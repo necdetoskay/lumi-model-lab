@@ -1,0 +1,38 @@
+name: qwen35_08b_smoke_qlora_v1
+model: unsloth/Qwen3.5-0.8B
+dataset_path: data/processed/milestone1_train.jsonl
+dataset_manifest: runs/training_dataset/manifest.json
+output_dir: adapters/qwen35_08b_smoke
+run_manifest: runs/smoke_training/qwen35_08b.json
+
+seed: 42
+load_in_4bit: true
+max_seq_length: 512
+max_examples: 12
+exclude_example_types:
+  - full_story_from_brief
+
+lora:
+  r: 8
+  alpha: 8
+  dropout: 0.0
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+training:
+  max_steps: 3
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 2
+  warmup_steps: 0
+  logging_steps: 1
+  optim: adamw_8bit
+  weight_decay: 0.01
+  lr_scheduler_type: linear
+  report_to: none
