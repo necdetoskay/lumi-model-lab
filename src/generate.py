@@ -12,7 +12,13 @@ import yaml
 from dotenv import load_dotenv
 from rich.console import Console
 
-from src.schemas import CostInfo, GenerationRecord, StorySpec, TokenUsage
+from src.schemas import (
+    CostInfo,
+    GenerationRecord,
+    StorySpec,
+    TechnicalValidation,
+    TokenUsage,
+)
 
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -45,16 +51,14 @@ Premise: {spec.premise}
 Additional constraints:
 {constraints}
 
-Return only the story text.
+Return only the story text. Make sure the story reaches a complete ending before the output limit.
 """
 
 
-def extract_text_content(content: Any) -> str | None:
-    """Normalize text from OpenAI-compatible string or content-part responses."""
+def _extract_text_content(message: dict[str, Any]) -> str | None:
+    content = message.get("content")
     if isinstance(content, str):
-        text = content.strip()
-        return text or None
-
+        return content.strip() or None
     if isinstance(content, list):
         parts: list[str] = []
         for item in content:
@@ -63,9 +67,7 @@ def extract_text_content(content: Any) -> str | None:
             text = item.get("text")
             if isinstance(text, str) and text.strip():
                 parts.append(text.strip())
-        combined = "\n".join(parts).strip()
-        return combined or None
-
+        return "\n".join(parts).strip() or None
     return None
 
 
@@ -79,9 +81,6 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         ],
         "temperature": temperature,
         "max_tokens": max_tokens,
-        # Story generation benefits from spending the output budget on the final
-        # prose rather than hidden/visible reasoning tokens. OpenRouter normalizes
-        # `effort: none` for models that support disabling reasoning.
         "reasoning": {"effort": "none", "exclude": True},
     }
     if seed is not None:
@@ -96,7 +95,7 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             "X-Title": "LUMI Model Lab",
         },
         json=payload,
-        timeout=180,
+        timeout=240,
     )
     response.raise_for_status()
     body = response.json()
@@ -105,23 +104,17 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
     if not choices:
         raise RuntimeError(f"OpenRouter response contains no choices: {body}")
 
-    choice = choices[0] or {}
+    choice = choices[0]
     message = choice.get("message") or {}
-    content = extract_text_content(message.get("content"))
+    content = _extract_text_content(message)
     if not content:
         usage = body.get("usage") or {}
-        completion_details = usage.get("completion_tokens_details") or {}
-        diagnostic = {
-            "model": body.get("model") or model,
-            "finish_reason": choice.get("finish_reason"),
-            "completion_tokens": usage.get("completion_tokens"),
-            "reasoning_tokens": completion_details.get("reasoning_tokens"),
-            "has_reasoning": bool(message.get("reasoning") or message.get("reasoning_details")),
-            "content_type": type(message.get("content")).__name__,
-        }
         raise RuntimeError(
-            "OpenRouter returned no final story text. Diagnostic: "
-            + json.dumps(diagnostic, ensure_ascii=False)
+            "OpenRouter response did not contain story text. "
+            f"finish_reason={choice.get('finish_reason')!r}, "
+            f"completion_tokens={usage.get('completion_tokens')!r}, "
+            f"reasoning_tokens={(usage.get('completion_tokens_details') or {}).get('reasoning_tokens')!r}, "
+            f"content_type={type(message.get('content')).__name__}."
         )
 
     return content, body, payload
@@ -147,6 +140,46 @@ def parse_cost(body: dict[str, Any]) -> CostInfo:
     return CostInfo(usd=usd_cost, try_amount=try_amount, usd_try_rate=rate)
 
 
+def count_words(text: str) -> int:
+    return len(text.split())
+
+
+def validate_generation(
+    *,
+    story: str,
+    spec: StorySpec,
+    finish_reason: str | None,
+    min_word_ratio: float,
+    max_word_ratio: float,
+) -> TechnicalValidation:
+    word_count = count_words(story)
+    min_words = round(spec.target_words * min_word_ratio)
+    max_words = round(spec.target_words * max_word_ratio)
+    reasons: list[str] = []
+
+    if finish_reason == "length":
+        reasons.append("model_hit_output_token_limit")
+    elif finish_reason not in (None, "stop"):
+        reasons.append(f"unexpected_finish_reason:{finish_reason}")
+
+    if word_count < min_words:
+        reasons.append("below_minimum_word_count")
+    if word_count > max_words:
+        reasons.append("above_maximum_word_count")
+
+    eligible_for_judge = not reasons
+    return TechnicalValidation(
+        status="complete" if eligible_for_judge else "incomplete",
+        eligible_for_judge=eligible_for_judge,
+        word_count=word_count,
+        target_words=spec.target_words,
+        min_words=min_words,
+        max_words=max_words,
+        finish_reason=finish_reason,
+        reasons=reasons,
+    )
+
+
 def next_story_id(raw_dir: Path) -> str:
     indexes: list[int] = []
     for path in raw_dir.glob("story_*.json"):
@@ -167,9 +200,10 @@ def save_record(record: GenerationRecord, raw_dir: Path) -> Path:
     return output_path
 
 
-def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False) -> Path | None:
+def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False) -> tuple[Path | None, TechnicalValidation | None]:
     teacher = config["teacher"]
     output = config["output"]
+    story_config = config.get("story") or {}
     model_env = teacher.get("model_env", "TEACHER_MODEL")
     configured_model = os.getenv(model_env)
     api_key = os.getenv("OPENROUTER_API_KEY")
@@ -191,7 +225,7 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
         console.print(f"Model: {model}")
         console.print(f"Prompt version: {PROMPT_VERSION}")
         console.print(user_prompt)
-        return None
+        return None, None
 
     story, body, request_payload = call_openrouter(
         api_key=api_key,
@@ -199,8 +233,18 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
         system_prompt=system_prompt,
         user_prompt=user_prompt,
         temperature=float(teacher.get("temperature", 0.8)),
-        max_tokens=int(teacher.get("max_tokens", 3500)),
+        max_tokens=int(teacher.get("max_tokens", 7000)),
         seed=config.get("seed"),
+    )
+
+    choice = (body.get("choices") or [{}])[0]
+    finish_reason = choice.get("finish_reason")
+    technical_validation = validate_generation(
+        story=story,
+        spec=spec,
+        finish_reason=finish_reason,
+        min_word_ratio=float(story_config.get("min_word_ratio", 0.80)),
+        max_word_ratio=float(story_config.get("max_word_ratio", 1.20)),
     )
 
     raw_dir = Path(output.get("raw_dir", "data/raw"))
@@ -214,6 +258,7 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
         story=story,
         usage=parse_usage(body),
         cost=parse_cost(body),
+        technical_validation=technical_validation,
         request={
             "temperature": request_payload.get("temperature"),
             "max_tokens": request_payload.get("max_tokens"),
@@ -224,10 +269,10 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
             "openrouter_id": body.get("id"),
             "model": body.get("model"),
             "provider": body.get("provider"),
-            "finish_reason": (body.get("choices") or [{}])[0].get("finish_reason"),
+            "finish_reason": finish_reason,
         },
     )
-    return save_record(record, raw_dir)
+    return save_record(record, raw_dir), technical_validation
 
 
 def parse_args() -> argparse.Namespace:
@@ -249,9 +294,18 @@ def main() -> None:
     spec = StorySpec.model_validate(load_yaml(Path(args.spec)))
 
     for index in range(args.count):
-        output_path = generate_one(config, spec, dry_run=args.dry_run)
-        if output_path:
-            console.print(f"[green]Generated[/green] {output_path}")
+        output_path, validation = generate_one(config, spec, dry_run=args.dry_run)
+        if output_path and validation:
+            status_style = "green" if validation.eligible_for_judge else "yellow"
+            console.print(f"[{status_style}]Generated[/{status_style}] {output_path}")
+            console.print(
+                f"Technical gate: [{status_style}]{validation.status}[/{status_style}] | "
+                f"words={validation.word_count}/{validation.target_words} | "
+                f"finish_reason={validation.finish_reason} | "
+                f"eligible_for_judge={validation.eligible_for_judge}"
+            )
+            if validation.reasons:
+                console.print(f"Reasons: {', '.join(validation.reasons)}")
         elif args.dry_run:
             break
         if index + 1 < args.count:
