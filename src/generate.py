@@ -93,11 +93,15 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
         # to disable it. Avoid seed here as provider support varies.
         return {"reasoning": {"enabled": True}}
 
-    if model.startswith("z-ai/glm-5.3"):
-        # GLM 5.3 requires reasoning on OpenRouter and rejects requests that
-        # disable it. Keep the request minimal and avoid seed because provider
-        # support may vary.
-        return {"reasoning": {"enabled": True}}
+    if model == "z-ai/glm-5.3":
+        # GLM 5.3 requires thinking. Its native default is max effort, which can
+        # consume the entire completion budget before visible prose is emitted.
+        # Story generation does not need deep coding-style reasoning, so use low
+        # effort and give reasoning + visible story enough shared token budget.
+        return {
+            "reasoning": {"enabled": True, "effort": "low"},
+            "max_tokens": 16000,
+        }
 
     if model.startswith("z-ai/glm-4.5"):
         # GLM 4.5 family supports hybrid thinking/non-thinking inference.
