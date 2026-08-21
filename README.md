@@ -118,6 +118,8 @@ Default behavior is quality-gated and sequential:
 8. registry + token/cost ledger + final report
 ```
 
+Provider/request failures are not model-quality failures. If benchmark generation cannot complete because the provider rejects request parameters, the run is recorded as `generation_error` instead of `rejected_technical`. Model-specific OpenRouter compatibility options belong in `src.generate.build_model_options`; for example, `google/gemini-3.7-flash` keeps mandatory reasoning enabled at low effort while excluding reasoning text from the visible story response.
+
 Benchmark stories are never used as training examples. Training source stories come from a separate frozen specification set.
 
 ### Fast screening only
