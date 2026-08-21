@@ -1,6 +1,6 @@
 import unittest
 
-from src.curate_examples import audit_examples, summarize, validate_expected_shape
+from src.curate_examples import apply_manual_overrides, audit_examples, summarize, validate_expected_shape
 
 
 class CurateExamplesTests(unittest.TestCase):
@@ -33,6 +33,24 @@ class CurateExamplesTests(unittest.TestCase):
         audited = audit_examples([self.row("a", "too short")], self.config)
         self.assertEqual(audited[0]["curation"]["status"], "review")
         self.assertIn("output_too_short:2<5", audited[0]["curation"]["review_reasons"])
+
+    def test_manual_repair_accept_preserves_original_output(self) -> None:
+        audited = audit_examples([self.row("a", "too short")], self.config)
+        repaired = apply_manual_overrides(
+            audited,
+            {
+                "a": {
+                    "action": "repair_accept",
+                    "note": "Manual repair for test",
+                    "output": "one two three four five six",
+                }
+            },
+            self.config,
+        )
+        self.assertEqual(repaired[0]["original_output"], "too short")
+        self.assertEqual(repaired[0]["output"], "one two three four five six")
+        self.assertEqual(repaired[0]["curation"]["status"], "ready")
+        self.assertEqual(repaired[0]["curation"]["manual_action"], "repair_accept")
 
     def test_expected_shape_has_no_warnings(self) -> None:
         rows = [self.row("a", "one two three four five"), self.row("b", "six seven eight nine ten")]
