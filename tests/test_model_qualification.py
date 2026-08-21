@@ -3,7 +3,12 @@ import unittest
 from pathlib import Path
 
 from src.leaderboard import leaderboard_rows
-from src.model_qualify import generation_error_reasons, screen_gate, technical_screen_gate
+from src.model_qualify import (
+    can_resume_from_screen,
+    generation_error_reasons,
+    screen_gate,
+    technical_screen_gate,
+)
 from src.model_registry import build_fingerprint, find_by_fingerprint, model_slug
 
 
@@ -53,6 +58,31 @@ class ModelQualificationTests(unittest.TestCase):
         reasons = generation_error_reasons(manifest, "google/gemini-3.7-flash")
         self.assertEqual(reasons[0], "generation_errors_present:1")
         self.assertIn("Reasoning is mandatory", reasons[1])
+
+    def test_full_run_resumes_from_exact_passed_screen(self) -> None:
+        existing = {
+            "status": "screen_passed",
+            "run_dir": "runs/qualifications/provider__model__abc",
+            "screen": {"technical_pass_rate": 1.0, "judge_average": 4.5},
+        }
+        self.assertTrue(can_resume_from_screen(existing, screen_only=False, rerun=False))
+
+    def test_screen_or_rerun_does_not_use_resume_path(self) -> None:
+        existing = {
+            "status": "screen_passed",
+            "run_dir": "runs/qualifications/provider__model__abc",
+            "screen": {"technical_pass_rate": 1.0},
+        }
+        self.assertFalse(can_resume_from_screen(existing, screen_only=True, rerun=False))
+        self.assertFalse(can_resume_from_screen(existing, screen_only=False, rerun=True))
+
+    def test_non_screen_passed_status_does_not_resume(self) -> None:
+        existing = {
+            "status": "rejected_judge",
+            "run_dir": "runs/qualifications/provider__model__abc",
+            "screen": {"technical_pass_rate": 1.0},
+        }
+        self.assertFalse(can_resume_from_screen(existing, screen_only=False, rerun=False))
 
     def test_full_screen_gate_accepts_good_summary(self) -> None:
         ok, reasons = screen_gate(
