@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import argparse
-import importlib
 import json
 import platform
 import sys
+from importlib import metadata
 from pathlib import Path
 from typing import Any
 
@@ -26,10 +26,9 @@ OPTIONAL_PACKAGES = (
 
 def package_version(name: str) -> str | None:
     try:
-        module = importlib.import_module(name)
-    except Exception:
+        return metadata.version(name)
+    except metadata.PackageNotFoundError:
         return None
-    return str(getattr(module, "__version__", "installed"))
 
 
 def collect_preflight() -> dict[str, Any]:
@@ -112,7 +111,7 @@ def classify(result: dict[str, Any]) -> tuple[str, list[str]]:
         if status == "candidate_ready":
             status = "stack_missing"
     else:
-        notes.append("All expected training packages are importable.")
+        notes.append("All expected training packages are installed.")
 
     return status, notes
 
