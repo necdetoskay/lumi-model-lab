@@ -49,6 +49,26 @@ Return only the story text.
 """
 
 
+def extract_text_content(content: Any) -> str | None:
+    """Normalize text from OpenAI-compatible string or content-part responses."""
+    if isinstance(content, str):
+        text = content.strip()
+        return text or None
+
+    if isinstance(content, list):
+        parts: list[str] = []
+        for item in content:
+            if not isinstance(item, dict):
+                continue
+            text = item.get("text")
+            if isinstance(text, str) and text.strip():
+                parts.append(text.strip())
+        combined = "\n".join(parts).strip()
+        return combined or None
+
+    return None
+
+
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
                     temperature: float, max_tokens: int, seed: int | None) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
@@ -59,6 +79,10 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         ],
         "temperature": temperature,
         "max_tokens": max_tokens,
+        # Story generation benefits from spending the output budget on the final
+        # prose rather than hidden/visible reasoning tokens. OpenRouter normalizes
+        # `effort: none` for models that support disabling reasoning.
+        "reasoning": {"effort": "none", "exclude": True},
     }
     if seed is not None:
         payload["seed"] = seed
@@ -81,11 +105,26 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
     if not choices:
         raise RuntimeError(f"OpenRouter response contains no choices: {body}")
 
-    content = choices[0].get("message", {}).get("content")
-    if not content or not isinstance(content, str):
-        raise RuntimeError("OpenRouter response did not contain story text.")
+    choice = choices[0] or {}
+    message = choice.get("message") or {}
+    content = extract_text_content(message.get("content"))
+    if not content:
+        usage = body.get("usage") or {}
+        completion_details = usage.get("completion_tokens_details") or {}
+        diagnostic = {
+            "model": body.get("model") or model,
+            "finish_reason": choice.get("finish_reason"),
+            "completion_tokens": usage.get("completion_tokens"),
+            "reasoning_tokens": completion_details.get("reasoning_tokens"),
+            "has_reasoning": bool(message.get("reasoning") or message.get("reasoning_details")),
+            "content_type": type(message.get("content")).__name__,
+        }
+        raise RuntimeError(
+            "OpenRouter returned no final story text. Diagnostic: "
+            + json.dumps(diagnostic, ensure_ascii=False)
+        )
 
-    return content.strip(), body, payload
+    return content, body, payload
 
 
 def parse_usage(body: dict[str, Any]) -> TokenUsage:
@@ -135,8 +174,6 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
     configured_model = os.getenv(model_env)
     api_key = os.getenv("OPENROUTER_API_KEY")
 
-    # A dry run must be usable before any API credentials or model selection exist.
-    # It only validates the local config/spec/prompt assembly and never calls OpenRouter.
     if dry_run:
         model = configured_model or DRY_RUN_MODEL_PLACEHOLDER
     else:
@@ -181,6 +218,7 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
             "temperature": request_payload.get("temperature"),
             "max_tokens": request_payload.get("max_tokens"),
             "seed": request_payload.get("seed"),
+            "reasoning": request_payload.get("reasoning"),
         },
         response_meta={
             "openrouter_id": body.get("id"),
