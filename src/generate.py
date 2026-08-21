@@ -22,7 +22,7 @@ from src.schemas import (
 
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-PROMPT_VERSION = "story_teacher_v0.1"
+PROMPT_VERSION = "story_teacher_v0.2"
 DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
 console = Console()
 
@@ -38,11 +38,14 @@ def load_teacher_prompt(path: Path) -> str:
 
 def build_user_prompt(spec: StorySpec) -> str:
     constraints = "\n".join(f"- {item}" for item in spec.constraints) or "- None"
+    min_words = round(spec.target_words * 0.90)
+    max_words = round(spec.target_words * 1.10)
     return f"""Create one finished story using this brief.
 
 Language: {spec.language}
 Age range: {spec.age_min}-{spec.age_max}
-Target length: approximately {spec.target_words} words
+Target length: {spec.target_words} words
+Required length range: {min_words}-{max_words} words
 Title hint: {spec.title_hint or 'Choose an appropriate title'}
 Protagonist: {spec.protagonist}
 Setting: {spec.setting}
@@ -51,7 +54,9 @@ Premise: {spec.premise}
 Additional constraints:
 {constraints}
 
-Return only the story text. Make sure the story reaches a complete ending before the output limit.
+Length is part of the task: do not finish substantially before {min_words} words. Reach the target naturally with meaningful events, observations, decisions, and consequences rather than repetition. Complete the ending before the output limit.
+
+Return only the story text.
 """
 
 
