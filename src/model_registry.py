@@ -28,7 +28,12 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build_fingerprint(model: str, qualification_config: dict[str, Any]) -> tuple[str, dict[str, str]]:
+def build_fingerprint(
+    model: str,
+    qualification_config: dict[str, Any],
+    *,
+    extra_identity: dict[str, Any] | None = None,
+) -> tuple[str, dict[str, str]]:
     files = [Path(str(item)) for item in qualification_config.get("fingerprint_files") or []]
     hashes: dict[str, str] = {}
     for path in files:
@@ -40,6 +45,7 @@ def build_fingerprint(model: str, qualification_config: dict[str, Any]) -> tuple
         "model": model,
         "qualification_name": qualification_config.get("name"),
         "files": hashes,
+        "runtime_identity": extra_identity or {},
     }
     encoded = json.dumps(payload, sort_keys=True, ensure_ascii=True).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest(), hashes
