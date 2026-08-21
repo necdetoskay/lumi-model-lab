@@ -1,4 +1,4 @@
-Bir çocuk hikâyesi üret ve çıktıyı aşağıdaki YAML sözleşmesine TAM OLARAK uyan tek bir belge olarak ver. Bu çıktı supervised fine-tuning veri hattına makine tarafından okunacaktır; bu nedenle biçim hatası kabul edilemez.
+Bir çocuk hikâyesi üret ve çıktıyı aşağıdaki YAML sözleşmesine TAM OLARAK uyan tek bir belge olarak ver. Bu çıktı supervised fine-tuning veri hattına makine tarafından okunacaktır; bu nedenle biçim ve uzunluk hatası kabul edilemez.
 
 ÇIKTI KURALLARI — ZORUNLU:
 - Yalnızca tek bir `yaml` kod bloğu üret. Kod bloğunun dışında hiçbir açıklama, önsöz, yorum veya sonuç yazma.
@@ -20,7 +20,12 @@ Bir çocuk hikâyesi üret ve çıktıyı aşağıdaki YAML sözleşmesine TAM O
 HİKÂYE GEREKSİNİMLERİ:
 - Dil: Türkçe
 - Hedef yaş aralığı: 6-8
-- Hedef uzunluk: yaklaşık 2000 kelime
+- `story` alanındaki HİKÂYE METNİ EN AZ 1800 kelime olmalı.
+- Tercih edilen aralık 1900-2200 kelimedir.
+- 1800 kelimenin altında hikâyeyi BİTİRME.
+- Emin değilsen kısa üretmek yerine mevcut sahneleri doğal biçimde geliştirerek biraz daha uzun üret.
+- Uzunluğu artırırken yeni ve gereksiz yan olaylar ekleme; mevcut olay örgüsünü, diyalogları, karakter tepkilerini, gözlemleri ve mekân ayrıntılarını doğal biçimde derinleştir.
+- `target_words` alanı her zaman `2000` olarak kalmalı; gerçek hikâye uzunluğunu bu alana göre kısaltma.
 - Hikâye tamamlanmış olmalı; başlangıç, gelişme ve tatmin edici bir son içermeli.
 - Açık bir olay örgüsü, tutarlı ana karakter ve anlamlı bir problem, gizem veya hedef bulunmalı.
 - Ana karakterin kararları sonucu etkilemeli.
@@ -30,6 +35,16 @@ HİKÂYE GEREKSİNİMLERİ:
 - Doğrudan didaktik/ahlak dersi veren bir kapanış kullanılmamalı.
 - Gereksiz tekrar ve dolgu kullanılmamalı.
 - Bilinen kitap, film, çizgi film veya telifli karakterleri kullanma; özgün karakter ve mekân üret.
+
+UZUNLUK STRATEJİSİ — ÖNEMLİ:
+Hikâyeyi tek kısa sahne gibi yazma. Doğal biçimde şu yapıyı kullan:
+1. Karakter ve mekânı kuran anlamlı bir açılış.
+2. Ana problem/hedefin ortaya çıkışı.
+3. En az iki gelişme sahnesi: araştırma, deneme, diyalog, karar veya küçük engel.
+4. Ana karakterin sonucu etkileyen bilinçli bir kararı.
+5. Problemin çözümü.
+6. Olayların sonucunu hissettiren sakin ve tamamlanmış bir kapanış.
+Bu yapı yalnız uzunluk doldurmak için değil, yaklaşık 2000 kelimelik doğal bir hikâye ritmi oluşturmak için kullanılmalı.
 
 AŞAĞIDAKİ ŞEMAYI BİREBİR KULLAN:
 
@@ -97,7 +112,11 @@ ALAN ANLAMLARI:
 5. Liste işaretleri `\-` biçiminde escape edilmiş mi? Edilmişse düzelt.
 6. `theme` gerçekten liste mi?
 7. `story: |` altındaki tüm hikâye satırları iki boşluk girintili mi?
-8. Hikâye yaklaşık 2000 kelime ve tamamlanmış mı?
-9. Kod bloğu dışında herhangi bir metin var mı? Varsa kaldır.
+8. `story` alanındaki hikâye 1800 kelimenin altında mı? Öyleyse ÇIKTI VERME; hikâyeyi mevcut sahneleri doğal biçimde geliştirerek uzat ve yeniden kontrol et.
+9. Tercihen hikâye 1900-2200 kelime aralığında mı?
+10. Hikâye tamamlanmış mı ve final sahnesi yarım kalmıyor mu?
+11. Kod bloğu dışında herhangi bir metin var mı? Varsa kaldır.
+
+Kelime sayısını kesin hesaplayamıyorsan güvenli tarafta kal: yaklaşık 2100-2200 kelimelik bir hikâye üretmeyi hedefle. 1800 kelimenin altında kalma.
 
 Şimdi bu sözleşmeye uygun TEK bir özgün çocuk hikâyesi üret.
