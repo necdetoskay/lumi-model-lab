@@ -111,6 +111,17 @@ def source_gate(manifest: dict[str, Any], required: int) -> tuple[bool, int]:
     return len(accepted) >= required, len(accepted)
 
 
+def can_resume_from_screen(existing: dict[str, Any] | None, *, screen_only: bool, rerun: bool) -> bool:
+    return bool(
+        existing
+        and not rerun
+        and not screen_only
+        and existing.get("status") == "screen_passed"
+        and existing.get("screen")
+        and existing.get("run_dir")
+    )
+
+
 def make_entry(
     *, model: str, fingerprint: str, hashes: dict[str, str], judge_model: str | None,
     run_dir: Path, status: str, screen: dict[str, Any] | None = None,
@@ -198,86 +209,94 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         extra_identity={"judge_model": judge_model},
     )
     existing = find_by_fingerprint(load_registry(registry_path), fingerprint)
-    if existing and not rerun:
+    resume_from_screen = can_resume_from_screen(existing, screen_only=screen_only, rerun=rerun)
+    if existing and not rerun and not resume_from_screen:
         console.print("[yellow]ALREADY TESTED[/yellow] Same model + experiment fingerprint already exists.")
         print_entry(existing)
         return existing
 
     root = Path(str(config.get("qualification_root", "runs/qualifications")))
-    run_dir = root / f"{model_slug(model)}__{fingerprint[:10]}"
+    default_run_dir = root / f"{model_slug(model)}__{fingerprint[:10]}"
+    run_dir = Path(str(existing["run_dir"])) if resume_from_screen and existing else default_run_dir
     config_dir = run_dir / "configs"
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    # Stage 1 — frozen teacher benchmark generation.
-    benchmark = load_benchmark_config(Path(str(config["benchmark_config"])))
-    benchmark = dict(benchmark)
-    benchmark["name"] = f"qualification_screen__{model_slug(model)}"
-    benchmark["models"] = [model]
-    benchmark["output_dir"] = str(run_dir / "screen")
-    benchmark_config_path = config_dir / "benchmark.yaml"
-    write_yaml(benchmark_config_path, benchmark)
-    screen_manifest = run_dir / "screen" / "manifest.json"
+    if resume_from_screen and existing:
+        screen_summary = dict(existing.get("screen") or {})
+        console.rule("Resume qualification")
+        console.print("[green]SCREEN REUSED[/green] Exact fingerprint already passed benchmark + judge.")
+        console.print("Continuing directly at Stage 3; no benchmark or screen-judge calls will be repeated.")
+    else:
+        # Stage 1 — frozen teacher benchmark generation.
+        benchmark = load_benchmark_config(Path(str(config["benchmark_config"])))
+        benchmark = dict(benchmark)
+        benchmark["name"] = f"qualification_screen__{model_slug(model)}"
+        benchmark["models"] = [model]
+        benchmark["output_dir"] = str(run_dir / "screen")
+        benchmark_config_path = config_dir / "benchmark.yaml"
+        write_yaml(benchmark_config_path, benchmark)
+        screen_manifest = run_dir / "screen" / "manifest.json"
 
-    console.rule("1/6 Technical benchmark")
-    generated_manifest = generate_phase(
-        benchmark,
-        Path(str(config["generation_config"])),
-        screen_manifest,
-        force=rerun,
-    )
-    generated_summary = summarize_entries(generated_manifest.get("entries", []), [model])[model]
-    generation_reasons = generation_error_reasons(generated_manifest, model)
-    if generation_reasons:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="generation_error", screen=generated_summary, reasons=generation_reasons,
+        console.rule("1/6 Technical benchmark")
+        generated_manifest = generate_phase(
+            benchmark,
+            Path(str(config["generation_config"])),
+            screen_manifest,
+            force=rerun,
         )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        generated_summary = summarize_entries(generated_manifest.get("entries", []), [model])[model]
+        generation_reasons = generation_error_reasons(generated_manifest, model)
+        if generation_reasons:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="generation_error", screen=generated_summary, reasons=generation_reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    tech_ok, tech_reasons = technical_screen_gate(generated_summary, config.get("screen_gates") or {})
-    if not tech_ok:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="rejected_technical", screen=generated_summary, reasons=tech_reasons,
-        )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        tech_ok, tech_reasons = technical_screen_gate(generated_summary, config.get("screen_gates") or {})
+        if not tech_ok:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="rejected_technical", screen=generated_summary, reasons=tech_reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    # Stage 2 — judge only if technical gate passes.
-    console.rule("2/6 Judge benchmark")
-    judged_manifest = judge_phase(
-        benchmark,
-        Path(str(config["evaluation_config"])),
-        screen_manifest,
-        force=rerun,
-    )
-    report_phase(benchmark, screen_manifest, run_dir / "screen")
-    screen_summary = summarize_entries(judged_manifest.get("entries", []), [model])[model]
-    qualified, reasons = screen_gate(screen_summary, config.get("screen_gates") or {})
-    if not qualified:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="rejected_judge", screen=screen_summary, reasons=reasons,
+        # Stage 2 — judge only if technical gate passes.
+        console.rule("2/6 Judge benchmark")
+        judged_manifest = judge_phase(
+            benchmark,
+            Path(str(config["evaluation_config"])),
+            screen_manifest,
+            force=rerun,
         )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        report_phase(benchmark, screen_manifest, run_dir / "screen")
+        screen_summary = summarize_entries(judged_manifest.get("entries", []), [model])[model]
+        qualified, reasons = screen_gate(screen_summary, config.get("screen_gates") or {})
+        if not qualified:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="rejected_judge", screen=screen_summary, reasons=reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    if screen_only:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="screen_passed", screen=screen_summary,
-        )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        if screen_only:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="screen_passed", screen=screen_summary,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
     # Stage 3 — create independent training source stories.
     console.rule("3/6 Training source stories")
