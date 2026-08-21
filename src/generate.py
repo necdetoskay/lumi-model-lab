@@ -93,6 +93,16 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
         # to disable it. Avoid seed here as provider support varies.
         return {"reasoning": {"enabled": True}}
 
+    if model.startswith("google/gemini-3.7-flash"):
+        # Gemini 3.7 Flash requires reasoning on OpenRouter. Keep effort low for
+        # story generation and exclude reasoning text from the visible response.
+        options: dict[str, Any] = {
+            "reasoning": {"enabled": True, "effort": "low", "exclude": True},
+        }
+        if seed is not None:
+            options["seed"] = seed
+        return options
+
     if model == "z-ai/glm-5.3":
         # GLM 5.3 requires thinking. Its native default is max effort, which can
         # consume the entire completion budget before visible prose is emitted.
