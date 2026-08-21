@@ -6,6 +6,7 @@ from src.leaderboard import leaderboard_rows
 from src.model_qualify import (
     can_resume_from_screen,
     generation_error_reasons,
+    retryable_source_entries,
     screen_gate,
     technical_screen_gate,
 )
@@ -67,6 +68,14 @@ class ModelQualificationTests(unittest.TestCase):
         }
         self.assertTrue(can_resume_from_screen(existing, screen_only=False, rerun=False))
 
+    def test_rejected_source_gate_can_resume_without_repeating_screen(self) -> None:
+        existing = {
+            "status": "rejected_source_gate",
+            "run_dir": "runs/qualifications/provider__model__abc",
+            "screen": {"technical_pass_rate": 1.0, "judge_average": 4.5},
+        }
+        self.assertTrue(can_resume_from_screen(existing, screen_only=False, rerun=False))
+
     def test_screen_or_rerun_does_not_use_resume_path(self) -> None:
         existing = {
             "status": "screen_passed",
@@ -76,13 +85,57 @@ class ModelQualificationTests(unittest.TestCase):
         self.assertFalse(can_resume_from_screen(existing, screen_only=True, rerun=False))
         self.assertFalse(can_resume_from_screen(existing, screen_only=False, rerun=True))
 
-    def test_non_screen_passed_status_does_not_resume(self) -> None:
+    def test_non_resumable_status_does_not_resume(self) -> None:
         existing = {
             "status": "rejected_judge",
             "run_dir": "runs/qualifications/provider__model__abc",
             "screen": {"technical_pass_rate": 1.0},
         }
         self.assertFalse(can_resume_from_screen(existing, screen_only=False, rerun=False))
+
+    def test_retryable_source_entries_only_selects_length_failures(self) -> None:
+        manifest = {
+            "entries": [
+                {
+                    "model": "m",
+                    "generation_status": "complete",
+                    "technical_pass": False,
+                    "technical_reasons": ["below_minimum_word_count"],
+                    "technical_retry_count": 0,
+                },
+                {
+                    "model": "m",
+                    "generation_status": "complete",
+                    "technical_pass": False,
+                    "technical_reasons": ["model_hit_output_token_limit"],
+                    "technical_retry_count": 0,
+                },
+                {
+                    "model": "m",
+                    "generation_status": "complete",
+                    "technical_pass": True,
+                    "technical_reasons": [],
+                    "technical_retry_count": 0,
+                },
+            ]
+        }
+        selected = retryable_source_entries(manifest, "m")
+        self.assertEqual(len(selected), 1)
+        self.assertEqual(selected[0]["technical_reasons"], ["below_minimum_word_count"])
+
+    def test_retryable_source_entries_respects_retry_limit(self) -> None:
+        manifest = {
+            "entries": [
+                {
+                    "model": "m",
+                    "generation_status": "complete",
+                    "technical_pass": False,
+                    "technical_reasons": ["above_maximum_word_count"],
+                    "technical_retry_count": 2,
+                }
+            ]
+        }
+        self.assertEqual(retryable_source_entries(manifest, "m"), [])
 
     def test_full_screen_gate_accepts_good_summary(self) -> None:
         ok, reasons = screen_gate(
