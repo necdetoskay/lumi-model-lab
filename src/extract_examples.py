@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from rich.console import Console
 
 from src.generate import OPENROUTER_URL, build_model_options, parse_cost, parse_usage
-from src.judge import extract_json_object
 from src.schemas import GenerationRecord
 
 console = Console()
@@ -32,6 +31,27 @@ def load_json(path: Path) -> dict[str, Any]:
 def save_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def extract_first_json_object(text: str) -> dict[str, Any]:
+    """Return the first valid JSON object from extractor text.
+
+    Extractor models occasionally append commentary or a second JSON fragment
+    after an otherwise valid response. We tolerate trailing material here, but
+    the extracted object still goes through strict schema/type-count validation.
+    """
+    cleaned = text.strip()
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(cleaned):
+        if char != "{":
+            continue
+        try:
+            parsed, _ = decoder.raw_decode(cleaned[index:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    raise RuntimeError("Extractor response did not contain a valid JSON object.")
 
 
 def accepted_source_entries(source_manifest: dict[str, Any]) -> list[dict[str, Any]]:
@@ -230,7 +250,7 @@ def extract_derived_in_chunks(
             temperature=temperature,
             max_tokens=max_tokens,
         )
-        parsed = extract_json_object(content)
+        parsed = extract_first_json_object(content)
         rows = validate_derived_examples(parsed, chunk_counts)
         all_examples.extend(rows)
 
