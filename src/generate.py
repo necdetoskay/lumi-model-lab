@@ -205,19 +205,24 @@ def save_record(record: GenerationRecord, raw_dir: Path) -> Path:
     return output_path
 
 
-def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False) -> tuple[Path | None, TechnicalValidation | None]:
+def generate_one(
+    config: dict[str, Any],
+    spec: StorySpec,
+    dry_run: bool = False,
+    model_override: str | None = None,
+) -> tuple[Path | None, TechnicalValidation | None]:
     teacher = config["teacher"]
     output = config["output"]
     story_config = config.get("story") or {}
     model_env = teacher.get("model_env", "TEACHER_MODEL")
-    configured_model = os.getenv(model_env)
+    configured_model = model_override or os.getenv(model_env)
     api_key = os.getenv("OPENROUTER_API_KEY")
 
     if dry_run:
         model = configured_model or DRY_RUN_MODEL_PLACEHOLDER
     else:
         if not configured_model:
-            raise RuntimeError(f"Missing model name in environment variable {model_env}.")
+            raise RuntimeError(f"Missing model name in --model or environment variable {model_env}.")
         if not api_key:
             raise RuntimeError("Missing OPENROUTER_API_KEY.")
         model = configured_model
@@ -284,6 +289,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate synthetic LUMI teacher stories via OpenRouter.")
     parser.add_argument("--spec", default="data/specifications/example_story.yaml")
     parser.add_argument("--config", default="configs/generation.yaml")
+    parser.add_argument("--model", help="Override TEACHER_MODEL for this run without editing .env")
     parser.add_argument("--count", type=int, default=1)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
@@ -299,7 +305,12 @@ def main() -> None:
     spec = StorySpec.model_validate(load_yaml(Path(args.spec)))
 
     for index in range(args.count):
-        output_path, validation = generate_one(config, spec, dry_run=args.dry_run)
+        output_path, validation = generate_one(
+            config,
+            spec,
+            dry_run=args.dry_run,
+            model_override=args.model,
+        )
         if output_path and validation:
             status_style = "green" if validation.eligible_for_judge else "yellow"
             console.print(f"[{status_style}]Generated[/{status_style}] {output_path}")
