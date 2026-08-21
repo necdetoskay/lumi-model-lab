@@ -1,6 +1,6 @@
 import unittest
 
-from src.extract_examples import accepted_source_entries, validate_derived_examples
+from src.extract_examples import accepted_source_entries, plan_extraction_chunks, validate_derived_examples
 
 
 class ExtractExamplesTests(unittest.TestCase):
@@ -71,6 +71,23 @@ class ExtractExamplesTests(unittest.TestCase):
         }
         with self.assertRaises(RuntimeError):
             validate_derived_examples(payload, counts)
+
+    def test_plans_small_extraction_chunks(self) -> None:
+        counts = {
+            "continuation": 2,
+            "character_dialogue": 2,
+            "scene_expansion": 2,
+            "conflict_resolution": 1,
+            "ending_generation": 1,
+            "plan_to_prose": 2,
+        }
+        chunks = plan_extraction_chunks(counts, 4)
+        self.assertEqual([sum(chunk.values()) for chunk in chunks], [4, 4, 2])
+        combined = {key: 0 for key in counts}
+        for chunk in chunks:
+            for key, value in chunk.items():
+                combined[key] += value
+        self.assertEqual(combined, counts)
 
 
 if __name__ == "__main__":
