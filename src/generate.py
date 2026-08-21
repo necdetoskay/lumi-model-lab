@@ -76,6 +76,26 @@ def _extract_text_content(message: dict[str, Any]) -> str | None:
     return None
 
 
+def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
+    """Return model-specific OpenRouter options.
+
+    Keep the common payload conservative. Some providers reject otherwise valid
+    OpenRouter parameters, so model-specific controls live here instead of being
+    applied globally.
+    """
+    if model == "aion-labs/aion-3.0":
+        # OpenRouter's Aion example explicitly enables reasoning. Do not send
+        # seed here because the example does not use it and provider support can vary.
+        return {"reasoning": {"enabled": True}}
+
+    options: dict[str, Any] = {
+        "reasoning": {"effort": "none", "exclude": True},
+    }
+    if seed is not None:
+        options["seed"] = seed
+    return options
+
+
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
                     temperature: float, max_tokens: int, seed: int | None) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
@@ -86,10 +106,8 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         ],
         "temperature": temperature,
         "max_tokens": max_tokens,
-        "reasoning": {"effort": "none", "exclude": True},
     }
-    if seed is not None:
-        payload["seed"] = seed
+    payload.update(build_model_options(model, seed))
 
     response = requests.post(
         OPENROUTER_URL,
@@ -102,9 +120,17 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         json=payload,
         timeout=240,
     )
-    response.raise_for_status()
-    body = response.json()
 
+    if not response.ok:
+        try:
+            error_body: Any = response.json()
+        except ValueError:
+            error_body = response.text[:2000]
+        raise RuntimeError(
+            f"OpenRouter HTTP {response.status_code} for model {model}: {error_body}"
+        )
+
+    body = response.json()
     choices = body.get("choices") or []
     if not choices:
         raise RuntimeError(f"OpenRouter response contains no choices: {body}")
@@ -234,6 +260,7 @@ def generate_one(
         console.rule("Dry run")
         console.print(f"Model: {model}")
         console.print(f"Prompt version: {PROMPT_VERSION}")
+        console.print(f"Model options: {build_model_options(model, config.get('seed'))}")
         console.print(user_prompt)
         return None, None
 
