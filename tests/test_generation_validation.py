@@ -10,7 +10,7 @@ class GenerationValidationTests(unittest.TestCase):
             age_min=6,
             age_max=8,
             language="tr",
-            target_words=100,
+            target_words=300,
             protagonist="Mira",
             setting="Kuzey Ormanı",
             theme="merak",
@@ -18,7 +18,7 @@ class GenerationValidationTests(unittest.TestCase):
         )
 
     def test_complete_story_is_eligible_for_judge(self) -> None:
-        story = "kelime " * 100
+        story = "kelime " * 300
         result = validate_generation(
             story=story,
             spec=self.spec,
@@ -31,7 +31,7 @@ class GenerationValidationTests(unittest.TestCase):
         self.assertEqual(result.reasons, [])
 
     def test_length_finish_is_incomplete_even_when_word_count_matches(self) -> None:
-        story = "kelime " * 100
+        story = "kelime " * 300
         result = validate_generation(
             story=story,
             spec=self.spec,
@@ -43,7 +43,7 @@ class GenerationValidationTests(unittest.TestCase):
         self.assertIn("model_hit_output_token_limit", result.reasons)
 
     def test_short_story_is_incomplete(self) -> None:
-        story = "kelime " * 50
+        story = "kelime " * 150
         result = validate_generation(
             story=story,
             spec=self.spec,
