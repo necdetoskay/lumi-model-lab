@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from src.leaderboard import leaderboard_rows
-from src.model_qualify import screen_gate, technical_screen_gate
+from src.model_qualify import generation_error_reasons, screen_gate, technical_screen_gate
 from src.model_registry import build_fingerprint, find_by_fingerprint, model_slug
 
 
@@ -32,6 +32,27 @@ class ModelQualificationTests(unittest.TestCase):
         )
         self.assertFalse(ok)
         self.assertIn("technical_pass_rate_below_threshold", reasons)
+
+    def test_generation_errors_are_reported_separately(self) -> None:
+        manifest = {
+            "entries": [
+                {
+                    "model": "google/gemini-3.7-flash",
+                    "spec_path": "data/specifications/benchmark/01.yaml",
+                    "generation_status": "error",
+                    "generation_error": "Reasoning is mandatory for this endpoint",
+                },
+                {
+                    "model": "other/model",
+                    "spec_path": "data/specifications/benchmark/02.yaml",
+                    "generation_status": "error",
+                    "generation_error": "unrelated",
+                },
+            ]
+        }
+        reasons = generation_error_reasons(manifest, "google/gemini-3.7-flash")
+        self.assertEqual(reasons[0], "generation_errors_present:1")
+        self.assertIn("Reasoning is mandatory", reasons[1])
 
     def test_full_screen_gate_accepts_good_summary(self) -> None:
         ok, reasons = screen_gate(
