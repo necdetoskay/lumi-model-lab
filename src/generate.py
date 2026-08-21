@@ -93,6 +93,12 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
         # to disable it. Avoid seed here as provider support varies.
         return {"reasoning": {"enabled": True}}
 
+    if model.startswith("z-ai/glm-5.3"):
+        # GLM 5.3 requires reasoning on OpenRouter and rejects requests that
+        # disable it. Keep the request minimal and avoid seed because provider
+        # support may vary.
+        return {"reasoning": {"enabled": True}}
+
     if model.startswith("z-ai/glm-4.5"):
         # GLM 4.5 family supports hybrid thinking/non-thinking inference.
         # For story generation we prefer non-thinking so the output budget is
