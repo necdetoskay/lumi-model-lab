@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any
 
 import requests
-import yaml
 from dotenv import load_dotenv
 from rich.console import Console
 
@@ -20,6 +19,8 @@ console = Console()
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
+    import yaml
+
     with path.open("r", encoding="utf-8") as handle:
         return yaml.safe_load(handle) or {}
 
@@ -88,6 +89,39 @@ APPROVED SOURCE STORY
 """
 
 
+def plan_extraction_chunks(derived_counts: dict[str, int], max_examples_per_call: int) -> list[dict[str, int]]:
+    if max_examples_per_call < 1:
+        raise RuntimeError("max_examples_per_call must be at least 1.")
+
+    chunks: list[dict[str, int]] = []
+    current: dict[str, int] = {}
+    current_total = 0
+
+    for example_type, requested in derived_counts.items():
+        remaining = requested
+        while remaining > 0:
+            capacity = max_examples_per_call - current_total
+            if capacity == 0:
+                chunks.append(current)
+                current = {}
+                current_total = 0
+                capacity = max_examples_per_call
+
+            take = min(remaining, capacity)
+            current[example_type] = current.get(example_type, 0) + take
+            current_total += take
+            remaining -= take
+
+            if current_total == max_examples_per_call:
+                chunks.append(current)
+                current = {}
+                current_total = 0
+
+    if current:
+        chunks.append(current)
+    return chunks
+
+
 def validate_derived_examples(payload: dict[str, Any], derived_counts: dict[str, int]) -> list[dict[str, str]]:
     examples = payload.get("examples")
     if not isinstance(examples, list):
@@ -125,7 +159,7 @@ def call_extractor(
     user_prompt: str,
     temperature: float,
     max_tokens: int,
-) -> tuple[list[dict[str, str]], dict[str, Any], dict[str, Any]]:
+) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
@@ -171,6 +205,62 @@ def call_extractor(
     return content, body, payload
 
 
+def extract_derived_in_chunks(
+    *,
+    record: GenerationRecord,
+    derived_counts: dict[str, int],
+    max_examples_per_call: int,
+    api_key: str,
+    model: str,
+    system_prompt: str,
+    temperature: float,
+    max_tokens: int,
+) -> tuple[list[dict[str, str]], list[dict[str, Any]]]:
+    chunks = plan_extraction_chunks(derived_counts, max_examples_per_call)
+    all_examples: list[dict[str, str]] = []
+    calls: list[dict[str, Any]] = []
+
+    for index, chunk_counts in enumerate(chunks, start=1):
+        console.print(f"  chunk {index}/{len(chunks)}: {chunk_counts}")
+        content, body, request_payload = call_extractor(
+            api_key=api_key,
+            model=model,
+            system_prompt=system_prompt,
+            user_prompt=build_extraction_input(record, chunk_counts),
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        parsed = extract_json_object(content)
+        rows = validate_derived_examples(parsed, chunk_counts)
+        all_examples.extend(rows)
+
+        usage = parse_usage(body)
+        cost = parse_cost(body)
+        choice = (body.get("choices") or [{}])[0]
+        calls.append(
+            {
+                "chunk": index,
+                "requested_counts": chunk_counts,
+                "example_count": len(rows),
+                "cost_usd": cost.usd,
+                "input_tokens": usage.input_tokens,
+                "output_tokens": usage.output_tokens,
+                "provider": body.get("provider"),
+                "finish_reason": choice.get("finish_reason"),
+                "reasoning": request_payload.get("reasoning"),
+            }
+        )
+
+    combined_counts = {key: 0 for key in derived_counts}
+    for row in all_examples:
+        combined_counts[row["example_type"]] += 1
+    if combined_counts != derived_counts:
+        raise RuntimeError(
+            f"Combined extractor counts do not match request. expected={derived_counts}, got={combined_counts}"
+        )
+    return all_examples, calls
+
+
 def run_extraction(config_path: Path, *, force: bool = False) -> dict[str, Any]:
     config = load_yaml(config_path)
     source_manifest_path = Path(str(config.get("source_manifest", "runs/source_dataset/manifest.json")))
@@ -195,6 +285,9 @@ def run_extraction(config_path: Path, *, force: bool = False) -> dict[str, Any]:
         raise RuntimeError(
             f"examples_per_story must equal 1 + derived_counts total ({target_per_story}); got {configured_target}."
         )
+
+    max_examples_per_call = int(config.get("max_derived_examples_per_call", 4))
+    chunks = plan_extraction_chunks(derived_counts, max_examples_per_call)
 
     output_dir = Path(str(config.get("output_dir", "data/raw/extracted")))
     run_dir = Path(str(config.get("run_dir", "runs/example_extraction")))
@@ -223,15 +316,16 @@ def run_extraction(config_path: Path, *, force: bool = False) -> dict[str, Any]:
 
         console.rule(f"Extract | {model} | {story_id}")
         try:
-            content, body, request_payload = call_extractor(
+            derived, call_records = extract_derived_in_chunks(
+                record=record,
+                derived_counts=derived_counts,
+                max_examples_per_call=max_examples_per_call,
                 api_key=api_key,
                 model=model,
                 system_prompt=system_prompt,
-                user_prompt=build_extraction_input(record, derived_counts),
                 temperature=float(config.get("temperature", 0.2)),
                 max_tokens=int(config.get("max_tokens", 9000)),
             )
-            derived = validate_derived_examples(extract_json_object(content), derived_counts)
             examples = [build_full_story_example(record), *derived]
             for index, example in enumerate(examples, start=1):
                 example["id"] = f"{story_id}_ex_{index:02d}"
@@ -245,26 +339,31 @@ def run_extraction(config_path: Path, *, force: bool = False) -> dict[str, Any]:
                 "source_story_path": str(story_path),
                 "prompt_version": config.get("prompt_version", "example_extractor_v0.1"),
                 "extraction_model": model,
+                "extraction_mode": "chunked",
+                "max_derived_examples_per_call": max_examples_per_call,
                 "examples": examples,
             }
             save_json(output_path, output_payload)
-            usage = parse_usage(body)
-            cost = parse_cost(body)
-            choice = (body.get("choices") or [{}])[0]
-            entry.update({
-                "status": "complete",
-                "output_path": str(output_path),
-                "example_count": len(examples),
-                "derived_count": len(derived),
-                "cost_usd": cost.usd,
-                "input_tokens": usage.input_tokens,
-                "output_tokens": usage.output_tokens,
-                "provider": body.get("provider"),
-                "finish_reason": choice.get("finish_reason"),
-                "reasoning": request_payload.get("reasoning"),
-                "error": None,
-            })
-            console.print(f"[green]{story_id}[/green] examples={len(examples)}")
+
+            total_cost = sum(float(call["cost_usd"]) for call in call_records if call.get("cost_usd") is not None)
+            total_input = sum(int(call["input_tokens"]) for call in call_records if call.get("input_tokens") is not None)
+            total_output = sum(int(call["output_tokens"]) for call in call_records if call.get("output_tokens") is not None)
+            entry.update(
+                {
+                    "status": "complete",
+                    "output_path": str(output_path),
+                    "example_count": len(examples),
+                    "derived_count": len(derived),
+                    "extraction_mode": "chunked",
+                    "chunk_count": len(chunks),
+                    "calls": call_records,
+                    "cost_usd": round(total_cost, 8),
+                    "input_tokens": total_input,
+                    "output_tokens": total_output,
+                    "error": None,
+                }
+            )
+            console.print(f"[green]{story_id}[/green] examples={len(examples)} chunks={len(chunks)}")
         except Exception as exc:
             entry.update({"status": "error", "error": str(exc)})
             console.print(f"[red]Extraction error[/red] {story_id}: {exc}")
