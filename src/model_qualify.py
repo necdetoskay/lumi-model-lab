@@ -83,6 +83,23 @@ def technical_screen_gate(summary: dict[str, Any], gates: dict[str, Any]) -> tup
     return True, []
 
 
+def generation_error_reasons(manifest: dict[str, Any], model: str) -> list[str]:
+    errors = [
+        entry for entry in manifest.get("entries") or []
+        if entry.get("model") == model and entry.get("generation_status") == "error"
+    ]
+    if not errors:
+        return []
+    reasons = [f"generation_errors_present:{len(errors)}"]
+    for entry in errors[:3]:
+        spec = Path(str(entry.get("spec_path", "unknown"))).name
+        message = str(entry.get("generation_error") or "unknown generation error")
+        if len(message) > 240:
+            message = message[:237] + "..."
+        reasons.append(f"{spec}: {message}")
+    return reasons
+
+
 def source_gate(manifest: dict[str, Any], required: int) -> tuple[bool, int]:
     accepted = [
         entry for entry in manifest.get("entries") or []
@@ -209,6 +226,17 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         force=rerun,
     )
     generated_summary = summarize_entries(generated_manifest.get("entries", []), [model])[model]
+    generation_reasons = generation_error_reasons(generated_manifest, model)
+    if generation_reasons:
+        entry = make_entry(
+            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+            run_dir=run_dir, status="generation_error", screen=generated_summary, reasons=generation_reasons,
+        )
+        upsert_entry(registry_path, entry)
+        save_json(run_dir / "final_report.json", entry)
+        print_entry(entry)
+        return entry
+
     tech_ok, tech_reasons = technical_screen_gate(generated_summary, config.get("screen_gates") or {})
     if not tech_ok:
         entry = make_entry(
@@ -261,8 +289,30 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
     write_yaml(source_config_path, source_config)
     source_runner = as_runner_config(source_config)
     source_manifest_path = run_dir / "source" / "manifest.json"
-    generate_phase(source_runner, Path(str(config["generation_config"])), source_manifest_path, force=rerun)
-    source_manifest = judge_phase(source_runner, Path(str(config["evaluation_config"])), source_manifest_path, force=rerun)
+    generated_source_manifest = generate_phase(
+        source_runner,
+        Path(str(config["generation_config"])),
+        source_manifest_path,
+        force=rerun,
+    )
+    source_generation_reasons = generation_error_reasons(generated_source_manifest, model)
+    if source_generation_reasons:
+        entry = make_entry(
+            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+            run_dir=run_dir, status="generation_error", screen=screen_summary,
+            reasons=["source_generation_failed", *source_generation_reasons],
+        )
+        upsert_entry(registry_path, entry)
+        save_json(run_dir / "final_report.json", entry)
+        print_entry(entry)
+        return entry
+
+    source_manifest = judge_phase(
+        source_runner,
+        Path(str(config["evaluation_config"])),
+        source_manifest_path,
+        force=rerun,
+    )
     report_phase(source_runner, source_manifest_path, run_dir / "source")
     required_sources = int((config.get("full_gates") or {}).get("required_accepted_source_stories", 5))
     source_ok, accepted_count = source_gate(source_manifest, required_sources)
