@@ -48,15 +48,24 @@ def word_count(text: str) -> int:
     return len([part for part in text.split() if part.strip()])
 
 
-def technical_result(words: int, target: int, min_ratio: float, max_ratio: float) -> dict[str, Any]:
+def technical_result(
+    words: int,
+    target: int,
+    min_ratio: float,
+    max_ratio: float,
+    hit_token_limit: bool,
+) -> dict[str, Any]:
     minimum = int(target * min_ratio)
     maximum = int(target * max_ratio)
+    length_pass = minimum <= words <= maximum
     return {
         "word_count": words,
         "target_words": target,
         "min_words": minimum,
         "max_words": maximum,
-        "pass": minimum <= words <= maximum,
+        "length_pass": length_pass,
+        "hit_token_limit": hit_token_limit,
+        "pass": length_pass and not hit_token_limit,
     }
 
 
@@ -126,19 +135,30 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             )
         elapsed = time.perf_counter() - started
         new_tokens = generated[0, input_tokens:]
+        output_tokens = int(new_tokens.shape[-1])
+        hit_token_limit = output_tokens >= max_new_tokens
+        eos_token_id = tokenizer.eos_token_id
+        ended_with_eos = bool(
+            eos_token_id is not None
+            and output_tokens > 0
+            and int(new_tokens[-1].item()) == int(eos_token_id)
+        )
         text = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
         words = word_count(text)
         target = int(spec.get("target_words", 2000))
-        technical = technical_result(words, target, min_ratio, max_ratio)
+        technical = technical_result(words, target, min_ratio, max_ratio, hit_token_limit)
 
         item = {
             "benchmark_index": index,
             "spec_path": str(spec_path),
             "title_hint": spec.get("title_hint"),
             "prompt_version": config.get("prompt_version"),
+            "generation_version": config.get("generation_version"),
             "model": model_name,
             "input_tokens": input_tokens,
-            "output_tokens": int(new_tokens.shape[-1]),
+            "output_tokens": output_tokens,
+            "max_new_tokens": max_new_tokens,
+            "ended_with_eos": ended_with_eos,
             "runtime_seconds": round(elapsed, 3),
             "technical": technical,
             "story": text,
@@ -147,7 +167,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         story_path.write_text(json.dumps(item, ensure_ascii=False, indent=2), encoding="utf-8")
         results.append(item)
         console.print(
-            f"  words={words} tokens={item['output_tokens']} runtime={elapsed:.1f}s "
+            f"  words={words} tokens={output_tokens} runtime={elapsed:.1f}s "
+            f"limit={'YES' if hit_token_limit else 'no'} eos={'yes' if ended_with_eos else 'no'} "
             f"technical={'PASS' if technical['pass'] else 'FAIL'}"
         )
 
@@ -157,9 +178,11 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         "status": "complete",
         "model": model_name,
         "prompt_version": config.get("prompt_version"),
+        "generation_version": config.get("generation_version"),
         "benchmark_config": str(config["benchmark_config"]),
         "stories": len(results),
         "technical_passes": sum(1 for item in results if item["technical"]["pass"]),
+        "token_limit_hits": sum(1 for item in results if item["technical"]["hit_token_limit"]),
         "average_words": round(sum(item["technical"]["word_count"] for item in results) / len(results), 1),
         "total_runtime_seconds": round(sum(item["runtime_seconds"] for item in results), 3),
         "peak_allocated_vram_gb": peak_gb,
@@ -174,6 +197,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     table.add_row("model", model_name)
     table.add_row("stories", str(summary["stories"]))
     table.add_row("technical passes", f"{summary['technical_passes']}/{summary['stories']}")
+    table.add_row("token limit hits", str(summary["token_limit_hits"]))
     table.add_row("average words", str(summary["average_words"]))
     table.add_row("runtime", f"{summary['total_runtime_seconds']:.1f}s")
     table.add_row("peak VRAM", f"{peak_gb:.3f} GB")
