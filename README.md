@@ -84,6 +84,16 @@ JUDGE_MODEL=...
 
 `USD_TRY_RATE` is optional. When supplied, qualification summaries also show the USD total converted to TRY using that explicit rate.
 
+### Training environment note
+
+The separate `.venv-train` environment is used for the CUDA / Unsloth stack, but it still needs the repository's lightweight application dependencies (`python-dotenv`, `pyyaml`, `requests`, `rich`, `pydantic`). After creating or activating `.venv-train`, also run:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+This does not install or replace the CUDA / Unsloth training stack because those packages are intentionally not pinned in `requirements.txt`.
+
 ## One-command model qualification
 
 The preferred way to test a newly discovered OpenRouter model is now:
