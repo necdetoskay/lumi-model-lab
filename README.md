@@ -23,12 +23,11 @@ Completed foundations:
 - Qwen3.5-0.8B 4-bit model-load probe on a 4 GB RTX 3050 Ti Laptop GPU
 - successful QLoRA smoke training
 - frozen five-story pre-finetune local baseline
+- one-command teacher-model qualification pipeline and model leaderboard
+- external/manual source-story ingest path with independent judge and training-example extraction
 - raw, curated, processed dataset artifacts and compact experiment records tracked in Git for cross-machine reproducibility
 
-Current work:
-
-- one-command teacher-model qualification pipeline and model leaderboard
-- next: full 55-example QLoRA experiment, post-finetune frozen benchmark, and before/after comparison
+Next major experiment: full 55-example QLoRA training, post-finetune frozen benchmark, and before/after comparison.
 
 The original 4B target remains `Qwen/Qwen3.5-4B` as the starting checkpoint for the stronger-GPU experiment. The 0.8B checkpoint is used locally to learn and validate the complete training mechanics on constrained hardware.
 
@@ -96,7 +95,7 @@ This does not install or replace the CUDA / Unsloth training stack because those
 
 ## One-command model qualification
 
-The preferred way to test a newly discovered OpenRouter model is now:
+The preferred way to test a newly discovered OpenRouter model is:
 
 ```bash
 python -m src.model_qualify --model "provider/model-name"
@@ -131,16 +130,7 @@ This stops after benchmark + judge and avoids source-story/extraction cost.
 
 ### Duplicate protection
 
-A qualification fingerprint includes:
-
-- model id
-- current judge model id
-- teacher, judge, and extractor prompts
-- qualification/generation/evaluation configs
-- frozen benchmark specifications
-- frozen training-source specifications
-
-The same model under the same experiment fingerprint is not run again accidentally.
+A qualification fingerprint includes the model id, current judge model id, prompts, protocol configs, frozen benchmark specifications, and frozen training-source specifications. The same model under the same experiment fingerprint is not run again accidentally.
 
 ```bash
 python -m src.model_qualify --model "provider/model-name"
@@ -155,9 +145,7 @@ python -m src.model_qualify --model "provider/model-name" --rerun
 
 A prompt, judge, gate, or frozen-spec change produces a different fingerprint and is treated as a new experiment.
 
-### Import today's pre-registry benchmark history
-
-The repository already contains teacher benchmark results created before the model registry existed. Import them once so Aion/GLM history appears in the registry and leaderboard without paying to regenerate it:
+### Import pre-registry benchmark history
 
 ```bash
 python -m src.import_legacy_benchmark
@@ -172,26 +160,76 @@ python -m src.model_qualify --list
 python -m src.model_qualify --model "provider/model-name" --status
 ```
 
-Registry:
+Registry: `runs/model_registry/registry.json`.
+
+## External/manual source story ingest
+
+A story generated outside the normal OpenRouter teacher pipeline can be admitted as a training source only through the same independent quality controls. The canonical generation prompt is versioned at:
 
 ```text
-runs/model_registry/registry.json
+prompts/generated_story_source.md
 ```
 
-Per-model qualification run:
+Give that prompt to any LLM, save its YAML output, and run:
+
+```bash
+python -m src.ingest_story --input path/to/story.yaml
+```
+
+The ingest pipeline is intentionally gated:
 
 ```text
-runs/qualifications/<model-slug>__<fingerprint>/
-  configs/
-  screen/
+external YAML story
+    ↓
+1. schema + technical validation
+    └─ fail -> REJECTED_TECHNICAL; no judge/extraction spend
+    ↓
+2. independent JUDGE_MODEL evaluation
+    └─ fail -> REJECTED_JUDGE; no extraction spend
+    ↓
+3. fixed extractor protocol
+    └─ 11 supervised examples expected
+    ↓
+4. deterministic curation
+    └─ review/reject -> NEEDS_MANUAL_REVIEW
+    ↓
+5. isolated training-ready JSONL + SHA256 manifest
+```
+
+The external model's own `training_eligible` or `suitability` values are stored as provenance only. They never override the local technical gate or independent judge decision.
+
+Each successful story produces the same 11-example shape:
+
+```text
+1  full_story_from_brief
+2  continuation
+2  character_dialogue
+2  scene_expansion
+1  conflict_resolution
+1  ending_generation
+2  plan_to_prose
+-----------------------
+11 examples/story
+```
+
+The output is isolated from the frozen Milestone-1 55-example dataset:
+
+```text
+runs/manual_ingest/<story-id>__<input-sha>/
+  input_snapshot.yaml
   source/
+  judge/
   extraction/
   extracted/
   curated/
   curation/
   dataset/
+    train.jsonl
+    manifest.json
   final_report.json
 ```
+
+Re-running the exact same YAML is blocked by default. Use `--force` only for an intentional repeat.
 
 ## Model leaderboard
 
@@ -199,33 +237,13 @@ runs/qualifications/<model-slug>__<fingerprint>/
 python -m src.leaderboard
 ```
 
-Ranking is quality-first: judge score first, technical reliability second, and API cost only as a tie-breaker when quality is comparable.
+Ranking is quality-first: judge score first, technical reliability second, and API cost only as a tie-breaker when quality is comparable. Stored output: `runs/model_registry/leaderboard.json`.
 
-Stored output:
-
-```text
-runs/model_registry/leaderboard.json
-```
-
-Each new qualification record keeps, where returned by the provider:
-
-- prompt/input tokens
-- completion/output tokens
-- total tokens
-- generation cost
-- judge cost
-- extraction cost
-- total USD cost
-- optional TRY conversion
-- stage-by-stage cost breakdown
+Each new qualification record keeps, where returned by the provider, prompt/input tokens, completion/output tokens, total tokens, generation/judge/extraction cost, total USD cost, optional TRY conversion, and stage-by-stage cost breakdown.
 
 ## Qualification gates
 
-The protocol is versioned in:
-
-```text
-configs/qualification.yaml
-```
+The protocol is versioned in `configs/qualification.yaml`.
 
 Current screening defaults:
 
@@ -266,37 +284,13 @@ python -m src.local_baseline
 
 ## Milestone-1 dataset design
 
-Each accepted training source story yields 11 supervised examples:
-
-```text
-1  full_story_from_brief
-2  continuation
-2  character_dialogue
-2  scene_expansion
-1  conflict_resolution
-1  ending_generation
-2  plan_to_prose
------------------------
-11 examples/story
-5 stories -> 55 examples
-```
-
-The small dataset validates the workflow and learning behavior. It is not treated as sufficient evidence of production-quality fine-tuning.
+The frozen small dataset contains 5 approved source stories × 11 examples = 55 supervised examples. It validates workflow and learning behavior; it is not treated as sufficient evidence of production-quality fine-tuning.
 
 ## Evaluation principle
 
 Before and after fine-tuning, the same frozen benchmark, inference prompt, judge protocol, and technical gates must be used. Benchmark-derived outputs must never enter the training dataset.
 
-Record at minimum:
-
-- technical pass rate
-- completion / EOS behavior
-- word-count compliance
-- judge average and criterion scores
-- runtime
-- peak VRAM for local inference/training
-- dataset SHA256
-- model / adapter identity
+Record at minimum technical pass rate, completion/EOS behavior, word-count compliance, judge average and criterion scores, runtime, peak VRAM, dataset SHA256, and model/adapter identity.
 
 ## Tests
 
