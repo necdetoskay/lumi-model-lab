@@ -86,7 +86,7 @@ JUDGE_MODEL=...
 
 ## One-command model qualification
 
-The preferred way to test a newly discovered OpenRouter model is now the qualification pipeline.
+The preferred way to test a newly discovered OpenRouter model is now:
 
 ```bash
 python -m src.model_qualify --model "provider/model-name"
@@ -109,15 +109,15 @@ Default behavior is quality-gated and sequential:
 8. registry + token/cost ledger + final report
 ```
 
-The benchmark stories are never used as training examples. Training source stories come from a separate frozen specification set.
+Benchmark stories are never used as training examples. Training source stories come from a separate frozen specification set.
 
 ### Fast screening only
-
-To benchmark + judge a model without paying for source-story/extraction work:
 
 ```bash
 python -m src.model_qualify --model "provider/model-name" --screen
 ```
+
+This stops after benchmark + judge and avoids source-story/extraction cost.
 
 ### Duplicate protection
 
@@ -125,11 +125,10 @@ A qualification fingerprint includes:
 
 - model id
 - current judge model id
-- teacher prompt
-- judge prompt
-- extractor prompt
-- frozen benchmark/config files
-- qualification protocol/config files
+- teacher, judge, and extractor prompts
+- qualification/generation/evaluation configs
+- frozen benchmark specifications
+- frozen training-source specifications
 
 The same model under the same experiment fingerprint is not run again accidentally.
 
@@ -144,7 +143,17 @@ Intentional repeat:
 python -m src.model_qualify --model "provider/model-name" --rerun
 ```
 
-A prompt/config/judge change naturally creates a new fingerprint and is therefore a new experiment.
+A prompt, judge, gate, or frozen-spec change produces a different fingerprint and is treated as a new experiment.
+
+### Import today's pre-registry benchmark history
+
+The repository already contains teacher benchmark results created before the model registry existed. Import them once so Aion/GLM history appears in the registry and leaderboard without paying to regenerate it:
+
+```bash
+python -m src.import_legacy_benchmark
+```
+
+Legacy records are marked `legacy_screened`. Historical generation manifests did not store teacher input-token counts, so their total-token value is explicitly marked as a lower bound; stored USD costs and available judge usage are preserved.
 
 ### Registry and status
 
@@ -159,7 +168,7 @@ Registry:
 runs/model_registry/registry.json
 ```
 
-Per-model run directory:
+Per-model qualification run:
 
 ```text
 runs/qualifications/<model-slug>__<fingerprint>/
@@ -188,7 +197,7 @@ Stored output:
 runs/model_registry/leaderboard.json
 ```
 
-Each qualification record keeps, where returned by the provider:
+Each new qualification record keeps, where returned by the provider:
 
 - prompt/input tokens
 - completion/output tokens
@@ -217,7 +226,7 @@ min_average_judge_score: 4.00
 max_critical_failures: 0
 ```
 
-Full dataset gate currently expects:
+Full dataset gate:
 
 ```yaml
 required_accepted_source_stories: 5
@@ -226,69 +235,22 @@ require_zero_review: true
 require_zero_reject: true
 ```
 
-Do not loosen these gates merely to make a model pass. A changed gate is a changed experiment protocol and therefore produces a different fingerprint.
+Do not loosen gates merely to make a model pass. A changed gate is a changed protocol and therefore a different fingerprint.
 
 ## Existing lower-level commands
 
-The individual stages remain available for debugging and focused experiments.
-
-Teacher generation dry run:
+Individual stages remain available for debugging and focused experiments.
 
 ```bash
 python -m src.generate --count 1 --dry-run
-```
-
-Teacher benchmark:
-
-```bash
 python -m src.teacher_benchmark all
-```
-
-Source dataset:
-
-```bash
 python -m src.source_dataset all
-```
-
-Supervised extraction:
-
-```bash
 python -m src.extract_examples
-```
-
-Curation:
-
-```bash
 python -m src.curate_examples
-```
-
-Prepare frozen training JSONL:
-
-```bash
 python -m src.prepare_training
-```
-
-Local GPU/training preflight:
-
-```bash
 python -m src.local_preflight
-```
-
-0.8B model-load probe:
-
-```bash
 python -m src.model_probe
-```
-
-Smoke QLoRA:
-
-```bash
 python -m src.smoke_train
-```
-
-Frozen local pre-finetune baseline:
-
-```bash
 python -m src.local_baseline
 ```
 
@@ -309,13 +271,13 @@ Each accepted training source story yields 11 supervised examples:
 5 stories -> 55 examples
 ```
 
-The small dataset is intended to validate the workflow and measure learning behavior. It is not treated as sufficient evidence of production-quality fine-tuning.
+The small dataset validates the workflow and learning behavior. It is not treated as sufficient evidence of production-quality fine-tuning.
 
 ## Evaluation principle
 
 Before and after fine-tuning, the same frozen benchmark, inference prompt, judge protocol, and technical gates must be used. Benchmark-derived outputs must never enter the training dataset.
 
-The comparison should record at minimum:
+Record at minimum:
 
 - technical pass rate
 - completion / EOS behavior
