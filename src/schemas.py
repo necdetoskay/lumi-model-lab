@@ -55,3 +55,43 @@ class GenerationRecord(BaseModel):
     technical_validation: TechnicalValidation
     request: dict[str, Any]
     response_meta: dict[str, Any] = Field(default_factory=dict)
+
+
+JUDGE_CRITERIA = (
+    "instruction_following",
+    "coherence",
+    "character_consistency",
+    "age_appropriateness",
+    "creativity",
+    "style_quality",
+)
+
+
+class JudgePayload(BaseModel):
+    scores: dict[str, int]
+    reasons: dict[str, str]
+    critical_failures: list[str] = Field(default_factory=list)
+
+
+class JudgeDecision(BaseModel):
+    accepted: bool
+    average_score: float
+    minimum_score: int
+    acceptance_threshold: float
+    minimum_criterion_score: int
+    reasons: list[str] = Field(default_factory=list)
+
+
+class JudgeRecord(BaseModel):
+    id: str
+    created_at: datetime
+    source_story_id: str
+    source_path: str
+    teacher_model: str
+    judge_model: str
+    judge_prompt_version: str
+    result: JudgePayload
+    decision: JudgeDecision
+    usage: TokenUsage
+    cost: CostInfo
+    response_meta: dict[str, Any] = Field(default_factory=dict)
