@@ -131,10 +131,85 @@ def audit_examples(examples: list[dict[str, Any]], config: dict[str, Any]) -> li
     return audited
 
 
+def apply_manual_overrides(
+    audited: list[dict[str, Any]],
+    overrides: dict[str, Any],
+    config: dict[str, Any],
+) -> list[dict[str, Any]]:
+    if not overrides:
+        return audited
+
+    min_words = {str(k): int(v) for k, v in (config.get("min_output_words") or {}).items()}
+    max_words = {str(k): int(v) for k, v in (config.get("max_output_words") or {}).items()}
+    known_ids = {str(row.get("id")) for row in audited}
+    unknown_ids = sorted(set(overrides) - known_ids)
+    if unknown_ids:
+        raise RuntimeError(f"Manual curation overrides reference unknown ids: {unknown_ids}")
+
+    result: list[dict[str, Any]] = []
+    for row in audited:
+        example_id = str(row.get("id"))
+        override = overrides.get(example_id)
+        if not override:
+            result.append(row)
+            continue
+        if not isinstance(override, dict):
+            raise RuntimeError(f"Manual override for {example_id} must be an object.")
+
+        action = str(override.get("action") or "").strip()
+        note = str(override.get("note") or "").strip()
+        updated = dict(row)
+        updated["curation"] = dict(row["curation"])
+
+        if action == "repair_accept":
+            repaired_output = override.get("output")
+            if not isinstance(repaired_output, str) or not repaired_output.strip():
+                raise RuntimeError(f"repair_accept for {example_id} requires non-empty output.")
+            kind = str(updated.get("example_type", ""))
+            words = count_words(repaired_output)
+            if kind not in min_words or kind not in max_words:
+                raise RuntimeError(f"repair_accept for {example_id} has unknown example type {kind!r}.")
+            if words < min_words[kind] or words > max_words[kind]:
+                raise RuntimeError(
+                    f"repair_accept for {example_id} fails length gate: {words} not in "
+                    f"[{min_words[kind]}, {max_words[kind]}]."
+                )
+            updated["original_output"] = updated.get("output")
+            updated["output"] = repaired_output.strip()
+            updated["curation"].update(
+                {
+                    "status": "ready",
+                    "output_words": words,
+                    "review_reasons": [],
+                    "hard_failures": [],
+                    "manual_action": action,
+                    "manual_note": note,
+                }
+            )
+        elif action == "reject":
+            updated["curation"].update(
+                {
+                    "status": "reject",
+                    "manual_action": action,
+                    "manual_note": note,
+                }
+            )
+        else:
+            raise RuntimeError(f"Unsupported manual curation action for {example_id}: {action!r}")
+
+        result.append(updated)
+    return result
+
+
 def summarize(audited: list[dict[str, Any]]) -> dict[str, Any]:
     status_counts = Counter(row["curation"]["status"] for row in audited)
     type_counts = Counter(str(row.get("example_type")) for row in audited)
     source_counts = Counter(str(row.get("source_story_id")) for row in audited)
+    manual_counts = Counter(
+        str(row["curation"].get("manual_action"))
+        for row in audited
+        if row["curation"].get("manual_action")
+    )
     reason_counts: Counter[str] = Counter()
     for row in audited:
         reason_counts.update(row["curation"].get("review_reasons") or [])
@@ -144,6 +219,7 @@ def summarize(audited: list[dict[str, Any]]) -> dict[str, Any]:
         "ready": status_counts.get("ready", 0),
         "review": status_counts.get("review", 0),
         "reject": status_counts.get("reject", 0),
+        "manual_actions": dict(sorted(manual_counts.items())),
         "by_type": dict(sorted(type_counts.items())),
         "by_source_story": dict(sorted(source_counts.items())),
         "issues": dict(reason_counts.most_common()),
@@ -183,6 +259,10 @@ def print_summary(summary: dict[str, Any], warnings: list[str]) -> None:
     for key in ("total", "ready", "review", "reject"):
         table.add_row(key, str(summary[key]))
     console.print(table)
+    if summary.get("manual_actions"):
+        console.print("Manual actions:")
+        for action, count in summary["manual_actions"].items():
+            console.print(f"  {action}: {count}")
     console.print("By type:")
     for kind, count in summary["by_type"].items():
         console.print(f"  {kind}: {count}")
@@ -207,6 +287,15 @@ def main() -> None:
     config = load_yaml(Path(args.config))
     examples = collect_examples(Path(str(config.get("input_dir", "data/raw/extracted"))))
     audited = audit_examples(examples, config)
+
+    override_path_raw = config.get("manual_overrides")
+    overrides: dict[str, Any] = {}
+    if override_path_raw:
+        override_path = Path(str(override_path_raw))
+        if override_path.exists():
+            overrides = load_yaml(override_path)
+    audited = apply_manual_overrides(audited, overrides, config)
+
     summary = summarize(audited)
     warnings = validate_expected_shape(summary, config)
     summary["shape_warnings"] = warnings
