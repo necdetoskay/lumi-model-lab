@@ -1,6 +1,11 @@
 import unittest
 
-from src.extract_examples import accepted_source_entries, plan_extraction_chunks, validate_derived_examples
+from src.extract_examples import (
+    accepted_source_entries,
+    extract_first_json_object,
+    plan_extraction_chunks,
+    validate_derived_examples,
+)
 
 
 class ExtractExamplesTests(unittest.TestCase):
@@ -88,6 +93,11 @@ class ExtractExamplesTests(unittest.TestCase):
             for key, value in chunk.items():
                 combined[key] += value
         self.assertEqual(combined, counts)
+
+    def test_extracts_first_json_object_when_trailing_data_exists(self) -> None:
+        text = '```json\n{"examples": []}\n```\n{"unexpected": true}'
+        parsed = extract_first_json_object(text)
+        self.assertEqual(parsed, {"examples": []})
 
 
 if __name__ == "__main__":
