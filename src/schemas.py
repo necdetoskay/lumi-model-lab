@@ -31,6 +31,17 @@ class CostInfo(BaseModel):
     usd_try_rate: float | None = None
 
 
+class TechnicalValidation(BaseModel):
+    status: str
+    eligible_for_judge: bool
+    word_count: int
+    target_words: int
+    min_words: int
+    max_words: int
+    finish_reason: str | None = None
+    reasons: list[str] = Field(default_factory=list)
+
+
 class GenerationRecord(BaseModel):
     id: str
     created_at: datetime
@@ -41,5 +52,6 @@ class GenerationRecord(BaseModel):
     story: str
     usage: TokenUsage
     cost: CostInfo
+    technical_validation: TechnicalValidation
     request: dict[str, Any]
     response_meta: dict[str, Any] = Field(default_factory=dict)
