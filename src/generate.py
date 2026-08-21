@@ -85,10 +85,24 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
     """
     if model == "aion-labs/aion-3.0":
         # OpenRouter's Aion example explicitly enables reasoning. Do not send
-        # seed here because the example does not use it and provider support can vary.
+        # seed here because provider support can vary.
         return {"reasoning": {"enabled": True}}
 
-    options: dict[str, Any] = {
+    if model.startswith("minimax/minimax-m2.5"):
+        # MiniMax M2.5 providers require reasoning and reject requests that try
+        # to disable it. Avoid seed here as provider support varies.
+        return {"reasoning": {"enabled": True}}
+
+    if model.startswith("z-ai/glm-4.5"):
+        # GLM 4.5 family supports hybrid thinking/non-thinking inference.
+        # For story generation we prefer non-thinking so the output budget is
+        # spent on visible prose rather than internal reasoning tokens.
+        options: dict[str, Any] = {"reasoning": {"enabled": False}}
+        if seed is not None:
+            options["seed"] = seed
+        return options
+
+    options = {
         "reasoning": {"effort": "none", "exclude": True},
     }
     if seed is not None:
