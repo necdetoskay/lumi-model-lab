@@ -17,6 +17,7 @@ from src.schemas import CostInfo, GenerationRecord, StorySpec, TokenUsage
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 PROMPT_VERSION = "story_teacher_v0.1"
+DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
 console = Console()
 
 
@@ -131,12 +132,19 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
     teacher = config["teacher"]
     output = config["output"]
     model_env = teacher.get("model_env", "TEACHER_MODEL")
-    model = os.getenv(model_env)
+    configured_model = os.getenv(model_env)
     api_key = os.getenv("OPENROUTER_API_KEY")
-    if not model:
-        raise RuntimeError(f"Missing model name in environment variable {model_env}.")
-    if not api_key and not dry_run:
-        raise RuntimeError("Missing OPENROUTER_API_KEY.")
+
+    # A dry run must be usable before any API credentials or model selection exist.
+    # It only validates the local config/spec/prompt assembly and never calls OpenRouter.
+    if dry_run:
+        model = configured_model or DRY_RUN_MODEL_PLACEHOLDER
+    else:
+        if not configured_model:
+            raise RuntimeError(f"Missing model name in environment variable {model_env}.")
+        if not api_key:
+            raise RuntimeError("Missing OPENROUTER_API_KEY.")
+        model = configured_model
 
     system_prompt = load_teacher_prompt(Path("prompts/story_teacher.md"))
     user_prompt = build_user_prompt(spec)
@@ -144,6 +152,7 @@ def generate_one(config: dict[str, Any], spec: StorySpec, dry_run: bool = False)
     if dry_run:
         console.rule("Dry run")
         console.print(f"Model: {model}")
+        console.print(f"Prompt version: {PROMPT_VERSION}")
         console.print(user_prompt)
         return None
 
