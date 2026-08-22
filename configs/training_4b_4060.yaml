@@ -1,0 +1,51 @@
+name: qwen35_4b_4060_m1
+model: Qwen/Qwen3.5-4B
+method: qlora
+framework: unsloth
+quantization: 4bit
+
+seed: 42
+load_in_4bit: true
+max_seq_length: 6144
+
+dataset_path: data/processed/milestone1_train.jsonl
+dataset_manifest: runs/training_dataset/manifest.json
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+training:
+  epochs: 2
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  warmup_ratio: 0.03
+  logging_steps: 1
+  optim: adamw_8bit
+  weight_decay: 0.01
+  lr_scheduler_type: linear
+  report_to: none
+
+output_dir: adapters/qwen35_4b_m1
+trainer_output_dir: adapters/qwen35_4b_m1_trainer
+run_manifest: runs/training/qwen35_4b_4060_m1.json
+
+hardware_target:
+  gpu: RTX 4060 Laptop
+  vram_gb: 8
+
+notes:
+  - Full 55-example Milestone-1 dataset.
+  - Assistant-only loss; prompt/user tokens are masked with -100.
+  - No silent truncation. The runner aborts if the exact chat-template token count exceeds max_seq_length.
+  - 6144 context is retained because five full-story examples exceed 4096 tokens.
