@@ -65,53 +65,81 @@ def training_fields(row: dict[str, Any]) -> tuple[str, str]:
     return user_text, output
 
 
-def _ids(value: Any) -> list[int]:
-    if isinstance(value, dict):
-        value = value.get("input_ids")
+def _list(value: Any) -> list[Any]:
     if hasattr(value, "tolist"):
         value = value.tolist()
     if value and isinstance(value[0], list):
         value = value[0]
-    return [int(item) for item in value]
+    return list(value)
 
 
 def tokenize_row(row: dict[str, Any], tokenizer: Any, max_seq_length: int) -> dict[str, Any]:
-    """Tokenize one chat row and mask every token except the assistant response."""
+    """Tokenize one Qwen chat row and train only tokens belonging to assistant content.
+
+    Qwen3.5's generation-prompt rendering is not guaranteed to be a token-prefix of a
+    completed conversation, so prefix-token comparison is unsafe. Instead we render the
+    completed chat once, locate the assistant text in that exact rendering, and use the
+    fast tokenizer's character offsets to build the loss mask.
+    """
     user_text, output = training_fields(row)
-    prompt_messages = [{"role": "user", "content": user_text}]
     full_messages = [
         {"role": "user", "content": user_text},
         {"role": "assistant", "content": output},
     ]
-    prompt_ids = _ids(
-        tokenizer.apply_chat_template(
-            prompt_messages,
-            tokenize=True,
-            add_generation_prompt=True,
-        )
+    rendered = tokenizer.apply_chat_template(
+        full_messages,
+        tokenize=False,
+        add_generation_prompt=False,
     )
-    full_ids = _ids(
-        tokenizer.apply_chat_template(
-            full_messages,
-            tokenize=True,
-            add_generation_prompt=False,
+    if not isinstance(rendered, str):
+        raise RuntimeError("Chat template did not return rendered text for safe assistant masking.")
+
+    assistant_start = rendered.rfind(output)
+    if assistant_start < 0:
+        raise RuntimeError("Assistant output was not found in rendered chat template; cannot mask safely.")
+    assistant_end = assistant_start + len(output)
+
+    try:
+        encoded = tokenizer(
+            rendered,
+            add_special_tokens=False,
+            return_offsets_mapping=True,
         )
-    )
-    if full_ids[: len(prompt_ids)] != prompt_ids:
-        raise RuntimeError("Chat template prompt is not a prefix of the full conversation; cannot mask safely.")
-    if len(full_ids) > max_seq_length:
+    except (TypeError, NotImplementedError, ValueError) as exc:
         raise RuntimeError(
-            f"Training example exceeds max_seq_length without truncation: {len(full_ids)} > {max_seq_length}."
+            "Tokenizer must provide offset_mapping for safe assistant-only loss masking."
+        ) from exc
+
+    input_ids = _list(encoded["input_ids"])
+    offsets = _list(encoded["offset_mapping"])
+    offsets = [tuple(int(part) for part in pair) for pair in offsets]
+    if len(input_ids) != len(offsets):
+        raise RuntimeError("Tokenizer returned mismatched input_ids and offset_mapping lengths.")
+    if len(input_ids) > max_seq_length:
+        raise RuntimeError(
+            f"Training example exceeds max_seq_length without truncation: {len(input_ids)} > {max_seq_length}."
         )
-    labels = [-100] * len(prompt_ids) + full_ids[len(prompt_ids) :]
-    if not any(label != -100 for label in labels):
+
+    labels: list[int] = []
+    assistant_token_count = 0
+    for token_id, (start, end) in zip(input_ids, offsets):
+        # Train only tokens whose rendered characters overlap the assistant's literal content.
+        # Template role markers, user text, and trailing control tokens remain masked.
+        is_assistant_content = end > assistant_start and start < assistant_end and end > start
+        if is_assistant_content:
+            labels.append(int(token_id))
+            assistant_token_count += 1
+        else:
+            labels.append(-100)
+
+    if assistant_token_count == 0:
         raise RuntimeError("Assistant-only masking produced zero trainable tokens.")
     return {
-        "input_ids": full_ids,
-        "attention_mask": [1] * len(full_ids),
+        "input_ids": [int(item) for item in input_ids],
+        "attention_mask": [1] * len(input_ids),
         "labels": labels,
-        "token_count": len(full_ids),
-        "assistant_token_count": len(full_ids) - len(prompt_ids),
+        "token_count": len(input_ids),
+        "assistant_token_count": assistant_token_count,
     }
 
 
