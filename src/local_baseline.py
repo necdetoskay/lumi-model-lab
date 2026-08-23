@@ -171,6 +171,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             )
             if generation.get("min_p") is not None:
                 generate_kwargs["min_p"] = float(generation["min_p"])
+            if generation.get("presence_penalty") is not None:
+                generate_kwargs["presence_penalty"] = float(generation["presence_penalty"])
 
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} ...")
         started = time.perf_counter()
