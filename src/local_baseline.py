@@ -11,6 +11,7 @@ import torch
 import yaml
 from rich.console import Console
 from rich.table import Table
+from transformers import LogitsProcessor, LogitsProcessorList
 from unsloth import FastLanguageModel
 
 console = Console()
@@ -20,6 +21,30 @@ SYSTEM_PROMPT = (
     "Verilen yaş aralığına, karaktere, ortama, temaya, öncül ve kısıtlara sadık kal. "
     "Hikâyeyi tamamlanmış bir sonla bitir; yalnızca hikâye metnini yaz."
 )
+
+
+class GeneratedPresencePenaltyLogitsProcessor(LogitsProcessor):
+    """Apply OpenAI/vLLM-style presence penalty to generated tokens only.
+
+    Transformers' generate() does not accept presence_penalty directly. This
+    processor subtracts a fixed penalty from every token that has appeared at
+    least once in the generated continuation, while leaving prompt tokens out
+    of the presence history.
+    """
+
+    def __init__(self, *, prompt_length: int, penalty: float) -> None:
+        self.prompt_length = int(prompt_length)
+        self.penalty = float(penalty)
+
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        if self.penalty == 0.0 or input_ids.shape[1] <= self.prompt_length:
+            return scores
+        generated = input_ids[:, self.prompt_length :]
+        for batch_index in range(generated.shape[0]):
+            seen = torch.unique(generated[batch_index])
+            if seen.numel() > 0:
+                scores[batch_index, seen] -= self.penalty
+        return scores
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -171,8 +196,17 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             )
             if generation.get("min_p") is not None:
                 generate_kwargs["min_p"] = float(generation["min_p"])
-            if generation.get("presence_penalty") is not None:
-                generate_kwargs["presence_penalty"] = float(generation["presence_penalty"])
+
+            presence_penalty = float(generation.get("presence_penalty", 0.0) or 0.0)
+            if presence_penalty != 0.0:
+                generate_kwargs["logits_processor"] = LogitsProcessorList(
+                    [
+                        GeneratedPresencePenaltyLogitsProcessor(
+                            prompt_length=input_tokens,
+                            penalty=presence_penalty,
+                        )
+                    ]
+                )
 
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} ...")
         started = time.perf_counter()
