@@ -48,6 +48,27 @@ def word_count(text: str) -> int:
     return len([part for part in text.split() if part.strip()])
 
 
+def _token_id_list(value: Any) -> list[int]:
+    if value is None:
+        return []
+    if isinstance(value, (list, tuple, set)):
+        return [int(item) for item in value if item is not None]
+    return [int(value)]
+
+
+def resolve_eos_token_ids(model: Any, tokenizer: Any) -> list[int]:
+    """Prefer the checkpoint generation config, which may define multiple EOS ids."""
+    values: list[int] = []
+    generation_config = getattr(model, "generation_config", None)
+    if generation_config is not None:
+        values.extend(_token_id_list(getattr(generation_config, "eos_token_id", None)))
+    values.extend(_token_id_list(getattr(tokenizer, "eos_token_id", None)))
+    model_config = getattr(model, "config", None)
+    if model_config is not None:
+        values.extend(_token_id_list(getattr(model_config, "eos_token_id", None)))
+    return list(dict.fromkeys(values))
+
+
 def technical_result(
     words: int,
     target: int,
@@ -105,6 +126,10 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     )
     FastLanguageModel.for_inference(model)
     tokenizer = processor.tokenizer if hasattr(processor, "tokenizer") else processor
+    eos_token_ids = resolve_eos_token_ids(model, tokenizer)
+    if not eos_token_ids:
+        raise RuntimeError("Could not resolve any EOS token ids for local baseline generation.")
+    console.print(f"EOS token ids: {eos_token_ids}")
 
     generation = config.get("generation") or {}
     gate = config.get("technical_gate") or {}
@@ -133,7 +158,11 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             "max_new_tokens": max_new_tokens,
             "do_sample": do_sample,
             "use_cache": True,
+            "eos_token_id": eos_token_ids,
         }
+        pad_token_id = getattr(tokenizer, "pad_token_id", None)
+        if pad_token_id is not None:
+            generate_kwargs["pad_token_id"] = int(pad_token_id)
         if do_sample:
             generate_kwargs.update(
                 temperature=float(generation.get("temperature", 0.7)),
@@ -151,12 +180,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         new_tokens = generated[0, input_tokens:]
         output_tokens = int(new_tokens.shape[-1])
         hit_token_limit = output_tokens >= max_new_tokens
-        eos_token_id = tokenizer.eos_token_id
-        ended_with_eos = bool(
-            eos_token_id is not None
-            and output_tokens > 0
-            and int(new_tokens[-1].item()) == int(eos_token_id)
-        )
+        last_token_id = int(new_tokens[-1].item()) if output_tokens > 0 else None
+        ended_with_eos = bool(last_token_id is not None and last_token_id in eos_token_ids)
         text = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
         words = word_count(text)
         target = int(spec.get("target_words", 2000))
@@ -171,6 +196,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             "model": model_name,
             "enable_thinking": enable_thinking,
             "generation": generation,
+            "eos_token_ids": eos_token_ids,
+            "last_token_id": last_token_id,
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
             "max_new_tokens": max_new_tokens,
@@ -185,7 +212,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         console.print(
             f"  words={words} tokens={output_tokens} runtime={elapsed:.1f}s "
             f"limit={'YES' if hit_token_limit else 'no'} eos={'yes' if ended_with_eos else 'no'} "
-            f"technical={'PASS' if technical['pass'] else 'FAIL'}"
+            f"last_token={last_token_id} technical={'PASS' if technical['pass'] else 'FAIL'}"
         )
 
     peak_gb = round(float(torch.cuda.max_memory_allocated()) / (1024 ** 3), 3)
@@ -197,6 +224,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         "generation_version": config.get("generation_version"),
         "enable_thinking": enable_thinking,
         "generation": generation,
+        "eos_token_ids": eos_token_ids,
         "benchmark_config": str(config["benchmark_config"]),
         "stories": len(results),
         "technical_passes": sum(1 for item in results if item["technical"]["pass"]),
