@@ -85,6 +85,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     max_seq_length = int(config.get("max_seq_length", 4096))
     max_new_tokens = int(config.get("max_new_tokens", 3000))
     seed = int(config.get("seed", 42))
+    enable_thinking = bool(config.get("enable_thinking", True))
     output_dir = Path(str(config.get("output_dir", "runs/model_baseline/pre_finetune_qwen35_08b")))
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -109,6 +110,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     gate = config.get("technical_gate") or {}
     min_ratio = float(gate.get("min_word_ratio", 0.8))
     max_ratio = float(gate.get("max_word_ratio", 1.2))
+    do_sample = bool(generation.get("do_sample", False))
 
     results: list[dict[str, Any]] = []
     for index, spec_path in enumerate(spec_paths, start=1):
@@ -118,21 +120,33 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ]
-        rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        rendered = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=enable_thinking,
+        )
         inputs = tokenizer(rendered, return_tensors="pt").to("cuda")
         input_tokens = int(inputs["input_ids"].shape[-1])
+
+        generate_kwargs: dict[str, Any] = {
+            "max_new_tokens": max_new_tokens,
+            "do_sample": do_sample,
+            "use_cache": True,
+        }
+        if do_sample:
+            generate_kwargs.update(
+                temperature=float(generation.get("temperature", 0.7)),
+                top_p=float(generation.get("top_p", 0.8)),
+                top_k=int(generation.get("top_k", 20)),
+            )
+            if generation.get("min_p") is not None:
+                generate_kwargs["min_p"] = float(generation["min_p"])
 
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} ...")
         started = time.perf_counter()
         with torch.inference_mode():
-            generated = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=bool(generation.get("do_sample", False)),
-                temperature=float(generation.get("temperature", 1.0)),
-                top_p=float(generation.get("top_p", 1.0)),
-                use_cache=True,
-            )
+            generated = model.generate(**inputs, **generate_kwargs)
         elapsed = time.perf_counter() - started
         new_tokens = generated[0, input_tokens:]
         output_tokens = int(new_tokens.shape[-1])
@@ -155,6 +169,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             "prompt_version": config.get("prompt_version"),
             "generation_version": config.get("generation_version"),
             "model": model_name,
+            "enable_thinking": enable_thinking,
+            "generation": generation,
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
             "max_new_tokens": max_new_tokens,
@@ -179,6 +195,8 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         "model": model_name,
         "prompt_version": config.get("prompt_version"),
         "generation_version": config.get("generation_version"),
+        "enable_thinking": enable_thinking,
+        "generation": generation,
         "benchmark_config": str(config["benchmark_config"]),
         "stories": len(results),
         "technical_passes": sum(1 for item in results if item["technical"]["pass"]),
@@ -195,6 +213,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     table.add_column("Metric")
     table.add_column("Value", justify="right")
     table.add_row("model", model_name)
+    table.add_row("thinking", "on" if enable_thinking else "off")
     table.add_row("stories", str(summary["stories"]))
     table.add_row("technical passes", f"{summary['technical_passes']}/{summary['stories']}")
     table.add_row("token limit hits", str(summary["token_limit_hits"]))
