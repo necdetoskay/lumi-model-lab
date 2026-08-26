@@ -118,21 +118,35 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ]
-        rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        template_kwargs: dict[str, Any] = {}
+        if "enable_thinking" in generation:
+            template_kwargs["enable_thinking"] = bool(generation["enable_thinking"])
+        rendered = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            **template_kwargs,
+        )
         inputs = tokenizer(rendered, return_tensors="pt").to("cuda")
         input_tokens = int(inputs["input_ids"].shape[-1])
 
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} ...")
         started = time.perf_counter()
+        generate_kwargs: dict[str, Any] = {
+            "max_new_tokens": max_new_tokens,
+            "do_sample": bool(generation.get("do_sample", False)),
+            "use_cache": True,
+        }
+        if generate_kwargs["do_sample"]:
+            generate_kwargs["temperature"] = float(generation.get("temperature", 1.0))
+            generate_kwargs["top_p"] = float(generation.get("top_p", 1.0))
+            if "top_k" in generation:
+                generate_kwargs["top_k"] = int(generation["top_k"])
+        if "repetition_penalty" in generation:
+            generate_kwargs["repetition_penalty"] = float(generation["repetition_penalty"])
+
         with torch.inference_mode():
-            generated = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=bool(generation.get("do_sample", False)),
-                temperature=float(generation.get("temperature", 1.0)),
-                top_p=float(generation.get("top_p", 1.0)),
-                use_cache=True,
-            )
+            generated = model.generate(**inputs, **generate_kwargs)
         elapsed = time.perf_counter() - started
         new_tokens = generated[0, input_tokens:]
         output_tokens = int(new_tokens.shape[-1])
