@@ -1,0 +1,75 @@
+{
+  "source_path": "runs\\model_baseline\\pre_finetune_gemma4_e4b_desktop\\story_01.json",
+  "source_model": "unsloth/gemma-4-E4B-it-GGUF",
+  "spec_path": "data\\specifications\\benchmark\\01_exploration_mystery.yaml",
+  "title_hint": "Sis İçindeki İşaret",
+  "technical": {
+    "word_count": 1279,
+    "target_words": 2000,
+    "min_words": 1600,
+    "max_words": 2400,
+    "length_pass": false,
+    "pass": false
+  },
+  "judge_model": "anthropic/claude-fable-5",
+  "scores": {
+    "instruction_following": 3,
+    "coherence": 4,
+    "character_consistency": 4,
+    "age_appropriateness": 3,
+    "creativity": 4,
+    "style_quality": 2
+  },
+  "reasons": {
+    "instruction_following": "Constraints are met: non-scary tone, a wrong assumption (sea creature) corrected by observation, solution built on two clues (tide timing + stone alignment), and an open-ended final (the small opening in the rocks). However, the word count is 1279 vs the 2000 target (technical pass: False), a substantial shortfall.",
+    "coherence": "Investigation follows a clear observe-hypothesize-revise arc; the mechanism explanation ties back to earlier clues. Minor flaws: a POV slip ('ilk önemli gözlemimdi' in a third-person narrative) and the spiral stone piece appearing somewhat abruptly before being used.",
+    "character_consistency": "Ada consistently acts as an evidence-driven explorer (notes, tide tables, repeated observation). The line 'hemen bir sonuca vardı' briefly contradicts her stated caution, though it serves the required wrong-assumption beat.",
+    "age_appropriateness": "Content is safe and non-frightening, but vocabulary and abstraction exceed the 6-8 range: 'optik yanılsama', 'jeolojik saat mekanizması', 'çevresel şart', 'Çözümün Sentezi', plus long analytical sentences with little dialogue.",
+    "creativity": "The tide-and-stone-triggered ancient light mechanism is a satisfying, setting-integrated puzzle, and the ending hook (a hidden opening) is well planted; premise elements are otherwise fairly conventional.",
+    "style_quality": "Report-like markdown section headers ('Yanlış Varsayım:', 'İkinci Aşama', 'Çözümün Sentezi') break narrative immersion; 'Ve mucize gerçekleşti' rhetorically undercuts the non-miracle resolution; the POV slip and dense expository passages weaken storytelling flow."
+  },
+  "critical_failures": [
+    "Word count 1279 falls well short of the 2000-word target (technical length pass: False)."
+  ],
+  "decision": {
+    "accepted": false,
+    "average_score": 3.333,
+    "minimum_score": 2,
+    "acceptance_threshold": 4.0,
+    "minimum_criterion_score": 3,
+    "reasons": [
+      "average_score_below_threshold",
+      "criterion_score_below_minimum",
+      "critical_failures_present"
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 5835,
+    "completion_tokens": 1569,
+    "total_tokens": 7404,
+    "cost": 0.1368,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.1368,
+      "upstream_inference_prompt_cost": 0.05835,
+      "upstream_inference_completions_cost": 0.07845
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 791,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "response_meta": {
+    "openrouter_id": "gen-1787740830-X0qbiY677hwbqtWPEtGZ",
+    "model": "anthropic/claude-fable-5",
+    "provider": "Google",
+    "finish_reason": "stop"
+  }
+}
