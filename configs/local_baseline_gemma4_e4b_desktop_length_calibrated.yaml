@@ -1,0 +1,23 @@
+name: gemma4_e4b_desktop_length_calibrated_v1
+model: unsloth/gemma-4-E4B-it-GGUF
+benchmark_config: configs/teacher_benchmark.yaml
+endpoint_url: http://127.0.0.1:8888/v1/chat/completions
+api_key_env: UNSLOTH_API_KEY
+output_dir: runs/model_baseline/pre_finetune_gemma4_e4b_desktop_length_calibrated
+prompt_version: local_story_benchmark_v0.1+length_calibration_v0.1
+generation_version: unsloth_desktop_endpoint_generation_v0.1
+max_tokens: 5200
+timeout_seconds: 900
+disable_thinking: false
+extra_prompt_instructions: |
+  Hikâyeyi yaklaşık 1800-2200 kelime aralığında tamamla; 1600 kelimeden önce finale geçme.
+  Olayları özetlemek yerine sahneler, gözlemler, diyaloglar ve karakterin düşünce süreciyle geliştir.
+  Hikâye metni içinde madde işaretli liste, numaralı açıklama, çözüm özeti veya ders çıkaran doğrudan ahlak cümlesi kullanma.
+  Yaş aralığına uygun sade ve doğal Türkçe kullan; karakter yaşını briefte verilmedikçe uydurma.
+generation:
+  temperature: 0.7
+  top_p: 0.9
+seed: 42
+technical_gate:
+  min_word_ratio: 0.80
+  max_word_ratio: 1.20
