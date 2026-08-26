@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any
@@ -79,6 +80,16 @@ def build_payload(config: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any
     return payload
 
 
+def build_headers(config: dict[str, Any]) -> dict[str, str]:
+    api_key_env = config.get("api_key_env")
+    if not api_key_env:
+        return {}
+    api_key = os.getenv(str(api_key_env))
+    if not api_key:
+        raise RuntimeError(f"Required API key environment variable is not set: {api_key_env}")
+    return {"Authorization": f"Bearer {api_key}"}
+
+
 def extract_story(response_json: dict[str, Any]) -> str:
     choices = response_json.get("choices") or []
     if not choices:
@@ -89,9 +100,6 @@ def extract_story(response_json: dict[str, Any]) -> str:
     if isinstance(content, str) and content.strip():
         return content.strip()
 
-    # llama.cpp can place model output in reasoning_content for thinking-capable
-    # Qwen-family templates. We disable thinking for story generation, but keep
-    # this fallback so endpoint-shape changes are observable rather than fatal.
     reasoning_content = message.get("reasoning_content")
     if isinstance(reasoning_content, str) and reasoning_content.strip():
         return reasoning_content.strip()
@@ -116,6 +124,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     timeout_seconds = int(config.get("timeout_seconds", 900))
     output_dir = Path(str(config.get("output_dir", "runs/model_baseline/pre_finetune_local_endpoint")))
     output_dir.mkdir(parents=True, exist_ok=True)
+    headers = build_headers(config)
 
     gate = config.get("technical_gate") or {}
     min_ratio = float(gate.get("min_word_ratio", 0.8))
@@ -127,7 +136,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         payload = build_payload(config, spec)
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} via local endpoint ...")
         started = time.perf_counter()
-        response = requests.post(endpoint_url, json=payload, timeout=timeout_seconds)
+        response = requests.post(endpoint_url, json=payload, headers=headers, timeout=timeout_seconds)
         response.raise_for_status()
         response_json = response.json()
         elapsed = time.perf_counter() - started
