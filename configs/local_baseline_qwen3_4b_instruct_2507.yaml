@@ -1,0 +1,18 @@
+name: qwen3_4b_instruct_2507_prefinetune_baseline_v1
+model: unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit
+benchmark_config: configs/teacher_benchmark.yaml
+output_dir: runs/model_baseline/pre_finetune_qwen3_4b_instruct_2507
+prompt_version: local_story_benchmark_v0.1
+generation_version: local_fastmodel_generation_v0.1
+load_in_4bit: true
+max_seq_length: 4096
+max_new_tokens: 5200
+generation:
+  do_sample: true
+  temperature: 0.7
+  top_p: 0.8
+  top_k: 20
+seed: 42
+technical_gate:
+  min_word_ratio: 0.80
+  max_word_ratio: 1.20
