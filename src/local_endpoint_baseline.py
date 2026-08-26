@@ -62,7 +62,7 @@ def technical_result(words: int, target: int, min_ratio: float, max_ratio: float
 
 def build_payload(config: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
     generation = config.get("generation") or {}
-    return {
+    payload = {
         "model": str(config["model"]),
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -74,6 +74,9 @@ def build_payload(config: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any
         "seed": int(config.get("seed", 42)),
         "stream": False,
     }
+    if bool(config.get("disable_thinking", True)):
+        payload["chat_template_kwargs"] = {"enable_thinking": False}
+    return payload
 
 
 def extract_story(response_json: dict[str, Any]) -> str:
@@ -81,10 +84,23 @@ def extract_story(response_json: dict[str, Any]) -> str:
     if not choices:
         raise RuntimeError("Local endpoint response did not contain choices.")
     message = choices[0].get("message") or {}
+
     content = message.get("content")
-    if not isinstance(content, str) or not content.strip():
-        raise RuntimeError("Local endpoint response did not contain story text.")
-    return content.strip()
+    if isinstance(content, str) and content.strip():
+        return content.strip()
+
+    # llama.cpp can place model output in reasoning_content for thinking-capable
+    # Qwen-family templates. We disable thinking for story generation, but keep
+    # this fallback so endpoint-shape changes are observable rather than fatal.
+    reasoning_content = message.get("reasoning_content")
+    if isinstance(reasoning_content, str) and reasoning_content.strip():
+        return reasoning_content.strip()
+
+    raise RuntimeError(
+        "Local endpoint response did not contain story text in "
+        "message.content or message.reasoning_content. "
+        f"message_keys={sorted(message.keys())}"
+    )
 
 
 def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
