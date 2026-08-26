@@ -109,7 +109,15 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": build_user_prompt(spec)},
         ]
-        rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        chat_template_kwargs: dict[str, Any] = {}
+        if "enable_thinking" in generation:
+            chat_template_kwargs["enable_thinking"] = bool(generation["enable_thinking"])
+        rendered = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            **chat_template_kwargs,
+        )
         inputs = tokenizer(rendered, return_tensors="pt").to("cuda")
         input_tokens = int(inputs["input_ids"].shape[-1])
 
