@@ -63,11 +63,15 @@ def technical_result(words: int, target: int, min_ratio: float, max_ratio: float
 
 def build_payload(config: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
     generation = config.get("generation") or {}
+    user_prompt = build_user_prompt(spec)
+    extra_instructions = str(config.get("extra_prompt_instructions") or "").strip()
+    if extra_instructions:
+        user_prompt += f"\n\nEk üretim talimatları:\n{extra_instructions}"
     payload = {
         "model": str(config["model"]),
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": build_user_prompt(spec)},
+            {"role": "user", "content": user_prompt},
         ],
         "max_tokens": int(config.get("max_tokens", 4200)),
         "temperature": float(generation.get("temperature", 0.0)),
