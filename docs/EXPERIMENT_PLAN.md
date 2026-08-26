@@ -17,8 +17,8 @@ Cost reduction is secondary. The primary outcome is a repeatable learning workfl
 
 ## Hardware and budget
 
-- Current local GPU: RTX 3050 Ti Laptop, 4 GB VRAM.
-- Target local GPU for more practical QLoRA work: RTX 4060 Laptop, 8 GB VRAM.
+- Current active local GPU: RTX 4060 Laptop, 8 GB VRAM.
+- Secondary constrained GPU reference: RTX 3050 Ti Laptop, 4 GB VRAM.
 - Primary fine-tuning method: 4-bit QLoRA.
 - Training framework target: Unsloth.
 - Local inference runtimes: llama.cpp-compatible endpoint for dense/GGUF baselines; FreeToken experimental track for supported large MoE models.
@@ -28,7 +28,7 @@ Cost reduction is secondary. The primary outcome is a repeatable learning workfl
 
 ## Architecture of the roadmap
 
-The lab now has three connected but separate tracks.
+The lab has three connected but separate tracks.
 
 ### Track A — Teacher and dataset
 
@@ -50,7 +50,7 @@ Flow:
 
 `base model -> frozen benchmark -> QLoRA -> same frozen benchmark -> base vs adapter comparison`
 
-RTX 3050 Ti is used for feasibility and constrained experiments. RTX 4060 8 GB remains the preferred target for practical 9B-class QLoRA.
+RTX 4060 8 GB is the current active target for practical QLoRA experiments. The RTX 3050 Ti remains useful only for constrained feasibility references.
 
 ### Track C — Large MoE local inference
 
@@ -94,23 +94,30 @@ Exit gate:
 
 ## Milestone 2 — Ornith 1.5 9B local baseline
 
-Goal: determine whether Ornith is worth treating as a serious LUMI student candidate before spending time on training.
+Status: runtime and technical benchmark complete; quality gate in progress.
 
-1. Run one-story smoke inference first.
-2. Use Q4/GGUF with CPU/system RAM and optional partial GPU offload on the RTX 3050 Ti.
-3. Record runtime, completion behavior, word count, repetition, and technical failures.
-4. If stable, expand to the frozen five-story benchmark.
-5. Run the same LUMI judge used for other candidates.
-6. Compare against existing compact student/base baselines.
+Observed on RTX 4060 Laptop 8 GB:
 
-Promotion gate to training:
+- native HF/Unsloth 4-bit pure-GPU load did not fit with the current load path;
+- llama.cpp + `Ornith-1.5-9B-GGUF` Q4_K_M through an OpenAI-compatible endpoint is stable;
+- 1-story smoke: 1/1 technical PASS, 1,924 words, 101.7 s;
+- frozen 5-story run: 5/5 runtime completions, 4/5 technical length PASS;
+- average words: 1,611.8;
+- total runtime: 467.2 s;
+- failing technical case: `05_emotional_calm`, 915 words.
 
-- stable local generation,
-- no systematic truncation/repetition failure,
-- story quality competitive enough to justify QLoRA,
-- model/runtime behavior is reproducible.
+Current interpretation:
 
-If the gate fails, Ornith remains an inference reference rather than a training target.
+- model/runtime stability is sufficient to proceed;
+- the technical failure is a length/termination behavior issue, not a runtime crash;
+- Ornith is not promoted to training until the common LUMI judge rubric and repetition/failure inspection are complete.
+
+Next gate:
+
+1. Judge all five frozen stories with the same six LUMI quality dimensions.
+2. Preserve the 05 emotional/calm length failure in the final promotion decision even if its prose quality is acceptable.
+3. Inspect repetition, truncation/early-stop behavior, and critical failures.
+4. Decide Ornith status: train candidate / inference-only candidate / reject.
 
 ## Milestone 3 — FreeToken feasibility experiment
 
@@ -122,14 +129,7 @@ Goal: determine whether the current machine can use supported 30–35B-class MoE
 4. Verify `/v1/models` and `/v1/chat/completions` compatibility.
 5. Point the existing `local_endpoint_baseline` runner at FreeToken.
 6. Run a one-story smoke benchmark.
-7. Record:
-   - model and quantization,
-   - system RAM use,
-   - VRAM use,
-   - prompt/prefill behavior,
-   - generation tokens/sec,
-   - total runtime,
-   - failures or stalls.
+7. Record model/quantization, system RAM use, VRAM use, prompt/prefill behavior, generation tokens/sec, total runtime, and failures/stalls.
 8. If stable, run the same five-story frozen LUMI benchmark.
 9. Compare quality and throughput with the dense/local candidates.
 
@@ -153,7 +153,7 @@ Only start after a student candidate passes its baseline gate.
 4. Record peak VRAM, loss, runtime, OOM behavior, and checkpoint integrity.
 5. Confirm the adapter can be reloaded and used for inference.
 
-For RTX 3050 Ti 4 GB, 9B-class QLoRA is experimental and may be rejected by the hardware gate. Do not treat failure here as a project failure.
+For Ornith 9B on RTX 4060 8 GB, QLoRA remains a separate memory-feasibility smoke test. The failed native pure-GPU inference load must not be interpreted as proof that QLoRA is impossible, but it is a warning that memory margins are tight and must be measured explicitly.
 
 ## Milestone 5 — Small end-to-end student experiment
 
@@ -167,8 +167,6 @@ For RTX 3050 Ti 4 GB, 9B-class QLoRA is experimental and may be rejected by the 
 Success is improvement on held-out LUMI story quality, not merely lower training loss.
 
 ## Milestone 6 — Student/runtime comparison matrix
-
-After the first end-to-end run, compare one variable at a time.
 
 Candidate matrix may include:
 
@@ -219,15 +217,15 @@ Then compare one variable at a time, for example:
 
 ## Immediate execution order
 
-1. Merge/validate the Ornith local baseline experiment.
-2. Run Ornith one-story baseline on the RTX 3050 Ti machine.
-3. Expand to five stories only if the smoke run is stable.
-4. Freeze the first GPT Luna supervised dataset v1.
-5. In parallel after hardware inventory, run a FreeToken feasibility smoke test with one supported A3B-class MoE model.
-6. Compare Ornith/dense baseline quality with the FreeToken MoE inference reference.
-7. Choose the first model that deserves QLoRA.
-8. Run the smallest possible QLoRA smoke test.
-9. Only then scale data, context length, or model size.
+1. Ornith 1-story smoke. ✅
+2. Ornith frozen 5-story runtime/technical benchmark. ✅ (4/5 technical PASS, 5/5 completion)
+3. Ornith common judge + repetition/failure inspection. ← current
+4. Decide whether Ornith deserves a QLoRA smoke test.
+5. Freeze/confirm the first GPT Luna supervised dataset v1 used for the selected student experiment.
+6. Run the smallest QLoRA memory/training smoke on the selected student.
+7. In parallel after hardware inventory, run a FreeToken feasibility smoke test with one supported A3B-class MoE model.
+8. Compare dense student and MoE reference under the same LUMI benchmark.
+9. Scale data, context length, or model size only after evidence supports it.
 
 ## Decision rule
 
