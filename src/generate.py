@@ -103,6 +103,17 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
             "max_tokens": 16000,
         }
 
+    if model == "z-ai/glm-5.3-flash":
+        # GLM 5.3 Flash also requires reasoning on OpenRouter. Keep effort low
+        # for story generation so most of the completion budget reaches prose.
+        options: dict[str, Any] = {
+            "reasoning": {"enabled": True, "effort": "low", "exclude": True},
+            "max_tokens": 10000,
+        }
+        if seed is not None:
+            options["seed"] = seed
+        return options
+
     if model.startswith("z-ai/glm-4.5"):
         # GLM 4.5 family supports hybrid thinking/non-thinking inference.
         # For story generation we prefer non-thinking so the output budget is
