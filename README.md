@@ -10,6 +10,25 @@ This README is the human entry point and current-state document for the reposito
 
 Milestone 1 validates the complete learning loop with a deliberately small but reproducible dataset before scaling data volume or training cost.
 
+The current roadmap now separates three model-lab tracks:
+
+1. **Teacher/data track** — GPT Luna remains the selected teacher for high-quality supervised story generation.
+2. **Dense/local student track** — compact/dense candidates are baseline-tested first, then promoted to QLoRA only if both story quality and hardware feasibility justify training.
+3. **Large-MoE inference track** — FreeToken is evaluated separately as an inference/benchmark runtime for supported large MoE models; it is not treated as a low-VRAM training solution.
+
+Current local student experiment:
+
+- candidate: `ornith-ai/Ornith-1.5-9B`
+- hardware: RTX 4060 Laptop GPU, 8 GB VRAM
+- native HF/Unsloth 4-bit load: does not fit with the current pure-GPU load path; this is recorded as a hardware/load-path result, not a model rejection
+- working baseline runtime: llama.cpp GGUF through an OpenAI-compatible local endpoint
+- one-story smoke: PASS, 1,924 words, 101.7 s
+- frozen five-story baseline: 5/5 runtime completions, 4/5 technical length passes, 1,611.8 average words, 467.2 s total runtime
+- current failing case: `05_emotional_calm` produced 915 words and failed the target-length gate
+- next gate: common LUMI judge rubric and failure/repetition inspection before deciding whether Ornith is a training candidate
+
+Epic #12 (`Local Student Training & Large-MoE Inference Roadmap`) is the SSOT for this sequence. PR #11 contains the current Ornith local-baseline work.
+
 Completed foundations:
 
 - OpenRouter teacher-story generation with prompt/model metadata, token usage, provider metadata, and cost
@@ -26,8 +45,6 @@ Completed foundations:
 - one-command teacher-model qualification pipeline and model leaderboard
 - external/manual source-story ingest path with independent judge and training-example extraction
 - raw, curated, processed dataset artifacts and compact experiment records tracked in Git for cross-machine reproducibility
-
-Next major experiment: full 55-example QLoRA training, post-finetune frozen benchmark, and before/after comparison.
 
 The original 4B target remains `Qwen/Qwen3.5-4B` as the starting checkpoint for the stronger-GPU experiment. The 0.8B checkpoint is used locally to learn and validate the complete training mechanics on constrained hardware.
 
@@ -51,6 +68,7 @@ Not tracked:
 .env
 .venv/
 .venv-train/
+.venv-ornith/
 models/
 adapters/
 .cache/
@@ -85,13 +103,43 @@ JUDGE_MODEL=...
 
 ### Training environment note
 
-The separate `.venv-train` environment is used for the CUDA / Unsloth stack, but it still needs the repository's lightweight application dependencies (`python-dotenv`, `pyyaml`, `requests`, `rich`, `pydantic`). After creating or activating `.venv-train`, also run:
+A separate training environment is used for the CUDA / Unsloth stack, but it still needs the repository's lightweight application dependencies (`python-dotenv`, `pyyaml`, `requests`, `rich`, `pydantic`). After creating or activating the environment, also run:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
 This does not install or replace the CUDA / Unsloth training stack because those packages are intentionally not pinned in `requirements.txt`.
+
+## Ornith local endpoint baseline
+
+The preferred baseline path for Ornith on the RTX 4060 8 GB machine is GGUF + llama.cpp rather than the current native HF/Unsloth pure-GPU load path.
+
+Start a local OpenAI-compatible llama.cpp server with the Ornith Q4_K_M GGUF, then run:
+
+```bash
+python -m src.local_endpoint_baseline --config configs/local_baseline_ornith15_9b.yaml --limit 1
+```
+
+After a stable one-story smoke, expand to the frozen five-story benchmark:
+
+```bash
+python -m src.local_endpoint_baseline --config configs/local_baseline_ornith15_9b.yaml --limit 5
+```
+
+Local endpoint artifacts are written under:
+
+```text
+runs/model_baseline/pre_finetune_ornith15_9b/
+```
+
+They can be judged with the same six-criterion LUMI rubric through:
+
+```bash
+python -m src.judge_local_endpoint --input runs/model_baseline/pre_finetune_ornith15_9b/story_01.json
+```
+
+This judge adapter uses the configured `JUDGE_MODEL` and `OPENROUTER_API_KEY`, so it may incur provider cost.
 
 ## One-command model qualification
 
@@ -218,84 +266,9 @@ The output is isolated from the frozen Milestone-1 55-example dataset:
 runs/manual_ingest/<story-id>__<input-sha>/
   input_snapshot.yaml
   source/
-  judge/
+  judgment/
   extraction/
-  extracted/
   curated/
-  curation/
   dataset/
-    train.jsonl
-    manifest.json
-  final_report.json
+  manifest.json
 ```
-
-Re-running the exact same YAML is blocked by default. Use `--force` only for an intentional repeat.
-
-## Model leaderboard
-
-```bash
-python -m src.leaderboard
-```
-
-Ranking is quality-first: judge score first, technical reliability second, and API cost only as a tie-breaker when quality is comparable. Stored output: `runs/model_registry/leaderboard.json`.
-
-Each new qualification record keeps, where returned by the provider, prompt/input tokens, completion/output tokens, total tokens, generation/judge/extraction cost, total USD cost, optional TRY conversion, and stage-by-stage cost breakdown.
-
-## Qualification gates
-
-The protocol is versioned in `configs/qualification.yaml`.
-
-Current screening defaults:
-
-```yaml
-min_technical_pass_rate: 0.80
-min_judge_accept_rate: 0.80
-min_average_judge_score: 4.00
-max_critical_failures: 0
-```
-
-Full dataset gate:
-
-```yaml
-required_accepted_source_stories: 5
-required_ready_examples: 55
-require_zero_review: true
-require_zero_reject: true
-```
-
-Do not loosen gates merely to make a model pass. A changed gate is a changed protocol and therefore a different fingerprint.
-
-## Existing lower-level commands
-
-Individual stages remain available for debugging and focused experiments.
-
-```bash
-python -m src.generate --count 1 --dry-run
-python -m src.teacher_benchmark all
-python -m src.source_dataset all
-python -m src.extract_examples
-python -m src.curate_examples
-python -m src.prepare_training
-python -m src.local_preflight
-python -m src.model_probe
-python -m src.smoke_train
-python -m src.local_baseline
-```
-
-## Milestone-1 dataset design
-
-The frozen small dataset contains 5 approved source stories × 11 examples = 55 supervised examples. It validates workflow and learning behavior; it is not treated as sufficient evidence of production-quality fine-tuning.
-
-## Evaluation principle
-
-Before and after fine-tuning, the same frozen benchmark, inference prompt, judge protocol, and technical gates must be used. Benchmark-derived outputs must never enter the training dataset.
-
-Record at minimum technical pass rate, completion/EOS behavior, word-count compliance, judge average and criterion scores, runtime, peak VRAM, dataset SHA256, and model/adapter identity.
-
-## Tests
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-Run tests before merging pipeline changes.
