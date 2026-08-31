@@ -1,0 +1,22 @@
+name: qwen35_4b_4060_postfinetune_nonthinking_v4
+model: adapters/qwen35_4b_m1
+base_model: Qwen/Qwen3.5-4B
+benchmark_config: configs/teacher_benchmark.yaml
+output_dir: runs/model_baseline/post_finetune_qwen35_4b_4060_nonthinking_v4
+prompt_version: local_story_benchmark_v0.1
+generation_version: local_story_generation_qwen35_nonthinking_v0.4
+load_in_4bit: true
+enable_thinking: false
+max_seq_length: 6144
+max_new_tokens: 5200
+generation:
+  do_sample: true
+  temperature: 0.7
+  top_p: 0.8
+  top_k: 20
+  min_p: 0.0
+  presence_penalty: 1.5
+seed: 42
+technical_gate:
+  min_word_ratio: 0.80
+  max_word_ratio: 1.20

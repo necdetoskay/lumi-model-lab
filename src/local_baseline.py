@@ -11,6 +11,7 @@ import torch
 import yaml
 from rich.console import Console
 from rich.table import Table
+from transformers import LogitsProcessor, LogitsProcessorList
 from unsloth import FastLanguageModel
 
 console = Console()
@@ -20,6 +21,30 @@ SYSTEM_PROMPT = (
     "Verilen yaş aralığına, karaktere, ortama, temaya, öncül ve kısıtlara sadık kal. "
     "Hikâyeyi tamamlanmış bir sonla bitir; yalnızca hikâye metnini yaz."
 )
+
+
+class GeneratedPresencePenaltyLogitsProcessor(LogitsProcessor):
+    """Apply OpenAI/vLLM-style presence penalty to generated tokens only.
+
+    Transformers' generate() does not accept presence_penalty directly. This
+    processor subtracts a fixed penalty from every token that has appeared at
+    least once in the generated continuation, while leaving prompt tokens out
+    of the presence history.
+    """
+
+    def __init__(self, *, prompt_length: int, penalty: float) -> None:
+        self.prompt_length = int(prompt_length)
+        self.penalty = float(penalty)
+
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
+        if self.penalty == 0.0 or input_ids.shape[1] <= self.prompt_length:
+            return scores
+        generated = input_ids[:, self.prompt_length :]
+        for batch_index in range(generated.shape[0]):
+            seen = torch.unique(generated[batch_index])
+            if seen.numel() > 0:
+                scores[batch_index, seen] -= self.penalty
+        return scores
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -46,6 +71,27 @@ def build_user_prompt(spec: dict[str, Any]) -> str:
 
 def word_count(text: str) -> int:
     return len([part for part in text.split() if part.strip()])
+
+
+def _token_id_list(value: Any) -> list[int]:
+    if value is None:
+        return []
+    if isinstance(value, (list, tuple, set)):
+        return [int(item) for item in value if item is not None]
+    return [int(value)]
+
+
+def resolve_eos_token_ids(model: Any, tokenizer: Any) -> list[int]:
+    """Prefer the checkpoint generation config, which may define multiple EOS ids."""
+    values: list[int] = []
+    generation_config = getattr(model, "generation_config", None)
+    if generation_config is not None:
+        values.extend(_token_id_list(getattr(generation_config, "eos_token_id", None)))
+    values.extend(_token_id_list(getattr(tokenizer, "eos_token_id", None)))
+    model_config = getattr(model, "config", None)
+    if model_config is not None:
+        values.extend(_token_id_list(getattr(model_config, "eos_token_id", None)))
+    return list(dict.fromkeys(values))
 
 
 def technical_result(
@@ -85,6 +131,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     max_seq_length = int(config.get("max_seq_length", 4096))
     max_new_tokens = int(config.get("max_new_tokens", 3000))
     seed = int(config.get("seed", 42))
+    enable_thinking = bool(config.get("enable_thinking", True))
     output_dir = Path(str(config.get("output_dir", "runs/model_baseline/pre_finetune_qwen35_08b")))
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -104,11 +151,16 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     )
     FastLanguageModel.for_inference(model)
     tokenizer = processor.tokenizer if hasattr(processor, "tokenizer") else processor
+    eos_token_ids = resolve_eos_token_ids(model, tokenizer)
+    if not eos_token_ids:
+        raise RuntimeError("Could not resolve any EOS token ids for local baseline generation.")
+    console.print(f"EOS token ids: {eos_token_ids}")
 
     generation = config.get("generation") or {}
     gate = config.get("technical_gate") or {}
     min_ratio = float(gate.get("min_word_ratio", 0.8))
     max_ratio = float(gate.get("max_word_ratio", 1.2))
+    do_sample = bool(generation.get("do_sample", False))
 
     results: list[dict[str, Any]] = []
     for index, spec_path in enumerate(spec_paths, start=1):
@@ -118,31 +170,54 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ]
-        rendered = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        rendered = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=enable_thinking,
+        )
         inputs = tokenizer(rendered, return_tensors="pt").to("cuda")
         input_tokens = int(inputs["input_ids"].shape[-1])
+
+        generate_kwargs: dict[str, Any] = {
+            "max_new_tokens": max_new_tokens,
+            "do_sample": do_sample,
+            "use_cache": True,
+            "eos_token_id": eos_token_ids,
+        }
+        pad_token_id = getattr(tokenizer, "pad_token_id", None)
+        if pad_token_id is not None:
+            generate_kwargs["pad_token_id"] = int(pad_token_id)
+        if do_sample:
+            generate_kwargs.update(
+                temperature=float(generation.get("temperature", 0.7)),
+                top_p=float(generation.get("top_p", 0.8)),
+                top_k=int(generation.get("top_k", 20)),
+            )
+            if generation.get("min_p") is not None:
+                generate_kwargs["min_p"] = float(generation["min_p"])
+
+            presence_penalty = float(generation.get("presence_penalty", 0.0) or 0.0)
+            if presence_penalty != 0.0:
+                generate_kwargs["logits_processor"] = LogitsProcessorList(
+                    [
+                        GeneratedPresencePenaltyLogitsProcessor(
+                            prompt_length=input_tokens,
+                            penalty=presence_penalty,
+                        )
+                    ]
+                )
 
         console.print(f"[{index}/{len(spec_paths)}] Generating {spec_path.name} ...")
         started = time.perf_counter()
         with torch.inference_mode():
-            generated = model.generate(
-                **inputs,
-                max_new_tokens=max_new_tokens,
-                do_sample=bool(generation.get("do_sample", False)),
-                temperature=float(generation.get("temperature", 1.0)),
-                top_p=float(generation.get("top_p", 1.0)),
-                use_cache=True,
-            )
+            generated = model.generate(**inputs, **generate_kwargs)
         elapsed = time.perf_counter() - started
         new_tokens = generated[0, input_tokens:]
         output_tokens = int(new_tokens.shape[-1])
         hit_token_limit = output_tokens >= max_new_tokens
-        eos_token_id = tokenizer.eos_token_id
-        ended_with_eos = bool(
-            eos_token_id is not None
-            and output_tokens > 0
-            and int(new_tokens[-1].item()) == int(eos_token_id)
-        )
+        last_token_id = int(new_tokens[-1].item()) if output_tokens > 0 else None
+        ended_with_eos = bool(last_token_id is not None and last_token_id in eos_token_ids)
         text = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
         words = word_count(text)
         target = int(spec.get("target_words", 2000))
@@ -155,6 +230,10 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
             "prompt_version": config.get("prompt_version"),
             "generation_version": config.get("generation_version"),
             "model": model_name,
+            "enable_thinking": enable_thinking,
+            "generation": generation,
+            "eos_token_ids": eos_token_ids,
+            "last_token_id": last_token_id,
             "input_tokens": input_tokens,
             "output_tokens": output_tokens,
             "max_new_tokens": max_new_tokens,
@@ -169,7 +248,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         console.print(
             f"  words={words} tokens={output_tokens} runtime={elapsed:.1f}s "
             f"limit={'YES' if hit_token_limit else 'no'} eos={'yes' if ended_with_eos else 'no'} "
-            f"technical={'PASS' if technical['pass'] else 'FAIL'}"
+            f"last_token={last_token_id} technical={'PASS' if technical['pass'] else 'FAIL'}"
         )
 
     peak_gb = round(float(torch.cuda.max_memory_allocated()) / (1024 ** 3), 3)
@@ -179,6 +258,9 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
         "model": model_name,
         "prompt_version": config.get("prompt_version"),
         "generation_version": config.get("generation_version"),
+        "enable_thinking": enable_thinking,
+        "generation": generation,
+        "eos_token_ids": eos_token_ids,
         "benchmark_config": str(config["benchmark_config"]),
         "stories": len(results),
         "technical_passes": sum(1 for item in results if item["technical"]["pass"]),
@@ -195,6 +277,7 @@ def run(config_path: Path, limit: int | None = None) -> dict[str, Any]:
     table.add_column("Metric")
     table.add_column("Value", justify="right")
     table.add_row("model", model_name)
+    table.add_row("thinking", "on" if enable_thinking else "off")
     table.add_row("stories", str(summary["stories"]))
     table.add_row("technical passes", f"{summary['technical_passes']}/{summary['stories']}")
     table.add_row("token limit hits", str(summary["token_limit_hits"]))

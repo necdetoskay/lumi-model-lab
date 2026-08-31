@@ -42,6 +42,12 @@ from src.teacher_benchmark import (
 
 console = Console()
 
+SOURCE_RETRYABLE_TECHNICAL_REASONS = {
+    "below_minimum_word_count",
+    "above_maximum_word_count",
+}
+SOURCE_MAX_TECHNICAL_RETRIES = 2
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -83,6 +89,23 @@ def technical_screen_gate(summary: dict[str, Any], gates: dict[str, Any]) -> tup
     return True, []
 
 
+def generation_error_reasons(manifest: dict[str, Any], model: str) -> list[str]:
+    errors = [
+        entry for entry in manifest.get("entries") or []
+        if entry.get("model") == model and entry.get("generation_status") == "error"
+    ]
+    if not errors:
+        return []
+    reasons = [f"generation_errors_present:{len(errors)}"]
+    for entry in errors[:3]:
+        spec = Path(str(entry.get("spec_path", "unknown"))).name
+        message = str(entry.get("generation_error") or "unknown generation error")
+        if len(message) > 240:
+            message = message[:237] + "..."
+        reasons.append(f"{spec}: {message}")
+    return reasons
+
+
 def source_gate(manifest: dict[str, Any], required: int) -> tuple[bool, int]:
     accepted = [
         entry for entry in manifest.get("entries") or []
@@ -92,6 +115,124 @@ def source_gate(manifest: dict[str, Any], required: int) -> tuple[bool, int]:
         and entry.get("judge_accepted")
     ]
     return len(accepted) >= required, len(accepted)
+
+
+def can_resume_from_screen(existing: dict[str, Any] | None, *, screen_only: bool, rerun: bool) -> bool:
+    resumable_statuses = {"screen_passed", "rejected_source_gate"}
+    return bool(
+        existing
+        and not rerun
+        and not screen_only
+        and existing.get("status") in resumable_statuses
+        and existing.get("screen")
+        and existing.get("run_dir")
+    )
+
+
+def retryable_source_entries(
+    manifest: dict[str, Any],
+    model: str,
+    *,
+    max_retries: int = SOURCE_MAX_TECHNICAL_RETRIES,
+) -> list[dict[str, Any]]:
+    retryable: list[dict[str, Any]] = []
+    for entry in manifest.get("entries") or []:
+        if entry.get("model") != model:
+            continue
+        if entry.get("generation_status") != "complete" or entry.get("technical_pass"):
+            continue
+        reasons = set(entry.get("technical_reasons") or [])
+        if not reasons or not reasons.issubset(SOURCE_RETRYABLE_TECHNICAL_REASONS):
+            continue
+        if int(entry.get("technical_retry_count") or 0) >= max_retries:
+            continue
+        retryable.append(entry)
+    return retryable
+
+
+def retry_source_technical_failures(
+    *,
+    source_runner: dict[str, Any],
+    generation_config_path: Path,
+    source_manifest_path: Path,
+    model: str,
+    config_dir: Path,
+) -> dict[str, Any]:
+    if not source_manifest_path.exists():
+        return {"entries": []}
+
+    generation_config = load_yaml(generation_config_path)
+    base_seed = generation_config.get("seed")
+
+    for attempt in range(1, SOURCE_MAX_TECHNICAL_RETRIES + 1):
+        manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
+        targets = retryable_source_entries(manifest, model)
+        if not targets:
+            return manifest
+
+        console.rule(f"Source technical retry {attempt}/{SOURCE_MAX_TECHNICAL_RETRIES}")
+        previous: dict[str, dict[str, Any]] = {}
+        for entry in targets:
+            key = str(entry.get("spec_path"))
+            previous[key] = {
+                "story_id": entry.get("story_id"),
+                "word_count": entry.get("word_count"),
+                "technical_reasons": list(entry.get("technical_reasons") or []),
+                "teacher_cost_usd": entry.get("teacher_cost_usd"),
+                "teacher_output_tokens": entry.get("teacher_output_tokens"),
+                "technical_retry_count": int(entry.get("technical_retry_count") or 0),
+                "retry_history": list(entry.get("retry_history") or []),
+            }
+            entry["generation_status"] = "retry_pending"
+            console.print(
+                f"[yellow]Retry[/yellow] {Path(key).name} | "
+                f"words={entry.get('word_count')} | reasons={entry.get('technical_reasons')}"
+            )
+        save_json(source_manifest_path, manifest)
+
+        retry_config = dict(generation_config)
+        if isinstance(base_seed, int):
+            retry_config["seed"] = base_seed + attempt
+        retry_config_path = config_dir / f"generation_source_retry_{attempt}.yaml"
+        write_yaml(retry_config_path, retry_config)
+        manifest = generate_phase(
+            source_runner,
+            retry_config_path,
+            source_manifest_path,
+            force=False,
+        )
+
+        for entry in manifest.get("entries") or []:
+            key = str(entry.get("spec_path"))
+            if key not in previous:
+                continue
+            before = previous[key]
+            old_cost = float(before.get("teacher_cost_usd") or 0.0)
+            new_cost = float(entry.get("teacher_cost_usd") or 0.0)
+            old_tokens = int(before.get("teacher_output_tokens") or 0)
+            new_tokens = int(entry.get("teacher_output_tokens") or 0)
+            history = list(before.get("retry_history") or [])
+            history.append(
+                {
+                    "attempt": int(before.get("technical_retry_count") or 0) + 1,
+                    "previous_story_id": before.get("story_id"),
+                    "previous_word_count": before.get("word_count"),
+                    "previous_reasons": before.get("technical_reasons"),
+                    "retry_story_id": entry.get("story_id"),
+                    "retry_word_count": entry.get("word_count"),
+                    "retry_reasons": list(entry.get("technical_reasons") or []),
+                    "seed": retry_config.get("seed"),
+                    "retry_cost_usd": new_cost,
+                    "retry_output_tokens": new_tokens,
+                }
+            )
+            entry["technical_retry_count"] = int(before.get("technical_retry_count") or 0) + 1
+            entry["retry_history"] = history
+            entry["teacher_cost_usd"] = round(old_cost + new_cost, 9)
+            entry["teacher_output_tokens"] = old_tokens + new_tokens
+        save_json(source_manifest_path, manifest)
+
+    return json.loads(source_manifest_path.read_text(encoding="utf-8"))
 
 
 def make_entry(
@@ -181,77 +322,93 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         extra_identity={"judge_model": judge_model},
     )
     existing = find_by_fingerprint(load_registry(registry_path), fingerprint)
-    if existing and not rerun:
+    resume_from_screen = can_resume_from_screen(existing, screen_only=screen_only, rerun=rerun)
+    if existing and not rerun and not resume_from_screen:
         console.print("[yellow]ALREADY TESTED[/yellow] Same model + experiment fingerprint already exists.")
         print_entry(existing)
         return existing
 
     root = Path(str(config.get("qualification_root", "runs/qualifications")))
-    run_dir = root / f"{model_slug(model)}__{fingerprint[:10]}"
+    default_run_dir = root / f"{model_slug(model)}__{fingerprint[:10]}"
+    run_dir = Path(str(existing["run_dir"])) if resume_from_screen and existing else default_run_dir
     config_dir = run_dir / "configs"
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    # Stage 1 — frozen teacher benchmark generation.
-    benchmark = load_benchmark_config(Path(str(config["benchmark_config"])))
-    benchmark = dict(benchmark)
-    benchmark["name"] = f"qualification_screen__{model_slug(model)}"
-    benchmark["models"] = [model]
-    benchmark["output_dir"] = str(run_dir / "screen")
-    benchmark_config_path = config_dir / "benchmark.yaml"
-    write_yaml(benchmark_config_path, benchmark)
-    screen_manifest = run_dir / "screen" / "manifest.json"
+    if resume_from_screen and existing:
+        screen_summary = dict(existing.get("screen") or {})
+        console.rule("Resume qualification")
+        console.print("[green]SCREEN REUSED[/green] Exact fingerprint already passed benchmark + judge.")
+        console.print("Continuing directly at Stage 3; no benchmark or screen-judge calls will be repeated.")
+    else:
+        benchmark = load_benchmark_config(Path(str(config["benchmark_config"])))
+        benchmark = dict(benchmark)
+        benchmark["name"] = f"qualification_screen__{model_slug(model)}"
+        benchmark["models"] = [model]
+        benchmark["output_dir"] = str(run_dir / "screen")
+        benchmark_config_path = config_dir / "benchmark.yaml"
+        write_yaml(benchmark_config_path, benchmark)
+        screen_manifest = run_dir / "screen" / "manifest.json"
 
-    console.rule("1/6 Technical benchmark")
-    generated_manifest = generate_phase(
-        benchmark,
-        Path(str(config["generation_config"])),
-        screen_manifest,
-        force=rerun,
-    )
-    generated_summary = summarize_entries(generated_manifest.get("entries", []), [model])[model]
-    tech_ok, tech_reasons = technical_screen_gate(generated_summary, config.get("screen_gates") or {})
-    if not tech_ok:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="rejected_technical", screen=generated_summary, reasons=tech_reasons,
+        console.rule("1/6 Technical benchmark")
+        generated_manifest = generate_phase(
+            benchmark,
+            Path(str(config["generation_config"])),
+            screen_manifest,
+            force=rerun,
         )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        generated_summary = summarize_entries(generated_manifest.get("entries", []), [model])[model]
+        generation_reasons = generation_error_reasons(generated_manifest, model)
+        if generation_reasons:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="generation_error", screen=generated_summary, reasons=generation_reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    # Stage 2 — judge only if technical gate passes.
-    console.rule("2/6 Judge benchmark")
-    judged_manifest = judge_phase(
-        benchmark,
-        Path(str(config["evaluation_config"])),
-        screen_manifest,
-        force=rerun,
-    )
-    report_phase(benchmark, screen_manifest, run_dir / "screen")
-    screen_summary = summarize_entries(judged_manifest.get("entries", []), [model])[model]
-    qualified, reasons = screen_gate(screen_summary, config.get("screen_gates") or {})
-    if not qualified:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="rejected_judge", screen=screen_summary, reasons=reasons,
+        tech_ok, tech_reasons = technical_screen_gate(generated_summary, config.get("screen_gates") or {})
+        if not tech_ok:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="rejected_technical", screen=generated_summary, reasons=tech_reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
+
+        console.rule("2/6 Judge benchmark")
+        judged_manifest = judge_phase(
+            benchmark,
+            Path(str(config["evaluation_config"])),
+            screen_manifest,
+            force=rerun,
         )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        report_phase(benchmark, screen_manifest, run_dir / "screen")
+        screen_summary = summarize_entries(judged_manifest.get("entries", []), [model])[model]
+        qualified, reasons = screen_gate(screen_summary, config.get("screen_gates") or {})
+        if not qualified:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="rejected_judge", screen=screen_summary, reasons=reasons,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    if screen_only:
-        entry = make_entry(
-            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
-            run_dir=run_dir, status="screen_passed", screen=screen_summary,
-        )
-        upsert_entry(registry_path, entry)
-        save_json(run_dir / "final_report.json", entry)
-        print_entry(entry)
-        return entry
+        if screen_only:
+            entry = make_entry(
+                model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+                run_dir=run_dir, status="screen_passed", screen=screen_summary,
+            )
+            upsert_entry(registry_path, entry)
+            save_json(run_dir / "final_report.json", entry)
+            print_entry(entry)
+            return entry
 
-    # Stage 3 — create independent training source stories.
     console.rule("3/6 Training source stories")
     source_config = load_yaml(Path(str(config["source_dataset_config"])))
     source_config = dict(source_config)
@@ -261,16 +418,47 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
     write_yaml(source_config_path, source_config)
     source_runner = as_runner_config(source_config)
     source_manifest_path = run_dir / "source" / "manifest.json"
-    generate_phase(source_runner, Path(str(config["generation_config"])), source_manifest_path, force=rerun)
-    source_manifest = judge_phase(source_runner, Path(str(config["evaluation_config"])), source_manifest_path, force=rerun)
+    generated_source_manifest = generate_phase(
+        source_runner,
+        Path(str(config["generation_config"])),
+        source_manifest_path,
+        force=rerun,
+    )
+    source_generation_reasons = generation_error_reasons(generated_source_manifest, model)
+    if source_generation_reasons:
+        entry = make_entry(
+            model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
+            run_dir=run_dir, status="generation_error", screen=screen_summary,
+            reasons=["source_generation_failed", *source_generation_reasons],
+        )
+        upsert_entry(registry_path, entry)
+        save_json(run_dir / "final_report.json", entry)
+        print_entry(entry)
+        return entry
+
+    generated_source_manifest = retry_source_technical_failures(
+        source_runner=source_runner,
+        generation_config_path=Path(str(config["generation_config"])),
+        source_manifest_path=source_manifest_path,
+        model=model,
+        config_dir=config_dir,
+    )
+
+    source_manifest = judge_phase(
+        source_runner,
+        Path(str(config["evaluation_config"])),
+        source_manifest_path,
+        force=rerun,
+    )
     report_phase(source_runner, source_manifest_path, run_dir / "source")
     required_sources = int((config.get("full_gates") or {}).get("required_accepted_source_stories", 5))
     source_ok, accepted_count = source_gate(source_manifest, required_sources)
+    retry_count = sum(int(entry.get("technical_retry_count") or 0) for entry in source_manifest.get("entries") or [])
     if not source_ok:
         entry = make_entry(
             model=model, fingerprint=fingerprint, hashes=hashes, judge_model=judge_model,
             run_dir=run_dir, status="rejected_source_gate", screen=screen_summary,
-            dataset={"accepted_source_stories": accepted_count},
+            dataset={"accepted_source_stories": accepted_count, "source_technical_retries": retry_count},
             reasons=["accepted_source_stories_below_requirement"],
         )
         upsert_entry(registry_path, entry)
@@ -278,7 +466,6 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         print_entry(entry)
         return entry
 
-    # Stage 4 — supervised example extraction.
     console.rule("4/6 Supervised extraction")
     extraction_config = load_yaml(Path(str(config["extraction_config"])))
     extraction_config = dict(extraction_config)
@@ -294,7 +481,6 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
     complete_extractions = [item for item in extraction_manifest.get("entries") or [] if item.get("status") == "complete"]
     extracted_count = sum(int(item.get("example_count", 0)) for item in complete_extractions)
 
-    # Stage 5 — deterministic curation. Manual-review findings stop the pipeline.
     console.rule("5/6 Curation gate")
     curation_config = load_yaml(Path(str(config["curation_config"])))
     curation_config = dict(curation_config)
@@ -326,6 +512,7 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
             run_dir=run_dir, status="needs_manual_review", screen=screen_summary,
             dataset={
                 "accepted_source_stories": accepted_count,
+                "source_technical_retries": retry_count,
                 "extracted_examples": extracted_count,
                 "ready": ready,
                 "review": needs_review,
@@ -338,7 +525,6 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         print_entry(entry)
         return entry
 
-    # Stage 6 — build frozen JSONL dataset.
     console.rule("6/6 Training dataset")
     prepare_config = load_yaml(Path(str(config["prepare_training_config"])))
     prepare_config = dict(prepare_config)
@@ -357,6 +543,7 @@ def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun
         run_dir=run_dir, status="qualified", screen=screen_summary,
         dataset={
             "accepted_source_stories": accepted_count,
+            "source_technical_retries": retry_count,
             "extracted_examples": extracted_count,
             "examples": dataset_manifest.get("examples"),
             "sha256": dataset_manifest.get("sha256"),

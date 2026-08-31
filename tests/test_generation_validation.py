@@ -1,6 +1,6 @@
 import unittest
 
-from src.generate import validate_generation
+from src.generate import build_model_options, validate_generation
 from src.schemas import StorySpec
 
 
@@ -53,6 +53,13 @@ class GenerationValidationTests(unittest.TestCase):
         )
         self.assertFalse(result.eligible_for_judge)
         self.assertIn("below_minimum_word_count", result.reasons)
+
+    def test_gemini_37_flash_keeps_reasoning_enabled(self) -> None:
+        options = build_model_options("google/gemini-3.7-flash", 42)
+        self.assertTrue(options["reasoning"]["enabled"])
+        self.assertEqual(options["reasoning"]["effort"], "low")
+        self.assertTrue(options["reasoning"]["exclude"])
+        self.assertEqual(options["seed"], 42)
 
 
 if __name__ == "__main__":
