@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import time
 from pathlib import Path
 from typing import Any
@@ -14,9 +15,49 @@ from src.generator_benchmark_v2 import load_config, load_json, save_json
 from src.judge import build_judge_input, call_judge, load_generation, load_yaml, make_decision
 
 
+def _slug(value: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9._-]+", "_", value).strip("_")
+
+
+def _legacy_run(entry: dict[str, Any]) -> dict[str, Any] | None:
+    model = entry.get("diagnostic_judge_model")
+    status = entry.get("diagnostic_judge_status")
+    if not model or not status:
+        return None
+    return {
+        "status": status,
+        "judge_model": model,
+        "average": entry.get("diagnostic_judge_average"),
+        "minimum": entry.get("diagnostic_judge_minimum"),
+        "raw_accepted": entry.get("diagnostic_judge_raw_accepted"),
+        "scores": entry.get("diagnostic_judge_scores"),
+        "critical_failures": entry.get("diagnostic_critical_failures"),
+        "latency_seconds": entry.get("diagnostic_judge_latency_seconds"),
+        "input_tokens": entry.get("diagnostic_judge_input_tokens"),
+        "output_tokens": entry.get("diagnostic_judge_output_tokens"),
+        "total_tokens": entry.get("diagnostic_judge_total_tokens"),
+        "cost_usd": entry.get("diagnostic_judge_cost_usd"),
+        "cost_try": entry.get("diagnostic_judge_cost_try"),
+        "diagnostic_only": entry.get("diagnostic_only"),
+        "promotion_eligible": entry.get("promotion_eligible"),
+        "error": entry.get("diagnostic_judge_error"),
+    }
+
+
+def _ensure_run_history(entry: dict[str, Any]) -> dict[str, Any]:
+    runs = entry.setdefault("diagnostic_judge_runs", {})
+    legacy = _legacy_run(entry)
+    if legacy and legacy["judge_model"] not in runs:
+        runs[str(legacy["judge_model"])] = legacy
+    return runs
+
+
 def run_diagnostic_judge(
     benchmark_config_path: Path,
     evaluation_config_path: Path,
+    *,
+    judge_model: str | None = None,
+    force: bool = False,
 ) -> dict[str, Any]:
     config = load_config(benchmark_config_path)
     output_dir = Path(str(config.get("output_dir", "runs/generator_benchmark_v2")))
@@ -26,10 +67,12 @@ def run_diagnostic_judge(
     evaluation = load_yaml(evaluation_config_path)
     judge_config = evaluation.get("judge") or {}
     model_env = judge_config.get("model_env", "JUDGE_MODEL")
-    model = os.getenv(model_env)
+    model = judge_model or os.getenv(model_env)
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not model:
-        raise RuntimeError(f"Missing judge model in environment variable {model_env}.")
+        raise RuntimeError(
+            f"Missing judge model. Pass --judge-model or set environment variable {model_env}."
+        )
     if not api_key:
         raise RuntimeError("Missing OPENROUTER_API_KEY.")
 
@@ -40,7 +83,10 @@ def run_diagnostic_judge(
     for entry in manifest.get("entries", []):
         if entry.get("generation_status") != "complete":
             continue
-        if entry.get("diagnostic_judge_status") == "complete":
+
+        runs = _ensure_run_history(entry)
+        existing = runs.get(model)
+        if existing and existing.get("status") == "complete" and not force:
             continue
 
         record = load_generation(Path(str(entry["story_path"])))
@@ -61,58 +107,104 @@ def run_diagnostic_judge(
             )
             usage = parse_usage(body)
             cost = parse_cost(body)
-            entry.update(
-                {
-                    "diagnostic_judge_status": "complete",
-                    "diagnostic_judge_model": model,
-                    "diagnostic_judge_average": decision.average_score,
-                    "diagnostic_judge_minimum": decision.minimum_score,
-                    "diagnostic_judge_raw_accepted": decision.accepted,
-                    "diagnostic_judge_scores": result.scores,
-                    "diagnostic_critical_failures": result.critical_failures,
-                    "diagnostic_judge_latency_seconds": round(time.perf_counter() - started, 3),
-                    "diagnostic_judge_input_tokens": usage.input_tokens,
-                    "diagnostic_judge_output_tokens": usage.output_tokens,
-                    "diagnostic_judge_total_tokens": usage.total_tokens,
-                    "diagnostic_judge_cost_usd": cost.usd,
-                    "diagnostic_judge_cost_try": cost.try_amount,
-                    "diagnostic_only": not bool(entry.get("technical_pass")),
-                    "promotion_eligible": bool(entry.get("technical_pass")) and decision.accepted,
-                    "diagnostic_judge_error": None,
-                }
-            )
+            run = {
+                "status": "complete",
+                "judge_model": model,
+                "average": decision.average_score,
+                "minimum": decision.minimum_score,
+                "raw_accepted": decision.accepted,
+                "scores": result.scores,
+                "critical_failures": result.critical_failures,
+                "latency_seconds": round(time.perf_counter() - started, 3),
+                "input_tokens": usage.input_tokens,
+                "output_tokens": usage.output_tokens,
+                "total_tokens": usage.total_tokens,
+                "cost_usd": cost.usd,
+                "cost_try": cost.try_amount,
+                "diagnostic_only": not bool(entry.get("technical_pass")),
+                "promotion_eligible": bool(entry.get("technical_pass")) and decision.accepted,
+                "error": None,
+            }
+            runs[model] = run
         except Exception as exc:
-            entry.update(
-                {
-                    "diagnostic_judge_status": "error",
-                    "diagnostic_judge_latency_seconds": round(time.perf_counter() - started, 3),
-                    "diagnostic_judge_error": str(exc),
-                }
-            )
+            runs[model] = {
+                "status": "error",
+                "judge_model": model,
+                "latency_seconds": round(time.perf_counter() - started, 3),
+                "error": str(exc),
+            }
         finally:
             save_json(manifest_path, manifest)
 
-    report = {
-        "benchmark": manifest.get("benchmark"),
-        "judge_model": model,
-        "entries": [
+    report_entries: list[dict[str, Any]] = []
+    for entry in manifest.get("entries", []):
+        if entry.get("generation_status") != "complete":
+            continue
+        run = (_ensure_run_history(entry)).get(model) or {}
+        report_entries.append(
             {
                 "model": entry.get("model"),
                 "technical_pass": entry.get("technical_pass"),
                 "word_count": entry.get("word_count"),
-                "diagnostic_judge_average": entry.get("diagnostic_judge_average"),
-                "diagnostic_judge_scores": entry.get("diagnostic_judge_scores"),
-                "diagnostic_judge_raw_accepted": entry.get("diagnostic_judge_raw_accepted"),
-                "promotion_eligible": entry.get("promotion_eligible"),
-                "diagnostic_judge_cost_usd": entry.get("diagnostic_judge_cost_usd"),
-                "diagnostic_judge_cost_try": entry.get("diagnostic_judge_cost_try"),
-                "diagnostic_judge_error": entry.get("diagnostic_judge_error"),
+                "diagnostic_judge_average": run.get("average"),
+                "diagnostic_judge_scores": run.get("scores"),
+                "diagnostic_judge_raw_accepted": run.get("raw_accepted"),
+                "promotion_eligible": run.get("promotion_eligible"),
+                "diagnostic_judge_latency_seconds": run.get("latency_seconds"),
+                "diagnostic_judge_input_tokens": run.get("input_tokens"),
+                "diagnostic_judge_output_tokens": run.get("output_tokens"),
+                "diagnostic_judge_total_tokens": run.get("total_tokens"),
+                "diagnostic_judge_cost_usd": run.get("cost_usd"),
+                "diagnostic_judge_cost_try": run.get("cost_try"),
+                "diagnostic_judge_error": run.get("error"),
             }
-            for entry in manifest.get("entries", [])
-            if entry.get("generation_status") == "complete"
-        ],
+        )
+
+    report = {
+        "benchmark": manifest.get("benchmark"),
+        "judge_model": model,
+        "entries": report_entries,
     }
-    save_json(output_dir / "diagnostic_judge_summary.json", report)
+    save_json(output_dir / f"diagnostic_judge_{_slug(model)}.json", report)
+
+    comparison: dict[str, Any] = {
+        "benchmark": manifest.get("benchmark"),
+        "judges": {},
+    }
+    judge_models = sorted(
+        {
+            judge_name
+            for entry in manifest.get("entries", [])
+            for judge_name in (_ensure_run_history(entry)).keys()
+        }
+    )
+    for judge_name in judge_models:
+        rows = []
+        total_cost_usd = 0.0
+        for entry in manifest.get("entries", []):
+            if entry.get("generation_status") != "complete":
+                continue
+            run = (_ensure_run_history(entry)).get(judge_name) or {}
+            if run.get("cost_usd") is not None:
+                total_cost_usd += float(run["cost_usd"])
+            rows.append(
+                {
+                    "generator_model": entry.get("model"),
+                    "average": run.get("average"),
+                    "scores": run.get("scores"),
+                    "raw_accepted": run.get("raw_accepted"),
+                    "latency_seconds": run.get("latency_seconds"),
+                    "cost_usd": run.get("cost_usd"),
+                    "cost_try": run.get("cost_try"),
+                    "error": run.get("error"),
+                }
+            )
+        comparison["judges"][judge_name] = {
+            "total_cost_usd": round(total_cost_usd, 6),
+            "entries": rows,
+        }
+    save_json(output_dir / "diagnostic_judge_comparison.json", comparison)
+
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return report
 
@@ -123,13 +215,23 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--benchmark-config", default="configs/generator_benchmark_smoke.yaml")
     parser.add_argument("--evaluation-config", default="configs/evaluation.yaml")
+    parser.add_argument(
+        "--judge-model",
+        help="OpenRouter model slug for this diagnostic run; overrides JUDGE_MODEL without requiring a provider-specific API key.",
+    )
+    parser.add_argument("--force", action="store_true", help="Repeat this judge model even if its run is already complete.")
     return parser.parse_args()
 
 
 def main() -> None:
     load_dotenv()
     args = parse_args()
-    run_diagnostic_judge(Path(args.benchmark_config), Path(args.evaluation_config))
+    run_diagnostic_judge(
+        Path(args.benchmark_config),
+        Path(args.evaluation_config),
+        judge_model=args.judge_model,
+        force=args.force,
+    )
 
 
 if __name__ == "__main__":
