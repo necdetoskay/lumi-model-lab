@@ -126,8 +126,10 @@ def call_judge(
     user_prompt: str,
     temperature: float,
     max_tokens: int,
+    reasoning: dict[str, Any] | None = None,
+    response_format: dict[str, Any] | None = None,
 ) -> tuple[JudgePayload, dict[str, Any]]:
-    payload = {
+    payload: dict[str, Any] = {
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
@@ -136,6 +138,11 @@ def call_judge(
         "temperature": temperature,
         "max_tokens": max_tokens,
     }
+    if reasoning is not None:
+        payload["reasoning"] = reasoning
+    if response_format is not None:
+        payload["response_format"] = response_format
+
     response = requests.post(
         OPENROUTER_URL,
         headers={
@@ -161,7 +168,10 @@ def call_judge(
     message = choices[0].get("message") or {}
     content = message.get("content")
     if not isinstance(content, str) or not content.strip():
-        raise RuntimeError("OpenRouter judge response did not contain text content.")
+        finish_reason = choices[0].get("finish_reason")
+        raise RuntimeError(
+            f"OpenRouter judge response did not contain text content (finish_reason={finish_reason})."
+        )
 
     result = validate_judge_payload(extract_json_object(content))
     return result, body
@@ -203,6 +213,8 @@ def judge_story(input_path: Path, config_path: Path) -> tuple[Path, JudgeRecord]
         user_prompt=build_judge_input(record),
         temperature=float(judge_config.get("temperature", 0.0)),
         max_tokens=int(judge_config.get("max_tokens", 1800)),
+        reasoning=judge_config.get("reasoning"),
+        response_format=judge_config.get("response_format"),
     )
     decision = make_decision(
         result,
