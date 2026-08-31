@@ -107,7 +107,9 @@ def run_diagnostic_judge(
                 system_prompt=system_prompt,
                 user_prompt=build_judge_input(record),
                 temperature=float(judge_config.get("temperature", 0.0)),
-                max_tokens=int(judge_config.get("max_tokens", 1200)),
+                max_tokens=int(judge_config.get("max_tokens", 2500)),
+                reasoning=judge_config.get("reasoning"),
+                response_format=judge_config.get("response_format"),
             )
             decision = make_decision(
                 result,
@@ -232,7 +234,7 @@ def parse_args() -> argparse.Namespace:
         "--judge-model",
         help="OpenRouter model slug for this diagnostic run; overrides JUDGE_MODEL without requiring a provider-specific API key.",
     )
-    parser.add_argument("--force", action="store_true", help="Repeat this exact judge model + rubric version even if its run is already complete.")
+    parser.add_argument("--force", action="store_true", help="Repeat this judge model/prompt version even if its run is already complete.")
     return parser.parse_args()
 
 
