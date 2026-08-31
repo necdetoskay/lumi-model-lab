@@ -1,0 +1,72 @@
+name: Generator Benchmark V2 Smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/generator-benchmark-smoke.yml'
+      - 'configs/generator_benchmark_smoke.yaml'
+      - 'configs/generation.yaml'
+      - 'src/generate.py'
+      - 'src/generator_benchmark_v2.py'
+      - 'data/specifications/generator_v2/**'
+      - 'tests/test_generator_benchmark_v2.py'
+      - 'tests/test_generator_model_options_v2.py'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.head_ref == 'bench/generator-v2-three-models'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      USD_TRY_RATE: '48.2624'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install lightweight dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Validate benchmark harness
+        run: python -m unittest tests.test_generator_benchmark_v2 tests.test_generator_model_options_v2 -v
+
+      - name: Verify OpenRouter credential is configured
+        shell: bash
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo '::error::Repository secret OPENROUTER_API_KEY is not configured for this workflow.'
+            exit 1
+          fi
+
+      - name: Run one generation per candidate model
+        run: >-
+          python -m src.generator_benchmark_v2 generate
+          --benchmark-config configs/generator_benchmark_smoke.yaml
+          --generation-config configs/generation.yaml
+
+      - name: Build smoke cost report
+        run: >-
+          python -m src.generator_benchmark_v2 report
+          --benchmark-config configs/generator_benchmark_smoke.yaml
+
+      - name: Show smoke summary
+        run: cat runs/generator_benchmark_v2_smoke/summary.md
+
+      - name: Upload smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: generator-benchmark-v2-smoke
+          path: |
+            runs/generator_benchmark_v2_smoke/
+            data/raw/story_*.json
+          if-no-files-found: warn
+          retention-days: 14
