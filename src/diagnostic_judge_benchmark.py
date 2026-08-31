@@ -19,6 +19,10 @@ def _slug(value: str) -> str:
     return re.sub(r"[^a-zA-Z0-9._-]+", "_", value).strip("_")
 
 
+def _run_key(model: str, prompt_version: str) -> str:
+    return f"{model}@{prompt_version}"
+
+
 def _legacy_run(entry: dict[str, Any]) -> dict[str, Any] | None:
     model = entry.get("diagnostic_judge_model")
     status = entry.get("diagnostic_judge_status")
@@ -27,6 +31,7 @@ def _legacy_run(entry: dict[str, Any]) -> dict[str, Any] | None:
     return {
         "status": status,
         "judge_model": model,
+        "prompt_version": "story_judge_v0.1",
         "average": entry.get("diagnostic_judge_average"),
         "minimum": entry.get("diagnostic_judge_minimum"),
         "raw_accepted": entry.get("diagnostic_judge_raw_accepted"),
@@ -47,8 +52,10 @@ def _legacy_run(entry: dict[str, Any]) -> dict[str, Any] | None:
 def _ensure_run_history(entry: dict[str, Any]) -> dict[str, Any]:
     runs = entry.setdefault("diagnostic_judge_runs", {})
     legacy = _legacy_run(entry)
-    if legacy and legacy["judge_model"] not in runs:
-        runs[str(legacy["judge_model"])] = legacy
+    if legacy:
+        legacy_key = _run_key(str(legacy["judge_model"]), str(legacy["prompt_version"]))
+        if legacy_key not in runs and str(legacy["judge_model"]) not in runs:
+            runs[legacy_key] = legacy
     return runs
 
 
@@ -68,6 +75,8 @@ def run_diagnostic_judge(
     judge_config = evaluation.get("judge") or {}
     model_env = judge_config.get("model_env", "JUDGE_MODEL")
     model = judge_model or os.getenv(model_env)
+    prompt_version = str(judge_config.get("prompt_version", "story_judge_v0.1"))
+    run_key = _run_key(str(model), prompt_version) if model else ""
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not model:
         raise RuntimeError(
@@ -85,7 +94,7 @@ def run_diagnostic_judge(
             continue
 
         runs = _ensure_run_history(entry)
-        existing = runs.get(model)
+        existing = runs.get(run_key)
         if existing and existing.get("status") == "complete" and not force:
             continue
 
@@ -98,7 +107,7 @@ def run_diagnostic_judge(
                 system_prompt=system_prompt,
                 user_prompt=build_judge_input(record),
                 temperature=float(judge_config.get("temperature", 0.0)),
-                max_tokens=int(judge_config.get("max_tokens", 3000)),
+                max_tokens=int(judge_config.get("max_tokens", 1200)),
             )
             decision = make_decision(
                 result,
@@ -110,6 +119,7 @@ def run_diagnostic_judge(
             run = {
                 "status": "complete",
                 "judge_model": model,
+                "prompt_version": prompt_version,
                 "average": decision.average_score,
                 "minimum": decision.minimum_score,
                 "raw_accepted": decision.accepted,
@@ -125,11 +135,12 @@ def run_diagnostic_judge(
                 "promotion_eligible": bool(entry.get("technical_pass")) and decision.accepted,
                 "error": None,
             }
-            runs[model] = run
+            runs[run_key] = run
         except Exception as exc:
-            runs[model] = {
+            runs[run_key] = {
                 "status": "error",
                 "judge_model": model,
+                "prompt_version": prompt_version,
                 "latency_seconds": round(time.perf_counter() - started, 3),
                 "error": str(exc),
             }
@@ -140,7 +151,7 @@ def run_diagnostic_judge(
     for entry in manifest.get("entries", []):
         if entry.get("generation_status") != "complete":
             continue
-        run = (_ensure_run_history(entry)).get(model) or {}
+        run = (_ensure_run_history(entry)).get(run_key) or {}
         report_entries.append(
             {
                 "model": entry.get("model"),
@@ -163,22 +174,24 @@ def run_diagnostic_judge(
     report = {
         "benchmark": manifest.get("benchmark"),
         "judge_model": model,
+        "prompt_version": prompt_version,
+        "run_key": run_key,
         "entries": report_entries,
     }
-    save_json(output_dir / f"diagnostic_judge_{_slug(model)}.json", report)
+    save_json(output_dir / f"diagnostic_judge_{_slug(run_key)}.json", report)
 
     comparison: dict[str, Any] = {
         "benchmark": manifest.get("benchmark"),
         "judges": {},
     }
-    judge_models = sorted(
+    judge_runs = sorted(
         {
             judge_name
             for entry in manifest.get("entries", [])
             for judge_name in (_ensure_run_history(entry)).keys()
         }
     )
-    for judge_name in judge_models:
+    for judge_name in judge_runs:
         rows = []
         total_cost_usd = 0.0
         for entry in manifest.get("entries", []):
@@ -219,7 +232,7 @@ def parse_args() -> argparse.Namespace:
         "--judge-model",
         help="OpenRouter model slug for this diagnostic run; overrides JUDGE_MODEL without requiring a provider-specific API key.",
     )
-    parser.add_argument("--force", action="store_true", help="Repeat this judge model even if its run is already complete.")
+    parser.add_argument("--force", action="store_true", help="Repeat this exact judge model + rubric version even if its run is already complete.")
     return parser.parse_args()
 
 
