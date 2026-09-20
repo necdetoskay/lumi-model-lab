@@ -519,3 +519,23 @@ The first implementation slice is:
 5. normalized result card.
 
 All later cleanup follows evidence from that vertical slice.
+
+
+## 22. Implementation Tracking
+
+Canonical implementation epic: **#43 — Model Lab Fast Path — Role-Centric AEGIS/MUR Retrofit**
+
+Execution order:
+
+- **#44 P0** — Freeze Fast Path canonical contract and Retrofit baseline
+- **#45 P1** — Add versioned role-profile contract and resolver
+- **#46 P2** — Implement unified `src.lab` CLI facade: quick / qualify / status
+- **#47 P3** — Registry v2: role-aware evidence identity and explicit champion authority
+- **#48 P4** — L1 Fast Path vertical slice for `story-generator`
+- **#49 P5** — L2 role qualification: reuse Quick evidence and decouple dataset/training side effects
+- **#50 P6** — Normalize result cards, role comparison, economics and champion decision packet
+- **#51 P7** — Prove genericity with a second non-generator role and preserve JEV isolation
+- **#52 P8** — Retire dual active authority, fix config drift, and simplify README/operator surface
+- **#53 P9** — Independent AEGIS + MUR Retrofit qualification and closeout
+
+The issue map is execution tracking, not a replacement for this canonical contract. If an implementation issue conflicts with this document, the canonical contract wins until deliberately amended.
