@@ -16,6 +16,17 @@ The experiment exists to answer one question with reproducible evidence:
 
 This is a falsification exercise, not an integration project.
 
+### 1.1 Controlled decision-model extensions
+
+The primary #27 verdict remains **JEV-as-Judge**. The reusable lab harness may also be used by separately qualified decision workloads, but no Judge GO/HOLD/REJECT result transfers automatically to them.
+
+Controlled extension tracks:
+- **#38 X1 — model/agent routing qualification**
+- **#39 X2 — StoryOpportunity relevance/ranking qualification**
+- **#40 X3 — bounded NPC reaction selection qualification**
+
+Each extension owns a separate dataset, policy, metrics, protected holdout and GO/HOLD/REJECT verdict. They do not block the core Judge Lab execution order and they do not authorize Project_LUMI runtime integration.
+
 ## 2. Current system baseline
 
 The repository already contains:
@@ -225,6 +236,11 @@ Turkish candidate/story representation + Turkish rubric/questions.
 ### Variant B
 English semantic/candidate representation + English rubric/questions.
 
+### Variant C
+Turkish source/candidate + **controlled English semantic projection** + English rubric/questions.
+
+Variant C exists to test the hypothesis that JEV performs better on an English decision representation without forcing the whole LUMI generation pipeline to become English-first. The projection must preserve canonical IDs, enumerations, numbers, chronology and structured state exactly. Any translation/projection step is part of the measured system and must be fingerprinted.
+
 The test must record:
 
 - decision agreement,
@@ -233,15 +249,27 @@ The test must record:
 - confidence calibration,
 - cost,
 - latency,
-- failure rate.
+- failure rate,
+- projection/translation disagreement for Variant C,
+- projection cost and latency for Variant C.
 
-English-first is promoted only if held-out evidence supports it.
+English-first or English-projected evaluation is promoted only if held-out evidence supports it and the projection layer does not introduce unacceptable semantic drift.
 
 If later used by Project_LUMI, canonical structured state remains language-independent where possible. User-facing Turkish localization remains a separate surface-quality problem and is not declared safe merely because an English semantic judge passed.
 
 ## 10. Provider/harness boundary
 
 JEV is accessed only through a Model Lab experiment adapter.
+
+The provider transport/evidence core should be reusable across **typed workload profiles** rather than hard-coded to story judging. Reuse of the transport/harness does not imply reuse of qualification evidence or a shared production abstraction.
+
+A workload profile must identify at least:
+- task/profile identifier and version,
+- input/state schema version,
+- question/choice/action-set version,
+- expected output shape,
+- risk class and deterministic preconditions,
+- dataset/partition fingerprint.
 
 The adapter must capture:
 
@@ -297,8 +325,13 @@ Intentional reruns are allowed but must create distinct evidence rather than ove
 
 ### 12.3 Confidence
 - reliability/calibration curves
+- Brier score where a binary/probabilistic target exists
+- log loss where probability vectors are comparable
+- expected calibration error (ECE) or a documented equivalent
 - threshold sweep
 - confidence-vs-error relationship
+- selective risk / coverage curve
+- area under the risk-coverage curve when meaningful
 - escalation coverage
 - high-confidence error inventory
 
@@ -357,6 +390,10 @@ The red-team suite must attempt to break the judge with:
 - good prose + wrong contract,
 - bad prose + correct contract,
 - equivalent context reorderings,
+- single-fact counterfactual mutations expected to change exactly the relevant decision,
+- semantically irrelevant distractor insertion/removal,
+- entity renaming that preserves relationships/state,
+- missing-evidence / intentionally ambiguous state,
 - repeated identical requests.
 
 Every finding records:
@@ -368,6 +405,20 @@ Every finding records:
 - confidence,
 - repair,
 - regression case.
+
+## 15.1 Counterfactual and invariance contract
+
+Accuracy alone is insufficient for a bounded decision model. The lab must explicitly test whether outputs move for the **right reasons**.
+
+Required metamorphic/counterfactual checks include:
+- equivalent field/context ordering should not materially change the decision;
+- irrelevant context should not materially change the decision;
+- changing one causally relevant fact should change only the dimensions/actions that depend on that fact;
+- renaming entities while preserving graph/state relations should preserve the decision;
+- removing required evidence should reduce confidence, abstain, or escalate rather than invent certainty;
+- repeated identical requests must be measured for distribution/decision stability.
+
+Failures are recorded separately from ordinary disagreement because they indicate brittle decision boundaries even when aggregate accuracy appears strong.
 
 ## 16. Repair loop
 
@@ -419,7 +470,14 @@ JEV does not provide enough safety, quality, stability, or economics. Preserve e
 - **#35 P7** — Independent AEGIS re-review and GO/HOLD/REJECT
 - **#36 P8** — Conditional Project_LUMI L3 handoff after GO only
 
+Controlled, non-blocking extensions:
+- **#38 X1** — JEV model/agent routing qualification
+- **#39 X2** — StoryOpportunity relevance/ranking qualification
+- **#40 X3** — bounded NPC reaction selection qualification
+
 P8 is blocked until P7 records GO.
+
+X1/X2/X3 may reuse #30 provider/evidence harness primitives, but each track must freeze its own fixtures, labels, policies, thresholds and final holdout. A core Judge Lab GO does not qualify an extension track, and an extension GO does not widen the Judge production handoff.
 
 ## 19. Change control
 
@@ -432,7 +490,9 @@ Material changes to:
 - protected holdout rules,
 - responsibility split,
 - promotion targets,
-- production-integration boundary
+- production-integration boundary,
+- transfer of qualification evidence between workload types,
+- extension-track authority boundaries
 
 must be changed in this document and called out in the epic before relying on the new rule.
 
@@ -440,4 +500,6 @@ must be changed in this document and called out in the epic before relying on th
 
 **JEV is not integrated into LUMI runtime.**
 
-The only authorized next step is isolated Model Lab qualification under this AEGIS contract.
+The authorized work remains isolated Model Lab qualification under this AEGIS contract.
+
+Core Judge qualification follows P1–P8. X1/X2/X3 are independent lab-only extension tracks and may not mutate Project_LUMI runtime/canonical state or inherit a GO verdict from #27.
