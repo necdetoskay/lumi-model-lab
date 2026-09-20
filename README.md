@@ -16,6 +16,15 @@ The current roadmap now separates three model-lab tracks:
 2. **Dense/local student track** — compact/dense candidates are baseline-tested first, then promoted to QLoRA only if both story quality and hardware feasibility justify training.
 3. **Large-MoE inference track** — FreeToken is evaluated separately as an inference/benchmark runtime for supported large MoE models; it is not treated as a low-VRAM training solution.
 
+## Experimental judge-systems track
+
+JEV is being evaluated as a **lab-only fast semantic judge**, not as a Project_LUMI runtime dependency. The experiment follows AEGIS L2 qualification and tests atomic rubric scoring, blind human calibration, adversarial false-PASS behavior, confidence calibration, cost/latency, and a simulated JEV → LLM Judge cascade.
+
+- Canonical contract: `docs/canonical/JEV_JUDGE_LAB.md`
+- Epic: #27 — JEV Judge Lab — AEGIS Qualification & Judge Cascade Decision
+- Execution: #28–#36
+- Production boundary: a later Project_LUMI integration requires a separate L3 AEGIS review and is **not** part of this repo epic.
+
 Current local student experiment:
 
 - candidate: `ornith-ai/Ornith-1.5-9B`
