@@ -25,6 +25,7 @@ from src.saga_blueprint_contract import (
     validate_blueprint_payload,
     validate_profile_against_manifest,
 )
+from src.saga_blueprint_validate import validate_static
 
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -538,14 +539,24 @@ def run_generation(
 
     normalized = validated.model_dump(mode="json", by_alias=True)
     _write_json(run_dir / "validated_blueprint.json", normalized)
-    manifest["status"] = "complete"
-    manifest["finished_at"] = _now_iso()
     manifest["validation"] = {
         "status": "pass",
         "errors": [],
         "schema": "character-narrative-blueprint.v1",
     }
     _write_json(run_dir / "validation.json", manifest["validation"])
+
+    static_validation = validate_static(normalized)
+    manifest["static_validation"] = static_validation
+    _write_json(run_dir / "static_validation.json", static_validation)
+    if static_validation["status"] == "FAIL":
+        manifest["status"] = "static_validation_failed"
+        manifest["finished_at"] = _now_iso()
+        _write_json(manifest_path, manifest)
+        return manifest
+
+    manifest["status"] = "complete"
+    manifest["finished_at"] = _now_iso()
     _write_json(manifest_path, manifest)
     return manifest
 
@@ -579,6 +590,7 @@ def main() -> None:
         "generation_incomplete",
         "parse_failed",
         "validation_failed",
+        "static_validation_failed",
     }:
         raise SystemExit(2)
 
