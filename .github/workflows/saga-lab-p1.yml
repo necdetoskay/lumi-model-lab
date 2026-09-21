@@ -9,9 +9,11 @@ on:
       - 'data/specifications/saga_lab/**'
       - 'src/saga_blueprint_contract.py'
       - 'src/saga_blueprint_generate.py'
+      - 'src/saga_blueprint_validate.py'
       - 'prompts/saga_narrative_architect_v1.md'
       - 'tests/test_saga_blueprint_contract.py'
       - 'tests/test_saga_blueprint_generate.py'
+      - 'tests/test_saga_blueprint_validate.py'
 
 permissions:
   contents: read
@@ -42,7 +44,14 @@ jobs:
           python -m unittest
           tests.test_saga_blueprint_contract
           tests.test_saga_blueprint_generate
+          tests.test_saga_blueprint_validate
           -v
+
+      - name: Run static falsification suite
+        run: >-
+          python -m src.saga_blueprint_validate
+          --falsification-spec data/specifications/saga_lab/blueprint_static_falsification_v1.json
+          --base-fixture-response data/specifications/saga_lab/narrative_architect_fixture_response_v1.json
 
       - name: Run no-cost Narrative Architect fixture smoke
         run: >-
