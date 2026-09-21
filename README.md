@@ -93,6 +93,17 @@ The bounded Judge workload now has a frozen v1 rubric structure:
 
 The v1 split keeps exact invariants in deterministic code, assigns narrow semantic dimensions to decision-engine qualification, keeps narrative progression/ending as hybrid candidates, and retains creativity/literary/deep-holistic judgment on the stronger LLM lane. TR native, independently frozen English, and controlled-English projection are separate experiment variants. P3 does not define an aggregate story PASS/BLOCK formula.
 
+### Decision-engine benchmark
+
+The P4 comparison analyzer is versioned at:
+
+- protocol: `docs/canonical/DECISION_ENGINE_BENCHMARK_V1.md`
+- runner: `python -m src.decision_benchmark`
+
+It separates historical PASS/BLOCK verdict metrics from atomic 0–4 decision-engine metrics and will not derive a story PASS/BLOCK from atomic scores. It reports exact/adjacent agreement, native-score MAE, quadratic weighted kappa, and—when native score distributions exist—multiclass Brier, log loss, ECE, selective risk/coverage and AURC.
+
+The final holdout requires an explicit `--final-evaluation` flag. If complete final human atomic references are missing, quality metrics are suppressed and the benchmark returns `REFERENCE_INCOMPLETE`. The current real corpus is in that state.
+
 Current local student experiment:
 
 - candidate: `ornith-ai/Ornith-1.5-9B`
