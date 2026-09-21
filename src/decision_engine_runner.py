@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -48,6 +49,57 @@ def redact(value: Any) -> Any:
     return value
 
 
+class ExternalCommandDecisionEngine:
+    """Adapter boundary for local/open/hosted sidecars.
+
+    The command receives one JSON request on stdin and must return one
+    DecisionEngineOutput-compatible JSON object on stdout. shell=True is
+    intentionally forbidden.
+    """
+
+    def __init__(
+        self,
+        identity: DecisionEngineIdentity,
+        command: list[str],
+        timeout_seconds: float = 30.0,
+    ) -> None:
+        if not command or not all(isinstance(part, str) and part for part in command):
+            raise ValueError("command engine requires a non-empty argv list")
+        self.identity = identity
+        self._command = command
+        self._timeout_seconds = timeout_seconds
+
+    def evaluate(
+        self,
+        *,
+        workload: DecisionWorkloadProfile,
+        case: DecisionCase,
+    ) -> DecisionEngineOutput:
+        request = {
+            "schema_version": 1,
+            "workload": workload.model_dump(mode="json"),
+            "case": case.model_dump(mode="json"),
+        }
+        completed = subprocess.run(
+            self._command,
+            input=json.dumps(request, ensure_ascii=False),
+            text=True,
+            capture_output=True,
+            timeout=self._timeout_seconds,
+            check=False,
+            shell=False,
+        )
+        if completed.returncode != 0:
+            raise RuntimeError(
+                f"external decision engine exited with code {completed.returncode}"
+            )
+        try:
+            payload = json.loads(completed.stdout)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("external decision engine returned non-JSON output") from exc
+        return DecisionEngineOutput.model_validate(payload)
+
+
 class FixtureDecisionEngine:
     def __init__(self, identity: DecisionEngineIdentity, outputs: dict[str, Any]) -> None:
         self.identity = identity
@@ -82,6 +134,13 @@ def build_engine(config: dict[str, Any]):
         fixture_path = Path(config["fixture_path"])
         fixture = _load_json(fixture_path)
         return FixtureDecisionEngine(identity, fixture["outputs"])
+
+    if engine_type == "command":
+        return ExternalCommandDecisionEngine(
+            identity,
+            list(config["command"]),
+            float(config.get("timeout_seconds", 30.0)),
+        )
 
     raise ValueError(
         f"unsupported engine type {engine_type!r}; no fallback is allowed"
@@ -243,7 +302,7 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
         "malformed_output_count": malformed,
         "runtime_error_count": runtime_errors,
         "latency_ms": {
-            "cold": latencies[0] if rows else None,
+            "cold": float(rows[0]["latency_ms"]) if rows else None,
             "overall_p50": percentile(latencies, 0.50),
             "overall_p95": percentile(latencies, 0.95),
             "warm_p50": percentile(warm_latencies, 0.50),
