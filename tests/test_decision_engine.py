@@ -52,6 +52,71 @@ class DecisionEngineTests(unittest.TestCase):
         with self.assertRaises(DecisionEngineMalformedOutput):
             validate_output(workload=workload, case=case, output=output)
 
+
+    def test_boolean_requires_native_probability_true(self) -> None:
+        workload = DecisionWorkloadProfile(
+            profile_id="x1",
+            profile_version="1",
+            input_schema_version="1",
+            question_set_version="1",
+            risk_class="L2",
+        )
+        case = DecisionCase(
+            case_id="c-bool",
+            state={},
+            questions=[
+                DecisionQuestion(
+                    question_id="safe",
+                    type="boolean",
+                    instructions="Is the action safe?",
+                )
+            ],
+        )
+        output = DecisionEngineOutput(
+            answers=[
+                DecisionAnswer(
+                    question_id="safe",
+                    type="boolean",
+                    value=True,
+                )
+            ]
+        )
+        with self.assertRaises(DecisionEngineMalformedOutput):
+            validate_output(workload=workload, case=case, output=output)
+
+    def test_score_requires_explicit_levels(self) -> None:
+        workload = DecisionWorkloadProfile(
+            profile_id="judge",
+            profile_version="1",
+            input_schema_version="1",
+            question_set_version="1",
+            risk_class="L2",
+        )
+        case = DecisionCase(
+            case_id="c-score",
+            state={},
+            questions=[
+                DecisionQuestion(
+                    question_id="quality",
+                    type="score",
+                    instructions="Score quality",
+                    score_min=0,
+                    score_max=2,
+                )
+            ],
+        )
+        output = DecisionEngineOutput(
+            answers=[
+                DecisionAnswer(
+                    question_id="quality",
+                    type="score",
+                    value=1.0,
+                )
+            ]
+        )
+        with self.assertRaises(DecisionEngineMalformedOutput):
+            validate_output(workload=workload, case=case, output=output)
+
     def test_fingerprint_changes_with_engine_identity(self) -> None:
         workload = DecisionWorkloadProfile(
             profile_id="x1",
