@@ -27,6 +27,22 @@ Controlled extension tracks:
 
 Each extension owns a separate dataset, policy, metrics, protected holdout and GO/HOLD/REJECT verdict. They do not block the core Judge Lab execution order and they do not authorize Project_LUMI runtime integration.
 
+### 1.2 Provider-agnostic Decision Engine Lab relationship
+
+Shared decision-engine architecture is now governed by `docs/canonical/DECISION_ENGINE_LAB.md`.
+
+This Judge contract remains authoritative for the story-judge workload, corpus, false-PASS gates, human calibration and JEV-specific evidence. The shared contract adds provider/model-neutral rules for:
+
+- comparing JEV against open/local bounded decision engines,
+- normalizing engine/runtime evidence,
+- explicit `INSUFFICIENT_EVIDENCE` / `ESCALATE` semantics,
+- local RTX 4060 8 GB qualification lanes,
+- cascade comparisons,
+- reproducible engine identity,
+- later LUMI-specialized contrastive/counterfactual training.
+
+A result from another decision engine does not inherit JEV qualification, and JEV does not inherit another engine's qualification. Every workload/engine pair retains its own evidence and verdict.
+
 ## 2. Current system baseline
 
 The repository already contains:
@@ -257,11 +273,13 @@ English-first or English-projected evaluation is promoted only if held-out evide
 
 If later used by Project_LUMI, canonical structured state remains language-independent where possible. User-facing Turkish localization remains a separate surface-quality problem and is not declared safe merely because an English semantic judge passed.
 
-## 10. Provider/harness boundary
+## 10. Decision-engine / harness boundary
 
 JEV is accessed only through a Model Lab experiment adapter.
 
-The provider transport/evidence core should be reusable across **typed workload profiles** rather than hard-coded to story judging. Reuse of the transport/harness does not imply reuse of qualification evidence or a shared production abstraction.
+The shared transport/evidence core is a **provider-agnostic decision-engine adapter** governed by `DECISION_ENGINE_LAB.md`. It must support JEV and separately qualified open/local bounded decision engines without hiding their native differences.
+
+The transport/evidence core should be reusable across **typed workload profiles** rather than hard-coded to story judging. Reuse of the transport/harness does not imply reuse of qualification evidence or a shared production abstraction.
 
 A workload profile must identify at least:
 - task/profile identifier and version,
@@ -271,17 +289,24 @@ A workload profile must identify at least:
 - risk class and deterministic preconditions,
 - dataset/partition fingerprint.
 
-The adapter must capture:
+The adapter must capture at least:
 
-- provider/model identifier,
-- provider model/version metadata when exposed,
-- rubric/question-set version,
+- engine family,
+- provider/runtime,
+- exact model identifier,
+- model revision / commit / artifact hash when exposed,
+- quantization when applicable,
+- serving stack/version,
+- rubric/question/choice-set version,
+- language/projection variant,
 - input/corpus fingerprint,
 - request/state size,
 - returned levels/choices/probabilities/confidence,
-- latency,
+- device/GPU for local runs,
+- peak VRAM where measurable,
+- cold/warm latency and p50/p95 aggregation,
 - usage/token accounting when exposed,
-- provider cost or reproducible cost estimate,
+- provider cost or reproducible local cost estimate,
 - retry/error metadata.
 
 The adapter must:
@@ -374,6 +399,8 @@ Rules:
 - thresholds are frozen before final holdout;
 - low-confidence and ambiguous cases escalate;
 - high-confidence errors are separately analyzed because they are more dangerous than ordinary errors.
+- when the supplied evidence may be incomplete, the question/choice contract must expose an explicit `INSUFFICIENT_EVIDENCE`, `ESCALATE`, or equivalent abstention path rather than forcing a normal choice.
+- deterministic policy may force escalation regardless of model confidence.
 
 ## 15. Red-team plan
 
@@ -471,7 +498,7 @@ JEV does not provide enough safety, quality, stability, or economics. Preserve e
 - **#36 P8** — Conditional Project_LUMI L3 handoff after GO only
 
 Controlled, non-blocking extensions:
-- **#38 X1** — JEV model/agent routing qualification
+- **#38 X1** — execution decision routing qualification (model/agent/repair/retry/escalation choices)
 - **#39 X2** — StoryOpportunity relevance/ranking qualification
 - **#40 X3** — bounded NPC reaction selection qualification
 
@@ -503,3 +530,5 @@ must be changed in this document and called out in the epic before relying on th
 The authorized work remains isolated Model Lab qualification under this AEGIS contract.
 
 Core Judge qualification follows P1–P8. X1/X2/X3 are independent lab-only extension tracks and may not mutate Project_LUMI runtime/canonical state or inherit a GO verdict from #27.
+
+JEV remains the proprietary/reference Judge candidate for this contract, but final architecture selection must compare it against qualified open/local decision engines under the shared `DECISION_ENGINE_LAB.md` evidence rules before any production-dependency recommendation is made.
