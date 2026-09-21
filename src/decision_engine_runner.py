@@ -139,7 +139,16 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
     malformed = 0
     runtime_errors = 0
 
-    for case in cases:
+    for case_index, case in enumerate(cases):
+        request_payload = {
+            "workload": workload.model_dump(mode="json"),
+            "case": case.model_dump(mode="json"),
+        }
+        request_json = canonical_json(request_payload)
+        request_fingerprint = sha256_text(request_json)
+        state_size_bytes = len(
+            canonical_json(case.state).encode("utf-8")
+        )
         started = time.perf_counter()
         try:
             raw_output = engine.evaluate(workload=workload, case=case)
@@ -152,10 +161,16 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
             row = {
                 "case_id": case.case_id,
                 "status": "complete",
+                "request_fingerprint": request_fingerprint,
+                "state_size_bytes": state_size_bytes,
+                "question_count": len(case.questions),
                 "latency_ms": latency_ms,
+                "latency_class": "cold" if case_index == 0 else "warm",
                 "answers": [a.model_dump(mode="json") for a in validated.answers],
                 "provider_metadata": redact(validated.provider_metadata),
+                "runtime_metadata": redact(validated.runtime_metadata),
                 "usage": redact(validated.usage),
+                "cost": redact(validated.cost),
             }
             evidence = {
                 **row,
@@ -167,7 +182,11 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
             row = {
                 "case_id": case.case_id,
                 "status": "malformed_output",
+                "request_fingerprint": request_fingerprint,
+                "state_size_bytes": state_size_bytes,
+                "question_count": len(case.questions),
                 "latency_ms": latency_ms,
+                "latency_class": "cold" if case_index == 0 else "warm",
                 "error": str(exc),
             }
             evidence = row
@@ -177,7 +196,11 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
             row = {
                 "case_id": case.case_id,
                 "status": "runtime_error",
+                "request_fingerprint": request_fingerprint,
+                "state_size_bytes": state_size_bytes,
+                "question_count": len(case.questions),
                 "latency_ms": latency_ms,
+                "latency_class": "cold" if case_index == 0 else "warm",
                 "error_type": type(exc).__name__,
                 "error": str(exc),
             }
@@ -191,11 +214,15 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
         rows.append(row)
 
     latencies = sorted(float(row["latency_ms"]) for row in rows)
-    def percentile(p: float) -> float | None:
-        if not latencies:
+    warm_latencies = sorted(
+        float(row["latency_ms"]) for row in rows if row["latency_class"] == "warm"
+    )
+
+    def percentile(values: list[float], p: float) -> float | None:
+        if not values:
             return None
-        index = min(len(latencies) - 1, round((len(latencies) - 1) * p))
-        return latencies[index]
+        index = min(len(values) - 1, round((len(values) - 1) * p))
+        return values[index]
 
     manifest = {
         "schema_version": 1,
@@ -216,8 +243,11 @@ def run_experiment(config_path: Path, *, rerun: bool = False) -> dict[str, Any]:
         "malformed_output_count": malformed,
         "runtime_error_count": runtime_errors,
         "latency_ms": {
-            "p50": percentile(0.50),
-            "p95": percentile(0.95),
+            "cold": latencies[0] if rows else None,
+            "overall_p50": percentile(latencies, 0.50),
+            "overall_p95": percentile(latencies, 0.95),
+            "warm_p50": percentile(warm_latencies, 0.50),
+            "warm_p95": percentile(warm_latencies, 0.95),
         },
         "cases": rows,
     }
