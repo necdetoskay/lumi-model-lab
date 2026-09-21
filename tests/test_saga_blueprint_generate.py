@@ -318,6 +318,59 @@ class SagaBlueprintGenerateTests(unittest.TestCase):
             self.assertEqual(manifest["usage"]["cost_usd"], 0.0123)
             self.assertEqual(manifest["usage"]["cost_try"], 0.615)
 
+
+    @patch("src.saga_blueprint_generate._fixture_provider")
+    def test_strict_valid_but_static_invalid_blueprint_is_not_complete(
+        self,
+        provider,
+    ) -> None:
+        fixture_response = json.loads(
+            (
+                ROOT
+                / "data"
+                / "specifications"
+                / "saga_lab"
+                / "narrative_architect_fixture_response_v1.json"
+            ).read_text(encoding="utf-8")
+        )
+        blueprint = fixture_response["blueprint"]
+        blueprint["saga_blueprint"]["threads"][0]["milestones"][0]["required"] = True
+        provider.return_value = (
+            {
+                "id": "static-invalid",
+                "model": "fixture/narrative-architect-reference-v1",
+                "provider": "local-fixture",
+                "choices": [
+                    {
+                        "finish_reason": "stop",
+                        "message": {
+                            "content": json.dumps(blueprint, ensure_ascii=False)
+                        },
+                    }
+                ],
+                "usage": {"cost": 0.0},
+            },
+            {"fixture": True},
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = _temp_config(root, BASE_CONFIG, output_root=root / "runs")
+            result = run_generation(config_path=config, fixture_id=FIXTURE_ID)
+            self.assertEqual(result["status"], "static_validation_failed")
+            run_dir = Path(result["run_dir"])
+            self.assertTrue((run_dir / "validated_blueprint.json").exists())
+            self.assertTrue((run_dir / "static_validation.json").exists())
+            static_report = json.loads(
+                (run_dir / "static_validation.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(static_report["status"], "FAIL")
+            self.assertFalse(static_report["semantic_evaluation_eligible"])
+            self.assertIn(
+                "MANDATORY_MILESTONE",
+                {item["code"] for item in static_report["findings"]},
+            )
+
     def test_fingerprint_changes_with_request_options(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
