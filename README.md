@@ -82,6 +82,17 @@ The Judge track now has a frozen v2 case plan and blind-human protocol:
 
 Current status is intentionally **NOT_PROMOTABLE**: synthetic mutation artifacts still require materialization and the corpus still requires complete blind human labels. Automation must not invent human labels.
 
+### Judge atomic rubric
+
+The bounded Judge workload now has a frozen v1 rubric structure:
+
+- canonical contract: `docs/canonical/JUDGE_ATOMIC_RUBRIC_V1.md`
+- machine-readable rubric: `data/specifications/judge_atomic_rubric_v1.yaml`
+- validator: `python -m src.judge_atomic_rubric`
+- current status: `FROZEN_STRUCTURE_CALIBRATION_PENDING`
+
+The v1 split keeps exact invariants in deterministic code, assigns narrow semantic dimensions to decision-engine qualification, keeps narrative progression/ending as hybrid candidates, and retains creativity/literary/deep-holistic judgment on the stronger LLM lane. TR native, independently frozen English, and controlled-English projection are separate experiment variants. P3 does not define an aggregate story PASS/BLOCK formula.
+
 Current local student experiment:
 
 - candidate: `ornith-ai/Ornith-1.5-9B`
