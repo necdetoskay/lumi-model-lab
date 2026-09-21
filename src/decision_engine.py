@@ -56,7 +56,9 @@ class DecisionAnswer(BaseModel):
 class DecisionEngineOutput(BaseModel):
     answers: list[DecisionAnswer]
     provider_metadata: dict[str, Any] = Field(default_factory=dict)
+    runtime_metadata: dict[str, Any] = Field(default_factory=dict)
     usage: dict[str, Any] = Field(default_factory=dict)
+    cost: dict[str, Any] = Field(default_factory=dict)
     raw_output: Any = None
 
 
