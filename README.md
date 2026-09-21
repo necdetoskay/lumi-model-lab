@@ -32,6 +32,19 @@ Shared rules include deterministic authority for hard invariants, explicit `INSU
 - Local target: RTX 4060 8 GB class hardware for the first open/local lane
 - Production boundary: any Project_LUMI integration requires a separate L3 AEGIS review and is **not** authorized by this repository.
 
+### Judge gold/reference corpus
+
+The Judge track now has a frozen v2 case plan and blind-human protocol:
+
+- protocol: `docs/canonical/JUDGE_GOLD_CORPUS_PROTOCOL.md`
+- manifest: `data/specifications/judge_gold_corpus_v2.json`
+- 100 case descriptors with source-family partition isolation
+- 46 calibration / 27 development holdout / 27 final holdout
+- explicit critical-protected and Turkish ↔ controlled-English comparison subsets
+- validator: `python -m src.judge_gold_corpus`
+
+Current status is intentionally **NOT_PROMOTABLE**: synthetic mutation artifacts still require materialization and the corpus still requires complete blind human labels. Automation must not invent human labels.
+
 Current local student experiment:
 
 - candidate: `ornith-ai/Ornith-1.5-9B`
