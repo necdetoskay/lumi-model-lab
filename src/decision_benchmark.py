@@ -314,12 +314,27 @@ def benchmark_engine_atomic(
         preds: list[float] = []
         prob_refs: list[int] = []
         distributions: list[list[float]] = []
+        insufficient_evidence_count = 0
+        missing_or_invalid_evidence_gate_count = 0
 
         for case_id, atomic in references.items():
             row = rows.get(case_id)
             if not row or row.get("status") != "complete":
                 continue
-            answer = _answer_map(row).get(dimension)
+            answers = _answer_map(row)
+            evidence = answers.get(f"{dimension}__evidence")
+            if (
+                not evidence
+                or evidence.get("type") != "choice"
+                or evidence.get("value") not in {"SUFFICIENT", "INSUFFICIENT_EVIDENCE"}
+            ):
+                missing_or_invalid_evidence_gate_count += 1
+                continue
+            if evidence.get("value") == "INSUFFICIENT_EVIDENCE":
+                insufficient_evidence_count += 1
+                continue
+
+            answer = answers.get(dimension)
             if not answer or answer.get("type") != "score":
                 continue
             value = answer.get("value")
@@ -349,6 +364,13 @@ def benchmark_engine_atomic(
                     )
 
         metrics = ordinal_metrics(refs, preds)
+        metrics["reference_case_count"] = len(references)
+        metrics["sufficient_prediction_count"] = len(refs)
+        metrics["insufficient_evidence_count"] = insufficient_evidence_count
+        metrics["missing_or_invalid_evidence_gate_count"] = (
+            missing_or_invalid_evidence_gate_count
+        )
+        metrics["coverage"] = len(refs) / len(references) if references else None
         metrics["probability_metrics"] = probability_metrics(
             prob_refs,
             distributions,
