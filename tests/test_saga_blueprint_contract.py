@@ -217,7 +217,7 @@ def minimal_blueprint() -> dict:
                     },
                     "recovery_policy": {
                         "can_reconnect_after_long_absence": True,
-                        "reconnection_methods": ["DOCUMENT", "NPC", "LOCATION"],
+                        "reconnection_methods": ["NPC", "LOCATION", "RUMOR"],
                     },
                 }
             ],
