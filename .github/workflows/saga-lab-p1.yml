@@ -1,4 +1,4 @@
-name: Saga Lab P1 Contract
+name: Saga Lab Contract and Generator
 
 on:
   pull_request:
@@ -8,7 +8,10 @@ on:
       - 'configs/saga_lab/**'
       - 'data/specifications/saga_lab/**'
       - 'src/saga_blueprint_contract.py'
+      - 'src/saga_blueprint_generate.py'
+      - 'prompts/saga_narrative_architect_v1.md'
       - 'tests/test_saga_blueprint_contract.py'
+      - 'tests/test_saga_blueprint_generate.py'
 
 permissions:
   contents: read
@@ -34,5 +37,15 @@ jobs:
           --profile configs/saga_lab/narrative_architect_v1.yaml
           --fixtures data/specifications/saga_lab/character_world_fixtures_v1.json
 
-      - name: Run Saga Lab P1 unit tests
-        run: python -m unittest tests.test_saga_blueprint_contract -v
+      - name: Run Saga Lab contract and generator tests
+        run: >-
+          python -m unittest
+          tests.test_saga_blueprint_contract
+          tests.test_saga_blueprint_generate
+          -v
+
+      - name: Run no-cost Narrative Architect fixture smoke
+        run: >-
+          python -m src.saga_blueprint_generate
+          --config configs/saga_lab/narrative_architect_fixture_v1.yaml
+          --fixture-id mature_adult_dormant_archivist
