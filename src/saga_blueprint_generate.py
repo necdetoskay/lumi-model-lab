@@ -304,6 +304,11 @@ def build_experiment_fingerprint(
         files["fixture_response"] = Path(config.provider.fixture_response_path)
 
     hashes = {name: file_sha256(path) for name, path in files.items()}
+    semantic_hashes = {
+        name: sha
+        for name, sha in hashes.items()
+        if name != "runner_config"
+    }
     identity = {
         "runner_version": RUNNER_VERSION,
         "role_id": profile.role_id,
@@ -316,7 +321,7 @@ def build_experiment_fingerprint(
         "provider_model_revision": config.provider.identity.model_revision,
         "model": model,
         "request": config.request.model_dump(mode="json"),
-        "files": hashes,
+        "files": semantic_hashes,
     }
     return _canonical_sha(identity), hashes
 
@@ -459,14 +464,31 @@ def run_generation(
     manifest["latency_ms"] = latency_ms
     manifest["usage"] = _provider_usage(body)
     choices = body.get("choices") or [{}]
+    finish_reason = choices[0].get("finish_reason")
     manifest["response_meta"] = {
         "id": body.get("id"),
         "model": body.get("model"),
         "provider": body.get("provider"),
-        "finish_reason": choices[0].get("finish_reason"),
+        "finish_reason": finish_reason,
     }
     _write_json(run_dir / "provider_request.json", provider_request)
     _write_json(run_dir / "raw_response.json", body)
+
+    if finish_reason not in (None, "stop"):
+        manifest["status"] = "generation_incomplete"
+        manifest["finished_at"] = _now_iso()
+        manifest["validation"] = {
+            "status": "generation_incomplete",
+            "errors": [
+                {
+                    "type": "finish_reason",
+                    "message": f"unexpected finish_reason: {finish_reason!r}",
+                }
+            ],
+        }
+        _write_json(run_dir / "validation.json", manifest["validation"])
+        _write_json(manifest_path, manifest)
+        return manifest
 
     try:
         content = _extract_text_content(body)
@@ -552,7 +574,12 @@ def main() -> None:
         rerun=args.rerun,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    if result.get("status") in {"provider_error", "parse_failed", "validation_failed"}:
+    if result.get("status") in {
+        "provider_error",
+        "generation_incomplete",
+        "parse_failed",
+        "validation_failed",
+    }:
         raise SystemExit(2)
 
 
