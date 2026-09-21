@@ -14,6 +14,7 @@ class DecisionQuestion(BaseModel):
     choices: list[str] = Field(default_factory=list)
     score_min: float | None = None
     score_max: float | None = None
+    score_levels: list[str] = Field(default_factory=list)
 
 
 class DecisionWorkloadProfile(BaseModel):
@@ -50,6 +51,7 @@ class DecisionAnswer(BaseModel):
     type: Literal["choice", "score", "boolean"]
     value: Any
     probabilities: dict[str, float] | None = None
+    probability_true: float | None = None
     confidence: float | None = None
 
 
@@ -119,8 +121,20 @@ def validate_output(
                 raise DecisionEngineMalformedOutput(
                     f"{answer.question_id}: boolean answer must be bool"
                 )
+            if answer.probability_true is None:
+                raise DecisionEngineMalformedOutput(
+                    f"{answer.question_id}: boolean answer requires probability_true"
+                )
+            if not 0.0 <= answer.probability_true <= 1.0:
+                raise DecisionEngineMalformedOutput(
+                    f"{answer.question_id}: probability_true must be within [0,1]"
+                )
 
         elif question.type == "score":
+            if len(question.score_levels) < 2:
+                raise DecisionEngineMalformedOutput(
+                    f"{answer.question_id}: score question requires at least two score_levels"
+                )
             if isinstance(answer.value, bool) or not isinstance(answer.value, (int, float)):
                 raise DecisionEngineMalformedOutput(
                     f"{answer.question_id}: score answer must be numeric"
