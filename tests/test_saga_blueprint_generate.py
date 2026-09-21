@@ -140,6 +140,47 @@ class SagaBlueprintGenerateTests(unittest.TestCase):
             self.assertTrue((run_dir / "raw_response.json").exists())
             self.assertFalse((run_dir / "validated_blueprint.json").exists())
 
+
+    @patch("src.saga_blueprint_generate._fixture_provider")
+    def test_non_stop_finish_reason_fails_closed_before_parse(self, provider) -> None:
+        provider.return_value = (
+            {
+                "id": "truncated",
+                "model": "fixture/narrative-architect-reference-v1",
+                "provider": "local-fixture",
+                "choices": [
+                    {
+                        "finish_reason": "length",
+                        "message": {
+                            "content": json.dumps(
+                                json.loads(
+                                    (
+                                        ROOT
+                                        / "data"
+                                        / "specifications"
+                                        / "saga_lab"
+                                        / "narrative_architect_fixture_response_v1.json"
+                                    ).read_text(encoding="utf-8")
+                                )["blueprint"]
+                            )
+                        },
+                    }
+                ],
+                "usage": {"cost": 0.0},
+            },
+            {"fixture": True},
+            1,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = _temp_config(root, BASE_CONFIG, output_root=root / "runs")
+            result = run_generation(config_path=config, fixture_id=FIXTURE_ID)
+            self.assertEqual(result["status"], "generation_incomplete")
+            run_dir = Path(result["run_dir"])
+            self.assertTrue((run_dir / "raw_response.json").exists())
+            self.assertTrue((run_dir / "validation.json").exists())
+            self.assertFalse((run_dir / "parsed_blueprint.json").exists())
+
     @patch("src.saga_blueprint_generate._fixture_provider")
     def test_schema_invalid_json_is_validation_failure_not_provider_failure(
         self,
@@ -312,6 +353,39 @@ class SagaBlueprintGenerateTests(unittest.TestCase):
                 model="fixture/narrative-architect-reference-v1",
             )
             self.assertNotEqual(a_fingerprint, b_fingerprint)
+
+
+    def test_output_root_change_does_not_change_experiment_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            a_dir = root / "a_cfg"
+            b_dir = root / "b_cfg"
+            a_dir.mkdir()
+            b_dir.mkdir()
+            a_path = _temp_config(a_dir, BASE_CONFIG, output_root=root / "runs_a")
+            b_path = _temp_config(b_dir, BASE_CONFIG, output_root=root / "runs_b")
+
+            a_config = load_runner_config(a_path)
+            b_config = load_runner_config(b_path)
+            profile = load_profile(Path(a_config.profile_path))
+            fixtures = load_fixture_manifest(Path(a_config.fixture_manifest_path))
+            fixture = next(x for x in fixtures.cases if x.case_id == FIXTURE_ID)
+
+            a_fingerprint, _ = build_experiment_fingerprint(
+                config_path=a_path,
+                config=a_config,
+                profile=profile,
+                fixture=fixture,
+                model="fixture/narrative-architect-reference-v1",
+            )
+            b_fingerprint, _ = build_experiment_fingerprint(
+                config_path=b_path,
+                config=b_config,
+                profile=profile,
+                fixture=fixture,
+                model="fixture/narrative-architect-reference-v1",
+            )
+            self.assertEqual(a_fingerprint, b_fingerprint)
 
     def test_fixture_identity_mismatch_is_provider_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
