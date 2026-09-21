@@ -1,0 +1,33 @@
+workload_profile:
+  profile_id: execution-routing-smoke
+  profile_version: "1"
+  input_schema_version: "1"
+  question_set_version: "1"
+  risk_class: L2
+  deterministic_preconditions:
+    - allowed_actions_are_explicit
+    - no_production_mutation
+  abstention_options:
+    - INSUFFICIENT_EVIDENCE
+    - ESCALATE
+
+dataset_path: data/specifications/decision_engine_smoke_v1.json
+
+engine:
+  type: command
+  identity:
+    engine_family: jev
+    provider_runtime: vercel-ai-gateway
+    model_id: typesafe-ai/jev
+    model_revision: null
+    artifact_hash: null
+    quantization: null
+    serving_stack: ai-sdk-7-experimental-evaluate
+    hardware: hosted
+    language_variant: native
+  command:
+    - node
+    - tooling/decision-engine/jev-ai-sdk-sidecar.mjs
+  timeout_seconds: 30
+
+output_root: runs/decision_engine
