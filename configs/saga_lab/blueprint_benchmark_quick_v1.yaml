@@ -1,0 +1,38 @@
+benchmark_id: saga_blueprint_architect_quick_v1
+benchmark_version: "1"
+generation_config: configs/saga_lab/narrative_architect_openrouter_v1.yaml
+fixture_manifest: data/specifications/saga_lab/character_world_fixtures_v1.json
+semantic_rubric: configs/saga_lab/blueprint_semantic_rubric_v1.yaml
+judge_prompt: prompts/saga_blueprint_judge_v1.md
+output_root: runs/saga_lab/blueprint_benchmark_quick_v1
+
+baseline_model: z-ai/glm-5.3-flash
+challenger_models:
+  - openai/gpt-5.6-sol
+  - anthropic/claude-sonnet-5
+
+fixture_ids:
+  - young_child_forest_explorer
+  - young_adult_orbital_engineer
+  - mature_adult_dormant_archivist
+
+judge_models:
+  - anthropic/claude-sonnet-5
+  - openai/gpt-5.6-sol
+
+judge_request:
+  temperature: 0.0
+  max_tokens: 3500
+  timeout_seconds: 240
+  max_retries: 1
+  reasoning:
+    effort: low
+    exclude: true
+  response_format:
+    type: json_object
+
+gates:
+  required_static_pass_rate: 1.0
+  minimum_external_semantic_average: 3.0
+  minimum_material_lift_vs_baseline: 0.25
+  maximum_critical_failures: 0
