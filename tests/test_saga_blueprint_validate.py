@@ -1,6 +1,8 @@
 import copy
 import json
 import unittest
+
+import yaml
 from pathlib import Path
 
 from src.saga_blueprint_validate import (
@@ -24,6 +26,12 @@ FALSIFICATION = (
     / "specifications"
     / "saga_lab"
     / "blueprint_static_falsification_v1.json"
+)
+SEMANTIC_RUBRIC = (
+    ROOT
+    / "configs"
+    / "saga_lab"
+    / "blueprint_semantic_rubric_v1.yaml"
 )
 
 
@@ -112,6 +120,16 @@ class SagaBlueprintValidatorTests(unittest.TestCase):
         codes = {item["code"] for item in report["findings"]}
         self.assertEqual(report["status"], "FAIL")
         self.assertIn("SCHEMA_OR_REFERENCE_INVALID", codes)
+
+
+    def test_semantic_rubric_cannot_override_hard_failure(self) -> None:
+        rubric = yaml.safe_load(SEMANTIC_RUBRIC.read_text(encoding="utf-8"))
+        self.assertTrue(
+            rubric["hard_gate_precondition"]["semantic_cannot_override_hard_failure"]
+        )
+        self.assertIn("FAIL", rubric["hard_gate_precondition"]["forbidden_static_status"])
+        self.assertTrue(rubric["promotion_rule"]["hard_validator_must_not_be_fail"])
+        self.assertGreaterEqual(len(rubric["dimensions"]), 8)
 
     def test_mutation_helper_does_not_modify_base(self) -> None:
         base = base_blueprint()
