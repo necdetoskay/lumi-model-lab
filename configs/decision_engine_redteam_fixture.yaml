@@ -1,0 +1,28 @@
+workload_profile:
+  profile_id: judge-redteam-v1
+  profile_version: "1"
+  input_schema_version: "1"
+  question_set_version: "atomic-rubric-1.1-redteam"
+  risk_class: L2
+  deterministic_preconditions:
+    - synthetic_redteam_only
+    - no_production_mutation
+  abstention_options:
+    - INSUFFICIENT_EVIDENCE
+
+dataset_path: data/specifications/decision_redteam_v1.json
+
+engine:
+  type: fixture
+  identity:
+    engine_family: fixture
+    provider_runtime: local-fixture
+    model_id: fixture/redteam-reference-v1
+    model_revision: "1"
+    artifact_hash: fixture-redteam-v1
+    serving_stack: python-fixture
+    hardware: cpu
+    language_variant: EN_REFERENCE
+  fixture_path: data/specifications/decision_redteam_fixture_outputs_v1.json
+
+output_root: runs/decision_engine_redteam_fixture
