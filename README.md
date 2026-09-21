@@ -49,6 +49,26 @@ The command adapter never uses `shell=True`. It receives a versioned workload/ca
 
 Evidence is stored under a SHA256 experiment fingerprint and includes request fingerprints, state size, question count, exact engine identity, per-case raw output, runtime/provider metadata, usage/cost fields, cold/warm latency, malformed-output classification and runtime-error classification. Re-running the same experiment refuses silent overwrite unless `--rerun` is explicit.
 
+#### JEV hosted sidecar
+
+JEV is connected through the same `command` adapter rather than special-casing the Python harness.
+
+Install the pinned optional AI SDK dependency:
+
+```bash
+npm install
+```
+
+Set either `AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN`, then run:
+
+```bash
+python -m src.decision_engine_runner --config configs/decision_engine_jev_smoke.yaml
+```
+
+The sidecar is `tooling/decision-engine/jev-ai-sdk-sidecar.mjs`. It requests `typesafe-ai/jev` through AI SDK 7's experimental evaluation API with Zero Data Retention requested, does not configure a fallback model, and returns the same normalized JSON contract used by local/open engines.
+
+The requested gateway alias and the provider-reported resolved model metadata are stored separately when exposed. Probability/confidence values are preserved rather than treated as correctness.
+
 ### Judge gold/reference corpus
 
 The Judge track now has a frozen v2 case plan and blind-human protocol:
