@@ -96,6 +96,15 @@ class DecisionBenchmarkReadinessTests(unittest.TestCase):
                     "status": "complete",
                     "answers": [
                         {
+                            "question_id": "contract_alignment__evidence",
+                            "type": "choice",
+                            "value": "SUFFICIENT",
+                            "probabilities": {
+                                "SUFFICIENT": 1.0,
+                                "INSUFFICIENT_EVIDENCE": 0.0,
+                            },
+                        },
+                        {
                             "question_id": "contract_alignment",
                             "type": "score",
                             "value": 4.0,
@@ -147,6 +156,31 @@ class DecisionBenchmarkReadinessTests(unittest.TestCase):
             metrics = result["engines"][0]["atomic_quality"]["per_dimension"]["contract_alignment"]
             self.assertEqual(metrics["exact_agreement"], 1.0)
             self.assertEqual(metrics["probability_metrics"]["multiclass_brier"], 0.0)
+
+
+    def test_insufficient_evidence_abstains_and_ignores_forced_score(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            gold, rubric, run = self._write_inputs(Path(tmp), final_reference=True)
+            payload = json.loads(run.read_text(encoding="utf-8"))
+            payload["cases"][0]["answers"][0]["value"] = "INSUFFICIENT_EVIDENCE"
+            payload["cases"][0]["answers"][0]["probabilities"] = {
+                "SUFFICIENT": 0.1,
+                "INSUFFICIENT_EVIDENCE": 0.9,
+            }
+            payload["cases"][0]["answers"][1]["value"] = 0.0
+            run.write_text(json.dumps(payload), encoding="utf-8")
+
+            result = benchmark(
+                gold_path=gold,
+                rubric_path=rubric,
+                run_paths=[run],
+                partition="calibration",
+                final_evaluation=False,
+            )
+            metrics = result["engines"][0]["atomic_quality"]["per_dimension"]["contract_alignment"]
+            self.assertEqual(metrics["case_count"], 0)
+            self.assertEqual(metrics["insufficient_evidence_count"], 1)
+            self.assertEqual(metrics["coverage"], 0.0)
 
     def test_final_holdout_requires_explicit_flag(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

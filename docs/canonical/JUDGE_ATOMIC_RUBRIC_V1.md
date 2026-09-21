@@ -1,6 +1,6 @@
 # Judge Atomic Rubric v1 — Decision-Engine Qualification Contract
 
-Status: **FROZEN STRUCTURE / CALIBRATION PENDING**  
+Status: **FROZEN STRUCTURE v1.1 / CALIBRATION PENDING**  
 Owner: **LUMI Model Lab**  
 Linked issue: **#31**  
 Parent contracts: `JEV_JUDGE_LAB.md`, `DECISION_ENGINE_LAB.md`, `JUDGE_GOLD_CORPUS_PROTOCOL.md`
@@ -74,6 +74,25 @@ Every decision-engine question must:
 - avoid combining quality, safety, and style into one score.
 
 A rubric item that repeatedly needs “it depends on several unrelated things” must be split before final holdout.
+
+## 3.1 Evidence sufficiency gate
+
+Every atomic dimension is evaluated as a **paired decision**:
+
+1. `<dimension_id>__evidence` — Choice: `SUFFICIENT` or `INSUFFICIENT_EVIDENCE`;
+2. `<dimension_id>` — the 0–4 ordinal Score question.
+
+The score answer is ignored whenever the paired evidence gate returns `INSUFFICIENT_EVIDENCE`.
+
+Rules:
+
+- missing state must never be converted into a guessed midpoint score;
+- the evidence gate is dimension-specific because one state may be sufficient for age fit but insufficient for knowledge consistency;
+- an insufficient-evidence result is a successful abstention outcome, not a malformed model output;
+- cascade policy may escalate an abstained dimension to a stronger judge or request additional context;
+- benchmark coverage must report abstentions separately and must not count the forced/native score returned beside an abstention as a quality prediction.
+
+The machine-readable gate contract is versioned with the rubric and therefore participates in the experiment fingerprint.
 
 ## 4. Score semantics
 
@@ -201,6 +220,7 @@ A rubric experiment fingerprint must include:
 
 - `rubric_id`,
 - `rubric_version`,
+- evidence-gate version and choice semantics,
 - exact YAML content hash,
 - language variant,
 - projection version where applicable,

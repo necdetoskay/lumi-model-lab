@@ -12,6 +12,16 @@ rubric_id: test-rubric
 rubric_version: "1"
 score_range: [0, 4]
 aggregate_story_verdict: forbidden_in_p3
+evidence_gate:
+  version: "1"
+  required_for_all_dimensions: true
+  question_id_pattern: "{dimension_id}__evidence"
+  type: choice
+  choices: [SUFFICIENT, INSUFFICIENT_EVIDENCE]
+  tr_instruction_template: yeterli mi
+  en_instruction_template: sufficient evidence
+  insufficient_policy: ignore_score_and_abstain
+  escalation_eligible: true
 language_variants:
   - {id: TR_NATIVE}
   - {id: EN_REFERENCE}
@@ -71,6 +81,21 @@ class JudgeAtomicRubricTests(unittest.TestCase):
         result = validate_rubric(copy.deepcopy(VALID))
         self.assertTrue(result["valid"])
         self.assertFalse(result["calibration_ready"])
+
+
+    def test_missing_evidence_gate_is_rejected(self) -> None:
+        data = copy.deepcopy(VALID)
+        data.pop("evidence_gate")
+        result = validate_rubric(data)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("evidence_gate" in e for e in result["errors"]))
+
+    def test_evidence_gate_cannot_force_score_on_missing_evidence(self) -> None:
+        data = copy.deepcopy(VALID)
+        data["evidence_gate"]["insufficient_policy"] = "use_midpoint_score"
+        result = validate_rubric(data)
+        self.assertFalse(result["valid"])
+        self.assertTrue(any("ignore score and abstain" in e for e in result["errors"]))
 
     def test_aggregate_story_verdict_is_rejected(self) -> None:
         data = copy.deepcopy(VALID)

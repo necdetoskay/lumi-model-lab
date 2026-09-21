@@ -43,6 +43,25 @@ def validate_rubric(data: dict[str, Any]) -> dict[str, Any]:
     if data.get("aggregate_story_verdict") != "forbidden_in_p3":
         errors.append("aggregate story verdict must remain forbidden in P3")
 
+    evidence_gate = data.get("evidence_gate")
+    if not isinstance(evidence_gate, dict):
+        errors.append("evidence_gate must be an object")
+        evidence_gate = {}
+    if evidence_gate.get("required_for_all_dimensions") is not True:
+        errors.append("evidence gate must be required for all dimensions")
+    if evidence_gate.get("question_id_pattern") != "{dimension_id}__evidence":
+        errors.append("evidence gate question_id_pattern must remain {dimension_id}__evidence")
+    if evidence_gate.get("type") != "choice":
+        errors.append("evidence gate must use choice semantics")
+    if evidence_gate.get("choices") != ["SUFFICIENT", "INSUFFICIENT_EVIDENCE"]:
+        errors.append("evidence gate choices must be SUFFICIENT/INSUFFICIENT_EVIDENCE")
+    if evidence_gate.get("insufficient_policy") != "ignore_score_and_abstain":
+        errors.append("insufficient evidence must ignore score and abstain")
+    for language in ("tr_instruction_template", "en_instruction_template"):
+        text = evidence_gate.get(language)
+        if not isinstance(text, str) or not text.strip():
+            errors.append(f"evidence gate missing {language}")
+
     variants = data.get("language_variants")
     if not isinstance(variants, list):
         errors.append("language_variants must be a list")
@@ -168,6 +187,7 @@ def validate_rubric(data: dict[str, Any]) -> dict[str, Any]:
         "calibration_ready": calibration_ready,
         "rubric_id": rubric_id,
         "rubric_version": rubric_version,
+        "evidence_gate_version": evidence_gate.get("version"),
         "dimension_count": len(dimensions),
         "decision_engine_dimension_count": owner_counts["decision_engine"],
         "hybrid_dimension_count": owner_counts["hybrid"],

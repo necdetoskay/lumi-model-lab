@@ -91,7 +91,7 @@ The bounded Judge workload now has a frozen v1 rubric structure:
 - validator: `python -m src.judge_atomic_rubric`
 - current status: `FROZEN_STRUCTURE_CALIBRATION_PENDING`
 
-The v1 split keeps exact invariants in deterministic code, assigns narrow semantic dimensions to decision-engine qualification, keeps narrative progression/ending as hybrid candidates, and retains creativity/literary/deep-holistic judgment on the stronger LLM lane. TR native, independently frozen English, and controlled-English projection are separate experiment variants. P3 does not define an aggregate story PASS/BLOCK formula.
+The v1.1 split keeps exact invariants in deterministic code, assigns narrow semantic dimensions to decision-engine qualification, keeps narrative progression/ending as hybrid candidates, and retains creativity/literary/deep-holistic judgment on the stronger LLM lane. Every dimension now has a paired `SUFFICIENT / INSUFFICIENT_EVIDENCE` gate; an abstained dimension's forced score is ignored. TR native, independently frozen English, and controlled-English projection are separate experiment variants. P3 does not define an aggregate story PASS/BLOCK formula.
 
 ### Decision-engine benchmark
 

@@ -97,6 +97,15 @@ For mean absolute error, the native fractional score is retained.
 
 This prevents a native probabilistic score from being prematurely discarded.
 
+### 6.1 Evidence-gate semantics
+
+Every v1.1 atomic score has a paired `<dimension_id>__evidence` Choice.
+
+- `SUFFICIENT` — the score is eligible for quality metrics;
+- `INSUFFICIENT_EVIDENCE` — the score returned beside it is ignored.
+
+The report records per-dimension abstention count, invalid/missing evidence-gate count, and score coverage. A forced score beside an abstention must never increase or decrease agreement metrics.
+
 ## 7. Probability semantics
 
 Provider-native values are preserved.

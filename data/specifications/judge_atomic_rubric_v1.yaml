@@ -1,9 +1,22 @@
 rubric_id: lumi-story-atomic-judge
-rubric_version: "1"
+rubric_version: "1.1"
 status: FROZEN_STRUCTURE_CALIBRATION_PENDING
 score_direction: higher_is_better
 score_range: [0, 4]
 aggregate_story_verdict: forbidden_in_p3
+
+evidence_gate:
+  version: "1"
+  required_for_all_dimensions: true
+  question_id_pattern: "{dimension_id}__evidence"
+  type: choice
+  choices:
+    - SUFFICIENT
+    - INSUFFICIENT_EVIDENCE
+  tr_instruction_template: "Bu boyutu güvenilir biçimde puanlamak için verilen state ve aday hikâyede yeterli kanıt var mı?"
+  en_instruction_template: "Is there sufficient evidence in the supplied state and candidate story to score this dimension reliably?"
+  insufficient_policy: ignore_score_and_abstain
+  escalation_eligible: true
 
 language_variants:
   - id: TR_NATIVE
