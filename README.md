@@ -32,6 +32,23 @@ Shared rules include deterministic authority for hard invariants, explicit `INSU
 - Local target: RTX 4060 8 GB class hardware for the first open/local lane
 - Production boundary: any Project_LUMI integration requires a separate L3 AEGIS review and is **not** authorized by this repository.
 
+### Decision-engine harness
+
+The provider-agnostic evidence harness now has a first executable baseline:
+
+```bash
+python -m src.decision_engine_runner --config configs/decision_engine_fixture_smoke.yaml
+```
+
+The initial adapter types are:
+
+- `fixture` — deterministic dry-run/test evidence;
+- `command` — JSON-over-stdin/stdout sidecar boundary for local/open or hosted engine adapters.
+
+The command adapter never uses `shell=True`. It receives a versioned workload/case envelope and must return the normalized `DecisionEngineOutput` JSON contract.
+
+Evidence is stored under a SHA256 experiment fingerprint and includes request fingerprints, state size, question count, exact engine identity, per-case raw output, runtime/provider metadata, usage/cost fields, cold/warm latency, malformed-output classification and runtime-error classification. Re-running the same experiment refuses silent overwrite unless `--rerun` is explicit.
+
 ### Judge gold/reference corpus
 
 The Judge track now has a frozen v2 case plan and blind-human protocol:

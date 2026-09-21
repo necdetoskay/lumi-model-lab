@@ -1,0 +1,90 @@
+{
+  "dataset_id": "decision_engine_smoke_v1",
+  "dataset_version": "1",
+  "cases": [
+    {
+      "case_id": "de-smoke-001",
+      "state": {
+        "task": "Story plan generated",
+        "validation": {
+          "schema_ok": true,
+          "contract_ok": true
+        },
+        "risk": "low"
+      },
+      "questions": [
+        {
+          "question_id": "next_action",
+          "type": "choice",
+          "instructions": "Choose the next bounded orchestration action.",
+          "choices": [
+            "CONTINUE",
+            "TARGETED_REPAIR",
+            "ESCALATE",
+            "INSUFFICIENT_EVIDENCE"
+          ]
+        }
+      ],
+      "metadata": {
+        "reference_note": "Clean low-risk case."
+      }
+    },
+    {
+      "case_id": "de-smoke-002",
+      "state": {
+        "task": "Story plan generated",
+        "validation": {
+          "schema_ok": true,
+          "contract_ok": false
+        },
+        "risk": "medium",
+        "repairable": true
+      },
+      "questions": [
+        {
+          "question_id": "next_action",
+          "type": "choice",
+          "instructions": "Choose the next bounded orchestration action.",
+          "choices": [
+            "CONTINUE",
+            "TARGETED_REPAIR",
+            "ESCALATE",
+            "INSUFFICIENT_EVIDENCE"
+          ]
+        }
+      ],
+      "metadata": {
+        "reference_note": "Known repairable contract miss."
+      }
+    },
+    {
+      "case_id": "de-smoke-003",
+      "state": {
+        "task": "Story plan generated",
+        "validation": {
+          "schema_ok": true
+        },
+        "risk": "high",
+        "required_evidence_missing": [
+          "canon_revision"
+        ]
+      },
+      "questions": [
+        {
+          "question_id": "next_action",
+          "type": "choice",
+          "instructions": "Choose the next bounded orchestration action.",
+          "choices": [
+            "CONTINUE",
+            "TARGETED_REPAIR",
+            "ESCALATE",
+            "INSUFFICIENT_EVIDENCE"
+          ]
+        }
+      ],
+      "metadata": {
+        "reference_note": "Must support abstention/escalation when evidence is incomplete."
+      }
+    }
+  ]
+}
