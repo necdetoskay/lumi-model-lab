@@ -1,0 +1,404 @@
+{
+  "fixture_response_id": "narrative_architect_fixture_response_v1",
+  "fixture_id": "mature_adult_dormant_archivist",
+  "model_identity": "fixture/narrative-architect-reference-v1",
+  "blueprint": {
+    "schema": "character-narrative-blueprint.v1",
+    "origin": {
+      "summary": "Kemal has spent decades caring for municipal records and has learned that ordinary paperwork can preserve the memory of a city.",
+      "origin_facts": [
+        {
+          "key": "origin_fact_01",
+          "fact": "Kemal has worked in the municipal archive for more than twenty years.",
+          "importance": "CORE",
+          "mutability": "IMMUTABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        },
+        {
+          "key": "origin_fact_02",
+          "fact": "A flood early in his career damaged several collections.",
+          "importance": "SUPPORTING",
+          "mutability": "IMMUTABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        }
+      ],
+      "formative_events": [
+        {
+          "key": "formative_event_01",
+          "summary": "The archive flood forced Kemal to choose which collections to rescue first.",
+          "age_or_period": "early career",
+          "impact": "He became careful about context, provenance, and what gets forgotten.",
+          "related_origin_facts": [
+            "origin_fact_02"
+          ]
+        }
+      ],
+      "origin_relationships": [
+        {
+          "key": "origin_relationship_01",
+          "subject": "former archive director",
+          "relationship_type": "mentor",
+          "historical_role": "trained Kemal in preservation work",
+          "current_status": "DISTANT",
+          "unresolved_tension": "Kemal never fully agreed with the director's priorities for what should be preserved."
+        }
+      ],
+      "unresolved_origin_questions": [
+        {
+          "key": "origin_question_01",
+          "question": "Why were several flood-era catalog references never reconciled with the surviving boxes?",
+          "importance": "MINOR",
+          "character_knows_question_exists": true,
+          "answer_predefined": false
+        }
+      ]
+    },
+    "present_situation": {
+      "summary": "Kemal is training a younger archivist while preparing for a future archive relocation and a large digitization backlog.",
+      "current_role": "municipal archivist nearing retirement",
+      "current_location_context": "municipal archive in a stable inland city",
+      "current_relationship_context": [
+        "training a younger archivist",
+        "regular contact with a neighborhood historian"
+      ],
+      "current_resources": [
+        "catalog access",
+        "institutional memory",
+        "public-library contacts"
+      ],
+      "current_pressures": [
+        "digitization backlog",
+        "planned archive relocation in two years"
+      ],
+      "current_open_questions": [
+        "which collections deserve priority",
+        "how much responsibility to hand over"
+      ],
+      "immediate_desires": [
+        "leave the archive usable and understandable",
+        "train a capable successor"
+      ],
+      "immediate_avoidances": [
+        "turning routine archive work into unnecessary drama",
+        "making promises about retirement timing"
+      ]
+    },
+    "narrative_core": {
+      "identity_anchors": [
+        {
+          "key": "identity_anchor_01",
+          "statement": "A patient custodian of public memory."
+        },
+        {
+          "key": "identity_anchor_02",
+          "statement": "He values quiet competence more than recognition."
+        }
+      ],
+      "core_drives": [
+        {
+          "key": "drive_01",
+          "drive": "preserve useful context for people who come later",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "drive_02",
+          "drive": "help his successor become independent",
+          "strength": "SECONDARY"
+        }
+      ],
+      "core_fears": [
+        {
+          "key": "fear_01",
+          "fear": "important context being lost while records technically survive"
+        }
+      ],
+      "internal_tensions": [
+        {
+          "key": "tension_01",
+          "side_a": "preserve continuity",
+          "side_b": "accept institutional change",
+          "description": "Kemal knows an archive cannot remain frozen merely because he understands the old system."
+        }
+      ],
+      "long_term_questions": [
+        {
+          "key": "long_question_01",
+          "question": "What does responsible stewardship look like when it is time to hand work to someone else?",
+          "must_be_answered": false
+        }
+      ],
+      "themes": [
+        "memory",
+        "succession",
+        "quiet civic responsibility",
+        "change"
+      ]
+    },
+    "saga_blueprint": {
+      "design_intent": {
+        "horizon": "LONG",
+        "breadth": "EXPANSIVE",
+        "linear_story_plan": false,
+        "mandatory_story_order": false,
+        "user_may_ignore_saga": true
+      },
+      "threads": [
+        {
+          "key": "saga_thread_01",
+          "title": "The Unreconciled Catalog",
+          "premise": "A handful of ordinary flood-era references may point to gaps in how one period of neighborhood history was cataloged, but the question can remain dormant until ordinary archive work makes it relevant.",
+          "importance": "SUPPORTING",
+          "themes": [
+            "memory",
+            "context",
+            "institutional continuity"
+          ],
+          "origin_links": [
+            "origin_fact_02",
+            "origin_question_01"
+          ],
+          "character_relevance": {
+            "why_it_matters": "The thread touches Kemal's professional values without requiring him to personally investigate it.",
+            "affected_drives": [
+              "drive_01",
+              "drive_02"
+            ],
+            "affected_tensions": [
+              "tension_01"
+            ]
+          },
+          "activation": {
+            "all_of": [],
+            "any_of": [
+              {
+                "type": "DOCUMENT",
+                "reference": "archive_catalog",
+                "condition": "a flood-era reference becomes relevant to a chosen archive task"
+              },
+              {
+                "type": "RELATIONSHIP",
+                "reference": "trainee",
+                "condition": "the trainee independently notices a catalog inconsistency"
+              }
+            ],
+            "must_not": []
+          },
+          "seeds": [
+            {
+              "key": "seed_01",
+              "kind": "DOCUMENT",
+              "summary": "A catalog card points to a ledger location that no longer matches the shelf map.",
+              "narrative_function": "QUESTION",
+              "world_binding_hint": {
+                "preferred_scope": "LOCAL",
+                "entity_type": "DOCUMENT",
+                "description": "Prefer an existing flood-era catalog or finding aid."
+              },
+              "visibility_policy": {
+                "initial_visibility": "DISCOVERABLE",
+                "allowed_usage": [
+                  "The inconsistent reference may be noticed during ordinary work."
+                ],
+                "forbidden_usage": [
+                  "Do not invent the missing ledger's contents.",
+                  "Do not imply wrongdoing without evidence."
+                ],
+                "reveal_ceiling": "Only the mismatch between catalog metadata and current shelf location may be established."
+              },
+              "eligibility_conditions": {
+                "all_of": [],
+                "any_of": [
+                  {
+                    "type": "EVENT",
+                    "reference": "archive_task",
+                    "condition": "a story naturally involves relevant catalog work"
+                  }
+                ],
+                "must_not": []
+              },
+              "may_unlock": [
+                "milestone_01"
+              ],
+              "must_not_force_followup": true
+            },
+            {
+              "key": "seed_02",
+              "kind": "RELATIONSHIP",
+              "summary": "The trainee remembers a similar mismatch from another collection but is unsure whether it matters.",
+              "narrative_function": "CONNECTION",
+              "world_binding_hint": {
+                "preferred_scope": "LOCAL",
+                "entity_type": "NPC",
+                "description": "Reuse the existing trainee relationship."
+              },
+              "visibility_policy": {
+                "initial_visibility": "HIDDEN",
+                "allowed_usage": [
+                  "The trainee may mention the memory after relevant trust/context exists."
+                ],
+                "forbidden_usage": [
+                  "Do not make the trainee secretly know the answer.",
+                  "Do not force Kemal to pursue the clue."
+                ],
+                "reveal_ceiling": "Only a possible pattern of catalog mismatches may be suggested."
+              },
+              "eligibility_conditions": {
+                "all_of": [
+                  {
+                    "type": "RELATIONSHIP",
+                    "reference": "trainee",
+                    "condition": "the trainee has participated in at least one relevant archive task"
+                  }
+                ],
+                "any_of": [],
+                "must_not": []
+              },
+              "may_unlock": [
+                "milestone_01"
+              ],
+              "must_not_force_followup": true
+            }
+          ],
+          "milestones": [
+            {
+              "key": "milestone_01",
+              "type": "DISCOVERY",
+              "summary": "Kemal or the trainee may establish why a subset of flood-era references were moved or renumbered.",
+              "required": false,
+              "preconditions": {
+                "all_of": [],
+                "any_of": [
+                  {
+                    "type": "KNOWLEDGE",
+                    "reference": "catalog_mismatch",
+                    "condition": "at least one mismatch has been legitimately discovered"
+                  }
+                ],
+                "must_not": []
+              },
+              "possible_entry_points": [
+                "seed_01",
+                "seed_02"
+              ],
+              "possible_consequences": [
+                "A small neighborhood-history gap may become clearer.",
+                "Responsibility for follow-up may shift to the trainee."
+              ],
+              "unlocks": [],
+              "terminal": false
+            }
+          ],
+          "branches": [
+            {
+              "key": "branch_01",
+              "trigger": "The mismatch becomes relevant to a chosen story.",
+              "paths": [
+                {
+                  "key": "branch_path_a",
+                  "description": "Kemal investigates directly as part of normal archive work."
+                },
+                {
+                  "key": "branch_path_b",
+                  "description": "The trainee takes the lead while Kemal advises."
+                },
+                {
+                  "key": "branch_path_c",
+                  "description": "They record the inconsistency and leave it dormant for later."
+                }
+              ],
+              "all_paths_valid": true
+            }
+          ],
+          "possible_payoffs": [
+            {
+              "key": "payoff_01",
+              "description": "A fuller but modest understanding of one neighborhood collection and a stronger handoff between Kemal and the trainee.",
+              "certainty": "POSSIBLE",
+              "required": false
+            }
+          ],
+          "dormancy_policy": {
+            "may_remain_dormant": true,
+            "maximum_story_gap": null,
+            "requires_periodic_reminder": false
+          },
+          "recovery_policy": {
+            "can_reconnect_after_long_absence": true,
+            "reconnection_methods": [
+              "NPC",
+              "RUMOR",
+              "LOCATION"
+            ]
+          }
+        }
+      ],
+      "cross_thread_links": []
+    },
+    "world_integration": {
+      "proposed_bindings": [
+        {
+          "key": "binding_01",
+          "saga_reference": "seed_01",
+          "binding_type": "DOCUMENT",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": true,
+          "description": "Bind to an existing catalog/finding-aid entity if one exists in the simulated archive.",
+          "placement_constraints": [
+            "must remain inside the known municipal archive context"
+          ]
+        },
+        {
+          "key": "binding_02",
+          "saga_reference": "seed_02",
+          "binding_type": "NPC",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Bind to the already-defined younger archivist trainee.",
+          "placement_constraints": [
+            "must not create a replacement trainee NPC"
+          ]
+        }
+      ],
+      "integration_rules": [
+        "Saga elements must appear to belong to the archive independently of Kemal.",
+        "Do not create world entities only to force Saga progression.",
+        "Prefer existing compatible world entities.",
+        "Respect character knowledge boundaries."
+      ]
+    },
+    "reweave_policy": {
+      "reweave_allowed": true,
+      "immutable_elements": [
+        "committed origin facts",
+        "already revealed saga facts",
+        "committed story outcomes"
+      ],
+      "mutable_elements": [
+        "future seeds",
+        "unrevealed milestones",
+        "unrevealed payoffs",
+        "inactive bindings"
+      ],
+      "recommended_triggers": [
+        "LONG_SAGA_DORMANCY",
+        "MAJOR_CHARACTER_CHANGE",
+        "THREAD_INVALIDATED"
+      ]
+    },
+    "safety_and_constraints": {
+      "never_prewrite_story_sequence": true,
+      "never_force_saga_progression": true,
+      "never_assume_future_character_choice": true,
+      "never_commit_future_event_as_fact": true,
+      "never_reveal_hidden_information_early": true,
+      "allow_saga_free_stories": true,
+      "allow_thread_abandonment": true,
+      "allow_thread_reactivation": true,
+      "allow_multiple_concurrent_threads": true
+    }
+  }
+}
