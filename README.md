@@ -104,6 +104,18 @@ It separates historical PASS/BLOCK verdict metrics from atomic 0–4 decision-en
 
 The final holdout requires an explicit `--final-evaluation` flag. If complete final human atomic references are missing, quality metrics are suppressed and the benchmark returns `REFERENCE_INCOMPLETE`. The current real corpus is in that state.
 
+### Decision-engine red-team
+
+The P5 metamorphic falsification layer is versioned at:
+
+- protocol: `docs/canonical/DECISION_ENGINE_REDTEAM_V1.md`
+- frozen diagnostic suite: `data/specifications/decision_redteam_v1.json`
+- evaluator: `python -m src.decision_redteam --run <decision-engine-manifest.json>`
+
+The v1 diagnostic suite contains 24 synthetic cases and 13 frozen relations covering knowledge/relationship/world/age contradictions, irrelevant context, entity renaming, field ordering, missing-evidence abstention, prompt injection, repeat stability, rubric mimicry, semantic repetition, and schema confinement.
+
+The committed fixture engine is only a harness self-test. A fixture PASS is **not** a JEV/open-model P5 verdict.
+
 Current local student experiment:
 
 - candidate: `ornith-ai/Ornith-1.5-9B`
