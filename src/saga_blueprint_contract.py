@@ -35,9 +35,9 @@ class Condition(StrictModel):
 
 
 class Conditions(StrictModel):
-    all_of: list[Condition] = Field(default_factory=list)
-    any_of: list[Condition] = Field(default_factory=list)
-    must_not: list[Condition] = Field(default_factory=list)
+    all_of: list[Condition]
+    any_of: list[Condition]
+    must_not: list[Condition]
 
 
 class OriginFact(StrictModel):
@@ -52,7 +52,7 @@ class OriginFact(StrictModel):
 class FormativeEvent(StrictModel):
     key: str = Field(pattern=KEY_PATTERN)
     summary: str
-    age_or_period: str | None = None
+    age_or_period: str | None
     impact: str
     related_origin_facts: list[str] = Field(default_factory=list)
 
@@ -63,7 +63,7 @@ class OriginRelationship(StrictModel):
     relationship_type: str
     historical_role: str
     current_status: Literal["KNOWN", "UNKNOWN", "LOST", "DISTANT", "ACTIVE", "UNCERTAIN"]
-    unresolved_tension: str | None = None
+    unresolved_tension: str | None
 
 
 class OriginQuestion(StrictModel):
@@ -86,12 +86,12 @@ class PresentSituation(StrictModel):
     summary: str
     current_role: str
     current_location_context: str
-    current_relationship_context: list[str] = Field(default_factory=list)
-    current_resources: list[str] = Field(default_factory=list)
-    current_pressures: list[str] = Field(default_factory=list)
-    current_open_questions: list[str] = Field(default_factory=list)
-    immediate_desires: list[str] = Field(default_factory=list)
-    immediate_avoidances: list[str] = Field(default_factory=list)
+    current_relationship_context: list[str]
+    current_resources: list[str]
+    current_pressures: list[str]
+    current_open_questions: list[str]
+    immediate_desires: list[str]
+    immediate_avoidances: list[str]
 
 
 class IdentityAnchor(StrictModel):
@@ -120,7 +120,7 @@ class InternalTension(StrictModel):
 class LongTermQuestion(StrictModel):
     key: str = Field(pattern=KEY_PATTERN)
     question: str
-    must_be_answered: bool = False
+    must_be_answered: bool
 
 
 class NarrativeCore(StrictModel):
@@ -142,8 +142,8 @@ class DesignIntent(StrictModel):
 
 class CharacterRelevance(StrictModel):
     why_it_matters: str
-    affected_drives: list[str] = Field(default_factory=list)
-    affected_tensions: list[str] = Field(default_factory=list)
+    affected_drives: list[str]
+    affected_tensions: list[str]
 
 
 class WorldBindingHint(StrictModel):
@@ -187,7 +187,7 @@ class Seed(StrictModel):
     world_binding_hint: WorldBindingHint
     visibility_policy: VisibilityPolicy
     eligibility_conditions: Conditions
-    may_unlock: list[str] = Field(default_factory=list)
+    may_unlock: list[str]
     must_not_force_followup: Literal[True]
 
 
@@ -203,12 +203,12 @@ class Milestone(StrictModel):
         "TRANSFORMATION",
     ]
     summary: str
-    required: bool = False
+    required: bool
     preconditions: Conditions
-    possible_entry_points: list[str] = Field(default_factory=list)
-    possible_consequences: list[str] = Field(default_factory=list)
-    unlocks: list[str] = Field(default_factory=list)
-    terminal: bool = False
+    possible_entry_points: list[str]
+    possible_consequences: list[str]
+    unlocks: list[str]
+    terminal: bool
 
 
 class BranchPath(StrictModel):
@@ -249,13 +249,13 @@ class SagaThread(StrictModel):
     premise: str
     importance: Literal["MAJOR", "SUPPORTING", "LATENT"]
     themes: list[str]
-    origin_links: list[str] = Field(default_factory=list)
+    origin_links: list[str]
     character_relevance: CharacterRelevance
     activation: Conditions
     seeds: list[Seed]
     milestones: list[Milestone]
-    branches: list[Branch] = Field(default_factory=list)
-    possible_payoffs: list[PossiblePayoff] = Field(default_factory=list)
+    branches: list[Branch]
+    possible_payoffs: list[PossiblePayoff]
     dormancy_policy: DormancyPolicy
     recovery_policy: RecoveryPolicy
 
@@ -277,7 +277,7 @@ class CrossThreadLink(StrictModel):
 class SagaBlueprint(StrictModel):
     design_intent: DesignIntent
     threads: list[SagaThread]
-    cross_thread_links: list[CrossThreadLink] = Field(default_factory=list)
+    cross_thread_links: list[CrossThreadLink]
 
 
 class ProposedBinding(StrictModel):
@@ -297,11 +297,11 @@ class ProposedBinding(StrictModel):
     reuse_first: Literal[True]
     creation_allowed_if_missing: bool
     description: str
-    placement_constraints: list[str] = Field(default_factory=list)
+    placement_constraints: list[str]
 
 
 class WorldIntegration(StrictModel):
-    proposed_bindings: list[ProposedBinding] = Field(default_factory=list)
+    proposed_bindings: list[ProposedBinding]
     integration_rules: list[str]
 
 
@@ -508,7 +508,7 @@ class FixtureCharacter(StrictModel):
     traits: list[str]
     interests: list[str]
     starting_goal: str
-    starting_relationships: list[str] = Field(default_factory=list)
+    starting_relationships: list[str]
 
 
 class FixtureWorld(StrictModel):
