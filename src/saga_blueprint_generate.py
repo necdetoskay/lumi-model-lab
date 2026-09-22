@@ -14,7 +14,13 @@ import yaml
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from src.model_registry import file_sha256, model_slug
+from src.model_registry import (
+    MODEL_RUNTIME_PROFILE_PATH,
+    file_sha256,
+    model_slug,
+    normalize_openrouter_request,
+    runtime_profile_identity,
+)
 from src.saga_blueprint_contract import (
     CharacterNarrativeBlueprint,
     NarrativeArchitectProfile,
@@ -180,6 +186,12 @@ def _call_openrouter(
         payload["reasoning"] = request.reasoning
     if request.response_format_json_object:
         payload["response_format"] = {"type": "json_object"}
+    payload = normalize_openrouter_request(
+        model,
+        payload,
+        request_class="structured_large",
+        structured_output=True,
+    )
 
     attempts = 0
     last_error: Exception | None = None
@@ -303,6 +315,8 @@ def build_experiment_fingerprint(
     }
     if config.provider.type == "fixture" and config.provider.fixture_response_path:
         files["fixture_response"] = Path(config.provider.fixture_response_path)
+    if config.provider.type == "openrouter":
+        files["model_runtime_profiles"] = MODEL_RUNTIME_PROFILE_PATH
 
     hashes = {name: file_sha256(path) for name, path in files.items()}
     semantic_hashes = {
@@ -321,6 +335,11 @@ def build_experiment_fingerprint(
         "provider_runtime": config.provider.identity.provider_runtime,
         "provider_model_revision": config.provider.identity.model_revision,
         "model": model,
+        "model_runtime_profile": (
+            runtime_profile_identity(model)
+            if config.provider.type == "openrouter"
+            else None
+        ),
         "request": config.request.model_dump(mode="json"),
         "files": semantic_hashes,
     }
@@ -400,6 +419,11 @@ def run_generation(
         "provider_runtime": config.provider.identity.provider_runtime,
         "model": model,
         "model_revision": config.provider.identity.model_revision,
+        "model_runtime_profile": (
+            runtime_profile_identity(model)
+            if config.provider.type == "openrouter"
+            else None
+        ),
         "request": config.request.model_dump(mode="json"),
     }
     _write_json(run_dir / "request_config.json", request_evidence)
@@ -421,6 +445,11 @@ def run_generation(
         "provider_runtime": config.provider.identity.provider_runtime,
         "model": model,
         "model_revision": config.provider.identity.model_revision,
+        "model_runtime_profile": (
+            runtime_profile_identity(model)
+            if config.provider.type == "openrouter"
+            else None
+        ),
         "attempts": 0,
         "latency_ms": None,
         "usage": {},

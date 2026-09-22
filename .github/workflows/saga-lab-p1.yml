@@ -6,11 +6,14 @@ on:
     paths:
       - '.github/workflows/saga-lab-p1.yml'
       - 'configs/saga_lab/**'
+      - 'configs/model_runtime_profiles.yaml'
       - 'data/specifications/saga_lab/**'
+      - 'src/model_registry.py'
       - 'src/saga_blueprint_contract.py'
       - 'src/saga_blueprint_generate.py'
       - 'src/saga_blueprint_validate.py'
       - 'prompts/saga_narrative_architect_v1.md'
+      - 'tests/test_model_runtime_profiles.py'
       - 'tests/test_saga_blueprint_contract.py'
       - 'tests/test_saga_blueprint_generate.py'
       - 'tests/test_saga_blueprint_validate.py'
@@ -42,6 +45,7 @@ jobs:
       - name: Run Saga Lab contract and generator tests
         run: >-
           python -m unittest
+          tests.test_model_runtime_profiles
           tests.test_saga_blueprint_contract
           tests.test_saga_blueprint_generate
           tests.test_saga_blueprint_validate
