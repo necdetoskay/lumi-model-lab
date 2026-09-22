@@ -12,6 +12,7 @@ import yaml
 from dotenv import load_dotenv
 from rich.console import Console
 
+from src.model_registry import normalize_openrouter_request
 from src.schemas import (
     CostInfo,
     GenerationRecord,
@@ -77,68 +78,20 @@ def _extract_text_content(message: dict[str, Any]) -> str | None:
 
 
 def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
-    """Return model-specific OpenRouter options.
+    """Return the effective model-specific OpenRouter option delta.
 
-    Keep the common payload conservative. Some providers reject otherwise valid
-    OpenRouter parameters, so model-specific controls live here instead of being
-    applied globally.
+    Runtime quirks live in the canonical model runtime profile registry.
+    Callers do not branch on model ids.
     """
-    if model == "aion-labs/aion-3.0":
-        # OpenRouter's Aion example explicitly enables reasoning. Do not send
-        # seed here because provider support can vary.
-        return {"reasoning": {"enabled": True}}
-
-    if model.startswith("minimax/minimax-m2.5"):
-        # MiniMax M2.5 providers require reasoning and reject requests that try
-        # to disable it. Avoid seed here as provider support varies.
-        return {"reasoning": {"enabled": True}}
-
-    if model.startswith("google/gemini-3.7-flash"):
-        # Gemini 3.7 Flash requires reasoning on OpenRouter. Keep effort low for
-        # story generation and exclude reasoning text from the visible response.
-        options: dict[str, Any] = {
-            "reasoning": {"enabled": True, "effort": "low", "exclude": True},
-        }
-        if seed is not None:
-            options["seed"] = seed
-        return options
-
-    if model == "z-ai/glm-5.3":
-        # GLM 5.3 requires thinking. Its native default is max effort, which can
-        # consume the entire completion budget before visible prose is emitted.
-        # Story generation does not need deep coding-style reasoning, so use low
-        # effort and give reasoning + visible story enough shared token budget.
-        return {
-            "reasoning": {"enabled": True, "effort": "low"},
-            "max_tokens": 16000,
-        }
-
-    if model == "z-ai/glm-5.3-flash":
-        # GLM 5.3 Flash also requires reasoning on OpenRouter. Keep effort low
-        # for story generation so most of the completion budget reaches prose.
-        options: dict[str, Any] = {
-            "reasoning": {"enabled": True, "effort": "low", "exclude": True},
-            "max_tokens": 10000,
-        }
-        if seed is not None:
-            options["seed"] = seed
-        return options
-
-    if model.startswith("z-ai/glm-4.5"):
-        # GLM 4.5 family supports hybrid thinking/non-thinking inference.
-        # For story generation we prefer non-thinking so the output budget is
-        # spent on visible prose rather than internal reasoning tokens.
-        options: dict[str, Any] = {"reasoning": {"enabled": False}}
-        if seed is not None:
-            options["seed"] = seed
-        return options
-
-    options = {
-        "reasoning": {"effort": "none", "exclude": True},
-    }
+    base: dict[str, Any] = {}
     if seed is not None:
-        options["seed"] = seed
-    return options
+        base["seed"] = seed
+    return normalize_openrouter_request(
+        model,
+        base,
+        request_class="teacher_story",
+        structured_output=False,
+    )
 
 
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
@@ -152,7 +105,14 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         "temperature": temperature,
         "max_tokens": max_tokens,
     }
-    payload.update(build_model_options(model, seed))
+    if seed is not None:
+        payload["seed"] = seed
+    payload = normalize_openrouter_request(
+        model,
+        payload,
+        request_class="teacher_story",
+        structured_output=False,
+    )
 
     response = requests.post(
         OPENROUTER_URL,
