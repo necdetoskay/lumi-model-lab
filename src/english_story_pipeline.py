@@ -481,22 +481,33 @@ def repair_scene_word_budget(
     seed: int,
     repair_index: int,
 ) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
-    current_words = count_words(str(envelope.get("prose") or ""))
+    current_prose = str(envelope.get("prose") or "")
+    current_words = count_words(current_prose)
     hard_min = round(target_words * 0.80)
     hard_max = round(target_words * 1.20)
     preferred_min = round(target_words * 0.92)
     preferred_max = round(target_words * 1.08)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
+    if repair_index == 1:
+        required_min = preferred_min
+        required_max = preferred_max
+    elif mode == "COMPRESS":
+        required_min = preferred_min
+        required_max = min(preferred_max, round(target_words * 1.03))
+    else:
+        required_min = max(preferred_min, round(target_words * 0.97))
+        required_max = preferred_max
+
     repair_input = json.dumps(
         {
             "mode": mode,
             "target_words": target_words,
             "hard_word_range": [hard_min, hard_max],
-            "preferred_word_range": [preferred_min, preferred_max],
+            "required_word_range": [required_min, required_max],
             "current_word_count": current_words,
             "immutable_state_delta": envelope.get("state_delta"),
-            "current_scene_envelope": envelope,
+            "current_scene_prose": current_prose,
         },
         ensure_ascii=False,
         indent=2,
@@ -508,23 +519,31 @@ def repair_scene_word_budget(
             encoding="utf-8"
         ).strip(),
         user_prompt=repair_input,
-        temperature=0.10,
+        temperature=0.0,
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
         structured_output=True,
     )
-    repaired = parse_json_object(text)
+    prose_payload = parse_json_object(text)
+    repaired = {
+        "prose": prose_payload.get("prose"),
+        "state_delta": envelope.get("state_delta"),
+    }
     errors, word_count = validate_scene_envelope(
         repaired,
         target_words=target_words,
     )
-    if repaired.get("state_delta") != envelope.get("state_delta"):
-        errors.append("word_budget_repair_state_delta_changed")
+    if not errors and not required_min <= word_count <= required_max:
+        errors.append(
+            f"word_budget_repair_missed_requested_range:"
+            f"{word_count} not in [{required_min},{required_max}]"
+        )
 
     attempt = {
         "kind": f"word_budget_repair_{repair_index}",
         "mode": mode,
+        "required_word_range": [required_min, required_max],
         "errors": errors,
         "word_count": word_count,
         "usage": parse_usage(body).model_dump(mode="json"),
