@@ -518,8 +518,8 @@ def scene_request_payload(
             "next_scene_guard": next_scene,
             "target_words": target_words,
             "allowed_word_range": [
-                round(target_words * 0.85),
-                round(target_words * 1.15),
+                round(target_words * 0.90),
+                round(target_words * 1.10),
             ],
             "plan_review_risks": plan_review,
         },
