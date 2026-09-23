@@ -10,6 +10,7 @@ import yaml
 DEFAULT_PROFILE_PATH = "configs/openrouter_jev_continuity.yaml"
 JEV_TRANSIENT_STATUS_CODES = {408, 429, 500, 502, 503, 504, 520, 522, 524}
 JEV_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
+JEV_RATE_LIMIT_RETRY_DELAYS_SECONDS = (5.0, 15.0, 30.0)
 JEV_MAX_ATTEMPTS = len(JEV_RETRY_DELAYS_SECONDS) + 1
 
 
@@ -139,10 +140,15 @@ def call_openrouter_jev(
                     retry_after = max(0.0, min(float(raw_retry_after), 30.0))
                 except (TypeError, ValueError):
                     retry_after = None
+            fallback_delays = (
+                JEV_RATE_LIMIT_RETRY_DELAYS_SECONDS
+                if response.status_code == 429
+                else JEV_RETRY_DELAYS_SECONDS
+            )
             delay = (
                 retry_after
                 if retry_after is not None
-                else JEV_RETRY_DELAYS_SECONDS[attempt]
+                else fallback_delays[attempt]
             )
             time.sleep(delay)
             continue
