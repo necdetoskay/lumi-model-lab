@@ -8,7 +8,7 @@ import requests
 import yaml
 
 DEFAULT_PROFILE_PATH = "configs/openrouter_jev_continuity.yaml"
-JEV_TRANSIENT_STATUS_CODES = {429, 502, 503, 504}
+JEV_TRANSIENT_STATUS_CODES = {429, *range(500, 600)}
 JEV_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
 JEV_MAX_ATTEMPTS = len(JEV_RETRY_DELAYS_SECONDS) + 1
 
