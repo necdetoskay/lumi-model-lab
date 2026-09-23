@@ -14,12 +14,12 @@ Rules:
 - Preserve all valid scene purposes and beats unless a supplied repair reason requires a local change.
 - Do not replace the story with a new concept.
 - Keep exactly six scenes with indexes 1 through 6.
-- Keep the decisive solution/payoff in Scene 5; Scene 6 handles consequences, closure, and only the bounded future-discovery hook.
+- Keep the decisive solution/payoff in Scene 5; Scene 6 handles consequences and closure. Keep open_threads_after empty unless the original brief explicitly requires a future-discovery opening; if required, preserve only one bounded hook.
 - Make every inference mechanically understandable from earlier evidence.
 - If a later object, fact, mechanism, institution, or hook appears, establish enough prior evidence before it is needed.
 - If an incorrect assumption must be corrected, explicitly schedule the concrete observation or evidence that corrects it.
 - If JEV flags early resolution, move only the decisive resolution material to Scene 5 and preserve earlier investigation.
-- If Haiku flags Scene 6 as an arbitrary hook, seed that hook earlier without creating a second main plot.
+- If Haiku flags Scene 6 as an arbitrary hook, remove it unless the original brief explicitly requires a future-discovery opening; when required, seed it earlier without creating a second main plot.
 - Preserve exact required_constraint_ids C1..Cn and schedule every ID in at least one scene.
 - Scenes 2-6 must contain concrete prior_evidence grounded in earlier scenes.
 - Keep fields concise. Do not add decorative subplots.
