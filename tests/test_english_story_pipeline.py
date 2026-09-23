@@ -11,6 +11,8 @@ from src.english_story_pipeline import (
     jev_needs_targeted_repair,
     jev_requires_final_escalation,
     jev_targeted_repair_reasons,
+    plan_repair_feedback,
+    repair_plan_once,
     validate_final_judge,
     validate_scene_envelope,
 )
@@ -175,6 +177,113 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         instructions = questions["no_contradictions"]["instructions"]
         self.assertIn("ContinuityLedger", instructions)
         self.assertIn("cannot both be true", instructions)
+
+    def test_plan_repair_feedback_preserves_only_gate_evidence(self):
+        plan_result = {
+            "deterministic_errors": ["scene_constraint_schedule_mismatch"],
+            "jev": {
+                "threshold": 0.8,
+                "below_threshold": {"no_early_resolution": 0.58},
+                "next_action": "CONTINUE",
+                "next_action_confidence": 0.82,
+            },
+            "haiku": {
+                "scores": {"no_early_resolution": 3},
+                "critical_failures": [],
+                "scene_risks": [{"scene": 5, "risk": "payoff leaks early"}],
+                "summary": "repair needed",
+            },
+        }
+        feedback = plan_repair_feedback(plan_result)
+        self.assertEqual(
+            feedback["jev"]["below_threshold"],
+            {"no_early_resolution": 0.58},
+        )
+        self.assertEqual(feedback["haiku"]["scene_risks"][0]["scene"], 5)
+
+    @patch("src.english_story_pipeline.evaluate_plan_candidate")
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_plan_repair_uses_unbounded_story_plan_request(
+        self,
+        mock_call,
+        mock_evaluate,
+    ):
+        mock_call.return_value = (
+            '{"story_title":"Signal","story_contract":{},"scenes":[]}',
+            {
+                "choices": [{"finish_reason": "stop"}],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                },
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        mock_evaluate.return_value = {
+            "accepted": True,
+            "deterministic_errors": [],
+            "jev": {
+                "threshold": 0.8,
+                "below_threshold": {},
+                "next_action": "CONTINUE",
+            },
+            "haiku": {
+                "scores": {},
+                "critical_failures": [],
+                "scene_risks": [],
+                "summary": "ok",
+            },
+            "costs": {"jev": 0.0, "haiku": {"usd": 0.0}},
+            "usage": {"jev": {}, "haiku": {}},
+            "request_evidence": {"haiku": {}},
+        }
+        spec = __import__("src.schemas", fromlist=["StorySpec"]).StorySpec(
+            age_min=6,
+            age_max=8,
+            language="en",
+            target_words=2000,
+            title_hint="Signal",
+            protagonist="Ada",
+            setting="coast",
+            theme="observation",
+            premise="Ada investigates a signal.",
+            constraints=["Use two clues."],
+        )
+        current = {
+            "plan": {"story_title": "Signal", "story_contract": {}, "scenes": []},
+            "deterministic_errors": [],
+            "jev": {
+                "threshold": 0.8,
+                "below_threshold": {"no_early_resolution": 0.58},
+                "next_action": "CONTINUE",
+                "next_action_confidence": 0.82,
+            },
+            "haiku": {
+                "scores": {"no_early_resolution": 3},
+                "critical_failures": [],
+                "scene_risks": [],
+                "summary": "repair",
+            },
+        }
+        repaired, attempt = repair_plan_once(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            judge_model="anthropic/claude-haiku-4.5",
+            spec=spec,
+            plan_result=current,
+            repair_index=1,
+        )
+        self.assertTrue(repaired["accepted"])
+        self.assertTrue(attempt["accepted"])
+        kwargs = mock_call.call_args.kwargs
+        self.assertIsNone(kwargs["max_tokens"])
+        self.assertEqual(kwargs["request_class"], "story_plan")
+        self.assertTrue(kwargs["structured_output"])
 
     def test_final_haiku_gate_accepts_strong_story(self):
         payload = {

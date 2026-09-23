@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from src.english_scene_plan_smoke import (
     build_labeled_brief,
+    evaluate_plan_candidate,
     parse_json_object,
     run as run_plan_smoke,
 )
@@ -28,6 +29,7 @@ from src.schemas import StorySpec
 
 SCENE_WRITER_PROMPT = Path("prompts/story_scene_writer_en_v1.md")
 SCENE_REPAIR_PROMPT = Path("prompts/story_scene_repair_en_v1.md")
+PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
 
@@ -570,6 +572,111 @@ def produce_scene(
     return envelope, errors, word_count, attempts
 
 
+def plan_repair_feedback(plan_result: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "deterministic_errors": plan_result.get("deterministic_errors") or [],
+        "jev": {
+            "threshold": (plan_result.get("jev") or {}).get("threshold"),
+            "below_threshold": (plan_result.get("jev") or {}).get("below_threshold") or {},
+            "next_action": (plan_result.get("jev") or {}).get("next_action"),
+            "next_action_confidence": (plan_result.get("jev") or {}).get(
+                "next_action_confidence"
+            ),
+        },
+        "haiku": {
+            "scores": (plan_result.get("haiku") or {}).get("scores") or {},
+            "critical_failures": (plan_result.get("haiku") or {}).get(
+                "critical_failures"
+            ) or [],
+            "scene_risks": (plan_result.get("haiku") or {}).get("scene_risks") or [],
+            "summary": (plan_result.get("haiku") or {}).get("summary") or "",
+        },
+    }
+
+
+def repair_plan_once(
+    *,
+    api_key: str,
+    model: str,
+    judge_model: str,
+    spec: StorySpec,
+    plan_result: dict[str, Any],
+    repair_index: int,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    brief = build_labeled_brief(spec)
+    repair_input = json.dumps(
+        {
+            "story_brief": brief,
+            "current_plan": plan_result["plan"],
+            "repair_feedback": plan_repair_feedback(plan_result),
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+    text, body, request = call_openrouter(
+        api_key=api_key,
+        model=model,
+        system_prompt=PLAN_REPAIR_PROMPT.read_text(encoding="utf-8").strip(),
+        user_prompt=repair_input,
+        temperature=0.15,
+        max_tokens=None,
+        seed=6400 + repair_index,
+        request_class="story_plan",
+        structured_output=True,
+    )
+    choice = (body.get("choices") or [{}])[0]
+    if choice.get("finish_reason") == "length":
+        usage = body.get("usage") or {}
+        raise RuntimeError(
+            "PLAN_REPAIR_TRUNCATED_AT_PROVIDER_LIMIT: "
+            f"completion_tokens={usage.get('completion_tokens')!r}."
+        )
+
+    repaired_plan = parse_json_object(text)
+    evaluation = evaluate_plan_candidate(
+        api_key=api_key,
+        plan=repaired_plan,
+        spec=spec,
+        judge_model=judge_model,
+    )
+    repaired_result = {
+        "pipeline": "english_scene_plan_repair_v1",
+        "planner_model": model,
+        "judge_model": judge_model,
+        "accepted": evaluation["accepted"],
+        "deterministic_errors": evaluation["deterministic_errors"],
+        "plan": repaired_plan,
+        "jev": evaluation["jev"],
+        "haiku": evaluation["haiku"],
+        "costs": {
+            "planner_repair": parse_cost(body).model_dump(mode="json"),
+            **evaluation["costs"],
+        },
+        "usage": {
+            "planner_repair": parse_usage(body).model_dump(mode="json"),
+            **evaluation["usage"],
+        },
+        "request_evidence": {
+            "planner_repair": {
+                "reasoning": request.get("reasoning"),
+                "response_format": request.get("response_format"),
+                "max_tokens": request.get("max_tokens"),
+            },
+            **evaluation["request_evidence"],
+        },
+    }
+    attempt = {
+        "repair": repair_index,
+        "before": plan_repair_feedback(plan_result),
+        "after": plan_repair_feedback(repaired_result),
+        "accepted": repaired_result["accepted"],
+        "usage": repaired_result["usage"],
+        "costs": repaired_result["costs"],
+        "request_evidence": repaired_result["request_evidence"],
+    }
+    return repaired_result, attempt
+
+
 def run(
     *,
     model: str,
@@ -594,11 +701,45 @@ def run(
         raise RuntimeError("English story pipeline requires language=en.")
 
     plan_result = run_plan_smoke(model, jev_model, judge_model, spec_path)
+    plan_repair_attempts: list[dict[str, Any]] = []
+    for repair_index in range(1, 3):
+        if plan_result["accepted"]:
+            break
+        plan_result, repair_attempt = repair_plan_once(
+            api_key=api_key,
+            model=model,
+            judge_model=judge_model,
+            spec=spec,
+            plan_result=plan_result,
+            repair_index=repair_index,
+        )
+        plan_repair_attempts.append(repair_attempt)
+        print(
+            json.dumps(
+                {
+                    "checkpoint": "plan_repair",
+                    "repair": repair_index,
+                    "accepted": plan_result["accepted"],
+                    "deterministic_errors": plan_result["deterministic_errors"],
+                    "jev_below_threshold": plan_result["jev"].get(
+                        "below_threshold"
+                    ) or {},
+                    "haiku_average": plan_result["haiku"].get("average"),
+                    "haiku_scene_risks": plan_result["haiku"].get(
+                        "scene_risks"
+                    ) or [],
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+
     if not plan_result["accepted"]:
         raise RuntimeError(
-            "PLAN_NOT_ACCEPTED: "
+            "PLAN_REPAIR_EXHAUSTED: "
             + json.dumps(
                 {
+                    "repairs": len(plan_repair_attempts),
                     "deterministic_errors": plan_result["deterministic_errors"],
                     "jev": plan_result["jev"],
                     "haiku": plan_result["haiku"],
@@ -607,6 +748,7 @@ def run(
             )
         )
 
+    plan_result["repair_attempts"] = plan_repair_attempts
     plan = plan_result["plan"]
     budgets = allocate_scene_budgets(spec.target_words)
     ledger: list[dict[str, Any]] = []
