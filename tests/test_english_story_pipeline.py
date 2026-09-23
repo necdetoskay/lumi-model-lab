@@ -228,6 +228,10 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 95)
         self.assertEqual(attempt["required_word_range"], [88, 98])
+        self.assertEqual(
+            mock_call.call_args.kwargs["temperature"],
+            0.15,
+        )
         self.assertEqual(attempt["aggressiveness"], "high")
         sent = __import__("json").loads(
             mock_call.call_args.kwargs["user_prompt"]
