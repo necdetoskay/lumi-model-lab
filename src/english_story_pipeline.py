@@ -908,20 +908,12 @@ def evaluate_completed_story(
         "final_judge": final_judge,
         "final_judge_usage": parse_usage(final_body).model_dump(mode="json"),
         "final_judge_cost": parse_cost(final_body).model_dump(mode="json"),
-        "final_judge_request": final_evaluation["final_judge_request"],
-        "final_evaluation_history": [
-            {
-                "accepted": item["accepted"],
-                "word_count": item["word_count"],
-                "deterministic_errors": item["deterministic_errors"],
-                "whole_story_jev": item["whole_story_jev"],
-                "final_judge": item["final_judge"],
-                "whole_jev_cost": item["whole_jev_cost"],
-                "final_judge_cost": item["final_judge_cost"],
-            }
-            for item in final_evaluations
-        ],
-        "final_polish_repairs": final_polish_repairs,
+        "final_judge_request": {
+            "temperature": final_request.get("temperature"),
+            "max_tokens": final_request.get("max_tokens"),
+            "reasoning": final_request.get("reasoning"),
+            "response_format": final_request.get("response_format"),
+        },
         "accepted": not deterministic_errors and final_judge["accepted"],
     }
 
@@ -1340,12 +1332,20 @@ def run(
             "whole_jev": final_evaluation["whole_jev_usage"],
             "final_haiku": final_evaluation["final_judge_usage"],
         },
-        "final_judge_request": {
-            "temperature": final_request.get("temperature"),
-            "max_tokens": final_request.get("max_tokens"),
-            "reasoning": final_request.get("reasoning"),
-            "response_format": final_request.get("response_format"),
-        },
+        "final_judge_request": final_evaluation["final_judge_request"],
+        "final_evaluation_history": [
+            {
+                "accepted": item["accepted"],
+                "word_count": item["word_count"],
+                "deterministic_errors": item["deterministic_errors"],
+                "whole_story_jev": item["whole_story_jev"],
+                "final_judge": item["final_judge"],
+                "whole_jev_cost": item["whole_jev_cost"],
+                "final_judge_cost": item["final_judge_cost"],
+            }
+            for item in final_evaluations
+        ],
+        "final_polish_repairs": final_polish_repairs,
     }
 
 

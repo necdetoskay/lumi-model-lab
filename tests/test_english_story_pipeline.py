@@ -7,6 +7,7 @@ from src.english_story_pipeline import (
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
+    evaluate_completed_story,
     evaluate_scene_jev,
     jev_needs_targeted_repair,
     jev_requires_final_escalation,
@@ -363,6 +364,107 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(repaired["state_delta"], envelope["state_delta"])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_completed_story_evaluation_returns_final_request(
+        self,
+        mock_jev,
+        mock_openrouter,
+    ):
+        whole_questions = build_whole_story_jev_questions()
+        answers = {
+            key: {"type": "noul", "noul": 0.95}
+            for key in whole_questions
+            if key != "next_action"
+        }
+        answers["next_action"] = {
+            "type": "choice",
+            "choice": "CONTINUE",
+            "confidence": 0.95,
+        }
+        mock_jev.return_value = {
+            "answers": answers,
+            "usage": {
+                "input_tokens": 100,
+                "output_tokens": 10,
+                "cost": 0.0001,
+            },
+        }
+        final_payload = {
+            "scores": {
+                "instruction_following": 4,
+                "coherence": 4,
+                "character_consistency": 4,
+                "age_appropriateness": 4,
+                "creativity": 4,
+                "style_quality": 4,
+                "continuity": 4,
+                "ending_quality": 4,
+            },
+            "critical_failures": [],
+            "repair_targets": [],
+            "summary": "Accepted.",
+        }
+        mock_openrouter.return_value = (
+            __import__("json").dumps(final_payload),
+            {
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 50,
+                    "total_tokens": 150,
+                    "cost": 0.002,
+                }
+            },
+            {
+                "temperature": 0.0,
+                "max_tokens": 2500,
+                "response_format": {"type": "json_object"},
+            },
+        )
+        spec = __import__("src.schemas", fromlist=["StorySpec"]).StorySpec(
+            age_min=6,
+            age_max=8,
+            language="en",
+            target_words=2000,
+            title_hint="Signal",
+            protagonist="Ada",
+            setting="coast",
+            theme="observation",
+            premise="Ada investigates a signal.",
+            constraints=["Use two clues."],
+        )
+        plan = {
+            "story_contract": {},
+            "scenes": [{"purpose": f"Scene {i}"} for i in range(1, 7)],
+        }
+        scenes = []
+        for i in range(1, 7):
+            envelope = good_envelope(334)
+            envelope["prose"] = " ".join(
+                f"scene{i}word{j}" for j in range(334)
+            )
+            scenes.append(
+                {
+                    "scene": i,
+                    "envelope": envelope,
+                    "jev_history": [],
+                    "semantic_repairs": [],
+                    "continuity_escalation_required": False,
+                }
+            )
+        result = evaluate_completed_story(
+            api_key="test",
+            judge_model="anthropic/claude-haiku-4.5",
+            spec=spec,
+            plan=plan,
+            ledger=[{"scene": i} for i in range(1, 7)],
+            scenes=scenes,
+        )
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["word_count"], 2004)
+        self.assertEqual(result["final_judge_request"]["temperature"], 0.0)
+        self.assertEqual(result["final_judge_request"]["max_tokens"], 2500)
 
     def test_final_haiku_gate_accepts_strong_story(self):
         payload = {
