@@ -18,6 +18,13 @@ A 5 is exceptional; a production-quality story will often contain 4s.
 
 Critical failures are severe defects that independently block acceptance: contradiction with the immutable StoryContract, unsafe content, incoherent story, missing required solution/ending, or a major unresolved continuity break.
 
+For each repair target:
+- scene is where the defect is observed.
+- repair_scene is the single minimal scene whose prose should be edited to fix it.
+- repair_scene may be earlier than scene when the defect is missing setup/foreshadowing.
+- choose the earliest minimal prose-only repair that can solve the issue without changing StoryContract, SceneGraph, state_delta, facts, clues, objects, relationships, or thread state.
+- if the observed scene itself is the correct repair location, set repair_scene equal to scene.
+
 Return JSON only:
 {
   "scores": {
@@ -32,7 +39,7 @@ Return JSON only:
   },
   "critical_failures": [],
   "repair_targets": [
-    {"scene": 1, "issue": ""}
+    {"scene": 1, "repair_scene": 1, "issue": ""}
   ],
   "summary": ""
 }
