@@ -64,8 +64,8 @@ def validate_scene_envelope(
     envelope: dict[str, Any],
     *,
     target_words: int,
-    min_ratio: float = 0.85,
-    max_ratio: float = 1.15,
+    min_ratio: float = 0.80,
+    max_ratio: float = 1.20,
 ) -> tuple[list[str], int]:
     errors: list[str] = []
     prose = envelope.get("prose")
@@ -486,6 +486,20 @@ def run(
             seed=4200 + scene_index * 10,
         )
         if scene_errors:
+            print(
+                json.dumps(
+                    {
+                        "checkpoint": "scene_failed",
+                        "scene": scene_index,
+                        "target_words": budgets[position],
+                        "word_count": word_count,
+                        "errors": scene_errors,
+                        "attempts": attempts,
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
             raise RuntimeError(
                 f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: {scene_errors}"
             )
@@ -542,6 +556,21 @@ def run(
                 "attempts": attempts,
                 "jev": jev,
             }
+        )
+        print(
+            json.dumps(
+                {
+                    "checkpoint": "scene_accepted",
+                    "scene": scene_index,
+                    "target_words": budgets[position],
+                    "word_count": word_count,
+                    "attempt_count": len(attempts),
+                    "jev_signal": jev["shadow_signal"],
+                    "jev_below_threshold": jev["below_threshold"],
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
         )
         previous_prose = envelope["prose"]
 

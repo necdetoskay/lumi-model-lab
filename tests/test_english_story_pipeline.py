@@ -56,6 +56,24 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             any(error.startswith("below_scene_word_budget:") for error in errors)
         )
 
+    def test_scene_hard_bound_allows_small_overage_after_repair(self):
+        envelope = good_envelope(118)
+        errors, _ = validate_scene_envelope(
+            envelope,
+            target_words=100,
+        )
+        self.assertEqual(errors, [])
+
+    def test_scene_hard_bound_rejects_large_overage(self):
+        envelope = good_envelope(121)
+        errors, _ = validate_scene_envelope(
+            envelope,
+            target_words=100,
+        )
+        self.assertTrue(
+            any(error.startswith("above_scene_word_budget:") for error in errors)
+        )
+
     def test_scene_jev_questions_are_atomic(self):
         questions = build_scene_jev_questions(3, False)
         self.assertEqual(len(questions), 8)
