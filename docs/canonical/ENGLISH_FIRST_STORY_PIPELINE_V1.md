@@ -37,7 +37,7 @@ Deterministic code owns hard invariants. JEV owns bounded semantic continuity qu
 12. Whole-story deterministic gate: total length, repeated n-grams, scene count, unresolved required threads, required constraints, structural omissions.
 13. JEV Whole-Story Continuity Gate: causal chain integrity, goal continuity, clue/solution progression, contradiction risk, repeated event risk, ending consistency.
 14. Haiku Final Quality Judge: anthropic/claude-haiku-4.5, English input, exact verified runtime profile. Rubric includes instruction following, coherence, character consistency, age appropriateness, creativity, style quality, ending quality, continuity, and critical failures.
-15. Final Haiku targeted repair: if the first final Haiku judgment misses the quality gate without a critical failure, repair at most three explicitly targeted scenes once. These final repairs are prose-only: state_delta, handoff, facts, clues, objects, relationships and thread state must remain byte-equivalent JSON. Reassemble, rerun whole-story JEV, and rerun Haiku exactly once. Whole-story regeneration remains last resort.
+15. Final Haiku targeted repair: if the first final Haiku judgment misses the quality gate without a critical failure, repair at most three explicitly targeted scenes. For each target, allow at most two prose-only repair attempts; after each attempt JEV asks one atomic question about whether that exact Haiku issue is resolved. These repairs are prose-only: state_delta, handoff, facts, clues, objects, relationships and thread state must remain byte-equivalent JSON. JEV verification is advisory; unresolved target risk is carried forward rather than hard-rejecting. Reassemble, rerun whole-story JEV, and rerun Haiku exactly once. Whole-story regeneration remains last resort.
 16. Turkish localization: runs only after the English master is accepted. Translation preserves identities, facts, chronology, clue structure, scene boundaries, age tone, thread state and canon-sensitive terms. English master remains the production evidence source.
 
 ## Word-budget policy
@@ -53,7 +53,7 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 - JEV low-confidence/high-risk scene results trigger bounded local repair when a concrete repair signal exists; residual or ambiguous risk escalates to Haiku rather than inventing certainty.
 - Scene repair may not modify StoryContract.
 - Final Haiku targeted repair may not modify any scene state_delta; a state change fails deterministically.
-- Final Haiku targeted repair runs at most once and touches at most three judge-targeted scenes.
+- Final Haiku targeted repair touches at most three judge-targeted scenes; each target allows at most two prose-only repair attempts with atomic JEV verification, followed by exactly one final whole-story Haiku rerun.
 - Translation may not become the canonical story artifact.
 
 ## Model Lab rollout
