@@ -19,6 +19,7 @@ from src.english_story_pipeline import (
     repair_plan_once,
     repair_scene_word_budget,
     repair_scene_for_final_judge,
+    run_final_polish_cycles,
     validate_final_judge,
     validate_prose_only_repair,
     validate_scene_envelope,
@@ -652,6 +653,88 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(result["word_count"], 2004)
         self.assertEqual(result["final_judge_request"]["temperature"], 0.0)
         self.assertEqual(result["final_judge_request"]["max_tokens"], 2500)
+
+    @patch("src.english_story_pipeline.apply_final_haiku_repairs")
+    @patch("src.english_story_pipeline.evaluate_completed_story")
+    def test_final_polish_can_run_two_bounded_cycles(
+        self,
+        mock_evaluate,
+        mock_repair,
+    ):
+        eval1 = {
+            "accepted": False,
+            "word_count": 2000,
+            "deterministic_errors": [],
+            "whole_story_jev": {},
+            "whole_jev_cost": 0.001,
+            "final_judge_cost": {"usd": 0.01},
+            "final_judge": {
+                "accepted": False,
+                "critical_failures": [],
+                "repair_targets": [
+                    {"scene": 5, "issue": "clarify payoff"},
+                    {"scene": 6, "issue": "smooth transition"},
+                ],
+            },
+        }
+        eval2 = {
+            "accepted": False,
+            "word_count": 2002,
+            "deterministic_errors": [],
+            "whole_story_jev": {},
+            "whole_jev_cost": 0.001,
+            "final_judge_cost": {"usd": 0.01},
+            "final_judge": {
+                "accepted": False,
+                "critical_failures": [],
+                "repair_targets": [
+                    {"scene": 1, "issue": "clarify setup"},
+                ],
+            },
+        }
+        eval3 = {
+            "accepted": True,
+            "word_count": 2004,
+            "deterministic_errors": [],
+            "whole_story_jev": {},
+            "whole_jev_cost": 0.001,
+            "final_judge_cost": {"usd": 0.01},
+            "final_judge": {
+                "accepted": True,
+                "critical_failures": [],
+                "repair_targets": [],
+            },
+        }
+        mock_evaluate.side_effect = [eval1, eval2, eval3]
+        mock_repair.side_effect = [
+            [
+                {"scene": 5, "accepted": True, "target_verified": True},
+                {"scene": 6, "accepted": True, "target_verified": True},
+            ],
+            [
+                {"scene": 1, "accepted": True, "target_verified": True},
+            ],
+        ]
+
+        final_eval, history, repairs, cycles = run_final_polish_cycles(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            judge_model="anthropic/claude-haiku-4.5",
+            spec=object(),
+            plan={},
+            ledger=[],
+            scenes=[],
+            max_cycles=2,
+        )
+
+        self.assertTrue(final_eval["accepted"])
+        self.assertEqual(len(history), 3)
+        self.assertEqual(mock_repair.call_count, 2)
+        self.assertEqual(
+            [cycle["requested_scenes"] for cycle in cycles],
+            [[5, 6], [1]],
+        )
+        self.assertEqual([repair["cycle"] for repair in repairs], [1, 1, 2])
 
     def test_final_haiku_gate_accepts_strong_story(self):
         payload = {
