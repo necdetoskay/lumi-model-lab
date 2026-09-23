@@ -807,7 +807,7 @@ def repair_plan_once(
         ensure_ascii=False,
         indent=2,
     )
-    text, body, request = call_openrouter(
+    repaired_plan, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
         system_prompt=PLAN_REPAIR_PROMPT.read_text(encoding="utf-8").strip(),
@@ -816,7 +816,6 @@ def repair_plan_once(
         max_tokens=None,
         seed=6400 + repair_index,
         request_class="story_plan",
-        structured_output=True,
     )
     choice = (body.get("choices") or [{}])[0]
     if choice.get("finish_reason") == "length":
@@ -826,7 +825,6 @@ def repair_plan_once(
             f"completion_tokens={usage.get('completion_tokens')!r}."
         )
 
-    repaired_plan = parse_json_object(text)
     evaluation = evaluate_plan_candidate(
         api_key=api_key,
         plan=repaired_plan,
@@ -851,6 +849,7 @@ def repair_plan_once(
             **evaluation["usage"],
         },
         "request_evidence": {
+            "structured_parse_retries": parse_failures,
             "planner_repair": {
                 "reasoning": request.get("reasoning"),
                 "response_format": request.get("response_format"),
@@ -955,7 +954,7 @@ def repair_scene_for_final_judge(
         ensure_ascii=False,
         indent=2,
     )
-    text, body, request = call_openrouter(
+    repaired, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
         system_prompt=FINAL_TARGETED_REPAIR_PROMPT.read_text(
@@ -966,9 +965,7 @@ def repair_scene_for_final_judge(
         max_tokens=None,
         seed=seed,
         request_class="scene_repair",
-        structured_output=True,
     )
-    repaired = parse_json_object(text)
     errors, word_count = validate_prose_only_repair(
         original_envelope=original_envelope,
         repaired_envelope=repaired,
@@ -978,6 +975,7 @@ def repair_scene_for_final_judge(
         "kind": "final_haiku_targeted_repair",
         "scene": scene_index,
         "repair_issue": issue,
+        "structured_parse_retries": parse_failures,
         "errors": errors,
         "word_count": word_count,
         "usage": parse_usage(body).model_dump(mode="json"),
@@ -1078,18 +1076,19 @@ def evaluate_completed_story(
         + "\n\nCOMPLETE ENGLISH STORY\n"
         + story
     )
-    final_text, final_body, final_request = call_openrouter(
-        api_key=api_key,
-        model=judge_model,
-        system_prompt=FINAL_JUDGE_PROMPT.read_text(encoding="utf-8").strip(),
-        user_prompt=final_input,
-        temperature=0.0,
-        max_tokens=2500,
-        seed=None,
-        request_class="judge",
-        structured_output=True,
+    final_payload, final_body, final_request, final_parse_failures = (
+        call_structured_json_with_retry(
+            api_key=api_key,
+            model=judge_model,
+            system_prompt=FINAL_JUDGE_PROMPT.read_text(encoding="utf-8").strip(),
+            user_prompt=final_input,
+            temperature=0.0,
+            max_tokens=2500,
+            seed=None,
+            request_class="judge",
+        )
     )
-    final_judge = validate_final_judge(parse_json_object(final_text))
+    final_judge = validate_final_judge(final_payload)
     return {
         "story": story,
         "word_count": total_words,
@@ -1099,6 +1098,7 @@ def evaluate_completed_story(
         "whole_jev_usage": whole_jev_body.get("usage") or {},
         "whole_jev_cost": (whole_jev_body.get("usage") or {}).get("cost"),
         "final_judge": final_judge,
+        "final_judge_structured_parse_retries": final_parse_failures,
         "final_judge_usage": parse_usage(final_body).model_dump(mode="json"),
         "final_judge_cost": parse_cost(final_body).model_dump(mode="json"),
         "final_judge_request": {
