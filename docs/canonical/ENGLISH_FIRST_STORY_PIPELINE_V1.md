@@ -49,13 +49,13 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 - No paid generator qualification without an exact qualification-ready runtime profile.
 - No Haiku judge call without an exact judge-ready runtime profile.
 - JEV absence must be recorded explicitly; it must never silently become PASS.
-- Any JEV low-confidence/high-risk result escalates rather than inventing certainty.
+- JEV low-confidence/high-risk scene results trigger bounded local repair when a concrete repair signal exists; residual or ambiguous risk escalates to Haiku rather than inventing certainty.
 - Scene repair may not modify StoryContract.
 - Translation may not become the canonical story artifact.
 
 ## Model Lab rollout
 
-Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, then OpenRouter JEV 1.13 continuity in shadow mode, then Haiku plan review.
+Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, then OpenRouter JEV 1.13 continuity evidence, then Haiku plan review.
 Phase B: generate one full English story with six sequential scenes, local repairs, JEV scene gates and Haiku final judge.
 Phase C: repeated qualification across Qwen, MiMo, DeepSeek and other candidates using identical frozen pipeline/gates.
 Phase D: translate only accepted English masters and qualify translation fidelity separately.
@@ -64,4 +64,4 @@ Phase D: translate only accepted English masters and qualify translation fidelit
 
 The canonical JEV candidate for this pipeline is the exact versioned OpenRouter Decisions API model `typesafe/jev-1.13`, called through `POST https://openrouter.ai/api/alpha/decisions` using the existing `OPENROUTER_API_KEY`. The older Vercel AI Gateway sidecar remains historical Model Lab infrastructure and is not the transport for this pipeline.
 
-JEV starts in shadow mode until calibrated on a frozen LUMI continuity corpus. Its probabilities and routing decision are recorded, but deterministic validation plus Haiku remain authoritative during qualification.
+JEV runs in advisory-repair mode until calibrated on a frozen LUMI continuity corpus. A scene-level metric below threshold or TARGETED_REPAIR decision may trigger at most two local repairs before ContinuityLedger commit. JEV never independently accepts or rejects the story; unresolved risk is passed explicitly to the final Haiku judge. ESCALATE without a concrete low metric is not blindly rewritten.

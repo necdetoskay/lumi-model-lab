@@ -68,7 +68,7 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
         body = {"answers": {key: {"type": "noul", "noul": 0.95} for key in keys}}
         body["answers"]["next_action"] = {"type": "choice", "choice": "CONTINUE", "confidence": 0.93}
         result = summarize_jev(body)
-        self.assertEqual(result["mode"], "shadow")
+        self.assertEqual(result["mode"], "advisory_repair")
         self.assertEqual(result["shadow_signal"], "CONTINUE")
         self.assertEqual(result["below_threshold"], {})
 

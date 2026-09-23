@@ -47,7 +47,7 @@ class OpenRouterJevTests(unittest.TestCase):
             profile.endpoint,
             "https://openrouter.ai/api/alpha/decisions",
         )
-        self.assertEqual(profile.mode, "shadow")
+        self.assertEqual(profile.mode, "advisory_repair")
 
     def test_question_shapes_match_decisions_api(self):
         self.assertEqual(

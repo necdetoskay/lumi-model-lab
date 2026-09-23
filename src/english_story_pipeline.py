@@ -210,6 +210,134 @@ def summarize_jev(
     }
 
 
+def jev_targeted_repair_reasons(jev: dict[str, Any]) -> list[str]:
+    threshold = float(jev.get("threshold") or 0.0)
+    reasons = [
+        f"jev:{metric}:{float(probability):.3f}<{threshold:.3f}"
+        for metric, probability in sorted((jev.get("below_threshold") or {}).items())
+    ]
+    if jev.get("next_action") == "TARGETED_REPAIR":
+        reasons.append("jev:next_action:TARGETED_REPAIR")
+    return reasons
+
+
+def jev_needs_targeted_repair(jev: dict[str, Any]) -> bool:
+    return bool(jev_targeted_repair_reasons(jev))
+
+
+def jev_requires_final_escalation(jev: dict[str, Any]) -> bool:
+    return bool(jev.get("below_threshold")) or jev.get("next_action") in {
+        "TARGETED_REPAIR",
+        "ESCALATE",
+    }
+
+
+def evaluate_scene_jev(
+    *,
+    api_key: str,
+    scene_index: int,
+    story_contract: dict[str, Any],
+    scene_contract: dict[str, Any],
+    next_scene: dict[str, Any] | None,
+    ledger: list[dict[str, Any]],
+    envelope: dict[str, Any],
+) -> dict[str, Any]:
+    scene_questions = build_scene_jev_questions(
+        scene_index,
+        scene_index == 6,
+    )
+    body = call_openrouter_jev(
+        api_key=api_key,
+        state={
+            "description": "English LUMI scene continuity evaluation.",
+            "story_contract": story_contract,
+            "scene_contract": scene_contract,
+            "next_scene_contract": next_scene,
+            "prior_ledger": ledger,
+            "current_scene": envelope,
+        },
+        questions=scene_questions,
+    )
+    return summarize_jev(
+        body,
+        question_ids=[
+            key for key in scene_questions
+            if key != "next_action"
+        ],
+    )
+
+
+def repair_scene_for_jev(
+    *,
+    api_key: str,
+    model: str,
+    plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    scene_contract: dict[str, Any],
+    next_scene: dict[str, Any] | None,
+    envelope: dict[str, Any],
+    jev: dict[str, Any],
+    target_words: int,
+    seed: int,
+    repair_index: int,
+    extra_reasons: list[str] | None = None,
+) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
+    repair_reasons = jev_targeted_repair_reasons(jev)
+    repair_reasons.extend(extra_reasons or [])
+    repair_input = json.dumps(
+        {
+            "story_contract": plan["story_contract"],
+            "scene_graph": plan["scenes"],
+            "continuity_ledger": ledger,
+            "scene_contract": scene_contract,
+            "next_scene_guard": next_scene,
+            "target_words": target_words,
+            "repair_reasons": repair_reasons,
+            "jev_continuity_evidence": {
+                "threshold": jev.get("threshold"),
+                "positive_probabilities": jev.get("positive_probabilities"),
+                "below_threshold": jev.get("below_threshold"),
+                "next_action": jev.get("next_action"),
+                "next_action_confidence": jev.get("next_action_confidence"),
+            },
+            "current_scene_envelope": envelope,
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+    text, body, request = call_openrouter(
+        api_key=api_key,
+        model=model,
+        system_prompt=SCENE_REPAIR_PROMPT.read_text(encoding="utf-8").strip(),
+        user_prompt=repair_input,
+        temperature=0.25,
+        max_tokens=None,
+        seed=seed + repair_index,
+        request_class="scene_repair",
+        structured_output=True,
+    )
+    repaired = parse_json_object(text)
+    errors, word_count = validate_scene_envelope(
+        repaired,
+        target_words=target_words,
+    )
+    attempt = {
+        "kind": f"jev_repair_{repair_index}",
+        "repair_reasons": repair_reasons,
+        "errors": errors,
+        "word_count": word_count,
+        "usage": parse_usage(body).model_dump(mode="json"),
+        "cost": parse_cost(body).model_dump(mode="json"),
+        "request": {
+            "temperature": request.get("temperature"),
+            "max_tokens": request.get("max_tokens"),
+            "reasoning": request.get("reasoning"),
+            "response_format": request.get("response_format"),
+        },
+    }
+    return repaired, errors, word_count, attempt
+
+
 def build_whole_story_jev_questions() -> dict[str, dict[str, Any]]:
     checks = {
         "causal_chain": (
@@ -528,30 +656,64 @@ def run(
                 f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: {scene_errors}"
             )
 
-        scene_questions = build_scene_jev_questions(
-            scene_index,
-            scene_index == 6,
-        )
-        jev_body = call_openrouter_jev(
+        jev = evaluate_scene_jev(
             api_key=api_key,
-            state={
-                "description": "English LUMI scene continuity evaluation.",
-                "story_contract": plan["story_contract"],
-                "scene_contract": scene_contract,
-                "next_scene_contract": next_scene,
-                "prior_ledger": ledger,
-                "current_scene": envelope,
-            },
-            questions=scene_questions,
+            scene_index=scene_index,
+            story_contract=plan["story_contract"],
+            scene_contract=scene_contract,
+            next_scene=next_scene,
+            ledger=ledger,
+            envelope=envelope,
         )
-        jev_question_ids = [
-            key for key in scene_questions
-            if key != "next_action"
-        ]
-        jev = summarize_jev(
-            jev_body,
-            question_ids=jev_question_ids,
-        )
+        jev_history = [jev]
+        semantic_repairs: list[dict[str, Any]] = []
+        semantic_errors: list[str] = []
+
+        for semantic_repair_index in range(1, 3):
+            if not jev_needs_targeted_repair(jev) and not semantic_errors:
+                break
+            jev_before = jev
+            envelope, semantic_errors, word_count, repair_attempt = repair_scene_for_jev(
+                api_key=api_key,
+                model=model,
+                plan=plan,
+                ledger=ledger,
+                scene_contract=scene_contract,
+                next_scene=next_scene,
+                envelope=envelope,
+                jev=jev_before,
+                target_words=budgets[position],
+                seed=5200 + scene_index * 10,
+                repair_index=semantic_repair_index,
+                extra_reasons=semantic_errors,
+            )
+            attempts.append(repair_attempt)
+            repair_record: dict[str, Any] = {
+                "repair": semantic_repair_index,
+                "before_jev": jev_before,
+                "technical_errors": semantic_errors,
+                "word_count": word_count,
+            }
+            if not semantic_errors:
+                jev = evaluate_scene_jev(
+                    api_key=api_key,
+                    scene_index=scene_index,
+                    story_contract=plan["story_contract"],
+                    scene_contract=scene_contract,
+                    next_scene=next_scene,
+                    ledger=ledger,
+                    envelope=envelope,
+                )
+                jev_history.append(jev)
+                repair_record["after_jev"] = jev
+            semantic_repairs.append(repair_record)
+
+        if semantic_errors:
+            raise RuntimeError(
+                f"SCENE_{scene_index}_JEV_REPAIR_TECHNICAL_EXHAUSTED: {semantic_errors}"
+            )
+
+        continuity_escalation_required = jev_requires_final_escalation(jev)
 
         delta = envelope["state_delta"]
         ledger_entry = {
@@ -579,6 +741,9 @@ def run(
                 "envelope": envelope,
                 "attempts": attempts,
                 "jev": jev,
+                "jev_history": jev_history,
+                "semantic_repairs": semantic_repairs,
+                "continuity_escalation_required": continuity_escalation_required,
             }
         )
         print(
@@ -589,8 +754,10 @@ def run(
                     "target_words": budgets[position],
                     "word_count": word_count,
                     "attempt_count": len(attempts),
+                    "semantic_repair_count": len(semantic_repairs),
                     "jev_signal": jev["shadow_signal"],
                     "jev_below_threshold": jev["below_threshold"],
+                    "continuity_escalation_required": continuity_escalation_required,
                 },
                 ensure_ascii=False,
             ),
@@ -648,7 +815,23 @@ def run(
         + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
         + "\n\nCONTINUITY LEDGER\n"
         + json.dumps(ledger, ensure_ascii=False, indent=2)
-        + "\n\nJEV WHOLE-STORY SHADOW EVIDENCE\n"
+        + "\n\nSCENE CONTINUITY EVIDENCE\n"
+        + json.dumps(
+            [
+                {
+                    "scene": scene["scene"],
+                    "jev_history": scene["jev_history"],
+                    "semantic_repairs": scene["semantic_repairs"],
+                    "continuity_escalation_required": scene[
+                        "continuity_escalation_required"
+                    ],
+                }
+                for scene in scenes
+            ],
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n\nJEV WHOLE-STORY ADVISORY EVIDENCE\n"
         + json.dumps(whole_jev, ensure_ascii=False, indent=2)
         + "\n\nCOMPLETE ENGLISH STORY\n"
         + story
@@ -669,11 +852,16 @@ def run(
     accepted = not deterministic_errors and final_judge["accepted"]
 
     total_generator_cost = 0.0
+    total_scene_jev_cost = 0.0
     for scene in scenes:
         for attempt in scene["attempts"]:
             usd = (attempt.get("cost") or {}).get("usd")
             if usd is not None:
                 total_generator_cost += float(usd)
+        for evaluation in scene["jev_history"]:
+            cost = (evaluation.get("usage") or {}).get("cost")
+            if cost is not None:
+                total_scene_jev_cost += float(cost)
 
     return {
         "pipeline": "english_story_pipeline_v1",
@@ -698,6 +886,7 @@ def run(
         "final_judge": final_judge,
         "costs": {
             "scene_generation_usd": round(total_generator_cost, 9),
+            "scene_jev_usd": round(total_scene_jev_cost, 9),
             "whole_jev_usd": (whole_jev_body.get("usage") or {}).get("cost"),
             "final_haiku": parse_cost(final_body).model_dump(mode="json"),
         },
@@ -762,6 +951,10 @@ def main() -> None:
                         "actual": scene["word_count"],
                         "jev_signal": scene["jev"]["shadow_signal"],
                         "jev_below": scene["jev"]["below_threshold"],
+                        "semantic_repairs": len(scene["semantic_repairs"]),
+                        "continuity_escalation_required": scene[
+                            "continuity_escalation_required"
+                        ],
                     }
                     for scene in result["scenes"]
                 ],

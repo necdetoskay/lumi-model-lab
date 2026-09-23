@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
 from src.english_story_pipeline import (
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
+    evaluate_scene_jev,
+    jev_needs_targeted_repair,
+    jev_requires_final_escalation,
+    jev_targeted_repair_reasons,
     validate_final_judge,
     validate_scene_envelope,
 )
@@ -79,6 +84,72 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(len(questions), 8)
         self.assertEqual(questions["no_contradiction"]["type"], "noul")
         self.assertEqual(questions["next_action"]["type"], "choice")
+
+    def test_jev_below_threshold_triggers_targeted_repair(self):
+        evidence = {
+            "threshold": 0.8,
+            "below_threshold": {"no_unexplained_dependency": 0.74},
+            "next_action": "CONTINUE",
+        }
+        self.assertTrue(jev_needs_targeted_repair(evidence))
+        self.assertEqual(
+            jev_targeted_repair_reasons(evidence),
+            ["jev:no_unexplained_dependency:0.740<0.800"],
+        )
+
+    def test_jev_clean_continue_does_not_trigger_repair(self):
+        evidence = {
+            "threshold": 0.8,
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+        }
+        self.assertFalse(jev_needs_targeted_repair(evidence))
+        self.assertFalse(jev_requires_final_escalation(evidence))
+
+    def test_jev_targeted_repair_choice_triggers_even_without_low_metric(self):
+        evidence = {
+            "threshold": 0.8,
+            "below_threshold": {},
+            "next_action": "TARGETED_REPAIR",
+        }
+        self.assertTrue(jev_needs_targeted_repair(evidence))
+        self.assertTrue(jev_requires_final_escalation(evidence))
+
+    def test_jev_escalate_without_low_metric_skips_blind_repair_but_escalates(self):
+        evidence = {
+            "threshold": 0.8,
+            "below_threshold": {},
+            "next_action": "ESCALATE",
+        }
+        self.assertFalse(jev_needs_targeted_repair(evidence))
+        self.assertTrue(jev_requires_final_escalation(evidence))
+
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_scene_jev_receives_story_contract(self, mock_jev):
+        questions = build_scene_jev_questions(2, False)
+        answers = {
+            key: {"type": "noul", "noul": 0.95}
+            for key in questions
+            if key != "next_action"
+        }
+        answers["next_action"] = {
+            "type": "choice",
+            "choice": "CONTINUE",
+            "confidence": 0.9,
+        }
+        mock_jev.return_value = {"answers": answers}
+        contract = {"protagonist_goal": "understand the signal"}
+        evaluate_scene_jev(
+            api_key="test",
+            scene_index=2,
+            story_contract=contract,
+            scene_contract={"purpose": "follow evidence"},
+            next_scene={"purpose": "combine clues"},
+            ledger=[],
+            envelope=good_envelope(100),
+        )
+        sent_state = mock_jev.call_args.kwargs["state"]
+        self.assertEqual(sent_state["story_contract"], contract)
 
     def test_whole_story_jev_questions_are_atomic(self):
         questions = build_whole_story_jev_questions()
