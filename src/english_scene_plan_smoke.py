@@ -72,6 +72,70 @@ def parse_json_object(text: str) -> dict[str, Any]:
         raise RuntimeError("Response JSON must be an object.")
     return value
 
+def call_structured_json_with_retry(
+    *,
+    api_key: str,
+    model: str,
+    system_prompt: str,
+    user_prompt: str,
+    temperature: float,
+    max_tokens: int | None,
+    seed: int | None,
+    request_class: str,
+    max_parse_attempts: int = 2,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    parse_failures: list[dict[str, Any]] = []
+    for parse_attempt in range(1, max_parse_attempts + 1):
+        effective_prompt = user_prompt
+        effective_temperature = temperature
+        effective_seed = seed
+        if parse_attempt > 1:
+            effective_prompt += (
+                "\n\nFORMAT RECOVERY: The previous response was malformed or incomplete JSON. "
+                "Return one complete JSON object only. Do not use markdown fences, commentary, "
+                "or trailing text. Close every string, array, and object. Preserve the requested "
+                "story facts and constraints."
+            )
+            effective_temperature = min(temperature, 0.20)
+            if seed is not None:
+                effective_seed = seed + 9000 + parse_attempt
+
+        text, body, request = call_openrouter(
+            api_key=api_key,
+            model=model,
+            system_prompt=system_prompt,
+            user_prompt=effective_prompt,
+            temperature=effective_temperature,
+            max_tokens=max_tokens,
+            seed=effective_seed,
+            request_class=request_class,
+            structured_output=True,
+        )
+        try:
+            payload = parse_json_object(text)
+        except RuntimeError as exc:
+            choice = (body.get("choices") or [{}])[0]
+            parse_failures.append(
+                {
+                    "parse_attempt": parse_attempt,
+                    "error": str(exc),
+                    "response_chars": len(text),
+                    "finish_reason": choice.get("finish_reason"),
+                    "usage": parse_usage(body).model_dump(mode="json"),
+                    "cost": parse_cost(body).model_dump(mode="json"),
+                }
+            )
+            if parse_attempt >= max_parse_attempts:
+                raise RuntimeError(
+                    "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED: "
+                    + json.dumps(parse_failures, ensure_ascii=False)
+                ) from exc
+            continue
+        return payload, body, request, parse_failures
+
+    raise RuntimeError("STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED")
+
+
 def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
     errors: list[str] = []
     if not isinstance(plan.get("story_title"), str) or not plan["story_title"].strip():
@@ -235,18 +299,19 @@ def evaluate_plan_candidate(
         + "\n\nJEV ADVISORY EVIDENCE\n"
         + json.dumps(jev, ensure_ascii=False, indent=2)
     )
-    haiku_text, haiku_body, haiku_request = call_openrouter(
-        api_key=api_key,
-        model=judge_model,
-        system_prompt=HAIKU_PROMPT.read_text(encoding="utf-8").strip(),
-        user_prompt=haiku_input,
-        temperature=0.0,
-        max_tokens=1800,
-        seed=None,
-        request_class="scene_plan_judge",
-        structured_output=True,
+    haiku_payload, haiku_body, haiku_request, haiku_parse_failures = (
+        call_structured_json_with_retry(
+            api_key=api_key,
+            model=judge_model,
+            system_prompt=HAIKU_PROMPT.read_text(encoding="utf-8").strip(),
+            user_prompt=haiku_input,
+            temperature=0.0,
+            max_tokens=1800,
+            seed=None,
+            request_class="scene_plan_judge",
+        )
     )
-    haiku = validate_haiku(parse_json_object(haiku_text))
+    haiku = validate_haiku(haiku_payload)
     accepted = not deterministic_errors and haiku["accepted"]
     return {
         "accepted": accepted,
@@ -262,6 +327,7 @@ def evaluate_plan_candidate(
             "haiku": parse_usage(haiku_body).model_dump(mode="json"),
         },
         "request_evidence": {
+            "haiku_structured_parse_retries": haiku_parse_failures,
             "haiku": {
                 "reasoning": haiku_request.get("reasoning"),
                 "response_format": haiku_request.get("response_format"),
@@ -284,12 +350,17 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
     if spec.language.lower() != "en":
         raise RuntimeError("English-first scene-plan smoke requires language=en.")
     brief = build_labeled_brief(spec)
-    plan_text, plan_body, plan_request = call_openrouter(
-        api_key=api_key, model=planner_model,
-        system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
-        user_prompt=f"Create the immutable six-scene story plan.\n\nSTORY BRIEF\n{brief}",
-        temperature=0.2, max_tokens=None, seed=42,
-        request_class="story_plan", structured_output=True,
+    plan, plan_body, plan_request, plan_parse_failures = (
+        call_structured_json_with_retry(
+            api_key=api_key,
+            model=planner_model,
+            system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
+            user_prompt=f"Create the immutable six-scene story plan.\n\nSTORY BRIEF\n{brief}",
+            temperature=0.2,
+            max_tokens=None,
+            seed=42,
+            request_class="story_plan",
+        )
     )
     plan_choice = (plan_body.get("choices") or [{}])[0]
     plan_finish_reason = plan_choice.get("finish_reason")
@@ -300,7 +371,6 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
             "finish_reason=length without a client max_tokens limit; "
             f"completion_tokens={usage.get('completion_tokens')!r}."
         )
-    plan = parse_json_object(plan_text)
     evaluation = evaluate_plan_candidate(
         api_key=api_key,
         plan=plan,
@@ -327,6 +397,7 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
             **evaluation["usage"],
         },
         "request_evidence": {
+            "planner_structured_parse_retries": plan_parse_failures,
             "planner": {
                 "reasoning": plan_request.get("reasoning"),
                 "response_format": plan_request.get("response_format"),
