@@ -108,6 +108,21 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(payload["response_format"], {"type": "json_object"})
         self.assertNotIn("stream", payload)
 
+    def test_qwen38_scene_story_and_repair_are_structured_and_bounded(self) -> None:
+        for request_class, temperature in (("scene_story", 0.7), ("scene_repair", 0.35)):
+            payload = normalize_openrouter_request(
+                "qwen/qwen3.8-flash",
+                {"temperature": temperature, "max_tokens": 2200, "seed": 77},
+                request_class=request_class,
+                structured_output=True,
+            )
+            self.assertEqual(payload["max_tokens"], 2200)
+            self.assertEqual(payload["temperature"], temperature)
+            self.assertEqual(payload["seed"], 77)
+            self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
+            self.assertEqual(payload["response_format"], {"type": "json_object"})
+            self.assertNotIn("stream", payload)
+
     def test_qwen38_default_request_keeps_provider_defaults(self) -> None:
         payload = normalize_openrouter_request(
             "qwen/qwen3.8-flash",
