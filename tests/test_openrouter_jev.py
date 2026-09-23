@@ -154,6 +154,39 @@ class OpenRouterJevTests(unittest.TestCase):
 
     @patch("src.openrouter_jev.time.sleep")
     @patch("src.openrouter_jev.requests.post")
+    def test_transient_529_retries_then_succeeds(self, mock_post, mock_sleep):
+        mock_post.side_effect = [
+            _FakeErrorResponse(
+                529,
+                {"error": {"message": "system_overloaded"}},
+            ),
+            _FakeResponse(),
+        ]
+        body = call_openrouter_jev(
+            api_key="test",
+            state={"description": "English story plan", "plan": {}},
+            questions={
+                "causal": noul_question(
+                    "Is the plan causal?",
+                    true_criteria="Yes.",
+                    false_criteria="No.",
+                ),
+                "next_action": choice_question(
+                    "Choose next action.",
+                    {
+                        "CONTINUE": "Safe.",
+                        "TARGETED_REPAIR": "Repair.",
+                        "ESCALATE": "Escalate.",
+                    },
+                ),
+            },
+        )
+        self.assertIn("answers", body)
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(2.0)
+
+    @patch("src.openrouter_jev.time.sleep")
+    @patch("src.openrouter_jev.requests.post")
     def test_non_transient_400_fails_without_retry(self, mock_post, mock_sleep):
         mock_post.return_value = _FakeErrorResponse(
             400,
