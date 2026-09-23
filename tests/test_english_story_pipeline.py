@@ -383,6 +383,45 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         sent_state = mock_jev.call_args.kwargs["state"]
         self.assertEqual(sent_state["story_contract"], contract)
 
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_scene_jev_outage_becomes_final_escalation(self, mock_jev):
+        mock_jev.side_effect = RuntimeError("OpenRouter JEV HTTP 529: overloaded")
+        result = evaluate_scene_jev(
+            api_key="test",
+            scene_index=3,
+            story_contract={"central_problem": "signal"},
+            scene_contract={"purpose": "test clues"},
+            next_scene={"purpose": "combine clues"},
+            ledger=[],
+            envelope=good_envelope(100),
+        )
+        self.assertFalse(result["available"])
+        self.assertEqual(result["next_action"], "ESCALATE")
+        self.assertFalse(jev_needs_targeted_repair(result))
+        self.assertTrue(jev_requires_final_escalation(result))
+
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_final_target_jev_outage_is_unverified_not_fatal(self, mock_jev):
+        mock_jev.side_effect = RuntimeError("OpenRouter JEV HTTP 529: overloaded")
+        scenes = [
+            {
+                "scene": 1,
+                "contract": {"purpose": "observe"},
+                "envelope": good_envelope(100),
+            }
+        ]
+        result = verify_final_repair_target(
+            api_key="test",
+            plan={"story_contract": {"central_problem": "signal"}},
+            scenes=scenes,
+            scene_index=1,
+            issue="clarify timing",
+        )
+        self.assertFalse(result["available"])
+        self.assertIsNone(result["verified"])
+        self.assertIsNone(result["probability"])
+        self.assertIn("529", result["error"])
+
     def test_whole_story_jev_questions_are_atomic(self):
         questions = build_whole_story_jev_questions()
         self.assertEqual(len(questions), 7)

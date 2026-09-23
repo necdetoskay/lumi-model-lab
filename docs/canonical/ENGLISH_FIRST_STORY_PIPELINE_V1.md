@@ -52,6 +52,7 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 - No Haiku judge call without an exact judge-ready runtime profile.
 - JEV absence must be recorded explicitly; it must never silently become PASS.
 - JEV low-confidence/high-risk scene results trigger bounded local repair when a concrete repair signal exists; residual or ambiguous risk escalates to Haiku rather than inventing certainty.
+- JEV is advisory and may not become a single point of production failure: after bounded transport retries, an unavailable JEV call is recorded as unavailable/ESCALATE evidence and Haiku remains the semantic authority.
 - Scene repair may not modify StoryContract.
 - Final Haiku targeted repair may not modify any scene state_delta; a state change fails deterministically.
 - Scene-level word-count misses never override schema/state/continuity failures; only pure word-budget errors may degrade to advisory after bounded repair.
