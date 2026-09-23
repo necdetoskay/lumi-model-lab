@@ -600,7 +600,7 @@ def repair_scene_word_budget(
             encoding="utf-8"
         ).strip(),
         user_prompt=repair_input,
-        temperature=0.0,
+        temperature=(0.0 if repair_index == 1 else 0.15),
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
