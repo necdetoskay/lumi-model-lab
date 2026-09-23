@@ -7,6 +7,7 @@ from src.english_story_pipeline import (
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
+    call_structured_json_with_retry,
     evaluate_completed_story,
     evaluate_scene_jev,
     jev_needs_targeted_repair,
@@ -44,6 +45,85 @@ def good_envelope(words: int = 100) -> dict:
 
 
 class EnglishStoryPipelineTests(unittest.TestCase):
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_recovers_on_second_attempt(self, mock_call):
+        body1 = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 10,
+                "completion_tokens": 20,
+                "total_tokens": 30,
+                "cost": 0.001,
+            },
+        }
+        body2 = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 11,
+                "completion_tokens": 21,
+                "total_tokens": 32,
+                "cost": 0.0011,
+            },
+        }
+        request1 = {"temperature": 0.7, "response_format": {"type": "json_object"}}
+        request2 = {"temperature": 0.2, "response_format": {"type": "json_object"}}
+        mock_call.side_effect = [
+            ('{"prose":"unterminated', body1, request1),
+            ('{"prose":"ok","state_delta":{}}', body2, request2),
+        ]
+
+        payload, body, request, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.7,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+        )
+
+        self.assertEqual(payload["prose"], "ok")
+        self.assertEqual(body, body2)
+        self.assertEqual(request, request2)
+        self.assertEqual(len(failures), 1)
+        self.assertEqual(failures[0]["parse_attempt"], 1)
+        self.assertEqual(mock_call.call_count, 2)
+        second = mock_call.call_args_list[1].kwargs
+        self.assertEqual(second["temperature"], 0.2)
+        self.assertEqual(second["seed"], 9044)
+        self.assertIn("FORMAT RECOVERY", second["user_prompt"])
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_exhaustion_is_explicit(self, mock_call):
+        body = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 10,
+                "completion_tokens": 20,
+                "total_tokens": 30,
+                "cost": 0.001,
+            },
+        }
+        request = {"temperature": 0.2, "response_format": {"type": "json_object"}}
+        mock_call.return_value = ('{"prose":"unterminated', body, request)
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED",
+        ):
+            call_structured_json_with_retry(
+                api_key="test",
+                model="qwen/qwen3.8-flash",
+                system_prompt="system",
+                user_prompt="user",
+                temperature=0.7,
+                max_tokens=None,
+                seed=42,
+                request_class="scene_story",
+            )
+        self.assertEqual(mock_call.call_count, 2)
+
     def test_default_2000_word_budget_distribution(self):
         self.assertEqual(
             allocate_scene_budgets(2000),
