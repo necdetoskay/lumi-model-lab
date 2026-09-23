@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,7 @@ from src.schemas import StorySpec
 SCENE_WRITER_PROMPT = Path("prompts/story_scene_writer_en_v1.md")
 SCENE_REPAIR_PROMPT = Path("prompts/story_scene_repair_en_v1.md")
 SCENE_WORD_BUDGET_REPAIR_PROMPT = Path("prompts/story_scene_word_budget_repair_en_v1.md")
+SCENE_CHUNK_COMPRESS_PROMPT = Path("prompts/story_scene_chunk_compress_en_v1.md")
 PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
@@ -530,6 +532,7 @@ def only_word_budget_errors(errors: list[str]) -> bool:
     return bool(errors) and all(
         error.startswith("below_scene_word_budget:")
         or error.startswith("above_scene_word_budget:")
+        or error.startswith("word_budget_repair_required_range_miss:")
         for error in errors
     )
 
@@ -646,6 +649,245 @@ def repair_scene_word_budget(
             "max_tokens": request.get("max_tokens"),
             "reasoning": request.get("reasoning"),
             "response_format": request.get("response_format"),
+        },
+    }
+    return repaired, errors, word_count, attempt
+
+
+def split_scene_for_compression(prose: str, chunk_count: int) -> list[str]:
+    cleaned = " ".join(str(prose or "").split())
+    if not cleaned:
+        return []
+    chunk_count = max(1, chunk_count)
+    sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", cleaned)
+        if sentence.strip()
+    ]
+    if len(sentences) < chunk_count:
+        words = cleaned.split()
+        size = max(1, (len(words) + chunk_count - 1) // chunk_count)
+        return [
+            " ".join(words[index:index + size]).strip()
+            for index in range(0, len(words), size)
+            if words[index:index + size]
+        ]
+
+    total_words = sum(count_words(sentence) for sentence in sentences)
+    target_per_chunk = max(1, round(total_words / chunk_count))
+    chunks: list[str] = []
+    current: list[str] = []
+    current_words = 0
+    for sentence in sentences:
+        sentence_words = count_words(sentence)
+        if (
+            current
+            and len(chunks) < chunk_count - 1
+            and current_words + sentence_words > target_per_chunk
+        ):
+            chunks.append(" ".join(current).strip())
+            current = []
+            current_words = 0
+        current.append(sentence)
+        current_words += sentence_words
+    if current:
+        chunks.append(" ".join(current).strip())
+    return chunks
+
+
+def allocate_chunk_word_ceilings(
+    chunks: list[str],
+    *,
+    total_target_words: int,
+) -> list[int]:
+    if not chunks:
+        return []
+    weights = [max(1, count_words(chunk)) for chunk in chunks]
+    weight_sum = sum(weights)
+    ceilings = [
+        max(20, round(total_target_words * weight / weight_sum))
+        for weight in weights
+    ]
+    delta = total_target_words - sum(ceilings)
+    order = sorted(
+        range(len(ceilings)),
+        key=lambda index: ceilings[index],
+        reverse=True,
+    )
+    cursor = 0
+    while delta != 0 and order:
+        index = order[cursor % len(order)]
+        if delta > 0:
+            ceilings[index] += 1
+            delta -= 1
+        elif ceilings[index] > 20:
+            ceilings[index] -= 1
+            delta += 1
+        cursor += 1
+        if cursor > 1000:
+            break
+    return ceilings
+
+
+def compress_scene_in_chunks(
+    *,
+    api_key: str,
+    model: str,
+    envelope: dict[str, Any],
+    scene_contract: dict[str, Any],
+    target_words: int,
+    seed: int,
+) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
+    current_prose = str(envelope.get("prose") or "").strip()
+    current_words = count_words(current_prose)
+    ratio = current_words / max(1, target_words)
+    chunk_count = min(4, max(2, round(ratio * 2)))
+    chunks = split_scene_for_compression(current_prose, chunk_count)
+    total_chunk_target = round(target_words * 0.94)
+    ceilings = allocate_chunk_word_ceilings(
+        chunks,
+        total_target_words=total_chunk_target,
+    )
+
+    compressed_chunks: list[str] = []
+    chunk_attempts: list[dict[str, Any]] = []
+    total_input_tokens = 0
+    total_output_tokens = 0
+    total_tokens = 0
+    total_cost = 0.0
+    chunk_errors: list[str] = []
+
+    for index, (chunk, ceiling) in enumerate(zip(chunks, ceilings), start=1):
+        minimum = max(20, ceiling - 8)
+        previous_context = compressed_chunks[-1][-220:] if compressed_chunks else ""
+        next_context = chunks[index][:220] if index < len(chunks) else ""
+        chunk_result: dict[str, Any] | None = None
+        chunk_word_count = 0
+        rounds: list[dict[str, Any]] = []
+
+        for round_index in range(1, 3):
+            effective_ceiling = ceiling if round_index == 1 else max(20, ceiling - 8)
+            effective_minimum = max(20, effective_ceiling - 8)
+            repair_input = json.dumps(
+                {
+                    "chunk_index": index,
+                    "total_chunks": len(chunks),
+                    "repair_round": round_index,
+                    "previous_attempt_missed_target": round_index > 1,
+                    "required_word_range": [
+                        effective_minimum,
+                        effective_ceiling,
+                    ],
+                    "maximum_output_words": effective_ceiling,
+                    "current_chunk_word_count": count_words(chunk),
+                    "previous_boundary_context": previous_context,
+                    "next_boundary_context": next_context,
+                    "scene_contract": scene_contract,
+                    "immutable_state_delta": envelope.get("state_delta"),
+                    "current_chunk": chunk,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            payload, body, request, parse_failures = call_structured_json_with_retry(
+                api_key=api_key,
+                model=model,
+                system_prompt=SCENE_CHUNK_COMPRESS_PROMPT.read_text(
+                    encoding="utf-8"
+                ).strip(),
+                user_prompt=repair_input,
+                temperature=0.0 if round_index == 1 else 0.15,
+                max_tokens=None,
+                seed=seed + index * 10 + round_index,
+                request_class="scene_repair",
+            )
+            usage = parse_usage(body).model_dump(mode="json")
+            cost = parse_cost(body).model_dump(mode="json")
+            total_input_tokens += int(usage.get("input_tokens") or 0)
+            total_output_tokens += int(usage.get("output_tokens") or 0)
+            total_tokens += int(usage.get("total_tokens") or 0)
+            total_cost += float(cost.get("usd") or 0.0)
+
+            prose = payload.get("prose")
+            chunk_word_count = (
+                count_words(prose)
+                if isinstance(prose, str) and prose.strip()
+                else 0
+            )
+            round_record = {
+                "round": round_index,
+                "required_word_range": [
+                    effective_minimum,
+                    effective_ceiling,
+                ],
+                "word_count": chunk_word_count,
+                "structured_parse_retries": parse_failures,
+                "usage": usage,
+                "cost": cost,
+                "request": {
+                    "temperature": request.get("temperature"),
+                    "max_tokens": request.get("max_tokens"),
+                    "reasoning": request.get("reasoning"),
+                    "response_format": request.get("response_format"),
+                },
+            }
+            rounds.append(round_record)
+            if (
+                isinstance(prose, str)
+                and prose.strip()
+                and effective_minimum <= chunk_word_count <= effective_ceiling
+            ):
+                chunk_result = {"prose": prose.strip()}
+                break
+
+        if chunk_result is None:
+            chunk_errors.append(
+                f"chunk_{index}_word_budget_miss:{chunk_word_count}>{ceiling}"
+            )
+            best_prose = payload.get("prose") if isinstance(payload, dict) else ""
+            if isinstance(best_prose, str) and best_prose.strip():
+                compressed_chunks.append(best_prose.strip())
+            else:
+                compressed_chunks.append(chunk)
+        else:
+            compressed_chunks.append(chunk_result["prose"])
+
+        chunk_attempts.append(
+            {
+                "chunk": index,
+                "input_words": count_words(chunk),
+                "ceiling": ceiling,
+                "rounds": rounds,
+                "accepted_word_count": count_words(compressed_chunks[-1]),
+            }
+        )
+
+    repaired = {
+        "prose": " ".join(compressed_chunks).strip(),
+        "state_delta": envelope.get("state_delta"),
+    }
+    errors, word_count = validate_scene_envelope(
+        repaired,
+        target_words=target_words,
+    )
+    errors.extend(chunk_errors)
+    attempt = {
+        "kind": "chunked_word_budget_compress",
+        "chunk_count": len(chunks),
+        "target_words": target_words,
+        "total_chunk_target": total_chunk_target,
+        "chunk_attempts": chunk_attempts,
+        "errors": errors,
+        "word_count": word_count,
+        "usage": {
+            "input_tokens": total_input_tokens,
+            "output_tokens": total_output_tokens,
+            "total_tokens": total_tokens,
+        },
+        "cost": {
+            "usd": round(total_cost, 9),
+            "try_amount": None,
+            "usd_try_rate": None,
         },
     }
     return repaired, errors, word_count, attempt
@@ -782,6 +1024,25 @@ def produce_scene(
             word_count = candidate_word_count
             if not errors:
                 break
+
+    if (
+        only_word_budget_errors(errors)
+        and word_count > round(target_words * 1.20)
+    ):
+        candidate, candidate_errors, candidate_word_count, attempt = (
+            compress_scene_in_chunks(
+                api_key=api_key,
+                model=model,
+                envelope=envelope,
+                scene_contract=scene_contract,
+                target_words=target_words,
+                seed=seed + 500,
+            )
+        )
+        attempts.append(attempt)
+        envelope = candidate
+        errors = candidate_errors
+        word_count = candidate_word_count
 
     return envelope, errors, word_count, attempts
 
