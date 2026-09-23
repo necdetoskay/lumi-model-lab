@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import unittest
 
-from src.english_scene_plan_smoke import build_jev_questions, summarize_jev, validate_haiku, validate_plan
+from src.english_scene_plan_smoke import build_jev_questions, require_complete_stage, summarize_jev, validate_haiku, validate_plan
+from src.model_registry import normalize_openrouter_request
 from src.schemas import StorySpec
 
 def _spec() -> StorySpec:
@@ -56,6 +57,27 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
         value = _plan()
         value["scenes"][2]["prior_evidence"] = []
         self.assertIn("scene_3_prior_evidence_missing", validate_plan(value, _spec()))
+
+    def test_story_plan_profile_allows_5000_tokens_and_json(self):
+        payload = normalize_openrouter_request(
+            "qwen/qwen3.8-flash",
+            {"max_tokens": 7000, "temperature": 0.2, "seed": 42},
+            request_class="story_plan",
+            structured_output=True,
+        )
+        self.assertEqual(payload["max_tokens"], 5000)
+        self.assertEqual(payload["response_format"], {"type": "json_object"})
+        self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
+
+    def test_truncated_plan_fails_closed(self):
+        with self.assertRaisesRegex(RuntimeError, "PLAN_TRUNCATED"):
+            require_complete_stage(
+                {
+                    "choices": [{"finish_reason": "length"}],
+                    "usage": {"completion_tokens": 5000},
+                },
+                "PLAN",
+            )
 
     def test_jev_question_set_is_atomic(self):
         questions = build_jev_questions()
