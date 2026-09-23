@@ -870,13 +870,13 @@ def compress_scene_in_chunks(
         repaired,
         target_words=target_words,
     )
-    errors.extend(chunk_errors)
     attempt = {
         "kind": "chunked_word_budget_compress",
         "chunk_count": len(chunks),
         "target_words": target_words,
         "total_chunk_target": total_chunk_target,
         "chunk_attempts": chunk_attempts,
+        "chunk_errors": chunk_errors,
         "errors": errors,
         "word_count": word_count,
         "usage": {
