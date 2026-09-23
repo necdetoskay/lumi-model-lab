@@ -86,6 +86,25 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(questions["clue_solution_progression"]["type"], "noul")
         self.assertEqual(questions["next_action"]["type"], "choice")
 
+    def test_scene_five_future_leakage_question_is_phase_aware(self):
+        questions = build_scene_jev_questions(5, False)
+        instructions = questions["no_future_leakage"]["instructions"]
+        self.assertIn("Scene 5", instructions)
+        self.assertIn("Scene 6", instructions)
+        self.assertIn("decisive payoff", instructions)
+
+    def test_final_scene_future_leakage_question_is_closure_aware(self):
+        questions = build_scene_jev_questions(6, True)
+        instructions = questions["no_future_leakage"]["instructions"]
+        self.assertIn("final scene", instructions.lower())
+        self.assertIn("new main problem", instructions.lower())
+
+    def test_whole_story_contradiction_question_defines_material_scope(self):
+        questions = build_whole_story_jev_questions()
+        instructions = questions["no_contradictions"]["instructions"]
+        self.assertIn("ContinuityLedger", instructions)
+        self.assertIn("cannot both be true", instructions)
+
     def test_final_haiku_gate_accepts_strong_story(self):
         payload = {
             "scores": {

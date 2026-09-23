@@ -128,9 +128,33 @@ def build_scene_jev_questions(scene_index: int, is_final: bool) -> dict[str, dic
             false_criteria="The central goal disappears, changes without cause, or stops motivating actions.",
         ),
         "no_future_leakage": noul_question(
-            "Does the scene avoid performing decisive events reserved for later scenes?",
-            true_criteria="Later-scene events and the decisive payoff remain protected.",
-            false_criteria="The scene leaks or performs a later-scene event too early.",
+            (
+                "Does Scene 5 deliver the decisive payoff while avoiding Scene 6's aftermath, closure, and future-hook material?"
+                if scene_index == 5
+                else (
+                    "Does the final scene resolve consequences without opening a new main problem beyond the bounded future-discovery hook?"
+                    if is_final
+                    else "Does the scene avoid performing decisive events reserved for later scenes?"
+                )
+            ),
+            true_criteria=(
+                "Scene 5 contains the decisive payoff but leaves aftermath, closure, and the future hook to Scene 6."
+                if scene_index == 5
+                else (
+                    "The final scene closes the main problem and leaves at most the allowed bounded hook."
+                    if is_final
+                    else "Later-scene events and the decisive payoff remain protected."
+                )
+            ),
+            false_criteria=(
+                "Scene 5 consumes Scene 6's aftermath, closure, or future-hook work."
+                if scene_index == 5
+                else (
+                    "The final scene opens a new main problem or fails to close the existing one."
+                    if is_final
+                    else "The scene leaks or performs a later-scene event too early."
+                )
+            ),
         ),
         "handoff_valid": noul_question(
             "Does the scene's handoff_state create a concrete, coherent state that the next scene can inherit?"
@@ -204,9 +228,9 @@ def build_whole_story_jev_questions() -> dict[str, dict[str, Any]]:
             "The solution depends on coincidence, retroactive explanation, or missing setup.",
         ),
         "no_contradictions": (
-            "Is the assembled story free of material contradictions across scene states and established facts?",
-            "No material contradiction is present.",
-            "At least one material contradiction is present.",
+            "Using the ContinuityLedger as canonical state, is the assembled story free of direct factual contradictions? Treat added descriptive detail or elaboration as non-contradictory unless two claims cannot both be true.",
+            "No direct factual contradiction exists between canonical scene states and the assembled story.",
+            "At least two factual claims cannot both be true, or the story directly conflicts with canonical ledger state.",
         ),
         "no_repeated_event": (
             "Does each scene advance the story rather than repeating an event, discovery, or narrative function already completed?",

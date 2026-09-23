@@ -61,6 +61,14 @@ jobs:
             --jev-model "$JEV_MODEL" \
             --judge-model "$JUDGE_MODEL" \
             --spec "$SPEC_PATH"
+      - name: Print accepted English master
+        if: success()
+        shell: bash
+        run: |
+          echo '===== ENGLISH MASTER STORY BEGIN ====='
+          cat runs/english_story_pipeline/result.story.txt
+          echo
+          echo '===== ENGLISH MASTER STORY END ====='
       - name: Upload pipeline evidence
         if: always()
         continue-on-error: true
