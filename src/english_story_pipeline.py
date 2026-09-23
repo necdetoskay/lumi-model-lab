@@ -551,23 +551,37 @@ def repair_scene_word_budget(
     preferred_max = round(target_words * 1.08)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
+    required_reduction_words = (
+        max(0, current_words - preferred_max)
+        if mode == "COMPRESS"
+        else 0
+    )
+    required_expansion_words = (
+        max(0, preferred_min - current_words)
+        if mode == "EXPAND"
+        else 0
+    )
+    required_reduction_percent = (
+        int((required_reduction_words * 100 + current_words - 1) / current_words)
+        if current_words and mode == "COMPRESS"
+        else 0
+    )
+    maximum_sentences = max(8, round(preferred_max / 14))
     repair_input = json.dumps(
         {
             "mode": mode,
+            "repair_attempt": repair_index,
+            "previous_attempt_failed": repair_index > 1,
             "target_words": target_words,
             "hard_word_range": [hard_min, hard_max],
             "required_word_range": [preferred_min, preferred_max],
             "current_word_count": current_words,
-            "required_reduction_words": (
-                max(0, current_words - preferred_max)
-                if mode == "COMPRESS"
-                else 0
-            ),
-            "required_expansion_words": (
-                max(0, preferred_min - current_words)
-                if mode == "EXPAND"
-                else 0
-            ),
+            "required_reduction_words": required_reduction_words,
+            "required_reduction_percent": required_reduction_percent,
+            "required_expansion_words": required_expansion_words,
+            "maximum_output_words": preferred_max,
+            "minimum_output_words": preferred_min,
+            "maximum_sentences": maximum_sentences,
             "immutable_state_delta": envelope.get("state_delta"),
             "current_prose": current_prose,
         },
@@ -581,7 +595,7 @@ def repair_scene_word_budget(
             encoding="utf-8"
         ).strip(),
         user_prompt=repair_input,
-        temperature=0.0,
+        temperature=(0.0 if repair_index == 1 else 0.15),
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
