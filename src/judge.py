@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from rich.console import Console
 
 from src.generate import OPENROUTER_URL, parse_cost, parse_usage
+from src.model_registry import normalize_openrouter_request, require_judge_runtime_profile
 from src.schemas import (
     GenerationRecord,
     JUDGE_CRITERIA,
@@ -142,6 +143,14 @@ def call_judge(
         payload["reasoning"] = reasoning
     if response_format is not None:
         payload["response_format"] = response_format
+
+    require_judge_runtime_profile(model)
+    payload = normalize_openrouter_request(
+        model,
+        payload,
+        request_class="judge",
+        structured_output=response_format is not None,
+    )
 
     response = requests.post(
         OPENROUTER_URL,
