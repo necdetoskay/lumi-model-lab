@@ -1,32 +1,21 @@
-# LUMI English Scene Word-Budget Repair v1
+# LUMI English Scene Word-Budget Repair v2
 
-Adjust only the prose length of one already-valid scene envelope.
+Adjust only the prose length of one already-valid scene. Canonical state is owned by the application and is not writable in this operation.
 
-This is not a story rewrite and not a continuity repair.
+You receive the current prose, immutable state_delta for context, the current word count, and a required output word range.
 
 Rules:
-- Preserve state_delta exactly. Every field and list item must remain unchanged.
-- Preserve every required event, clue, fact, decision, handoff, and scene purpose.
+- Return rewritten prose only. Do not return or rewrite state_delta.
+- The prose word count MUST fall inside required_word_range.
+- Preserve every required event, clue, fact, decision, handoff meaning, and scene purpose already present.
 - Do not introduce a new character, object, location, fact, clue, power, subplot, or solution.
-- If mode is COMPRESS, shorten wording, combine redundant sentences, remove repeated sensory detail, and tighten dialogue without deleting required events.
-- If mode is EXPAND, add only non-plot-bearing action, observation, dialogue texture, consequences, or sensory detail that is already implied by the scene.
-- Aim for the preferred word range, not the hard boundary.
-- Never modify later-scene work or solve a later event early.
+- COMPRESS: aggressively tighten phrasing, combine redundant sentences, remove repeated descriptions, and shorten dialogue while retaining all plot-bearing content.
+- EXPAND: add only non-plot-bearing action, observation, dialogue texture, consequences, or sensory detail already implied by the scene.
+- Do not perform later-scene work or solve a later event early.
 - Keep the prose natural and age-appropriate.
+- Do not explain the edit.
 
-Return JSON only using exactly the same scene-envelope shape:
+Return JSON only:
 {
-  "prose": "",
-  "state_delta": {
-    "location": "",
-    "character_goal": "",
-    "knowledge_gained": [""],
-    "facts_established": [""],
-    "clues_added": [""],
-    "objects_changed": [""],
-    "relationships_changed": [""],
-    "threads_opened": [""],
-    "threads_resolved": [""],
-    "handoff_state": ""
-  }
+  "prose": ""
 }

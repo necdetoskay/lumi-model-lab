@@ -104,9 +104,9 @@ class EnglishStoryPipelineTests(unittest.TestCase):
     @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_compresses_without_state_change(self, mock_call):
         original = good_envelope(130)
-        repaired = good_envelope(105)
+        repaired_prose = {"prose": "word " * 105}
         mock_call.return_value = (
-            __import__("json").dumps(repaired),
+            __import__("json").dumps(repaired_prose),
             {
                 "usage": {
                     "prompt_tokens": 10,
@@ -133,16 +133,19 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(result["state_delta"], original["state_delta"])
         self.assertEqual(attempt["mode"], "COMPRESS")
         self.assertEqual(attempt["kind"], "word_budget_repair_1")
+        self.assertEqual(attempt["required_word_range"], [92, 108])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
-        self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.10)
+        self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
 
     @patch("src.english_story_pipeline.call_openrouter")
-    def test_word_budget_repair_rejects_state_delta_change(self, mock_call):
+    def test_word_budget_repair_ignores_model_state_delta_output(self, mock_call):
         original = good_envelope(130)
-        repaired = good_envelope(105)
-        repaired["state_delta"]["location"] = "new location"
+        payload = {
+            "prose": "word " * 105,
+            "state_delta": {"location": "new location"},
+        }
         mock_call.return_value = (
-            __import__("json").dumps(repaired),
+            __import__("json").dumps(payload),
             {
                 "usage": {
                     "prompt_tokens": 10,
@@ -156,7 +159,7 @@ class EnglishStoryPipelineTests(unittest.TestCase):
                 "response_format": {"type": "json_object"},
             },
         )
-        _, errors, _, _ = repair_scene_word_budget(
+        repaired, errors, _, _ = repair_scene_word_budget(
             api_key="test",
             model="qwen/qwen3.8-flash",
             envelope=original,
@@ -164,7 +167,8 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             seed=100,
             repair_index=1,
         )
-        self.assertIn("word_budget_repair_state_delta_changed", errors)
+        self.assertEqual(errors, [])
+        self.assertEqual(repaired["state_delta"], original["state_delta"])
 
     def test_scene_jev_questions_are_atomic(self):
         questions = build_scene_jev_questions(3, False)
