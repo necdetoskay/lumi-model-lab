@@ -551,20 +551,57 @@ def repair_scene_word_budget(
     preferred_max = round(target_words * 1.08)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
+    requested_min = preferred_min
+    requested_max = preferred_max
+    adaptive_factor = 1.0
+
+    if repair_index > 1 and current_words > 0:
+        if mode == "COMPRESS":
+            adaptive_factor = max(1.0, current_words / max(preferred_max, 1))
+            requested_min = max(
+                hard_min,
+                round(preferred_min / adaptive_factor),
+            )
+            requested_max = max(
+                requested_min,
+                min(
+                    hard_max,
+                    round(preferred_max / adaptive_factor),
+                ),
+            )
+        else:
+            adaptive_factor = max(1.0, preferred_min / current_words)
+            requested_min = min(
+                hard_max,
+                max(
+                    hard_min,
+                    round(preferred_min * adaptive_factor),
+                ),
+            )
+            requested_max = min(
+                hard_max,
+                max(
+                    requested_min,
+                    round(preferred_max * adaptive_factor),
+                ),
+            )
+
     repair_input = json.dumps(
         {
             "mode": mode,
             "target_words": target_words,
             "hard_word_range": [hard_min, hard_max],
-            "required_word_range": [preferred_min, preferred_max],
+            "preferred_final_range": [preferred_min, preferred_max],
+            "required_word_range": [requested_min, requested_max],
             "current_word_count": current_words,
+            "adaptive_factor": round(adaptive_factor, 4),
             "required_reduction_words": (
-                max(0, current_words - preferred_max)
+                max(0, current_words - requested_max)
                 if mode == "COMPRESS"
                 else 0
             ),
             "required_expansion_words": (
-                max(0, preferred_min - current_words)
+                max(0, requested_min - current_words)
                 if mode == "EXPAND"
                 else 0
             ),
@@ -603,16 +640,17 @@ def repair_scene_word_budget(
             repaired,
             target_words=target_words,
         )
-        if not preferred_min <= word_count <= preferred_max:
-            errors.append(
-                "word_budget_repair_preferred_range_miss:"
-                f"{word_count} not in [{preferred_min},{preferred_max}]"
-            )
 
     attempt = {
         "kind": f"word_budget_repair_{repair_index}",
         "mode": mode,
-        "required_word_range": [preferred_min, preferred_max],
+        "hard_word_range": [hard_min, hard_max],
+        "preferred_word_range": [preferred_min, preferred_max],
+        "required_word_range": [requested_min, requested_max],
+        "adaptive_factor": round(adaptive_factor, 4),
+        "preferred_range_miss": not (
+            preferred_min <= word_count <= preferred_max
+        ),
         "structured_parse_retries": parse_failures,
         "errors": errors,
         "word_count": word_count,
