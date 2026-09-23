@@ -86,15 +86,12 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(profile["match"]["type"], "exact")
         self.assertEqual(profile["metadata"]["max_output_tokens"], 131072)
         self.assertEqual(profile["metadata"]["reasoning"]["default_effort"], "xhigh")
-        self.assertEqual(payload["max_tokens"], 12000)
-        self.assertEqual(payload["temperature"], 0.8)
-        self.assertEqual(payload["seed"], 42)
+        self.assertNotIn("max_tokens", payload)
+        self.assertNotIn("temperature", payload)
+        self.assertNotIn("seed", payload)
         self.assertNotIn("reasoning", payload)
-        self.assertEqual(payload["reasoning_effort"], "low")
-        self.assertEqual(
-            payload["provider"],
-            {"allow_fallbacks": False, "require_parameters": True},
-        )
+        self.assertNotIn("reasoning_effort", payload)
+        self.assertNotIn("provider", payload)
 
     def test_paid_qualification_profile_gate_rejects_fallback_and_family(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):
