@@ -76,7 +76,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
             {"enabled": True, "effort": "low", "exclude": True},
         )
 
-    def test_qwen38_flash_uses_verified_low_reasoning_budget(self) -> None:
+    def test_qwen38_flash_uses_verified_openrouter_streaming_transport(self) -> None:
         profile = require_qualification_runtime_profile("qwen/qwen3.8-flash")
         payload = normalize_openrouter_request(
             "qwen/qwen3.8-flash",
@@ -92,6 +92,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertNotIn("reasoning", payload)
         self.assertNotIn("reasoning_effort", payload)
         self.assertNotIn("provider", payload)
+        self.assertIs(payload["stream"], True)
 
     def test_paid_qualification_profile_gate_rejects_fallback_and_family(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):
