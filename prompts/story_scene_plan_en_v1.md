@@ -16,6 +16,8 @@ Rules:
 - Each handoff states the concrete unresolved state inherited by the next scene.
 - For Scenes 2-6, prior_evidence must name concrete setup already established in earlier scenes for any inference, clue, object, or fact the scene depends on.
 - must_not_do explicitly protects against contradiction, premature resolution, or later-scene leakage.
+- Keep the plan concise: purpose/entry_state/handoff should each be at most 30 words; each beat, must_include, must_not_do, and prior_evidence item should be at most 24 words.
+- Use 2-3 beats per scene and no more than 3 prior_evidence items per scene.
 
 Return JSON only with this shape:
 {

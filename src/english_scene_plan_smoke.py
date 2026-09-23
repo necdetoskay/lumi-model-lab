@@ -216,9 +216,17 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
         api_key=api_key, model=planner_model,
         system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
         user_prompt=f"Create the immutable six-scene story plan.\n\nSTORY BRIEF\n{brief}",
-        temperature=0.2, max_tokens=2500, seed=42,
+        temperature=0.2, max_tokens=5000, seed=42,
         request_class="story_plan", structured_output=True,
     )
+    plan_choice = (plan_body.get("choices") or [{}])[0]
+    plan_finish_reason = plan_choice.get("finish_reason")
+    if plan_finish_reason == "length":
+        usage = plan_body.get("usage") or {}
+        raise RuntimeError(
+            "PLAN_TRUNCATED: English scene plan hit its output limit; "
+            f"completion_tokens={usage.get('completion_tokens')!r}."
+        )
     plan = parse_json_object(plan_text)
     deterministic_errors = validate_plan(plan, spec)
     jev_body = call_openrouter_jev(
