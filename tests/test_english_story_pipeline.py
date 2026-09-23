@@ -11,9 +11,12 @@ from src.english_story_pipeline import (
     jev_needs_targeted_repair,
     jev_requires_final_escalation,
     jev_targeted_repair_reasons,
+    final_repair_scene_ids,
     plan_repair_feedback,
     repair_plan_once,
+    repair_scene_for_final_judge,
     validate_final_judge,
+    validate_prose_only_repair,
     validate_scene_envelope,
 )
 
@@ -284,6 +287,82 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertIsNone(kwargs["max_tokens"])
         self.assertEqual(kwargs["request_class"], "story_plan")
         self.assertTrue(kwargs["structured_output"])
+
+    def test_final_repair_scene_ids_are_bounded_and_deduplicated(self):
+        final_judge = {
+            "critical_failures": [],
+            "repair_targets": [
+                {"scene": 4, "issue": "a"},
+                {"scene": 4, "issue": "b"},
+                {"scene": 5, "issue": "c"},
+                {"scene": 6, "issue": "d"},
+                {"scene": 2, "issue": "e"},
+            ],
+        }
+        self.assertEqual(final_repair_scene_ids(final_judge), [4, 5, 6])
+
+    def test_final_repair_skips_critical_failure(self):
+        final_judge = {
+            "critical_failures": ["contract violation"],
+            "repair_targets": [{"scene": 4, "issue": "a"}],
+        }
+        self.assertEqual(final_repair_scene_ids(final_judge), [])
+
+    def test_prose_only_repair_rejects_state_delta_change(self):
+        original = good_envelope(100)
+        repaired = good_envelope(100)
+        repaired["state_delta"]["location"] = "different location"
+        errors, _ = validate_prose_only_repair(
+            original_envelope=original,
+            repaired_envelope=repaired,
+            target_words=100,
+        )
+        self.assertIn("final_repair_state_delta_changed", errors)
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_final_scene_repair_is_token_uncapped_and_state_preserving(
+        self,
+        mock_call,
+    ):
+        envelope = good_envelope(100)
+        mock_call.return_value = (
+            __import__("json").dumps(envelope),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "contract": {"purpose": "observe"},
+                "envelope": envelope,
+            }
+        ]
+        repaired, errors, word_count, attempt = repair_scene_for_final_judge(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={"story_contract": {}, "scenes": [{"purpose": "observe"}]},
+            ledger=[{"scene": 1, "word_count": 100}],
+            scenes=scenes,
+            scene_index=1,
+            issue="add one clarifying sentence",
+            seed=7601,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 100)
+        self.assertEqual(repaired["state_delta"], envelope["state_delta"])
+        self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
+        self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
 
     def test_final_haiku_gate_accepts_strong_story(self):
         payload = {
