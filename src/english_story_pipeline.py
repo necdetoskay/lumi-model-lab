@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 from pathlib import Path
@@ -33,6 +34,7 @@ SCENE_WORD_BUDGET_REPAIR_PROMPT = Path("prompts/story_scene_word_budget_repair_e
 PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
+MAX_FINAL_POLISH_ROUNDS = 2
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
 
 FINAL_CRITERIA = (
@@ -871,6 +873,79 @@ def repair_plan_once(
     return repaired_result, attempt
 
 
+def normalize_repair_issue(issue: str) -> str:
+    return " ".join(issue.casefold().split())
+
+
+def final_repair_target_fingerprint(target: dict[str, Any]) -> str | None:
+    scene = target.get("scene")
+    issue = target.get("issue")
+    if (
+        not isinstance(scene, int)
+        or isinstance(scene, bool)
+        or not 1 <= scene <= 6
+        or not isinstance(issue, str)
+        or not issue.strip()
+    ):
+        return None
+    return f"{scene}:{normalize_repair_issue(issue)}"
+
+
+def unseen_final_repair_targets(
+    final_judge: dict[str, Any],
+    attempted_fingerprints: set[str],
+    *,
+    limit: int = 3,
+) -> list[dict[str, Any]]:
+    if final_judge.get("critical_failures"):
+        return []
+    selected: list[dict[str, Any]] = []
+    seen_scenes: set[int] = set()
+    for target in final_judge.get("repair_targets") or []:
+        if not isinstance(target, dict):
+            continue
+        fingerprint = final_repair_target_fingerprint(target)
+        scene = target.get("scene")
+        if fingerprint is None or fingerprint in attempted_fingerprints:
+            continue
+        if scene in seen_scenes:
+            continue
+        selected.append(
+            {
+                "scene": scene,
+                "issue": str(target["issue"]).strip(),
+                "fingerprint": fingerprint,
+            }
+        )
+        seen_scenes.add(scene)
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def should_attempt_final_polish(
+    final_evaluation: dict[str, Any],
+    attempted_fingerprints: set[str],
+) -> list[dict[str, Any]]:
+    if final_evaluation.get("accepted"):
+        return []
+    if final_evaluation.get("deterministic_errors"):
+        return []
+    final_judge = final_evaluation.get("final_judge") or {}
+    if final_judge.get("critical_failures"):
+        return []
+    minimum = final_judge.get("minimum")
+    average = final_judge.get("average")
+    if not isinstance(minimum, (int, float)) or minimum < 3:
+        return []
+    if not isinstance(average, (int, float)) or average < 3.5:
+        return []
+    return unseen_final_repair_targets(
+        final_judge,
+        attempted_fingerprints,
+    )
+
+
 def final_repair_scene_ids(final_judge: dict[str, Any], *, limit: int = 3) -> list[int]:
     if final_judge.get("critical_failures"):
         return []
@@ -1532,46 +1607,125 @@ def run(
     final_evaluations.append(final_evaluation)
 
     final_polish_repairs: list[dict[str, Any]] = []
-    if (
-        not final_evaluation["accepted"]
-        and not final_evaluation["final_judge"]["critical_failures"]
-        and final_repair_scene_ids(final_evaluation["final_judge"])
-    ):
-        final_polish_repairs = apply_final_haiku_repairs(
+    final_polish_rounds: list[dict[str, Any]] = []
+    attempted_final_target_fingerprints: set[str] = set()
+
+    for polish_round in range(1, MAX_FINAL_POLISH_ROUNDS + 1):
+        selected_targets = should_attempt_final_polish(
+            final_evaluation,
+            attempted_final_target_fingerprints,
+        )
+        if not selected_targets:
+            break
+
+        before_average = final_evaluation["final_judge"].get("average")
+        scene_snapshot = copy.deepcopy(scenes)
+        ledger_snapshot = copy.deepcopy(ledger)
+        selected_fingerprints = [
+            target["fingerprint"] for target in selected_targets
+        ]
+        attempted_final_target_fingerprints.update(selected_fingerprints)
+        repair_judge = dict(final_evaluation["final_judge"])
+        repair_judge["repair_targets"] = [
+            {
+                "scene": target["scene"],
+                "issue": target["issue"],
+            }
+            for target in selected_targets
+        ]
+
+        round_repairs = apply_final_haiku_repairs(
             api_key=api_key,
             model=model,
             plan=plan,
             ledger=ledger,
             scenes=scenes,
-            final_judge=final_evaluation["final_judge"],
+            final_judge=repair_judge,
         )
+        round_success = bool(round_repairs) and all(
+            repair["accepted"] for repair in round_repairs
+        )
+        round_record: dict[str, Any] = {
+            "round": polish_round,
+            "selected_targets": selected_targets,
+            "repairs": round_repairs,
+            "before_average": before_average,
+            "technical_success": round_success,
+        }
+        final_polish_repairs.extend(round_repairs)
+
+        if not round_success:
+            scenes = scene_snapshot
+            ledger = ledger_snapshot
+            round_record["rolled_back"] = True
+            final_polish_rounds.append(round_record)
+            print(
+                json.dumps(
+                    {
+                        "checkpoint": "final_haiku_targeted_repair",
+                        "round": polish_round,
+                        "rolled_back": True,
+                        "targets": [
+                            {
+                                "scene": repair["scene"],
+                                "accepted": repair["accepted"],
+                                "errors": repair.get("errors") or [],
+                            }
+                            for repair in round_repairs
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
+            break
+
+        final_evaluation = evaluate_completed_story(
+            api_key=api_key,
+            judge_model=judge_model,
+            spec=spec,
+            plan=plan,
+            ledger=ledger,
+            scenes=scenes,
+        )
+        final_evaluations.append(final_evaluation)
+        round_record["rolled_back"] = False
+        round_record["after_average"] = final_evaluation["final_judge"].get(
+            "average"
+        )
+        round_record["accepted_after_round"] = final_evaluation["accepted"]
+        final_polish_rounds.append(round_record)
+
         print(
             json.dumps(
                 {
                     "checkpoint": "final_haiku_targeted_repair",
+                    "round": polish_round,
+                    "rolled_back": False,
+                    "accepted_after_round": final_evaluation["accepted"],
+                    "before_average": before_average,
+                    "after_average": final_evaluation["final_judge"].get(
+                        "average"
+                    ),
                     "targets": [
                         {
                             "scene": repair["scene"],
                             "accepted": repair["accepted"],
+                            "target_verified": repair.get(
+                                "target_verified"
+                            ),
                             "errors": repair.get("errors") or [],
                         }
-                        for repair in final_polish_repairs
+                        for repair in round_repairs
                     ],
                 },
                 ensure_ascii=False,
             ),
             flush=True,
         )
-        if all(repair["accepted"] for repair in final_polish_repairs):
-            final_evaluation = evaluate_completed_story(
-                api_key=api_key,
-                judge_model=judge_model,
-                spec=spec,
-                plan=plan,
-                ledger=ledger,
-                scenes=scenes,
-            )
-            final_evaluations.append(final_evaluation)
+
+        if final_evaluation["accepted"]:
+            break
 
     story = final_evaluation["story"]
     total_words = final_evaluation["word_count"]
@@ -1640,6 +1794,10 @@ def run(
             for item in final_evaluations
         ],
         "final_polish_repairs": final_polish_repairs,
+        "final_polish_rounds": final_polish_rounds,
+        "attempted_final_target_fingerprints": sorted(
+            attempted_final_target_fingerprints
+        ),
     }
 
 
