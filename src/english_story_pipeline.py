@@ -489,25 +489,25 @@ def repair_scene_word_budget(
     preferred_max = round(target_words * 1.08)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
-    if repair_index == 1:
-        required_min = preferred_min
-        required_max = preferred_max
-    elif mode == "COMPRESS":
-        required_min = preferred_min
-        required_max = min(preferred_max, round(target_words * 1.03))
-    else:
-        required_min = max(preferred_min, round(target_words * 0.97))
-        required_max = preferred_max
-
     repair_input = json.dumps(
         {
             "mode": mode,
             "target_words": target_words,
             "hard_word_range": [hard_min, hard_max],
-            "required_word_range": [required_min, required_max],
+            "required_word_range": [preferred_min, preferred_max],
             "current_word_count": current_words,
+            "required_reduction_words": (
+                max(0, current_words - preferred_max)
+                if mode == "COMPRESS"
+                else 0
+            ),
+            "required_expansion_words": (
+                max(0, preferred_min - current_words)
+                if mode == "EXPAND"
+                else 0
+            ),
             "immutable_state_delta": envelope.get("state_delta"),
-            "current_scene_prose": current_prose,
+            "current_prose": current_prose,
         },
         ensure_ascii=False,
         indent=2,
@@ -519,33 +519,45 @@ def repair_scene_word_budget(
             encoding="utf-8"
         ).strip(),
         user_prompt=repair_input,
-        temperature=0.0,
+        temperature=0.10,
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
         structured_output=True,
     )
-    prose_payload = parse_json_object(text)
-    repaired = {
-        "prose": prose_payload.get("prose"),
-        "state_delta": envelope.get("state_delta"),
-    }
-    errors, word_count = validate_scene_envelope(
-        repaired,
-        target_words=target_words,
-    )
-    if not errors and not required_min <= word_count <= required_max:
-        errors.append(
-            f"word_budget_repair_missed_requested_range:"
-            f"{word_count} not in [{required_min},{required_max}]"
+    payload = parse_json_object(text)
+    repaired_prose = payload.get("prose")
+    if not isinstance(repaired_prose, str) or not repaired_prose.strip():
+        repaired = {
+            "prose": "",
+            "state_delta": envelope.get("state_delta"),
+        }
+        errors = ["word_budget_repair_prose_missing"]
+        word_count = 0
+    else:
+        repaired = {
+            "prose": repaired_prose.strip(),
+            "state_delta": envelope.get("state_delta"),
+        }
+        errors, word_count = validate_scene_envelope(
+            repaired,
+            target_words=target_words,
         )
+        if not preferred_min <= word_count <= preferred_max:
+            errors.append(
+                "word_budget_repair_preferred_range_miss:"
+                f"{word_count} not in [{preferred_min},{preferred_max}]"
+            )
 
     attempt = {
         "kind": f"word_budget_repair_{repair_index}",
         "mode": mode,
-        "required_word_range": [required_min, required_max],
+        "required_word_range": [preferred_min, preferred_max],
         "errors": errors,
         "word_count": word_count,
+        "ignored_output_keys": sorted(
+            key for key in payload if key != "prose"
+        ),
         "usage": parse_usage(body).model_dump(mode="json"),
         "cost": parse_cost(body).model_dump(mode="json"),
         "request": {
