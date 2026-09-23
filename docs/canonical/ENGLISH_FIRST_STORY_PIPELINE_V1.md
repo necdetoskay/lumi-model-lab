@@ -27,7 +27,7 @@ Deterministic code owns hard invariants. JEV owns bounded semantic continuity qu
 2. Immutable StoryContract: protagonist goal, central problem, solution principle, theme thread, required constraints, prohibited events, ending state, open-thread policy, target total length.
 3. Six-scene SceneGraph: exactly six scene contracts; each declares entry state, purpose, beats, must-include facts, must-not-do guards, handoff, and open threads. Decisive solution is reserved for Scene 5; Scene 6 resolves consequences.
 4. Deterministic plan gate: schema validity, indexes 1..6, required fields, no duplicate purposes/handoffs, all StoryContract constraints scheduled, explicit early-resolution guards.
-5. JEV Plan Continuity Gate: English structured state only. Atomic checks cover causal continuity, stable protagonist goal, constraint coverage, information progression, unexplained entity/fact risk, premature resolution risk, ending-chain consistency, and next action CONTINUE/TARGETED_REPAIR/ESCALATE.
+5. JEV Plan Continuity Gate: English structured state only. Atomic checks cover causal continuity, stable protagonist goal, constraint coverage, information progression, unexplained entity/fact risk, premature resolution risk, ending-chain consistency, and next action CONTINUE/TARGETED_REPAIR/ESCALATE. If the plan is not accepted, the same plan may receive at most two targeted repair passes using deterministic errors plus JEV and Haiku feedback; each repaired plan is re-evaluated by all three gates before scene generation.
 6. Sequential scene generation: each scene receives immutable StoryContract, complete SceneGraph, cumulative ContinuityLedger, previous scene prose, current SceneContract, next-scene guard summary, and target word budget.
 7. Every scene returns a structured envelope: prose, state_delta, facts_established, clues_added, objects_changed, relationships_changed, threads_opened, threads_resolved, handoff_state.
 8. Scene deterministic gate: word-count range, schema, forbidden structural mutations, valid thread references, and handoff presence.
@@ -55,7 +55,7 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 
 ## Model Lab rollout
 
-Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, then OpenRouter JEV 1.13 continuity evidence, then Haiku plan review.
+Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, OpenRouter JEV 1.13 continuity evidence, and Haiku plan review are followed by at most two targeted plan repairs if needed.
 Phase B: generate one full English story with six sequential scenes, local repairs, JEV scene gates and Haiku final judge.
 Phase C: repeated qualification across Qwen, MiMo, DeepSeek and other candidates using identical frozen pipeline/gates.
 Phase D: translate only accepted English masters and qualify translation fidelity separately.
