@@ -94,6 +94,20 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertNotIn("provider", payload)
         self.assertIs(payload["stream"], True)
 
+    def test_qwen38_story_plan_has_separate_output_budget(self) -> None:
+        payload = normalize_openrouter_request(
+            "qwen/qwen3.8-flash",
+            {"temperature": 0.2, "max_tokens": 5000, "seed": 42},
+            request_class="story_plan",
+            structured_output=True,
+        )
+        self.assertEqual(payload["max_tokens"], 5000)
+        self.assertEqual(payload["temperature"], 0.2)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
+        self.assertEqual(payload["response_format"], {"type": "json_object"})
+        self.assertNotIn("stream", payload)
+
     def test_qwen38_default_request_keeps_provider_defaults(self) -> None:
         payload = normalize_openrouter_request(
             "qwen/qwen3.8-flash",
