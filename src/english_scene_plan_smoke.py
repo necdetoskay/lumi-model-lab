@@ -72,6 +72,19 @@ def parse_json_object(text: str) -> dict[str, Any]:
         raise RuntimeError("Response JSON must be an object.")
     return value
 
+def require_complete_stage(body: dict[str, Any], stage: str) -> None:
+    choice = (body.get("choices") or [{}])[0]
+    finish_reason = choice.get("finish_reason")
+    if finish_reason == "length":
+        usage = body.get("usage") or {}
+        raise RuntimeError(
+            f"{stage}_TRUNCATED: model hit output limit; "
+            f"completion_tokens={usage.get('completion_tokens')!r}"
+        )
+    if finish_reason not in (None, "stop"):
+        raise RuntimeError(f"{stage}_INCOMPLETE: finish_reason={finish_reason!r}")
+
+
 def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
     errors: list[str] = []
     if not isinstance(plan.get("story_title"), str) or not plan["story_title"].strip():
@@ -216,9 +229,10 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
         api_key=api_key, model=planner_model,
         system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
         user_prompt=f"Create the immutable six-scene story plan.\n\nSTORY BRIEF\n{brief}",
-        temperature=0.2, max_tokens=2500, seed=42,
+        temperature=0.2, max_tokens=5000, seed=42,
         request_class="story_plan", structured_output=True,
     )
+    require_complete_stage(plan_body, "PLAN")
     plan = parse_json_object(plan_text)
     deterministic_errors = validate_plan(plan, spec)
     jev_body = call_openrouter_jev(
