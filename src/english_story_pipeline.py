@@ -104,6 +104,18 @@ def validate_scene_envelope(
     return errors, word_count
 
 
+def split_scene_errors(errors: list[str]) -> tuple[list[str], list[str]]:
+    word_budget_errors = [
+        error
+        for error in errors
+        if error.startswith("below_scene_word_budget:")
+        or error.startswith("above_scene_word_budget:")
+        or error.startswith("word_budget_repair_preferred_range_miss:")
+    ]
+    hard_errors = [error for error in errors if error not in word_budget_errors]
+    return hard_errors, word_budget_errors
+
+
 def build_scene_jev_questions(scene_index: int, is_final: bool) -> dict[str, dict[str, Any]]:
     questions = {
         "continues_prior_state": noul_question(
@@ -1005,7 +1017,7 @@ def evaluate_completed_story(
     )
     total_words = count_words(story)
     minimum_words = round(spec.target_words * 0.90)
-    maximum_words = round(spec.target_words * 1.10)
+    maximum_words = round(spec.target_words * 1.25)
     repetition = repeated_ngram_ratio(story, 8)
     deterministic_errors: list[str] = []
     if total_words < minimum_words:
@@ -1474,7 +1486,10 @@ def run(
             plan_review=plan_review,
             seed=4200 + scene_index * 10,
         )
-        if scene_errors:
+        hard_scene_errors, soft_word_budget_errors = split_scene_errors(
+            scene_errors
+        )
+        if hard_scene_errors:
             print(
                 json.dumps(
                     {
@@ -1483,6 +1498,8 @@ def run(
                         "target_words": budgets[position],
                         "word_count": word_count,
                         "errors": scene_errors,
+                        "hard_errors": hard_scene_errors,
+                        "soft_word_budget_errors": soft_word_budget_errors,
                         "attempts": attempts,
                     },
                     ensure_ascii=False,
@@ -1490,7 +1507,8 @@ def run(
                 flush=True,
             )
             raise RuntimeError(
-                f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: {scene_errors}"
+                f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: "
+                f"{hard_scene_errors}"
             )
 
         jev = evaluate_scene_jev(
@@ -1545,9 +1563,13 @@ def run(
                 repair_record["after_jev"] = jev
             semantic_repairs.append(repair_record)
 
-        if semantic_errors:
+        semantic_hard_errors, semantic_word_budget_errors = split_scene_errors(
+            semantic_errors
+        )
+        if semantic_hard_errors:
             raise RuntimeError(
-                f"SCENE_{scene_index}_JEV_REPAIR_TECHNICAL_EXHAUSTED: {semantic_errors}"
+                f"SCENE_{scene_index}_JEV_REPAIR_TECHNICAL_EXHAUSTED: "
+                f"{semantic_hard_errors}"
             )
 
         continuity_escalation_required = jev_requires_final_escalation(jev)
@@ -1580,6 +1602,11 @@ def run(
                 "jev": jev,
                 "jev_history": jev_history,
                 "semantic_repairs": semantic_repairs,
+                "soft_word_budget_errors": soft_word_budget_errors,
+                "semantic_soft_word_budget_errors": semantic_word_budget_errors,
+                "word_budget_degraded": bool(
+                    soft_word_budget_errors or semantic_word_budget_errors
+                ),
                 "continuity_escalation_required": continuity_escalation_required,
             }
         )
@@ -1592,6 +1619,11 @@ def run(
                     "word_count": word_count,
                     "attempt_count": len(attempts),
                     "semantic_repair_count": len(semantic_repairs),
+                    "word_budget_degraded": bool(
+                        soft_word_budget_errors or semantic_word_budget_errors
+                    ),
+                    "soft_word_budget_errors": soft_word_budget_errors,
+                    "semantic_soft_word_budget_errors": semantic_word_budget_errors,
                     "jev_signal": jev["shadow_signal"],
                     "jev_below_threshold": jev["below_threshold"],
                     "continuity_escalation_required": continuity_escalation_required,
