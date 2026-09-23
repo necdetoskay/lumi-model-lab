@@ -121,6 +121,43 @@ class OpenRouterJevTests(unittest.TestCase):
 
     @patch("src.openrouter_jev.time.sleep")
     @patch("src.openrouter_jev.requests.post")
+    def test_429_without_retry_after_uses_longer_backoff(
+        self,
+        mock_post,
+        mock_sleep,
+    ):
+        mock_post.side_effect = [
+            _FakeErrorResponse(
+                429,
+                {"error": {"message": "temporarily rate-limited upstream"}},
+            ),
+            _FakeResponse(),
+        ]
+        body = call_openrouter_jev(
+            api_key="test",
+            state={"description": "English story plan", "plan": {}},
+            questions={
+                "causal": noul_question(
+                    "Is the plan causal?",
+                    true_criteria="Yes.",
+                    false_criteria="No.",
+                ),
+                "next_action": choice_question(
+                    "Choose next action.",
+                    {
+                        "CONTINUE": "Safe.",
+                        "TARGETED_REPAIR": "Repair.",
+                        "ESCALATE": "Escalate.",
+                    },
+                ),
+            },
+        )
+        self.assertIn("answers", body)
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(5.0)
+
+    @patch("src.openrouter_jev.time.sleep")
+    @patch("src.openrouter_jev.requests.post")
     def test_transient_520_retries_then_succeeds(self, mock_post, mock_sleep):
         mock_post.side_effect = [
             _FakeErrorResponse(
