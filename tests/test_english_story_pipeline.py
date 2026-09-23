@@ -19,6 +19,7 @@ from src.english_story_pipeline import (
     repair_plan_once,
     repair_scene_word_budget,
     repair_scene_for_final_judge,
+    split_scene_errors,
     run_final_polish_cycles,
     validate_final_judge,
     validate_prose_only_repair,
@@ -149,6 +150,26 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertTrue(
             any(error.startswith("above_scene_word_budget:") for error in errors)
         )
+
+    def test_scene_word_budget_errors_are_soft_after_repairs(self):
+        hard, soft = split_scene_errors(
+            [
+                "above_scene_word_budget:471>408",
+                "word_budget_repair_preferred_range_miss:471 not in [313,367]",
+            ]
+        )
+        self.assertEqual(hard, [])
+        self.assertEqual(len(soft), 2)
+
+    def test_scene_structure_errors_remain_hard(self):
+        hard, soft = split_scene_errors(
+            [
+                "above_scene_word_budget:471>408",
+                "state_delta_location_missing",
+            ]
+        )
+        self.assertEqual(hard, ["state_delta_location_missing"])
+        self.assertEqual(soft, ["above_scene_word_budget:471>408"])
 
     def test_only_word_budget_errors_detects_budget_only_failure(self):
         self.assertTrue(
@@ -628,9 +649,9 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         }
         scenes = []
         for i in range(1, 7):
-            envelope = good_envelope(334)
+            envelope = good_envelope(400)
             envelope["prose"] = " ".join(
-                f"scene{i}word{j}" for j in range(334)
+                f"scene{i}word{j}" for j in range(400)
             )
             scenes.append(
                 {
@@ -650,7 +671,7 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             scenes=scenes,
         )
         self.assertTrue(result["accepted"])
-        self.assertEqual(result["word_count"], 2004)
+        self.assertEqual(result["word_count"], 2400)
         self.assertEqual(result["final_judge_request"]["temperature"], 0.0)
         self.assertEqual(result["final_judge_request"]["max_tokens"], 2500)
 
