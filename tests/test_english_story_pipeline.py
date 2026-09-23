@@ -4,10 +4,12 @@ import unittest
 from unittest.mock import patch
 
 from src.english_story_pipeline import (
+    allocate_chunk_word_ceilings,
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
     call_structured_json_with_retry,
+    compress_scene_in_chunks,
     evaluate_completed_story,
     evaluate_scene_jev,
     jev_needs_targeted_repair,
@@ -20,6 +22,8 @@ from src.english_story_pipeline import (
     repair_scene_word_budget,
     repair_scene_for_final_judge,
     run_final_polish_cycles,
+    scene_request_payload,
+    split_scene_for_compression,
     validate_final_judge,
     validate_prose_only_repair,
     validate_scene_envelope,
@@ -112,6 +116,94 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             [260, 310, 340, 340, 410, 340],
         )
         self.assertEqual(sum(allocate_scene_budgets(2000)), 2000)
+
+    def test_scene_request_uses_tighter_writer_word_range(self):
+        StorySpec = __import__("src.schemas", fromlist=["StorySpec"]).StorySpec
+        spec = StorySpec(
+            age_min=6,
+            age_max=8,
+            language="en",
+            target_words=2000,
+            title_hint="Signal",
+            protagonist="Ada",
+            setting="coast",
+            theme="observation",
+            premise="Ada investigates a signal.",
+            constraints=["Use two clues."],
+        )
+        payload = __import__("json").loads(
+            scene_request_payload(
+                spec=spec,
+                plan={"story_contract": {}, "scenes": []},
+                ledger=[],
+                scene_contract={"purpose": "observe"},
+                next_scene=None,
+                previous_prose="",
+                target_words=100,
+                plan_review={},
+            )
+        )
+        self.assertEqual(payload["allowed_word_range"], [90, 110])
+
+    def test_chunk_split_and_ceilings_preserve_total_budget(self):
+        prose = (
+            "One two three. Four five six. Seven eight nine. "
+            "Ten eleven twelve. Thirteen fourteen fifteen. "
+            "Sixteen seventeen eighteen."
+        )
+        chunks = split_scene_for_compression(prose, 3)
+        self.assertEqual(len(chunks), 3)
+        self.assertEqual(
+            sum(__import__("src.generate", fromlist=["count_words"]).count_words(chunk) for chunk in chunks),
+            18,
+        )
+        ceilings = allocate_chunk_word_ceilings(
+            chunks,
+            total_target_words=90,
+        )
+        self.assertEqual(len(ceilings), 3)
+        self.assertEqual(sum(ceilings), 90)
+        self.assertTrue(all(value >= 20 for value in ceilings))
+
+    @patch("src.english_story_pipeline.call_structured_json_with_retry")
+    def test_chunked_compression_can_rescue_large_overage(self, mock_structured):
+        original = good_envelope(180)
+        response = (
+            {"prose": "word " * 22},
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 10,
+                    "total_tokens": 20,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "temperature": 0.0,
+                "response_format": {"type": "json_object"},
+            },
+            [],
+        )
+        mock_structured.side_effect = [response, response, response, response]
+
+        repaired, errors, word_count, attempt = compress_scene_in_chunks(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            scene_contract={"purpose": "observe"},
+            target_words=100,
+            seed=500,
+        )
+
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 88)
+        self.assertEqual(repaired["state_delta"], original["state_delta"])
+        self.assertEqual(attempt["kind"], "chunked_word_budget_compress")
+        self.assertEqual(attempt["chunk_count"], 4)
+        self.assertEqual(mock_structured.call_count, 4)
+        self.assertIsNone(
+            mock_structured.call_args_list[0].kwargs["max_tokens"]
+        )
 
     def test_scene_envelope_passes_inside_budget(self):
         envelope = good_envelope(100)
