@@ -21,6 +21,7 @@ from src.english_story_pipeline import (
     validate_final_judge,
     validate_prose_only_repair,
     validate_scene_envelope,
+    verify_final_repair_target,
 )
 
 
@@ -399,6 +400,47 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             target_words=100,
         )
         self.assertIn("final_repair_state_delta_changed", errors)
+
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_final_repair_target_verification_uses_atomic_jev_question(
+        self,
+        mock_jev,
+    ):
+        mock_jev.return_value = {
+            "answers": {
+                "target_resolved": {
+                    "type": "noul",
+                    "noul": 0.91,
+                }
+            },
+            "usage": {"cost": 0.00001},
+            "model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+        }
+        scenes = [
+            {
+                "scene": 1,
+                "contract": {"purpose": "observe"},
+                "envelope": good_envelope(100),
+            }
+        ]
+        result = verify_final_repair_target(
+            api_key="test",
+            plan={"story_contract": {"central_problem": "signal"}},
+            scenes=scenes,
+            scene_index=1,
+            issue="The timing statement is contradictory.",
+        )
+        self.assertTrue(result["verified"])
+        self.assertEqual(result["probability"], 0.91)
+        questions = mock_jev.call_args.kwargs["questions"]
+        self.assertEqual(list(questions), ["target_resolved"])
+        self.assertEqual(questions["target_resolved"]["type"], "noul")
+        sent_state = mock_jev.call_args.kwargs["state"]
+        self.assertEqual(
+            sent_state["repair_issue"],
+            "The timing statement is contradictory.",
+        )
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_final_scene_repair_is_token_uncapped_and_state_preserving(
