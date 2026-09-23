@@ -94,21 +94,21 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertNotIn("provider", payload)
         self.assertIs(payload["stream"], True)
 
-    def test_qwen38_story_plan_has_separate_output_budget(self) -> None:
+    def test_qwen38_story_plan_has_no_client_token_limit(self) -> None:
         payload = normalize_openrouter_request(
             "qwen/qwen3.8-flash",
             {"temperature": 0.2, "max_tokens": 5000, "seed": 42},
             request_class="story_plan",
             structured_output=True,
         )
-        self.assertEqual(payload["max_tokens"], 5000)
+        self.assertNotIn("max_tokens", payload)
         self.assertEqual(payload["temperature"], 0.2)
         self.assertEqual(payload["seed"], 42)
         self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
         self.assertEqual(payload["response_format"], {"type": "json_object"})
         self.assertNotIn("stream", payload)
 
-    def test_qwen38_scene_story_and_repair_are_structured_and_bounded(self) -> None:
+    def test_qwen38_scene_story_and_repair_have_no_client_token_limit(self) -> None:
         for request_class, temperature in (("scene_story", 0.7), ("scene_repair", 0.35)):
             payload = normalize_openrouter_request(
                 "qwen/qwen3.8-flash",
@@ -116,7 +116,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
                 request_class=request_class,
                 structured_output=True,
             )
-            self.assertEqual(payload["max_tokens"], 2200)
+            self.assertNotIn("max_tokens", payload)
             self.assertEqual(payload["temperature"], temperature)
             self.assertEqual(payload["seed"], 77)
             self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
