@@ -9,7 +9,6 @@ from typing import Any
 from dotenv import load_dotenv
 
 from src.generate import call_openrouter, load_yaml, parse_cost, parse_usage
-from src.generator_scene_first_calibration import _brief_text
 from src.model_registry import require_judge_runtime_profile, require_qualification_runtime_profile
 from src.openrouter_jev import call_openrouter_jev, choice_question, choice_value, load_jev_profile, noul_probability, noul_question
 from src.schemas import StorySpec
@@ -27,6 +26,23 @@ HAIKU_CRITERIA = (
     "no_early_resolution",
     "ending_coherence",
 )
+
+def build_labeled_brief(spec: StorySpec) -> str:
+    constraints = "\n".join(
+        f"C{index}: {constraint}"
+        for index, constraint in enumerate(spec.constraints, start=1)
+    )
+    return f"""Language: {spec.language}
+Age range: {spec.age_min}-{spec.age_max}
+Target words: {spec.target_words}
+Title hint: {spec.title_hint or 'None'}
+Protagonist: {spec.protagonist}
+Setting: {spec.setting}
+Theme: {spec.theme}
+Premise: {spec.premise}
+Required constraints:
+{constraints}"""
+
 
 JEV_CHECKS = {
     "causal_continuity": ("Do all six scenes form one causal chain in which each scene follows from prior state and materially enables or constrains the next?", "Scenes form one causal chain.", "One or more transitions are arbitrary or disconnected."),
@@ -68,9 +84,10 @@ def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
         for field in required_fields:
             if not isinstance(contract.get(field), str) or not contract[field].strip():
                 errors.append(f"story_contract_{field}_missing")
-        constraints = contract.get("required_constraints")
-        if not isinstance(constraints, list) or len(constraints) < len(spec.constraints):
-            errors.append("required_constraints_underrepresented")
+        expected_ids = [f"C{index}" for index in range(1, len(spec.constraints) + 1)]
+        constraint_ids = contract.get("required_constraint_ids")
+        if not isinstance(constraint_ids, list) or constraint_ids != expected_ids:
+            errors.append("required_constraint_ids_mismatch")
         prohibited = contract.get("prohibited_events")
         if not isinstance(prohibited, list) or not prohibited:
             errors.append("prohibited_events_missing")
@@ -92,11 +109,33 @@ def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
             value = scene.get(field)
             if not isinstance(value, list) or not value or not all(isinstance(item, str) and item.strip() for item in value):
                 errors.append(f"scene_{index}_{field}_invalid")
+        constraint_ids = scene.get("constraint_ids")
+        if not isinstance(constraint_ids, list) or not all(
+            isinstance(item, str) and item.strip() for item in constraint_ids
+        ):
+            errors.append(f"scene_{index}_constraint_ids_invalid")
+        prior_evidence = scene.get("prior_evidence")
+        if not isinstance(prior_evidence, list) or not all(
+            isinstance(item, str) and item.strip() for item in prior_evidence
+        ):
+            errors.append(f"scene_{index}_prior_evidence_invalid")
+        elif index > 1 and not prior_evidence:
+            errors.append(f"scene_{index}_prior_evidence_missing")
         beats = scene.get("beats")
         if isinstance(beats, list) and not 2 <= len(beats) <= 4:
             errors.append(f"scene_{index}_beats_out_of_range")
         purposes.append(str(scene.get("purpose") or "").strip().casefold())
         handoffs.append(str(scene.get("handoff") or "").strip().casefold())
+    expected_ids = {f"C{index}" for index in range(1, len(spec.constraints) + 1)}
+    scheduled_ids = {
+        constraint_id
+        for scene in scenes
+        if isinstance(scene, dict)
+        for constraint_id in (scene.get("constraint_ids") or [])
+        if isinstance(constraint_id, str)
+    }
+    if scheduled_ids != expected_ids:
+        errors.append("scene_constraint_schedule_mismatch")
     if len(purposes) != len(set(purposes)):
         errors.append("duplicate_scene_purpose")
     if len(handoffs) != len(set(handoffs)):
@@ -172,7 +211,7 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
     spec = StorySpec.model_validate(load_yaml(spec_path))
     if spec.language.lower() != "en":
         raise RuntimeError("English-first scene-plan smoke requires language=en.")
-    brief = _brief_text(spec)
+    brief = build_labeled_brief(spec)
     plan_text, plan_body, plan_request = call_openrouter(
         api_key=api_key, model=planner_model,
         system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
