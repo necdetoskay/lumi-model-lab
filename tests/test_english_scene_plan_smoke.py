@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
-from src.english_scene_plan_smoke import build_jev_questions, summarize_jev, validate_haiku, validate_plan
+from src.english_scene_plan_smoke import build_jev_questions, call_structured_json_with_retry, summarize_jev, validate_haiku, validate_plan
 from src.schemas import StorySpec
 
 def _spec() -> StorySpec:
@@ -38,6 +39,49 @@ def _plan() -> dict:
     }
 
 class EnglishScenePlanSmokeTests(unittest.TestCase):
+    @patch("src.english_scene_plan_smoke.call_openrouter")
+    def test_plan_structured_json_retry_recovers(self, mock_call):
+        body = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 10,
+                "completion_tokens": 20,
+                "total_tokens": 30,
+                "cost": 0.001,
+            },
+        }
+        mock_call.side_effect = [
+            (
+                '{"story_title":"unfinished',
+                body,
+                {"temperature": 0.2, "response_format": {"type": "json_object"}},
+            ),
+            (
+                __import__("json").dumps(_plan()),
+                body,
+                {"temperature": 0.2, "response_format": {"type": "json_object"}},
+            ),
+        ]
+
+        payload, _, _, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.2,
+            max_tokens=None,
+            seed=42,
+            request_class="story_plan",
+        )
+
+        self.assertEqual(payload["story_title"], "Signal")
+        self.assertEqual(len(failures), 1)
+        self.assertEqual(mock_call.call_count, 2)
+        self.assertIn(
+            "FORMAT RECOVERY",
+            mock_call.call_args_list[1].kwargs["user_prompt"],
+        )
+
     def test_valid_plan_shape(self):
         self.assertEqual(validate_plan(_plan(), _spec()), [])
 
