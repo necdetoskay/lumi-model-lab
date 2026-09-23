@@ -46,6 +46,25 @@ def load_jev_profile(path: str = DEFAULT_PROFILE_PATH) -> JevProfile:
     )
 
 
+
+def unavailable_jev_evidence(error: Exception | str) -> dict[str, Any]:
+    profile = load_jev_profile()
+    return {
+        "mode": profile.mode,
+        "available": False,
+        "error": str(error),
+        "threshold": profile.positive_probability_threshold,
+        "positive_probabilities": {},
+        "below_threshold": {},
+        "next_action": "ESCALATE",
+        "next_action_confidence": 1.0,
+        "shadow_signal": "REVIEW",
+        "resolved_model": profile.model_id,
+        "provider": None,
+        "usage": {},
+    }
+
+
 def noul_question(
     instructions: str,
     *,
