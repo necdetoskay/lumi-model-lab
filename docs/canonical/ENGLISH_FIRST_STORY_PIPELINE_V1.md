@@ -42,7 +42,7 @@ Deterministic code owns hard invariants. JEV owns bounded semantic continuity qu
 
 ## Word-budget policy
 
-For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 340 words. Each scene has bounded tolerance and may be locally expanded or compressed without changing its events or handoff.
+For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 340 words. Each scene has a target and bounded local-repair tolerance. After bounded repair attempts, a residual scene-only word-count miss becomes advisory evidence rather than a production failure, provided schema/state/continuity invariants remain valid. The assembled story total remains the hard length gate.
 
 ## Fail-closed rules
 
@@ -54,6 +54,8 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 - JEV low-confidence/high-risk scene results trigger bounded local repair when a concrete repair signal exists; residual or ambiguous risk escalates to Haiku rather than inventing certainty.
 - Scene repair may not modify StoryContract.
 - Final Haiku targeted repair may not modify any scene state_delta; a state change fails deterministically.
+- Scene-level word-count misses never override schema/state/continuity failures; only pure word-budget errors may degrade to advisory after bounded repair.
+- Total assembled-story word budget remains a deterministic hard gate.
 - Final Haiku targeted repair touches at most three judge-targeted scenes; each target allows at most two prose-only repair attempts with atomic JEV verification, followed by exactly one final whole-story Haiku rerun.
 - Translation may not become the canonical story artifact.
 

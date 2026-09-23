@@ -526,10 +526,37 @@ def scene_request_payload(
     )
 
 
+SCENE_WORD_BUDGET_ERROR_PREFIXES = (
+    "below_scene_word_budget:",
+    "above_scene_word_budget:",
+    "word_budget_repair_preferred_range_miss:",
+    "word_budget_repair_required_range_miss:",
+)
+
+
+def is_scene_word_budget_error(error: str) -> bool:
+    return any(
+        error.startswith(prefix)
+        for prefix in SCENE_WORD_BUDGET_ERROR_PREFIXES
+    )
+
+
+def partition_scene_validation_errors(
+    errors: list[str],
+) -> tuple[list[str], list[str]]:
+    blocking: list[str] = []
+    word_budget_warnings: list[str] = []
+    for error in errors:
+        if is_scene_word_budget_error(error):
+            word_budget_warnings.append(error)
+        else:
+            blocking.append(error)
+    return blocking, word_budget_warnings
+
+
 def only_word_budget_errors(errors: list[str]) -> bool:
     return bool(errors) and all(
-        error.startswith("below_scene_word_budget:")
-        or error.startswith("above_scene_word_budget:")
+        is_scene_word_budget_error(error)
         for error in errors
     )
 
@@ -922,10 +949,11 @@ def validate_prose_only_repair(
     repaired_envelope: dict[str, Any],
     target_words: int,
 ) -> tuple[list[str], int]:
-    errors, word_count = validate_scene_envelope(
+    raw_errors, word_count = validate_scene_envelope(
         repaired_envelope,
         target_words=target_words,
     )
+    errors, _ = partition_scene_validation_errors(raw_errors)
     if repaired_envelope.get("state_delta") != original_envelope.get("state_delta"):
         errors.append("final_repair_state_delta_changed")
     return errors, word_count
@@ -986,6 +1014,13 @@ def repair_scene_for_final_judge(
         seed=seed,
         request_class="scene_repair",
     )
+    raw_validation_errors, _ = validate_scene_envelope(
+        repaired,
+        target_words=scene["target_words"],
+    )
+    _, word_budget_warnings = partition_scene_validation_errors(
+        raw_validation_errors
+    )
     errors, word_count = validate_prose_only_repair(
         original_envelope=original_envelope,
         repaired_envelope=repaired,
@@ -996,6 +1031,7 @@ def repair_scene_for_final_judge(
         "scene": scene_index,
         "repair_issue": issue,
         "structured_parse_retries": parse_failures,
+        "word_budget_warnings": word_budget_warnings,
         "errors": errors,
         "word_count": word_count,
         "usage": parse_usage(body).model_dump(mode="json"),
@@ -1494,7 +1530,11 @@ def run(
             plan_review=plan_review,
             seed=4200 + scene_index * 10,
         )
-        if scene_errors:
+        (
+            scene_blocking_errors,
+            scene_word_budget_warnings,
+        ) = partition_scene_validation_errors(scene_errors)
+        if scene_blocking_errors:
             print(
                 json.dumps(
                     {
@@ -1502,7 +1542,8 @@ def run(
                         "scene": scene_index,
                         "target_words": budgets[position],
                         "word_count": word_count,
-                        "errors": scene_errors,
+                        "errors": scene_blocking_errors,
+                        "word_budget_warnings": scene_word_budget_warnings,
                         "attempts": attempts,
                     },
                     ensure_ascii=False,
@@ -1510,7 +1551,22 @@ def run(
                 flush=True,
             )
             raise RuntimeError(
-                f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: {scene_errors}"
+                f"SCENE_{scene_index}_TECHNICAL_REPAIR_EXHAUSTED: "
+                f"{scene_blocking_errors}"
+            )
+        if scene_word_budget_warnings:
+            print(
+                json.dumps(
+                    {
+                        "checkpoint": "scene_word_budget_advisory",
+                        "scene": scene_index,
+                        "target_words": budgets[position],
+                        "word_count": word_count,
+                        "warnings": scene_word_budget_warnings,
+                    },
+                    ensure_ascii=False,
+                ),
+                flush=True,
             )
 
         jev = evaluate_scene_jev(
@@ -1530,7 +1586,12 @@ def run(
             if not jev_needs_targeted_repair(jev) and not semantic_errors:
                 break
             jev_before = jev
-            envelope, semantic_errors, word_count, repair_attempt = repair_scene_for_jev(
+            (
+                envelope,
+                raw_semantic_errors,
+                word_count,
+                repair_attempt,
+            ) = repair_scene_for_jev(
                 api_key=api_key,
                 model=model,
                 plan=plan,
@@ -1545,10 +1606,20 @@ def run(
                 extra_reasons=semantic_errors,
             )
             attempts.append(repair_attempt)
+            (
+                semantic_errors,
+                semantic_word_budget_warnings,
+            ) = partition_scene_validation_errors(raw_semantic_errors)
+            scene_word_budget_warnings.extend(
+                warning
+                for warning in semantic_word_budget_warnings
+                if warning not in scene_word_budget_warnings
+            )
             repair_record: dict[str, Any] = {
                 "repair": semantic_repair_index,
                 "before_jev": jev_before,
                 "technical_errors": semantic_errors,
+                "word_budget_warnings": semantic_word_budget_warnings,
                 "word_count": word_count,
             }
             if not semantic_errors:
@@ -1600,6 +1671,7 @@ def run(
                 "jev": jev,
                 "jev_history": jev_history,
                 "semantic_repairs": semantic_repairs,
+                "word_budget_warnings": scene_word_budget_warnings,
                 "continuity_escalation_required": continuity_escalation_required,
             }
         )
@@ -1612,6 +1684,7 @@ def run(
                     "word_count": word_count,
                     "attempt_count": len(attempts),
                     "semantic_repair_count": len(semantic_repairs),
+                    "word_budget_warnings": scene_word_budget_warnings,
                     "jev_signal": jev["shadow_signal"],
                     "jev_below_threshold": jev["below_threshold"],
                     "continuity_escalation_required": continuity_escalation_required,
