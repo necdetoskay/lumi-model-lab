@@ -199,6 +199,78 @@ def validate_haiku(payload: dict[str, Any]) -> dict[str, Any]:
         "accepted": average >= 4.0 and minimum >= 3 and not critical,
     }
 
+
+def evaluate_plan_candidate(
+    *,
+    api_key: str,
+    plan: dict[str, Any],
+    spec: StorySpec,
+    judge_model: str,
+) -> dict[str, Any]:
+    deterministic_errors = validate_plan(plan, spec)
+    jev_body = call_openrouter_jev(
+        api_key=api_key,
+        state={
+            "description": "English LUMI story brief, StoryContract, and six-scene plan. Judge continuity only.",
+            "story_brief": {
+                "protagonist": spec.protagonist,
+                "setting": spec.setting,
+                "theme": spec.theme,
+                "premise": spec.premise,
+                "constraints": spec.constraints,
+            },
+            "story_contract": plan.get("story_contract"),
+            "scenes": plan.get("scenes"),
+        },
+        questions=build_jev_questions(),
+    )
+    jev = summarize_jev(jev_body)
+
+    brief = build_labeled_brief(spec)
+    haiku_input = (
+        "STORY BRIEF\n"
+        + brief
+        + "\n\nPLAN\n"
+        + json.dumps(plan, ensure_ascii=False, indent=2)
+        + "\n\nJEV ADVISORY EVIDENCE\n"
+        + json.dumps(jev, ensure_ascii=False, indent=2)
+    )
+    haiku_text, haiku_body, haiku_request = call_openrouter(
+        api_key=api_key,
+        model=judge_model,
+        system_prompt=HAIKU_PROMPT.read_text(encoding="utf-8").strip(),
+        user_prompt=haiku_input,
+        temperature=0.0,
+        max_tokens=1800,
+        seed=None,
+        request_class="scene_plan_judge",
+        structured_output=True,
+    )
+    haiku = validate_haiku(parse_json_object(haiku_text))
+    accepted = not deterministic_errors and haiku["accepted"]
+    return {
+        "accepted": accepted,
+        "deterministic_errors": deterministic_errors,
+        "jev": jev,
+        "haiku": haiku,
+        "costs": {
+            "jev": (jev_body.get("usage") or {}).get("cost"),
+            "haiku": parse_cost(haiku_body).model_dump(mode="json"),
+        },
+        "usage": {
+            "jev": jev_body.get("usage") or {},
+            "haiku": parse_usage(haiku_body).model_dump(mode="json"),
+        },
+        "request_evidence": {
+            "haiku": {
+                "reasoning": haiku_request.get("reasoning"),
+                "response_format": haiku_request.get("response_format"),
+            }
+        },
+    }
+
+
+
 def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -> dict[str, Any]:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
@@ -229,35 +301,38 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
             f"completion_tokens={usage.get('completion_tokens')!r}."
         )
     plan = parse_json_object(plan_text)
-    deterministic_errors = validate_plan(plan, spec)
-    jev_body = call_openrouter_jev(
+    evaluation = evaluate_plan_candidate(
         api_key=api_key,
-        state={
-            "description": "English LUMI story brief, immutable StoryContract, and six-scene plan. Judge continuity only.",
-            "story_brief": {"protagonist": spec.protagonist, "setting": spec.setting, "theme": spec.theme, "premise": spec.premise, "constraints": spec.constraints},
-            "story_contract": plan.get("story_contract"),
-            "scenes": plan.get("scenes"),
-        },
-        questions=build_jev_questions(),
+        plan=plan,
+        spec=spec,
+        judge_model=judge_model,
     )
-    jev = summarize_jev(jev_body)
-    haiku_input = "STORY BRIEF\n" + brief + "\n\nPLAN\n" + json.dumps(plan, ensure_ascii=False, indent=2) + "\n\nJEV SHADOW SIGNAL\n" + json.dumps(jev, ensure_ascii=False, indent=2)
-    haiku_text, haiku_body, haiku_request = call_openrouter(
-        api_key=api_key, model=judge_model,
-        system_prompt=HAIKU_PROMPT.read_text(encoding="utf-8").strip(),
-        user_prompt=haiku_input, temperature=0.0, max_tokens=1800, seed=None,
-        request_class="scene_plan_judge", structured_output=True,
-    )
-    haiku = validate_haiku(parse_json_object(haiku_text))
-    accepted = not deterministic_errors and haiku["accepted"]
     return {
         "pipeline": "english_scene_plan_smoke_v1",
-        "planner_model": planner_model, "jev_model": jev_model, "judge_model": judge_model,
-        "spec": str(spec_path), "accepted": accepted, "deterministic_errors": deterministic_errors,
-        "plan": plan, "jev": jev, "haiku": haiku,
-        "costs": {"planner": parse_cost(plan_body).model_dump(mode="json"), "jev": (jev_body.get("usage") or {}).get("cost"), "haiku": parse_cost(haiku_body).model_dump(mode="json")},
-        "usage": {"planner": parse_usage(plan_body).model_dump(mode="json"), "jev": jev_body.get("usage") or {}, "haiku": parse_usage(haiku_body).model_dump(mode="json")},
-        "request_evidence": {"planner": {"reasoning": plan_request.get("reasoning"), "response_format": plan_request.get("response_format")}, "haiku": {"reasoning": haiku_request.get("reasoning"), "response_format": haiku_request.get("response_format")}},
+        "planner_model": planner_model,
+        "jev_model": jev_model,
+        "judge_model": judge_model,
+        "spec": str(spec_path),
+        "accepted": evaluation["accepted"],
+        "deterministic_errors": evaluation["deterministic_errors"],
+        "plan": plan,
+        "jev": evaluation["jev"],
+        "haiku": evaluation["haiku"],
+        "costs": {
+            "planner": parse_cost(plan_body).model_dump(mode="json"),
+            **evaluation["costs"],
+        },
+        "usage": {
+            "planner": parse_usage(plan_body).model_dump(mode="json"),
+            **evaluation["usage"],
+        },
+        "request_evidence": {
+            "planner": {
+                "reasoning": plan_request.get("reasoning"),
+                "response_format": plan_request.get("response_format"),
+            },
+            **evaluation["request_evidence"],
+        },
     }
 
 def main() -> None:
