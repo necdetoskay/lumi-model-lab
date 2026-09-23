@@ -89,9 +89,11 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(payload["max_tokens"], 12000)
         self.assertEqual(payload["temperature"], 0.8)
         self.assertEqual(payload["seed"], 42)
+        self.assertNotIn("reasoning", payload)
+        self.assertEqual(payload["reasoning_effort"], "low")
         self.assertEqual(
-            payload["reasoning"],
-            {"enabled": True, "effort": "low", "exclude": True},
+            payload["provider"],
+            {"allow_fallbacks": False, "require_parameters": True},
         )
 
     def test_paid_qualification_profile_gate_rejects_fallback_and_family(self) -> None:

@@ -192,6 +192,16 @@ def normalize_openrouter_request(
     elif reasoning_mode in {"provider_managed_required", "provider_default", "unsupported"}:
         result.pop("reasoning", None)
 
+    reasoning_effort = behavior.get("reasoning_effort") or {}
+    reasoning_effort_mode = reasoning_effort.get("mode", "omit")
+    if reasoning_effort_mode == "send" and reasoning_effort.get("value") is not None:
+        result["reasoning_effort"] = str(reasoning_effort["value"])
+        # OpenRouter documents reasoning_effort as shorthand for reasoning.effort;
+        # never send both forms because provider adapters may reject or disagree.
+        result.pop("reasoning", None)
+    else:
+        result.pop("reasoning_effort", None)
+
     if structured_output:
         structured_mode = behavior.get("structured_output", "provider_default")
         if structured_mode == "json_object":
