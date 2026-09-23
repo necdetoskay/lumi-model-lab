@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from unittest.mock import patch
 
-from src.english_scene_plan_smoke import build_jev_questions, call_structured_json_with_retry, summarize_jev, validate_haiku, validate_plan
+from src.english_scene_plan_smoke import build_jev_questions, call_structured_json_with_retry, evaluate_plan_candidate, summarize_jev, validate_haiku, validate_plan
 from src.schemas import StorySpec
 
 def _spec() -> StorySpec:
@@ -88,6 +88,44 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
             "FORMAT RECOVERY",
             mock_call.call_args_list[1].kwargs["user_prompt"],
         )
+
+    @patch("src.english_scene_plan_smoke.call_structured_json_with_retry")
+    @patch("src.english_scene_plan_smoke.call_openrouter_jev")
+    def test_plan_jev_outage_degrades_to_haiku(
+        self,
+        mock_jev,
+        mock_structured,
+    ):
+        mock_jev.side_effect = RuntimeError("OpenRouter JEV HTTP 529: overloaded")
+        mock_structured.return_value = (
+            {
+                "scores": {
+                    "causal_continuity": 5,
+                    "protagonist_goal_continuity": 5,
+                    "constraint_coverage": 5,
+                    "information_progression": 5,
+                    "no_unexplained_dependencies": 5,
+                    "no_early_resolution": 5,
+                    "ending_coherence": 5,
+                },
+                "critical_failures": [],
+                "scene_risks": [],
+                "summary": "Plan is sound.",
+            },
+            {"usage": {"cost": 0.001}},
+            {"reasoning": None, "response_format": {"type": "json_object"}},
+            [],
+        )
+        result = evaluate_plan_candidate(
+            api_key="test",
+            plan=_plan(),
+            spec=_spec(),
+            judge_model="anthropic/claude-haiku-4.5",
+        )
+        self.assertTrue(result["accepted"])
+        self.assertFalse(result["jev"]["available"])
+        self.assertEqual(result["jev"]["next_action"], "ESCALATE")
+        self.assertIn("529", result["jev"]["error"])
 
     def test_valid_plan_shape(self):
         self.assertEqual(validate_plan(_plan(), _spec()), [])
