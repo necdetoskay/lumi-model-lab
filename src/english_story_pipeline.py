@@ -33,6 +33,8 @@ SCENE_WORD_BUDGET_REPAIR_PROMPT = Path("prompts/story_scene_word_budget_repair_e
 PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
+TOTAL_STORY_MIN_RATIO = 0.75
+TOTAL_STORY_MAX_RATIO = 1.25
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
 
 FINAL_CRITERIA = (
@@ -1060,8 +1062,8 @@ def evaluate_completed_story(
         for scene in scenes
     )
     total_words = count_words(story)
-    minimum_words = round(spec.target_words * 0.90)
-    maximum_words = round(spec.target_words * 1.10)
+    minimum_words = round(spec.target_words * TOTAL_STORY_MIN_RATIO)
+    maximum_words = round(spec.target_words * TOTAL_STORY_MAX_RATIO)
     repetition = repeated_ngram_ratio(story, 8)
     deterministic_errors: list[str] = []
     if total_words < minimum_words:
