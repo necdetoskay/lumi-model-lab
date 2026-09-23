@@ -79,9 +79,10 @@ class GenerateStreamingTests(unittest.TestCase):
         self.assertTrue(payload["stream"])
         self.assertNotIn("usage", payload)
         self.assertNotIn("stream_options", payload)
-        self.assertNotIn("max_tokens", payload)
-        self.assertNotIn("temperature", payload)
-        self.assertNotIn("seed", payload)
+        self.assertEqual(payload["max_tokens"], 7000)
+        self.assertEqual(payload["temperature"], 0.8)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
         _, kwargs = mock_post.call_args
         self.assertTrue(kwargs["stream"])
 
