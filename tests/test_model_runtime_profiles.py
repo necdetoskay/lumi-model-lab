@@ -4,6 +4,7 @@ import unittest
 
 from src.model_registry import (
     normalize_openrouter_request,
+    require_qualification_runtime_profile,
     resolve_model_request_behavior,
     resolve_model_runtime_profile,
     runtime_profile_identity,
@@ -74,6 +75,32 @@ class ModelRuntimeProfileTests(unittest.TestCase):
             payload["reasoning"],
             {"enabled": True, "effort": "low", "exclude": True},
         )
+
+    def test_qwen38_flash_uses_verified_low_reasoning_budget(self) -> None:
+        profile = require_qualification_runtime_profile("qwen/qwen3.8-flash")
+        payload = normalize_openrouter_request(
+            "qwen/qwen3.8-flash",
+            {"temperature": 0.8, "max_tokens": 7000, "seed": 42},
+            request_class="teacher_story",
+        )
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 131072)
+        self.assertEqual(profile["metadata"]["reasoning"]["default_effort"], "xhigh")
+        self.assertEqual(payload["max_tokens"], 12000)
+        self.assertEqual(payload["temperature"], 0.8)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(
+            payload["reasoning"],
+            {"enabled": True, "effort": "low", "exclude": True},
+        )
+
+    def test_paid_qualification_profile_gate_rejects_fallback_and_family(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):
+            require_qualification_runtime_profile("vendor/new-model")
+        with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):
+            require_qualification_runtime_profile("minimax/minimax-m2.5-fast")
+        with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):
+            require_qualification_runtime_profile("qwen/qwen3.6-flash")
 
     def test_family_prefix_profile_is_resolved(self) -> None:
         profile = resolve_model_runtime_profile("minimax/minimax-m2.5-fast")

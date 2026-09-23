@@ -25,6 +25,7 @@ from src.extract_examples import run_extraction
 from src.model_registry import (
     build_fingerprint,
     find_by_fingerprint,
+    require_qualification_runtime_profile,
     load_registry,
     model_slug,
     save_json,
@@ -313,6 +314,10 @@ def list_registry(registry_path: Path, model_filter: str | None = None) -> None:
 
 
 def run_qualification(model: str, config_path: Path, *, screen_only: bool, rerun: bool) -> dict[str, Any]:
+    # Cost-bearing qualification is fail-closed: generic/family fallbacks may be
+    # useful for exploratory runtime calls, but they are not evidence that a new
+    # model's transport contract has been verified.
+    require_qualification_runtime_profile(model)
     config = load_yaml(config_path)
     registry_path = Path(str(config.get("registry_path", "runs/model_registry/registry.json")))
     judge_model = os.getenv("JUDGE_MODEL")
