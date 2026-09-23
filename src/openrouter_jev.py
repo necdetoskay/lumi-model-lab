@@ -18,7 +18,8 @@ class JevProfile:
 
 
 def load_jev_profile(path: str = DEFAULT_PROFILE_PATH) -> JevProfile:
-    payload = yaml.safe_load(open(path, "r", encoding="utf-8")) or {}
+    with open(path, "r", encoding="utf-8") as handle:
+        payload = yaml.safe_load(handle) or {}
     if payload.get("schema_version") != "openrouter-jev-profile.v1":
         raise RuntimeError("Unsupported OpenRouter JEV profile schema.")
     model_id = str(payload.get("model_id") or "")
