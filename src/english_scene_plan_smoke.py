@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 from src.generate import call_openrouter, load_yaml, parse_cost, parse_usage
 from src.model_registry import require_judge_runtime_profile, require_qualification_runtime_profile
-from src.openrouter_jev import call_openrouter_jev, choice_question, choice_value, load_jev_profile, noul_probability, noul_question
+from src.openrouter_jev import call_openrouter_jev, choice_question, choice_value, load_jev_profile, noul_probability, noul_question, unavailable_jev_evidence
 from src.schemas import StorySpec
 
 PLAN_PROMPT = Path("prompts/story_scene_plan_en_v1.md")
@@ -283,23 +283,28 @@ def evaluate_plan_candidate(
     judge_model: str,
 ) -> dict[str, Any]:
     deterministic_errors = validate_plan(plan, spec)
-    jev_body = call_openrouter_jev(
-        api_key=api_key,
-        state={
-            "description": "English LUMI story brief, StoryContract, and six-scene plan. Judge continuity only.",
-            "story_brief": {
-                "protagonist": spec.protagonist,
-                "setting": spec.setting,
-                "theme": spec.theme,
-                "premise": spec.premise,
-                "constraints": spec.constraints,
+    jev_body: dict[str, Any] = {}
+    try:
+        jev_body = call_openrouter_jev(
+            api_key=api_key,
+            state={
+                "description": "English LUMI story brief, StoryContract, and six-scene plan. Judge continuity only.",
+                "story_brief": {
+                    "protagonist": spec.protagonist,
+                    "setting": spec.setting,
+                    "theme": spec.theme,
+                    "premise": spec.premise,
+                    "constraints": spec.constraints,
+                },
+                "story_contract": plan.get("story_contract"),
+                "scenes": plan.get("scenes"),
             },
-            "story_contract": plan.get("story_contract"),
-            "scenes": plan.get("scenes"),
-        },
-        questions=build_jev_questions(),
-    )
-    jev = summarize_jev(jev_body)
+            questions=build_jev_questions(),
+        )
+        jev = summarize_jev(jev_body)
+        jev["available"] = True
+    except RuntimeError as exc:
+        jev = unavailable_jev_evidence(exc)
 
     brief = build_labeled_brief(spec)
     haiku_input = (
