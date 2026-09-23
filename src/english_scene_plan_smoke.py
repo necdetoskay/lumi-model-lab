@@ -51,7 +51,7 @@ JEV_CHECKS = {
     "information_progression": ("Do clues, observations, decisions, and consequences accumulate without resetting knowledge or repeating the same narrative function?", "Information progresses cumulatively.", "Knowledge resets or narrative functions repeat without progression."),
     "no_unexplained_dependencies": ("Can every important later event be explained using elements established before they are needed?", "Later events depend only on previously established elements.", "A later event requires an unexplained character, object, location, fact, power, or clue."),
     "no_early_resolution": ("Does the plan keep the central problem unresolved through Scene 4 and reserve the decisive solution for Scene 5?", "The decisive solution is reserved for Scene 5.", "The central problem is solved before Scene 5 or later payoff leaks early."),
-    "ending_coherence": ("Does Scene 6 resolve consequences from the Scene 5 payoff while leaving at most a small future-discovery hook?", "Scene 6 resolves the main consequences coherently.", "Scene 6 contradicts the payoff, opens a new main problem, or leaves the main thread unresolved."),
+    "ending_coherence": ("Does Scene 6 resolve consequences from the Scene 5 payoff, close the main thread, and leave a future-discovery hook only when the brief actually calls for one?", "Scene 6 resolves the main consequences coherently and respects the brief's ending requirements.", "Scene 6 contradicts the payoff, opens a new main problem, leaves the main thread unresolved, or invents an unnecessary future hook."),
 }
 
 def parse_json_object(text: str) -> dict[str, Any]:
@@ -169,10 +169,21 @@ def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
         for field in ("purpose", "entry_state", "handoff"):
             if not isinstance(scene.get(field), str) or not scene[field].strip():
                 errors.append(f"scene_{index}_{field}_missing")
-        for field in ("beats", "must_include", "must_not_do", "open_threads_after"):
+        for field in ("beats", "must_include", "must_not_do"):
             value = scene.get(field)
-            if not isinstance(value, list) or not value or not all(isinstance(item, str) and item.strip() for item in value):
+            if not isinstance(value, list) or not value or not all(
+                isinstance(item, str) and item.strip()
+                for item in value
+            ):
                 errors.append(f"scene_{index}_{field}_invalid")
+        open_threads_after = scene.get("open_threads_after")
+        if not isinstance(open_threads_after, list) or not all(
+            isinstance(item, str) and item.strip()
+            for item in open_threads_after
+        ):
+            errors.append(f"scene_{index}_open_threads_after_invalid")
+        elif index < 6 and not open_threads_after:
+            errors.append(f"scene_{index}_open_threads_after_missing")
         constraint_ids = scene.get("constraint_ids")
         if not isinstance(constraint_ids, list) or not all(
             isinstance(item, str) and item.strip() for item in constraint_ids
