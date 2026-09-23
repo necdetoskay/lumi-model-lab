@@ -1098,38 +1098,74 @@ def apply_final_haiku_repairs(
         issue = final_repair_issue(final_judge, scene_index)
         if not issue:
             continue
-        repaired, errors, word_count, attempt = repair_scene_for_final_judge(
-            api_key=api_key,
-            model=model,
-            plan=plan,
-            ledger=ledger,
-            scenes=scenes,
-            scene_index=scene_index,
-            issue=issue,
-            seed=7600 + scene_index,
-        )
-        if errors:
-            records.append(
-                {
-                    "scene": scene_index,
-                    "accepted": False,
-                    "errors": errors,
-                    "attempt": attempt,
-                }
-            )
-            continue
 
         position = scene_index - 1
-        scenes[position]["envelope"] = repaired
-        scenes[position]["word_count"] = word_count
-        scenes[position]["attempts"].append(attempt)
+        repair_attempts: list[dict[str, Any]] = []
+        verifications: list[dict[str, Any]] = []
+        latest_word_count = scenes[position]["word_count"]
+        technical_failure = False
+
+        for repair_round in range(1, 3):
+            repaired, errors, word_count, attempt = repair_scene_for_final_judge(
+                api_key=api_key,
+                model=model,
+                plan=plan,
+                ledger=ledger,
+                scenes=scenes,
+                scene_index=scene_index,
+                issue=issue,
+                seed=7600 + scene_index * 10 + repair_round,
+            )
+            attempt["repair_round"] = repair_round
+            repair_attempts.append(attempt)
+
+            if errors:
+                records.append(
+                    {
+                        "scene": scene_index,
+                        "accepted": False,
+                        "target_verified": False,
+                        "issue": issue,
+                        "errors": errors,
+                        "repair_attempts": repair_attempts,
+                        "verifications": verifications,
+                    }
+                )
+                technical_failure = True
+                break
+
+            scenes[position]["envelope"] = repaired
+            scenes[position]["word_count"] = word_count
+            scenes[position]["attempts"].append(attempt)
+            ledger[position]["word_count"] = word_count
+            latest_word_count = word_count
+
+            verification = verify_final_repair_target(
+                api_key=api_key,
+                plan=plan,
+                scenes=scenes,
+                scene_index=scene_index,
+                issue=issue,
+            )
+            verification["repair_round"] = repair_round
+            verifications.append(verification)
+            if verification["verified"]:
+                break
+
+        if technical_failure:
+            continue
+
+        target_verified = bool(
+            verifications and verifications[-1]["verified"]
+        )
         scenes[position].setdefault("final_polish_repairs", []).append(
             {
                 "issue": issue,
-                "word_count": word_count,
+                "word_count": latest_word_count,
+                "repair_attempts": len(repair_attempts),
+                "target_verified": target_verified,
             }
         )
-        ledger[position]["word_count"] = word_count
 
         post_jev = evaluate_scene_jev(
             api_key=api_key,
@@ -1142,7 +1178,7 @@ def apply_final_haiku_repairs(
                 else None
             ),
             ledger=ledger[:position],
-            envelope=repaired,
+            envelope=scenes[position]["envelope"],
         )
         scenes[position]["jev"] = post_jev
         scenes[position]["jev_history"].append(post_jev)
@@ -1153,10 +1189,12 @@ def apply_final_haiku_repairs(
             {
                 "scene": scene_index,
                 "accepted": True,
+                "target_verified": target_verified,
                 "issue": issue,
-                "word_count": word_count,
+                "word_count": latest_word_count,
                 "post_jev": post_jev,
-                "attempt": attempt,
+                "repair_attempts": repair_attempts,
+                "verifications": verifications,
             }
         )
     return records
