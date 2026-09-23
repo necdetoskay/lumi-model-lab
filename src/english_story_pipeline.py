@@ -31,6 +31,7 @@ SCENE_WRITER_PROMPT = Path("prompts/story_scene_writer_en_v1.md")
 SCENE_REPAIR_PROMPT = Path("prompts/story_scene_repair_en_v1.md")
 PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
+FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
 
 FINAL_CRITERIA = (
@@ -677,6 +678,332 @@ def repair_plan_once(
     return repaired_result, attempt
 
 
+def final_repair_scene_ids(final_judge: dict[str, Any], *, limit: int = 3) -> list[int]:
+    if final_judge.get("critical_failures"):
+        return []
+    scene_ids: list[int] = []
+    for target in final_judge.get("repair_targets") or []:
+        if not isinstance(target, dict):
+            continue
+        scene = target.get("scene")
+        if not isinstance(scene, int) or isinstance(scene, bool) or not 1 <= scene <= 6:
+            continue
+        if scene not in scene_ids:
+            scene_ids.append(scene)
+        if len(scene_ids) >= limit:
+            break
+    return scene_ids
+
+
+def final_repair_issue(final_judge: dict[str, Any], scene_index: int) -> str:
+    issues = [
+        str(target.get("issue") or "").strip()
+        for target in final_judge.get("repair_targets") or []
+        if isinstance(target, dict) and target.get("scene") == scene_index
+    ]
+    return "\n".join(issue for issue in issues if issue)
+
+
+def validate_prose_only_repair(
+    *,
+    original_envelope: dict[str, Any],
+    repaired_envelope: dict[str, Any],
+    target_words: int,
+) -> tuple[list[str], int]:
+    errors, word_count = validate_scene_envelope(
+        repaired_envelope,
+        target_words=target_words,
+    )
+    if repaired_envelope.get("state_delta") != original_envelope.get("state_delta"):
+        errors.append("final_repair_state_delta_changed")
+    return errors, word_count
+
+
+def repair_scene_for_final_judge(
+    *,
+    api_key: str,
+    model: str,
+    plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    scenes: list[dict[str, Any]],
+    scene_index: int,
+    issue: str,
+    seed: int,
+) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
+    position = scene_index - 1
+    scene = scenes[position]
+    original_envelope = scene["envelope"]
+    previous_prose = (
+        scenes[position - 1]["envelope"]["prose"]
+        if position > 0
+        else ""
+    )
+    next_prose = (
+        scenes[position + 1]["envelope"]["prose"]
+        if position + 1 < len(scenes)
+        else ""
+    )
+    payload = json.dumps(
+        {
+            "story_contract": plan["story_contract"],
+            "scene_contract": scene["contract"],
+            "prior_ledger": ledger[:position],
+            "immutable_state_delta": original_envelope["state_delta"],
+            "repair_issue": issue,
+            "target_words": scene["target_words"],
+            "allowed_word_range": [
+                round(scene["target_words"] * 0.80),
+                round(scene["target_words"] * 1.20),
+            ],
+            "previous_scene_prose": previous_prose,
+            "current_scene_envelope": original_envelope,
+            "next_scene_prose": next_prose,
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+    text, body, request = call_openrouter(
+        api_key=api_key,
+        model=model,
+        system_prompt=FINAL_TARGETED_REPAIR_PROMPT.read_text(
+            encoding="utf-8"
+        ).strip(),
+        user_prompt=payload,
+        temperature=0.20,
+        max_tokens=None,
+        seed=seed,
+        request_class="scene_repair",
+        structured_output=True,
+    )
+    repaired = parse_json_object(text)
+    errors, word_count = validate_prose_only_repair(
+        original_envelope=original_envelope,
+        repaired_envelope=repaired,
+        target_words=scene["target_words"],
+    )
+    attempt = {
+        "kind": "final_haiku_targeted_repair",
+        "scene": scene_index,
+        "repair_issue": issue,
+        "errors": errors,
+        "word_count": word_count,
+        "usage": parse_usage(body).model_dump(mode="json"),
+        "cost": parse_cost(body).model_dump(mode="json"),
+        "request": {
+            "temperature": request.get("temperature"),
+            "max_tokens": request.get("max_tokens"),
+            "reasoning": request.get("reasoning"),
+            "response_format": request.get("response_format"),
+        },
+    }
+    return repaired, errors, word_count, attempt
+
+
+def evaluate_completed_story(
+    *,
+    api_key: str,
+    judge_model: str,
+    spec: StorySpec,
+    plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    scenes: list[dict[str, Any]],
+) -> dict[str, Any]:
+    story = "\n\n".join(
+        scene["envelope"]["prose"].strip()
+        for scene in scenes
+    )
+    total_words = count_words(story)
+    minimum_words = round(spec.target_words * 0.90)
+    maximum_words = round(spec.target_words * 1.10)
+    repetition = repeated_ngram_ratio(story, 8)
+    deterministic_errors: list[str] = []
+    if total_words < minimum_words:
+        deterministic_errors.append(
+            f"below_total_word_budget:{total_words}<{minimum_words}"
+        )
+    if total_words > maximum_words:
+        deterministic_errors.append(
+            f"above_total_word_budget:{total_words}>{maximum_words}"
+        )
+    if repetition > 0.02:
+        deterministic_errors.append(
+            f"repeat_8gram_ratio_high:{repetition}>0.02"
+        )
+
+    whole_questions = build_whole_story_jev_questions()
+    whole_jev_body = call_openrouter_jev(
+        api_key=api_key,
+        state={
+            "description": "Completed English LUMI six-scene story continuity ledger.",
+            "story_contract": plan["story_contract"],
+            "scene_graph": plan["scenes"],
+            "continuity_ledger": ledger,
+            "total_word_count": total_words,
+            "story": story,
+        },
+        questions=whole_questions,
+    )
+    whole_jev = summarize_jev(
+        whole_jev_body,
+        question_ids=[
+            key for key in whole_questions
+            if key != "next_action"
+        ],
+    )
+
+    brief = build_labeled_brief(spec)
+    final_input = (
+        "STORY BRIEF\n"
+        + brief
+        + "\n\nIMMUTABLE STORY CONTRACT\n"
+        + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
+        + "\n\nSCENE GRAPH\n"
+        + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
+        + "\n\nCONTINUITY LEDGER\n"
+        + json.dumps(ledger, ensure_ascii=False, indent=2)
+        + "\n\nSCENE CONTINUITY EVIDENCE\n"
+        + json.dumps(
+            [
+                {
+                    "scene": scene["scene"],
+                    "jev_history": scene["jev_history"],
+                    "semantic_repairs": scene["semantic_repairs"],
+                    "continuity_escalation_required": scene[
+                        "continuity_escalation_required"
+                    ],
+                    "final_polish_repairs": scene.get(
+                        "final_polish_repairs", []
+                    ),
+                }
+                for scene in scenes
+            ],
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n\nJEV WHOLE-STORY ADVISORY EVIDENCE\n"
+        + json.dumps(whole_jev, ensure_ascii=False, indent=2)
+        + "\n\nCOMPLETE ENGLISH STORY\n"
+        + story
+    )
+    final_text, final_body, final_request = call_openrouter(
+        api_key=api_key,
+        model=judge_model,
+        system_prompt=FINAL_JUDGE_PROMPT.read_text(encoding="utf-8").strip(),
+        user_prompt=final_input,
+        temperature=0.0,
+        max_tokens=2500,
+        seed=None,
+        request_class="judge",
+        structured_output=True,
+    )
+    final_judge = validate_final_judge(parse_json_object(final_text))
+    return {
+        "story": story,
+        "word_count": total_words,
+        "repeat_8gram_ratio": repetition,
+        "deterministic_errors": deterministic_errors,
+        "whole_story_jev": whole_jev,
+        "whole_jev_usage": whole_jev_body.get("usage") or {},
+        "whole_jev_cost": (whole_jev_body.get("usage") or {}).get("cost"),
+        "final_judge": final_judge,
+        "final_judge_usage": parse_usage(final_body).model_dump(mode="json"),
+        "final_judge_cost": parse_cost(final_body).model_dump(mode="json"),
+        "final_judge_request": final_evaluation["final_judge_request"],
+        "final_evaluation_history": [
+            {
+                "accepted": item["accepted"],
+                "word_count": item["word_count"],
+                "deterministic_errors": item["deterministic_errors"],
+                "whole_story_jev": item["whole_story_jev"],
+                "final_judge": item["final_judge"],
+                "whole_jev_cost": item["whole_jev_cost"],
+                "final_judge_cost": item["final_judge_cost"],
+            }
+            for item in final_evaluations
+        ],
+        "final_polish_repairs": final_polish_repairs,
+        "accepted": not deterministic_errors and final_judge["accepted"],
+    }
+
+
+def apply_final_haiku_repairs(
+    *,
+    api_key: str,
+    model: str,
+    plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    scenes: list[dict[str, Any]],
+    final_judge: dict[str, Any],
+) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for scene_index in final_repair_scene_ids(final_judge):
+        issue = final_repair_issue(final_judge, scene_index)
+        if not issue:
+            continue
+        repaired, errors, word_count, attempt = repair_scene_for_final_judge(
+            api_key=api_key,
+            model=model,
+            plan=plan,
+            ledger=ledger,
+            scenes=scenes,
+            scene_index=scene_index,
+            issue=issue,
+            seed=7600 + scene_index,
+        )
+        if errors:
+            records.append(
+                {
+                    "scene": scene_index,
+                    "accepted": False,
+                    "errors": errors,
+                    "attempt": attempt,
+                }
+            )
+            continue
+
+        position = scene_index - 1
+        scenes[position]["envelope"] = repaired
+        scenes[position]["word_count"] = word_count
+        scenes[position]["attempts"].append(attempt)
+        scenes[position].setdefault("final_polish_repairs", []).append(
+            {
+                "issue": issue,
+                "word_count": word_count,
+            }
+        )
+        ledger[position]["word_count"] = word_count
+
+        post_jev = evaluate_scene_jev(
+            api_key=api_key,
+            scene_index=scene_index,
+            story_contract=plan["story_contract"],
+            scene_contract=scenes[position]["contract"],
+            next_scene=(
+                plan["scenes"][position + 1]
+                if position + 1 < len(plan["scenes"])
+                else None
+            ),
+            ledger=ledger[:position],
+            envelope=repaired,
+        )
+        scenes[position]["jev"] = post_jev
+        scenes[position]["jev_history"].append(post_jev)
+        scenes[position]["continuity_escalation_required"] = (
+            jev_requires_final_escalation(post_jev)
+        )
+        records.append(
+            {
+                "scene": scene_index,
+                "accepted": True,
+                "issue": issue,
+                "word_count": word_count,
+                "post_jev": post_jev,
+                "attempt": attempt,
+            }
+        )
+    return records
+
+
 def run(
     *,
     model: str,
@@ -907,91 +1234,66 @@ def run(
         )
         previous_prose = envelope["prose"]
 
-    story = "\n\n".join(scene["envelope"]["prose"].strip() for scene in scenes)
-    total_words = count_words(story)
-    minimum_words = round(spec.target_words * 0.90)
-    maximum_words = round(spec.target_words * 1.10)
-    repetition = repeated_ngram_ratio(story, 8)
-    deterministic_errors: list[str] = []
-    if total_words < minimum_words:
-        deterministic_errors.append(
-            f"below_total_word_budget:{total_words}<{minimum_words}"
-        )
-    if total_words > maximum_words:
-        deterministic_errors.append(
-            f"above_total_word_budget:{total_words}>{maximum_words}"
-        )
-    if repetition > 0.02:
-        deterministic_errors.append(
-            f"repeat_8gram_ratio_high:{repetition}>0.02"
-        )
-
-    whole_questions = build_whole_story_jev_questions()
-    whole_jev_body = call_openrouter_jev(
+    final_evaluations: list[dict[str, Any]] = []
+    final_evaluation = evaluate_completed_story(
         api_key=api_key,
-        state={
-            "description": "Completed English LUMI six-scene story continuity ledger.",
-            "story_contract": plan["story_contract"],
-            "scene_graph": plan["scenes"],
-            "continuity_ledger": ledger,
-            "total_word_count": total_words,
-            "story": story,
-        },
-        questions=whole_questions,
+        judge_model=judge_model,
+        spec=spec,
+        plan=plan,
+        ledger=ledger,
+        scenes=scenes,
     )
-    whole_jev = summarize_jev(
-        whole_jev_body,
-        question_ids=[
-            key for key in whole_questions
-            if key != "next_action"
-        ],
-    )
+    final_evaluations.append(final_evaluation)
 
-    brief = build_labeled_brief(spec)
-    final_input = (
-        "STORY BRIEF\n"
-        + brief
-        + "\n\nIMMUTABLE STORY CONTRACT\n"
-        + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
-        + "\n\nSCENE GRAPH\n"
-        + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
-        + "\n\nCONTINUITY LEDGER\n"
-        + json.dumps(ledger, ensure_ascii=False, indent=2)
-        + "\n\nSCENE CONTINUITY EVIDENCE\n"
-        + json.dumps(
-            [
+    final_polish_repairs: list[dict[str, Any]] = []
+    if (
+        not final_evaluation["accepted"]
+        and not final_evaluation["final_judge"]["critical_failures"]
+        and final_repair_scene_ids(final_evaluation["final_judge"])
+    ):
+        final_polish_repairs = apply_final_haiku_repairs(
+            api_key=api_key,
+            model=model,
+            plan=plan,
+            ledger=ledger,
+            scenes=scenes,
+            final_judge=final_evaluation["final_judge"],
+        )
+        print(
+            json.dumps(
                 {
-                    "scene": scene["scene"],
-                    "jev_history": scene["jev_history"],
-                    "semantic_repairs": scene["semantic_repairs"],
-                    "continuity_escalation_required": scene[
-                        "continuity_escalation_required"
+                    "checkpoint": "final_haiku_targeted_repair",
+                    "targets": [
+                        {
+                            "scene": repair["scene"],
+                            "accepted": repair["accepted"],
+                            "errors": repair.get("errors") or [],
+                        }
+                        for repair in final_polish_repairs
                     ],
-                }
-                for scene in scenes
-            ],
-            ensure_ascii=False,
-            indent=2,
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
         )
-        + "\n\nJEV WHOLE-STORY ADVISORY EVIDENCE\n"
-        + json.dumps(whole_jev, ensure_ascii=False, indent=2)
-        + "\n\nCOMPLETE ENGLISH STORY\n"
-        + story
-    )
-    final_text, final_body, final_request = call_openrouter(
-        api_key=api_key,
-        model=judge_model,
-        system_prompt=FINAL_JUDGE_PROMPT.read_text(encoding="utf-8").strip(),
-        user_prompt=final_input,
-        temperature=0.0,
-        max_tokens=2500,
-        seed=None,
-        request_class="judge",
-        structured_output=True,
-    )
-    final_judge = validate_final_judge(parse_json_object(final_text))
+        if all(repair["accepted"] for repair in final_polish_repairs):
+            final_evaluation = evaluate_completed_story(
+                api_key=api_key,
+                judge_model=judge_model,
+                spec=spec,
+                plan=plan,
+                ledger=ledger,
+                scenes=scenes,
+            )
+            final_evaluations.append(final_evaluation)
 
-    accepted = not deterministic_errors and final_judge["accepted"]
+    story = final_evaluation["story"]
+    total_words = final_evaluation["word_count"]
+    repetition = final_evaluation["repeat_8gram_ratio"]
+    deterministic_errors = final_evaluation["deterministic_errors"]
+    whole_jev = final_evaluation["whole_story_jev"]
+    final_judge = final_evaluation["final_judge"]
+    accepted = final_evaluation["accepted"]
 
     total_generator_cost = 0.0
     total_scene_jev_cost = 0.0
@@ -1029,12 +1331,14 @@ def run(
         "costs": {
             "scene_generation_usd": round(total_generator_cost, 9),
             "scene_jev_usd": round(total_scene_jev_cost, 9),
-            "whole_jev_usd": (whole_jev_body.get("usage") or {}).get("cost"),
-            "final_haiku": parse_cost(final_body).model_dump(mode="json"),
+            "whole_jev_usd": final_evaluation["whole_jev_cost"],
+            "whole_jev_usd_total": round(sum(float(item.get("whole_jev_cost") or 0.0) for item in final_evaluations), 9),
+            "final_haiku": final_evaluation["final_judge_cost"],
+            "final_haiku_usd_total": round(sum(float((item.get("final_judge_cost") or {}).get("usd") or 0.0) for item in final_evaluations), 9),
         },
         "usage": {
-            "whole_jev": whole_jev_body.get("usage") or {},
-            "final_haiku": parse_usage(final_body).model_dump(mode="json"),
+            "whole_jev": final_evaluation["whole_jev_usage"],
+            "final_haiku": final_evaluation["final_judge_usage"],
         },
         "final_judge_request": {
             "temperature": final_request.get("temperature"),
