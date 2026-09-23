@@ -106,6 +106,24 @@ def resolve_model_runtime_profile(
     return resolved
 
 
+def require_qualification_runtime_profile(
+    model: str,
+    path: Path = MODEL_RUNTIME_PROFILE_PATH,
+) -> dict[str, Any]:
+    profile = resolve_model_runtime_profile(model, path)
+    match = profile.get("match") or {}
+    qualification = profile.get("qualification") or {}
+    if match.get("type") != "exact" or qualification.get("ready") is not True:
+        raise RuntimeError(
+            "MODEL_RUNTIME_PROFILE_MISSING: paid qualification requires an exact, "
+            f"qualification-ready runtime profile for {model!r}; "
+            f"resolved match={match.get('type')!r}, ready={qualification.get('ready')!r}. "
+            "Verify the model against provider/upstream documentation and add its "
+            "metadata + transport contract before running qualification."
+        )
+    return profile
+
+
 def resolve_model_request_behavior(
     model: str,
     request_class: str = "default",

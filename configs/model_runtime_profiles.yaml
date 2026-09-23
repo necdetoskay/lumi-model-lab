@@ -171,6 +171,63 @@ profiles:
     source: application_contract
     expose_in_settings: true
 
+  - model_id: qwen/qwen3.8-flash
+    display_name: Qwen 3.8 Flash
+    source: verified_runtime
+    expose_in_settings: true
+    qualification:
+      ready: true
+      evidence: provider_and_upstream_docs
+    metadata:
+      verified_at: '2026-09-23'
+      provider_model_slug: qwen/qwen3.8-flash
+      upstream_service_model: qwen3.8-flash
+      release_date: '2026-08-26'
+      context_tokens: 1000000
+      max_input_tokens: 991000
+      max_output_tokens: 131072
+      max_reasoning_tokens: 262144
+      modalities:
+        input: [text, image, video]
+        output: [text]
+      pricing_usd_per_million_tokens:
+        input: 0.15
+        output: 0.47
+        cache_read: 0.016
+        cache_create_5m: 0.20
+      capabilities:
+        structured_output: true
+        tool_calling: true
+        reasoning: true
+      reasoning:
+        default_effort: xhigh
+        supported_effort: [low, medium, xhigh]
+        low_budget_tokens: 4096
+        medium_budget_tokens: 16384
+      sources:
+        - https://openrouter.ai/qwen/qwen3.8-flash
+        - https://www.qwencloud.com/models/qwen3.8-flash
+        - https://docs.qwencloud.com/api-reference/chat/openai-chat
+    notes:
+      - Thinking is enabled by default and xhigh is the provider default; never qualify this model with provider-default reasoning under a small shared completion cap.
+      - LUMI teacher-story qualification uses low reasoning effort to reserve visible-output budget while retaining reasoning.
+      - OpenRouter exposes structured outputs and tool calling for this exact model slug.
+    transport:
+      structured_output: strict_json_schema
+      reasoning:
+        mode: provider_managed_required
+        request:
+          enabled: true
+          effort: low
+          exclude: true
+      temperature:
+        mode: send
+      max_tokens:
+        mode: send
+        value: 12000
+      seed:
+        mode: send
+
   - model_id: qwen/qwen3.5-flash-02-23
     display_name: Qwen 3.5 Flash
     source: application_contract

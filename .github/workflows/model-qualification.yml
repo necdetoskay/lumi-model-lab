@@ -17,6 +17,11 @@ on:
         required: true
         default: false
         type: boolean
+      qualification_config:
+        description: 'Qualification config path (use configs/qualification_smoke.yaml for one-case preflight)'
+        required: true
+        default: 'configs/qualification.yaml'
+        type: string
 
 permissions:
   contents: read
@@ -48,18 +53,21 @@ jobs:
           MODEL_ID: ${{ inputs.model }}
           SCREEN_ONLY: ${{ inputs.screen_only }}
           RERUN: ${{ inputs.rerun }}
+          QUALIFICATION_CONFIG: ${{ inputs.qualification_config }}
         run: |
-          args=(--model "$MODEL_ID")
+          args=(--model "$MODEL_ID" --config "$QUALIFICATION_CONFIG")
           if [ "$SCREEN_ONLY" = "true" ]; then args+=(--screen); fi
           if [ "$RERUN" = "true" ]; then args+=(--rerun); fi
           python -m src.model_qualify "${args[@]}"
       - name: Upload qualification evidence
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: model-qualification-${{ github.run_id }}
           path: |
             runs/qualifications/
+            runs/qualifications_smoke/
             runs/model_registry/
           if-no-files-found: warn
           retention-days: 14
