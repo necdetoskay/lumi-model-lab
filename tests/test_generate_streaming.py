@@ -26,6 +26,42 @@ class FakeStreamingResponse:
         raise AssertionError("streaming response must not call response.json()")
 
 
+
+
+class FakeJsonSuccessResponse:
+    ok = True
+    status_code = 200
+    text = ""
+    headers = {}
+
+    def __init__(self, body: dict):
+        self._body = body
+
+    def json(self):
+        return self._body
+
+
+class FakeErrorResponse:
+    ok = False
+
+    def __init__(
+        self,
+        status_code: int,
+        body: dict,
+        *,
+        retry_after: str | None = None,
+    ):
+        self.status_code = status_code
+        self._body = body
+        self.text = json.dumps(body)
+        self.headers = {}
+        if retry_after is not None:
+            self.headers["Retry-After"] = retry_after
+
+    def json(self):
+        return self._body
+
+
 class GenerateStreamingTests(unittest.TestCase):
     @patch("src.generate.requests.post")
     def test_qwen_stream_aggregates_content_and_final_usage(self, mock_post) -> None:
@@ -85,6 +121,86 @@ class GenerateStreamingTests(unittest.TestCase):
         self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
         _, kwargs = mock_post.call_args
         self.assertTrue(kwargs["stream"])
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
+    def test_transient_429_retries_then_succeeds(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        success = FakeJsonSuccessResponse(
+            {
+                "id": "gen-retry",
+                "model": "qwen/qwen3.8-flash",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Recovered.",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 2,
+                    "total_tokens": 12,
+                },
+            }
+        )
+        mock_post.side_effect = [
+            FakeErrorResponse(
+                429,
+                {"error": {"message": "temporarily rate-limited upstream"}},
+                retry_after="0.25",
+            ),
+            success,
+        ]
+
+        story, _, _ = call_openrouter(
+            api_key="test-key",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.8,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+            structured_output=True,
+        )
+
+        self.assertEqual(story, "Recovered.")
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(0.25)
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
+    def test_non_transient_400_fails_without_retry(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        mock_post.return_value = FakeErrorResponse(
+            400,
+            {"error": {"message": "bad request"}},
+        )
+
+        with self.assertRaisesRegex(RuntimeError, "OpenRouter HTTP 400"):
+            call_openrouter(
+                api_key="test-key",
+                model="qwen/qwen3.8-flash",
+                system_prompt="system",
+                user_prompt="user",
+                temperature=0.8,
+                max_tokens=None,
+                seed=42,
+                request_class="scene_story",
+                structured_output=True,
+            )
+
+        self.assertEqual(mock_post.call_count, 1)
+        mock_sleep.assert_not_called()
 
     @patch("src.generate.requests.post")
     def test_qwen_stream_without_visible_content_fails_with_usage_diagnostics(self, mock_post) -> None:

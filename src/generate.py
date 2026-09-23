@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -23,6 +24,9 @@ from src.schemas import (
 
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+OPENROUTER_TRANSIENT_STATUS_CODES = {429, 502, 503, 504}
+OPENROUTER_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
+OPENROUTER_MAX_ATTEMPTS = len(OPENROUTER_RETRY_DELAYS_SECONDS) + 1
 PROMPT_VERSION = "story_teacher_v0.2"
 DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
 console = Console()
@@ -188,26 +192,69 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
 
     stream_enabled = payload.get("stream") is True
 
-    response = requests.post(
-        OPENROUTER_URL,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/necdetoskay/lumi-model-lab",
-            "X-Title": "LUMI Model Lab",
-        },
-        json=payload,
-        timeout=240,
-        stream=stream_enabled,
-    )
+    response = None
+    transport_error: Exception | None = None
+    for attempt in range(OPENROUTER_MAX_ATTEMPTS):
+        try:
+            response = requests.post(
+                OPENROUTER_URL,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/necdetoskay/lumi-model-lab",
+                    "X-Title": "LUMI Model Lab",
+                },
+                json=payload,
+                timeout=240,
+                stream=stream_enabled,
+            )
+            transport_error = None
+        except (requests.Timeout, requests.ConnectionError) as exc:
+            transport_error = exc
+            if attempt >= OPENROUTER_MAX_ATTEMPTS - 1:
+                raise RuntimeError(
+                    f"OpenRouter transport failed after {OPENROUTER_MAX_ATTEMPTS} "
+                    f"attempts for model {model}: {exc}"
+                ) from exc
+            time.sleep(OPENROUTER_RETRY_DELAYS_SECONDS[attempt])
+            continue
 
-    if not response.ok:
+        if response.ok:
+            break
+
         try:
             error_body: Any = response.json()
         except ValueError:
             error_body = response.text[:2000]
+
+        if (
+            response.status_code in OPENROUTER_TRANSIENT_STATUS_CODES
+            and attempt < OPENROUTER_MAX_ATTEMPTS - 1
+        ):
+            retry_after = None
+            headers = getattr(response, "headers", {}) or {}
+            raw_retry_after = headers.get("Retry-After")
+            if raw_retry_after is not None:
+                try:
+                    retry_after = max(0.0, min(float(raw_retry_after), 30.0))
+                except (TypeError, ValueError):
+                    retry_after = None
+            delay = (
+                retry_after
+                if retry_after is not None
+                else OPENROUTER_RETRY_DELAYS_SECONDS[attempt]
+            )
+            time.sleep(delay)
+            continue
+
         raise RuntimeError(
             f"OpenRouter HTTP {response.status_code} for model {model}: {error_body}"
+        )
+
+    if response is None:
+        raise RuntimeError(
+            f"OpenRouter request failed before receiving a response for model {model}: "
+            f"{transport_error}"
         )
 
     body = _aggregate_openrouter_stream(response, model) if stream_enabled else response.json()
