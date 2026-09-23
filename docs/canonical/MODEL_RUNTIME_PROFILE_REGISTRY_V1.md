@@ -53,6 +53,17 @@ The registry carries the current production transport contract for production-us
 
 Notable examples:
 
+### Aion 3.0
+
+- exact OpenRouter id: `aion-labs/aion-3.0`
+- qualification-ready verified runtime profile
+- JSON structured output uses `json_object`, not JSON-schema enforcement
+- reasoning remains enabled/provider-managed for LUMI scene production
+- current endpoint does not advertise seed support, so seed is omitted
+- `story_plan`, `scene_story`, and `scene_repair` omit client `max_tokens`
+- scene length is governed by LUMI word targets, local repair, and final deterministic gates
+- current verified limits: 131,072 context / 32,768 completion tokens
+
 ### Aion 3.0 Mini
 
 - reasoning is mandatory/provider-managed

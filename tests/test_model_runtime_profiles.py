@@ -12,6 +12,46 @@ from src.model_registry import (
 
 
 class ModelRuntimeProfileTests(unittest.TestCase):
+    def test_aion30_is_qualification_ready_with_verified_metadata(self) -> None:
+        profile = require_qualification_runtime_profile("aion-labs/aion-3.0")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["context_tokens"], 131072)
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 32768)
+        self.assertEqual(
+            profile["metadata"]["capabilities"]["structured_output"],
+            "json_object",
+        )
+
+    def test_aion30_scene_pipeline_contract_is_unbounded_json_object(self) -> None:
+        for request_class, temperature in (
+            ("story_plan", 0.2),
+            ("scene_story", 0.7),
+            ("scene_repair", 0.35),
+        ):
+            payload = normalize_openrouter_request(
+                "aion-labs/aion-3.0",
+                {
+                    "temperature": temperature,
+                    "max_tokens": 9999,
+                    "seed": 77,
+                },
+                request_class=request_class,
+                structured_output=True,
+            )
+            self.assertNotIn("max_tokens", payload)
+            self.assertNotIn("seed", payload)
+            self.assertEqual(payload["temperature"], temperature)
+            self.assertEqual(
+                payload["reasoning"],
+                {"enabled": True, "exclude": True},
+            )
+            self.assertEqual(
+                payload["response_format"],
+                {"type": "json_object"},
+            )
+            self.assertNotIn("stream", payload)
+
     def test_aion_mini_large_structured_request_matches_production_contract(self) -> None:
         payload = normalize_openrouter_request(
             "aion-labs/aion-3.0-mini",
