@@ -26,6 +26,7 @@ from src.schemas import (
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_TRANSIENT_STATUS_CODES = {408, 429, 500, 502, 503, 504, 520, 522, 524}
 OPENROUTER_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
+OPENROUTER_RATE_LIMIT_RETRY_DELAYS_SECONDS = (5.0, 15.0, 30.0)
 OPENROUTER_MAX_ATTEMPTS = len(OPENROUTER_RETRY_DELAYS_SECONDS) + 1
 PROMPT_VERSION = "story_teacher_v0.2"
 DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
@@ -239,10 +240,15 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
                     retry_after = max(0.0, min(float(raw_retry_after), 30.0))
                 except (TypeError, ValueError):
                     retry_after = None
+            fallback_delays = (
+                OPENROUTER_RATE_LIMIT_RETRY_DELAYS_SECONDS
+                if response.status_code == 429
+                else OPENROUTER_RETRY_DELAYS_SECONDS
+            )
             delay = (
                 retry_after
                 if retry_after is not None
-                else OPENROUTER_RETRY_DELAYS_SECONDS[attempt]
+                else fallback_delays[attempt]
             )
             time.sleep(delay)
             continue
