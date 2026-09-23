@@ -1,6 +1,6 @@
 # LUMI English Final Targeted Scene Polish v1
 
-Repair only the prose of one already-accepted scene to address one final Haiku repair target.
+Repair only the prose of one already-accepted repair scene to address one final Haiku repair target. The defect may be observed in a later scene; when that happens, add only the smallest earlier setup/foreshadowing needed to make the later moment earned.
 
 This is a bounded polish operation, not a rewrite.
 
@@ -14,6 +14,8 @@ Rules:
 - Keep the repaired prose within the supplied scene word range.
 - Preserve age appropriateness and the existing narrative voice.
 - Never modify later scenes or solve a later scene's work early.
+- When observed_scene_context is supplied, use it only to understand the later defect; edit only the current repair scene.
+- If repairing earlier setup, add only information that is compatible with existing canon and already implied by the immutable SceneGraph; do not create a new clue, object, rule, or plot event.
 
 Return JSON only using exactly the same scene-envelope shape:
 {

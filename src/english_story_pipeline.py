@@ -476,6 +476,40 @@ def validate_final_judge(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(repair_targets, list):
         raise RuntimeError("Final judge repair_targets must be a list.")
 
+    normalized_targets: list[dict[str, Any]] = []
+    for target in repair_targets:
+        if not isinstance(target, dict):
+            raise RuntimeError("Final judge repair target must be an object.")
+        scene = target.get("scene")
+        if (
+            not isinstance(scene, int)
+            or isinstance(scene, bool)
+            or not 1 <= scene <= 6
+        ):
+            raise RuntimeError(
+                f"Invalid final judge repair target scene: {scene!r}"
+            )
+        repair_scene = target.get("repair_scene", scene)
+        if (
+            not isinstance(repair_scene, int)
+            or isinstance(repair_scene, bool)
+            or not 1 <= repair_scene <= 6
+        ):
+            raise RuntimeError(
+                "Invalid final judge repair target repair_scene: "
+                f"{repair_scene!r}"
+            )
+        issue = str(target.get("issue") or "").strip()
+        if not issue:
+            raise RuntimeError("Final judge repair target issue must be non-empty.")
+        normalized_targets.append(
+            {
+                "scene": scene,
+                "repair_scene": repair_scene,
+                "issue": issue,
+            }
+        )
+
     average = round(sum(normalized.values()) / len(normalized), 3)
     minimum = min(normalized.values())
     return {
@@ -483,7 +517,7 @@ def validate_final_judge(payload: dict[str, Any]) -> dict[str, Any]:
         "average": average,
         "minimum": minimum,
         "critical_failures": critical,
-        "repair_targets": repair_targets,
+        "repair_targets": normalized_targets,
         "summary": str(payload.get("summary") or ""),
         "accepted": average >= 4.0 and minimum >= 3 and not critical,
     }
@@ -926,23 +960,43 @@ def final_repair_scene_ids(final_judge: dict[str, Any], *, limit: int = 3) -> li
     for target in final_judge.get("repair_targets") or []:
         if not isinstance(target, dict):
             continue
-        scene = target.get("scene")
-        if not isinstance(scene, int) or isinstance(scene, bool) or not 1 <= scene <= 6:
+        repair_scene = target.get("repair_scene", target.get("scene"))
+        if (
+            not isinstance(repair_scene, int)
+            or isinstance(repair_scene, bool)
+            or not 1 <= repair_scene <= 6
+        ):
             continue
-        if scene not in scene_ids:
-            scene_ids.append(scene)
+        if repair_scene not in scene_ids:
+            scene_ids.append(repair_scene)
         if len(scene_ids) >= limit:
             break
     return scene_ids
 
 
-def final_repair_issue(final_judge: dict[str, Any], scene_index: int) -> str:
-    issues = [
-        str(target.get("issue") or "").strip()
+def final_repair_targets_for_scene(
+    final_judge: dict[str, Any],
+    repair_scene_index: int,
+) -> list[dict[str, Any]]:
+    return [
+        target
         for target in final_judge.get("repair_targets") or []
-        if isinstance(target, dict) and target.get("scene") == scene_index
+        if isinstance(target, dict)
+        and target.get("repair_scene", target.get("scene"))
+        == repair_scene_index
     ]
-    return "\n".join(issue for issue in issues if issue)
+
+
+def final_repair_issue(final_judge: dict[str, Any], scene_index: int) -> str:
+    issues = []
+    for target in final_repair_targets_for_scene(final_judge, scene_index):
+        observed_scene = target.get("scene")
+        issue = str(target.get("issue") or "").strip()
+        if issue:
+            issues.append(
+                f"Observed in Scene {observed_scene}: {issue}"
+            )
+    return "\n".join(issues)
 
 
 def validate_prose_only_repair(
@@ -971,6 +1025,7 @@ def repair_scene_for_final_judge(
     scene_index: int,
     issue: str,
     seed: int,
+    observed_scene_indices: list[int] | None = None,
 ) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
     position = scene_index - 1
     scene = scenes[position]
@@ -985,10 +1040,21 @@ def repair_scene_for_final_judge(
         if position + 1 < len(scenes)
         else ""
     )
+    observed_scene_context = [
+        {
+            "scene": observed_index,
+            "scene_contract": scenes[observed_index - 1]["contract"],
+            "prose": scenes[observed_index - 1]["envelope"]["prose"],
+        }
+        for observed_index in (observed_scene_indices or [])
+        if 1 <= observed_index <= len(scenes)
+        and observed_index != scene_index
+    ]
     payload = json.dumps(
         {
             "story_contract": plan["story_contract"],
             "scene_contract": scene["contract"],
+            "observed_scene_context": observed_scene_context,
             "prior_ledger": ledger[:position],
             "immutable_state_delta": original_envelope["state_delta"],
             "repair_issue": issue,
@@ -1176,6 +1242,7 @@ def verify_final_repair_target(
     scenes: list[dict[str, Any]],
     scene_index: int,
     issue: str,
+    observed_scene_indices: list[int] | None = None,
 ) -> dict[str, Any]:
     position = scene_index - 1
     scene = scenes[position]
@@ -1214,6 +1281,16 @@ def verify_final_repair_target(
             "story_contract": plan["story_contract"],
             "scene_contract": scene["contract"],
             "repair_issue": issue,
+            "observed_scene_context": [
+                {
+                    "scene": observed_index,
+                    "scene_contract": scenes[observed_index - 1]["contract"],
+                    "prose": scenes[observed_index - 1]["envelope"]["prose"],
+                }
+                for observed_index in (observed_scene_indices or [])
+                if 1 <= observed_index <= len(scenes)
+                and observed_index != scene_index
+            ],
             "previous_scene_prose": previous_prose,
             "current_scene_prose": scene["envelope"]["prose"],
             "next_scene_prose": next_prose,
@@ -1248,6 +1325,17 @@ def apply_final_haiku_repairs(
             continue
 
         position = scene_index - 1
+        repair_targets = final_repair_targets_for_scene(
+            final_judge,
+            scene_index,
+        )
+        observed_scene_indices = sorted(
+            {
+                int(target["scene"])
+                for target in repair_targets
+                if isinstance(target.get("scene"), int)
+            }
+        )
         repair_attempts: list[dict[str, Any]] = []
         verifications: list[dict[str, Any]] = []
         latest_word_count = scenes[position]["word_count"]
@@ -1263,6 +1351,7 @@ def apply_final_haiku_repairs(
                 scene_index=scene_index,
                 issue=issue,
                 seed=7600 + scene_index * 10 + repair_round,
+                observed_scene_indices=observed_scene_indices,
             )
             attempt["repair_round"] = repair_round
             repair_attempts.append(attempt)
@@ -1274,6 +1363,7 @@ def apply_final_haiku_repairs(
                         "accepted": False,
                         "target_verified": False,
                         "issue": issue,
+                        "observed_scenes": observed_scene_indices,
                         "errors": errors,
                         "repair_attempts": repair_attempts,
                         "verifications": verifications,
@@ -1294,6 +1384,7 @@ def apply_final_haiku_repairs(
                 scenes=scenes,
                 scene_index=scene_index,
                 issue=issue,
+                observed_scene_indices=observed_scene_indices,
             )
             verification["repair_round"] = repair_round
             verifications.append(verification)
@@ -1309,6 +1400,7 @@ def apply_final_haiku_repairs(
         scenes[position].setdefault("final_polish_repairs", []).append(
             {
                 "issue": issue,
+                "observed_scenes": observed_scene_indices,
                 "word_count": latest_word_count,
                 "repair_attempts": len(repair_attempts),
                 "target_verified": target_verified,
@@ -1339,6 +1431,7 @@ def apply_final_haiku_repairs(
                 "accepted": True,
                 "target_verified": target_verified,
                 "issue": issue,
+                "observed_scenes": observed_scene_indices,
                 "word_count": latest_word_count,
                 "post_jev": post_jev,
                 "repair_attempts": repair_attempts,

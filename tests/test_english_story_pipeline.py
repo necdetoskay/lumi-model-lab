@@ -15,6 +15,7 @@ from src.english_story_pipeline import (
     jev_needs_targeted_repair,
     jev_requires_final_escalation,
     jev_targeted_repair_reasons,
+    final_repair_issue,
     final_repair_scene_ids,
     only_word_budget_errors,
     partition_scene_validation_errors,
@@ -515,6 +516,65 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(kwargs["request_class"], "story_plan")
         self.assertTrue(kwargs["structured_output"])
 
+    def test_final_judge_normalizes_repair_scene_backward_compatibly(self):
+        payload = {
+            "scores": {
+                "instruction_following": 4,
+                "coherence": 4,
+                "character_consistency": 4,
+                "age_appropriateness": 4,
+                "creativity": 4,
+                "style_quality": 4,
+                "continuity": 3,
+                "ending_quality": 4,
+            },
+            "critical_failures": [],
+            "repair_targets": [
+                {
+                    "scene": 3,
+                    "repair_scene": 1,
+                    "issue": "Seed the lower drift layer earlier.",
+                },
+                {
+                    "scene": 5,
+                    "issue": "Clarify bridge timing.",
+                },
+            ],
+            "summary": "Needs local repair.",
+        }
+        result = validate_final_judge(payload)
+        self.assertEqual(
+            result["repair_targets"][0]["repair_scene"],
+            1,
+        )
+        self.assertEqual(
+            result["repair_targets"][1]["repair_scene"],
+            5,
+        )
+        self.assertEqual(final_repair_scene_ids(result), [1, 5])
+        self.assertIn(
+            "Observed in Scene 3",
+            final_repair_issue(result, 1),
+        )
+
+    def test_final_repair_scene_ids_use_repair_scene_not_observed_scene(self):
+        final_judge = {
+            "critical_failures": [],
+            "repair_targets": [
+                {
+                    "scene": 3,
+                    "repair_scene": 1,
+                    "issue": "Earlier setup needed.",
+                },
+                {
+                    "scene": 5,
+                    "repair_scene": 5,
+                    "issue": "Timing ambiguity.",
+                },
+            ],
+        }
+        self.assertEqual(final_repair_scene_ids(final_judge), [1, 5])
+
     def test_final_repair_scene_ids_are_bounded_and_deduplicated(self):
         final_judge = {
             "critical_failures": [],
@@ -625,12 +685,78 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             scene_index=1,
             issue="add one clarifying sentence",
             seed=7601,
+            observed_scene_indices=[1],
         )
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 100)
         self.assertEqual(repaired["state_delta"], envelope["state_delta"])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_antecedent_repair_receives_observed_scene_context(self, mock_call):
+        scene1 = good_envelope(100)
+        scene2 = good_envelope(100)
+        mock_call.return_value = (
+            __import__("json").dumps(scene1),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "contract": {"purpose": "seed world rule"},
+                "envelope": scene1,
+            },
+            {
+                "scene": 2,
+                "target_words": 100,
+                "contract": {"purpose": "use world rule"},
+                "envelope": scene2,
+            },
+        ]
+        repair_scene_for_final_judge(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={
+                "story_contract": {},
+                "scenes": [
+                    {"purpose": "seed world rule"},
+                    {"purpose": "use world rule"},
+                ],
+            },
+            ledger=[
+                {"scene": 1, "word_count": 100},
+                {"scene": 2, "word_count": 100},
+            ],
+            scenes=scenes,
+            scene_index=1,
+            issue="Observed in Scene 2: establish the rule earlier.",
+            seed=7601,
+            observed_scene_indices=[2],
+        )
+        sent = __import__("json").loads(
+            mock_call.call_args.kwargs["user_prompt"]
+        )
+        self.assertEqual(
+            sent["observed_scene_context"][0]["scene"],
+            2,
+        )
+        self.assertEqual(
+            sent["observed_scene_context"][0]["scene_contract"]["purpose"],
+            "use world rule",
+        )
 
     def test_total_story_word_budget_is_plus_minus_25_percent(self):
         self.assertEqual(TOTAL_STORY_MIN_RATIO, 0.75)
