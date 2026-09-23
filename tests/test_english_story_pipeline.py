@@ -13,8 +13,10 @@ from src.english_story_pipeline import (
     jev_requires_final_escalation,
     jev_targeted_repair_reasons,
     final_repair_scene_ids,
+    only_word_budget_errors,
     plan_repair_feedback,
     repair_plan_once,
+    repair_scene_word_budget,
     repair_scene_for_final_judge,
     validate_final_judge,
     validate_prose_only_repair,
@@ -84,6 +86,84 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertTrue(
             any(error.startswith("above_scene_word_budget:") for error in errors)
         )
+
+    def test_only_word_budget_errors_detects_budget_only_failure(self):
+        self.assertTrue(
+            only_word_budget_errors(["above_scene_word_budget:130>120"])
+        )
+        self.assertFalse(
+            only_word_budget_errors(
+                [
+                    "above_scene_word_budget:130>120",
+                    "state_delta_location_missing",
+                ]
+            )
+        )
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_word_budget_repair_compresses_without_state_change(self, mock_call):
+        original = good_envelope(130)
+        repaired = good_envelope(105)
+        mock_call.return_value = (
+            __import__("json").dumps(repaired),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        result, errors, word_count, attempt = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=100,
+            seed=100,
+            repair_index=1,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 105)
+        self.assertEqual(result["state_delta"], original["state_delta"])
+        self.assertEqual(attempt["mode"], "COMPRESS")
+        self.assertEqual(attempt["kind"], "word_budget_repair_1")
+        self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
+        self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.10)
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_word_budget_repair_rejects_state_delta_change(self, mock_call):
+        original = good_envelope(130)
+        repaired = good_envelope(105)
+        repaired["state_delta"]["location"] = "new location"
+        mock_call.return_value = (
+            __import__("json").dumps(repaired),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        _, errors, _, _ = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=100,
+            seed=100,
+            repair_index=1,
+        )
+        self.assertIn("word_budget_repair_state_delta_changed", errors)
 
     def test_scene_jev_questions_are_atomic(self):
         questions = build_scene_jev_questions(3, False)

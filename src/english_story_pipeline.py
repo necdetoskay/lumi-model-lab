@@ -29,6 +29,7 @@ from src.schemas import StorySpec
 
 SCENE_WRITER_PROMPT = Path("prompts/story_scene_writer_en_v1.md")
 SCENE_REPAIR_PROMPT = Path("prompts/story_scene_repair_en_v1.md")
+SCENE_WORD_BUDGET_REPAIR_PROMPT = Path("prompts/story_scene_word_budget_repair_en_v1.md")
 PLAN_REPAIR_PROMPT = Path("prompts/story_scene_plan_repair_en_v1.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
@@ -463,6 +464,81 @@ def scene_request_payload(
     )
 
 
+def only_word_budget_errors(errors: list[str]) -> bool:
+    return bool(errors) and all(
+        error.startswith("below_scene_word_budget:")
+        or error.startswith("above_scene_word_budget:")
+        for error in errors
+    )
+
+
+def repair_scene_word_budget(
+    *,
+    api_key: str,
+    model: str,
+    envelope: dict[str, Any],
+    target_words: int,
+    seed: int,
+    repair_index: int,
+) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
+    current_words = count_words(str(envelope.get("prose") or ""))
+    hard_min = round(target_words * 0.80)
+    hard_max = round(target_words * 1.20)
+    preferred_min = round(target_words * 0.92)
+    preferred_max = round(target_words * 1.08)
+    mode = "COMPRESS" if current_words > hard_max else "EXPAND"
+
+    repair_input = json.dumps(
+        {
+            "mode": mode,
+            "target_words": target_words,
+            "hard_word_range": [hard_min, hard_max],
+            "preferred_word_range": [preferred_min, preferred_max],
+            "current_word_count": current_words,
+            "immutable_state_delta": envelope.get("state_delta"),
+            "current_scene_envelope": envelope,
+        },
+        ensure_ascii=False,
+        indent=2,
+    )
+    text, body, request = call_openrouter(
+        api_key=api_key,
+        model=model,
+        system_prompt=SCENE_WORD_BUDGET_REPAIR_PROMPT.read_text(
+            encoding="utf-8"
+        ).strip(),
+        user_prompt=repair_input,
+        temperature=0.10,
+        max_tokens=None,
+        seed=seed + repair_index,
+        request_class="scene_repair",
+        structured_output=True,
+    )
+    repaired = parse_json_object(text)
+    errors, word_count = validate_scene_envelope(
+        repaired,
+        target_words=target_words,
+    )
+    if repaired.get("state_delta") != envelope.get("state_delta"):
+        errors.append("word_budget_repair_state_delta_changed")
+
+    attempt = {
+        "kind": f"word_budget_repair_{repair_index}",
+        "mode": mode,
+        "errors": errors,
+        "word_count": word_count,
+        "usage": parse_usage(body).model_dump(mode="json"),
+        "cost": parse_cost(body).model_dump(mode="json"),
+        "request": {
+            "temperature": request.get("temperature"),
+            "max_tokens": request.get("max_tokens"),
+            "reasoning": request.get("reasoning"),
+            "response_format": request.get("response_format"),
+        },
+    }
+    return repaired, errors, word_count, attempt
+
+
 def produce_scene(
     *,
     api_key: str,
@@ -569,6 +645,33 @@ def produce_scene(
                 },
             }
         )
+
+    if only_word_budget_errors(errors):
+        locked_state_delta = envelope.get("state_delta")
+        for budget_repair_index in range(1, 3):
+            candidate, candidate_errors, candidate_word_count, attempt = (
+                repair_scene_word_budget(
+                    api_key=api_key,
+                    model=model,
+                    envelope=envelope,
+                    target_words=target_words,
+                    seed=seed + 100,
+                    repair_index=budget_repair_index,
+                )
+            )
+            attempts.append(attempt)
+            state_changed = (
+                candidate.get("state_delta") != locked_state_delta
+            )
+            if state_changed:
+                errors = candidate_errors
+                continue
+
+            envelope = candidate
+            errors = candidate_errors
+            word_count = candidate_word_count
+            if not errors:
+                break
 
     return envelope, errors, word_count, attempts
 
