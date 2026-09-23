@@ -176,6 +176,57 @@ class GenerateStreamingTests(unittest.TestCase):
 
     @patch("src.generate.time.sleep")
     @patch("src.generate.requests.post")
+    def test_429_without_retry_after_uses_longer_backoff(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        success = FakeJsonSuccessResponse(
+            {
+                "id": "gen-429-backoff",
+                "model": "qwen/qwen3.8-flash",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Recovered after rate limit.",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 4,
+                    "total_tokens": 14,
+                },
+            }
+        )
+        mock_post.side_effect = [
+            FakeErrorResponse(
+                429,
+                {"error": {"message": "temporarily rate-limited upstream"}},
+            ),
+            success,
+        ]
+
+        story, _, _ = call_openrouter(
+            api_key="test-key",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.8,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+            structured_output=True,
+        )
+
+        self.assertEqual(story, "Recovered after rate limit.")
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(5.0)
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
     def test_transient_520_retries_then_succeeds(
         self,
         mock_post,
