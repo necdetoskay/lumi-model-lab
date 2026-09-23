@@ -8,7 +8,7 @@ import requests
 import yaml
 
 DEFAULT_PROFILE_PATH = "configs/openrouter_jev_continuity.yaml"
-JEV_TRANSIENT_STATUS_CODES = {408, 429, 500, 502, 503, 504, 520, 522, 524}
+JEV_TRANSIENT_STATUS_CODES = {408, 429, 500, 502, 503, 504, 520, 522, 524, 529}
 JEV_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
 JEV_MAX_ATTEMPTS = len(JEV_RETRY_DELAYS_SECONDS) + 1
 
@@ -44,6 +44,25 @@ def load_jev_profile(path: str = DEFAULT_PROFILE_PATH) -> JevProfile:
         ),
         mode=str(workload.get("mode") or "shadow"),
     )
+
+
+
+def unavailable_jev_evidence(error: Exception | str) -> dict[str, Any]:
+    profile = load_jev_profile()
+    return {
+        "mode": profile.mode,
+        "available": False,
+        "error": str(error),
+        "threshold": profile.positive_probability_threshold,
+        "positive_probabilities": {},
+        "below_threshold": {},
+        "next_action": "ESCALATE",
+        "next_action_confidence": 1.0,
+        "shadow_signal": "REVIEW",
+        "resolved_model": profile.model_id,
+        "provider": None,
+        "usage": {},
+    }
 
 
 def noul_question(
