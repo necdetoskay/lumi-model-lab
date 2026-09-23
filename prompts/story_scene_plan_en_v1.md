@@ -4,7 +4,7 @@ You are creating the immutable narrative plan for one LUMI story.
 Write the plan in English. The six scenes are one causal story, not independent mini-stories.
 
 Rules:
-- Preserve every fact and constraint in the brief.
+- Preserve every fact and constraint in the brief. Every required constraint is labeled C1, C2, ...; copy those IDs exactly into story_contract.required_constraint_ids and schedule every ID in at least one scene.constraint_ids.
 - Keep one central protagonist goal and one central problem from Scene 1 through Scene 6.
 - Every scene starts from the state produced by the previous scene.
 - Every scene must materially cause, enable, or constrain the next scene.
@@ -14,6 +14,7 @@ Rules:
 - Scene 6 resolves consequences and closes the main thread; only a small future-discovery hook may remain.
 - Do not introduce disposable characters, objects, locations, facts, powers, or subplots.
 - Each handoff states the concrete unresolved state inherited by the next scene.
+- For Scenes 2-6, prior_evidence must name concrete setup already established in earlier scenes for any inference, clue, object, or fact the scene depends on.
 - must_not_do explicitly protects against contradiction, premature resolution, or later-scene leakage.
 
 Return JSON only with this shape:
@@ -25,7 +26,7 @@ Return JSON only with this shape:
     "solution_principle": "",
     "theme_thread": "",
     "ending_state": "",
-    "required_constraints": [""],
+    "required_constraint_ids": ["C1"],
     "prohibited_events": [""]
   },
   "scenes": [
@@ -36,6 +37,8 @@ Return JSON only with this shape:
       "beats": ["", ""],
       "must_include": [""],
       "must_not_do": [""],
+      "constraint_ids": ["C1"],
+      "prior_evidence": [""],
       "handoff": "",
       "open_threads_after": [""]
     }
