@@ -13,7 +13,8 @@ Rules:
 - Do not fully resolve the central problem before Scene 5.
 - Add only facts or objects that are required by the current plan and that can be explained from prior state.
 - Keep prose natural, vivid, age-appropriate, and non-frightening.
-- Stay close to the target word budget using meaningful action, observation, dialogue, consequence, and sensory detail rather than filler.
+- The prose word count MUST fall inside allowed_word_range from the request. Count words internally before returning; if the draft is above the maximum, compress it before output.
+- Use meaningful action, observation, dialogue, consequence, and sensory detail rather than filler.
 - Do not moralize or explain the lesson after showing it.
 - The handoff_state must describe the exact story state inherited by the next scene.
 
