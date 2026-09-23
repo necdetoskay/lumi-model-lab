@@ -106,6 +106,22 @@ def resolve_model_runtime_profile(
     return resolved
 
 
+def require_judge_runtime_profile(
+    model: str,
+    path: Path = MODEL_RUNTIME_PROFILE_PATH,
+) -> dict[str, Any]:
+    profile = resolve_model_runtime_profile(model, path)
+    match = profile.get("match") or {}
+    judge = profile.get("judge") or {}
+    if match.get("type") != "exact" or judge.get("ready") is not True:
+        raise RuntimeError(
+            "MODEL_JUDGE_RUNTIME_PROFILE_MISSING: paid judge calls require an exact, "
+            f"judge-ready runtime profile for {model!r}; "
+            f"resolved match={match.get('type')!r}, ready={judge.get('ready')!r}."
+        )
+    return profile
+
+
 def require_qualification_runtime_profile(
     model: str,
     path: Path = MODEL_RUNTIME_PROFILE_PATH,
