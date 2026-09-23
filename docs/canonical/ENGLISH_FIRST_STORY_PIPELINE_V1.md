@@ -55,11 +55,13 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 
 ## Model Lab rollout
 
-Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, then JEV continuity when credentials are available, then Haiku plan review.
+Phase A: Qwen 3.8 Flash creates an English StoryContract + six-scene plan. Deterministic validation, then OpenRouter JEV 1.13 continuity in shadow mode, then Haiku plan review.
 Phase B: generate one full English story with six sequential scenes, local repairs, JEV scene gates and Haiku final judge.
 Phase C: repeated qualification across Qwen, MiMo, DeepSeek and other candidates using identical frozen pipeline/gates.
 Phase D: translate only accepted English masters and qualify translation fidelity separately.
 
-## Current blocker
+## OpenRouter JEV transport
 
-The repository currently exposes only OPENROUTER_API_KEY as a GitHub Actions secret. The existing JEV sidecar requires AI_GATEWAY_API_KEY or VERCEL_OIDC_TOKEN. Until one is configured, real JEV calls are BLOCKED_MISSING_CREDENTIAL, never PASS.
+The canonical JEV candidate for this pipeline is the exact versioned OpenRouter Decisions API model `typesafe/jev-1.13`, called through `POST https://openrouter.ai/api/alpha/decisions` using the existing `OPENROUTER_API_KEY`. The older Vercel AI Gateway sidecar remains historical Model Lab infrastructure and is not the transport for this pipeline.
+
+JEV starts in shadow mode until calibrated on a frozen LUMI continuity corpus. Its probabilities and routing decision are recorded, but deterministic validation plus Haiku remain authoritative during qualification.
