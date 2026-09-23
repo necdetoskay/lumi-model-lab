@@ -442,6 +442,80 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             "The timing statement is contradictory.",
         )
 
+    @patch("src.english_story_pipeline.evaluate_scene_jev")
+    @patch("src.english_story_pipeline.verify_final_repair_target")
+    @patch("src.english_story_pipeline.repair_scene_for_final_judge")
+    def test_final_repair_retries_once_when_target_not_verified(
+        self,
+        mock_repair,
+        mock_verify,
+        mock_scene_jev,
+    ):
+        envelope = good_envelope(100)
+        mock_repair.side_effect = [
+            (envelope, [], 100, {"kind": "repair-1"}),
+            (envelope, [], 100, {"kind": "repair-2"}),
+        ]
+        mock_verify.side_effect = [
+            {
+                "probability": 0.61,
+                "threshold": 0.8,
+                "verified": False,
+                "usage": {},
+            },
+            {
+                "probability": 0.91,
+                "threshold": 0.8,
+                "verified": True,
+                "usage": {},
+            },
+        ]
+        mock_scene_jev.return_value = {
+            "threshold": 0.8,
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+        }
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "word_count": 100,
+                "contract": {"purpose": "observe"},
+                "envelope": envelope,
+                "attempts": [],
+                "jev_history": [],
+                "semantic_repairs": [],
+                "continuity_escalation_required": False,
+            }
+        ]
+        records = __import__(
+            "src.english_story_pipeline",
+            fromlist=["apply_final_haiku_repairs"],
+        ).apply_final_haiku_repairs(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={
+                "story_contract": {"central_problem": "signal"},
+                "scenes": [{"purpose": "observe"}],
+            },
+            ledger=[{"scene": 1, "word_count": 100}],
+            scenes=scenes,
+            final_judge={
+                "critical_failures": [],
+                "repair_targets": [
+                    {"scene": 1, "issue": "clarify timing"}
+                ],
+            },
+        )
+        self.assertEqual(mock_repair.call_count, 2)
+        self.assertEqual(mock_verify.call_count, 2)
+        self.assertTrue(records[0]["target_verified"])
+        self.assertEqual(len(records[0]["verifications"]), 2)
+        self.assertEqual(
+            scenes[0]["final_polish_repairs"][0]["repair_attempts"],
+            2,
+        )
+
     @patch("src.english_story_pipeline.call_openrouter")
     def test_final_scene_repair_is_token_uncapped_and_state_preserving(
         self,
