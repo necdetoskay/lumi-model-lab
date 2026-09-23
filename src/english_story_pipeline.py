@@ -1290,6 +1290,88 @@ def apply_final_haiku_repairs(
     return records
 
 
+def run_final_polish_cycles(
+    *,
+    api_key: str,
+    model: str,
+    judge_model: str,
+    spec: StorySpec,
+    plan: dict[str, Any],
+    ledger: list[dict[str, Any]],
+    scenes: list[dict[str, Any]],
+    max_cycles: int = 2,
+) -> tuple[
+    dict[str, Any],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+]:
+    final_evaluations: list[dict[str, Any]] = [
+        evaluate_completed_story(
+            api_key=api_key,
+            judge_model=judge_model,
+            spec=spec,
+            plan=plan,
+            ledger=ledger,
+            scenes=scenes,
+        )
+    ]
+    all_repairs: list[dict[str, Any]] = []
+    cycle_records: list[dict[str, Any]] = []
+
+    for cycle in range(1, max_cycles + 1):
+        current = final_evaluations[-1]
+        final_judge = current["final_judge"]
+        target_scenes = final_repair_scene_ids(final_judge)
+        if (
+            current["accepted"]
+            or final_judge["critical_failures"]
+            or not target_scenes
+        ):
+            break
+
+        repairs = apply_final_haiku_repairs(
+            api_key=api_key,
+            model=model,
+            plan=plan,
+            ledger=ledger,
+            scenes=scenes,
+            final_judge=final_judge,
+        )
+        tagged_repairs = [
+            {**repair, "cycle": cycle}
+            for repair in repairs
+        ]
+        all_repairs.extend(tagged_repairs)
+        cycle_record = {
+            "cycle": cycle,
+            "requested_scenes": target_scenes,
+            "repairs": tagged_repairs,
+        }
+        cycle_records.append(cycle_record)
+
+        if not repairs or not all(repair["accepted"] for repair in repairs):
+            break
+
+        final_evaluations.append(
+            evaluate_completed_story(
+                api_key=api_key,
+                judge_model=judge_model,
+                spec=spec,
+                plan=plan,
+                ledger=ledger,
+                scenes=scenes,
+            )
+        )
+
+    return (
+        final_evaluations[-1],
+        final_evaluations,
+        all_repairs,
+        cycle_records,
+    )
+
+
 def run(
     *,
     model: str,
@@ -1520,58 +1602,45 @@ def run(
         )
         previous_prose = envelope["prose"]
 
-    final_evaluations: list[dict[str, Any]] = []
-    final_evaluation = evaluate_completed_story(
+    (
+        final_evaluation,
+        final_evaluations,
+        final_polish_repairs,
+        final_polish_cycles,
+    ) = run_final_polish_cycles(
         api_key=api_key,
+        model=model,
         judge_model=judge_model,
         spec=spec,
         plan=plan,
         ledger=ledger,
         scenes=scenes,
+        max_cycles=2,
     )
-    final_evaluations.append(final_evaluation)
 
-    final_polish_repairs: list[dict[str, Any]] = []
-    if (
-        not final_evaluation["accepted"]
-        and not final_evaluation["final_judge"]["critical_failures"]
-        and final_repair_scene_ids(final_evaluation["final_judge"])
-    ):
-        final_polish_repairs = apply_final_haiku_repairs(
-            api_key=api_key,
-            model=model,
-            plan=plan,
-            ledger=ledger,
-            scenes=scenes,
-            final_judge=final_evaluation["final_judge"],
-        )
+    for cycle in final_polish_cycles:
         print(
             json.dumps(
                 {
                     "checkpoint": "final_haiku_targeted_repair",
+                    "cycle": cycle["cycle"],
+                    "requested_scenes": cycle["requested_scenes"],
                     "targets": [
                         {
                             "scene": repair["scene"],
                             "accepted": repair["accepted"],
+                            "target_verified": repair.get(
+                                "target_verified"
+                            ),
                             "errors": repair.get("errors") or [],
                         }
-                        for repair in final_polish_repairs
+                        for repair in cycle["repairs"]
                     ],
                 },
                 ensure_ascii=False,
             ),
             flush=True,
         )
-        if all(repair["accepted"] for repair in final_polish_repairs):
-            final_evaluation = evaluate_completed_story(
-                api_key=api_key,
-                judge_model=judge_model,
-                spec=spec,
-                plan=plan,
-                ledger=ledger,
-                scenes=scenes,
-            )
-            final_evaluations.append(final_evaluation)
 
     story = final_evaluation["story"]
     total_words = final_evaluation["word_count"]
@@ -1614,6 +1683,19 @@ def run(
         "repeat_8gram_ratio": repetition,
         "whole_story_jev": whole_jev,
         "final_judge": final_judge,
+        "final_polish_cycles": final_polish_cycles,
+        "final_evaluation_history": [
+            {
+                "accepted": item["accepted"],
+                "word_count": item["word_count"],
+                "deterministic_errors": item["deterministic_errors"],
+                "whole_story_jev": item["whole_story_jev"],
+                "final_judge": item["final_judge"],
+                "whole_jev_cost": item["whole_jev_cost"],
+                "final_judge_cost": item["final_judge_cost"],
+            }
+            for item in final_evaluations
+        ],
         "costs": {
             "scene_generation_usd": round(total_generator_cost, 9),
             "scene_jev_usd": round(total_scene_jev_cost, 9),
