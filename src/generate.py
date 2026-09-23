@@ -164,7 +164,7 @@ def _aggregate_openrouter_stream(response: requests.Response, model: str) -> dic
 
 
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
-                    temperature: float, max_tokens: int, seed: int | None,
+                    temperature: float, max_tokens: int | None, seed: int | None,
                     request_class: str = "teacher_story",
                     structured_output: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
@@ -174,8 +174,9 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             {"role": "user", "content": user_prompt},
         ],
         "temperature": temperature,
-        "max_tokens": max_tokens,
     }
+    if max_tokens is not None:
+        payload["max_tokens"] = max_tokens
     if seed is not None:
         payload["seed"] = seed
     payload = normalize_openrouter_request(

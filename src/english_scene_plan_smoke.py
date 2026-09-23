@@ -216,7 +216,7 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
         api_key=api_key, model=planner_model,
         system_prompt=PLAN_PROMPT.read_text(encoding="utf-8").strip(),
         user_prompt=f"Create the immutable six-scene story plan.\n\nSTORY BRIEF\n{brief}",
-        temperature=0.2, max_tokens=5000, seed=42,
+        temperature=0.2, max_tokens=None, seed=42,
         request_class="story_plan", structured_output=True,
     )
     plan_choice = (plan_body.get("choices") or [{}])[0]
@@ -224,7 +224,8 @@ def run(planner_model: str, jev_model: str, judge_model: str, spec_path: Path) -
     if plan_finish_reason == "length":
         usage = plan_body.get("usage") or {}
         raise RuntimeError(
-            "PLAN_TRUNCATED: English scene plan hit its output limit; "
+            "PLAN_TRUNCATED_AT_PROVIDER_LIMIT: English scene plan ended with "
+            "finish_reason=length without a client max_tokens limit; "
             f"completion_tokens={usage.get('completion_tokens')!r}."
         )
     plan = parse_json_object(plan_text)
