@@ -164,7 +164,9 @@ def _aggregate_openrouter_stream(response: requests.Response, model: str) -> dic
 
 
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
-                    temperature: float, max_tokens: int, seed: int | None) -> tuple[str, dict[str, Any], dict[str, Any]]:
+                    temperature: float, max_tokens: int, seed: int | None,
+                    request_class: str = "teacher_story",
+                    structured_output: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
@@ -179,8 +181,8 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
     payload = normalize_openrouter_request(
         model,
         payload,
-        request_class="teacher_story",
-        structured_output=False,
+        request_class=request_class,
+        structured_output=structured_output,
     )
 
     stream_enabled = payload.get("stream") is True
