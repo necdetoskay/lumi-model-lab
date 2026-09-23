@@ -26,10 +26,35 @@ from src.schemas import (
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_TRANSIENT_STATUS_CODES = {408, 429, 500, 502, 503, 504, 520, 522, 524}
 OPENROUTER_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
-OPENROUTER_MAX_ATTEMPTS = len(OPENROUTER_RETRY_DELAYS_SECONDS) + 1
+OPENROUTER_SHARED_POOL_429_RETRY_DELAYS_SECONDS = (5.0, 10.0, 20.0, 30.0, 45.0)
 PROMPT_VERSION = "story_teacher_v0.2"
 DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
 console = Console()
+
+
+def _is_shared_pool_rate_limit(status_code: int, error_body: Any) -> bool:
+    if status_code != 429 or not isinstance(error_body, dict):
+        return False
+    error = error_body.get("error")
+    if not isinstance(error, dict):
+        return False
+    metadata = error.get("metadata")
+    if isinstance(metadata, dict):
+        if metadata.get("limit_source") == "upstream_provider_shared_pool":
+            return True
+        raw = str(metadata.get("raw") or "").lower()
+        if "temporarily rate-limited upstream" in raw:
+            return True
+    message = str(error.get("message") or "").lower()
+    return "temporarily rate-limited upstream" in message
+
+
+def _retry_delays_for_response(status_code: int, error_body: Any) -> tuple[float, ...] | None:
+    if _is_shared_pool_rate_limit(status_code, error_body):
+        return OPENROUTER_SHARED_POOL_429_RETRY_DELAYS_SECONDS
+    if status_code in OPENROUTER_TRANSIENT_STATUS_CODES:
+        return OPENROUTER_RETRY_DELAYS_SECONDS
+    return None
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -194,7 +219,8 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
 
     response = None
     transport_error: Exception | None = None
-    for attempt in range(OPENROUTER_MAX_ATTEMPTS):
+    attempt = 0
+    while True:
         try:
             response = requests.post(
                 OPENROUTER_URL,
@@ -211,12 +237,14 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             transport_error = None
         except (requests.Timeout, requests.ConnectionError) as exc:
             transport_error = exc
-            if attempt >= OPENROUTER_MAX_ATTEMPTS - 1:
+            if attempt >= len(OPENROUTER_RETRY_DELAYS_SECONDS):
                 raise RuntimeError(
-                    f"OpenRouter transport failed after {OPENROUTER_MAX_ATTEMPTS} "
-                    f"attempts for model {model}: {exc}"
+                    "OpenRouter transport failed after "
+                    f"{len(OPENROUTER_RETRY_DELAYS_SECONDS) + 1} attempts "
+                    f"for model {model}: {exc}"
                 ) from exc
             time.sleep(OPENROUTER_RETRY_DELAYS_SECONDS[attempt])
+            attempt += 1
             continue
 
         if response.ok:
@@ -227,24 +255,32 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         except ValueError:
             error_body = response.text[:2000]
 
-        if (
-            response.status_code in OPENROUTER_TRANSIENT_STATUS_CODES
-            and attempt < OPENROUTER_MAX_ATTEMPTS - 1
-        ):
+        retry_delays = _retry_delays_for_response(
+            response.status_code,
+            error_body,
+        )
+        if retry_delays is not None and attempt < len(retry_delays):
             retry_after = None
             headers = getattr(response, "headers", {}) or {}
             raw_retry_after = headers.get("Retry-After")
             if raw_retry_after is not None:
                 try:
-                    retry_after = max(0.0, min(float(raw_retry_after), 30.0))
+                    retry_after = max(
+                        0.0,
+                        min(
+                            float(raw_retry_after),
+                            60.0 if response.status_code == 429 else 30.0,
+                        ),
+                    )
                 except (TypeError, ValueError):
                     retry_after = None
             delay = (
                 retry_after
                 if retry_after is not None
-                else OPENROUTER_RETRY_DELAYS_SECONDS[attempt]
+                else retry_delays[attempt]
             )
             time.sleep(delay)
+            attempt += 1
             continue
 
         raise RuntimeError(

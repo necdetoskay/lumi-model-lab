@@ -176,6 +176,129 @@ class GenerateStreamingTests(unittest.TestCase):
 
     @patch("src.generate.time.sleep")
     @patch("src.generate.requests.post")
+    def test_shared_pool_429_uses_extended_cooldown(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        success = FakeJsonSuccessResponse(
+            {
+                "id": "gen-shared-pool-retry",
+                "model": "qwen/qwen3.8-flash",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Recovered after shared-pool cooldown.",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 5,
+                    "total_tokens": 15,
+                },
+            }
+        )
+        shared_pool_error = FakeErrorResponse(
+            429,
+            {
+                "error": {
+                    "message": "Provider returned error",
+                    "metadata": {
+                        "raw": "qwen/qwen3.8-flash is temporarily rate-limited upstream.",
+                        "limit_source": "upstream_provider_shared_pool",
+                    },
+                }
+            },
+        )
+        mock_post.side_effect = [
+            shared_pool_error,
+            shared_pool_error,
+            shared_pool_error,
+            shared_pool_error,
+            shared_pool_error,
+            success,
+        ]
+
+        story, _, _ = call_openrouter(
+            api_key="test-key",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.8,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+            structured_output=True,
+        )
+
+        self.assertEqual(story, "Recovered after shared-pool cooldown.")
+        self.assertEqual(mock_post.call_count, 6)
+        self.assertEqual(
+            [call.args[0] for call in mock_sleep.call_args_list],
+            [5.0, 10.0, 20.0, 30.0, 45.0],
+        )
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
+    def test_generic_429_keeps_short_retry_window(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        success = FakeJsonSuccessResponse(
+            {
+                "id": "gen-generic-429",
+                "model": "qwen/qwen3.8-flash",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Recovered generic 429.",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 4,
+                    "total_tokens": 14,
+                },
+            }
+        )
+        generic_error = FakeErrorResponse(
+            429,
+            {"error": {"message": "rate limit"}},
+        )
+        mock_post.side_effect = [
+            generic_error,
+            generic_error,
+            generic_error,
+            success,
+        ]
+
+        story, _, _ = call_openrouter(
+            api_key="test-key",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.8,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+            structured_output=True,
+        )
+
+        self.assertEqual(story, "Recovered generic 429.")
+        self.assertEqual(
+            [call.args[0] for call in mock_sleep.call_args_list],
+            [2.0, 5.0, 10.0],
+        )
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
     def test_transient_520_retries_then_succeeds(
         self,
         mock_post,
