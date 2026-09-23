@@ -15,6 +15,7 @@ from src.english_story_pipeline import (
     jev_targeted_repair_reasons,
     final_repair_scene_ids,
     only_word_budget_errors,
+    partition_scene_validation_errors,
     plan_repair_feedback,
     repair_plan_once,
     repair_scene_word_budget,
@@ -162,6 +163,40 @@ class EnglishStoryPipelineTests(unittest.TestCase):
                 ]
             )
         )
+
+    def test_scene_word_budget_errors_can_be_advisory(self):
+        blocking, warnings = partition_scene_validation_errors(
+            [
+                "above_scene_word_budget:457>408",
+                "word_budget_repair_required_range_miss:457 not in [299,333]",
+            ]
+        )
+        self.assertEqual(blocking, [])
+        self.assertEqual(len(warnings), 2)
+
+    def test_scene_schema_errors_remain_blocking(self):
+        blocking, warnings = partition_scene_validation_errors(
+            [
+                "above_scene_word_budget:457>408",
+                "state_delta_location_missing",
+            ]
+        )
+        self.assertEqual(blocking, ["state_delta_location_missing"])
+        self.assertEqual(
+            warnings,
+            ["above_scene_word_budget:457>408"],
+        )
+
+    def test_final_prose_repair_does_not_fail_only_for_scene_length(self):
+        original = good_envelope(100)
+        repaired = good_envelope(130)
+        errors, word_count = validate_prose_only_repair(
+            original_envelope=original,
+            repaired_envelope=repaired,
+            target_words=100,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 130)
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_compresses_without_state_change(self, mock_call):
