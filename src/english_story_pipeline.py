@@ -24,6 +24,7 @@ from src.openrouter_jev import (
     load_jev_profile,
     noul_probability,
     noul_question,
+    unavailable_jev_evidence,
 )
 from src.schemas import StorySpec
 
@@ -252,25 +253,30 @@ def evaluate_scene_jev(
         scene_index,
         scene_index == 6,
     )
-    body = call_openrouter_jev(
-        api_key=api_key,
-        state={
-            "description": "English LUMI scene continuity evaluation.",
-            "story_contract": story_contract,
-            "scene_contract": scene_contract,
-            "next_scene_contract": next_scene,
-            "prior_ledger": ledger,
-            "current_scene": envelope,
-        },
-        questions=scene_questions,
-    )
-    return summarize_jev(
-        body,
-        question_ids=[
-            key for key in scene_questions
-            if key != "next_action"
-        ],
-    )
+    try:
+        body = call_openrouter_jev(
+            api_key=api_key,
+            state={
+                "description": "English LUMI scene continuity evaluation.",
+                "story_contract": story_contract,
+                "scene_contract": scene_contract,
+                "next_scene_contract": next_scene,
+                "prior_ledger": ledger,
+                "current_scene": envelope,
+            },
+            questions=scene_questions,
+        )
+        result = summarize_jev(
+            body,
+            question_ids=[
+                key for key in scene_questions
+                if key != "next_action"
+            ],
+        )
+        result["available"] = True
+        return result
+    except RuntimeError as exc:
+        return unavailable_jev_evidence(exc)
 
 
 def call_structured_json_with_retry(
@@ -1080,25 +1086,30 @@ def evaluate_completed_story(
         )
 
     whole_questions = build_whole_story_jev_questions()
-    whole_jev_body = call_openrouter_jev(
-        api_key=api_key,
-        state={
-            "description": "Completed English LUMI six-scene story continuity ledger.",
-            "story_contract": plan["story_contract"],
-            "scene_graph": plan["scenes"],
-            "continuity_ledger": ledger,
-            "total_word_count": total_words,
-            "story": story,
-        },
-        questions=whole_questions,
-    )
-    whole_jev = summarize_jev(
-        whole_jev_body,
-        question_ids=[
-            key for key in whole_questions
-            if key != "next_action"
-        ],
-    )
+    whole_jev_body: dict[str, Any] = {}
+    try:
+        whole_jev_body = call_openrouter_jev(
+            api_key=api_key,
+            state={
+                "description": "Completed English LUMI six-scene story continuity ledger.",
+                "story_contract": plan["story_contract"],
+                "scene_graph": plan["scenes"],
+                "continuity_ledger": ledger,
+                "total_word_count": total_words,
+                "story": story,
+            },
+            questions=whole_questions,
+        )
+        whole_jev = summarize_jev(
+            whole_jev_body,
+            question_ids=[
+                key for key in whole_questions
+                if key != "next_action"
+            ],
+        )
+        whole_jev["available"] = True
+    except RuntimeError as exc:
+        whole_jev = unavailable_jev_evidence(exc)
 
     brief = build_labeled_brief(spec)
     final_input = (
@@ -1207,29 +1218,42 @@ def verify_final_repair_target(
             ),
         )
     }
-    body = call_openrouter_jev(
-        api_key=api_key,
-        state={
-            "description": "Focused verification of one Haiku final-repair target.",
-            "story_contract": plan["story_contract"],
-            "scene_contract": scene["contract"],
-            "repair_issue": issue,
-            "previous_scene_prose": previous_prose,
-            "current_scene_prose": scene["envelope"]["prose"],
-            "next_scene_prose": next_prose,
-        },
-        questions=questions,
-    )
-    probability = noul_probability(body["answers"]["target_resolved"])
     threshold = load_jev_profile().positive_probability_threshold
-    return {
-        "probability": probability,
-        "threshold": threshold,
-        "verified": probability >= threshold,
-        "usage": body.get("usage") or {},
-        "resolved_model": body.get("model"),
-        "provider": body.get("provider"),
-    }
+    try:
+        body = call_openrouter_jev(
+            api_key=api_key,
+            state={
+                "description": "Focused verification of one Haiku final-repair target.",
+                "story_contract": plan["story_contract"],
+                "scene_contract": scene["contract"],
+                "repair_issue": issue,
+                "previous_scene_prose": previous_prose,
+                "current_scene_prose": scene["envelope"]["prose"],
+                "next_scene_prose": next_prose,
+            },
+            questions=questions,
+        )
+        probability = noul_probability(body["answers"]["target_resolved"])
+        return {
+            "available": True,
+            "probability": probability,
+            "threshold": threshold,
+            "verified": probability >= threshold,
+            "usage": body.get("usage") or {},
+            "resolved_model": body.get("model"),
+            "provider": body.get("provider"),
+        }
+    except RuntimeError as exc:
+        return {
+            "available": False,
+            "error": str(exc),
+            "probability": None,
+            "threshold": threshold,
+            "verified": None,
+            "usage": {},
+            "resolved_model": load_jev_profile().model_id,
+            "provider": None,
+        }
 
 
 def apply_final_haiku_repairs(
@@ -1297,7 +1321,7 @@ def apply_final_haiku_repairs(
             )
             verification["repair_round"] = repair_round
             verifications.append(verification)
-            if verification["verified"]:
+            if verification.get("available") is False or verification.get("verified") is True:
                 break
 
         if technical_failure:
