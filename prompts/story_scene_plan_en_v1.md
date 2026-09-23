@@ -11,6 +11,7 @@ Rules:
 - Clues, observations, decisions, and consequences must accumulate; do not reset knowledge.
 - Do not fully solve the central problem before Scene 5.
 - Scene 5 contains the decisive application/payoff.
+- Scene 5 may fully resolve the central problem; open_threads_after may be empty when Scene 6 is purely consequence/closure, provided handoff still states the resulting state.
 - Scene 6 resolves consequences and closes the main thread. Leave open_threads_after empty unless the story brief explicitly requires a future-discovery opening; if it does, keep only one small bounded hook.
 - Do not introduce disposable characters, objects, locations, facts, powers, or subplots.
 - Each handoff states the concrete unresolved state inherited by the next scene.

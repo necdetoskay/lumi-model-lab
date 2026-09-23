@@ -14,7 +14,7 @@ Rules:
 - Preserve all valid scene purposes and beats unless a supplied repair reason requires a local change.
 - Do not replace the story with a new concept.
 - Keep exactly six scenes with indexes 1 through 6.
-- Keep the decisive solution/payoff in Scene 5; Scene 6 handles consequences and closure. Keep open_threads_after empty unless the original brief explicitly requires a future-discovery opening; if required, preserve only one bounded hook.
+- Keep the decisive solution/payoff in Scene 5; Scene 5 may close the central problem completely and may have open_threads_after=[] when Scene 6 is consequence-only. Scene 6 handles consequences and closure. Keep Scene 6 open_threads_after empty unless the original brief explicitly requires a future-discovery opening; if required, preserve only one bounded hook.
 - Make every inference mechanically understandable from earlier evidence.
 - If a later object, fact, mechanism, institution, or hook appears, establish enough prior evidence before it is needed.
 - If an incorrect assumption must be corrected, explicitly schedule the concrete observation or evidence that corrects it.

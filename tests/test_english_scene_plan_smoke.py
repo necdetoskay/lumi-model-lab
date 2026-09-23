@@ -108,11 +108,16 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
         value["scenes"][5]["open_threads_after"] = []
         self.assertEqual(validate_plan(value, _spec()), [])
 
-    def test_pre_final_scene_still_requires_open_thread(self):
+    def test_scene_five_may_close_with_no_open_threads(self):
         value = _plan()
         value["scenes"][4]["open_threads_after"] = []
+        self.assertEqual(validate_plan(value, _spec()), [])
+
+    def test_scene_four_still_requires_open_thread(self):
+        value = _plan()
+        value["scenes"][3]["open_threads_after"] = []
         self.assertIn(
-            "scene_5_open_threads_after_missing",
+            "scene_4_open_threads_after_missing",
             validate_plan(value, _spec()),
         )
 
