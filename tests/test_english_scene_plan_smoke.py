@@ -103,6 +103,19 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
             scene["constraint_ids"] = ["C1"]
         self.assertIn("scene_constraint_schedule_mismatch", validate_plan(value, _spec()))
 
+    def test_scene_six_may_close_with_no_open_threads(self):
+        value = _plan()
+        value["scenes"][5]["open_threads_after"] = []
+        self.assertEqual(validate_plan(value, _spec()), [])
+
+    def test_pre_final_scene_still_requires_open_thread(self):
+        value = _plan()
+        value["scenes"][4]["open_threads_after"] = []
+        self.assertIn(
+            "scene_5_open_threads_after_missing",
+            validate_plan(value, _spec()),
+        )
+
     def test_prior_evidence_required_after_scene_one(self):
         value = _plan()
         value["scenes"][2]["prior_evidence"] = []
