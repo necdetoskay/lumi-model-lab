@@ -236,6 +236,7 @@ def evaluate_scene_jev(
     *,
     api_key: str,
     scene_index: int,
+    story_contract: dict[str, Any],
     scene_contract: dict[str, Any],
     next_scene: dict[str, Any] | None,
     ledger: list[dict[str, Any]],
@@ -249,7 +250,7 @@ def evaluate_scene_jev(
         api_key=api_key,
         state={
             "description": "English LUMI scene continuity evaluation.",
-            "story_contract": None,
+            "story_contract": story_contract,
             "scene_contract": scene_contract,
             "next_scene_contract": next_scene,
             "prior_ledger": ledger,
@@ -658,6 +659,7 @@ def run(
         jev = evaluate_scene_jev(
             api_key=api_key,
             scene_index=scene_index,
+            story_contract=plan["story_contract"],
             scene_contract=scene_contract,
             next_scene=next_scene,
             ledger=ledger,
@@ -696,6 +698,7 @@ def run(
                 jev = evaluate_scene_jev(
                     api_key=api_key,
                     scene_index=scene_index,
+                    story_contract=plan["story_contract"],
                     scene_contract=scene_contract,
                     next_scene=next_scene,
                     ledger=ledger,
