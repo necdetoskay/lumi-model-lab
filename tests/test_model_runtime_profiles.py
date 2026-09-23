@@ -76,7 +76,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
             {"enabled": True, "effort": "low", "exclude": True},
         )
 
-    def test_qwen38_flash_uses_verified_openrouter_streaming_transport(self) -> None:
+    def test_qwen38_flash_uses_verified_teacher_story_contract(self) -> None:
         profile = require_qualification_runtime_profile("qwen/qwen3.8-flash")
         payload = normalize_openrouter_request(
             "qwen/qwen3.8-flash",
@@ -86,13 +86,25 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(profile["match"]["type"], "exact")
         self.assertEqual(profile["metadata"]["max_output_tokens"], 131072)
         self.assertEqual(profile["metadata"]["reasoning"]["default_effort"], "xhigh")
-        self.assertNotIn("max_tokens", payload)
-        self.assertNotIn("temperature", payload)
-        self.assertNotIn("seed", payload)
-        self.assertNotIn("reasoning", payload)
+        self.assertEqual(payload["max_tokens"], 7000)
+        self.assertEqual(payload["temperature"], 0.8)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(payload["reasoning"], {"effort": "none", "exclude": True})
         self.assertNotIn("reasoning_effort", payload)
         self.assertNotIn("provider", payload)
         self.assertIs(payload["stream"], True)
+
+    def test_qwen38_default_request_keeps_provider_defaults(self) -> None:
+        payload = normalize_openrouter_request(
+            "qwen/qwen3.8-flash",
+            {"temperature": 0.8, "max_tokens": 7000, "seed": 42},
+            request_class="default",
+        )
+        self.assertNotIn("temperature", payload)
+        self.assertNotIn("max_tokens", payload)
+        self.assertNotIn("seed", payload)
+        self.assertNotIn("reasoning", payload)
+        self.assertNotIn("stream", payload)
 
     def test_paid_qualification_profile_gate_rejects_fallback_and_family(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "MODEL_RUNTIME_PROFILE_MISSING"):

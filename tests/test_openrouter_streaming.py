@@ -13,9 +13,16 @@ class _FakeStreamResponse:
 
 
 class OpenRouterStreamingTests(unittest.TestCase):
-    def test_qwen38_profile_enables_streaming_without_generation_overrides(self) -> None:
+    def test_qwen38_teacher_story_profile_disables_reasoning_and_streams(self) -> None:
         options = build_model_options("qwen/qwen3.8-flash", 42)
-        self.assertEqual(options, {"stream": True})
+        self.assertEqual(
+            options,
+            {
+                "seed": 42,
+                "reasoning": {"effort": "none", "exclude": True},
+                "stream": True,
+            },
+        )
 
     def test_stream_aggregates_content_finish_reason_and_final_usage(self) -> None:
         response = _FakeStreamResponse(

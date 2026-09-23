@@ -209,10 +209,10 @@ profiles:
         - https://www.qwencloud.com/models/qwen3.8-flash
         - https://docs.qwencloud.com/api-reference/chat/openai-chat
     notes:
-      - Thinking is enabled by default and xhigh is the provider default; never qualify this model with provider-default reasoning under a small shared completion cap.
-      - Compatibility baseline follows the OpenRouter model-page Quick Start: model + messages + stream=true, with provider-default reasoning and no client max_tokens/temperature/seed override.
-      - Streaming is part of the verified transport contract for this model and preserves final usage evidence from the final SSE chunk.
-      - Reasoning tuning is allowed only after this exact OpenRouter baseline proves visible content for LUMI teacher-story prompts.
+      - Thinking is enabled by default and xhigh is the provider default; never qualify this model with provider-default reasoning under an unbounded story workload.
+      - OpenRouter exposes the canonical reasoning parameter for this model and documents effort=none as the cross-model way to disable thinking.
+      - LUMI teacher-story generation disables reasoning, keeps a bounded visible-output budget, and streams the response so long stories do not depend on a single buffered completion.
+      - Other request classes retain the model/provider defaults unless they define their own override.
       - OpenRouter exposes structured outputs and tool calling for this exact model slug.
     transport:
       structured_output: strict_json_schema
@@ -225,8 +225,24 @@ profiles:
       seed:
         mode: omit
       stream:
-        mode: send
-        value: true
+        mode: omit
+    request_overrides:
+      teacher_story:
+        reasoning:
+          mode: provider_managed_required
+          request:
+            effort: none
+            exclude: true
+        temperature:
+          mode: send
+        max_tokens:
+          mode: send
+          cap: 7000
+        seed:
+          mode: send
+        stream:
+          mode: send
+          value: true
 
   - model_id: qwen/qwen3.5-flash-02-23
     display_name: Qwen 3.5 Flash
