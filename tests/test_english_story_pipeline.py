@@ -200,6 +200,44 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
 
     @patch("src.english_story_pipeline.call_openrouter")
+    def test_second_word_budget_repair_is_more_aggressive(self, mock_call):
+        original = good_envelope(130)
+        mock_call.return_value = (
+            __import__("json").dumps({"prose": "word " * 95}),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        _, errors, word_count, attempt = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=100,
+            seed=100,
+            repair_index=2,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 95)
+        self.assertEqual(attempt["required_word_range"], [88, 98])
+        self.assertEqual(attempt["aggressiveness"], "high")
+        sent = __import__("json").loads(
+            mock_call.call_args.kwargs["user_prompt"]
+        )
+        self.assertTrue(sent["previous_attempt_missed_target"])
+        self.assertEqual(sent["minimum_words_to_remove"], 32)
+        self.assertEqual(sent["maximum_output_words"], 98)
+        self.assertEqual(sent["maximum_sentences"], 8)
+
+    @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_ignores_model_state_delta_output(self, mock_call):
         original = good_envelope(130)
         payload = {
