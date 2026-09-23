@@ -17,7 +17,7 @@ def _plan() -> dict:
             "solution_principle": "Combine tide and marker clues.",
             "theme_thread": "Patient observation.",
             "ending_state": "Source understood.",
-            "required_constraints": ["Ada corrects a wrong assumption.", "Use two clues."],
+            "required_constraint_ids": ["C1", "C2"],
             "prohibited_events": ["Do not solve before Scene 5."],
         },
         "scenes": [
@@ -28,6 +28,8 @@ def _plan() -> dict:
                 "beats": [f"Beat {i}a", f"Beat {i}b"],
                 "must_include": [f"Required {i}"],
                 "must_not_do": [f"Guard {i}"],
+                "constraint_ids": ["C1"] if i < 6 else ["C2"],
+                "prior_evidence": [] if i == 1 else [f"Evidence from scene {i - 1}"],
                 "handoff": f"Handoff {i}",
                 "open_threads_after": [f"Thread {i}"],
             }
@@ -39,10 +41,21 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
     def test_valid_plan_shape(self):
         self.assertEqual(validate_plan(_plan(), _spec()), [])
 
-    def test_constraint_underrepresentation_fails(self):
+    def test_constraint_id_mismatch_fails(self):
         value = _plan()
-        value["story_contract"]["required_constraints"] = ["one"]
-        self.assertIn("required_constraints_underrepresented", validate_plan(value, _spec()))
+        value["story_contract"]["required_constraint_ids"] = ["C1"]
+        self.assertIn("required_constraint_ids_mismatch", validate_plan(value, _spec()))
+
+    def test_scene_constraint_schedule_mismatch_fails(self):
+        value = _plan()
+        for scene in value["scenes"]:
+            scene["constraint_ids"] = ["C1"]
+        self.assertIn("scene_constraint_schedule_mismatch", validate_plan(value, _spec()))
+
+    def test_prior_evidence_required_after_scene_one(self):
+        value = _plan()
+        value["scenes"][2]["prior_evidence"] = []
+        self.assertIn("scene_3_prior_evidence_missing", validate_plan(value, _spec()))
 
     def test_jev_question_set_is_atomic(self):
         questions = build_jev_questions()
