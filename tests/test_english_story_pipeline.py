@@ -6,6 +6,8 @@ from unittest.mock import patch
 from src.english_story_pipeline import (
     allocate_scene_budgets,
     build_scene_jev_questions,
+    TOTAL_STORY_MAX_RATIO,
+    TOTAL_STORY_MIN_RATIO,
     build_whole_story_jev_questions,
     call_structured_json_with_retry,
     evaluate_completed_story,
@@ -629,6 +631,12 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(repaired["state_delta"], envelope["state_delta"])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
+
+    def test_total_story_word_budget_is_plus_minus_25_percent(self):
+        self.assertEqual(TOTAL_STORY_MIN_RATIO, 0.75)
+        self.assertEqual(TOTAL_STORY_MAX_RATIO, 1.25)
+        self.assertEqual(round(2000 * TOTAL_STORY_MIN_RATIO), 1500)
+        self.assertEqual(round(2000 * TOTAL_STORY_MAX_RATIO), 2500)
 
     @patch("src.english_story_pipeline.call_openrouter")
     @patch("src.english_story_pipeline.call_openrouter_jev")
