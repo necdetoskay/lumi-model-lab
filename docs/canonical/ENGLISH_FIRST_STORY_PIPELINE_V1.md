@@ -47,7 +47,8 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 ## Fail-closed rules
 
 - No paid generator qualification without an exact qualification-ready runtime profile.
-- OpenRouter transport retries only transient 429/502/503/504 and connection/timeout failures with bounded backoff; permanent 4xx errors fail immediately.
+- OpenRouter transport retries only bounded transient gateway/rate/timeout failures; permanent client errors fail immediately.
+- Structured JSON generation responses that are malformed or incomplete receive at most one format-recovery retry at lower temperature; malformed payloads are never committed to plan, scene state, or ContinuityLedger.
 - No Haiku judge call without an exact judge-ready runtime profile.
 - JEV absence must be recorded explicitly; it must never silently become PASS.
 - JEV low-confidence/high-risk scene results trigger bounded local repair when a concrete repair signal exists; residual or ambiguous risk escalates to Haiku rather than inventing certainty.

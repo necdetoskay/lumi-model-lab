@@ -7,6 +7,7 @@ from src.english_story_pipeline import (
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
+    call_structured_json_with_retry,
     evaluate_completed_story,
     evaluate_scene_jev,
     jev_needs_targeted_repair,
@@ -44,6 +45,66 @@ def good_envelope(words: int = 100) -> dict:
 
 
 class EnglishStoryPipelineTests(unittest.TestCase):
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_recovers_malformed_response(self, mock_call):
+        valid = good_envelope(100)
+        mock_call.side_effect = [
+            (
+                '{"prose":"unfinished',
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.7,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+            (
+                __import__("json").dumps(valid),
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 20,
+                        "total_tokens": 30,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.2,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+        ]
+
+        payload, _, _, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.7,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+        )
+
+        self.assertEqual(payload, valid)
+        self.assertEqual(len(failures), 1)
+        self.assertEqual(failures[0]["parse_attempt"], 1)
+        self.assertEqual(mock_call.call_count, 2)
+        second = mock_call.call_args_list[1].kwargs
+        self.assertEqual(second["temperature"], 0.2)
+        self.assertNotEqual(second["seed"], 42)
+        self.assertIn("FORMAT RECOVERY", second["user_prompt"])
+
     def test_default_2000_word_budget_distribution(self):
         self.assertEqual(
             allocate_scene_budgets(2000),
