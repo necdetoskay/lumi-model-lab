@@ -39,6 +39,21 @@ class _FakeResponse:
         }
 
 
+
+class _FakeErrorResponse:
+    ok = False
+    text = ""
+
+    def __init__(self, status_code: int, body: dict, retry_after: str | None = None):
+        self.status_code = status_code
+        self._body = body
+        self.headers = {}
+        if retry_after is not None:
+            self.headers["Retry-After"] = retry_after
+
+    def json(self):
+        return self._body
+
 class OpenRouterJevTests(unittest.TestCase):
     def test_profile_is_exact_versioned_openrouter_model(self):
         profile = load_jev_profile()
@@ -69,6 +84,70 @@ class OpenRouterJevTests(unittest.TestCase):
             )["type"],
             "choice",
         )
+
+    @patch("src.openrouter_jev.time.sleep")
+    @patch("src.openrouter_jev.requests.post")
+    def test_transient_429_retries_then_succeeds(self, mock_post, mock_sleep):
+        mock_post.side_effect = [
+            _FakeErrorResponse(
+                429,
+                {"error": {"message": "temporarily rate-limited upstream"}},
+                retry_after="0.5",
+            ),
+            _FakeResponse(),
+        ]
+        body = call_openrouter_jev(
+            api_key="test",
+            state={"description": "English story plan", "plan": {}},
+            questions={
+                "causal": noul_question(
+                    "Is the plan causal?",
+                    true_criteria="Yes.",
+                    false_criteria="No.",
+                ),
+                "next_action": choice_question(
+                    "Choose next action.",
+                    {
+                        "CONTINUE": "Safe.",
+                        "TARGETED_REPAIR": "Repair.",
+                        "ESCALATE": "Escalate.",
+                    },
+                ),
+            },
+        )
+        self.assertIn("answers", body)
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(0.5)
+
+    @patch("src.openrouter_jev.time.sleep")
+    @patch("src.openrouter_jev.requests.post")
+    def test_non_transient_400_fails_without_retry(self, mock_post, mock_sleep):
+        mock_post.return_value = _FakeErrorResponse(
+            400,
+            {"error": {"message": "bad request"}},
+        )
+        with self.assertRaisesRegex(RuntimeError, "OpenRouter JEV HTTP 400"):
+            call_openrouter_jev(
+                api_key="test",
+                state={"description": "English story plan", "plan": {}},
+                questions={
+                    "causal": noul_question(
+                        "Is the plan causal?",
+                        true_criteria="Yes.",
+                        false_criteria="No.",
+                    ),
+                    "next_action": choice_question(
+                        "Choose next action.",
+                        {
+                            "CONTINUE": "Safe.",
+                            "TARGETED_REPAIR": "Repair.",
+                            "ESCALATE": "Escalate.",
+                        },
+                    ),
+                },
+            )
+        self.assertEqual(mock_post.call_count, 1)
+        mock_sleep.assert_not_called()
 
     @patch("src.openrouter_jev.requests.post")
     def test_call_uses_openrouter_decisions_api(self, mock_post):
