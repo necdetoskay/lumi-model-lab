@@ -1084,6 +1084,69 @@ def verify_final_repair_target(
     }
 
 
+def verify_final_repair_target(
+    *,
+    api_key: str,
+    plan: dict[str, Any],
+    scenes: list[dict[str, Any]],
+    scene_index: int,
+    issue: str,
+) -> dict[str, Any]:
+    position = scene_index - 1
+    scene = scenes[position]
+    previous_prose = (
+        scenes[position - 1]["envelope"]["prose"]
+        if position > 0
+        else ""
+    )
+    next_prose = (
+        scenes[position + 1]["envelope"]["prose"]
+        if position + 1 < len(scenes)
+        else ""
+    )
+    questions = {
+        "target_resolved": noul_question(
+            (
+                "Has this exact final-judge repair issue been resolved in the current "
+                f"Scene {scene_index} prose without introducing a new contradiction? "
+                f"Repair issue: {issue}"
+            ),
+            true_criteria=(
+                "The named issue is concretely resolved in the current scene prose, "
+                "the surrounding scene transition remains coherent, and no new "
+                "contradiction was introduced."
+            ),
+            false_criteria=(
+                "The named issue remains, is only partially addressed, or the repair "
+                "creates a new contradiction with adjacent prose or the SceneContract."
+            ),
+        )
+    }
+    body = call_openrouter_jev(
+        api_key=api_key,
+        state={
+            "description": "Focused verification of one Haiku final-repair target.",
+            "story_contract": plan["story_contract"],
+            "scene_contract": scene["contract"],
+            "repair_issue": issue,
+            "previous_scene_prose": previous_prose,
+            "current_scene_prose": scene["envelope"]["prose"],
+            "next_scene_prose": next_prose,
+        },
+        questions=questions,
+    )
+    probability = noul_probability(body["answers"]["target_resolved"])
+    threshold = load_jev_profile().positive_probability_threshold
+    return {
+        "probability": probability,
+        "threshold": threshold,
+        "verified": probability >= threshold,
+        "usage": body.get("usage") or {},
+        "resolved_model": body.get("model"),
+        "provider": body.get("provider"),
+    }
+
+
 def apply_final_haiku_repairs(
     *,
     api_key: str,
