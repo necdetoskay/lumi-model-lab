@@ -44,7 +44,8 @@ Incoming state / candidate artifact
              v
 +-------------------------------+
 | Deterministic preconditions   |
-| schema / auth / exact rules   |
+| schema / auth / privacy /     |
+| locality / exact rules        |
 +---------------+---------------+
                 |
                 v
@@ -76,6 +77,8 @@ Deterministic code owns all exact and enforceable invariants, including:
 
 - authorization and ownership,
 - provider/model allowlists,
+- privacy/data-classification and provider-locality policy before any hosted call,
+- deterministic context/token-length ceilings where they are known exactly,
 - hard budget ceilings,
 - schema validity,
 - revision/CAS/idempotency rules,
@@ -217,6 +220,39 @@ The exact set is fixture-specific and versioned.
 
 This profile does not authorize the decision engine to execute arbitrary tools or actions. Deterministic orchestration validates the selected action before execution.
 
+#### 6.2.1 Router signal decomposition
+
+Execution routing qualification must distinguish **semantic signals** from the final route/action.
+
+Candidate semantic signals may include:
+
+- task/lane classification,
+- ordinal task difficulty,
+- whether web/tool access is semantically required,
+- whether the state appears privacy-sensitive,
+- whether additional context is required,
+- route confidence / probability distribution.
+
+These signals are evidence for deterministic routing policy; none of them directly creates execution authority.
+
+Difficulty is not a model-tier label by itself. A `difficulty` score is useful only after it is calibrated against measured downstream success/failure for the actual candidate model tiers on frozen LUMI workloads. The lab must therefore measure routing regret and task success, not merely agreement with a human difficulty label.
+
+Where an engine can answer several typed questions over the same state in one request, the lab should test the combined request shape as well as independent requests. Parallel multi-question evaluation may reduce latency/cost, but shared-state convenience must not be treated as proof of question independence or correctness.
+
+#### 6.2.2 Privacy/locality pre-gate
+
+A hosted decision engine must not receive raw sensitive state merely to decide whether that state was safe to send to the hosted engine.
+
+For any routing profile that contains personal, credential, confidential, financial, medical, child, or other restricted data:
+
+1. deterministic/local classification and redaction rules run first where exact patterns are available;
+2. any learned privacy/sensitivity classifier used before cloud egress must itself run locally or on an explicitly approved private runtime;
+3. hosted JEV or any other cloud decision service may receive only the state allowed by that pre-gate;
+4. uncertain privacy classification fails toward the safer locality/escalation path;
+5. the experiment records whether a route was forced local because of privacy policy.
+
+This requirement is independent of a provider's claimed retention policy. It is an architectural data-egress boundary.
+
 ### 6.3 StoryOpportunity ranking profile
 
 Owned by #39.
@@ -246,6 +282,7 @@ Each engine run must capture:
 - quantization,
 - serving stack and version,
 - prompt/question/choice-set version,
+- multi-question request shape and question count,
 - language/projection variant,
 - input/corpus fingerprint,
 - device/GPU,
@@ -254,6 +291,8 @@ Each engine run must capture:
 - warm latency,
 - p50/p95 latency,
 - returned choice/score/probability distribution,
+- normalized router signals (lane, difficulty, locality/privacy, web/tool need, context sufficiency) when applicable,
+- selected provider locality (local/private/cloud) and the policy reason,
 - malformed/partial-output status,
 - retry count,
 - usage/token accounting when applicable,
@@ -292,7 +331,8 @@ Every engine compared for one workload must receive:
 - the same semantic questions/choice sets,
 - the same calibration/final-holdout split,
 - equivalent context content,
-- a frozen policy version.
+- a frozen policy version,
+- the same privacy/locality pre-gate and redaction policy for cloud-facing comparisons.
 
 Required comparisons include, where relevant:
 
@@ -439,6 +479,17 @@ Deterministic -> Local/Open Decision Engine -> Strong LLM
 Deterministic -> Local/Open Engine -> JEV -> Strong LLM
 ```
 
+### Policy D — privacy-first routing
+
+```text
+Deterministic exact guards
+  -> Local privacy/locality gate
+  -> Local/Open Decision Engine
+  -> qualified cloud model only when policy permits
+```
+
+Policy D is mandatory to evaluate for workloads that can contain sensitive state. A cloud decision model is never the first privacy detector for raw restricted input.
+
 Policy C must not be preferred merely because it contains more stages.
 
 It is admitted only when evidence shows material additional value after accounting for complexity, latency, failure modes, and maintenance cost.
@@ -457,7 +508,9 @@ Include:
 - escalation rate,
 - downstream strong-model cost,
 - latency p50/p95,
-- operational complexity.
+- operational complexity,
+- local-deflection rate by workload class,
+- routing regret from selecting a weaker/stronger tier than downstream evidence supports.
 
 A very cheap first-stage engine is not useful if it causes expensive incorrect routing or excessive escalation.
 
@@ -503,6 +556,6 @@ The lab will not optimize around JEV as a permanent dependency.
 
 The current authorized direction is:
 
-> Build a provider-agnostic LUMI Decision Engine qualification plane in Model Lab, retain JEV as a reference candidate, qualify realistic local/open alternatives on the same frozen evidence, and escalate uncertain/high-risk/deep-reasoning cases to stronger models.
+> Build a provider-agnostic LUMI Decision Engine qualification plane in Model Lab, retain JEV as a reference candidate, qualify realistic local/open alternatives on the same frozen evidence, enforce a local/privacy pre-gate before hosted routing decisions, calibrate difficulty against real downstream model success, and escalate uncertain/high-risk/deep-reasoning cases to stronger models.
 
 No production integration is authorized by this decision.
