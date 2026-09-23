@@ -7,6 +7,11 @@ on:
         description: 'OpenRouter model id'
         required: true
         type: string
+      judge_model:
+        description: 'Exact OpenRouter judge model id'
+        required: true
+        default: 'anthropic/claude-haiku-4.5'
+        type: string
       screen_only:
         description: 'Run benchmark + judge screen only'
         required: true
@@ -32,6 +37,7 @@ jobs:
     timeout-minutes: 60
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      JUDGE_MODEL: ${{ inputs.judge_model }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,11 +46,15 @@ jobs:
           cache: 'pip'
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-      - name: Verify OpenRouter credential
+      - name: Verify qualification credentials and models
         shell: bash
         run: |
           if [ -z "$OPENROUTER_API_KEY" ]; then
             echo '::error::Repository secret OPENROUTER_API_KEY is not configured.'
+            exit 1
+          fi
+          if [ -z "$JUDGE_MODEL" ]; then
+            echo '::error::judge_model input is required.'
             exit 1
           fi
       - name: Run qualification
