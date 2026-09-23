@@ -94,6 +94,75 @@ def build_model_options(model: str, seed: int | None) -> dict[str, Any]:
     )
 
 
+def _extract_stream_text_content(delta: dict[str, Any]) -> str:
+    content = delta.get("content")
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts: list[str] = []
+        for item in content:
+            if isinstance(item, dict) and isinstance(item.get("text"), str):
+                parts.append(item["text"])
+        return "".join(parts)
+    return ""
+
+
+def _aggregate_openrouter_stream(response: requests.Response, model: str) -> dict[str, Any]:
+    content_parts: list[str] = []
+    usage: dict[str, Any] = {}
+    finish_reason: str | None = None
+    response_id: str | None = None
+    response_model: str | None = None
+    provider: str | None = None
+
+    for raw_line in response.iter_lines(decode_unicode=True):
+        if raw_line is None:
+            continue
+        line = raw_line.decode("utf-8") if isinstance(raw_line, bytes) else str(raw_line)
+        line = line.strip("\r\n")
+        if not line or line.startswith(":") or not line.startswith("data:"):
+            continue
+        data = line[5:].strip()
+        if data == "[DONE]":
+            break
+        try:
+            chunk = json.loads(data)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(f"OpenRouter stream contained invalid JSON: {data[:500]}") from exc
+        if chunk.get("error"):
+            raise RuntimeError(f"OpenRouter streaming error for model {model}: {chunk['error']}")
+
+        response_id = chunk.get("id") or response_id
+        response_model = chunk.get("model") or response_model
+        provider = chunk.get("provider") or provider
+        if isinstance(chunk.get("usage"), dict):
+            usage = dict(chunk["usage"])
+
+        choices = chunk.get("choices") or []
+        if not choices:
+            continue
+        choice = choices[0] or {}
+        delta = choice.get("delta") or {}
+        text = _extract_stream_text_content(delta)
+        if text:
+            content_parts.append(text)
+        if choice.get("finish_reason") is not None:
+            finish_reason = choice.get("finish_reason")
+
+    return {
+        "id": response_id,
+        "model": response_model or model,
+        "provider": provider,
+        "choices": [
+            {
+                "message": {"role": "assistant", "content": "".join(content_parts)},
+                "finish_reason": finish_reason,
+            }
+        ],
+        "usage": usage,
+    }
+
+
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
                     temperature: float, max_tokens: int, seed: int | None) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
@@ -114,6 +183,8 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         structured_output=False,
     )
 
+    stream_enabled = payload.get("stream") is True
+
     response = requests.post(
         OPENROUTER_URL,
         headers={
@@ -124,6 +195,7 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         },
         json=payload,
         timeout=240,
+        stream=stream_enabled,
     )
 
     if not response.ok:
@@ -135,7 +207,7 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             f"OpenRouter HTTP {response.status_code} for model {model}: {error_body}"
         )
 
-    body = response.json()
+    body = _aggregate_openrouter_stream(response, model) if stream_enabled else response.json()
     choices = body.get("choices") or []
     if not choices:
         raise RuntimeError(f"OpenRouter response contains no choices: {body}")
@@ -306,6 +378,7 @@ def generate_one(
             "max_tokens": request_payload.get("max_tokens"),
             "seed": request_payload.get("seed"),
             "reasoning": request_payload.get("reasoning"),
+            "stream": request_payload.get("stream"),
         },
         response_meta={
             "openrouter_id": body.get("id"),

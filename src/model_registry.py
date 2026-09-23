@@ -184,6 +184,13 @@ def normalize_openrouter_request(
     if seed.get("mode") == "omit":
         result.pop("seed", None)
 
+    stream = behavior.get("stream") or {}
+    stream_mode = stream.get("mode", "omit")
+    if stream_mode == "send" and stream.get("value") is not None:
+        result["stream"] = bool(stream["value"])
+    elif stream_mode == "omit":
+        result.pop("stream", None)
+
     reasoning = behavior.get("reasoning") or {}
     reasoning_mode = reasoning.get("mode", "provider_default")
     reasoning_request = reasoning.get("request")
