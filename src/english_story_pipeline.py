@@ -551,23 +551,42 @@ def repair_scene_word_budget(
     preferred_max = round(target_words * 1.08)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
+    if repair_index <= 1:
+        required_min = preferred_min
+        required_max = preferred_max
+        aggressiveness = "normal"
+    elif mode == "COMPRESS":
+        required_min = max(hard_min + 5, round(target_words * 0.88))
+        required_max = min(hard_max - 5, round(target_words * 0.98))
+        aggressiveness = "high"
+    else:
+        required_min = max(hard_min + 5, round(target_words * 1.02))
+        required_max = min(hard_max - 5, round(target_words * 1.10))
+        aggressiveness = "high"
+
     repair_input = json.dumps(
         {
             "mode": mode,
+            "aggressiveness": aggressiveness,
+            "repair_index": repair_index,
+            "previous_attempt_missed_target": repair_index > 1,
             "target_words": target_words,
             "hard_word_range": [hard_min, hard_max],
-            "required_word_range": [preferred_min, preferred_max],
+            "required_word_range": [required_min, required_max],
             "current_word_count": current_words,
-            "required_reduction_words": (
-                max(0, current_words - preferred_max)
+            "minimum_words_to_remove": (
+                max(0, current_words - required_max)
                 if mode == "COMPRESS"
                 else 0
             ),
-            "required_expansion_words": (
-                max(0, preferred_min - current_words)
+            "minimum_words_to_add": (
+                max(0, required_min - current_words)
                 if mode == "EXPAND"
                 else 0
             ),
+            "maximum_output_words": required_max,
+            "minimum_output_words": required_min,
+            "maximum_sentences": max(8, round(required_max / 22)),
             "immutable_state_delta": envelope.get("state_delta"),
             "current_prose": current_prose,
         },
@@ -603,16 +622,17 @@ def repair_scene_word_budget(
             repaired,
             target_words=target_words,
         )
-        if not preferred_min <= word_count <= preferred_max:
+        if not required_min <= word_count <= required_max:
             errors.append(
-                "word_budget_repair_preferred_range_miss:"
-                f"{word_count} not in [{preferred_min},{preferred_max}]"
+                "word_budget_repair_required_range_miss:"
+                f"{word_count} not in [{required_min},{required_max}]"
             )
 
     attempt = {
         "kind": f"word_budget_repair_{repair_index}",
         "mode": mode,
-        "required_word_range": [preferred_min, preferred_max],
+        "required_word_range": [required_min, required_max],
+        "aggressiveness": aggressiveness,
         "structured_parse_retries": parse_failures,
         "errors": errors,
         "word_count": word_count,
