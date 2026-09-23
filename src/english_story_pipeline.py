@@ -57,6 +57,74 @@ SCENE_LIST_FIELDS = (
 )
 
 
+def call_structured_json_with_recovery(
+    *,
+    api_key: str,
+    model: str,
+    system_prompt: str,
+    user_prompt: str,
+    temperature: float,
+    seed: int | None,
+    request_class: str,
+    label: str,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    recovery_records: list[dict[str, Any]] = []
+    current_prompt = user_prompt
+
+    for response_attempt in range(1, 3):
+        effective_temperature = temperature if response_attempt == 1 else 0.0
+        effective_seed = seed
+        if seed is not None and response_attempt > 1:
+            effective_seed = seed + 9000 + response_attempt
+
+        text, body, request = call_openrouter(
+            api_key=api_key,
+            model=model,
+            system_prompt=system_prompt,
+            user_prompt=current_prompt,
+            temperature=effective_temperature,
+            max_tokens=None,
+            seed=effective_seed,
+            request_class=request_class,
+            structured_output=True,
+        )
+        try:
+            payload = parse_json_object(text)
+            return payload, body, request, recovery_records
+        except RuntimeError as exc:
+            choice = (body.get("choices") or [{}])[0]
+            recovery_records.append(
+                {
+                    "kind": f"{label}_json_invalid_{response_attempt}",
+                    "parse_error": str(exc),
+                    "finish_reason": choice.get("finish_reason"),
+                    "response_chars": len(text),
+                    "usage": parse_usage(body).model_dump(mode="json"),
+                    "cost": parse_cost(body).model_dump(mode="json"),
+                    "request": {
+                        "temperature": request.get("temperature"),
+                        "max_tokens": request.get("max_tokens"),
+                        "reasoning": request.get("reasoning"),
+                        "response_format": request.get("response_format"),
+                    },
+                }
+            )
+            if response_attempt >= 2:
+                raise RuntimeError(
+                    f"STRUCTURED_JSON_RECOVERY_EXHAUSTED:{label}: {exc}"
+                ) from exc
+
+            current_prompt = (
+                user_prompt
+                + "\n\nRECOVERY REQUIREMENT: The previous provider response was "
+                "malformed or incomplete JSON. Return one complete JSON object only. "
+                "Do not use markdown fences, commentary, prefixes, or suffixes. "
+                "Preserve the same story contract and requested operation."
+            )
+
+    raise RuntimeError(f"STRUCTURED_JSON_RECOVERY_EXHAUSTED:{label}")
+
+
 def allocate_scene_budgets(target_words: int) -> list[int]:
     weights = (0.13, 0.155, 0.17, 0.17, 0.205, 0.17)
     budgets = [round(target_words * weight) for weight in weights]
