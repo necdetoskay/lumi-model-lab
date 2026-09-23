@@ -176,6 +176,57 @@ class GenerateStreamingTests(unittest.TestCase):
 
     @patch("src.generate.time.sleep")
     @patch("src.generate.requests.post")
+    def test_transient_520_retries_then_succeeds(
+        self,
+        mock_post,
+        mock_sleep,
+    ) -> None:
+        success = FakeJsonSuccessResponse(
+            {
+                "id": "gen-retry-520",
+                "model": "qwen/qwen3.8-flash",
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": "Recovered from 520.",
+                        },
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 4,
+                    "total_tokens": 14,
+                },
+            }
+        )
+        mock_post.side_effect = [
+            FakeErrorResponse(
+                520,
+                {"error": {"message": "edge/provider transient failure"}},
+            ),
+            success,
+        ]
+
+        story, _, _ = call_openrouter(
+            api_key="test-key",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.8,
+            max_tokens=None,
+            seed=42,
+            request_class="scene_story",
+            structured_output=True,
+        )
+
+        self.assertEqual(story, "Recovered from 520.")
+        self.assertEqual(mock_post.call_count, 2)
+        mock_sleep.assert_called_once_with(2.0)
+
+    @patch("src.generate.time.sleep")
+    @patch("src.generate.requests.post")
     def test_non_transient_400_fails_without_retry(
         self,
         mock_post,
