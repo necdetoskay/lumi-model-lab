@@ -271,6 +271,69 @@ def evaluate_scene_jev(
     )
 
 
+def call_structured_json_with_retry(
+    *,
+    api_key: str,
+    model: str,
+    system_prompt: str,
+    user_prompt: str,
+    temperature: float,
+    max_tokens: int | None,
+    seed: int | None,
+    request_class: str,
+    max_parse_attempts: int = 2,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
+    parse_failures: list[dict[str, Any]] = []
+    for parse_attempt in range(1, max_parse_attempts + 1):
+        effective_prompt = user_prompt
+        effective_temperature = temperature
+        effective_seed = seed
+        if parse_attempt > 1:
+            effective_prompt += (
+                "\n\nFORMAT RECOVERY: The previous response was malformed or incomplete JSON. "
+                "Return one complete JSON object only. Do not use markdown fences, commentary, "
+                "or trailing text. Close every string, array, and object."
+            )
+            effective_temperature = min(temperature, 0.20)
+            if seed is not None:
+                effective_seed = seed + 9000 + parse_attempt
+
+        text, body, request = call_openrouter(
+            api_key=api_key,
+            model=model,
+            system_prompt=system_prompt,
+            user_prompt=effective_prompt,
+            temperature=effective_temperature,
+            max_tokens=max_tokens,
+            seed=effective_seed,
+            request_class=request_class,
+            structured_output=True,
+        )
+        try:
+            payload = parse_json_object(text)
+        except RuntimeError as exc:
+            choice = (body.get("choices") or [{}])[0]
+            parse_failures.append(
+                {
+                    "parse_attempt": parse_attempt,
+                    "error": str(exc),
+                    "response_chars": len(text),
+                    "finish_reason": choice.get("finish_reason"),
+                    "usage": parse_usage(body).model_dump(mode="json"),
+                    "cost": parse_cost(body).model_dump(mode="json"),
+                }
+            )
+            if parse_attempt >= max_parse_attempts:
+                raise RuntimeError(
+                    "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED: "
+                    + json.dumps(parse_failures, ensure_ascii=False)
+                ) from exc
+            continue
+        return payload, body, request, parse_failures
+
+    raise RuntimeError("STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED")
+
+
 def repair_scene_for_jev(
     *,
     api_key: str,
@@ -309,7 +372,7 @@ def repair_scene_for_jev(
         ensure_ascii=False,
         indent=2,
     )
-    text, body, request = call_openrouter(
+    repaired, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
         system_prompt=SCENE_REPAIR_PROMPT.read_text(encoding="utf-8").strip(),
@@ -318,9 +381,7 @@ def repair_scene_for_jev(
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
-        structured_output=True,
     )
-    repaired = parse_json_object(text)
     errors, word_count = validate_scene_envelope(
         repaired,
         target_words=target_words,
@@ -328,6 +389,7 @@ def repair_scene_for_jev(
     attempt = {
         "kind": f"jev_repair_{repair_index}",
         "repair_reasons": repair_reasons,
+        "structured_parse_retries": parse_failures,
         "errors": errors,
         "word_count": word_count,
         "usage": parse_usage(body).model_dump(mode="json"),
@@ -512,7 +574,7 @@ def repair_scene_word_budget(
         ensure_ascii=False,
         indent=2,
     )
-    text, body, request = call_openrouter(
+    payload, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
         system_prompt=SCENE_WORD_BUDGET_REPAIR_PROMPT.read_text(
@@ -523,9 +585,7 @@ def repair_scene_word_budget(
         max_tokens=None,
         seed=seed + repair_index,
         request_class="scene_repair",
-        structured_output=True,
     )
-    payload = parse_json_object(text)
     repaired_prose = payload.get("prose")
     if not isinstance(repaired_prose, str) or not repaired_prose.strip():
         repaired = {
@@ -553,6 +613,7 @@ def repair_scene_word_budget(
         "kind": f"word_budget_repair_{repair_index}",
         "mode": mode,
         "required_word_range": [preferred_min, preferred_max],
+        "structured_parse_retries": parse_failures,
         "errors": errors,
         "word_count": word_count,
         "ignored_output_keys": sorted(
@@ -596,7 +657,7 @@ def produce_scene(
         plan_review=plan_review,
     )
 
-    text, body, request = call_openrouter(
+    envelope, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
         system_prompt=SCENE_WRITER_PROMPT.read_text(encoding="utf-8").strip(),
@@ -605,9 +666,7 @@ def produce_scene(
         max_tokens=None,
         seed=seed,
         request_class="scene_story",
-        structured_output=True,
     )
-    envelope = parse_json_object(text)
     errors, word_count = validate_scene_envelope(
         envelope,
         target_words=target_words,
@@ -615,6 +674,7 @@ def produce_scene(
     attempts.append(
         {
             "kind": "generate",
+            "structured_parse_retries": parse_failures,
             "errors": errors,
             "word_count": word_count,
             "usage": parse_usage(body).model_dump(mode="json"),
@@ -645,7 +705,7 @@ def produce_scene(
             ensure_ascii=False,
             indent=2,
         )
-        text, body, request = call_openrouter(
+        envelope, body, request, parse_failures = call_structured_json_with_retry(
             api_key=api_key,
             model=model,
             system_prompt=SCENE_REPAIR_PROMPT.read_text(encoding="utf-8").strip(),
@@ -654,9 +714,7 @@ def produce_scene(
             max_tokens=None,
             seed=seed + repair_index,
             request_class="scene_repair",
-            structured_output=True,
         )
-        envelope = parse_json_object(text)
         errors, word_count = validate_scene_envelope(
             envelope,
             target_words=target_words,
@@ -664,6 +722,7 @@ def produce_scene(
         attempts.append(
             {
                 "kind": f"repair_{repair_index}",
+                "structured_parse_retries": parse_failures,
                 "errors": errors,
                 "word_count": word_count,
                 "usage": parse_usage(body).model_dump(mode="json"),
