@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from src.english_story_pipeline import (
+    MAX_FINAL_POLISH_ROUNDS,
     allocate_scene_budgets,
     build_scene_jev_questions,
     build_whole_story_jev_questions,
@@ -14,11 +15,14 @@ from src.english_story_pipeline import (
     jev_requires_final_escalation,
     jev_targeted_repair_reasons,
     final_repair_scene_ids,
+    final_repair_target_fingerprint,
     only_word_budget_errors,
     plan_repair_feedback,
     repair_plan_once,
     repair_scene_word_budget,
     repair_scene_for_final_judge,
+    should_attempt_final_polish,
+    unseen_final_repair_targets,
     validate_final_judge,
     validate_prose_only_repair,
     validate_scene_envelope,
@@ -434,6 +438,81 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertIsNone(kwargs["max_tokens"])
         self.assertEqual(kwargs["request_class"], "story_plan")
         self.assertTrue(kwargs["structured_output"])
+
+    def test_final_polish_round_limit_is_two(self):
+        self.assertEqual(MAX_FINAL_POLISH_ROUNDS, 2)
+
+    def test_final_target_fingerprint_normalizes_case_and_whitespace(self):
+        first = final_repair_target_fingerprint(
+            {"scene": 1, "issue": " Blue   light gap "}
+        )
+        second = final_repair_target_fingerprint(
+            {"scene": 1, "issue": "blue light GAP"}
+        )
+        self.assertEqual(first, second)
+
+    def test_unseen_final_targets_allow_new_issue_in_second_round(self):
+        attempted = {
+            final_repair_target_fingerprint(
+                {"scene": 5, "issue": "blue light gap"}
+            )
+        }
+        judge = {
+            "critical_failures": [],
+            "repair_targets": [
+                {"scene": 5, "issue": "Blue Light Gap"},
+                {"scene": 1, "issue": "Clarify the early blue pulse."},
+                {"scene": 6, "issue": "Smooth the emotional transition."},
+            ],
+        }
+        selected = unseen_final_repair_targets(judge, attempted)
+        self.assertEqual([item["scene"] for item in selected], [1, 6])
+
+    def test_final_polish_requires_local_noncritical_near_pass(self):
+        base = {
+            "accepted": False,
+            "deterministic_errors": [],
+            "final_judge": {
+                "average": 3.875,
+                "minimum": 3,
+                "critical_failures": [],
+                "repair_targets": [
+                    {"scene": 1, "issue": "Clarify the early blue pulse."}
+                ],
+            },
+        }
+        selected = should_attempt_final_polish(base, set())
+        self.assertEqual([item["scene"] for item in selected], [1])
+
+        critical = __import__("copy").deepcopy(base)
+        critical["final_judge"]["critical_failures"] = ["contract violation"]
+        self.assertEqual(should_attempt_final_polish(critical, set()), [])
+
+        deterministic = __import__("copy").deepcopy(base)
+        deterministic["deterministic_errors"] = ["above_total_word_budget"]
+        self.assertEqual(should_attempt_final_polish(deterministic, set()), [])
+
+        broad_failure = __import__("copy").deepcopy(base)
+        broad_failure["final_judge"]["average"] = 3.25
+        self.assertEqual(should_attempt_final_polish(broad_failure, set()), [])
+
+    def test_final_polish_does_not_repeat_same_exact_target(self):
+        target = {"scene": 1, "issue": "Clarify the early blue pulse."}
+        fingerprint = final_repair_target_fingerprint(target)
+        evaluation = {
+            "accepted": False,
+            "deterministic_errors": [],
+            "final_judge": {
+                "average": 3.875,
+                "minimum": 3,
+                "critical_failures": [],
+                "repair_targets": [target],
+            },
+        }
+        self.assertEqual(
+            should_attempt_final_polish(evaluation, {fingerprint}),
+            [],
+        )
 
     def test_final_repair_scene_ids_are_bounded_and_deduplicated(self):
         final_judge = {
