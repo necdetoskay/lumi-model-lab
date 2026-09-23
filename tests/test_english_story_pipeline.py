@@ -200,6 +200,71 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
 
     @patch("src.english_story_pipeline.call_openrouter")
+    def test_second_word_budget_repair_uses_adaptive_compression_range(self, mock_call):
+        original = good_envelope(130)
+        mock_call.return_value = (
+            __import__("json").dumps({"prose": "word " * 90}),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        _, errors, word_count, attempt = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=100,
+            seed=100,
+            repair_index=2,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 90)
+        self.assertEqual(attempt["required_word_range"], [80, 90])
+        self.assertGreater(attempt["adaptive_factor"], 1.0)
+        self.assertTrue(attempt["preferred_range_miss"])
+        sent = __import__("json").loads(mock_call.call_args.kwargs["user_prompt"])
+        self.assertEqual(sent["required_word_range"], [80, 90])
+        self.assertEqual(sent["required_reduction_words"], 40)
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_preferred_range_miss_is_advisory_when_hard_gate_passes(self, mock_call):
+        original = good_envelope(130)
+        mock_call.return_value = (
+            __import__("json").dumps({"prose": "word " * 118}),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        _, errors, word_count, attempt = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=100,
+            seed=100,
+            repair_index=1,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 118)
+        self.assertTrue(attempt["preferred_range_miss"])
+
+    @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_ignores_model_state_delta_output(self, mock_call):
         original = good_envelope(130)
         payload = {
