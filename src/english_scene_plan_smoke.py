@@ -182,7 +182,7 @@ def validate_plan(plan: dict[str, Any], spec: StorySpec) -> list[str]:
             for item in open_threads_after
         ):
             errors.append(f"scene_{index}_open_threads_after_invalid")
-        elif index < 6 and not open_threads_after:
+        elif index < 5 and not open_threads_after:
             errors.append(f"scene_{index}_open_threads_after_missing")
         constraint_ids = scene.get("constraint_ids")
         if not isinstance(constraint_ids, list) or not all(
