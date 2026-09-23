@@ -200,6 +200,53 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
 
     @patch("src.english_story_pipeline.call_openrouter")
+    def test_second_word_budget_repair_is_adaptive(self, mock_call):
+        original = good_envelope(471)
+        repaired_prose = {"prose": "word " * 350}
+        mock_call.return_value = (
+            __import__("json").dumps(repaired_prose),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+
+        _, errors, word_count, attempt = repair_scene_word_budget(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            envelope=original,
+            target_words=340,
+            seed=100,
+            repair_index=2,
+        )
+
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 350)
+        self.assertEqual(attempt["mode"], "COMPRESS")
+        self.assertEqual(
+            mock_call.call_args.kwargs["temperature"],
+            0.15,
+        )
+        payload = __import__("json").loads(
+            mock_call.call_args.kwargs["user_prompt"]
+        )
+        self.assertTrue(payload["previous_attempt_failed"])
+        self.assertEqual(payload["repair_attempt"], 2)
+        self.assertEqual(payload["maximum_output_words"], 367)
+        self.assertEqual(payload["minimum_output_words"], 313)
+        self.assertGreaterEqual(payload["required_reduction_words"], 104)
+        self.assertGreaterEqual(payload["required_reduction_percent"], 22)
+        self.assertLessEqual(payload["maximum_sentences"], 27)
+
+    @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_ignores_model_state_delta_output(self, mock_call):
         original = good_envelope(130)
         payload = {
