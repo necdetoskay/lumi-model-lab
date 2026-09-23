@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import time
 from typing import Any
 
 import requests
 import yaml
 
 DEFAULT_PROFILE_PATH = "configs/openrouter_jev_continuity.yaml"
+JEV_TRANSIENT_STATUS_CODES = {429, 502, 503, 504}
+JEV_RETRY_DELAYS_SECONDS = (2.0, 5.0, 10.0)
+JEV_MAX_ATTEMPTS = len(JEV_RETRY_DELAYS_SECONDS) + 1
 
 
 @dataclass(frozen=True)
@@ -82,28 +86,75 @@ def call_openrouter_jev(
     profile = load_jev_profile(profile_path)
     if not questions:
         raise ValueError("JEV request requires at least one question.")
-    response = requests.post(
-        profile.endpoint,
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/necdetoskay/lumi-model-lab",
-            "X-Title": "LUMI Model Lab",
-        },
-        json={
-            "model": profile.model_id,
-            "state": state,
-            "questions": questions,
-        },
-        timeout=timeout_seconds,
-    )
-    if not response.ok:
+    request_headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://github.com/necdetoskay/lumi-model-lab",
+        "X-Title": "LUMI Model Lab",
+    }
+    request_payload = {
+        "model": profile.model_id,
+        "state": state,
+        "questions": questions,
+    }
+
+    response = None
+    transport_error: Exception | None = None
+    for attempt in range(JEV_MAX_ATTEMPTS):
+        try:
+            response = requests.post(
+                profile.endpoint,
+                headers=request_headers,
+                json=request_payload,
+                timeout=timeout_seconds,
+            )
+            transport_error = None
+        except (requests.Timeout, requests.ConnectionError) as exc:
+            transport_error = exc
+            if attempt >= JEV_MAX_ATTEMPTS - 1:
+                raise RuntimeError(
+                    f"OpenRouter JEV transport failed after {JEV_MAX_ATTEMPTS} "
+                    f"attempts: {exc}"
+                ) from exc
+            time.sleep(JEV_RETRY_DELAYS_SECONDS[attempt])
+            continue
+
+        if response.ok:
+            break
+
         try:
             detail: Any = response.json()
         except ValueError:
             detail = response.text[:2000]
+
+        if (
+            response.status_code in JEV_TRANSIENT_STATUS_CODES
+            and attempt < JEV_MAX_ATTEMPTS - 1
+        ):
+            retry_after = None
+            headers = getattr(response, "headers", {}) or {}
+            raw_retry_after = headers.get("Retry-After")
+            if raw_retry_after is not None:
+                try:
+                    retry_after = max(0.0, min(float(raw_retry_after), 30.0))
+                except (TypeError, ValueError):
+                    retry_after = None
+            delay = (
+                retry_after
+                if retry_after is not None
+                else JEV_RETRY_DELAYS_SECONDS[attempt]
+            )
+            time.sleep(delay)
+            continue
+
         raise RuntimeError(
             f"OpenRouter JEV HTTP {response.status_code}: {detail}"
+        )
+
+    if response is None:
+        raise RuntimeError(
+            "OpenRouter JEV request failed before receiving a response: "
+            f"{transport_error}"
         )
     body = response.json()
     answers = body.get("answers")
