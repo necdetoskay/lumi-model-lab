@@ -755,6 +755,64 @@ def load_context_pack(path: str | None) -> tuple[dict[str, Any] | None, str | No
     return context_pack, path
 
 
+def validate_state_authority_context_alignment(
+    context_pack: dict[str, Any] | None,
+    authority: dict[str, Any],
+) -> list[str]:
+    if context_pack is None:
+        return []
+
+    errors: list[str] = []
+    context_entities: dict[str, tuple[int, str, str]] = {}
+    for section in ("character", "world", "opportunity", "saga"):
+        row = context_pack.get(section)
+        if not isinstance(row, dict):
+            continue
+        entity_ref = str(row.get("entity_ref") or "")
+        revision = row.get("revision")
+        fingerprint = str(row.get("fingerprint") or "")
+        if entity_ref and isinstance(revision, int) and not isinstance(revision, bool) and fingerprint:
+            context_entities[entity_ref] = (revision, fingerprint, section)
+
+    authority_entities = authority.get("entities")
+    if not isinstance(authority_entities, list) or not authority_entities:
+        return ["state_authority_entities_missing"]
+
+    declared_refs: set[str] = set()
+    for index, entity in enumerate(authority_entities):
+        if not isinstance(entity, dict):
+            errors.append(f"state_authority_entity_{index}_not_object")
+            continue
+
+        entity_ref = str(entity.get("entity_ref") or "")
+        if not entity_ref:
+            errors.append(f"state_authority_entity_{index}_ref_missing")
+            continue
+        declared_refs.add(entity_ref)
+
+        context_version = context_entities.get(entity_ref)
+        if context_version is None:
+            errors.append(f"state_authority_entity_not_in_context:{entity_ref}")
+            continue
+
+        context_revision, context_fingerprint, _section = context_version
+        if entity.get("expected_revision") != context_revision:
+            errors.append(f"state_authority_context_revision_mismatch:{entity_ref}")
+        if str(entity.get("expected_fingerprint") or "") != context_fingerprint:
+            errors.append(f"state_authority_context_fingerprint_mismatch:{entity_ref}")
+
+    allowed = authority.get("allowed_mutations")
+    if isinstance(allowed, list):
+        for index, row in enumerate(allowed):
+            if not isinstance(row, dict):
+                continue
+            entity_ref = str(row.get("entity_ref") or "")
+            if entity_ref and entity_ref not in declared_refs:
+                errors.append(f"state_authority_mutation_entity_undeclared:{index}:{entity_ref}")
+
+    return errors
+
+
 def load_state_authority(path: str | None) -> tuple[dict[str, Any], str]:
     if path:
         authority_path = Path(path)
@@ -813,6 +871,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     spec, spec_source = load_story_spec(args.spec)
     state_authority, state_authority_source = load_state_authority(args.state_authority)
     context_pack, context_pack_source = load_context_pack(args.context_pack)
+    alignment_errors = validate_state_authority_context_alignment(
+        context_pack,
+        state_authority,
+    )
+    if alignment_errors:
+        raise RuntimeError(
+            "STATE_AUTHORITY_CONTEXT_MISMATCH:" + ",".join(alignment_errors)
+        )
     brief = build_labeled_brief(spec)
     started = time.perf_counter()
 
@@ -1075,6 +1141,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "context_pack": context_pack,
         "state_authority_source": state_authority_source,
         "state_authority": state_authority,
+        "state_authority_context_alignment": {
+            "validated": context_pack is not None,
+            "errors": alignment_errors,
+        },
         "plan": plan,
         "plan_parse_failures": plan_parse,
         "draft": draft,
