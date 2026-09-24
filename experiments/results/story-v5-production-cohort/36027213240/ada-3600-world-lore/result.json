@@ -1,0 +1,650 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-production-cohort/adult-3600-world-lore-uncertainty.yaml",
+  "context_pack_source": "experiments/context_packs/v5-cohort/ada-flood-lines.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-ada-flood-lines-001",
+    "profile": {
+      "profile_id": "profile-ada",
+      "age": 34,
+      "reading_mode": "ADULT"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-ada",
+      "revision": 41,
+      "fingerprint": "char-ada-r41-fp",
+      "name": "Ada",
+      "age": 34,
+      "traits": [
+        "careful with evidence",
+        "skeptical of tidy historical stories",
+        "patient with conflicting records"
+      ],
+      "current_goal": "Determine what the public exhibit can responsibly say about when the old quay was raised.",
+      "established_knowledge": [
+        "PUBLIC_ARCHIVE and NORTH_QUAY_WALK are explored.",
+        "MAINTENANCE_LEDGER_DESK is discovered and accessible.",
+        "SEALED_SURVEY_ROOM is only rumored in an old index and is not accessible.",
+        "A flood mark dated 1968 sits lower than a second undated mark."
+      ],
+      "prohibited_knowledge": [
+        "Ada does not know what records, if any, remain in SEALED_SURVEY_ROOM.",
+        "Ada does not know the exact year of the quay raising.",
+        "Ada does not know whether the undated mark was installed during the same work campaign as the ledger repairs."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-north-quay",
+      "revision": 63,
+      "fingerprint": "world-north-quay-r63-fp",
+      "location": "North Quay civic archive district",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "PUBLIC_ARCHIVE",
+          "status": "EXPLORED",
+          "summary": "Public reading room with catalogued maps and exhibit drafts."
+        },
+        {
+          "id": "NORTH_QUAY_WALK",
+          "status": "EXPLORED",
+          "summary": "Public harbor walk where two historic flood-height marks can be inspected."
+        },
+        {
+          "id": "MAINTENANCE_LEDGER_DESK",
+          "status": "DISCOVERED",
+          "summary": "Supervised desk with municipal maintenance ledgers."
+        },
+        {
+          "id": "SEALED_SURVEY_ROOM",
+          "status": "RUMORED",
+          "summary": "Room named in an old index; inaccessible and not a source for this story."
+        }
+      ],
+      "current_facts": [
+        "The 1968 flood mark is visibly lower than an undated later mark.",
+        "A 1972 maintenance ledger records stone coping replacement along part of North Quay but does not explicitly say the whole quay was raised.",
+        "A public map revised in 1974 depicts a slightly altered quay edge.",
+        "The exhibit draft currently says 'The quay was raised in 1972' without qualification."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "No hidden survey establishes an exact raising year.",
+        "SEALED_SURVEY_ROOM contents are intentionally unknown."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-ada-flood-001",
+      "revision": 14,
+      "fingerprint": "opp-ada-flood-r14-fp",
+      "status": "AVAILABLE",
+      "title": "Correct the North Quay exhibit claim",
+      "premise": "Ada can reconcile public physical evidence, the maintenance ledger and revised map to decide how certain the exhibit may be.",
+      "success_condition": "Replace an overconfident claim with the strongest evidence-supported wording and explicitly preserve what remains unknown.",
+      "constraints": [
+        "Do not enter SEALED_SURVEY_ROOM.",
+        "Do not invent missing surveys or private records.",
+        "Do not force an exact year if evidence does not establish one."
+      ]
+    },
+    "canon": {
+      "revision": 22,
+      "fingerprint": "canon-r22-fp",
+      "hard_rules": [
+        "Public historical claims must distinguish fact from inference.",
+        "RUMORED archives do not become sources without governed discovery.",
+        "No supernatural explanation.",
+        "Story consequences must be evidenced by accepted prose."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-ada-archive",
+      "revision": 18,
+      "fingerprint": "saga-ada-r18-fp",
+      "eligible_context": [
+        "Ada's longer arc concerns improving the archive's standards for claims and uncertainty.",
+        "A prior exhibit correction taught her to record disagreement rather than hide it."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal a future survey discovery.",
+        "Do not establish corruption or deliberate falsification without evidence."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-ada-11",
+        "summary": "Ada previously revised an exhibit caption from a definite date to a date range after comparing two municipal sources.",
+        "relevance": "Supports disciplined uncertainty but must not predetermine this quay's answer."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/cohort-ada-flood-lines.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "cohort-ada-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 41,
+        "expected_fingerprint": "char-ada-r41-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 63,
+        "expected_fingerprint": "world-north-quay-r63-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 18,
+        "expected_fingerprint": "saga-ada-r18-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 14,
+        "expected_fingerprint": "opp-ada-flood-r14-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "north_quay.rebuild_hypotheses",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Two Flood Lines",
+    "scene_count_rationale": "Five scenes are sufficient to give the investigation a clear evidence progression: establish the overconfident claim, inspect the physical marks, compare the independent documentary sources, make the evidence-based judgment, and implement a precise but bounded correction. The structure avoids micro-scenes while preserving room for competing interpretations and a distinct resolution.",
+    "story_contract": {
+      "protagonist_goal": "Determine what the public exhibit can responsibly say about when the old quay was raised.",
+      "central_problem": "The exhibit claims that the quay was raised in 1972, but the lower 1968 flood mark, the higher undated mark, the 1972 maintenance ledger, and the 1974 public map do not establish that exact claim.",
+      "solution_principle": "Separate observed facts from inferences, compare at least three independent sources, present plausible interpretations, and choose wording no stronger than the evidence permits.",
+      "theme_thread": "Responsible history becomes more precise by naming uncertainty rather than disguising it as certainty.",
+      "ending_state": "The exhibit replaces its definite 1972 claim with evidence-supported wording that identifies the 1972 coping work as a likely contributor to the altered quay edge while explicitly stating that the exact raising year and the relationship between the two marks remain unproven.",
+      "must_preserve": [
+        "Ada is a careful civic archivist who distinguishes record evidence from inference.",
+        "PUBLIC_ARCHIVE and NORTH_QUAY_WALK remain explored locations.",
+        "MAINTENANCE_LEDGER_DESK remains discovered and accessible.",
+        "The 1968 flood mark is visibly lower than the undated later mark.",
+        "The 1972 ledger records stone coping replacement along part of North Quay but does not explicitly say the whole quay was raised.",
+        "The 1974 public map depicts a slightly altered quay edge.",
+        "The story uses the physical flood marks, the maintenance ledger, and the public map as independent evidence sources.",
+        "At least two plausible interpretations are considered before one is preferred.",
+        "The preferred interpretation remains an interpretation rather than a new canonical fact.",
+        "Ada alone conducts and resolves the investigation.",
+        "The ending preserves bounded historical uncertainty.",
+        "Ada's prior experience of recording disagreement may support her method without determining the answer."
+      ],
+      "must_not_happen": [
+        "Ada must not enter or use records from SEALED_SURVEY_ROOM.",
+        "No sealed-room survey, missing record, private record, or exact raising year may be invented.",
+        "The exhibit must not retain the unqualified statement that the quay was raised in 1972.",
+        "The story must not claim that the 1972 work raised the entire quay as an established fact.",
+        "The undated mark must not be declared to have been installed during the 1972 work campaign without proof.",
+        "A supervisor or outside expert must not solve the investigation for Ada.",
+        "RUMORED knowledge must not be upgraded into an explored source.",
+        "No corruption, deliberate falsification, supernatural explanation, or future survey discovery may be established."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Establish Ada's assignment, the exhibit's overconfident claim, and the precise distinction she must investigate.",
+        "beats": [
+          "At the PUBLIC_ARCHIVE, Ada reviews the draft caption stating, 'The quay was raised in 1972.'",
+          "She identifies the claim's hidden assumptions: that the whole quay was raised, that the higher flood mark dates from that work, and that the year is proven.",
+          "She frames the investigation around the two flood lines, the maintenance ledger, and the revised public map.",
+          "She notes that the old index's reference to SEALED_SURVEY_ROOM is not an accessible source and cannot be used to fill gaps."
+        ],
+        "prior_evidence": [
+          "The exhibit draft currently says 'The quay was raised in 1972' without qualification.",
+          "The 1968 flood mark is lower than a second undated mark.",
+          "The 1972 maintenance ledger records coping replacement along part of North Quay but does not explicitly say the whole quay was raised.",
+          "A public map revised in 1974 depicts a slightly altered quay edge.",
+          "SEALED_SURVEY_ROOM is only rumored and inaccessible."
+        ],
+        "must_include": [
+          "Ada's careful distinction between a documented fact and an inference.",
+          "A clear central question about what the exhibit may responsibly claim.",
+          "The constraint that inaccessible or rumored records cannot be treated as evidence."
+        ],
+        "must_not_do": [
+          "Do not imply that the sealed room contains the missing answer.",
+          "Do not let Ada decide the preferred interpretation before comparing the evidence.",
+          "Do not introduce a supervisor or expert as the investigator."
+        ],
+        "handoff": "Ada leaves the draft unchanged for the moment and goes to NORTH_QUAY_WALK to inspect what the two marks actually establish."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 22,
+        "purpose": "Examine the physical evidence and establish what the flood marks show without assigning them an unsupported date.",
+        "beats": [
+          "At NORTH_QUAY_WALK, Ada compares the dated 1968 mark with the higher undated mark and confirms their visible vertical difference.",
+          "She records the 1968 date and the relative position of the later mark as observations, not proof of construction timing.",
+          "She tests whether the physical marks alone can establish that the whole quay was raised in 1972 and concludes they cannot.",
+          "She considers that the higher line may reflect a later altered quay edge, but keeps the date and scope unresolved."
+        ],
+        "prior_evidence": [
+          "The public archive draft asserts a 1972 raising.",
+          "The context establishes that the 1968 mark is lower than the undated mark.",
+          "Ada's established knowledge distinguishes the physical comparison from the unknown date of the later mark."
+        ],
+        "must_include": [
+          "The 1968 flood mark and the higher undated mark.",
+          "Ada's written separation of observation from inference.",
+          "The conclusion that physical position alone does not establish an exact year or whole-quay scope."
+        ],
+        "must_not_do": [
+          "Do not date the undated mark as 1972.",
+          "Do not claim that the marks prove a single construction campaign.",
+          "Do not add measurements, inscriptions, or physical alterations not supplied by the context."
+        ],
+        "handoff": "With the physical evidence bounded, Ada consults the maintenance ledger and the 1974 map to test which explanations the documents can support."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "relative_weight": 25,
+        "purpose": "Bring the independent documentary sources into tension and present at least two plausible interpretations before preference.",
+        "beats": [
+          "At MAINTENANCE_LEDGER_DESK, Ada examines the 1972 entry recording stone coping replacement along part of North Quay.",
+          "She compares that limited wording with the 1974 public map's slightly altered quay edge.",
+          "She formulates one plausible interpretation: the 1972 coping work contributed to a raised or altered section, later represented by the higher mark and the 1974 map.",
+          "She formulates a second plausible interpretation: the coping replacement and the higher mark belong to separate works or dates, with the map documenting a later condition without identifying when the elevation changed.",
+          "She recognizes that both interpretations fit the available sources better than the exhibit's claim that the entire quay was raised in 1972."
+        ],
+        "prior_evidence": [
+          "The physical marks establish a lower dated line from 1968 and a higher undated line.",
+          "The 1972 ledger is accessible and records coping replacement along part of the quay.",
+          "The 1974 map shows a slightly altered quay edge.",
+          "The context does not establish whether the undated mark was installed during the same campaign as the ledger repairs."
+        ],
+        "must_include": [
+          "The maintenance ledger as an independent source.",
+          "The public map as an independent source.",
+          "Two explicitly stated plausible interpretations.",
+          "A clear distinction between the ledger's limited scope and the exhibit's whole-quay claim."
+        ],
+        "must_not_do": [
+          "Do not treat the map's 1974 revision as proof that construction occurred in 1974.",
+          "Do not treat the ledger's 1972 date as proof that the undated mark dates from 1972.",
+          "Do not consult or speculate about records in SEALED_SURVEY_ROOM.",
+          "Do not have another person resolve the competing interpretations."
+        ],
+        "handoff": "Ada returns to the archive with three sources and a narrowed judgment: one interpretation is stronger, but neither proves the exact year or full extent of the raising."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 23,
+        "purpose": "Resolve the evidence conflict through Ada's own disciplined synthesis and determine the strongest responsible exhibit wording.",
+        "beats": [
+          "Ada lays out the three sources side by side: the two physical marks, the 1972 coping-replacement ledger, and the 1974 altered-edge map.",
+          "She prefers the interpretation that the 1972 coping work likely contributed to an altered or raised section because it is the only dated work record that aligns with the later physical and mapped condition.",
+          "She records the limits of that preference: the ledger covers only part of North Quay, the higher mark is undated, and no source proves that all changes occurred in one campaign.",
+          "She rejects the sentence 'The quay was raised in 1972' and drafts wording that labels the 1972 work as a likely contributor rather than a proven whole-quay event.",
+          "She adds an explicit uncertainty statement that the exact raising year and the relationship between the higher mark and the ledger work remain unknown."
+        ],
+        "prior_evidence": [
+          "The physical comparison shows the 1968 mark is lower than the undated mark.",
+          "The 1972 ledger documents coping replacement along part of North Quay.",
+          "The 1974 map documents a slightly altered quay edge.",
+          "Two plausible interpretations have been considered: one linking the 1972 work to the later condition and one treating them as separate or differently timed changes.",
+          "No supplied source establishes an exact raising year."
+        ],
+        "must_include": [
+          "A preferred interpretation explicitly labeled as inference.",
+          "The wording decision that removes the unqualified 1972 claim.",
+          "A statement that the evidence does not prove the whole quay was raised in 1972.",
+          "A statement that the exact year and mark-to-work relationship remain unresolved."
+        ],
+        "must_not_do": [
+          "Do not convert the preferred interpretation into a canonical fact.",
+          "Do not claim that uncertainty has disappeared.",
+          "Do not use a rumored or inaccessible source to strengthen the conclusion."
+        ],
+        "handoff": "Ada submits the corrected caption and evidence note to the public archive exhibit process, where the consequence of her judgment can be made visible."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 12,
+        "purpose": "Show the corrected public record and establish Ada's enduring practice of preserving both evidence and uncertainty.",
+        "beats": [
+          "The exhibit text is replaced with wording that identifies the 1972 coping replacement as possible or likely evidence of work contributing to the altered quay edge, not proof that the entire quay was raised that year.",
+          "A note beside the caption distinguishes the observed lower 1968 mark, the higher undated mark, the limited 1972 ledger entry, and the altered 1974 map.",
+          "The final text explicitly says that the exact raising year and whether the higher mark came from the same work campaign are not established by the available evidence.",
+          "Ada files her reasoning so a future revision can preserve the disagreement and the limits of the current record rather than silently replacing uncertainty with a new certainty."
+        ],
+        "prior_evidence": [
+          "Ada confirmed the relative positions of the two flood marks.",
+          "The 1972 ledger records coping replacement only along part of North Quay.",
+          "The 1974 map shows a slightly altered quay edge.",
+          "Ada's preferred interpretation remains an evidence-supported inference rather than a proven fact.",
+          "The opportunity requires replacing the overconfident claim and explicitly preserving what remains unknown."
+        ],
+        "must_include": [
+          "The corrected exhibit wording.",
+          "The three-source evidence basis.",
+          "Bounded historical uncertainty about the exact year and the relationship between the two marks and the 1972 work.",
+          "A visible consequence for the public record."
+        ],
+        "must_not_do": [
+          "Do not end by naming an exact raising year.",
+          "Do not imply that the corrected caption proves the preferred interpretation.",
+          "Do not reveal future survey information or sealed-room contents."
+        ],
+        "handoff": "The public exhibit now tells a more precise history: it preserves what the records show, identifies what they suggest, and leaves the unresolved parts honestly unresolved."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Two Flood Lines",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "The sentence sat in the middle of the exhibit draft like a nail driven too cleanly into old wood.\n\nThe quay was raised in 1972.\n\nAda read it once, then again, letting the period remain visible at the end. It gave the sentence a confidence the records did not possess. Around her, the public archive carried on with its quiet daytime noises: the soft shuffling of map folders, the click of a radiator, a printer waking somewhere behind the service desk. Rain silvered the tall windows overlooking the harbor district.\n\nShe drew the draft toward her and uncapped her pencil.\n\n“What, exactly, does this sentence claim?” she murmured.\n\nThe answer was more complicated than its nine words. It claimed that the whole quay had been raised, not merely repaired or altered in one section. It claimed that the work took place in 1972. It also quietly suggested that the higher of the two flood marks dated from that work, because otherwise the mark could not serve as evidence of a raised quay. None of those assumptions appeared in the sentence. That was how overconfident history usually entered a public record: not through a dramatic invention, but through several unstated steps compressed into a smooth line of prose.\n\nAda opened a fresh sheet and divided it into two columns. At the top of the first she wrote FACTS OBSERVED. At the top of the second she wrote INFERENCES.\n\nUnder the first column she entered what she could already establish. The flood mark dated 1968 was visibly lower than a second, undated mark at North Quay. A municipal maintenance ledger from 1972 recorded stone coping replacement along part of the quay. A public map revised in 1974 depicted a slightly altered quay edge. The draft caption said the quay was raised in 1972.\n\nShe paused before adding anything to the second column.\n\nThe higher mark might reflect an altered quay edge. The coping work might have contributed to that alteration. The work might have happened before the higher mark was made, or the mark might have been made under conditions that had nothing to do with the ledger entry. The map might show a consequence of the coping replacement, or it might simply record a later condition produced by separate work.\n\nPossibility was not evidence. It could guide an investigation, but it could not quietly become its conclusion.\n\nAda had learned that distinction years earlier, and more than once. In one previous exhibit, two municipal sources had supported a date range rather than the single year printed in the first caption. She had changed the wording, and had added a note explaining why. The correction had not made the history less interesting. It had made the boundary between record and interpretation visible.\n\nNow she wrote the question that would govern this review: What may the exhibit responsibly say about when the old quay was raised?\n\nShe turned to the archive catalog. The relevant entries were familiar: the physical marks at North Quay Walk, the maintenance ledger at the supervised ledger desk, and the public map in the reading room collection. An older index also contained a reference to a SEALED_SURVEY_ROOM. The name had acquired a life of its own in marginal notes and hallway speculation, but it was not an accessible collection. Ada did not know what records, if any, remained there. It could not fill a gap in her argument.\n\nShe wrote that down as well: An inaccessible or rumored record is not evidence.\n\nThe statement looked severe beside the other notes, but it steadied her. She would not make the sealed room into a silent authority simply because the exhibit wanted a definite year. Nor would she pretend that the absence of an accessible record proved anything about what might be behind the door.\n\nAda left the draft sentence unchanged for the moment. It was important to preserve the starting point exactly, including its unwarranted certainty. She slid the folder into her canvas case, checked that her notebook was open to a clean page, and stepped out toward North Quay Walk.\n\nThe rain had stopped. Along the harbor, the stones shone under a pale break in the clouds. The two lines waited where the public record said they waited, one dated, one not. Before she could decide what connected them, she needed to see what they actually established."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "North Quay Walk followed the harbor in a long, open curve between the archive district and the ferry landing. Even in the damp afternoon, people passed along it: a man walking a small terrier, two students sharing an umbrella, a woman carrying groceries in a blue cloth bag. The quay was part of ordinary life, not a sealed historical object. Its stones bore the marks of weather, repairs, salt, and use.\n\nAda stopped at the section identified in the archive catalog and set her notebook on the broad coping. The lower line was easy to find. A small metal plate beside it read 1968. The flood mark itself ran horizontally across the stone, darkened by age and interrupted in places by the rough texture of the wall. Above it was the second line, visibly higher. It had no plate, no date, and no explanatory text.\n\nShe looked from one to the other without trying to make them speak more clearly than they could.\n\nIn the notebook she wrote:\n\nObservation: a flood mark labeled 1968 is lower than a second mark without a date.\n\nShe added a second line beneath it.\n\nObservation: the relative vertical difference is visible at the quay.\n\nThen she drew a horizontal rule and wrote:\n\nInference not established: the undated mark was made in 1972.\n\nThe words felt almost comically cautious beside the heavy harbor stones. Yet the stones did not contain a year. They contained positions. A higher line could indicate a changed edge, a different point of measurement, a later flood, or some combination of conditions. The visible difference mattered, but it did not explain itself.\n\nAda moved along the quay, checking the relation from several points where both marks could be seen. She did not take a measurement; none was required for the question before her. The lower line remained lower. The undated line remained higher. What she could confirm with her own eyes was limited but firm.\n\nShe imagined how easily a visitor might read the marks. The dated line below, the undated line above: a story seemed to rise naturally between them. The quay had been changed; the upper mark belonged to the change; the change had happened in the year written in the ledger. A neat sequence could be assembled in seconds.\n\nBut the physical evidence alone could not support that sequence. It could not show whether the entire quay had been raised. It could not identify a construction campaign. It could not assign the higher mark to any year at all.\n\nAda wrote another entry.\n\nWhat the marks establish: the 1968 reference is lower than the undated reference.\n\nWhat the marks suggest only when combined with other evidence: a later altered condition may have affected the height at which flooding was recorded.\n\nWhat remains unknown: date of the higher mark; extent of any raising or alteration; relationship to the 1972 work.\n\nA gull dropped onto the rail beside her, watched her writing, and flew away when a cyclist approached. Ada closed the notebook as the cyclist passed, then opened it again. The interruption had not changed the evidence. That, too, was useful. A conclusion should survive the ordinary world around it.\n\nShe walked to the water's edge and looked back at the wall. The line marked 1968 belonged to a documented date. The other belonged to an undated physical trace. She could call it later only in a limited sense: it was higher, and the archive described it as the later mark, but its installation date was not known. She could not turn “later” into “1972” merely because 1972 was the year under review.\n\nThe exhibit's sentence now seemed to contain a question hidden inside a claim. Was the whole quay raised? Was the higher line a result of that work? Did the ledger describe the work that changed the edge shown on the map? Each question required a different kind of support.\n\nAda photographed neither mark. The public archive had already documented their location, and she wanted her notes to remain tied to the evidence as encountered rather than to an image that might encourage a false precision. She copied the labels as they stood: 1968 on the lower mark; no date on the higher one.\n\nAt the end of the walk, she reviewed the page. The physical marks had done their part. They gave her an observed relationship, not a finished history.\n\nShe returned toward the archive, carrying the distinction with her. The ledger and the map would have to answer the next questions: whether any dated work could plausibly account for the altered edge, and whether its recorded scope matched the exhibit's claim about the whole quay."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "prose": "The maintenance ledger desk stood in a glass-fronted room just beyond the public reading area. Its ledgers were available under supervision, but Ada needed no assistance beyond the desk's catalog number and the rules printed on the sign: clean hands, no loose papers, pencils only. She signed the access sheet and brought the 1972 volume beneath the desk lamp.\n\nThe book was thick, its spine repaired with dark tape. The pages had the uneven softness of paper handled by many careful hands. Ada found the year, then the entry listed in the catalog. She read it once for its subject and again for its verbs.\n\nThe 1972 entry recorded stone coping replacement along part of North Quay.\n\nPart of North Quay.\n\nShe copied the wording exactly into her notebook. The entry did not say that the whole quay was raised. It did not say that the coping replacement changed the height of the entire harbor edge. It did not refer to either flood mark. It recorded work, a location, and a limited scope.\n\nAda placed a ruler across the page without touching the writing, marking the ledger as one source among several rather than allowing its date to dominate the investigation. The year was strong evidence that coping work occurred in 1972. It was not proof that every later condition visible at the quay came from that work.\n\nBeside the ledger reference she wrote:\n\nDocumented: stone coping replacement, along part of North Quay, 1972.\n\nNot documented: whole-quay raising; date of higher flood mark; single campaign connecting all changes.\n\nThe public map was stored in a flat drawer in the reading room. Ada returned the ledger according to the desk procedure, then retrieved the map folder and carried it to a large table beneath the north windows. The sheet had been revised in 1974. Its lines were finer than the older harbor plans, and the quay edge appeared slightly altered in the revised depiction.\n\nShe studied the alteration without enlarging it into an event. A map revised in 1974 showed a condition represented in 1974. It did not necessarily say when the physical change occurred. Cartographic revision could document an earlier condition, a recent one, or a change made in the act of redrawing. The map offered independent evidence that the edge was depicted differently by 1974, not a certificate of construction in that year.\n\nThree sources now occupied the table around her: the physical marks, the maintenance ledger, and the public map. They did not align into a single arrow. They formed a triangle with a gap at its center.\n\nAda leaned back and began to test explanations.\n\nThe first was plausible. The 1972 coping replacement along part of North Quay may have contributed to an altered or raised section. That altered section could be related to the higher flood mark, and the changed edge could then be represented on the 1974 map. This interpretation connected the only dated work record to the later physical and mapped condition. It explained why the ledger, the marks, and the map were all relevant to the same stretch of harbor, while preserving the ledger's wording about only part of the quay.\n\nShe wrote it as an inference, not a finding:\n\nInterpretation A: 1972 coping work likely contributed to an altered section later reflected by the higher mark and the 1974 map.\n\nThen she forced herself to construct a second account instead of treating the first coherent story as the only serious one.\n\nThe coping replacement and the higher mark might belong to separate works or different dates. The 1972 ledger could describe a limited repair that did not raise the quay. The higher mark could have been made after another alteration, and the 1974 map could document that later condition without revealing when its elevation changed. Under this interpretation, the three sources still belonged to the same broad history, but they did not describe one campaign.\n\nInterpretation B: the 1972 coping work and the higher mark may be separate or differently timed, with the 1974 map recording a later condition whose date and cause remain unidentified.\n\nAda underlined “may” in both entries. Neither interpretation was proven. The first had the advantage of temporal and spatial fit: a dated coping project, a later altered edge, and a higher mark. The second had the advantage of respecting every limit in the documents. It did not require the undated mark to have been installed during the ledger work, nor did it assume that a mapped difference represented a known construction date.\n\nShe compared both with the exhibit's original sentence.\n\nThe quay was raised in 1972.\n\nThat sentence was weaker than either careful interpretation because it made the broadest claim while naming the fewest conditions. It turned work along part of the quay into work on the whole quay. It treated the ledger's date as the date of a physical raising. It implied a connection between the higher mark and the ledger without proving one. It also ignored the map's narrower contribution: a slightly altered edge visible in a 1974 depiction.\n\nAda placed the map beside her notes and made a small table.\n\nPhysical marks: lower dated line from 1968; higher undated line.\n\nLedger: 1972 coping replacement along part of North Quay.\n\nMap: slightly altered quay edge depicted in 1974.\n\nNo source: exact raising year; full extent of raising; proof that the higher mark came from the 1972 campaign.\n\nThe rain began again, tapping the windows. For a moment, the table looked like an argument in three languages: stone, municipal prose, and cartographic line. Each could corroborate the others only up to a point.\n\nAda did not look toward the old index or wonder aloud what might be behind the inaccessible sealed room. A rumored source could not be brought into the table simply because the available sources stopped short of certainty. The gap was part of the evidence landscape.\n\nShe closed the map folder and returned it to its drawer. One interpretation was now stronger, but strength was not proof. She had enough to revise the caption, not enough to give it the certainty it wanted.\n\nWith the three sources and two plausible interpretations written down, Ada went back to the public archive table. Her task had narrowed. She no longer needed to decide what had happened in every detail. She needed to decide what the exhibit could say without claiming more than the record supported."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "Back in the public reading room, Ada cleared a wide space on the table and laid out her notes in the order a visitor might encounter the evidence. First came the physical marks: the lower line labeled 1968 and the higher line without a date. Next came the 1972 maintenance ledger entry, with the phrase along part of North Quay boxed in pencil. Last came the 1974 public map, its slightly altered quay edge traced lightly on a transparent sheet for comparison.\n\nShe did not need the transparency to prove a match. It only helped her see the relationship she was testing. The work recorded in 1972 occurred along part of the same public harbor edge whose later depiction had changed. That fact gave Interpretation A a real advantage. It was the only interpretation that connected a dated work record with both the altered mapped condition and the physical possibility of a higher edge.\n\nBut “advantage” was not “established.”\n\nAda wrote across the top of a new page: Preferred interpretation — inference.\n\nThen she continued: The 1972 coping work likely contributed to an altered or raised section later represented by the higher flood mark and the 1974 map.\n\nShe read the sentence critically. “Likely contributed” was doing important work. It expressed the weight of the evidence without disguising the remaining steps. The ledger did not say that coping replacement raised the quay. The mark did not carry a date. The map showed a changed edge but did not identify the date or cause of the change.\n\nShe tested Interpretation B once more. Separate works or differently timed changes remained possible. Nothing in the three sources ruled it out. It was less satisfying as a unified account, but historical records were not obligated to be satisfying. Its continued plausibility meant that the preferred interpretation could not be promoted to fact.\n\nAda drew a line beneath both interpretations and wrote:\n\nPreference is based on alignment, not proof.\n\nThat sentence reminded her why she had kept the original draft visible. If she simply replaced one definite claim with another polished sentence, a future reader might not know where evidence ended and judgment began. The archive needed to preserve the structure of the reasoning, not just its final surface.\n\nShe crossed out the draft caption.\n\nThe quay was raised in 1972.\n\nThe pencil line made the sentence look suddenly smaller. It had once seemed authoritative because it was short. Now its brevity revealed how many unsupported conclusions it had been carrying.\n\nAda began the replacement:\n\nThe 1972 maintenance ledger records stone coping replacement along part of North Quay. Together with the lower flood mark dated 1968, the higher undated mark, and the slightly altered quay edge shown on the 1974 public map, this provides likely evidence that the 1972 work contributed to an altered section of the quay.\n\nShe stopped there. The sentence was careful, but not careful enough. A visitor could still read “likely evidence” as a disguised declaration if the limits were left elsewhere.\n\nShe added a second paragraph:\n\nThe available evidence does not prove that the entire quay was raised in 1972. The exact year of any raising, and whether the higher mark was made during the same work campaign as the ledger repairs, remain unresolved.\n\nAda read the two paragraphs together. The first identified the evidence-supported inference. The second placed a boundary around it. Neither erased the original historical problem. Both made the problem legible.\n\nShe checked each phrase against the sources. “1972 maintenance ledger” was documented. “Stone coping replacement along part of North Quay” was documented. “Lower flood mark dated 1968” and “higher undated mark” were observed. “Slightly altered quay edge shown on the 1974 public map” was documented by the map. “Likely evidence that the 1972 work contributed” was her inference. “Entire quay was raised in 1972” was explicitly rejected as unproven. “Exact year” and “same work campaign” were explicitly left unresolved.\n\nThe distinction held.\n\nShe prepared an evidence note to accompany the caption. It named the three sources separately rather than blending them into one general authority. The physical marks established a relative position. The ledger established limited work in 1972. The map established a changed depiction by 1974. Their convergence supported a cautious preference, while their differences prevented a definite conclusion.\n\nAda considered whether to mention the old index and the inaccessible survey room in the note. She decided not to. The exhibit needed to tell visitors what the available evidence showed, not invite them to treat a rumor as an absent answer. In her working file, however, she recorded the methodological rule: unaccessible or rumored records cannot be used to fill an evidentiary gap.\n\nShe placed the corrected caption over the old draft and left the crossed-out sentence visible beneath it until the replacement was accepted. This was not a dramatic victory. No hidden document appeared. No witness arrived with a perfect recollection. The evidence had not transformed itself into certainty because Ada wanted it to.\n\nInstead, the conclusion became more precise by admitting what it could not settle.\n\nShe signed the evidence note and submitted both documents through the public archive exhibit process. Before closing the folder, she added one final line for future revision: Preferred interpretation remains an inference; preserve alternatives and limits in any later update.\n\nThen she carried the corrected text toward the display case, where the public record could change in a way visitors would actually see."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "By the next opening, the exhibit no longer said, “The quay was raised in 1972.”\n\nThe new caption identified the 1972 maintenance ledger's record of stone coping replacement along part of North Quay and described that work as likely evidence of a contribution to an altered quay edge. It did not call the whole quay raised. It did not assign the higher mark to the work as a proven fact.\n\nBeside the caption, Ada placed a concise evidence note:\n\nThe lower flood mark is dated 1968. A second mark is visibly higher but undated. A 1972 ledger records coping replacement along part of the quay, and a public map revised in 1974 depicts a slightly altered quay edge. These sources support an interpretation that the 1972 work may have contributed to the altered condition, but they do not establish that the entire quay was raised that year. The exact raising year, and whether the higher mark came from the same work campaign, remain unknown.\n\nVisitors paused to read it. One traced the map's edge with a finger without touching the glass. Another leaned toward the two lines in the accompanying photograph, looking first at the date and then at the higher mark.\n\nAda watched from the reading room doorway. The exhibit offered no single neat answer, but it offered something more responsible: what had been observed, what the documents recorded, what the evidence suggested, and where the record stopped.\n\nShe filed her notes with the caption history, including the two plausible interpretations and the reasons for preferring one without treating it as fact. A future archivist could revise the display if new governed evidence became available. Until then, the disagreement and the uncertainty would remain part of the record rather than being silently replaced by confidence.\n\nOutside, the harbor lay beyond the windows, holding both flood lines in the same gray light. Ada returned to her desk. The history had not become certain. It had become more exact about its uncertainty."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "The sentence sat in the middle of the exhibit draft like a nail driven too cleanly into old wood.\n\nThe quay was raised in 1972.\n\nAda read it once, then again, letting the period remain visible at the end. It gave the sentence a confidence the records did not possess. Around her, the public archive carried on with its quiet daytime noises: the soft shuffling of map folders, the click of a radiator, a printer waking somewhere behind the service desk. Rain silvered the tall windows overlooking the harbor district.\n\nShe drew the draft toward her and uncapped her pencil.\n\n“What, exactly, does this sentence claim?” she murmured.\n\nThe answer was more complicated than its nine words. It claimed that the whole quay had been raised, not merely repaired or altered in one section. It claimed that the work took place in 1972. It also quietly suggested that the higher of the two flood marks dated from that work, because otherwise the mark could not serve as evidence of a raised quay. None of those assumptions appeared in the sentence. That was how overconfident history usually entered a public record: not through a dramatic invention, but through several unstated steps compressed into a smooth line of prose.\n\nAda opened a fresh sheet and divided it into two columns. At the top of the first she wrote FACTS OBSERVED. At the top of the second she wrote INFERENCES.\n\nUnder the first column she entered what she could already establish. The flood mark dated 1968 was visibly lower than a second, undated mark at North Quay. A municipal maintenance ledger from 1972 recorded stone coping replacement along part of the quay. A public map revised in 1974 depicted a slightly altered quay edge. The draft caption said the quay was raised in 1972.\n\nShe paused before adding anything to the second column.\n\nThe higher mark might reflect an altered quay edge. The coping work might have contributed to that alteration. The work might have happened before the higher mark was made, or the mark might have been made under conditions that had nothing to do with the ledger entry. The map might show a consequence of the coping replacement, or it might simply record a later condition produced by separate work.\n\nPossibility was not evidence. It could guide an investigation, but it could not quietly become its conclusion.\n\nAda had learned that distinction years earlier, and more than once. In one previous exhibit, two municipal sources had supported a date range rather than the single year printed in the first caption. She had changed the wording, and had added a note explaining why. The correction had not made the history less interesting. It had made the boundary between record and interpretation visible.\n\nNow she wrote the question that would govern this review: What may the exhibit responsibly say about when the old quay was raised?\n\nShe turned to the archive catalog. The relevant entries were familiar: the physical marks at North Quay Walk, the maintenance ledger at the supervised ledger desk, and the public map in the reading room collection. An older index also contained a reference to a SEALED_SURVEY_ROOM. The name had acquired a life of its own in marginal notes and hallway speculation, but it was not an accessible collection. Ada did not know what records, if any, remained there. It could not fill a gap in her argument.\n\nShe wrote that down as well: An inaccessible or rumored record is not evidence.\n\nThe statement looked severe beside the other notes, but it steadied her. She would not make the sealed room into a silent authority simply because the exhibit wanted a definite year. Nor would she pretend that the absence of an accessible record proved anything about what might be behind the door.\n\nAda left the draft sentence unchanged for the moment. It was important to preserve the starting point exactly, including its unwarranted certainty. She slid the folder into her canvas case, checked that her notebook was open to a clean page, and stepped out toward North Quay Walk.\n\nThe rain had stopped. Along the harbor, the stones shone under a pale break in the clouds. The two lines waited where the public record said they waited, one dated, one not. Before she could decide what connected them, she needed to see what they actually established.\n\nNorth Quay Walk followed the harbor in a long, open curve between the archive district and the ferry landing. Even in the damp afternoon, people passed along it: a man walking a small terrier, two students sharing an umbrella, a woman carrying groceries in a blue cloth bag. The quay was part of ordinary life, not a sealed historical object. Its stones bore the marks of weather, repairs, salt, and use.\n\nAda stopped at the section identified in the archive catalog and set her notebook on the broad coping. The lower line was easy to find. A small metal plate beside it read 1968. The flood mark itself ran horizontally across the stone, darkened by age and interrupted in places by the rough texture of the wall. Above it was the second line, visibly higher. It had no plate, no date, and no explanatory text.\n\nShe looked from one to the other without trying to make them speak more clearly than they could.\n\nIn the notebook she wrote:\n\nObservation: a flood mark labeled 1968 is lower than a second mark without a date.\n\nShe added a second line beneath it.\n\nObservation: the relative vertical difference is visible at the quay.\n\nThen she drew a horizontal rule and wrote:\n\nInference not established: the undated mark was made in 1972.\n\nThe words felt almost comically cautious beside the heavy harbor stones. Yet the stones did not contain a year. They contained positions. A higher line could indicate a changed edge, a different point of measurement, a later flood, or some combination of conditions. The visible difference mattered, but it did not explain itself.\n\nAda moved along the quay, checking the relation from several points where both marks could be seen. She did not take a measurement; none was required for the question before her. The lower line remained lower. The undated line remained higher. What she could confirm with her own eyes was limited but firm.\n\nShe imagined how easily a visitor might read the marks. The dated line below, the undated line above: a story seemed to rise naturally between them. The quay had been changed; the upper mark belonged to the change; the change had happened in the year written in the ledger. A neat sequence could be assembled in seconds.\n\nBut the physical evidence alone could not support that sequence. It could not show whether the entire quay had been raised. It could not identify a construction campaign. It could not assign the higher mark to any year at all.\n\nAda wrote another entry.\n\nWhat the marks establish: the 1968 reference is lower than the undated reference.\n\nWhat the marks suggest only when combined with other evidence: a later altered condition may have affected the height at which flooding was recorded.\n\nWhat remains unknown: date of the higher mark; extent of any raising or alteration; relationship to the 1972 work.\n\nA gull dropped onto the rail beside her, watched her writing, and flew away when a cyclist approached. Ada closed the notebook as the cyclist passed, then opened it again. The interruption had not changed the evidence. That, too, was useful. A conclusion should survive the ordinary world around it.\n\nShe walked to the water's edge and looked back at the wall. The line marked 1968 belonged to a documented date. The other belonged to an undated physical trace. She could call it later only in a limited sense: it was higher, and the archive described it as the later mark, but its installation date was not known. She could not turn “later” into “1972” merely because 1972 was the year under review.\n\nThe exhibit's sentence now seemed to contain a question hidden inside a claim. Was the whole quay raised? Was the higher line a result of that work? Did the ledger describe the work that changed the edge shown on the map? Each question required a different kind of support.\n\nAda photographed neither mark. The public archive had already documented their location, and she wanted her notes to remain tied to the evidence as encountered rather than to an image that might encourage a false precision. She copied the labels as they stood: 1968 on the lower mark; no date on the higher one.\n\nAt the end of the walk, she reviewed the page. The physical marks had done their part. They gave her an observed relationship, not a finished history.\n\nShe returned toward the archive, carrying the distinction with her. The ledger and the map would have to answer the next questions: whether any dated work could plausibly account for the altered edge, and whether its recorded scope matched the exhibit's claim about the whole quay.\n\nThe maintenance ledger desk stood in a glass-fronted room just beyond the public reading area. Its ledgers were available under supervision, but Ada needed no assistance beyond the desk's catalog number and the rules printed on the sign: clean hands, no loose papers, pencils only. She signed the access sheet and brought the 1972 volume beneath the desk lamp.\n\nThe book was thick, its spine repaired with dark tape. The pages had the uneven softness of paper handled by many careful hands. Ada found the year, then the entry listed in the catalog. She read it once for its subject and again for its verbs.\n\nThe 1972 entry recorded stone coping replacement along part of North Quay.\n\nPart of North Quay.\n\nShe copied the wording exactly into her notebook. The entry did not say that the whole quay was raised. It did not say that the coping replacement changed the height of the entire harbor edge. It did not refer to either flood mark. It recorded work, a location, and a limited scope.\n\nAda placed a ruler across the page without touching the writing, marking the ledger as one source among several rather than allowing its date to dominate the investigation. The year was strong evidence that coping work occurred in 1972. It was not proof that every later condition visible at the quay came from that work.\n\nBeside the ledger reference she wrote:\n\nDocumented: stone coping replacement, along part of North Quay, 1972.\n\nNot documented: whole-quay raising; date of higher flood mark; single campaign connecting all changes.\n\nThe public map was stored in a flat drawer in the reading room. Ada returned the ledger according to the desk procedure, then retrieved the map folder and carried it to a large table beneath the north windows. The sheet had been revised in 1974. Its lines were finer than the older harbor plans, and the quay edge appeared slightly altered in the revised depiction.\n\nShe studied the alteration without enlarging it into an event. A map revised in 1974 showed a condition represented in 1974. It did not necessarily say when the physical change occurred. Cartographic revision could document an earlier condition, a recent one, or a change made in the act of redrawing. The map offered independent evidence that the edge was depicted differently by 1974, not a certificate of construction in that year.\n\nThree sources now occupied the table around her: the physical marks, the maintenance ledger, and the public map. They did not align into a single arrow. They formed a triangle with a gap at its center.\n\nAda leaned back and began to test explanations.\n\nThe first was plausible. The 1972 coping replacement along part of North Quay may have contributed to an altered or raised section. That altered section could be related to the higher flood mark, and the changed edge could then be represented on the 1974 map. This interpretation connected the only dated work record to the later physical and mapped condition. It explained why the ledger, the marks, and the map were all relevant to the same stretch of harbor, while preserving the ledger's wording about only part of the quay.\n\nShe wrote it as an inference, not a finding:\n\nInterpretation A: 1972 coping work likely contributed to an altered section later reflected by the higher mark and the 1974 map.\n\nThen she forced herself to construct a second account instead of treating the first coherent story as the only serious one.\n\nThe coping replacement and the higher mark might belong to separate works or different dates. The 1972 ledger could describe a limited repair that did not raise the quay. The higher mark could have been made after another alteration, and the 1974 map could document that later condition without revealing when its elevation changed. Under this interpretation, the three sources still belonged to the same broad history, but they did not describe one campaign.\n\nInterpretation B: the 1972 coping work and the higher mark may be separate or differently timed, with the 1974 map recording a later condition whose date and cause remain unidentified.\n\nAda underlined “may” in both entries. Neither interpretation was proven. The first had the advantage of temporal and spatial fit: a dated coping project, a later altered edge, and a higher mark. The second had the advantage of respecting every limit in the documents. It did not require the undated mark to have been installed during the ledger work, nor did it assume that a mapped difference represented a known construction date.\n\nShe compared both with the exhibit's original sentence.\n\nThe quay was raised in 1972.\n\nThat sentence was weaker than either careful interpretation because it made the broadest claim while naming the fewest conditions. It turned work along part of the quay into work on the whole quay. It treated the ledger's date as the date of a physical raising. It implied a connection between the higher mark and the ledger without proving one. It also ignored the map's narrower contribution: a slightly altered edge visible in a 1974 depiction.\n\nAda placed the map beside her notes and made a small table.\n\nPhysical marks: lower dated line from 1968; higher undated line.\n\nLedger: 1972 coping replacement along part of North Quay.\n\nMap: slightly altered quay edge depicted in 1974.\n\nNo source: exact raising year; full extent of raising; proof that the higher mark came from the 1972 campaign.\n\nThe rain began again, tapping the windows. For a moment, the table looked like an argument in three languages: stone, municipal prose, and cartographic line. Each could corroborate the others only up to a point.\n\nAda did not look toward the old index or wonder aloud what might be behind the inaccessible sealed room. A rumored source could not be brought into the table simply because the available sources stopped short of certainty. The gap was part of the evidence landscape.\n\nShe closed the map folder and returned it to its drawer. One interpretation was now stronger, but strength was not proof. She had enough to revise the caption, not enough to give it the certainty it wanted.\n\nWith the three sources and two plausible interpretations written down, Ada went back to the public archive table. Her task had narrowed. She no longer needed to decide what had happened in every detail. She needed to decide what the exhibit could say without claiming more than the record supported.\n\nBack in the public reading room, Ada cleared a wide space on the table and laid out her notes in the order a visitor might encounter the evidence. First came the physical marks: the lower line labeled 1968 and the higher line without a date. Next came the 1972 maintenance ledger entry, with the phrase along part of North Quay boxed in pencil. Last came the 1974 public map, its slightly altered quay edge traced lightly on a transparent sheet for comparison.\n\nShe did not need the transparency to prove a match. It only helped her see the relationship she was testing. The work recorded in 1972 occurred along part of the same public harbor edge whose later depiction had changed. That fact gave Interpretation A a real advantage. It was the only interpretation that connected a dated work record with both the altered mapped condition and the physical possibility of a higher edge.\n\nBut “advantage” was not “established.”\n\nAda wrote across the top of a new page: Preferred interpretation — inference.\n\nThen she continued: The 1972 coping work likely contributed to an altered or raised section later represented by the higher flood mark and the 1974 map.\n\nShe read the sentence critically. “Likely contributed” was doing important work. It expressed the weight of the evidence without disguising the remaining steps. The ledger did not say that coping replacement raised the quay. The mark did not carry a date. The map showed a changed edge but did not identify the date or cause of the change.\n\nShe tested Interpretation B once more. Separate works or differently timed changes remained possible. Nothing in the three sources ruled it out. It was less satisfying as a unified account, but historical records were not obligated to be satisfying. Its continued plausibility meant that the preferred interpretation could not be promoted to fact.\n\nAda drew a line beneath both interpretations and wrote:\n\nPreference is based on alignment, not proof.\n\nThat sentence reminded her why she had kept the original draft visible. If she simply replaced one definite claim with another polished sentence, a future reader might not know where evidence ended and judgment began. The archive needed to preserve the structure of the reasoning, not just its final surface.\n\nShe crossed out the draft caption.\n\nThe quay was raised in 1972.\n\nThe pencil line made the sentence look suddenly smaller. It had once seemed authoritative because it was short. Now its brevity revealed how many unsupported conclusions it had been carrying.\n\nAda began the replacement:\n\nThe 1972 maintenance ledger records stone coping replacement along part of North Quay. Together with the lower flood mark dated 1968, the higher undated mark, and the slightly altered quay edge shown on the 1974 public map, this provides likely evidence that the 1972 work contributed to an altered section of the quay.\n\nShe stopped there. The sentence was careful, but not careful enough. A visitor could still read “likely evidence” as a disguised declaration if the limits were left elsewhere.\n\nShe added a second paragraph:\n\nThe available evidence does not prove that the entire quay was raised in 1972. The exact year of any raising, and whether the higher mark was made during the same work campaign as the ledger repairs, remain unresolved.\n\nAda read the two paragraphs together. The first identified the evidence-supported inference. The second placed a boundary around it. Neither erased the original historical problem. Both made the problem legible.\n\nShe checked each phrase against the sources. “1972 maintenance ledger” was documented. “Stone coping replacement along part of North Quay” was documented. “Lower flood mark dated 1968” and “higher undated mark” were observed. “Slightly altered quay edge shown on the 1974 public map” was documented by the map. “Likely evidence that the 1972 work contributed” was her inference. “Entire quay was raised in 1972” was explicitly rejected as unproven. “Exact year” and “same work campaign” were explicitly left unresolved.\n\nThe distinction held.\n\nShe prepared an evidence note to accompany the caption. It named the three sources separately rather than blending them into one general authority. The physical marks established a relative position. The ledger established limited work in 1972. The map established a changed depiction by 1974. Their convergence supported a cautious preference, while their differences prevented a definite conclusion.\n\nAda considered whether to mention the old index and the inaccessible survey room in the note. She decided not to. The exhibit needed to tell visitors what the available evidence showed, not invite them to treat a rumor as an absent answer. In her working file, however, she recorded the methodological rule: unaccessible or rumored records cannot be used to fill an evidentiary gap.\n\nShe placed the corrected caption over the old draft and left the crossed-out sentence visible beneath it until the replacement was accepted. This was not a dramatic victory. No hidden document appeared. No witness arrived with a perfect recollection. The evidence had not transformed itself into certainty because Ada wanted it to.\n\nInstead, the conclusion became more precise by admitting what it could not settle.\n\nShe signed the evidence note and submitted both documents through the public archive exhibit process. Before closing the folder, she added one final line for future revision: Preferred interpretation remains an inference; preserve alternatives and limits in any later update.\n\nThen she carried the corrected text toward the display case, where the public record could change in a way visitors would actually see.\n\nBy the next opening, the exhibit no longer said, “The quay was raised in 1972.”\n\nThe new caption identified the 1972 maintenance ledger's record of stone coping replacement along part of North Quay and described that work as likely evidence of a contribution to an altered quay edge. It did not call the whole quay raised. It did not assign the higher mark to the work as a proven fact.\n\nBeside the caption, Ada placed a concise evidence note:\n\nThe lower flood mark is dated 1968. A second mark is visibly higher but undated. A 1972 ledger records coping replacement along part of the quay, and a public map revised in 1974 depicts a slightly altered quay edge. These sources support an interpretation that the 1972 work may have contributed to the altered condition, but they do not establish that the entire quay was raised that year. The exact raising year, and whether the higher mark came from the same work campaign, remain unknown.\n\nVisitors paused to read it. One traced the map's edge with a finger without touching the glass. Another leaned toward the two lines in the accompanying photograph, looking first at the date and then at the higher mark.\n\nAda watched from the reading room doorway. The exhibit offered no single neat answer, but it offered something more responsible: what had been observed, what the documents recorded, what the evidence suggested, and where the record stopped.\n\nShe filed her notes with the caption history, including the two plausible interpretations and the reasons for preferring one without treating it as fact. A future archivist could revise the display if new governed evidence became available. Until then, the disagreement and the uncertainty would remain part of the record rather than being silently replaced by confidence.\n\nOutside, the harbor lay beyond the windows, holding both flood lines in the same gray light. Ada returned to her desk. The history had not become certain. It had become more exact about its uncertainty.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 3816,
+    "target_words": 3600,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 648
+      },
+      {
+        "scene": 2,
+        "target_words": 792
+      },
+      {
+        "scene": 3,
+        "target_words": 900
+      },
+      {
+        "scene": 4,
+        "target_words": 828
+      },
+      {
+        "scene": 5,
+        "target_words": 432
+      }
+    ],
+    "repeat_8gram_ratio": 0.000788,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.94,
+      "no_redundant_events": 0.94,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.87,
+      "context_authority": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.88,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10279,
+      "output_tokens": 208,
+      "cost": 0.000431718
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. The story executes the StoryContract and SceneGraph with exceptional discipline. Ada investigates the overconfident exhibit claim through three independent sources (physical flood marks, 1972 maintenance ledger, 1974 public map), explicitly formulates two plausible interpretations before preferring one, and resolves the central problem by replacing the definite 1972 claim with evidence-supported wording that preserves bounded uncertainty. All constraints are honored: SEALED_SURVEY_ROOM is correctly treated as inaccessible and not consulted; no supervisor solves the investigation; Ada alone conducts the analysis; the preferred interpretation remains labeled as inference rather than fact; and the ending preserves the unresolved questions (exact raising year, relationship between marks and 1972 work, full extent of alteration). The prose is precise, methodical, and thematically coherent—the narrative structure mirrors the epistemological argument. Character consistency is maintained throughout: Ada's careful distinction between fact and inference, her skepticism of tidy historical stories, and her patience with conflicting records all drive the investigation. The style is mature and contemplative, appropriate for a 34-year-old professional archivist. The ending is particularly strong: it shows the corrected public record, demonstrates the consequence of Ada's judgment, and closes with the thematic resolution that history becomes more precise by naming uncertainty rather than disguising it. Word count is approximately 3,600. No canon violations, no prohibited knowledge leaks, no unsupported character knowledge. The story is production-ready.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "cohort-ada-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 41,
+        "base_fingerprint": "char-ada-r41-fp",
+        "value": {
+          "documented_evidence": [
+            "The 1968 flood mark is lower than the undated higher mark.",
+            "A 1972 ledger records stone coping replacement along part of North Quay.",
+            "A 1974 public map depicts a slightly altered quay edge."
+          ],
+          "preferred_interpretation": "The 1972 coping work likely contributed to an altered or raised section.",
+          "limits": [
+            "The exact raising year is unresolved.",
+            "It is unresolved whether the higher mark came from the same work campaign.",
+            "The evidence does not establish that the whole quay was raised in 1972."
+          ]
+        },
+        "evidence_scenes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "reason": "Ada directly examined the physical marks and accessible documentary sources, recorded the preferred interpretation as an inference, and preserved the unresolved limits."
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "north_quay.rebuild_hypotheses",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS",
+        "base_revision": 63,
+        "base_fingerprint": "world-north-quay-r63-fp",
+        "value": {
+          "hypothesis": "The 1972 coping work likely contributed to an altered or raised section later represented by the higher flood mark and the 1974 map.",
+          "confidence_basis": [
+            "The 1972 work is the only dated work record.",
+            "The later physical and mapped conditions align with that limited work."
+          ],
+          "uncertainties": [
+            "The ledger covers only part of North Quay.",
+            "The higher mark is undated.",
+            "The relationship between the mark and the ledger work is unproven."
+          ]
+        },
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "The ending establishes a preferred evidence-supported interpretation while explicitly keeping it distinct from a proven fact."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 18,
+        "base_fingerprint": "saga-ada-r18-fp",
+        "value": "North Quay exhibit claim corrected to evidence-supported wording",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The overconfident exhibit claim is replaced, the evidence note is filed, and the public record visibly reflects the completed investigation."
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 18,
+        "base_fingerprint": "saga-ada-r18-fp",
+        "value": "Exact raising year and relationship between the higher mark and the 1972 work remain unresolved",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The final exhibit and archived reasoning explicitly preserve these historical questions for possible future revision."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 14,
+        "base_fingerprint": "opp-ada-flood-r14-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ada submits and implements the corrected caption with the strongest responsible wording and explicit uncertainty."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 9685,
+      "output_tokens": 2239,
+      "total_tokens": 11924
+    },
+    "cost": {
+      "usd": 0.0051079,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.004487,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.00712215,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.012745,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.0051079,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.02946205
+  },
+  "elapsed_seconds": 114.667
+}

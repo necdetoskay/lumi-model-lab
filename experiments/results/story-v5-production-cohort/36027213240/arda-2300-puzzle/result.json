@@ -1,0 +1,623 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-production-cohort/age13-2300-puzzle-npc-boundary.yaml",
+  "context_pack_source": "experiments/context_packs/v5-cohort/arda-clock-cards.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-arda-clock-cards-001",
+    "profile": {
+      "profile_id": "profile-arda",
+      "age": 13,
+      "reading_mode": "INDEPENDENT_READER"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-arda",
+      "revision": 17,
+      "fingerprint": "char-arda-r17-fp",
+      "name": "Arda",
+      "age": 13,
+      "traits": [
+        "systematic",
+        "skeptical of convenient answers",
+        "enjoys logic puzzles"
+      ],
+      "current_goal": "Determine why workshop timing cards disagree before visitors arrive.",
+      "established_knowledge": [
+        "WORKSHOP_ROOM and PUBLIC_DESK are explored.",
+        "STAFF_BOARD is discovered and readable while supervised.",
+        "ARCHIVE_STAIR is only rumored and is not part of Arda's access.",
+        "Selin told Arda only that Room B changed use last week and that the public clock was checked this morning."
+      ],
+      "prohibited_knowledge": [
+        "Arda does not know who printed the timing cards.",
+        "Arda does not know any private staff discussion about the schedule.",
+        "Arda does not know what is stored beyond ARCHIVE_STAIR."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-hill-library",
+      "revision": 28,
+      "fingerprint": "world-hill-library-r28-fp",
+      "location": "Hill Library",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "WORKSHOP_ROOM",
+          "status": "EXPLORED",
+          "summary": "Public workshop room with tables and timing cards."
+        },
+        {
+          "id": "PUBLIC_DESK",
+          "status": "EXPLORED",
+          "summary": "Public service desk and room clock."
+        },
+        {
+          "id": "STAFF_BOARD",
+          "status": "DISCOVERED",
+          "summary": "Supervised notice board containing a current room-use note."
+        },
+        {
+          "id": "ARCHIVE_STAIR",
+          "status": "RUMORED",
+          "summary": "Restricted stair mentioned by older visitors; remains outside Arda's knowledge boundary."
+        }
+      ],
+      "current_facts": [
+        "Three printed timing cards show 14:00, 14:20 and 14:40.",
+        "The public workshop sheet shows 14:00, 14:30 and 15:00.",
+        "A supervised staff-board note says Room B changed use last week.",
+        "Selin explicitly said the public clock was checked this morning."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "The identity of the person who printed the cards is unknown.",
+        "No private staff schedule or archive record is available to Arda."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-arda-clock-001",
+      "revision": 6,
+      "fingerprint": "opp-arda-clock-r6-fp",
+      "status": "AVAILABLE",
+      "title": "Reconcile the workshop timing conflict",
+      "premise": "Arda can compare the public sheet, timing cards, clock and supervised note without inventing private NPC knowledge.",
+      "success_condition": "Recommend a correction supported by the available evidence while preserving any unresolved uncertainty.",
+      "constraints": [
+        "Do not enter ARCHIVE_STAIR.",
+        "Do not quote Selin as saying anything beyond the ContextPack.",
+        "Do not assign blame without evidence."
+      ]
+    },
+    "canon": {
+      "revision": 10,
+      "fingerprint": "canon-r10-fp",
+      "hard_rules": [
+        "No combat.",
+        "No supernatural explanation.",
+        "NPC dialogue cannot create previously unavailable canonical facts.",
+        "RUMORED locations remain unvisited unless governed expansion explicitly occurs.",
+        "Uncertain causes remain hypotheses."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-arda-reasoning",
+      "revision": 12,
+      "fingerprint": "saga-arda-r12-fp",
+      "eligible_context": [
+        "Arda has previously learned to distinguish a clock error from a schedule error.",
+        "He is practicing how to document why one explanation is stronger than another."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal future access to ARCHIVE_STAIR.",
+        "Do not introduce a secret staff cover-up."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-arda-07",
+        "summary": "Arda once corrected a classroom timetable only after checking both the printed sheet and the wall clock.",
+        "relevance": "Supports multi-source verification without predetermining the answer."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/cohort-arda-clock-cards.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "cohort-arda-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 17,
+        "expected_fingerprint": "char-arda-r17-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 28,
+        "expected_fingerprint": "world-hill-library-r28-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 12,
+        "expected_fingerprint": "saga-arda-r12-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 6,
+        "expected_fingerprint": "opp-arda-clock-r6-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "workshop.schedule_hypotheses",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Library Clock Cards",
+    "scene_count_rationale": "Five scenes are sufficient: setup establishes the conflict and access limits; investigation gathers and compares the available evidence; testing rejects the tempting clock-error explanation and preserves uncertainty about the cards' origin; payoff makes the evidence-based correction recommendation; resolution has an adult approve the correction without solving the puzzle. This avoids micro-scenes while giving the clue progression and causal reasoning enough space for a 2300-word story.",
+    "story_contract": {
+      "protagonist_goal": "Determine why the workshop timing cards disagree before visitors arrive and recommend the safest correction.",
+      "central_problem": "Three timing cards list 14:00, 14:20, and 14:40, while the public workshop sheet lists 14:00, 14:30, and 15:00, the public clock has been checked, and a supervised note says Room B changed use last week.",
+      "solution_principle": "Prefer the correction supported by multiple available sources, distinguish current evidence from hypotheses, and do not claim private knowledge about who made the cards or why.",
+      "theme_thread": "Good reasoning uses what people actually said and what the evidence actually shows, not what people might have meant.",
+      "ending_state": "Arda recommends replacing or clearly correcting the timing cards to match the public workshop sheet, with the unresolved cause and source of the old cards explicitly left unknown. An adult approves the correction after Arda explains the evidence.",
+      "must_preserve": [
+        "Arda is 13, systematic, skeptical of convenient answers, willing to test competing explanations, and enjoys logic puzzles.",
+        "The story remains in the Hill Library workshop floor and known public or staff-supervised areas only.",
+        "WORKSHOP_ROOM and PUBLIC_DESK are explored; STAFF_BOARD is discovered and readable while supervised.",
+        "ARCHIVE_STAIR remains rumored, restricted, and unvisited.",
+        "Selin communicated only that Room B changed use last week and that the public clock was checked this morning.",
+        "The three timing cards show 14:00, 14:20, and 14:40.",
+        "The public workshop sheet shows 14:00, 14:30, and 15:00.",
+        "The correction reconciles at least three pieces of evidence.",
+        "At least one plausible explanation is tested and rejected.",
+        "An adult approves the correction but does not solve the puzzle.",
+        "An unresolved scheduling possibility remains a hypothesis rather than becoming a world fact.",
+        "No blame is assigned without evidence.",
+        "The story contains no combat or supernatural explanation."
+      ],
+      "must_not_happen": [
+        "Arda must not enter, investigate, or gain knowledge from ARCHIVE_STAIR.",
+        "Arda must not invent, paraphrase beyond the supplied facts, or attribute additional statements to Selin.",
+        "The story must not reveal who printed the cards.",
+        "The story must not reveal private staff discussions, a private staff schedule, or archive records.",
+        "The story must not claim that Room B's change definitely caused the card discrepancy.",
+        "The story must not establish a secret staff cover-up.",
+        "The story must not treat the timing cards' source or intended schedule as known.",
+        "The adult must not identify the answer for Arda.",
+        "The public clock must not be declared wrong merely because the cards disagree with it."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Introduce Arda's preparation task, establish the timing conflict, and define the safe evidence boundary before he begins reasoning.",
+        "beats": [
+          "Arda helps arrange the Hill Library workshop room and notices three printed timing cards labeled 14:00, 14:20, and 14:40.",
+          "He compares them with the public workshop sheet, which lists 14:00, 14:30, and 15:00, and recognizes that the disagreement is about the schedule rather than merely the display format.",
+          "Arda recalls the relevant knowledge boundary: Selin said only that Room B changed use last week and that the public clock was checked this morning.",
+          "Instead of guessing who made the cards or searching restricted areas, Arda decides to test explanations using only public and supervised evidence."
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "The workshop room as a public area with tables and timing cards.",
+          "All three card times and all three public-sheet times.",
+          "Arda's central goal of resolving the conflict before visitors arrive.",
+          "The fact that Selin's two communicated facts are limited and exact.",
+          "Arda's choice not to enter or investigate ARCHIVE_STAIR."
+        ],
+        "must_not_do": [
+          "Do not identify the printer of the cards.",
+          "Do not imply that Selin supplied an explanation for the discrepancy.",
+          "Do not make the old cards evidence of deliberate deception."
+        ],
+        "handoff": "Arda carries the cards and his written comparison toward the public desk, where he will test whether a clock error could explain the disagreement."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 24,
+        "purpose": "Gather and organize the available evidence so Arda can compare independent sources rather than relying on a convenient assumption.",
+        "beats": [
+          "At the public desk, Arda checks the room clock against the current time and records that it agrees with the time reference he is using.",
+          "He recalls that Selin explicitly said the public clock was checked this morning, giving him a second reason not to treat the clock as the immediate culprit.",
+          "Under supervision, Arda reads the staff-board note that Room B changed use last week, carefully recording the statement without expanding it into a claim about the workshop schedule.",
+          "He makes a small evidence table: cards show twenty-minute intervals; the public sheet shows thirty-minute intervals; the clock appears reliable; Room B's use changed, but the consequence of that change is unknown."
+        ],
+        "prior_evidence": [
+          "Scene 1: The cards list 14:00, 14:20, and 14:40, while the public sheet lists 14:00, 14:30, and 15:00.",
+          "Scene 1: Selin's exact communicated facts are that Room B changed use last week and the public clock was checked this morning."
+        ],
+        "must_include": [
+          "The PUBLIC_DESK and its public room clock.",
+          "The supervised STAFF_BOARD and its exact current note that Room B changed use last week.",
+          "Arda's evidence table or equivalent written comparison.",
+          "A clear distinction between observed facts and possible explanations."
+        ],
+        "must_not_do": [
+          "Do not enter ARCHIVE_STAIR or seek information beyond the supervised board.",
+          "Do not state that the room-use change definitely changed the schedule.",
+          "Do not turn the staff-board note into a private staff conversation."
+        ],
+        "handoff": "Arda has enough evidence to test competing explanations, beginning with the plausible idea that the public clock is wrong."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "relative_weight": 23,
+        "purpose": "Test and reject at least one plausible explanation while narrowing the safest interpretation without pretending to know the cards' history.",
+        "beats": [
+          "Arda tests the clock-error explanation against the checked clock, the morning-check statement, and the matching 14:00 starting time on both lists.",
+          "He rejects that explanation because a wrong clock would not adequately explain the cards' 20-minute intervals versus the sheet's 30-minute intervals, especially when the clock has been checked.",
+          "He considers whether the change in Room B's use could explain the cards being outdated, but marks this only as a plausible hypothesis because the note does not say what schedule, if any, changed.",
+          "Arda recognizes the practical distinction between identifying a likely current reference and proving the cards' origin: the public sheet is the safer schedule to use, but the reason for the old cards remains unresolved."
+        ],
+        "prior_evidence": [
+          "Scene 1: The cards and public sheet share a 14:00 starting time but diverge in their later intervals.",
+          "Scene 2: The public clock was checked this morning, and Arda's direct comparison does not show it contradicting the current time.",
+          "Scene 2: The staff-board note says only that Room B changed use last week.",
+          "Scene 2: Arda's evidence table separates observations from hypotheses."
+        ],
+        "must_include": [
+          "A plausible clock-error explanation being explicitly tested and rejected.",
+          "The interval comparison of twenty minutes versus thirty minutes.",
+          "The possibility that the cards are outdated, presented as unresolved rather than factual.",
+          "Arda's reasoning that a safe correction can be chosen without knowing who printed the cards."
+        ],
+        "must_not_do": [
+          "Do not claim certainty about why the cards were printed.",
+          "Do not accuse staff, visitors, or any unnamed person.",
+          "Do not treat the Room B note as proof that the schedule changed.",
+          "Do not introduce a secret cover-up or supernatural cause."
+        ],
+        "handoff": "Arda prepares to explain a correction based on the current public sheet, checked clock, and supervised note while clearly labeling the remaining uncertainty."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 25,
+        "purpose": "Deliver the central reasoning payoff by reconciling the evidence and selecting the safest actionable correction.",
+        "beats": [
+          "Arda presents his conclusion to the supervising adult: the timing cards should be replaced or clearly corrected to 14:00, 14:30, and 15:00, matching the public workshop sheet.",
+          "He supports the recommendation with at least three pieces of evidence: the public sheet gives the current published times, the public clock was checked and does not support a clock-error explanation, and the staff-board note shows that Room B's use changed last week, making outdated material possible without proving it.",
+          "Arda explains that he is not claiming to know who made the cards or exactly why their intervals differ.",
+          "The adult asks Arda to verify the written times one more time, then agrees that the correction is the safest available choice rather than supplying the reasoning."
+        ],
+        "prior_evidence": [
+          "Scene 2: The public sheet lists 14:00, 14:30, and 15:00.",
+          "Scene 2: Selin said the public clock was checked this morning, and Arda's comparison supports treating the clock as reliable.",
+          "Scene 2: The supervised note says Room B changed use last week.",
+          "Scene 3: The clock-error explanation was rejected because it does not explain the interval mismatch.",
+          "Scene 3: The cause and source of the cards remain unknown."
+        ],
+        "must_include": [
+          "A correction matching the public workshop sheet.",
+          "An explicit reconciliation of the cards, public sheet, clock evidence, and Room B note.",
+          "A statement that the Room B connection is a possibility, not a confirmed cause.",
+          "An adult approval that follows Arda's reasoning rather than replacing it."
+        ],
+        "must_not_do": [
+          "Do not have the adult announce or discover the solution.",
+          "Do not present the old cards as proven fraudulent or intentionally misleading.",
+          "Do not erase the unresolved uncertainty about the cards' origin."
+        ],
+        "handoff": "With approval secured, Arda corrects the visitor-facing materials and records what is known, what is recommended, and what remains uncertain."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 10,
+        "purpose": "Show the practical result of sound reasoning and close with the theme: accurate statements and evidence are safer than assumptions.",
+        "beats": [
+          "Arda replaces or clearly marks the conflicting timing cards so visitors will see 14:00, 14:30, and 15:00, consistent with the public workshop sheet.",
+          "He leaves a concise note for the supervising adult that the correction is supported by the published schedule, the checked public clock, and the supervised Room B-use note, while the cards' source and exact history remain unknown.",
+          "As visitors begin arriving, Arda notices that he has solved the actionable problem without inventing a private explanation.",
+          "He reflects that reasoning is not filling every gap with a story; it is choosing the strongest safe action from what people actually said and what the evidence actually shows."
+        ],
+        "prior_evidence": [
+          "Scene 4: The adult approved Arda's evidence-based correction.",
+          "Scene 4: The public sheet's times were verified as 14:00, 14:30, and 15:00.",
+          "Scene 4: The clock-error explanation was rejected, while the cards' origin and the exact effect of the Room B change remained unresolved."
+        ],
+        "must_include": [
+          "The corrected visitor-facing schedule.",
+          "The preserved uncertainty about the cards' source and the Room B connection.",
+          "A quiet thematic reflection tied to using exact statements rather than assumptions.",
+          "A safe ending entirely within the workshop floor and other authorized areas."
+        ],
+        "must_not_do": [
+          "Do not reveal a definitive hidden cause after the correction.",
+          "Do not imply that the schedule possibility has become a confirmed world fact.",
+          "Do not revisit or reveal anything about ARCHIVE_STAIR."
+        ],
+        "handoff": "The workshop can begin with the safest supported schedule in place, while Arda's careful record keeps future reasoning from turning uncertainty into false certainty."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Library Clock Cards",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "Arda liked preparing a room almost as much as solving a puzzle. Before visitors arrived at Hill Library, he moved chairs into pairs, lined up pencils, and checked that each table had enough blank paper for the workshop. The workshop room was public, bright, and still quiet except for the scrape of chair legs and the soft hum of the heating system.\n\nOn the nearest table, three printed timing cards lay in a neat row. Arda picked them up. The first said 14:00. The second said 14:20. The third said 14:40.\n\nHe carried them to the public workshop sheet taped beside the supply box. That sheet listed 14:00, 14:30, and 15:00.\n\nArda looked from one list to the other. At first, he wondered whether the cards were simply a different way of displaying the same schedule. But the starting times alone did not settle anything. After 14:00, one list advanced by twenty minutes each time, while the other advanced by thirty. The disagreement was about the schedule itself, not merely about how it had been printed.\n\nHe took out his small notebook. At the top of a clean page, he wrote: “Goal: resolve timing conflict before visitors arrive.” Under that, he copied all six times exactly.\n\nHe also wrote what he knew about Selin’s information. Selin had told him only two things: Room B changed use last week, and the public clock was checked this morning. That was all. She had not told him who made the cards, why the times differed, or what the room change had done to the workshop schedule.\n\nArda paused with his pencil above the page. A convenient answer was already tempting: perhaps someone had made a mistake, or perhaps the cards belonged to an earlier plan. But neither possibility was evidence yet. He enjoyed logic puzzles because they punished answers that arrived too quickly.\n\nHe would compare sources instead of guessing. He could check the public desk and, while supervised, read the staff board. He would not search restricted places or try to discover private information. The rumored ARCHIVE_STAIR was not part of his access, and he had no reason to investigate it. Whatever was beyond it could not safely be used in his explanation.\n\nArda placed the cards between the pages of his notebook so they would not scatter. Then he carried his written comparison toward the public desk, ready to test the first explanation: that the clock itself might be wrong."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "The public desk stood just outside the workshop room. Behind it, the public room clock showed the current time in clear black numbers. Arda checked it against the time reference he was using, then checked again after making sure he had not misread either display. The clock agreed.\n\nThat did not prove every schedule in the building was correct, but it was useful evidence. So was Selin’s exact statement that the public clock had been checked this morning. Arda wrote both points in his notebook without adding anything to them.\n\nAn adult supervising the workshop noticed his notes and allowed him to read the staff board nearby. Arda stayed where he was directed. The board contained a current note saying: “Room B changed use last week.” He copied the sentence precisely, including the word “changed.” He did not rewrite it as “the workshop moved,” or “the schedule was changed,” because the note did not say either of those things.\n\nBack at the public desk, he drew a table.\n\nObserved source | What it shows\n\nTiming cards | 14:00, 14:20, 14:40\nPublic workshop sheet | 14:00, 14:30, 15:00\nPublic room clock | Agrees with the current time reference\nSelin’s communicated facts | The clock was checked this morning; Room B changed use last week\nStaff-board note | Room B changed use last week\n\nArda added a second section beneath it.\n\nPossible explanations:\n\nClock error: possible to test.\nCards are outdated: possible, but not established.\nRoom B change caused the difference: possible connection, but not stated.\nSomeone deliberately misled visitors: no evidence.\n\nHe tapped the table with his pencil. The evidence did not all have the same strength. The times on the cards were directly visible. The times on the public sheet were directly visible. The clock could be compared with the current reference. The note about Room B was also visible, but it was narrower than a full explanation.\n\nArda remembered correcting a classroom timetable once. He had checked both the printed sheet and the wall clock before changing anything. That memory did not tell him the answer now, but it reminded him that a printed disagreement did not automatically make the clock guilty—or the paper guilty. Sources had to be compared.\n\nHe considered whether to ask for more information. Then he stopped. Asking an adult to reveal a private staff discussion would not make the evidence safer. Neither would trying to learn who printed the cards. He did not know those things, and he could solve the practical problem without pretending that he did.\n\nThe clock and the morning check gave him two reasons to examine the clock-error explanation carefully. The two lists gave him a pattern to test: twenty-minute intervals on the cards and thirty-minute intervals on the public sheet. Arda copied that pattern in large writing, circled it, and carried the notebook back toward the workshop room.\n\nNow he had enough evidence to test a competing explanation instead of merely collecting facts."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "prose": "Arda began with the explanation that seemed easiest to blame: the public clock was wrong. He wrote it as a question rather than a conclusion.\n\nIf the clock were wrong, what should the evidence look like? Perhaps the current time reference and the public clock would disagree. Perhaps the workshop times would have been copied or adjusted to match a mistaken display. But the clock agreed with Arda’s reference, and Selin had explicitly said it was checked that morning.\n\nThere was another problem. Even if the clock had been wrong, that would not explain the shape of the two lists. The cards went from 14:00 to 14:20 to 14:40: twenty-minute intervals. The public sheet went from 14:00 to 14:30 to 15:00: thirty-minute intervals. A clock showing the wrong time might shift a reading, but it would not by itself turn a twenty-minute pattern into a thirty-minute pattern.\n\nArda drew a line through “clock error” in the possible-explanations section. Beside it he wrote: “Rejected by direct comparison, morning check, and interval mismatch.” He did not write “impossible.” Good reasoning, he knew, did not need stronger words than the evidence allowed. The explanation was not adequate for this conflict.\n\nNext he examined the Room B note. Room B had changed use last week. Could that be connected to the timing cards? Yes, it could. If materials had been prepared before a change, the cards might be outdated. But the note did not say that a workshop had moved, that the intervals had changed, or that the cards belonged to an earlier plan. It only stated that the room had changed use.\n\nArda wrote: “Outdated cards: plausible hypothesis.” Then underneath: “Room B connection: possible, not confirmed.”\n\nHe was careful not to turn possibility into history. The timing cards might have been left from an earlier arrangement. They might have been made for some other purpose. Or there might be an explanation he had not considered. Since he did not know who printed them, he could not safely claim to know their intended schedule or their source.\n\nStill, uncertainty about the past did not prevent a decision about the present. The public workshop sheet gave three clear times. The public clock agreed with the current reference and had been checked that morning. The Room B note showed that something about room use had changed recently, which made caution about older materials sensible, even though it did not prove a cause.\n\nArda looked again at the shared starting time, 14:00. That small agreement mattered. The disagreement began afterward, in the intervals. It made the public sheet no less clear and the cards no more reliable as a current visitor schedule.\n\nHe closed his notebook, leaving the crossed-out explanation and the unresolved possibilities visible. He could recommend a correction without solving the cards’ history. The safest answer would rest on what was current, checkable, and actually stated—not on a story about what someone might have meant."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "The supervising adult joined Arda beside the workshop tables. Arda spread out the three timing cards, the public workshop sheet, and his notebook so that every comparison could be seen at once.\n\n“I recommend replacing the cards, or clearly correcting them,” he said. “The visitor-facing times should be 14:00, 14:30, and 15:00, matching the public workshop sheet.”\n\nThe adult looked at the materials, then at Arda’s table. “Explain how you reached that recommendation.”\n\nArda pointed first to the public sheet. “This is the published workshop schedule available to visitors. It lists 14:00, 14:30, and 15:00. The cards instead list 14:00, 14:20, and 14:40.”\n\nHe placed his finger beneath the two sequences. “The cards use twenty-minute intervals. The sheet uses thirty-minute intervals. They share the first time, but they do not show the same later schedule.”\n\nThen he pointed toward the public desk. “I compared the public room clock with the current time reference, and they agreed. Selin also said the public clock was checked this morning. So the clock-error explanation does not fit the evidence. It would not explain the different intervals anyway.”\n\nFinally, he indicated the note he had copied from the supervised staff board. “It says Room B changed use last week. That makes it possible that some material is outdated, but the note does not say the workshop schedule changed, and it does not prove that the room change caused these cards. I’m using it as a reason to be cautious, not as a confirmed explanation.”\n\nThe adult nodded but did not reach for the cards. “What do you know about who made them?”\n\n“Nothing certain,” Arda answered. “I don’t know who printed them or exactly why their times differ. I don’t need to know that to choose the safest current correction.”\n\nThe adult studied his notebook. “Verify the written times one more time.”\n\nArda checked the sheet slowly. “14:00, 14:30, 15:00.” He checked again against the numbers he had written. The same. He also confirmed that the old cards said 14:00, 14:20, and 14:40, so no number had been shifted while he was comparing them.\n\n“Then correct the visitor materials,” the adult said. “Your recommendation is approved.”\n\nThe approval felt different from being handed an answer. The adult had asked him to show the evidence and verify the transcription; Arda had supplied the reasoning himself. He took a fresh set of cards from the workshop supplies and wrote the three public-sheet times in large, clear numerals. Beside the older cards, he placed a note reading: “Do not use—times conflict with the current public workshop sheet.” He did not label them false, dishonest, or deliberately misleading. Their source and history remained unknown.\n\nBefore visitors arrived, he also prepared a concise record for the supervising adult: the correction was supported by the published schedule, the checked public clock, and the supervised note that Room B had changed use last week. The note would state clearly that the Room B connection was only a possibility, not a confirmed cause. Arda underlined the final sentence: “Source and exact history of the older cards remain unknown.”\n\nThe table now offered one schedule to visitors instead of two competing ones."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "As the first visitors entered the workshop room, they could clearly see 14:00, 14:30, and 15:00 on the corrected cards, matching the public workshop sheet. The older cards were set aside with Arda’s note, not a guess about their history.\n\nHis record preserved the important uncertainties: the cards’ source was unknown, and the Room B change might be connected but had not been shown to cause the discrepancy. What was known was enough to act safely.\n\nArda watched visitors gather around the tables. He had not filled every gap with a story. He had used the exact statements people had made and the evidence he could actually check. Sometimes sound reasoning did not uncover a hidden answer. Sometimes it simply chose the strongest safe action—and marked the remaining questions honestly."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "Arda liked preparing a room almost as much as solving a puzzle. Before visitors arrived at Hill Library, he moved chairs into pairs, lined up pencils, and checked that each table had enough blank paper for the workshop. The workshop room was public, bright, and still quiet except for the scrape of chair legs and the soft hum of the heating system.\n\nOn the nearest table, three printed timing cards lay in a neat row. Arda picked them up. The first said 14:00. The second said 14:20. The third said 14:40.\n\nHe carried them to the public workshop sheet taped beside the supply box. That sheet listed 14:00, 14:30, and 15:00.\n\nArda looked from one list to the other. At first, he wondered whether the cards were simply a different way of displaying the same schedule. But the starting times alone did not settle anything. After 14:00, one list advanced by twenty minutes each time, while the other advanced by thirty. The disagreement was about the schedule itself, not merely about how it had been printed.\n\nHe took out his small notebook. At the top of a clean page, he wrote: “Goal: resolve timing conflict before visitors arrive.” Under that, he copied all six times exactly.\n\nHe also wrote what he knew about Selin’s information. Selin had told him only two things: Room B changed use last week, and the public clock was checked this morning. That was all. She had not told him who made the cards, why the times differed, or what the room change had done to the workshop schedule.\n\nArda paused with his pencil above the page. A convenient answer was already tempting: perhaps someone had made a mistake, or perhaps the cards belonged to an earlier plan. But neither possibility was evidence yet. He enjoyed logic puzzles because they punished answers that arrived too quickly.\n\nHe would compare sources instead of guessing. He could check the public desk and, while supervised, read the staff board. He would not search restricted places or try to discover private information. The rumored ARCHIVE_STAIR was not part of his access, and he had no reason to investigate it. Whatever was beyond it could not safely be used in his explanation.\n\nArda placed the cards between the pages of his notebook so they would not scatter. Then he carried his written comparison toward the public desk, ready to test the first explanation: that the clock itself might be wrong.\n\nThe public desk stood just outside the workshop room. Behind it, the public room clock showed the current time in clear black numbers. Arda checked it against the time reference he was using, then checked again after making sure he had not misread either display. The clock agreed.\n\nThat did not prove every schedule in the building was correct, but it was useful evidence. So was Selin’s exact statement that the public clock had been checked this morning. Arda wrote both points in his notebook without adding anything to them.\n\nAn adult supervising the workshop noticed his notes and allowed him to read the staff board nearby. Arda stayed where he was directed. The board contained a current note saying: “Room B changed use last week.” He copied the sentence precisely, including the word “changed.” He did not rewrite it as “the workshop moved,” or “the schedule was changed,” because the note did not say either of those things.\n\nBack at the public desk, he drew a table.\n\nObserved source | What it shows\n\nTiming cards | 14:00, 14:20, 14:40\nPublic workshop sheet | 14:00, 14:30, 15:00\nPublic room clock | Agrees with the current time reference\nSelin’s communicated facts | The clock was checked this morning; Room B changed use last week\nStaff-board note | Room B changed use last week\n\nArda added a second section beneath it.\n\nPossible explanations:\n\nClock error: possible to test.\nCards are outdated: possible, but not established.\nRoom B change caused the difference: possible connection, but not stated.\nSomeone deliberately misled visitors: no evidence.\n\nHe tapped the table with his pencil. The evidence did not all have the same strength. The times on the cards were directly visible. The times on the public sheet were directly visible. The clock could be compared with the current reference. The note about Room B was also visible, but it was narrower than a full explanation.\n\nArda remembered correcting a classroom timetable once. He had checked both the printed sheet and the wall clock before changing anything. That memory did not tell him the answer now, but it reminded him that a printed disagreement did not automatically make the clock guilty—or the paper guilty. Sources had to be compared.\n\nHe considered whether to ask for more information. Then he stopped. Asking an adult to reveal a private staff discussion would not make the evidence safer. Neither would trying to learn who printed the cards. He did not know those things, and he could solve the practical problem without pretending that he did.\n\nThe clock and the morning check gave him two reasons to examine the clock-error explanation carefully. The two lists gave him a pattern to test: twenty-minute intervals on the cards and thirty-minute intervals on the public sheet. Arda copied that pattern in large writing, circled it, and carried the notebook back toward the workshop room.\n\nNow he had enough evidence to test a competing explanation instead of merely collecting facts.\n\nArda began with the explanation that seemed easiest to blame: the public clock was wrong. He wrote it as a question rather than a conclusion.\n\nIf the clock were wrong, what should the evidence look like? Perhaps the current time reference and the public clock would disagree. Perhaps the workshop times would have been copied or adjusted to match a mistaken display. But the clock agreed with Arda’s reference, and Selin had explicitly said it was checked that morning.\n\nThere was another problem. Even if the clock had been wrong, that would not explain the shape of the two lists. The cards went from 14:00 to 14:20 to 14:40: twenty-minute intervals. The public sheet went from 14:00 to 14:30 to 15:00: thirty-minute intervals. A clock showing the wrong time might shift a reading, but it would not by itself turn a twenty-minute pattern into a thirty-minute pattern.\n\nArda drew a line through “clock error” in the possible-explanations section. Beside it he wrote: “Rejected by direct comparison, morning check, and interval mismatch.” He did not write “impossible.” Good reasoning, he knew, did not need stronger words than the evidence allowed. The explanation was not adequate for this conflict.\n\nNext he examined the Room B note. Room B had changed use last week. Could that be connected to the timing cards? Yes, it could. If materials had been prepared before a change, the cards might be outdated. But the note did not say that a workshop had moved, that the intervals had changed, or that the cards belonged to an earlier plan. It only stated that the room had changed use.\n\nArda wrote: “Outdated cards: plausible hypothesis.” Then underneath: “Room B connection: possible, not confirmed.”\n\nHe was careful not to turn possibility into history. The timing cards might have been left from an earlier arrangement. They might have been made for some other purpose. Or there might be an explanation he had not considered. Since he did not know who printed them, he could not safely claim to know their intended schedule or their source.\n\nStill, uncertainty about the past did not prevent a decision about the present. The public workshop sheet gave three clear times. The public clock agreed with the current reference and had been checked that morning. The Room B note showed that something about room use had changed recently, which made caution about older materials sensible, even though it did not prove a cause.\n\nArda looked again at the shared starting time, 14:00. That small agreement mattered. The disagreement began afterward, in the intervals. It made the public sheet no less clear and the cards no more reliable as a current visitor schedule.\n\nHe closed his notebook, leaving the crossed-out explanation and the unresolved possibilities visible. He could recommend a correction without solving the cards’ history. The safest answer would rest on what was current, checkable, and actually stated—not on a story about what someone might have meant.\n\nThe supervising adult joined Arda beside the workshop tables. Arda spread out the three timing cards, the public workshop sheet, and his notebook so that every comparison could be seen at once.\n\n“I recommend replacing the cards, or clearly correcting them,” he said. “The visitor-facing times should be 14:00, 14:30, and 15:00, matching the public workshop sheet.”\n\nThe adult looked at the materials, then at Arda’s table. “Explain how you reached that recommendation.”\n\nArda pointed first to the public sheet. “This is the published workshop schedule available to visitors. It lists 14:00, 14:30, and 15:00. The cards instead list 14:00, 14:20, and 14:40.”\n\nHe placed his finger beneath the two sequences. “The cards use twenty-minute intervals. The sheet uses thirty-minute intervals. They share the first time, but they do not show the same later schedule.”\n\nThen he pointed toward the public desk. “I compared the public room clock with the current time reference, and they agreed. Selin also said the public clock was checked this morning. So the clock-error explanation does not fit the evidence. It would not explain the different intervals anyway.”\n\nFinally, he indicated the note he had copied from the supervised staff board. “It says Room B changed use last week. That makes it possible that some material is outdated, but the note does not say the workshop schedule changed, and it does not prove that the room change caused these cards. I’m using it as a reason to be cautious, not as a confirmed explanation.”\n\nThe adult nodded but did not reach for the cards. “What do you know about who made them?”\n\n“Nothing certain,” Arda answered. “I don’t know who printed them or exactly why their times differ. I don’t need to know that to choose the safest current correction.”\n\nThe adult studied his notebook. “Verify the written times one more time.”\n\nArda checked the sheet slowly. “14:00, 14:30, 15:00.” He checked again against the numbers he had written. The same. He also confirmed that the old cards said 14:00, 14:20, and 14:40, so no number had been shifted while he was comparing them.\n\n“Then correct the visitor materials,” the adult said. “Your recommendation is approved.”\n\nThe approval felt different from being handed an answer. The adult had asked him to show the evidence and verify the transcription; Arda had supplied the reasoning himself. He took a fresh set of cards from the workshop supplies and wrote the three public-sheet times in large, clear numerals. Beside the older cards, he placed a note reading: “Do not use—times conflict with the current public workshop sheet.” He did not label them false, dishonest, or deliberately misleading. Their source and history remained unknown.\n\nBefore visitors arrived, he also prepared a concise record for the supervising adult: the correction was supported by the published schedule, the checked public clock, and the supervised note that Room B had changed use last week. The note would state clearly that the Room B connection was only a possibility, not a confirmed cause. Arda underlined the final sentence: “Source and exact history of the older cards remain unknown.”\n\nThe table now offered one schedule to visitors instead of two competing ones.\n\nAs the first visitors entered the workshop room, they could clearly see 14:00, 14:30, and 15:00 on the corrected cards, matching the public workshop sheet. The older cards were set aside with Arda’s note, not a guess about their history.\n\nHis record preserved the important uncertainties: the cards’ source was unknown, and the Room B change might be connected but had not been shown to cause the discrepancy. What was known was enough to act safely.\n\nArda watched visitors gather around the tables. He had not filled every gap with a story. He had used the exact statements people had made and the evidence he could actually check. Sometimes sound reasoning did not uncover a hidden answer. Sometimes it simply chose the strongest safe action—and marked the remaining questions honestly.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 2051,
+    "target_words": 2300,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 414
+      },
+      {
+        "scene": 2,
+        "target_words": 552
+      },
+      {
+        "scene": 3,
+        "target_words": 529
+      },
+      {
+        "scene": 4,
+        "target_words": 575
+      },
+      {
+        "scene": 5,
+        "target_words": 230
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.94,
+      "no_redundant_events": 0.94,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.86,
+      "context_authority": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8198,
+      "output_tokens": 208,
+      "cost": 0.000344316
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. This is exceptional production-quality work that fully satisfies the StoryContract, SceneGraph, and ContextPack. The story demonstrates systematic reasoning grounded in evidence, not assumption. Arda correctly identifies and rejects the clock-error explanation (C5), reconciles four independent sources—the cards, public sheet, checked clock, and supervised staff note (C4)—and preserves the unresolved origin of the cards as hypothesis rather than fact (C7). All character knowledge boundaries are respected: Selin's two communicated facts are quoted exactly (C2), ARCHIVE_STAIR remains rumored and unvisited (C3), and no private staff knowledge is invented. The adult approves the correction after Arda explains the evidence, without solving the puzzle (C6). The theme—good reasoning uses what people actually said, not what we assume they meant—is woven throughout Arda's internal reasoning and his final reflection. The prose is clear, age-appropriate for 13-year-old independent readers, and maintains narrative tension while modeling sound epistemic practice. Word count is approximately 2,300. No canon violations, no prohibited knowledge leaks, no unsupported character states. The ending is emotionally satisfying and thematically complete.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "cohort-arda-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 17,
+        "base_fingerprint": "char-arda-r17-fp",
+        "value": "The public workshop sheet is the safest current visitor schedule; the checked clock-error explanation does not account for the discrepancy, while the cards' source and exact history remain unknown.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "Arda tests the clock-error explanation, rejects it using the checked clock and interval mismatch, and successfully recommends and applies the supported schedule correction."
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "workshop.schedule_hypotheses",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS",
+        "base_revision": 28,
+        "base_fingerprint": "world-hill-library-r28-fp",
+        "value": "The conflicting timing cards may be outdated, possibly in connection with Room B's changed use; this connection and the cards' origin are unconfirmed.",
+        "evidence_scenes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "reason": "The story explicitly preserves outdated cards and a possible Room B connection as unresolved hypotheses rather than established causes."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 12,
+        "base_fingerprint": "saga-arda-r12-fp",
+        "value": "Workshop timing conflict reconciled by correcting visitor-facing materials to 14:00, 14:30, and 15:00.",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The supervising adult approves Arda's evidence-based correction and the corrected schedule is displayed for visitors."
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 12,
+        "base_fingerprint": "saga-arda-r12-fp",
+        "value": "The source and exact history of the conflicting timing cards, and whether Room B's changed use caused the discrepancy, remain unresolved.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "The story explicitly leaves the cards' origin and the Room B connection unknown or unconfirmed."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 6,
+        "base_fingerprint": "opp-arda-clock-r6-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Arda reconciles the available evidence, recommends the safest correction, receives approval, and corrects the visitor-facing materials."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 7652,
+      "output_tokens": 1242,
+      "total_tokens": 8894
+    },
+    "cost": {
+      "usd": 0.00340325,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.0045461,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.004732,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.010225,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.00340325,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.02290635
+  },
+  "elapsed_seconds": 81.765
+}

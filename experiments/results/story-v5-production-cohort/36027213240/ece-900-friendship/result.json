@@ -1,0 +1,561 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-production-cohort/age7-900-friendship-boundary.yaml",
+  "context_pack_source": "experiments/context_packs/v5-cohort/ece-chalk-arrow.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-ece-chalk-arrow-001",
+    "profile": {
+      "profile_id": "profile-ece",
+      "age": 7,
+      "reading_mode": "EARLY_INDEPENDENT"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-ece",
+      "revision": 5,
+      "fingerprint": "char-ece-r5-fp",
+      "name": "Ece",
+      "age": 7,
+      "traits": [
+        "kind",
+        "curious",
+        "likes labeling small plant pots"
+      ],
+      "current_goal": "Help Mert understand whether a chalk arrow near their seed-box table is connected to their project.",
+      "established_knowledge": [
+        "HOME_TABLE and LEARNING_GARDEN are explored.",
+        "GREENHOUSE_DOOR is discovered and may be seen from the public garden.",
+        "GLASS_PASSAGE is only rumored and Ece has never entered it.",
+        "Mert placed the shared seed box on the garden table earlier that morning."
+      ],
+      "prohibited_knowledge": [
+        "Ece does not know who drew the chalk arrow.",
+        "Ece does not know what is inside GLASS_PASSAGE.",
+        "Ece does not know whether greenhouse staff use chalk arrows for maintenance."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-riverside-garden",
+      "revision": 11,
+      "fingerprint": "world-riverside-r11-fp",
+      "location": "Riverside Learning Garden",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "HOME_TABLE",
+          "status": "EXPLORED",
+          "summary": "Public learning table with seed boxes and chalk."
+        },
+        {
+          "id": "LEARNING_GARDEN",
+          "status": "EXPLORED",
+          "summary": "Open beds, labels and paths used by children and families."
+        },
+        {
+          "id": "GREENHOUSE_DOOR",
+          "status": "DISCOVERED",
+          "summary": "Closed greenhouse entrance visible from the public path."
+        },
+        {
+          "id": "GLASS_PASSAGE",
+          "status": "RUMORED",
+          "summary": "A rumored service passage beyond the closed greenhouse; must remain unexplored."
+        }
+      ],
+      "current_facts": [
+        "A fresh chalk arrow points from the shared table toward a public watering shelf.",
+        "Mert is worried someone moved or borrowed part of their seed-box project.",
+        "The shared seed box is still on the table.",
+        "A small packet of blue plant labels is missing from the top tray."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "The original author of the chalk arrow is intentionally unknown.",
+        "No canonical fact connects GLASS_PASSAGE to the missing labels."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-ece-arrow-001",
+      "revision": 3,
+      "fingerprint": "opp-ece-arrow-r3-fp",
+      "status": "AVAILABLE",
+      "title": "Understand the chalk arrow from known ground",
+      "premise": "Ece can help Mert investigate the arrow and missing label packet using only public garden evidence.",
+      "success_condition": "Resolve whether their project is actually missing something important and preserve uncertainty about unsupported causes.",
+      "constraints": [
+        "Do not enter GLASS_PASSAGE.",
+        "Do not identify the arrow's author without evidence.",
+        "Do not create danger or an adult rescue."
+      ]
+    },
+    "canon": {
+      "revision": 6,
+      "fingerprint": "canon-r6-fp",
+      "hard_rules": [
+        "No combat.",
+        "No supernatural explanation.",
+        "Character knowledge cannot exceed experienced or explicitly communicated facts.",
+        "RUMORED locations are not EXPLORED.",
+        "Social misunderstandings should resolve without humiliation."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-ece-garden",
+      "revision": 4,
+      "fingerprint": "saga-ece-r4-fp",
+      "eligible_context": [
+        "Ece is learning to ask before assuming what another person meant.",
+        "Ece and Mert enjoy small shared garden projects."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal future greenhouse access.",
+        "Do not establish a secret club or hidden antagonist."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-ece-02",
+        "summary": "Ece once blamed the wind for a missing paper label before discovering she had tucked it under a notebook.",
+        "relevance": "Supports checking simple explanations before assigning blame."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/cohort-ece-chalk-arrow.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "cohort-ece-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 5,
+        "expected_fingerprint": "char-ece-r5-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 11,
+        "expected_fingerprint": "world-riverside-r11-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 4,
+        "expected_fingerprint": "saga-ece-r4-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 3,
+        "expected_fingerprint": "opp-ece-arrow-r3-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "garden.arrow_hypotheses",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Chalk Arrow",
+    "scene_count_rationale": "Five scenes provide enough space for a clear setup, a public-area investigation, careful separation of observations from guesses, an evidence-based payoff, and a gentle resolution without entering the rumored passage or inventing the arrow's author.",
+    "story_contract": {
+      "protagonist_goal": "Ece wants to help Mert understand whether the chalk arrow and missing blue label packet are connected to their seed-box project.",
+      "central_problem": "A chalk arrow points from the shared garden table toward the public watering shelf, while the packet of blue plant labels is missing from the seed box's top tray, leading Mert to worry that someone moved or borrowed part of their project.",
+      "solution_principle": "Ece and Mert will check what they can actually see in known public areas, separate observations from guesses, and draw only the conclusion supported by the evidence.",
+      "theme_thread": "Helping a friend works best when we separate what we saw from what we guessed.",
+      "ending_state": "Mert understands that the project is not missing its blue labels, Ece has helped without blaming anyone, and both children accept that the arrow's original author and exact purpose remain unknown.",
+      "must_preserve": [
+        "Ece is seven, kind, curious, careful, and likes labeling small plant pots.",
+        "The setting remains within the currently known public areas of Riverside Learning Garden.",
+        "The shared seed box remains on the garden table.",
+        "The chalk arrow points from the shared table toward the public watering shelf.",
+        "The blue plant-label packet is missing from the top tray at the beginning.",
+        "Mert may contribute observations but cannot know hidden facts.",
+        "Ece and Mert must use simple, age-appropriate reasoning and gentle social stakes.",
+        "The immediate misunderstanding must be resolved without identifying the arrow's author.",
+        "The story must preserve uncertainty about GLASS_PASSAGE and what is inside it."
+      ],
+      "must_not_happen": [
+        "Ece or Mert enters, explores, or claims knowledge about GLASS_PASSAGE.",
+        "The story claims who drew the chalk arrow.",
+        "The story claims what is inside the closed greenhouse or that staff use chalk arrows for maintenance.",
+        "The story connects the missing labels to GLASS_PASSAGE without evidence.",
+        "A supernatural explanation, danger, combat, adult rescue, secret club, or hidden antagonist is introduced.",
+        "Mert is humiliated or blamed.",
+        "Ece treats a rumor or guess as a fact."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Introduce Ece, Mert, their shared project, the arrow, and the worry caused by the missing label packet.",
+        "beats": [
+          "At the explored garden table, Ece notices the fresh chalk arrow leading toward the public watering shelf.",
+          "Mert checks the seed box and worries because the blue plant-label packet is no longer in the top tray.",
+          "Ece reminds him that seeing an empty tray does not yet explain where the packet went or who made the arrow."
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "The shared seed box is still on the table.",
+          "The arrow and missing packet are presented as observations.",
+          "Mert is worried but not mocked or blamed."
+        ],
+        "must_not_do": [
+          "Do not suggest that the arrow proves someone took the labels.",
+          "Do not mention hidden facts about the greenhouse or passage."
+        ],
+        "handoff": "Ece and Mert agree to follow only the arrow's visible direction through public garden space and check what they can actually find."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 22,
+        "purpose": "Move the children through known public areas while gathering direct evidence and respecting the boundary of the closed greenhouse.",
+        "beats": [
+          "Ece and Mert inspect the table, the open garden path, nearby plant labels, and the public watering shelf.",
+          "They notice the arrow ends in the direction of the shelf, but it does not explain who drew it or why.",
+          "From the public path they can see the closed greenhouse door; Ece says they will not go through it or investigate the rumored passage."
+        ],
+        "prior_evidence": [
+          "The arrow visibly points from the shared table toward the public watering shelf.",
+          "The blue label packet was missing from the seed box's top tray.",
+          "GREENHOUSE_DOOR is visible from the public garden, while GLASS_PASSAGE is only rumored and unexplored."
+        ],
+        "must_include": [
+          "The investigation stays in HOME_TABLE and LEARNING_GARDEN, with the watering shelf as a public destination.",
+          "Ece states the difference between following a visible arrow and following a rumor."
+        ],
+        "must_not_do": [
+          "Do not enter or explore GLASS_PASSAGE.",
+          "Do not claim the greenhouse or its passage contains the labels.",
+          "Do not turn the arrow into proof of an author's identity."
+        ],
+        "handoff": "Near the watering shelf, Ece asks Mert to describe exactly what he sees before either of them decides what it means."
+      },
+      {
+        "index": 3,
+        "role": "REASONING",
+        "relative_weight": 20,
+        "purpose": "Make the theme explicit through age-appropriate sorting of facts, guesses, and possible explanations.",
+        "beats": [
+          "Ece and Mert name the facts: the packet is absent from the top tray, the arrow points toward the shelf, and the seed box remains on the table.",
+          "They name the guesses: someone borrowed the packet, the arrow was meant for their project, or the packet was simply carried to the shelf.",
+          "Ece remembers that a missing label can be tucked somewhere ordinary, and suggests looking carefully before blaming anyone."
+        ],
+        "prior_evidence": [
+          "Their public-area check confirmed the arrow's direction but did not reveal its author or purpose.",
+          "The packet's absence from the tray does not prove it left the garden or was taken.",
+          "The children have access to the public watering shelf without crossing any restricted boundary."
+        ],
+        "must_include": [
+          "Ece uses careful language such as 'we saw' and 'we guessed.'",
+          "Mert contributes an observation without claiming hidden knowledge.",
+          "The search remains focused on resolving the immediate project worry."
+        ],
+        "must_not_do": [
+          "Do not resolve the arrow's original meaning before finding evidence.",
+          "Do not make Mert know who drew it."
+        ],
+        "handoff": "They look beside and around the public watering shelf, checking ordinary places where a small packet might have been set down."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 24,
+        "purpose": "Deliver the evidence that resolves the immediate misunderstanding while keeping the arrow's author unknown.",
+        "beats": [
+          "Ece and Mert find the blue plant-label packet beside the public watering shelf, where it can be plainly seen from the garden path.",
+          "Mert realizes the project still has its labels; the packet was moved from the tray, not proven stolen or lost.",
+          "Ece observes that the packet's location fits the arrow's direction, but she says that this still does not prove who drew the arrow or exactly what the arrow meant."
+        ],
+        "prior_evidence": [
+          "The arrow points toward the public watering shelf.",
+          "The packet was missing only from the seed box's top tray.",
+          "The children agreed to check simple, observable explanations before assigning blame."
+        ],
+        "must_include": [
+          "The packet is recovered in a known public area.",
+          "The immediate project problem is solved through direct evidence.",
+          "Uncertainty about the arrow's author is preserved."
+        ],
+        "must_not_do": [
+          "Do not state that the arrow definitely directed them to the packet.",
+          "Do not invent who placed the packet or drew the arrow.",
+          "Do not connect the event to GLASS_PASSAGE."
+        ],
+        "handoff": "Mert feels relieved, and Ece helps him decide how to return the packet and talk about what they learned."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 16,
+        "purpose": "Close the social misunderstanding, reinforce the theme, and restore the shared project without unsupported answers.",
+        "beats": [
+          "Mert places the blue labels back with the seed box and thanks Ece for checking instead of accusing someone.",
+          "They agree they can say, 'We saw the arrow and found the packet by the shelf,' but cannot say who drew the arrow or why.",
+          "Ece labels the next small pots with Mert, leaving the chalk arrow as an unanswered but harmless clue."
+        ],
+        "prior_evidence": [
+          "The label packet was found at the public watering shelf.",
+          "No evidence identified the arrow's author or established its exact purpose.",
+          "The children stayed within known public areas and did not enter the closed greenhouse passage."
+        ],
+        "must_include": [
+          "The friendship and project end in a calm, positive state.",
+          "The distinction between observation and guess is restated naturally.",
+          "The ending leaves unsupported causes unresolved."
+        ],
+        "must_not_do": [
+          "Do not reveal a future greenhouse access point.",
+          "Do not reveal an author, secret group, antagonist, or hidden explanation.",
+          "Do not imply that uncertainty means the investigation failed."
+        ],
+        "handoff": "The story ends with Ece and Mert working together in the open garden, more careful about what they know and more confident about asking before assuming."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Chalk Arrow",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "Ece liked the shared garden table because it was just the right height for small hands. On it sat their seed box, filled with tiny pots, soil, and packets of seeds. Mert had placed the box there that morning. Ece was ready to label the pots when she noticed a fresh white chalk arrow on the ground. It pointed from the table toward the public watering shelf. “Look,” said Mert. He lifted the top tray of the seed box. “The blue plant-label packet is gone.” His eyebrows pulled together. “Maybe someone moved it. Maybe someone borrowed it.” Ece felt a little worried too, but she shook her head gently. “We saw that the tray is empty,” she said. “We saw that the arrow points to the shelf. But we do not know where the packet went, or who made the arrow.” Mert nodded. Ece remembered once blaming the wind for a missing paper label. She had found it tucked under her own notebook. “Let’s follow only what we can see,” she said. Together, they left the seed box safely on the table."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "First, they looked carefully around the table. The seed box was still there. The top tray was still empty, and no blue packet lay under the table legs. Chalk dust marked the beginning of the arrow. Ece and Mert followed its direction along the open garden path. They passed green beds with little plant labels poking from the soil. Some labels were yellow, some white, and one was pink. None was the blue packet. The path stayed open beneath the bright sky. Soon they could see the public watering shelf beside a row of pots. Farther away stood the closed greenhouse door. It was only something they could see from the public path. Mert glanced toward it. People sometimes talked about a glass passage beyond the closed door. “We are not going through the door,” Ece said. “And we are not investigating a passage we have only heard about. Following a visible arrow is different from following a rumor.” Mert agreed. They stayed in the open garden and walked to the shelf. The arrow ended in that direction, but it did not say who had drawn it or why. Near the shelf, Ece turned to Mert. “Before we decide what it means, tell me exactly what you see.”"
+      },
+      {
+        "index": 3,
+        "role": "REASONING",
+        "prose": "Mert looked slowly, as if his eyes were little garden rakes. “I see the watering shelf,” he said. “I see the arrow pointing here. I see that the blue packet is not in the seed box’s top tray. And I see the seed box is still on the table.” “Good,” said Ece. “Those are things we saw.” Mert thought. “I guessed that someone borrowed the packet. I also guessed the arrow was meant for our project.” “Those are guesses,” Ece said. “They might be true, but we do not know.” She crouched beside the shelf. “We can add another guess: perhaps the packet was carried here and set down.” Mert looked relieved that this was possible, but he did not claim it was the answer. Ece remembered the label under her notebook. Small things could hide in ordinary places. “Let’s check beside the shelf, under its lower board, and around the pots,” she said. “We can look for evidence before we blame anyone.” Mert nodded. They searched the public shelf and the nearby path. They did not touch the closed greenhouse door. They did not need to. Their question was about the seed-box project, and the shelf was right in front of them."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "Mert moved one empty watering can. Ece peered beside a stack of small pots. Then sunlight flashed on something blue beside the bottom edge of the public watering shelf. “There!” she cried. She reached down and picked up the packet of blue plant labels. It was plainly visible from the garden path, though it had been easy to miss among the pots and tools. Mert opened his mouth, then smiled. “Our labels are here! The project is not missing them.” He held the packet carefully with both hands. “So someone did not steal them.” Ece paused. “We can say the packet was missing from the top tray. We can say we found it beside the shelf. We cannot say who moved it.” Mert looked at the chalk arrow behind them. “The packet’s place fits the arrow’s direction.” “Yes,” said Ece. “That is something we can notice. But it does not prove the arrow directed us to the packet. It does not prove who drew it, either, or exactly what the arrow meant.” Mert considered this. The arrow might have been connected to the packet. It might not have been. They had no evidence for more. Still, they had found what their project needed without entering any closed place or accusing anyone. Mert tucked the packet against his shirt. “I feel much better,” he said. Ece smiled. “Me too. Let’s take it back and decide what we really know.”"
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "At the shared table, Mert placed the blue packet beside the seed box. Then he put it safely in the top tray. “Thank you for checking instead of accusing someone,” he said. Ece smiled. “We can tell the truth simply: we saw the arrow, and we found the packet by the shelf.” “But we do not know who drew the arrow or why,” Mert added. “Exactly.” The chalk arrow stayed on the path, harmless and unanswered. Ece opened the packet, and she and Mert began labeling the little pots. Blue labels stood neatly in the soil beside green shoots. They worked together in the open garden, asking before assuming and checking before blaming. Ece still wondered about the arrow, but she knew something more important: not every unanswered question was a failure. Sometimes helping a friend meant finding the facts first."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "Ece liked the shared garden table because it was just the right height for small hands. On it sat their seed box, filled with tiny pots, soil, and packets of seeds. Mert had placed the box there that morning. Ece was ready to label the pots when she noticed a fresh white chalk arrow on the ground. It pointed from the table toward the public watering shelf. “Look,” said Mert. He lifted the top tray of the seed box. “The blue plant-label packet is gone.” His eyebrows pulled together. “Maybe someone moved it. Maybe someone borrowed it.” Ece felt a little worried too, but she shook her head gently. “We saw that the tray is empty,” she said. “We saw that the arrow points to the shelf. But we do not know where the packet went, or who made the arrow.” Mert nodded. Ece remembered once blaming the wind for a missing paper label. She had found it tucked under her own notebook. “Let’s follow only what we can see,” she said. Together, they left the seed box safely on the table.\n\nFirst, they looked carefully around the table. The seed box was still there. The top tray was still empty, and no blue packet lay under the table legs. Chalk dust marked the beginning of the arrow. Ece and Mert followed its direction along the open garden path. They passed green beds with little plant labels poking from the soil. Some labels were yellow, some white, and one was pink. None was the blue packet. The path stayed open beneath the bright sky. Soon they could see the public watering shelf beside a row of pots. Farther away stood the closed greenhouse door. It was only something they could see from the public path. Mert glanced toward it. People sometimes talked about a glass passage beyond the closed door. “We are not going through the door,” Ece said. “And we are not investigating a passage we have only heard about. Following a visible arrow is different from following a rumor.” Mert agreed. They stayed in the open garden and walked to the shelf. The arrow ended in that direction, but it did not say who had drawn it or why. Near the shelf, Ece turned to Mert. “Before we decide what it means, tell me exactly what you see.”\n\nMert looked slowly, as if his eyes were little garden rakes. “I see the watering shelf,” he said. “I see the arrow pointing here. I see that the blue packet is not in the seed box’s top tray. And I see the seed box is still on the table.” “Good,” said Ece. “Those are things we saw.” Mert thought. “I guessed that someone borrowed the packet. I also guessed the arrow was meant for our project.” “Those are guesses,” Ece said. “They might be true, but we do not know.” She crouched beside the shelf. “We can add another guess: perhaps the packet was carried here and set down.” Mert looked relieved that this was possible, but he did not claim it was the answer. Ece remembered the label under her notebook. Small things could hide in ordinary places. “Let’s check beside the shelf, under its lower board, and around the pots,” she said. “We can look for evidence before we blame anyone.” Mert nodded. They searched the public shelf and the nearby path. They did not touch the closed greenhouse door. They did not need to. Their question was about the seed-box project, and the shelf was right in front of them.\n\nMert moved one empty watering can. Ece peered beside a stack of small pots. Then sunlight flashed on something blue beside the bottom edge of the public watering shelf. “There!” she cried. She reached down and picked up the packet of blue plant labels. It was plainly visible from the garden path, though it had been easy to miss among the pots and tools. Mert opened his mouth, then smiled. “Our labels are here! The project is not missing them.” He held the packet carefully with both hands. “So someone did not steal them.” Ece paused. “We can say the packet was missing from the top tray. We can say we found it beside the shelf. We cannot say who moved it.” Mert looked at the chalk arrow behind them. “The packet’s place fits the arrow’s direction.” “Yes,” said Ece. “That is something we can notice. But it does not prove the arrow directed us to the packet. It does not prove who drew it, either, or exactly what the arrow meant.” Mert considered this. The arrow might have been connected to the packet. It might not have been. They had no evidence for more. Still, they had found what their project needed without entering any closed place or accusing anyone. Mert tucked the packet against his shirt. “I feel much better,” he said. Ece smiled. “Me too. Let’s take it back and decide what we really know.”\n\nAt the shared table, Mert placed the blue packet beside the seed box. Then he put it safely in the top tray. “Thank you for checking instead of accusing someone,” he said. Ece smiled. “We can tell the truth simply: we saw the arrow, and we found the packet by the shelf.” “But we do not know who drew the arrow or why,” Mert added. “Exactly.” The chalk arrow stayed on the path, harmless and unanswered. Ece opened the packet, and she and Mert began labeling the little pots. Blue labels stood neatly in the soil beside green shoots. They worked together in the open garden, asking before assuming and checking before blaming. Ece still wondered about the arrow, but she knew something more important: not every unanswered question was a failure. Sometimes helping a friend meant finding the facts first.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 972,
+    "target_words": 900,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 162
+      },
+      {
+        "scene": 2,
+        "target_words": 198
+      },
+      {
+        "scene": 3,
+        "target_words": 180
+      },
+      {
+        "scene": 4,
+        "target_words": 216
+      },
+      {
+        "scene": 5,
+        "target_words": 144
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.97,
+      "evidence_progression": 0.95,
+      "no_contradictions": 0.93,
+      "no_redundant_events": 0.95,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.9,
+      "context_authority": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.91,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 5754,
+      "output_tokens": 208,
+      "cost": 0.000241668
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPT. This is exceptional production-quality work that meets all acceptance criteria with an average score of 4.875. The story demonstrates flawless adherence to the StoryContract, SceneGraph, and StoryContextPack. Every constraint is honored: GLASS_PASSAGE remains unexplored and rumored; the arrow's author is never identified; no prohibited knowledge is leaked; all character knowledge stays within experienced facts; the theme is woven naturally through Ece's careful reasoning; and the ending preserves uncertainty while resolving the immediate misunderstanding. The prose is age-appropriate for 7-year-old independent readers, with simple sentence structures, concrete imagery ('eyes were little garden rakes'), and gentle emotional stakes. Ece's characterization as kind, curious, and careful about what she knows is consistent throughout. Mert contributes observations without claiming hidden facts. The five-scene structure follows the SceneGraph exactly: Setup introduces the arrow and missing packet; Investigation moves through public areas while respecting boundaries; Reasoning makes the theme explicit through sorting facts from guesses; Payoff delivers the packet at the shelf without inventing authorship; Resolution closes the social misunderstanding and reinforces the distinction between observation and assumption. The causal chain is sound (arrow → investigation → reasoning → discovery → resolution), evidence progression is logical, and no contradictions exist. The only reason this is not a 5 in creativity is that the solution—finding the packet beside the shelf—is straightforward and expected given the arrow's direction, though this is entirely appropriate for the age range and theme. The writing quality is notably strong: dialogue feels natural, pacing is controlled, and the closing reflection ('not every unanswered question was a failure') elegantly reinforces the theme without didacticism. No repair needed.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "cohort-ece-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 5,
+        "base_fingerprint": "char-ece-r5-fp",
+        "value": "The blue plant-label packet was found beside the public watering shelf, so the seed-box project was not missing its labels; the arrow's author and exact purpose remain unknown.",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ece directly observes the packet's recovery and explicitly preserves uncertainty about the arrow."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 4,
+        "base_fingerprint": "saga-ece-r4-fp",
+        "value": "The immediate seed-box concern about the missing blue labels is resolved; the arrow's authorship and exact purpose remain unresolved.",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The packet is recovered and the children clearly distinguish the resolved project problem from the unanswered arrow question."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 3,
+        "base_fingerprint": "opp-ece-arrow-r3-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The children resolve the project concern using public-area evidence while preserving unsupported uncertainty, satisfying the opportunity's success condition."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 5333,
+      "output_tokens": 800,
+      "total_tokens": 6133
+    },
+    "cost": {
+      "usd": 0.0022931,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.00343735,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.00276335,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.008449,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.0022931,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.0169428
+  },
+  "elapsed_seconds": 53.123
+}
