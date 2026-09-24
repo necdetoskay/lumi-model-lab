@@ -18,7 +18,7 @@ from src.schemas import StorySpec
 
 PROTOCOL_VERSION = "english-story-production.v5-whole-draft-prototype"
 
-DEFAULT_ARCHITECT = "anthropic/claude-sonnet-5"
+DEFAULT_ARCHITECT = "openai/gpt-5.6-luna"
 DEFAULT_WRITER = "openai/gpt-5.6-luna"
 DEFAULT_CONTINUITY = "typesafe/jev-1.13"
 DEFAULT_JUDGE = "anthropic/claude-haiku-4.5"
