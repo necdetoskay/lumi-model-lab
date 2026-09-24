@@ -59,6 +59,23 @@ burden evidence. It does not increase current coverage.
 
 Provider-access and provider-transport failures are retained as operational evidence but are excluded from both current and historical capability density. A quota/auth/rate-limit/network failure therefore does not make a cell THIN, PROVISIONAL, failed, anomalous, or sentinel-eligible. Unknown terminal failures remain fail-closed capability failures.
 
+## Provider-access preflight
+
+Paid qualification waves must run a provider-access preflight after matrix preparation and before any case-generation job starts.
+
+For OpenRouter, the preflight calls `GET https://openrouter.ai/api/v1/key` with the existing repository API key and reads only safe key-status fields. It must never log the bearer token or raw key label.
+
+Rules:
+
+- missing or invalid credentials fail closed;
+- transport or malformed-response errors fail closed;
+- an unlimited key (`limit_remaining` absent/null) may proceed;
+- a limited key with `limit_remaining <= 0` blocks the entire paid matrix before story generation;
+- the preflight does not call a model and therefore does not create capability evidence;
+- after access is restored, the same governed qualification matrix is rerun with fresh run ids.
+
+This gate prevents repeated quota/auth failures from spawning redundant operational evidence while preserving the existing rule that provider incidents never become model-quality failures.
+
 ## Selection order
 
 v1 uses deterministic lexicographic priority rather than an opaque numerical score.

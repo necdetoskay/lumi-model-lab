@@ -83,3 +83,15 @@ or the key's monthly limit is raised/reset.
 
 A successful rerun must produce fresh run ids and normal immutable evidence
 packs. The 403 evidence remains as historical operational evidence.
+
+## Permanent workflow mitigation
+
+The incident motivated a provider-access preflight in the paid capability-wave
+workflow. After matrix preparation and before any story case starts, the
+workflow calls OpenRouter's current-key endpoint and fails closed when the key
+cannot be inspected or its configured `limit_remaining` is exhausted.
+
+The preflight makes no model request and creates no capability evidence. It
+exists only to prevent repeated provider-access failures from spawning
+redundant case jobs while keeping provider incidents separate from model
+quality.
