@@ -95,3 +95,19 @@ The preflight makes no model request and creates no capability evidence. It
 exists only to prevent repeated provider-access failures from spawning
 redundant case jobs while keeping provider incidents separate from model
 quality.
+
+## Live preflight verification
+
+The preflight was verified after merge on main commit `0190ecf1283c79f4a8971aa8bf1db37af111a9aa`.
+
+Workflow run `36000135555` behaved as intended:
+
+- `prepare`: success;
+- `provider_preflight`: failed closed because the configured OpenRouter key limit remained exhausted;
+- reset cadence reported by OpenRouter: monthly;
+- `qualify`: skipped;
+- no story/model generation job started;
+- no new qualification evidence pack was produced;
+- Capability Cube coverage and pass/fail denominators therefore remained unchanged.
+
+This is the desired operational behavior while access is blocked. The same governed world-lore matrix remains the next qualification batch after provider access is restored.
