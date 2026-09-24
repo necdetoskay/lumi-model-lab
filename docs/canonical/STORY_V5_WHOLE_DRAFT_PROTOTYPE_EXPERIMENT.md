@@ -643,3 +643,176 @@ Covered fail-closed cases include:
 - presentation-order disagreement -> `INCONCLUSIVE`.
 
 An earlier test run failed because the positive fixture omitted entity version metadata while the validator already required it. The validator was not weakened. The test fixture was repaired to include the required revision/fingerprint preconditions, and the fresh run passed all contracts.
+
+
+## Typed state authority hardening — 36023901260
+
+Evidence:
+
+`evidence/story-v5-typed-state-36023901260`
+
+The state extractor was converted from free-form StoryOutcome fields to a closed application-owned mutation authority.
+
+Each allowed mutation now binds to:
+
+- mutation type;
+- canonical entity reference;
+- allowed field key;
+- entity base revision;
+- entity base fingerprint;
+- story evidence scenes.
+
+The validation run passed:
+
+- story accepted;
+- 4 scenes / 412 words for the 500-word fixture;
+- no repair;
+- no length normalization;
+- StoryOutcome validation errors: none;
+- `commit_ready=true`;
+- DB write: false.
+
+The generated mutations copied the application-provided base revisions and fingerprints exactly.
+
+Transient proposals previously observed, such as current activity, temporary emotion, and brief inventory handling, disappeared because those fields were not authorized.
+
+Deterministic contract tests now explicitly fail closed on:
+
+- model-invented fields;
+- unauthorized transient-state mutation types;
+- stale authority revision;
+- stale entity base revision;
+- stale entity fingerprint;
+- invalid evidence scene;
+- duplicate mutation.
+
+Decision:
+
+> Evidence support alone never creates persistence authority. The application owns the closed mutation catalog and optimistic-concurrency identity.
+
+## Pairwise judge calibration — 36023582660
+
+Evidence:
+
+`evidence/story-v5-pairwise-36023582660`
+
+Two already-accepted versions of the same 1,500-word Lantern Map fixture were judged blindly by Claude Sonnet 5.
+
+Protocol:
+
+1. candidate A vs B;
+2. candidate order reversed;
+3. second result normalized back to the original candidate identities;
+4. a winner is accepted only when the overall result remains stable after the swap.
+
+Initial pairwise attempt exposed a runtime-policy defect: a 2,200-token completion budget was consumed almost entirely by reasoning, leaving no visible JSON. This was a transport/budget failure, not a quality verdict.
+
+The corrected run used medium reasoning and a 5,000-token completion budget.
+
+Results:
+
+- forward order: candidate B, SMALL preference;
+- reversed order normalized to original identities: TIE, SMALL preference;
+- overall consistency: false;
+- stable criteria: 3 / 7;
+- calibration status: `POSITION_SENSITIVE`;
+- calibrated winner: `INCONCLUSIVE`.
+
+Total Sonnet cost for the two comparison calls: USD 0.056306.
+
+Decision:
+
+> A strong pairwise judge is not automatically a stable ranking authority for close stories. Model Lab pairwise comparisons must be blind and order-swapped. Order disagreement produces INCONCLUSIVE, never a forced winner.
+
+Consequences:
+
+- Haiku remains useful as a production acceptance gate;
+- Sonnet pairwise is a Model Lab diagnostic / relative-quality tool, not a per-story production dependency;
+- scalar judge scores are not sufficient for generator ranking;
+- pairwise winners must pass position-bias calibration.
+
+## First production-like LUMI context run — 36024405327
+
+Evidence:
+
+`evidence/story-v5-production-like-36024405327`
+
+The v5 pipeline was extended beyond a flat StorySpec with an application-compiled context pack containing:
+
+- Character state and knowledge boundary;
+- World state and Local Area statuses;
+- current Opportunity;
+- Canon revision/fingerprint and hard rules;
+- eligible Saga context and forbidden reveal;
+- relevant memory;
+- canonical entity revisions and fingerprints.
+
+Fixture:
+
+- character: Deniz, age 10;
+- target: 1,500 words;
+- unknown boundary: `OLD_PUMP_PATH` remains RUMORED;
+- explicit hidden-fact exclusions;
+- opportunity requires investigation from known public ground only.
+
+Result:
+
+- accepted: true;
+- 5 dynamically selected scenes;
+- 1,672 words;
+- repetition ratio: 0.0;
+- no length normalization;
+- no semantic repair;
+- elapsed: 90.368 seconds;
+- JEV context-authority probability: 0.96;
+- all JEV dimensions above threshold;
+- Haiku acceptance: 4.875 average;
+- StoryOutcome validation errors: none;
+- `commit_ready=true`;
+- DB write: false.
+
+Human inspection confirmed:
+
+- `OLD_PUMP_PATH` was never entered;
+- its RUMORED status was preserved;
+- no hidden pump-house facts were revealed;
+- no adult solved the central investigation;
+- the character explicitly preserved an unseen contact-point uncertainty;
+- the story did not manufacture danger.
+
+This is the first v5 evidence that the whole-draft architecture can preserve application-provided G2/Living-Universe knowledge boundaries rather than only solve standalone benchmark briefs.
+
+### Epistemic-state issue discovered
+
+The accepted story correctly concluded that a repaired sign/bracket was the **best-supported explanation** for the sound while preserving uncertainty about the exact contact point.
+
+The first state authority represented this as `WORLD_FACT_SET`.
+
+That is too strong.
+
+A supported hypothesis is not equivalent to a canonical fact merely because the story and judges accept it.
+
+Decision:
+
+> Story-state persistence must preserve epistemic class.
+
+The experimental authority is therefore being hardened to distinguish facts from best-supported hypotheses. A hypothesis/uncertainty must never be silently upgraded to FACT during outcome extraction or commit.
+
+Required state proposal properties now include:
+
+- mutation type;
+- field key;
+- epistemic class where applicable;
+- base revision;
+- base fingerprint;
+- proposed value;
+- evidence scenes.
+
+## Updated judge interpretation
+
+The production-like Haiku result again emitted the familiar 4.875 score pattern. Its textual summary also contained minor internal inconsistencies (for example, referring to six constraints while enumerating seven, and describing creativity as a 5 while the structured score remained 4).
+
+This does not invalidate the acceptance result, but reinforces the existing rule:
+
+> Structured acceptance fields are authoritative; free-form judge prose is explanatory evidence only. Haiku scores are not a high-resolution ranking instrument.
+
