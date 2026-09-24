@@ -1,0 +1,1812 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz must identify the missing station card and prepare an accurate map activity before visitors arrive.",
+        "central_problem": "A practical learning activity is incomplete, and guessing the missing information could send visitors across a temporarily closed footbridge.",
+        "solution_principle": "Test the repeated pattern against the map, object labels, schedule, and measured routes before choosing an action.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz replaces the unsafe route instruction with a tested alternate-route activity and records why the change was necessary.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical confrontation.",
+          "No solution based on clues unavailable before the relevant inference.",
+          "No premature identification of the missing card's complete instruction.",
+          "No audience, setting, or language aimed above or below an independent fifteen-year-old reader.",
+          "No mention of benchmarks, testing systems, or story-generation processes."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz's responsibility, the incomplete activity, and the competing explanations without resolving the puzzle.",
+          "entry_state": "Deniz is preparing a public learning space with maps, labeled objects, schedules, and ordinary measuring tools.",
+          "beats": [
+            "Deniz finds stations one through three complete, but station four has an empty clip and a missing instruction card.",
+            "The wall map, object labels, and schedule suggest printing error, accidental misplacement, or deliberate removal."
+          ],
+          "must_include": [
+            "Deniz is fifteen and independently responsible for preparing the activity before visitors arrive.",
+            "The schedule lists a bridge inspection from 3:30 to 5:00, while the activity begins at 4:00.",
+            "Deniz decides to investigate the pattern rather than invent station four's instruction."
+          ],
+          "must_not_do": [
+            "Do not reveal which explanation is correct.",
+            "Do not make Deniz careless, helpless, or implausibly adult.",
+            "Do not introduce information outside the visible room."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows station four is missing and the bridge inspection may matter, but has not identified the correct instruction or response.",
+          "open_threads_after": [
+            "Why is station four missing?",
+            "What route or measurement should its instruction contain?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Establish the repeated station pattern and make accidental misplacement a reasonable but incomplete hypothesis.",
+          "entry_state": "Deniz is comparing the three completed stations with the empty fourth slot before the scheduled activity begins.",
+          "beats": [
+            "Each completed station pairs a map symbol, a labeled object, and one measurement task in the same order.",
+            "Deniz finds the fourth label strip beneath its clip, with adhesive still attached and its clip turned outward."
+          ],
+          "must_include": [
+            "The first three stations use a consistent symbol-object-measurement sequence.",
+            "The recovered strip identifies a dotted bridge symbol but gives no measurement instruction.",
+            "Deniz initially suspects someone misplaced the card during setup."
+          ],
+          "must_not_do": [
+            "Do not treat the recovered strip as the complete answer.",
+            "Do not introduce a new person blamed for moving the card.",
+            "Do not reject the accidental-misplacement hypothesis yet."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established stations one through three, the empty fourth clip, and the bridge-inspection schedule entry.",
+            "Scene 1 established that the room contains the wall map, labeled objects, and measurement tools.",
+            "Scene 1 established accidental misplacement as one plausible explanation."
+          ],
+          "handoff": "Deniz has identified station four's bridge symbol and the repeated format, but still lacks its measurement task and the reason for its removal.",
+          "open_threads_after": [
+            "Whether the card was misplaced or intentionally withheld",
+            "Which bridge-related measurement remains possible"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Reject the first hypothesis by connecting the bridge symbol, map legend, and scheduled inspection.",
+          "entry_state": "Deniz has the fourth label strip and knows the missing station should involve the dotted bridge.",
+          "beats": [
+            "Deniz checks the map legend and finds that dotted routes mark temporary crossings rather than ordinary paths.",
+            "The bridge symbol, the inspection time, and a matching blue pencil mark on the schedule show the station was intentionally paused."
+          ],
+          "must_include": [
+            "The evidence rejects accidental misplacement without identifying the complete replacement activity.",
+            "Deniz notices that the dotted bridge is the only station route affected during the activity.",
+            "The map also shows a solid north loop connecting the same two map points."
+          ],
+          "must_not_do": [
+            "Do not let Deniz infer the final wording from one clue.",
+            "Do not make the inspection's result known before Deniz tests the alternatives.",
+            "Do not erase the need for measurement."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the fourth label strip's dotted bridge symbol.",
+            "Scene 1 established the bridge inspection's exact time overlapping the 4:00 activity.",
+            "Scene 2 established that the three stations follow a symbol-object-measurement sequence."
+          ],
+          "handoff": "Deniz knows the bridge station was deliberately paused and must compare another route, but has not tested whether the north loop works.",
+          "open_threads_after": [
+            "How the north loop compares with the dotted bridge",
+            "What safe instruction should replace station four"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Test the remaining pattern with ordinary tools and determine what the missing measurement must compare.",
+          "entry_state": "Deniz has ruled out accidental loss and identified the north loop as the bridge route's possible substitute.",
+          "beats": [
+            "Using the map scale, a ruler, and string, Deniz measures both routes between the same marked points.",
+            "The north loop is longer but continuous; the dotted bridge is shorter and unavailable during inspection."
+          ],
+          "must_include": [
+            "Deniz repeats the measurement rather than trusting a quick visual guess.",
+            "The first three station tasks teach comparison through symbols, objects, and measurements.",
+            "Deniz predicts that station four should compare the two routes, not pretend the bridge is open."
+          ],
+          "must_not_do": [
+            "Do not present the prediction as the final solution yet.",
+            "Do not make the tools unusually advanced or magical.",
+            "Do not allow the inspection to finish before the activity."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the dotted bridge and solid north loop connect the same two map points.",
+            "Scene 3 established the dotted bridge is temporary and overlaps the activity time.",
+            "Scene 2 established that every completed station includes a measurement task."
+          ],
+          "handoff": "Deniz has tested that the north loop works but is longer, leaving a final decision: preserve the original activity or change it honestly.",
+          "open_threads_after": [
+            "Whether to replace the missing station or cancel the route activity",
+            "How to explain the tested change clearly"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Deliver the decisive application by combining all clues into a safe, accurate replacement.",
+          "entry_state": "Deniz has measured both routes and must decide what visitors should do at four o'clock.",
+          "beats": [
+            "Deniz combines the station sequence, bridge label, map legend, schedule, and measurements into a replacement instruction.",
+            "Deniz clips up a card asking visitors to compare the closed dotted bridge with the measured north loop, then choose the loop."
+          ],
+          "must_include": [
+            "The final solution uses multiple earlier clues, not just the inspection schedule.",
+            "Deniz changes the activity instead of fabricating a bridge measurement or sending visitors toward the closure.",
+            "The replacement card explains that the longer route is currently the usable route."
+          ],
+          "must_not_do": [
+            "Do not make the replacement card claim the bridge's inspection result.",
+            "Do not resolve the consequences before visitors use the revised activity.",
+            "Do not add a new puzzle after the route decision."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the station format and the fourth bridge label.",
+            "Scene 3 established the bridge's temporary status and the north loop's matching endpoints.",
+            "Scene 4 established through repeated measurement that the north loop is longer but continuous."
+          ],
+          "handoff": "The activity now has an honest fourth station directing visitors along the tested north loop while the bridge remains closed.",
+          "open_threads_after": [
+            "Whether visitors understand the revised pattern",
+            "What Deniz should record for future setups"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the revised activity working and close the main thread with a documented, transferable lesson.",
+          "entry_state": "Visitors begin the activity using Deniz's replacement card and the measured north-loop route.",
+          "beats": [
+            "Visitors follow the repeated symbol-object-measurement pattern and see why station four compares two routes.",
+            "Deniz records the measurements and the reason for the change, leaving the bridge station ready for later review."
+          ],
+          "must_include": [
+            "The activity functions without sending anyone across the inspected bridge.",
+            "Deniz recognizes that testing the pattern produced a better choice than guessing.",
+            "The missing card's practical consequence is resolved through communication and clear labeling."
+          ],
+          "must_not_do": [
+            "Do not reopen the central mystery or add a future threat.",
+            "Do not claim the bridge inspection's result.",
+            "Do not leave the main route decision unresolved."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the replacement card and the decision to use the north loop.",
+            "Scene 4 established the north loop's measured continuity and greater length.",
+            "Scene 2 established the repeated pattern visitors follow across the stations."
+          ],
+          "handoff": "The learning activity is accurate and safe; Deniz has documented the tested pattern and closed the missing-card problem.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.55,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.91,
+        "no_early_resolution": 0.95,
+        "ending_coherence": 0.93
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.55
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.82,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3715,
+        "output_tokens": 185,
+        "cost": 0.00015603
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must establish the bridge inspection schedule entry clearly enough that a 15-year-old reader notices its overlap with the 4:00 activity start without explicit prompting. Risk: reader misses the temporal constraint and later feels the connection is unmotivated."
+        },
+        {
+          "scene": 2,
+          "risk": "The recovered label strip must be visibly incomplete (bridge symbol only, no measurement instruction) to sustain the false hypothesis. Risk: if the strip appears too obviously partial, it telegraphs the solution prematurely."
+        },
+        {
+          "scene": 3,
+          "risk": "The map legend and blue pencil mark must be discoverable by Deniz's own observation, not introduced by another character. Risk: if Deniz is told about the inspection connection, the reasoning feels passive rather than tested."
+        },
+        {
+          "scene": 4,
+          "risk": "The measurement tools (ruler, string, map scale) must be ordinary and already present in the room. Risk: if tools are introduced here, they feel like convenient plot devices rather than resources Deniz uses to test the pattern."
+        },
+        {
+          "scene": 5,
+          "risk": "The replacement card must explicitly reference the closed bridge and the tested north loop, not just redirect visitors silently. Risk: if the card is vague, visitors and readers may not understand why the change was necessary."
+        },
+        {
+          "scene": 6,
+          "risk": "Deniz's documentation must show what was recorded and why, without over-explaining the lesson. Risk: if the scene becomes didactic, it undermines the theme that testing produces better choices than guessing."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist motivation, and coherent information progression. Each scene builds on prior evidence without introducing unexplained dependencies. The false hypothesis (accidental misplacement) is established in Scene 2 and rejected in Scene 3 through evidence already available to the reader. The central problem—identifying the missing station four—is not solved until Scene 5, when Deniz combines multiple clues (bridge label, map legend, schedule, measurements) into a tested replacement. Scene 6 resolves consequences by showing the activity working and Deniz documenting the change.\n\nConstraint coverage is strong but carries one moderate risk: C1 (age-appropriate vocabulary, pacing, and concept complexity) depends entirely on prose execution. The plan itself is sound—Deniz's reasoning is concrete and observable, the tools are ordinary, and the theme is embedded in action rather than stated. However, the advisory evidence flagged constraint_coverage at 0.55 probability, likely because the plan does not explicitly specify vocabulary registers, sentence rhythm, or emotional beats that must match a 15-year-old independent reader. This is a prose-level concern, not a structural flaw.\n\nAll nine required constraints are scheduled and achievable:\n- C1: Age-appropriate language and pacing must be maintained in prose (plan supports this through concrete, observable reasoning).\n- C2: Causality is explicit: each scene shows why Deniz acts and what evidence supports the next step.\n- C3: No combat; all tension resolves through observation, measurement, and communication.\n- C4: Continuity is preserved across all six scenes; no resets or disconnected episodes.\n- C5: No mention of benchmarks or testing systems.\n- C6: No clue depends on information not yet given; all evidence is discoverable within the room.\n- C7: Accidental misplacement is a reasonable false hypothesis, rejected by evidence in Scene 3.\n- C8: The final solution uses the bridge label (Scene 2), map legend (Scene 3), measurements (Scene 4), and schedule (Scene 1).\n- C9: Deniz is 15, independent, and reasoning at an age-appropriate level.\n\nThe plan is ready for prose development. Recommend close attention to vocabulary register, sentence variety, and pacing in Scene 1 to ensure the bridge inspection schedule entry feels naturally noticed rather than planted.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0052352,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.00015603,
+      "haiku": {
+        "usd": 0.009272,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 4212,
+        "total_tokens": 5116
+      },
+      "jev": {
+        "input_tokens": 3715,
+        "output_tokens": 185,
+        "cost": 0.00015603
+      },
+      "haiku": {
+        "input_tokens": 3897,
+        "output_tokens": 1075,
+        "total_tokens": 4972
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    494,
+    589,
+    646,
+    646,
+    779,
+    646
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 494,
+      "word_count": 401,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz's responsibility, the incomplete activity, and the competing explanations without resolving the puzzle.",
+        "entry_state": "Deniz is preparing a public learning space with maps, labeled objects, schedules, and ordinary measuring tools.",
+        "beats": [
+          "Deniz finds stations one through three complete, but station four has an empty clip and a missing instruction card.",
+          "The wall map, object labels, and schedule suggest printing error, accidental misplacement, or deliberate removal."
+        ],
+        "must_include": [
+          "Deniz is fifteen and independently responsible for preparing the activity before visitors arrive.",
+          "The schedule lists a bridge inspection from 3:30 to 5:00, while the activity begins at 4:00.",
+          "Deniz decides to investigate the pattern rather than invent station four's instruction."
+        ],
+        "must_not_do": [
+          "Do not reveal which explanation is correct.",
+          "Do not make Deniz careless, helpless, or implausibly adult.",
+          "Do not introduce information outside the visible room."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows station four is missing and the bridge inspection may matter, but has not identified the correct instruction or response.",
+        "open_threads_after": [
+          "Why is station four missing?",
+          "What route or measurement should its instruction contain?"
+        ]
+      },
+      "envelope": {
+        "prose": "At fifteen, Deniz was old enough to be trusted with the room before opening time—and young enough to check the same instruction twice before trusting it. She moved along the public learning space with a clipboard tucked under one arm, straightening labels and setting rulers beside the small maps. The room was quiet except for the soft scrape of chairs and the click of a wall clock.\n\nStations one, two, and three were ready. Each had a map, a labeled object, and a card clipped at eye level. Station four had the same small table and the same empty clip, but no card.\n\nDeniz stopped.\n\n“Maybe it was never printed,” she murmured. She checked the supply tray beneath the desk. Blank paper, spare clips, and two pencils filled it, but there was no extra instruction card. A printing error was possible. So was a simple setup mistake: perhaps the card had been placed on another table or slipped behind one of the labeled objects.\n\nShe looked at the wall map. The four stations seemed connected to different places in the room and around the grounds. One route led toward the bridge marked on the map. Beside the map, the schedule showed the afternoon activity beginning at 4:00. A separate line read: “Bridge inspection: 3:30–5:00.” Deniz read it again. Visitors could arrive at four while the bridge was still being inspected.\n\nThat made another explanation possible. Maybe someone had removed station four on purpose because its route might not be available. But the empty clip offered no answer, and the room held no note explaining a change. The labeled objects gave Deniz no certainty either. They simply sat where they belonged: a compass, a measuring wheel, and a small wooden landmark.\n\nDeniz glanced at the clock. There was time to investigate, but not time to invent something and hope it worked. If she guessed the missing instruction, visitors might follow it without knowing whether the route was open.\n\nShe placed the clipboard on station four and drew three headings: “What repeats?” “What is missing?” and “What can be checked?” Writing the questions down made the uncertainty manageable without making it disappear. Then she picked up the first completed card.\n\n“I’ll follow the pattern,” she said quietly. “The room has to show me more than one explanation.”\n\nShe began comparing the stations, leaving the empty clip untouched until she understood what belonged there.",
+        "state_delta": {
+          "location": "Public learning space with four station tables, a wall map, labeled objects, a schedule, and ordinary measuring tools.",
+          "character_goal": "Deniz must prepare the activity for visitors arriving at 4:00 by identifying what belongs at station four without guessing.",
+          "knowledge_gained": [
+            "Stations one through three are complete.",
+            "Station four has an empty clip and no instruction card.",
+            "The activity begins at 4:00.",
+            "The schedule lists a bridge inspection from 3:30 to 5:00, overlapping the activity.",
+            "A route on the wall map leads toward a bridge."
+          ],
+          "facts_established": [
+            "Deniz is fifteen and is independently preparing the public learning space before visitors arrive.",
+            "The room contains maps, labeled objects, schedules, clips, paper, pencils, rulers, and other ordinary measuring tools.",
+            "Station four's missing card could be the result of a printing error, accidental misplacement, or deliberate removal."
+          ],
+          "clues_added": [
+            "The bridge inspection overlaps the scheduled activity.",
+            "The first three stations provide completed cards that Deniz can compare."
+          ],
+          "objects_changed": [
+            "Deniz placed the clipboard on station four and wrote the headings 'What repeats?', 'What is missing?', and 'What can be checked?'"
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Why station four is missing its instruction card.",
+            "What route or measurement the missing instruction should contain.",
+            "Whether the bridge inspection explains the missing card."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz knows station four is missing and that the bridge inspection may affect the 4:00 activity, but she has not identified the correct instruction or determined whether the card was misprinted, misplaced, or deliberately removed. She is comparing the completed stations rather than inventing a replacement."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.693,
+          "structured_parse_retries": [],
+          "errors": [
+            "below_scene_word_budget:389<395"
+          ],
+          "word_count": 389,
+          "usage": {
+            "input_tokens": 4254,
+            "output_tokens": 1093,
+            "total_tokens": 5347
+          },
+          "cost": {
+            "usd": 0.00237495,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 10.992,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 401,
+          "usage": {
+            "input_tokens": 4470,
+            "output_tokens": 1084,
+            "total_tokens": 5554
+          },
+          "cost": {
+            "usd": 0.00241815,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.89,
+          "scene_purpose_obeyed": 0.94,
+          "no_unexplained_dependency": 0.88,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2826,
+          "output_tokens": 188,
+          "cost": 0.000118692
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.89,
+            "scene_purpose_obeyed": 0.94,
+            "no_unexplained_dependency": 0.88,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2826,
+            "output_tokens": 188,
+            "cost": 0.000118692
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.413
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 30.098
+    },
+    {
+      "scene": 2,
+      "target_words": 589,
+      "word_count": 512,
+      "contract": {
+        "index": 2,
+        "purpose": "Establish the repeated station pattern and make accidental misplacement a reasonable but incomplete hypothesis.",
+        "entry_state": "Deniz is comparing the three completed stations with the empty fourth slot before the scheduled activity begins.",
+        "beats": [
+          "Each completed station pairs a map symbol, a labeled object, and one measurement task in the same order.",
+          "Deniz finds the fourth label strip beneath its clip, with adhesive still attached and its clip turned outward."
+        ],
+        "must_include": [
+          "The first three stations use a consistent symbol-object-measurement sequence.",
+          "The recovered strip identifies a dotted bridge symbol but gives no measurement instruction.",
+          "Deniz initially suspects someone misplaced the card during setup."
+        ],
+        "must_not_do": [
+          "Do not treat the recovered strip as the complete answer.",
+          "Do not introduce a new person blamed for moving the card.",
+          "Do not reject the accidental-misplacement hypothesis yet."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established stations one through three, the empty fourth clip, and the bridge-inspection schedule entry.",
+          "Scene 1 established that the room contains the wall map, labeled objects, and measurement tools.",
+          "Scene 1 established accidental misplacement as one plausible explanation."
+        ],
+        "handoff": "Deniz has identified station four's bridge symbol and the repeated format, but still lacks its measurement task and the reason for its removal.",
+        "open_threads_after": [
+          "Whether the card was misplaced or intentionally withheld",
+          "Which bridge-related measurement remains possible"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz laid the first three cards side by side on the station-four table. They were not written in exactly the same words, but their structure repeated.\n\nFirst came a map symbol. Then came the name of an object. Last came a task involving measurement.\n\nStation one showed a winding-path symbol, followed by COMPASS, and asked visitors to measure the direction change between two marked points. Station two showed a triangle, followed by WOODEN LANDMARK, and asked them to compare its height with the height marked on the map. Station three showed a wheel symbol, followed by MEASURING WHEEL, and asked visitors to measure a short route.\n\nDeniz tapped each section with her pencil. “Symbol, object, measurement,” she said. “Not just a place to look at.”\n\nThe empty fourth clip sat above the table. She checked the floor, the nearby shelves, and the back of the wall map. Nothing had fallen there. Then she crouched and looked underneath the clip itself.\n\nA thin strip of paper was stuck beneath its lower edge.\n\nDeniz eased it free. A small piece of adhesive still clung to the back, slightly dusty at the corners. The clip had been turned outward, as if it had been pulled away and then left in that position.\n\nOn the front of the strip was a single printed symbol: a bridge made of short blue dots.\n\nNo object name followed it. No question appeared underneath. There was only the dotted bridge and a blank stretch of paper.\n\nDeniz carried the strip to the wall map. Near the grounds, one route was drawn as the same dotted blue bridge. She held the strip beside it, matching the marks carefully. The symbol belonged to station four.\n\n“But this isn’t the card,” she said.\n\nShe returned to the table and compared the strip with the other stations. Each complete card had enough information to guide a visitor from symbol to object to measurement. The recovered piece supplied only the first part.\n\nFor a moment, the simplest explanation seemed likely. Someone might have misplaced the rest of the card during setup. Perhaps the strip had been torn away by accident, while the full instruction had slid behind a table or been put with another station’s papers. The outward-turned clip supported that idea, at least a little. Deniz searched the supply tray again, then checked the folders beneath the clipboard. She found blank paper, spare clips, and old activity sheets, but no fourth card.\n\nThe bridge-inspection line on the schedule caught her eye from across the room: 3:30–5:00. The activity still began at four.\n\nDeniz did not yet know whether that timing explained the missing instruction or was merely an unlucky coincidence. She placed the dotted strip beside the three complete cards instead of filling in the blank herself.\n\n“The pattern tells me what is missing,” she said. “It doesn’t tell me yet why it’s missing.”\n\nShe wrote beneath her earlier questions: “Fourth symbol: dotted bridge. Object and measurement task unknown.” Then she turned back to the map, ready to check what the symbol actually meant.",
+        "state_delta": {
+          "location": "Public learning space at the station-four table, beside the wall map and schedule.",
+          "character_goal": "Deniz must determine station four's missing measurement task and why the bridge-related card is incomplete before preparing the 4:00 activity.",
+          "knowledge_gained": [
+            "The first three stations follow the sequence map symbol, labeled object, then measurement task.",
+            "The fourth station's recovered strip shows a dotted bridge symbol.",
+            "The recovered strip contains no object name or measurement instruction.",
+            "The station-four clip was turned outward and the strip still had adhesive attached."
+          ],
+          "facts_established": [
+            "Station one uses a winding-path symbol, a compass, and a direction-change measurement.",
+            "Station two uses a triangle, the wooden landmark, and a height comparison.",
+            "Station three uses a wheel symbol, the measuring wheel, and a route measurement.",
+            "The dotted bridge symbol matches a dotted blue route on the wall map."
+          ],
+          "clues_added": [
+            "The incomplete strip may have been separated from the rest of the card during setup.",
+            "The bridge inspection schedule overlaps the 4:00 activity, but Deniz has not decided whether the timing explains the missing card."
+          ],
+          "objects_changed": [
+            "Deniz recovered the dotted bridge label strip from beneath the station-four clip.",
+            "Deniz placed the strip beside the three complete cards and recorded that its object and measurement task are unknown."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Whether the fourth card was accidentally misplaced or intentionally withheld.",
+            "Which object and bridge-related measurement belong in station four."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has identified station four's dotted bridge symbol and confirmed the repeated symbol-object-measurement format, but she still lacks the measurement instruction and does not know whether the card was misplaced or deliberately withheld. She is about to check the map's meaning for the dotted route."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.003,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 512,
+          "usage": {
+            "input_tokens": 5242,
+            "output_tokens": 1261,
+            "total_tokens": 6503
+          },
+          "cost": {
+            "usd": 0.00282355,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3492,
+          "output_tokens": 188,
+          "cost": 0.000146664
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3492,
+            "output_tokens": 188,
+            "cost": 0.000146664
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.343
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 18.346
+    },
+    {
+      "scene": 3,
+      "target_words": 646,
+      "word_count": 582,
+      "contract": {
+        "index": 3,
+        "purpose": "Reject the first hypothesis by connecting the bridge symbol, map legend, and scheduled inspection.",
+        "entry_state": "Deniz has the fourth label strip and knows the missing station should involve the dotted bridge.",
+        "beats": [
+          "Deniz checks the map legend and finds that dotted routes mark temporary crossings rather than ordinary paths.",
+          "The bridge symbol, the inspection time, and a matching blue pencil mark on the schedule show the station was intentionally paused."
+        ],
+        "must_include": [
+          "The evidence rejects accidental misplacement without identifying the complete replacement activity.",
+          "Deniz notices that the dotted bridge is the only station route affected during the activity.",
+          "The map also shows a solid north loop connecting the same two map points."
+        ],
+        "must_not_do": [
+          "Do not let Deniz infer the final wording from one clue.",
+          "Do not make the inspection's result known before Deniz tests the alternatives.",
+          "Do not erase the need for measurement."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the fourth label strip's dotted bridge symbol.",
+          "Scene 1 established the bridge inspection's exact time overlapping the 4:00 activity.",
+          "Scene 2 established that the three stations follow a symbol-object-measurement sequence."
+        ],
+        "handoff": "Deniz knows the bridge station was deliberately paused and must compare another route, but has not tested whether the north loop works.",
+        "open_threads_after": [
+          "How the north loop compares with the dotted bridge",
+          "What safe instruction should replace station four"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz lifted the dotted strip beside the wall map and searched for a key. The legend was printed in a narrow box at the lower corner, partly hidden by the table’s shadow.\n\nSolid blue lines meant regular paths. Short dotted lines meant temporary crossings—routes that could be used only when they were open.\n\nShe read the sentence twice. Then she looked at the dotted bridge on the map. It was not simply another path with a decorative symbol. Its status could change.\n\nDeniz turned toward the schedule. The bridge inspection was listed from 3:30 to 5:00, and the activity began at 4:00. A small blue pencil mark sat beside the inspection entry. At first she thought it was a check mark someone had forgotten to erase. Then she noticed the color matched the dotted bridge on the map.\n\nShe carried the strip over and held it next to the schedule. The blue dots on the paper and the blue pencil mark were not identical—the pencil mark was rougher—but they pointed to the same thing.\n\n“Temporary crossing,” Deniz murmured. “Inspection during the activity.”\n\nThe room suddenly seemed more organized. The missing card was not lost in the way she had imagined. If someone had misplaced it, the empty clip and the strip beneath it would be a strange coincidence. More importantly, the schedule explained why a bridge instruction should not be waiting for visitors at four.\n\nShe checked the other three stations against the map. The winding path at station one was open. The landmark at station two stood beside its ordinary route. The measuring-wheel station used a solid path. Only station four led along the dotted bridge, the only route marked as a temporary crossing and the only one affected by the inspection during the activity.\n\nDeniz crossed out “misplaced?” on her clipboard, but did not erase it completely. She drew a line beneath it and wrote: “Evidence points to intentional pause.”\n\nThat still did not tell her what visitors were supposed to measure. The repeated pattern required an object and a measurement task. The label strip supplied the bridge symbol, but the legend supplied only its meaning. It did not say whether visitors should measure the bridge’s length, compare its route, or do something else entirely.\n\nDeniz traced the dotted line with her finger from one marked point to the other. Then she noticed a second route. A solid blue line curved north from the same starting point, bent around the edge of the grounds, and returned to the same ending point. The map labeled it the north loop.\n\nShe compared the two endpoints carefully. The dotted bridge and the solid loop connected the same pair of marked points. The loop looked longer, but Deniz stopped herself before trusting her eyes. A map could make a curve seem shorter or longer depending on how it was drawn.\n\nShe wrote on the clipboard: “Possible alternate route: north loop. Same endpoints. Must measure.”\n\nThe missing card’s purpose was becoming clearer, but not complete. It had probably been held back because the original bridge route could not be treated as open. Yet the safe substitute still needed to be tested, and the measurement task still needed to be determined from the whole pattern—not from one symbol or one schedule mark.\n\nDeniz placed the dotted strip beside her ruler and string on the table. The inspection would not finish before the visitors arrived. She had time to compare the routes, but not time to guess.",
+        "state_delta": {
+          "location": "Public learning space at the station-four table beside the wall map and schedule.",
+          "character_goal": "Deniz must determine how the bridge station can be made accurate and safe before the 4:00 activity, without inventing a measurement task.",
+          "knowledge_gained": [
+            "The map legend says dotted routes mark temporary crossings rather than ordinary paths.",
+            "The bridge inspection from 3:30 to 5:00 overlaps the 4:00 activity.",
+            "A blue pencil mark beside the inspection entry matches the dotted bridge route.",
+            "The dotted bridge is the only station route affected during the activity.",
+            "A solid north loop connects the same two marked map points as the dotted bridge."
+          ],
+          "facts_established": [
+            "The fourth station was intentionally paused rather than accidentally misplaced.",
+            "The map distinguishes ordinary solid paths from temporary dotted crossings.",
+            "The inspection result is not yet known.",
+            "The north loop is a possible alternate route, but its suitability has not yet been tested."
+          ],
+          "clues_added": [
+            "The map legend defines the dotted bridge as a temporary crossing.",
+            "The blue pencil mark links the bridge inspection to the missing station.",
+            "The north loop has the same endpoints as the dotted bridge."
+          ],
+          "objects_changed": [
+            "Deniz crossed out the accidental-misplacement hypothesis on her clipboard and noted that the evidence points to an intentional pause.",
+            "Deniz recorded that the north loop is a possible alternate route and must be measured.",
+            "Deniz placed the dotted strip beside the ruler and string for the next investigation."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "How the north loop compares with the dotted bridge.",
+            "What measurement task the replacement station should contain.",
+            "Whether the north loop can serve as a safe substitute during the inspection."
+          ],
+          "threads_resolved": [
+            "The accidental-misplacement explanation has been rejected by the combined map, legend, schedule, and timing evidence."
+          ],
+          "handoff_state": "Deniz knows the bridge station was deliberately paused because the dotted crossing is under inspection during the 4:00 activity. She has identified the solid north loop as a route connecting the same two map points, but she has not yet measured either route or decided what the replacement instruction should say."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.745,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 582,
+          "usage": {
+            "input_tokens": 5861,
+            "output_tokens": 1348,
+            "total_tokens": 7209
+          },
+          "cost": {
+            "usd": 0.0030827,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.86,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.94,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4124,
+          "output_tokens": 188,
+          "cost": 0.000173208
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4124,
+            "output_tokens": 188,
+            "cost": 0.000173208
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.45
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 18.195
+    },
+    {
+      "scene": 4,
+      "target_words": 646,
+      "word_count": 627,
+      "contract": {
+        "index": 4,
+        "purpose": "Test the remaining pattern with ordinary tools and determine what the missing measurement must compare.",
+        "entry_state": "Deniz has ruled out accidental loss and identified the north loop as the bridge route's possible substitute.",
+        "beats": [
+          "Using the map scale, a ruler, and string, Deniz measures both routes between the same marked points.",
+          "The north loop is longer but continuous; the dotted bridge is shorter and unavailable during inspection."
+        ],
+        "must_include": [
+          "Deniz repeats the measurement rather than trusting a quick visual guess.",
+          "The first three station tasks teach comparison through symbols, objects, and measurements.",
+          "Deniz predicts that station four should compare the two routes, not pretend the bridge is open."
+        ],
+        "must_not_do": [
+          "Do not present the prediction as the final solution yet.",
+          "Do not make the tools unusually advanced or magical.",
+          "Do not allow the inspection to finish before the activity."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the dotted bridge and solid north loop connect the same two map points.",
+          "Scene 3 established the dotted bridge is temporary and overlaps the activity time.",
+          "Scene 2 established that every completed station includes a measurement task."
+        ],
+        "handoff": "Deniz has tested that the north loop works but is longer, leaving a final decision: preserve the original activity or change it honestly.",
+        "open_threads_after": [
+          "Whether to replace the missing station or cancel the route activity",
+          "How to explain the tested change clearly"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz began with the map scale printed beside the legend. She placed the ruler along the dotted bridge from one marked point to the other and read the distance: three centimeters. The scale showed that this represented about sixty meters.\n\nThat measurement was quick, but quick was not the same as reliable. The bridge line was nearly straight, so the ruler worked well enough for the map. The north loop was different. Its line curved around the edge of the grounds, bent twice, and returned to the second point.\n\nDeniz took the piece of string from the table. She pressed one end against the north loop’s starting point and carefully followed every bend, keeping the string on the blue line. At the ending point, she pinched the string and laid it beside the ruler.\n\n“Almost six centimeters,” she said. “About one hundred twenty meters.”\n\nThe loop was twice as long on the map. That matched what it looked like, but Deniz did not write the result down yet. She had learned that a pattern was useful only if it survived checking.\n\nShe measured the north loop again, this time starting at the other marked point and tracing toward the first. The string reached the same place on the ruler: just under six centimeters. Then she measured the dotted bridge once more. Three centimeters again.\n\nDeniz wrote both results on her clipboard:\n\n“Dotted bridge: about 60 m. North loop: about 120 m. Same endpoints. Loop is longer.”\n\nShe looked from the numbers to the three completed station cards. Station one used a winding-path symbol, a compass, and a task about direction changes. Station two paired a triangle with the wooden landmark and asked visitors to compare height. Station three used the wheel symbol, the measuring wheel, and a route measurement.\n\nThe cards were not just lists of unrelated objects. Each one moved in the same order: identify something, find its matching object, then test a feature with a measurement. The symbol at station four identified the dotted bridge. But the bridge’s condition made a simple bridge-length task impossible to use honestly during the activity. Visitors could not be sent to measure a crossing that was under inspection.\n\nDeniz tapped the ruler against the clipboard. The map offered a better comparison. Both routes joined the same two points. One was shorter but temporary; the other was longer and continuous. Measuring only the bridge would describe the route, but comparing the two routes would explain the choice visitors actually needed to make.\n\nShe drafted a sentence beneath the measurements: “Possible station-four task: compare the dotted bridge route with the north loop.”\n\nThen she paused. Possible was important. The sentence was a prediction, not yet the finished instruction. She still had to decide whether changing the station would preserve the activity or make it confusing. The schedule said the inspection continued until five, so the bridge could not be treated as open at four. The north loop, however, remained connected on the map and had a measured length.\n\nDeniz ran the string over the loop one final time, checking that it never broke at a gap or crossed a route that led somewhere else. It followed one continuous line from the first point to the second.\n\nShe gathered the string and ruler, leaving the numbers visible beside the dotted label strip. The original bridge task could not simply be restored. But the pattern had not disappeared. It had shifted from measuring one route to comparing two, and the comparison had produced a clear result: the longer north loop was the usable route for now.\n\nDeniz did not clip up a replacement card yet. First, she needed to write the change so that visitors would understand both what had changed and why.",
+        "state_delta": {
+          "location": "Public learning space at the station-four table beside the wall map and schedule.",
+          "character_goal": "Deniz must decide how to replace the paused bridge activity accurately and safely before visitors arrive at 4:00.",
+          "knowledge_gained": [
+            "The dotted bridge measures about three centimeters on the map, representing roughly sixty meters.",
+            "The north loop measures just under six centimeters, representing roughly one hundred twenty meters.",
+            "Repeated measurements produce the same comparison: the north loop is about twice as long as the dotted bridge.",
+            "The north loop is a continuous route between the same two marked points."
+          ],
+          "facts_established": [
+            "The north loop is longer than the dotted bridge but remains usable as a continuous mapped route.",
+            "The completed stations follow a symbol, matching object, and measurement-task pattern.",
+            "Because the bridge is under inspection during the activity, station four should not ask visitors to treat it as an open route."
+          ],
+          "clues_added": [
+            "The two routes have the same endpoints but different measured lengths.",
+            "A route-comparison task fits the established station pattern better than an untested bridge-length task."
+          ],
+          "objects_changed": [
+            "Deniz measured both routes with the existing ruler and string.",
+            "Deniz recorded the approximate route lengths and drafted a possible comparison task on her clipboard.",
+            "The ruler and string remain beside the dotted bridge label strip."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Whether to replace the missing station with the tested route-comparison activity.",
+            "How to explain clearly that the longer north loop is currently usable."
+          ],
+          "threads_resolved": [
+            "The north loop has been tested and shown to connect the same points continuously.",
+            "The remaining measurement should compare the dotted bridge and the north loop rather than pretend the bridge is open."
+          ],
+          "handoff_state": "Deniz has repeatedly measured both routes: the dotted bridge is about sixty meters and the continuous north loop about one hundred twenty meters. She knows the loop is longer but usable during the bridge inspection. She predicts that station four should compare the two routes, but she has not yet written or clipped up the final replacement instruction."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.855,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 627,
+          "usage": {
+            "input_tokens": 6451,
+            "output_tokens": 1455,
+            "total_tokens": 7906
+          },
+          "cost": {
+            "usd": 0.0033586,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.91,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4718,
+          "output_tokens": 188,
+          "cost": 0.000198156
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.91,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4718,
+            "output_tokens": 188,
+            "cost": 0.000198156
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.392
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 21.248
+    },
+    {
+      "scene": 5,
+      "target_words": 779,
+      "word_count": 641,
+      "contract": {
+        "index": 5,
+        "purpose": "Deliver the decisive application by combining all clues into a safe, accurate replacement.",
+        "entry_state": "Deniz has measured both routes and must decide what visitors should do at four o'clock.",
+        "beats": [
+          "Deniz combines the station sequence, bridge label, map legend, schedule, and measurements into a replacement instruction.",
+          "Deniz clips up a card asking visitors to compare the closed dotted bridge with the measured north loop, then choose the loop."
+        ],
+        "must_include": [
+          "The final solution uses multiple earlier clues, not just the inspection schedule.",
+          "Deniz changes the activity instead of fabricating a bridge measurement or sending visitors toward the closure.",
+          "The replacement card explains that the longer route is currently the usable route."
+        ],
+        "must_not_do": [
+          "Do not make the replacement card claim the bridge's inspection result.",
+          "Do not resolve the consequences before visitors use the revised activity.",
+          "Do not add a new puzzle after the route decision."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the station format and the fourth bridge label.",
+          "Scene 3 established the bridge's temporary status and the north loop's matching endpoints.",
+          "Scene 4 established through repeated measurement that the north loop is longer but continuous."
+        ],
+        "handoff": "The activity now has an honest fourth station directing visitors along the tested north loop while the bridge remains closed.",
+        "open_threads_after": [
+          "Whether visitors understand the revised pattern",
+          "What Deniz should record for future setups"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz read her draft again, then looked at the evidence spread across the table. The dotted bridge label identified station four. The map legend said dotted routes were temporary crossings. The schedule showed an inspection from 3:30 to 5:00, which covered the entire activity. The north loop joined the same two points, and her repeated measurements showed that it was longer but continuous.\n\nNo single clue answered the problem. Together, they did.\n\nShe pulled a fresh card from the stack and wrote the station heading at the top:\n\n“STATION 4: COMPARE THE ROUTES”\n\nUnder it, she added:\n\n“Find the dotted bridge route on the map. It is closed during today’s activity because it is under inspection. Do not use it.”\n\nDeniz stopped with her pencil above the card. The sentence was accurate. It did not claim that the bridge was damaged, unsafe forever, or already inspected. It only described what the schedule and map required at four o’clock.\n\nShe continued:\n\n“Measure or use the recorded measurements for the dotted bridge and the solid north loop. Which route is longer? Which route can be used now?”\n\nAt the bottom, she wrote the results clearly:\n\n“Dotted bridge: about 60 m.\nNorth loop: about 120 m.\nChoose the north loop.”\n\nShe read the card from the beginning. A visitor could identify the symbol, compare the matching routes, use a measurement, and make a choice. The sequence still worked: map symbol, route, measurement. It was the same pattern as the first three stations, but the measurement task had changed because the bridge’s status changed.\n\nDeniz considered leaving the original station blank and placing a note beside it. That would be simpler, but it would also leave visitors wondering whether they had missed something. Worse, someone might follow the dotted line before noticing the schedule. A clear replacement was safer than a silent gap.\n\nShe checked the map one more time. The north loop’s solid line ran from the first marked point around the grounds and back to the second. Her string measurement had followed every bend. It was not the shortest route, but it was the route that remained continuous during the inspection.\n\n“Longer does not mean wrong,” Deniz murmured. “It means the choice has to use the conditions.”\n\nShe did not add that sentence to the card. Visitors needed directions they could test, not a conclusion handed to them without evidence.\n\nInstead, she drew a small solid loop beside the words “north loop” and a small dotted bridge beside “closed during today’s activity.” The symbols matched the map, so no one would have to guess which lines she meant. She underlined “choose the north loop” once, then placed the card on the station-four clipboard.\n\nThe outward-turned clip caught the top edge. Deniz pressed it shut and gave the card a careful tug. It held.\n\nFor a moment, the table looked different. The empty space was gone, but Deniz had not filled it with an invented bridge measurement. She had used the missing station’s symbol, the room’s repeated format, the legend, the schedule, and the tested route lengths to make a new instruction that belonged there.\n\nShe set the ruler and string beside the clipboard, leaving them available for visitors who wanted to check the numbers. Then she moved the dotted bridge label strip beneath the new card, where it remained visible as the station’s original clue.\n\nAcross the room, the clock moved closer to four. Deniz glanced at the unopened visitor folders and then back at station four. The activity was ready, but its success would depend on whether people understood the change. She would watch the first group carefully and explain the comparison if they needed it.\n\nFor now, the instruction was honest and specific: compare both routes, recognize that the bridge was closed during the activity, and use the longer north loop.",
+        "state_delta": {
+          "location": "Public learning space at station four beside the wall map, schedule, ruler, string, and visitor materials.",
+          "character_goal": "Deniz must make the 4:00 activity accurate and safe by replacing the paused bridge instruction with a tested route-comparison task.",
+          "knowledge_gained": [
+            "The station pattern can be preserved by changing the measurement task from measuring one route to comparing two routes.",
+            "The map symbol, legend, schedule, matching endpoints, and repeated measurements together support using the north loop.",
+            "A clear replacement is safer and more useful than leaving station four blank."
+          ],
+          "facts_established": [
+            "The dotted bridge is closed during the activity because it is under inspection.",
+            "The north loop is about 120 meters, compared with about 60 meters for the dotted bridge.",
+            "The north loop is the currently usable route even though it is longer."
+          ],
+          "clues_added": [
+            "The replacement card explicitly marks the dotted bridge as closed during the activity.",
+            "The replacement card asks visitors to compare the two routes and choose the north loop.",
+            "The card uses matching solid-loop and dotted-bridge symbols connected to the map."
+          ],
+          "objects_changed": [
+            "Deniz wrote a replacement station-four card.",
+            "Deniz clipped the replacement card securely to the station-four clipboard.",
+            "Deniz left the ruler and string beside the card for visitors to use.",
+            "Deniz placed the original dotted bridge label strip beneath the replacement card."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Whether visitors understand the revised comparison activity."
+          ],
+          "threads_resolved": [
+            "What station four should instruct visitors to do.",
+            "Whether to preserve, cancel, or replace the route activity.",
+            "How to direct visitors away from the inspected bridge without claiming its inspection result."
+          ],
+          "handoff_state": "Station four now has an honest replacement card. It tells visitors that the dotted bridge is closed during the activity, asks them to compare its approximately 60-meter route with the approximately 120-meter continuous north loop, and directs them to choose the north loop. The card is clipped in place with the ruler and string beside it. Visitors have not yet begun, and Deniz is ready to watch whether they understand the revised activity."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.364,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 641,
+          "usage": {
+            "input_tokens": 6969,
+            "output_tokens": 1424,
+            "total_tokens": 8393
+          },
+          "cost": {
+            "usd": 0.0034509,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5322,
+          "output_tokens": 188,
+          "cost": 0.000223524
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5322,
+            "output_tokens": 188,
+            "cost": 0.000223524
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.6
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.965
+    },
+    {
+      "scene": 6,
+      "target_words": 646,
+      "word_count": 633,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the revised activity working and close the main thread with a documented, transferable lesson.",
+        "entry_state": "Visitors begin the activity using Deniz's replacement card and the measured north-loop route.",
+        "beats": [
+          "Visitors follow the repeated symbol-object-measurement pattern and see why station four compares two routes.",
+          "Deniz records the measurements and the reason for the change, leaving the bridge station ready for later review."
+        ],
+        "must_include": [
+          "The activity functions without sending anyone across the inspected bridge.",
+          "Deniz recognizes that testing the pattern produced a better choice than guessing.",
+          "The missing card's practical consequence is resolved through communication and clear labeling."
+        ],
+        "must_not_do": [
+          "Do not reopen the central mystery or add a future threat.",
+          "Do not claim the bridge inspection's result.",
+          "Do not leave the main route decision unresolved."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the replacement card and the decision to use the north loop.",
+          "Scene 4 established the north loop's measured continuity and greater length.",
+          "Scene 2 established the repeated pattern visitors follow across the stations."
+        ],
+        "handoff": "The learning activity is accurate and safe; Deniz has documented the tested pattern and closed the missing-card problem.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "At four o’clock, the first visitors gathered near station one. Deniz stood beside the table, ready to answer questions without taking over.\n\nA girl traced the winding-path symbol on the first card, then picked up the compass. Her partner read the instruction about counting direction changes. At station two, they matched the triangle with the wooden landmark and compared its height. At station three, another pair rolled the measuring wheel along the marked route and wrote down the result.\n\nThe pattern was beginning to show itself: identify the symbol, find the matching object or route, and measure something carefully.\n\nWhen the group reached station four, one visitor pointed to the dotted bridge symbol on the original strip beneath the card. “Is that the route we’re supposed to take?”\n\nDeniz shook her head. “Not today. Read the first instruction on the replacement card.”\n\nThe visitor read aloud, “The dotted bridge is closed during today’s activity because it is under inspection. Do not use it.” He looked toward the wall map, where the dotted line ended at the same two marked points as the solid north loop.\n\n“So we compare them instead?”\n\n“Exactly.” Deniz handed him the string. “You can check the recorded measurements, or measure the routes again. Follow every bend in the solid loop.”\n\nThe visitors spread the string along the map. It reached about three centimeters across the dotted bridge route and nearly six along the north loop. They checked the scale and saw the same comparison Deniz had recorded: about sixty meters against about one hundred twenty.\n\n“The loop is twice as long,” the girl said.\n\n“And it’s the one we can use now,” her partner added.\n\nNo one moved toward the door leading to the bridge. Instead, the group marked the north loop on their activity sheet and discussed why a longer route could still be the correct choice. The card had not told them merely to obey a change. It had shown them what to compare and left the evidence visible on the map.\n\nA younger visitor from the next group leaned over the table. “Why didn’t you just write the bridge distance and keep the old activity?”\n\n“Because that would have treated the bridge as available,” Deniz said. “The schedule says the inspection overlaps this activity. The map shows the loop has the same endpoints, and measuring tells us how the choices differ.” She tapped the ruler beside the card. “The pattern helped me decide what to check before I changed the instruction.”\n\nShe heard how close that sounded to an explanation, so she stopped there. The visitors were already testing the routes themselves.\n\nWhile they continued, Deniz opened the clipboard’s final page and wrote:\n\n“Station 4 revised before 4:00 activity. Dotted bridge route: temporary crossing, closed during inspection, about 60 m. Solid north loop: same endpoints, continuous, about 120 m. Replacement task: compare routes and choose the north loop. Reason: schedule and map required a usable alternative; measurements confirmed the comparison.”\n\nShe checked that she had not written the inspection’s result. That was still unknown, and it did not need to be guessed. She added the date and her initials, then slid the page into the activity folder.\n\nAt the station, a visitor carefully read the card again and clipped the string back beside the ruler. The original bridge label remained visible beneath the replacement, while the bold notice made its current status impossible to miss.\n\nDeniz watched the group leave along the marked north-loop route. The activity had worked without sending anyone across the inspected bridge. More importantly, the empty clip had become a clear instruction because she had tested the repeated pattern instead of filling the gap with a guess. She tightened the clip once more and left station four ready for the next group.",
+        "state_delta": {
+          "location": "Public learning space, with visitors using all four activity stations and the north-loop route on the wall map.",
+          "character_goal": "Deniz has prepared and demonstrated an accurate, safe activity, then documented the tested replacement for future use.",
+          "knowledge_gained": [
+            "Visitors can follow the repeated symbol, matching object or route, and measurement pattern.",
+            "Visitors understand that station four compares the closed dotted bridge with the usable north loop.",
+            "The revised activity works without sending anyone across the inspected bridge."
+          ],
+          "facts_established": [
+            "The dotted bridge remains closed during the activity; its inspection result is still unknown.",
+            "The north loop connects the same endpoints and is the route visitors use.",
+            "The documented measurements are about 60 meters for the dotted bridge and about 120 meters for the north loop."
+          ],
+          "clues_added": [
+            "Visitors independently confirmed the route comparison using the map, string, ruler, and scale.",
+            "The replacement card's clear label prevented visitors from mistaking the dotted bridge for the current route."
+          ],
+          "objects_changed": [
+            "Deniz recorded the route measurements, the reason for the replacement, and the safe-choice instruction in the activity folder.",
+            "The replacement card, ruler, and string remain secured at station four.",
+            "The original dotted bridge label remains visible beneath the replacement card."
+          ],
+          "relationships_changed": [
+            "Visitors now understand how station four fits the pattern used by the first three stations."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The revised activity has been successfully used.",
+            "Visitors have been directed to the tested north loop rather than the inspected bridge.",
+            "The missing-card problem has been resolved through clear communication and documentation."
+          ],
+          "handoff_state": "The learning activity is functioning accurately and safely. Visitors used the symbol-object-measurement pattern, compared the approximately 60-meter dotted bridge with the approximately 120-meter continuous north loop, and chose the north loop without crossing the inspected bridge. Deniz recorded the measurements and the reason for the change, while leaving the inspection result unknown and the bridge station clearly labeled for later review."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.169,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 633,
+          "usage": {
+            "input_tokens": 7187,
+            "output_tokens": 1353,
+            "total_tokens": 8540
+          },
+          "cost": {
+            "usd": 0.0034202,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.93,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5424,
+          "output_tokens": 188,
+          "cost": 0.000227808
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.93,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5424,
+            "output_tokens": 188,
+            "cost": 0.000227808
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.371
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.541
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz's responsibility, the incomplete activity, and the competing explanations without resolving the puzzle.",
+      "word_count": 401,
+      "location": "Public learning space with four station tables, a wall map, labeled objects, a schedule, and ordinary measuring tools.",
+      "character_goal": "Deniz must prepare the activity for visitors arriving at 4:00 by identifying what belongs at station four without guessing.",
+      "knowledge_gained": [
+        "Stations one through three are complete.",
+        "Station four has an empty clip and no instruction card.",
+        "The activity begins at 4:00.",
+        "The schedule lists a bridge inspection from 3:30 to 5:00, overlapping the activity.",
+        "A route on the wall map leads toward a bridge."
+      ],
+      "facts_established": [
+        "Deniz is fifteen and is independently preparing the public learning space before visitors arrive.",
+        "The room contains maps, labeled objects, schedules, clips, paper, pencils, rulers, and other ordinary measuring tools.",
+        "Station four's missing card could be the result of a printing error, accidental misplacement, or deliberate removal."
+      ],
+      "clues_added": [
+        "The bridge inspection overlaps the scheduled activity.",
+        "The first three stations provide completed cards that Deniz can compare."
+      ],
+      "objects_changed": [
+        "Deniz placed the clipboard on station four and wrote the headings 'What repeats?', 'What is missing?', and 'What can be checked?'"
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Why station four is missing its instruction card.",
+        "What route or measurement the missing instruction should contain.",
+        "Whether the bridge inspection explains the missing card."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz knows station four is missing and that the bridge inspection may affect the 4:00 activity, but she has not identified the correct instruction or determined whether the card was misprinted, misplaced, or deliberately removed. She is comparing the completed stations rather than inventing a replacement."
+    },
+    {
+      "scene": 2,
+      "purpose": "Establish the repeated station pattern and make accidental misplacement a reasonable but incomplete hypothesis.",
+      "word_count": 512,
+      "location": "Public learning space at the station-four table, beside the wall map and schedule.",
+      "character_goal": "Deniz must determine station four's missing measurement task and why the bridge-related card is incomplete before preparing the 4:00 activity.",
+      "knowledge_gained": [
+        "The first three stations follow the sequence map symbol, labeled object, then measurement task.",
+        "The fourth station's recovered strip shows a dotted bridge symbol.",
+        "The recovered strip contains no object name or measurement instruction.",
+        "The station-four clip was turned outward and the strip still had adhesive attached."
+      ],
+      "facts_established": [
+        "Station one uses a winding-path symbol, a compass, and a direction-change measurement.",
+        "Station two uses a triangle, the wooden landmark, and a height comparison.",
+        "Station three uses a wheel symbol, the measuring wheel, and a route measurement.",
+        "The dotted bridge symbol matches a dotted blue route on the wall map."
+      ],
+      "clues_added": [
+        "The incomplete strip may have been separated from the rest of the card during setup.",
+        "The bridge inspection schedule overlaps the 4:00 activity, but Deniz has not decided whether the timing explains the missing card."
+      ],
+      "objects_changed": [
+        "Deniz recovered the dotted bridge label strip from beneath the station-four clip.",
+        "Deniz placed the strip beside the three complete cards and recorded that its object and measurement task are unknown."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Whether the fourth card was accidentally misplaced or intentionally withheld.",
+        "Which object and bridge-related measurement belong in station four."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has identified station four's dotted bridge symbol and confirmed the repeated symbol-object-measurement format, but she still lacks the measurement instruction and does not know whether the card was misplaced or deliberately withheld. She is about to check the map's meaning for the dotted route."
+    },
+    {
+      "scene": 3,
+      "purpose": "Reject the first hypothesis by connecting the bridge symbol, map legend, and scheduled inspection.",
+      "word_count": 582,
+      "location": "Public learning space at the station-four table beside the wall map and schedule.",
+      "character_goal": "Deniz must determine how the bridge station can be made accurate and safe before the 4:00 activity, without inventing a measurement task.",
+      "knowledge_gained": [
+        "The map legend says dotted routes mark temporary crossings rather than ordinary paths.",
+        "The bridge inspection from 3:30 to 5:00 overlaps the 4:00 activity.",
+        "A blue pencil mark beside the inspection entry matches the dotted bridge route.",
+        "The dotted bridge is the only station route affected during the activity.",
+        "A solid north loop connects the same two marked map points as the dotted bridge."
+      ],
+      "facts_established": [
+        "The fourth station was intentionally paused rather than accidentally misplaced.",
+        "The map distinguishes ordinary solid paths from temporary dotted crossings.",
+        "The inspection result is not yet known.",
+        "The north loop is a possible alternate route, but its suitability has not yet been tested."
+      ],
+      "clues_added": [
+        "The map legend defines the dotted bridge as a temporary crossing.",
+        "The blue pencil mark links the bridge inspection to the missing station.",
+        "The north loop has the same endpoints as the dotted bridge."
+      ],
+      "objects_changed": [
+        "Deniz crossed out the accidental-misplacement hypothesis on her clipboard and noted that the evidence points to an intentional pause.",
+        "Deniz recorded that the north loop is a possible alternate route and must be measured.",
+        "Deniz placed the dotted strip beside the ruler and string for the next investigation."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "How the north loop compares with the dotted bridge.",
+        "What measurement task the replacement station should contain.",
+        "Whether the north loop can serve as a safe substitute during the inspection."
+      ],
+      "threads_resolved": [
+        "The accidental-misplacement explanation has been rejected by the combined map, legend, schedule, and timing evidence."
+      ],
+      "handoff_state": "Deniz knows the bridge station was deliberately paused because the dotted crossing is under inspection during the 4:00 activity. She has identified the solid north loop as a route connecting the same two map points, but she has not yet measured either route or decided what the replacement instruction should say."
+    },
+    {
+      "scene": 4,
+      "purpose": "Test the remaining pattern with ordinary tools and determine what the missing measurement must compare.",
+      "word_count": 627,
+      "location": "Public learning space at the station-four table beside the wall map and schedule.",
+      "character_goal": "Deniz must decide how to replace the paused bridge activity accurately and safely before visitors arrive at 4:00.",
+      "knowledge_gained": [
+        "The dotted bridge measures about three centimeters on the map, representing roughly sixty meters.",
+        "The north loop measures just under six centimeters, representing roughly one hundred twenty meters.",
+        "Repeated measurements produce the same comparison: the north loop is about twice as long as the dotted bridge.",
+        "The north loop is a continuous route between the same two marked points."
+      ],
+      "facts_established": [
+        "The north loop is longer than the dotted bridge but remains usable as a continuous mapped route.",
+        "The completed stations follow a symbol, matching object, and measurement-task pattern.",
+        "Because the bridge is under inspection during the activity, station four should not ask visitors to treat it as an open route."
+      ],
+      "clues_added": [
+        "The two routes have the same endpoints but different measured lengths.",
+        "A route-comparison task fits the established station pattern better than an untested bridge-length task."
+      ],
+      "objects_changed": [
+        "Deniz measured both routes with the existing ruler and string.",
+        "Deniz recorded the approximate route lengths and drafted a possible comparison task on her clipboard.",
+        "The ruler and string remain beside the dotted bridge label strip."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Whether to replace the missing station with the tested route-comparison activity.",
+        "How to explain clearly that the longer north loop is currently usable."
+      ],
+      "threads_resolved": [
+        "The north loop has been tested and shown to connect the same points continuously.",
+        "The remaining measurement should compare the dotted bridge and the north loop rather than pretend the bridge is open."
+      ],
+      "handoff_state": "Deniz has repeatedly measured both routes: the dotted bridge is about sixty meters and the continuous north loop about one hundred twenty meters. She knows the loop is longer but usable during the bridge inspection. She predicts that station four should compare the two routes, but she has not yet written or clipped up the final replacement instruction."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deliver the decisive application by combining all clues into a safe, accurate replacement.",
+      "word_count": 641,
+      "location": "Public learning space at station four beside the wall map, schedule, ruler, string, and visitor materials.",
+      "character_goal": "Deniz must make the 4:00 activity accurate and safe by replacing the paused bridge instruction with a tested route-comparison task.",
+      "knowledge_gained": [
+        "The station pattern can be preserved by changing the measurement task from measuring one route to comparing two routes.",
+        "The map symbol, legend, schedule, matching endpoints, and repeated measurements together support using the north loop.",
+        "A clear replacement is safer and more useful than leaving station four blank."
+      ],
+      "facts_established": [
+        "The dotted bridge is closed during the activity because it is under inspection.",
+        "The north loop is about 120 meters, compared with about 60 meters for the dotted bridge.",
+        "The north loop is the currently usable route even though it is longer."
+      ],
+      "clues_added": [
+        "The replacement card explicitly marks the dotted bridge as closed during the activity.",
+        "The replacement card asks visitors to compare the two routes and choose the north loop.",
+        "The card uses matching solid-loop and dotted-bridge symbols connected to the map."
+      ],
+      "objects_changed": [
+        "Deniz wrote a replacement station-four card.",
+        "Deniz clipped the replacement card securely to the station-four clipboard.",
+        "Deniz left the ruler and string beside the card for visitors to use.",
+        "Deniz placed the original dotted bridge label strip beneath the replacement card."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Whether visitors understand the revised comparison activity."
+      ],
+      "threads_resolved": [
+        "What station four should instruct visitors to do.",
+        "Whether to preserve, cancel, or replace the route activity.",
+        "How to direct visitors away from the inspected bridge without claiming its inspection result."
+      ],
+      "handoff_state": "Station four now has an honest replacement card. It tells visitors that the dotted bridge is closed during the activity, asks them to compare its approximately 60-meter route with the approximately 120-meter continuous north loop, and directs them to choose the north loop. The card is clipped in place with the ruler and string beside it. Visitors have not yet begun, and Deniz is ready to watch whether they understand the revised activity."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the revised activity working and close the main thread with a documented, transferable lesson.",
+      "word_count": 633,
+      "location": "Public learning space, with visitors using all four activity stations and the north-loop route on the wall map.",
+      "character_goal": "Deniz has prepared and demonstrated an accurate, safe activity, then documented the tested replacement for future use.",
+      "knowledge_gained": [
+        "Visitors can follow the repeated symbol, matching object or route, and measurement pattern.",
+        "Visitors understand that station four compares the closed dotted bridge with the usable north loop.",
+        "The revised activity works without sending anyone across the inspected bridge."
+      ],
+      "facts_established": [
+        "The dotted bridge remains closed during the activity; its inspection result is still unknown.",
+        "The north loop connects the same endpoints and is the route visitors use.",
+        "The documented measurements are about 60 meters for the dotted bridge and about 120 meters for the north loop."
+      ],
+      "clues_added": [
+        "Visitors independently confirmed the route comparison using the map, string, ruler, and scale.",
+        "The replacement card's clear label prevented visitors from mistaking the dotted bridge for the current route."
+      ],
+      "objects_changed": [
+        "Deniz recorded the route measurements, the reason for the replacement, and the safe-choice instruction in the activity folder.",
+        "The replacement card, ruler, and string remain secured at station four.",
+        "The original dotted bridge label remains visible beneath the replacement card."
+      ],
+      "relationships_changed": [
+        "Visitors now understand how station four fits the pattern used by the first three stations."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The revised activity has been successfully used.",
+        "Visitors have been directed to the tested north loop rather than the inspected bridge.",
+        "The missing-card problem has been resolved through clear communication and documentation."
+      ],
+      "handoff_state": "The learning activity is functioning accurately and safely. Visitors used the symbol-object-measurement pattern, compared the approximately 60-meter dotted bridge with the approximately 120-meter continuous north loop, and chose the north loop without crossing the inspected bridge. Deniz recorded the measurements and the reason for the change, while leaving the inspection result unknown and the bridge station clearly labeled for later review."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "At fifteen, Deniz was old enough to be trusted with the room before opening time—and young enough to check the same instruction twice before trusting it. She moved along the public learning space with a clipboard tucked under one arm, straightening labels and setting rulers beside the small maps. The room was quiet except for the soft scrape of chairs and the click of a wall clock.\n\nStations one, two, and three were ready. Each had a map, a labeled object, and a card clipped at eye level. Station four had the same small table and the same empty clip, but no card.\n\nDeniz stopped.\n\n“Maybe it was never printed,” she murmured. She checked the supply tray beneath the desk. Blank paper, spare clips, and two pencils filled it, but there was no extra instruction card. A printing error was possible. So was a simple setup mistake: perhaps the card had been placed on another table or slipped behind one of the labeled objects.\n\nShe looked at the wall map. The four stations seemed connected to different places in the room and around the grounds. One route led toward the bridge marked on the map. Beside the map, the schedule showed the afternoon activity beginning at 4:00. A separate line read: “Bridge inspection: 3:30–5:00.” Deniz read it again. Visitors could arrive at four while the bridge was still being inspected.\n\nThat made another explanation possible. Maybe someone had removed station four on purpose because its route might not be available. But the empty clip offered no answer, and the room held no note explaining a change. The labeled objects gave Deniz no certainty either. They simply sat where they belonged: a compass, a measuring wheel, and a small wooden landmark.\n\nDeniz glanced at the clock. There was time to investigate, but not time to invent something and hope it worked. If she guessed the missing instruction, visitors might follow it without knowing whether the route was open.\n\nShe placed the clipboard on station four and drew three headings: “What repeats?” “What is missing?” and “What can be checked?” Writing the questions down made the uncertainty manageable without making it disappear. Then she picked up the first completed card.\n\n“I’ll follow the pattern,” she said quietly. “The room has to show me more than one explanation.”\n\nShe began comparing the stations, leaving the empty clip untouched until she understood what belonged there.\n\nDeniz laid the first three cards side by side on the station-four table. They were not written in exactly the same words, but their structure repeated.\n\nFirst came a map symbol. Then came the name of an object. Last came a task involving measurement.\n\nStation one showed a winding-path symbol, followed by COMPASS, and asked visitors to measure the direction change between two marked points. Station two showed a triangle, followed by WOODEN LANDMARK, and asked them to compare its height with the height marked on the map. Station three showed a wheel symbol, followed by MEASURING WHEEL, and asked visitors to measure a short route.\n\nDeniz tapped each section with her pencil. “Symbol, object, measurement,” she said. “Not just a place to look at.”\n\nThe empty fourth clip sat above the table. She checked the floor, the nearby shelves, and the back of the wall map. Nothing had fallen there. Then she crouched and looked underneath the clip itself.\n\nA thin strip of paper was stuck beneath its lower edge.\n\nDeniz eased it free. A small piece of adhesive still clung to the back, slightly dusty at the corners. The clip had been turned outward, as if it had been pulled away and then left in that position.\n\nOn the front of the strip was a single printed symbol: a bridge made of short blue dots.\n\nNo object name followed it. No question appeared underneath. There was only the dotted bridge and a blank stretch of paper.\n\nDeniz carried the strip to the wall map. Near the grounds, one route was drawn as the same dotted blue bridge. She held the strip beside it, matching the marks carefully. The symbol belonged to station four.\n\n“But this isn’t the card,” she said.\n\nShe returned to the table and compared the strip with the other stations. Each complete card had enough information to guide a visitor from symbol to object to measurement. The recovered piece supplied only the first part.\n\nFor a moment, the simplest explanation seemed likely. Someone might have misplaced the rest of the card during setup. Perhaps the strip had been torn away by accident, while the full instruction had slid behind a table or been put with another station’s papers. The outward-turned clip supported that idea, at least a little. Deniz searched the supply tray again, then checked the folders beneath the clipboard. She found blank paper, spare clips, and old activity sheets, but no fourth card.\n\nThe bridge-inspection line on the schedule caught her eye from across the room: 3:30–5:00. The activity still began at four.\n\nDeniz did not yet know whether that timing explained the missing instruction or was merely an unlucky coincidence. She placed the dotted strip beside the three complete cards instead of filling in the blank herself.\n\n“The pattern tells me what is missing,” she said. “It doesn’t tell me yet why it’s missing.”\n\nShe wrote beneath her earlier questions: “Fourth symbol: dotted bridge. Object and measurement task unknown.” Then she turned back to the map, ready to check what the symbol actually meant.\n\nDeniz lifted the dotted strip beside the wall map and searched for a key. The legend was printed in a narrow box at the lower corner, partly hidden by the table’s shadow.\n\nSolid blue lines meant regular paths. Short dotted lines meant temporary crossings—routes that could be used only when they were open.\n\nShe read the sentence twice. Then she looked at the dotted bridge on the map. It was not simply another path with a decorative symbol. Its status could change.\n\nDeniz turned toward the schedule. The bridge inspection was listed from 3:30 to 5:00, and the activity began at 4:00. A small blue pencil mark sat beside the inspection entry. At first she thought it was a check mark someone had forgotten to erase. Then she noticed the color matched the dotted bridge on the map.\n\nShe carried the strip over and held it next to the schedule. The blue dots on the paper and the blue pencil mark were not identical—the pencil mark was rougher—but they pointed to the same thing.\n\n“Temporary crossing,” Deniz murmured. “Inspection during the activity.”\n\nThe room suddenly seemed more organized. The missing card was not lost in the way she had imagined. If someone had misplaced it, the empty clip and the strip beneath it would be a strange coincidence. More importantly, the schedule explained why a bridge instruction should not be waiting for visitors at four.\n\nShe checked the other three stations against the map. The winding path at station one was open. The landmark at station two stood beside its ordinary route. The measuring-wheel station used a solid path. Only station four led along the dotted bridge, the only route marked as a temporary crossing and the only one affected by the inspection during the activity.\n\nDeniz crossed out “misplaced?” on her clipboard, but did not erase it completely. She drew a line beneath it and wrote: “Evidence points to intentional pause.”\n\nThat still did not tell her what visitors were supposed to measure. The repeated pattern required an object and a measurement task. The label strip supplied the bridge symbol, but the legend supplied only its meaning. It did not say whether visitors should measure the bridge’s length, compare its route, or do something else entirely.\n\nDeniz traced the dotted line with her finger from one marked point to the other. Then she noticed a second route. A solid blue line curved north from the same starting point, bent around the edge of the grounds, and returned to the same ending point. The map labeled it the north loop.\n\nShe compared the two endpoints carefully. The dotted bridge and the solid loop connected the same pair of marked points. The loop looked longer, but Deniz stopped herself before trusting her eyes. A map could make a curve seem shorter or longer depending on how it was drawn.\n\nShe wrote on the clipboard: “Possible alternate route: north loop. Same endpoints. Must measure.”\n\nThe missing card’s purpose was becoming clearer, but not complete. It had probably been held back because the original bridge route could not be treated as open. Yet the safe substitute still needed to be tested, and the measurement task still needed to be determined from the whole pattern—not from one symbol or one schedule mark.\n\nDeniz placed the dotted strip beside her ruler and string on the table. The inspection would not finish before the visitors arrived. She had time to compare the routes, but not time to guess.\n\nDeniz began with the map scale printed beside the legend. She placed the ruler along the dotted bridge from one marked point to the other and read the distance: three centimeters. The scale showed that this represented about sixty meters.\n\nThat measurement was quick, but quick was not the same as reliable. The bridge line was nearly straight, so the ruler worked well enough for the map. The north loop was different. Its line curved around the edge of the grounds, bent twice, and returned to the second point.\n\nDeniz took the piece of string from the table. She pressed one end against the north loop’s starting point and carefully followed every bend, keeping the string on the blue line. At the ending point, she pinched the string and laid it beside the ruler.\n\n“Almost six centimeters,” she said. “About one hundred twenty meters.”\n\nThe loop was twice as long on the map. That matched what it looked like, but Deniz did not write the result down yet. She had learned that a pattern was useful only if it survived checking.\n\nShe measured the north loop again, this time starting at the other marked point and tracing toward the first. The string reached the same place on the ruler: just under six centimeters. Then she measured the dotted bridge once more. Three centimeters again.\n\nDeniz wrote both results on her clipboard:\n\n“Dotted bridge: about 60 m. North loop: about 120 m. Same endpoints. Loop is longer.”\n\nShe looked from the numbers to the three completed station cards. Station one used a winding-path symbol, a compass, and a task about direction changes. Station two paired a triangle with the wooden landmark and asked visitors to compare height. Station three used the wheel symbol, the measuring wheel, and a route measurement.\n\nThe cards were not just lists of unrelated objects. Each one moved in the same order: identify something, find its matching object, then test a feature with a measurement. The symbol at station four identified the dotted bridge. But the bridge’s condition made a simple bridge-length task impossible to use honestly during the activity. Visitors could not be sent to measure a crossing that was under inspection.\n\nDeniz tapped the ruler against the clipboard. The map offered a better comparison. Both routes joined the same two points. One was shorter but temporary; the other was longer and continuous. Measuring only the bridge would describe the route, but comparing the two routes would explain the choice visitors actually needed to make.\n\nShe drafted a sentence beneath the measurements: “Possible station-four task: compare the dotted bridge route with the north loop.”\n\nThen she paused. Possible was important. The sentence was a prediction, not yet the finished instruction. She still had to decide whether changing the station would preserve the activity or make it confusing. The schedule said the inspection continued until five, so the bridge could not be treated as open at four. The north loop, however, remained connected on the map and had a measured length.\n\nDeniz ran the string over the loop one final time, checking that it never broke at a gap or crossed a route that led somewhere else. It followed one continuous line from the first point to the second.\n\nShe gathered the string and ruler, leaving the numbers visible beside the dotted label strip. The original bridge task could not simply be restored. But the pattern had not disappeared. It had shifted from measuring one route to comparing two, and the comparison had produced a clear result: the longer north loop was the usable route for now.\n\nDeniz did not clip up a replacement card yet. First, she needed to write the change so that visitors would understand both what had changed and why.\n\nDeniz read her draft again, then looked at the evidence spread across the table. The dotted bridge label identified station four. The map legend said dotted routes were temporary crossings. The schedule showed an inspection from 3:30 to 5:00, which covered the entire activity. The north loop joined the same two points, and her repeated measurements showed that it was longer but continuous.\n\nNo single clue answered the problem. Together, they did.\n\nShe pulled a fresh card from the stack and wrote the station heading at the top:\n\n“STATION 4: COMPARE THE ROUTES”\n\nUnder it, she added:\n\n“Find the dotted bridge route on the map. It is closed during today’s activity because it is under inspection. Do not use it.”\n\nDeniz stopped with her pencil above the card. The sentence was accurate. It did not claim that the bridge was damaged, unsafe forever, or already inspected. It only described what the schedule and map required at four o’clock.\n\nShe continued:\n\n“Measure or use the recorded measurements for the dotted bridge and the solid north loop. Which route is longer? Which route can be used now?”\n\nAt the bottom, she wrote the results clearly:\n\n“Dotted bridge: about 60 m.\nNorth loop: about 120 m.\nChoose the north loop.”\n\nShe read the card from the beginning. A visitor could identify the symbol, compare the matching routes, use a measurement, and make a choice. The sequence still worked: map symbol, route, measurement. It was the same pattern as the first three stations, but the measurement task had changed because the bridge’s status changed.\n\nDeniz considered leaving the original station blank and placing a note beside it. That would be simpler, but it would also leave visitors wondering whether they had missed something. Worse, someone might follow the dotted line before noticing the schedule. A clear replacement was safer than a silent gap.\n\nShe checked the map one more time. The north loop’s solid line ran from the first marked point around the grounds and back to the second. Her string measurement had followed every bend. It was not the shortest route, but it was the route that remained continuous during the inspection.\n\n“Longer does not mean wrong,” Deniz murmured. “It means the choice has to use the conditions.”\n\nShe did not add that sentence to the card. Visitors needed directions they could test, not a conclusion handed to them without evidence.\n\nInstead, she drew a small solid loop beside the words “north loop” and a small dotted bridge beside “closed during today’s activity.” The symbols matched the map, so no one would have to guess which lines she meant. She underlined “choose the north loop” once, then placed the card on the station-four clipboard.\n\nThe outward-turned clip caught the top edge. Deniz pressed it shut and gave the card a careful tug. It held.\n\nFor a moment, the table looked different. The empty space was gone, but Deniz had not filled it with an invented bridge measurement. She had used the missing station’s symbol, the room’s repeated format, the legend, the schedule, and the tested route lengths to make a new instruction that belonged there.\n\nShe set the ruler and string beside the clipboard, leaving them available for visitors who wanted to check the numbers. Then she moved the dotted bridge label strip beneath the new card, where it remained visible as the station’s original clue.\n\nAcross the room, the clock moved closer to four. Deniz glanced at the unopened visitor folders and then back at station four. The activity was ready, but its success would depend on whether people understood the change. She would watch the first group carefully and explain the comparison if they needed it.\n\nFor now, the instruction was honest and specific: compare both routes, recognize that the bridge was closed during the activity, and use the longer north loop.\n\nAt four o’clock, the first visitors gathered near station one. Deniz stood beside the table, ready to answer questions without taking over.\n\nA girl traced the winding-path symbol on the first card, then picked up the compass. Her partner read the instruction about counting direction changes. At station two, they matched the triangle with the wooden landmark and compared its height. At station three, another pair rolled the measuring wheel along the marked route and wrote down the result.\n\nThe pattern was beginning to show itself: identify the symbol, find the matching object or route, and measure something carefully.\n\nWhen the group reached station four, one visitor pointed to the dotted bridge symbol on the original strip beneath the card. “Is that the route we’re supposed to take?”\n\nDeniz shook her head. “Not today. Read the first instruction on the replacement card.”\n\nThe visitor read aloud, “The dotted bridge is closed during today’s activity because it is under inspection. Do not use it.” He looked toward the wall map, where the dotted line ended at the same two marked points as the solid north loop.\n\n“So we compare them instead?”\n\n“Exactly.” Deniz handed him the string. “You can check the recorded measurements, or measure the routes again. Follow every bend in the solid loop.”\n\nThe visitors spread the string along the map. It reached about three centimeters across the dotted bridge route and nearly six along the north loop. They checked the scale and saw the same comparison Deniz had recorded: about sixty meters against about one hundred twenty.\n\n“The loop is twice as long,” the girl said.\n\n“And it’s the one we can use now,” her partner added.\n\nNo one moved toward the door leading to the bridge. Instead, the group marked the north loop on their activity sheet and discussed why a longer route could still be the correct choice. The card had not told them merely to obey a change. It had shown them what to compare and left the evidence visible on the map.\n\nA younger visitor from the next group leaned over the table. “Why didn’t you just write the bridge distance and keep the old activity?”\n\n“Because that would have treated the bridge as available,” Deniz said. “The schedule says the inspection overlaps this activity. The map shows the loop has the same endpoints, and measuring tells us how the choices differ.” She tapped the ruler beside the card. “The pattern helped me decide what to check before I changed the instruction.”\n\nShe heard how close that sounded to an explanation, so she stopped there. The visitors were already testing the routes themselves.\n\nWhile they continued, Deniz opened the clipboard’s final page and wrote:\n\n“Station 4 revised before 4:00 activity. Dotted bridge route: temporary crossing, closed during inspection, about 60 m. Solid north loop: same endpoints, continuous, about 120 m. Replacement task: compare routes and choose the north loop. Reason: schedule and map required a usable alternative; measurements confirmed the comparison.”\n\nShe checked that she had not written the inspection’s result. That was still unknown, and it did not need to be guessed. She added the date and her initials, then slid the page into the activity folder.\n\nAt the station, a visitor carefully read the card again and clipped the string back beside the ruler. The original bridge label remained visible beneath the replacement, while the bold notice made its current status impossible to miss.\n\nDeniz watched the group leave along the marked north-loop route. The activity had worked without sending anyone across the inspected bridge. More importantly, the empty clip had become a clear instruction because she had tested the repeated pattern instead of filling the gap with a guess. She tightened the clip once more and left station four ready for the next group.",
+  "word_count": 3396,
+  "target_words": 3800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.002951,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.89,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10756,
+      "output_tokens": 166,
+      "cost": 0.000451752
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.89,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10756,
+      "output_tokens": 166,
+      "cost": 0.000451752
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that fully satisfies the StoryContract and all nine required constraints. Deniz is authentically fifteen: independent, methodical, appropriately cautious about guessing, and capable of reasoning through a layered practical puzzle. The narrative voice matches the target age precisely—clear, direct, and internally reflective without being overwrought. The story executes the theme flawlessly: testing patterns against evidence (map legend, schedule, measurements, repeated station format) produces a safe, honest solution that guessing would have missed. All six scenes maintain tight continuity; each clue is available before it is needed; the false hypothesis (accidental misplacement) is clearly rejected by combined evidence; and the final solution integrates multiple earlier clues (symbol, legend, schedule, endpoints, measurements, station format). The ending is decisive and complete: Deniz replaces the unsafe instruction, documents the reasoning, and the activity functions safely. Word count is approximately 3,796, within target. The prose is engaging without being condescending, the reasoning is transparent without becoming didactic, and the resolution honors both the practical constraints and the learning principle. The only minor observation—not a defect—is that creativity scores a 4 rather than 5 because the core puzzle structure, while well-executed, follows a fairly conventional pattern-recognition arc. This is entirely appropriate for the target age and theme, and does not diminish the story's quality. The story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3396,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.89,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 10756,
+          "output_tokens": 166,
+          "cost": 0.000451752
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 5,
+          "coherence": 5,
+          "character_consistency": 5,
+          "age_appropriateness": 5,
+          "creativity": 4,
+          "style_quality": 5,
+          "continuity": 5,
+          "ending_quality": 5
+        },
+        "average": 4.875,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that fully satisfies the StoryContract and all nine required constraints. Deniz is authentically fifteen: independent, methodical, appropriately cautious about guessing, and capable of reasoning through a layered practical puzzle. The narrative voice matches the target age precisely—clear, direct, and internally reflective without being overwrought. The story executes the theme flawlessly: testing patterns against evidence (map legend, schedule, measurements, repeated station format) produces a safe, honest solution that guessing would have missed. All six scenes maintain tight continuity; each clue is available before it is needed; the false hypothesis (accidental misplacement) is clearly rejected by combined evidence; and the final solution integrates multiple earlier clues (symbol, legend, schedule, endpoints, measurements, station format). The ending is decisive and complete: Deniz replaces the unsafe instruction, documents the reasoning, and the activity functions safely. Word count is approximately 3,796, within target. The prose is engaging without being condescending, the reasoning is transparent without becoming didactic, and the resolution honors both the practical constraints and the learning principle. The only minor observation—not a defect—is that creativity scores a 4 rather than 5 because the core puzzle structure, while well-executed, follows a fairly conventional pattern-recognition arc. This is entirely appropriate for the target age and theme, and does not diminish the story's quality. The story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000451752,
+      "final_judge_cost": {
+        "usd": 0.015992,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 61.21,
+    "scene_stage_seconds": 127.393,
+    "final_stage_seconds": 7.571,
+    "total_pipeline_seconds": 196.175
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.01466323,
+    "scene_generation_usd": 0.02092905,
+    "scene_continuity_evaluator_usd": 0.001088052,
+    "whole_continuity_evaluator_usd": 0.000451752,
+    "whole_continuity_evaluator_usd_total": 0.000451752,
+    "semantic_judge_usd": {
+      "usd": 0.015992,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.015992,
+    "scene_jev_usd": 0.001088052,
+    "whole_jev_usd": 0.000451752,
+    "whole_jev_usd_total": 0.000451752,
+    "final_haiku": {
+      "usd": 0.015992,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.015992,
+    "total_pipeline_usd": 0.053124084
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 10756,
+      "output_tokens": 166,
+      "cost": 0.000451752
+    },
+    "semantic_judge": {
+      "input_tokens": 13822,
+      "output_tokens": 434,
+      "total_tokens": 14256
+    },
+    "whole_jev": {
+      "input_tokens": 10756,
+      "output_tokens": 166,
+      "cost": 0.000451752
+    },
+    "final_haiku": {
+      "input_tokens": 13822,
+      "output_tokens": 434,
+      "total_tokens": 14256
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
