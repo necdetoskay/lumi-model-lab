@@ -82,7 +82,26 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(payload["max_tokens"], 1200)
         self.assertEqual(payload["response_format"], {"type": "json_object"})
 
-    def test_luna_omits_temperature_and_pins_provider_routing(self) -> None:
+    def test_luna_is_qualification_ready_with_verified_metadata(self) -> None:
+        profile = require_qualification_runtime_profile("openai/gpt-5.6-luna")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["canonical_slug"], "openai/gpt-5.6-luna-20260709")
+        self.assertEqual(profile["metadata"]["context_tokens"], 1050000)
+        self.assertEqual(profile["metadata"]["max_input_tokens"], 922000)
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 128000)
+        self.assertEqual(profile["metadata"]["reasoning"]["default_effort"], "medium")
+        self.assertEqual(
+            profile["metadata"]["pricing_usd_per_million_tokens"],
+            {
+                "input": 0.20,
+                "output": 1.20,
+                "cache_read": 0.02,
+                "cache_write": 0.25,
+            },
+        )
+
+    def test_luna_omits_temperature_and_pins_standard_openai_provider(self) -> None:
         payload = normalize_openrouter_request(
             "openai/gpt-5.6-luna",
             {
@@ -93,14 +112,67 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         )
         self.assertNotIn("temperature", payload)
         self.assertEqual(payload["max_tokens"], 4000)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(
+            payload["reasoning"],
+            {"effort": "medium", "exclude": True},
+        )
         self.assertEqual(
             payload["provider"],
             {
                 "order": ["openai"],
                 "allow_fallbacks": False,
                 "require_parameters": True,
-                "sort": "latency",
             },
+        )
+        self.assertNotIn("service_tier", payload)
+
+    def test_luna_story_pipeline_is_uncapped_json_object_medium_reasoning(self) -> None:
+        for request_class in ("story_plan", "scene_story", "scene_repair"):
+            payload = normalize_openrouter_request(
+                "openai/gpt-5.6-luna",
+                {
+                    "temperature": 0.7,
+                    "max_tokens": 9999,
+                    "seed": 77,
+                },
+                request_class=request_class,
+                structured_output=True,
+            )
+            self.assertNotIn("temperature", payload)
+            self.assertNotIn("max_tokens", payload)
+            self.assertEqual(payload["seed"], 77)
+            self.assertEqual(
+                payload["reasoning"],
+                {"effort": "medium", "exclude": True},
+            )
+            self.assertEqual(payload["response_format"], {"type": "json_object"})
+            self.assertNotIn("stream", payload)
+            self.assertEqual(
+                payload["provider"],
+                {
+                    "order": ["openai"],
+                    "allow_fallbacks": False,
+                    "require_parameters": True,
+                },
+            )
+
+    def test_luna_teacher_story_is_uncapped_medium_reasoning(self) -> None:
+        payload = normalize_openrouter_request(
+            "openai/gpt-5.6-luna",
+            {
+                "temperature": 0.8,
+                "max_tokens": 7000,
+                "seed": 42,
+            },
+            request_class="teacher_story",
+        )
+        self.assertNotIn("temperature", payload)
+        self.assertNotIn("max_tokens", payload)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(
+            payload["reasoning"],
+            {"effort": "medium", "exclude": True},
         )
 
     def test_glm_flash_preserves_lab_verified_reasoning_and_budget(self) -> None:
