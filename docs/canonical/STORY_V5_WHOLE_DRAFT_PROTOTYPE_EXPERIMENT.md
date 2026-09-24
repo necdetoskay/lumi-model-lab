@@ -816,3 +816,86 @@ This does not invalidate the acceptance result, but reinforces the existing rule
 
 > Structured acceptance fields are authoritative; free-form judge prose is explanatory evidence only. Haiku scores are not a high-resolution ranking instrument.
 
+
+
+## Epistemic-state hardening validation — 36024864692
+
+Evidence:
+
+`evidence/story-v5-production-like-36024864692`
+
+The production-like context case was rerun after adding explicit epistemic mutation classes.
+
+The authority no longer permits the bounded sound explanation to be stored as `WORLD_FACT_SET`.
+
+It permits:
+
+- mutation type: `WORLD_HYPOTHESIS_SET`;
+- field: `commons.sound_hypotheses`;
+- epistemic class: `BEST_SUPPORTED_HYPOTHESIS`.
+
+Result:
+
+- accepted: true;
+- 5 dynamic scenes;
+- 1,468 / 1,500 words;
+- repetition ratio: 0.0;
+- no length normalization;
+- no semantic repair;
+- JEV context authority: 0.97;
+- all JEV dimensions above threshold;
+- Haiku accepted;
+- outcome validation errors: none;
+- `commit_ready=true`;
+- elapsed: 82.466 seconds.
+
+The accepted mutation set preserved four distinct authority classes:
+
+- `CHARACTER_KNOWLEDGE`;
+- `BEST_SUPPORTED_HYPOTHESIS`;
+- `THREAD_STATE`;
+- `WORKFLOW_STATE`.
+
+The world mutation was:
+
+`WORLD_HYPOTHESIS_SET / commons.sound_hypotheses / BEST_SUPPORTED_HYPOTHESIS`
+
+and explicitly retained the statement that the explanation may not account for every occurrence.
+
+All proposals copied their application-owned base revisions and fingerprints exactly.
+
+The deterministic contract suite also passed after adding a fail-closed test proving that a proposal cannot replace an authorized `BEST_SUPPORTED_HYPOTHESIS` epistemic class with `FACT`.
+
+Decision:
+
+> Epistemic status is part of state authority and optimistic-concurrency identity. Story acceptance does not authorize uncertainty collapse.
+
+## v5 status after state + context hardening
+
+The leading candidate now has evidence for:
+
+- dynamic model-owned scene count;
+- whole-draft generation;
+- deterministic length/repetition gates;
+- whole-story JEV;
+- final semantic acceptance;
+- application-compiled Character + World + Opportunity + Canon + Saga + memory context;
+- knowledge-boundary preservation;
+- typed mutation authority;
+- base revision/fingerprint binding;
+- epistemic-class preservation;
+- fail-closed deterministic contract tests.
+
+Still not proven:
+
+1. atomic application commit;
+2. idempotent replay;
+3. conflict behavior when a base revision/fingerprint changes after story generation;
+4. durable async recovery across provider/process failure;
+5. larger production-like reliability sample.
+
+Next engineering target:
+
+`Validated StateMutationProposal[] -> Atomic/Idempotent Commit Simulator -> conflict/no-partial-write tests`
+
+No real LUMI database write is authorized by this experiment.
