@@ -74,9 +74,19 @@ Notable examples:
 
 ### GPT-5.6 Luna
 
-- temperature is omitted
-- OpenAI routing is pinned
-- provider fallback is disabled by the application contract
+Verified qualification profile:
+
+- exact model id: `openai/gpt-5.6-luna`
+- verified against the OpenRouter model page and live endpoint metadata on 2026-09-24
+- context window: 1,050,000 tokens
+- pinned OpenAI standard endpoint max prompt: 922,000 tokens
+- max completion: 128,000 tokens
+- inputs: text, image, file; output: text
+- structured outputs, tool calling, reasoning, seed, and max_tokens are supported by the pinned OpenAI endpoint
+- temperature is not advertised by the pinned endpoint and is always omitted
+- provider routing is pinned to OpenAI with fallbacks disabled so Azure/Bedrock parameter differences cannot change qualification behavior
+- story-plan, scene-story, and scene-repair calls use `reasoning.effort=none`, exclude reasoning output, omit client `max_tokens`, keep seed, and use `json_object`
+- application-owned schema/state validation remains authoritative after JSON parsing
 
 ### GLM 5.3 Flash
 
