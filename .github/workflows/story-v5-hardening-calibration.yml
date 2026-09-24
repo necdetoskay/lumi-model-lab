@@ -1,0 +1,81 @@
+name: Story v5 Hardening Calibration
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-v5-hardening-calibration.txt
+
+permissions:
+  contents: write
+
+jobs:
+  calibrate:
+    runs-on: self-hosted
+    timeout-minutes: 40
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile hardening prototypes
+        run: |
+          python -m py_compile experiments/prototypes/story_v5_whole_draft_prototype.py
+          python -m py_compile experiments/prototypes/story_pairwise_judge_v1.py
+
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json
+
+      - name: Run typed-state age5 validation
+        shell: bash
+        run: |
+          set +e
+          mkdir -p runs/story_v5_hardening/typed-state
+          PYTHONPATH=. python experiments/prototypes/story_v5_whole_draft_prototype.py             --spec experiments/specs/v5-whole-draft/age5-500-nature.yaml             --state-authority experiments/state_authority/age5-500-nature.json             --output runs/story_v5_hardening/typed-state/result.json
+          echo "$?" > runs/story_v5_hardening/typed-state/exit-code.txt
+          exit 0
+
+      - name: Run blind order-swapped pairwise calibration
+        shell: bash
+        run: |
+          set +e
+          mkdir -p runs/story_v5_hardening/pairwise
+          PYTHONPATH=. python experiments/prototypes/story_pairwise_judge_v1.py             --spec experiments/specs/v5-whole-draft/age9-1500-exploration.yaml             --story-a experiments/pairwise_inputs/lantern-map-a-normalized-1410.txt             --story-b experiments/pairwise_inputs/lantern-map-b-first-draft-1783.txt             --output runs/story_v5_hardening/pairwise/result.json
+          echo "$?" > runs/story_v5_hardening/pairwise/exit-code.txt
+          exit 0
+
+      - name: Provider preflight after calibration
+        if: always()
+        run: python -m src.openrouter_preflight --json
+
+      - name: Archive calibration evidence
+        if: always()
+        shell: bash
+        run: |
+          DEST="experiments/results/story-v5-hardening/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp -R runs/story_v5_hardening/. "$DEST/" || true
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "typed_state_protocol": "state-mutation-authority.v1",
+            "pairwise_protocol": "story-pairwise-judge.v1",
+            "pairwise_judge": "anthropic/claude-sonnet-5"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): story v5 hardening calibration ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-hardening-${GITHUB_RUN_ID}"
