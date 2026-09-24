@@ -1028,6 +1028,32 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertTrue(result["accepted"])
         self.assertGreaterEqual(result["average"], 4.0)
 
+    def test_final_haiku_gate_requires_repair_targets_to_be_cleared(self):
+        payload = {
+            "scores": {
+                "instruction_following": 5,
+                "coherence": 5,
+                "character_consistency": 5,
+                "age_appropriateness": 5,
+                "creativity": 4,
+                "style_quality": 4,
+                "continuity": 4,
+                "ending_quality": 4,
+            },
+            "critical_failures": [],
+            "repair_targets": [
+                {
+                    "scene": 5,
+                    "repair_scene": 5,
+                    "issue": "Clarify the solution wording.",
+                }
+            ],
+            "summary": "Strong, but one local wording repair remains.",
+        }
+        result = validate_final_judge(payload)
+        self.assertFalse(result["accepted"])
+        self.assertGreaterEqual(result["average"], 4.0)
+
     def test_final_haiku_gate_rejects_critical_failure(self):
         payload = {
             "scores": {
