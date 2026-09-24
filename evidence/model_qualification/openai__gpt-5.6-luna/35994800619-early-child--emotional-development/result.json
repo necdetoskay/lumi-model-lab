@@ -1,0 +1,1738 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/early-child--emotional-development.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/early-child--emotional-development.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Space Between Words",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to keep playing happily with Sam at their familiar community playroom.",
+        "central_problem": "Deniz misunderstands Sam's quiet behavior and thinks Sam no longer wants to share their cardboard bus.",
+        "solution_principle": "Deniz notices feelings, checks what the evidence shows, and asks Sam clearly without blame.",
+        "theme_thread": "Feelings become easier to handle when they are named, checked, and spoken aloud.",
+        "ending_state": "Deniz and Sam repair the cardboard bus, understand the misunderstanding, and return to shared play.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or threatening behavior.",
+          "No premature explanation that fully solves the misunderstanding.",
+          "No benchmark, test, or instructional-story language.",
+          "No new subplot, disposable character, or unexplained object.",
+          "No simplistic moral lecture."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz's shared play with familiar Sam and the small behavior that changes Deniz's interpretation.",
+          "entry_state": "Deniz arrives at the familiar community playroom, ready to continue building a cardboard bus with Sam.",
+          "beats": [
+            "Sam says, \"Wait, Deniz,\" carries the bus behind a shelf, and closes the little cabinet.",
+            "Deniz sees Sam whispering with familiar helper Jo and feels left out, though Sam had invited Deniz to play earlier."
+          ],
+          "must_include": [
+            "The community playroom, Sam, and Jo are familiar parts of Deniz's regular life.",
+            "Deniz's evidence supports worry: Sam says wait, hides the shared bus, and does not explain.",
+            "Sam's evidence supports another reading: Sam invited Deniz and carefully carries the shared bus."
+          ],
+          "must_not_do": [
+            "Do not reveal why Sam moved the bus.",
+            "Do not let Deniz accuse Sam or solve the misunderstanding.",
+            "Do not use vocabulary, fear, or conflict beyond a four-year-old read-aloud story."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C4",
+            "C5",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz feels worried and believes Sam may not want to share the bus, but the reason remains unknown.",
+          "open_threads_after": [
+            "Why did Sam say wait and hide the shared bus?",
+            "Can Deniz check the worry before deciding what Sam meant?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Have Deniz name the feeling and begin checking the room for evidence instead of treating the worry as fact.",
+          "entry_state": "Deniz is worried beside the shelf, while Sam and Jo continue working behind it.",
+          "beats": [
+            "Deniz names the feeling: \"My tummy feels tight. I feel left out.\"",
+            "Deniz notices a glue bottle, a loose bus door, and Sam holding the door carefully.",
+            "Deniz asks Jo what happened, and Jo says Sam is fixing something but suggests asking Sam directly."
+          ],
+          "must_include": [
+            "Deniz's body feeling and simple emotion word are connected clearly.",
+            "Observation gives Sam a believable reason without proving the whole misunderstanding false.",
+            "Jo supports checking with Sam rather than deciding for Deniz."
+          ],
+          "must_not_do": [
+            "Do not have Jo disclose Sam's full plan.",
+            "Do not make Deniz's worry disappear because of one clue.",
+            "Do not turn Jo into a lecturer or introduce another problem."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4"
+          ],
+          "prior_evidence": [
+            "Sam said, \"Wait, Deniz,\" and moved the shared cardboard bus behind the shelf.",
+            "Sam had invited Deniz to build and play before moving the bus.",
+            "Jo was whispering with Sam when Deniz felt left out."
+          ],
+          "handoff": "Deniz now knows the bus may need fixing, but still wonders whether Sam wanted to keep the work away from them.",
+          "open_threads_after": [
+            "What does Sam mean by wait?",
+            "Will Deniz ask Sam about the hurt feeling?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Let Deniz gather one more concrete clue and prepare simple, non-blaming words for Sam.",
+          "entry_state": "Deniz has noticed the glue and loose door but still lacks Sam's explanation.",
+          "beats": [
+            "From nearby, Deniz sees a dry space beside the bus door where the red wheel can fit.",
+            "Deniz hears Sam tell Jo, \"Deniz can add the wheel when it is dry.\"",
+            "Deniz practices: \"I felt left out. Did you want me to wait?\""
+          ],
+          "must_include": [
+            "The red wheel connects directly to Deniz's earlier shared bus work.",
+            "Sam's words suggest inclusion later, while the closed cabinet still reasonably hurt Deniz.",
+            "Deniz prepares a question rather than planning blame or retreat."
+          ],
+          "must_not_do": [
+            "Do not let overhearing replace a direct conversation.",
+            "Do not make Deniz certain about Sam's intention yet.",
+            "Do not resolve trust before Deniz speaks with Sam."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Deniz named feeling left out and noticed the glue bottle and loose bus door.",
+            "Jo said Sam was fixing something but told Deniz to ask Sam directly.",
+            "The shared cardboard bus and Deniz's red wheel were established in Scene 1."
+          ],
+          "handoff": "Deniz has evidence of both care and exclusion, plus simple words for asking Sam what the waiting meant.",
+          "open_threads_after": [
+            "How will Sam explain the hidden repair?",
+            "Can both children name what they wanted?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Bring Deniz and Sam together at the repaired bus while keeping the emotional misunderstanding active.",
+          "entry_state": "The bus door is dry, and Sam brings the bus from behind the shelf to show Deniz.",
+          "beats": [
+            "Sam says, \"I fixed the door,\" while Deniz notices the cabinet is still between them.",
+            "Deniz says, \"I thought you did not want me,\" and Sam says, \"I wanted to fix it first.\"",
+            "Both pause because fixing the bus did not explain why Deniz felt shut out."
+          ],
+          "must_include": [
+            "The first exchange uses the prepared feeling and Sam's concrete reason.",
+            "Both perspectives remain believable: Deniz wanted to help, while Sam wanted to finish the repair.",
+            "The unresolved pause leads directly to a clearer conversation and shared action."
+          ],
+          "must_not_do": [
+            "Do not make either child cruel, villainous, or fully satisfied by the first explanation.",
+            "Do not add an apology that completes the repair.",
+            "Do not introduce a new setting, object, or character."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Deniz practiced asking whether Sam wanted them to wait.",
+            "Deniz heard Sam say the red wheel could be added when the bus was dry.",
+            "The glue, loose door, and hidden bus were established as concrete clues."
+          ],
+          "handoff": "Sam's repair is complete, but Deniz and Sam still need to explain the hurt and agree how to play together again.",
+          "open_threads_after": [
+            "Can Deniz and Sam say what each person meant?",
+            "What shared action will show the trust is repaired?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Resolve the central problem through a clear conversation, mutual understanding, and cooperative repair of the bus.",
+          "entry_state": "The repaired bus is ready, but Deniz still feels hurt and Sam still does not understand the hidden cabinet's effect.",
+          "beats": [
+            "Deniz says, \"I felt left out when you said wait and closed the cabinet. I wanted to help.\"",
+            "Sam explains, \"I wanted to fix the door for our bus. I thought wait meant you wanted me to do it.\"",
+            "They apologize simply, open the cabinet together, and let Deniz add the red wheel."
+          ],
+          "must_include": [
+            "The conversation names feelings, observations, intentions, and the mistaken meaning of wait.",
+            "Deniz and Sam each acknowledge the other person's believable perspective.",
+            "Adding the red wheel is the concrete action that repairs both bus and trust."
+          ],
+          "must_not_do": [
+            "Do not solve the problem through Jo speaking for either child.",
+            "Do not add a long moral lesson.",
+            "Do not introduce a larger danger or make the children use adult-level language."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Deniz practiced the question, \"Did you want me to wait?\"",
+            "Sam already explained that the bus door needed fixing first.",
+            "The red wheel was saved for Deniz to add after the bus became dry."
+          ],
+          "handoff": "Deniz and Sam understand the misunderstanding, have repaired the bus together, and are ready to play again.",
+          "open_threads_after": [
+            "How will their clearer words shape the next few minutes of shared play?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the repaired trust in ordinary play and close the story with a small, age-appropriate communication habit.",
+          "entry_state": "The bus stands ready, and Deniz and Sam have agreed on what happened.",
+          "beats": [
+            "Deniz and Sam play bus together; Sam says, \"I need a minute,\" and Deniz asks, \"Do you want help or wait?\"",
+            "Sam answers clearly, and Deniz smiles because the words leave room for both friends.",
+            "They drive the bus across the playroom to greet Jo and continue their familiar game."
+          ],
+          "must_include": [
+            "The new exchange echoes the original misunderstanding without repeating it exactly.",
+            "The ending shows changed behavior through play, not an adult explanation.",
+            "The community playroom and familiar relationships remain continuous."
+          ],
+          "must_not_do": [
+            "Do not reopen the misunderstanding.",
+            "Do not add a future mystery, new conflict, or extra lesson.",
+            "Do not end with a simplistic statement of the theme."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C3",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Deniz and Sam named their feelings and intentions in their direct conversation.",
+            "They opened the cabinet and repaired the bus together by adding Deniz's red wheel.",
+            "Sam and Deniz had already planned shared bus play before the misunderstanding."
+          ],
+          "handoff": "Deniz and Sam return to comfortable shared play, using clear words when a pause or helping choice is needed.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.94,
+        "goal_continuity": 0.93,
+        "constraint_coverage": 0.69,
+        "information_progression": 0.93,
+        "no_unexplained_dependencies": 0.89,
+        "no_early_resolution": 0.94,
+        "ending_coherence": 0.94
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.69
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.72,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3756,
+        "output_tokens": 185,
+        "cost": 0.000157752
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "The 'whispering with Jo' detail must be carefully written to feel natural and age-appropriate; if it reads as deliberately secretive, it may feel manipulative rather than innocent. Ensure Sam's tone and body language remain warm and inclusive despite the closed cabinet."
+        },
+        {
+          "scene": 2,
+          "risk": "Jo's role as a redirect (suggesting Deniz ask Sam directly) is correct, but Jo must not become a secondary problem-solver or authority figure. Jo should remain a familiar, supportive presence without explaining or over-managing."
+        },
+        {
+          "scene": 3,
+          "risk": "Overhearing Sam's words about the red wheel is a strong clue, but Deniz must not treat it as certainty. The plan correctly keeps the emotional hurt (the closed cabinet) as a separate, unresolved thread. Ensure Deniz's practiced question remains open and curious, not accusatory."
+        },
+        {
+          "scene": 4,
+          "risk": "The 'pause' after Sam's explanation is crucial. If it feels awkward or prolonged, it may confuse a 4-year-old reader. The pause should be brief and lead naturally into Scene 5's deeper conversation. Ensure the cabinet remains visible as a concrete symbol of the hurt."
+        },
+        {
+          "scene": 5,
+          "risk": "This is the emotional and narrative climax. The conversation must use simple, age-appropriate language while honoring both children's perspectives. Avoid making either child sound like they are delivering a lesson. The apology and shared action (adding the wheel) must feel like genuine repair, not a scripted resolution."
+        },
+        {
+          "scene": 6,
+          "risk": "The echo of 'I need a minute' / 'Do you want help or wait?' must feel like a natural habit Deniz has learned, not a forced callback. If it reads as too neat or instructional, it will undermine the story's authenticity. The ending should feel like ordinary play resuming, not a moral being stated."
+        }
+      ],
+      "summary": "This plan is strong and well-structured for the target age and theme. Causal continuity is explicit and age-appropriate: each scene follows naturally from the previous state, and Deniz's actions are motivated by the stable goal of returning to shared play. The protagonist's goal remains consistent throughout. Information accumulates without resets: the glue bottle, loose door, red wheel, and overheard words build a coherent picture that Deniz must integrate with the hurt feeling. No unexplained dependencies exist; all characters (Sam, Jo), objects (bus, wheel, glue, cabinet), and locations (playroom, shelf) are introduced before they are needed. The central problem is not solved until Scene 5, when Deniz and Sam have a direct conversation and repair the bus together. Scene 5 delivers the decisive payoff (mutual understanding and shared action), and Scene 6 resolves consequences consistently by showing the new communication habit in ordinary play. Constraint coverage is the only area flagged as below threshold (0.69 in the advisory). Review confirms that all nine required constraints are addressed in the plan: C1 (age-appropriate language and pacing are specified throughout), C2 (causality is explicit without didacticism), C3 (no combat; resolution through observation, communication, and cooperation), C4 (continuity is preserved across all six scenes), C5 (no mention of benchmark or test), C6 (no simplistic moral lecture; the theme is woven into action and dialogue), C7 (misunderstanding has believable evidence on both sides: Sam's care and Sam's exclusion), C8 (emotional resolution requires a concrete conversation and shared action), and C9 (target reader is exactly age 4 in read-aloud mode). The constraint_coverage score of 4 reflects minor risks in execution (e.g., ensuring Jo does not over-explain, ensuring the pause in Scene 4 is brief and natural, ensuring Scene 6's echo feels organic rather than instructional) rather than gaps in the plan itself. The plan is ready for prose development with attention to the scene-specific risks noted above.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.005116,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000157752,
+      "haiku": {
+        "usd": 0.009396,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 902,
+        "output_tokens": 4113,
+        "total_tokens": 5015
+      },
+      "jev": {
+        "input_tokens": 3756,
+        "output_tokens": 185,
+        "cost": 0.000157752
+      },
+      "haiku": {
+        "input_tokens": 4001,
+        "output_tokens": 1079,
+        "total_tokens": 5080
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    65,
+    78,
+    85,
+    85,
+    102,
+    85
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 65,
+      "word_count": 70,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz's shared play with familiar Sam and the small behavior that changes Deniz's interpretation.",
+        "entry_state": "Deniz arrives at the familiar community playroom, ready to continue building a cardboard bus with Sam.",
+        "beats": [
+          "Sam says, \"Wait, Deniz,\" carries the bus behind a shelf, and closes the little cabinet.",
+          "Deniz sees Sam whispering with familiar helper Jo and feels left out, though Sam had invited Deniz to play earlier."
+        ],
+        "must_include": [
+          "The community playroom, Sam, and Jo are familiar parts of Deniz's regular life.",
+          "Deniz's evidence supports worry: Sam says wait, hides the shared bus, and does not explain.",
+          "Sam's evidence supports another reading: Sam invited Deniz and carefully carries the shared bus."
+        ],
+        "must_not_do": [
+          "Do not reveal why Sam moved the bus.",
+          "Do not let Deniz accuse Sam or solve the misunderstanding.",
+          "Do not use vocabulary, fear, or conflict beyond a four-year-old read-aloud story."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C4",
+          "C5",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz feels worried and believes Sam may not want to share the bus, but the reason remains unknown.",
+        "open_threads_after": [
+          "Why did Sam say wait and hide the shared bus?",
+          "Can Deniz check the worry before deciding what Sam meant?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz came to the community playroom, where Sam and helper Jo were familiar faces. Sam had invited Deniz to build their cardboard bus. They made vroom sounds together.\n\nThen Sam said, “Wait, Deniz.” He carried the bus carefully behind a shelf and closed the little cabinet.\n\nDeniz watched Sam whisper with Jo. Sam did not explain. Deniz’s tummy felt tight. Maybe Sam did not want to share the bus anymore.",
+        "state_delta": {
+          "location": "The familiar community playroom, beside a shelf and its little cabinet.",
+          "character_goal": "Deniz still wants to play happily and share the cardboard bus with Sam.",
+          "knowledge_gained": [
+            "Sam invited Deniz to build and play before moving the bus.",
+            "Sam said, \"Wait, Deniz,\" and carried the bus behind the shelf.",
+            "Sam whispered with familiar helper Jo but did not explain."
+          ],
+          "facts_established": [
+            "Deniz, Sam, and Jo regularly know one another in the community playroom.",
+            "Deniz and Sam are building a cardboard bus together."
+          ],
+          "clues_added": [
+            "Sam carefully carried the shared bus.",
+            "Sam closed the little cabinet.",
+            "Sam whispered with Jo."
+          ],
+          "objects_changed": [
+            "The cardboard bus was moved behind the shelf.",
+            "The little cabinet was closed."
+          ],
+          "relationships_changed": [
+            "Deniz feels uncertain about whether Sam still wants to share the bus."
+          ],
+          "threads_opened": [
+            "Why did Sam say wait and hide the shared bus?",
+            "Can Deniz check the worry before deciding what Sam meant?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz stands worried beside the shelf, with a tight tummy, while Sam and Jo continue behind it. Deniz thinks Sam may not want to share the bus, but the reason remains unknown."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.269,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 70,
+          "usage": {
+            "input_tokens": 4379,
+            "output_tokens": 895,
+            "total_tokens": 5274
+          },
+          "cost": {
+            "usd": 0.0021686,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.9,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2300,
+          "output_tokens": 188,
+          "cost": 9.66e-05
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.9,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2300,
+            "output_tokens": 188,
+            "cost": 9.66e-05
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.522
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.792
+    },
+    {
+      "scene": 2,
+      "target_words": 78,
+      "word_count": 82,
+      "contract": {
+        "index": 2,
+        "purpose": "Have Deniz name the feeling and begin checking the room for evidence instead of treating the worry as fact.",
+        "entry_state": "Deniz is worried beside the shelf, while Sam and Jo continue working behind it.",
+        "beats": [
+          "Deniz names the feeling: \"My tummy feels tight. I feel left out.\"",
+          "Deniz notices a glue bottle, a loose bus door, and Sam holding the door carefully.",
+          "Deniz asks Jo what happened, and Jo says Sam is fixing something but suggests asking Sam directly."
+        ],
+        "must_include": [
+          "Deniz's body feeling and simple emotion word are connected clearly.",
+          "Observation gives Sam a believable reason without proving the whole misunderstanding false.",
+          "Jo supports checking with Sam rather than deciding for Deniz."
+        ],
+        "must_not_do": [
+          "Do not have Jo disclose Sam's full plan.",
+          "Do not make Deniz's worry disappear because of one clue.",
+          "Do not turn Jo into a lecturer or introduce another problem."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "prior_evidence": [
+          "Sam said, \"Wait, Deniz,\" and moved the shared cardboard bus behind the shelf.",
+          "Sam had invited Deniz to build and play before moving the bus.",
+          "Jo was whispering with Sam when Deniz felt left out."
+        ],
+        "handoff": "Deniz now knows the bus may need fixing, but still wonders whether Sam wanted to keep the work away from them.",
+        "open_threads_after": [
+          "What does Sam mean by wait?",
+          "Will Deniz ask Sam about the hurt feeling?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz touched their tummy. “It feels tight,” they whispered. “I feel left out.”\n\nBehind the shelf, Sam held the cardboard bus. Its little door hung loose. A glue bottle sat on the floor.\n\nJo, the familiar helper, looked over. “What happened?” Deniz asked.\n\n“Sam is fixing something,” Jo said. “You can ask Sam.”\n\nDeniz watched Sam hold the door carefully. Maybe Sam was fixing the bus. Maybe Sam still wanted to keep Deniz away. The worry stayed, small and tight, inside Deniz.",
+        "state_delta": {
+          "location": "The familiar community playroom, beside the shelf and little cabinet.",
+          "character_goal": "Deniz still wants to play happily and share the cardboard bus with Sam, while wanting to understand the waiting.",
+          "knowledge_gained": [
+            "Deniz names the feeling as left out and notices a tight tummy.",
+            "The cardboard bus has a loose door.",
+            "Sam is fixing something.",
+            "Jo suggests that Deniz ask Sam directly."
+          ],
+          "facts_established": [
+            "A glue bottle is on the playroom floor.",
+            "Sam is holding the loose bus door carefully."
+          ],
+          "clues_added": [
+            "The loose door and glue suggest that Sam may be fixing the bus."
+          ],
+          "objects_changed": [
+            "The loose cardboard bus door remains in Sam's hands.",
+            "The glue bottle is visible beside the shelf."
+          ],
+          "relationships_changed": [
+            "Deniz remains uncertain whether Sam wants to share the bus."
+          ],
+          "threads_opened": [
+            "What does Sam mean by wait?",
+            "Will Deniz ask Sam about the hurt feeling?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz now knows the bus may need fixing, but still wonders whether Sam wanted to keep the work away from them."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.801,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 82,
+          "usage": {
+            "input_tokens": 4847,
+            "output_tokens": 841,
+            "total_tokens": 5688
+          },
+          "cost": {
+            "usd": 0.0022208,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2684,
+          "output_tokens": 188,
+          "cost": 0.000112728
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2684,
+            "output_tokens": 188,
+            "cost": 0.000112728
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.611
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.412
+    },
+    {
+      "scene": 3,
+      "target_words": 85,
+      "word_count": 91,
+      "contract": {
+        "index": 3,
+        "purpose": "Let Deniz gather one more concrete clue and prepare simple, non-blaming words for Sam.",
+        "entry_state": "Deniz has noticed the glue and loose door but still lacks Sam's explanation.",
+        "beats": [
+          "From nearby, Deniz sees a dry space beside the bus door where the red wheel can fit.",
+          "Deniz hears Sam tell Jo, \"Deniz can add the wheel when it is dry.\"",
+          "Deniz practices: \"I felt left out. Did you want me to wait?\""
+        ],
+        "must_include": [
+          "The red wheel connects directly to Deniz's earlier shared bus work.",
+          "Sam's words suggest inclusion later, while the closed cabinet still reasonably hurt Deniz.",
+          "Deniz prepares a question rather than planning blame or retreat."
+        ],
+        "must_not_do": [
+          "Do not let overhearing replace a direct conversation.",
+          "Do not make Deniz certain about Sam's intention yet.",
+          "Do not resolve trust before Deniz speaks with Sam."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Deniz named feeling left out and noticed the glue bottle and loose bus door.",
+          "Jo said Sam was fixing something but told Deniz to ask Sam directly.",
+          "The shared cardboard bus and Deniz's red wheel were established in Scene 1."
+        ],
+        "handoff": "Deniz has evidence of both care and exclusion, plus simple words for asking Sam what the waiting meant.",
+        "open_threads_after": [
+          "How will Sam explain the hidden repair?",
+          "Can both children name what they wanted?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz peeked around the shelf. Beside the loose bus door was a dry spot, just the right size for Deniz’s red wheel.\n\nSam whispered to Jo, “Deniz can add the wheel when it is dry.”\n\nDeniz looked at the closed little cabinet. Sam might want Deniz to help later. But the waiting still felt lonely.\n\nDeniz took a small breath. “I felt left out,” they practiced. “Did you want me to wait?”\n\nThe words felt soft and ready. Deniz held the red wheel and waited for a chance to ask Sam.",
+        "state_delta": {
+          "location": "The familiar community playroom, beside the shelf and closed little cabinet.",
+          "character_goal": "Deniz wants to understand Sam's waiting and return to happy shared play with the cardboard bus.",
+          "knowledge_gained": [
+            "There is a dry space beside the bus door for Deniz's red wheel.",
+            "Sam said Deniz can add the wheel when it is dry."
+          ],
+          "facts_established": [
+            "Deniz's red wheel belongs on the cardboard bus.",
+            "Sam expects Deniz to help with the bus later."
+          ],
+          "clues_added": [
+            "Sam's words suggest inclusion later.",
+            "The closed cabinet still makes Deniz feel left out."
+          ],
+          "objects_changed": [
+            "Deniz is holding the red wheel.",
+            "The little cabinet remains closed."
+          ],
+          "relationships_changed": [
+            "Deniz sees that Sam may still want to include them, but the hurt remains."
+          ],
+          "threads_opened": [
+            "How will Sam explain the hidden repair?",
+            "Can Deniz and Sam say what each person wanted?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has evidence of both care and exclusion, holds the red wheel, and is ready to ask Sam, without blame, whether Sam wanted Deniz to wait."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 6.345,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 91,
+          "usage": {
+            "input_tokens": 5219,
+            "output_tokens": 606,
+            "total_tokens": 5825
+          },
+          "cost": {
+            "usd": 0.0020318,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3045,
+          "output_tokens": 188,
+          "cost": 0.00012789
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3045,
+            "output_tokens": 188,
+            "cost": 0.00012789
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.615
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 6.96
+    },
+    {
+      "scene": 4,
+      "target_words": 85,
+      "word_count": 98,
+      "contract": {
+        "index": 4,
+        "purpose": "Bring Deniz and Sam together at the repaired bus while keeping the emotional misunderstanding active.",
+        "entry_state": "The bus door is dry, and Sam brings the bus from behind the shelf to show Deniz.",
+        "beats": [
+          "Sam says, \"I fixed the door,\" while Deniz notices the cabinet is still between them.",
+          "Deniz says, \"I thought you did not want me,\" and Sam says, \"I wanted to fix it first.\"",
+          "Both pause because fixing the bus did not explain why Deniz felt shut out."
+        ],
+        "must_include": [
+          "The first exchange uses the prepared feeling and Sam's concrete reason.",
+          "Both perspectives remain believable: Deniz wanted to help, while Sam wanted to finish the repair.",
+          "The unresolved pause leads directly to a clearer conversation and shared action."
+        ],
+        "must_not_do": [
+          "Do not make either child cruel, villainous, or fully satisfied by the first explanation.",
+          "Do not add an apology that completes the repair.",
+          "Do not introduce a new setting, object, or character."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Deniz practiced asking whether Sam wanted them to wait.",
+          "Deniz heard Sam say the red wheel could be added when the bus was dry.",
+          "The glue, loose door, and hidden bus were established as concrete clues."
+        ],
+        "handoff": "Sam's repair is complete, but Deniz and Sam still need to explain the hurt and agree how to play together again.",
+        "open_threads_after": [
+          "Can Deniz and Sam say what each person meant?",
+          "What shared action will show the trust is repaired?"
+        ]
+      },
+      "envelope": {
+        "prose": "Sam came around the shelf, carrying the cardboard bus. “I fixed the door,” Sam said. The door stayed on now.\n\nDeniz looked at the little cabinet. It was still closed between them.\n\n“I felt left out,” Deniz said. “I thought you did not want me.”\n\nSam held the bus carefully. “I wanted to fix it first.”\n\nDeniz looked at the dry spot by the door. “I wanted to help.”\n\nFor a moment, neither spoke. The bus was fixed, but the hurt was not. Deniz still held the red wheel. They stayed beside the cabinet, ready to talk more.",
+        "state_delta": {
+          "location": "The familiar community playroom, beside the shelf and closed little cabinet.",
+          "character_goal": "Deniz wants Sam to understand the hurt and wants to return to happy shared play with the cardboard bus.",
+          "knowledge_gained": [
+            "Sam fixed the loose bus door.",
+            "Sam wanted to finish fixing the door first.",
+            "Deniz wanted to help."
+          ],
+          "facts_established": [
+            "The bus door is repaired and stays on.",
+            "The little cabinet remains closed between Deniz and Sam."
+          ],
+          "clues_added": [
+            "Sam's reason for saying wait was to finish the repair.",
+            "Deniz's hurt remains even after the bus is fixed."
+          ],
+          "objects_changed": [
+            "Sam brought the repaired cardboard bus from behind the shelf.",
+            "The little cabinet remains closed.",
+            "Deniz still holds the red wheel."
+          ],
+          "relationships_changed": [
+            "Deniz and Sam have shared their first simple explanations, but their hurt and misunderstanding are not yet fully repaired."
+          ],
+          "threads_opened": [
+            "Can Deniz and Sam explain what each person meant?",
+            "Can they agree how to play together again?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "The repaired bus is beside the closed cabinet. Deniz has said they felt left out and wanted to help. Sam has said they wanted to fix the door first. Both children still need to explain the hurt, acknowledge each other's perspective, and decide on a shared action, with Deniz still holding the red wheel."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.123,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 98,
+          "usage": {
+            "input_tokens": 5573,
+            "output_tokens": 865,
+            "total_tokens": 6438
+          },
+          "cost": {
+            "usd": 0.0024311,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.94,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.86,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.94,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3477,
+          "output_tokens": 188,
+          "cost": 0.000146034
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.94,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.86,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3477,
+            "output_tokens": 188,
+            "cost": 0.000146034
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.549
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.673
+    },
+    {
+      "scene": 5,
+      "target_words": 102,
+      "word_count": 106,
+      "contract": {
+        "index": 5,
+        "purpose": "Resolve the central problem through a clear conversation, mutual understanding, and cooperative repair of the bus.",
+        "entry_state": "The repaired bus is ready, but Deniz still feels hurt and Sam still does not understand the hidden cabinet's effect.",
+        "beats": [
+          "Deniz says, \"I felt left out when you said wait and closed the cabinet. I wanted to help.\"",
+          "Sam explains, \"I wanted to fix the door for our bus. I thought wait meant you wanted me to do it.\"",
+          "They apologize simply, open the cabinet together, and let Deniz add the red wheel."
+        ],
+        "must_include": [
+          "The conversation names feelings, observations, intentions, and the mistaken meaning of wait.",
+          "Deniz and Sam each acknowledge the other person's believable perspective.",
+          "Adding the red wheel is the concrete action that repairs both bus and trust."
+        ],
+        "must_not_do": [
+          "Do not solve the problem through Jo speaking for either child.",
+          "Do not add a long moral lesson.",
+          "Do not introduce a larger danger or make the children use adult-level language."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Deniz practiced the question, \"Did you want me to wait?\"",
+          "Sam already explained that the bus door needed fixing first.",
+          "The red wheel was saved for Deniz to add after the bus became dry."
+        ],
+        "handoff": "Deniz and Sam understand the misunderstanding, have repaired the bus together, and are ready to play again.",
+        "open_threads_after": [
+          "How will their clearer words shape the next few minutes of shared play?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz took a small breath. “I felt left out when you said wait and closed the cabinet. I wanted to help.”\n\nSam looked at the cabinet. “I’m sorry. I wanted to fix the door for our bus. I thought wait meant you wanted me to do it.”\n\n“I’m sorry I thought you did not want me,” Deniz said.\n\n“I did want you,” Sam said. “I just wanted to fix it first.”\n\nThey opened the cabinet together. Sam held the bus steady. Deniz pressed the red wheel into the dry spot. Click! The bus stood ready. Deniz and Sam smiled and pushed it onto the playroom floor.",
+        "state_delta": {
+          "location": "The familiar community playroom, now with the cabinet open and the bus on the playroom floor.",
+          "character_goal": "Deniz wants to return to happy shared play with Sam, and Sam wants to play together too.",
+          "knowledge_gained": [
+            "Sam wanted to fix the bus door, not keep Deniz away.",
+            "Deniz felt left out because Sam said wait and closed the cabinet.",
+            "Sam and Deniz both wanted to share the bus."
+          ],
+          "facts_established": [
+            "The cabinet can be opened together.",
+            "The red wheel fits in the dry spot beside the bus door."
+          ],
+          "clues_added": [
+            "The shared action of adding the red wheel shows that the friends understand one another again."
+          ],
+          "objects_changed": [
+            "The cabinet was opened.",
+            "Deniz added the red wheel to the cardboard bus.",
+            "The bus is ready for play on the playroom floor."
+          ],
+          "relationships_changed": [
+            "Deniz and Sam apologized, acknowledged each other's perspectives, and repaired their trust."
+          ],
+          "threads_opened": [
+            "How will Deniz and Sam use clearer words during their next few minutes of play?"
+          ],
+          "threads_resolved": [
+            "Why Sam said wait and closed the cabinet.",
+            "Whether Sam still wanted to share the bus.",
+            "How Deniz and Sam could repair the bus and their hurt feelings together."
+          ],
+          "handoff_state": "Deniz and Sam understand that Sam meant to fix the bus first, not exclude Deniz. They apologized, opened the cabinet together, added Deniz's red wheel, and are ready to play bus together on the playroom floor."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.482,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 106,
+          "usage": {
+            "input_tokens": 5920,
+            "output_tokens": 796,
+            "total_tokens": 6716
+          },
+          "cost": {
+            "usd": 0.00243505,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.86,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3895,
+          "output_tokens": 188,
+          "cost": 0.00016359
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.86,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3895,
+            "output_tokens": 188,
+            "cost": 0.00016359
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.555
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.038
+    },
+    {
+      "scene": 6,
+      "target_words": 85,
+      "word_count": 89,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the repaired trust in ordinary play and close the story with a small, age-appropriate communication habit.",
+        "entry_state": "The bus stands ready, and Deniz and Sam have agreed on what happened.",
+        "beats": [
+          "Deniz and Sam play bus together; Sam says, \"I need a minute,\" and Deniz asks, \"Do you want help or wait?\"",
+          "Sam answers clearly, and Deniz smiles because the words leave room for both friends.",
+          "They drive the bus across the playroom to greet Jo and continue their familiar game."
+        ],
+        "must_include": [
+          "The new exchange echoes the original misunderstanding without repeating it exactly.",
+          "The ending shows changed behavior through play, not an adult explanation.",
+          "The community playroom and familiar relationships remain continuous."
+        ],
+        "must_not_do": [
+          "Do not reopen the misunderstanding.",
+          "Do not add a future mystery, new conflict, or extra lesson.",
+          "Do not end with a simplistic statement of the theme."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C3",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Deniz and Sam named their feelings and intentions in their direct conversation.",
+          "They opened the cabinet and repaired the bus together by adding Deniz's red wheel.",
+          "Sam and Deniz had already planned shared bus play before the misunderstanding."
+        ],
+        "handoff": "Deniz and Sam return to comfortable shared play, using clear words when a pause or helping choice is needed.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz and Sam climbed into the cardboard bus and pushed it across the playroom rug. “Beep, beep!” Sam laughed. Then Sam stopped. “I need a minute.”\n\nDeniz looked at Sam. “Do you want help or wait?”\n\n“Wait, please,” said Sam. “Then you can drive.”\n\n“Okay,” said Deniz. Deniz waited beside the bus. Soon Sam patted the seat. “Ready!”\n\nDeniz climbed in, and together they drove across the familiar community playroom to Jo. “The bus is here!” they called. Jo waved, and the friends began their happy bus game again.",
+        "state_delta": {
+          "location": "The familiar community playroom, with Deniz and Sam driving the cardboard bus toward Jo.",
+          "character_goal": "Deniz wants to keep playing happily with Sam, and Sam wants to continue their shared bus game.",
+          "knowledge_gained": [
+            "Deniz can ask clearly whether Sam wants help or wants to wait.",
+            "Sam can say what kind of pause is needed."
+          ],
+          "facts_established": [
+            "Sam says when a short pause is needed.",
+            "Deniz and Sam can return to play after using clear words."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The cardboard bus moved across the playroom rug toward Jo."
+          ],
+          "relationships_changed": [
+            "Deniz and Sam are comfortably sharing play again.",
+            "Deniz and Sam use clearer words during their familiar game."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "Deniz and Sam return to ordinary shared play after repairing their misunderstanding."
+          ],
+          "handoff_state": "Deniz and Sam are happily playing together in the familiar community playroom. They use clear words when one of them needs a pause or help, and they have driven the repaired cardboard bus over to greet Jo."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.855,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 89,
+          "usage": {
+            "input_tokens": 5930,
+            "output_tokens": 823,
+            "total_tokens": 6753
+          },
+          "cost": {
+            "usd": 0.00246995,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3803,
+          "output_tokens": 188,
+          "cost": 0.000159726
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3803,
+            "output_tokens": 188,
+            "cost": 0.000159726
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.569
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.424
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz's shared play with familiar Sam and the small behavior that changes Deniz's interpretation.",
+      "word_count": 70,
+      "location": "The familiar community playroom, beside a shelf and its little cabinet.",
+      "character_goal": "Deniz still wants to play happily and share the cardboard bus with Sam.",
+      "knowledge_gained": [
+        "Sam invited Deniz to build and play before moving the bus.",
+        "Sam said, \"Wait, Deniz,\" and carried the bus behind the shelf.",
+        "Sam whispered with familiar helper Jo but did not explain."
+      ],
+      "facts_established": [
+        "Deniz, Sam, and Jo regularly know one another in the community playroom.",
+        "Deniz and Sam are building a cardboard bus together."
+      ],
+      "clues_added": [
+        "Sam carefully carried the shared bus.",
+        "Sam closed the little cabinet.",
+        "Sam whispered with Jo."
+      ],
+      "objects_changed": [
+        "The cardboard bus was moved behind the shelf.",
+        "The little cabinet was closed."
+      ],
+      "relationships_changed": [
+        "Deniz feels uncertain about whether Sam still wants to share the bus."
+      ],
+      "threads_opened": [
+        "Why did Sam say wait and hide the shared bus?",
+        "Can Deniz check the worry before deciding what Sam meant?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz stands worried beside the shelf, with a tight tummy, while Sam and Jo continue behind it. Deniz thinks Sam may not want to share the bus, but the reason remains unknown."
+    },
+    {
+      "scene": 2,
+      "purpose": "Have Deniz name the feeling and begin checking the room for evidence instead of treating the worry as fact.",
+      "word_count": 82,
+      "location": "The familiar community playroom, beside the shelf and little cabinet.",
+      "character_goal": "Deniz still wants to play happily and share the cardboard bus with Sam, while wanting to understand the waiting.",
+      "knowledge_gained": [
+        "Deniz names the feeling as left out and notices a tight tummy.",
+        "The cardboard bus has a loose door.",
+        "Sam is fixing something.",
+        "Jo suggests that Deniz ask Sam directly."
+      ],
+      "facts_established": [
+        "A glue bottle is on the playroom floor.",
+        "Sam is holding the loose bus door carefully."
+      ],
+      "clues_added": [
+        "The loose door and glue suggest that Sam may be fixing the bus."
+      ],
+      "objects_changed": [
+        "The loose cardboard bus door remains in Sam's hands.",
+        "The glue bottle is visible beside the shelf."
+      ],
+      "relationships_changed": [
+        "Deniz remains uncertain whether Sam wants to share the bus."
+      ],
+      "threads_opened": [
+        "What does Sam mean by wait?",
+        "Will Deniz ask Sam about the hurt feeling?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz now knows the bus may need fixing, but still wonders whether Sam wanted to keep the work away from them."
+    },
+    {
+      "scene": 3,
+      "purpose": "Let Deniz gather one more concrete clue and prepare simple, non-blaming words for Sam.",
+      "word_count": 91,
+      "location": "The familiar community playroom, beside the shelf and closed little cabinet.",
+      "character_goal": "Deniz wants to understand Sam's waiting and return to happy shared play with the cardboard bus.",
+      "knowledge_gained": [
+        "There is a dry space beside the bus door for Deniz's red wheel.",
+        "Sam said Deniz can add the wheel when it is dry."
+      ],
+      "facts_established": [
+        "Deniz's red wheel belongs on the cardboard bus.",
+        "Sam expects Deniz to help with the bus later."
+      ],
+      "clues_added": [
+        "Sam's words suggest inclusion later.",
+        "The closed cabinet still makes Deniz feel left out."
+      ],
+      "objects_changed": [
+        "Deniz is holding the red wheel.",
+        "The little cabinet remains closed."
+      ],
+      "relationships_changed": [
+        "Deniz sees that Sam may still want to include them, but the hurt remains."
+      ],
+      "threads_opened": [
+        "How will Sam explain the hidden repair?",
+        "Can Deniz and Sam say what each person wanted?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has evidence of both care and exclusion, holds the red wheel, and is ready to ask Sam, without blame, whether Sam wanted Deniz to wait."
+    },
+    {
+      "scene": 4,
+      "purpose": "Bring Deniz and Sam together at the repaired bus while keeping the emotional misunderstanding active.",
+      "word_count": 98,
+      "location": "The familiar community playroom, beside the shelf and closed little cabinet.",
+      "character_goal": "Deniz wants Sam to understand the hurt and wants to return to happy shared play with the cardboard bus.",
+      "knowledge_gained": [
+        "Sam fixed the loose bus door.",
+        "Sam wanted to finish fixing the door first.",
+        "Deniz wanted to help."
+      ],
+      "facts_established": [
+        "The bus door is repaired and stays on.",
+        "The little cabinet remains closed between Deniz and Sam."
+      ],
+      "clues_added": [
+        "Sam's reason for saying wait was to finish the repair.",
+        "Deniz's hurt remains even after the bus is fixed."
+      ],
+      "objects_changed": [
+        "Sam brought the repaired cardboard bus from behind the shelf.",
+        "The little cabinet remains closed.",
+        "Deniz still holds the red wheel."
+      ],
+      "relationships_changed": [
+        "Deniz and Sam have shared their first simple explanations, but their hurt and misunderstanding are not yet fully repaired."
+      ],
+      "threads_opened": [
+        "Can Deniz and Sam explain what each person meant?",
+        "Can they agree how to play together again?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "The repaired bus is beside the closed cabinet. Deniz has said they felt left out and wanted to help. Sam has said they wanted to fix the door first. Both children still need to explain the hurt, acknowledge each other's perspective, and decide on a shared action, with Deniz still holding the red wheel."
+    },
+    {
+      "scene": 5,
+      "purpose": "Resolve the central problem through a clear conversation, mutual understanding, and cooperative repair of the bus.",
+      "word_count": 106,
+      "location": "The familiar community playroom, now with the cabinet open and the bus on the playroom floor.",
+      "character_goal": "Deniz wants to return to happy shared play with Sam, and Sam wants to play together too.",
+      "knowledge_gained": [
+        "Sam wanted to fix the bus door, not keep Deniz away.",
+        "Deniz felt left out because Sam said wait and closed the cabinet.",
+        "Sam and Deniz both wanted to share the bus."
+      ],
+      "facts_established": [
+        "The cabinet can be opened together.",
+        "The red wheel fits in the dry spot beside the bus door."
+      ],
+      "clues_added": [
+        "The shared action of adding the red wheel shows that the friends understand one another again."
+      ],
+      "objects_changed": [
+        "The cabinet was opened.",
+        "Deniz added the red wheel to the cardboard bus.",
+        "The bus is ready for play on the playroom floor."
+      ],
+      "relationships_changed": [
+        "Deniz and Sam apologized, acknowledged each other's perspectives, and repaired their trust."
+      ],
+      "threads_opened": [
+        "How will Deniz and Sam use clearer words during their next few minutes of play?"
+      ],
+      "threads_resolved": [
+        "Why Sam said wait and closed the cabinet.",
+        "Whether Sam still wanted to share the bus.",
+        "How Deniz and Sam could repair the bus and their hurt feelings together."
+      ],
+      "handoff_state": "Deniz and Sam understand that Sam meant to fix the bus first, not exclude Deniz. They apologized, opened the cabinet together, added Deniz's red wheel, and are ready to play bus together on the playroom floor."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the repaired trust in ordinary play and close the story with a small, age-appropriate communication habit.",
+      "word_count": 89,
+      "location": "The familiar community playroom, with Deniz and Sam driving the cardboard bus toward Jo.",
+      "character_goal": "Deniz wants to keep playing happily with Sam, and Sam wants to continue their shared bus game.",
+      "knowledge_gained": [
+        "Deniz can ask clearly whether Sam wants help or wants to wait.",
+        "Sam can say what kind of pause is needed."
+      ],
+      "facts_established": [
+        "Sam says when a short pause is needed.",
+        "Deniz and Sam can return to play after using clear words."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The cardboard bus moved across the playroom rug toward Jo."
+      ],
+      "relationships_changed": [
+        "Deniz and Sam are comfortably sharing play again.",
+        "Deniz and Sam use clearer words during their familiar game."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "Deniz and Sam return to ordinary shared play after repairing their misunderstanding."
+      ],
+      "handoff_state": "Deniz and Sam are happily playing together in the familiar community playroom. They use clear words when one of them needs a pause or help, and they have driven the repaired cardboard bus over to greet Jo."
+    }
+  ],
+  "story_title": "The Space Between Words",
+  "story": "Deniz came to the community playroom, where Sam and helper Jo were familiar faces. Sam had invited Deniz to build their cardboard bus. They made vroom sounds together.\n\nThen Sam said, “Wait, Deniz.” He carried the bus carefully behind a shelf and closed the little cabinet.\n\nDeniz watched Sam whisper with Jo. Sam did not explain. Deniz’s tummy felt tight. Maybe Sam did not want to share the bus anymore.\n\nDeniz touched their tummy. “It feels tight,” they whispered. “I feel left out.”\n\nBehind the shelf, Sam held the cardboard bus. Its little door hung loose. A glue bottle sat on the floor.\n\nJo, the familiar helper, looked over. “What happened?” Deniz asked.\n\n“Sam is fixing something,” Jo said. “You can ask Sam.”\n\nDeniz watched Sam hold the door carefully. Maybe Sam was fixing the bus. Maybe Sam still wanted to keep Deniz away. The worry stayed, small and tight, inside Deniz.\n\nDeniz peeked around the shelf. Beside the loose bus door was a dry spot, just the right size for Deniz’s red wheel.\n\nSam whispered to Jo, “Deniz can add the wheel when it is dry.”\n\nDeniz looked at the closed little cabinet. Sam might want Deniz to help later. But the waiting still felt lonely.\n\nDeniz took a small breath. “I felt left out,” they practiced. “Did you want me to wait?”\n\nThe words felt soft and ready. Deniz held the red wheel and waited for a chance to ask Sam.\n\nSam came around the shelf, carrying the cardboard bus. “I fixed the door,” Sam said. The door stayed on now.\n\nDeniz looked at the little cabinet. It was still closed between them.\n\n“I felt left out,” Deniz said. “I thought you did not want me.”\n\nSam held the bus carefully. “I wanted to fix it first.”\n\nDeniz looked at the dry spot by the door. “I wanted to help.”\n\nFor a moment, neither spoke. The bus was fixed, but the hurt was not. Deniz still held the red wheel. They stayed beside the cabinet, ready to talk more.\n\nDeniz took a small breath. “I felt left out when you said wait and closed the cabinet. I wanted to help.”\n\nSam looked at the cabinet. “I’m sorry. I wanted to fix the door for our bus. I thought wait meant you wanted me to do it.”\n\n“I’m sorry I thought you did not want me,” Deniz said.\n\n“I did want you,” Sam said. “I just wanted to fix it first.”\n\nThey opened the cabinet together. Sam held the bus steady. Deniz pressed the red wheel into the dry spot. Click! The bus stood ready. Deniz and Sam smiled and pushed it onto the playroom floor.\n\nDeniz and Sam climbed into the cardboard bus and pushed it across the playroom rug. “Beep, beep!” Sam laughed. Then Sam stopped. “I need a minute.”\n\nDeniz looked at Sam. “Do you want help or wait?”\n\n“Wait, please,” said Sam. “Then you can drive.”\n\n“Okay,” said Deniz. Deniz waited beside the bus. Soon Sam patted the seat. “Ready!”\n\nDeniz climbed in, and together they drove across the familiar community playroom to Jo. “The bus is here!” they called. Jo waved, and the friends began their happy bus game again.",
+  "word_count": 536,
+  "target_words": 500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.00189,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.86,
+      "no_repeated_event": 0.91,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6344,
+      "output_tokens": 166,
+      "cost": 0.000266448
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.86,
+      "no_repeated_event": 0.91,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6344,
+      "output_tokens": 166,
+      "cost": 0.000266448
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This story successfully executes the StoryContract and six-scene plan. Deniz's emotional journey—from worry through observation, naming, and clear communication—is age-appropriate and narratively coherent. The misunderstanding has believable evidence on both sides: Sam's hidden repair and closed cabinet reasonably trigger Deniz's hurt, while Sam's careful handling and inclusion of Deniz in the final step show genuine care. The dialogue is simple and natural for a 4-year-old read-aloud, with concrete actions (the red wheel, the cabinet opening) anchoring emotional resolution. The ending shows changed behavior through play rather than moral lecture, and the new communication pattern ('Do you want help or wait?') echoes the original misunderstanding without repeating it. Word count is 536, within target. Vocabulary, sentence structure, pacing, and emotional intensity are consistently calibrated to the exact age and reading mode. All six scenes maintain continuity, and no prohibited events occur. The story passes the acceptance gate with strong scores across all criteria.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 536,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.94,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.95,
+          "no_contradictions": 0.86,
+          "no_repeated_event": 0.91,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.89,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6344,
+          "output_tokens": 166,
+          "cost": 0.000266448
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This story successfully executes the StoryContract and six-scene plan. Deniz's emotional journey—from worry through observation, naming, and clear communication—is age-appropriate and narratively coherent. The misunderstanding has believable evidence on both sides: Sam's hidden repair and closed cabinet reasonably trigger Deniz's hurt, while Sam's careful handling and inclusion of Deniz in the final step show genuine care. The dialogue is simple and natural for a 4-year-old read-aloud, with concrete actions (the red wheel, the cabinet opening) anchoring emotional resolution. The ending shows changed behavior through play rather than moral lecture, and the new communication pattern ('Do you want help or wait?') echoes the original misunderstanding without repeating it. Word count is 536, within target. Vocabulary, sentence structure, pacing, and emotional intensity are consistently calibrated to the exact age and reading mode. All six scenes maintain continuity, and no prohibited events occur. The story passes the acceptance gate with strong scores across all criteria.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000266448,
+      "final_judge_cost": {
+        "usd": 0.01108,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 53.944,
+    "scene_stage_seconds": 50.299,
+    "final_stage_seconds": 7.377,
+    "total_pipeline_seconds": 111.619
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.014669752,
+    "scene_generation_usd": 0.0137573,
+    "scene_continuity_evaluator_usd": 0.000806568,
+    "whole_continuity_evaluator_usd": 0.000266448,
+    "whole_continuity_evaluator_usd_total": 0.000266448,
+    "semantic_judge_usd": {
+      "usd": 0.01108,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.01108,
+    "scene_jev_usd": 0.000806568,
+    "whole_jev_usd": 0.000266448,
+    "whole_jev_usd_total": 0.000266448,
+    "final_haiku": {
+      "usd": 0.01108,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.01108,
+    "total_pipeline_usd": 0.040580068
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 6344,
+      "output_tokens": 166,
+      "cost": 0.000266448
+    },
+    "semantic_judge": {
+      "input_tokens": 9370,
+      "output_tokens": 342,
+      "total_tokens": 9712
+    },
+    "whole_jev": {
+      "input_tokens": 6344,
+      "output_tokens": 166,
+      "cost": 0.000266448
+    },
+    "final_haiku": {
+      "input_tokens": 9370,
+      "output_tokens": 342,
+      "total_tokens": 9712
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
