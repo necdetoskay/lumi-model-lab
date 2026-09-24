@@ -36,8 +36,10 @@ FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_en_v1.md")
 FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.md")
 TOTAL_STORY_MIN_RATIO = 0.75
 TOTAL_STORY_MAX_RATIO = 1.25
+SCENE_WORD_BUDGET_RATIO_TOLERANCE = 0.25
+SCENE_WORD_BUDGET_MIN_ABSOLUTE_SLACK = 20
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
-GENERATION_PROTOCOL_VERSION = "english-story-production.v1"
+GENERATION_PROTOCOL_VERSION = "english-story-production.v2"
 EVALUATION_PROTOCOL_VERSION = "english-story-evaluation.v1"
 
 FINAL_CRITERIA = (
@@ -82,12 +84,26 @@ def sum_plan_stage_cost_usd(cost_history: list[dict[str, Any]]) -> float:
     return total
 
 
+def scene_word_budget_bounds(
+    target_words: int,
+    *,
+    ratio_tolerance: float = SCENE_WORD_BUDGET_RATIO_TOLERANCE,
+    min_absolute_slack: int = SCENE_WORD_BUDGET_MIN_ABSOLUTE_SLACK,
+) -> tuple[int, int]:
+    if target_words <= 0:
+        raise ValueError("target_words must be positive")
+    if ratio_tolerance < 0:
+        raise ValueError("ratio_tolerance must be non-negative")
+    if min_absolute_slack < 0:
+        raise ValueError("min_absolute_slack must be non-negative")
+    slack = max(round(target_words * ratio_tolerance), min_absolute_slack)
+    return max(1, target_words - slack), target_words + slack
+
+
 def validate_scene_envelope(
     envelope: dict[str, Any],
     *,
     target_words: int,
-    min_ratio: float = 0.80,
-    max_ratio: float = 1.20,
 ) -> tuple[list[str], int]:
     errors: list[str] = []
     prose = envelope.get("prose")
@@ -95,8 +111,7 @@ def validate_scene_envelope(
         return ["prose_missing"], 0
 
     word_count = count_words(prose)
-    minimum = round(target_words * min_ratio)
-    maximum = round(target_words * max_ratio)
+    minimum, maximum = scene_word_budget_bounds(target_words)
     if word_count < minimum:
         errors.append(f"below_scene_word_budget:{word_count}<{minimum}")
     if word_count > maximum:
@@ -626,10 +641,10 @@ def repair_scene_word_budget(
 ) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
     current_prose = str(envelope.get("prose") or "")
     current_words = count_words(current_prose)
-    hard_min = round(target_words * 0.80)
-    hard_max = round(target_words * 1.20)
-    preferred_min = round(target_words * 0.92)
-    preferred_max = round(target_words * 1.08)
+    hard_min, hard_max = scene_word_budget_bounds(target_words)
+    preferred_slack = max(round(target_words * 0.08), 8)
+    preferred_min = max(hard_min + 1, target_words - preferred_slack)
+    preferred_max = min(hard_max - 1, target_words + preferred_slack)
     mode = "COMPRESS" if current_words > hard_max else "EXPAND"
 
     if repair_index <= 1:
