@@ -504,14 +504,27 @@ def run_judge(
     plan: dict[str, Any],
     draft: dict[str, Any],
     jev: dict[str, Any],
+    context_pack: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     user = (
         "ORIGINAL BRIEF\n"
         + build_labeled_brief(spec)
+        + (
+            "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
+            + json.dumps(context_pack, ensure_ascii=False, indent=2)
+            if context_pack is not None
+            else ""
+        )
         + "\n\nIMMUTABLE STORY CONTRACT\n"
         + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
         + "\n\nDYNAMIC SCENE GRAPH\n"
         + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
+        + (
+            "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
+            + json.dumps(context_pack, ensure_ascii=False, indent=2)
+            if context_pack is not None
+            else ""
+        )
         + "\n\nCURRENT WHOLE-STORY JEV EVIDENCE\n"
         + json.dumps(jev, ensure_ascii=False, indent=2)
         + "\n\nCURRENT FINAL STORY\n"
@@ -660,6 +673,58 @@ def load_story_spec(path: str | None) -> tuple[StorySpec, str]:
     return StorySpec.model_validate(BUILTIN_SPEC), "<builtin-v5-prototype-spec>"
 
 
+def validate_context_pack(context_pack: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    required_top = (
+        "schema_version",
+        "context_id",
+        "character",
+        "world",
+        "opportunity",
+        "canon",
+        "saga",
+        "relevant_memories",
+    )
+    for key in required_top:
+        if key not in context_pack:
+            errors.append(f"context_pack_missing:{key}")
+
+    for key in ("character", "world", "opportunity", "saga"):
+        row = context_pack.get(key)
+        if not isinstance(row, dict):
+            continue
+        if key != "saga" or row.get("entity_ref"):
+            if not str(row.get("entity_ref") or ""):
+                errors.append(f"context_pack_{key}_entity_ref_missing")
+        if not isinstance(row.get("revision"), int):
+            errors.append(f"context_pack_{key}_revision_missing")
+        if not str(row.get("fingerprint") or ""):
+            errors.append(f"context_pack_{key}_fingerprint_missing")
+
+    canon = context_pack.get("canon")
+    if isinstance(canon, dict):
+        if not isinstance(canon.get("revision"), int):
+            errors.append("context_pack_canon_revision_missing")
+        if not str(canon.get("fingerprint") or ""):
+            errors.append("context_pack_canon_fingerprint_missing")
+
+    memories = context_pack.get("relevant_memories")
+    if not isinstance(memories, list):
+        errors.append("context_pack_memories_not_list")
+    return errors
+
+
+def load_context_pack(path: str | None) -> tuple[dict[str, Any] | None, str | None]:
+    if not path:
+        return None, None
+    context_path = Path(path)
+    context_pack = json.loads(context_path.read_text(encoding="utf-8"))
+    errors = validate_context_pack(context_pack)
+    if errors:
+        raise RuntimeError("CONTEXT_PACK_INVALID:" + ",".join(errors))
+    return context_pack, path
+
+
 def load_state_authority(path: str | None) -> tuple[dict[str, Any], str]:
     if path:
         authority_path = Path(path)
@@ -717,6 +782,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     spec, spec_source = load_story_spec(args.spec)
     state_authority, state_authority_source = load_state_authority(args.state_authority)
+    context_pack, context_pack_source = load_context_pack(args.context_pack)
     brief = build_labeled_brief(spec)
     started = time.perf_counter()
 
@@ -724,7 +790,16 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         api_key=api_key,
         model=args.architect,
         system_prompt=ARCHITECT_PROMPT,
-        user_prompt="Create the story architecture.\n\nSTORY BRIEF\n" + brief,
+        user_prompt=(
+            "Create the story architecture.\n\nSTORY BRIEF\n"
+            + brief
+            + (
+                "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
+                + json.dumps(context_pack, ensure_ascii=False, indent=2)
+                if context_pack is not None
+                else ""
+            )
+        ),
         temperature=0.2,
         max_tokens=None,
         seed=41,
@@ -840,7 +915,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             deterministic_errors = []
 
     jev = run_jev(api_key, spec, plan, draft)
-    judge, judge_meta = run_judge(api_key, args.judge, spec, plan, draft, jev)
+    judge, judge_meta = run_judge(
+        api_key, args.judge, spec, plan, draft, jev, context_pack
+    )
 
     repair = None
     if not deterministic_errors and not judge["accepted"]:
@@ -870,7 +947,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             if not repair_errors:
                 repaired_jev = run_jev(api_key, spec, plan, repaired)
                 repaired_judge, repaired_judge_meta = run_judge(
-                    api_key, args.judge, spec, plan, repaired, repaired_jev
+                    api_key, args.judge, spec, plan, repaired, repaired_jev, context_pack
                 )
                 repair = {
                     "attempted": True,
@@ -899,6 +976,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         outcome_user = (
             "APPLICATION-OWNED STATE AUTHORITY\n"
             + json.dumps(state_authority, ensure_ascii=False, indent=2)
+            + (
+                "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
+                + json.dumps(context_pack, ensure_ascii=False, indent=2)
+                if context_pack is not None
+                else ""
+            )
             + "\n\nIMMUTABLE STORY CONTRACT\n"
             + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
             + "\n\nSCENE GRAPH\n"
@@ -952,6 +1035,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "outcome_extractor": args.outcome_extractor,
         },
         "spec": spec_source,
+        "context_pack_source": context_pack_source,
+        "context_pack": context_pack,
         "state_authority_source": state_authority_source,
         "state_authority": state_authority,
         "plan": plan,
@@ -1006,6 +1091,7 @@ def main() -> None:
     parser.add_argument("--judge", default=DEFAULT_JUDGE)
     parser.add_argument("--outcome-extractor", default=DEFAULT_OUTCOME_EXTRACTOR)
     parser.add_argument("--state-authority", default=None)
+    parser.add_argument("--context-pack", default=None)
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
 
