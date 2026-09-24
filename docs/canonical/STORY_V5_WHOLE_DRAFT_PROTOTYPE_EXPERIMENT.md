@@ -1057,3 +1057,110 @@ The highest-value remaining work is:
 5. use blind order-swapped pairwise comparison only as aggregate Model Lab evidence, never as a single-model-selection verdict.
 
 Broad 80-cell synthetic qualification remains lower priority than proving the real LUMI bridge.
+
+
+## Atomic/idempotent state commit simulation — 36025700209
+
+Evidence:
+
+`evidence/story-v5-state-commit-36025700209`
+
+Protocol:
+
+`state-commit-simulator.v1`
+
+The accepted production-like epistemic outcome was applied to a deterministic state-store simulator.
+
+### First commit
+
+Status: `COMMITTED`
+
+Touched entities advanced exactly once:
+
+- Character 21 -> 22;
+- World 34 -> 35;
+- Saga 9 -> 10;
+- Opportunity 7 -> 8.
+
+The simulator generated deterministic post-commit fingerprints.
+
+Post-state preserved:
+
+- `OLD_PUMP_PATH = RUMORED`;
+- the sound explanation under `commons.sound_hypotheses`;
+- Opportunity `AVAILABLE -> CONSUMED`.
+
+### Identical replay
+
+Submitting the exact same outcome with the same idempotency key produced:
+
+`IDEMPOTENT_REPLAY`
+
+Evidence:
+
+- zero mutated entities;
+- state hash before == state hash after;
+- zero additional revision increments;
+- no duplicate knowledge append.
+
+### Stale-state conflict
+
+The controlled conflict fixture advanced the World revision from 34 to 35 before applying an outcome whose base revision was still 34.
+
+Result:
+
+`CONFLICT`
+
+Exact conflict:
+
+`mutation_1_stale_revision:35!=34`
+
+Evidence:
+
+- zero mutated entities;
+- state hash before == state hash after;
+- no Character update leaked through;
+- Opportunity remained unconsumed;
+- no partial write.
+
+### Contract suite
+
+Run:
+
+`36025500899`
+
+Result:
+
+**18 / 18 PASS**
+
+Coverage includes:
+
+- authorized typed mutation;
+- invented-field rejection;
+- transient-state rejection;
+- stale authority revision;
+- stale base revision;
+- stale fingerprint;
+- epistemic-class mismatch;
+- invalid evidence;
+- duplicate mutation;
+- pairwise order-swap semantics;
+- atomic successful commit;
+- identical idempotent replay;
+- idempotency-key collision;
+- stale revision/fingerprint atomic abort;
+- rollback when a later apply-stage mutation fails after an earlier mutation modified the working copy.
+
+Decision:
+
+> Commit semantics are validate-all-first -> mutate isolated working copy -> publish atomically. Any authority, concurrency, idempotency, or apply failure must yield zero partial authoritative writes.
+
+## v5 boundary after commit simulation
+
+Model Lab now has governed evidence for:
+
+`Compiled Context -> Dynamic Architect -> Whole Draft -> Deterministic Gates -> JEV Context Gate -> Haiku Acceptance -> Typed/Epistemic Mutation Proposal -> Atomic/Idempotent Commit Simulation`
+
+This still does **not** authorize a real production database write.
+
+The next highest-value step is no longer another synthetic story sweep. It is mapping the proven prototype contracts onto LUMI's real G2 transaction/job boundary, followed by a small production-like reliability sample.
