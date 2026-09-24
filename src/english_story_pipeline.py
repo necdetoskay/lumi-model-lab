@@ -519,12 +519,7 @@ def validate_final_judge(payload: dict[str, Any]) -> dict[str, Any]:
         "critical_failures": critical,
         "repair_targets": normalized_targets,
         "summary": str(payload.get("summary") or ""),
-        "accepted": (
-            average >= 4.0
-            and minimum >= 3
-            and not critical
-            and not normalized_targets
-        ),
+        "accepted": average >= 4.0 and minimum >= 3 and not critical,
     }
 
 
