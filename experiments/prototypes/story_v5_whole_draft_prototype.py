@@ -668,6 +668,70 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if repeat_ratio > 0.02:
         deterministic_errors.append(f"repeat_8gram_ratio_high:{repeat_ratio}>0.02")
 
+    length_normalization = None
+    only_length_error = bool(deterministic_errors) and all(
+        error.startswith("below_total_word_budget:")
+        or error.startswith("above_total_word_budget:")
+        for error in deterministic_errors
+    )
+    if only_length_error:
+        normalize_user = (
+            "The current whole draft is structurally valid but outside the application-owned word range. "
+            "Normalize LENGTH ONLY. Preserve the same title, scene count, roles, facts, clue order, "
+            "character decisions, payoff, resolution, and ending state. Remove redundant description, "
+            "recap, and repeated explanation before removing causal content. Do not add new events.\n\n"
+            + f"TARGET TOTAL WORDS: {spec.target_words}\n"
+            + f"HARD ACCEPTABLE TOTAL RANGE: {min_words}-{max_words}\n"
+            + "NORMALIZED SCENE WORD TARGETS:\n"
+            + json.dumps(scene_word_targets, ensure_ascii=False, indent=2)
+            + "\n\nCURRENT DRAFT JSON:\n"
+            + json.dumps(draft, ensure_ascii=False, indent=2)
+        )
+        normalized, normalize_body, _, normalize_parse = call_structured_json_with_retry(
+            api_key=api_key,
+            model=args.writer,
+            system_prompt=WHOLE_DRAFT_PROMPT,
+            user_prompt=normalize_user,
+            temperature=0.2,
+            max_tokens=None,
+            seed=4201,
+            request_class="scene_repair",
+        )
+        normalize_schema_errors = validate_draft(normalized, plan)
+        normalized_story = assemble_story(normalized) if not normalize_schema_errors else ""
+        normalized_words = count_words(normalized_story) if normalized_story else 0
+        normalized_repeat = repeated_ngram_ratio(normalized_story, 8) if normalized_story else 0.0
+        normalized_deterministic: list[str] = []
+        if not normalize_schema_errors:
+            if normalized_words < min_words:
+                normalized_deterministic.append(
+                    f"below_total_word_budget:{normalized_words}<{min_words}"
+                )
+            if normalized_words > max_words:
+                normalized_deterministic.append(
+                    f"above_total_word_budget:{normalized_words}>{max_words}"
+                )
+            if normalized_repeat > 0.02:
+                normalized_deterministic.append(
+                    f"repeat_8gram_ratio_high:{normalized_repeat}>0.02"
+                )
+        length_normalization = {
+            "attempted": True,
+            "before_words": word_count,
+            "after_words": normalized_words,
+            "schema_errors": normalize_schema_errors,
+            "deterministic_errors_after": normalized_deterministic,
+            "usage": parse_usage(normalize_body).model_dump(mode="json"),
+            "cost": parse_cost(normalize_body).model_dump(mode="json"),
+            "parse_failures": normalize_parse,
+        }
+        if not normalize_schema_errors and not normalized_deterministic:
+            draft = normalized
+            story = normalized_story
+            word_count = normalized_words
+            repeat_ratio = normalized_repeat
+            deterministic_errors = []
+
     jev = run_jev(api_key, spec, plan, draft)
     judge, judge_meta = run_judge(api_key, args.judge, spec, plan, draft, jev)
 
@@ -761,6 +825,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         judge_meta["cost"],
         outcome_meta["cost"] if outcome_meta else None,
         repair["cost"] if repair else None,
+        length_normalization["cost"] if length_normalization else None,
     )
 
     result = {
@@ -790,6 +855,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "whole_story_jev": jev,
         "final_judge": judge,
         "repair": repair,
+        "length_normalization": length_normalization,
         "story_outcome": outcome,
         "story_outcome_validation_errors": outcome_errors,
         "story_outcome_meta": outcome_meta,
@@ -804,6 +870,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "final_judge": judge_meta["cost"],
             "outcome_extraction": outcome_meta["cost"] if outcome_meta else None,
             "repair": repair["cost"] if repair else None,
+            "length_normalization": (
+                length_normalization["cost"] if length_normalization else None
+            ),
             "known_usd_total_excluding_jev_if_unreported": round(total_cost, 9),
         },
         "elapsed_seconds": round(time.perf_counter() - started, 3),
