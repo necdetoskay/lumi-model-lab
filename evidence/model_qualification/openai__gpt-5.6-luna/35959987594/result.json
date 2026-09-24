@@ -1,0 +1,2402 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/benchmark_en/01_exploration_mystery.yaml",
+  "accepted": false,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/benchmark_en/01_exploration_mystery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Signal in the Mist",
+      "story_contract": {
+        "protagonist_goal": "Ada wants to reach the light's source and understand why it appears briefly each evening.",
+        "central_problem": "Mist, changing tides, unclear stone markings, and shifting surroundings make the light's safe route and source uncertain.",
+        "solution_principle": "Ada combines tide evidence, waystone markings, changing seaweed lines, and light alignment through the cave.",
+        "theme_thread": "Careful observation and patient exploration turn uncertainty into understanding.",
+        "ending_state": "Ada explains the light as evening sunlight reflecting from wet quartz inside a tidal cave, while noticing one small unexplored marking.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5"
+        ],
+        "prohibited_events": [
+          "No frightening danger, threatening creature, injury, or frightening imagery.",
+          "No coincidence, miracle, unexplained magic, or single clue solving the mystery.",
+          "Do not solve the central mystery before Scene 5.",
+          "Do not introduce disposable characters, objects, locations, or subplots."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Ada, the misty coast, the brief light, and her evidence-first goal.",
+          "entry_state": "Ada explores the mist-covered coastal cliffs and notices an unusual light flashing from the shoreline.",
+          "beats": [
+            "Ada watches the light appear for only a few minutes, then vanish as evening mist thickens.",
+            "She notes the nearest old waystone, the tide line, and seaweed newly exposed on the rocks.",
+            "Ada decides to investigate carefully rather than guess, carrying her observations toward the tidal caves."
+          ],
+          "must_include": [
+            "Ada is curious, careful, and reluctant to decide without evidence.",
+            "The coastal cliffs, tidal caves, old waystones, mist, brief evening signal, and changing surroundings appear."
+          ],
+          "must_not_do": [
+            "Do not reveal the light's source or make the coast frightening.",
+            "Do not send Ada into the caves before she studies the tide and markings."
+          ],
+          "constraint_ids": [
+            "C1"
+          ],
+          "prior_evidence": [],
+          "handoff": "Ada has recorded the signal's timing and nearby clues, but does not know whether the closest waystone produces it.",
+          "open_threads_after": [
+            "What creates the brief light?",
+            "What do the waystone markings and tide changes mean?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test Ada's first assumption and replace it with a concrete observation.",
+          "entry_state": "Ada returns as the evening light begins, believing the nearest waystone may be the signal's source.",
+          "beats": [
+            "She inspects the waystone before the flash and finds no glow, warmth, or reflective surface on its seaward face.",
+            "The signal appears across the cliff instead, while a wet stone band catches a moving streak of light.",
+            "Ada corrects her assumption: the waystone may guide the route, but it does not create the signal."
+          ],
+          "must_include": [
+            "Ada makes an incorrect assumption and corrects it through direct observation.",
+            "The moving reflection and the waystone's lack of light provide concrete evidence."
+          ],
+          "must_not_do": [
+            "Do not treat Ada's first assumption as correct.",
+            "Do not identify the final source from this single observation."
+          ],
+          "constraint_ids": [
+            "C2"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the nearest waystone beside the signal-viewing cliff.",
+            "Scene 1 established that the light appears briefly each evening.",
+            "Scene 1 established the tide line and freshly exposed seaweed."
+          ],
+          "handoff": "Ada now suspects the waystone marks a route toward a reflection, but the tide and remaining markings must be understood.",
+          "open_threads_after": [
+            "What do the waystone symbols indicate?",
+            "Which tide level safely reveals the cave route?",
+            "What surface reflects the signal?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Decode the route clues by comparing markings with tide evidence.",
+          "entry_state": "Ada knows the nearest waystone is a guide, not the source, and studies its marks before entering the caves.",
+          "beats": [
+            "She compares repeated wave-shaped marks with the waterline and finds a notch matching the lowest seaweed band.",
+            "A second waystone points toward a cave opening hidden by mist, while exposed stepping stones form a safe approach.",
+            "Ada decides to wait for the marked tide level and follow the stones instead of crossing blindly."
+          ],
+          "must_include": [
+            "The stone markings connect the route to a specific tide level.",
+            "Ada uses a small environmental change, the seaweed band, to test the markings."
+          ],
+          "must_not_do": [
+            "Do not let the markings give a complete explanation of the light.",
+            "Do not make Ada enter while the tide blocks the safe stepping stones."
+          ],
+          "constraint_ids": [],
+          "prior_evidence": [
+            "Scene 1 established old waystones, the tide line, and newly exposed seaweed.",
+            "Scene 2 established that the nearest waystone guides rather than produces the reflection.",
+            "Scene 2 established that light moves across a wet stone band."
+          ],
+          "handoff": "Ada has a marked tide level and a safe route, but the cave's interior reflection and the signal's exact source remain unknown.",
+          "open_threads_after": [
+            "What will Ada find beyond the cave entrance?",
+            "How does the tide level affect the moving light?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Gather the final physical clues inside the cave without resolving the mystery.",
+          "entry_state": "At the marked tide level, Ada follows exposed stepping stones into the tidal cave.",
+          "beats": [
+            "Inside, she observes the light sliding along a wet wall as the evening sun lowers, matching the earlier moving reflection.",
+            "Foam retreats from a narrow passage, revealing a smooth pale patch beyond a shallow water curtain.",
+            "Ada waits and sketches the alignment, realizing the tide, markings, and light must work together."
+          ],
+          "must_include": [
+            "The cave remains calm and non-frightening despite mist and moving water.",
+            "Ada records the wet wall, retreating foam, narrow passage, and pale reflective patch."
+          ],
+          "must_not_do": [
+            "Do not name quartz or fully explain the signal yet.",
+            "Do not have Ada force passage or ignore the tide."
+          ],
+          "constraint_ids": [
+            "C1"
+          ],
+          "prior_evidence": [
+            "Scene 2 established that the reflection moves across a wet stone surface.",
+            "Scene 3 established the marked tide level and safe stepping-stone route.",
+            "Scene 3 established that the cave entrance becomes reachable as water falls."
+          ],
+          "handoff": "Ada has the route, timing, moving-light pattern, and pale patch, but must apply them together to confirm the source.",
+          "open_threads_after": [
+            "Is the pale patch truly the source?",
+            "Why does the light appear only briefly each evening?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply all accumulated clues and decisively explain the signal.",
+          "entry_state": "Ada stands inside the cave with the tide at the marked level and the evening light nearing its brief alignment.",
+          "beats": [
+            "She positions herself by the marked stone, follows the safe passage, and watches the sunbeam reach the wet wall.",
+            "The beam strikes the smooth pale quartz patch, flashes across the cave, and disappears when the tide rises over it.",
+            "Ada explains the signal by combining the waystone timing, seaweed tide mark, cave alignment, and reflective quartz."
+          ],
+          "must_include": [
+            "The solution depends on at least two different clues, clearly combined by Ada.",
+            "The central mystery is fully resolved through observation rather than coincidence or miracle."
+          ],
+          "must_not_do": [
+            "Do not introduce a hidden magical sender or an unrelated explanation.",
+            "Do not solve the mystery before Ada applies the clues in this scene."
+          ],
+          "constraint_ids": [
+            "C3",
+            "C4"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the moving reflection across a wet stone surface.",
+            "Scene 3 established the waystone's tide mark and safe route.",
+            "Scene 4 established the pale patch, water curtain, and beam alignment."
+          ],
+          "handoff": "Ada understands the natural signal and leaves safely, carrying a complete explanation plus one faint marking not needed for this discovery.",
+          "open_threads_after": [
+            "What does the faint second marking on the inland waystone indicate?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the calm consequence, reinforce the theme, and leave one bounded future-discovery opening.",
+          "entry_state": "Ada has safely explained the evening signal and returns from the cave before the tide covers the stepping stones.",
+          "beats": [
+            "She records the tide, markings, quartz reflection, and timing so another careful explorer can understand the route.",
+            "Watching the next mist clear, Ada notices a faint second symbol continuing inland from the waystones.",
+            "She smiles and leaves it for another patient investigation, satisfied that one mystery can lead to a thoughtful question."
+          ],
+          "must_include": [
+            "The main mystery remains resolved and Ada is safe.",
+            "The ending preserves curiosity with exactly one small, bounded future-discovery hook."
+          ],
+          "must_not_do": [
+            "Do not reopen the solved signal mystery.",
+            "Do not add a new character, danger, quest, or unresolved major problem."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C5"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the waystones as route markers.",
+            "Scene 5 established the complete natural explanation for the signal.",
+            "Scene 5 established that one faint marking remained outside the solved route."
+          ],
+          "handoff": "Ada returns home with the signal explained; one faint inland waystone marking remains as a small, safe possibility for future discovery.",
+          "open_threads_after": [
+            "What does the faint inland waystone marking mean?"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.97,
+        "constraint_coverage": 0.9,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.84,
+        "no_early_resolution": 0.96,
+        "ending_coherence": 0.97
+      },
+      "below_threshold": {},
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.77,
+      "shadow_signal": "CONTINUE",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3423,
+        "output_tokens": 185,
+        "cost": 0.000143766
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 5,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 5.0,
+      "minimum": 5,
+      "critical_failures": [],
+      "scene_risks": [],
+      "summary": "Excellent plan. Every scene follows causally from the prior state and materially enables the next. Ada's goal remains stable throughout: understand the light's source through careful observation. All five constraints are explicitly scheduled and achievable: C1 (non-frightening) is maintained across all scenes; C2 (incorrect assumption corrected by observation) is the core of Scene 2; C3 (no single coincidence) is enforced by the solution principle; C4 (at least two clues combined) is built into Scene 5's beats; C5 (small future-discovery opening) is Scene 6's sole purpose. Information accumulates without reset: the waystone, tide line, seaweed band, moving reflection, cave interior, pale patch, and quartz alignment are introduced sequentially and combined in Scene 5. No unexplained dependencies exist—every object, location, and fact introduced is either grounded in prior scenes or explained by Ada's observation. The central mystery is preserved until Scene 5, where Ada applies all clues together to explain the signal as evening sunlight reflecting from wet quartz. Scene 6 resolves consequences (Ada records the route, leaves safely, notices one faint inland marking) and closes the main story while leaving exactly one bounded future-discovery hook. The plan is internally coherent, thematically consistent, and ready for prose.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0039966,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000143766,
+      "haiku": {
+        "usd": 0.00562,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 813,
+        "output_tokens": 3195,
+        "total_tokens": 4008
+      },
+      "jev": {
+        "input_tokens": 3423,
+        "output_tokens": 185,
+        "cost": 0.000143766
+      },
+      "haiku": {
+        "input_tokens": 3545,
+        "output_tokens": 415,
+        "total_tokens": 3960
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    260,
+    310,
+    340,
+    340,
+    410,
+    340
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 260,
+      "word_count": 272,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Ada, the misty coast, the brief light, and her evidence-first goal.",
+        "entry_state": "Ada explores the mist-covered coastal cliffs and notices an unusual light flashing from the shoreline.",
+        "beats": [
+          "Ada watches the light appear for only a few minutes, then vanish as evening mist thickens.",
+          "She notes the nearest old waystone, the tide line, and seaweed newly exposed on the rocks.",
+          "Ada decides to investigate carefully rather than guess, carrying her observations toward the tidal caves."
+        ],
+        "must_include": [
+          "Ada is curious, careful, and reluctant to decide without evidence.",
+          "The coastal cliffs, tidal caves, old waystones, mist, brief evening signal, and changing surroundings appear."
+        ],
+        "must_not_do": [
+          "Do not reveal the light's source or make the coast frightening.",
+          "Do not send Ada into the caves before she studies the tide and markings."
+        ],
+        "constraint_ids": [
+          "C1"
+        ],
+        "prior_evidence": [],
+        "handoff": "Ada has recorded the signal's timing and nearby clues, but does not know whether the closest waystone produces it.",
+        "open_threads_after": [
+          "What creates the brief light?",
+          "What do the waystone markings and tide changes mean?"
+        ]
+      },
+      "envelope": {
+        "prose": "Ada stood on the mist-covered coastal cliffs with her notebook tucked beneath one arm. Below, the sea folded gently against the rocks, and dark openings led to the tidal caves. She had come to watch the strange evening light.\n\nFor three evenings, it had appeared at nearly the same time. Tonight, just as the sun slipped behind the cloud bank, a pale blink shone near the shoreline.\n\nAda held her breath and counted. One, two, three... The light glimmered again, then faded. A few moments later, it flashed once more. After only a few minutes, the mist thickened, and the light vanished completely.\n\n“Not a guess yet,” Ada said, writing carefully. “Appears near sunset. Lasts about four minutes. Seen from the west cliff.”\n\nShe looked around for changes. Beside the path stood an old waystone, rounded by wind and salt. Its carved marks were softened, but a wave-shaped line could still be seen on one side. Ada drew it in her notebook.\n\nNear the cliff edge, the tide had left a dark line across the rocks. Freshly exposed seaweed clung below it, bright green and shining with drops. Yesterday, that seaweed had been covered by water.\n\nAda glanced toward the misty cave mouths. She was curious about the light, but curiosity did not mean rushing. The waystone, the tide line, and the newly uncovered seaweed might each tell part of the story.\n\nShe marked their positions, checked the steady path beneath her boots, and began walking toward the tidal caves—without entering them. First, she would study the markings and the tide. Then she would decide what the evidence allowed her to believe.",
+        "state_delta": {
+          "location": "Misty coastal cliff path beside the nearest old waystone, facing the tidal caves.",
+          "character_goal": "Ada wants to reach the light's source and understand why it appears briefly each evening, but will first gather evidence.",
+          "knowledge_gained": [
+            "The light appears near sunset for about four minutes.",
+            "The light is visible from the west cliff near the shoreline.",
+            "The tide has left a dark line, and fresh seaweed is newly exposed below it."
+          ],
+          "facts_established": [
+            "The coast has mist-covered cliffs and tidal cave openings.",
+            "An old waystone stands beside the path.",
+            "The waystone bears a softened wave-shaped marking."
+          ],
+          "clues_added": [
+            "The light's repeated evening timing.",
+            "The nearest waystone and its wave-shaped mark.",
+            "The tide line and freshly exposed seaweed."
+          ],
+          "objects_changed": [
+            "Ada records the signal timing, waystone marking, tide line, and seaweed positions in her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What creates the brief light?",
+            "What do the waystone markings and tide changes mean?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Ada is walking toward the tidal caves but has not entered them. She has recorded the signal's timing, the nearest waystone, the tide line, and freshly exposed seaweed, but does not know whether the waystone produces the light."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.665,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 272,
+          "usage": {
+            "input_tokens": 3530,
+            "output_tokens": 783,
+            "total_tokens": 4313
+          },
+          "cost": {
+            "usd": 0.00182195,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.91,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2500,
+          "output_tokens": 188,
+          "cost": 0.000105
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.91,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2500,
+            "output_tokens": 188,
+            "cost": 0.000105
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.484
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.149
+    },
+    {
+      "scene": 2,
+      "target_words": 310,
+      "word_count": 329,
+      "contract": {
+        "index": 2,
+        "purpose": "Test Ada's first assumption and replace it with a concrete observation.",
+        "entry_state": "Ada returns as the evening light begins, believing the nearest waystone may be the signal's source.",
+        "beats": [
+          "She inspects the waystone before the flash and finds no glow, warmth, or reflective surface on its seaward face.",
+          "The signal appears across the cliff instead, while a wet stone band catches a moving streak of light.",
+          "Ada corrects her assumption: the waystone may guide the route, but it does not create the signal."
+        ],
+        "must_include": [
+          "Ada makes an incorrect assumption and corrects it through direct observation.",
+          "The moving reflection and the waystone's lack of light provide concrete evidence."
+        ],
+        "must_not_do": [
+          "Do not treat Ada's first assumption as correct.",
+          "Do not identify the final source from this single observation."
+        ],
+        "constraint_ids": [
+          "C2"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the nearest waystone beside the signal-viewing cliff.",
+          "Scene 1 established that the light appears briefly each evening.",
+          "Scene 1 established the tide line and freshly exposed seaweed."
+        ],
+        "handoff": "Ada now suspects the waystone marks a route toward a reflection, but the tide and remaining markings must be understood.",
+        "open_threads_after": [
+          "What do the waystone symbols indicate?",
+          "Which tide level safely reveals the cave route?",
+          "What surface reflects the signal?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next evening, Ada returned to the old waystone before the light was due. She had spent the day thinking about its softened wave-shaped mark.\n\n“Perhaps the stone is sending the signal,” she said. “It stands in just the right place.”\n\nStill, she did not write that down as a fact. She crouched beside the waystone and examined its seaward face. The stone was cool, rough, and gray. No glow shone from its cracks. It gave off no warmth. Even when Ada tilted her small looking glass toward it, the surface showed only dull stone and a smear of salt.\n\nShe drew three careful marks in her notebook: no light, no warmth, no bright surface.\n\nThen the evening sun slipped through a break in the clouds.\n\nA pale flash appeared—not on the waystone, but across the cliff, farther toward the misty shoreline. Ada turned quickly. A thin streak of brightness was sliding along a dark, wet band of rock. It moved as the sun lowered, shining for a moment and then fading.\n\nAda followed the streak with her eyes. It was not coming from the waystone. The wet stone was catching the light and carrying it along its uneven surface, almost like a tiny traveling wave.\n\nShe checked the waystone again. It remained quiet and dark.\n\n“So my first idea was wrong,” Ada said, and crossed out her sentence. “The waystone does not make the signal. It may point toward something that reflects it.”\n\nBelow her, the tide line still marked the rocks, and the freshly exposed seaweed trembled in the breeze. The nearest cave mouths waited beyond the mist, but Ada did not hurry toward them. If the waystone was a guide, its wave mark and the changing tide might explain where to go.\n\nShe copied the moving reflection, the dark wet band, and the waystone’s position into her notebook. Then she watched the last glimmer vanish, ready to study the remaining marks before stepping into the caves.",
+        "state_delta": {
+          "location": "Misty coastal cliff beside the nearest old waystone, looking toward the tidal caves and shoreline.",
+          "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by studying the route and tide before entering the caves.",
+          "knowledge_gained": [
+            "The nearest waystone does not glow, feel warm, or reflect brightly on its seaward face.",
+            "The signal appears across the cliff rather than on the waystone.",
+            "A moving streak of light travels along a wet band of rock as the sun lowers."
+          ],
+          "facts_established": [
+            "The waystone is a guide or marker rather than the source of the signal.",
+            "The wet stone band reflects moving evening light."
+          ],
+          "clues_added": [
+            "The waystone's lack of glow, warmth, and reflective surface.",
+            "The moving reflection across a wet stone band.",
+            "The wave-shaped waystone mark may indicate a route toward the reflection."
+          ],
+          "objects_changed": [
+            "Ada crosses out her first guess in her notebook and records the waystone's condition, the moving reflection, and their positions."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What do the waystone symbols indicate?",
+            "Which tide level safely reveals the route?",
+            "What surface reflects the signal?"
+          ],
+          "threads_resolved": [
+            "The nearest waystone is not producing the light."
+          ],
+          "handoff_state": "Ada remains outside the caves. She now suspects the waystone marks a route toward a reflection, but she must compare its symbols with the tide line and seaweed before entering safely."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.796,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 329,
+          "usage": {
+            "input_tokens": 4303,
+            "output_tokens": 885,
+            "total_tokens": 5188
+          },
+          "cost": {
+            "usd": 0.0021376,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3025,
+          "output_tokens": 188,
+          "cost": 0.00012705
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3025,
+            "output_tokens": 188,
+            "cost": 0.00012705
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.421
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.218
+    },
+    {
+      "scene": 3,
+      "target_words": 340,
+      "word_count": 379,
+      "contract": {
+        "index": 3,
+        "purpose": "Decode the route clues by comparing markings with tide evidence.",
+        "entry_state": "Ada knows the nearest waystone is a guide, not the source, and studies its marks before entering the caves.",
+        "beats": [
+          "She compares repeated wave-shaped marks with the waterline and finds a notch matching the lowest seaweed band.",
+          "A second waystone points toward a cave opening hidden by mist, while exposed stepping stones form a safe approach.",
+          "Ada decides to wait for the marked tide level and follow the stones instead of crossing blindly."
+        ],
+        "must_include": [
+          "The stone markings connect the route to a specific tide level.",
+          "Ada uses a small environmental change, the seaweed band, to test the markings."
+        ],
+        "must_not_do": [
+          "Do not let the markings give a complete explanation of the light.",
+          "Do not make Ada enter while the tide blocks the safe stepping stones."
+        ],
+        "constraint_ids": [],
+        "prior_evidence": [
+          "Scene 1 established old waystones, the tide line, and newly exposed seaweed.",
+          "Scene 2 established that the nearest waystone guides rather than produces the reflection.",
+          "Scene 2 established that light moves across a wet stone band."
+        ],
+        "handoff": "Ada has a marked tide level and a safe route, but the cave's interior reflection and the signal's exact source remain unknown.",
+        "open_threads_after": [
+          "What will Ada find beyond the cave entrance?",
+          "How does the tide level affect the moving light?"
+        ]
+      },
+      "envelope": {
+        "prose": "Ada returned to the waystone the next afternoon, while the mist still rested lightly over the cliffs. She knelt beside its softened wave-shaped mark and copied it into her notebook. Then she looked toward the rocks below.\n\nThe tide had risen since yesterday. A dark, wet line crossed the stones, and the stepping stones that led toward the nearest cave were mostly covered. Ada did not try to cross. Instead, she searched the waystone more carefully.\n\nNear the bottom of the carved wave, she found a tiny notch. It was easy to miss, almost hidden beneath a strip of pale seaweed. Ada brushed the seaweed aside and compared its position with the shore. The notch sat at the same height as the lowest band of fresh seaweed on the rocks—the band left when the water had recently been there.\n\n“Maybe this is not just a wave,” Ada said. “Maybe it tells me when the path is ready.”\n\nShe drew a line between the notch, the seaweed band, and the covered stepping stones. The idea was useful, but Ada wanted another mark to test it.\n\nFollowing the cliff path inland, she found a second old waystone half veiled by mist. Its face held two worn lines: one curved like a wave, and one pointed toward the shoreline. Ada turned until the pointed line aimed at a narrow cave opening across the rocks. From there, she could see the tops of several stepping stones leading toward it.\n\nThe route was becoming clearer. The first waystone showed a tide height. The second pointed toward a particular cave. The seaweed showed that the tide was still too high, because the lowest band had not yet been reached by the falling water.\n\nAda marked the spot where the safe stones would appear. Then she sat on a dry ledge and waited, watching the water slip quietly away. One stone emerged, then another, their rounded tops shining with wetness.\n\nShe did not hurry. When the water lowered to the seaweed band, the stepping stones formed an unbroken path.\n\nAda packed her notebook under her coat and took one careful step toward the cave. The markings had shown her when and where to go, but they had not yet told her what waited beyond the mist.",
+        "state_delta": {
+          "location": "Cliff path between the nearest old waystone and a second waystone, facing the tidal cave entrance.",
+          "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by following the evidence-based route safely.",
+          "knowledge_gained": [
+            "A small notch in the nearest waystone matches the lowest band of seaweed on the rocks.",
+            "The notch indicates a tide level at which the stepping-stone route becomes safe.",
+            "A second waystone points toward a particular cave opening.",
+            "The tide must fall to the marked seaweed level before Ada crosses."
+          ],
+          "facts_established": [
+            "The waystone markings connect the route to a specific tide level.",
+            "Exposed stepping stones form a safe approach to the cave when the water reaches the marked level.",
+            "The cave entrance becomes reachable as the tide falls."
+          ],
+          "clues_added": [
+            "The notch at the bottom of the wave-shaped mark.",
+            "The matching lowest seaweed band.",
+            "The second waystone's shoreline-pointing mark.",
+            "The exposed stepping-stone path."
+          ],
+          "objects_changed": [
+            "Ada adds the notch, seaweed level, second waystone, cave direction, and safe route to her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What will Ada find beyond the cave entrance?",
+            "How does the marked tide level affect the moving light?"
+          ],
+          "threads_resolved": [
+            "The waystone marks indicate when and where the cave route can be followed safely."
+          ],
+          "handoff_state": "Ada has waited until the tide reaches the seaweed-marked level. The exposed stepping stones now form a safe route to the mist-hidden cave, but the cave's interior reflection and the light's exact source remain unknown."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.284,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 379,
+          "usage": {
+            "input_tokens": 4751,
+            "output_tokens": 988,
+            "total_tokens": 5739
+          },
+          "cost": {
+            "usd": 0.0023732,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3523,
+          "output_tokens": 188,
+          "cost": 0.000147966
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3523,
+            "output_tokens": 188,
+            "cost": 0.000147966
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.506
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.79
+    },
+    {
+      "scene": 4,
+      "target_words": 340,
+      "word_count": 358,
+      "contract": {
+        "index": 4,
+        "purpose": "Gather the final physical clues inside the cave without resolving the mystery.",
+        "entry_state": "At the marked tide level, Ada follows exposed stepping stones into the tidal cave.",
+        "beats": [
+          "Inside, she observes the light sliding along a wet wall as the evening sun lowers, matching the earlier moving reflection.",
+          "Foam retreats from a narrow passage, revealing a smooth pale patch beyond a shallow water curtain.",
+          "Ada waits and sketches the alignment, realizing the tide, markings, and light must work together."
+        ],
+        "must_include": [
+          "The cave remains calm and non-frightening despite mist and moving water.",
+          "Ada records the wet wall, retreating foam, narrow passage, and pale reflective patch."
+        ],
+        "must_not_do": [
+          "Do not name quartz or fully explain the signal yet.",
+          "Do not have Ada force passage or ignore the tide."
+        ],
+        "constraint_ids": [
+          "C1"
+        ],
+        "prior_evidence": [
+          "Scene 2 established that the reflection moves across a wet stone surface.",
+          "Scene 3 established the marked tide level and safe stepping-stone route.",
+          "Scene 3 established that the cave entrance becomes reachable as water falls."
+        ],
+        "handoff": "Ada has the route, timing, moving-light pattern, and pale patch, but must apply them together to confirm the source.",
+        "open_threads_after": [
+          "Is the pale patch truly the source?",
+          "Why does the light appear only briefly each evening?"
+        ]
+      },
+      "envelope": {
+        "prose": "Ada stepped from stone to stone, following the path the tide had uncovered. Each rounded top was damp beneath her boots, but the water had fallen to the seaweed band, just as the first waystone had shown. Ahead, the cave opening waited beneath a curtain of mist.\n\nInside, the air felt cool and quiet. Water made a soft, ticking sound as it slipped from the roof. Ada set one hand against the wall and moved slowly, watching where she placed her feet. The cave was not dark; a pale evening glow rested near the entrance.\n\nThen a narrow streak of light slid across the wet wall.\n\nAda stopped. The streak moved just as the reflection had moved across the cliff outside, traveling along the shining stone while the sun lowered. It reached a bend in the wall and faded. A moment later, another thin line appeared a little farther along.\n\n“So the cave changes the path of the light,” Ada murmured. “But I still need to see where it begins.”\n\nShe waited beside a flat rock and listened to the water. Foam gathered at the edge of a shallow pool, then slowly pulled back. As it retreated, it uncovered a narrow passage between two smooth walls. Beyond the passage, a pale patch showed through a thin water curtain.\n\nAda did not step into the passage. The water was still moving, and the safe route ended at the dry rock beneath her. Instead, she took out her notebook and sketched the cave entrance, the stepping stones, the wet wall, and the newly visible patch. She added arrows for the direction of the sliding light and a small mark for the seaweed level outside.\n\nWhen the foam crept forward again, the pale patch blurred behind the water. When it drew back, the patch returned.\n\nAda studied her drawing. The waystone had shown the tide level. The tide had uncovered the stepping stones and the narrow passage. The lowering sun had sent light along the wet wall. All the clues seemed to meet here, but she needed to watch the exact alignment once more before deciding what the pale patch meant.",
+        "state_delta": {
+          "location": "Inside the mist-covered tidal cave, beside the safe stepping-stone route and a shallow pool near a narrow passage.",
+          "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by observing the cave's alignment without forcing passage or ignoring the tide.",
+          "knowledge_gained": [
+            "The evening light slides along a wet cave wall as the sun lowers.",
+            "The moving cave reflection matches the moving reflection Ada saw outside.",
+            "Retreating foam reveals a narrow passage and a smooth pale patch beyond a shallow water curtain.",
+            "The pale patch appears and blurs as the water curtain moves."
+          ],
+          "facts_established": [
+            "The cave remains calm and passable only along the tide-revealed route.",
+            "The marked tide level connects the stepping-stone route to the cave's changing interior.",
+            "The wet wall, moving light, tide, and pale patch appear physically connected, but the source is not yet confirmed."
+          ],
+          "clues_added": [
+            "The light slides along the wet cave wall.",
+            "Foam retreats from the narrow passage.",
+            "A smooth pale patch lies beyond a shallow water curtain.",
+            "The pale patch appears and blurs with the movement of the water."
+          ],
+          "objects_changed": [
+            "Ada sketches the cave entrance, stepping stones, wet wall, narrow passage, pale patch, light direction, and seaweed tide level in her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Is the pale patch truly the source of the light?",
+            "Why does the light appear only briefly each evening?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Ada is safely inside the tidal cave at the marked tide level. She has observed the light sliding along a wet wall, seen foam retreat to reveal a narrow passage and pale patch behind a water curtain, and recorded the alignment. She has not entered the passage or identified the patch's material or confirmed the signal's source."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.089,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 358,
+          "usage": {
+            "input_tokens": 5220,
+            "output_tokens": 979,
+            "total_tokens": 6199
+          },
+          "cost": {
+            "usd": 0.00247965,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.98,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3971,
+          "output_tokens": 188,
+          "cost": 0.000166782
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.98,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3971,
+            "output_tokens": 188,
+            "cost": 0.000166782
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        1.208
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 11.297
+    },
+    {
+      "scene": 5,
+      "target_words": 410,
+      "word_count": 391,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply all accumulated clues and decisively explain the signal.",
+        "entry_state": "Ada stands inside the cave with the tide at the marked level and the evening light nearing its brief alignment.",
+        "beats": [
+          "She positions herself by the marked stone, follows the safe passage, and watches the sunbeam reach the wet wall.",
+          "The beam strikes the smooth pale quartz patch, flashes across the cave, and disappears when the tide rises over it.",
+          "Ada explains the signal by combining the waystone timing, seaweed tide mark, cave alignment, and reflective quartz."
+        ],
+        "must_include": [
+          "The solution depends on at least two different clues, clearly combined by Ada.",
+          "The central mystery is fully resolved through observation rather than coincidence or miracle."
+        ],
+        "must_not_do": [
+          "Do not introduce a hidden magical sender or an unrelated explanation.",
+          "Do not solve the mystery before Ada applies the clues in this scene."
+        ],
+        "constraint_ids": [
+          "C3",
+          "C4"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the moving reflection across a wet stone surface.",
+          "Scene 3 established the waystone's tide mark and safe route.",
+          "Scene 4 established the pale patch, water curtain, and beam alignment."
+        ],
+        "handoff": "Ada understands the natural signal and leaves safely, carrying a complete explanation plus one faint marking not needed for this discovery.",
+        "open_threads_after": [
+          "What does the faint second marking on the inland waystone indicate?"
+        ]
+      },
+      "envelope": {
+        "prose": "Ada stood on the dry cliff path outside the tidal cave, safely beyond the stepping stones. She had returned before the tide covered the lowest step and would not cross back over it. From the cave mouth, she could still see the wet wall and the pale patch beyond the narrow passage. Her notebook lay open beside her.\n\nThe seaweed mark had shown the safe tide level, and the waystone had guided her to the cave. Now she remained outside and watched the final alignment from this secure vantage point.\n\nThe sun lowered. A beam slipped through the mist and touched the wet wall inside the cave. It traveled along the shining surface, just as the streak had moved across the cliff outside. Then it reached the pale patch beyond the water curtain.\n\nFor one bright moment, the patch flashed silver-white. Light sprang across the cave, skimmed the wall, and shone toward the entrance.\n\nAda studied the pattern without leaving the dry path. The flash was not coming from the waystone. That stone had helped her find the right tide and passage. The lowest seaweed band had shown when the stepping stones would be safe. The lowering sun had supplied the beam, and the smooth pale patch had caught it.\n\n“Quartz,” Ada said softly. She had seen pieces of it before, clear and pale, shining when wet. “Wet quartz is reflecting the evening sun.”\n\nThe water curtain thickened as the tide turned. A little wave slid across the passage and covered the pale patch. The silver flash weakened, broke into dull glimmers, and vanished.\n\nAda compared the moment with her notebook. The signal had lasted only a few minutes, just as it had on the cliff. The waystone mark had led her to the cave, the seaweed tide line had marked the safe timing, the cave’s position had aligned the beam, and the wet quartz had reflected it. Each clue supported the others.\n\nShe recorded the quartz reflection and the tide-covered disappearance, then closed her notebook. Before starting home, she noticed one faint second mark continuing along the inland side of the waystone. It was not needed to explain the light, so she recorded it for another careful day.\n\nAda headed along the cliff path, carrying a complete answer to the evening mystery and leaving the rising tide safely behind her.",
+        "state_delta": {
+          "location": "Cliff path outside the tidal cave, after Ada has safely returned before the tide covers the stepping stones.",
+          "character_goal": "Ada has reached the light's source and understands why it appears briefly each evening; she now carries the explanation home.",
+          "knowledge_gained": [
+            "The smooth pale patch beyond the water curtain is wet quartz.",
+            "The evening sunbeam strikes the quartz and creates the brief flash.",
+            "The flash disappears when the rising tide covers the quartz.",
+            "The waystone, seaweed tide mark, cave alignment, and quartz work together to create the signal."
+          ],
+          "facts_established": [
+            "The light is a natural reflection from wet quartz inside the tidal cave.",
+            "The signal lasts only a few minutes because the evening sun reaches the quartz briefly and the rising tide soon covers it.",
+            "The waystones guide the safe route and tide timing but do not produce the light.",
+            "A faint second marking continues inland from the waystone and is not needed for the solved signal."
+          ],
+          "clues_added": [
+            "The sunbeam visibly reaches the wet wall and then the quartz patch.",
+            "The quartz flashes across the cave before the rising water covers it.",
+            "The flash duration matches Ada's recorded evening timing.",
+            "A faint second marking continues inland from the waystone."
+          ],
+          "objects_changed": [
+            "Ada adds the quartz reflection, tide-covered disappearance, complete explanation, and faint second marking to her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What does the faint inland waystone marking mean?"
+          ],
+          "threads_resolved": [
+            "What creates the brief light?",
+            "Why does the light appear only briefly each evening?",
+            "How do the waystone timing, seaweed tide mark, cave alignment, and reflective surface combine?"
+          ],
+          "handoff_state": "Ada has safely left the cave with the signal fully explained as evening sunlight reflecting from wet quartz, timed and revealed by the marked tide route. She is heading home with her notes; one faint inland waystone marking remains as a small, safe future discovery."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.149,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 416,
+          "usage": {
+            "input_tokens": 5643,
+            "output_tokens": 1127,
+            "total_tokens": 6770
+          },
+          "cost": {
+            "usd": 0.002763,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 11.525,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.230<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 367,
+          "usage": {
+            "input_tokens": 6131,
+            "output_tokens": 1337,
+            "total_tokens": 7468
+          },
+          "cost": {
+            "usd": 0.003137,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 11.679,
+          "repair_reasons": [
+            "jev:handoff_valid:0.780<0.800",
+            "jev:no_contradiction:0.600<0.800",
+            "jev:no_future_leakage:0.760<0.800",
+            "jev:no_unexplained_dependency:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 367,
+          "usage": {
+            "input_tokens": 6085,
+            "output_tokens": 1320,
+            "total_tokens": 7405
+          },
+          "cost": {
+            "usd": 0.0031051,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "final_haiku_targeted_repair",
+          "scene": 5,
+          "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "repair_round": 1,
+          "ignored_model_state_delta_change": false,
+          "structured_parse_retries": [],
+          "word_budget_warnings": [],
+          "errors": [],
+          "word_count": 354,
+          "usage": {
+            "input_tokens": 5248,
+            "output_tokens": 1208,
+            "total_tokens": 6456
+          },
+          "cost": {
+            "usd": 0.00276145,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "final_haiku_targeted_repair",
+          "scene": 5,
+          "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "repair_round": 2,
+          "ignored_model_state_delta_change": false,
+          "structured_parse_retries": [],
+          "word_budget_warnings": [],
+          "errors": [],
+          "word_count": 391,
+          "usage": {
+            "input_tokens": 5231,
+            "output_tokens": 1237,
+            "total_tokens": 6468
+          },
+          "cost": {
+            "usd": 0.002792,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.46,
+          "scene_purpose_obeyed": 0.86,
+          "no_unexplained_dependency": 0.77,
+          "no_contradiction": 0.58,
+          "goal_preserved": 0.92,
+          "no_future_leakage": 0.2,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {
+          "continues_prior_state": 0.46,
+          "no_unexplained_dependency": 0.77,
+          "no_contradiction": 0.58,
+          "no_future_leakage": 0.2
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.41,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4548,
+          "output_tokens": 188,
+          "cost": 0.000191016
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.23,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.23
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4589,
+            "output_tokens": 188,
+            "cost": 0.000192738
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.94,
+            "no_unexplained_dependency": 0.78,
+            "no_contradiction": 0.6,
+            "goal_preserved": 0.94,
+            "no_future_leakage": 0.76,
+            "handoff_valid": 0.78
+          },
+          "below_threshold": {
+            "no_unexplained_dependency": 0.78,
+            "no_contradiction": 0.6,
+            "no_future_leakage": 0.76,
+            "handoff_valid": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.53,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4460,
+            "output_tokens": 188,
+            "cost": 0.00018732
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.83,
+            "no_contradiction": 0.87,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.18,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.18
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.85,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4527,
+            "output_tokens": 188,
+            "cost": 0.000190134
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.46,
+            "scene_purpose_obeyed": 0.86,
+            "no_unexplained_dependency": 0.77,
+            "no_contradiction": 0.58,
+            "goal_preserved": 0.92,
+            "no_future_leakage": 0.2,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {
+            "continues_prior_state": 0.46,
+            "no_unexplained_dependency": 0.77,
+            "no_contradiction": 0.58,
+            "no_future_leakage": 0.2
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.41,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4548,
+            "output_tokens": 188,
+            "cost": 0.000191016
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.781,
+        0.515,
+        0.664
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.86,
+              "no_contradiction": 0.92,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.23,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.23
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.94,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4589,
+              "output_tokens": 188,
+              "cost": 0.000192738
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 367,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.92,
+              "scene_purpose_obeyed": 0.94,
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.6,
+              "goal_preserved": 0.94,
+              "no_future_leakage": 0.76,
+              "handoff_valid": 0.78
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.6,
+              "no_future_leakage": 0.76,
+              "handoff_valid": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.53,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4460,
+              "output_tokens": 188,
+              "cost": 0.00018732
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.92,
+              "scene_purpose_obeyed": 0.94,
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.6,
+              "goal_preserved": 0.94,
+              "no_future_leakage": 0.76,
+              "handoff_valid": 0.78
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.6,
+              "no_future_leakage": 0.76,
+              "handoff_valid": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.53,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4460,
+              "output_tokens": 188,
+              "cost": 0.00018732
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 367,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.95,
+              "no_unexplained_dependency": 0.83,
+              "no_contradiction": 0.87,
+              "goal_preserved": 0.95,
+              "no_future_leakage": 0.18,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.18
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.85,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4527,
+              "output_tokens": 188,
+              "cost": 0.000190134
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": true,
+      "elapsed_seconds": 37.315,
+      "final_polish_repairs": [
+        {
+          "issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "observed_scenes": [
+            5
+          ],
+          "word_count": 391,
+          "repair_attempts": 2,
+          "target_verified": false
+        }
+      ]
+    },
+    {
+      "scene": 6,
+      "target_words": 340,
+      "word_count": 321,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the calm consequence, reinforce the theme, and leave one bounded future-discovery opening.",
+        "entry_state": "Ada has safely explained the evening signal and returns from the cave before the tide covers the stepping stones.",
+        "beats": [
+          "She records the tide, markings, quartz reflection, and timing so another careful explorer can understand the route.",
+          "Watching the next mist clear, Ada notices a faint second symbol continuing inland from the waystones.",
+          "She smiles and leaves it for another patient investigation, satisfied that one mystery can lead to a thoughtful question."
+        ],
+        "must_include": [
+          "The main mystery remains resolved and Ada is safe.",
+          "The ending preserves curiosity with exactly one small, bounded future-discovery hook."
+        ],
+        "must_not_do": [
+          "Do not reopen the solved signal mystery.",
+          "Do not add a new character, danger, quest, or unresolved major problem."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C5"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the waystones as route markers.",
+          "Scene 5 established the complete natural explanation for the signal.",
+          "Scene 5 established that one faint marking remained outside the solved route."
+        ],
+        "handoff": "Ada returns home with the signal explained; one faint inland waystone marking remains as a small, safe possibility for future discovery.",
+        "open_threads_after": [
+          "What does the faint inland waystone marking mean?"
+        ]
+      },
+      "envelope": {
+        "prose": "Ada reached the cliff path just before the tide covered the lowest stepping stone. She stopped on the dry grass and listened to the gentle water below. The cave was quiet again, its bright secret safely understood.\n\nShe opened her notebook beneath the nearest waystone and turned to a fresh page. First she drew the lowest seaweed band and the notch in the wave-shaped mark. Beside it, she sketched the stepping stones that appeared when the tide fell. Then she drew the cave wall, the narrow passage, and the pale quartz patch behind the water curtain.\n\n“Tide, waystone, sunlight, and wet quartz,” she wrote. “All four are needed.”\n\nShe added the time the flash began and the time it vanished. The evening sun had touched the quartz for only a few minutes. Then the rising water had covered it, just as her observations had predicted. The waystone had not made the light at all. It had helped her know when and where to look.\n\nAda closed the notebook, but before she started home, the mist lifted from the inland side of the path. More of the old waystone came into view. There, beneath a patch of lichen, was the faint second symbol she had noticed earlier. It continued away from the coast, a small line of marks disappearing into the grass.\n\nAda tilted her head. The symbol was not part of the route to the cave, and it could not change the answer she had found. She did not guess what it meant. She simply drew it carefully in her notebook and placed a tiny question mark beside it.\n\nThe mist drifted back, soft and silver. Ada smiled and tucked away her pencil.\n\nOne mystery had become an answer because she had watched, waited, and compared each clue. The new marking could wait too. She followed the cliff path home, carrying her notes and one quiet question for another patient day.",
+        "state_delta": {
+          "location": "Cliff path leading home from the tidal cave, beside the old waystones.",
+          "character_goal": "Ada has reached the light's source and understands its brief evening appearance; she is returning home with a complete explanation.",
+          "knowledge_gained": [
+            "The tide, waystone markings, cave alignment, evening sunlight, and wet quartz must all be considered together.",
+            "The signal appeared only briefly because sunlight reached the quartz for a short time before rising water covered it."
+          ],
+          "facts_established": [
+            "The main mystery is fully resolved as a natural reflection from wet quartz inside the tidal cave.",
+            "Ada is safe and returns before the tide covers the stepping-stone route.",
+            "The waystones mark the safe route and tide timing rather than producing the light."
+          ],
+          "clues_added": [
+            "A faint second symbol continues inland from the waystones."
+          ],
+          "objects_changed": [
+            "Ada records the tide, markings, stepping-stone route, quartz reflection, timing, and faint inland symbol in her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What does the faint inland waystone marking mean?"
+          ],
+          "threads_resolved": [
+            "The brief evening light is explained.",
+            "The role of the waystones, tide, cave alignment, and wet quartz is confirmed."
+          ],
+          "handoff_state": "Ada returns home with the evening signal fully explained as sunlight reflecting from wet quartz, revealed and timed by the marked tide route. She is safe, and one faint inland waystone marking remains as a small, bounded possibility for a future discovery."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.746,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 321,
+          "usage": {
+            "input_tokens": 5810,
+            "output_tokens": 842,
+            "total_tokens": 6652
+          },
+          "cost": {
+            "usd": 0.00246275,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.89,
+          "no_future_leakage": 0.98,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4491,
+          "output_tokens": 188,
+          "cost": 0.000188622
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.89,
+            "no_future_leakage": 0.98,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4491,
+            "output_tokens": 188,
+            "cost": 0.000188622
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.432
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.178
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Ada, the misty coast, the brief light, and her evidence-first goal.",
+      "word_count": 272,
+      "location": "Misty coastal cliff path beside the nearest old waystone, facing the tidal caves.",
+      "character_goal": "Ada wants to reach the light's source and understand why it appears briefly each evening, but will first gather evidence.",
+      "knowledge_gained": [
+        "The light appears near sunset for about four minutes.",
+        "The light is visible from the west cliff near the shoreline.",
+        "The tide has left a dark line, and fresh seaweed is newly exposed below it."
+      ],
+      "facts_established": [
+        "The coast has mist-covered cliffs and tidal cave openings.",
+        "An old waystone stands beside the path.",
+        "The waystone bears a softened wave-shaped marking."
+      ],
+      "clues_added": [
+        "The light's repeated evening timing.",
+        "The nearest waystone and its wave-shaped mark.",
+        "The tide line and freshly exposed seaweed."
+      ],
+      "objects_changed": [
+        "Ada records the signal timing, waystone marking, tide line, and seaweed positions in her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What creates the brief light?",
+        "What do the waystone markings and tide changes mean?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Ada is walking toward the tidal caves but has not entered them. She has recorded the signal's timing, the nearest waystone, the tide line, and freshly exposed seaweed, but does not know whether the waystone produces the light."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test Ada's first assumption and replace it with a concrete observation.",
+      "word_count": 329,
+      "location": "Misty coastal cliff beside the nearest old waystone, looking toward the tidal caves and shoreline.",
+      "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by studying the route and tide before entering the caves.",
+      "knowledge_gained": [
+        "The nearest waystone does not glow, feel warm, or reflect brightly on its seaward face.",
+        "The signal appears across the cliff rather than on the waystone.",
+        "A moving streak of light travels along a wet band of rock as the sun lowers."
+      ],
+      "facts_established": [
+        "The waystone is a guide or marker rather than the source of the signal.",
+        "The wet stone band reflects moving evening light."
+      ],
+      "clues_added": [
+        "The waystone's lack of glow, warmth, and reflective surface.",
+        "The moving reflection across a wet stone band.",
+        "The wave-shaped waystone mark may indicate a route toward the reflection."
+      ],
+      "objects_changed": [
+        "Ada crosses out her first guess in her notebook and records the waystone's condition, the moving reflection, and their positions."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What do the waystone symbols indicate?",
+        "Which tide level safely reveals the route?",
+        "What surface reflects the signal?"
+      ],
+      "threads_resolved": [
+        "The nearest waystone is not producing the light."
+      ],
+      "handoff_state": "Ada remains outside the caves. She now suspects the waystone marks a route toward a reflection, but she must compare its symbols with the tide line and seaweed before entering safely."
+    },
+    {
+      "scene": 3,
+      "purpose": "Decode the route clues by comparing markings with tide evidence.",
+      "word_count": 379,
+      "location": "Cliff path between the nearest old waystone and a second waystone, facing the tidal cave entrance.",
+      "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by following the evidence-based route safely.",
+      "knowledge_gained": [
+        "A small notch in the nearest waystone matches the lowest band of seaweed on the rocks.",
+        "The notch indicates a tide level at which the stepping-stone route becomes safe.",
+        "A second waystone points toward a particular cave opening.",
+        "The tide must fall to the marked seaweed level before Ada crosses."
+      ],
+      "facts_established": [
+        "The waystone markings connect the route to a specific tide level.",
+        "Exposed stepping stones form a safe approach to the cave when the water reaches the marked level.",
+        "The cave entrance becomes reachable as the tide falls."
+      ],
+      "clues_added": [
+        "The notch at the bottom of the wave-shaped mark.",
+        "The matching lowest seaweed band.",
+        "The second waystone's shoreline-pointing mark.",
+        "The exposed stepping-stone path."
+      ],
+      "objects_changed": [
+        "Ada adds the notch, seaweed level, second waystone, cave direction, and safe route to her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What will Ada find beyond the cave entrance?",
+        "How does the marked tide level affect the moving light?"
+      ],
+      "threads_resolved": [
+        "The waystone marks indicate when and where the cave route can be followed safely."
+      ],
+      "handoff_state": "Ada has waited until the tide reaches the seaweed-marked level. The exposed stepping stones now form a safe route to the mist-hidden cave, but the cave's interior reflection and the light's exact source remain unknown."
+    },
+    {
+      "scene": 4,
+      "purpose": "Gather the final physical clues inside the cave without resolving the mystery.",
+      "word_count": 358,
+      "location": "Inside the mist-covered tidal cave, beside the safe stepping-stone route and a shallow pool near a narrow passage.",
+      "character_goal": "Ada wants to reach the light's source and understand its brief evening appearance by observing the cave's alignment without forcing passage or ignoring the tide.",
+      "knowledge_gained": [
+        "The evening light slides along a wet cave wall as the sun lowers.",
+        "The moving cave reflection matches the moving reflection Ada saw outside.",
+        "Retreating foam reveals a narrow passage and a smooth pale patch beyond a shallow water curtain.",
+        "The pale patch appears and blurs as the water curtain moves."
+      ],
+      "facts_established": [
+        "The cave remains calm and passable only along the tide-revealed route.",
+        "The marked tide level connects the stepping-stone route to the cave's changing interior.",
+        "The wet wall, moving light, tide, and pale patch appear physically connected, but the source is not yet confirmed."
+      ],
+      "clues_added": [
+        "The light slides along the wet cave wall.",
+        "Foam retreats from the narrow passage.",
+        "A smooth pale patch lies beyond a shallow water curtain.",
+        "The pale patch appears and blurs with the movement of the water."
+      ],
+      "objects_changed": [
+        "Ada sketches the cave entrance, stepping stones, wet wall, narrow passage, pale patch, light direction, and seaweed tide level in her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Is the pale patch truly the source of the light?",
+        "Why does the light appear only briefly each evening?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Ada is safely inside the tidal cave at the marked tide level. She has observed the light sliding along a wet wall, seen foam retreat to reveal a narrow passage and pale patch behind a water curtain, and recorded the alignment. She has not entered the passage or identified the patch's material or confirmed the signal's source."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply all accumulated clues and decisively explain the signal.",
+      "word_count": 391,
+      "location": "Cliff path outside the tidal cave, after Ada has safely returned before the tide covers the stepping stones.",
+      "character_goal": "Ada has reached the light's source and understands why it appears briefly each evening; she now carries the explanation home.",
+      "knowledge_gained": [
+        "The smooth pale patch beyond the water curtain is wet quartz.",
+        "The evening sunbeam strikes the quartz and creates the brief flash.",
+        "The flash disappears when the rising tide covers the quartz.",
+        "The waystone, seaweed tide mark, cave alignment, and quartz work together to create the signal."
+      ],
+      "facts_established": [
+        "The light is a natural reflection from wet quartz inside the tidal cave.",
+        "The signal lasts only a few minutes because the evening sun reaches the quartz briefly and the rising tide soon covers it.",
+        "The waystones guide the safe route and tide timing but do not produce the light.",
+        "A faint second marking continues inland from the waystone and is not needed for the solved signal."
+      ],
+      "clues_added": [
+        "The sunbeam visibly reaches the wet wall and then the quartz patch.",
+        "The quartz flashes across the cave before the rising water covers it.",
+        "The flash duration matches Ada's recorded evening timing.",
+        "A faint second marking continues inland from the waystone."
+      ],
+      "objects_changed": [
+        "Ada adds the quartz reflection, tide-covered disappearance, complete explanation, and faint second marking to her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What does the faint inland waystone marking mean?"
+      ],
+      "threads_resolved": [
+        "What creates the brief light?",
+        "Why does the light appear only briefly each evening?",
+        "How do the waystone timing, seaweed tide mark, cave alignment, and reflective surface combine?"
+      ],
+      "handoff_state": "Ada has safely left the cave with the signal fully explained as evening sunlight reflecting from wet quartz, timed and revealed by the marked tide route. She is heading home with her notes; one faint inland waystone marking remains as a small, safe future discovery."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the calm consequence, reinforce the theme, and leave one bounded future-discovery opening.",
+      "word_count": 321,
+      "location": "Cliff path leading home from the tidal cave, beside the old waystones.",
+      "character_goal": "Ada has reached the light's source and understands its brief evening appearance; she is returning home with a complete explanation.",
+      "knowledge_gained": [
+        "The tide, waystone markings, cave alignment, evening sunlight, and wet quartz must all be considered together.",
+        "The signal appeared only briefly because sunlight reached the quartz for a short time before rising water covered it."
+      ],
+      "facts_established": [
+        "The main mystery is fully resolved as a natural reflection from wet quartz inside the tidal cave.",
+        "Ada is safe and returns before the tide covers the stepping-stone route.",
+        "The waystones mark the safe route and tide timing rather than producing the light."
+      ],
+      "clues_added": [
+        "A faint second symbol continues inland from the waystones."
+      ],
+      "objects_changed": [
+        "Ada records the tide, markings, stepping-stone route, quartz reflection, timing, and faint inland symbol in her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What does the faint inland waystone marking mean?"
+      ],
+      "threads_resolved": [
+        "The brief evening light is explained.",
+        "The role of the waystones, tide, cave alignment, and wet quartz is confirmed."
+      ],
+      "handoff_state": "Ada returns home with the evening signal fully explained as sunlight reflecting from wet quartz, revealed and timed by the marked tide route. She is safe, and one faint inland waystone marking remains as a small, bounded possibility for a future discovery."
+    }
+  ],
+  "story_title": "The Signal in the Mist",
+  "story": "Ada stood on the mist-covered coastal cliffs with her notebook tucked beneath one arm. Below, the sea folded gently against the rocks, and dark openings led to the tidal caves. She had come to watch the strange evening light.\n\nFor three evenings, it had appeared at nearly the same time. Tonight, just as the sun slipped behind the cloud bank, a pale blink shone near the shoreline.\n\nAda held her breath and counted. One, two, three... The light glimmered again, then faded. A few moments later, it flashed once more. After only a few minutes, the mist thickened, and the light vanished completely.\n\n“Not a guess yet,” Ada said, writing carefully. “Appears near sunset. Lasts about four minutes. Seen from the west cliff.”\n\nShe looked around for changes. Beside the path stood an old waystone, rounded by wind and salt. Its carved marks were softened, but a wave-shaped line could still be seen on one side. Ada drew it in her notebook.\n\nNear the cliff edge, the tide had left a dark line across the rocks. Freshly exposed seaweed clung below it, bright green and shining with drops. Yesterday, that seaweed had been covered by water.\n\nAda glanced toward the misty cave mouths. She was curious about the light, but curiosity did not mean rushing. The waystone, the tide line, and the newly uncovered seaweed might each tell part of the story.\n\nShe marked their positions, checked the steady path beneath her boots, and began walking toward the tidal caves—without entering them. First, she would study the markings and the tide. Then she would decide what the evidence allowed her to believe.\n\nThe next evening, Ada returned to the old waystone before the light was due. She had spent the day thinking about its softened wave-shaped mark.\n\n“Perhaps the stone is sending the signal,” she said. “It stands in just the right place.”\n\nStill, she did not write that down as a fact. She crouched beside the waystone and examined its seaward face. The stone was cool, rough, and gray. No glow shone from its cracks. It gave off no warmth. Even when Ada tilted her small looking glass toward it, the surface showed only dull stone and a smear of salt.\n\nShe drew three careful marks in her notebook: no light, no warmth, no bright surface.\n\nThen the evening sun slipped through a break in the clouds.\n\nA pale flash appeared—not on the waystone, but across the cliff, farther toward the misty shoreline. Ada turned quickly. A thin streak of brightness was sliding along a dark, wet band of rock. It moved as the sun lowered, shining for a moment and then fading.\n\nAda followed the streak with her eyes. It was not coming from the waystone. The wet stone was catching the light and carrying it along its uneven surface, almost like a tiny traveling wave.\n\nShe checked the waystone again. It remained quiet and dark.\n\n“So my first idea was wrong,” Ada said, and crossed out her sentence. “The waystone does not make the signal. It may point toward something that reflects it.”\n\nBelow her, the tide line still marked the rocks, and the freshly exposed seaweed trembled in the breeze. The nearest cave mouths waited beyond the mist, but Ada did not hurry toward them. If the waystone was a guide, its wave mark and the changing tide might explain where to go.\n\nShe copied the moving reflection, the dark wet band, and the waystone’s position into her notebook. Then she watched the last glimmer vanish, ready to study the remaining marks before stepping into the caves.\n\nAda returned to the waystone the next afternoon, while the mist still rested lightly over the cliffs. She knelt beside its softened wave-shaped mark and copied it into her notebook. Then she looked toward the rocks below.\n\nThe tide had risen since yesterday. A dark, wet line crossed the stones, and the stepping stones that led toward the nearest cave were mostly covered. Ada did not try to cross. Instead, she searched the waystone more carefully.\n\nNear the bottom of the carved wave, she found a tiny notch. It was easy to miss, almost hidden beneath a strip of pale seaweed. Ada brushed the seaweed aside and compared its position with the shore. The notch sat at the same height as the lowest band of fresh seaweed on the rocks—the band left when the water had recently been there.\n\n“Maybe this is not just a wave,” Ada said. “Maybe it tells me when the path is ready.”\n\nShe drew a line between the notch, the seaweed band, and the covered stepping stones. The idea was useful, but Ada wanted another mark to test it.\n\nFollowing the cliff path inland, she found a second old waystone half veiled by mist. Its face held two worn lines: one curved like a wave, and one pointed toward the shoreline. Ada turned until the pointed line aimed at a narrow cave opening across the rocks. From there, she could see the tops of several stepping stones leading toward it.\n\nThe route was becoming clearer. The first waystone showed a tide height. The second pointed toward a particular cave. The seaweed showed that the tide was still too high, because the lowest band had not yet been reached by the falling water.\n\nAda marked the spot where the safe stones would appear. Then she sat on a dry ledge and waited, watching the water slip quietly away. One stone emerged, then another, their rounded tops shining with wetness.\n\nShe did not hurry. When the water lowered to the seaweed band, the stepping stones formed an unbroken path.\n\nAda packed her notebook under her coat and took one careful step toward the cave. The markings had shown her when and where to go, but they had not yet told her what waited beyond the mist.\n\nAda stepped from stone to stone, following the path the tide had uncovered. Each rounded top was damp beneath her boots, but the water had fallen to the seaweed band, just as the first waystone had shown. Ahead, the cave opening waited beneath a curtain of mist.\n\nInside, the air felt cool and quiet. Water made a soft, ticking sound as it slipped from the roof. Ada set one hand against the wall and moved slowly, watching where she placed her feet. The cave was not dark; a pale evening glow rested near the entrance.\n\nThen a narrow streak of light slid across the wet wall.\n\nAda stopped. The streak moved just as the reflection had moved across the cliff outside, traveling along the shining stone while the sun lowered. It reached a bend in the wall and faded. A moment later, another thin line appeared a little farther along.\n\n“So the cave changes the path of the light,” Ada murmured. “But I still need to see where it begins.”\n\nShe waited beside a flat rock and listened to the water. Foam gathered at the edge of a shallow pool, then slowly pulled back. As it retreated, it uncovered a narrow passage between two smooth walls. Beyond the passage, a pale patch showed through a thin water curtain.\n\nAda did not step into the passage. The water was still moving, and the safe route ended at the dry rock beneath her. Instead, she took out her notebook and sketched the cave entrance, the stepping stones, the wet wall, and the newly visible patch. She added arrows for the direction of the sliding light and a small mark for the seaweed level outside.\n\nWhen the foam crept forward again, the pale patch blurred behind the water. When it drew back, the patch returned.\n\nAda studied her drawing. The waystone had shown the tide level. The tide had uncovered the stepping stones and the narrow passage. The lowering sun had sent light along the wet wall. All the clues seemed to meet here, but she needed to watch the exact alignment once more before deciding what the pale patch meant.\n\nAda stood on the dry cliff path outside the tidal cave, safely beyond the stepping stones. She had returned before the tide covered the lowest step and would not cross back over it. From the cave mouth, she could still see the wet wall and the pale patch beyond the narrow passage. Her notebook lay open beside her.\n\nThe seaweed mark had shown the safe tide level, and the waystone had guided her to the cave. Now she remained outside and watched the final alignment from this secure vantage point.\n\nThe sun lowered. A beam slipped through the mist and touched the wet wall inside the cave. It traveled along the shining surface, just as the streak had moved across the cliff outside. Then it reached the pale patch beyond the water curtain.\n\nFor one bright moment, the patch flashed silver-white. Light sprang across the cave, skimmed the wall, and shone toward the entrance.\n\nAda studied the pattern without leaving the dry path. The flash was not coming from the waystone. That stone had helped her find the right tide and passage. The lowest seaweed band had shown when the stepping stones would be safe. The lowering sun had supplied the beam, and the smooth pale patch had caught it.\n\n“Quartz,” Ada said softly. She had seen pieces of it before, clear and pale, shining when wet. “Wet quartz is reflecting the evening sun.”\n\nThe water curtain thickened as the tide turned. A little wave slid across the passage and covered the pale patch. The silver flash weakened, broke into dull glimmers, and vanished.\n\nAda compared the moment with her notebook. The signal had lasted only a few minutes, just as it had on the cliff. The waystone mark had led her to the cave, the seaweed tide line had marked the safe timing, the cave’s position had aligned the beam, and the wet quartz had reflected it. Each clue supported the others.\n\nShe recorded the quartz reflection and the tide-covered disappearance, then closed her notebook. Before starting home, she noticed one faint second mark continuing along the inland side of the waystone. It was not needed to explain the light, so she recorded it for another careful day.\n\nAda headed along the cliff path, carrying a complete answer to the evening mystery and leaving the rising tide safely behind her.\n\nAda reached the cliff path just before the tide covered the lowest stepping stone. She stopped on the dry grass and listened to the gentle water below. The cave was quiet again, its bright secret safely understood.\n\nShe opened her notebook beneath the nearest waystone and turned to a fresh page. First she drew the lowest seaweed band and the notch in the wave-shaped mark. Beside it, she sketched the stepping stones that appeared when the tide fell. Then she drew the cave wall, the narrow passage, and the pale quartz patch behind the water curtain.\n\n“Tide, waystone, sunlight, and wet quartz,” she wrote. “All four are needed.”\n\nShe added the time the flash began and the time it vanished. The evening sun had touched the quartz for only a few minutes. Then the rising water had covered it, just as her observations had predicted. The waystone had not made the light at all. It had helped her know when and where to look.\n\nAda closed the notebook, but before she started home, the mist lifted from the inland side of the path. More of the old waystone came into view. There, beneath a patch of lichen, was the faint second symbol she had noticed earlier. It continued away from the coast, a small line of marks disappearing into the grass.\n\nAda tilted her head. The symbol was not part of the route to the cave, and it could not change the answer she had found. She did not guess what it meant. She simply drew it carefully in her notebook and placed a tiny question mark beside it.\n\nThe mist drifted back, soft and silver. Ada smiled and tucked away her pencil.\n\nOne mystery had become an answer because she had watched, waited, and compared each clue. The new marking could wait too. She followed the cliff path home, carrying her notes and one quiet question for another patient day.",
+  "word_count": 2050,
+  "target_words": 2000,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.65,
+      "no_repeated_event": 0.66,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {
+      "no_contradictions": 0.65,
+      "no_repeated_event": 0.66
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.64,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8378,
+      "output_tokens": 166,
+      "cost": 0.000351876
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.65,
+      "no_repeated_event": 0.66,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {
+      "no_contradictions": 0.65,
+      "no_repeated_event": 0.66
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.64,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8378,
+      "output_tokens": 166,
+      "cost": 0.000351876
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 3,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 3,
+      "ending_quality": 4
+    },
+    "average": 3.75,
+    "minimum": 3,
+    "critical_failures": [
+      "Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' observing the quartz flash and the water curtain, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation ('Ada stood on the dry cliff path outside the tidal cave, safely beyond the stepping stones. She had returned before the tide covered the lowest step... From the cave mouth, she could still see the wet wall and the pale patch beyond the narrow passage'), which creates ambiguity about whether the solution is confirmed inside or outside the cave. This contradiction undermines the clarity of Ada's safety and the exact location of the final observation, violating the StoryContract's requirement that the solution be reached safely and the ending_state be unambiguous."
+    ],
+    "repair_targets": [
+      {
+        "scene": 5,
+        "repair_scene": 5,
+        "issue": "Scene 5 prose contains a contradiction between entry/handoff state and narrative action. The opening states Ada is 'outside the tidal cave, safely beyond the stepping stones' and 'will not cross back over it,' yet the prose then describes her observing the quartz flash and water curtain 'beyond the narrow passage' with language suggesting active interior observation ('The water curtain thickened as the tide turned. A little wave slid across the passage and covered the pale patch'). Revise Scene 5 to establish a single, unambiguous vantage point: either Ada observes the final alignment from outside the cave entrance (looking in through the opening) with explicit confirmation she remains on dry ground, or she observes from inside but with clear prose showing her exiting safely before the tide rises. Ensure the handoff state matches the final narrative position and that Ada's safety is never in question."
+      }
+    ],
+    "summary": "The story demonstrates strong instruction-following, character consistency, age-appropriateness, creativity, and style. Ada's voice is authentic and patient; the coastal setting is vivid and non-frightening; the mystery unfolds through careful observation rather than coincidence. The required constraints are met: C1 (no frightening content), C2 (Ada's incorrect assumption about the waystone is corrected through observation), C3 (no single coincidence solves the mystery), C4 (the solution combines tide evidence, waystone markings, seaweed lines, and light alignment through the cave), and C5 (the faint inland marking leaves a bounded future-discovery opening). The clue progression is logical and well-paced across six scenes. However, a critical structural contradiction in Scene 5 undermines coherence and continuity: the scene's entry and handoff states place Ada outside the cave, but the prose describes her observing interior details (water curtain, pale patch, foam movement) with language suggesting she is inside. This ambiguity about her location and safety during the final observation violates the StoryContract's requirement for a clear, safe ending_state and must be resolved by establishing a single, unambiguous vantage point. The whole-story JEV evidence flagged 'no_contradictions' (0.65) and 'no_repeated_event' (0.66) as below threshold, and the Scene 5 continuity escalation confirms this contradiction. Once Scene 5 is revised to clarify Ada's position and confirm her safe exit, the story will meet the acceptance gate (average score 4.0+, all criteria ≥3, no critical failures). The ending is satisfying and thematic; the pacing respects the age range; the prose quality is consistently strong.",
+    "accepted": false
+  },
+  "final_polish_cycles": [
+    {
+      "cycle": 1,
+      "requested_scenes": [
+        5
+      ],
+      "repairs": [
+        {
+          "scene": 5,
+          "accepted": true,
+          "target_verified": false,
+          "issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "observed_scenes": [
+            5
+          ],
+          "word_count": 391,
+          "post_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.46,
+              "scene_purpose_obeyed": 0.86,
+              "no_unexplained_dependency": 0.77,
+              "no_contradiction": 0.58,
+              "goal_preserved": 0.92,
+              "no_future_leakage": 0.2,
+              "handoff_valid": 0.94
+            },
+            "below_threshold": {
+              "continues_prior_state": 0.46,
+              "no_unexplained_dependency": 0.77,
+              "no_contradiction": 0.58,
+              "no_future_leakage": 0.2
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.41,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4548,
+              "output_tokens": 188,
+              "cost": 0.000191016
+            }
+          },
+          "repair_attempts": [
+            {
+              "kind": "final_haiku_targeted_repair",
+              "scene": 5,
+              "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+              "repair_round": 1,
+              "ignored_model_state_delta_change": false,
+              "structured_parse_retries": [],
+              "word_budget_warnings": [],
+              "errors": [],
+              "word_count": 354,
+              "usage": {
+                "input_tokens": 5248,
+                "output_tokens": 1208,
+                "total_tokens": 6456
+              },
+              "cost": {
+                "usd": 0.00276145,
+                "try_amount": null,
+                "usd_try_rate": null
+              },
+              "request": {
+                "temperature": null,
+                "max_tokens": null,
+                "reasoning": {
+                  "effort": "medium",
+                  "exclude": true
+                },
+                "response_format": {
+                  "type": "json_object"
+                }
+              }
+            },
+            {
+              "kind": "final_haiku_targeted_repair",
+              "scene": 5,
+              "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+              "repair_round": 2,
+              "ignored_model_state_delta_change": false,
+              "structured_parse_retries": [],
+              "word_budget_warnings": [],
+              "errors": [],
+              "word_count": 391,
+              "usage": {
+                "input_tokens": 5231,
+                "output_tokens": 1237,
+                "total_tokens": 6468
+              },
+              "cost": {
+                "usd": 0.002792,
+                "try_amount": null,
+                "usd_try_rate": null
+              },
+              "request": {
+                "temperature": null,
+                "max_tokens": null,
+                "reasoning": {
+                  "effort": "medium",
+                  "exclude": true
+                },
+                "response_format": {
+                  "type": "json_object"
+                }
+              }
+            }
+          ],
+          "verifications": [
+            {
+              "probability": 0.73,
+              "probabilities": {
+                "target_resolved": 0.73,
+                "no_residual_ambiguity": 0.94
+              },
+              "threshold": 0.8,
+              "verified": false,
+              "usage": {
+                "input_tokens": 2950,
+                "output_tokens": 46,
+                "cost": 0.0001239
+              },
+              "resolved_model": "typesafe/jev-1.13-20260917",
+              "provider": "TypeSafe",
+              "repair_round": 1
+            },
+            {
+              "probability": 0.73,
+              "probabilities": {
+                "target_resolved": 0.73,
+                "no_residual_ambiguity": 0.94
+              },
+              "threshold": 0.8,
+              "verified": false,
+              "usage": {
+                "input_tokens": 2988,
+                "output_tokens": 46,
+                "cost": 0.000125496
+              },
+              "resolved_model": "typesafe/jev-1.13-20260917",
+              "provider": "TypeSafe",
+              "repair_round": 2
+            }
+          ],
+          "cycle": 1
+        }
+      ]
+    }
+  ],
+  "final_evaluation_history": [
+    {
+      "accepted": false,
+      "word_count": 2026,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.95,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.6,
+          "no_repeated_event": 0.66,
+          "ending_consistency": 0.97
+        },
+        "below_threshold": {
+          "no_contradictions": 0.6,
+          "no_repeated_event": 0.66
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.58,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8357,
+          "output_tokens": 166,
+          "cost": 0.000350994
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 3,
+          "ending_quality": 4
+        },
+        "average": 3.875,
+        "minimum": 3,
+        "critical_failures": [],
+        "repair_targets": [
+          {
+            "scene": 5,
+            "repair_scene": 5,
+            "issue": "Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action."
+          }
+        ],
+        "summary": "The story is well-crafted, engaging, and meets the acceptance gate with an average score of 3.875 (rounded to 3.9). All criteria score at least 3, and no critical failures contradict the StoryContract or prohibit acceptance.\n\n**Strengths:**\n- Ada's character is consistently curious, careful, and evidence-driven throughout all six scenes.\n- The mystery solution elegantly combines four clues (waystone tide mark, seaweed band, cave alignment, wet quartz reflection) as required by C4.\n- Ada's incorrect assumption in Scene 2 (the waystone produces the light) is corrected through direct observation, satisfying C2.\n- The ending preserves the main mystery as solved while introducing exactly one bounded future-discovery hook (the faint inland marking), meeting C5.\n- The narrative is age-appropriate, non-frightening, and maintains steady pacing.\n- Word count (2,426) is within acceptable range for the 2,000-word target.\n- Continuity across scenes is strong; JEV evidence shows high confidence in causal chain (0.95) and goal continuity (0.97).\n\n**Minor continuity concern (non-blocking):**\nScene 5 contains a subtle structural inconsistency between the ledger's handoff state (Ada 'safely returned' from the cave) and the prose narrative (which shows Ada actively inside the cave observing the quartz flash from a 'marked stone beside the passage'). The repair target above addresses this ambiguity. While the current prose is narratively coherent and the solution is clearly explained, clarifying Ada's exact position during the final observation would eliminate the contradiction and strengthen the handoff consistency.\n\n**Optional polish (non-blocking):**\n- Scene 6 could be slightly more concise; it contains some repetition of the explanation already given in Scene 5.\n- The transition between Ada's final observation inside the cave and her return to the cliff path could be more explicit.\n\nThe story successfully fulfills all required constraints, maintains thematic coherence, and delivers a satisfying, evidence-based resolution. The repair target is a prose-only clarification that does not alter the StoryContract or scene structure.",
+        "accepted": false
+      },
+      "whole_jev_cost": 0.000350994,
+      "final_judge_cost": {
+        "usd": 0.017332,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    {
+      "accepted": false,
+      "word_count": 2050,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.95,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.95,
+          "no_contradictions": 0.65,
+          "no_repeated_event": 0.66,
+          "ending_consistency": 0.97
+        },
+        "below_threshold": {
+          "no_contradictions": 0.65,
+          "no_repeated_event": 0.66
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.64,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8378,
+          "output_tokens": 166,
+          "cost": 0.000351876
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 3,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 3,
+          "ending_quality": 4
+        },
+        "average": 3.75,
+        "minimum": 3,
+        "critical_failures": [
+          "Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' observing the quartz flash and the water curtain, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation ('Ada stood on the dry cliff path outside the tidal cave, safely beyond the stepping stones. She had returned before the tide covered the lowest step... From the cave mouth, she could still see the wet wall and the pale patch beyond the narrow passage'), which creates ambiguity about whether the solution is confirmed inside or outside the cave. This contradiction undermines the clarity of Ada's safety and the exact location of the final observation, violating the StoryContract's requirement that the solution be reached safely and the ending_state be unambiguous."
+        ],
+        "repair_targets": [
+          {
+            "scene": 5,
+            "repair_scene": 5,
+            "issue": "Scene 5 prose contains a contradiction between entry/handoff state and narrative action. The opening states Ada is 'outside the tidal cave, safely beyond the stepping stones' and 'will not cross back over it,' yet the prose then describes her observing the quartz flash and water curtain 'beyond the narrow passage' with language suggesting active interior observation ('The water curtain thickened as the tide turned. A little wave slid across the passage and covered the pale patch'). Revise Scene 5 to establish a single, unambiguous vantage point: either Ada observes the final alignment from outside the cave entrance (looking in through the opening) with explicit confirmation she remains on dry ground, or she observes from inside but with clear prose showing her exiting safely before the tide rises. Ensure the handoff state matches the final narrative position and that Ada's safety is never in question."
+          }
+        ],
+        "summary": "The story demonstrates strong instruction-following, character consistency, age-appropriateness, creativity, and style. Ada's voice is authentic and patient; the coastal setting is vivid and non-frightening; the mystery unfolds through careful observation rather than coincidence. The required constraints are met: C1 (no frightening content), C2 (Ada's incorrect assumption about the waystone is corrected through observation), C3 (no single coincidence solves the mystery), C4 (the solution combines tide evidence, waystone markings, seaweed lines, and light alignment through the cave), and C5 (the faint inland marking leaves a bounded future-discovery opening). The clue progression is logical and well-paced across six scenes. However, a critical structural contradiction in Scene 5 undermines coherence and continuity: the scene's entry and handoff states place Ada outside the cave, but the prose describes her observing interior details (water curtain, pale patch, foam movement) with language suggesting she is inside. This ambiguity about her location and safety during the final observation violates the StoryContract's requirement for a clear, safe ending_state and must be resolved by establishing a single, unambiguous vantage point. The whole-story JEV evidence flagged 'no_contradictions' (0.65) and 'no_repeated_event' (0.66) as below threshold, and the Scene 5 continuity escalation confirms this contradiction. Once Scene 5 is revised to clarify Ada's position and confirm her safe exit, the story will meet the acceptance gate (average score 4.0+, all criteria ≥3, no critical failures). The ending is satisfying and thematic; the pacing respects the age range; the prose quality is consistently strong.",
+        "accepted": false
+      },
+      "whole_jev_cost": 0.000351876,
+      "final_judge_cost": {
+        "usd": 0.018354,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 31.761,
+    "scene_stage_seconds": 87.947,
+    "final_stage_seconds": 45.785,
+    "total_pipeline_seconds": 165.493
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.009760366,
+    "scene_generation_usd": 0.0258337,
+    "scene_continuity_evaluator_usd": 0.001496628,
+    "whole_continuity_evaluator_usd": 0.000351876,
+    "whole_continuity_evaluator_usd_total": 0.00070287,
+    "semantic_judge_usd": {
+      "usd": 0.018354,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.035686,
+    "scene_jev_usd": 0.001496628,
+    "whole_jev_usd": 0.000351876,
+    "whole_jev_usd_total": 0.00070287,
+    "final_haiku": {
+      "usd": 0.018354,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.035686,
+    "total_pipeline_usd": 0.073479564
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 8378,
+      "output_tokens": 166,
+      "cost": 0.000351876
+    },
+    "semantic_judge": {
+      "input_tokens": 13719,
+      "output_tokens": 927,
+      "total_tokens": 14646
+    },
+    "whole_jev": {
+      "input_tokens": 8378,
+      "output_tokens": 166,
+      "cost": 0.000351876
+    },
+    "final_haiku": {
+      "input_tokens": 13719,
+      "output_tokens": 927,
+      "total_tokens": 14646
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": [
+    {
+      "scene": 5,
+      "accepted": true,
+      "target_verified": false,
+      "issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+      "observed_scenes": [
+        5
+      ],
+      "word_count": 391,
+      "post_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.46,
+          "scene_purpose_obeyed": 0.86,
+          "no_unexplained_dependency": 0.77,
+          "no_contradiction": 0.58,
+          "goal_preserved": 0.92,
+          "no_future_leakage": 0.2,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {
+          "continues_prior_state": 0.46,
+          "no_unexplained_dependency": 0.77,
+          "no_contradiction": 0.58,
+          "no_future_leakage": 0.2
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.41,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4548,
+          "output_tokens": 188,
+          "cost": 0.000191016
+        }
+      },
+      "repair_attempts": [
+        {
+          "kind": "final_haiku_targeted_repair",
+          "scene": 5,
+          "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "repair_round": 1,
+          "ignored_model_state_delta_change": false,
+          "structured_parse_retries": [],
+          "word_budget_warnings": [],
+          "errors": [],
+          "word_count": 354,
+          "usage": {
+            "input_tokens": 5248,
+            "output_tokens": 1208,
+            "total_tokens": 6456
+          },
+          "cost": {
+            "usd": 0.00276145,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "final_haiku_targeted_repair",
+          "scene": 5,
+          "repair_issue": "Observed in Scene 5: Scene 5 contains a structural contradiction: Ada is described as standing 'inside the cave' on a 'marked stone beside the passage' observing the quartz flash, but the scene's entry_state and handoff_state both indicate she should be 'outside the tidal cave' after safely returning. The prose shows her actively inside the cave during the final observation, which contradicts the ledger's statement that Scene 5 occurs 'after Ada has safely returned before the tide covers the stepping stones.' This creates ambiguity about whether the solution is confirmed inside or outside the cave, and whether Ada's safety is compromised. Revise Scene 5 prose to clarify that Ada observes the final alignment from a safe vantage point (either clearly inside but with explicit confirmation she exits safely, or from outside the cave looking in), ensuring the handoff state matches the narrative action.",
+          "repair_round": 2,
+          "ignored_model_state_delta_change": false,
+          "structured_parse_retries": [],
+          "word_budget_warnings": [],
+          "errors": [],
+          "word_count": 391,
+          "usage": {
+            "input_tokens": 5231,
+            "output_tokens": 1237,
+            "total_tokens": 6468
+          },
+          "cost": {
+            "usd": 0.002792,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "verifications": [
+        {
+          "probability": 0.73,
+          "probabilities": {
+            "target_resolved": 0.73,
+            "no_residual_ambiguity": 0.94
+          },
+          "threshold": 0.8,
+          "verified": false,
+          "usage": {
+            "input_tokens": 2950,
+            "output_tokens": 46,
+            "cost": 0.0001239
+          },
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "repair_round": 1
+        },
+        {
+          "probability": 0.73,
+          "probabilities": {
+            "target_resolved": 0.73,
+            "no_residual_ambiguity": 0.94
+          },
+          "threshold": 0.8,
+          "verified": false,
+          "usage": {
+            "input_tokens": 2988,
+            "output_tokens": 46,
+            "cost": 0.000125496
+          },
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "repair_round": 2
+        }
+      ],
+      "cycle": 1
+    }
+  ]
+}
