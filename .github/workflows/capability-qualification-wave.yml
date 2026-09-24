@@ -6,7 +6,7 @@ on:
       wave:
         description: 'Qualification wave manifest'
         required: true
-        default: 'configs/qualification_waves/age-standard-v1.yaml'
+        default: 'configs/qualification_waves/age-relative-standard-v2.yaml'
         type: string
 
 permissions:
@@ -17,6 +17,7 @@ jobs:
     runs-on: self-hosted
     outputs:
       matrix: ${{ steps.compile.outputs.matrix }}
+      max_parallel: ${{ steps.compile.outputs.max_parallel }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,7 +34,9 @@ jobs:
         run: |
           python -m src.qualification_wave validate --wave "$WAVE_PATH"
           MATRIX="$(python -m src.qualification_wave matrix --wave "$WAVE_PATH")"
+          MAX_PARALLEL="$(python -m src.qualification_wave max-parallel --wave "$WAVE_PATH")"
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "max_parallel=$MAX_PARALLEL" >> "$GITHUB_OUTPUT"
 
   qualify:
     needs: prepare
@@ -41,7 +44,7 @@ jobs:
     timeout-minutes: 40
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: ${{ fromJSON(needs.prepare.outputs.max_parallel) }}
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
