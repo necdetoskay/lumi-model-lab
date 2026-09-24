@@ -1,6 +1,6 @@
 # English-First Story Production Pipeline v2 — Word-Budget Gate Retrofit
 
-Status: **Candidate pending live regression qualification**
+Status: **NOT PROMOTED — superseded by v3 candidate after live regression**
 Date: 2026-09-24
 Base: `ENGLISH_FIRST_STORY_PIPELINE_V1.md`
 Generation protocol version: `english-story-production.v2`
@@ -8,6 +8,27 @@ Generation protocol version: `english-story-production.v2`
 ## Purpose
 
 v2 is a deliberately narrow generation-protocol change.
+
+## Live regression outcome
+
+v2 was **not promoted**. The five cross-age smoke cases all passed, but the
+TEEN × puzzle control cell showed materially higher retry burden than the v1
+control cohort under the same Luna / continuity-evaluator / semantic-judge
+stack.
+
+Observed TEEN × puzzle cohorts:
+
+- v1: `7/0`, `6/0`, `7/1` scene attempts / semantic repairs;
+- v2: `8/1`, `11/5`, `7/1`.
+
+Mean burden therefore moved from about `6.67 attempts / 0.33 semantic repairs`
+to `8.67 / 2.33`. The worst v2 run admitted three scenes that were below the
+v1 80% local minimum; two later required continuity repair. This is not proof
+that under-length admission caused every repair, but it is enough to reject
+symmetric lower-bound relaxation for promotion.
+
+v3 keeps the v1 lower bound and relaxes only the historically dominant
+overshoot side. All v2 evidence remains immutable experimental evidence.
 
 It does **not** change:
 
