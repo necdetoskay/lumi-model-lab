@@ -313,7 +313,7 @@ def call_structured_json_with_retry(
         )
         try:
             payload = parse_json_object(text)
-        except RuntimeError as exc:
+        except (RuntimeError, json.JSONDecodeError) as exc:
             choice = (body.get("choices") or [{}])[0]
             parse_failures.append(
                 {

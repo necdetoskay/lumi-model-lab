@@ -110,6 +110,78 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertNotEqual(second["seed"], 42)
         self.assertIn("FORMAT RECOVERY", second["user_prompt"])
 
+    @patch("src.english_story_pipeline.parse_json_object")
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_recovers_direct_jsondecodeerror(
+        self,
+        mock_call,
+        mock_parse,
+    ):
+        valid = good_envelope(100)
+        decode_error = __import__("json").JSONDecodeError(
+            "Expecting ',' delimiter",
+            '{"broken": true}',
+            14,
+        )
+        mock_parse.side_effect = [decode_error, valid]
+        mock_call.side_effect = [
+            (
+                '{"broken": true}',
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.0,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+            (
+                __import__("json").dumps(valid),
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 20,
+                        "total_tokens": 30,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.0,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+        ]
+
+        payload, _, _, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="anthropic/claude-haiku-4.5",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.0,
+            max_tokens=2500,
+            seed=None,
+            request_class="judge",
+        )
+
+        self.assertEqual(payload, valid)
+        self.assertEqual(len(failures), 1)
+        self.assertIn("Expecting ',' delimiter", failures[0]["error"])
+        self.assertEqual(mock_call.call_count, 2)
+        self.assertEqual(mock_parse.call_count, 2)
+        self.assertIn(
+            "FORMAT RECOVERY",
+            mock_call.call_args_list[1].kwargs["user_prompt"],
+        )
+
     def test_default_2000_word_budget_distribution(self):
         self.assertEqual(
             allocate_scene_budgets(2000),
