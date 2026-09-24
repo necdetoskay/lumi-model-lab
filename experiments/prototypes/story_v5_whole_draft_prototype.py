@@ -234,7 +234,9 @@ You may propose only mutations that exactly match one allowed tuple:
 
 Rules:
 - Never invent a database field, entity, operation, persistence class, or mutation type.
+- Copy epistemic_class exactly from the matching allowed mutation when it is provided.
 - Copy base_revision and base_fingerprint exactly from the matching authority entity.
+- Never encode a hypothesis, uncertainty, rumor, or best-supported explanation as a FACT mutation.
 - Every proposal must cite one or more supporting scene indexes.
 - Evidence support is necessary but not sufficient: emit a mutation only when the story
   establishes an end-of-story state that the authority explicitly allows to persist.
@@ -254,6 +256,7 @@ Return JSON only:
       "mutation_type": "",
       "entity_ref": "",
       "field_key": "",
+      "epistemic_class": "",
       "base_revision": 1,
       "base_fingerprint": "",
       "value": null,
@@ -602,6 +605,7 @@ def validate_outcome(
         entity_versions[entity_ref] = (revision, fingerprint)
 
     allowed: set[tuple[str, str, str]] = set()
+    allowed_epistemic: dict[tuple[str, str, str], str] = {}
     for index, row in enumerate(allowed_rows):
         if not isinstance(row, dict):
             errors.append(f"state_authority_row_{index}_not_object")
@@ -615,6 +619,9 @@ def validate_outcome(
             errors.append(f"state_authority_row_{index}_invalid")
             continue
         allowed.add(key)
+        epistemic_class = str(row.get("epistemic_class") or "")
+        if epistemic_class:
+            allowed_epistemic[key] = epistemic_class
 
     mutations = outcome.get("mutations")
     if not isinstance(mutations, list):
@@ -636,6 +643,10 @@ def validate_outcome(
                 "mutation_not_authorized:"
                 + "|".join(key)
             )
+        else:
+            expected_epistemic = allowed_epistemic.get(key)
+            if expected_epistemic and row.get("epistemic_class") != expected_epistemic:
+                errors.append(f"mutation_{index}_epistemic_class_mismatch")
 
         expected_version = entity_versions.get(key[1])
         if expected_version is None:
