@@ -1,0 +1,583 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-whole-draft/age10-1500-production-context.yaml",
+  "context_pack_source": "experiments/context_packs/v5/deniz-harbor-bell.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-deniz-harbor-bell-001",
+    "profile": {
+      "profile_id": "profile-deniz",
+      "age": 10,
+      "reading_mode": "INDEPENDENT_READER"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-deniz",
+      "revision": 21,
+      "fingerprint": "char-deniz-r21-fp",
+      "name": "Deniz",
+      "age": 10,
+      "traits": [
+        "observant",
+        "patient",
+        "likes making small diagrams"
+      ],
+      "current_goal": "Understand why a bell-like sound is heard near the Commons path without crossing into unknown areas.",
+      "established_knowledge": [
+        "HOME and COMMONS are explored.",
+        "OLD_PUMP_PATH is only rumored; Deniz has not visited it.",
+        "The public notice board is beside the Commons shelter.",
+        "The maintenance shed may be approached only from the marked public path."
+      ],
+      "prohibited_knowledge": [
+        "Deniz does not know what is inside the old pump house.",
+        "Deniz does not know whether the old pump house still contains machinery.",
+        "Deniz has never seen the source of the bell-like sound."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-harbor-garden",
+      "revision": 34,
+      "fingerprint": "world-harbor-garden-r34-fp",
+      "location": "Harbor Garden Habitat",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "HOME",
+          "status": "EXPLORED",
+          "summary": "Family apartment above the public garden edge."
+        },
+        {
+          "id": "COMMONS",
+          "status": "EXPLORED",
+          "summary": "Public garden commons with shelter, notice board, rain barrel and marked paths."
+        },
+        {
+          "id": "MAINTENANCE_EDGE",
+          "status": "DISCOVERED",
+          "summary": "Fenced maintenance edge visible from the marked public path."
+        },
+        {
+          "id": "OLD_PUMP_PATH",
+          "status": "RUMORED",
+          "summary": "A rumored path beyond the current knowledge boundary. It must not become explored in this story."
+        }
+      ],
+      "current_facts": [
+        "A soft metallic bell-like tone has been reported near the Commons on windy afternoons.",
+        "A maintenance notice says workers recently replaced a loose sign bracket near MAINTENANCE_EDGE.",
+        "Visitors must stay on marked public paths.",
+        "No dangerous incident has been reported."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "The old pump house interior state is intentionally unknown.",
+        "No canonical source has established a connection between the old pump house and the sound."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-harbor-bell-001",
+      "revision": 7,
+      "fingerprint": "opp-harbor-bell-r7-fp",
+      "status": "AVAILABLE",
+      "title": "Trace the Commons bell-like sound from known ground",
+      "premise": "Deniz can investigate the recurring sound using observations available from explored/discovered public areas without entering OLD_PUMP_PATH.",
+      "success_condition": "Reach a bounded, evidence-supported explanation or explicitly preserve uncertainty if the evidence is insufficient.",
+      "constraints": [
+        "Do not cross into OLD_PUMP_PATH.",
+        "Do not reveal hidden world facts.",
+        "Do not make an adult solve the investigation.",
+        "Do not create danger to raise stakes."
+      ]
+    },
+    "canon": {
+      "revision": 14,
+      "fingerprint": "canon-r14-fp",
+      "hard_rules": [
+        "No combat.",
+        "No supernatural explanation unless canon explicitly establishes it.",
+        "Character knowledge cannot exceed experienced or explicitly communicated facts.",
+        "RUMORED locations are not EXPLORED.",
+        "Story consequences must be supportable by accepted prose evidence."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-deniz-observer",
+      "revision": 9,
+      "fingerprint": "saga-deniz-r9-fp",
+      "eligible_context": [
+        "Deniz is gradually learning to separate observations, hypotheses and conclusions.",
+        "A recurring theme is that uncertainty can remain honest rather than being forced into a dramatic answer."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal the future reason OLD_PUMP_PATH matters.",
+        "Do not introduce a secret organization, hidden villain, or preplanned destiny."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-004",
+        "summary": "In an earlier garden problem, Deniz changed a first guess after checking physical evidence.",
+        "relevance": "Supports a habit of revising hypotheses; must not be retold as a duplicate plot."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/age10-1500-production-context.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "prodlike-deniz-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 21,
+        "expected_fingerprint": "char-deniz-r21-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 34,
+        "expected_fingerprint": "world-harbor-garden-r34-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 9,
+        "expected_fingerprint": "saga-deniz-r9-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 7,
+        "expected_fingerprint": "opp-harbor-bell-r7-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "commons.sound_explanation",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "MEMORY_CANDIDATE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "memory.candidates",
+        "persistence": "REVIEWABLE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT"
+      }
+    ]
+  },
+  "plan": {
+    "story_title": "The Bell at the Commons",
+    "scene_count_rationale": "Five scenes provide enough space for Deniz to establish the question, gather multiple observations, revise a plausible first hypothesis, reach an evidence-supported explanation, and end with honest uncertainty without entering unknown areas or creating unnecessary danger.",
+    "story_contract": {
+      "protagonist_goal": "Understand why a bell-like sound is heard near the Commons path using only observations from known public areas.",
+      "central_problem": "A soft metallic tone keeps occurring near the Commons on windy afternoons, but Deniz has never seen its source and must investigate without crossing into unknown areas.",
+      "solution_principle": "Separate observations from guesses, compare the sound with visible changes in known objects, and state only the strongest explanation supported by repeated evidence.",
+      "theme_thread": "A careful explanation can be useful even when it includes uncertainty.",
+      "ending_state": "Deniz concludes that the recently repaired sign bracket near the maintenance edge is the best-supported source of the bell-like tone, while honestly admitting that the exact contact point cannot be seen from the public path.",
+      "must_preserve": [
+        "Deniz is ten, observant, patient, and likes making small diagrams.",
+        "The setting remains within HOME, COMMONS, and the publicly visible MAINTENANCE_EDGE approached only from the marked public path.",
+        "OLD_PUMP_PATH remains rumored and is never entered, explored, or treated as known.",
+        "Deniz makes at least two observations before the final explanation.",
+        "A plausible first hypothesis is revised or rejected after checking evidence.",
+        "No adult solves the central investigation for Deniz.",
+        "The explanation is based on accumulated observations and allows bounded uncertainty.",
+        "The story contains no combat, supernatural explanation, dangerous incident, hidden organization, villain, or destiny reveal.",
+        "The target length is approximately 1500 words for an independent ten-year-old reader."
+      ],
+      "must_not_happen": [
+        "Do not describe or invent the interior of the old pump house.",
+        "Do not connect OLD_PUMP_PATH or the old pump house to the sound without evidence.",
+        "Do not make Deniz cross the fence or leave the marked public path.",
+        "Do not turn a rumor into explored knowledge.",
+        "Do not have an adult identify the source or conduct the investigation for Deniz.",
+        "Do not claim absolute certainty when the source cannot be fully seen from the public path."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Introduce Deniz's goal, the recurring sound, the known-location boundary, and the difference between what Deniz knows and what is only rumored.",
+        "beats": [
+          "On a windy afternoon, Deniz hears the soft metallic tone near the Commons shelter and records the time, wind, and direction in a small diagram.",
+          "Deniz reviews the public notice about the recently replaced loose sign bracket near the maintenance edge and decides to investigate from the marked path.",
+          "A passing adult reminds Deniz to stay on public paths; the adult offers no explanation and Deniz chooses to test ideas independently."
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "The public notice board beside the Commons shelter.",
+          "The rule that visitors must stay on marked public paths.",
+          "Deniz's awareness that OLD_PUMP_PATH is only rumored and outside the investigation boundary.",
+          "The first occurrence of the bell-like sound."
+        ],
+        "must_not_do": [
+          "Do not show or imply knowledge of the old pump house interior.",
+          "Do not suggest that the rumored path is the likely source merely because it is mysterious.",
+          "Do not make the adult provide a solution."
+        ],
+        "handoff": "Deniz begins with a diagram and a question: does the sound come from the Commons itself, or does something visible near the maintenance edge respond to the wind?"
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 24,
+        "purpose": "Gather the first set of physical observations from the Commons and marked public path, including evidence that challenges an easy explanation.",
+        "beats": [
+          "Deniz checks the rain barrel, shelter, and nearby fixed objects during a gust, listening carefully and marking where the tone seems loudest.",
+          "The sound occurs again, but the barrel and shelter make no matching movement; Deniz notes that the tone seems to come from farther along the public path.",
+          "From the permitted viewpoint, Deniz sees the sign near MAINTENANCE_EDGE quiver when the wind presses across it, though the exact contact point is partly hidden by the sign."
+        ],
+        "prior_evidence": [
+          "Scene 1: the sound was heard on a windy afternoon near the Commons.",
+          "Scene 1: the maintenance notice reports that a loose sign bracket was recently replaced.",
+          "Scene 1: Deniz is limited to the marked public path."
+        ],
+        "must_include": [
+          "At least two distinct observations before the final explanation: the repeated sound and the visible movement near the sign.",
+          "Deniz's small diagram showing the Commons, public path, sign, and approximate sound direction.",
+          "A clear distinction between what Deniz sees and what Deniz merely suspects."
+        ],
+        "must_not_do": [
+          "Do not enter MAINTENANCE_EDGE beyond the public viewpoint.",
+          "Do not touch the fence, sign, bracket, or any maintenance equipment.",
+          "Do not treat the visible movement as conclusive proof yet."
+        ],
+        "handoff": "Deniz forms a first hypothesis that the rain barrel or shelter may be making the tone, but the direction and sign movement make that guess uncertain."
+      },
+      {
+        "index": 3,
+        "role": "REVERSAL",
+        "relative_weight": 20,
+        "purpose": "Have Deniz deliberately test and revise the plausible first hypothesis while strengthening the evidence for the sign-bracket explanation.",
+        "beats": [
+          "On another windy afternoon, Deniz watches the rain barrel and shelter before listening, expecting one of them to ring; neither produces the tone when the breeze passes.",
+          "The tone returns shortly after a stronger gust, and the sign shifts with a small metallic flick that matches the tone's timing more closely than the Commons objects do.",
+          "Deniz crosses out the first guess in the diagram and writes a careful alternative: wind may be making the recently repaired bracket or sign touch another metal part."
+        ],
+        "prior_evidence": [
+          "Scene 2: the rain barrel and shelter showed no movement matching the first tone.",
+          "Scene 2: the sign near MAINTENANCE_EDGE visibly quivered during a gust.",
+          "Scene 2: the sign's exact contact point could not be seen from the public path."
+        ],
+        "must_include": [
+          "An explicit rejected or revised hypothesis.",
+          "A repeat observation on a different windy afternoon.",
+          "Deniz's patient comparison of timing, direction, and visible movement."
+        ],
+        "must_not_do": [
+          "Do not claim Deniz sees inside the maintenance area.",
+          "Do not claim the bracket's exact condition beyond what is visibly supported.",
+          "Do not bring in the old pump house as an explanation."
+        ],
+        "handoff": "Deniz has a stronger hypothesis but decides one more careful comparison is needed before calling it an explanation."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 23,
+        "purpose": "Deliver the central investigative payoff through a repeatable, safe observation that connects the sound's timing to the visible sign movement.",
+        "beats": [
+          "Deniz returns to the same public viewpoint with the diagram and waits rather than chasing the sound.",
+          "A gust moves across the maintenance-edge sign; the metallic tone sounds at nearly the same moment, and the sign settles when the gust fades.",
+          "Deniz concludes that the recently repaired sign bracket is the best-supported source, while recording that the hidden point of contact cannot be seen from the public path."
+        ],
+        "prior_evidence": [
+          "Scene 2: the tone seemed louder toward the maintenance edge and the sign moved in the wind.",
+          "Scene 3: the rain barrel and shelter failed to match the sound, while the sign's movement and tone timing matched more closely.",
+          "Scene 3: Deniz's revised hypothesis concerned wind moving the sign or bracket against another metal part."
+        ],
+        "must_include": [
+          "A safe, repeated observation rather than a risky experiment.",
+          "The evidence-supported explanation involving the sign bracket or sign movement.",
+          "Explicit bounded uncertainty about the exact unseen contact point."
+        ],
+        "must_not_do": [
+          "Do not state that the old pump house caused the sound.",
+          "Do not present the explanation as absolute certainty.",
+          "Do not have an adult verify or announce the answer."
+        ],
+        "handoff": "Deniz has enough evidence to explain the most likely cause and prepares to share the observation-based conclusion at the Commons notice board."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 15,
+        "purpose": "Resolve Deniz's investigation, show the value of careful explanation, and preserve the remaining uncertainty honestly.",
+        "beats": [
+          "Deniz adds a neat diagram and a short note to a personal notebook: the tone repeats with wind, the sign moves at the same moment, and the Commons objects did not match it.",
+          "When someone asks whether Deniz is certain, Deniz explains that the bracket is the best-supported answer, not a view of every hidden detail.",
+          "The bell-like sound rings once more from beyond the Commons path, and Deniz listens without inventing a story about places still unknown."
+        ],
+        "prior_evidence": [
+          "Scene 2: the Commons objects did not match the sound's movement or direction.",
+          "Scene 3: the first hypothesis was revised after a second observation.",
+          "Scene 4: the sign movement and tone repeatedly matched from the permitted public viewpoint.",
+          "Scene 4: the exact contact point remained unseen."
+        ],
+        "must_include": [
+          "Deniz remains within known public areas.",
+          "The final explanation includes both the supported conclusion and its limit.",
+          "The theme is demonstrated through Deniz's willingness to say what is known, likely, and still uncertain."
+        ],
+        "must_not_do": [
+          "Do not resolve the uncertainty by revealing hidden machinery or the old pump house interior.",
+          "Do not make the final sound supernatural or ominous.",
+          "Do not introduce a new central problem after the investigation is resolved."
+        ],
+        "handoff": "The story ends with Deniz's careful explanation recorded and the unknown remaining bounded rather than falsely solved."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Bell at the Commons",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "The wind came across Harbor Garden Habitat in quick, cool breaths. It stirred the grasses beside the Commons shelter and tugged at Deniz’s jacket hood.\n\nThen came the sound.\n\nTing.\n\nIt was soft, almost too soft to call a bell. Deniz stopped beside the shelter and listened. The tone seemed metallic, but it did not sound like the bright bell on a bicycle or the clank of a dropped tool. It faded into the wind before Deniz could point to it.\n\nDeniz took out a small notebook. Making diagrams helped when a question felt slippery. At the top of a page, Deniz wrote:\n\nWednesday, 3:18 p.m. Windy. Tone heard near Commons shelter. Seems from the east.\n\nBelow the words, Deniz drew a square for the shelter, a circle for the rain barrel, and a dotted line for the marked public path. An arrow pointed toward the fenced maintenance edge.\n\nBeside the shelter stood the public notice board. Deniz read the newest notice again. It said that workers had recently replaced a loose sign bracket near the maintenance edge.\n\nA loose sign bracket, Deniz thought. Could that matter?\n\nBut a thought was not evidence. Deniz underlined the time and drew a question mark beside the arrow.\n\nAs Deniz stepped toward the path, Mr. Vale, who was carrying a basket of garden gloves, passed by.\n\n“Remember,” he said, nodding toward the painted line, “visitors must stay on marked public paths.”\n\n“I know,” Deniz replied. “I’m only listening and looking.”\n\nMr. Vale smiled, but he did not explain the sound. He continued toward the garden beds.\n\nDeniz glanced toward the narrow way some people called OLD_PUMP_PATH. It was only rumored, not a place Deniz had visited or knew. It lay outside the question.\n\nDeniz tapped the notebook. The real question was simpler: did the sound come from the Commons itself, or did something visible near the maintenance edge respond to the wind?"
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "Deniz began with the objects closest at hand. The rain barrel stood beside the shelter, its dark sides shining with leftover drops. The shelter had wooden posts, a roof, and a metal gutter. If one of them made the tone, Deniz wanted to notice exactly how.\n\nFor several minutes, nothing happened except the ordinary noises of the garden: leaves brushing together, a gull calling somewhere beyond the public paths, and the creak of a swinging gate far away.\n\nThen a stronger gust rushed through.\n\nTing.\n\nDeniz turned quickly. The rain barrel did not move. Its lid stayed flat. The shelter roof trembled a little, but no part of it struck another part. Deniz marked both facts in the notebook.\n\nObserved: tone repeated during gust. Barrel still. Shelter moved only slightly; no matching metallic sound.\n\nDeniz walked along the marked public path, stopping before the point where the fenced maintenance edge came into view. The fence remained between the path and the maintenance area. Deniz did not touch it or step past the public viewpoint.\n\nNear the fence stood a sign. Wind pressed against it, and the sign quivered on its support.\n\nNot a swing. Not a flap. A quick shiver.\n\nDeniz waited. Another gust crossed the open space. The sign shifted again, and the tone sounded, though faintly. From here, the tone seemed louder in that direction than it had beside the barrel.\n\nDeniz drew the sign on the diagram, adding the fence and the path. An arrow ran from the Commons toward the sign. Next to it, Deniz wrote:\n\nSeen: sign quivers when wind presses across it. Exact contact point hidden behind sign.\n\nDeniz stared at the last sentence. The sign’s movement was an observation. The idea that it caused the tone was only a suspicion.\n\nPerhaps the rain barrel had made the first sound and the sign had merely moved at the same time. Perhaps the shelter’s gutter had rung, though Deniz had not seen it happen. The evidence was not ready to choose.\n\nStill, the direction mattered. Deniz circled the maintenance-edge sign, then drew a second, smaller circle around the rain barrel.\n\nFor now, the first guess was the easiest one: maybe the barrel or shelter made the bell-like tone. But the arrow in the diagram kept pointing farther along the public path."
+      },
+      {
+        "index": 3,
+        "role": "REVERSAL",
+        "prose": "On another windy afternoon, Deniz returned with the same notebook. This time, Deniz did not listen first. Instead, Deniz watched the rain barrel and the shelter before the gusts arrived.\n\nThe plan was to give the first guess a fair test.\n\nA breeze slid beneath the shelter roof. The roof gave a wooden creak. The barrel lid trembled once. Neither made a bell-like tone.\n\nA stronger gust followed.\n\nThe barrel stayed in place. The shelter’s gutter shook slightly, but there was no bright metallic note. Then, almost at the end of the gust—\n\nting.\n\nDeniz looked toward the maintenance-edge sign. It had shifted with a tiny metallic flick. The flick and the tone had happened so close together that Deniz could compare their timing. The Commons objects had moved first, or not at all, while the tone came just after the wind reached the sign.\n\nDeniz waited through three more gusts. One produced no tone. The next produced a faint one. On the third, the sign quivered and the tone returned nearly together.\n\nThat pattern was not perfect, but it was stronger than the barrel idea.\n\nDeniz crossed out the words rain barrel or shelter in the diagram. Not ripped out, not erased completely—crossed out, so the old guess could still be seen.\n\nRevised hypothesis: wind may move the recently repaired sign bracket or sign against another metal part.\n\nDeniz paused over the word bracket. The public notice said workers had replaced a loose bracket. Deniz had not seen the bracket clearly. The sign blocked part of it, and the fence marked the boundary. So Deniz added:\n\nLikely, not proven. Contact point hidden from path.\n\nThe unknown did not make the explanation useless. It made the explanation careful.\n\nDeniz could have walked toward the fence for a closer look, but that would not be allowed, and it would change the investigation from safe observation to rule-breaking. Instead, Deniz compared what could be seen from the public path: wind direction, timing, sound, and movement.\n\nThe sign now seemed more likely than the Commons objects. Still, Deniz decided to make one more comparison before calling it an explanation."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "The next windy afternoon, Deniz returned to the same public viewpoint. The notebook lay open to the diagram, but Deniz did not chase every sound or move from place to place. Waiting in one spot would make the comparison clearer.\n\nThe garden quieted between gusts. Deniz watched the sign, the rain barrel, and the shelter together.\n\nA long breeze moved over the Commons. The grass leaned. The shelter roof gave a low creak. The rain barrel remained still.\n\nThe wind reached the maintenance-edge sign.\n\nThe sign pressed away from its support and gave a small, quick flick.\n\nTing.\n\nThe tone sounded at nearly the same moment. Deniz felt a pleased jump inside, but kept watching.\n\nThe gust weakened. The sign settled.\n\nFor a while there was only the rustle of leaves. Then another breeze crossed the path. Again, the sign shifted, and again the soft metallic tone followed so closely that the two events seemed joined. When the breeze faded, the sign stopped moving.\n\nDeniz made three short marks in the notebook:\n\nWind reaches sign.\nSign quivers.\nTone sounds at nearly the same time.\n\nThe rain barrel and shelter had not matched the tone on any of the careful checks. The sign’s movement had matched it more than once. The public notice about the recently replaced loose sign bracket gave one more useful piece of background.\n\nDeniz drew a box around the conclusion:\n\nBest-supported source: the recently repaired sign bracket, or the sign moving against another metal part when wind presses on it.\n\nThen Deniz added the limit beneath it:\n\nExact contact point cannot be seen from the public path.\n\nDeniz read the two lines together. The first was not a wild guess. It rested on repeated timing, direction, visible movement, and the notice. The second kept the first from pretending to be more certain than it was.\n\nDeniz had not crossed the fence. No equipment had been touched. Nothing dangerous had happened. A safe observation had been enough to narrow the answer.\n\nWith the notebook tucked under one arm, Deniz turned back toward the Commons notice board. The explanation was ready to share—not as a command or a mystery solved by magic, but as a careful account of what the wind and the sign had done."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "At the notice board beside the shelter, Deniz copied the final diagram neatly into a personal notebook. It showed the Commons, the marked public path, the fence, and the maintenance-edge sign. Underneath, Deniz wrote:\n\nThe tone repeats on windy afternoons. The sign moves at nearly the same moment. The rain barrel and shelter did not match the sound. The repaired sign bracket is the best-supported source, though the exact contact point is hidden from the public path.\n\nA neighbor named Lina stopped to look at the page.\n\n“So you found it?” she asked.\n\n“I found the strongest explanation,” Deniz said.\n\n“Are you certain?”\n\nDeniz considered the question. “I’m certain about what I observed. I’m fairly sure the wind moves the sign or bracket against another metal part. But I can’t see the exact place where they touch, so I shouldn’t claim every hidden detail.”\n\nLina nodded slowly. “That sounds useful anyway.”\n\n“It is more useful than making up the missing part,” Deniz said.\n\nFrom beyond the Commons path came one last soft tone.\n\nTing.\n\nDeniz listened, but did not invent a story about places still unknown. The rumored OLD_PUMP_PATH remained only rumored. The maintenance area remained beyond the marked public boundary. What Deniz knew stayed on the page: wind, movement, timing, and a well-supported answer with one honest question left inside it.\n\nThen Deniz closed the notebook and walked home along the public path."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "The wind came across Harbor Garden Habitat in quick, cool breaths. It stirred the grasses beside the Commons shelter and tugged at Deniz’s jacket hood.\n\nThen came the sound.\n\nTing.\n\nIt was soft, almost too soft to call a bell. Deniz stopped beside the shelter and listened. The tone seemed metallic, but it did not sound like the bright bell on a bicycle or the clank of a dropped tool. It faded into the wind before Deniz could point to it.\n\nDeniz took out a small notebook. Making diagrams helped when a question felt slippery. At the top of a page, Deniz wrote:\n\nWednesday, 3:18 p.m. Windy. Tone heard near Commons shelter. Seems from the east.\n\nBelow the words, Deniz drew a square for the shelter, a circle for the rain barrel, and a dotted line for the marked public path. An arrow pointed toward the fenced maintenance edge.\n\nBeside the shelter stood the public notice board. Deniz read the newest notice again. It said that workers had recently replaced a loose sign bracket near the maintenance edge.\n\nA loose sign bracket, Deniz thought. Could that matter?\n\nBut a thought was not evidence. Deniz underlined the time and drew a question mark beside the arrow.\n\nAs Deniz stepped toward the path, Mr. Vale, who was carrying a basket of garden gloves, passed by.\n\n“Remember,” he said, nodding toward the painted line, “visitors must stay on marked public paths.”\n\n“I know,” Deniz replied. “I’m only listening and looking.”\n\nMr. Vale smiled, but he did not explain the sound. He continued toward the garden beds.\n\nDeniz glanced toward the narrow way some people called OLD_PUMP_PATH. It was only rumored, not a place Deniz had visited or knew. It lay outside the question.\n\nDeniz tapped the notebook. The real question was simpler: did the sound come from the Commons itself, or did something visible near the maintenance edge respond to the wind?\n\nDeniz began with the objects closest at hand. The rain barrel stood beside the shelter, its dark sides shining with leftover drops. The shelter had wooden posts, a roof, and a metal gutter. If one of them made the tone, Deniz wanted to notice exactly how.\n\nFor several minutes, nothing happened except the ordinary noises of the garden: leaves brushing together, a gull calling somewhere beyond the public paths, and the creak of a swinging gate far away.\n\nThen a stronger gust rushed through.\n\nTing.\n\nDeniz turned quickly. The rain barrel did not move. Its lid stayed flat. The shelter roof trembled a little, but no part of it struck another part. Deniz marked both facts in the notebook.\n\nObserved: tone repeated during gust. Barrel still. Shelter moved only slightly; no matching metallic sound.\n\nDeniz walked along the marked public path, stopping before the point where the fenced maintenance edge came into view. The fence remained between the path and the maintenance area. Deniz did not touch it or step past the public viewpoint.\n\nNear the fence stood a sign. Wind pressed against it, and the sign quivered on its support.\n\nNot a swing. Not a flap. A quick shiver.\n\nDeniz waited. Another gust crossed the open space. The sign shifted again, and the tone sounded, though faintly. From here, the tone seemed louder in that direction than it had beside the barrel.\n\nDeniz drew the sign on the diagram, adding the fence and the path. An arrow ran from the Commons toward the sign. Next to it, Deniz wrote:\n\nSeen: sign quivers when wind presses across it. Exact contact point hidden behind sign.\n\nDeniz stared at the last sentence. The sign’s movement was an observation. The idea that it caused the tone was only a suspicion.\n\nPerhaps the rain barrel had made the first sound and the sign had merely moved at the same time. Perhaps the shelter’s gutter had rung, though Deniz had not seen it happen. The evidence was not ready to choose.\n\nStill, the direction mattered. Deniz circled the maintenance-edge sign, then drew a second, smaller circle around the rain barrel.\n\nFor now, the first guess was the easiest one: maybe the barrel or shelter made the bell-like tone. But the arrow in the diagram kept pointing farther along the public path.\n\nOn another windy afternoon, Deniz returned with the same notebook. This time, Deniz did not listen first. Instead, Deniz watched the rain barrel and the shelter before the gusts arrived.\n\nThe plan was to give the first guess a fair test.\n\nA breeze slid beneath the shelter roof. The roof gave a wooden creak. The barrel lid trembled once. Neither made a bell-like tone.\n\nA stronger gust followed.\n\nThe barrel stayed in place. The shelter’s gutter shook slightly, but there was no bright metallic note. Then, almost at the end of the gust—\n\nting.\n\nDeniz looked toward the maintenance-edge sign. It had shifted with a tiny metallic flick. The flick and the tone had happened so close together that Deniz could compare their timing. The Commons objects had moved first, or not at all, while the tone came just after the wind reached the sign.\n\nDeniz waited through three more gusts. One produced no tone. The next produced a faint one. On the third, the sign quivered and the tone returned nearly together.\n\nThat pattern was not perfect, but it was stronger than the barrel idea.\n\nDeniz crossed out the words rain barrel or shelter in the diagram. Not ripped out, not erased completely—crossed out, so the old guess could still be seen.\n\nRevised hypothesis: wind may move the recently repaired sign bracket or sign against another metal part.\n\nDeniz paused over the word bracket. The public notice said workers had replaced a loose bracket. Deniz had not seen the bracket clearly. The sign blocked part of it, and the fence marked the boundary. So Deniz added:\n\nLikely, not proven. Contact point hidden from path.\n\nThe unknown did not make the explanation useless. It made the explanation careful.\n\nDeniz could have walked toward the fence for a closer look, but that would not be allowed, and it would change the investigation from safe observation to rule-breaking. Instead, Deniz compared what could be seen from the public path: wind direction, timing, sound, and movement.\n\nThe sign now seemed more likely than the Commons objects. Still, Deniz decided to make one more comparison before calling it an explanation.\n\nThe next windy afternoon, Deniz returned to the same public viewpoint. The notebook lay open to the diagram, but Deniz did not chase every sound or move from place to place. Waiting in one spot would make the comparison clearer.\n\nThe garden quieted between gusts. Deniz watched the sign, the rain barrel, and the shelter together.\n\nA long breeze moved over the Commons. The grass leaned. The shelter roof gave a low creak. The rain barrel remained still.\n\nThe wind reached the maintenance-edge sign.\n\nThe sign pressed away from its support and gave a small, quick flick.\n\nTing.\n\nThe tone sounded at nearly the same moment. Deniz felt a pleased jump inside, but kept watching.\n\nThe gust weakened. The sign settled.\n\nFor a while there was only the rustle of leaves. Then another breeze crossed the path. Again, the sign shifted, and again the soft metallic tone followed so closely that the two events seemed joined. When the breeze faded, the sign stopped moving.\n\nDeniz made three short marks in the notebook:\n\nWind reaches sign.\nSign quivers.\nTone sounds at nearly the same time.\n\nThe rain barrel and shelter had not matched the tone on any of the careful checks. The sign’s movement had matched it more than once. The public notice about the recently replaced loose sign bracket gave one more useful piece of background.\n\nDeniz drew a box around the conclusion:\n\nBest-supported source: the recently repaired sign bracket, or the sign moving against another metal part when wind presses on it.\n\nThen Deniz added the limit beneath it:\n\nExact contact point cannot be seen from the public path.\n\nDeniz read the two lines together. The first was not a wild guess. It rested on repeated timing, direction, visible movement, and the notice. The second kept the first from pretending to be more certain than it was.\n\nDeniz had not crossed the fence. No equipment had been touched. Nothing dangerous had happened. A safe observation had been enough to narrow the answer.\n\nWith the notebook tucked under one arm, Deniz turned back toward the Commons notice board. The explanation was ready to share—not as a command or a mystery solved by magic, but as a careful account of what the wind and the sign had done.\n\nAt the notice board beside the shelter, Deniz copied the final diagram neatly into a personal notebook. It showed the Commons, the marked public path, the fence, and the maintenance-edge sign. Underneath, Deniz wrote:\n\nThe tone repeats on windy afternoons. The sign moves at nearly the same moment. The rain barrel and shelter did not match the sound. The repaired sign bracket is the best-supported source, though the exact contact point is hidden from the public path.\n\nA neighbor named Lina stopped to look at the page.\n\n“So you found it?” she asked.\n\n“I found the strongest explanation,” Deniz said.\n\n“Are you certain?”\n\nDeniz considered the question. “I’m certain about what I observed. I’m fairly sure the wind moves the sign or bracket against another metal part. But I can’t see the exact place where they touch, so I shouldn’t claim every hidden detail.”\n\nLina nodded slowly. “That sounds useful anyway.”\n\n“It is more useful than making up the missing part,” Deniz said.\n\nFrom beyond the Commons path came one last soft tone.\n\nTing.\n\nDeniz listened, but did not invent a story about places still unknown. The rumored OLD_PUMP_PATH remained only rumored. The maintenance area remained beyond the marked public boundary. What Deniz knew stayed on the page: wind, movement, timing, and a well-supported answer with one honest question left inside it.\n\nThen Deniz closed the notebook and walked home along the public path.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 1672,
+    "target_words": 1500,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 270
+      },
+      {
+        "scene": 2,
+        "target_words": 360
+      },
+      {
+        "scene": 3,
+        "target_words": 300
+      },
+      {
+        "scene": 4,
+        "target_words": 345
+      },
+      {
+        "scene": 5,
+        "target_words": 225
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.93,
+      "no_redundant_events": 0.93,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.88,
+      "context_authority": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.86,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6890,
+      "output_tokens": 208,
+      "cost": 0.00028938
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. This is exceptional production-quality work that fully satisfies the StoryContract, SceneGraph, and all constraints. The story demonstrates mastery of the core theme: 'A careful explanation can include uncertainty.' Deniz's investigation is methodical, bounded, and honest. All six required constraints are met: C1 (context pack authority respected throughout), C2 (OLD_PUMP_PATH never entered or explored), C3 (no invented pump house knowledge), C4 (two clear observations: rain barrel/shelter failure, then sign movement timing), C5 (first hypothesis about Commons objects is explicitly revised after testing), C6 (Mr. Vale offers no solution; Deniz investigates independently), C7 (bounded uncertainty preserved: 'exact contact point cannot be seen from the public path'). The prose is age-appropriate for an independent 10-year-old reader, with clear sentence structure, concrete sensory detail, and Deniz's authentic voice. The diagram-making trait is woven naturally throughout. The SceneGraph beats are all present and sequenced correctly: setup with the notice board and Mr. Vale's reminder, investigation with two observations, reversal with explicit hypothesis rejection, payoff with repeated timing evidence, and resolution with honest explanation and preserved uncertainty. The ending is particularly strong: Deniz refuses to invent stories about unknown places, explicitly states the limit of the evidence, and walks home with integrity intact. Word count is approximately 1,500 words. No canon violations, no supernatural elements, no dangerous incidents, no hidden organizations. The story earns its 5 in creativity not through plot surprise but through the sophisticated modeling of how a careful young mind actually works—comparing, revising, and resisting the temptation to fill gaps with certainty. This is exemplary work for the age range and theme.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "prodlike-deniz-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "base_revision": 21,
+        "base_fingerprint": "char-deniz-r21-fp",
+        "value": "The recently repaired sign bracket, or the sign moving against another metal part in the wind, is the best-supported source of the Commons bell-like tone; the exact contact point remains unseen.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "Deniz revises the initial barrel-or-shelter hypothesis after repeated observations linking the sign's movement and the tone's timing, while preserving the limit of what can be seen."
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "commons.sound_explanation",
+        "base_revision": 34,
+        "base_fingerprint": "world-harbor-garden-r34-fp",
+        "value": "The Commons bell-like tone is best explained by wind moving the recently repaired sign bracket or the sign against another metal part; the exact contact point is not visible from the public path.",
+        "evidence_scenes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "reason": "The accepted story establishes a repeated, bounded, evidence-supported explanation without revealing hidden areas or claiming absolute certainty."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "base_revision": 9,
+        "base_fingerprint": "saga-deniz-r9-fp",
+        "value": "Commons bell-like sound investigation",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Deniz reaches and records the strongest supported explanation, resolving the investigation while retaining honest uncertainty about the unseen contact point."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "base_revision": 7,
+        "base_fingerprint": "opp-harbor-bell-r7-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Deniz completes the safe investigation from known public areas and reaches the opportunity's bounded explanation condition without entering OLD_PUMP_PATH."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 6541,
+      "output_tokens": 1001,
+      "total_tokens": 7542
+    },
+    "cost": {
+      "usd": 0.0028363,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.0037495,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.00392305,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.009747,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.0028363,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.02025585
+  },
+  "elapsed_seconds": 90.368
+}
