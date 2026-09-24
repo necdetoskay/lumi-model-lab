@@ -1,6 +1,6 @@
 # English-First Story Production Pipeline v1
 
-Status: canonical Model Lab design candidate
+Status: **HISTORICAL — superseded by ENGLISH_FIRST_STORY_PIPELINE_V3.md**
 Date: 2026-09-23
 
 ## Goal

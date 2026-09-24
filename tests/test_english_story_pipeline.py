@@ -23,6 +23,7 @@ from src.english_story_pipeline import (
     repair_plan_once,
     repair_scene_word_budget,
     repair_scene_for_final_judge,
+    scene_word_budget_bounds,
     run_final_polish_cycles,
     sum_plan_stage_cost_usd,
     validate_final_judge,
@@ -226,19 +227,66 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             any(error.startswith("below_scene_word_budget:") for error in errors)
         )
 
-    def test_scene_hard_bound_allows_small_overage_after_repair(self):
-        envelope = good_envelope(118)
+    def test_scene_hard_bound_keeps_80_percent_floor_and_25_percent_ceiling(self):
+        self.assertEqual(scene_word_budget_bounds(100), (80, 125))
+        envelope = good_envelope(125)
         errors, _ = validate_scene_envelope(
             envelope,
             target_words=100,
         )
         self.assertEqual(errors, [])
 
-    def test_scene_hard_bound_rejects_large_overage(self):
-        envelope = good_envelope(121)
+    def test_scene_hard_bound_keeps_underlength_gate_at_80_percent(self):
+        envelope = good_envelope(79)
         errors, _ = validate_scene_envelope(
             envelope,
             target_words=100,
+        )
+        self.assertTrue(
+            any(error.startswith("below_scene_word_budget:") for error in errors)
+        )
+
+    def test_scene_hard_bound_rejects_beyond_25_percent(self):
+        envelope = good_envelope(126)
+        errors, _ = validate_scene_envelope(
+            envelope,
+            target_words=100,
+        )
+        self.assertTrue(
+            any(error.startswith("above_scene_word_budget:") for error in errors)
+        )
+
+    def test_short_scene_uses_upper_minimum_absolute_slack_only(self):
+        self.assertEqual(scene_word_budget_bounds(65), (52, 85))
+        accepted = good_envelope(84)
+        errors, _ = validate_scene_envelope(
+            accepted,
+            target_words=65,
+        )
+        self.assertEqual(errors, [])
+
+        rejected = good_envelope(90)
+        errors, _ = validate_scene_envelope(
+            rejected,
+            target_words=65,
+        )
+        self.assertTrue(
+            any(error.startswith("above_scene_word_budget:") for error in errors)
+        )
+
+    def test_child_scene_known_small_overage_is_not_repaired_in_v3(self):
+        self.assertEqual(scene_word_budget_bounds(255), (204, 319))
+        accepted = good_envelope(311)
+        errors, _ = validate_scene_envelope(
+            accepted,
+            target_words=255,
+        )
+        self.assertEqual(errors, [])
+
+        rejected = good_envelope(334)
+        errors, _ = validate_scene_envelope(
+            rejected,
+            target_words=255,
         )
         self.assertTrue(
             any(error.startswith("above_scene_word_budget:") for error in errors)

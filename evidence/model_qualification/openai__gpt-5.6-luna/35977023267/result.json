@@ -1,0 +1,1732 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/child--exploration-mystery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/child--exploration-mystery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Quiet Signal",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to discover what the repeating quiet signal means and choose a safe, helpful response.",
+        "central_problem": "Three soft taps and a pause repeat around town, but Deniz cannot tell whether they are a warning, a message, or a natural sound.",
+        "solution_principle": "Compare observations from different places, test assumptions, and confirm the source through visible evidence.",
+        "theme_thread": "Careful observation can turn uncertainty into understanding.",
+        "ending_state": "Deniz identifies a woodpecker feeding on the old observation-point post and helps keep the nesting place undisturbed.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or frightening danger.",
+          "No convenient coincidence, unexplained clue, or premature mystery solution.",
+          "Do not mention benchmarks, tests, or story-planning processes."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the repeating signal, and the careful investigation goal.",
+          "entry_state": "Deniz visits the town library and notices an unfamiliar sound during an ordinary quiet moment.",
+          "beats": [
+            "Three soft taps come through the library window, followed by a pause; the pattern repeats.",
+            "Deniz writes the rhythm and time in a notebook, then looks outside but sees no source.",
+            "Deniz decides to listen elsewhere before guessing what the signal means."
+          ],
+          "must_include": [
+            "Deniz is seven and uses simple, age-appropriate words and reasoning.",
+            "The signal is observable: three taps, a pause, then three taps again.",
+            "The mystery remains open, with no immediate explanation."
+          ],
+          "must_not_do": [
+            "Do not make Deniz solve the signal from one observation.",
+            "Do not use advanced equipment, adult-only reasoning, or intense fear.",
+            "Do not introduce combat, danger, or a hidden message as fact."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has recorded the rhythm but does not know its source or meaning, so the next investigation begins in the public garden.",
+          "open_threads_after": [
+            "Where does the signal come from?",
+            "Is the signal intentional?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Add a second location and show that position changes the signal's apparent direction.",
+          "entry_state": "Deniz carries the library notebook into the public garden to compare the same repeating sound.",
+          "beats": [
+            "The three taps repeat near the garden path, and Deniz marks their time beside the library entry.",
+            "Walking slowly, Deniz hears the taps grow clearer toward the hill leading to the old observation point.",
+            "Deniz finds three fresh, narrow chips beneath a fallen branch but cannot tell whether they matter."
+          ],
+          "must_include": [
+            "Deniz compares the new rhythm with the written library rhythm.",
+            "The direction clue is based on listening from more than one garden position.",
+            "The wood chips are visible before they become useful evidence."
+          ],
+          "must_not_do": [
+            "Do not identify the chips or source yet.",
+            "Do not treat the direction as proof; echoes may confuse Deniz.",
+            "Do not reset Deniz's knowledge or discard the library record."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The library notebook records three taps followed by a pause.",
+            "The library window was the first place Deniz heard the repeating pattern."
+          ],
+          "handoff": "The garden makes the hill seem likely, but echoes and unexplained wood chips require a simple comparison at the workshop.",
+          "open_threads_after": [
+            "Whether the hill truly holds the source.",
+            "Whether the wood chips connect to the taps."
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use the workshop to test the wood-chip clue without turning a guess into a conclusion.",
+          "entry_state": "Deniz brings the notebook and garden observations to the town workshop for a careful sound comparison.",
+          "beats": [
+            "Using safe scrap wood, Deniz compares tapping sounds and notices hollow wood carries a sharper, longer echo.",
+            "The workshop's old cedar scraps show tiny fresh marks shaped like the garden chips.",
+            "Deniz concludes that something may be tapping wood, but still needs to observe the actual source."
+          ],
+          "must_include": [
+            "The comparison is simple and supervised, suitable for a seven-year-old.",
+            "The cedar marks are observable before Deniz uses them as supporting evidence.",
+            "Deniz keeps both possibilities open: a natural sound or an intentional signal."
+          ],
+          "must_not_do": [
+            "Do not let the workshop comparison prove the exact animal.",
+            "Do not introduce a new mystery, tool, or unrelated workshop project.",
+            "Do not send Deniz alone into unsafe conditions."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The notebook contains the same three-tap rhythm from the library and garden.",
+            "The garden contains fresh narrow chips near the direction of the hill.",
+            "Deniz heard the sound grow clearer while walking toward the hill."
+          ],
+          "handoff": "Hollow wood and matching fresh marks support a tapping source, so Deniz must watch the old observation point and confirm what makes them.",
+          "open_threads_after": [
+            "What is tapping the wood?",
+            "Whether the sound is a message or an animal's ordinary action."
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Gather direct site evidence while preserving uncertainty until the decisive observation.",
+          "entry_state": "With a trusted adult nearby, Deniz visits the old observation point carrying the notebook and workshop comparison.",
+          "beats": [
+            "Deniz finds the hollow cedar post, fresh chips, and small feathers beside it; each clue is visible before interpretation.",
+            "From the post, the taps sound exactly like the library and garden rhythm, with the same pause.",
+            "Deniz watches quietly but sees no bird, so the source is close yet still unconfirmed."
+          ],
+          "must_include": [
+            "The old post explains why the sound carried toward the library and garden.",
+            "Deniz connects sound, hollow wood, chips, and feathers without claiming certainty.",
+            "The central mystery remains open for the next scene."
+          ],
+          "must_not_do": [
+            "Do not reveal the bird before Deniz directly observes it.",
+            "Do not make feathers alone identify a species.",
+            "Do not allow touching, damaging, or climbing on the old post."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The workshop comparison showed that hollow wood can carry a sharper echo.",
+            "The garden chips matched fresh marks on workshop cedar scraps.",
+            "The notebook preserves the repeated rhythm across the library and garden."
+          ],
+          "handoff": "The post matches every sound clue, but Deniz still needs direct visual confirmation before choosing how to respond.",
+          "open_threads_after": [
+            "Which creature makes the taps?",
+            "What careful response will protect the place?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Deliver the decisive observation and apply the accumulated evidence.",
+          "entry_state": "Deniz returns at the recorded time and waits quietly beside the observation point without disturbing the post.",
+          "beats": [
+            "A small woodpecker lands, taps the hollow post three times, pauses, and repeats while searching for food.",
+            "Deniz compares the bird, beak marks, chips, feathers, hollow post, direction, and recorded rhythm.",
+            "Deniz chooses not to tap back or touch the post, and tells the nearby adult the post may hold a nest."
+          ],
+          "must_include": [
+            "The bird's tapping directly explains the repeating signal through earlier observable evidence.",
+            "Deniz recognizes the sound is not a coded warning or secret message.",
+            "The choice protects the bird and follows observation rather than luck."
+          ],
+          "must_not_do": [
+            "Do not add a sudden rescue, magical signal, or unrelated danger.",
+            "Do not resolve the mystery before the direct observation.",
+            "Do not make Deniz handle the bird, nest, or post."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The post produced the same three-tap rhythm and pause as the library and garden.",
+            "Fresh chips, feathers, and beak-shaped marks surrounded the hollow post.",
+            "Workshop testing showed hollow wood could carry the sound across town."
+          ],
+          "handoff": "The signal is explained as a woodpecker feeding on the hollow post; the remaining task is protecting the quiet nesting place.",
+          "open_threads_after": [
+            "How Deniz and the town will keep the observation point undisturbed."
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the practical consequence and close Deniz's investigation with shared understanding.",
+          "entry_state": "Deniz has identified the woodpecker and asks for a gentle way to protect the hollow observation-point post.",
+          "beats": [
+            "The adult informs the library and workshop, and they place a simple quiet reminder near the post without blocking it.",
+            "Deniz shares the notebook's observations, helping others understand why the signal carries through town.",
+            "The taps continue softly as Deniz listens with new understanding instead of worry."
+          ],
+          "must_include": [
+            "The town protects the post without disturbing the bird.",
+            "The ending explains the signal through the complete chain of evidence.",
+            "Deniz's independence, care, and reasoning remain plausible for age seven."
+          ],
+          "must_not_do": [
+            "Do not reopen the central mystery or add a new signal.",
+            "Do not make the ending depend on coincidence.",
+            "Do not leave a major consequence unresolved."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Deniz directly saw the woodpecker repeat the recorded three-tap rhythm.",
+            "The post, chips, feathers, marks, and echo explained the earlier observations.",
+            "Deniz chose not to touch the post and reported the possible nesting place."
+          ],
+          "handoff": "The signal's source and meaning are understood, the post is protected, and Deniz's investigation is complete.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.95,
+        "constraint_coverage": 0.8,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.89,
+        "no_early_resolution": 0.97,
+        "ending_coherence": 0.94
+      },
+      "below_threshold": {},
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.83,
+      "shadow_signal": "CONTINUE",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3725,
+        "output_tokens": 185,
+        "cost": 0.00015645
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 5,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 5.0,
+      "minimum": 5,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 4,
+          "risk": "Adult supervision is mentioned but not named or characterized; ensure the adult remains passive and does not solve the mystery for Deniz."
+        },
+        {
+          "scene": 5,
+          "risk": "The woodpecker must appear at the recorded time; if prose timing feels rushed, the payoff may feel coincidental rather than earned. Pacing must allow Deniz's quiet waiting to feel deliberate."
+        },
+        {
+          "scene": 6,
+          "risk": "The library and workshop's involvement in protection must feel natural and proportionate; avoid making them overly enthusiastic or turning the ending into a celebration that overshadows Deniz's reasoning."
+        }
+      ],
+      "summary": "This plan demonstrates exceptional structural integrity for a 7-year-old EARLY_READER story. Every scene builds causally on prior observations without reset or redundancy. Deniz's goal—to discover and safely respond to the signal—remains stable and motivates each investigation. All nine constraints are explicitly scheduled and observable before use: the notebook (C7), wood chips, feathers, beak marks, and hollow post all appear before interpretation. Information accumulates linearly (library → garden → workshop → observation point → direct sighting → community response), with no unexplained dependencies or convenient coincidences. The central mystery remains genuinely open through Scene 4, with Scene 5 delivering the decisive visual confirmation through the woodpecker's direct appearance, and Scene 6 resolving the practical consequence (post protection) consistently. Vocabulary, reasoning, and emotional intensity are age-appropriate throughout: Deniz uses simple comparison, listening, and note-taking rather than deduction or advanced inference. The ending explains the signal through the complete chain of accumulated evidence rather than luck. No combat, danger, or benchmark references appear. The plan is ready for prose development with only minor pacing vigilance needed in Scenes 5–6 to preserve the earned quality of the payoff.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.004921,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.00015645,
+      "haiku": {
+        "usd": 0.006735,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 905,
+        "output_tokens": 3950,
+        "total_tokens": 4855
+      },
+      "jev": {
+        "input_tokens": 3725,
+        "output_tokens": 185,
+        "cost": 0.00015645
+      },
+      "haiku": {
+        "input_tokens": 3920,
+        "output_tokens": 563,
+        "total_tokens": 4483
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    195,
+    232,
+    255,
+    255,
+    308,
+    255
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 195,
+      "word_count": 213,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the repeating signal, and the careful investigation goal.",
+        "entry_state": "Deniz visits the town library and notices an unfamiliar sound during an ordinary quiet moment.",
+        "beats": [
+          "Three soft taps come through the library window, followed by a pause; the pattern repeats.",
+          "Deniz writes the rhythm and time in a notebook, then looks outside but sees no source.",
+          "Deniz decides to listen elsewhere before guessing what the signal means."
+        ],
+        "must_include": [
+          "Deniz is seven and uses simple, age-appropriate words and reasoning.",
+          "The signal is observable: three taps, a pause, then three taps again.",
+          "The mystery remains open, with no immediate explanation."
+        ],
+        "must_not_do": [
+          "Do not make Deniz solve the signal from one observation.",
+          "Do not use advanced equipment, adult-only reasoning, or intense fear.",
+          "Do not introduce combat, danger, or a hidden message as fact."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has recorded the rhythm but does not know its source or meaning, so the next investigation begins in the public garden.",
+        "open_threads_after": [
+          "Where does the signal come from?",
+          "Is the signal intentional?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz was seven, and she liked the quiet corner of the town library. She sat by the window with her small notebook while the librarian stamped books nearby.\n\nTap, tap, tap.\n\nDeniz looked up. A pause followed. Then came the same sound again.\n\nTap, tap, tap.\n\nShe held her pencil still. The taps were soft, but they were clear. They seemed to come through the window.\n\nDeniz wrote:\n\n3:10 — three taps, pause, three taps.\n\nShe pressed her nose close to the glass and looked outside. The street was calm. A bicycle leaned against a wall. Leaves moved in the sea breeze. No one stood near the window.\n\n“Maybe it is a branch,” Deniz whispered. “Or maybe someone is tapping.”\n\nThe sound did not come again right away. Deniz waited, but guessing felt too easy. One sound could fool her. She needed to listen in another place.\n\nShe closed her notebook carefully and put it in her bag. The public garden was just down the street. From there, she could compare what she heard with what she had written.\n\nDeniz glanced once more at the quiet window. She did not know if the taps were a warning, a message, or only an ordinary sound. So she decided to listen first and guess later.",
+        "state_delta": {
+          "location": "Town library, preparing to go to the public garden",
+          "character_goal": "Deniz wants to discover what the repeating signal means and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The sound consists of three soft taps, a pause, and three more taps.",
+            "The signal was heard at about 3:10 near the library window.",
+            "No source was visible outside the library."
+          ],
+          "facts_established": [
+            "Deniz is seven years old.",
+            "Deniz keeps observations in a small notebook.",
+            "The library window was the first place Deniz heard the repeating pattern."
+          ],
+          "clues_added": [
+            "The repeating rhythm may be an ordinary sound, a person's tapping, a warning, or a message, but its meaning is unknown."
+          ],
+          "objects_changed": [
+            "Deniz recorded the rhythm and time in her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Where does the signal come from?",
+            "Is the signal intentional?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has recorded three taps, a pause, and three taps heard near the library window, but she does not know the source or meaning. She is carrying the notebook to the public garden to compare the sound in another place."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.165,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 213,
+          "usage": {
+            "input_tokens": 4013,
+            "output_tokens": 703,
+            "total_tokens": 4716
+          },
+          "cost": {
+            "usd": 0.0018467,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2416,
+          "output_tokens": 188,
+          "cost": 0.000101472
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2416,
+            "output_tokens": 188,
+            "cost": 0.000101472
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.331
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.496
+    },
+    {
+      "scene": 2,
+      "target_words": 232,
+      "word_count": 253,
+      "contract": {
+        "index": 2,
+        "purpose": "Add a second location and show that position changes the signal's apparent direction.",
+        "entry_state": "Deniz carries the library notebook into the public garden to compare the same repeating sound.",
+        "beats": [
+          "The three taps repeat near the garden path, and Deniz marks their time beside the library entry.",
+          "Walking slowly, Deniz hears the taps grow clearer toward the hill leading to the old observation point.",
+          "Deniz finds three fresh, narrow chips beneath a fallen branch but cannot tell whether they matter."
+        ],
+        "must_include": [
+          "Deniz compares the new rhythm with the written library rhythm.",
+          "The direction clue is based on listening from more than one garden position.",
+          "The wood chips are visible before they become useful evidence."
+        ],
+        "must_not_do": [
+          "Do not identify the chips or source yet.",
+          "Do not treat the direction as proof; echoes may confuse Deniz.",
+          "Do not reset Deniz's knowledge or discard the library record."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The library notebook records three taps followed by a pause.",
+          "The library window was the first place Deniz heard the repeating pattern."
+        ],
+        "handoff": "The garden makes the hill seem likely, but echoes and unexplained wood chips require a simple comparison at the workshop.",
+        "open_threads_after": [
+          "Whether the hill truly holds the source.",
+          "Whether the wood chips connect to the taps."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz walked to the public garden with her notebook tucked under her arm. The garden path curved between flower beds and a row of young trees. She stopped near the gate and listened.\n\nTap, tap, tap.\n\nA pause.\n\nTap, tap, tap.\n\nDeniz opened her notebook. The garden was quiet except for bees and the far-off hush of the sea. She checked the little clock on the path sign.\n\n“3:25,” she said, and wrote it beside the library time.\n\nLibrary: 3:10 — three taps, pause, three taps.\nGarden: 3:25 — three taps, pause, three taps.\n\nThe rhythm matched. That felt important, but it did not tell her what made the sound.\n\nDeniz walked ten slow steps along the path and listened again. The taps seemed faint behind her. She turned toward the hill, where the old observation point stood above the town.\n\nShe moved a little closer to the hill. The next taps sounded clearer there. Deniz tried one more place, beside a stone bench. The sound was clearer still, though it bounced between the trees.\n\n“Maybe it is coming from the hill,” she said. “But an echo can play tricks.”\n\nNear the bench, a fallen branch lay across the grass. Under it, Deniz noticed three fresh, narrow wood chips. They were pale against the dark soil.\n\nShe did not pick them up. She drew their shapes in her notebook and added, “Found near the path.”\n\nThe hill seemed like a good place to check next. Still, Deniz needed more than a good guess.",
+        "state_delta": {
+          "location": "Public garden path, moving toward the hill that leads to the old observation point",
+          "character_goal": "Deniz wants to compare the garden sound with the library record and find its source without guessing too soon.",
+          "knowledge_gained": [
+            "The garden signal matches the library pattern: three taps, a pause, and three taps.",
+            "The taps sound clearer from garden positions closer to the hill.",
+            "Echoes between the trees may make the direction uncertain."
+          ],
+          "facts_established": [
+            "Deniz heard the garden pattern at about 3:25.",
+            "The public garden lies between the library and the hill."
+          ],
+          "clues_added": [
+            "Three fresh, narrow wood chips were visible beneath a fallen branch near the garden path."
+          ],
+          "objects_changed": [
+            "Deniz added the garden time, sound comparison, direction observations, and a drawing of the wood chips to her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Whether the hill truly holds the source of the taps.",
+            "Whether the fresh wood chips connect to the repeating sound."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has confirmed the same three-tap rhythm in the garden and heard it grow clearer toward the hill, but she knows echoes may confuse the direction. She has recorded three fresh, narrow wood chips near a fallen branch without identifying their source. She will take the notebook and observations to the town workshop for a careful comparison."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.149,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 253,
+          "usage": {
+            "input_tokens": 4698,
+            "output_tokens": 774,
+            "total_tokens": 5472
+          },
+          "cost": {
+            "usd": 0.00210315,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2931,
+          "output_tokens": 188,
+          "cost": 0.000123102
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2931,
+            "output_tokens": 188,
+            "cost": 0.000123102
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.357
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.506
+    },
+    {
+      "scene": 3,
+      "target_words": 255,
+      "word_count": 276,
+      "contract": {
+        "index": 3,
+        "purpose": "Use the workshop to test the wood-chip clue without turning a guess into a conclusion.",
+        "entry_state": "Deniz brings the notebook and garden observations to the town workshop for a careful sound comparison.",
+        "beats": [
+          "Using safe scrap wood, Deniz compares tapping sounds and notices hollow wood carries a sharper, longer echo.",
+          "The workshop's old cedar scraps show tiny fresh marks shaped like the garden chips.",
+          "Deniz concludes that something may be tapping wood, but still needs to observe the actual source."
+        ],
+        "must_include": [
+          "The comparison is simple and supervised, suitable for a seven-year-old.",
+          "The cedar marks are observable before Deniz uses them as supporting evidence.",
+          "Deniz keeps both possibilities open: a natural sound or an intentional signal."
+        ],
+        "must_not_do": [
+          "Do not let the workshop comparison prove the exact animal.",
+          "Do not introduce a new mystery, tool, or unrelated workshop project.",
+          "Do not send Deniz alone into unsafe conditions."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The notebook contains the same three-tap rhythm from the library and garden.",
+          "The garden contains fresh narrow chips near the direction of the hill.",
+          "Deniz heard the sound grow clearer while walking toward the hill."
+        ],
+        "handoff": "Hollow wood and matching fresh marks support a tapping source, so Deniz must watch the old observation point and confirm what makes them.",
+        "open_threads_after": [
+          "What is tapping the wood?",
+          "Whether the sound is a message or an animal's ordinary action."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz carried her notebook to the town workshop. Mina, the workshop keeper, was sorting safe pieces of scrap wood at a low table.\n\n“I found chips in the garden,” Deniz said. “And I hear three taps, a pause, and three taps.”\n\nShe showed Mina the drawing and the notes from the library and garden.\n\nMina placed two small pieces on the table. One was solid wood. The other was an old cedar scrap with a hollow middle. She held each piece firmly while Deniz tapped it three times with her fingertip.\n\nTap, tap, tap.\n\nThe solid piece made a short, dull sound. The hollow cedar made a sharper sound that seemed to last longer. A little echo trembled in the workshop.\n\nDeniz looked at her notebook. “The sound from the garden lasted, too.”\n\n“Wood can carry sound,” Mina said. “But this test cannot tell us what made the taps.”\n\nBeside the cedar scrap, Deniz noticed tiny fresh marks. They were narrow and close together. She placed her garden drawing next to them. The marks looked much like the three chips she had seen under the fallen branch.\n\nShe wrote: Cedar has fresh narrow marks. They look like garden chips.\n\n“Maybe something is tapping wood,” Deniz said. “Or maybe someone is making a signal.”\n\n“Both are still possible,” Mina replied. “The best next step is to watch the place where the clues meet.”\n\nDeniz thought of the hill and the old observation point. She closed her notebook carefully. The workshop had not solved the mystery, but it had made one thing clearer: the sound might begin in hollow wood. Now she needed to see what made it.",
+        "state_delta": {
+          "location": "Town workshop",
+          "character_goal": "Deniz wants to observe the source of the repeating signal and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "Hollow cedar makes a sharper sound with a longer echo than solid wood.",
+            "The workshop comparison cannot identify what makes the taps.",
+            "The sound may begin in hollow wood."
+          ],
+          "facts_established": [
+            "Mina, the workshop keeper, supervised Deniz's safe sound comparison.",
+            "Deniz compared solid wood with hollow cedar by tapping each piece three times."
+          ],
+          "clues_added": [
+            "Tiny fresh marks on old cedar scraps look like the three narrow chips Deniz saw in the garden.",
+            "The garden chips may have come from something tapping wood."
+          ],
+          "objects_changed": [
+            "Deniz added the cedar sound comparison and the matching-mark observation to her notebook."
+          ],
+          "relationships_changed": [
+            "Mina supports Deniz's investigation by supervising the comparison without solving the mystery for her."
+          ],
+          "threads_opened": [
+            "What is tapping the wood?",
+            "Whether the sound is a message or an animal's ordinary action."
+          ],
+          "threads_resolved": [
+            "The workshop test shows that hollow wood can carry a sharper, longer echo."
+          ],
+          "handoff_state": "Deniz has compared solid wood with hollow cedar and found fresh narrow marks on cedar scraps that resemble the garden chips. She knows something may be tapping hollow wood, but both a natural sound and an intentional signal remain possible. With Mina's support, she will watch the old observation point to find the actual source."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.567,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 276,
+          "usage": {
+            "input_tokens": 5140,
+            "output_tokens": 1063,
+            "total_tokens": 6203
+          },
+          "cost": {
+            "usd": 0.00256045,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3370,
+          "output_tokens": 188,
+          "cost": 0.00014154
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3370,
+            "output_tokens": 188,
+            "cost": 0.00014154
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.374
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.941
+    },
+    {
+      "scene": 4,
+      "target_words": 255,
+      "word_count": 253,
+      "contract": {
+        "index": 4,
+        "purpose": "Gather direct site evidence while preserving uncertainty until the decisive observation.",
+        "entry_state": "With a trusted adult nearby, Deniz visits the old observation point carrying the notebook and workshop comparison.",
+        "beats": [
+          "Deniz finds the hollow cedar post, fresh chips, and small feathers beside it; each clue is visible before interpretation.",
+          "From the post, the taps sound exactly like the library and garden rhythm, with the same pause.",
+          "Deniz watches quietly but sees no bird, so the source is close yet still unconfirmed."
+        ],
+        "must_include": [
+          "The old post explains why the sound carried toward the library and garden.",
+          "Deniz connects sound, hollow wood, chips, and feathers without claiming certainty.",
+          "The central mystery remains open for the next scene."
+        ],
+        "must_not_do": [
+          "Do not reveal the bird before Deniz directly observes it.",
+          "Do not make feathers alone identify a species.",
+          "Do not allow touching, damaging, or climbing on the old post."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The workshop comparison showed that hollow wood can carry a sharper echo.",
+          "The garden chips matched fresh marks on workshop cedar scraps.",
+          "The notebook preserves the repeated rhythm across the library and garden."
+        ],
+        "handoff": "The post matches every sound clue, but Deniz still needs direct visual confirmation before choosing how to respond.",
+        "open_threads_after": [
+          "Which creature makes the taps?",
+          "What careful response will protect the place?"
+        ]
+      },
+      "envelope": {
+        "prose": "Mina walked with Deniz up the hill to the old observation point. She stayed on the path while Deniz carried her notebook and watched the wooden lookout.\n\nThe post beside it was made of cedar. Near its bottom lay three fresh, narrow chips. A few small feathers rested in the grass beside them. Deniz did not touch anything. She only looked, then drew the clues in her notebook.\n\n“Could the chips come from this post?” she whispered.\n\n“Maybe,” Mina said. “Let’s listen.”\n\nThey stood quietly. A soft sound came from the post.\n\nTap, tap, tap.\n\nDeniz held her breath. After a pause, the sound came again.\n\nTap, tap, tap.\n\nShe checked her notes. The rhythm was just like the one at the library and in the garden. At the garden, the hill had seemed to make the taps clearer. Now Deniz understood why. The hollow cedar post could carry the sound down the hill and across the town.\n\nShe pointed to the chips. “The wood is marked, too. And there are feathers.”\n\n“Those are clues,” Mina said. “But they do not tell us exactly who made the marks.”\n\nDeniz sat on a flat stone a short distance away. She watched the post without touching it. The taps came once more, but she saw no bird and no person. Leaves moved in the sea breeze. The post stood still.\n\nDeniz wrote: Hollow post. Same rhythm. Chips and feathers. Source still unseen.\n\nThe clues fit together, but one question remained. What was making the taps?",
+        "state_delta": {
+          "location": "Old observation point on the hill",
+          "character_goal": "Deniz wants to identify the source of the repeating signal and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The old cedar post produces the same three-tap rhythm and pause heard at the library and in the garden.",
+            "The hollow post can explain how the sound carried toward the garden and library.",
+            "The source is close to the post but has not been seen."
+          ],
+          "facts_established": [
+            "Mina accompanied Deniz and stayed nearby while Deniz investigated safely.",
+            "The old observation-point post is hollow cedar.",
+            "Fresh narrow chips and small feathers are beside the post."
+          ],
+          "clues_added": [
+            "The post has fresh chips beside it and small feathers nearby.",
+            "The matching rhythm, hollow wood, chips, and feathers connect the observation point to the earlier clues."
+          ],
+          "objects_changed": [
+            "Deniz added a drawing and notes about the hollow post, chips, feathers, and unseen source to her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which creature makes the taps?",
+            "What careful response will protect the place?"
+          ],
+          "threads_resolved": [
+            "The old observation-point post explains why the signal carried toward the garden and library."
+          ],
+          "handoff_state": "Deniz has found the hollow cedar post at the old observation point, fresh chips and small feathers beside it, and the exact three-tap rhythm with the same pause. She understands that the post can carry the sound toward town, but she did not see a bird or person make it. With Mina nearby, Deniz is ready to return at the recorded time and wait quietly for direct visual confirmation without touching or disturbing the post."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.312,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 253,
+          "usage": {
+            "input_tokens": 5544,
+            "output_tokens": 832,
+            "total_tokens": 6376
+          },
+          "cost": {
+            "usd": 0.00238425,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.8,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3787,
+          "output_tokens": 188,
+          "cost": 0.000159054
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.8,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3787,
+            "output_tokens": 188,
+            "cost": 0.000159054
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.393
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.705
+    },
+    {
+      "scene": 5,
+      "target_words": 308,
+      "word_count": 304,
+      "contract": {
+        "index": 5,
+        "purpose": "Deliver the decisive observation and apply the accumulated evidence.",
+        "entry_state": "Deniz returns at the recorded time and waits quietly beside the observation point without disturbing the post.",
+        "beats": [
+          "A small woodpecker lands, taps the hollow post three times, pauses, and repeats while searching for food.",
+          "Deniz compares the bird, beak marks, chips, feathers, hollow post, direction, and recorded rhythm.",
+          "Deniz chooses not to tap back or touch the post, and tells the nearby adult the post may hold a nest."
+        ],
+        "must_include": [
+          "The bird's tapping directly explains the repeating signal through earlier observable evidence.",
+          "Deniz recognizes the sound is not a coded warning or secret message.",
+          "The choice protects the bird and follows observation rather than luck."
+        ],
+        "must_not_do": [
+          "Do not add a sudden rescue, magical signal, or unrelated danger.",
+          "Do not resolve the mystery before the direct observation.",
+          "Do not make Deniz handle the bird, nest, or post."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The post produced the same three-tap rhythm and pause as the library and garden.",
+          "Fresh chips, feathers, and beak-shaped marks surrounded the hollow post.",
+          "Workshop testing showed hollow wood could carry the sound across town."
+        ],
+        "handoff": "The signal is explained as a woodpecker feeding on the hollow post; the remaining task is protecting the quiet nesting place.",
+        "open_threads_after": [
+          "How Deniz and the town will keep the observation point undisturbed."
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz returned with Mina at the time written in her notebook. She sat on the same flat stone. Mina waited quietly on the path.\n\nDeniz kept her hands in her lap. She did not touch the post. She did not tap back.\n\nFor a while, nothing happened. A gull called far below. Grass bent in the sea breeze. Deniz watched the hollow cedar and waited.\n\nThen a small bird flew to the post.\n\nIt had a pointed beak and a neat black-and-white body. The bird held on to the cedar. Tap, tap, tap. It paused, tilted its head, and tapped again.\n\nDeniz stared. The bird pecked at a small spot in the wood, then stopped to look for food. Tiny bits of cedar fell to the grass.\n\nShe looked at the clues in her notebook. The bird's beak fit the narrow marks. The new chips matched the old chips. The feathers beside the post could have come from a bird. The hollow cedar had carried the tapping down the hill, past the garden, and toward the library. Most important, the bird made the same three taps and the same pause.\n\n“So it is not a warning,” Deniz whispered. “And it is not a secret message.”\n\n“No,” Mina said softly. “You watched carefully and found the answer.”\n\nThe woodpecker tapped once more. Deniz wanted to answer it, but she remembered that the post might be a nesting place. A tap from her could disturb the bird.\n\nShe pointed without getting closer. “Mina, we should tell people to leave this post quiet. It may hold a nest.”\n\nMina nodded. “That is a careful choice.”\n\nDeniz wrote the final clue: Woodpecker feeding on hollow post. Three taps, pause, three taps. The mystery was no longer a worry. It was a sound with a source.",
+        "state_delta": {
+          "location": "Old observation point on the hill",
+          "character_goal": "Deniz wants to protect the woodpecker's quiet nesting place after identifying the source of the repeating signal.",
+          "knowledge_gained": [
+            "A small woodpecker makes the three taps, pause, and three taps while feeding on the hollow cedar post.",
+            "The woodpecker's beak marks, chips, feathers, and the hollow post match the earlier clues.",
+            "The sound is not a coded warning or secret message."
+          ],
+          "facts_established": [
+            "Deniz directly observed the woodpecker tapping the post.",
+            "The woodpecker searched for food between tapping.",
+            "The post may hold a nest."
+          ],
+          "clues_added": [
+            "Fresh cedar bits fell when the woodpecker pecked the post.",
+            "The woodpecker's beak fits the narrow marks around the post."
+          ],
+          "objects_changed": [
+            "Deniz added the direct woodpecker observation and the explained rhythm to her notebook."
+          ],
+          "relationships_changed": [
+            "Mina supports Deniz's decision to keep the post quiet."
+          ],
+          "threads_opened": [
+            "How Deniz and the town will protect the quiet nesting place."
+          ],
+          "threads_resolved": [
+            "The source of the repeating signal is a woodpecker feeding on the hollow post.",
+            "The signal is an ordinary animal sound, not an intentional warning or message."
+          ],
+          "handoff_state": "Deniz has directly seen a woodpecker tap the hollow observation-point post three times, pause, and repeat while searching for food. The bird, beak marks, chips, feathers, hollow wood, direction, and notebook rhythm explain the signal. Deniz did not tap back or touch the post and told Mina that it may hold a nest. The remaining task is to inform the library and workshop and place a gentle reminder so the post stays undisturbed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.979,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 304,
+          "usage": {
+            "input_tokens": 5921,
+            "output_tokens": 1052,
+            "total_tokens": 6973
+          },
+          "cost": {
+            "usd": 0.0027425,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.85,
+          "no_contradiction": 0.85,
+          "goal_preserved": 0.92,
+          "no_future_leakage": 0.85,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.8,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4325,
+          "output_tokens": 188,
+          "cost": 0.00018165
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.85,
+            "goal_preserved": 0.92,
+            "no_future_leakage": 0.85,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.8,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4325,
+            "output_tokens": 188,
+            "cost": 0.00018165
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.477
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.456
+    },
+    {
+      "scene": 6,
+      "target_words": 255,
+      "word_count": 275,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the practical consequence and close Deniz's investigation with shared understanding.",
+        "entry_state": "Deniz has identified the woodpecker and asks for a gentle way to protect the hollow observation-point post.",
+        "beats": [
+          "The adult informs the library and workshop, and they place a simple quiet reminder near the post without blocking it.",
+          "Deniz shares the notebook's observations, helping others understand why the signal carries through town.",
+          "The taps continue softly as Deniz listens with new understanding instead of worry."
+        ],
+        "must_include": [
+          "The town protects the post without disturbing the bird.",
+          "The ending explains the signal through the complete chain of evidence.",
+          "Deniz's independence, care, and reasoning remain plausible for age seven."
+        ],
+        "must_not_do": [
+          "Do not reopen the central mystery or add a new signal.",
+          "Do not make the ending depend on coincidence.",
+          "Do not leave a major consequence unresolved."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Deniz directly saw the woodpecker repeat the recorded three-tap rhythm.",
+          "The post, chips, feathers, marks, and echo explained the earlier observations.",
+          "Deniz chose not to touch the post and reported the possible nesting place."
+        ],
+        "handoff": "The signal's source and meaning are understood, the post is protected, and Deniz's investigation is complete.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "The next morning, Mina walked with Deniz to the library. Deniz showed the librarian her notebook.\n\nShe showed the first time: three taps, a pause, and three taps by the window. Then she showed the garden notes, the wood chips, and the hill. She explained how the hollow cedar post carried the sound down toward town.\n\nLast, she drew the woodpecker tapping the post.\n\nThe librarian looked at the careful drawings. “Now I understand why the sound seemed to come from different places,” she said. “It traveled.”\n\nMina and Deniz went to the workshop next. Deniz showed Mina’s cedar comparison and the marks that matched the chips. The workshop keeper agreed to tell visitors to stay away from the post.\n\nTogether, the adults made a small sign. It said, PLEASE KEEP QUIET. BIRD NESTING AREA.\n\nThey placed the sign beside the path, far enough away that it did not touch or block the old post. No one climbed on the lookout. No one tapped the wood. The bird would have its quiet place.\n\nDeniz stood with Mina below the hill. Soon, the sound came softly through the sea air.\n\nTap, tap, tap. Pause. Tap, tap, tap.\n\nDeniz smiled. She could name every part now: the woodpecker’s beak, the fresh chips, the feathers, the hollow cedar, and the echo that carried the sound toward the garden and library.\n\n“It sounded like a message,” she said, “but it was a bird looking for food.”\n\nMina nodded. “Your notes helped everyone hear the whole story.”\n\nDeniz listened again. The taps were no longer a worry. They were the woodpecker’s ordinary work, safely continuing at the old observation point.",
+        "state_delta": {
+          "location": "The old observation point on the hill, with the library and workshop now informed",
+          "character_goal": "Deniz has completed her investigation and wants the woodpecker's nesting place to remain quiet and safe.",
+          "knowledge_gained": [
+            "The library and workshop understand that the sound traveled from the hollow post.",
+            "A quiet reminder can protect the post without disturbing the bird."
+          ],
+          "facts_established": [
+            "The town placed a sign reading PLEASE KEEP QUIET. BIRD NESTING AREA beside the path.",
+            "The sign does not touch or block the old post.",
+            "People will not climb on the lookout or tap the wood."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "Deniz shared her completed notebook observations with the library and workshop.",
+            "A quiet reminder sign was placed near the observation point."
+          ],
+          "relationships_changed": [
+            "The library and workshop now support protecting the bird's nesting place."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The town's practical response to the woodpecker's nesting place is complete.",
+            "The signal is fully explained as a woodpecker tapping hollow cedar while searching for food."
+          ],
+          "handoff_state": "The source and meaning of the three-tap signal are understood. The library and workshop know the full chain of evidence, and a sign protects the hollow observation-point post without blocking or disturbing it. Deniz listens to the continuing taps with understanding instead of worry, and her investigation is complete."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.311,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 275,
+          "usage": {
+            "input_tokens": 6043,
+            "output_tokens": 801,
+            "total_tokens": 6844
+          },
+          "cost": {
+            "usd": 0.0024718,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.83,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.93,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.78,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4257,
+          "output_tokens": 188,
+          "cost": 0.000178794
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.83,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.93,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.78,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4257,
+            "output_tokens": 188,
+            "cost": 0.000178794
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.412
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.724
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the repeating signal, and the careful investigation goal.",
+      "word_count": 213,
+      "location": "Town library, preparing to go to the public garden",
+      "character_goal": "Deniz wants to discover what the repeating signal means and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The sound consists of three soft taps, a pause, and three more taps.",
+        "The signal was heard at about 3:10 near the library window.",
+        "No source was visible outside the library."
+      ],
+      "facts_established": [
+        "Deniz is seven years old.",
+        "Deniz keeps observations in a small notebook.",
+        "The library window was the first place Deniz heard the repeating pattern."
+      ],
+      "clues_added": [
+        "The repeating rhythm may be an ordinary sound, a person's tapping, a warning, or a message, but its meaning is unknown."
+      ],
+      "objects_changed": [
+        "Deniz recorded the rhythm and time in her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Where does the signal come from?",
+        "Is the signal intentional?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has recorded three taps, a pause, and three taps heard near the library window, but she does not know the source or meaning. She is carrying the notebook to the public garden to compare the sound in another place."
+    },
+    {
+      "scene": 2,
+      "purpose": "Add a second location and show that position changes the signal's apparent direction.",
+      "word_count": 253,
+      "location": "Public garden path, moving toward the hill that leads to the old observation point",
+      "character_goal": "Deniz wants to compare the garden sound with the library record and find its source without guessing too soon.",
+      "knowledge_gained": [
+        "The garden signal matches the library pattern: three taps, a pause, and three taps.",
+        "The taps sound clearer from garden positions closer to the hill.",
+        "Echoes between the trees may make the direction uncertain."
+      ],
+      "facts_established": [
+        "Deniz heard the garden pattern at about 3:25.",
+        "The public garden lies between the library and the hill."
+      ],
+      "clues_added": [
+        "Three fresh, narrow wood chips were visible beneath a fallen branch near the garden path."
+      ],
+      "objects_changed": [
+        "Deniz added the garden time, sound comparison, direction observations, and a drawing of the wood chips to her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Whether the hill truly holds the source of the taps.",
+        "Whether the fresh wood chips connect to the repeating sound."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has confirmed the same three-tap rhythm in the garden and heard it grow clearer toward the hill, but she knows echoes may confuse the direction. She has recorded three fresh, narrow wood chips near a fallen branch without identifying their source. She will take the notebook and observations to the town workshop for a careful comparison."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use the workshop to test the wood-chip clue without turning a guess into a conclusion.",
+      "word_count": 276,
+      "location": "Town workshop",
+      "character_goal": "Deniz wants to observe the source of the repeating signal and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "Hollow cedar makes a sharper sound with a longer echo than solid wood.",
+        "The workshop comparison cannot identify what makes the taps.",
+        "The sound may begin in hollow wood."
+      ],
+      "facts_established": [
+        "Mina, the workshop keeper, supervised Deniz's safe sound comparison.",
+        "Deniz compared solid wood with hollow cedar by tapping each piece three times."
+      ],
+      "clues_added": [
+        "Tiny fresh marks on old cedar scraps look like the three narrow chips Deniz saw in the garden.",
+        "The garden chips may have come from something tapping wood."
+      ],
+      "objects_changed": [
+        "Deniz added the cedar sound comparison and the matching-mark observation to her notebook."
+      ],
+      "relationships_changed": [
+        "Mina supports Deniz's investigation by supervising the comparison without solving the mystery for her."
+      ],
+      "threads_opened": [
+        "What is tapping the wood?",
+        "Whether the sound is a message or an animal's ordinary action."
+      ],
+      "threads_resolved": [
+        "The workshop test shows that hollow wood can carry a sharper, longer echo."
+      ],
+      "handoff_state": "Deniz has compared solid wood with hollow cedar and found fresh narrow marks on cedar scraps that resemble the garden chips. She knows something may be tapping hollow wood, but both a natural sound and an intentional signal remain possible. With Mina's support, she will watch the old observation point to find the actual source."
+    },
+    {
+      "scene": 4,
+      "purpose": "Gather direct site evidence while preserving uncertainty until the decisive observation.",
+      "word_count": 253,
+      "location": "Old observation point on the hill",
+      "character_goal": "Deniz wants to identify the source of the repeating signal and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The old cedar post produces the same three-tap rhythm and pause heard at the library and in the garden.",
+        "The hollow post can explain how the sound carried toward the garden and library.",
+        "The source is close to the post but has not been seen."
+      ],
+      "facts_established": [
+        "Mina accompanied Deniz and stayed nearby while Deniz investigated safely.",
+        "The old observation-point post is hollow cedar.",
+        "Fresh narrow chips and small feathers are beside the post."
+      ],
+      "clues_added": [
+        "The post has fresh chips beside it and small feathers nearby.",
+        "The matching rhythm, hollow wood, chips, and feathers connect the observation point to the earlier clues."
+      ],
+      "objects_changed": [
+        "Deniz added a drawing and notes about the hollow post, chips, feathers, and unseen source to her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which creature makes the taps?",
+        "What careful response will protect the place?"
+      ],
+      "threads_resolved": [
+        "The old observation-point post explains why the signal carried toward the garden and library."
+      ],
+      "handoff_state": "Deniz has found the hollow cedar post at the old observation point, fresh chips and small feathers beside it, and the exact three-tap rhythm with the same pause. She understands that the post can carry the sound toward town, but she did not see a bird or person make it. With Mina nearby, Deniz is ready to return at the recorded time and wait quietly for direct visual confirmation without touching or disturbing the post."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deliver the decisive observation and apply the accumulated evidence.",
+      "word_count": 304,
+      "location": "Old observation point on the hill",
+      "character_goal": "Deniz wants to protect the woodpecker's quiet nesting place after identifying the source of the repeating signal.",
+      "knowledge_gained": [
+        "A small woodpecker makes the three taps, pause, and three taps while feeding on the hollow cedar post.",
+        "The woodpecker's beak marks, chips, feathers, and the hollow post match the earlier clues.",
+        "The sound is not a coded warning or secret message."
+      ],
+      "facts_established": [
+        "Deniz directly observed the woodpecker tapping the post.",
+        "The woodpecker searched for food between tapping.",
+        "The post may hold a nest."
+      ],
+      "clues_added": [
+        "Fresh cedar bits fell when the woodpecker pecked the post.",
+        "The woodpecker's beak fits the narrow marks around the post."
+      ],
+      "objects_changed": [
+        "Deniz added the direct woodpecker observation and the explained rhythm to her notebook."
+      ],
+      "relationships_changed": [
+        "Mina supports Deniz's decision to keep the post quiet."
+      ],
+      "threads_opened": [
+        "How Deniz and the town will protect the quiet nesting place."
+      ],
+      "threads_resolved": [
+        "The source of the repeating signal is a woodpecker feeding on the hollow post.",
+        "The signal is an ordinary animal sound, not an intentional warning or message."
+      ],
+      "handoff_state": "Deniz has directly seen a woodpecker tap the hollow observation-point post three times, pause, and repeat while searching for food. The bird, beak marks, chips, feathers, hollow wood, direction, and notebook rhythm explain the signal. Deniz did not tap back or touch the post and told Mina that it may hold a nest. The remaining task is to inform the library and workshop and place a gentle reminder so the post stays undisturbed."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the practical consequence and close Deniz's investigation with shared understanding.",
+      "word_count": 275,
+      "location": "The old observation point on the hill, with the library and workshop now informed",
+      "character_goal": "Deniz has completed her investigation and wants the woodpecker's nesting place to remain quiet and safe.",
+      "knowledge_gained": [
+        "The library and workshop understand that the sound traveled from the hollow post.",
+        "A quiet reminder can protect the post without disturbing the bird."
+      ],
+      "facts_established": [
+        "The town placed a sign reading PLEASE KEEP QUIET. BIRD NESTING AREA beside the path.",
+        "The sign does not touch or block the old post.",
+        "People will not climb on the lookout or tap the wood."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "Deniz shared her completed notebook observations with the library and workshop.",
+        "A quiet reminder sign was placed near the observation point."
+      ],
+      "relationships_changed": [
+        "The library and workshop now support protecting the bird's nesting place."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The town's practical response to the woodpecker's nesting place is complete.",
+        "The signal is fully explained as a woodpecker tapping hollow cedar while searching for food."
+      ],
+      "handoff_state": "The source and meaning of the three-tap signal are understood. The library and workshop know the full chain of evidence, and a sign protects the hollow observation-point post without blocking or disturbing it. Deniz listens to the continuing taps with understanding instead of worry, and her investigation is complete."
+    }
+  ],
+  "story_title": "The Quiet Signal",
+  "story": "Deniz was seven, and she liked the quiet corner of the town library. She sat by the window with her small notebook while the librarian stamped books nearby.\n\nTap, tap, tap.\n\nDeniz looked up. A pause followed. Then came the same sound again.\n\nTap, tap, tap.\n\nShe held her pencil still. The taps were soft, but they were clear. They seemed to come through the window.\n\nDeniz wrote:\n\n3:10 — three taps, pause, three taps.\n\nShe pressed her nose close to the glass and looked outside. The street was calm. A bicycle leaned against a wall. Leaves moved in the sea breeze. No one stood near the window.\n\n“Maybe it is a branch,” Deniz whispered. “Or maybe someone is tapping.”\n\nThe sound did not come again right away. Deniz waited, but guessing felt too easy. One sound could fool her. She needed to listen in another place.\n\nShe closed her notebook carefully and put it in her bag. The public garden was just down the street. From there, she could compare what she heard with what she had written.\n\nDeniz glanced once more at the quiet window. She did not know if the taps were a warning, a message, or only an ordinary sound. So she decided to listen first and guess later.\n\nDeniz walked to the public garden with her notebook tucked under her arm. The garden path curved between flower beds and a row of young trees. She stopped near the gate and listened.\n\nTap, tap, tap.\n\nA pause.\n\nTap, tap, tap.\n\nDeniz opened her notebook. The garden was quiet except for bees and the far-off hush of the sea. She checked the little clock on the path sign.\n\n“3:25,” she said, and wrote it beside the library time.\n\nLibrary: 3:10 — three taps, pause, three taps.\nGarden: 3:25 — three taps, pause, three taps.\n\nThe rhythm matched. That felt important, but it did not tell her what made the sound.\n\nDeniz walked ten slow steps along the path and listened again. The taps seemed faint behind her. She turned toward the hill, where the old observation point stood above the town.\n\nShe moved a little closer to the hill. The next taps sounded clearer there. Deniz tried one more place, beside a stone bench. The sound was clearer still, though it bounced between the trees.\n\n“Maybe it is coming from the hill,” she said. “But an echo can play tricks.”\n\nNear the bench, a fallen branch lay across the grass. Under it, Deniz noticed three fresh, narrow wood chips. They were pale against the dark soil.\n\nShe did not pick them up. She drew their shapes in her notebook and added, “Found near the path.”\n\nThe hill seemed like a good place to check next. Still, Deniz needed more than a good guess.\n\nDeniz carried her notebook to the town workshop. Mina, the workshop keeper, was sorting safe pieces of scrap wood at a low table.\n\n“I found chips in the garden,” Deniz said. “And I hear three taps, a pause, and three taps.”\n\nShe showed Mina the drawing and the notes from the library and garden.\n\nMina placed two small pieces on the table. One was solid wood. The other was an old cedar scrap with a hollow middle. She held each piece firmly while Deniz tapped it three times with her fingertip.\n\nTap, tap, tap.\n\nThe solid piece made a short, dull sound. The hollow cedar made a sharper sound that seemed to last longer. A little echo trembled in the workshop.\n\nDeniz looked at her notebook. “The sound from the garden lasted, too.”\n\n“Wood can carry sound,” Mina said. “But this test cannot tell us what made the taps.”\n\nBeside the cedar scrap, Deniz noticed tiny fresh marks. They were narrow and close together. She placed her garden drawing next to them. The marks looked much like the three chips she had seen under the fallen branch.\n\nShe wrote: Cedar has fresh narrow marks. They look like garden chips.\n\n“Maybe something is tapping wood,” Deniz said. “Or maybe someone is making a signal.”\n\n“Both are still possible,” Mina replied. “The best next step is to watch the place where the clues meet.”\n\nDeniz thought of the hill and the old observation point. She closed her notebook carefully. The workshop had not solved the mystery, but it had made one thing clearer: the sound might begin in hollow wood. Now she needed to see what made it.\n\nMina walked with Deniz up the hill to the old observation point. She stayed on the path while Deniz carried her notebook and watched the wooden lookout.\n\nThe post beside it was made of cedar. Near its bottom lay three fresh, narrow chips. A few small feathers rested in the grass beside them. Deniz did not touch anything. She only looked, then drew the clues in her notebook.\n\n“Could the chips come from this post?” she whispered.\n\n“Maybe,” Mina said. “Let’s listen.”\n\nThey stood quietly. A soft sound came from the post.\n\nTap, tap, tap.\n\nDeniz held her breath. After a pause, the sound came again.\n\nTap, tap, tap.\n\nShe checked her notes. The rhythm was just like the one at the library and in the garden. At the garden, the hill had seemed to make the taps clearer. Now Deniz understood why. The hollow cedar post could carry the sound down the hill and across the town.\n\nShe pointed to the chips. “The wood is marked, too. And there are feathers.”\n\n“Those are clues,” Mina said. “But they do not tell us exactly who made the marks.”\n\nDeniz sat on a flat stone a short distance away. She watched the post without touching it. The taps came once more, but she saw no bird and no person. Leaves moved in the sea breeze. The post stood still.\n\nDeniz wrote: Hollow post. Same rhythm. Chips and feathers. Source still unseen.\n\nThe clues fit together, but one question remained. What was making the taps?\n\nThe next afternoon, Deniz returned with Mina at the time written in her notebook. She sat on the same flat stone. Mina waited quietly on the path.\n\nDeniz kept her hands in her lap. She did not touch the post. She did not tap back.\n\nFor a while, nothing happened. A gull called far below. Grass bent in the sea breeze. Deniz watched the hollow cedar and waited.\n\nThen a small bird flew to the post.\n\nIt had a pointed beak and a neat black-and-white body. The bird held on to the cedar. Tap, tap, tap. It paused, tilted its head, and tapped again.\n\nDeniz stared. The bird pecked at a small spot in the wood, then stopped to look for food. Tiny bits of cedar fell to the grass.\n\nShe looked at the clues in her notebook. The bird's beak fit the narrow marks. The new chips matched the old chips. The feathers beside the post could have come from a bird. The hollow cedar had carried the tapping down the hill, past the garden, and toward the library. Most important, the bird made the same three taps and the same pause.\n\n“So it is not a warning,” Deniz whispered. “And it is not a secret message.”\n\n“No,” Mina said softly. “You watched carefully and found the answer.”\n\nThe woodpecker tapped once more. Deniz wanted to answer it, but she remembered that the post might be a nesting place. A tap from her could disturb the bird.\n\nShe pointed without getting closer. “Mina, we should tell people to leave this post quiet. It may hold a nest.”\n\nMina nodded. “That is a careful choice.”\n\nDeniz wrote the final clue: Woodpecker feeding on hollow post. Three taps, pause, three taps. The mystery was no longer a worry. It was a sound with a source.\n\nThe next morning, Mina walked with Deniz to the library. Deniz showed the librarian her notebook.\n\nShe showed the first time: three taps, a pause, and three taps by the window. Then she showed the garden notes, the wood chips, and the hill. She explained how the hollow cedar post carried the sound down toward town.\n\nLast, she drew the woodpecker tapping the post.\n\nThe librarian looked at the careful drawings. “Now I understand why the sound seemed to come from different places,” she said. “It traveled.”\n\nMina and Deniz went to the workshop next. Deniz showed Mina’s cedar comparison and the marks that matched the chips. The workshop keeper agreed to tell visitors to stay away from the post.\n\nTogether, the adults made a small sign. It said, PLEASE KEEP QUIET. BIRD NESTING AREA.\n\nThey placed the sign beside the path, far enough away that it did not touch or block the old post. No one climbed on the lookout. No one tapped the wood. The bird would have its quiet place.\n\nDeniz stood with Mina below the hill. Soon, the sound came softly through the sea air.\n\nTap, tap, tap. Pause. Tap, tap, tap.\n\nDeniz smiled. She could name every part now: the woodpecker’s beak, the fresh chips, the feathers, the hollow cedar, and the echo that carried the sound toward the garden and library.\n\n“It sounded like a message,” she said, “but it was a bird looking for food.”\n\nMina nodded. “Your notes helped everyone hear the whole story.”\n\nDeniz listened again. The taps were no longer a worry. They were the woodpecker’s ordinary work, safely continuing at the old observation point.",
+  "word_count": 1574,
+  "target_words": 1500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.97,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 7875,
+      "output_tokens": 166,
+      "cost": 0.00033075
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.97,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 7875,
+      "output_tokens": 166,
+      "cost": 0.00033075
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully fulfills the StoryContract and all six scenes. Deniz is consistently portrayed as a thoughtful seven-year-old who observes carefully, records evidence in her notebook, and resists premature conclusions. The central mystery—three soft taps repeating—remains genuinely open through Scene 4, with each location (library, garden, workshop, observation point) adding observable clues: the rhythm, direction, wood chips, feathers, and hollow cedar post. Scene 5 delivers the decisive observation (the woodpecker) through direct sight, not luck, and Scene 6 resolves the practical consequence (the protective sign) without reopening the mystery. Vocabulary, sentence structure, and pacing are consistently age-appropriate for early readers. The causal chain is explicit: Deniz hears → records → compares → tests → observes → protects. No combat, convenient coincidence, or unexplained clues appear. Continuity across all six scenes is maintained through the notebook as a physical anchor and Mina as a consistent supportive presence. The ending explains the signal through the complete chain of evidence (beak marks, chips, feathers, hollow wood, rhythm, direction) rather than luck. Word count is 1,374, within the 1,500-word target. The story meets the acceptance gate: average score 4.0, all criteria at least 3, no critical failures, and no blocking repair targets.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 1574,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.87,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 7875,
+          "output_tokens": 166,
+          "cost": 0.00033075
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully fulfills the StoryContract and all six scenes. Deniz is consistently portrayed as a thoughtful seven-year-old who observes carefully, records evidence in her notebook, and resists premature conclusions. The central mystery—three soft taps repeating—remains genuinely open through Scene 4, with each location (library, garden, workshop, observation point) adding observable clues: the rhythm, direction, wood chips, feathers, and hollow cedar post. Scene 5 delivers the decisive observation (the woodpecker) through direct sight, not luck, and Scene 6 resolves the practical consequence (the protective sign) without reopening the mystery. Vocabulary, sentence structure, and pacing are consistently age-appropriate for early readers. The causal chain is explicit: Deniz hears → records → compares → tests → observes → protects. No combat, convenient coincidence, or unexplained clues appear. Continuity across all six scenes is maintained through the notebook as a physical anchor and Mina as a consistent supportive presence. The ending explains the signal through the complete chain of evidence (beak marks, chips, feathers, hollow wood, rhythm, direction) rather than luck. Word count is 1,374, within the 1,500-word target. The story meets the acceptance gate: average score 4.0, all criteria at least 3, no critical failures, and no blocking repair targets.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.00033075,
+      "final_judge_cost": {
+        "usd": 0.013138,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 51.452,
+    "scene_stage_seconds": 68.828,
+    "final_stage_seconds": 6.559,
+    "total_pipeline_seconds": 126.84
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.01181245,
+    "scene_generation_usd": 0.01410885,
+    "scene_continuity_evaluator_usd": 0.000885612,
+    "whole_continuity_evaluator_usd": 0.00033075,
+    "whole_continuity_evaluator_usd_total": 0.00033075,
+    "semantic_judge_usd": {
+      "usd": 0.013138,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.013138,
+    "scene_jev_usd": 0.000885612,
+    "whole_jev_usd": 0.00033075,
+    "whole_jev_usd_total": 0.00033075,
+    "final_haiku": {
+      "usd": 0.013138,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.013138,
+    "total_pipeline_usd": 0.040275662
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 7875,
+      "output_tokens": 166,
+      "cost": 0.00033075
+    },
+    "semantic_judge": {
+      "input_tokens": 10993,
+      "output_tokens": 429,
+      "total_tokens": 11422
+    },
+    "whole_jev": {
+      "input_tokens": 7875,
+      "output_tokens": 166,
+      "cost": 0.00033075
+    },
+    "final_haiku": {
+      "input_tokens": 10993,
+      "output_tokens": 429,
+      "total_tokens": 11422
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}

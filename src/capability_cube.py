@@ -837,8 +837,8 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         f"**{cube['possible_cell_count_for_observed_models']}** "
         f"(unknown: **{cube['unknown_cell_count']}**)",
         "",
-        "| Model | Age tier | Reading mode | Narrative family | Relative length | Runs | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
-        "|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
+        "| Model | Protocol | Age tier | Reading mode | Narrative family | Relative length | Runs | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
+        "|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     for cell in cube["cells"]:
         sec = "—" if cell["average_pipeline_seconds"] is None else f"{cell['average_pipeline_seconds']:.1f}"
@@ -846,8 +846,9 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         judge = "—" if cell["average_final_judge"] is None else f"{cell['average_final_judge']:.3f}"
         minimum = "—" if cell["minimum_final_criterion"] is None else str(cell["minimum_final_criterion"])
         lines.append(
-            f"| {cell['model_id']} | {cell['narrative_age_tier']} | "
-            f"{cell['reading_mode']} | {cell['narrative_family']} | "
+            f"| {cell['model_id']} | {cell['generation_protocol_version']} | "
+            f"{cell['narrative_age_tier']} | {cell['reading_mode']} | "
+            f"{cell['narrative_family']} | "
             f"{cell['relative_length_class']} | "
             f"{cell['run_count']} | {cell['pass_rate']:.0%} | {judge} | {minimum} | "
             f"{cell['semantic_repairs_per_run']:.2f} | {sec} | {usd} | "
