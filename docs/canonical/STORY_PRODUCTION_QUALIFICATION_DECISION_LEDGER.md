@@ -722,3 +722,38 @@ Decision:
 - do not use its scalar score to rank close stories or generators;
 - keep blind, order-swapped pairwise evaluation as aggregate Model Lab evidence only;
 - no single judge output is model-routing authority.
+
+
+## 2026-09-24 — Multi-context commit cohort preserves touched-entity semantics
+
+Run:
+
+`36028239880`
+
+Evidence:
+
+`evidence/story-v5-state-commit-cohort-36028239880`
+
+The three production-like accepted outcomes were applied and then replayed through `state-commit-simulator.v1`.
+
+Observed:
+
+- 3/3 first commit: `COMMITTED`;
+- 3/3 identical replay: `IDEMPOTENT_REPLAY`;
+- no replay mutation;
+- Opportunity consumed in all three cases;
+- RUMORED knowledge-boundary fields remained unchanged.
+
+Important rule exposed by Ece:
+
+The accepted outcome mutated Character, Saga and Opportunity but did not propose a World mutation.
+
+Therefore World revision correctly stayed at 11.
+
+Decision:
+
+> Revision advancement follows the validated touched-entity set. Story acceptance alone does not advance every entity included in StoryContextPack.
+
+Commit assertions must never assume a fixed touched-entity set.
+
+With this cohort, the leading v5 candidate has multi-context evidence from compiled snapshot through atomic/idempotent simulated commit. The next architecture target is the actual LUMI G2 bridge.
