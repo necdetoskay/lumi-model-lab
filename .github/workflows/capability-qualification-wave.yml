@@ -65,8 +65,30 @@ jobs:
           echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
           echo "max_parallel=$MAX_PARALLEL" >> "$GITHUB_OUTPUT"
 
-  qualify:
+  provider_preflight:
     needs: prepare
+    runs-on: self-hosted
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Check OpenRouter key access before paid qualification
+        shell: bash
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo '::error::Repository secret OPENROUTER_API_KEY is not configured.'
+            exit 1
+          fi
+          python -m src.openrouter_preflight --json
+
+  qualify:
+    needs: [prepare, provider_preflight]
     runs-on: self-hosted
     timeout-minutes: 40
     strategy:
