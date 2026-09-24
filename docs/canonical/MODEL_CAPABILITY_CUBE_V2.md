@@ -311,6 +311,8 @@ record of why the policy changed.
 
 ## 15. Expansion policy
 
+Adaptive scheduling is governed by `docs/canonical/CAPABILITY_COVERAGE_PLANNER_V1.md`. The planner may prioritize executable cells, but it cannot redefine capability dimensions, acceptance gates, evidence identity, or fixture authority.
+
 After the age-relative STANDARD sweep:
 
 1. identify weak or surprising cells;
