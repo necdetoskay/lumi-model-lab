@@ -62,6 +62,14 @@ Examples:
 v3 therefore keeps the v1 under-length protection while relaxing only the
 historically dominant overshoot side.
 
+The local scene range is a **bounded-repair authority**, not the final hard
+story-length acceptance gate. A scene outside the local range triggers bounded
+repair work; after bounded repair, a residual scene-only length miss may be
+retained as advisory when no schema/state error remains. This prevents local
+length oscillation from overriding a semantically successful repair. The
+assembled whole-story 75%–125% gate remains the hard deterministic length
+authority.
+
 A deterministic replay over the 16 historical v1 initial word-budget misses
 shows the intended selectivity:
 
