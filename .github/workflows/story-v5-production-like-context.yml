@@ -1,0 +1,63 @@
+name: Story v5 Production-like Context
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-v5-production-like-context.txt
+
+permissions:
+  contents: write
+
+jobs:
+  production_like:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile prototype
+        run: python -m py_compile experiments/prototypes/story_v5_whole_draft_prototype.py
+
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json
+
+      - name: Run production-like context story
+        run: |
+          mkdir -p runs/story_v5_production_like
+          PYTHONPATH=. python experiments/prototypes/story_v5_whole_draft_prototype.py             --spec experiments/specs/v5-whole-draft/age10-1500-production-context.yaml             --context-pack experiments/context_packs/v5/deniz-harbor-bell.json             --state-authority experiments/state_authority/age10-1500-production-context.json             --output runs/story_v5_production_like/result.json
+
+      - name: Archive production-like evidence
+        if: always()
+        shell: bash
+        run: |
+          DEST="experiments/results/story-v5-production-like/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story_v5_production_like/result.json "$DEST/result.json" || true
+          cp runs/story_v5_production_like/result.outcome.json "$DEST/result.outcome.json" || true
+          cp runs/story_v5_production_like/result.story.txt "$DEST/result.story.txt" || true
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "protocol": "english-story-production.v5-whole-draft-prototype",
+            "context_protocol": "story-context-pack.v2-prototype",
+            "state_authority_protocol": "state-mutation-authority.v1"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): story v5 production-like context ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-production-like-${GITHUB_RUN_ID}"
