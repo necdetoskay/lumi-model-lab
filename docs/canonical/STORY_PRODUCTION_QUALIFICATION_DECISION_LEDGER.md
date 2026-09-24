@@ -473,3 +473,42 @@ Do not promote v4 from one successful story. Before broad qualification, define 
 6. Compare Luna vs Sonnet as Narrative Architect under the same v4 protocol.
 7. Promote only with evidence that the higher-cost planner materially improves reliability/quality or reduces repair burden.
 8. Restart broad Capability Cube qualification only under the promoted protocol identity.
+
+
+## 2026-09-24 — Whole-draft v5 prototype justified for further validation
+
+Motivation:
+
+Sequential scene generation increased call count, latency, repeated-context overhead, evaluator disagreement surface and repair-loop complexity. A simpler candidate was tested:
+
+`Dynamic Architect -> Whole Draft -> Deterministic Gate -> Whole-Story JEV -> Haiku -> StoryOutcome`
+
+Run `36016223639` showed that the semantic path could produce a strong story (Haiku 4.875, JEV clean) but a single whole-draft call still needed application-owned word-budget governance; 2,119 words exceeded the 1,500 target's hard range.
+
+After adding normalized per-scene targets derived from planner weights, Run `36016585318` produced:
+
+- accepted story;
+- 1,567 / 1,500 words;
+- six dynamically chosen scenes;
+- zero prose repair;
+- repeated 8-gram ratio 0;
+- whole-story JEV clean;
+- Haiku 4.875, minimum 4;
+- validated StoryOutcome proposal;
+- `commit_ready=true`;
+- no database write by design;
+- 82.77 seconds;
+- approximately USD 0.019667 total observed cost.
+
+Decision:
+
+- preserve v5 as an experimental production candidate;
+- do not promote from one accepted sample;
+- prefer a small cross-length/cross-family validation cohort before any broad 80-cell spend;
+- keep StoryOutcome extraction after final story acceptance;
+- keep database authority in the LUMI application, with atomic/idempotent commit required before user-visible delivery;
+- do not mix v5 evidence with v3/v4 Capability Cube evidence.
+
+Reference:
+
+`docs/canonical/STORY_PRODUCTION_V5_WHOLE_DRAFT_PROTOTYPE.md`
