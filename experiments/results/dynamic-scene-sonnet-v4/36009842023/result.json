@@ -1,0 +1,1772 @@
+{
+  "pipeline": "dynamic_scene_sonnet_architect_luna_writer_v4_experiment",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5",
+    "planner": "anthropic/claude-sonnet-5"
+  },
+  "generation_protocol_version": "english-story-production.v4-dynamic-scene-experiment",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "experiments/specs/dynamic-v4/middle-child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_dynamic_scene_plan_v4_experiment",
+    "planner_model": "anthropic/claude-sonnet-5",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "experiments/specs/dynamic-v4/middle-child--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "scene_count_rationale": "Six scenes are minimally sufficient: one setup, one false-hypothesis test, two clue-gathering steps, one payoff applying combined clues, and one resolution—matching the layered puzzle's required evidence chain for a 2800-word independent reader story.",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to fix the broken Pattern Trail activity before the afternoon explorer group arrives at the library's Explorer Room.",
+        "central_problem": "A numbered stamp is missing from the Pattern Trail sequence, and the cause is not obvious from a single glance.",
+        "solution_principle": "Systematically testing clues from the sign-out log and the map's color-code legend reveals the stamp was swapped, not lost.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz restores the correct stamp pattern, the afternoon trail runs smoothly, and Deniz proposes a checklist to prevent future mix-ups.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "Do not let an adult solve the puzzle for Deniz.",
+          "Do not include theft, violence, or combat.",
+          "Do not mention benchmarks, tests, or AI evaluation.",
+          "Do not reveal the swap cause before evidence supports it."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "narrative_role": "SETUP",
+          "relative_weight": 15,
+          "purpose": "Establish Deniz's role, the Pattern Trail activity, and the missing stamp problem with a time pressure before the afternoon group arrives.",
+          "entry_state": "Deniz enters the library's Explorer Room on Tuesday afternoon, ready to help set up the weekly Pattern Trail activity.",
+          "beats": [
+            "Deniz greets coordinator Ms. Ada and offers to check activity bins before the afternoon group's session.",
+            "Deniz counts the five numbered stamps and notices stamp 3 is missing from its labeled bin.",
+            "Ms. Ada explains the floor map trail needs all five stamps matched to their color-coded zones."
+          ],
+          "must_include": [
+            "Missing stamp 3 discovered",
+            "Time pressure before afternoon group arrives",
+            "Floor map with color-coded zones introduced"
+          ],
+          "must_not_do": [
+            "Do not reveal the cause of the missing stamp",
+            "Do not assume theft yet"
+          ],
+          "constraint_ids": [
+            "C1",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows stamp 3 is missing, the deadline is close, and must investigate using the room's tools and labels.",
+          "open_threads_after": [
+            "Cause of missing stamp unknown",
+            "Deadline pressure remains"
+          ]
+        },
+        {
+          "index": 2,
+          "narrative_role": "COMPLICATION",
+          "relative_weight": 15,
+          "purpose": "Deniz tests a reasonable false hypothesis about the missing stamp and rejects it using direct evidence.",
+          "entry_state": "Deniz has confirmed stamp 3 is missing and feels pressure to find it before the group arrives.",
+          "beats": [
+            "Deniz guesses the stamp was lost or thrown away and checks the lost-and-found bin near the entrance.",
+            "The lost-and-found bin holds no matching stamp, ruling out the simple-loss guess.",
+            "Deniz realizes guessing isn't working and decides to look for real evidence instead."
+          ],
+          "must_include": [
+            "Explicit false hypothesis: stamp lost or discarded",
+            "Lost-and-found evidence rejecting that hypothesis"
+          ],
+          "must_not_do": [
+            "Do not accuse a specific person of theft",
+            "Do not solve the mystery yet"
+          ],
+          "constraint_ids": [
+            "C2",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Stamp 3 missing from its bin (Scene 1)"
+          ],
+          "handoff": "Deniz rules out simple loss and turns to the volunteer sign-out clipboard for a real clue.",
+          "open_threads_after": [
+            "Need concrete clue from the sign-out schedule"
+          ]
+        },
+        {
+          "index": 3,
+          "narrative_role": "RISING",
+          "relative_weight": 15,
+          "purpose": "Deniz finds the sign-out log clue pointing to a specific helper and bin pairing linked to the missing stamp.",
+          "entry_state": "Deniz, having ruled out simple loss, checks the volunteer sign-out clipboard by the supply shelf.",
+          "beats": [
+            "Deniz reads the sign-out sheet and finds bins 3 and 5 were both checked out that morning by helper 'R.K.'",
+            "Deniz recalls R.K. runs the morning group's simpler version of the trail.",
+            "Deniz suspects the bins got mixed up during restocking, but needs proof."
+          ],
+          "must_include": [
+            "Sign-out sheet clue naming bins 3 and 5 and helper R.K.",
+            "Morning restocking connection established"
+          ],
+          "must_not_do": [
+            "Do not reveal the swap answer directly",
+            "Do not skip the evidence-based reasoning step"
+          ],
+          "constraint_ids": [
+            "C1",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Lost-and-found empty, ruling out simple loss (Scene 2)",
+            "Stamp 3 missing (Scene 1)"
+          ],
+          "handoff": "Deniz has a lead pointing to bin 5 and must test it against the map's color-code system to confirm.",
+          "open_threads_after": [
+            "Unverified whether bin 5 holds the missing stamp"
+          ]
+        },
+        {
+          "index": 4,
+          "narrative_role": "CLIMAX_BUILD",
+          "relative_weight": 20,
+          "purpose": "Deniz tests the sign-out clue against the color-code legend, confirming the swap and checking all bins systematically.",
+          "entry_state": "Deniz has the clipboard clue pointing to bin 5 and decides to test it against the floor map's color zones.",
+          "beats": [
+            "Deniz opens bin 5 and finds two stamps inside, colored to match zones 3 and 5.",
+            "Deniz compares each stamp's color to the map legend, confirming true zones by color, not bin number.",
+            "Deniz checks the remaining bins against the legend to be sure no other swaps exist."
+          ],
+          "must_include": [
+            "Two stamps found in bin 5",
+            "Color-code legend used to confirm true zones",
+            "Systematic check of all bins"
+          ],
+          "must_not_do": [
+            "Do not fix the pattern yet",
+            "Do not introduce a new unrelated clue"
+          ],
+          "constraint_ids": [
+            "C2",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Sign-out clue about bins 3 and 5 and R.K. (Scene 3)",
+            "Color-coded zone legend on the map (Scene 1)"
+          ],
+          "handoff": "Deniz has confirmed the exact swap and verified the whole trail using the color-code system; ready to fix it physically.",
+          "open_threads_after": []
+        },
+        {
+          "index": 5,
+          "narrative_role": "PAYOFF",
+          "relative_weight": 20,
+          "purpose": "Deniz applies the combined clues to correctly swap the stamps back, restoring the full Pattern Trail before the group arrives.",
+          "entry_state": "Deniz has confirmed both stamps' true zones using the sign-out log and color-code legend, with the group arriving soon.",
+          "beats": [
+            "Deniz swaps the stamps between bins 3 and 5, matching each color to its correct numbered zone.",
+            "Deniz double-checks the full trail against the map, confirming all five zones now match their stamps.",
+            "Deniz tells Ms. Ada what happened, explaining the mix-up using both clues, not a guess."
+          ],
+          "must_include": [
+            "Physical swap of stamps between bins",
+            "Explanation citing sign-out log and color-code evidence together"
+          ],
+          "must_not_do": [
+            "Do not introduce new clues at this stage",
+            "Do not delay the fix past the group's arrival"
+          ],
+          "constraint_ids": [
+            "C3",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Sign-out clue about R.K. and bins 3/5 (Scene 3)",
+            "Color-code confirmation of true zones (Scene 4)"
+          ],
+          "handoff": "The Pattern Trail is fully restored and correct, and Deniz is ready to see it work as the afternoon group arrives.",
+          "open_threads_after": [
+            "Whether a checklist could prevent future mix-ups"
+          ]
+        },
+        {
+          "index": 6,
+          "narrative_role": "RESOLUTION",
+          "relative_weight": 15,
+          "purpose": "The afternoon group uses the restored trail successfully, and Deniz reflects on testing patterns over guessing, closing the story.",
+          "entry_state": "The Pattern Trail is fully restored, and the afternoon explorer group is arriving to begin the activity.",
+          "beats": [
+            "The afternoon group follows the trail successfully, stamping each zone in the correct order.",
+            "Ms. Ada thanks Deniz for solving it with evidence instead of guessing.",
+            "Deniz suggests a simple checklist so future restocking won't mix up bins again."
+          ],
+          "must_include": [
+            "Successful use of the restored trail by the group",
+            "Deniz's reflection on testing versus guessing",
+            "Checklist idea proposed for the future"
+          ],
+          "must_not_do": [
+            "Do not introduce a new mystery",
+            "Do not contradict the confirmed swap explanation"
+          ],
+          "constraint_ids": [
+            "C3",
+            "C4",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Restored trail from combined clues (Scene 5)",
+            "Original sign-out and color-code evidence (Scenes 3-4)"
+          ],
+          "handoff": "Story ends with the trail working, the mystery solved through evidence, and one bounded future idea: the checklist.",
+          "open_threads_after": [
+            "Whether the library adopts Deniz's checklist idea"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.96,
+        "goal_continuity": 0.97,
+        "constraint_coverage": 0.58,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.9,
+        "no_early_resolution": 0.54,
+        "ending_coherence": 0.95,
+        "decomposition_fitness": 0.9
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.58,
+        "no_early_resolution": 0.54
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.77,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3647,
+        "output_tokens": 208,
+        "cost": 0.000153174
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 2,
+          "risk": "False hypothesis (simple loss) is rejected quickly; ensure the lost-and-found check feels like genuine investigative work, not a throwaway beat, so the pivot to evidence-based reasoning feels earned rather than forced."
+        },
+        {
+          "scene": 3,
+          "risk": "Sign-out log clue must be legible and specific enough for a 10-year-old independent reader to follow; confirm that 'bins 3 and 5 checked out by R.K.' is clearly written and that Deniz's inference (morning restocking → possible mix-up) is explicit enough without being didactic."
+        },
+        {
+          "scene": 4,
+          "risk": "Color-code legend must be introduced in Scene 1 with enough visual/textual clarity that Deniz's systematic check in Scene 4 feels like pattern-testing, not arbitrary bin-opening. Ensure the legend is referenced or visible on the map so the reader can follow the logic."
+        },
+        {
+          "scene": 5,
+          "risk": "Deniz's explanation to Ms. Ada must cite both the sign-out log AND the color-code evidence together (C8 requirement); avoid letting Deniz explain only one clue or letting Ms. Ada fill in the gaps. The explanation should model the theme: testing patterns, not guessing."
+        }
+      ],
+      "summary": "The SceneGraph is structurally sound and well-justified for a 2800-word independent-reader story. Six scenes form a coherent causal chain: setup → false hypothesis rejection → first clue (sign-out log) → second clue confirmation (color-code legend) → payoff (physical fix + evidence-based explanation) → resolution (success + reflection). All required constraints are addressable in prose. Causal continuity is strong; each scene enables the next without gaps. Protagonist goal remains coherent throughout (fix the trail before the group arrives). Information progression is clean: clues accumulate, the false hypothesis is rejected by evidence, and the final solution uses both the sign-out log and color-code system together. No unexplained dependencies exist; all later events rely on established setup. Early resolution is avoided; the decisive fix occurs in Scene 5 (PAYOFF), not before. Ending coherence is solid: the PAYOFF is earned through evidence, the RESOLUTION follows naturally (group uses the trail, Deniz reflects on testing vs. guessing, proposes a checklist), and the main thread closes. The JEV advisory flagged constraint_coverage (0.58) and no_early_resolution (0.54) as below threshold; however, manual review finds both risks are mitigated by the plan's structure. Constraint_coverage concern likely reflects the need for explicit prose verification of C1 (age-appropriate vocabulary/pacing) and C6 (no clue depends on unrevealed info)—both are satisfied by the scene design. No_early_resolution concern is resolved: the swap is not revealed until Scene 4, and the physical fix is Scene 5 (PAYOFF), not earlier. Scene risks are primarily prose-level: ensure the lost-and-found check feels investigative, the sign-out log is legible, the color-code legend is visible/clear, and Deniz's final explanation cites both clues. No structural defects detected. Recommend proceeding to prose with attention to those four prose-level details.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.089336,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000153174,
+      "haiku": {
+        "usd": 0.008359,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 1728,
+        "output_tokens": 8588,
+        "total_tokens": 10316
+      },
+      "jev": {
+        "input_tokens": 3647,
+        "output_tokens": 208,
+        "cost": 0.000153174
+      },
+      "haiku": {
+        "input_tokens": 3854,
+        "output_tokens": 901,
+        "total_tokens": 4755
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "high",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        },
+        "max_tokens": null
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    420,
+    420,
+    420,
+    560,
+    560,
+    420
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 420,
+      "word_count": 394,
+      "contract": {
+        "index": 1,
+        "narrative_role": "SETUP",
+        "relative_weight": 15,
+        "purpose": "Establish Deniz's role, the Pattern Trail activity, and the missing stamp problem with a time pressure before the afternoon group arrives.",
+        "entry_state": "Deniz enters the library's Explorer Room on Tuesday afternoon, ready to help set up the weekly Pattern Trail activity.",
+        "beats": [
+          "Deniz greets coordinator Ms. Ada and offers to check activity bins before the afternoon group's session.",
+          "Deniz counts the five numbered stamps and notices stamp 3 is missing from its labeled bin.",
+          "Ms. Ada explains the floor map trail needs all five stamps matched to their color-coded zones."
+        ],
+        "must_include": [
+          "Missing stamp 3 discovered",
+          "Time pressure before afternoon group arrives",
+          "Floor map with color-coded zones introduced"
+        ],
+        "must_not_do": [
+          "Do not reveal the cause of the missing stamp",
+          "Do not assume theft yet"
+        ],
+        "constraint_ids": [
+          "C1",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows stamp 3 is missing, the deadline is close, and must investigate using the room's tools and labels.",
+        "open_threads_after": [
+          "Cause of missing stamp unknown",
+          "Deadline pressure remains"
+        ]
+      },
+      "envelope": {
+        "prose": "On Tuesday afternoon, Deniz hurried into the library’s Explorer Room with a small notebook tucked under one arm. The room was ready for the weekly Pattern Trail: a floor map covered one wall, supply bins lined a shelf, and bright labels marked every station.\n\n“Hi, Deniz,” called Ms. Ada, the room’s coordinator. She was taping down one corner of the map. “Perfect timing. Could you check the activity bins before the explorer group arrives?”\n\n“Sure,” Deniz said. “How long do we have?”\n\n“About forty minutes. The group will be here soon, and they’ll start as soon as we finish setting up.”\n\nDeniz went to the shelf and found five small bins. Each had a large number on the front: 1, 2, 3, 4, and 5. Inside each bin should be a rubber stamp for marking the trail cards. Deniz lifted the lid of bin 1 and counted one stamp. Bin 2 had one, too. Bin 3 was empty.\n\nDeniz checked again, moving aside the cards and the little ink pad. Nothing.\n\n“Ms. Ada?” Deniz called. “Stamp 3 isn’t here.”\n\nMs. Ada came over. “Are you sure?”\n\nDeniz held up the empty bin. “I checked under the cards. It’s the only bin without a stamp.”\n\n“That is a problem,” Ms. Ada said, glancing at the clock. “The Pattern Trail needs all five stamps. The explorers follow the numbered route and stamp their cards at each zone.”\n\nShe pointed to the large floor map. Five colored areas made a winding path through the room. Beside the map was a small legend:\n\n“Blue means Zone 1,” Deniz read. “Yellow is Zone 2. Green is Zone 3. Red is Zone 4, and purple is Zone 5.”\n\n“Exactly,” said Ms. Ada. “Each stamp has a color that matches its true zone. The numbers on the bins help us store them, while the map’s colors help us check that everything belongs where it should.”\n\nDeniz looked from the empty bin to the bright trail on the map. Without stamp 3, the afternoon activity could not run properly. The clock seemed louder now.\n\n“I’ll find out what happened,” Deniz said.\n\nDeniz picked up the empty bin and looked around the room. There were shelves, labeled drawers, a lost-and-found box near the entrance, and a clipboard beside the supply shelf. The answer might be anywhere—but Deniz knew the group would arrive soon.",
+        "state_delta": {
+          "location": "Explorer Room in the public library",
+          "character_goal": "Deniz wants to find the missing stamp 3 and fix the Pattern Trail before the afternoon explorer group arrives.",
+          "knowledge_gained": [
+            "The Pattern Trail uses five numbered stamps.",
+            "Stamp 3 is missing from its labeled bin.",
+            "The floor map has five color-coded zones.",
+            "The map legend identifies blue as Zone 1, yellow as Zone 2, green as Zone 3, red as Zone 4, and purple as Zone 5.",
+            "Each stamp's color should match its true numbered zone."
+          ],
+          "facts_established": [
+            "It is Tuesday afternoon.",
+            "Ms. Ada coordinates the Explorer Room.",
+            "The afternoon group will arrive in about forty minutes.",
+            "The room contains labeled supply bins, a floor map, a lost-and-found box, and a sign-out clipboard."
+          ],
+          "clues_added": [
+            "The map's color-code legend can be used to check whether stamps belong in the correct zones."
+          ],
+          "objects_changed": [
+            "Deniz removed and inspected the empty bin labeled 3."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "The cause and location of missing stamp 3 are unknown.",
+            "Deniz must investigate before the afternoon group arrives."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz knows stamp 3 is missing, the deadline is close, and the map's color-code legend and room tools are available for investigation."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.608,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 394,
+          "usage": {
+            "input_tokens": 3895,
+            "output_tokens": 985,
+            "total_tokens": 4880
+          },
+          "cost": {
+            "usd": 0.0021556,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.92
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2662,
+          "output_tokens": 188,
+          "cost": 0.000111804
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.92
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2662,
+            "output_tokens": 188,
+            "cost": 0.000111804
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.343
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.952
+    },
+    {
+      "scene": 2,
+      "target_words": 420,
+      "word_count": 362,
+      "contract": {
+        "index": 2,
+        "narrative_role": "COMPLICATION",
+        "relative_weight": 15,
+        "purpose": "Deniz tests a reasonable false hypothesis about the missing stamp and rejects it using direct evidence.",
+        "entry_state": "Deniz has confirmed stamp 3 is missing and feels pressure to find it before the group arrives.",
+        "beats": [
+          "Deniz guesses the stamp was lost or thrown away and checks the lost-and-found bin near the entrance.",
+          "The lost-and-found bin holds no matching stamp, ruling out the simple-loss guess.",
+          "Deniz realizes guessing isn't working and decides to look for real evidence instead."
+        ],
+        "must_include": [
+          "Explicit false hypothesis: stamp lost or discarded",
+          "Lost-and-found evidence rejecting that hypothesis"
+        ],
+        "must_not_do": [
+          "Do not accuse a specific person of theft",
+          "Do not solve the mystery yet"
+        ],
+        "constraint_ids": [
+          "C2",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Stamp 3 missing from its bin (Scene 1)"
+        ],
+        "handoff": "Deniz rules out simple loss and turns to the volunteer sign-out clipboard for a real clue.",
+        "open_threads_after": [
+          "Need concrete clue from the sign-out schedule"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz carried the empty bin toward the entrance. The lost-and-found box sat beneath a sign that said, PLEASE CHECK HERE BEFORE REPLACING AN ITEM. If the stamp had been dropped, someone might have placed it there.\n\nMaybe it was lost, Deniz thought. Or maybe someone had thrown it away by mistake.\n\nThe clock on the wall showed thirty-six minutes until the explorers arrived. Deniz lifted the lid and began checking carefully. A blue water bottle, two scarves, a toy dinosaur, and a pair of glasses were inside. Deniz moved each item aside, one at a time.\n\nNo stamp.\n\nDeniz checked the floor around the box, too. A few paper scraps had slid underneath the shelf. Deniz pulled them out and looked beneath them. There was no rubber stamp, no ink mark, and no small object that could have been mistaken for one.\n\n“Nothing,” Deniz said.\n\nMs. Ada looked over from the map. “Could it be somewhere else?”\n\n“It could,” Deniz replied. “But it isn’t in lost-and-found, and it wasn’t thrown away with these papers.”\n\nDeniz walked to the wastebasket and peered inside without touching anything. It held only folded tape backing and yesterday’s snack wrappers. No stamp.\n\nFor a moment, Deniz imagined the afternoon group arriving while Zone 3 stayed empty. Everyone would wait. Someone might guess which stamp to use, and then the trail cards could end up with the wrong pattern.\n\nDeniz almost guessed again. Perhaps the stamp had rolled behind a shelf. Perhaps a visitor had carried it out. But those ideas did not come from anything Deniz had actually found.\n\nGuessing was making the room seem full of answers and giving none of them a way to be checked.\n\nDeniz returned the toy dinosaur and scarves to the lost-and-found box and closed the lid. Then Deniz looked toward the supply shelf, where a clipboard hung beside the labeled bins.\n\n“A real clue should leave a record,” Deniz said. “If someone used the bins, maybe they wrote it down.”\n\nThe clipboard held the volunteer sign-out sheet. Deniz picked up a pencil and stepped closer, ready to test what had happened instead of choosing the first explanation that sounded possible.",
+        "state_delta": {
+          "location": "By the volunteer sign-out clipboard beside the supply shelf in the Explorer Room",
+          "character_goal": "Deniz wants to find reliable evidence about the missing stamp 3 and fix the Pattern Trail before the afternoon group arrives.",
+          "knowledge_gained": [
+            "The lost-and-found box does not contain stamp 3.",
+            "The nearby wastebasket contains no stamp or matching discarded item.",
+            "The simple-loss or discarded-stamp explanation is not supported by the available evidence."
+          ],
+          "facts_established": [
+            "About thirty-six minutes remain before the afternoon group arrives.",
+            "The lost-and-found box contains unrelated items but no stamp.",
+            "Deniz chooses to use the volunteer sign-out sheet as the next source of evidence."
+          ],
+          "clues_added": [
+            "The volunteer sign-out clipboard may record which bins were used."
+          ],
+          "objects_changed": [
+            "Deniz checked the lost-and-found box and nearby wastebasket, then closed the box."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "A concrete clue is needed from the volunteer sign-out schedule."
+          ],
+          "threads_resolved": [
+            "The hypothesis that stamp 3 was simply lost or discarded has been rejected by direct checking."
+          ],
+          "handoff_state": "Deniz has ruled out simple loss and is standing at the volunteer sign-out clipboard, ready to read it for evidence about the missing stamp."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.117,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 362,
+          "usage": {
+            "input_tokens": 4848,
+            "output_tokens": 884,
+            "total_tokens": 5732
+          },
+          "cost": {
+            "usd": 0.00227265,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2978,
+          "output_tokens": 188,
+          "cost": 0.000125076
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2978,
+            "output_tokens": 188,
+            "cost": 0.000125076
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.369
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.487
+    },
+    {
+      "scene": 3,
+      "target_words": 420,
+      "word_count": 351,
+      "contract": {
+        "index": 3,
+        "narrative_role": "RISING",
+        "relative_weight": 15,
+        "purpose": "Deniz finds the sign-out log clue pointing to a specific helper and bin pairing linked to the missing stamp.",
+        "entry_state": "Deniz, having ruled out simple loss, checks the volunteer sign-out clipboard by the supply shelf.",
+        "beats": [
+          "Deniz reads the sign-out sheet and finds bins 3 and 5 were both checked out that morning by helper 'R.K.'",
+          "Deniz recalls R.K. runs the morning group's simpler version of the trail.",
+          "Deniz suspects the bins got mixed up during restocking, but needs proof."
+        ],
+        "must_include": [
+          "Sign-out sheet clue naming bins 3 and 5 and helper R.K.",
+          "Morning restocking connection established"
+        ],
+        "must_not_do": [
+          "Do not reveal the swap answer directly",
+          "Do not skip the evidence-based reasoning step"
+        ],
+        "constraint_ids": [
+          "C1",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Lost-and-found empty, ruling out simple loss (Scene 2)",
+          "Stamp 3 missing (Scene 1)"
+        ],
+        "handoff": "Deniz has a lead pointing to bin 5 and must test it against the map's color-code system to confirm.",
+        "open_threads_after": [
+          "Unverified whether bin 5 holds the missing stamp"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz examined the clipboard. The sign-out sheet had a column for the helper, another for the bins, and a third for the time.\n\nMost of the writing was neat, but the morning entries were crowded together. Deniz traced each line with a finger so nothing would be missed.\n\nAt 9:10, R.K. — bins 3 and 5.\n\nDeniz read it again. “Bins 3 and 5,” Deniz whispered.\n\nThe entry did not say anything about a missing stamp. It only proved that both bins had been taken out that morning. Deniz looked toward the shelf. Bin 3 was the empty one. Bin 5 still sat in its place, its label facing forward.\n\nThen Deniz remembered the morning group. R.K. usually led that group through a simpler version of the Pattern Trail. The children used fewer stops, so the bins had to be brought out, rearranged, and put away before the next activity.\n\n“R.K. handled both of them,” Deniz said. “Maybe the bins were mixed up during restocking.”\n\nDeniz paused. That sounded more likely than a stamp disappearing by itself, but it was still only an idea. The sign-out sheet showed where the bins had been. It did not show what was inside them when they came back.\n\nDeniz lifted the clipboard closer and checked the other morning entries. Bin 1 had been used by M.S. Bin 2 had been used by J.T. Bin 4 had not been signed out. Only bins 3 and 5 appeared together on one line.\n\nThat pairing made Deniz’s idea stronger, but not certain. If the missing stamp was in bin 5, the map’s color system should prove it. The legend beside the floor map clearly matched each true zone with a color: blue for 1, yellow for 2, green for 3, red for 4, and purple for 5.\n\nDeniz took the pencil from the clipboard and wrote a small note: Check bin 5 against the legend.\n\nThe clock showed twenty-nine minutes until the explorers arrived. Deniz set the clipboard back on its hook and reached for bin 5.\n\n“I have a lead,” Deniz said, “not an answer yet.”",
+        "state_delta": {
+          "location": "Explorer Room, beside the volunteer sign-out clipboard and labeled supply bins",
+          "character_goal": "Deniz wants to test whether bins 3 and 5 were mixed during morning restocking and fix the Pattern Trail before the afternoon explorer group arrives.",
+          "knowledge_gained": [
+            "The sign-out sheet records that helper R.K. checked out bins 3 and 5 at 9:10 that morning.",
+            "R.K. leads the morning group's simpler version of the Pattern Trail.",
+            "The sign-out record supports a possible restocking mix-up but does not prove what is inside either bin."
+          ],
+          "facts_established": [
+            "About twenty-nine minutes remain before the afternoon group arrives.",
+            "Other morning entries do not pair bins 3 and 5 together.",
+            "The floor map legend identifies blue as Zone 1, yellow as Zone 2, green as Zone 3, red as Zone 4, and purple as Zone 5."
+          ],
+          "clues_added": [
+            "Bins 3 and 5 were handled together by R.K. during morning restocking.",
+            "Bin 5 should be checked against the map's color-code legend."
+          ],
+          "objects_changed": [
+            "Deniz read the volunteer sign-out clipboard and wrote a note to check bin 5 against the legend."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "It remains unverified whether bin 5 contains the missing stamp 3.",
+            "Deniz must test the sign-out clue against the map's color system."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has a specific lead: R.K. checked out bins 3 and 5 during morning restocking. Deniz is reaching for bin 5 to test that lead against the floor map's color-code legend, without yet knowing whether the bins were swapped."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.038,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 351,
+          "usage": {
+            "input_tokens": 5145,
+            "output_tokens": 962,
+            "total_tokens": 6107
+          },
+          "cost": {
+            "usd": 0.0024405,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.93
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3470,
+          "output_tokens": 188,
+          "cost": 0.00014574
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.93
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3470,
+            "output_tokens": 188,
+            "cost": 0.00014574
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.493
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.532
+    },
+    {
+      "scene": 4,
+      "target_words": 560,
+      "word_count": 456,
+      "contract": {
+        "index": 4,
+        "narrative_role": "CLIMAX_BUILD",
+        "relative_weight": 20,
+        "purpose": "Deniz tests the sign-out clue against the color-code legend, confirming the swap and checking all bins systematically.",
+        "entry_state": "Deniz has the clipboard clue pointing to bin 5 and decides to test it against the floor map's color zones.",
+        "beats": [
+          "Deniz opens bin 5 and finds two stamps inside, colored to match zones 3 and 5.",
+          "Deniz compares each stamp's color to the map legend, confirming true zones by color, not bin number.",
+          "Deniz checks the remaining bins against the legend to be sure no other swaps exist."
+        ],
+        "must_include": [
+          "Two stamps found in bin 5",
+          "Color-code legend used to confirm true zones",
+          "Systematic check of all bins"
+        ],
+        "must_not_do": [
+          "Do not fix the pattern yet",
+          "Do not introduce a new unrelated clue"
+        ],
+        "constraint_ids": [
+          "C2",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Sign-out clue about bins 3 and 5 and R.K. (Scene 3)",
+          "Color-coded zone legend on the map (Scene 1)"
+        ],
+        "handoff": "Deniz has confirmed the exact swap and verified the whole trail using the color-code system; ready to fix it physically.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz pulled bin 5 from the shelf and set it on the table. The label was still attached, but the lid felt heavier than usual.\n\nInside were two stamps.\n\nDeniz leaned closer. One stamp had a green handle and a small green mark on its base. The other had a purple handle and a purple mark. Deniz lifted both carefully and placed them beside the floor map.\n\nThe map’s legend said green matched Zone 3. Purple matched Zone 5.\n\nDeniz looked from the stamps to the bin label. “So this bin has Zone 3 and Zone 5,” Deniz said. “But it is labeled 5.”\n\nThe empty bin labeled 3 sat nearby. Its blank space suddenly made sense. Stamp 3 had not vanished. It was in the wrong bin, sharing space with stamp 5.\n\nStill, Deniz did not move anything yet. The sign-out sheet had shown that bins 3 and 5 were handled together by R.K. that morning. The color legend now showed that the two stamps belonged to Zones 3 and 5, even though both had ended up in bin 5. Together, the clues pointed to a swap during restocking.\n\nTo make sure, Deniz placed the stamps in a straight line and checked the rest of the shelf. Guessing one swap was not enough. If two bins had been mixed, perhaps another one had been mixed too.\n\nBin 1 held one blue stamp. Deniz checked the legend: blue was Zone 1. Correct.\n\nBin 2 held one yellow stamp. Yellow was Zone 2. Correct.\n\nBin 3 held no stamp at all. Its empty space matched the missing green Zone 3 stamp on the table.\n\nBin 4 held one red stamp. Red was Zone 4. Correct.\n\nBin 5 held the green and purple stamps. Green was Zone 3, and purple was Zone 5. The purple stamp belonged there. The green one did not.\n\nDeniz checked the labels once more, then checked the legend again. The pattern was clear: blue, yellow, green, red, purple for Zones 1 through 5. Four stamps already matched their bins, and the only mismatch was the green stamp sitting in bin 5 instead of bin 3.\n\nA small rush of excitement rose in Deniz’s chest, but Deniz kept both hands away from the stamps. Finding the answer and fixing the answer were different steps.\n\nThe clock showed twenty-four minutes until the explorers arrived. Deniz wrote on the note beneath the first line: Bin 5 contains Zones 3 and 5. Swap confirmed by colors. Check complete.\n\nThen Deniz left the green stamp beside the empty bin 3 and the purple stamp beside bin 5. The exact swap was confirmed. The trail was ready to be put right—but not until Deniz made the physical move carefully.",
+        "state_delta": {
+          "location": "Explorer Room, at the labeled supply bins beside the floor map",
+          "character_goal": "Deniz wants to restore the Pattern Trail before the afternoon explorer group arrives, now knowing the exact stamp swap that must be made.",
+          "knowledge_gained": [
+            "Bin 5 contains two stamps: the green Zone 3 stamp and the purple Zone 5 stamp.",
+            "The green stamp belongs in bin 3, while the purple stamp belongs in bin 5.",
+            "Bins 1, 2, and 4 contain the correct blue, yellow, and red stamps.",
+            "The color-code legend confirms that only the stamps in bins 3 and 5 are mismatched."
+          ],
+          "facts_established": [
+            "The sign-out record and the color-code legend together confirm that stamps 3 and 5 were swapped during restocking.",
+            "Twenty-four minutes remain before the afternoon explorers arrive.",
+            "Deniz has checked every bin systematically and found no other mismatch."
+          ],
+          "clues_added": [
+            "Bin 5 holds both the green Zone 3 stamp and the purple Zone 5 stamp.",
+            "The legend's color pattern matches every bin except the empty bin 3 and the extra green stamp in bin 5."
+          ],
+          "objects_changed": [
+            "Deniz opened bin 5 and removed its two stamps for inspection.",
+            "Deniz checked all five bins against the map legend without yet moving the stamps into their final bins.",
+            "Deniz wrote a note confirming the swap and completed check."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The location of missing stamp 3 is confirmed.",
+            "The exact swap between bins 3 and 5 is confirmed.",
+            "The possibility of another unnoticed bin mismatch is ruled out."
+          ],
+          "handoff_state": "Deniz has confirmed with the sign-out log and map legend that the green Zone 3 stamp must move from bin 5 to bin 3, while the purple Zone 5 stamp stays in bin 5. All other bins are correct. The physical swap has not yet been made; Deniz is ready to restore the trail before the group arrives."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.997,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 456,
+          "usage": {
+            "input_tokens": 5602,
+            "output_tokens": 1205,
+            "total_tokens": 6807
+          },
+          "cost": {
+            "usd": 0.00284635,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.95,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.88
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.77,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4145,
+          "output_tokens": 188,
+          "cost": 0.00017409
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.95,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.88
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.77,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4145,
+            "output_tokens": 188,
+            "cost": 0.00017409
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.419
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.417
+    },
+    {
+      "scene": 5,
+      "target_words": 560,
+      "word_count": 458,
+      "contract": {
+        "index": 5,
+        "narrative_role": "PAYOFF",
+        "relative_weight": 20,
+        "purpose": "Deniz applies the combined clues to correctly swap the stamps back, restoring the full Pattern Trail before the group arrives.",
+        "entry_state": "Deniz has confirmed both stamps' true zones using the sign-out log and color-code legend, with the group arriving soon.",
+        "beats": [
+          "Deniz swaps the stamps between bins 3 and 5, matching each color to its correct numbered zone.",
+          "Deniz double-checks the full trail against the map, confirming all five zones now match their stamps.",
+          "Deniz tells Ms. Ada what happened, explaining the mix-up using both clues, not a guess."
+        ],
+        "must_include": [
+          "Physical swap of stamps between bins",
+          "Explanation citing sign-out log and color-code evidence together"
+        ],
+        "must_not_do": [
+          "Do not introduce new clues at this stage",
+          "Do not delay the fix past the group's arrival"
+        ],
+        "constraint_ids": [
+          "C3",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Sign-out clue about R.K. and bins 3/5 (Scene 3)",
+          "Color-code confirmation of true zones (Scene 4)"
+        ],
+        "handoff": "The Pattern Trail is fully restored and correct, and Deniz is ready to see it work as the afternoon group arrives.",
+        "open_threads_after": [
+          "Whether a checklist could prevent future mix-ups"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz picked up the green-handled stamp first. The green mark on its base matched Zone 3 on the map, so Deniz slid it into the empty bin labeled 3. It fit neatly beside the label.\n\nThen Deniz lifted the purple stamp and placed it in bin 5, where the purple color matched Zone 5. Deniz pressed the lid down gently. This time, the bin did not look too full.\n\n“One careful move at a time,” Deniz murmured.\n\nBefore calling Ms. Ada, Deniz checked the whole shelf again. Bin 1 held the blue stamp. The legend said blue was Zone 1. Bin 2 held yellow for Zone 2. Bin 3 now held green for Zone 3. Bin 4 held red for Zone 4. Bin 5 held purple for Zone 5.\n\nDeniz pointed to each bin in order. Blue, yellow, green, red, purple. The pattern matched the map from beginning to end. Deniz straightened each lid and label so the numbered row was easy for the next helper to read.\n\nFootsteps sounded in the hallway. Voices drifted closer. The afternoon group would arrive soon.\n\nDeniz carried the note and went to find Ms. Ada, who was arranging pencils near the Explorer Room door.\n\n“Ms. Ada, I fixed the Pattern Trail,” Deniz said. “Stamp 3 wasn’t lost. I found it in bin 5 with the Zone 5 stamp.”\n\nMs. Ada looked toward the supply shelf. “How did you know the stamps had been swapped?”\n\nDeniz held up the note. “First, the sign-out sheet showed that R.K. had checked out bins 3 and 5 together during morning restocking. That made those two bins the ones to test. Then the map’s color legend showed that the green stamp belonged to Zone 3 and the purple stamp belonged to Zone 5. Both were in bin 5, and bin 3 was empty.”\n\n“So you used both clues,” Ms. Ada said.\n\n“I didn’t just guess that a stamp was missing,” Deniz replied. “I checked where the bins had been used, then tested the colors against the map. I also checked the other bins.”\n\nMs. Ada smiled. “That is a careful solution.”\n\nA group of explorers entered the room, talking excitedly about the activity. Deniz stepped aside as Ms. Ada welcomed them. The bins were back on the shelf in their numbered order, and the floor map waited in the middle of the room, its five bright zones ready.\n\nDeniz glanced once more at the pattern: blue, yellow, green, red, purple. Nothing was missing. Nothing was in the wrong place.\n\nMs. Ada turned toward the group. “Let’s begin the Pattern Trail.”\n\nDeniz stood beside the restored shelf, ready to watch the first explorer start. The puzzle was fixed, and the next step belonged to the afternoon group.",
+        "state_delta": {
+          "location": "Explorer Room in the public library, beside the restored supply shelf and floor map",
+          "character_goal": "Deniz wants to see the restored Pattern Trail work correctly when the afternoon explorer group begins.",
+          "knowledge_gained": [
+            "The green Zone 3 stamp belongs in bin 3.",
+            "The purple Zone 5 stamp belongs in bin 5.",
+            "All five bins now match the map's color-coded zones."
+          ],
+          "facts_established": [
+            "Deniz physically swapped the green and purple stamps between bins 3 and 5.",
+            "The full stamp pattern now matches the map: blue, yellow, green, red, purple.",
+            "The afternoon explorer group has arrived.",
+            "Ms. Ada has been told that the sign-out log and color-code legend together proved the mix-up."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The green Zone 3 stamp was moved into bin 3.",
+            "The purple Zone 5 stamp was placed in bin 5.",
+            "The restored bins were returned to the shelf in numbered order."
+          ],
+          "relationships_changed": [
+            "Ms. Ada now knows Deniz solved the problem through evidence and careful testing."
+          ],
+          "threads_opened": [
+            "The afternoon group is ready to use the restored Pattern Trail.",
+            "A checklist to prevent future mix-ups remains a possible future improvement."
+          ],
+          "threads_resolved": [
+            "The stamp pattern has been physically restored.",
+            "The Pattern Trail is fully correct and ready for the group."
+          ],
+          "handoff_state": "The restored Pattern Trail is ready as the afternoon explorers begin. Deniz has explained to Ms. Ada that the sign-out log identified bins 3 and 5 for testing, while the color legend confirmed the swap. The remaining resolution is for the group to use the trail successfully and for Deniz to propose a simple prevention checklist."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.306,
+          "structured_parse_retries": [],
+          "errors": [
+            "below_scene_word_budget:440<448"
+          ],
+          "word_count": 440,
+          "usage": {
+            "input_tokens": 6233,
+            "output_tokens": 1097,
+            "total_tokens": 7330
+          },
+          "cost": {
+            "usd": 0.0028745,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 12.077,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 458,
+          "usage": {
+            "input_tokens": 5972,
+            "output_tokens": 1209,
+            "total_tokens": 7181
+          },
+          "cost": {
+            "usd": 0.00294365,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.96,
+          "no_contradiction": 0.84,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.9,
+          "handoff_valid": 0.92
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.86,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4656,
+          "output_tokens": 188,
+          "cost": 0.000195552
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.96,
+            "no_contradiction": 0.84,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.9,
+            "handoff_valid": 0.92
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4656,
+            "output_tokens": 188,
+            "cost": 0.000195552
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.356
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 27.741
+    },
+    {
+      "scene": 6,
+      "target_words": 420,
+      "word_count": 414,
+      "contract": {
+        "index": 6,
+        "narrative_role": "RESOLUTION",
+        "relative_weight": 15,
+        "purpose": "The afternoon group uses the restored trail successfully, and Deniz reflects on testing patterns over guessing, closing the story.",
+        "entry_state": "The Pattern Trail is fully restored, and the afternoon explorer group is arriving to begin the activity.",
+        "beats": [
+          "The afternoon group follows the trail successfully, stamping each zone in the correct order.",
+          "Ms. Ada thanks Deniz for solving it with evidence instead of guessing.",
+          "Deniz suggests a simple checklist so future restocking won't mix up bins again."
+        ],
+        "must_include": [
+          "Successful use of the restored trail by the group",
+          "Deniz's reflection on testing versus guessing",
+          "Checklist idea proposed for the future"
+        ],
+        "must_not_do": [
+          "Do not introduce a new mystery",
+          "Do not contradict the confirmed swap explanation"
+        ],
+        "constraint_ids": [
+          "C3",
+          "C4",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Restored trail from combined clues (Scene 5)",
+          "Original sign-out and color-code evidence (Scenes 3-4)"
+        ],
+        "handoff": "Story ends with the trail working, the mystery solved through evidence, and one bounded future idea: the checklist.",
+        "open_threads_after": [
+          "Whether the library adopts Deniz's checklist idea"
+        ]
+      },
+      "envelope": {
+        "prose": "The first explorer chose a blue card from the table and followed the blue arrows on the floor map. At Zone 1, she pressed the blue stamp onto her activity sheet.\n\n“Yellow next!” she called.\n\nThe other explorers checked the map instead of racing ahead. They found Zone 2, then Zone 3, where the green stamp made a bright square mark. Red came after green, and purple finished the trail at Zone 5.\n\nEach time, Deniz watched the explorers compare the stamp with the color on the map. When someone reached toward the wrong corner, another explorer pointed to the legend and helped.\n\n“Blue, yellow, green, red, purple,” the group said together as they completed their sheets.\n\nMs. Ada stood beside Deniz near the supply shelf. “They’re following the pattern perfectly,” she said. “Thank you for getting everything ready.”\n\nDeniz looked at the five bins. The row still seemed satisfying: every number had its stamp, and every color had its proper zone.\n\n“I almost started by guessing that someone had dropped stamp 3,” Deniz said. “But the lost-and-found box didn’t have it. The sign-out sheet gave me a better place to look, and the map colors let me test what I found.”\n\nMs. Ada nodded. “You checked one idea, found it didn’t fit, and tested the next one.”\n\n“That worked better than guessing,” Deniz said. “Guessing could have made me search everywhere.”\n\nThe explorers returned their sheets and carefully placed the stamps back in their bins. Deniz noticed how easily the green and purple stamps could be mixed if someone hurried during cleanup.\n\n“Could we make a checklist?” Deniz asked. “Something short for restocking: check the bin number, check the stamp color against the map legend, and make sure each bin has one stamp.”\n\nMs. Ada picked up a pencil. “Let’s write it before we forget.”\n\nOn a small card, Deniz wrote:\n\n1. Match the stamp to the bin number.\n2. Check its color on the map legend.\n3. Put one stamp in each bin.\n4. Sign the sheet when the check is finished.\n\nMs. Ada placed the card beside the clipboard, where the next helper would see it. “This is a useful plan.”\n\nDeniz smiled as the explorers began talking about their favorite zones. The trail had worked because its pattern was checked, not guessed. Now the same idea was part of the cleanup, too. The blue, yellow, green, red, and purple stamps rested in their proper bins, ready for the next group.",
+        "state_delta": {
+          "location": "Explorer Room in the public library, beside the restored supply shelf and floor map",
+          "character_goal": "Deniz wants the restored Pattern Trail to remain reliable for future groups by suggesting a simple restocking checklist.",
+          "knowledge_gained": [
+            "The afternoon explorer group can follow the restored color pattern successfully.",
+            "A short checklist can help prevent future stamp and bin mix-ups."
+          ],
+          "facts_established": [
+            "The group stamped Zones 1 through 5 in the correct order.",
+            "Ms. Ada thanked Deniz for solving the problem with evidence instead of guessing.",
+            "Deniz wrote a four-step restocking checklist.",
+            "The checklist was placed beside the volunteer sign-out clipboard."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The explorers used the five correctly matched stamps.",
+            "A checklist card was written and placed beside the clipboard."
+          ],
+          "relationships_changed": [
+            "Ms. Ada accepts Deniz's checklist idea as a useful future improvement."
+          ],
+          "threads_opened": [
+            "The library may use Deniz's checklist during future restocking."
+          ],
+          "threads_resolved": [
+            "The afternoon group completed the Pattern Trail successfully.",
+            "The main problem of the swapped stamps is fully resolved.",
+            "Deniz's evidence-based investigation and reflection are complete."
+          ],
+          "handoff_state": "The Pattern Trail is working, the afternoon group completed it in the correct color order, and the swap mystery is closed. Deniz has proposed and written a bounded four-step checklist, which Ms. Ada placed beside the clipboard for future helpers."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.363,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 414,
+          "usage": {
+            "input_tokens": 6372,
+            "output_tokens": 985,
+            "total_tokens": 7357
+          },
+          "cost": {
+            "usd": 0.00277485,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.93,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4650,
+          "output_tokens": 188,
+          "cost": 0.0001953
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.93,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4650,
+            "output_tokens": 188,
+            "cost": 0.0001953
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.33
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.694
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish Deniz's role, the Pattern Trail activity, and the missing stamp problem with a time pressure before the afternoon group arrives.",
+      "word_count": 394,
+      "location": "Explorer Room in the public library",
+      "character_goal": "Deniz wants to find the missing stamp 3 and fix the Pattern Trail before the afternoon explorer group arrives.",
+      "knowledge_gained": [
+        "The Pattern Trail uses five numbered stamps.",
+        "Stamp 3 is missing from its labeled bin.",
+        "The floor map has five color-coded zones.",
+        "The map legend identifies blue as Zone 1, yellow as Zone 2, green as Zone 3, red as Zone 4, and purple as Zone 5.",
+        "Each stamp's color should match its true numbered zone."
+      ],
+      "facts_established": [
+        "It is Tuesday afternoon.",
+        "Ms. Ada coordinates the Explorer Room.",
+        "The afternoon group will arrive in about forty minutes.",
+        "The room contains labeled supply bins, a floor map, a lost-and-found box, and a sign-out clipboard."
+      ],
+      "clues_added": [
+        "The map's color-code legend can be used to check whether stamps belong in the correct zones."
+      ],
+      "objects_changed": [
+        "Deniz removed and inspected the empty bin labeled 3."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "The cause and location of missing stamp 3 are unknown.",
+        "Deniz must investigate before the afternoon group arrives."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz knows stamp 3 is missing, the deadline is close, and the map's color-code legend and room tools are available for investigation."
+    },
+    {
+      "scene": 2,
+      "purpose": "Deniz tests a reasonable false hypothesis about the missing stamp and rejects it using direct evidence.",
+      "word_count": 362,
+      "location": "By the volunteer sign-out clipboard beside the supply shelf in the Explorer Room",
+      "character_goal": "Deniz wants to find reliable evidence about the missing stamp 3 and fix the Pattern Trail before the afternoon group arrives.",
+      "knowledge_gained": [
+        "The lost-and-found box does not contain stamp 3.",
+        "The nearby wastebasket contains no stamp or matching discarded item.",
+        "The simple-loss or discarded-stamp explanation is not supported by the available evidence."
+      ],
+      "facts_established": [
+        "About thirty-six minutes remain before the afternoon group arrives.",
+        "The lost-and-found box contains unrelated items but no stamp.",
+        "Deniz chooses to use the volunteer sign-out sheet as the next source of evidence."
+      ],
+      "clues_added": [
+        "The volunteer sign-out clipboard may record which bins were used."
+      ],
+      "objects_changed": [
+        "Deniz checked the lost-and-found box and nearby wastebasket, then closed the box."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "A concrete clue is needed from the volunteer sign-out schedule."
+      ],
+      "threads_resolved": [
+        "The hypothesis that stamp 3 was simply lost or discarded has been rejected by direct checking."
+      ],
+      "handoff_state": "Deniz has ruled out simple loss and is standing at the volunteer sign-out clipboard, ready to read it for evidence about the missing stamp."
+    },
+    {
+      "scene": 3,
+      "purpose": "Deniz finds the sign-out log clue pointing to a specific helper and bin pairing linked to the missing stamp.",
+      "word_count": 351,
+      "location": "Explorer Room, beside the volunteer sign-out clipboard and labeled supply bins",
+      "character_goal": "Deniz wants to test whether bins 3 and 5 were mixed during morning restocking and fix the Pattern Trail before the afternoon explorer group arrives.",
+      "knowledge_gained": [
+        "The sign-out sheet records that helper R.K. checked out bins 3 and 5 at 9:10 that morning.",
+        "R.K. leads the morning group's simpler version of the Pattern Trail.",
+        "The sign-out record supports a possible restocking mix-up but does not prove what is inside either bin."
+      ],
+      "facts_established": [
+        "About twenty-nine minutes remain before the afternoon group arrives.",
+        "Other morning entries do not pair bins 3 and 5 together.",
+        "The floor map legend identifies blue as Zone 1, yellow as Zone 2, green as Zone 3, red as Zone 4, and purple as Zone 5."
+      ],
+      "clues_added": [
+        "Bins 3 and 5 were handled together by R.K. during morning restocking.",
+        "Bin 5 should be checked against the map's color-code legend."
+      ],
+      "objects_changed": [
+        "Deniz read the volunteer sign-out clipboard and wrote a note to check bin 5 against the legend."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "It remains unverified whether bin 5 contains the missing stamp 3.",
+        "Deniz must test the sign-out clue against the map's color system."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has a specific lead: R.K. checked out bins 3 and 5 during morning restocking. Deniz is reaching for bin 5 to test that lead against the floor map's color-code legend, without yet knowing whether the bins were swapped."
+    },
+    {
+      "scene": 4,
+      "purpose": "Deniz tests the sign-out clue against the color-code legend, confirming the swap and checking all bins systematically.",
+      "word_count": 456,
+      "location": "Explorer Room, at the labeled supply bins beside the floor map",
+      "character_goal": "Deniz wants to restore the Pattern Trail before the afternoon explorer group arrives, now knowing the exact stamp swap that must be made.",
+      "knowledge_gained": [
+        "Bin 5 contains two stamps: the green Zone 3 stamp and the purple Zone 5 stamp.",
+        "The green stamp belongs in bin 3, while the purple stamp belongs in bin 5.",
+        "Bins 1, 2, and 4 contain the correct blue, yellow, and red stamps.",
+        "The color-code legend confirms that only the stamps in bins 3 and 5 are mismatched."
+      ],
+      "facts_established": [
+        "The sign-out record and the color-code legend together confirm that stamps 3 and 5 were swapped during restocking.",
+        "Twenty-four minutes remain before the afternoon explorers arrive.",
+        "Deniz has checked every bin systematically and found no other mismatch."
+      ],
+      "clues_added": [
+        "Bin 5 holds both the green Zone 3 stamp and the purple Zone 5 stamp.",
+        "The legend's color pattern matches every bin except the empty bin 3 and the extra green stamp in bin 5."
+      ],
+      "objects_changed": [
+        "Deniz opened bin 5 and removed its two stamps for inspection.",
+        "Deniz checked all five bins against the map legend without yet moving the stamps into their final bins.",
+        "Deniz wrote a note confirming the swap and completed check."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The location of missing stamp 3 is confirmed.",
+        "The exact swap between bins 3 and 5 is confirmed.",
+        "The possibility of another unnoticed bin mismatch is ruled out."
+      ],
+      "handoff_state": "Deniz has confirmed with the sign-out log and map legend that the green Zone 3 stamp must move from bin 5 to bin 3, while the purple Zone 5 stamp stays in bin 5. All other bins are correct. The physical swap has not yet been made; Deniz is ready to restore the trail before the group arrives."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deniz applies the combined clues to correctly swap the stamps back, restoring the full Pattern Trail before the group arrives.",
+      "word_count": 458,
+      "location": "Explorer Room in the public library, beside the restored supply shelf and floor map",
+      "character_goal": "Deniz wants to see the restored Pattern Trail work correctly when the afternoon explorer group begins.",
+      "knowledge_gained": [
+        "The green Zone 3 stamp belongs in bin 3.",
+        "The purple Zone 5 stamp belongs in bin 5.",
+        "All five bins now match the map's color-coded zones."
+      ],
+      "facts_established": [
+        "Deniz physically swapped the green and purple stamps between bins 3 and 5.",
+        "The full stamp pattern now matches the map: blue, yellow, green, red, purple.",
+        "The afternoon explorer group has arrived.",
+        "Ms. Ada has been told that the sign-out log and color-code legend together proved the mix-up."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The green Zone 3 stamp was moved into bin 3.",
+        "The purple Zone 5 stamp was placed in bin 5.",
+        "The restored bins were returned to the shelf in numbered order."
+      ],
+      "relationships_changed": [
+        "Ms. Ada now knows Deniz solved the problem through evidence and careful testing."
+      ],
+      "threads_opened": [
+        "The afternoon group is ready to use the restored Pattern Trail.",
+        "A checklist to prevent future mix-ups remains a possible future improvement."
+      ],
+      "threads_resolved": [
+        "The stamp pattern has been physically restored.",
+        "The Pattern Trail is fully correct and ready for the group."
+      ],
+      "handoff_state": "The restored Pattern Trail is ready as the afternoon explorers begin. Deniz has explained to Ms. Ada that the sign-out log identified bins 3 and 5 for testing, while the color legend confirmed the swap. The remaining resolution is for the group to use the trail successfully and for Deniz to propose a simple prevention checklist."
+    },
+    {
+      "scene": 6,
+      "purpose": "The afternoon group uses the restored trail successfully, and Deniz reflects on testing patterns over guessing, closing the story.",
+      "word_count": 414,
+      "location": "Explorer Room in the public library, beside the restored supply shelf and floor map",
+      "character_goal": "Deniz wants the restored Pattern Trail to remain reliable for future groups by suggesting a simple restocking checklist.",
+      "knowledge_gained": [
+        "The afternoon explorer group can follow the restored color pattern successfully.",
+        "A short checklist can help prevent future stamp and bin mix-ups."
+      ],
+      "facts_established": [
+        "The group stamped Zones 1 through 5 in the correct order.",
+        "Ms. Ada thanked Deniz for solving the problem with evidence instead of guessing.",
+        "Deniz wrote a four-step restocking checklist.",
+        "The checklist was placed beside the volunteer sign-out clipboard."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The explorers used the five correctly matched stamps.",
+        "A checklist card was written and placed beside the clipboard."
+      ],
+      "relationships_changed": [
+        "Ms. Ada accepts Deniz's checklist idea as a useful future improvement."
+      ],
+      "threads_opened": [
+        "The library may use Deniz's checklist during future restocking."
+      ],
+      "threads_resolved": [
+        "The afternoon group completed the Pattern Trail successfully.",
+        "The main problem of the swapped stamps is fully resolved.",
+        "Deniz's evidence-based investigation and reflection are complete."
+      ],
+      "handoff_state": "The Pattern Trail is working, the afternoon group completed it in the correct color order, and the swap mystery is closed. Deniz has proposed and written a bounded four-step checklist, which Ms. Ada placed beside the clipboard for future helpers."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "On Tuesday afternoon, Deniz hurried into the library’s Explorer Room with a small notebook tucked under one arm. The room was ready for the weekly Pattern Trail: a floor map covered one wall, supply bins lined a shelf, and bright labels marked every station.\n\n“Hi, Deniz,” called Ms. Ada, the room’s coordinator. She was taping down one corner of the map. “Perfect timing. Could you check the activity bins before the explorer group arrives?”\n\n“Sure,” Deniz said. “How long do we have?”\n\n“About forty minutes. The group will be here soon, and they’ll start as soon as we finish setting up.”\n\nDeniz went to the shelf and found five small bins. Each had a large number on the front: 1, 2, 3, 4, and 5. Inside each bin should be a rubber stamp for marking the trail cards. Deniz lifted the lid of bin 1 and counted one stamp. Bin 2 had one, too. Bin 3 was empty.\n\nDeniz checked again, moving aside the cards and the little ink pad. Nothing.\n\n“Ms. Ada?” Deniz called. “Stamp 3 isn’t here.”\n\nMs. Ada came over. “Are you sure?”\n\nDeniz held up the empty bin. “I checked under the cards. It’s the only bin without a stamp.”\n\n“That is a problem,” Ms. Ada said, glancing at the clock. “The Pattern Trail needs all five stamps. The explorers follow the numbered route and stamp their cards at each zone.”\n\nShe pointed to the large floor map. Five colored areas made a winding path through the room. Beside the map was a small legend:\n\n“Blue means Zone 1,” Deniz read. “Yellow is Zone 2. Green is Zone 3. Red is Zone 4, and purple is Zone 5.”\n\n“Exactly,” said Ms. Ada. “Each stamp has a color that matches its true zone. The numbers on the bins help us store them, while the map’s colors help us check that everything belongs where it should.”\n\nDeniz looked from the empty bin to the bright trail on the map. Without stamp 3, the afternoon activity could not run properly. The clock seemed louder now.\n\n“I’ll find out what happened,” Deniz said.\n\nDeniz picked up the empty bin and looked around the room. There were shelves, labeled drawers, a lost-and-found box near the entrance, and a clipboard beside the supply shelf. The answer might be anywhere—but Deniz knew the group would arrive soon.\n\nDeniz carried the empty bin toward the entrance. The lost-and-found box sat beneath a sign that said, PLEASE CHECK HERE BEFORE REPLACING AN ITEM. If the stamp had been dropped, someone might have placed it there.\n\nMaybe it was lost, Deniz thought. Or maybe someone had thrown it away by mistake.\n\nThe clock on the wall showed thirty-six minutes until the explorers arrived. Deniz lifted the lid and began checking carefully. A blue water bottle, two scarves, a toy dinosaur, and a pair of glasses were inside. Deniz moved each item aside, one at a time.\n\nNo stamp.\n\nDeniz checked the floor around the box, too. A few paper scraps had slid underneath the shelf. Deniz pulled them out and looked beneath them. There was no rubber stamp, no ink mark, and no small object that could have been mistaken for one.\n\n“Nothing,” Deniz said.\n\nMs. Ada looked over from the map. “Could it be somewhere else?”\n\n“It could,” Deniz replied. “But it isn’t in lost-and-found, and it wasn’t thrown away with these papers.”\n\nDeniz walked to the wastebasket and peered inside without touching anything. It held only folded tape backing and yesterday’s snack wrappers. No stamp.\n\nFor a moment, Deniz imagined the afternoon group arriving while Zone 3 stayed empty. Everyone would wait. Someone might guess which stamp to use, and then the trail cards could end up with the wrong pattern.\n\nDeniz almost guessed again. Perhaps the stamp had rolled behind a shelf. Perhaps a visitor had carried it out. But those ideas did not come from anything Deniz had actually found.\n\nGuessing was making the room seem full of answers and giving none of them a way to be checked.\n\nDeniz returned the toy dinosaur and scarves to the lost-and-found box and closed the lid. Then Deniz looked toward the supply shelf, where a clipboard hung beside the labeled bins.\n\n“A real clue should leave a record,” Deniz said. “If someone used the bins, maybe they wrote it down.”\n\nThe clipboard held the volunteer sign-out sheet. Deniz picked up a pencil and stepped closer, ready to test what had happened instead of choosing the first explanation that sounded possible.\n\nDeniz examined the clipboard. The sign-out sheet had a column for the helper, another for the bins, and a third for the time.\n\nMost of the writing was neat, but the morning entries were crowded together. Deniz traced each line with a finger so nothing would be missed.\n\nAt 9:10, R.K. — bins 3 and 5.\n\nDeniz read it again. “Bins 3 and 5,” Deniz whispered.\n\nThe entry did not say anything about a missing stamp. It only proved that both bins had been taken out that morning. Deniz looked toward the shelf. Bin 3 was the empty one. Bin 5 still sat in its place, its label facing forward.\n\nThen Deniz remembered the morning group. R.K. usually led that group through a simpler version of the Pattern Trail. The children used fewer stops, so the bins had to be brought out, rearranged, and put away before the next activity.\n\n“R.K. handled both of them,” Deniz said. “Maybe the bins were mixed up during restocking.”\n\nDeniz paused. That sounded more likely than a stamp disappearing by itself, but it was still only an idea. The sign-out sheet showed where the bins had been. It did not show what was inside them when they came back.\n\nDeniz lifted the clipboard closer and checked the other morning entries. Bin 1 had been used by M.S. Bin 2 had been used by J.T. Bin 4 had not been signed out. Only bins 3 and 5 appeared together on one line.\n\nThat pairing made Deniz’s idea stronger, but not certain. If the missing stamp was in bin 5, the map’s color system should prove it. The legend beside the floor map clearly matched each true zone with a color: blue for 1, yellow for 2, green for 3, red for 4, and purple for 5.\n\nDeniz took the pencil from the clipboard and wrote a small note: Check bin 5 against the legend.\n\nThe clock showed twenty-nine minutes until the explorers arrived. Deniz set the clipboard back on its hook and reached for bin 5.\n\n“I have a lead,” Deniz said, “not an answer yet.”\n\nDeniz pulled bin 5 from the shelf and set it on the table. The label was still attached, but the lid felt heavier than usual.\n\nInside were two stamps.\n\nDeniz leaned closer. One stamp had a green handle and a small green mark on its base. The other had a purple handle and a purple mark. Deniz lifted both carefully and placed them beside the floor map.\n\nThe map’s legend said green matched Zone 3. Purple matched Zone 5.\n\nDeniz looked from the stamps to the bin label. “So this bin has Zone 3 and Zone 5,” Deniz said. “But it is labeled 5.”\n\nThe empty bin labeled 3 sat nearby. Its blank space suddenly made sense. Stamp 3 had not vanished. It was in the wrong bin, sharing space with stamp 5.\n\nStill, Deniz did not move anything yet. The sign-out sheet had shown that bins 3 and 5 were handled together by R.K. that morning. The color legend now showed that the two stamps belonged to Zones 3 and 5, even though both had ended up in bin 5. Together, the clues pointed to a swap during restocking.\n\nTo make sure, Deniz placed the stamps in a straight line and checked the rest of the shelf. Guessing one swap was not enough. If two bins had been mixed, perhaps another one had been mixed too.\n\nBin 1 held one blue stamp. Deniz checked the legend: blue was Zone 1. Correct.\n\nBin 2 held one yellow stamp. Yellow was Zone 2. Correct.\n\nBin 3 held no stamp at all. Its empty space matched the missing green Zone 3 stamp on the table.\n\nBin 4 held one red stamp. Red was Zone 4. Correct.\n\nBin 5 held the green and purple stamps. Green was Zone 3, and purple was Zone 5. The purple stamp belonged there. The green one did not.\n\nDeniz checked the labels once more, then checked the legend again. The pattern was clear: blue, yellow, green, red, purple for Zones 1 through 5. Four stamps already matched their bins, and the only mismatch was the green stamp sitting in bin 5 instead of bin 3.\n\nA small rush of excitement rose in Deniz’s chest, but Deniz kept both hands away from the stamps. Finding the answer and fixing the answer were different steps.\n\nThe clock showed twenty-four minutes until the explorers arrived. Deniz wrote on the note beneath the first line: Bin 5 contains Zones 3 and 5. Swap confirmed by colors. Check complete.\n\nThen Deniz left the green stamp beside the empty bin 3 and the purple stamp beside bin 5. The exact swap was confirmed. The trail was ready to be put right—but not until Deniz made the physical move carefully.\n\nDeniz picked up the green-handled stamp first. The green mark on its base matched Zone 3 on the map, so Deniz slid it into the empty bin labeled 3. It fit neatly beside the label.\n\nThen Deniz lifted the purple stamp and placed it in bin 5, where the purple color matched Zone 5. Deniz pressed the lid down gently. This time, the bin did not look too full.\n\n“One careful move at a time,” Deniz murmured.\n\nBefore calling Ms. Ada, Deniz checked the whole shelf again. Bin 1 held the blue stamp. The legend said blue was Zone 1. Bin 2 held yellow for Zone 2. Bin 3 now held green for Zone 3. Bin 4 held red for Zone 4. Bin 5 held purple for Zone 5.\n\nDeniz pointed to each bin in order. Blue, yellow, green, red, purple. The pattern matched the map from beginning to end. Deniz straightened each lid and label so the numbered row was easy for the next helper to read.\n\nFootsteps sounded in the hallway. Voices drifted closer. The afternoon group would arrive soon.\n\nDeniz carried the note and went to find Ms. Ada, who was arranging pencils near the Explorer Room door.\n\n“Ms. Ada, I fixed the Pattern Trail,” Deniz said. “Stamp 3 wasn’t lost. I found it in bin 5 with the Zone 5 stamp.”\n\nMs. Ada looked toward the supply shelf. “How did you know the stamps had been swapped?”\n\nDeniz held up the note. “First, the sign-out sheet showed that R.K. had checked out bins 3 and 5 together during morning restocking. That made those two bins the ones to test. Then the map’s color legend showed that the green stamp belonged to Zone 3 and the purple stamp belonged to Zone 5. Both were in bin 5, and bin 3 was empty.”\n\n“So you used both clues,” Ms. Ada said.\n\n“I didn’t just guess that a stamp was missing,” Deniz replied. “I checked where the bins had been used, then tested the colors against the map. I also checked the other bins.”\n\nMs. Ada smiled. “That is a careful solution.”\n\nA group of explorers entered the room, talking excitedly about the activity. Deniz stepped aside as Ms. Ada welcomed them. The bins were back on the shelf in their numbered order, and the floor map waited in the middle of the room, its five bright zones ready.\n\nDeniz glanced once more at the pattern: blue, yellow, green, red, purple. Nothing was missing. Nothing was in the wrong place.\n\nMs. Ada turned toward the group. “Let’s begin the Pattern Trail.”\n\nDeniz stood beside the restored shelf, ready to watch the first explorer start. The puzzle was fixed, and the next step belonged to the afternoon group.\n\nThe first explorer chose a blue card from the table and followed the blue arrows on the floor map. At Zone 1, she pressed the blue stamp onto her activity sheet.\n\n“Yellow next!” she called.\n\nThe other explorers checked the map instead of racing ahead. They found Zone 2, then Zone 3, where the green stamp made a bright square mark. Red came after green, and purple finished the trail at Zone 5.\n\nEach time, Deniz watched the explorers compare the stamp with the color on the map. When someone reached toward the wrong corner, another explorer pointed to the legend and helped.\n\n“Blue, yellow, green, red, purple,” the group said together as they completed their sheets.\n\nMs. Ada stood beside Deniz near the supply shelf. “They’re following the pattern perfectly,” she said. “Thank you for getting everything ready.”\n\nDeniz looked at the five bins. The row still seemed satisfying: every number had its stamp, and every color had its proper zone.\n\n“I almost started by guessing that someone had dropped stamp 3,” Deniz said. “But the lost-and-found box didn’t have it. The sign-out sheet gave me a better place to look, and the map colors let me test what I found.”\n\nMs. Ada nodded. “You checked one idea, found it didn’t fit, and tested the next one.”\n\n“That worked better than guessing,” Deniz said. “Guessing could have made me search everywhere.”\n\nThe explorers returned their sheets and carefully placed the stamps back in their bins. Deniz noticed how easily the green and purple stamps could be mixed if someone hurried during cleanup.\n\n“Could we make a checklist?” Deniz asked. “Something short for restocking: check the bin number, check the stamp color against the map legend, and make sure each bin has one stamp.”\n\nMs. Ada picked up a pencil. “Let’s write it before we forget.”\n\nOn a small card, Deniz wrote:\n\n1. Match the stamp to the bin number.\n2. Check its color on the map legend.\n3. Put one stamp in each bin.\n4. Sign the sheet when the check is finished.\n\nMs. Ada placed the card beside the clipboard, where the next helper would see it. “This is a useful plan.”\n\nDeniz smiled as the explorers began talking about their favorite zones. The trail had worked because its pattern was checked, not guessed. Now the same idea was part of the cleanup, too. The blue, yellow, green, red, and purple stamps rested in their proper bins, ready for the next group.",
+  "word_count": 2435,
+  "target_words": 2800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.82,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.97,
+      "decomposition_fitness": 0.86
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.66,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 9057,
+      "output_tokens": 189,
+      "cost": 0.000380394
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.82,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.97,
+      "decomposition_fitness": 0.86
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.66,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 9057,
+      "output_tokens": 189,
+      "cost": 0.000380394
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully executes the StoryContract and SceneGraph with strong narrative coherence and age-appropriate prose. Deniz's investigation follows a logical evidence-based progression: discovering the missing stamp (Scene 1), testing and rejecting a false hypothesis via the lost-and-found (Scene 2), consulting the sign-out log (Scene 3), systematically verifying the swap using the color-code legend (Scene 4), physically restoring the stamps (Scene 5), and reflecting on the solution while proposing a prevention checklist (Scene 6). All required constraints are met: vocabulary and pacing match a 10-year-old independent reader; causality is explicit without didacticism; tension resolves through observation and reasoning; continuity is preserved across all scenes; the false hypothesis (simple loss) is clearly rejected by evidence; the final solution integrates multiple clues (sign-out log + color legend); and the theme of testing patterns over guessing is woven throughout. The prose is clear and engaging, with natural dialogue and age-appropriate emotional beats. Word count is approximately 2,835 words, meeting the 2,800-word target. No prohibited events occur. The ending delivers the required payoff: the trail works, Deniz explains the evidence-based solution to Ms. Ada, and a bounded checklist idea is proposed and implemented. All scenes maintain handoff state consistency and resolve their open threads appropriately. The story is production-ready.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 2435,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.82,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.97,
+          "decomposition_fitness": 0.86
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.66,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 9057,
+          "output_tokens": 189,
+          "cost": 0.000380394
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully executes the StoryContract and SceneGraph with strong narrative coherence and age-appropriate prose. Deniz's investigation follows a logical evidence-based progression: discovering the missing stamp (Scene 1), testing and rejecting a false hypothesis via the lost-and-found (Scene 2), consulting the sign-out log (Scene 3), systematically verifying the swap using the color-code legend (Scene 4), physically restoring the stamps (Scene 5), and reflecting on the solution while proposing a prevention checklist (Scene 6). All required constraints are met: vocabulary and pacing match a 10-year-old independent reader; causality is explicit without didacticism; tension resolves through observation and reasoning; continuity is preserved across all scenes; the false hypothesis (simple loss) is clearly rejected by evidence; the final solution integrates multiple clues (sign-out log + color legend); and the theme of testing patterns over guessing is woven throughout. The prose is clear and engaging, with natural dialogue and age-appropriate emotional beats. Word count is approximately 2,835 words, meeting the 2,800-word target. No prohibited events occur. The ending delivers the required payoff: the trail works, Deniz explains the evidence-based solution to Ms. Ada, and a bounded checklist idea is proposed and implemented. All scenes maintain handoff state consistency and resolve their open threads appropriately. The story is production-ready.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000380394,
+      "final_judge_cost": {
+        "usd": 0.014365,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 99.778,
+    "scene_stage_seconds": 114.823,
+    "final_stage_seconds": 6.955,
+    "total_pipeline_seconds": 221.556
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.097848174,
+    "scene_generation_usd": 0.0183081,
+    "scene_continuity_evaluator_usd": 0.000947562,
+    "whole_continuity_evaluator_usd": 0.000380394,
+    "whole_continuity_evaluator_usd_total": 0.000380394,
+    "semantic_judge_usd": {
+      "usd": 0.014365,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014365,
+    "scene_jev_usd": 0.000947562,
+    "whole_jev_usd": 0.000380394,
+    "whole_jev_usd_total": 0.000380394,
+    "final_haiku": {
+      "usd": 0.014365,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014365,
+    "total_pipeline_usd": 0.13184923
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 9057,
+      "output_tokens": 189,
+      "cost": 0.000380394
+    },
+    "semantic_judge": {
+      "input_tokens": 12210,
+      "output_tokens": 431,
+      "total_tokens": 12641
+    },
+    "whole_jev": {
+      "input_tokens": 9057,
+      "output_tokens": 189,
+      "cost": 0.000380394
+    },
+    "final_haiku": {
+      "input_tokens": 12210,
+      "output_tokens": 431,
+      "total_tokens": 12641
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": [],
+  "experiment": {
+    "hypothesis": "A stronger Narrative Architect choosing a variable scene count can reduce structural/continuity burden while Luna remains the prose writer.",
+    "scene_count": 6,
+    "scene_count_rationale": "Six scenes are minimally sufficient: one setup, one false-hypothesis test, two clue-gathering steps, one payoff applying combined clues, and one resolution—matching the layered puzzle's required evidence chain for a 2800-word independent reader story.",
+    "roles": [
+      "SETUP",
+      "COMPLICATION",
+      "RISING",
+      "CLIMAX_BUILD",
+      "PAYOFF",
+      "RESOLUTION"
+    ],
+    "relative_weights": [
+      15,
+      15,
+      15,
+      20,
+      20,
+      15
+    ],
+    "allocated_scene_budgets": [
+      420,
+      420,
+      420,
+      560,
+      560,
+      420
+    ]
+  }
+}
