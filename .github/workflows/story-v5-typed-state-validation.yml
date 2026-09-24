@@ -1,0 +1,61 @@
+name: Story v5 Typed State Validation
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-v5-typed-state-validation.txt
+
+permissions:
+  contents: write
+
+jobs:
+  typed_state:
+    runs-on: self-hosted
+    timeout-minutes: 25
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile prototype
+        run: python -m py_compile experiments/prototypes/story_v5_whole_draft_prototype.py
+
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json
+
+      - name: Run typed state validation
+        run: |
+          mkdir -p runs/story_v5_typed_state
+          PYTHONPATH=. python experiments/prototypes/story_v5_whole_draft_prototype.py             --spec experiments/specs/v5-whole-draft/age5-500-nature.yaml             --state-authority experiments/state_authority/age5-500-nature.json             --output runs/story_v5_typed_state/result.json
+
+      - name: Archive typed-state evidence
+        if: always()
+        shell: bash
+        run: |
+          DEST="experiments/results/story-v5-typed-state/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story_v5_typed_state/result.json "$DEST/result.json" || true
+          cp runs/story_v5_typed_state/result.outcome.json "$DEST/result.outcome.json" || true
+          cp runs/story_v5_typed_state/result.story.txt "$DEST/result.story.txt" || true
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "authority_protocol": "state-mutation-authority.v1"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): story v5 typed-state validation ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-typed-state-${GITHUB_RUN_ID}"
