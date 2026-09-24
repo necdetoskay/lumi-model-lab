@@ -302,7 +302,19 @@ Do not use matrix-job rerun as the canonical sentinel mechanism.
 
 Future sentinel work must be launched as a fresh planner/workflow dispatch with the intended bounded matrix and fresh run ids.
 
-The extra attempt is retained as real evidence if its evidence packs remain valid; it is not erased merely because the execution scope was broader than intended.
+Attempt 3 produced a clean EARLY_CHILD story result:
+
+- 573 words;
+- `repeat_8gram_ratio = 0.0`;
+- final semantic judge accepted;
+- pipeline result `accepted = true`;
+- pipeline cost approximately USD 0.04487.
+
+Therefore the original `0.02381` repetition miss did not reproduce in the immediate diagnostic attempt.
+
+However, attempt 3 reused the same `GITHUB_RUN_ID + CASE_ID`. The evidence branch already existed, so the append-only archive push was correctly rejected as non-fast-forward. The repeated story is useful diagnostic information but must **not** be counted as a second canonical Capability Cube observation.
+
+Permanent rule: a qualification repeat that is intended to count as evidence must be a fresh workflow dispatch with a fresh run id. GitHub rerun is not a canonical qualification-repeat mechanism.
 
 ## 2026-09-24 — Secondary GitHub artifact storage is non-authoritative
 
