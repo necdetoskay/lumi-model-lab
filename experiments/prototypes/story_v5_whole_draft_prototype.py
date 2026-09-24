@@ -78,6 +78,11 @@ Rules:
 - Do not create micro-scenes merely to increase scene count.
 - Do not overload a scene with incompatible narrative jobs merely to reduce scene count.
 - Preserve every brief constraint.
+- If an APPLICATION-COMPILED STORY CONTEXT PACK is supplied, treat its Character, World,
+  Opportunity, Canon, Saga, memories, IDs, revisions, knowledge boundaries, hidden-fact
+  exclusions, and location statuses as authoritative.
+- Never reveal or use hidden/prohibited knowledge and never upgrade RUMORED/DISCOVERED
+  knowledge into EXPLORED unless the supplied Opportunity explicitly authorizes that change.
 - Keep one central protagonist goal and one central problem unless the brief requires otherwise.
 - Facts, clues, knowledge and consequences must accumulate rather than reset.
 - Each scene must list prior_evidence for any important inference or dependency.
@@ -122,6 +127,9 @@ Rules:
 - Produce one coherent story from beginning to end.
 - Follow the SceneGraph exactly enough that every scene has its declared narrative job.
 - Preserve all established facts and dependencies.
+- If an APPLICATION-COMPILED STORY CONTEXT PACK is supplied, it is authoritative. Do not
+  contradict it, reveal excluded/hidden facts, give the protagonist knowledge they do not
+  possess, or cross a location/knowledge boundary the Opportunity does not authorize.
 - Do not reset knowledge between scenes.
 - Do not perform PAYOFF work early.
 - The final RESOLUTION must follow from the PAYOFF and close the main problem.
@@ -148,8 +156,11 @@ Return JSON only:
 FINAL_JUDGE_PROMPT = """
 You are the final production gate for a complete LUMI story.
 
-Judge ONLY the CURRENT final story against its immutable StoryContract, SceneGraph and
-original brief. Historical repair attempts are intentionally not supplied. Do not invent
+Judge ONLY the CURRENT final story against its immutable StoryContract, SceneGraph,
+original brief, and any APPLICATION-COMPILED STORY CONTEXT PACK supplied. The context
+pack is authoritative. A material canon violation, hidden/prohibited-knowledge leak,
+unauthorized location-boundary crossing, or unsupported character knowledge is a
+critical failure. Historical repair attempts are intentionally not supplied. Do not invent
 a defect from earlier versions.
 
 Score each criterion 1-5:
@@ -519,12 +530,6 @@ def run_judge(
         + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
         + "\n\nDYNAMIC SCENE GRAPH\n"
         + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
-        + (
-            "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
-            + json.dumps(context_pack, ensure_ascii=False, indent=2)
-            if context_pack is not None
-            else ""
-        )
         + "\n\nCURRENT WHOLE-STORY JEV EVIDENCE\n"
         + json.dumps(jev, ensure_ascii=False, indent=2)
         + "\n\nCURRENT FINAL STORY\n"
@@ -819,6 +824,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
         + "\n\nDYNAMIC SCENE GRAPH\n"
         + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
+        + (
+            "\n\nAPPLICATION-COMPILED STORY CONTEXT PACK\n"
+            + json.dumps(context_pack, ensure_ascii=False, indent=2)
+            if context_pack is not None
+            else ""
+        )
         + "\n\nNORMALIZED SCENE WORD TARGETS\n"
         + json.dumps(scene_word_targets, ensure_ascii=False, indent=2)
         + f"\n\nTARGET TOTAL WORDS: {spec.target_words}"
