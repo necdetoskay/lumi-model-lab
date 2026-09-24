@@ -1,0 +1,1742 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v3-all-families/teen--world-lore-discovery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v3-all-families/teen--world-lore-discovery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Story Behind the Marker",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to determine and responsibly present the most defensible history of a familiar neighborhood landmark.",
+        "central_problem": "The landmark's old map label, recorded memory, and present inscription partly agree but conflict about its purpose and history.",
+        "solution_principle": "Compare sources, separate observation from interpretation, identify what is known, inferred, remembered, and uncertain.",
+        "theme_thread": "Understanding a place requires comparing evidence, memory, and incomplete stories without forcing certainty.",
+        "ending_state": "Deniz's evidence-based account is added to the archive display, preserving the landmark's uncertainties and one bounded question for future research.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C10",
+          "C11"
+        ],
+        "prohibited_events": [
+          "No combat or physical confrontation.",
+          "No omniscient explanation that settles every ambiguity.",
+          "No premature final answer before Scene 5.",
+          "No claim that one source is automatically correct.",
+          "No contradiction of Deniz's age, setting, sources, or accumulated evidence."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz's investigation after noticing that the familiar Riverside Marker tells a different story in its inscription and surroundings.",
+          "entry_state": "Deniz passes the neighborhood marker and reads its inscription: First Bridge, 1842, though no bridge remains.",
+          "beats": [
+            "Deniz records the inscription exactly, then notices worn stone steps descending toward the river beside the marker.",
+            "At the local archive, Deniz asks archivist Mara to inspect the old map room and oral-history collection."
+          ],
+          "must_include": [
+            "Deniz's goal is to understand the marker, not prove a favorite explanation.",
+            "The present inscription identifies a first bridge in 1842.",
+            "Deniz begins a notes page separating direct observations from guesses."
+          ],
+          "must_not_do": [
+            "Do not reveal which source is most reliable.",
+            "Do not resolve the marker's history or explain the missing bridge.",
+            "Do not make Deniz sound younger or older than fifteen."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C4",
+            "C5",
+            "C9",
+            "C11"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has the inscription and physical steps as initial evidence, while Mara provides access to the old map and recordings.",
+          "open_threads_after": [
+            "Why does the marker's inscription mention a bridge when the visible steps suggest an earlier river crossing?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Use the old map to establish a concrete historical label that supports some observations but challenges the inscription.",
+          "entry_state": "Deniz and Mara enter the map room with the inscription and steps recorded as separate observations.",
+          "beats": [
+            "Deniz finds an 1871 survey map labeling the site Ferry Steps, with a dotted route crossing the river.",
+            "Deniz copies the map's wording and dates, marking the bridge inscription as a later claim rather than a settled fact."
+          ],
+          "must_include": [
+            "The map is visibly dated 1871 and labels the location Ferry Steps.",
+            "The dotted crossing route partly matches the surviving steps.",
+            "Deniz distinguishes what the map shows from what the label might mean."
+          ],
+          "must_not_do": [
+            "Do not treat the map as proof that no bridge existed.",
+            "Do not erase the present inscription from Deniz's evidence.",
+            "Do not introduce a different landmark or unrelated historical dispute."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the 1842 bridge inscription and the worn steps beside the marker."
+          ],
+          "handoff": "The map suggests a ferry crossing before or alongside the claimed bridge, so Deniz must test the map against remembered local experience.",
+          "open_threads_after": [
+            "Did residents remember ferry steps, a bridge, or both at the marker?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Add oral testimony that meaningfully conflicts with the map while preserving a plausible connection among all accounts.",
+          "entry_state": "Deniz now has the inscription and map, which disagree about whether the site primarily marked a bridge or ferry crossing.",
+          "beats": [
+            "Mara plays a 1998 oral-history recording in which Arun Patel remembers his grandmother calling the stone the flood mark.",
+            "Deniz notes that Arun remembers children measuring river height there, but cannot verify the story's original date."
+          ],
+          "must_include": [
+            "The recording is identified with speaker, date, and oral-history collection context.",
+            "Arun's memory calls the stone a flood mark, not simply a bridge marker.",
+            "Deniz records memory as valuable evidence without treating it as exact measurement."
+          ],
+          "must_not_do": [
+            "Do not portray Arun's memory as foolish or definitively false.",
+            "Do not add a secret conspiracy behind the conflicting accounts.",
+            "Do not let the recording settle the landmark's original purpose."
+          ],
+          "constraint_ids": [
+            "C4",
+            "C6",
+            "C7",
+            "C8"
+          ],
+          "prior_evidence": [
+            "The inscription claimed a first bridge in 1842.",
+            "The 1871 map labeled the site Ferry Steps and showed a dotted river crossing."
+          ],
+          "handoff": "Three sources now conflict about purpose but converge on repeated river use; Deniz needs present-day observations to test their physical implications.",
+          "open_threads_after": [
+            "Can the current riverbank and neighborhood reveal whether ferry, bridge, and flood memories fit the same place?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Explore the present neighborhood so Deniz can compare source claims with physical evidence and classify remaining uncertainty.",
+          "entry_state": "Deniz has three conflicting accounts and must examine the marker's surroundings without choosing one prematurely.",
+          "beats": [
+            "Deniz measures the step direction with Mara, finding it faces the old market street shown near the map's dotted route.",
+            "They find no bridge foundations, but a high-water line on the marker matches Arun's flood-memory description.",
+            "Deniz sorts notes into known, inferred, remembered, and uncertain, leaving the original marker purpose unresolved."
+          ],
+          "must_include": [
+            "The present landscape supports a crossing route and a flood-related use.",
+            "The absence of bridge foundations limits, rather than disproves, the inscription.",
+            "Deniz explicitly labels each conclusion by evidence type."
+          ],
+          "must_not_do": [
+            "Do not uncover a conclusive hidden artifact.",
+            "Do not let present observations erase historical testimony.",
+            "Do not solve the central conflict before Deniz applies the comparison."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The map showed Ferry Steps and a dotted crossing toward the market.",
+            "Arun's recording described the stone as a flood mark.",
+            "The inscription claimed a first bridge in 1842."
+          ],
+          "handoff": "Deniz has a cautious synthesis: the site served river crossing and flood memory, while the bridge claim remains possible but unverified.",
+          "open_threads_after": [
+            "How can Deniz present a useful account without pretending the sources describe one perfectly certain event?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the evidence-comparison method by presenting a defensible account and a revised archive label that preserves disagreement.",
+          "entry_state": "Deniz must turn classified evidence into a public explanation while the original purpose and bridge claim remain partly uncertain.",
+          "beats": [
+            "Deniz presents Mara a draft stating known observations, map-supported inferences, Arun's memory, and the unverified bridge inscription.",
+            "After discussion, Deniz writes an archive panel: crossing place, remembered flood marker, and possible 1842 bridge site.",
+            "Mara approves the panel for the neighborhood display because it names sources instead of forcing one perfect story."
+          ],
+          "must_include": [
+            "The decisive application is Deniz's source-labeled account and proposed public panel.",
+            "The panel preserves the disagreement between map, recording, and inscription.",
+            "Deniz explains why uncertainty is part of the landmark's honest history."
+          ],
+          "must_not_do": [
+            "Do not claim the bridge definitely existed or definitely did not exist.",
+            "Do not replace the original inscription without permission.",
+            "Do not introduce a new source that suddenly resolves everything."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 4 established the matching route, flood line, missing foundations, and four evidence categories.",
+            "The map, recording, and inscription supplied the competing historical claims."
+          ],
+          "handoff": "The archive accepts Deniz's qualified panel, and the remaining task is observing how the neighborhood receives an account that preserves uncertainty.",
+          "open_threads_after": [
+            "How will neighbors respond when the marker's history is presented as layered rather than singular?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show consequences, close Deniz's investigation, and leave one evidence-based question for future exploration.",
+          "entry_state": "The archive display now presents Deniz's qualified account beside the original inscription and source references.",
+          "beats": [
+            "Neighbors read the panel; one recognizes the flood line, while another accepts that family memory and documents can both hold partial truth.",
+            "Deniz updates the notes with the final account and keeps the bridge claim marked unverified.",
+            "A faint continuation of the map's dotted route beneath the modern market raises one bounded question about where the crossing led."
+          ],
+          "must_include": [
+            "Deniz's central investigation is resolved through a preserved, evidence-based account.",
+            "The original inscription remains visible with its limits clearly stated.",
+            "The future question comes directly from the map's surviving route, not a new mystery."
+          ],
+          "must_not_do": [
+            "Do not reopen the main problem or invalidate Deniz's account.",
+            "Do not add a dramatic revelation, danger, or unrelated subplot.",
+            "Do not provide an answer to the route question."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C3",
+            "C4",
+            "C10",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the approved panel and its distinction among known, inferred, remembered, and uncertain claims.",
+            "The 1871 map showed a dotted route continuing toward the market.",
+            "The original inscription's bridge claim remained explicitly unverified."
+          ],
+          "handoff": "Deniz's account is publicly preserved, the main conflict is responsibly closed, and one map-based route question remains for future research.",
+          "open_threads_after": [
+            "Where did the dotted crossing route continue beyond the present-day market?"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.97,
+        "constraint_coverage": 0.72,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.9,
+        "no_early_resolution": 0.94,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.72
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.87,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3838,
+        "output_tokens": 185,
+        "cost": 0.000161196
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 2,
+          "risk": "The 1871 map must be visibly distinct from the present inscription (1842) to avoid reader confusion about dating. Plan states dates clearly, but prose execution must emphasize the 29-year gap and what it implies about competing claims."
+        },
+        {
+          "scene": 3,
+          "risk": "Arun's 1998 recording must be contextualized so readers understand oral history as evidence without treating memory as exact fact. The plan correctly frames this, but the prose must show Deniz actively distinguishing 'what Arun remembers' from 'when the original use occurred.'"
+        },
+        {
+          "scene": 4,
+          "risk": "The high-water line observation must be physically plausible and tied to Arun's flood-memory without implying causation. The plan avoids this trap, but prose must show Deniz noting the match as suggestive, not conclusive."
+        },
+        {
+          "scene": 5,
+          "risk": "The archive panel must preserve all three sources visibly (map label, recording reference, inscription) so readers see Deniz choosing synthesis over erasure. The plan specifies this; prose must show the actual panel text or Deniz's reasoning about what to include."
+        }
+      ],
+      "summary": "This plan demonstrates strong causal continuity, stable protagonist motivation, and rigorous information progression. All six scenes build toward a defensible, evidence-based account that preserves uncertainty rather than forcing false resolution. Constraint coverage is solid: C1–C11 are all scheduled and integrated. The three sources (inscription, map, recording) are distinct and meaningfully conflict (C6, C7). Deniz's method explicitly separates known, inferred, remembered, and uncertain (C8), and the ending opens a bounded map-based question (C10) without reopening the main problem. No combat, no omniscient resolution, no premature closure, no unexplained dependencies. The protagonist's age and reading mode (15, independent reader) are consistently respected in the plan's language and concept complexity. The JEV advisory flagged constraint_coverage at 0.72; this plan addresses that concern by scheduling all 11 constraints across scenes with explicit must-include and must-not-do guardrails. Prose execution must ensure the archive panel is concrete enough for readers to see Deniz's synthesis, and Scene 4's physical observations must remain suggestive rather than conclusive. Overall, this is a well-structured plan ready for prose development.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0043404,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000161196,
+      "haiku": {
+        "usd": 0.007987,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 978,
+        "output_tokens": 3454,
+        "total_tokens": 4432
+      },
+      "jev": {
+        "input_tokens": 3838,
+        "output_tokens": 185,
+        "cost": 0.000161196
+      },
+      "haiku": {
+        "input_tokens": 4032,
+        "output_tokens": 791,
+        "total_tokens": 4823
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    494,
+    589,
+    646,
+    646,
+    779,
+    646
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 494,
+      "word_count": 464,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz's investigation after noticing that the familiar Riverside Marker tells a different story in its inscription and surroundings.",
+        "entry_state": "Deniz passes the neighborhood marker and reads its inscription: First Bridge, 1842, though no bridge remains.",
+        "beats": [
+          "Deniz records the inscription exactly, then notices worn stone steps descending toward the river beside the marker.",
+          "At the local archive, Deniz asks archivist Mara to inspect the old map room and oral-history collection."
+        ],
+        "must_include": [
+          "Deniz's goal is to understand the marker, not prove a favorite explanation.",
+          "The present inscription identifies a first bridge in 1842.",
+          "Deniz begins a notes page separating direct observations from guesses."
+        ],
+        "must_not_do": [
+          "Do not reveal which source is most reliable.",
+          "Do not resolve the marker's history or explain the missing bridge.",
+          "Do not make Deniz sound younger or older than fifteen."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C4",
+          "C5",
+          "C9",
+          "C11"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has the inscription and physical steps as initial evidence, while Mara provides access to the old map and recordings.",
+        "open_threads_after": [
+          "Why does the marker's inscription mention a bridge when the visible steps suggest an earlier river crossing?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz had passed the Riverside Marker hundreds of times, usually without looking at it. That afternoon, the afternoon light made the carved letters stand out.\n\nFIRST BRIDGE\n1842\n\nDeniz stopped. The river moved below the path, broad and brown-green between the banks. There was no bridge. No broken pillars rose from the water, and no road led straight toward it. Only weeds, smooth stones, and the narrow path used by people walking to the market.\n\nDeniz took out a phone, then decided a notebook would be better. On a fresh page, they wrote:\n\nDIRECT OBSERVATION: The marker says “First Bridge, 1842.”\nDIRECT OBSERVATION: No bridge is visible today.\n\nThey looked around again. Beside the marker, partly hidden under grass, a line of worn stone steps descended toward the river. The top steps were uneven, their edges rounded by weather or by many feet. At the bottom, mud covered whatever the steps once reached.\n\nDeniz added another line.\n\nDIRECT OBSERVATION: Stone steps lead down toward the river.\n\nUnder that, they wrote:\n\nGUESS: The steps may be connected to the bridge mentioned on the marker.\n\nThen Deniz paused, pencil hovering. “May be” mattered. The thought felt less satisfying than a firm answer, but it was more honest. The goal was not to prove a favorite explanation. It was to understand what the marker could actually tell them—and what it could not.\n\nAt the local archive, Deniz found Mara at the front desk, sorting photographs into labeled folders. Mara had helped with school research before, but she did not treat Deniz like a little kid. She glanced at the notebook and raised an eyebrow.\n\n“Starting an investigation?”\n\n“I think so,” Deniz said. “The marker says there was a first bridge here in 1842, but there isn’t even a bridge now. These steps seem important, though I don’t know why.”\n\nMara read the page without touching the notebook. “Good distinction. You’ve separated what you saw from what you’re suggesting.”\n\n“I want to check the suggestion,” Deniz said. “Not just collect things that make it sound right.”\n\n“That is usually the difficult part.” Mara pointed down the corridor. “The old map room is open. The oral-history collection is in the listening room beside it. I can help you handle the materials and check the catalog, but you’ll need to record exactly what each source says.”\n\nDeniz looked back at the page. The words FIRST BRIDGE, 1842 seemed certain in a way the riverbank did not.\n\n“Then I’ll start with the marker,” Deniz said, closing the notebook. “And keep the questions beside it.”\n\nMara unlocked the map-room door. Inside, flat drawers filled one wall, and the air smelled faintly of dust and paper. Deniz stepped in, carrying the inscription, the steps, and the first careful division between seeing and guessing.",
+        "state_delta": {
+          "location": "Deniz is entering the local archive's old map room after examining the Riverside Marker and its river-facing steps.",
+          "character_goal": "Deniz wants to understand the marker's history responsibly, without proving a preferred explanation.",
+          "knowledge_gained": [
+            "The present marker inscription reads “FIRST BRIDGE, 1842.”",
+            "No bridge is visible at the present-day site.",
+            "Worn stone steps descend from beside the marker toward the river.",
+            "Mara can provide access to the old map room and oral-history collection."
+          ],
+          "facts_established": [
+            "The Riverside Marker stands beside the river near the neighborhood path to the market.",
+            "The marker and the surviving steps are in the same location."
+          ],
+          "clues_added": [
+            "The worn steps may be connected to the bridge named by the inscription, but this remains a guess."
+          ],
+          "objects_changed": [
+            "Deniz began a notebook page separating direct observations from guesses."
+          ],
+          "relationships_changed": [
+            "Mara agrees to support Deniz's investigation while requiring careful recording of each source."
+          ],
+          "threads_opened": [
+            "Why does the inscription mention a bridge when no bridge remains?",
+            "What do the worn river-facing steps indicate?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has recorded the exact 1842 bridge inscription and the worn steps as separate initial evidence, with the possible connection labeled only as a guess. Mara has opened the old map room and made the oral-history collection available for comparison in the next investigation."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.927,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 464,
+          "usage": {
+            "input_tokens": 4186,
+            "output_tokens": 1133,
+            "total_tokens": 5319
+          },
+          "cost": {
+            "usd": 0.00240595,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.9,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.84,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2844,
+          "output_tokens": 188,
+          "cost": 0.000119448
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.9,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.84,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2844,
+            "output_tokens": 188,
+            "cost": 0.000119448
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.568
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.495
+    },
+    {
+      "scene": 2,
+      "target_words": 589,
+      "word_count": 544,
+      "contract": {
+        "index": 2,
+        "purpose": "Use the old map to establish a concrete historical label that supports some observations but challenges the inscription.",
+        "entry_state": "Deniz and Mara enter the map room with the inscription and steps recorded as separate observations.",
+        "beats": [
+          "Deniz finds an 1871 survey map labeling the site Ferry Steps, with a dotted route crossing the river.",
+          "Deniz copies the map's wording and dates, marking the bridge inscription as a later claim rather than a settled fact."
+        ],
+        "must_include": [
+          "The map is visibly dated 1871 and labels the location Ferry Steps.",
+          "The dotted crossing route partly matches the surviving steps.",
+          "Deniz distinguishes what the map shows from what the label might mean."
+        ],
+        "must_not_do": [
+          "Do not treat the map as proof that no bridge existed.",
+          "Do not erase the present inscription from Deniz's evidence.",
+          "Do not introduce a different landmark or unrelated historical dispute."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the 1842 bridge inscription and the worn steps beside the marker."
+        ],
+        "handoff": "The map suggests a ferry crossing before or alongside the claimed bridge, so Deniz must test the map against remembered local experience.",
+        "open_threads_after": [
+          "Did residents remember ferry steps, a bridge, or both at the marker?"
+        ]
+      },
+      "envelope": {
+        "prose": "The map room was cooler than the corridor. Mara pulled open a wide drawer, and rows of rolled sheets rested inside like sleeping scrolls.\n\n“Start with the catalog,” she said. “A map can be useful, but only if we know what it is and when it was made.”\n\nDeniz read the drawer labels until one caught their attention: RIVER CROSSINGS—SURVEY MAPS. Inside, a flat folder held several copies and notes. The first sheet was large enough to cover most of the table. In its lower corner, clear black numbers read:\n\nSURVEYED 1871.\n\nDeniz leaned closer. The river curved across the page, with the market street drawn on one side and a small set of steps marked on the other. Beside the steps, the surveyor had written two words:\n\nFERRY STEPS.\n\nA dotted line began at the steps, crossed the river, and continued toward the old market street.\n\nFor a moment Deniz felt the pleasant pull of an answer. “So it was a ferry.”\n\nMara did not correct them immediately. “What does the map show?”\n\nDeniz looked again. “It shows a place labeled ‘Ferry Steps.’ It shows a dotted route crossing the river. The route seems to start where the surviving steps are.”\n\n“And what might the label mean?”\n\n“That people used the steps to reach a ferry. Or that the surveyor called the whole crossing Ferry Steps. But I don’t know whether the label describes the original purpose, the purpose in 1871, or just the name people used then.”\n\nMara smiled slightly. “That distinction will save you trouble.”\n\nDeniz opened the notebook. Under the earlier observations, they wrote:\n\nDIRECT SOURCE: An 1871 survey map labels the site “Ferry Steps.”\nDIRECT SOURCE: A dotted route crosses the river from the steps toward the market street.\nINFERENCE: The surviving steps were probably connected to a river crossing in 1871.\nUNCERTAIN: Whether the crossing used a ferry, a bridge, or both at different times.\n\nThen Deniz added another line, pressing the pencil more lightly than before.\n\nRELATION TO INSCRIPTION: The map is dated 1871, twenty-nine years after the marker’s “First Bridge, 1842” claim. It challenges the idea that the bridge inscription tells the whole history, but does not prove that no bridge existed.\n\nThey copied the map title, date, label, and the direction of the dotted route. After that, Deniz used the archive’s small camera to photograph the sheet, following Mara’s instructions about keeping the page flat and the scale visible.\n\n“The map and the marker disagree,” Deniz said. “Or at least they emphasize different things.”\n\n“Exactly. A disagreement is not always a choice between one source being true and the other being useless.”\n\nDeniz glanced at the dotted line. It stopped near the market street, but the modern neighborhood had been built over that area many times. The line was evidence of a route, not a complete explanation of who crossed, how they crossed, or when the route began.\n\nMara returned the map to its folder. “You have a map claim now. The listening room may give you a memory claim.”\n\nDeniz closed the notebook, leaving the questions visible beneath the copied evidence. The marker still said First Bridge. The map said Ferry Steps. Both pointed toward the same riverbank, but neither had finished the story.",
+        "state_delta": {
+          "location": "Deniz is in the local archive's old map room, preparing to use the oral-history collection next.",
+          "character_goal": "Deniz wants to compare the map's claim with other evidence rather than decide immediately whether the marker or map is correct.",
+          "knowledge_gained": [
+            "An 1871 survey map labels the Riverside Marker site \"Ferry Steps.\"",
+            "The map shows a dotted route crossing the river from the steps toward the old market street.",
+            "The map's date is twenty-nine years after the marker's 1842 bridge inscription."
+          ],
+          "facts_established": [
+            "The surviving steps appear at the same riverbank location represented by the map's Ferry Steps label.",
+            "The 1871 map records a crossing route but does not identify every detail of how or when it was used."
+          ],
+          "clues_added": [
+            "The dotted route partly matches the surviving steps and points toward the old market street.",
+            "The site may have supported a ferry crossing in 1871, though the map does not establish whether a bridge also existed at another time."
+          ],
+          "objects_changed": [
+            "Deniz copied the 1871 map's title, date, label, and route into the notebook.",
+            "Deniz photographed the map for the investigation."
+          ],
+          "relationships_changed": [
+            "Mara continues to guide Deniz in separating what a source shows from what it might mean."
+          ],
+          "threads_opened": [
+            "Did residents remember ferry steps, a bridge, or both at the marker?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz now has three carefully separated pieces of evidence: the 1842 First Bridge inscription, the surviving river-facing steps, and an 1871 survey map labeled Ferry Steps with a dotted crossing route toward the market. The map challenges any single account of the site but does not disprove the bridge claim. Mara is directing Deniz to the oral-history collection to compare the documents with remembered local experience."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.466,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 544,
+          "usage": {
+            "input_tokens": 5255,
+            "output_tokens": 1312,
+            "total_tokens": 6567
+          },
+          "cost": {
+            "usd": 0.002888,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3507,
+          "output_tokens": 188,
+          "cost": 0.000147294
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3507,
+            "output_tokens": 188,
+            "cost": 0.000147294
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.366
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.832
+    },
+    {
+      "scene": 3,
+      "target_words": 646,
+      "word_count": 653,
+      "contract": {
+        "index": 3,
+        "purpose": "Add oral testimony that meaningfully conflicts with the map while preserving a plausible connection among all accounts.",
+        "entry_state": "Deniz now has the inscription and map, which disagree about whether the site primarily marked a bridge or ferry crossing.",
+        "beats": [
+          "Mara plays a 1998 oral-history recording in which Arun Patel remembers his grandmother calling the stone the flood mark.",
+          "Deniz notes that Arun remembers children measuring river height there, but cannot verify the story's original date."
+        ],
+        "must_include": [
+          "The recording is identified with speaker, date, and oral-history collection context.",
+          "Arun's memory calls the stone a flood mark, not simply a bridge marker.",
+          "Deniz records memory as valuable evidence without treating it as exact measurement."
+        ],
+        "must_not_do": [
+          "Do not portray Arun's memory as foolish or definitively false.",
+          "Do not add a secret conspiracy behind the conflicting accounts.",
+          "Do not let the recording settle the landmark's original purpose."
+        ],
+        "constraint_ids": [
+          "C4",
+          "C6",
+          "C7",
+          "C8"
+        ],
+        "prior_evidence": [
+          "The inscription claimed a first bridge in 1842.",
+          "The 1871 map labeled the site Ferry Steps and showed a dotted river crossing."
+        ],
+        "handoff": "Three sources now conflict about purpose but converge on repeated river use; Deniz needs present-day observations to test their physical implications.",
+        "open_threads_after": [
+          "Can the current riverbank and neighborhood reveal whether ferry, bridge, and flood memories fit the same place?"
+        ]
+      },
+      "envelope": {
+        "prose": "The listening room had no windows, but it was not silent. The archive’s ventilation hummed above the shelves, and somewhere behind the wall a printer clicked and paused.\n\nMara found a slim box labeled ORAL-HISTORY COLLECTION: RIVER DISTRICT, 1998. A card inside identified the recording:\n\nINTERVIEW WITH ARUN PATEL, RECORDED MAY 14, 1998.\n\n“Arun was seventy-two when he spoke with the archive volunteer,” Mara said. “He was remembering stories told by his grandmother. That makes the interview useful, but it also gives us a distance to keep track of.”\n\nDeniz wrote the speaker’s name, the date, and the collection title at the top of a fresh page. “How far back was his grandmother remembering?”\n\n“We may not know. Let’s listen before we guess.”\n\nMara placed headphones beside the old cassette player, then pressed PLAY. The tape made a soft hiss. A man’s voice followed, calm and slightly rough around the edges.\n\n“My grandmother never called it the bridge stone,” Arun said. “To her, it was the flood mark. She said children used to stand there after heavy rain and measure how high the river had climbed.”\n\nThe recording clicked faintly as he shifted in his chair.\n\n“Measure how?” asked the interviewer.\n\n“By looking at the stone, mostly. Sometimes they scratched a little line in mud beside it. They knew the market path flooded before the rest of the street did.”\n\nDeniz glanced at the copied map in their notebook. Ferry Steps. A crossing route. Now a flood mark.\n\nArun continued, “My grandmother remembered people going across there, too. Boats, I think. But the stone mattered because it told you whether crossing was sensible that day.”\n\nMara stopped the tape.\n\n“Boats, I think,” Deniz repeated. “That sounds uncertain.”\n\n“It is uncertain,” Mara said. “And even if Arun remembered accurately, he was describing what his grandmother told him. He could tell us how the story was remembered without proving when the stone first got its purpose.”\n\nDeniz replayed the section about the children. This time they listened for the exact words, writing slowly.\n\nMEMORY SOURCE: Arun Patel, recorded in 1998 for the River District Oral-History Collection.\nREMEMBERED: His grandmother called the stone “the flood mark.” Children watched the stone and measured how high the river had risen.\nREMEMBERED, LESS CERTAIN: Boats may have used the crossing.\nUNCERTAIN: When Arun’s grandmother learned the story; when the flood-mark practice began; whether the practice belonged to the original stone or a later use.\n\nThey underlined the word remembered, then drew a line beneath it.\n\n“I almost wrote that children measured the river there,” Deniz said. “But that makes it sound like I watched them do it.”\n\n“Good catch.”\n\n“I can write that Arun remembered hearing it from his grandmother. That keeps the evidence, but not more certainty than the recording gives us.”\n\nMara nodded. “And how does this account relate to the map?”\n\nDeniz studied the three descriptions in the notebook: First Bridge, 1842; Ferry Steps, 1871; flood mark, remembered in 1998.\n\n“They all place people near the river,” Deniz said. “But they describe different reasons. The map gives a named crossing. Arun gives a remembered warning sign. Neither one explains the bridge inscription.”\n\n“Nor does the recording tell us that the site began as a flood marker,” Mara added. “It tells us that this is how one family remembered it.”\n\nDeniz saved the audio file to the archive’s research folder, then added the recording’s reference number to the page. The story had become less tidy, but more precise. Three sources pointed toward the same riverbank. Their purposes did not line up neatly, and the oldest part of the story was still out of reach.\n\nMara returned the cassette to its box. “Tomorrow, we can test what these accounts would have looked like on the ground.”\n\nDeniz closed the notebook, leaving the three labels visible. “The river might help us decide what fits,” they said. “Not everything, though.”",
+        "state_delta": {
+          "location": "Deniz is leaving the archive's listening room after reviewing an oral-history recording, with the present-day riverbank ready for examination next.",
+          "character_goal": "Deniz wants to compare the inscription, map, and remembered account without deciding prematurely which source explains the landmark.",
+          "knowledge_gained": [
+            "A 1998 recording in the River District Oral-History Collection features an interview with Arun Patel.",
+            "Arun remembered his grandmother calling the stone the flood mark.",
+            "Arun remembered children watching the stone and measuring how high the river had risen after heavy rain.",
+            "Arun was less certain that boats used the crossing.",
+            "The recording cannot establish when the flood-mark practice began or the original purpose of the stone."
+          ],
+          "facts_established": [
+            "The oral testimony is a remembered family account recorded in 1998, not a contemporaneous measurement.",
+            "The recording places flood awareness and possible river crossing at the same general site as the map and inscription."
+          ],
+          "clues_added": [
+            "The stone may have served as a practical flood reference in neighborhood memory.",
+            "The map's crossing and Arun's flood memory may describe different uses of the same riverbank."
+          ],
+          "objects_changed": [
+            "Deniz added the recording's speaker, date, collection, reference number, and carefully qualified notes to the notebook.",
+            "Deniz saved the audio file to the archive's research folder."
+          ],
+          "relationships_changed": [
+            "Mara continues to guide Deniz in distinguishing remembered testimony from verified historical fact."
+          ],
+          "threads_opened": [
+            "Can the present riverbank and neighborhood show whether the crossing route and flood-memory account fit the physical site?",
+            "What purpose did the stone have first, if any source can establish that?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz now has three conflicting accounts of the Riverside Marker: the inscription claims First Bridge, 1842; the 1871 map labels the location Ferry Steps and shows a dotted crossing; and Arun Patel's 1998 oral-history recording remembers the stone as a flood mark where children measured river height. Deniz has preserved Arun's memory as valuable but not exact evidence and is ready to examine the present-day steps, riverbank, and marker with Mara."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 21.194,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 653,
+          "usage": {
+            "input_tokens": 5886,
+            "output_tokens": 1513,
+            "total_tokens": 7399
+          },
+          "cost": {
+            "usd": 0.00328695,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.94,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4303,
+          "output_tokens": 188,
+          "cost": 0.000180726
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.94,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4303,
+            "output_tokens": 188,
+            "cost": 0.000180726
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.474
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 21.669
+    },
+    {
+      "scene": 4,
+      "target_words": 646,
+      "word_count": 702,
+      "contract": {
+        "index": 4,
+        "purpose": "Explore the present neighborhood so Deniz can compare source claims with physical evidence and classify remaining uncertainty.",
+        "entry_state": "Deniz has three conflicting accounts and must examine the marker's surroundings without choosing one prematurely.",
+        "beats": [
+          "Deniz measures the step direction with Mara, finding it faces the old market street shown near the map's dotted route.",
+          "They find no bridge foundations, but a high-water line on the marker matches Arun's flood-memory description.",
+          "Deniz sorts notes into known, inferred, remembered, and uncertain, leaving the original marker purpose unresolved."
+        ],
+        "must_include": [
+          "The present landscape supports a crossing route and a flood-related use.",
+          "The absence of bridge foundations limits, rather than disproves, the inscription.",
+          "Deniz explicitly labels each conclusion by evidence type."
+        ],
+        "must_not_do": [
+          "Do not uncover a conclusive hidden artifact.",
+          "Do not let present observations erase historical testimony.",
+          "Do not solve the central conflict before Deniz applies the comparison."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The map showed Ferry Steps and a dotted crossing toward the market.",
+          "Arun's recording described the stone as a flood mark.",
+          "The inscription claimed a first bridge in 1842."
+        ],
+        "handoff": "Deniz has a cautious synthesis: the site served river crossing and flood memory, while the bridge claim remains possible but unverified.",
+        "open_threads_after": [
+          "How can Deniz present a useful account without pretending the sources describe one perfectly certain event?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Mara met Deniz at the Riverside Marker with a measuring tape, a compass app, and the notebook.\n\n“Nothing here can tell us the whole story,” Mara said. “But the ground can tell us what is possible.”\n\nDeniz stood beside the worn steps. Their edges were rounded from years of feet, weather, and perhaps water. The steps descended toward the river at a slight angle, not straight into the current.\n\nThey held the compass phone flat while Mara checked the direction against the old map. Deniz followed the line with one finger. “The steps face northeast.”\n\n“Which is?”\n\n“The old market street.” Deniz looked past the river. The modern market stood several blocks away, but the older street still ran toward it between apartment buildings and repair shops. “The map’s dotted route starts here and points almost the same way.”\n\nThat did not prove what had crossed the river. It did show that the map’s route and the surviving steps fit the present landscape better than Deniz had expected.\n\nThey walked along the riverbank, searching for signs of a bridge. Mara checked the ground near the marker, then the stretch beneath the path. Deniz looked for straight rows of stones, holes where beams might have rested, or anything that seemed too regular to be natural.\n\nThey found weeds, cracked paving, and one rusted bolt beside a newer railing. Nothing that could be identified as a bridge foundation.\n\nDeniz wrote: No visible bridge foundations at or beside the marker.\n\nThen they paused. “That sounds stronger than I mean it to.”\n\nMara raised an eyebrow.\n\n“I should write, ‘No bridge foundations found during this visit.’ The first version sounds like nobody could ever find any.”\n\n“Exactly.”\n\nDeniz changed the sentence. The absence limited the inscription’s claim, but it did not disprove it. A bridge might have stood somewhere slightly different. Its supports might have been removed, buried, or washed away. None of those possibilities had evidence behind them yet.\n\nWhile they examined the lower stones, Mara noticed a pale, uneven stripe across the marker’s river-facing side. It sat higher than Deniz’s shoulder, just below a shallow notch in the stone.\n\n“Could that be the high-water line?” Deniz asked.\n\n“Could be. What would you need before calling it that?”\n\n“A record of the stone’s surface, maybe a comparison with other flood marks. We’d need to know it wasn’t just a difference in the stone.”\n\nDeniz photographed the stripe without naming it as fact. Still, its height reminded them of Arun’s recording: children watching the stone after heavy rain and judging whether the market path might flood.\n\nThey added: A pale line on the marker is consistent with a high-water mark; its date and cause are unknown.\n\nBack at a bench, Deniz divided a clean notebook page into four boxes.\n\nKNOWN, they wrote first. The inscription reads “FIRST BRIDGE, 1842.” The 1871 map labels the place “Ferry Steps” and shows a dotted route toward the market. Steps still descend toward the river. A pale line remains on the marker.\n\nINFERRED came next. The steps and their direction fit a crossing route. The site may have supported ferry travel or another way across. The pale line may record high water.\n\nUnder REMEMBERED, Deniz wrote Arun Patel’s 1998 account: his grandmother called the stone the flood mark, and children measured the river’s rise there. That was evidence of neighborhood memory, not a measurement Deniz had witnessed.\n\nThe last box was UNCERTAIN. Whether a bridge stood at the site in 1842. Whether the flood line came from that period. Whether the stone began as a bridge marker, ferry landmark, flood reference, or served several purposes over time.\n\nDeniz tapped the page. “The present place supports both the crossing and flood accounts.”\n\n“And the original purpose?” Mara asked.\n\n“Still unresolved.” Deniz closed the notebook. “But unresolved is more accurate than choosing one because it sounds neat.”\n\nAcross the river, the market buses groaned around a corner. The old route was still there, though the bridge, ferry, and children in Arun’s story remained partly out of reach. Deniz gathered the notebook and compass. Tomorrow, they would have to explain the uncertainty clearly enough for someone else to understand it.",
+        "state_delta": {
+          "location": "The present-day Riverside Marker, its river-facing steps, riverbank, and nearby market route.",
+          "character_goal": "Deniz wants to build a defensible account by testing the three sources against the physical landscape without choosing a single explanation prematurely.",
+          "knowledge_gained": [
+            "The surviving steps face northeast toward the old market street shown near the map's dotted route.",
+            "No bridge foundations were found during this visit.",
+            "A pale line on the marker is consistent with a high-water mark, though its date and cause are unknown."
+          ],
+          "facts_established": [
+            "The present landscape physically supports a route crossing toward the market.",
+            "The absence of visible bridge foundations limits but does not disprove the 1842 bridge inscription.",
+            "The marker contains a possible high-water line that fits Arun's remembered flood-related use."
+          ],
+          "clues_added": [
+            "The direction of the steps matches the direction of the 1871 map's dotted crossing route.",
+            "The possible high-water line provides physical support for a flood-related use, without proving when or why it was made."
+          ],
+          "objects_changed": [
+            "Deniz photographed the possible high-water line.",
+            "Deniz revised the notebook into four sections: known, inferred, remembered, and uncertain.",
+            "Deniz recorded the absence of bridge foundations as a finding limited to this visit."
+          ],
+          "relationships_changed": [
+            "Mara continues to guide Deniz toward precise, evidence-limited wording rather than stronger claims than the observations support."
+          ],
+          "threads_opened": [
+            "How can Deniz present a useful account while preserving the unresolved original purpose of the marker?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz's cautious synthesis is that the site fits a crossing route and a flood-related memory. The map-supported route and possible high-water line are present-day observations and inferences, Arun's account remains remembered testimony, and the 1842 bridge claim remains uncertain because no foundations were found. Deniz has explicitly sorted the evidence into known, inferred, remembered, and uncertain and is ready to draft a public explanation with Mara."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.905,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 702,
+          "usage": {
+            "input_tokens": 6619,
+            "output_tokens": 1484,
+            "total_tokens": 8103
+          },
+          "cost": {
+            "usd": 0.0034354,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.94,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4863,
+          "output_tokens": 188,
+          "cost": 0.000204246
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.94,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4863,
+            "output_tokens": 188,
+            "cost": 0.000204246
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.613
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.519
+    },
+    {
+      "scene": 5,
+      "target_words": 779,
+      "word_count": 753,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the evidence-comparison method by presenting a defensible account and a revised archive label that preserves disagreement.",
+        "entry_state": "Deniz must turn classified evidence into a public explanation while the original purpose and bridge claim remain partly uncertain.",
+        "beats": [
+          "Deniz presents Mara a draft stating known observations, map-supported inferences, Arun's memory, and the unverified bridge inscription.",
+          "After discussion, Deniz writes an archive panel: crossing place, remembered flood marker, and possible 1842 bridge site.",
+          "Mara approves the panel for the neighborhood display because it names sources instead of forcing one perfect story."
+        ],
+        "must_include": [
+          "The decisive application is Deniz's source-labeled account and proposed public panel.",
+          "The panel preserves the disagreement between map, recording, and inscription.",
+          "Deniz explains why uncertainty is part of the landmark's honest history."
+        ],
+        "must_not_do": [
+          "Do not claim the bridge definitely existed or definitely did not exist.",
+          "Do not replace the original inscription without permission.",
+          "Do not introduce a new source that suddenly resolves everything."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 4 established the matching route, flood line, missing foundations, and four evidence categories.",
+          "The map, recording, and inscription supplied the competing historical claims."
+        ],
+        "handoff": "The archive accepts Deniz's qualified panel, and the remaining task is observing how the neighborhood receives an account that preserves uncertainty.",
+        "open_threads_after": [
+          "How will neighbors respond when the marker's history is presented as layered rather than singular?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next morning, Deniz spread the notebook across a table in the archive’s small reading room. The four headings filled most of the page: KNOWN, INFERRED, REMEMBERED, UNCERTAIN. Beside them lay the photograph of the pale line on the marker, the copied map notes, and the reference card for Arun Patel’s recording.\n\nMara set down two cups of tea. “Show me the account you want people to read.”\n\nDeniz turned the notebook around.\n\n“Known,” they began, pointing to the first section. “The marker still says, ‘FIRST BRIDGE, 1842.’ The surviving steps descend toward the river. The 1871 survey map labels this place ‘Ferry Steps’ and draws a dotted route across the river toward the old market street. And there’s a pale line on the stone.”\n\n“Careful with the last one,” Mara said.\n\n“Right. The line is visible. It is consistent with a high-water mark, but we don’t know when it was made or what caused it.”\n\nMara nodded. “Continue.”\n\n“Under inferred: the steps and the map’s route fit a crossing place. The site may have supported ferry travel or another crossing. The line may be connected to flood measurement.”\n\n“May be connected,” Mara repeated. “Good.”\n\nDeniz moved to the third section. “Remembered: in the 1998 River District Oral-History Collection recording, Arun Patel said his grandmother called the stone the flood mark. He remembered children watching the river rise there after heavy rain. That tells us how the place lived in neighborhood memory. It doesn’t tell us exactly when the practice began, or whether the stone was first used for that purpose.”\n\n“And the bridge?”\n\n“Uncertain. The inscription claims a first bridge in 1842. We found no bridge foundations during our visit, but that doesn’t prove there was never a bridge. So I can’t call the inscription true or false.”\n\nMara leaned back. “Now turn those notes into something that works on a wall. Someone should understand it without having your whole notebook beside them.”\n\nDeniz opened a blank document. At first, the cursor blinked in the empty space like a challenge. They typed a title:\n\nRIVERSIDE MARKER: CROSSING, FLOOD MEMORY, AND AN UNVERIFIED BRIDGE CLAIM\n\nBelow it, Deniz drafted:\n\nThe stone beside these steps stands at a long-used river crossing. An 1871 survey map labels the location “Ferry Steps” and shows a dotted route toward the old market street. The surviving steps face that direction today.\n\nA 1998 recording in the River District Oral-History Collection preserves Arun Patel’s memory that his grandmother called the stone a flood mark and that children watched it to judge how high the river had risen. This is remembered local experience, not a dated measurement of the stone’s original use.\n\nThe stone also bears the inscription “FIRST BRIDGE, 1842.” No bridge foundations were found during a recent visit, so the claim remains unverified. The inscription may record a bridge, while the map and oral history record other uses of the same place. The evidence does not yet establish which use came first, or whether the site served several purposes over time.\n\nDeniz read the paragraph twice. “It sounds less satisfying than saying, ‘This was a bridge,’ or ‘This was a ferry.’”\n\n“It is less satisfying,” Mara said. “But is it less useful?”\n\nDeniz considered the map, the recording, and the stone’s uneven line. “No. It tells people what they can check, what someone remembered, and what we’re inferring. If we choose one clean story, we’d hide the disagreement instead of explaining it.”\n\n“Then say that in the panel.”\n\nDeniz added a final sentence: “Keeping the uncertainty is part of the landmark’s honest history.”\n\nMara read the finished text silently. Then she reached for the display folder and placed a label beneath the title: Sources: 1871 survey map; River District Oral-History Collection, Arun Patel interview, 1998; present inscription and site observations.\n\n“The original inscription stays where it is,” Mara said. “This panel gives it context. We are not replacing the stone’s words, only showing their limits.”\n\nShe signed the approval line for the neighborhood display.\n\nDeniz printed the panel, checking every date and quotation against the notebook. The account did not force the marker into a single past. It let the crossing route, the flood memory, and the possible bridge remain connected without pretending they were the same piece of evidence.\n\nBy afternoon, the approved panel was ready to be placed beside the original inscription. The archive had accepted Deniz’s account, and the next question belonged not to the document alone, but to the people who would read it.",
+        "state_delta": {
+          "location": "The local archive's reading room and neighborhood display preparation area.",
+          "character_goal": "Deniz wants to present the most defensible history of the Riverside Marker without erasing disagreement or claiming more certainty than the evidence allows.",
+          "knowledge_gained": [
+            "A public account can distinguish known observations, map-supported inferences, remembered testimony, and uncertain claims.",
+            "The archive can preserve the original inscription while adding context about its limits.",
+            "Mara approves a qualified account for the neighborhood display."
+          ],
+          "facts_established": [
+            "The proposed panel identifies the site as a long-used river crossing.",
+            "The 1871 map label, 1998 Arun Patel recording, present inscription, and recent site observations are all named as sources.",
+            "The account states that the 1842 bridge claim remains unverified.",
+            "The panel states that the original purpose and order of uses remain unresolved."
+          ],
+          "clues_added": [
+            "The map, flood memory, and bridge inscription may describe different uses of the same place over time."
+          ],
+          "objects_changed": [
+            "Deniz turned the notebook synthesis into a source-labeled archive panel.",
+            "Mara approved the printed panel for the neighborhood display.",
+            "The original Riverside Marker inscription remains in place beside the forthcoming panel."
+          ],
+          "relationships_changed": [
+            "Mara accepts Deniz's evidence-based account and trusts Deniz to present the uncertainty publicly."
+          ],
+          "threads_opened": [
+            "How will neighbors respond when the marker's history is presented as layered rather than singular?"
+          ],
+          "threads_resolved": [
+            "Deniz has created a defensible public account that preserves the disagreement among the map, recording, and inscription."
+          ],
+          "handoff_state": "The archive has approved Deniz's qualified panel for the neighborhood display. The panel presents the Riverside Marker as a crossing place, preserves Arun Patel's remembered flood-marker account, identifies the 1871 Ferry Steps map, and keeps the 1842 bridge claim explicitly unverified. The original inscription remains visible and has not been replaced. The next scene begins with neighbors reading the display."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.203,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 753,
+          "usage": {
+            "input_tokens": 7142,
+            "output_tokens": 1595,
+            "total_tokens": 8737
+          },
+          "cost": {
+            "usd": 0.00369935,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.94,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5555,
+          "output_tokens": 188,
+          "cost": 0.00023331
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5555,
+            "output_tokens": 188,
+            "cost": 0.00023331
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.398
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.601
+    },
+    {
+      "scene": 6,
+      "target_words": 646,
+      "word_count": 666,
+      "contract": {
+        "index": 6,
+        "purpose": "Show consequences, close Deniz's investigation, and leave one evidence-based question for future exploration.",
+        "entry_state": "The archive display now presents Deniz's qualified account beside the original inscription and source references.",
+        "beats": [
+          "Neighbors read the panel; one recognizes the flood line, while another accepts that family memory and documents can both hold partial truth.",
+          "Deniz updates the notes with the final account and keeps the bridge claim marked unverified.",
+          "A faint continuation of the map's dotted route beneath the modern market raises one bounded question about where the crossing led."
+        ],
+        "must_include": [
+          "Deniz's central investigation is resolved through a preserved, evidence-based account.",
+          "The original inscription remains visible with its limits clearly stated.",
+          "The future question comes directly from the map's surviving route, not a new mystery."
+        ],
+        "must_not_do": [
+          "Do not reopen the main problem or invalidate Deniz's account.",
+          "Do not add a dramatic revelation, danger, or unrelated subplot.",
+          "Do not provide an answer to the route question."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C3",
+          "C4",
+          "C10",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the approved panel and its distinction among known, inferred, remembered, and uncertain claims.",
+          "The 1871 map showed a dotted route continuing toward the market.",
+          "The original inscription's bridge claim remained explicitly unverified."
+        ],
+        "handoff": "Deniz's account is publicly preserved, the main conflict is responsibly closed, and one map-based route question remains for future research.",
+        "open_threads_after": [
+          "Where did the dotted crossing route continue beyond the present-day market?"
+        ]
+      },
+      "envelope": {
+        "prose": "By Saturday afternoon, the panel stood beside the Riverside Marker under a clear plastic cover. The original words remained carved in the stone: “FIRST BRIDGE, 1842.” Beneath them, the new display explained the 1871 “Ferry Steps” map, Arun Patel’s 1998 flood-mark memory, the surviving steps, and the absence of visible bridge foundations. Its last lines stated that the bridge claim remained unverified and that the site might have served several purposes over time.\n\nPeople stopped on their way to the market. Some read quickly, then continued with their bags. Others leaned closer to study the sources.\n\nAn older woman in a green coat touched the photograph of the pale line. “That is the mark,” she said. “Or at least, it looks like the one my father showed me.”\n\nDeniz, standing nearby with Mara, kept their voice careful. “Do you remember what he said it measured?”\n\n“The river after storms. He said children used to compare it with the stones below.” The woman looked from the photograph to the steps. “I never knew anyone had written it down.”\n\n“Your memory helps show how the place was used in the neighborhood,” Deniz said. “But we still can’t date the line from your memory alone.”\n\nThe woman nodded. “Fair enough. A memory can point toward something without being a measuring instrument.”\n\nA man reading the panel’s source list frowned at the word unverified. “If the stone says bridge, why not trust the stone?”\n\n“Because the inscription is evidence too,” Deniz replied. “It tells us what someone wanted the stone to say. The map records Ferry Steps twenty-nine years later, and the recording preserves another use remembered by a family. None of those sources automatically cancels the others.”\n\nHe glanced at the old inscription. “So the documents and the family story can both be partly right?”\n\n“They can hold different pieces of the place’s history,” Mara said. “That is what the evidence allows us to say.”\n\nThe man read the panel again. This time he did not shake his head. “I suppose a place can do more than one job.”\n\nAfter the visitors moved on, Deniz returned to the archive with the notebook. The old headings were still there, but the page now carried a final section: PUBLIC ACCOUNT.\n\nUnder it, Deniz wrote: The Riverside Marker is documented as a crossing place. The 1871 map supports the Ferry Steps route toward the market. Arun Patel’s 1998 recording preserves a flood-marker memory. The present inscription claims a first bridge in 1842, but that claim remains unverified. The order and combination of uses are still uncertain.\n\nDeniz paused, then added: The account is defensible because each statement is matched to the kind of evidence supporting it.\n\nMara read the entry over Deniz’s shoulder. “You’re keeping the uncertainty.”\n\n“It belongs there,” Deniz said. “The panel would be less honest without it.”\n\nBefore closing the notebook, Deniz unfolded the photograph of the map. The dotted route crossed the river, then continued beneath the area now occupied by the market. On the surveyor’s sheet, the line faded near a cluster of tiny buildings. It did not say whether the route ended there, turned along the street, or connected to another path.\n\nDeniz traced the fading dots with one finger, careful not to touch the original map when they later returned the photograph to its folder.\n\n“What are you thinking?” Mara asked.\n\n“That the panel answers what we can responsibly say about the marker,” Deniz said. “But the map leaves one smaller question.”\n\n“Which is?”\n\n“Where did the crossing route continue beyond the present-day market?”\n\nMara smiled. “A question based on evidence.”\n\nDeniz closed the notebook. Outside, people crossed the square carrying bread, flowers, and shopping lists. The marker stood beside them, its old claim still visible, its limits now visible too. The main story of the stone no longer needed to be made perfectly certain. It had been preserved—layer by layer, source by source—with one dotted line waiting for someone to follow it another day.",
+        "state_delta": {
+          "location": "The Riverside Marker and adjoining neighborhood display, followed by the local archive.",
+          "character_goal": "Deniz's central investigation is complete: they have publicly presented the most defensible account of the landmark and now hold one bounded question for future research.",
+          "knowledge_gained": [
+            "A neighbor recognizes the pale line as consistent with a flood-related practice remembered in the neighborhood.",
+            "Another visitor accepts that documents and family memory can each preserve partial truth.",
+            "The 1871 map's dotted route continues beneath or beyond the present-day market, but its exact continuation is unknown."
+          ],
+          "facts_established": [
+            "The approved panel remains displayed beside the original Riverside Marker inscription.",
+            "The panel preserves the map, oral-history recording, site observations, and the inscription's limits.",
+            "Deniz's final account identifies the site as a documented crossing place while keeping the bridge claim unverified.",
+            "The order and combination of the site's historical uses remain uncertain."
+          ],
+          "clues_added": [
+            "The map's route fades near buildings in the area now occupied by the market.",
+            "The route may have continued along or beyond the modern market, but no answer is established."
+          ],
+          "objects_changed": [
+            "The approved archive panel is publicly displayed beside the marker.",
+            "Deniz updated the notebook with a final source-labeled public account.",
+            "The map photograph was returned to its archive folder after Deniz examined the route."
+          ],
+          "relationships_changed": [
+            "A neighbor contributes a supporting but undated memory of the flood line.",
+            "A skeptical visitor accepts that the conflicting sources may each preserve part of the landmark's history.",
+            "Mara recognizes Deniz's remaining route question as evidence-based future research."
+          ],
+          "threads_opened": [
+            "Where did the 1871 map's dotted crossing route continue beyond the present-day market?"
+          ],
+          "threads_resolved": [
+            "Deniz's central investigation is resolved through a publicly preserved account that distinguishes documented observations, inferences, remembered testimony, and uncertainty."
+          ],
+          "handoff_state": "Deniz's evidence-based account is publicly displayed beside the unchanged inscription “FIRST BRIDGE, 1842.” Neighbors have seen that the landmark's map, oral history, physical evidence, and inscription can preserve different partial truths. The bridge claim remains explicitly unverified, and the main conflict is responsibly closed. One bounded question remains for future research: where the 1871 map's dotted crossing route continued beyond the present-day market."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.749,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 666,
+          "usage": {
+            "input_tokens": 7357,
+            "output_tokens": 1514,
+            "total_tokens": 8871
+          },
+          "cost": {
+            "usd": 0.0036559,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.94,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5584,
+          "output_tokens": 188,
+          "cost": 0.000234528
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.94,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5584,
+            "output_tokens": 188,
+            "cost": 0.000234528
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.413
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 21.165
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz's investigation after noticing that the familiar Riverside Marker tells a different story in its inscription and surroundings.",
+      "word_count": 464,
+      "location": "Deniz is entering the local archive's old map room after examining the Riverside Marker and its river-facing steps.",
+      "character_goal": "Deniz wants to understand the marker's history responsibly, without proving a preferred explanation.",
+      "knowledge_gained": [
+        "The present marker inscription reads “FIRST BRIDGE, 1842.”",
+        "No bridge is visible at the present-day site.",
+        "Worn stone steps descend from beside the marker toward the river.",
+        "Mara can provide access to the old map room and oral-history collection."
+      ],
+      "facts_established": [
+        "The Riverside Marker stands beside the river near the neighborhood path to the market.",
+        "The marker and the surviving steps are in the same location."
+      ],
+      "clues_added": [
+        "The worn steps may be connected to the bridge named by the inscription, but this remains a guess."
+      ],
+      "objects_changed": [
+        "Deniz began a notebook page separating direct observations from guesses."
+      ],
+      "relationships_changed": [
+        "Mara agrees to support Deniz's investigation while requiring careful recording of each source."
+      ],
+      "threads_opened": [
+        "Why does the inscription mention a bridge when no bridge remains?",
+        "What do the worn river-facing steps indicate?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has recorded the exact 1842 bridge inscription and the worn steps as separate initial evidence, with the possible connection labeled only as a guess. Mara has opened the old map room and made the oral-history collection available for comparison in the next investigation."
+    },
+    {
+      "scene": 2,
+      "purpose": "Use the old map to establish a concrete historical label that supports some observations but challenges the inscription.",
+      "word_count": 544,
+      "location": "Deniz is in the local archive's old map room, preparing to use the oral-history collection next.",
+      "character_goal": "Deniz wants to compare the map's claim with other evidence rather than decide immediately whether the marker or map is correct.",
+      "knowledge_gained": [
+        "An 1871 survey map labels the Riverside Marker site \"Ferry Steps.\"",
+        "The map shows a dotted route crossing the river from the steps toward the old market street.",
+        "The map's date is twenty-nine years after the marker's 1842 bridge inscription."
+      ],
+      "facts_established": [
+        "The surviving steps appear at the same riverbank location represented by the map's Ferry Steps label.",
+        "The 1871 map records a crossing route but does not identify every detail of how or when it was used."
+      ],
+      "clues_added": [
+        "The dotted route partly matches the surviving steps and points toward the old market street.",
+        "The site may have supported a ferry crossing in 1871, though the map does not establish whether a bridge also existed at another time."
+      ],
+      "objects_changed": [
+        "Deniz copied the 1871 map's title, date, label, and route into the notebook.",
+        "Deniz photographed the map for the investigation."
+      ],
+      "relationships_changed": [
+        "Mara continues to guide Deniz in separating what a source shows from what it might mean."
+      ],
+      "threads_opened": [
+        "Did residents remember ferry steps, a bridge, or both at the marker?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz now has three carefully separated pieces of evidence: the 1842 First Bridge inscription, the surviving river-facing steps, and an 1871 survey map labeled Ferry Steps with a dotted crossing route toward the market. The map challenges any single account of the site but does not disprove the bridge claim. Mara is directing Deniz to the oral-history collection to compare the documents with remembered local experience."
+    },
+    {
+      "scene": 3,
+      "purpose": "Add oral testimony that meaningfully conflicts with the map while preserving a plausible connection among all accounts.",
+      "word_count": 653,
+      "location": "Deniz is leaving the archive's listening room after reviewing an oral-history recording, with the present-day riverbank ready for examination next.",
+      "character_goal": "Deniz wants to compare the inscription, map, and remembered account without deciding prematurely which source explains the landmark.",
+      "knowledge_gained": [
+        "A 1998 recording in the River District Oral-History Collection features an interview with Arun Patel.",
+        "Arun remembered his grandmother calling the stone the flood mark.",
+        "Arun remembered children watching the stone and measuring how high the river had risen after heavy rain.",
+        "Arun was less certain that boats used the crossing.",
+        "The recording cannot establish when the flood-mark practice began or the original purpose of the stone."
+      ],
+      "facts_established": [
+        "The oral testimony is a remembered family account recorded in 1998, not a contemporaneous measurement.",
+        "The recording places flood awareness and possible river crossing at the same general site as the map and inscription."
+      ],
+      "clues_added": [
+        "The stone may have served as a practical flood reference in neighborhood memory.",
+        "The map's crossing and Arun's flood memory may describe different uses of the same riverbank."
+      ],
+      "objects_changed": [
+        "Deniz added the recording's speaker, date, collection, reference number, and carefully qualified notes to the notebook.",
+        "Deniz saved the audio file to the archive's research folder."
+      ],
+      "relationships_changed": [
+        "Mara continues to guide Deniz in distinguishing remembered testimony from verified historical fact."
+      ],
+      "threads_opened": [
+        "Can the present riverbank and neighborhood show whether the crossing route and flood-memory account fit the physical site?",
+        "What purpose did the stone have first, if any source can establish that?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz now has three conflicting accounts of the Riverside Marker: the inscription claims First Bridge, 1842; the 1871 map labels the location Ferry Steps and shows a dotted crossing; and Arun Patel's 1998 oral-history recording remembers the stone as a flood mark where children measured river height. Deniz has preserved Arun's memory as valuable but not exact evidence and is ready to examine the present-day steps, riverbank, and marker with Mara."
+    },
+    {
+      "scene": 4,
+      "purpose": "Explore the present neighborhood so Deniz can compare source claims with physical evidence and classify remaining uncertainty.",
+      "word_count": 702,
+      "location": "The present-day Riverside Marker, its river-facing steps, riverbank, and nearby market route.",
+      "character_goal": "Deniz wants to build a defensible account by testing the three sources against the physical landscape without choosing a single explanation prematurely.",
+      "knowledge_gained": [
+        "The surviving steps face northeast toward the old market street shown near the map's dotted route.",
+        "No bridge foundations were found during this visit.",
+        "A pale line on the marker is consistent with a high-water mark, though its date and cause are unknown."
+      ],
+      "facts_established": [
+        "The present landscape physically supports a route crossing toward the market.",
+        "The absence of visible bridge foundations limits but does not disprove the 1842 bridge inscription.",
+        "The marker contains a possible high-water line that fits Arun's remembered flood-related use."
+      ],
+      "clues_added": [
+        "The direction of the steps matches the direction of the 1871 map's dotted crossing route.",
+        "The possible high-water line provides physical support for a flood-related use, without proving when or why it was made."
+      ],
+      "objects_changed": [
+        "Deniz photographed the possible high-water line.",
+        "Deniz revised the notebook into four sections: known, inferred, remembered, and uncertain.",
+        "Deniz recorded the absence of bridge foundations as a finding limited to this visit."
+      ],
+      "relationships_changed": [
+        "Mara continues to guide Deniz toward precise, evidence-limited wording rather than stronger claims than the observations support."
+      ],
+      "threads_opened": [
+        "How can Deniz present a useful account while preserving the unresolved original purpose of the marker?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz's cautious synthesis is that the site fits a crossing route and a flood-related memory. The map-supported route and possible high-water line are present-day observations and inferences, Arun's account remains remembered testimony, and the 1842 bridge claim remains uncertain because no foundations were found. Deniz has explicitly sorted the evidence into known, inferred, remembered, and uncertain and is ready to draft a public explanation with Mara."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the evidence-comparison method by presenting a defensible account and a revised archive label that preserves disagreement.",
+      "word_count": 753,
+      "location": "The local archive's reading room and neighborhood display preparation area.",
+      "character_goal": "Deniz wants to present the most defensible history of the Riverside Marker without erasing disagreement or claiming more certainty than the evidence allows.",
+      "knowledge_gained": [
+        "A public account can distinguish known observations, map-supported inferences, remembered testimony, and uncertain claims.",
+        "The archive can preserve the original inscription while adding context about its limits.",
+        "Mara approves a qualified account for the neighborhood display."
+      ],
+      "facts_established": [
+        "The proposed panel identifies the site as a long-used river crossing.",
+        "The 1871 map label, 1998 Arun Patel recording, present inscription, and recent site observations are all named as sources.",
+        "The account states that the 1842 bridge claim remains unverified.",
+        "The panel states that the original purpose and order of uses remain unresolved."
+      ],
+      "clues_added": [
+        "The map, flood memory, and bridge inscription may describe different uses of the same place over time."
+      ],
+      "objects_changed": [
+        "Deniz turned the notebook synthesis into a source-labeled archive panel.",
+        "Mara approved the printed panel for the neighborhood display.",
+        "The original Riverside Marker inscription remains in place beside the forthcoming panel."
+      ],
+      "relationships_changed": [
+        "Mara accepts Deniz's evidence-based account and trusts Deniz to present the uncertainty publicly."
+      ],
+      "threads_opened": [
+        "How will neighbors respond when the marker's history is presented as layered rather than singular?"
+      ],
+      "threads_resolved": [
+        "Deniz has created a defensible public account that preserves the disagreement among the map, recording, and inscription."
+      ],
+      "handoff_state": "The archive has approved Deniz's qualified panel for the neighborhood display. The panel presents the Riverside Marker as a crossing place, preserves Arun Patel's remembered flood-marker account, identifies the 1871 Ferry Steps map, and keeps the 1842 bridge claim explicitly unverified. The original inscription remains visible and has not been replaced. The next scene begins with neighbors reading the display."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show consequences, close Deniz's investigation, and leave one evidence-based question for future exploration.",
+      "word_count": 666,
+      "location": "The Riverside Marker and adjoining neighborhood display, followed by the local archive.",
+      "character_goal": "Deniz's central investigation is complete: they have publicly presented the most defensible account of the landmark and now hold one bounded question for future research.",
+      "knowledge_gained": [
+        "A neighbor recognizes the pale line as consistent with a flood-related practice remembered in the neighborhood.",
+        "Another visitor accepts that documents and family memory can each preserve partial truth.",
+        "The 1871 map's dotted route continues beneath or beyond the present-day market, but its exact continuation is unknown."
+      ],
+      "facts_established": [
+        "The approved panel remains displayed beside the original Riverside Marker inscription.",
+        "The panel preserves the map, oral-history recording, site observations, and the inscription's limits.",
+        "Deniz's final account identifies the site as a documented crossing place while keeping the bridge claim unverified.",
+        "The order and combination of the site's historical uses remain uncertain."
+      ],
+      "clues_added": [
+        "The map's route fades near buildings in the area now occupied by the market.",
+        "The route may have continued along or beyond the modern market, but no answer is established."
+      ],
+      "objects_changed": [
+        "The approved archive panel is publicly displayed beside the marker.",
+        "Deniz updated the notebook with a final source-labeled public account.",
+        "The map photograph was returned to its archive folder after Deniz examined the route."
+      ],
+      "relationships_changed": [
+        "A neighbor contributes a supporting but undated memory of the flood line.",
+        "A skeptical visitor accepts that the conflicting sources may each preserve part of the landmark's history.",
+        "Mara recognizes Deniz's remaining route question as evidence-based future research."
+      ],
+      "threads_opened": [
+        "Where did the 1871 map's dotted crossing route continue beyond the present-day market?"
+      ],
+      "threads_resolved": [
+        "Deniz's central investigation is resolved through a publicly preserved account that distinguishes documented observations, inferences, remembered testimony, and uncertainty."
+      ],
+      "handoff_state": "Deniz's evidence-based account is publicly displayed beside the unchanged inscription “FIRST BRIDGE, 1842.” Neighbors have seen that the landmark's map, oral history, physical evidence, and inscription can preserve different partial truths. The bridge claim remains explicitly unverified, and the main conflict is responsibly closed. One bounded question remains for future research: where the 1871 map's dotted crossing route continued beyond the present-day market."
+    }
+  ],
+  "story_title": "The Story Behind the Marker",
+  "story": "Deniz had passed the Riverside Marker hundreds of times, usually without looking at it. That afternoon, the afternoon light made the carved letters stand out.\n\nFIRST BRIDGE\n1842\n\nDeniz stopped. The river moved below the path, broad and brown-green between the banks. There was no bridge. No broken pillars rose from the water, and no road led straight toward it. Only weeds, smooth stones, and the narrow path used by people walking to the market.\n\nDeniz took out a phone, then decided a notebook would be better. On a fresh page, they wrote:\n\nDIRECT OBSERVATION: The marker says “First Bridge, 1842.”\nDIRECT OBSERVATION: No bridge is visible today.\n\nThey looked around again. Beside the marker, partly hidden under grass, a line of worn stone steps descended toward the river. The top steps were uneven, their edges rounded by weather or by many feet. At the bottom, mud covered whatever the steps once reached.\n\nDeniz added another line.\n\nDIRECT OBSERVATION: Stone steps lead down toward the river.\n\nUnder that, they wrote:\n\nGUESS: The steps may be connected to the bridge mentioned on the marker.\n\nThen Deniz paused, pencil hovering. “May be” mattered. The thought felt less satisfying than a firm answer, but it was more honest. The goal was not to prove a favorite explanation. It was to understand what the marker could actually tell them—and what it could not.\n\nAt the local archive, Deniz found Mara at the front desk, sorting photographs into labeled folders. Mara had helped with school research before, but she did not treat Deniz like a little kid. She glanced at the notebook and raised an eyebrow.\n\n“Starting an investigation?”\n\n“I think so,” Deniz said. “The marker says there was a first bridge here in 1842, but there isn’t even a bridge now. These steps seem important, though I don’t know why.”\n\nMara read the page without touching the notebook. “Good distinction. You’ve separated what you saw from what you’re suggesting.”\n\n“I want to check the suggestion,” Deniz said. “Not just collect things that make it sound right.”\n\n“That is usually the difficult part.” Mara pointed down the corridor. “The old map room is open. The oral-history collection is in the listening room beside it. I can help you handle the materials and check the catalog, but you’ll need to record exactly what each source says.”\n\nDeniz looked back at the page. The words FIRST BRIDGE, 1842 seemed certain in a way the riverbank did not.\n\n“Then I’ll start with the marker,” Deniz said, closing the notebook. “And keep the questions beside it.”\n\nMara unlocked the map-room door. Inside, flat drawers filled one wall, and the air smelled faintly of dust and paper. Deniz stepped in, carrying the inscription, the steps, and the first careful division between seeing and guessing.\n\nThe map room was cooler than the corridor. Mara pulled open a wide drawer, and rows of rolled sheets rested inside like sleeping scrolls.\n\n“Start with the catalog,” she said. “A map can be useful, but only if we know what it is and when it was made.”\n\nDeniz read the drawer labels until one caught their attention: RIVER CROSSINGS—SURVEY MAPS. Inside, a flat folder held several copies and notes. The first sheet was large enough to cover most of the table. In its lower corner, clear black numbers read:\n\nSURVEYED 1871.\n\nDeniz leaned closer. The river curved across the page, with the market street drawn on one side and a small set of steps marked on the other. Beside the steps, the surveyor had written two words:\n\nFERRY STEPS.\n\nA dotted line began at the steps, crossed the river, and continued toward the old market street.\n\nFor a moment Deniz felt the pleasant pull of an answer. “So it was a ferry.”\n\nMara did not correct them immediately. “What does the map show?”\n\nDeniz looked again. “It shows a place labeled ‘Ferry Steps.’ It shows a dotted route crossing the river. The route seems to start where the surviving steps are.”\n\n“And what might the label mean?”\n\n“That people used the steps to reach a ferry. Or that the surveyor called the whole crossing Ferry Steps. But I don’t know whether the label describes the original purpose, the purpose in 1871, or just the name people used then.”\n\nMara smiled slightly. “That distinction will save you trouble.”\n\nDeniz opened the notebook. Under the earlier observations, they wrote:\n\nDIRECT SOURCE: An 1871 survey map labels the site “Ferry Steps.”\nDIRECT SOURCE: A dotted route crosses the river from the steps toward the market street.\nINFERENCE: The surviving steps were probably connected to a river crossing in 1871.\nUNCERTAIN: Whether the crossing used a ferry, a bridge, or both at different times.\n\nThen Deniz added another line, pressing the pencil more lightly than before.\n\nRELATION TO INSCRIPTION: The map is dated 1871, twenty-nine years after the marker’s “First Bridge, 1842” claim. It challenges the idea that the bridge inscription tells the whole history, but does not prove that no bridge existed.\n\nThey copied the map title, date, label, and the direction of the dotted route. After that, Deniz used the archive’s small camera to photograph the sheet, following Mara’s instructions about keeping the page flat and the scale visible.\n\n“The map and the marker disagree,” Deniz said. “Or at least they emphasize different things.”\n\n“Exactly. A disagreement is not always a choice between one source being true and the other being useless.”\n\nDeniz glanced at the dotted line. It stopped near the market street, but the modern neighborhood had been built over that area many times. The line was evidence of a route, not a complete explanation of who crossed, how they crossed, or when the route began.\n\nMara returned the map to its folder. “You have a map claim now. The listening room may give you a memory claim.”\n\nDeniz closed the notebook, leaving the questions visible beneath the copied evidence. The marker still said First Bridge. The map said Ferry Steps. Both pointed toward the same riverbank, but neither had finished the story.\n\nThe listening room had no windows, but it was not silent. The archive’s ventilation hummed above the shelves, and somewhere behind the wall a printer clicked and paused.\n\nMara found a slim box labeled ORAL-HISTORY COLLECTION: RIVER DISTRICT, 1998. A card inside identified the recording:\n\nINTERVIEW WITH ARUN PATEL, RECORDED MAY 14, 1998.\n\n“Arun was seventy-two when he spoke with the archive volunteer,” Mara said. “He was remembering stories told by his grandmother. That makes the interview useful, but it also gives us a distance to keep track of.”\n\nDeniz wrote the speaker’s name, the date, and the collection title at the top of a fresh page. “How far back was his grandmother remembering?”\n\n“We may not know. Let’s listen before we guess.”\n\nMara placed headphones beside the old cassette player, then pressed PLAY. The tape made a soft hiss. A man’s voice followed, calm and slightly rough around the edges.\n\n“My grandmother never called it the bridge stone,” Arun said. “To her, it was the flood mark. She said children used to stand there after heavy rain and measure how high the river had climbed.”\n\nThe recording clicked faintly as he shifted in his chair.\n\n“Measure how?” asked the interviewer.\n\n“By looking at the stone, mostly. Sometimes they scratched a little line in mud beside it. They knew the market path flooded before the rest of the street did.”\n\nDeniz glanced at the copied map in their notebook. Ferry Steps. A crossing route. Now a flood mark.\n\nArun continued, “My grandmother remembered people going across there, too. Boats, I think. But the stone mattered because it told you whether crossing was sensible that day.”\n\nMara stopped the tape.\n\n“Boats, I think,” Deniz repeated. “That sounds uncertain.”\n\n“It is uncertain,” Mara said. “And even if Arun remembered accurately, he was describing what his grandmother told him. He could tell us how the story was remembered without proving when the stone first got its purpose.”\n\nDeniz replayed the section about the children. This time they listened for the exact words, writing slowly.\n\nMEMORY SOURCE: Arun Patel, recorded in 1998 for the River District Oral-History Collection.\nREMEMBERED: His grandmother called the stone “the flood mark.” Children watched the stone and measured how high the river had risen.\nREMEMBERED, LESS CERTAIN: Boats may have used the crossing.\nUNCERTAIN: When Arun’s grandmother learned the story; when the flood-mark practice began; whether the practice belonged to the original stone or a later use.\n\nThey underlined the word remembered, then drew a line beneath it.\n\n“I almost wrote that children measured the river there,” Deniz said. “But that makes it sound like I watched them do it.”\n\n“Good catch.”\n\n“I can write that Arun remembered hearing it from his grandmother. That keeps the evidence, but not more certainty than the recording gives us.”\n\nMara nodded. “And how does this account relate to the map?”\n\nDeniz studied the three descriptions in the notebook: First Bridge, 1842; Ferry Steps, 1871; flood mark, remembered in 1998.\n\n“They all place people near the river,” Deniz said. “But they describe different reasons. The map gives a named crossing. Arun gives a remembered warning sign. Neither one explains the bridge inscription.”\n\n“Nor does the recording tell us that the site began as a flood marker,” Mara added. “It tells us that this is how one family remembered it.”\n\nDeniz saved the audio file to the archive’s research folder, then added the recording’s reference number to the page. The story had become less tidy, but more precise. Three sources pointed toward the same riverbank. Their purposes did not line up neatly, and the oldest part of the story was still out of reach.\n\nMara returned the cassette to its box. “Tomorrow, we can test what these accounts would have looked like on the ground.”\n\nDeniz closed the notebook, leaving the three labels visible. “The river might help us decide what fits,” they said. “Not everything, though.”\n\nThe next afternoon, Mara met Deniz at the Riverside Marker with a measuring tape, a compass app, and the notebook.\n\n“Nothing here can tell us the whole story,” Mara said. “But the ground can tell us what is possible.”\n\nDeniz stood beside the worn steps. Their edges were rounded from years of feet, weather, and perhaps water. The steps descended toward the river at a slight angle, not straight into the current.\n\nThey held the compass phone flat while Mara checked the direction against the old map. Deniz followed the line with one finger. “The steps face northeast.”\n\n“Which is?”\n\n“The old market street.” Deniz looked past the river. The modern market stood several blocks away, but the older street still ran toward it between apartment buildings and repair shops. “The map’s dotted route starts here and points almost the same way.”\n\nThat did not prove what had crossed the river. It did show that the map’s route and the surviving steps fit the present landscape better than Deniz had expected.\n\nThey walked along the riverbank, searching for signs of a bridge. Mara checked the ground near the marker, then the stretch beneath the path. Deniz looked for straight rows of stones, holes where beams might have rested, or anything that seemed too regular to be natural.\n\nThey found weeds, cracked paving, and one rusted bolt beside a newer railing. Nothing that could be identified as a bridge foundation.\n\nDeniz wrote: No visible bridge foundations at or beside the marker.\n\nThen they paused. “That sounds stronger than I mean it to.”\n\nMara raised an eyebrow.\n\n“I should write, ‘No bridge foundations found during this visit.’ The first version sounds like nobody could ever find any.”\n\n“Exactly.”\n\nDeniz changed the sentence. The absence limited the inscription’s claim, but it did not disprove it. A bridge might have stood somewhere slightly different. Its supports might have been removed, buried, or washed away. None of those possibilities had evidence behind them yet.\n\nWhile they examined the lower stones, Mara noticed a pale, uneven stripe across the marker’s river-facing side. It sat higher than Deniz’s shoulder, just below a shallow notch in the stone.\n\n“Could that be the high-water line?” Deniz asked.\n\n“Could be. What would you need before calling it that?”\n\n“A record of the stone’s surface, maybe a comparison with other flood marks. We’d need to know it wasn’t just a difference in the stone.”\n\nDeniz photographed the stripe without naming it as fact. Still, its height reminded them of Arun’s recording: children watching the stone after heavy rain and judging whether the market path might flood.\n\nThey added: A pale line on the marker is consistent with a high-water mark; its date and cause are unknown.\n\nBack at a bench, Deniz divided a clean notebook page into four boxes.\n\nKNOWN, they wrote first. The inscription reads “FIRST BRIDGE, 1842.” The 1871 map labels the place “Ferry Steps” and shows a dotted route toward the market. Steps still descend toward the river. A pale line remains on the marker.\n\nINFERRED came next. The steps and their direction fit a crossing route. The site may have supported ferry travel or another way across. The pale line may record high water.\n\nUnder REMEMBERED, Deniz wrote Arun Patel’s 1998 account: his grandmother called the stone the flood mark, and children measured the river’s rise there. That was evidence of neighborhood memory, not a measurement Deniz had witnessed.\n\nThe last box was UNCERTAIN. Whether a bridge stood at the site in 1842. Whether the flood line came from that period. Whether the stone began as a bridge marker, ferry landmark, flood reference, or served several purposes over time.\n\nDeniz tapped the page. “The present place supports both the crossing and flood accounts.”\n\n“And the original purpose?” Mara asked.\n\n“Still unresolved.” Deniz closed the notebook. “But unresolved is more accurate than choosing one because it sounds neat.”\n\nAcross the river, the market buses groaned around a corner. The old route was still there, though the bridge, ferry, and children in Arun’s story remained partly out of reach. Deniz gathered the notebook and compass. Tomorrow, they would have to explain the uncertainty clearly enough for someone else to understand it.\n\nThe next morning, Deniz spread the notebook across a table in the archive’s small reading room. The four headings filled most of the page: KNOWN, INFERRED, REMEMBERED, UNCERTAIN. Beside them lay the photograph of the pale line on the marker, the copied map notes, and the reference card for Arun Patel’s recording.\n\nMara set down two cups of tea. “Show me the account you want people to read.”\n\nDeniz turned the notebook around.\n\n“Known,” they began, pointing to the first section. “The marker still says, ‘FIRST BRIDGE, 1842.’ The surviving steps descend toward the river. The 1871 survey map labels this place ‘Ferry Steps’ and draws a dotted route across the river toward the old market street. And there’s a pale line on the stone.”\n\n“Careful with the last one,” Mara said.\n\n“Right. The line is visible. It is consistent with a high-water mark, but we don’t know when it was made or what caused it.”\n\nMara nodded. “Continue.”\n\n“Under inferred: the steps and the map’s route fit a crossing place. The site may have supported ferry travel or another crossing. The line may be connected to flood measurement.”\n\n“May be connected,” Mara repeated. “Good.”\n\nDeniz moved to the third section. “Remembered: in the 1998 River District Oral-History Collection recording, Arun Patel said his grandmother called the stone the flood mark. He remembered children watching the river rise there after heavy rain. That tells us how the place lived in neighborhood memory. It doesn’t tell us exactly when the practice began, or whether the stone was first used for that purpose.”\n\n“And the bridge?”\n\n“Uncertain. The inscription claims a first bridge in 1842. We found no bridge foundations during our visit, but that doesn’t prove there was never a bridge. So I can’t call the inscription true or false.”\n\nMara leaned back. “Now turn those notes into something that works on a wall. Someone should understand it without having your whole notebook beside them.”\n\nDeniz opened a blank document. At first, the cursor blinked in the empty space like a challenge. They typed a title:\n\nRIVERSIDE MARKER: CROSSING, FLOOD MEMORY, AND AN UNVERIFIED BRIDGE CLAIM\n\nBelow it, Deniz drafted:\n\nThe stone beside these steps stands at a long-used river crossing. An 1871 survey map labels the location “Ferry Steps” and shows a dotted route toward the old market street. The surviving steps face that direction today.\n\nA 1998 recording in the River District Oral-History Collection preserves Arun Patel’s memory that his grandmother called the stone a flood mark and that children watched it to judge how high the river had risen. This is remembered local experience, not a dated measurement of the stone’s original use.\n\nThe stone also bears the inscription “FIRST BRIDGE, 1842.” No bridge foundations were found during a recent visit, so the claim remains unverified. The inscription may record a bridge, while the map and oral history record other uses of the same place. The evidence does not yet establish which use came first, or whether the site served several purposes over time.\n\nDeniz read the paragraph twice. “It sounds less satisfying than saying, ‘This was a bridge,’ or ‘This was a ferry.’”\n\n“It is less satisfying,” Mara said. “But is it less useful?”\n\nDeniz considered the map, the recording, and the stone’s uneven line. “No. It tells people what they can check, what someone remembered, and what we’re inferring. If we choose one clean story, we’d hide the disagreement instead of explaining it.”\n\n“Then say that in the panel.”\n\nDeniz added a final sentence: “Keeping the uncertainty is part of the landmark’s honest history.”\n\nMara read the finished text silently. Then she reached for the display folder and placed a label beneath the title: Sources: 1871 survey map; River District Oral-History Collection, Arun Patel interview, 1998; present inscription and site observations.\n\n“The original inscription stays where it is,” Mara said. “This panel gives it context. We are not replacing the stone’s words, only showing their limits.”\n\nShe signed the approval line for the neighborhood display.\n\nDeniz printed the panel, checking every date and quotation against the notebook. The account did not force the marker into a single past. It let the crossing route, the flood memory, and the possible bridge remain connected without pretending they were the same piece of evidence.\n\nBy afternoon, the approved panel was ready to be placed beside the original inscription. The archive had accepted Deniz’s account, and the next question belonged not to the document alone, but to the people who would read it.\n\nBy Saturday afternoon, the panel stood beside the Riverside Marker under a clear plastic cover. The original words remained carved in the stone: “FIRST BRIDGE, 1842.” Beneath them, the new display explained the 1871 “Ferry Steps” map, Arun Patel’s 1998 flood-mark memory, the surviving steps, and the absence of visible bridge foundations. Its last lines stated that the bridge claim remained unverified and that the site might have served several purposes over time.\n\nPeople stopped on their way to the market. Some read quickly, then continued with their bags. Others leaned closer to study the sources.\n\nAn older woman in a green coat touched the photograph of the pale line. “That is the mark,” she said. “Or at least, it looks like the one my father showed me.”\n\nDeniz, standing nearby with Mara, kept their voice careful. “Do you remember what he said it measured?”\n\n“The river after storms. He said children used to compare it with the stones below.” The woman looked from the photograph to the steps. “I never knew anyone had written it down.”\n\n“Your memory helps show how the place was used in the neighborhood,” Deniz said. “But we still can’t date the line from your memory alone.”\n\nThe woman nodded. “Fair enough. A memory can point toward something without being a measuring instrument.”\n\nA man reading the panel’s source list frowned at the word unverified. “If the stone says bridge, why not trust the stone?”\n\n“Because the inscription is evidence too,” Deniz replied. “It tells us what someone wanted the stone to say. The map records Ferry Steps twenty-nine years later, and the recording preserves another use remembered by a family. None of those sources automatically cancels the others.”\n\nHe glanced at the old inscription. “So the documents and the family story can both be partly right?”\n\n“They can hold different pieces of the place’s history,” Mara said. “That is what the evidence allows us to say.”\n\nThe man read the panel again. This time he did not shake his head. “I suppose a place can do more than one job.”\n\nAfter the visitors moved on, Deniz returned to the archive with the notebook. The old headings were still there, but the page now carried a final section: PUBLIC ACCOUNT.\n\nUnder it, Deniz wrote: The Riverside Marker is documented as a crossing place. The 1871 map supports the Ferry Steps route toward the market. Arun Patel’s 1998 recording preserves a flood-marker memory. The present inscription claims a first bridge in 1842, but that claim remains unverified. The order and combination of uses are still uncertain.\n\nDeniz paused, then added: The account is defensible because each statement is matched to the kind of evidence supporting it.\n\nMara read the entry over Deniz’s shoulder. “You’re keeping the uncertainty.”\n\n“It belongs there,” Deniz said. “The panel would be less honest without it.”\n\nBefore closing the notebook, Deniz unfolded the photograph of the map. The dotted route crossed the river, then continued beneath the area now occupied by the market. On the surveyor’s sheet, the line faded near a cluster of tiny buildings. It did not say whether the route ended there, turned along the street, or connected to another path.\n\nDeniz traced the fading dots with one finger, careful not to touch the original map when they later returned the photograph to its folder.\n\n“What are you thinking?” Mara asked.\n\n“That the panel answers what we can responsibly say about the marker,” Deniz said. “But the map leaves one smaller question.”\n\n“Which is?”\n\n“Where did the crossing route continue beyond the present-day market?”\n\nMara smiled. “A question based on evidence.”\n\nDeniz closed the notebook. Outside, people crossed the square carrying bread, flowers, and shopping lists. The marker stood beside them, its old claim still visible, its limits now visible too. The main story of the stone no longer needed to be made perfectly certain. It had been preserved—layer by layer, source by source—with one dotted line waiting for someone to follow it another day.",
+  "word_count": 3782,
+  "target_words": 3800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.00106,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.95,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.94,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11769,
+      "output_tokens": 166,
+      "cost": 0.000494298
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.95,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.94,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11769,
+      "output_tokens": 166,
+      "cost": 0.000494298
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully meets the acceptance gate. The narrative demonstrates sophisticated handling of the core theme—distinguishing observation from interpretation, memory from fact, and known from uncertain—in a way that is both intellectually rigorous and emotionally resonant for a 15-year-old independent reader.\n\nStrengths:\n\n1. **Instruction Following & Theme Execution**: The story faithfully executes all required constraints. It uses three distinct sources (inscription, 1871 map, 1998 oral-history recording) with meaningful disagreement (bridge vs. ferry vs. flood mark). Deniz's methodology—separating direct observation, inference, memory, and uncertainty—is demonstrated consistently and becomes the story's central intellectual achievement.\n\n2. **Age-Appropriate Voice & Complexity**: Deniz's internal reasoning, dialogue with Mara, and notebook entries reflect authentic 15-year-old cognition: capable of abstract thinking about evidence and epistemology, but still learning to apply it. Sentence structure varies naturally between simple observations and more complex analytical passages. Vocabulary is accessible without being condescending.\n\n3. **Coherence & Continuity**: The six-scene arc is seamless. Each scene builds on prior evidence without repetition. The handoff states in the continuity ledger are all satisfied. Deniz's goal remains constant (understand responsibly, not prove a favorite), and the investigation progresses logically from observation → map research → oral history → physical testing → synthesis → public presentation → reflection.\n\n4. **Character Consistency**: Deniz is consistently portrayed as thoughtful, methodical, and willing to embrace uncertainty. The relationship with Mara develops naturally as a mentoring partnership that models intellectual honesty. Deniz's hesitations (\"may be\" vs. firm answers, \"could be\" vs. definitive claims) are character-consistent and thematically central.\n\n5. **Creativity & Style**: The story avoids exposition dumps through Deniz's active investigation and Mara's Socratic questioning. The notebook device is elegant—it becomes both a practical tool and a metaphor for the story's epistemological work. The prose is clear and engaging, with good pacing across scenes. Descriptions of the marker, steps, and pale line are vivid without being purple.\n\n6. **Ending Quality**: Scene 6 successfully closes the main investigation while opening one bounded, evidence-based question (where does the dotted route continue?). The neighbor interactions show how the qualified account functions in the community. The final image of Deniz tracing the fading dots is both concrete and symbolic. The ending does not resolve the central conflict prematurely; instead, it demonstrates that Deniz's account is defensible and useful precisely because it preserves uncertainty.\n\n7. **Constraint Compliance**: All prohibited events are avoided. No combat, no omniscient resolution, no premature final answer, no automatic source hierarchy, no age/setting contradictions. The story distinguishes known/inferred/remembered/uncertain throughout (C8). It preserves continuity across all six scenes (C4). It does not mention being a benchmark or test (C5).\n\n**Minor Observations (Non-Blocking)**:\n\n- The story reaches approximately 3,782 words, slightly under the 3,800 target but within acceptable range for this narrative structure.\n- The woman in the green coat's contribution in Scene 6 is brief but effective—it shows how the panel invites community knowledge without claiming to settle everything.\n- The final reflection on the dotted route is appropriately bounded; it does not introduce a new mystery but rather extends the map-based evidence into future research.\n\n**Verdict**: This story meets all acceptance criteria. It is coherent, age-appropriate, thematically sound, and narratively engaging. The average score of 4.0 reflects production-quality work with no defects that materially prevent acceptance. The story successfully teaches a 15-year-old reader how to think about evidence, disagreement, and responsible uncertainty—not through didacticism, but through Deniz's lived investigation.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3782,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.94,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.87,
+          "no_repeated_event": 0.95,
+          "ending_consistency": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 11769,
+          "output_tokens": 166,
+          "cost": 0.000494298
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully meets the acceptance gate. The narrative demonstrates sophisticated handling of the core theme—distinguishing observation from interpretation, memory from fact, and known from uncertain—in a way that is both intellectually rigorous and emotionally resonant for a 15-year-old independent reader.\n\nStrengths:\n\n1. **Instruction Following & Theme Execution**: The story faithfully executes all required constraints. It uses three distinct sources (inscription, 1871 map, 1998 oral-history recording) with meaningful disagreement (bridge vs. ferry vs. flood mark). Deniz's methodology—separating direct observation, inference, memory, and uncertainty—is demonstrated consistently and becomes the story's central intellectual achievement.\n\n2. **Age-Appropriate Voice & Complexity**: Deniz's internal reasoning, dialogue with Mara, and notebook entries reflect authentic 15-year-old cognition: capable of abstract thinking about evidence and epistemology, but still learning to apply it. Sentence structure varies naturally between simple observations and more complex analytical passages. Vocabulary is accessible without being condescending.\n\n3. **Coherence & Continuity**: The six-scene arc is seamless. Each scene builds on prior evidence without repetition. The handoff states in the continuity ledger are all satisfied. Deniz's goal remains constant (understand responsibly, not prove a favorite), and the investigation progresses logically from observation → map research → oral history → physical testing → synthesis → public presentation → reflection.\n\n4. **Character Consistency**: Deniz is consistently portrayed as thoughtful, methodical, and willing to embrace uncertainty. The relationship with Mara develops naturally as a mentoring partnership that models intellectual honesty. Deniz's hesitations (\"may be\" vs. firm answers, \"could be\" vs. definitive claims) are character-consistent and thematically central.\n\n5. **Creativity & Style**: The story avoids exposition dumps through Deniz's active investigation and Mara's Socratic questioning. The notebook device is elegant—it becomes both a practical tool and a metaphor for the story's epistemological work. The prose is clear and engaging, with good pacing across scenes. Descriptions of the marker, steps, and pale line are vivid without being purple.\n\n6. **Ending Quality**: Scene 6 successfully closes the main investigation while opening one bounded, evidence-based question (where does the dotted route continue?). The neighbor interactions show how the qualified account functions in the community. The final image of Deniz tracing the fading dots is both concrete and symbolic. The ending does not resolve the central conflict prematurely; instead, it demonstrates that Deniz's account is defensible and useful precisely because it preserves uncertainty.\n\n7. **Constraint Compliance**: All prohibited events are avoided. No combat, no omniscient resolution, no premature final answer, no automatic source hierarchy, no age/setting contradictions. The story distinguishes known/inferred/remembered/uncertain throughout (C8). It preserves continuity across all six scenes (C4). It does not mention being a benchmark or test (C5).\n\n**Minor Observations (Non-Blocking)**:\n\n- The story reaches approximately 3,782 words, slightly under the 3,800 target but within acceptable range for this narrative structure.\n- The woman in the green coat's contribution in Scene 6 is brief but effective—it shows how the panel invites community knowledge without claiming to settle everything.\n- The final reflection on the dotted route is appropriately bounded; it does not introduce a new mystery but rather extends the map-based evidence into future research.\n\n**Verdict**: This story meets all acceptance criteria. It is coherent, age-appropriate, thematically sound, and narratively engaging. The average score of 4.0 reflects production-quality work with no defects that materially prevent acceptance. The story successfully teaches a 15-year-old reader how to think about evidence, disagreement, and responsible uncertainty—not through didacticism, but through Deniz's lived investigation.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000494298,
+      "final_judge_cost": {
+        "usd": 0.020173,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 48.419,
+    "scene_stage_seconds": 118.281,
+    "final_stage_seconds": 13.506,
+    "total_pipeline_seconds": 180.206
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.012488596,
+    "scene_generation_usd": 0.01937155,
+    "scene_continuity_evaluator_usd": 0.001119552,
+    "whole_continuity_evaluator_usd": 0.000494298,
+    "whole_continuity_evaluator_usd_total": 0.000494298,
+    "semantic_judge_usd": {
+      "usd": 0.020173,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.020173,
+    "scene_jev_usd": 0.001119552,
+    "whole_jev_usd": 0.000494298,
+    "whole_jev_usd_total": 0.000494298,
+    "final_haiku": {
+      "usd": 0.020173,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.020173,
+    "total_pipeline_usd": 0.053646996
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 11769,
+      "output_tokens": 166,
+      "cost": 0.000494298
+    },
+    "semantic_judge": {
+      "input_tokens": 14993,
+      "output_tokens": 1036,
+      "total_tokens": 16029
+    },
+    "whole_jev": {
+      "input_tokens": 11769,
+      "output_tokens": 166,
+      "cost": 0.000494298
+    },
+    "final_haiku": {
+      "input_tokens": 14993,
+      "output_tokens": 1036,
+      "total_tokens": 16029
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
