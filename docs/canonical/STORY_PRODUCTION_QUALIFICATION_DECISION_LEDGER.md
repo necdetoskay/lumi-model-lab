@@ -591,3 +591,47 @@ Decision:
 - Haiku scalar score and Sonnet pairwise preference remain measurement signals, not promotion authority.
 
 The purpose of the pairwise layer is to improve discrimination, not to replace one unquestioned judge with another.
+
+
+## 2026-09-24 — v5 production-like ContextPack passes without knowledge leakage
+
+Runs:
+
+- `36024405327` initial production-like context;
+- `36024864692` epistemic-hardening rerun.
+
+The input included Character, World, Opportunity, Canon, Saga and relevant-memory state with revision/fingerprint identity and an explicit local-knowledge boundary.
+
+Observed:
+
+- both stories accepted;
+- dynamic 5-scene decomposition;
+- no prose repair;
+- no length normalization;
+- JEV context-authority 0.96 then 0.97;
+- no OLD_PUMP_PATH exploration;
+- no hidden pump-house facts;
+- no adult solution takeover;
+- typed outcomes commit-ready in dry-run mode.
+
+The first run exposed an epistemic persistence flaw: a bounded best-supported explanation could be represented as `WORLD_FACT_SET`.
+
+Decision:
+
+- uncertainty must retain its epistemic class across story -> outcome -> persistence;
+- canonical fact, character knowledge, rumor and best-supported hypothesis are distinct state classes;
+- authority changed the lane to `WORLD_HYPOTHESIS_SET / BEST_SUPPORTED_HYPOTHESIS`;
+- deterministic validation rejects epistemic-class upgrades;
+- accepted narrative prose is never sufficient authority to promote a hypothesis to world fact.
+
+Fresh regression after the guard:
+
+`36024871502` — 12/12 deterministic contract tests PASS.
+
+## Superseding v5 next step
+
+Do not return to broad synthetic 80-cell spend yet.
+
+The next architecture boundary to prove is the bridge from Model Lab's production-candidate contracts to the **actual LUMI G2 Character/World/Opportunity/Canon/Saga contracts and application-owned commit path**.
+
+The model never becomes database authority.
