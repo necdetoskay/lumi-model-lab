@@ -1,4 +1,4 @@
-schema_version: model-runtime-profile.v1
+schema_version: model-runtime-profile.v2
 provider: openrouter
 
 generic:
@@ -37,14 +37,15 @@ profiles:
         mode: send
       seed:
         mode: omit
-    request_overrides:
-      structured_small:
-        max_tokens:
-          mode: send
-          cap: 1200
-      structured_large:
-        max_tokens:
-          mode: omit
+    production_policy:
+      request_classes:
+        structured_small:
+          max_tokens:
+            mode: send
+            cap: 1200
+        structured_large:
+          max_tokens:
+            mode: omit
 
   - model_id: aion-labs/aion-3.0
     display_name: Aion 3.0
@@ -102,52 +103,53 @@ profiles:
         mode: omit
       stream:
         mode: omit
-    request_overrides:
-      story_plan:
-        structured_output: json_object
-        reasoning:
-          mode: provider_managed_required
-          request:
-            enabled: true
-            exclude: true
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: omit
-        stream:
-          mode: omit
-      scene_story:
-        structured_output: json_object
-        reasoning:
-          mode: provider_managed_required
-          request:
-            enabled: true
-            exclude: true
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: omit
-        stream:
-          mode: omit
-      scene_repair:
-        structured_output: json_object
-        reasoning:
-          mode: provider_managed_required
-          request:
-            enabled: true
-            exclude: true
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: omit
-        stream:
-          mode: omit
+    production_policy:
+      request_classes:
+        story_plan:
+          structured_output: json_object
+          reasoning:
+            mode: provider_managed_required
+            request:
+              enabled: true
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        scene_story:
+          structured_output: json_object
+          reasoning:
+            mode: provider_managed_required
+            request:
+              enabled: true
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        scene_repair:
+          structured_output: json_object
+          reasoning:
+            mode: provider_managed_required
+            request:
+              enabled: true
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: omit
+          stream:
+            mode: omit
 
   - model_id: openai/gpt-5.6-luna
     display_name: GPT-5.6 Luna
@@ -233,66 +235,67 @@ profiles:
         order: [openai]
         allow_fallbacks: false
         require_parameters: true
-    request_overrides:
-      teacher_story:
-        reasoning:
-          mode: client_configurable
-          request:
-            effort: medium
-            exclude: true
-        temperature:
-          mode: omit
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
-      story_plan:
-        structured_output: json_object
-        reasoning:
-          mode: client_configurable
-          request:
-            effort: medium
-            exclude: true
-        temperature:
-          mode: omit
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
-      scene_story:
-        structured_output: json_object
-        reasoning:
-          mode: client_configurable
-          request:
-            effort: medium
-            exclude: true
-        temperature:
-          mode: omit
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
-      scene_repair:
-        structured_output: json_object
-        reasoning:
-          mode: client_configurable
-          request:
-            effort: medium
-            exclude: true
-        temperature:
-          mode: omit
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
+    production_policy:
+      request_classes:
+        teacher_story:
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: medium
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
+        story_plan:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: medium
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
+        scene_story:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: medium
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
+        scene_repair:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: medium
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
 
   - model_id: openai/gpt-5.6-luna-pro
     display_name: GPT-5.6 Luna Pro
@@ -423,38 +426,39 @@ profiles:
         mode: omit
       stream:
         mode: omit
-    request_overrides:
-      judge:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        temperature:
-          mode: send
-        max_tokens:
-          mode: send
-          cap: 2500
-        seed:
-          mode: omit
-        stream:
-          mode: omit
-      scene_plan_judge:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        structured_output: json_object
-        temperature:
-          mode: send
-        max_tokens:
-          mode: send
-          cap: 1800
-        seed:
-          mode: omit
-        stream:
-          mode: omit
+    production_policy:
+      request_classes:
+        judge:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: send
+            cap: 2500
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        scene_plan_judge:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          structured_output: json_object
+          temperature:
+            mode: send
+          max_tokens:
+            mode: send
+            cap: 1800
+          seed:
+            mode: omit
+          stream:
+            mode: omit
 
   - model_id: qwen/qwen3.8-flash
     display_name: Qwen 3.8 Flash
@@ -511,68 +515,69 @@ profiles:
         mode: omit
       stream:
         mode: omit
-    request_overrides:
-      teacher_story:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        temperature:
-          mode: send
-        max_tokens:
-          mode: send
-          cap: 7000
-        seed:
-          mode: send
-        stream:
-          mode: send
-          value: true
-      story_plan:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        structured_output: json_object
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
-      scene_story:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        structured_output: json_object
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
-      scene_repair:
-        reasoning:
-          mode: provider_managed_required
-          request:
-            effort: none
-            exclude: true
-        structured_output: json_object
-        temperature:
-          mode: send
-        max_tokens:
-          mode: omit
-        seed:
-          mode: send
-        stream:
-          mode: omit
+    production_policy:
+      request_classes:
+        teacher_story:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: send
+            cap: 7000
+          seed:
+            mode: send
+          stream:
+            mode: send
+            value: true
+        story_plan:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          structured_output: json_object
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
+        scene_story:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          structured_output: json_object
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
+        scene_repair:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: none
+              exclude: true
+          structured_output: json_object
+          temperature:
+            mode: send
+          max_tokens:
+            mode: omit
+          seed:
+            mode: send
+          stream:
+            mode: omit
 
   - model_id: qwen/qwen3.5-flash-02-23
     display_name: Qwen 3.5 Flash

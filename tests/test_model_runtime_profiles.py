@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import tempfile
 import unittest
+from pathlib import Path
 
 from src.model_registry import (
+    load_runtime_profile_registry,
     normalize_openrouter_request,
     require_qualification_runtime_profile,
     resolve_model_request_behavior,
@@ -271,6 +274,26 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(profile["match"]["type"], "fallback")
         self.assertEqual(profile["transport"]["reasoning"]["mode"], "provider_default")
         self.assertEqual(len(identity["profile_sha256"]), 64)
+        self.assertEqual(len(identity["runtime_contract_sha256"]), 64)
+        self.assertEqual(len(identity["production_policy_sha256"]), 64)
+
+    def test_v2_registry_rejects_legacy_request_overrides(self) -> None:
+        payload = """schema_version: model-runtime-profile.v2
+provider: openrouter
+generic:
+  display_name: Generic
+  source: generic
+  request_overrides:
+    scene_story:
+      max_tokens:
+        mode: omit
+profiles: []
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "profiles.yaml"
+            path.write_text(payload, encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "Legacy request_overrides"):
+                load_runtime_profile_registry(path)
 
 
 if __name__ == "__main__":

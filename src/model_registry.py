@@ -49,10 +49,21 @@ def load_runtime_profile_registry(
     if not path.exists():
         raise RuntimeError(f"Model runtime profile registry does not exist: {path}")
     payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    if payload.get("schema_version") != "model-runtime-profile.v1":
+    if payload.get("schema_version") != "model-runtime-profile.v2":
         raise RuntimeError(
             f"Unsupported model runtime profile schema: {payload.get('schema_version')!r}"
         )
+    entries = [
+        payload.get("generic"),
+        *(payload.get("profiles") or []),
+        *(payload.get("families") or []),
+    ]
+    for entry in entries:
+        if isinstance(entry, dict) and "request_overrides" in entry:
+            raise RuntimeError(
+                "Legacy request_overrides is not allowed in model-runtime-profile.v2; "
+                "move model-specific LUMI behavior under production_policy.request_classes."
+            )
     if not isinstance(payload.get("generic"), dict):
         raise RuntimeError("Model runtime profile registry requires generic profile")
     return payload
@@ -147,7 +158,9 @@ def resolve_model_request_behavior(
 ) -> dict[str, Any]:
     profile = resolve_model_runtime_profile(model, path)
     transport = dict(profile.get("transport") or {})
-    override = (profile.get("request_overrides") or {}).get(request_class) or {}
+    production_policy = profile.get("production_policy") or {}
+    request_classes = production_policy.get("request_classes") or {}
+    override = request_classes.get(request_class) or {}
     return _deep_merge(transport, override)
 
 
@@ -157,6 +170,21 @@ def runtime_profile_identity(
 ) -> dict[str, Any]:
     profile = resolve_model_runtime_profile(model, path)
     encoded = json.dumps(profile, sort_keys=True, ensure_ascii=True).encode("utf-8")
+    runtime_contract = {
+        "transport": profile.get("transport") or {},
+        "metadata": profile.get("metadata") or {},
+    }
+    production_policy = profile.get("production_policy") or {}
+    runtime_encoded = json.dumps(
+        runtime_contract,
+        sort_keys=True,
+        ensure_ascii=True,
+    ).encode("utf-8")
+    policy_encoded = json.dumps(
+        production_policy,
+        sort_keys=True,
+        ensure_ascii=True,
+    ).encode("utf-8")
     return {
         "schema_version": profile["schema_version"],
         "provider": profile["provider"],
@@ -165,6 +193,8 @@ def runtime_profile_identity(
         "source": profile.get("source"),
         "match": profile.get("match"),
         "profile_sha256": hashlib.sha256(encoded).hexdigest(),
+        "runtime_contract_sha256": hashlib.sha256(runtime_encoded).hexdigest(),
+        "production_policy_sha256": hashlib.sha256(policy_encoded).hexdigest(),
     }
 
 
