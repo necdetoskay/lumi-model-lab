@@ -765,7 +765,7 @@ def main() -> None:
         cmd = sub.add_parser(name)
         cmd.add_argument(
             "--wave",
-            default="configs/qualification_waves/age-relative-standard-v2.yaml",
+            default="configs/qualification_waves/age-relative-standard-v3-all-families.yaml",
         )
         cmd.add_argument("--evidence-root", default=str(DEFAULT_EVIDENCE_ROOT))
         cmd.add_argument("--batch-size", type=int, default=8)

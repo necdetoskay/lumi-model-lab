@@ -10,7 +10,9 @@ from src.capability_coverage import build_coverage_plan, matrix_payload
 from src.capability_cube import build_evidence
 from src.qualification_wave import wave_cases
 
-WAVE = Path("configs/qualification_waves/age-relative-standard-v2.yaml")
+WAVE = Path(
+    "configs/qualification_waves/age-relative-standard-v3-all-families.yaml"
+)
 
 
 def fake_result(
@@ -85,10 +87,10 @@ def case_spec(age_tier: str, family: str) -> Path:
 class CapabilityCoverageTests(unittest.TestCase):
     def test_empty_evidence_plan_is_age_balanced_and_reports_scope_gap(self) -> None:
         plan = build_coverage_plan(WAVE, batch_size=8, evidence=[])
-        self.assertEqual(plan["summary"]["executable_scope_case_count"], 24)
+        self.assertEqual(plan["summary"]["executable_scope_case_count"], 80)
         self.assertEqual(plan["summary"]["canonical_standard_case_count"], 80)
-        self.assertEqual(plan["summary"]["canonical_out_of_scope_case_count"], 56)
-        self.assertEqual(plan["summary"]["current_protocol_unknown_case_count"], 24)
+        self.assertEqual(plan["summary"]["canonical_out_of_scope_case_count"], 0)
+        self.assertEqual(plan["summary"]["current_protocol_unknown_case_count"], 80)
         self.assertEqual(len(plan["selected"]), 8)
         self.assertEqual(
             len({item["age_tier"] for item in plan["selected"]}),

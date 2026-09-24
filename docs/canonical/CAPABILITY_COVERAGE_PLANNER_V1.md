@@ -22,20 +22,22 @@ Capability Cube v2 currently defines a canonical STANDARD space of:
 
 `8 NarrativeAgeTiers × 10 NarrativeFamilies = 80 cells`
 
-The executable age-relative wave currently has complete synthetic fixtures for
-three families:
+The active age-relative wave now has frozen synthetic fixtures for all ten
+canonical narrative families:
 
-- `exploration_mystery`
-- `emotional_development`
-- `puzzle_problem_solving`
+`configs/qualification_waves/age-relative-standard-v3-all-families.yaml`
 
-Therefore the current executable scope is:
+Therefore the current executable STANDARD scope is the full canonical space:
 
-`8 ages × 3 fixture-backed families = 24 cells`
+`8 ages × 10 fixture-backed families = 80 cells`
 
-The remaining 56 canonical STANDARD cells are **OUT_OF_SCOPE_FIXTURE_MISSING**,
-not failed qualification cells. The planner must never synthesize an arbitrary
-benchmark premise merely to make those cells executable.
+The earlier v2 wave remains in the repository as provenance for the original
+three-family 24-cell phase. Its 24 generated specs are byte-equivalent to the
+same three families in v3, so existing evidence keeps the same governed axes
+and fixture meaning.
+
+A future canonical family may still be fixture-missing; the planner must never
+invent an arbitrary benchmark premise merely to make a cell executable.
 
 ## Governed identity
 
@@ -210,22 +212,33 @@ case execution.
 
 ## Initial v1 planning result
 
-With `english-story-production.v3` evidence after protocol promotion:
+The first planner release operated on the original 24-cell three-family wave.
+At that point it selected `emotional_development` across all eight age tiers
+because that family had zero active-v3 age coverage while remaining fully
+fixture-backed.
 
-- executable scope: 24 cells;
-- observed under active protocol: 5;
-- unknown: 19;
-- thin: 4;
-- provisional: 1;
-- established: 0;
-- canonical fixture-missing out-of-scope: 56.
+That historical milestone is preserved in experiment evidence; it is no longer
+the active executable scope.
 
-The first age-balanced batch selected `emotional_development` across all eight
-age tiers because that family had zero active-v3 age coverage while remaining
-fully fixture-backed.
+## All-family expansion milestone
 
-This is a coverage decision, not a claim that emotional-development stories
-are more important than other families.
+After the three-family STANDARD scope reached 24/24 observed cells and the
+high-repair sentinels were resolved through bounded repeats / diagnostic
+fixtures, the qualification fixture set expanded to all ten canonical
+narrative families.
+
+At the moment of v3-all-families activation:
+
+- executable STANDARD scope: 80 cells;
+- observed under active protocol: 24;
+- unknown: 56;
+- fixture-missing out-of-scope: 0;
+- existing 24 evidence cells retain their prior governed meaning.
+
+The first age-balanced batch selected `world_lore_discovery` across all eight
+age tiers because it had zero active-protocol age coverage. This is a coverage
+decision, not a claim that world-lore stories are more important than other
+families.
 
 ## Change control
 
