@@ -1,0 +1,2048 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/young-adult--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/young-adult--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to reconstruct the missing station in the Learning Commons activity and decide whether the evening workshop can run.",
+        "central_problem": "One map station, its label, and its scheduled time are missing, creating several plausible explanations and an unsafe uncertainty about the workshop route.",
+        "solution_principle": "Test how map edges, labels, objects, schedules, and records repeat together instead of trusting appearances or guessing.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz identifies the deliberate accessible-route change, runs the workshop safely, and records the pattern for future users.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical intimidation.",
+          "No unexplained clue, object, ability, or location.",
+          "No premature discovery of the complete solution.",
+          "No mention of benchmarks, testing systems, or the story's construction."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Establish Deniz's responsibility, the incomplete learning activity, and the practical decision that depends on solving it.",
+          "entry_state": "Deniz arrives at the public Learning Commons to prepare its evening Pattern Walk workshop independently.",
+          "beats": [
+            "Deniz finds five arranged map stations, ordinary paired objects, labels, a schedule, measuring tools, and one taped-off empty position.",
+            "A setup note says the missing station may be intentional but asks Deniz to verify the pattern before canceling or changing anything.",
+            "Deniz lists the visible gap: one map, label, object pairing, and scheduled time are absent."
+          ],
+          "must_include": [
+            "The Learning Commons visibly contains maps, objects, schedules, labels, and ordinary tools.",
+            "Deniz is twenty-one and handles the preparation without childish reasoning or dependence.",
+            "The missing station creates the central choice between canceling, guessing, or investigating."
+          ],
+          "must_not_do": [
+            "Do not reveal whether the station was stolen, misplaced, or intentionally removed.",
+            "Do not let Deniz solve the pattern from the setup note alone.",
+            "Do not introduce a second problem unrelated to the missing station."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz must determine whether the visible gap is an accident or part of the workshop's design before changing the setup.",
+          "open_threads_after": [
+            "Why are the map, label, object, and schedule entry missing together?",
+            "What order connects the five remaining stations?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test the first plausible explanation and show that the display's order depends on physical map connections.",
+          "entry_state": "Deniz has five intact stations and a coordinated gap but does not know whether labels or materials were shuffled.",
+          "beats": [
+            "Deniz first suspects a labeling mistake or theft, then uses the ruler to compare map borders and road lines across the displayed stations.",
+            "The map edges form a continuous walking route only in a nonalphabetical order, rejecting the simple shuffled-label hypothesis.",
+            "Small repeated triangle marks point toward the empty position, giving Deniz a testable location for the missing station."
+          ],
+          "must_include": [
+            "The false hypothesis is reasonable and is rejected by physical alignment evidence.",
+            "The ruler and visible map lines provide the test rather than intuition.",
+            "The triangle marks are visible before Deniz interprets their significance."
+          ],
+          "must_not_do": [
+            "Do not identify the missing station's complete contents yet.",
+            "Do not treat the map alignment as proof of theft or intentional removal.",
+            "Do not add a secret code unrelated to the displayed materials."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established five map stations, a taped empty position, and a ruler beside the display.",
+            "Scene 1 established that one station's map, label, object, and time are absent together.",
+            "Scene 1 established the setup note's instruction to verify before changing the workshop."
+          ],
+          "handoff": "The route points to a specific missing position, but Deniz still needs the labels and objects to identify that station and its scheduled use.",
+          "open_threads_after": [
+            "Which object and label belong at the map gap?",
+            "Why is the corresponding schedule time blank?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use repeated symbols and schedule spacing to infer the missing station without assuming the blank is an error.",
+          "entry_state": "Deniz knows the map gap's position in the walking route but not its station identity or purpose.",
+          "beats": [
+            "Deniz compares the labels' triangle symbols with map icons and finds that each object represents a practical feature along the route.",
+            "The sequence requires a water-access stop between the market and garden stations, matching the missing object's outlined shape on the inventory sheet.",
+            "The schedule's blank at 2:00 follows the same route interval, so the missing entry is deliberate enough to investigate further."
+          ],
+          "must_include": [
+            "The inventory sheet is already among the display papers and identifies the missing object's outline without naming its location.",
+            "The schedule is interpreted alongside map order, not as an isolated time list.",
+            "Deniz gains a specific prediction: the missing station concerns water access at 2:00."
+          ],
+          "must_not_do": [
+            "Do not reveal the accessibility explanation yet.",
+            "Do not make the inventory sheet magically identify who removed anything.",
+            "Do not present the predicted water stop as fully confirmed."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the labels, objects, schedule, and inventory sheet as parts of the same display.",
+            "Scene 2 established the route order and triangle marks pointing to the missing position.",
+            "Scene 2 established that the apparent shuffled order failed when tested against map borders and roads."
+          ],
+          "handoff": "Deniz predicts a missing water-access station at 2:00, but must verify whether its absence is accidental or an intentional route adaptation.",
+          "open_threads_after": [
+            "Was the water station removed deliberately?",
+            "Can the workshop operate safely without its original map panel?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Confirm the deliberate change through the Commons record and uncover the reason for the missing materials.",
+          "entry_state": "Deniz has a tested prediction for the missing station but lacks documentary evidence about the blank schedule.",
+          "beats": [
+            "Deniz checks the visible checkout clipboard and finds the water-route map marked for an accessibility trial, with a return time matching the workshop.",
+            "In the labeled storage drawer, Deniz finds the matching object and a temporary card describing a quieter route around the crowded stairway.",
+            "The card explains that the original station was removed so participants could follow the accessible route, not because materials were lost."
+          ],
+          "must_include": [
+            "The clipboard, storage drawer, and temporary card belong to the established Learning Commons materials.",
+            "The documentary clue confirms the map, symbols, object, schedule gap, and route prediction together.",
+            "The accessibility purpose is stated plainly enough for independent readers without becoming a lecture."
+          ],
+          "must_not_do": [
+            "Do not introduce a new antagonist or secret organization.",
+            "Do not let the card solve the workshop setup without Deniz applying the earlier pattern.",
+            "Do not erase the uncertainty about how to run the session safely."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the display's inventory sheet, clipboard, storage area, and ordinary tools.",
+            "Scene 2 established the route alignment and the triangle marks at the missing position.",
+            "Scene 3 established the predicted water-access station and matching 2:00 schedule gap."
+          ],
+          "handoff": "The missing station is an intentional accessible-route adaptation; Deniz must now apply the combined evidence to prepare a safe workshop decision.",
+          "open_threads_after": [
+            "How can Deniz represent the missing station without restoring the unsuitable original route?",
+            "Will Deniz cancel the workshop or run the adapted version?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the complete pattern and make the decisive choice that resolves the central practical problem.",
+          "entry_state": "Deniz knows the missing station is deliberate and has its object, route purpose, and scheduled position.",
+          "beats": [
+            "Using the ruler, labels, map edges, triangle marks, schedule, clipboard, and temporary card, Deniz reconstructs a clear water-stop marker beside the accessible route.",
+            "Deniz places the recovered object, writes the 2:00 entry, and marks the quieter path with removable tape rather than restoring the old stairway route.",
+            "Deniz chooses to run the workshop with the tested adaptation, documenting the missing panel instead of canceling or pretending nothing changed."
+          ],
+          "must_include": [
+            "The decisive application visibly uses multiple earlier clues, not only the temporary card.",
+            "Removable tape and a written schedule preserve reversibility and public safety.",
+            "Deniz's choice changes because the pattern proves the absence is purposeful."
+          ],
+          "must_not_do": [
+            "Do not restore the original route after learning it conflicts with the accessibility trial.",
+            "Do not portray Deniz's decision as a guess or heroic impulse.",
+            "Do not leave the central problem unresolved after the adapted setup is ready."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the map-edge route and triangle alignment.",
+            "Scene 3 established the water-stop prediction and matching 2:00 schedule gap.",
+            "Scene 4 established the accessibility trial, recovered object, and quieter-route instructions."
+          ],
+          "handoff": "The adapted workshop is ready and the missing station is accounted for; Deniz must observe the consequences and leave reliable guidance.",
+          "open_threads_after": [
+            "Will participants understand the adapted route?",
+            "How should the Learning Commons record the completed pattern?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the workshop's consequences, confirm the reasoning publicly, and close the missing-pattern thread.",
+          "entry_state": "Deniz has prepared the accessible route and chosen to run the workshop rather than cancel it.",
+          "beats": [
+            "Participants follow the marked route, match the recovered object to the water stop, and notice that the map pattern works without the removed panel.",
+            "Deniz explains the tested sequence and records the accessibility trial beside the schedule, preventing future staff from treating the blank as an error.",
+            "The display remains coherent, the workshop succeeds, and Deniz leaves knowing observation changed the responsible choice."
+          ],
+          "must_include": [
+            "The consequence confirms the solution through ordinary participant use rather than coincidence.",
+            "Deniz records the reason for the missing station and preserves the adapted setup.",
+            "The ending closes the workshop, the missing materials question, and Deniz's decision."
+          ],
+          "must_not_do": [
+            "Do not introduce a new mystery or future-discovery hook.",
+            "Do not claim every participant reacts identically or unrealistically.",
+            "Do not add a late explanation unsupported by the tested clues."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 4 established that the missing station was an intentional accessibility adaptation.",
+            "Scene 5 established the tested route, recovered object placement, 2:00 schedule entry, and removable tape markers.",
+            "Scene 5 established Deniz's decision to run and document the adapted workshop."
+          ],
+          "handoff": "No unresolved central thread remains: the workshop succeeds, the adaptation is documented, and the missing pattern has been responsibly explained.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.95,
+        "constraint_coverage": 0.61,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.9,
+        "no_early_resolution": 0.81,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.61
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.73,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 4054,
+        "output_tokens": 185,
+        "cost": 0.000170268
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "C1 (age-appropriate vocabulary and pacing) depends entirely on prose execution. Plan is sound, but 'taped-off empty position' and 'setup note' must be rendered with natural 21-year-old voice and realistic emotional stakes, not didactic exposition."
+        },
+        {
+          "scene": 2,
+          "risk": "C7 (false hypothesis rejection) is well-designed but requires careful prose: the 'shuffled-label hypothesis' must feel genuinely plausible to Deniz before map-edge testing rejects it. If the false hypothesis is too obviously wrong, the pattern-testing theme weakens."
+        },
+        {
+          "scene": 3,
+          "risk": "C6 (no clue depends on unrevealed information) is at risk if the inventory sheet's 'outlined shape' is not visibly present in Scene 1 or clearly described in Scene 2. The plan states it is 'already among the display papers,' but prose must confirm this explicitly before Scene 3 uses it."
+        },
+        {
+          "scene": 4,
+          "risk": "C3 (no combat/intimidation) is satisfied, but the 'accessibility trial' explanation must not feel like a lecture or moral lesson. The temporary card and clipboard must be discovered as ordinary materials, not as a revelation that reframes Deniz's earlier reasoning."
+        },
+        {
+          "scene": 5,
+          "risk": "C8 (final solution uses multiple earlier clues) is structurally sound, but prose must show Deniz actively *applying* the ruler, labels, map edges, triangle marks, and schedule together—not simply assembling them. The reconstruction must feel like testing, not assembly."
+        },
+        {
+          "scene": 6,
+          "risk": "C4 (continuity across all six scenes) depends on the record Deniz leaves. If the documentation is vague or incomplete, future readers (and the story's implicit audience) may not understand why the pattern matters. The record must be concrete and repeatable."
+        }
+      ],
+      "summary": "The plan is structurally sound and satisfies all critical continuity, causality, and dependency requirements. Causal chain is explicit: Scene 1 establishes the gap → Scene 2 tests map alignment and rejects shuffling → Scene 3 predicts water-stop via symbols and schedule → Scene 4 confirms deliberate accessibility trial → Scene 5 applies all clues to reconstruct and decide → Scene 6 validates through use and documents. Protagonist goal remains stable (prepare workshop safely by solving the pattern). No unexplained dependencies; all clues are introduced before use. False hypothesis (shuffled labels) is rejected by evidence. Central problem is not solved until Scene 5. Ending is coherent: Scene 5 delivers the decisive choice (run adapted workshop), Scene 6 resolves consequences (workshop succeeds, adaptation documented). Constraint coverage is strong but depends on prose execution: C1 (age-appropriate voice), C2 (explicit causality without didacticism), C3 (no combat), C5 (no benchmark mention), C6 (inventory sheet visibility), C7 (false hypothesis plausibility), C8 (multi-clue reconstruction), C9 (21-year-old independent reasoning). All required materials (maps, objects, schedules, labels, tools, clipboard, storage, temporary card) are introduced in Scene 1 and used consistently. No prohibited events occur. Recommend proceeding to prose with attention to: (1) natural 21-year-old voice and emotional authenticity in Scene 1; (2) genuine plausibility of the shuffled-label hypothesis before rejection in Scene 2; (3) explicit visibility of the inventory sheet's outlined shape before Scene 3 uses it; (4) accessibility explanation as discovery, not lecture, in Scene 4; (5) active pattern-testing (not passive assembly) in Scene 5; (6) concrete, repeatable documentation in Scene 6.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.00602,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000170268,
+      "haiku": {
+        "usd": 0.00946,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 4866,
+        "total_tokens": 5770
+      },
+      "jev": {
+        "input_tokens": 4054,
+        "output_tokens": 185,
+        "cost": 0.000170268
+      },
+      "haiku": {
+        "input_tokens": 4265,
+        "output_tokens": 1039,
+        "total_tokens": 5304
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    546,
+    651,
+    714,
+    714,
+    861,
+    714
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 546,
+      "word_count": 496,
+      "contract": {
+        "index": 1,
+        "purpose": "Establish Deniz's responsibility, the incomplete learning activity, and the practical decision that depends on solving it.",
+        "entry_state": "Deniz arrives at the public Learning Commons to prepare its evening Pattern Walk workshop independently.",
+        "beats": [
+          "Deniz finds five arranged map stations, ordinary paired objects, labels, a schedule, measuring tools, and one taped-off empty position.",
+          "A setup note says the missing station may be intentional but asks Deniz to verify the pattern before canceling or changing anything.",
+          "Deniz lists the visible gap: one map, label, object pairing, and scheduled time are absent."
+        ],
+        "must_include": [
+          "The Learning Commons visibly contains maps, objects, schedules, labels, and ordinary tools.",
+          "Deniz is twenty-one and handles the preparation without childish reasoning or dependence.",
+          "The missing station creates the central choice between canceling, guessing, or investigating."
+        ],
+        "must_not_do": [
+          "Do not reveal whether the station was stolen, misplaced, or intentionally removed.",
+          "Do not let Deniz solve the pattern from the setup note alone.",
+          "Do not introduce a second problem unrelated to the missing station."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz must determine whether the visible gap is an accident or part of the workshop's design before changing the setup.",
+        "open_threads_after": [
+          "Why are the map, label, object, and schedule entry missing together?",
+          "What order connects the five remaining stations?"
+        ]
+      },
+      "envelope": {
+        "prose": "At twenty-one, Deniz had learned that preparing an event was mostly a matter of noticing what other people might overlook. So before the evening Pattern Walk workshop, Deniz arrived at the Learning Commons early, unlocked the activity room, and set down a canvas bag of pencils and removable tape.\n\nThe room was a public learning space, brightened by tall windows and crowded with useful things. A long table held five map stations in a row. Each station had a laminated map, a printed label, and a small pair of ordinary objects: a wooden token beside a measuring cup, a brass key beside a cardboard doorway, a fabric swatch beside a market symbol, and other combinations Deniz recognized from the workshop instructions. The objects were meant to help visitors connect places on the maps with practical features in the neighborhood.\n\nA schedule on a stand listed the walking stops and times. Beside it lay a ruler, two pencils, a magnifying glass, an inventory sheet, and a clipboard for checking materials in and out. A shallow storage drawer under the table held spare cards and labels. Everything looked ready until Deniz reached the fourth position.\n\nA neat rectangle of pale tape marked an empty space between the third and fifth stations. There was no map in it, no label, and no object pairing. On the schedule, one line had been left blank. The inventory sheet showed a blank outline where a small station object should have been recorded, too.\n\nDeniz crouched to inspect the tape. It was unbroken and firmly stuck to the table, with no torn corners or scattered scraps nearby. That did not answer anything. Someone could have removed the station carefully. Someone could also have set the gap aside on purpose.\n\nA folded setup note rested beneath the ruler. Deniz opened it and read:\n\n“ONE STATION IS MISSING. It may be intentional. Before canceling or changing the Pattern Walk, verify the pattern across the maps, labels, objects, and schedule.”\n\nDeniz read the sentence twice. It was not permission to pretend the gap did not matter, and it was not an explanation. The workshop route would depend on participants knowing where to go, especially if the missing time represented a stop between two others.\n\nThe simplest response would be to cancel and email the coordinator. The most convenient would be to guess what belonged in the empty space and hope no one noticed. Neither choice fit the note—or Deniz’s responsibility for opening the room to the public.\n\nDeniz took out a pencil and wrote four questions on the back of the setup note: Which map is missing? Which label goes with it? What object belongs there? Why is the time blank?\n\nThen Deniz added a fifth question: What order connects the five stations that remain?\n\nThe room offered plenty to examine, but no answer yet. Deniz left the maps exactly where they were, picked up the ruler, and began with the display rather than a guess.",
+        "state_delta": {
+          "location": "The Learning Commons activity room, at the long table holding the Pattern Walk display.",
+          "character_goal": "Deniz wants to reconstruct the missing station and decide whether the evening workshop can run safely.",
+          "knowledge_gained": [
+            "Five map stations remain arranged on the display.",
+            "The fourth position is taped off and empty.",
+            "The missing station is absent as a map, label, object pairing, and schedule entry.",
+            "The setup note instructs Deniz to verify the pattern before canceling or changing the workshop."
+          ],
+          "facts_established": [
+            "The Learning Commons contains maps, practical objects, labels, a schedule, an inventory sheet, a checkout clipboard, a storage drawer, a ruler, pencils, and a magnifying glass.",
+            "The tape around the empty position is unbroken and neatly applied.",
+            "The inventory sheet has a blank outline where a station object should be recorded.",
+            "Deniz is twenty-one and is independently responsible for preparing the public workshop."
+          ],
+          "clues_added": [
+            "The coordinated absence of the map, label, object pairing, and schedule time may be meaningful rather than accidental.",
+            "The display materials and schedule must be examined together."
+          ],
+          "objects_changed": [
+            "Deniz writes five investigation questions on the back of the setup note.",
+            "Deniz picks up the ruler and begins examining the display."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Why are the map, label, object, and schedule entry missing together?",
+            "What order connects the five remaining stations?",
+            "Should Deniz cancel, guess, or investigate before changing the workshop?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz remains in the Learning Commons with five intact stations, a taped empty position, and the ruler in hand. The missing station has not been identified, and Deniz is beginning to test the display rather than cancel or guess."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.59,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 496,
+          "usage": {
+            "input_tokens": 4722,
+            "output_tokens": 1182,
+            "total_tokens": 5904
+          },
+          "cost": {
+            "usd": 0.00259875,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.89,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2997,
+          "output_tokens": 188,
+          "cost": 0.000125874
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.89,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2997,
+            "output_tokens": 188,
+            "cost": 0.000125874
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.374
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.965
+    },
+    {
+      "scene": 2,
+      "target_words": 651,
+      "word_count": 652,
+      "contract": {
+        "index": 2,
+        "purpose": "Test the first plausible explanation and show that the display's order depends on physical map connections.",
+        "entry_state": "Deniz has five intact stations and a coordinated gap but does not know whether labels or materials were shuffled.",
+        "beats": [
+          "Deniz first suspects a labeling mistake or theft, then uses the ruler to compare map borders and road lines across the displayed stations.",
+          "The map edges form a continuous walking route only in a nonalphabetical order, rejecting the simple shuffled-label hypothesis.",
+          "Small repeated triangle marks point toward the empty position, giving Deniz a testable location for the missing station."
+        ],
+        "must_include": [
+          "The false hypothesis is reasonable and is rejected by physical alignment evidence.",
+          "The ruler and visible map lines provide the test rather than intuition.",
+          "The triangle marks are visible before Deniz interprets their significance."
+        ],
+        "must_not_do": [
+          "Do not identify the missing station's complete contents yet.",
+          "Do not treat the map alignment as proof of theft or intentional removal.",
+          "Do not add a secret code unrelated to the displayed materials."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established five map stations, a taped empty position, and a ruler beside the display.",
+          "Scene 1 established that one station's map, label, object, and time are absent together.",
+          "Scene 1 established the setup note's instruction to verify before changing the workshop."
+        ],
+        "handoff": "The route points to a specific missing position, but Deniz still needs the labels and objects to identify that station and its scheduled use.",
+        "open_threads_after": [
+          "Which object and label belong at the map gap?",
+          "Why is the corresponding schedule time blank?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz began by treating the display as if it might have been disturbed. The labels could have been returned to the wrong stations after a busy program. Or, less conveniently, someone might have taken one station and shifted the others to hide the gap. Both explanations were possible. Neither deserved to be accepted without checking.\n\nThe five laminated maps were almost the same size, but their edges carried different pieces of a larger picture: a footpath here, a street corner there, a thin line that might be a canal or a boundary. Deniz loosened the first map’s clip and slid it a few centimeters to the right. The road line along its lower edge stopped just before the next map’s upper corner.\n\n“That does not match,” Deniz said quietly.\n\nAt first, the labels seemed to offer an easier order. Their titles began with different letters, and the stations had been placed left to right as if someone had sorted them alphabetically. If the labels had been shuffled, Deniz could simply put each one back with the map it named. The empty fourth position might then be nothing more than a missing piece caused by careless setup.\n\nDeniz took up the ruler. Instead of measuring the cards, Deniz held the straight edge across the printed roads. The line on the station marked with the library label continued only when that map was placed beside the station marked with the garden label—not beside the next card in the row. A narrow walking path crossed cleanly from one border to the other.\n\nDeniz rearranged two maps, then three, recording each trial in the margin of the setup note. The alphabetical order failed at nearly every join. The maps made a continuous route only in a different sequence: library, market, garden, then the empty position, followed by the station marked with the overlook symbol.\n\nThe route was not merely a tidy display arrangement. A footpath ran across the first join. A road bent through the second. At the third, the line ended at the taped space, as if the missing map should continue it. When Deniz tested the last join, the overlook path met the far edge of the fifth map without a gap.\n\nThe evidence changed the question. The labels might still have been misplaced, but they were not the thing determining the route. Physical map lines were. The display had been arranged in an order that ignored the alphabet because the walking path mattered more.\n\nDeniz leaned closer to the borders. Tiny triangle marks appeared near several route lines. They were easy to miss: three short strokes forming a small arrowhead, printed in the same dark ink as the maps. One sat near the lower edge of the market map. Another appeared at the garden map’s side. A third pointed toward the taped empty position.\n\nDeniz had not noticed them from standing height. Now the magnifying glass showed that they repeated at the route joins. They were not scratches, and they did not form a separate message. Each triangle sat beside a path where a traveler would need to continue.\n\nAt the empty position, the final visible triangle pointed inward, toward the missing space. Deniz placed the ruler along its direction and extended the line across the tape. It aimed between the garden station and the overlook station, exactly where the route had broken.\n\nThat did not prove what had happened to the missing materials. It did give Deniz a specific place to investigate. The station belonged in the route at that gap, whatever its label and object had been.\n\nDeniz returned the maps to their tested positions and left the labels beside them rather than forcing them into alphabetical order. The route now had a shape, and the small triangles gave that shape a direction. The label and object still had to be matched, and the blank time on the schedule remained unexplained.",
+        "state_delta": {
+          "location": "The Learning Commons activity room at the Pattern Walk display.",
+          "character_goal": "Deniz wants to identify the missing station and determine whether the workshop route can be changed safely.",
+          "knowledge_gained": [
+            "The visible labels' alphabetical order does not match the route order.",
+            "The map borders and road lines form one continuous walking route in a nonalphabetical sequence.",
+            "The empty position lies between the garden station and the overlook station in the tested route.",
+            "Repeated small triangle marks occur along the route joins, with one pointing toward the empty position."
+          ],
+          "facts_established": [
+            "The ruler can be used to test whether roads and paths continue across map borders.",
+            "The tested route order is library, market, garden, the empty position, and overlook.",
+            "The triangle marks are part of the printed map materials and indicate continuation along the route."
+          ],
+          "clues_added": [
+            "A path line ends at the taped empty position and should continue through the missing map.",
+            "A repeated triangle mark points inward toward the missing position.",
+            "The display's physical map connections, rather than alphabetical labels, determine the walking order."
+          ],
+          "objects_changed": [
+            "Deniz temporarily rearranged the maps for testing, recorded the trials on the setup note, and returned the maps to the tested route positions.",
+            "The ruler was used to align map borders and road lines.",
+            "The magnifying glass was used to inspect the repeated triangle marks."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which label and object belong at the map gap?",
+            "Why is the corresponding schedule time blank?",
+            "What station purpose fits the route position between the garden and overlook stations?"
+          ],
+          "threads_resolved": [
+            "The simple explanation that the display should be read in alphabetical label order was rejected by physical map alignment evidence."
+          ],
+          "handoff_state": "Deniz remains at the Learning Commons display with the maps arranged in the tested walking-route order. The map gap is located between the garden and overlook stations, and repeated triangle marks point toward it. Deniz has not identified the missing station's label, object, or scheduled time, and has not determined whether the gap is accidental or intentional."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 31.869,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 652,
+          "usage": {
+            "input_tokens": 5843,
+            "output_tokens": 1547,
+            "total_tokens": 7390
+          },
+          "cost": {
+            "usd": 0.003317,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.88,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3777,
+          "output_tokens": 188,
+          "cost": 0.000158634
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.88,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3777,
+            "output_tokens": 188,
+            "cost": 0.000158634
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.51
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 32.379
+    },
+    {
+      "scene": 3,
+      "target_words": 714,
+      "word_count": 660,
+      "contract": {
+        "index": 3,
+        "purpose": "Use repeated symbols and schedule spacing to infer the missing station without assuming the blank is an error.",
+        "entry_state": "Deniz knows the map gap's position in the walking route but not its station identity or purpose.",
+        "beats": [
+          "Deniz compares the labels' triangle symbols with map icons and finds that each object represents a practical feature along the route.",
+          "The sequence requires a water-access stop between the market and garden stations, matching the missing object's outlined shape on the inventory sheet.",
+          "The schedule's blank at 2:00 follows the same route interval, so the missing entry is deliberate enough to investigate further."
+        ],
+        "must_include": [
+          "The inventory sheet is already among the display papers and identifies the missing object's outline without naming its location.",
+          "The schedule is interpreted alongside map order, not as an isolated time list.",
+          "Deniz gains a specific prediction: the missing station concerns water access at 2:00."
+        ],
+        "must_not_do": [
+          "Do not reveal the accessibility explanation yet.",
+          "Do not make the inventory sheet magically identify who removed anything.",
+          "Do not present the predicted water stop as fully confirmed."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the labels, objects, schedule, and inventory sheet as parts of the same display.",
+          "Scene 2 established the route order and triangle marks pointing to the missing position.",
+          "Scene 2 established that the apparent shuffled order failed when tested against map borders and roads."
+        ],
+        "handoff": "Deniz predicts a missing water-access station at 2:00, but must verify whether its absence is accidental or an intentional route adaptation.",
+        "open_threads_after": [
+          "Was the water station removed deliberately?",
+          "Can the workshop operate safely without its original map panel?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz turned back to the labels, leaving them beside the maps instead of forcing them into a neat alphabetical row. Each label carried a small triangle like the ones printed near the route lines. The triangles were not identical decorations. Their points faced the direction a visitor would continue, and beside each one sat a simple map icon.\n\nThe market label had a basket. The garden label showed a leaf. The overlook label showed a broad window shape. On the table, the paired objects matched those features: a small wooden basket, a smooth plant marker, and a cardboard viewing frame. They were not souvenirs. Each object represented something a visitor could use or notice at that stop.\n\nDeniz copied the icons onto the setup note, then compared them with the tested route. The sequence moved from the library to the market, then to the garden, and continued through the empty position before reaching the overlook. Somewhere along that continuation, visitors would need a water-access stop. The empty station had to represent a practical feature, not merely fill a gap in the display.\n\nThe inventory sheet lay beneath the schedule, where Deniz had seen it earlier. It listed the paired objects by outline rather than by name. The basket shape was crossed off. So was the narrow plant marker. The viewing frame was crossed off too. One blank space remained: a rounded outline with a short projection on one side, like a public drinking fountain viewed from above.\n\nDeniz traced the outline with a pencil, without writing on the sheet. The shape was not proof by itself. It could have belonged to a misplaced tool or to an object used in another activity. But when Deniz held the sheet beside the maps, the outline matched the small water-access icon printed near the route between the garden and overlook positions. The triangle at the missing position pointed toward the same part of the path.\n\n“Possible,” Deniz murmured. “Not confirmed.”\n\nThe schedule needed its own test. It was arranged in a column of times, with the station names written beside most entries. The names did not progress alphabetically. They followed the walking activity: library, market, garden, then the later route toward the overlook. Between the entries, the times advanced by the same interval. One line was blank at 2:00.\n\nDeniz placed the ruler along the schedule column and marked the intervals on the margin of the setup note. The blank was not an extra space at the bottom, where someone might have forgotten to add a final activity. It occupied the position required by the route's repeated spacing. The time before it and the time after it were separated by the same amount as the other stops.\n\nThat made the blank significant, but not conclusive. Someone could still have removed the water station by accident and left the schedule unfinished. Or the display might have been assembled from materials that happened to fit a tempting pattern. Deniz wrote both possibilities beneath the earlier questions.\n\nThen Deniz checked the symbols again. The market's triangle led onward to the garden; the garden's route line continued toward the water-access feature before the overlook; and the remaining path ended at the overlook station. The map edges, repeated triangles, object outlines, and evenly spaced schedule were separate pieces of evidence, but they pointed in the same direction.\n\nDeniz wrote a careful prediction: “Missing station: water access. Scheduled time: 2:00.” A second line followed: “Verify before changing workshop.”\n\nThe prediction explained why four things were absent together—the map, label, object, and time—but it did not explain who had moved them or whether the workshop route was safe without the original panel. Deniz folded the setup note back to the marked questions and looked toward the visible checkout clipboard and the storage drawers beyond the display.\n\nThe next step was no longer guessing what belonged in the gap. It was finding out whether the gap had been made on purpose.",
+        "state_delta": {
+          "location": "The Learning Commons activity room, at the Pattern Walk display.",
+          "character_goal": "Deniz wants to verify the predicted water-access station and determine whether the workshop route can operate safely.",
+          "knowledge_gained": [
+            "The station objects represent practical features along the walking route.",
+            "The missing object's outline on the inventory sheet matches the displayed water-access icon near the route between the garden and overlook positions.",
+            "The blank schedule position falls within the repeated route intervals at 2:00."
+          ],
+          "facts_established": [
+            "The inventory sheet is part of the display papers and contains one unfilled rounded outline with a short side projection.",
+            "The schedule follows the tested walking activity rather than alphabetical label order.",
+            "The tested route proceeds from library to market to garden, then through the missing position toward the overlook."
+          ],
+          "clues_added": [
+            "The missing object is predicted to be a water-access marker or paired object.",
+            "The missing station's predicted time is 2:00.",
+            "The map icons, triangle marks, object outline, and schedule spacing independently support the same prediction."
+          ],
+          "objects_changed": [
+            "Deniz records the icons, schedule intervals, and the prediction 'Missing station: water access. Scheduled time: 2:00' on the setup note."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Was the water station removed deliberately?",
+            "Can the workshop operate safely without its original map panel?"
+          ],
+          "threads_resolved": [
+            "Deniz identifies a specific predicted station purpose and scheduled time, though the prediction is not yet fully confirmed."
+          ],
+          "handoff_state": "Deniz remains at the display with a tested prediction that the missing station concerns water access at 2:00. The map, symbols, inventory outline, and schedule support the prediction, but Deniz still needs documentary evidence to determine whether the absence is accidental or an intentional route adaptation."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 30.503,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 648,
+          "usage": {
+            "input_tokens": 6551,
+            "output_tokens": 1950,
+            "total_tokens": 8501
+          },
+          "cost": {
+            "usd": 0.0039776,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 17.797,
+          "repair_reasons": [
+            "jev:no_contradiction:0.750<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 654,
+          "usage": {
+            "input_tokens": 6391,
+            "output_tokens": 1718,
+            "total_tokens": 8109
+          },
+          "cost": {
+            "usd": 0.0036592,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 20.014,
+          "repair_reasons": [
+            "jev:no_contradiction:0.760<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 660,
+          "usage": {
+            "input_tokens": 6399,
+            "output_tokens": 1837,
+            "total_tokens": 8236
+          },
+          "cost": {
+            "usd": 0.003804,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.81,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4303,
+          "output_tokens": 188,
+          "cost": 0.000180726
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.75,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.75
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4287,
+            "output_tokens": 188,
+            "cost": 0.000180054
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.87,
+            "no_contradiction": 0.76,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.76
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4296,
+            "output_tokens": 188,
+            "cost": 0.000180432
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.81,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4303,
+            "output_tokens": 188,
+            "cost": 0.000180726
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.643,
+        0.823,
+        0.409
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.75,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.75
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.94,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4287,
+              "output_tokens": 188,
+              "cost": 0.000180054
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 654,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.95,
+              "no_unexplained_dependency": 0.87,
+              "no_contradiction": 0.76,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.76
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.96,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4296,
+              "output_tokens": 188,
+              "cost": 0.000180432
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.95,
+              "no_unexplained_dependency": 0.87,
+              "no_contradiction": 0.76,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.76
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.96,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4296,
+              "output_tokens": 188,
+              "cost": 0.000180432
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 660,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.9,
+              "no_contradiction": 0.81,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.96,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4303,
+              "output_tokens": 188,
+              "cost": 0.000180726
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 70.191
+    },
+    {
+      "scene": 4,
+      "target_words": 714,
+      "word_count": 669,
+      "contract": {
+        "index": 4,
+        "purpose": "Confirm the deliberate change through the Commons record and uncover the reason for the missing materials.",
+        "entry_state": "Deniz has a tested prediction for the missing station but lacks documentary evidence about the blank schedule.",
+        "beats": [
+          "Deniz checks the visible checkout clipboard and finds the water-route map marked for an accessibility trial, with a return time matching the workshop.",
+          "In the labeled storage drawer, Deniz finds the matching object and a temporary card describing a quieter route around the crowded stairway.",
+          "The card explains that the original station was removed so participants could follow the accessible route, not because materials were lost."
+        ],
+        "must_include": [
+          "The clipboard, storage drawer, and temporary card belong to the established Learning Commons materials.",
+          "The documentary clue confirms the map, symbols, object, schedule gap, and route prediction together.",
+          "The accessibility purpose is stated plainly enough for independent readers without becoming a lecture."
+        ],
+        "must_not_do": [
+          "Do not introduce a new antagonist or secret organization.",
+          "Do not let the card solve the workshop setup without Deniz applying the earlier pattern.",
+          "Do not erase the uncertainty about how to run the session safely."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the display's inventory sheet, clipboard, storage area, and ordinary tools.",
+          "Scene 2 established the route alignment and the triangle marks at the missing position.",
+          "Scene 3 established the predicted water-access station and matching 2:00 schedule gap."
+        ],
+        "handoff": "The missing station is an intentional accessible-route adaptation; Deniz must now apply the combined evidence to prepare a safe workshop decision.",
+        "open_threads_after": [
+          "How can Deniz represent the missing station without restoring the unsuitable original route?",
+          "Will Deniz cancel the workshop or run the adapted version?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz crossed to the checkout clipboard, which rested on the corner of the display table beneath a clear plastic cover. The sheet held ordinary records: dates, initials, item names, and return times. Near the bottom, one line had been added in darker ink.\n\n“Water Route map — accessibility trial — return by 2:00.”\n\nDeniz read it twice. The time matched the blank in the schedule, but the note did not stand alone. The words “Water Route” matched the route continuation between the garden and the overlook. Even the capital letters looked like the beginning of a label that should have occupied the empty position.\n\nThe line had been initialed by a Commons staff member, with no warning or complaint beside it. No one had reported a lost map. Instead, the map appeared to be checked out for a specific purpose.\n\n“That changes the question,” Deniz said quietly. “Not where did it disappear, but what was it being used for?”\n\nThe answer might be in the storage area. Deniz carried the clipboard to the labeled drawers along the wall. Each drawer had a plain description: “Map Panels,” “Route Objects,” “Pencils and Measuring Tools,” and “Temporary Signs.” The labels were familiar from other Commons activities, and the drawers were unlocked.\n\nInside “Route Objects,” several paired items sat in shallow compartments. The basket and plant marker were already represented at the display. Behind them, wrapped in a square of paper, was an object with a rounded base and a short side projection. Its outline was the same one left unfilled on the inventory sheet.\n\nDeniz lifted it carefully. It was a small, solid model of a drinking fountain, made to be handled rather than admired. A strip of removable tape on its underside carried the words “Water access.”\n\nThe prediction on the setup note now had a physical match. The map gap, the triangle pointing into that gap, the water-access icon, the blank outline, and the 2:00 schedule line were not separate accidents. Each had pointed to the same missing station before Deniz knew why the station was absent.\n\nBut the object was not the only thing in the drawer. Beneath it lay a stiff temporary card, printed on one side and marked with a revision date. Deniz read it beside the clipboard.\n\n“Water Route accessibility trial,” the card said. “Original station panel removed during the trial. Use the quieter path around the crowded stairway. Keep the water-access marker with the temporary route materials. Do not restore the stairway connection until the trial is reviewed.”\n\nDeniz looked toward the display. The old map line from the garden to the overlook seemed harmless on paper. In the building, however, it would direct participants toward the stairway at the busiest part of the evening. The temporary card did not claim that the original route was unusable for everyone. It gave a narrower instruction: during this trial, participants needed a quieter route around it.\n\nThat explained the coordinated absence. The map panel had been removed because the original line would contradict the adapted route. The label, object, and 2:00 entry had been kept with the trial materials rather than left where visitors might follow the wrong instruction.\n\nDeniz placed the object and card on the table beside the setup note. The evidence was now documentary as well as visual, but the workshop was not ready. A card could explain a change; it could not show visitors where to go. Deniz still had to decide how to represent the missing station without rebuilding the route the trial had deliberately replaced.\n\nFor the moment, Deniz wrote the confirmation beneath the earlier prediction: “Water Route, 2:00. Removed for accessibility trial; original stairway path not in use during workshop.” Then Deniz returned the clipboard to its place and kept the recovered object in hand.\n\nThe choice was no longer between accepting a mysterious gap and pretending it was not there. It was between canceling a useful activity and making the tested change clear enough for people to follow safely.",
+        "state_delta": {
+          "location": "The Learning Commons activity room, between the Pattern Walk display, the checkout clipboard, and the labeled storage drawers.",
+          "character_goal": "Deniz wants to apply the confirmed route evidence to prepare a safe decision about whether and how to run the workshop.",
+          "knowledge_gained": [
+            "The Water Route map was checked out for an accessibility trial and had a return time of 2:00.",
+            "The matching water-access object is stored in the Route Objects drawer.",
+            "A temporary card states that the original station panel was removed during the trial so participants could use a quieter path around the crowded stairway."
+          ],
+          "facts_established": [
+            "The checkout clipboard, labeled storage drawers, and temporary card are ordinary Learning Commons materials.",
+            "The map gap, triangle mark, water-access icon, inventory outline, object, and 2:00 schedule blank all refer to the same Water Route station.",
+            "The original stairway connection should not be restored during the accessibility trial."
+          ],
+          "clues_added": [
+            "The documentary record confirms that the coordinated missing materials were removed deliberately.",
+            "The temporary route must go around the crowded stairway and remain distinct from the original map connection.",
+            "The recovered object is a small drinking-fountain model labeled Water access."
+          ],
+          "objects_changed": [
+            "Deniz retrieves the matching water-access object and temporary card from the Route Objects drawer.",
+            "Deniz writes the confirmed Water Route, 2:00 schedule, and accessibility-trial note on the setup note.",
+            "The clipboard is examined and returned to its place; the recovered object remains with Deniz for setup."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "How can Deniz represent the missing station without restoring the unsuitable stairway route?",
+            "Will Deniz cancel the workshop or run the adapted version?",
+            "How can visitors be shown the quieter route clearly and safely?"
+          ],
+          "threads_resolved": [
+            "The water station's identity and 2:00 time are confirmed.",
+            "The coordinated absence is explained as an intentional accessibility adaptation rather than lost materials."
+          ],
+          "handoff_state": "Deniz remains in the Learning Commons with the recovered water-access object, the temporary accessibility card, the clipboard evidence, and the tested map pattern. The original stairway route must not be restored during the trial. Deniz has not yet marked the adapted path, reconstructed the station, or decided whether to run the workshop."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 22.029,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 669,
+          "usage": {
+            "input_tokens": 7036,
+            "output_tokens": 1570,
+            "total_tokens": 8606
+          },
+          "cost": {
+            "usd": 0.00364285,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.89,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4946,
+          "output_tokens": 188,
+          "cost": 0.000207732
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.89,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4946,
+            "output_tokens": 188,
+            "cost": 0.000207732
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.416
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 22.446
+    },
+    {
+      "scene": 5,
+      "target_words": 861,
+      "word_count": 760,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the complete pattern and make the decisive choice that resolves the central practical problem.",
+        "entry_state": "Deniz knows the missing station is deliberate and has its object, route purpose, and scheduled position.",
+        "beats": [
+          "Using the ruler, labels, map edges, triangle marks, schedule, clipboard, and temporary card, Deniz reconstructs a clear water-stop marker beside the accessible route.",
+          "Deniz places the recovered object, writes the 2:00 entry, and marks the quieter path with removable tape rather than restoring the old stairway route.",
+          "Deniz chooses to run the workshop with the tested adaptation, documenting the missing panel instead of canceling or pretending nothing changed."
+        ],
+        "must_include": [
+          "The decisive application visibly uses multiple earlier clues, not only the temporary card.",
+          "Removable tape and a written schedule preserve reversibility and public safety.",
+          "Deniz's choice changes because the pattern proves the absence is purposeful."
+        ],
+        "must_not_do": [
+          "Do not restore the original route after learning it conflicts with the accessibility trial.",
+          "Do not portray Deniz's decision as a guess or heroic impulse.",
+          "Do not leave the central problem unresolved after the adapted setup is ready."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the map-edge route and triangle alignment.",
+          "Scene 3 established the water-stop prediction and matching 2:00 schedule gap.",
+          "Scene 4 established the accessibility trial, recovered object, and quieter-route instructions."
+        ],
+        "handoff": "The adapted workshop is ready and the missing station is accounted for; Deniz must observe the consequences and leave reliable guidance.",
+        "open_threads_after": [
+          "Will participants understand the adapted route?",
+          "How should the Learning Commons record the completed pattern?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz spread the setup note, the temporary card, and the schedule across the table. The answer was confirmed, but the display still showed a gap that visitors could misunderstand. Replacing the missing panel with the old route would undo the accessibility trial. Leaving the gap unexplained would make the workshop depend on Deniz’s spoken instructions alone.\n\nSo Deniz tested the adaptation against the whole pattern once more.\n\nThe ruler went along the lower edges of the garden and overlook maps. Their printed road lines did not meet each other directly; the missing station had belonged between them. Beside the break, the small triangle on the garden map pointed inward, while the matching triangle on the overlook map pointed back toward the same space. The marks did not indicate the old stairway route. They indicated a connection that needed a new, clearly marked middle point.\n\nDeniz checked the labels next. Library, Market, Garden, and Overlook were printed in the same style, each with a triangle and a practical feature. The missing label needed to name the feature represented by the recovered object, not simply fill an alphabetical blank.\n\nOn the schedule, the stations were listed in walking order rather than label order. The times advanced by the same interval, and the empty line between Garden and Overlook was still waiting at 2:00. Deniz wrote carefully in the blank:\n\n“Water access — adapted route — 2:00.”\n\nThe wording mattered. It identified the stop without suggesting that the original stairway connection was open.\n\nDeniz took a strip of removable tape from the tools drawer and placed it on the table first, testing the route before fixing anything. The tape began beside the garden station, curved away from the direction of the crowded stairway, and ended near the overlook station. Deniz checked its distance with the ruler against the map edges. The line followed the route indicated by the temporary card and left enough space for people to pass without brushing the display.\n\nAt the bend, Deniz set down the small drinking-fountain model. Its rounded base matched the outline on the inventory sheet, and its short projection faced the tape line like an arrow. Deniz placed the temporary “Water access” label beside it, then compared the marker with the triangle on the garden map.\n\nThe pieces agreed: map edges located the gap, triangles showed the continuation, the object supplied the feature, and the schedule supplied the time. The clipboard explained why the original panel was absent. None of those clues had been enough by itself. Together, they made one route that could be checked and followed.\n\nDeniz stepped back. The first strip of tape was visible from the display, but the route needed one more turn around the stairway entrance. A second strip marked that bend, and a third ended at the overlook station. All three pieces were removable. If the accessibility trial changed after review, the Commons could alter the display without leaving permanent marks or pretending the temporary route had always been there.\n\nFor a moment, Deniz considered canceling the workshop anyway. Canceling would avoid the risk of confusing anyone. But the evidence did not show a failed activity. It showed a deliberate change whose instructions had been separated from the original materials. The missing panel was not a hole in the pattern anymore; it was part of the record of how the route had been adapted.\n\nDeniz opened the workshop folder and added a short setup record beneath the earlier notes:\n\n“Run Pattern Walk with adapted Water Route. Water-access marker at the missing position; schedule 2:00. Follow removable tape around crowded stairway. Original map panel remains removed during accessibility trial. Do not restore stairway connection.”\n\nThen Deniz placed the recovered object on its marked spot and clipped the temporary card to the front of the folder. The original five maps stayed in their tested route order. The empty position remained empty, but it now had a label, a time, an object, and a visible route around it.\n\nDeniz looked at the clock. There was enough time to welcome the group and explain the first instruction before the workshop began. The decision was no longer a guess between canceling and carrying on. Deniz would run the workshop with the adaptation, because the repeated pattern had shown what the missing station meant and how it could be used safely.\n\nBefore leaving the table, Deniz pressed each tape corner flat, checked that the walkway remained clear, and read the setup record once more. The display was ready without pretending that anything had been restored.",
+        "state_delta": {
+          "location": "The Learning Commons activity room at the Pattern Walk display, with the adapted route marked around the crowded stairway.",
+          "character_goal": "Deniz now wants to run the evening workshop safely using the confirmed accessible Water Route and leave clear instructions for its use.",
+          "knowledge_gained": [
+            "The complete set of map edges, triangle marks, labels, object outline, schedule, clipboard, and temporary card supports one adapted Water Route.",
+            "The original stairway connection must remain unreconstructed during the accessibility trial.",
+            "A removable, clearly marked route can represent the missing station without restoring the unsuitable original panel."
+          ],
+          "facts_established": [
+            "The missing station is represented by the recovered Water access object and a temporary label.",
+            "The adapted Water Route is scheduled for 2:00.",
+            "The route curves around the crowded stairway and ends at the overlook station.",
+            "The original map panel remains removed during the accessibility trial."
+          ],
+          "clues_added": [
+            "The ruler confirms that the removable tape route connects the garden and overlook positions while avoiding the stairway.",
+            "The water-access object, triangle marks, map edges, label, schedule, and documentary records agree when applied together."
+          ],
+          "objects_changed": [
+            "Deniz writes “Water access — adapted route — 2:00” in the schedule.",
+            "Deniz places the recovered drinking-fountain model and temporary Water access label beside the adapted route.",
+            "Deniz marks the quieter path with three strips of removable tape.",
+            "Deniz adds a concrete setup record to the workshop folder and clips the temporary card to it."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Participants must follow and understand the marked adapted route.",
+            "The completed accessibility trial must be recorded for future Learning Commons users."
+          ],
+          "threads_resolved": [
+            "Deniz decides not to cancel the workshop.",
+            "The missing station is accounted for without restoring the old stairway route.",
+            "The adapted workshop setup is ready and the central practical problem is resolved."
+          ],
+          "handoff_state": "The Learning Commons display remains in tested route order with the original fourth map panel absent. A Water access marker and recovered object stand at the missing position, the schedule records the adapted stop at 2:00, and removable tape marks a quieter path around the crowded stairway. Deniz has documented the accessibility trial and chosen to run the workshop. The next scene begins as participants arrive and test whether the marked route is understandable in ordinary use."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 24.364,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 760,
+          "usage": {
+            "input_tokens": 7600,
+            "output_tokens": 1662,
+            "total_tokens": 9262
+          },
+          "cost": {
+            "usd": 0.00389425,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.91,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5651,
+          "output_tokens": 188,
+          "cost": 0.000237342
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.91,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5651,
+            "output_tokens": 188,
+            "cost": 0.000237342
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.477
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 24.841
+    },
+    {
+      "scene": 6,
+      "target_words": 714,
+      "word_count": 601,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the workshop's consequences, confirm the reasoning publicly, and close the missing-pattern thread.",
+        "entry_state": "Deniz has prepared the accessible route and chosen to run the workshop rather than cancel it.",
+        "beats": [
+          "Participants follow the marked route, match the recovered object to the water stop, and notice that the map pattern works without the removed panel.",
+          "Deniz explains the tested sequence and records the accessibility trial beside the schedule, preventing future staff from treating the blank as an error.",
+          "The display remains coherent, the workshop succeeds, and Deniz leaves knowing observation changed the responsible choice."
+        ],
+        "must_include": [
+          "The consequence confirms the solution through ordinary participant use rather than coincidence.",
+          "Deniz records the reason for the missing station and preserves the adapted setup.",
+          "The ending closes the workshop, the missing materials question, and Deniz's decision."
+        ],
+        "must_not_do": [
+          "Do not introduce a new mystery or future-discovery hook.",
+          "Do not claim every participant reacts identically or unrealistically.",
+          "Do not add a late explanation unsupported by the tested clues."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 4 established that the missing station was an intentional accessibility adaptation.",
+          "Scene 5 established the tested route, recovered object placement, 2:00 schedule entry, and removable tape markers.",
+          "Scene 5 established Deniz's decision to run and document the adapted workshop."
+        ],
+        "handoff": "No unresolved central thread remains: the workshop succeeds, the adaptation is documented, and the missing pattern has been responsibly explained.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "At six o’clock, the first participants gathered near the Pattern Walk display. Some had come for the maps; others had noticed the three strips of tape curving away from the crowded stairway and wanted to know where they led.\n\nDeniz welcomed them and pointed to the library station. “We’ll follow the route in walking order. The labels won’t tell us everything, so notice what connects from one map to the next.”\n\nThe group moved from Library to Market, then to Garden. At Garden, the printed path ended near the small triangle. A participant named Mara traced the tape with her eyes. “The route doesn’t go toward the stairs,” she said. “It turns this way.”\n\n“It does,” Deniz said. “Let’s test where it leads.”\n\nThey followed the first strip, then the bend marked by the second. No one had to squeeze past the stairway entrance. The tape guided them to the small drinking-fountain model beside the empty map position.\n\nA participant picked up the Water access label, read it, and set it beside the model. “So this is the missing stop?”\n\n“It is the adapted stop,” Deniz replied. “The original map panel is still removed. The object and the temporary route show us what belongs here without reopening the old stairway connection.”\n\nThe group compared the model with the rounded outline on the inventory sheet. Its short side projection matched the shape exactly. Another participant checked the schedule. “Water access, 2:00,” she read. “But it’s already six.”\n\n“The workshop uses the same route pattern,” Deniz explained. “The schedule helped us identify the missing station. The time was part of the evidence, not a direction to wait until two today.”\n\nAt the overlook station, the last tape strip ended beside the matching triangle. The road lines on the Garden and Overlook maps did not meet directly, but the marked route connected them around the stairs. The participants could see the pattern without needing the removed panel. One person preferred studying the map edges; another focused on the labels and object. Their observations were different, but they led to the same route.\n\nDeniz brought the group back to the display. “At first, the labels made the stations look as if they might have been shuffled. The ruler showed that the map borders and road lines had their own order. Then the triangles pointed to the gap. The inventory outline, water icon, schedule spacing, clipboard, and temporary card all supported the same explanation.”\n\nDeniz opened the schedule folder and placed a fresh note beside the 2:00 entry. It read:\n\n“Water access — adapted route. Original station panel removed for accessibility trial. Follow removable tape around crowded stairway; do not restore stairway connection. Recovered water-access object and temporary label are stored with this record.”\n\nThe note was clipped to the folder, and the temporary card stayed with it. Deniz checked that the object remained beside the route and that the tape corners were still flat. Before the group dispersed, Deniz invited everyone to walk the path once more, this time noticing where the route narrowed and where it opened again.\n\nThe workshop did not need a guessed replacement or a canceled ending. The participants had tested the connections in ordinary use, and the display remained coherent: five original maps, one clearly marked adapted stop, and a route that avoided the crowded stairway.\n\nWhen the last participant left, Deniz recorded the workshop date beneath the note and returned the clipboard to its place. The missing materials question was closed. They had not been lost. The absence had carried instructions, and careful observation had made those instructions usable.",
+        "state_delta": {
+          "location": "The Learning Commons activity room at the Pattern Walk display, after the evening workshop.",
+          "character_goal": "Deniz wanted to run the adapted workshop safely, confirm that participants could use the route, and leave reliable guidance for future users.",
+          "knowledge_gained": [
+            "Participants can follow the removable tape from Garden around the crowded stairway to the Water access stop and onward to Overlook.",
+            "The recovered water-access object, temporary label, map triangles, map edges, inventory outline, and schedule all work together in ordinary use.",
+            "The adapted route is understandable without restoring the removed map panel."
+          ],
+          "facts_established": [
+            "The workshop was successfully run with the adapted Water Route.",
+            "The original station panel remains removed for the accessibility trial.",
+            "The route avoids the crowded stairway and connects Garden to Overlook.",
+            "The missing materials were deliberately removed rather than lost."
+          ],
+          "clues_added": [
+            "Participant use confirms that the marked route functions without the original panel.",
+            "The completed record beside the schedule explains the accessibility trial and gives repeatable route instructions."
+          ],
+          "objects_changed": [
+            "Deniz placed a detailed accessibility-trial note beside the 2:00 schedule entry.",
+            "The temporary card remained clipped to the workshop folder.",
+            "The recovered water-access object and temporary label remained at the adapted stop.",
+            "Deniz recorded the workshop date beneath the setup note and returned the clipboard."
+          ],
+          "relationships_changed": [
+            "The participants now understand the connection among the maps, labels, object, schedule, and adapted route."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "Participants understood and followed the adapted route.",
+            "The workshop succeeded without restoring the unsuitable stairway route.",
+            "The reason for the missing station and materials was documented for future Learning Commons users.",
+            "Deniz's decision to run the workshop rather than cancel it was confirmed through ordinary use."
+          ],
+          "handoff_state": "The workshop is complete. Participants followed the tested accessible Water Route from Garden around the crowded stairway to Overlook, matched the recovered object to the water stop, and confirmed that the map pattern works without the removed panel. Deniz documented the accessibility trial beside the 2:00 schedule entry, preserved the temporary card, object, label, and removable tape setup, and recorded the workshop date. No central thread remains unresolved."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.757,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 601,
+          "usage": {
+            "input_tokens": 7833,
+            "output_tokens": 1354,
+            "total_tokens": 9187
+          },
+          "cost": {
+            "usd": 0.0035829,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.84,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.73,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5604,
+          "output_tokens": 188,
+          "cost": 0.000235368
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.84,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.73,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5604,
+            "output_tokens": 188,
+            "cost": 0.000235368
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.726
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.483
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish Deniz's responsibility, the incomplete learning activity, and the practical decision that depends on solving it.",
+      "word_count": 496,
+      "location": "The Learning Commons activity room, at the long table holding the Pattern Walk display.",
+      "character_goal": "Deniz wants to reconstruct the missing station and decide whether the evening workshop can run safely.",
+      "knowledge_gained": [
+        "Five map stations remain arranged on the display.",
+        "The fourth position is taped off and empty.",
+        "The missing station is absent as a map, label, object pairing, and schedule entry.",
+        "The setup note instructs Deniz to verify the pattern before canceling or changing the workshop."
+      ],
+      "facts_established": [
+        "The Learning Commons contains maps, practical objects, labels, a schedule, an inventory sheet, a checkout clipboard, a storage drawer, a ruler, pencils, and a magnifying glass.",
+        "The tape around the empty position is unbroken and neatly applied.",
+        "The inventory sheet has a blank outline where a station object should be recorded.",
+        "Deniz is twenty-one and is independently responsible for preparing the public workshop."
+      ],
+      "clues_added": [
+        "The coordinated absence of the map, label, object pairing, and schedule time may be meaningful rather than accidental.",
+        "The display materials and schedule must be examined together."
+      ],
+      "objects_changed": [
+        "Deniz writes five investigation questions on the back of the setup note.",
+        "Deniz picks up the ruler and begins examining the display."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Why are the map, label, object, and schedule entry missing together?",
+        "What order connects the five remaining stations?",
+        "Should Deniz cancel, guess, or investigate before changing the workshop?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz remains in the Learning Commons with five intact stations, a taped empty position, and the ruler in hand. The missing station has not been identified, and Deniz is beginning to test the display rather than cancel or guess."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test the first plausible explanation and show that the display's order depends on physical map connections.",
+      "word_count": 652,
+      "location": "The Learning Commons activity room at the Pattern Walk display.",
+      "character_goal": "Deniz wants to identify the missing station and determine whether the workshop route can be changed safely.",
+      "knowledge_gained": [
+        "The visible labels' alphabetical order does not match the route order.",
+        "The map borders and road lines form one continuous walking route in a nonalphabetical sequence.",
+        "The empty position lies between the garden station and the overlook station in the tested route.",
+        "Repeated small triangle marks occur along the route joins, with one pointing toward the empty position."
+      ],
+      "facts_established": [
+        "The ruler can be used to test whether roads and paths continue across map borders.",
+        "The tested route order is library, market, garden, the empty position, and overlook.",
+        "The triangle marks are part of the printed map materials and indicate continuation along the route."
+      ],
+      "clues_added": [
+        "A path line ends at the taped empty position and should continue through the missing map.",
+        "A repeated triangle mark points inward toward the missing position.",
+        "The display's physical map connections, rather than alphabetical labels, determine the walking order."
+      ],
+      "objects_changed": [
+        "Deniz temporarily rearranged the maps for testing, recorded the trials on the setup note, and returned the maps to the tested route positions.",
+        "The ruler was used to align map borders and road lines.",
+        "The magnifying glass was used to inspect the repeated triangle marks."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which label and object belong at the map gap?",
+        "Why is the corresponding schedule time blank?",
+        "What station purpose fits the route position between the garden and overlook stations?"
+      ],
+      "threads_resolved": [
+        "The simple explanation that the display should be read in alphabetical label order was rejected by physical map alignment evidence."
+      ],
+      "handoff_state": "Deniz remains at the Learning Commons display with the maps arranged in the tested walking-route order. The map gap is located between the garden and overlook stations, and repeated triangle marks point toward it. Deniz has not identified the missing station's label, object, or scheduled time, and has not determined whether the gap is accidental or intentional."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use repeated symbols and schedule spacing to infer the missing station without assuming the blank is an error.",
+      "word_count": 660,
+      "location": "The Learning Commons activity room, at the Pattern Walk display.",
+      "character_goal": "Deniz wants to verify the predicted water-access station and determine whether the workshop route can operate safely.",
+      "knowledge_gained": [
+        "The station objects represent practical features along the walking route.",
+        "The missing object's outline on the inventory sheet matches the displayed water-access icon near the route between the garden and overlook positions.",
+        "The blank schedule position falls within the repeated route intervals at 2:00."
+      ],
+      "facts_established": [
+        "The inventory sheet is part of the display papers and contains one unfilled rounded outline with a short side projection.",
+        "The schedule follows the tested walking activity rather than alphabetical label order.",
+        "The tested route proceeds from library to market to garden, then through the missing position toward the overlook."
+      ],
+      "clues_added": [
+        "The missing object is predicted to be a water-access marker or paired object.",
+        "The missing station's predicted time is 2:00.",
+        "The map icons, triangle marks, object outline, and schedule spacing independently support the same prediction."
+      ],
+      "objects_changed": [
+        "Deniz records the icons, schedule intervals, and the prediction 'Missing station: water access. Scheduled time: 2:00' on the setup note."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Was the water station removed deliberately?",
+        "Can the workshop operate safely without its original map panel?"
+      ],
+      "threads_resolved": [
+        "Deniz identifies a specific predicted station purpose and scheduled time, though the prediction is not yet fully confirmed."
+      ],
+      "handoff_state": "Deniz remains at the display with a tested prediction that the missing station concerns water access at 2:00. The map, symbols, inventory outline, and schedule support the prediction, but Deniz still needs documentary evidence to determine whether the absence is accidental or an intentional route adaptation."
+    },
+    {
+      "scene": 4,
+      "purpose": "Confirm the deliberate change through the Commons record and uncover the reason for the missing materials.",
+      "word_count": 669,
+      "location": "The Learning Commons activity room, between the Pattern Walk display, the checkout clipboard, and the labeled storage drawers.",
+      "character_goal": "Deniz wants to apply the confirmed route evidence to prepare a safe decision about whether and how to run the workshop.",
+      "knowledge_gained": [
+        "The Water Route map was checked out for an accessibility trial and had a return time of 2:00.",
+        "The matching water-access object is stored in the Route Objects drawer.",
+        "A temporary card states that the original station panel was removed during the trial so participants could use a quieter path around the crowded stairway."
+      ],
+      "facts_established": [
+        "The checkout clipboard, labeled storage drawers, and temporary card are ordinary Learning Commons materials.",
+        "The map gap, triangle mark, water-access icon, inventory outline, object, and 2:00 schedule blank all refer to the same Water Route station.",
+        "The original stairway connection should not be restored during the accessibility trial."
+      ],
+      "clues_added": [
+        "The documentary record confirms that the coordinated missing materials were removed deliberately.",
+        "The temporary route must go around the crowded stairway and remain distinct from the original map connection.",
+        "The recovered object is a small drinking-fountain model labeled Water access."
+      ],
+      "objects_changed": [
+        "Deniz retrieves the matching water-access object and temporary card from the Route Objects drawer.",
+        "Deniz writes the confirmed Water Route, 2:00 schedule, and accessibility-trial note on the setup note.",
+        "The clipboard is examined and returned to its place; the recovered object remains with Deniz for setup."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "How can Deniz represent the missing station without restoring the unsuitable stairway route?",
+        "Will Deniz cancel the workshop or run the adapted version?",
+        "How can visitors be shown the quieter route clearly and safely?"
+      ],
+      "threads_resolved": [
+        "The water station's identity and 2:00 time are confirmed.",
+        "The coordinated absence is explained as an intentional accessibility adaptation rather than lost materials."
+      ],
+      "handoff_state": "Deniz remains in the Learning Commons with the recovered water-access object, the temporary accessibility card, the clipboard evidence, and the tested map pattern. The original stairway route must not be restored during the trial. Deniz has not yet marked the adapted path, reconstructed the station, or decided whether to run the workshop."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the complete pattern and make the decisive choice that resolves the central practical problem.",
+      "word_count": 760,
+      "location": "The Learning Commons activity room at the Pattern Walk display, with the adapted route marked around the crowded stairway.",
+      "character_goal": "Deniz now wants to run the evening workshop safely using the confirmed accessible Water Route and leave clear instructions for its use.",
+      "knowledge_gained": [
+        "The complete set of map edges, triangle marks, labels, object outline, schedule, clipboard, and temporary card supports one adapted Water Route.",
+        "The original stairway connection must remain unreconstructed during the accessibility trial.",
+        "A removable, clearly marked route can represent the missing station without restoring the unsuitable original panel."
+      ],
+      "facts_established": [
+        "The missing station is represented by the recovered Water access object and a temporary label.",
+        "The adapted Water Route is scheduled for 2:00.",
+        "The route curves around the crowded stairway and ends at the overlook station.",
+        "The original map panel remains removed during the accessibility trial."
+      ],
+      "clues_added": [
+        "The ruler confirms that the removable tape route connects the garden and overlook positions while avoiding the stairway.",
+        "The water-access object, triangle marks, map edges, label, schedule, and documentary records agree when applied together."
+      ],
+      "objects_changed": [
+        "Deniz writes “Water access — adapted route — 2:00” in the schedule.",
+        "Deniz places the recovered drinking-fountain model and temporary Water access label beside the adapted route.",
+        "Deniz marks the quieter path with three strips of removable tape.",
+        "Deniz adds a concrete setup record to the workshop folder and clips the temporary card to it."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Participants must follow and understand the marked adapted route.",
+        "The completed accessibility trial must be recorded for future Learning Commons users."
+      ],
+      "threads_resolved": [
+        "Deniz decides not to cancel the workshop.",
+        "The missing station is accounted for without restoring the old stairway route.",
+        "The adapted workshop setup is ready and the central practical problem is resolved."
+      ],
+      "handoff_state": "The Learning Commons display remains in tested route order with the original fourth map panel absent. A Water access marker and recovered object stand at the missing position, the schedule records the adapted stop at 2:00, and removable tape marks a quieter path around the crowded stairway. Deniz has documented the accessibility trial and chosen to run the workshop. The next scene begins as participants arrive and test whether the marked route is understandable in ordinary use."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the workshop's consequences, confirm the reasoning publicly, and close the missing-pattern thread.",
+      "word_count": 601,
+      "location": "The Learning Commons activity room at the Pattern Walk display, after the evening workshop.",
+      "character_goal": "Deniz wanted to run the adapted workshop safely, confirm that participants could use the route, and leave reliable guidance for future users.",
+      "knowledge_gained": [
+        "Participants can follow the removable tape from Garden around the crowded stairway to the Water access stop and onward to Overlook.",
+        "The recovered water-access object, temporary label, map triangles, map edges, inventory outline, and schedule all work together in ordinary use.",
+        "The adapted route is understandable without restoring the removed map panel."
+      ],
+      "facts_established": [
+        "The workshop was successfully run with the adapted Water Route.",
+        "The original station panel remains removed for the accessibility trial.",
+        "The route avoids the crowded stairway and connects Garden to Overlook.",
+        "The missing materials were deliberately removed rather than lost."
+      ],
+      "clues_added": [
+        "Participant use confirms that the marked route functions without the original panel.",
+        "The completed record beside the schedule explains the accessibility trial and gives repeatable route instructions."
+      ],
+      "objects_changed": [
+        "Deniz placed a detailed accessibility-trial note beside the 2:00 schedule entry.",
+        "The temporary card remained clipped to the workshop folder.",
+        "The recovered water-access object and temporary label remained at the adapted stop.",
+        "Deniz recorded the workshop date beneath the setup note and returned the clipboard."
+      ],
+      "relationships_changed": [
+        "The participants now understand the connection among the maps, labels, object, schedule, and adapted route."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "Participants understood and followed the adapted route.",
+        "The workshop succeeded without restoring the unsuitable stairway route.",
+        "The reason for the missing station and materials was documented for future Learning Commons users.",
+        "Deniz's decision to run the workshop rather than cancel it was confirmed through ordinary use."
+      ],
+      "handoff_state": "The workshop is complete. Participants followed the tested accessible Water Route from Garden around the crowded stairway to Overlook, matched the recovered object to the water stop, and confirmed that the map pattern works without the removed panel. Deniz documented the accessibility trial beside the 2:00 schedule entry, preserved the temporary card, object, label, and removable tape setup, and recorded the workshop date. No central thread remains unresolved."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "At twenty-one, Deniz had learned that preparing an event was mostly a matter of noticing what other people might overlook. So before the evening Pattern Walk workshop, Deniz arrived at the Learning Commons early, unlocked the activity room, and set down a canvas bag of pencils and removable tape.\n\nThe room was a public learning space, brightened by tall windows and crowded with useful things. A long table held five map stations in a row. Each station had a laminated map, a printed label, and a small pair of ordinary objects: a wooden token beside a measuring cup, a brass key beside a cardboard doorway, a fabric swatch beside a market symbol, and other combinations Deniz recognized from the workshop instructions. The objects were meant to help visitors connect places on the maps with practical features in the neighborhood.\n\nA schedule on a stand listed the walking stops and times. Beside it lay a ruler, two pencils, a magnifying glass, an inventory sheet, and a clipboard for checking materials in and out. A shallow storage drawer under the table held spare cards and labels. Everything looked ready until Deniz reached the fourth position.\n\nA neat rectangle of pale tape marked an empty space between the third and fifth stations. There was no map in it, no label, and no object pairing. On the schedule, one line had been left blank. The inventory sheet showed a blank outline where a small station object should have been recorded, too.\n\nDeniz crouched to inspect the tape. It was unbroken and firmly stuck to the table, with no torn corners or scattered scraps nearby. That did not answer anything. Someone could have removed the station carefully. Someone could also have set the gap aside on purpose.\n\nA folded setup note rested beneath the ruler. Deniz opened it and read:\n\n“ONE STATION IS MISSING. It may be intentional. Before canceling or changing the Pattern Walk, verify the pattern across the maps, labels, objects, and schedule.”\n\nDeniz read the sentence twice. It was not permission to pretend the gap did not matter, and it was not an explanation. The workshop route would depend on participants knowing where to go, especially if the missing time represented a stop between two others.\n\nThe simplest response would be to cancel and email the coordinator. The most convenient would be to guess what belonged in the empty space and hope no one noticed. Neither choice fit the note—or Deniz’s responsibility for opening the room to the public.\n\nDeniz took out a pencil and wrote four questions on the back of the setup note: Which map is missing? Which label goes with it? What object belongs there? Why is the time blank?\n\nThen Deniz added a fifth question: What order connects the five stations that remain?\n\nThe room offered plenty to examine, but no answer yet. Deniz left the maps exactly where they were, picked up the ruler, and began with the display rather than a guess.\n\nDeniz began by treating the display as if it might have been disturbed. The labels could have been returned to the wrong stations after a busy program. Or, less conveniently, someone might have taken one station and shifted the others to hide the gap. Both explanations were possible. Neither deserved to be accepted without checking.\n\nThe five laminated maps were almost the same size, but their edges carried different pieces of a larger picture: a footpath here, a street corner there, a thin line that might be a canal or a boundary. Deniz loosened the first map’s clip and slid it a few centimeters to the right. The road line along its lower edge stopped just before the next map’s upper corner.\n\n“That does not match,” Deniz said quietly.\n\nAt first, the labels seemed to offer an easier order. Their titles began with different letters, and the stations had been placed left to right as if someone had sorted them alphabetically. If the labels had been shuffled, Deniz could simply put each one back with the map it named. The empty fourth position might then be nothing more than a missing piece caused by careless setup.\n\nDeniz took up the ruler. Instead of measuring the cards, Deniz held the straight edge across the printed roads. The line on the station marked with the library label continued only when that map was placed beside the station marked with the garden label—not beside the next card in the row. A narrow walking path crossed cleanly from one border to the other.\n\nDeniz rearranged two maps, then three, recording each trial in the margin of the setup note. The alphabetical order failed at nearly every join. The maps made a continuous route only in a different sequence: library, market, garden, then the empty position, followed by the station marked with the overlook symbol.\n\nThe route was not merely a tidy display arrangement. A footpath ran across the first join. A road bent through the second. At the third, the line ended at the taped space, as if the missing map should continue it. When Deniz tested the last join, the overlook path met the far edge of the fifth map without a gap.\n\nThe evidence changed the question. The labels might still have been misplaced, but they were not the thing determining the route. Physical map lines were. The display had been arranged in an order that ignored the alphabet because the walking path mattered more.\n\nDeniz leaned closer to the borders. Tiny triangle marks appeared near several route lines. They were easy to miss: three short strokes forming a small arrowhead, printed in the same dark ink as the maps. One sat near the lower edge of the market map. Another appeared at the garden map’s side. A third pointed toward the taped empty position.\n\nDeniz had not noticed them from standing height. Now the magnifying glass showed that they repeated at the route joins. They were not scratches, and they did not form a separate message. Each triangle sat beside a path where a traveler would need to continue.\n\nAt the empty position, the final visible triangle pointed inward, toward the missing space. Deniz placed the ruler along its direction and extended the line across the tape. It aimed between the garden station and the overlook station, exactly where the route had broken.\n\nThat did not prove what had happened to the missing materials. It did give Deniz a specific place to investigate. The station belonged in the route at that gap, whatever its label and object had been.\n\nDeniz returned the maps to their tested positions and left the labels beside them rather than forcing them into alphabetical order. The route now had a shape, and the small triangles gave that shape a direction. The label and object still had to be matched, and the blank time on the schedule remained unexplained.\n\nDeniz turned back to the labels, leaving them beside the maps instead of forcing them into a neat alphabetical row. Each label carried a small triangle like the ones printed near the route lines. The triangles were not identical decorations. Their points faced the direction a visitor would continue, and beside each one sat a simple map icon.\n\nThe market label had a basket. The garden label showed a leaf. The overlook label showed a broad window shape. On the table, the paired objects matched those features: a small wooden basket, a smooth plant marker, and a cardboard viewing frame. They were not souvenirs. Each object represented something a visitor could use or notice at that stop.\n\nDeniz copied the icons onto the setup note, then compared them with the tested route. The sequence moved from the library to the market, then to the garden, and continued through the empty position before reaching the overlook. Somewhere along that continuation, visitors would need a water-access stop. The empty station had to represent a practical feature, not merely fill a gap in the display.\n\nThe inventory sheet lay beneath the schedule, where Deniz had seen it earlier. It listed the paired objects by outline rather than by name. The basket shape was crossed off. So was the narrow plant marker. The viewing frame was crossed off too. One blank space remained: a rounded outline with a short projection on one side, like a public drinking fountain viewed from above.\n\nDeniz traced the outline with a pencil, without writing on the sheet. The shape was not proof by itself. It could have belonged to a misplaced tool or to an object used in another activity. But when Deniz held the sheet beside the maps, the outline matched the small water-access icon printed near the route between the garden and overlook positions. The triangle at the missing position pointed toward the same part of the path.\n\n“Possible,” Deniz murmured. “Not confirmed.”\n\nThe schedule needed its own test. It was arranged in a column of times, with the station names written beside most entries. The names did not progress alphabetically. They followed the walking activity: library, market, garden, then the later route toward the overlook. Between the entries, the times advanced by the same interval. One line was blank at 2:00.\n\nDeniz placed the ruler along the schedule column and marked the intervals on the margin of the setup note. The blank was not an extra space at the bottom, where someone might have forgotten to add a final activity. It occupied the position required by the route's repeated spacing. The time before it and the time after it were separated by the same amount as the other stops.\n\nThat made the blank significant, but not conclusive. Someone could still have removed the water station by accident and left the schedule unfinished. Or the display might have been assembled from materials that happened to fit a tempting pattern. Deniz wrote both possibilities beneath the earlier questions.\n\nThen Deniz checked the symbols again. The market's triangle led onward to the garden; the garden's route line continued toward the water-access feature before the overlook; and the remaining path ended at the overlook station. The map edges, repeated triangles, object outlines, and evenly spaced schedule were separate pieces of evidence, but they pointed in the same direction.\n\nDeniz wrote a careful prediction: “Missing station: water access. Scheduled time: 2:00.” A second line followed: “Verify before changing workshop.”\n\nThe prediction explained why four things were absent together—the map, label, object, and time—but it did not explain who had moved them or whether the workshop route was safe without the original panel. Deniz folded the setup note back to the marked questions and looked toward the visible checkout clipboard and the storage drawers beyond the display.\n\nThe next step was no longer guessing what belonged in the gap. It was finding out whether the gap had been made on purpose.\n\nDeniz crossed to the checkout clipboard, which rested on the corner of the display table beneath a clear plastic cover. The sheet held ordinary records: dates, initials, item names, and return times. Near the bottom, one line had been added in darker ink.\n\n“Water Route map — accessibility trial — return by 2:00.”\n\nDeniz read it twice. The time matched the blank in the schedule, but the note did not stand alone. The words “Water Route” matched the route continuation between the garden and the overlook. Even the capital letters looked like the beginning of a label that should have occupied the empty position.\n\nThe line had been initialed by a Commons staff member, with no warning or complaint beside it. No one had reported a lost map. Instead, the map appeared to be checked out for a specific purpose.\n\n“That changes the question,” Deniz said quietly. “Not where did it disappear, but what was it being used for?”\n\nThe answer might be in the storage area. Deniz carried the clipboard to the labeled drawers along the wall. Each drawer had a plain description: “Map Panels,” “Route Objects,” “Pencils and Measuring Tools,” and “Temporary Signs.” The labels were familiar from other Commons activities, and the drawers were unlocked.\n\nInside “Route Objects,” several paired items sat in shallow compartments. The basket and plant marker were already represented at the display. Behind them, wrapped in a square of paper, was an object with a rounded base and a short side projection. Its outline was the same one left unfilled on the inventory sheet.\n\nDeniz lifted it carefully. It was a small, solid model of a drinking fountain, made to be handled rather than admired. A strip of removable tape on its underside carried the words “Water access.”\n\nThe prediction on the setup note now had a physical match. The map gap, the triangle pointing into that gap, the water-access icon, the blank outline, and the 2:00 schedule line were not separate accidents. Each had pointed to the same missing station before Deniz knew why the station was absent.\n\nBut the object was not the only thing in the drawer. Beneath it lay a stiff temporary card, printed on one side and marked with a revision date. Deniz read it beside the clipboard.\n\n“Water Route accessibility trial,” the card said. “Original station panel removed during the trial. Use the quieter path around the crowded stairway. Keep the water-access marker with the temporary route materials. Do not restore the stairway connection until the trial is reviewed.”\n\nDeniz looked toward the display. The old map line from the garden to the overlook seemed harmless on paper. In the building, however, it would direct participants toward the stairway at the busiest part of the evening. The temporary card did not claim that the original route was unusable for everyone. It gave a narrower instruction: during this trial, participants needed a quieter route around it.\n\nThat explained the coordinated absence. The map panel had been removed because the original line would contradict the adapted route. The label, object, and 2:00 entry had been kept with the trial materials rather than left where visitors might follow the wrong instruction.\n\nDeniz placed the object and card on the table beside the setup note. The evidence was now documentary as well as visual, but the workshop was not ready. A card could explain a change; it could not show visitors where to go. Deniz still had to decide how to represent the missing station without rebuilding the route the trial had deliberately replaced.\n\nFor the moment, Deniz wrote the confirmation beneath the earlier prediction: “Water Route, 2:00. Removed for accessibility trial; original stairway path not in use during workshop.” Then Deniz returned the clipboard to its place and kept the recovered object in hand.\n\nThe choice was no longer between accepting a mysterious gap and pretending it was not there. It was between canceling a useful activity and making the tested change clear enough for people to follow safely.\n\nDeniz spread the setup note, the temporary card, and the schedule across the table. The answer was confirmed, but the display still showed a gap that visitors could misunderstand. Replacing the missing panel with the old route would undo the accessibility trial. Leaving the gap unexplained would make the workshop depend on Deniz’s spoken instructions alone.\n\nSo Deniz tested the adaptation against the whole pattern once more.\n\nThe ruler went along the lower edges of the garden and overlook maps. Their printed road lines did not meet each other directly; the missing station had belonged between them. Beside the break, the small triangle on the garden map pointed inward, while the matching triangle on the overlook map pointed back toward the same space. The marks did not indicate the old stairway route. They indicated a connection that needed a new, clearly marked middle point.\n\nDeniz checked the labels next. Library, Market, Garden, and Overlook were printed in the same style, each with a triangle and a practical feature. The missing label needed to name the feature represented by the recovered object, not simply fill an alphabetical blank.\n\nOn the schedule, the stations were listed in walking order rather than label order. The times advanced by the same interval, and the empty line between Garden and Overlook was still waiting at 2:00. Deniz wrote carefully in the blank:\n\n“Water access — adapted route — 2:00.”\n\nThe wording mattered. It identified the stop without suggesting that the original stairway connection was open.\n\nDeniz took a strip of removable tape from the tools drawer and placed it on the table first, testing the route before fixing anything. The tape began beside the garden station, curved away from the direction of the crowded stairway, and ended near the overlook station. Deniz checked its distance with the ruler against the map edges. The line followed the route indicated by the temporary card and left enough space for people to pass without brushing the display.\n\nAt the bend, Deniz set down the small drinking-fountain model. Its rounded base matched the outline on the inventory sheet, and its short projection faced the tape line like an arrow. Deniz placed the temporary “Water access” label beside it, then compared the marker with the triangle on the garden map.\n\nThe pieces agreed: map edges located the gap, triangles showed the continuation, the object supplied the feature, and the schedule supplied the time. The clipboard explained why the original panel was absent. None of those clues had been enough by itself. Together, they made one route that could be checked and followed.\n\nDeniz stepped back. The first strip of tape was visible from the display, but the route needed one more turn around the stairway entrance. A second strip marked that bend, and a third ended at the overlook station. All three pieces were removable. If the accessibility trial changed after review, the Commons could alter the display without leaving permanent marks or pretending the temporary route had always been there.\n\nFor a moment, Deniz considered canceling the workshop anyway. Canceling would avoid the risk of confusing anyone. But the evidence did not show a failed activity. It showed a deliberate change whose instructions had been separated from the original materials. The missing panel was not a hole in the pattern anymore; it was part of the record of how the route had been adapted.\n\nDeniz opened the workshop folder and added a short setup record beneath the earlier notes:\n\n“Run Pattern Walk with adapted Water Route. Water-access marker at the missing position; schedule 2:00. Follow removable tape around crowded stairway. Original map panel remains removed during accessibility trial. Do not restore stairway connection.”\n\nThen Deniz placed the recovered object on its marked spot and clipped the temporary card to the front of the folder. The original five maps stayed in their tested route order. The empty position remained empty, but it now had a label, a time, an object, and a visible route around it.\n\nDeniz looked at the clock. There was enough time to welcome the group and explain the first instruction before the workshop began. The decision was no longer a guess between canceling and carrying on. Deniz would run the workshop with the adaptation, because the repeated pattern had shown what the missing station meant and how it could be used safely.\n\nBefore leaving the table, Deniz pressed each tape corner flat, checked that the walkway remained clear, and read the setup record once more. The display was ready without pretending that anything had been restored.\n\nAt six o’clock, the first participants gathered near the Pattern Walk display. Some had come for the maps; others had noticed the three strips of tape curving away from the crowded stairway and wanted to know where they led.\n\nDeniz welcomed them and pointed to the library station. “We’ll follow the route in walking order. The labels won’t tell us everything, so notice what connects from one map to the next.”\n\nThe group moved from Library to Market, then to Garden. At Garden, the printed path ended near the small triangle. A participant named Mara traced the tape with her eyes. “The route doesn’t go toward the stairs,” she said. “It turns this way.”\n\n“It does,” Deniz said. “Let’s test where it leads.”\n\nThey followed the first strip, then the bend marked by the second. No one had to squeeze past the stairway entrance. The tape guided them to the small drinking-fountain model beside the empty map position.\n\nA participant picked up the Water access label, read it, and set it beside the model. “So this is the missing stop?”\n\n“It is the adapted stop,” Deniz replied. “The original map panel is still removed. The object and the temporary route show us what belongs here without reopening the old stairway connection.”\n\nThe group compared the model with the rounded outline on the inventory sheet. Its short side projection matched the shape exactly. Another participant checked the schedule. “Water access, 2:00,” she read. “But it’s already six.”\n\n“The workshop uses the same route pattern,” Deniz explained. “The schedule helped us identify the missing station. The time was part of the evidence, not a direction to wait until two today.”\n\nAt the overlook station, the last tape strip ended beside the matching triangle. The road lines on the Garden and Overlook maps did not meet directly, but the marked route connected them around the stairs. The participants could see the pattern without needing the removed panel. One person preferred studying the map edges; another focused on the labels and object. Their observations were different, but they led to the same route.\n\nDeniz brought the group back to the display. “At first, the labels made the stations look as if they might have been shuffled. The ruler showed that the map borders and road lines had their own order. Then the triangles pointed to the gap. The inventory outline, water icon, schedule spacing, clipboard, and temporary card all supported the same explanation.”\n\nDeniz opened the schedule folder and placed a fresh note beside the 2:00 entry. It read:\n\n“Water access — adapted route. Original station panel removed for accessibility trial. Follow removable tape around crowded stairway; do not restore stairway connection. Recovered water-access object and temporary label are stored with this record.”\n\nThe note was clipped to the folder, and the temporary card stayed with it. Deniz checked that the object remained beside the route and that the tape corners were still flat. Before the group dispersed, Deniz invited everyone to walk the path once more, this time noticing where the route narrowed and where it opened again.\n\nThe workshop did not need a guessed replacement or a canceled ending. The participants had tested the connections in ordinary use, and the display remained coherent: five original maps, one clearly marked adapted stop, and a route that avoided the crowded stairway.\n\nWhen the last participant left, Deniz recorded the workshop date beneath the note and returned the clipboard to its place. The missing materials question was closed. They had not been lost. The absence had carried instructions, and careful observation had made those instructions usable.",
+  "word_count": 3838,
+  "target_words": 4200,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.73,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {
+      "no_contradictions": 0.73
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.71,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11712,
+      "output_tokens": 166,
+      "cost": 0.000491904
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.73,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {
+      "no_contradictions": 0.73
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.71,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11712,
+      "output_tokens": 166,
+      "cost": 0.000491904
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully executes the StoryContract and meets all acceptance criteria. The narrative demonstrates strong instruction-following: Deniz is authentically twenty-one, reasoning independently through a layered puzzle without childish dependence or didacticism. The story maintains explicit causality throughout—each clue (map edges, triangle marks, inventory outline, schedule spacing, clipboard record, temporary card) builds logically toward the solution, and the false hypothesis (shuffled labels) is properly rejected by physical evidence before being abandoned.\n\nCoherence is excellent across all six scenes. The central problem (missing station creating uncertainty about workshop safety) is established clearly in Scene 1, tested systematically in Scenes 2–3, confirmed through documentary evidence in Scene 4, applied decisively in Scene 5, and resolved through ordinary participant use in Scene 6. The causal chain is transparent: Deniz observes → tests → predicts → verifies → decides → documents → confirms.\n\nCharacter consistency is strong. Deniz's judgment, vocabulary, emotional intensity, and sense of responsibility remain plausible for age twenty-one throughout. The decision to investigate rather than cancel or guess reflects mature reasoning, and the choice to run the adapted workshop is grounded in tested evidence, not impulse.\n\nAge-appropriateness is well-calibrated. Sentence structure, concept complexity, and pacing suit an independent adult reader. The story avoids condescension while remaining accessible; technical details (map alignment, schedule intervals, accessibility trial) are explained through Deniz's reasoning rather than exposition.\n\nCreativity is evident in the puzzle design itself: the repeated symbols (triangles), the inventory outline, the schedule spacing, and the documentary record (clipboard, temporary card) form an elegant system where no single clue is sufficient but all together are conclusive. The accessibility theme is woven naturally into the mystery rather than imposed.\n\nStyle quality is consistent. Prose is clear and purposeful, with good pacing between observation, reasoning, and action. Dialogue is minimal but effective. The narrative voice matches Deniz's methodical, observant character.\n\nContinuity is solid across all scenes. The ledger and JEV evidence confirm that each scene properly continues prior state, preserves goals, and hands off coherently. No unexplained dependencies or contradictions remain in the final prose.\n\nEnding quality is strong. Scene 6 resolves the central problem (workshop runs safely with adapted route), confirms the solution through ordinary use (participants follow the marked route and verify the pattern), and closes all open threads (missing materials are accounted for, accessibility trial is documented, future users have clear guidance). The ending is neither premature nor prolonged.\n\nThe story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present. The assembly successfully balances puzzle complexity with readability, maintains Deniz's agency throughout, and delivers a satisfying resolution grounded in tested reasoning rather than luck or revelation.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3838,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.73,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.94
+        },
+        "below_threshold": {
+          "no_contradictions": 0.73
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.71,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 11712,
+          "output_tokens": 166,
+          "cost": 0.000491904
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully executes the StoryContract and meets all acceptance criteria. The narrative demonstrates strong instruction-following: Deniz is authentically twenty-one, reasoning independently through a layered puzzle without childish dependence or didacticism. The story maintains explicit causality throughout—each clue (map edges, triangle marks, inventory outline, schedule spacing, clipboard record, temporary card) builds logically toward the solution, and the false hypothesis (shuffled labels) is properly rejected by physical evidence before being abandoned.\n\nCoherence is excellent across all six scenes. The central problem (missing station creating uncertainty about workshop safety) is established clearly in Scene 1, tested systematically in Scenes 2–3, confirmed through documentary evidence in Scene 4, applied decisively in Scene 5, and resolved through ordinary participant use in Scene 6. The causal chain is transparent: Deniz observes → tests → predicts → verifies → decides → documents → confirms.\n\nCharacter consistency is strong. Deniz's judgment, vocabulary, emotional intensity, and sense of responsibility remain plausible for age twenty-one throughout. The decision to investigate rather than cancel or guess reflects mature reasoning, and the choice to run the adapted workshop is grounded in tested evidence, not impulse.\n\nAge-appropriateness is well-calibrated. Sentence structure, concept complexity, and pacing suit an independent adult reader. The story avoids condescension while remaining accessible; technical details (map alignment, schedule intervals, accessibility trial) are explained through Deniz's reasoning rather than exposition.\n\nCreativity is evident in the puzzle design itself: the repeated symbols (triangles), the inventory outline, the schedule spacing, and the documentary record (clipboard, temporary card) form an elegant system where no single clue is sufficient but all together are conclusive. The accessibility theme is woven naturally into the mystery rather than imposed.\n\nStyle quality is consistent. Prose is clear and purposeful, with good pacing between observation, reasoning, and action. Dialogue is minimal but effective. The narrative voice matches Deniz's methodical, observant character.\n\nContinuity is solid across all scenes. The ledger and JEV evidence confirm that each scene properly continues prior state, preserves goals, and hands off coherently. No unexplained dependencies or contradictions remain in the final prose.\n\nEnding quality is strong. Scene 6 resolves the central problem (workshop runs safely with adapted route), confirms the solution through ordinary use (participants follow the marked route and verify the pattern), and closes all open threads (missing materials are accounted for, accessibility trial is documented, future users have clear guidance). The ending is neither premature nor prolonged.\n\nThe story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present. The assembly successfully balances puzzle complexity with readability, maintains Deniz's agency throughout, and delivers a satisfying resolution grounded in tested reasoning rather than luck or revelation.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000491904,
+      "final_judge_cost": {
+        "usd": 0.020508,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 63.152,
+    "scene_stage_seconds": 186.305,
+    "final_stage_seconds": 11.158,
+    "total_pipeline_seconds": 260.616
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.015650268,
+    "scene_generation_usd": 0.02847655,
+    "scene_continuity_evaluator_usd": 0.001506162,
+    "whole_continuity_evaluator_usd": 0.000491904,
+    "whole_continuity_evaluator_usd_total": 0.000491904,
+    "semantic_judge_usd": {
+      "usd": 0.020508,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.020508,
+    "scene_jev_usd": 0.001506162,
+    "whole_jev_usd": 0.000491904,
+    "whole_jev_usd_total": 0.000491904,
+    "final_haiku": {
+      "usd": 0.020508,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.020508,
+    "total_pipeline_usd": 0.066632884
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 11712,
+      "output_tokens": 166,
+      "cost": 0.000491904
+    },
+    "semantic_judge": {
+      "input_tokens": 16593,
+      "output_tokens": 783,
+      "total_tokens": 17376
+    },
+    "whole_jev": {
+      "input_tokens": 11712,
+      "output_tokens": 166,
+      "cost": 0.000491904
+    },
+    "final_haiku": {
+      "input_tokens": 16593,
+      "output_tokens": 783,
+      "total_tokens": 17376
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
