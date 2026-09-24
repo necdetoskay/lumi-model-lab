@@ -8,7 +8,7 @@ Observed cells: **60** / **400** (unknown: **340**)
 |---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | openai/gpt-5.6-luna | english-story-production.v3 | ADULT | INDEPENDENT_READER | emotional_development | STANDARD | 1 | 100% | 4.000 | 4 | 0.00 | 197.0 | 0.05590 | THIN |
 | openai/gpt-5.6-luna | english-story-production.v3 | ADULT | INDEPENDENT_READER | exploration_mystery | STANDARD | 2 | 100% | 4.000 | 4 | 0.00 | 198.5 | 0.05729 | PROVISIONAL |
-| openai/gpt-5.6-luna | english-story-production.v3 | ADULT | INDEPENDENT_READER | puzzle_problem_solving | STANDARD | 2 | 100% | 4.000 | 4 | 2.00 | 258.9 | 0.08566 | PROVISIONAL |
+| openai/gpt-5.6-luna | english-story-production.v3 | ADULT | INDEPENDENT_READER | puzzle_problem_solving | STANDARD | 3 | 100% | 4.000 | 4 | 1.33 | 229.1 | 0.07508 | PROVISIONAL |
 | openai/gpt-5.6-luna | english-story-production.v3 | CHILD | EARLY_READER | emotional_development | STANDARD | 1 | 100% | 4.000 | 4 | 0.00 | 135.9 | 0.04589 | THIN |
 | openai/gpt-5.6-luna | english-story-production.v3 | CHILD | EARLY_READER | exploration_mystery | STANDARD | 2 | 100% | 4.000 | 4 | 0.00 | 124.5 | 0.04104 | PROVISIONAL |
 | openai/gpt-5.6-luna | english-story-production.v3 | CHILD | EARLY_READER | puzzle_problem_solving | STANDARD | 1 | 100% | 4.000 | 4 | 0.00 | 160.5 | 0.04337 | THIN |
