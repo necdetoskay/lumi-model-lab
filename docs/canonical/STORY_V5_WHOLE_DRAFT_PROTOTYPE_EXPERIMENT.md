@@ -1339,3 +1339,28 @@ The next highest-value work is:
 4. then run a bounded production-like reliability cohort through the real application bridge.
 
 Broad 80-cell synthetic qualification remains lower priority until that bridge exists.
+
+
+## Production-like state-commit cohort — 36028239880
+
+Evidence branch:
+
+`evidence/story-v5-state-commit-cohort-36028239880`
+
+The three accepted production-like cohort outcomes were applied to the deterministic atomic/idempotent commit simulator.
+
+All three first applications returned `COMMITTED`; all three identical replays returned `IDEMPOTENT_REPLAY`. No replay changed authoritative state.
+
+Ece touched Character, Saga and Opportunity only. Because no World mutation was proposed, World revision correctly stayed 11 while Character 5 -> 6, Saga 4 -> 5 and Opportunity 3 -> 4. `GLASS_PASSAGE` remained `RUMORED`.
+
+Arda touched Character, World, Saga and Opportunity. Revisions became 18 / 29 / 13 / 7 and `ARCHIVE_STAIR` remained `RUMORED`. The schedule/card relationship remained a bounded hypothesis.
+
+Ada touched Character, World, Saga and Opportunity. Revisions became 42 / 64 / 19 / 15 and `SEALED_SURVEY_ROOM` remained `RUMORED`. The structured world hypothesis retained explicit uncertainty.
+
+The first commit-cohort assertion incorrectly assumed every story must advance World revision. Ece demonstrated the correct rule: only the validated touched-entity set advances. The assertion was repaired; simulator semantics were not weakened.
+
+Decision:
+
+> Revision advancement follows validated mutations, not StoryContextPack membership or story acceptance.
+
+With this cohort, v5 has multi-context evidence through exact snapshot -> whole-draft story -> typed/epistemic proposal -> atomic commit -> idempotent replay while preserving knowledge-boundary state.

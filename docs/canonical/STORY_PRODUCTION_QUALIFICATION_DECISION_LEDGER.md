@@ -722,3 +722,30 @@ Decision:
 - do not use its scalar score to rank close stories or generators;
 - keep blind, order-swapped pairwise evaluation as aggregate Model Lab evidence only;
 - no single judge output is model-routing authority.
+
+
+## 2026-09-24 — Multi-context commit cohort preserves touched-entity semantics
+
+Run:
+
+`36028239880`
+
+Evidence:
+
+`evidence/story-v5-state-commit-cohort-36028239880`
+
+Observed:
+
+- 3/3 first commit: `COMMITTED`;
+- 3/3 identical replay: `IDEMPOTENT_REPLAY`;
+- no replay mutation;
+- Opportunity consumed in all three cases;
+- RUMORED knowledge-boundary fields remained unchanged.
+
+Ece did not propose a World mutation, so World revision correctly remained 11.
+
+Decision:
+
+> Revision advancement follows the validated touched-entity set. Story acceptance alone does not advance every entity included in StoryContextPack.
+
+The next architecture target is the actual LUMI G2 bridge.
