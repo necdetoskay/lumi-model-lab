@@ -300,6 +300,17 @@ At all-family activation:
 
 The deterministic first batch selected `world_lore_discovery × 8 age tiers`.
 
+After promotion of workflow run `36000135555` first world-lore evidence:
+
+- observed: 32/80;
+- UNKNOWN: 48/80;
+- active v3 governed runs: 53;
+- accepted: 52/53;
+- the single canonical failure is EARLY_CHILD × world_lore_discovery on the hard repetition gate;
+- all eight world-lore cells are now observed and THIN.
+
+A subsequent same-run diagnostic generation produced a clean EARLY_CHILD story, but because the GitHub rerun reused the existing evidence run id it is not counted as a second canonical observation.
+
 After each promoted batch:
 
 1. rebuild capability reports from immutable evidence;
