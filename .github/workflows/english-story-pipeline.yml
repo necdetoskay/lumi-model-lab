@@ -6,17 +6,27 @@ on:
       model:
         description: 'Exact OpenRouter generator model id'
         required: true
-        default: 'qwen/qwen3.8-flash'
+        default: 'openai/gpt-5.6-luna'
         type: string
-      jev_model:
-        description: 'Exact OpenRouter JEV Decisions model id'
+      continuity_evaluator_model:
+        description: 'Exact OpenRouter continuity evaluator model id'
         required: true
         default: 'typesafe/jev-1.13'
         type: string
-      judge_model:
-        description: 'Exact OpenRouter final judge model id'
+      semantic_judge_model:
+        description: 'Exact OpenRouter semantic quality judge model id'
         required: true
         default: 'anthropic/claude-haiku-4.5'
+        type: string
+      jev_model:
+        description: 'Deprecated compatibility alias for continuity evaluator'
+        required: false
+        default: ''
+        type: string
+      judge_model:
+        description: 'Deprecated compatibility alias for semantic quality judge'
+        required: false
+        default: ''
         type: string
       spec:
         description: 'English benchmark spec'
@@ -52,15 +62,40 @@ jobs:
         shell: bash
         env:
           MODEL_ID: ${{ inputs.model }}
-          JEV_MODEL: ${{ inputs.jev_model }}
-          JUDGE_MODEL: ${{ inputs.judge_model }}
+          CONTINUITY_EVALUATOR_MODEL: ${{ inputs.continuity_evaluator_model }}
+          SEMANTIC_JUDGE_MODEL: ${{ inputs.semantic_judge_model }}
+          LEGACY_JEV_MODEL: ${{ inputs.jev_model }}
+          LEGACY_JUDGE_MODEL: ${{ inputs.judge_model }}
           SPEC_PATH: ${{ inputs.spec }}
         run: |
+          CONTINUITY_MODEL="${LEGACY_JEV_MODEL:-$CONTINUITY_EVALUATOR_MODEL}"
+          SEMANTIC_JUDGE="${LEGACY_JUDGE_MODEL:-$SEMANTIC_JUDGE_MODEL}"
           python -m src.english_story_pipeline \
             --model "$MODEL_ID" \
-            --jev-model "$JEV_MODEL" \
-            --judge-model "$JUDGE_MODEL" \
+            --continuity-evaluator-model "$CONTINUITY_MODEL" \
+            --semantic-judge-model "$SEMANTIC_JUDGE" \
             --spec "$SPEC_PATH"
+      - name: Build immutable qualification evidence pack
+        if: always()
+        shell: bash
+        env:
+          SPEC_PATH: ${{ inputs.spec }}
+        run: |
+          EVIDENCE_SOURCE=""
+          if [ -f runs/english_story_pipeline/result.json ]; then
+            EVIDENCE_SOURCE="runs/english_story_pipeline/result.json"
+          elif [ -f runs/english_story_pipeline/failure.json ]; then
+            EVIDENCE_SOURCE="runs/english_story_pipeline/failure.json"
+          fi
+          if [ -n "$EVIDENCE_SOURCE" ]; then
+            python -m src.capability_cube pack \
+              --result "$EVIDENCE_SOURCE" \
+              --spec "$SPEC_PATH" \
+              --run-id "$GITHUB_RUN_ID" \
+              --output-root runs/english_story_pipeline/evidence-pack
+            python -m src.capability_cube verify \
+              --evidence-root runs/english_story_pipeline/evidence-pack
+          fi
       - name: Print accepted English master
         if: success()
         shell: bash

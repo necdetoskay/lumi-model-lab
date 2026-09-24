@@ -10,8 +10,8 @@ The active generator baseline for the current English-first LUMI Model Lab story
 
 - generator: `openai/gpt-5.6-luna`
 - provider path: OpenRouter with the upstream OpenAI provider pinned
-- JEV continuity evaluator: `typesafe/jev-1.13`
-- final semantic judge: `anthropic/claude-haiku-4.5`
+- continuity evaluator implementation at promotion: `typesafe/jev-1.13`
+- semantic judge implementation at promotion: `anthropic/claude-haiku-4.5`
 - story production protocol: current `english_story_pipeline_v1`
 - runtime registry: `model-runtime-profile.v2`
 
@@ -19,7 +19,7 @@ This is a Model Lab promotion decision. It qualifies Luna as the generator to ca
 
 ## Why the baseline changed
 
-The prior 2026-08-31 GLM decision was produced under `story_scene_first_v0.3`. The current production architecture is materially different: it uses an English-first six-scene contract, JEV continuity checks, deterministic story/state gates, Haiku final qualification, and model-specific production policies resolved through Model Runtime Profile v2.
+The prior 2026-08-31 GLM decision was produced under `story_scene_first_v0.3`. The current production architecture is materially different: it uses an English-first six-scene contract, a continuity-evaluator role, deterministic story/state gates, a semantic-judge role, and model-specific production policies resolved through Model Runtime Profile v2.
 
 Because the protocols differ, old GLM scores and current Luna scores are retained as separate historical evidence. They are not treated as an apples-to-apples benchmark.
 
@@ -64,8 +64,8 @@ The following remain shared pipeline authority:
 - StoryContract and SceneGraph requirements
 - deterministic validation
 - scene continuity rules
-- JEV questions and thresholds
-- Haiku rubric and acceptance thresholds
+- continuity-evaluation questions and thresholds
+- semantic-judge rubric and acceptance thresholds
 - total-story word tolerance
 - critical-failure definitions
 - safety constraints
@@ -87,14 +87,24 @@ The canonical stability matrix is recorded in:
 
 `docs/experiments/gpt56-luna-production-qualification-20260924.md`
 
+The migrated immutable run evidence and derived multidimensional capability
+view are governed by:
+
+`docs/canonical/MODEL_CAPABILITY_CUBE_V1.md`
+
+The initial cube deliberately marks these five CHILD × STANDARD cells as
+PROVISIONAL because each currently has only two retained runs. Promotion as a
+Model Lab integration candidate and evidence-density status are separate
+concepts.
+
 Promotion requirements:
 
 - all five frozen cases must pass on canonical `main`
 - repeated runs must not reveal a persistent model-specific failure pattern
-- final Haiku minimum must remain at or above the global acceptance floor
+- final semantic-judge minimum must remain at or above the global acceptance floor
 - no model-specific judge/rubric threshold modification is allowed
 - failures must be preserved rather than silently replaced
-- cost reporting must include plan, scene generation, JEV, and final Haiku stages
+- cost reporting must include plan, scene generation, continuity evaluation, and semantic-judge stages
 
 ## Observed reliability signal
 
@@ -105,7 +115,7 @@ At the time of this decision, the canonical-main matrix showed:
 - **65** total scene-generation attempts
 - **2** semantic scene repairs, both in Scene 5 of one Case 01 repeat
 - one Case 03 first repeat required four Scene 2 generation attempts but no semantic repair; its second repeat accepted all six scenes first-attempt
-- final Haiku average across the matrix: **4.0875/5**
+- final semantic-judge average across the matrix: **4.0875/5**
 - lowest observed final criterion score: **3**, with no critical failure
 - no persistent failure signature requiring Luna-specific prompt, weaker judge thresholds, or pipeline branching
 
@@ -135,7 +145,7 @@ A lower price alone is not sufficient to replace the baseline.
 The next step after this Model Lab promotion is controlled LUMI integration:
 
 - mirror the exact Luna production policy into the application runtime profile;
-- keep JEV and Haiku gates unchanged;
+- keep continuity-evaluator and semantic-judge gates unchanged;
 - run application-level StoryContext/StoryContract integration qualification;
 - verify end-to-end durable story lifecycle and accepted-story persistence;
 - only then promote the application route.

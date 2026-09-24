@@ -1,0 +1,130 @@
+{
+  "accepted": true,
+  "word_count": 2127,
+  "target_words": 2000,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.001415,
+  "scene_words": [
+    {
+      "scene": 1,
+      "target": 260,
+      "actual": 277,
+      "jev_signal": "CONTINUE",
+      "jev_below": {},
+      "semantic_repairs": 0,
+      "continuity_escalation_required": false
+    },
+    {
+      "scene": 2,
+      "target": 310,
+      "actual": 364,
+      "jev_signal": "CONTINUE",
+      "jev_below": {},
+      "semantic_repairs": 0,
+      "continuity_escalation_required": false
+    },
+    {
+      "scene": 3,
+      "target": 340,
+      "actual": 350,
+      "jev_signal": "CONTINUE",
+      "jev_below": {},
+      "semantic_repairs": 0,
+      "continuity_escalation_required": false
+    },
+    {
+      "scene": 4,
+      "target": 340,
+      "actual": 367,
+      "jev_signal": "CONTINUE",
+      "jev_below": {},
+      "semantic_repairs": 0,
+      "continuity_escalation_required": false
+    },
+    {
+      "scene": 5,
+      "target": 410,
+      "actual": 447,
+      "jev_signal": "REVIEW",
+      "jev_below": {
+        "no_contradiction": 0.79
+      },
+      "semantic_repairs": 2,
+      "continuity_escalation_required": true
+    },
+    {
+      "scene": 6,
+      "target": 340,
+      "actual": 322,
+      "jev_signal": "CONTINUE",
+      "jev_below": {},
+      "semantic_repairs": 0,
+      "continuity_escalation_required": false
+    }
+  ],
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.63,
+      "no_repeated_event": 0.89,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {
+      "no_contradictions": 0.63
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.72,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8543,
+      "output_tokens": 166,
+      "cost": 0.000358806
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 3,
+      "ending_quality": 4
+    },
+    "average": 4.125,
+    "minimum": 3,
+    "critical_failures": [],
+    "repair_targets": [
+      {
+        "scene": 5,
+        "repair_scene": 5,
+        "issue": "Contradiction in sunset beam behavior: Scene 5 states the beam 'struck the polished stone exactly where she had seen the pale beam land before,' but Scene 4 explicitly describes Ada observing the beam during the evening flash and then retreating when the tide returned. Scene 5 should clarify that Ada is now observing the same sunset-to-stone-to-wall path she partially witnessed before, not discovering it for the first time. The current phrasing creates ambiguity about whether Ada has already seen this beam path or is seeing it anew."
+      }
+    ],
+    "summary": "The story successfully delivers a coherent, age-appropriate mystery that meets all six constraints. Ada demonstrates consistent curiosity and careful observation throughout. The narrative arc progresses logically from signal observation (Scene 1) through hypothesis testing (Scene 2), route planning (Scene 3), partial investigation (Scene 4), and final confirmation (Scene 5). The solution properly combines waystone markings and tide observations with cave light behavior—satisfying C4 (multiple clues). Ada's correction of her lighthouse hypothesis in Scene 2 fulfills C2 (incorrect assumption corrected by observation). The ending (Scene 6) responsibly closes the main mystery while opening a bounded future discovery via the faint second waystone marking, satisfying C5. The story is not frightening (C1), avoids coincidence or miracle (C3), and maintains a logical causal chain throughout.\n\nThe primary continuity issue is a subtle contradiction in Scene 5 regarding whether Ada is re-observing the beam path she partially witnessed in Scene 4 or discovering it anew. The prose should be clarified to confirm that Ada is confirming her earlier partial observation rather than encountering the beam-to-stone-to-wall path for the first time. This is a prose-level repair that does not affect the StoryContract, SceneGraph, or solution logic.\n\nWord count is approximately 2,127 words, within the 2,000-word target. Character voice is strong and consistent—Ada remains methodical, evidence-based, and appropriately cautious throughout. The style is clear and engaging for the 6–8 age range, with good pacing and sensory detail. The story passes the acceptance gate: average score is 4.1, all criteria are at least 3, and no critical failures are present.",
+    "accepted": true
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.011110456,
+    "scene_generation_usd": 0.0212352,
+    "scene_jev_usd": 0.001336062,
+    "whole_jev_usd": 0.000358806,
+    "whole_jev_usd_total": 0.000358806,
+    "final_haiku": {
+      "usd": 0.016413,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.016413,
+    "total_pipeline_usd": 0.050453524
+  },
+  "output": "runs/english_story_pipeline/result.json",
+  "story_path": "runs/english_story_pipeline/result.story.txt"
+}
