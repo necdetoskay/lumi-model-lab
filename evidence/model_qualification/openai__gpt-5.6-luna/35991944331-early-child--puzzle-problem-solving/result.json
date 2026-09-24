@@ -1,0 +1,2038 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/early-child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_repair_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to restore the learning-space route so everyone can follow it.",
+        "central_problem": "The route's last picture card is missing, and several possible cards could fit.",
+        "solution_principle": "Test the visual pattern against the schedule, labels, and real locations instead of guessing.",
+        "theme_thread": "Careful testing makes a better answer than a quick guess.",
+        "ending_state": "Deniz places the correct tool card, follows the completed route, and helps prepare the learning space.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or frightening danger.",
+          "No unexplained clues, abilities, or objects.",
+          "No premature solution before Scene 5.",
+          "No benchmark or test language."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the public learning space, the route board, and the missing final card.",
+          "entry_state": "Deniz visits a learning space with maps, labeled shelves, objects, tools, and a posted picture schedule.",
+          "beats": [
+            "Deniz sees a route board showing map, shell, map, shell, and an empty final space.",
+            "Deniz sees picture labels on the map and shell places, a picture schedule, and ordinary tools at the tools table.",
+            "Deniz wants to help complete the route before the scheduled pattern activity begins."
+          ],
+          "must_include": [
+            "Use simple read-aloud language, short sentences, repeated key words, and age-four emotional intensity.",
+            "Show the maps, objects, picture schedule, labels, and ordinary tools naturally as physical things Deniz can see and touch.",
+            "Deniz decides to look carefully before choosing a card."
+          ],
+          "must_not_do": [
+            "Do not reveal the missing card or solve the pattern.",
+            "Do not make Deniz read beyond plausible picture labels and simple words.",
+            "Do not introduce danger, combat, or a second main problem."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has identified the missing final space and will compare the visible pattern with the picture schedule and the real places.",
+          "open_threads_after": [
+            "Which picture card belongs in the empty space?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Let Deniz form and test a reasonable first hypothesis with natural adult scaffolding.",
+          "entry_state": "Deniz knows the board alternates map and shell pictures, but the final card is missing.",
+          "beats": [
+            "Deniz points to the last visible map and shell pictures and says, 'Shell next?' because shell follows map twice.",
+            "The space helper reads the picture schedule aloud: 'Map, shell, map, shell, then tools.'",
+            "Deniz points to the tools picture at the end of the schedule and notices that the route ends at the tools table, not the shell shelf.",
+            "The helper confirms Deniz's observation without supplying the answer."
+          ],
+          "must_include": [
+            "Make the shell guess reasonable from the visible alternating pictures.",
+            "Have the helper read the picture schedule aloud naturally; Deniz responds by pointing and using short questions rather than reading text.",
+            "Clearly show the schedule evidence rejecting the shell guess.",
+            "Keep the board, schedule, helper, and goal continuous from Scene 1."
+          ],
+          "must_not_do": [
+            "Do not treat the first guess as correct.",
+            "Do not add a new route, activity, or unexplained schedule entry.",
+            "Do not solve the missing-card puzzle yet.",
+            "Do not require Deniz to independently read the schedule."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the visible map-shell-map-shell sequence.",
+            "Scene 1 established the picture schedule and the route board.",
+            "Scene 1 established Deniz's goal of completing the route.",
+            "Scene 1 established the tools table as a visible place in the learning space."
+          ],
+          "handoff": "The alternating pictures suggest shell, but the helper's spoken schedule points to tools, so Deniz must check the real places to find which clue controls the final space.",
+          "open_threads_after": [
+            "Why does the route's ending differ from the visible alternation?",
+            "Which tool picture belongs there?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Reveal that the board's pictures mark destinations, then narrow the answer using picture labels and adult-read words.",
+          "entry_state": "Deniz has rejected shell and needs evidence connecting the final route space to the tools table.",
+          "beats": [
+            "Deniz physically follows the map and shell pictures to their matching picture-marked places.",
+            "At each place, the helper reads the simple label aloud while Deniz points to the matching picture.",
+            "At the tools table, Deniz notices a ruler beside a matching ruler picture and a blank card outline.",
+            "The helper reads the ruler label aloud, and Deniz says, 'Ruler goes here?'"
+          ],
+          "must_include": [
+            "Show that pictures are destination clues, not only a repeating decoration.",
+            "Use the existing picture labels and ordinary ruler as concrete evidence.",
+            "Have the helper read any written labels aloud; Deniz identifies them through pictures, pointing, and simple speech.",
+            "Let Deniz communicate the new idea simply without independently interpreting complex text."
+          ],
+          "must_not_do": [
+            "Do not reveal the completed route card yet.",
+            "Do not make the ruler magical or unusually important.",
+            "Do not introduce a new person or location."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the picture-marked map and object areas.",
+            "Scene 2 established that the spoken schedule ends at the tools table.",
+            "Scene 2 established that shell cannot fit the scheduled ending.",
+            "Scene 1 established that the tools table and ordinary tools are physically present."
+          ],
+          "handoff": "The tools table has a ruler picture and an empty card outline, giving Deniz a candidate that must still be checked against the whole route.",
+          "open_threads_after": [
+            "Is the ruler card truly the missing route card?",
+            "How can Deniz test the completed route?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Have Deniz compare all accumulated evidence through pointing, short dialogue, and a concrete cooperative test plan.",
+          "entry_state": "Deniz suspects the missing card shows a ruler because the picture schedule and tools label agree.",
+          "beats": [
+            "Deniz points in turn to the board's map-shell pattern, the final tools picture on the schedule, the matching destination pictures, and the ruler outline.",
+            "Deniz tells the helper, in short phrases, 'Map. Shell. Tools. Ruler.'",
+            "The helper repeats the evidence and asks whether they should try the ruler card.",
+            "Deniz agrees and carries the card to the board for a route test."
+          ],
+          "must_include": [
+            "Accumulate the visual sequence, spoken schedule, destination pictures, and ruler evidence.",
+            "Show the comparison through physical pointing and simple dialogue, not silent abstract reasoning.",
+            "Show communication and cooperation without making Deniz dependent or helpless.",
+            "Make the test plan clear before the decisive application."
+          ],
+          "must_not_do": [
+            "Do not place the card permanently yet.",
+            "Do not reveal an additional hidden clue.",
+            "Do not let the helper solve the puzzle for Deniz.",
+            "Do not require Deniz to read or explain abstract logic."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the spoken schedule's tools-table ending.",
+            "Scene 3 established that board pictures match picture-marked destinations.",
+            "Scene 3 established the ruler picture, ordinary ruler, and matching blank card outline.",
+            "Scene 2 established the shell hypothesis and its rejection."
+          ],
+          "handoff": "Deniz and the helper are ready to test the ruler card on the route and check whether every concrete clue agrees.",
+          "open_threads_after": [
+            "Whether the ruler card completes the route correctly."
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the tested solution and resolve the missing-card problem.",
+          "entry_state": "Deniz has a ruler card candidate and a planned route test supported by several earlier clues.",
+          "beats": [
+            "Deniz places the ruler card in the empty space and follows the pictures: map, shell, map, shell, ruler.",
+            "Deniz reaches the tools table at the time shown by the picture schedule.",
+            "Deniz points to the matching ruler picture, chooses the ruler, and leaves the shell behind.",
+            "The helper confirms that the board, schedule, destinations, and ruler all match."
+          ],
+          "must_include": [
+            "Use the alternating pictures, picture schedule, destination labels, and ruler outline together.",
+            "Make the successful route test a concrete action: placing, following, arriving, and choosing.",
+            "Make the route test the decisive payoff.",
+            "Show Deniz's final choice changing because the tested answer identifies the correct tool.",
+            "Keep the action and dialogue short and concrete for a four-year-old listener."
+          ],
+          "must_not_do": [
+            "Do not introduce a different answer after the test succeeds.",
+            "Do not leave the central problem unresolved.",
+            "Do not add a new puzzle during the payoff."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the rejected shell hypothesis and the tools-table schedule.",
+            "Scene 3 established matching destination pictures and the ruler outline.",
+            "Scene 4 established the cooperative plan to test the ruler card.",
+            "Scene 1 established the physical route board and ordinary tools."
+          ],
+          "handoff": "The route is complete, the correct ruler is chosen, and Deniz can help prepare the scheduled pattern activity.",
+          "open_threads_after": [
+            "Deniz must finish the activity setup and share what the tested pattern showed."
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the practical consequence and close with Deniz sharing the lesson through action.",
+          "entry_state": "The completed route identifies the tools table and the ruler Deniz should use.",
+          "beats": [
+            "Deniz carries the ruler to the table and helps measure the activity strip with the space helper.",
+            "Deniz points to the route, then to the ruler, and says, 'We checked. It fit!'",
+            "The helper affirms Deniz's concrete observation, and they finish preparing the activity together."
+          ],
+          "must_include": [
+            "Close the route, tool choice, and scheduled activity together.",
+            "Keep Deniz's explanation concrete, brief, and suitable for a four-year-old listener.",
+            "Show the lesson through pointing, measuring, and cooperation rather than a lecture.",
+            "End with cooperation and confidence."
+          ],
+          "must_not_do": [
+            "Do not open a new mystery or future quest.",
+            "Do not erase the earlier false hypothesis.",
+            "Do not use abstract or age-inappropriate vocabulary."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established that the ruler card completes the route.",
+            "Scene 5 established that the tools table is the scheduled destination.",
+            "Scene 5 established Deniz's choice to use the ruler.",
+            "Scene 4 established that the helper and Deniz would test the route together."
+          ],
+          "handoff": "The route is complete, the activity is prepared, and the main problem is closed through tested evidence and cooperation.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.63,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.85,
+        "no_early_resolution": 0.93,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.63
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.79,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 4017,
+        "output_tokens": 185,
+        "cost": 0.000168714
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must ensure picture labels and schedule are introduced as visible, touchable objects without requiring independent reading by Deniz. Helper's role in reading aloud should be established naturally."
+        },
+        {
+          "scene": 2,
+          "risk": "The shell hypothesis must feel genuinely plausible from the visible alternation (map-shell-map-shell). If the schedule is not read aloud clearly enough, the rejection of shell may feel arbitrary to a four-year-old listener."
+        },
+        {
+          "scene": 3,
+          "risk": "The transition from 'pictures decorate the board' to 'pictures mark destinations' must be shown through concrete physical following, not explained abstractly. The ruler picture and blank card outline must be visibly present at the tools table."
+        },
+        {
+          "scene": 4,
+          "risk": "The pointing and dialogue must accumulate evidence without becoming a silent montage. Each piece of evidence (board pattern, schedule, destination pictures, ruler outline) must be verbally acknowledged by Deniz or the helper so the listener follows the reasoning."
+        },
+        {
+          "scene": 5,
+          "risk": "The route test must be a concrete action sequence (place card → follow pictures → arrive at tools table → choose ruler) that a four-year-old can visualize. The payoff depends on all earlier clues being remembered by the listener."
+        },
+        {
+          "scene": 6,
+          "risk": "Deniz's final statement 'We checked. It fit!' must feel earned and age-appropriate. The measuring action must be brief and concrete; avoid abstract reflection on the lesson."
+        }
+      ],
+      "summary": "This plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. The central problem (missing final card) is preserved until Scene 5, where the tested solution delivers the decisive payoff. Scene 6 resolves consequences through practical cooperation. The false hypothesis (shell) is introduced plausibly in Scene 2 and rejected by evidence (the spoken schedule), satisfying C7. The final solution uses multiple earlier clues: the visible alternating pattern, the helper-read schedule, the destination picture labels, and the ruler outline. All dependencies are explained within the story. Constraint coverage is strong but depends critically on prose execution: C1 (age-four language and pacing) and C9 (read-aloud mode) require careful sentence structure, repetition, and dialogue in the actual scenes. The plan does not violate any prohibited events. The JEV advisory flagged constraint_coverage at 0.63 probability; this reflects the plan's reliance on precise age-appropriate prose and helper scaffolding, which are specified in the beats but not yet written. The plan itself is sound; execution risk is moderate and manageable.",
+      "accepted": true
+    },
+    "costs": {
+      "planner_repair": {
+        "usd": 0.0045169,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000168714,
+      "haiku": {
+        "usd": 0.00804,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner_repair": {
+        "input_tokens": 3985,
+        "output_tokens": 2934,
+        "total_tokens": 6919
+      },
+      "jev": {
+        "input_tokens": 4017,
+        "output_tokens": 185,
+        "cost": 0.000168714
+      },
+      "haiku": {
+        "input_tokens": 4225,
+        "output_tokens": 763,
+        "total_tokens": 4988
+      }
+    },
+    "request_evidence": {
+      "structured_parse_retries": [],
+      "planner_repair": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        },
+        "max_tokens": null
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": [
+      {
+        "repair": 1,
+        "before": {
+          "deterministic_errors": [],
+          "jev": {
+            "threshold": 0.8,
+            "below_threshold": {
+              "constraint_coverage": 0.58
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.77
+          },
+          "haiku": {
+            "scores": {
+              "causal_continuity": 5,
+              "protagonist_goal_continuity": 5,
+              "constraint_coverage": 3,
+              "information_progression": 5,
+              "no_unexplained_dependencies": 5,
+              "no_early_resolution": 5,
+              "ending_coherence": 5
+            },
+            "critical_failures": [
+              "C1 (age-appropriate complexity) is at risk: the plan requires Deniz to read or interpret a posted schedule, destination labels, and a ruler label. A typical 4-year-old in read-aloud mode cannot independently read these texts. The plan must either (a) have the helper read labels aloud naturally, (b) use only picture labels Deniz recognizes, or (c) have Deniz point while an adult reads. Without explicit scaffolding, Scene 2's 'posted schedule' and Scene 3's 'labels' become unexplained dependencies.",
+              "C9 (exact age 4, read-aloud mode) tension: The plan assumes Deniz can follow a multi-step logical chain (alternating pattern → schedule contradiction → destination matching → label confirmation → test). This is cognitively plausible for a 4-year-old with adult guidance, but the prose must keep sentences very short, repeat key ideas, and use concrete actions (pointing, following, placing) rather than abstract reasoning. The plan does not yet specify how much scaffolding the helper provides."
+            ],
+            "scene_risks": [
+              {
+                "scene": 1,
+                "risk": "Must establish the route board, schedule, labels, and tools visually and concretely. If any of these are only mentioned in text without physical props or pictures, Deniz cannot interact with them. Ensure the scene shows Deniz seeing and touching real objects."
+              },
+              {
+                "scene": 2,
+                "risk": "The 'posted schedule' must be readable or interpretable by Deniz without unexplained adult help. If the schedule is text-only, add a picture-based schedule or have the helper read it aloud as part of natural dialogue. The shell hypothesis must feel like Deniz's own observation, not a guess planted by the adult."
+              },
+              {
+                "scene": 3,
+                "risk": "Deniz must physically follow the route (map → shell → map → shell) to their labeled places. This requires the learning space to have these locations clearly marked. If labels are text-only, they must be read aloud by the helper or Deniz must recognize them by picture. The 'blank card outline' at the tools table must be visually obvious, not inferred."
+              },
+              {
+                "scene": 4,
+                "risk": "The comparison of 'board, schedule, destination labels, and ruler outline' is abstract for a 4-year-old. The scene must show Deniz pointing to each clue in turn and the helper confirming, not Deniz reasoning silently. Communication with the helper must be dialogue, not internal thought."
+              },
+              {
+                "scene": 5,
+                "risk": "The 'successful route test' must be a concrete action: Deniz places the card, follows the route, and arrives at the tools table. The payoff is the arrival and the choice to use the ruler, not a verbal confirmation. Ensure the scene shows the physical completion, not just agreement."
+              },
+              {
+                "scene": 6,
+                "risk": "Deniz's explanation that 'checking each clue worked better than guessing' must be expressed in 4-year-old language and action, not as a moral lesson. The scene should show Deniz using the ruler and pointing to the route, with the helper affirming, rather than Deniz delivering a conclusion."
+              }
+            ],
+            "summary": "The plan has strong causal continuity, goal stability, information progression, and ending coherence. The central problem is not solved early, and no unexplained dependencies exist at the plot level. However, constraint_coverage scores 3 because C1 and C9 are at risk: the plan assumes Deniz can read or interpret a posted schedule and multiple labels without specifying how the helper scaffolds this for a 4-year-old in read-aloud mode. The logical chain (pattern → schedule → labels → test) is cognitively plausible but requires explicit dialogue and physical interaction to remain age-appropriate. Revise Scenes 2–4 to show the helper reading labels and schedules aloud naturally, and ensure Deniz's reasoning is expressed through pointing, following, and simple questions rather than silent deduction. The false hypothesis (shell) is well-placed and rejected by evidence. The final solution uses the alternating pattern, schedule, destination labels, and ruler outline together. Recommend proceeding to prose with close attention to dialogue, sentence length, and concrete action in Scenes 2–4."
+          }
+        },
+        "after": {
+          "deterministic_errors": [],
+          "jev": {
+            "threshold": 0.8,
+            "below_threshold": {
+              "constraint_coverage": 0.63
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.79
+          },
+          "haiku": {
+            "scores": {
+              "causal_continuity": 5,
+              "protagonist_goal_continuity": 5,
+              "constraint_coverage": 4,
+              "information_progression": 5,
+              "no_unexplained_dependencies": 5,
+              "no_early_resolution": 5,
+              "ending_coherence": 5
+            },
+            "critical_failures": [],
+            "scene_risks": [
+              {
+                "scene": 1,
+                "risk": "Must ensure picture labels and schedule are introduced as visible, touchable objects without requiring independent reading by Deniz. Helper's role in reading aloud should be established naturally."
+              },
+              {
+                "scene": 2,
+                "risk": "The shell hypothesis must feel genuinely plausible from the visible alternation (map-shell-map-shell). If the schedule is not read aloud clearly enough, the rejection of shell may feel arbitrary to a four-year-old listener."
+              },
+              {
+                "scene": 3,
+                "risk": "The transition from 'pictures decorate the board' to 'pictures mark destinations' must be shown through concrete physical following, not explained abstractly. The ruler picture and blank card outline must be visibly present at the tools table."
+              },
+              {
+                "scene": 4,
+                "risk": "The pointing and dialogue must accumulate evidence without becoming a silent montage. Each piece of evidence (board pattern, schedule, destination pictures, ruler outline) must be verbally acknowledged by Deniz or the helper so the listener follows the reasoning."
+              },
+              {
+                "scene": 5,
+                "risk": "The route test must be a concrete action sequence (place card → follow pictures → arrive at tools table → choose ruler) that a four-year-old can visualize. The payoff depends on all earlier clues being remembered by the listener."
+              },
+              {
+                "scene": 6,
+                "risk": "Deniz's final statement 'We checked. It fit!' must feel earned and age-appropriate. The measuring action must be brief and concrete; avoid abstract reflection on the lesson."
+              }
+            ],
+            "summary": "This plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. The central problem (missing final card) is preserved until Scene 5, where the tested solution delivers the decisive payoff. Scene 6 resolves consequences through practical cooperation. The false hypothesis (shell) is introduced plausibly in Scene 2 and rejected by evidence (the spoken schedule), satisfying C7. The final solution uses multiple earlier clues: the visible alternating pattern, the helper-read schedule, the destination picture labels, and the ruler outline. All dependencies are explained within the story. Constraint coverage is strong but depends critically on prose execution: C1 (age-four language and pacing) and C9 (read-aloud mode) require careful sentence structure, repetition, and dialogue in the actual scenes. The plan does not violate any prohibited events. The JEV advisory flagged constraint_coverage at 0.63 probability; this reflects the plan's reliance on precise age-appropriate prose and helper scaffolding, which are specified in the beats but not yet written. The plan itself is sound; execution risk is moderate and manageable."
+          }
+        },
+        "accepted": true,
+        "usage": {
+          "planner_repair": {
+            "input_tokens": 3985,
+            "output_tokens": 2934,
+            "total_tokens": 6919
+          },
+          "jev": {
+            "input_tokens": 4017,
+            "output_tokens": 185,
+            "cost": 0.000168714
+          },
+          "haiku": {
+            "input_tokens": 4225,
+            "output_tokens": 763,
+            "total_tokens": 4988
+          }
+        },
+        "costs": {
+          "planner_repair": {
+            "usd": 0.0045169,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "jev": 0.000168714,
+          "haiku": {
+            "usd": 0.00804,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "request_evidence": {
+          "structured_parse_retries": [],
+          "planner_repair": {
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            },
+            "max_tokens": null
+          },
+          "haiku_structured_parse_retries": [],
+          "haiku": {
+            "reasoning": {
+              "effort": "none",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "scene_budgets": [
+    65,
+    78,
+    85,
+    85,
+    102,
+    85
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 65,
+      "word_count": 72,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the public learning space, the route board, and the missing final card.",
+        "entry_state": "Deniz visits a learning space with maps, labeled shelves, objects, tools, and a posted picture schedule.",
+        "beats": [
+          "Deniz sees a route board showing map, shell, map, shell, and an empty final space.",
+          "Deniz sees picture labels on the map and shell places, a picture schedule, and ordinary tools at the tools table.",
+          "Deniz wants to help complete the route before the scheduled pattern activity begins."
+        ],
+        "must_include": [
+          "Use simple read-aloud language, short sentences, repeated key words, and age-four emotional intensity.",
+          "Show the maps, objects, picture schedule, labels, and ordinary tools naturally as physical things Deniz can see and touch.",
+          "Deniz decides to look carefully before choosing a card."
+        ],
+        "must_not_do": [
+          "Do not reveal the missing card or solve the pattern.",
+          "Do not make Deniz read beyond plausible picture labels and simple words.",
+          "Do not introduce danger, combat, or a second main problem."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has identified the missing final space and will compare the visible pattern with the picture schedule and the real places.",
+        "open_threads_after": [
+          "Which picture card belongs in the empty space?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz stepped into the learning room. Maps lay in a map-marked place. Shells sat on a shelf with a shell picture. At a table lay a ruler, crayons, and tape. A route board showed: map, shell, map, shell, then an empty square. Nearby, a picture schedule showed little pictures. The space helper smiled. Deniz touched the empty square. “I can help,” Deniz said. “I will look carefully before I choose a card.”",
+        "state_delta": {
+          "location": "Public learning room with map and shell areas, a route board, a picture schedule, and a tools table.",
+          "character_goal": "Deniz wants to help complete the route before the pattern activity begins.",
+          "knowledge_gained": [
+            "The route board shows map, shell, map, shell, and an empty final space.",
+            "The learning room has map and shell picture-marked places.",
+            "The tools table has a ruler, crayons, and tape."
+          ],
+          "facts_established": [
+            "A space helper is present.",
+            "The picture schedule is posted near the route board."
+          ],
+          "clues_added": [
+            "The visible route pattern is map, shell, map, shell.",
+            "The final route space is empty."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which picture card belongs in the empty final space?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has identified the empty final space and will compare the visible map-shell pattern with the picture schedule and the real places."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.338,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 72,
+          "usage": {
+            "input_tokens": 4637,
+            "output_tokens": 1060,
+            "total_tokens": 5697
+          },
+          "cost": {
+            "usd": 0.0024311,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.9,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.84,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2318,
+          "output_tokens": 188,
+          "cost": 9.7356e-05
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.9,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.84,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2318,
+            "output_tokens": 188,
+            "cost": 9.7356e-05
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.57
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.909
+    },
+    {
+      "scene": 2,
+      "target_words": 78,
+      "word_count": 81,
+      "contract": {
+        "index": 2,
+        "purpose": "Let Deniz form and test a reasonable first hypothesis with natural adult scaffolding.",
+        "entry_state": "Deniz knows the board alternates map and shell pictures, but the final card is missing.",
+        "beats": [
+          "Deniz points to the last visible map and shell pictures and says, 'Shell next?' because shell follows map twice.",
+          "The space helper reads the picture schedule aloud: 'Map, shell, map, shell, then tools.'",
+          "Deniz points to the tools picture at the end of the schedule and notices that the route ends at the tools table, not the shell shelf.",
+          "The helper confirms Deniz's observation without supplying the answer."
+        ],
+        "must_include": [
+          "Make the shell guess reasonable from the visible alternating pictures.",
+          "Have the helper read the picture schedule aloud naturally; Deniz responds by pointing and using short questions rather than reading text.",
+          "Clearly show the schedule evidence rejecting the shell guess.",
+          "Keep the board, schedule, helper, and goal continuous from Scene 1."
+        ],
+        "must_not_do": [
+          "Do not treat the first guess as correct.",
+          "Do not add a new route, activity, or unexplained schedule entry.",
+          "Do not solve the missing-card puzzle yet.",
+          "Do not require Deniz to independently read the schedule."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the visible map-shell-map-shell sequence.",
+          "Scene 1 established the picture schedule and the route board.",
+          "Scene 1 established Deniz's goal of completing the route.",
+          "Scene 1 established the tools table as a visible place in the learning space."
+        ],
+        "handoff": "The alternating pictures suggest shell, but the helper's spoken schedule points to tools, so Deniz must check the real places to find which clue controls the final space.",
+        "open_threads_after": [
+          "Why does the route's ending differ from the visible alternation?",
+          "Which tool picture belongs there?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz pointed to the board. “Map, shell, map, shell,” Deniz said. “Shell next?” The guess made sense. Shell followed map twice. The helper touched the picture schedule. “Map, shell, map, shell, then tools,” the helper read aloud. Deniz pointed to the last picture. “Tools?” Deniz looked at the shell shelf, then at the tools table. The route ended at the tools table, not the shell shelf. “You noticed,” said the helper. Deniz’s shell guess no longer fit. Which tool belonged there?",
+        "state_delta": {
+          "location": "Public learning room beside the route board, picture schedule, shell shelf, and tools table.",
+          "character_goal": "Deniz wants to complete the route before the pattern activity begins.",
+          "knowledge_gained": [
+            "The spoken picture schedule says map, shell, map, shell, then tools.",
+            "The route ends at the tools table, not the shell shelf.",
+            "The shell guess does not fit the schedule."
+          ],
+          "facts_established": [
+            "The space helper can read the picture schedule aloud.",
+            "Deniz uses pointing and short questions to communicate observations."
+          ],
+          "clues_added": [
+            "The final route destination is the tools table.",
+            "The last card must show a tool rather than a shell."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which tool picture belongs in the final route space?",
+            "Why do the visible alternating pictures end differently?"
+          ],
+          "threads_resolved": [
+            "The shell hypothesis as the final card was rejected by the spoken schedule."
+          ],
+          "handoff_state": "The alternating board pictures suggest shell, but the spoken schedule points to the tools table. Deniz must check the real places and find which tool picture belongs in the empty space."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.529,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 81,
+          "usage": {
+            "input_tokens": 5114,
+            "output_tokens": 687,
+            "total_tokens": 5801
+          },
+          "cost": {
+            "usd": 0.00210275,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2767,
+          "output_tokens": 188,
+          "cost": 0.000116214
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2767,
+            "output_tokens": 188,
+            "cost": 0.000116214
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.61
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.14
+    },
+    {
+      "scene": 3,
+      "target_words": 85,
+      "word_count": 86,
+      "contract": {
+        "index": 3,
+        "purpose": "Reveal that the board's pictures mark destinations, then narrow the answer using picture labels and adult-read words.",
+        "entry_state": "Deniz has rejected shell and needs evidence connecting the final route space to the tools table.",
+        "beats": [
+          "Deniz physically follows the map and shell pictures to their matching picture-marked places.",
+          "At each place, the helper reads the simple label aloud while Deniz points to the matching picture.",
+          "At the tools table, Deniz notices a ruler beside a matching ruler picture and a blank card outline.",
+          "The helper reads the ruler label aloud, and Deniz says, 'Ruler goes here?'"
+        ],
+        "must_include": [
+          "Show that pictures are destination clues, not only a repeating decoration.",
+          "Use the existing picture labels and ordinary ruler as concrete evidence.",
+          "Have the helper read any written labels aloud; Deniz identifies them through pictures, pointing, and simple speech.",
+          "Let Deniz communicate the new idea simply without independently interpreting complex text."
+        ],
+        "must_not_do": [
+          "Do not reveal the completed route card yet.",
+          "Do not make the ruler magical or unusually important.",
+          "Do not introduce a new person or location."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the picture-marked map and object areas.",
+          "Scene 2 established that the spoken schedule ends at the tools table.",
+          "Scene 2 established that shell cannot fit the scheduled ending.",
+          "Scene 1 established that the tools table and ordinary tools are physically present."
+        ],
+        "handoff": "The tools table has a ruler picture and an empty card outline, giving Deniz a candidate that must still be checked against the whole route.",
+        "open_threads_after": [
+          "Is the ruler card truly the missing route card?",
+          "How can Deniz test the completed route?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz followed the pictures. First, the map picture led to the map table. The helper pointed to its label. “Map,” the helper read. Deniz touched the map picture. Next, the shell picture led to the shell shelf. “Shell,” read the helper. Deniz pointed again. The pictures were not just decorations. They showed where to go. At the tools table, Deniz saw a ruler beside a ruler picture. A blank card outline sat nearby. The helper read the label. “Ruler.” Deniz touched the ruler. “Ruler goes here?”",
+        "state_delta": {
+          "location": "Public learning room, moving from the map table and shell shelf to the tools table.",
+          "character_goal": "Deniz wants to identify the correct tool card and complete the route.",
+          "knowledge_gained": [
+            "The board pictures point to matching places.",
+            "The route ends at the tools table.",
+            "A ruler matches a picture and a blank card outline at the tools table."
+          ],
+          "facts_established": [
+            "The helper reads the simple place and tool labels aloud.",
+            "Deniz identifies matching pictures by pointing."
+          ],
+          "clues_added": [
+            "The ruler picture matches the ordinary ruler.",
+            "The ruler outline is a candidate for the missing card."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Is the ruler card truly the missing route card?",
+            "How can Deniz test the completed route?"
+          ],
+          "threads_resolved": [
+            "The board pictures are destination clues, not only a repeating decoration."
+          ],
+          "handoff_state": "Deniz suspects the missing card shows a ruler because the tools-table destination, the ruler picture, the ordinary ruler, and the blank card outline agree. The card still needs to be compared with the whole route and tested."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 6.507,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 86,
+          "usage": {
+            "input_tokens": 5408,
+            "output_tokens": 608,
+            "total_tokens": 6016
+          },
+          "cost": {
+            "usd": 0.00208145,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3058,
+          "output_tokens": 188,
+          "cost": 0.000128436
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3058,
+            "output_tokens": 188,
+            "cost": 0.000128436
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.551
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 7.058
+    },
+    {
+      "scene": 4,
+      "target_words": 85,
+      "word_count": 92,
+      "contract": {
+        "index": 4,
+        "purpose": "Have Deniz compare all accumulated evidence through pointing, short dialogue, and a concrete cooperative test plan.",
+        "entry_state": "Deniz suspects the missing card shows a ruler because the picture schedule and tools label agree.",
+        "beats": [
+          "Deniz points in turn to the board's map-shell pattern, the final tools picture on the schedule, the matching destination pictures, and the ruler outline.",
+          "Deniz tells the helper, in short phrases, 'Map. Shell. Tools. Ruler.'",
+          "The helper repeats the evidence and asks whether they should try the ruler card.",
+          "Deniz agrees and carries the card to the board for a route test."
+        ],
+        "must_include": [
+          "Accumulate the visual sequence, spoken schedule, destination pictures, and ruler evidence.",
+          "Show the comparison through physical pointing and simple dialogue, not silent abstract reasoning.",
+          "Show communication and cooperation without making Deniz dependent or helpless.",
+          "Make the test plan clear before the decisive application."
+        ],
+        "must_not_do": [
+          "Do not place the card permanently yet.",
+          "Do not reveal an additional hidden clue.",
+          "Do not let the helper solve the puzzle for Deniz.",
+          "Do not require Deniz to read or explain abstract logic."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the spoken schedule's tools-table ending.",
+          "Scene 3 established that board pictures match picture-marked destinations.",
+          "Scene 3 established the ruler picture, ordinary ruler, and matching blank card outline.",
+          "Scene 2 established the shell hypothesis and its rejection."
+        ],
+        "handoff": "Deniz and the helper are ready to test the ruler card on the route and check whether every concrete clue agrees.",
+        "open_threads_after": [
+          "Whether the ruler card completes the route correctly."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz stood by the route board. One finger touched map, shell, map, shell. “Map. Shell,” Deniz said. Then Deniz pointed to the last picture on the schedule. The helper read, “Tools.” Deniz pointed to the map table and shell shelf. “They match,” said the helper. At the tools table, Deniz touched the ruler picture, the real ruler, and the ruler-shaped outline. “Ruler,” Deniz said. “Map. Shell. Tools. Ruler.” The helper nodded. “Shall we try the ruler card?” Deniz smiled, picked up the card, and carried it to the board. “We can test.”",
+        "state_delta": {
+          "location": "Public learning room beside the route board and tools table.",
+          "character_goal": "Deniz wants to test the ruler card and complete the route.",
+          "knowledge_gained": [
+            "The board pattern, spoken schedule, destination pictures, and ruler evidence all point toward the ruler card."
+          ],
+          "facts_established": [
+            "Deniz can compare the clues by pointing and using short phrases.",
+            "The helper and Deniz agree to test the ruler card together."
+          ],
+          "clues_added": [
+            "The map and shell pictures match their real destinations.",
+            "The tools destination and ruler outline support the ruler card."
+          ],
+          "objects_changed": [
+            "Deniz picked up the ruler card and carried it to the route board; it has not been placed."
+          ],
+          "relationships_changed": [
+            "Deniz and the helper formed a cooperative plan to test the card."
+          ],
+          "threads_opened": [
+            "Whether the ruler card completes the route correctly."
+          ],
+          "threads_resolved": [
+            "The clues have been gathered into one concrete test plan."
+          ],
+          "handoff_state": "Deniz and the helper are beside the route board with the ruler card ready to test. The card has not been placed. The next step is to place it, follow map, shell, map, shell, ruler, and check whether the route reaches the tools table."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 6.69,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 92,
+          "usage": {
+            "input_tokens": 5716,
+            "output_tokens": 714,
+            "total_tokens": 6430
+          },
+          "cost": {
+            "usd": 0.00228565,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3421,
+          "output_tokens": 188,
+          "cost": 0.000143682
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3421,
+            "output_tokens": 188,
+            "cost": 0.000143682
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.606
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 7.296
+    },
+    {
+      "scene": 5,
+      "target_words": 102,
+      "word_count": 102,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the tested solution and resolve the missing-card problem.",
+        "entry_state": "Deniz has a ruler card candidate and a planned route test supported by several earlier clues.",
+        "beats": [
+          "Deniz places the ruler card in the empty space and follows the pictures: map, shell, map, shell, ruler.",
+          "Deniz reaches the tools table at the time shown by the picture schedule.",
+          "Deniz points to the matching ruler picture, chooses the ruler, and leaves the shell behind.",
+          "The helper confirms that the board, schedule, destinations, and ruler all match."
+        ],
+        "must_include": [
+          "Use the alternating pictures, picture schedule, destination labels, and ruler outline together.",
+          "Make the successful route test a concrete action: placing, following, arriving, and choosing.",
+          "Make the route test the decisive payoff.",
+          "Show Deniz's final choice changing because the tested answer identifies the correct tool.",
+          "Keep the action and dialogue short and concrete for a four-year-old listener."
+        ],
+        "must_not_do": [
+          "Do not introduce a different answer after the test succeeds.",
+          "Do not leave the central problem unresolved.",
+          "Do not add a new puzzle during the payoff."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the rejected shell hypothesis and the tools-table schedule.",
+          "Scene 3 established matching destination pictures and the ruler outline.",
+          "Scene 4 established the cooperative plan to test the ruler card.",
+          "Scene 1 established the physical route board and ordinary tools."
+        ],
+        "handoff": "The route is complete, the correct ruler is chosen, and Deniz can help prepare the scheduled pattern activity.",
+        "open_threads_after": [
+          "Deniz must finish the activity setup and share what the tested pattern showed."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz placed the ruler card in the empty space. The board now showed map, shell, map, shell, ruler. Deniz followed each picture. First came the map table. Then the shell shelf. Then the map table again. Then the shell shelf. The last picture led to the tools table, just as the helper had read on the schedule. Deniz pointed to the tools label, the ruler picture, and the ruler-shaped outline. A shell sat nearby, but Deniz left it there. Deniz picked up the ruler. “Ruler!” said Deniz. The helper smiled. “The board, schedule, places, and ruler all match.” The route was complete.",
+        "state_delta": {
+          "location": "Public learning room at the tools table beside the completed route board.",
+          "character_goal": "Deniz wants to complete the route and choose the correctly tested tool.",
+          "knowledge_gained": [
+            "The ruler card completes the route.",
+            "Following the completed route leads to the tools table.",
+            "The ruler, not the shell, is the correct tool for the route."
+          ],
+          "facts_established": [
+            "The completed board shows map, shell, map, shell, ruler.",
+            "The route reaches the tools table as shown by the picture schedule.",
+            "The board, schedule, destination pictures, ruler outline, and real ruler agree."
+          ],
+          "clues_added": [
+            "The successful route test confirms the ruler card.",
+            "The matching ruler picture identifies the correct tool."
+          ],
+          "objects_changed": [
+            "The ruler card was placed in the final space on the route board.",
+            "Deniz chose the real ruler.",
+            "The shell remained at the shell shelf."
+          ],
+          "relationships_changed": [
+            "The helper confirms Deniz's tested choice."
+          ],
+          "threads_opened": [
+            "Deniz must use the ruler to finish preparing the scheduled activity."
+          ],
+          "threads_resolved": [
+            "The missing final route card was identified and placed.",
+            "The correct tool was chosen.",
+            "The route test confirmed the solution."
+          ],
+          "handoff_state": "The route is complete. The ruler card is in the final space, and Deniz has chosen the correct ruler at the tools table. The next scene can begin the activity preparation."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.815,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 106,
+          "usage": {
+            "input_tokens": 6007,
+            "output_tokens": 699,
+            "total_tokens": 6706
+          },
+          "cost": {
+            "usd": 0.0023404,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 8.523,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 102,
+          "usage": {
+            "input_tokens": 5886,
+            "output_tokens": 840,
+            "total_tokens": 6726
+          },
+          "cost": {
+            "usd": 0.00247935,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.9,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3780,
+          "output_tokens": 188,
+          "cost": 0.00015876
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.85,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.78,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.88,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3820,
+            "output_tokens": 188,
+            "cost": 0.00016044
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.9,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3780,
+            "output_tokens": 188,
+            "cost": 0.00015876
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.654,
+        0.566
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.89,
+              "no_contradiction": 0.85,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.78,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.88,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3820,
+              "output_tokens": 188,
+              "cost": 0.00016044
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 102,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.94,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.9,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.94,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3780,
+              "output_tokens": 188,
+              "cost": 0.00015876
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.559
+    },
+    {
+      "scene": 6,
+      "target_words": 85,
+      "word_count": 91,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the practical consequence and close with Deniz sharing the lesson through action.",
+        "entry_state": "The completed route identifies the tools table and the ruler Deniz should use.",
+        "beats": [
+          "Deniz carries the ruler to the table and helps measure the activity strip with the space helper.",
+          "Deniz points to the route, then to the ruler, and says, 'We checked. It fit!'",
+          "The helper affirms Deniz's concrete observation, and they finish preparing the activity together."
+        ],
+        "must_include": [
+          "Close the route, tool choice, and scheduled activity together.",
+          "Keep Deniz's explanation concrete, brief, and suitable for a four-year-old listener.",
+          "Show the lesson through pointing, measuring, and cooperation rather than a lecture.",
+          "End with cooperation and confidence."
+        ],
+        "must_not_do": [
+          "Do not open a new mystery or future quest.",
+          "Do not erase the earlier false hypothesis.",
+          "Do not use abstract or age-inappropriate vocabulary."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established that the ruler card completes the route.",
+          "Scene 5 established that the tools table is the scheduled destination.",
+          "Scene 5 established Deniz's choice to use the ruler.",
+          "Scene 4 established that the helper and Deniz would test the route together."
+        ],
+        "handoff": "The route is complete, the activity is prepared, and the main problem is closed through tested evidence and cooperation.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz carried the ruler to the activity table. The helper unrolled a long paper strip. Together, they measured it. Deniz held one end. The helper moved the ruler along the strip. “Here,” said Deniz. “And here.” Small marks went across the paper.\n\nDeniz pointed to the route board, then to the ruler. “We checked. It fit!” Deniz said.\n\n“It did,” said the helper. “The route showed us the right tool.”\n\nThey put the ruler beside the strip and finished setting out the pattern pieces. Deniz smiled. The learning space was ready.",
+        "state_delta": {
+          "location": "Public learning room at the activity table beside the completed route board.",
+          "character_goal": "Deniz wants to help finish preparing the scheduled pattern activity.",
+          "knowledge_gained": [
+            "The ruler can be used to measure the activity strip.",
+            "The tested route helped identify the right tool."
+          ],
+          "facts_established": [
+            "Deniz and the helper measured the activity strip together.",
+            "The pattern activity was prepared."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The activity strip was measured and marked.",
+            "The ruler was placed beside the strip.",
+            "The pattern pieces were set out."
+          ],
+          "relationships_changed": [
+            "Deniz and the helper finished the preparation cooperatively."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The activity preparation was completed.",
+            "The route, tool choice, and scheduled activity were connected."
+          ],
+          "handoff_state": "The route is complete, the correct ruler was tested and used, and the pattern activity is ready. Deniz and the helper finished the learning space together."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 6.957,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 91,
+          "usage": {
+            "input_tokens": 5949,
+            "output_tokens": 646,
+            "total_tokens": 6595
+          },
+          "cost": {
+            "usd": 0.0022623,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.85,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.88,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3603,
+          "output_tokens": 188,
+          "cost": 0.000151326
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.88,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3603,
+            "output_tokens": 188,
+            "cost": 0.000151326
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.547
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 7.504
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the public learning space, the route board, and the missing final card.",
+      "word_count": 72,
+      "location": "Public learning room with map and shell areas, a route board, a picture schedule, and a tools table.",
+      "character_goal": "Deniz wants to help complete the route before the pattern activity begins.",
+      "knowledge_gained": [
+        "The route board shows map, shell, map, shell, and an empty final space.",
+        "The learning room has map and shell picture-marked places.",
+        "The tools table has a ruler, crayons, and tape."
+      ],
+      "facts_established": [
+        "A space helper is present.",
+        "The picture schedule is posted near the route board."
+      ],
+      "clues_added": [
+        "The visible route pattern is map, shell, map, shell.",
+        "The final route space is empty."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which picture card belongs in the empty final space?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has identified the empty final space and will compare the visible map-shell pattern with the picture schedule and the real places."
+    },
+    {
+      "scene": 2,
+      "purpose": "Let Deniz form and test a reasonable first hypothesis with natural adult scaffolding.",
+      "word_count": 81,
+      "location": "Public learning room beside the route board, picture schedule, shell shelf, and tools table.",
+      "character_goal": "Deniz wants to complete the route before the pattern activity begins.",
+      "knowledge_gained": [
+        "The spoken picture schedule says map, shell, map, shell, then tools.",
+        "The route ends at the tools table, not the shell shelf.",
+        "The shell guess does not fit the schedule."
+      ],
+      "facts_established": [
+        "The space helper can read the picture schedule aloud.",
+        "Deniz uses pointing and short questions to communicate observations."
+      ],
+      "clues_added": [
+        "The final route destination is the tools table.",
+        "The last card must show a tool rather than a shell."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which tool picture belongs in the final route space?",
+        "Why do the visible alternating pictures end differently?"
+      ],
+      "threads_resolved": [
+        "The shell hypothesis as the final card was rejected by the spoken schedule."
+      ],
+      "handoff_state": "The alternating board pictures suggest shell, but the spoken schedule points to the tools table. Deniz must check the real places and find which tool picture belongs in the empty space."
+    },
+    {
+      "scene": 3,
+      "purpose": "Reveal that the board's pictures mark destinations, then narrow the answer using picture labels and adult-read words.",
+      "word_count": 86,
+      "location": "Public learning room, moving from the map table and shell shelf to the tools table.",
+      "character_goal": "Deniz wants to identify the correct tool card and complete the route.",
+      "knowledge_gained": [
+        "The board pictures point to matching places.",
+        "The route ends at the tools table.",
+        "A ruler matches a picture and a blank card outline at the tools table."
+      ],
+      "facts_established": [
+        "The helper reads the simple place and tool labels aloud.",
+        "Deniz identifies matching pictures by pointing."
+      ],
+      "clues_added": [
+        "The ruler picture matches the ordinary ruler.",
+        "The ruler outline is a candidate for the missing card."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Is the ruler card truly the missing route card?",
+        "How can Deniz test the completed route?"
+      ],
+      "threads_resolved": [
+        "The board pictures are destination clues, not only a repeating decoration."
+      ],
+      "handoff_state": "Deniz suspects the missing card shows a ruler because the tools-table destination, the ruler picture, the ordinary ruler, and the blank card outline agree. The card still needs to be compared with the whole route and tested."
+    },
+    {
+      "scene": 4,
+      "purpose": "Have Deniz compare all accumulated evidence through pointing, short dialogue, and a concrete cooperative test plan.",
+      "word_count": 92,
+      "location": "Public learning room beside the route board and tools table.",
+      "character_goal": "Deniz wants to test the ruler card and complete the route.",
+      "knowledge_gained": [
+        "The board pattern, spoken schedule, destination pictures, and ruler evidence all point toward the ruler card."
+      ],
+      "facts_established": [
+        "Deniz can compare the clues by pointing and using short phrases.",
+        "The helper and Deniz agree to test the ruler card together."
+      ],
+      "clues_added": [
+        "The map and shell pictures match their real destinations.",
+        "The tools destination and ruler outline support the ruler card."
+      ],
+      "objects_changed": [
+        "Deniz picked up the ruler card and carried it to the route board; it has not been placed."
+      ],
+      "relationships_changed": [
+        "Deniz and the helper formed a cooperative plan to test the card."
+      ],
+      "threads_opened": [
+        "Whether the ruler card completes the route correctly."
+      ],
+      "threads_resolved": [
+        "The clues have been gathered into one concrete test plan."
+      ],
+      "handoff_state": "Deniz and the helper are beside the route board with the ruler card ready to test. The card has not been placed. The next step is to place it, follow map, shell, map, shell, ruler, and check whether the route reaches the tools table."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the tested solution and resolve the missing-card problem.",
+      "word_count": 102,
+      "location": "Public learning room at the tools table beside the completed route board.",
+      "character_goal": "Deniz wants to complete the route and choose the correctly tested tool.",
+      "knowledge_gained": [
+        "The ruler card completes the route.",
+        "Following the completed route leads to the tools table.",
+        "The ruler, not the shell, is the correct tool for the route."
+      ],
+      "facts_established": [
+        "The completed board shows map, shell, map, shell, ruler.",
+        "The route reaches the tools table as shown by the picture schedule.",
+        "The board, schedule, destination pictures, ruler outline, and real ruler agree."
+      ],
+      "clues_added": [
+        "The successful route test confirms the ruler card.",
+        "The matching ruler picture identifies the correct tool."
+      ],
+      "objects_changed": [
+        "The ruler card was placed in the final space on the route board.",
+        "Deniz chose the real ruler.",
+        "The shell remained at the shell shelf."
+      ],
+      "relationships_changed": [
+        "The helper confirms Deniz's tested choice."
+      ],
+      "threads_opened": [
+        "Deniz must use the ruler to finish preparing the scheduled activity."
+      ],
+      "threads_resolved": [
+        "The missing final route card was identified and placed.",
+        "The correct tool was chosen.",
+        "The route test confirmed the solution."
+      ],
+      "handoff_state": "The route is complete. The ruler card is in the final space, and Deniz has chosen the correct ruler at the tools table. The next scene can begin the activity preparation."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the practical consequence and close with Deniz sharing the lesson through action.",
+      "word_count": 91,
+      "location": "Public learning room at the activity table beside the completed route board.",
+      "character_goal": "Deniz wants to help finish preparing the scheduled pattern activity.",
+      "knowledge_gained": [
+        "The ruler can be used to measure the activity strip.",
+        "The tested route helped identify the right tool."
+      ],
+      "facts_established": [
+        "Deniz and the helper measured the activity strip together.",
+        "The pattern activity was prepared."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The activity strip was measured and marked.",
+        "The ruler was placed beside the strip.",
+        "The pattern pieces were set out."
+      ],
+      "relationships_changed": [
+        "Deniz and the helper finished the preparation cooperatively."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The activity preparation was completed.",
+        "The route, tool choice, and scheduled activity were connected."
+      ],
+      "handoff_state": "The route is complete, the correct ruler was tested and used, and the pattern activity is ready. Deniz and the helper finished the learning space together."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "Deniz stepped into the learning room. Maps lay in a map-marked place. Shells sat on a shelf with a shell picture. At a table lay a ruler, crayons, and tape. A route board showed: map, shell, map, shell, then an empty square. Nearby, a picture schedule showed little pictures. The space helper smiled. Deniz touched the empty square. “I can help,” Deniz said. “I will look carefully before I choose a card.”\n\nDeniz pointed to the board. “Map, shell, map, shell,” Deniz said. “Shell next?” The guess made sense. Shell followed map twice. The helper touched the picture schedule. “Map, shell, map, shell, then tools,” the helper read aloud. Deniz pointed to the last picture. “Tools?” Deniz looked at the shell shelf, then at the tools table. The route ended at the tools table, not the shell shelf. “You noticed,” said the helper. Deniz’s shell guess no longer fit. Which tool belonged there?\n\nDeniz followed the pictures. First, the map picture led to the map table. The helper pointed to its label. “Map,” the helper read. Deniz touched the map picture. Next, the shell picture led to the shell shelf. “Shell,” read the helper. Deniz pointed again. The pictures were not just decorations. They showed where to go. At the tools table, Deniz saw a ruler beside a ruler picture. A blank card outline sat nearby. The helper read the label. “Ruler.” Deniz touched the ruler. “Ruler goes here?”\n\nDeniz stood by the route board. One finger touched map, shell, map, shell. “Map. Shell,” Deniz said. Then Deniz pointed to the last picture on the schedule. The helper read, “Tools.” Deniz pointed to the map table and shell shelf. “They match,” said the helper. At the tools table, Deniz touched the ruler picture, the real ruler, and the ruler-shaped outline. “Ruler,” Deniz said. “Map. Shell. Tools. Ruler.” The helper nodded. “Shall we try the ruler card?” Deniz smiled, picked up the card, and carried it to the board. “We can test.”\n\nDeniz placed the ruler card in the empty space. The board now showed map, shell, map, shell, ruler. Deniz followed each picture. First came the map table. Then the shell shelf. Then the map table again. Then the shell shelf. The last picture led to the tools table, just as the helper had read on the schedule. Deniz pointed to the tools label, the ruler picture, and the ruler-shaped outline. A shell sat nearby, but Deniz left it there. Deniz picked up the ruler. “Ruler!” said Deniz. The helper smiled. “The board, schedule, places, and ruler all match.” The route was complete.\n\nDeniz carried the ruler to the activity table. The helper unrolled a long paper strip. Together, they measured it. Deniz held one end. The helper moved the ruler along the strip. “Here,” said Deniz. “And here.” Small marks went across the paper.\n\nDeniz pointed to the route board, then to the ruler. “We checked. It fit!” Deniz said.\n\n“It did,” said the helper. “The route showed us the right tool.”\n\nThey put the ruler beside the strip and finished setting out the pattern pieces. Deniz smiled. The learning space was ready.",
+  "word_count": 524,
+  "target_words": 500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.8,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.83,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6409,
+      "output_tokens": 166,
+      "cost": 0.000269178
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.8,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.83,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6409,
+      "output_tokens": 166,
+      "cost": 0.000269178
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with consistent characterization and clear causal progression. Deniz's reasoning is concrete and observable (pointing, touching, following), appropriate for a four-year-old listener in read-aloud mode. The vocabulary and sentence structure are simple and repetitive, supporting comprehension. The central problem—identifying the missing route card—is solved through systematic testing of multiple clues: the visible alternating pattern, the spoken picture schedule, the destination pictures, the ruler outline, and the real ruler. The false hypothesis (shell) is introduced naturally in Scene 2 and rejected by evidence (the schedule says tools, not shell). The final solution uses all accumulated clues and results in a concrete action (placing the card, following the route, choosing the ruler, measuring the strip). The ending resolves the practical consequence and closes with Deniz's simple reflection ('We checked. It fit!'), which captures the theme without didacticism. Continuity is maintained across all six scenes: the learning space, route board, helper, and Deniz's goal remain consistent. The story avoids combat, unexplained objects, and benchmark language. Word counts per scene are within reasonable bounds for the target length of 500 words (total: 524 words). The narrative demonstrates that careful testing produces better answers than guessing, fulfilling the theme thread through action rather than exposition.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 524,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.8,
+          "no_repeated_event": 0.92,
+          "ending_consistency": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.83,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6409,
+          "output_tokens": 166,
+          "cost": 0.000269178
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with consistent characterization and clear causal progression. Deniz's reasoning is concrete and observable (pointing, touching, following), appropriate for a four-year-old listener in read-aloud mode. The vocabulary and sentence structure are simple and repetitive, supporting comprehension. The central problem—identifying the missing route card—is solved through systematic testing of multiple clues: the visible alternating pattern, the spoken picture schedule, the destination pictures, the ruler outline, and the real ruler. The false hypothesis (shell) is introduced naturally in Scene 2 and rejected by evidence (the schedule says tools, not shell). The final solution uses all accumulated clues and results in a concrete action (placing the card, following the route, choosing the ruler, measuring the strip). The ending resolves the practical consequence and closes with Deniz's simple reflection ('We checked. It fit!'), which captures the theme without didacticism. Continuity is maintained across all six scenes: the learning space, route board, helper, and Deniz's goal remain consistent. The story avoids combat, unexplained objects, and benchmark language. Word counts per scene are within reasonable bounds for the target length of 500 words (total: 524 words). The narrative demonstrates that careful testing produces better answers than guessing, fulfilling the theme thread through action rather than exposition.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000269178,
+      "final_judge_cost": {
+        "usd": 0.012332,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 80.856,
+    "scene_stage_seconds": 58.466,
+    "final_stage_seconds": 7.715,
+    "total_pipeline_seconds": 147.037
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.026771904,
+    "scene_generation_usd": 0.015983,
+    "scene_continuity_evaluator_usd": 0.000956214,
+    "whole_continuity_evaluator_usd": 0.000269178,
+    "whole_continuity_evaluator_usd_total": 0.000269178,
+    "semantic_judge_usd": {
+      "usd": 0.012332,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.012332,
+    "scene_jev_usd": 0.000956214,
+    "whole_jev_usd": 0.000269178,
+    "whole_jev_usd_total": 0.000269178,
+    "final_haiku": {
+      "usd": 0.012332,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.012332,
+    "total_pipeline_usd": 0.056312296
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 6409,
+      "output_tokens": 166,
+      "cost": 0.000269178
+    },
+    "semantic_judge": {
+      "input_tokens": 10172,
+      "output_tokens": 432,
+      "total_tokens": 10604
+    },
+    "whole_jev": {
+      "input_tokens": 6409,
+      "output_tokens": 166,
+      "cost": 0.000269178
+    },
+    "final_haiku": {
+      "input_tokens": 10172,
+      "output_tokens": 432,
+      "total_tokens": 10604
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
