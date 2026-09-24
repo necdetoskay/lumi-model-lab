@@ -24,10 +24,30 @@ DEFAULT_CONTINUITY = "typesafe/jev-1.13"
 DEFAULT_JUDGE = "anthropic/claude-haiku-4.5"
 DEFAULT_OUTCOME_EXTRACTOR = "openai/gpt-5.6-luna"
 
-DEFAULT_SPEC = Path(
-    "data/specifications/waves/age-relative-standard-v3-all-families/"
-    "middle-child--puzzle-problem-solving.yaml"
-)
+DEFAULT_SPEC: str | None = None
+
+BUILTIN_SPEC = {
+    "title_hint": "The Lantern Map",
+    "age_min": 9,
+    "age_max": 9,
+    "language": "en",
+    "target_words": 1500,
+    "narrative_family": "exploration_mystery",
+    "reading_mode": "INDEPENDENT_READER",
+    "relative_length_class": "STANDARD",
+    "protagonist": "Mira, age 9, observant and curious but not unusually expert",
+    "setting": "A small public nature center with a garden trail, map board, labels, notebooks, and ordinary tools.",
+    "theme": "Careful observation can turn uncertainty into understanding.",
+    "premise": "Before a family nature walk begins, Mira notices that one route marker on the center's map no longer matches the real garden trail. She investigates what changed and must decide how to correct the route before visitors follow it.",
+    "constraints": [
+        "Use age-appropriate vocabulary, reasoning, pacing, and emotional intensity for an independent 9-year-old reader.",
+        "No combat, supernatural powers, or frightening danger.",
+        "The solution must emerge from at least two previously established observations.",
+        "Include one reasonable false hypothesis that is rejected by evidence.",
+        "Do not make an adult solve the central problem for Mira.",
+        "Preserve continuity across the complete story and the Narrative Architect's chosen SceneGraph."
+    ],
+}
 
 FINAL_CRITERIA = (
     "instruction_following",
@@ -556,12 +576,18 @@ def sum_costs(*costs: Any) -> float:
     return total
 
 
+def load_story_spec(path: str | None) -> tuple[StorySpec, str]:
+    if path:
+        return StorySpec.model_validate(load_yaml(Path(path))), path
+    return StorySpec.model_validate(BUILTIN_SPEC), "<builtin-v5-prototype-spec>"
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         raise RuntimeError("Missing OPENROUTER_API_KEY")
 
-    spec = StorySpec.model_validate(load_yaml(Path(args.spec)))
+    spec, spec_source = load_story_spec(args.spec)
     brief = build_labeled_brief(spec)
     started = time.perf_counter()
 
@@ -720,7 +746,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "semantic_judge": args.judge,
             "outcome_extractor": args.outcome_extractor,
         },
-        "spec": args.spec,
+        "spec": spec_source,
         "plan": plan,
         "plan_parse_failures": plan_parse,
         "draft": draft,
@@ -762,7 +788,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="LUMI v5 whole-draft story prototype: Architect -> Whole Draft -> JEV -> Judge -> Outcome."
     )
-    parser.add_argument("--spec", default=str(DEFAULT_SPEC))
+    parser.add_argument("--spec", default=DEFAULT_SPEC)
     parser.add_argument("--architect", default=DEFAULT_ARCHITECT)
     parser.add_argument("--writer", default=DEFAULT_WRITER)
     parser.add_argument("--judge", default=DEFAULT_JUDGE)
