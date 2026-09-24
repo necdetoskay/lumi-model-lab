@@ -386,6 +386,44 @@ class CapabilityCoverageTests(unittest.TestCase):
             "middle-child--puzzle-problem-solving",
         )
 
+    def test_provider_access_failure_does_not_increase_coverage_or_trigger_sentinel(self) -> None:
+        spec = case_spec("MATURE_ADULT", "puzzle_problem_solving")
+        blocked_result = fake_result(
+            protocol="english-story-production.v3",
+            accepted=False,
+        )
+        blocked_result["scenes"] = []
+        blocked_result["final_judge"] = {}
+        blocked_result["terminal_error"] = {
+            "type": "RuntimeError",
+            "message": "OpenRouter JEV HTTP 403: Key limit exceeded (monthly limit)",
+        }
+        blocked = build_evidence(
+            result=blocked_result,
+            spec_path=spec,
+            run_id="provider-access-blocked",
+            source="unit_test",
+        )
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=[blocked])
+        candidate = next(
+            item
+            for item in plan["candidates"]
+            if item["age_tier"] == "MATURE_ADULT"
+            and item["narrative_family"] == "puzzle_problem_solving"
+        )
+        self.assertEqual(candidate["current_run_count"], 0)
+        self.assertEqual(candidate["current_failure_count"], 0)
+        self.assertEqual(candidate["current_status"], "UNKNOWN")
+        self.assertIsNone(plan["summary"]["sentinel_repeat_case_id"])
+        self.assertEqual(
+            plan["summary"]["excluded_non_capability_evidence_run_count"],
+            1,
+        )
+        self.assertEqual(
+            plan["summary"]["non_capability_outcome_counts"],
+            {"PROVIDER_ACCESS_FAILURE": 1},
+        )
+
     def test_different_evaluation_stack_is_ignored(self) -> None:
         spec = case_spec("CHILD", "emotional_development")
         foreign = build_evidence(

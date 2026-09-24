@@ -102,6 +102,64 @@ class QualificationEvidence(BaseModel):
     evidence_limitations: list[str] = Field(default_factory=list)
 
 
+PROVIDER_ACCESS_FAILURE_MARKERS = (
+    "http 401",
+    "http 402",
+    "http 403",
+    "http 429",
+    "key limit exceeded",
+    "monthly limit",
+    "quota exceeded",
+    "quota",
+    "rate limit",
+    "rate_limit",
+    "insufficient credit",
+    "insufficient funds",
+    "payment required",
+    "unauthorized",
+    "forbidden",
+    "invalid api key",
+    "authentication failed",
+)
+PROVIDER_TRANSPORT_FAILURE_MARKERS = (
+    "http 500",
+    "http 502",
+    "http 503",
+    "http 504",
+    "connection error",
+    "connection reset",
+    "network error",
+    "temporarily unavailable",
+    "timed out",
+    "timeout",
+)
+
+
+def qualification_outcome_class(evidence: QualificationEvidence) -> str:
+    """Classify whether a run actually exercised model capability."""
+    if evidence.accepted:
+        return "QUALIFIED_SUCCESS"
+    if not evidence.terminal_error:
+        return "CAPABILITY_FAILURE"
+
+    error_type = str(evidence.terminal_error.get("type") or "")
+    message = str(evidence.terminal_error.get("message") or "")
+    haystack = f"{error_type} {message}".lower()
+
+    if any(marker in haystack for marker in PROVIDER_ACCESS_FAILURE_MARKERS):
+        return "PROVIDER_ACCESS_FAILURE"
+    if any(marker in haystack for marker in PROVIDER_TRANSPORT_FAILURE_MARKERS):
+        return "PROVIDER_TRANSPORT_FAILURE"
+    return "CAPABILITY_FAILURE"
+
+
+def is_capability_eligible_evidence(evidence: QualificationEvidence) -> bool:
+    return qualification_outcome_class(evidence) in {
+        "QUALIFIED_SUCCESS",
+        "CAPABILITY_FAILURE",
+    }
+
+
 def load_capability_config(path: Path = CAPABILITY_CONFIG_PATH) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     if payload.get("schema_version") != "capability-cube.v2":
@@ -610,6 +668,25 @@ def build_capability_cube(
             family,
             relative_length_class,
         ) = key
+        evidence_items = items
+        outcome_counts: dict[str, int] = {}
+        for evidence_item in evidence_items:
+            outcome_class = qualification_outcome_class(evidence_item)
+            outcome_counts[outcome_class] = outcome_counts.get(outcome_class, 0) + 1
+        items = [
+            evidence_item
+            for evidence_item in evidence_items
+            if is_capability_eligible_evidence(evidence_item)
+        ]
+        if not items:
+            continue
+        excluded_non_capability_count = len(evidence_items) - len(items)
+        non_capability_outcome_counts = {
+            outcome_class: count
+            for outcome_class, count in sorted(outcome_counts.items())
+            if outcome_class
+            in {"PROVIDER_ACCESS_FAILURE", "PROVIDER_TRANSPORT_FAILURE"}
+        }
         judge = [x.final_judge_average for x in items if x.final_judge_average is not None]
         judge_min = [x.final_judge_minimum for x in items if x.final_judge_minimum is not None]
         durations = [
@@ -735,7 +812,10 @@ def build_capability_cube(
                 "reading_mode": reading_mode,
                 "narrative_family": family,
                 "relative_length_class": relative_length_class,
+                "evidence_run_count": len(evidence_items),
                 "run_count": len(items),
+                "excluded_non_capability_count": excluded_non_capability_count,
+                "non_capability_outcome_counts": non_capability_outcome_counts,
                 "accepted_count": sum(1 for x in items if x.accepted),
                 "pass_rate": round(sum(1 for x in items if x.accepted) / len(items), 6),
                 "coverage_status": _coverage_status(len(items), config),
@@ -793,7 +873,10 @@ def build_capability_cube(
             }
         )
 
-    known_models = sorted({x.generator_model for x in selected})
+    capability_selected = [
+        row for row in selected if is_capability_eligible_evidence(row)
+    ]
+    known_models = sorted({x.generator_model for x in capability_selected})
     known_measurement_variants = {
         (
             x.generator_model,
@@ -802,7 +885,7 @@ def build_capability_cube(
             x.generation_protocol_sha256,
             x.evaluation_stack_sha256,
         )
-        for x in selected
+        for x in capability_selected
     }
     total_possible = (
         len(known_measurement_variants)
@@ -810,9 +893,27 @@ def build_capability_cube(
         * len(config["narrative_families"])
         * len(config["relative_length_classes"])
     )
+    non_capability_rows = [
+        row for row in selected if not is_capability_eligible_evidence(row)
+    ]
+    non_capability_outcome_counts: dict[str, int] = {}
+    for row in non_capability_rows:
+        outcome_class = qualification_outcome_class(row)
+        non_capability_outcome_counts[outcome_class] = (
+            non_capability_outcome_counts.get(outcome_class, 0) + 1
+        )
+
     return {
         "schema_version": "model-capability-cube.v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "evidence_run_count": len(selected),
+        "capability_eligible_run_count": (
+            len(selected) - len(non_capability_rows)
+        ),
+        "excluded_non_capability_run_count": len(non_capability_rows),
+        "non_capability_outcome_counts": dict(
+            sorted(non_capability_outcome_counts.items())
+        ),
         "dimensions": {
             "models": known_models,
             "narrative_age_tiers": list(config["narrative_age_tiers"].keys()),
@@ -837,8 +938,12 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         f"**{cube['possible_cell_count_for_observed_models']}** "
         f"(unknown: **{cube['unknown_cell_count']}**)",
         "",
-        "| Model | Protocol | Age tier | Reading mode | Narrative family | Relative length | Runs | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
-        "|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
+        f"Evidence runs: **{cube.get('evidence_run_count', 0)}**; "
+        f"capability-eligible: **{cube.get('capability_eligible_run_count', 0)}**; "
+        f"excluded operational/access failures: **{cube.get('excluded_non_capability_run_count', 0)}**.",
+        "",
+        "| Model | Protocol | Age tier | Reading mode | Narrative family | Relative length | Runs | Excl | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
+        "|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     for cell in cube["cells"]:
         sec = "—" if cell["average_pipeline_seconds"] is None else f"{cell['average_pipeline_seconds']:.1f}"
@@ -850,7 +955,8 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
             f"{cell['narrative_age_tier']} | {cell['reading_mode']} | "
             f"{cell['narrative_family']} | "
             f"{cell['relative_length_class']} | "
-            f"{cell['run_count']} | {cell['pass_rate']:.0%} | {judge} | {minimum} | "
+            f"{cell['run_count']} | {cell.get('excluded_non_capability_count', 0)} | "
+            f"{cell['pass_rate']:.0%} | {judge} | {minimum} | "
             f"{cell['semantic_repairs_per_run']:.2f} | {sec} | {usd} | "
             f"{cell['coverage_status']} |"
         )
@@ -858,7 +964,9 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         [
             "",
             "> Missing cells are **UNKNOWN**, not failures and not successes. "
-            "They require qualification evidence before routing decisions.",
+            "Provider access/transport failures remain immutable evidence but are "
+            "excluded from capability denominators because the qualification was not "
+            "actually completed.",
             "",
         ]
     )

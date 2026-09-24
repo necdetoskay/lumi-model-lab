@@ -437,6 +437,84 @@ class CapabilityCubeTests(unittest.TestCase):
             self.assertEqual(cell["terminal_failure_count"], 1)
             self.assertEqual(cell["terminal_error_counts"], {"RuntimeError": 1})
 
+    def test_provider_access_failure_is_preserved_but_excluded_from_capability_denominator(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_path = root / "spec.yaml"
+            write_spec(
+                spec_path,
+                age_min=6,
+                age_max=8,
+                family="exploration_mystery",
+            )
+            success = build_evidence(
+                result=fake_result(),
+                spec_path=spec_path,
+                run_id="success-run",
+                source="unit_test",
+            )
+            failure_result = fake_result(accepted=False, judge=0.0, minimum=0)
+            failure_result["word_count"] = 0
+            failure_result["final_judge"] = {}
+            failure_result["scenes"] = []
+            failure_result["terminal_error"] = {
+                "type": "RuntimeError",
+                "message": "OpenRouter JEV HTTP 403: Key limit exceeded (monthly limit)",
+            }
+            blocked = build_evidence(
+                result=failure_result,
+                spec_path=spec_path,
+                run_id="provider-blocked-run",
+                source="unit_test",
+            )
+            cube = build_capability_cube([success, blocked])
+            self.assertEqual(cube["evidence_run_count"], 2)
+            self.assertEqual(cube["capability_eligible_run_count"], 1)
+            self.assertEqual(cube["excluded_non_capability_run_count"], 1)
+            self.assertEqual(
+                cube["non_capability_outcome_counts"],
+                {"PROVIDER_ACCESS_FAILURE": 1},
+            )
+            cell = cube["cells"][0]
+            self.assertEqual(cell["evidence_run_count"], 2)
+            self.assertEqual(cell["run_count"], 1)
+            self.assertEqual(cell["excluded_non_capability_count"], 1)
+            self.assertEqual(cell["pass_rate"], 1.0)
+            self.assertEqual(cell["terminal_failure_count"], 0)
+            self.assertEqual(
+                cell["non_capability_outcome_counts"],
+                {"PROVIDER_ACCESS_FAILURE": 1},
+            )
+
+    def test_operational_only_evidence_does_not_create_observed_capability_cell(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_path = root / "spec.yaml"
+            write_spec(
+                spec_path,
+                age_min=6,
+                age_max=8,
+                family="exploration_mystery",
+            )
+            failure_result = fake_result(accepted=False, judge=0.0, minimum=0)
+            failure_result["word_count"] = 0
+            failure_result["final_judge"] = {}
+            failure_result["scenes"] = []
+            failure_result["terminal_error"] = {
+                "type": "RuntimeError",
+                "message": "OpenRouter HTTP 429: rate limit exceeded",
+            }
+            blocked = build_evidence(
+                result=failure_result,
+                spec_path=spec_path,
+                run_id="rate-limited-run",
+                source="unit_test",
+            )
+            cube = build_capability_cube([blocked])
+            self.assertEqual(cube["observed_cell_count"], 0)
+            self.assertEqual(cube["capability_eligible_run_count"], 0)
+            self.assertEqual(cube["excluded_non_capability_run_count"], 1)
+
     def test_exact_target_words_and_age_ranges_remain_visible(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
