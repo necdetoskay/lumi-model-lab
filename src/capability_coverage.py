@@ -10,8 +10,10 @@ from src.capability_cube import (
     QualificationEvidence,
     build_evaluation_stack_identity,
     build_generation_protocol_identity,
+    is_capability_eligible_evidence,
     load_capability_config,
     load_evidence_manifests,
+    qualification_outcome_class,
 )
 from src.english_story_pipeline import (
     EVALUATION_PROTOCOL_VERSION,
@@ -237,10 +239,20 @@ def build_coverage_candidates(
     cases = wave_cases(wave_path)
     rows = evidence if evidence is not None else load_evidence_manifests(evidence_root)
 
-    comparable = [
+    matching_evidence = [
         row
         for row in rows
         if _same_runtime_and_evaluation(row, identity)
+    ]
+    non_capability_evidence = [
+        row
+        for row in matching_evidence
+        if not is_capability_eligible_evidence(row)
+    ]
+    comparable = [
+        row
+        for row in matching_evidence
+        if is_capability_eligible_evidence(row)
     ]
     current_rows = [
         row
@@ -429,7 +441,20 @@ def build_coverage_candidates(
         * len(capability["narrative_families"])
         * len(capability["relative_length_classes"])
     )
+    non_capability_outcome_counts: dict[str, int] = {}
+    for row in non_capability_evidence:
+        outcome_class = qualification_outcome_class(row)
+        non_capability_outcome_counts[outcome_class] = (
+            non_capability_outcome_counts.get(outcome_class, 0) + 1
+        )
+
     summary = {
+        "matching_evidence_run_count": len(matching_evidence),
+        "capability_eligible_evidence_run_count": len(comparable),
+        "excluded_non_capability_evidence_run_count": len(non_capability_evidence),
+        "non_capability_outcome_counts": dict(
+            sorted(non_capability_outcome_counts.items())
+        ),
         "executable_scope_case_count": len(cases),
         "executable_age_tier_count": len(wave["age_cases"]),
         "canonical_standard_case_count": canonical_case_count,

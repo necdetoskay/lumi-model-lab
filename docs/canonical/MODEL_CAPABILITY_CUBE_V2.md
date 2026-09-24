@@ -218,7 +218,13 @@ Native evidence records retain:
 
 Evidence directories are append-only. A duplicate run id fails closed.
 
-Failed runs remain evidence and remain in pass-rate denominators.
+Failed runs remain evidence, but pass-rate denominators distinguish **capability failures** from **qualification-not-executed operational failures**.
+
+A run remains capability-eligible when the model/evaluation stack was actually exercised and the run either passed or failed a story-quality, schema, validation, continuity, judge, or other governed qualification condition. Unknown terminal failures are fail-closed and remain capability failures.
+
+Provider-access and provider-transport failures are preserved immutably but excluded from capability denominators because the governed qualification did not complete. Examples include authentication/authorization failure, exhausted key or monthly quota, rate limiting, insufficient provider credit, HTTP 5xx transport failure, connection failure, and timeout. These events remain visible as operational reliability evidence and must not be rewritten as model-quality failures.
+
+This distinction must not be used to hide a genuine model failure. Only explicitly classified non-capability failure domains may be excluded; unrecognized failures stay in the denominator.
 
 ## 10. Legacy evidence
 

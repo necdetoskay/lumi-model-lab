@@ -55,6 +55,8 @@ current identity:
 Evidence from an older generation protocol may be used only as historical
 burden evidence. It does not increase current coverage.
 
+Provider-access and provider-transport failures are retained as operational evidence but are excluded from both current and historical capability density. A quota/auth/rate-limit/network failure therefore does not make a cell THIN, PROVISIONAL, failed, anomalous, or sentinel-eligible. Unknown terminal failures remain fail-closed capability failures.
+
 ## Selection order
 
 v1 uses deterministic lexicographic priority rather than an opaque numerical score.
