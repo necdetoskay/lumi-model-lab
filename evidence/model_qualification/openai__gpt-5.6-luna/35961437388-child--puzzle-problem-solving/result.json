@@ -1,0 +1,1787 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-standard-v1/child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-standard-v1/child--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to restore the learning activity before three o'clock without guessing where the missing card belongs.",
+        "central_problem": "A missing instruction card breaks a repeated display pattern and could send visitors to the wrong map activity.",
+        "solution_principle": "Test repeated patterns against physical evidence, schedules, labels, and maps before choosing an action.",
+        "theme_thread": "Good solutions come from checking patterns instead of trusting the first guess.",
+        "ending_state": "The display works, the useful map marker remains available, and Deniz explains the evidence-based solution to staff.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or threatening behavior.",
+          "No unsupported clues, magical explanations, or new subplots.",
+          "Do not reveal or solve the missing-card problem before Scene 5.",
+          "Do not mention benchmarks or tests."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the public learning space, the broken display, and the goal of finding its missing pattern card.",
+          "entry_state": "Deniz visits a public learning space containing maps, objects, schedules, labels, shelves, and ordinary tools.",
+          "beats": [
+            "Deniz sees three display rows repeating map, object, label, tool; the third row has a blank place between an object and a tool.",
+            "The three-o'clock schedule says visitors will match objects with labels and follow a map; Deniz decides to investigate carefully."
+          ],
+          "must_include": [
+            "Deniz is seven and acts independently but seeks staff help when an answer affects other visitors.",
+            "The display has pockets, a return tray, a sign-out sheet, a recycling bin, pencils, and scrap paper nearby.",
+            "Deniz notices the empty pocket's shape and records the visible sequence before touching anything."
+          ],
+          "must_not_do": [
+            "Do not identify the missing card yet.",
+            "Do not accuse anyone or move display materials without evidence.",
+            "Do not use vocabulary, emotions, or reasoning beyond an exact seven-year-old's understanding."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows a card is missing from the repeated display but not what it is or where it went.",
+          "open_threads_after": [
+            "Which card belongs in the empty pocket?",
+            "Was the card borrowed, misplaced, or used somewhere else?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test a reasonable borrowing hypothesis and reject it when the room's records provide no support.",
+          "entry_state": "Deniz has recorded the display sequence and must investigate without disturbing the learning activity.",
+          "beats": [
+            "Deniz checks the return tray, sign-out sheet, and nearby recycling bin, wondering whether a visitor borrowed the card.",
+            "No card appears, no borrowing is recorded, and the bin contains no matching paper edge; Deniz keeps the hypothesis open but weaker."
+          ],
+          "must_include": [
+            "The borrowing idea is reasonable because visitors use the display cards during activities.",
+            "Deniz compares the card-sized pockets with the papers found instead of deciding from one empty place.",
+            "Deniz notices a blue triangle drawn on the schedule beside the map activity."
+          ],
+          "must_not_do": [
+            "Do not blame a visitor or staff member.",
+            "Do not treat missing records as proof that nobody moved the card.",
+            "Do not reveal the card's exact identity or final location."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the empty pocket, repeated row, return tray, sign-out sheet, recycling bin, and three-o'clock schedule.",
+            "Scene 1 established that Deniz records observations before touching materials."
+          ],
+          "handoff": "The borrowing hypothesis is weakened, but the card's identity and location remain unresolved.",
+          "open_threads_after": [
+            "What exact card completes the repeated rows?",
+            "Why does the schedule show a blue triangle?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use repeated rows and the schedule to infer the missing card's type and narrow the search.",
+          "entry_state": "Deniz has ruled out obvious borrowing evidence and needs independent clues before searching further.",
+          "beats": [
+            "Deniz compares both complete rows: each places a label between an object and a tool, matching the schedule's object-label activity.",
+            "Deniz concludes the gap needs a label card, then checks the labeled card drawer and the map materials for a matching blue mark."
+          ],
+          "must_include": [
+            "The inference uses two complete rows, not just the nearest neighboring cards.",
+            "The labeled drawer is an ordinary, visible place already connected to the display.",
+            "A blue triangle appears on a map folder, giving Deniz a specific next search location."
+          ],
+          "must_not_do": [
+            "Do not claim the label card is found in the drawer.",
+            "Do not make the blue triangle alone prove the card's location.",
+            "Do not introduce a secret passage, special power, or unexplained helper."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established two complete display rows and the empty third-row pocket.",
+            "Scene 2 established the schedule's blue triangle and the lack of a recorded borrowing.",
+            "Scene 1 established labeled materials and maps as parts of the same learning display."
+          ],
+          "handoff": "Deniz knows the missing item must be a label card and has narrowed the search to map materials marked with blue triangles.",
+          "open_threads_after": [
+            "Is the blue-marked map folder connected to the missing card?",
+            "Should a card found there be returned or left in place?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Find the card in a map folder and discover that its placement may serve a useful purpose.",
+          "entry_state": "Deniz is searching the blue-marked map materials for the label card, guided by the tested display pattern.",
+          "beats": [
+            "Inside the blue-marked map folder, Deniz finds the missing label card being used as a bookmark on a map page.",
+            "The card's rounded corner fits the empty pocket, while its blue triangle matches the schedule and the marked map page."
+          ],
+          "must_include": [
+            "The card's physical fit, printed label, blue triangle, and map-page mark are all observable evidence.",
+            "Deniz realizes the card was misplaced or reused, not stolen.",
+            "The marked map page appears useful for the scheduled activity, creating a choice rather than a simple grab."
+          ],
+          "must_not_do": [
+            "Do not resolve the choice by immediately taking the card.",
+            "Do not say who placed the card there without evidence.",
+            "Do not add a new map purpose unrelated to the schedule and display."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 3 established that the missing item must be a label card.",
+            "Scene 3 established the blue triangle as a search clue connected to map materials.",
+            "Scene 1 established the card-sized pockets and the scheduled object-label map activity."
+          ],
+          "handoff": "Deniz has the correct card and evidence of its useful map marking, but must choose how to restore the display without losing the map clue.",
+          "open_threads_after": [
+            "How can Deniz restore the pattern and preserve the useful map marker?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply all tested clues, restore the display, and choose a practical solution preserving both learning tools.",
+          "entry_state": "Deniz has found the correct label card but must solve the conflict between the display pocket and the marked map.",
+          "beats": [
+            "Deniz tests the card in the empty pocket; its label completes every row, while the blue triangle links the card, schedule, and map page.",
+            "Instead of removing the map marker, Deniz copies the triangle and page mark onto scrap paper, replaces the card, and leaves the copy in the folder."
+          ],
+          "must_include": [
+            "The decisive solution uses the repeated rows, card-pocket fit, schedule symbol, and matching map mark.",
+            "Deniz chooses a reversible, cooperative solution rather than guessing who moved the card.",
+            "The restored display now clearly points visitors toward the correct map activity."
+          ],
+          "must_not_do": [
+            "Do not solve the central problem before this scene.",
+            "Do not discard, damage, or permanently alter the useful map.",
+            "Do not make Deniz's solution depend on an adult doing the reasoning."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the label-card requirement from two complete rows and the schedule.",
+            "Scene 4 established the card's pocket fit, blue triangle, and matching map-page mark.",
+            "Scene 1 established scrap paper and pencils as available ordinary tools."
+          ],
+          "handoff": "The display pattern is restored, and a copied marker preserves the map clue; Deniz now needs to communicate what happened.",
+          "open_threads_after": [
+            "Staff should know why the card was moved and how the display was repaired."
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve practical consequences, communicate the reasoning, and close the learning space's main problem.",
+          "entry_state": "The display works and the map clue is preserved, but staff have not yet heard Deniz's explanation.",
+          "beats": [
+            "Deniz tells staff the card was found in the map folder and explains each tested clue in simple order.",
+            "Staff accept the repaired display, add a clear bookmark copy, and the three-o'clock activity can begin without misleading visitors."
+          ],
+          "must_include": [
+            "Deniz explains that the first borrowing idea was checked and rejected by evidence.",
+            "The final explanation connects the repeated pattern, schedule, label, pocket, and map marker.",
+            "The ending reinforces checking patterns instead of guessing without becoming a lecture."
+          ],
+          "must_not_do": [
+            "Do not introduce a new mystery or future threat.",
+            "Do not leave the display, map, or schedule unresolved.",
+            "Do not make staff praise replace the causal explanation."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the restored display and copied map marker.",
+            "Scene 2 established the rejected borrowing hypothesis and its missing supporting evidence.",
+            "Scenes 3-5 established the linked pattern, schedule, card, pocket, and map clues."
+          ],
+          "handoff": "The learning activity begins with accurate materials, and Deniz leaves knowing that tested patterns can guide better choices.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.95,
+        "constraint_coverage": 0.67,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.93,
+        "no_early_resolution": 0.94,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.67
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.71,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3784,
+        "output_tokens": 185,
+        "cost": 0.000158928
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must ensure vocabulary and emotional tone match exactly age 7 (C1, C9). Deniz's reasoning should feel natural, not precocious. Avoid complex spatial language or abstract concepts."
+        },
+        {
+          "scene": 2,
+          "risk": "The borrowing hypothesis must feel genuinely plausible to a 7-year-old reader, not contrived. The rejection via missing records should be clear without requiring adult logic."
+        },
+        {
+          "scene": 3,
+          "risk": "The inference from two complete rows to 'a label card must go here' is the story's logical pivot. Must be shown through concrete observation (comparing what's in each row) rather than abstract pattern-matching language."
+        },
+        {
+          "scene": 4,
+          "risk": "Finding the card in the map folder must feel like discovery, not coincidence. The blue triangle connection must be visually/physically obvious enough that a 7-year-old reader accepts it without feeling manipulated."
+        },
+        {
+          "scene": 5,
+          "risk": "The copying solution is creative but must be presented as Deniz's own idea, not as a clever workaround imposed by the narrative. Deniz should test the card in the pocket first, then notice the conflict, then think of copying."
+        },
+        {
+          "scene": 6,
+          "risk": "Deniz's explanation to staff must be age-appropriate in length and detail. Avoid making it sound like a formal report or a lesson. Keep it conversational and grounded in what Deniz actually did."
+        }
+      ],
+      "summary": "The plan is structurally sound and meets all critical requirements. Causal continuity is strong: each scene builds on prior evidence without resets or new subplots. Deniz's goal remains stable (restore the display by testing patterns, not guessing), and the central problem is preserved until Scene 5. Information accumulates logically: empty pocket → borrowing hypothesis rejected → label card inferred → card found in map → solution chosen → explanation given. All eight required constraints are scheduled and traceable. The false hypothesis (borrowing) is introduced in Scene 2 and rejected by evidence in the same scene, satisfying C7. The final solution in Scene 5 uses multiple earlier clues (repeated rows, schedule symbol, card-pocket fit, map marker, available tools), satisfying C8. No unexplained dependencies exist; every later event depends only on information already given. The ending is coherent: Scene 5 delivers the decisive payoff (display restored, map clue preserved), and Scene 6 resolves consequences (staff informed, activity can proceed). The JEV advisory flagged constraint_coverage at 0.67, likely due to concern about C1 and C9 (age-exact language and complexity). This is a valid caution: the prose execution must match a 7-year-old's vocabulary, sentence structure, and emotional intensity precisely. The plan itself does not violate these constraints; it provides clear guardrails for each scene. Recommend proceeding to prose with close attention to age-appropriate exposition, pacing, and concept complexity in every scene.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0056492,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000158928,
+      "haiku": {
+        "usd": 0.013,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 892,
+        "output_tokens": 4559,
+        "total_tokens": 5451
+      },
+      "jev": {
+        "input_tokens": 3784,
+        "output_tokens": 185,
+        "cost": 0.000158928
+      },
+      "haiku": {
+        "input_tokens": 4000,
+        "output_tokens": 1800,
+        "total_tokens": 5800
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    260,
+    310,
+    340,
+    340,
+    410,
+    340
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 260,
+      "word_count": 291,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the public learning space, the broken display, and the goal of finding its missing pattern card.",
+        "entry_state": "Deniz visits a public learning space containing maps, objects, schedules, labels, shelves, and ordinary tools.",
+        "beats": [
+          "Deniz sees three display rows repeating map, object, label, tool; the third row has a blank place between an object and a tool.",
+          "The three-o'clock schedule says visitors will match objects with labels and follow a map; Deniz decides to investigate carefully."
+        ],
+        "must_include": [
+          "Deniz is seven and acts independently but seeks staff help when an answer affects other visitors.",
+          "The display has pockets, a return tray, a sign-out sheet, a recycling bin, pencils, and scrap paper nearby.",
+          "Deniz notices the empty pocket's shape and records the visible sequence before touching anything."
+        ],
+        "must_not_do": [
+          "Do not identify the missing card yet.",
+          "Do not accuse anyone or move display materials without evidence.",
+          "Do not use vocabulary, emotions, or reasoning beyond an exact seven-year-old's understanding."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows a card is missing from the repeated display but not what it is or where it went.",
+        "open_threads_after": [
+          "Which card belongs in the empty pocket?",
+          "Was the card borrowed, misplaced, or used somewhere else?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz was seven, and she liked figuring things out by herself. At the town learning center, she walked past shelves of objects, maps, labels, and ordinary tools. Near the map table stood a display with clear pockets.\n\nThe display had three rows. Deniz looked from left to right. The first row showed a map, an object, a label, and a tool. The second row showed the same kind of group. The third row showed a map, an object, an empty pocket, and a tool.\n\n“Something is missing,” Deniz whispered.\n\nShe leaned closer but did not touch the display. The empty pocket was a little rectangle with rounded corners, just the right shape for a card. Deniz took a pencil from the nearby cup and a piece of scrap paper. Before moving anything, she wrote:\n\nmap — object — label — tool\nmap — object — label — tool\nmap — object — empty — tool\n\nThen she drew the empty pocket with its rounded top corners.\n\nA return tray sat below the display. Beside it were a sign-out sheet and a recycling bin. Deniz noticed all three. If a visitor had moved something, one of those places might help explain it.\n\nAt the top of the display, a schedule said, “3:00: Match objects with labels and follow the map.” People would use the display soon. Deniz did not want to put a wrong card in the empty pocket and send visitors to the wrong activity.\n\nShe could keep looking on her own, but if the answer affected everyone, she knew she should ask a staff member for help. First, though, she would check the nearby places carefully. The empty pocket waited, holding its secret without giving away which card belonged there.",
+        "state_delta": {
+          "location": "Town public learning center, beside the map display",
+          "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+          "knowledge_gained": [
+            "The display repeats the sequence map, object, label, tool in its first two rows.",
+            "The third row has an empty pocket between an object and a tool.",
+            "The three-o'clock activity involves matching objects with labels and following a map."
+          ],
+          "facts_established": [
+            "Deniz is seven and investigates independently.",
+            "Deniz will seek staff help if her answer could affect other visitors.",
+            "The empty pocket has a rounded rectangular shape."
+          ],
+          "clues_added": [
+            "The recorded visible sequence is map, object, label, tool; map, object, label, tool; map, object, empty, tool.",
+            "A return tray, sign-out sheet, and recycling bin are near the display."
+          ],
+          "objects_changed": [
+            "Deniz wrote the visible sequence and drew the empty pocket on scrap paper.",
+            "No display materials were moved."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which card belongs in the empty pocket?",
+            "Was the missing card borrowed, misplaced, or used somewhere else?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz knows a card is missing from the repeated display but not what it is or where it went. She has recorded the pattern and is ready to check the return tray, sign-out sheet, and recycling bin without disturbing the display."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.377,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 291,
+          "usage": {
+            "input_tokens": 4335,
+            "output_tokens": 916,
+            "total_tokens": 5251
+          },
+          "cost": {
+            "usd": 0.0021828,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2595,
+          "output_tokens": 188,
+          "cost": 0.00010899
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2595,
+            "output_tokens": 188,
+            "cost": 0.00010899
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.559
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.937
+    },
+    {
+      "scene": 2,
+      "target_words": 310,
+      "word_count": 315,
+      "contract": {
+        "index": 2,
+        "purpose": "Test a reasonable borrowing hypothesis and reject it when the room's records provide no support.",
+        "entry_state": "Deniz has recorded the display sequence and must investigate without disturbing the learning activity.",
+        "beats": [
+          "Deniz checks the return tray, sign-out sheet, and nearby recycling bin, wondering whether a visitor borrowed the card.",
+          "No card appears, no borrowing is recorded, and the bin contains no matching paper edge; Deniz keeps the hypothesis open but weaker."
+        ],
+        "must_include": [
+          "The borrowing idea is reasonable because visitors use the display cards during activities.",
+          "Deniz compares the card-sized pockets with the papers found instead of deciding from one empty place.",
+          "Deniz notices a blue triangle drawn on the schedule beside the map activity."
+        ],
+        "must_not_do": [
+          "Do not blame a visitor or staff member.",
+          "Do not treat missing records as proof that nobody moved the card.",
+          "Do not reveal the card's exact identity or final location."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the empty pocket, repeated row, return tray, sign-out sheet, recycling bin, and three-o'clock schedule.",
+          "Scene 1 established that Deniz records observations before touching materials."
+        ],
+        "handoff": "The borrowing hypothesis is weakened, but the card's identity and location remain unresolved.",
+        "open_threads_after": [
+          "What exact card completes the repeated rows?",
+          "Why does the schedule show a blue triangle?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz started with the return tray. Visitors used the display cards during activities, so perhaps someone had borrowed the missing one and meant to bring it back.\n\nShe looked through the tray without disturbing the display. It held two folded activity sheets, a pencil, and a small square of paper. Deniz compared them with the empty pocket. The sheets were too wide, and the square had sharp corners. None had the same rounded shape she had drawn on her scrap paper.\n\n“Not this time,” she said softly.\n\nNext, she checked the sign-out sheet. A few names and times were written there, but no one had written down a display card. Deniz did not decide that nobody had moved it. Maybe someone had forgotten. Still, the sheet gave no support to her borrowing idea.\n\nShe peered into the recycling bin. A strip of blue paper stuck out near the top. Deniz took a pencil and nudged the strip so she could see it better. It was only a torn piece, with a straight edge. There was no rounded corner to match the empty pocket.\n\nDeniz wrote on her scrap paper:\n\nreturn tray — no matching card\nsign-out sheet — no card listed\nrecycling bin — no matching edge\n\nShe glanced back at the schedule. “3:00: Match objects with labels and follow the map,” it said. Beside the map part was a small blue triangle.\n\nDeniz circled the triangle on her scrap paper. She had not noticed it before.\n\nThe borrowing idea still seemed possible, but now it was weaker. The nearby places had not shown where the missing card went. The blue triangle might be important, or it might simply help people notice the map activity. Deniz would need another clue before choosing what to do.\n\nShe kept her pencil ready and looked again at the three display rows, careful not to touch any of them.",
+        "state_delta": {
+          "location": "Town public learning center, beside the map display and its nearby return tray, sign-out sheet, and recycling bin",
+          "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+          "knowledge_gained": [
+            "Visitors might borrow display cards during activities, so borrowing is a reasonable possibility.",
+            "The return tray has no card matching the rounded pocket.",
+            "The sign-out sheet has no recorded display-card borrowing.",
+            "The recycling bin has no paper edge matching the pocket."
+          ],
+          "facts_established": [
+            "Deniz checks nearby evidence without moving the display materials.",
+            "The papers in the return tray are too wide or have the wrong corners.",
+            "The blue triangle is printed beside the map activity on the three-o'clock schedule."
+          ],
+          "clues_added": [
+            "The schedule's blue triangle may connect the map activity to the missing card.",
+            "The borrowing hypothesis has no supporting record or physical match, though it remains possible."
+          ],
+          "objects_changed": [
+            "Deniz added notes about the return tray, sign-out sheet, and recycling bin to her scrap paper.",
+            "Deniz circled the blue triangle on her scrap paper.",
+            "No display materials were moved."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What exact card completes the repeated rows?",
+            "Why does the schedule show a blue triangle?",
+            "Was the card borrowed without being recorded?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has checked the return tray, sign-out sheet, and recycling bin. No matching card, borrowing record, or matching paper edge was found, so borrowing is weaker but not ruled out. She has noticed and recorded a blue triangle beside the map activity and is ready to compare the complete display rows for another clue."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.18,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 315,
+          "usage": {
+            "input_tokens": 5127,
+            "output_tokens": 1020,
+            "total_tokens": 6147
+          },
+          "cost": {
+            "usd": 0.0025056,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3131,
+          "output_tokens": 188,
+          "cost": 0.000131502
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3131,
+            "output_tokens": 188,
+            "cost": 0.000131502
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.638
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.818
+    },
+    {
+      "scene": 3,
+      "target_words": 340,
+      "word_count": 343,
+      "contract": {
+        "index": 3,
+        "purpose": "Use repeated rows and the schedule to infer the missing card's type and narrow the search.",
+        "entry_state": "Deniz has ruled out obvious borrowing evidence and needs independent clues before searching further.",
+        "beats": [
+          "Deniz compares both complete rows: each places a label between an object and a tool, matching the schedule's object-label activity.",
+          "Deniz concludes the gap needs a label card, then checks the labeled card drawer and the map materials for a matching blue mark."
+        ],
+        "must_include": [
+          "The inference uses two complete rows, not just the nearest neighboring cards.",
+          "The labeled drawer is an ordinary, visible place already connected to the display.",
+          "A blue triangle appears on a map folder, giving Deniz a specific next search location."
+        ],
+        "must_not_do": [
+          "Do not claim the label card is found in the drawer.",
+          "Do not make the blue triangle alone prove the card's location.",
+          "Do not introduce a secret passage, special power, or unexplained helper."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established two complete display rows and the empty third-row pocket.",
+          "Scene 2 established the schedule's blue triangle and the lack of a recorded borrowing.",
+          "Scene 1 established labeled materials and maps as parts of the same learning display."
+        ],
+        "handoff": "Deniz knows the missing item must be a label card and has narrowed the search to map materials marked with blue triangles.",
+        "open_threads_after": [
+          "Is the blue-marked map folder connected to the missing card?",
+          "Should a card found there be returned or left in place?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz kept her pencil ready and studied the display without touching it. She looked at the first complete row.\n\nMap, object, label, tool.\n\nThen she looked at the second row.\n\nMap, object, label, tool.\n\nShe said the words quietly as her eyes moved from left to right. In both rows, the label was between the object and the tool. The empty place in the third row was between an object and a tool too.\n\n“It needs a label,” Deniz said.\n\nShe wrote it on her scrap paper, then checked her idea again. She had not decided from only two cards beside the empty place. Both complete rows showed the same order. Also, the schedule said visitors would match objects with labels before following a map. The display and the schedule fit together.\n\nNear the display stood a short labeled-card drawer. Its front had a picture of a card and the words LABEL CARDS. Deniz pulled the drawer open just enough to look. Several cards rested inside, but none had a loose corner or an empty spot that explained the display. She did not take them out. The missing card might have been moved somewhere else.\n\nDeniz glanced at her notes. The blue triangle on the schedule caught her eye again. If it marked the map part of the activity, perhaps it appeared on the map materials too.\n\nShe walked to the low shelf beside the display. Map folders stood there in a neat row. One had a small blue triangle printed on its tab.\n\nDeniz stopped and drew the triangle on her scrap paper. She compared it with the one beside “follow the map” on the schedule. They looked the same: three blue sides, pointing up.\n\n“That is another clue,” she whispered. “But it does not prove the card is there.”\n\nThe folder was connected to the map activity, and the label drawer had shown her what kind of card to seek. Deniz now had a careful next step. She would look inside the blue-marked map folder, without assuming what she would find.",
+        "state_delta": {
+          "location": "Town public learning center, beside the map display and the low shelf of map folders",
+          "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+          "knowledge_gained": [
+            "Both complete display rows place a label between an object and a tool.",
+            "The empty third-row pocket therefore needs a label card.",
+            "The labeled-card drawer is connected to the display but does not explain where the missing card went.",
+            "A map folder has the same blue triangle as the one beside the map activity on the schedule."
+          ],
+          "facts_established": [
+            "Deniz used both complete rows to check the repeated order.",
+            "The labeled-card drawer is an ordinary visible drawer beside the display.",
+            "The blue triangle on the map folder has three blue sides and points up."
+          ],
+          "clues_added": [
+            "The missing item is a label card.",
+            "The blue triangle connects a particular map folder to the scheduled map activity."
+          ],
+          "objects_changed": [
+            "Deniz wrote that the empty place needs a label card.",
+            "Deniz drew the blue triangle from the map folder on her scrap paper.",
+            "No display materials or cards were moved."
+          ],
+          "relationships_changed": [
+            "The repeated display pattern is linked to the object-label activity on the schedule.",
+            "The blue-marked map folder is linked to the scheduled map activity."
+          ],
+          "threads_opened": [
+            "Is the blue-marked map folder connected to the missing label card?",
+            "Should a card found there be returned to the display or left in the map folder?"
+          ],
+          "threads_resolved": [
+            "The missing card's type is identified as a label card."
+          ],
+          "handoff_state": "Deniz knows the missing item must be a label card and has narrowed the search to the map folder marked with the same blue triangle as the schedule. She has not opened the folder yet and does not know whether the card is inside or what purpose it may serve there."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.506,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 343,
+          "usage": {
+            "input_tokens": 5625,
+            "output_tokens": 1070,
+            "total_tokens": 6695
+          },
+          "cost": {
+            "usd": 0.0026901,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3692,
+          "output_tokens": 188,
+          "cost": 0.000155064
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3692,
+            "output_tokens": 188,
+            "cost": 0.000155064
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.812
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 14.319
+    },
+    {
+      "scene": 4,
+      "target_words": 340,
+      "word_count": 365,
+      "contract": {
+        "index": 4,
+        "purpose": "Find the card in a map folder and discover that its placement may serve a useful purpose.",
+        "entry_state": "Deniz is searching the blue-marked map materials for the label card, guided by the tested display pattern.",
+        "beats": [
+          "Inside the blue-marked map folder, Deniz finds the missing label card being used as a bookmark on a map page.",
+          "The card's rounded corner fits the empty pocket, while its blue triangle matches the schedule and the marked map page."
+        ],
+        "must_include": [
+          "The card's physical fit, printed label, blue triangle, and map-page mark are all observable evidence.",
+          "Deniz realizes the card was misplaced or reused, not stolen.",
+          "The marked map page appears useful for the scheduled activity, creating a choice rather than a simple grab."
+        ],
+        "must_not_do": [
+          "Do not resolve the choice by immediately taking the card.",
+          "Do not say who placed the card there without evidence.",
+          "Do not add a new map purpose unrelated to the schedule and display."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 3 established that the missing item must be a label card.",
+          "Scene 3 established the blue triangle as a search clue connected to map materials.",
+          "Scene 1 established the card-sized pockets and the scheduled object-label map activity."
+        ],
+        "handoff": "Deniz has the correct card and evidence of its useful map marking, but must choose how to restore the display without losing the map clue.",
+        "open_threads_after": [
+          "How can Deniz restore the pattern and preserve the useful map marker?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz lifted the blue-marked folder from the low shelf. She opened it carefully and looked at the first map page.\n\nA blue triangle was printed near one corner. It looked just like the triangle on the schedule.\n\nThen Deniz saw something tucked between the pages.\n\nIt was a card.\n\nShe slid it out only far enough to see it. The card had a printed label and a small picture. One corner was rounded, just like the empty pocket in the display. A blue triangle was printed on the card too.\n\nDeniz held the card beside the pocket without putting it in. The rounded corner matched the pocket’s shape. The card was the right size. It was the kind of card the third row needed.\n\nShe looked back at the map page. The card had been used as a bookmark. Its blue triangle pointed to the same place as the blue triangle on the map page.\n\n“So this is the missing card,” Deniz said softly.\n\nShe checked her notes. First, both complete rows had shown that a label belonged between an object and a tool. Next, the card-sized shape matched the empty pocket. Now the blue triangle connected the card, the schedule, and this map page.\n\nThe card had not vanished. It had been put here, or reused here, for a reason. Deniz did not know who had placed it in the folder, and she would not make up a guess.\n\nShe touched the edge of the map page. The marked page looked useful for the three-o’clock activity. Visitors were supposed to follow a map after matching objects with labels. If Deniz took the card away, the display would be complete, but the useful mark might be harder to find. If she left the card, the map would keep its bookmark, but the display would still have a hole.\n\nDeniz looked from the card to the empty pocket and back to the map.\n\n“I found the answer,” she said, “but I still need to choose carefully.”\n\nShe placed the card on top of the folder, not back inside yet, and reached for her pencil and scrap paper. Maybe one clue could be kept in two places.",
+        "state_delta": {
+          "location": "Town public learning center, beside the low shelf of map folders and the map display",
+          "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing where the missing card belongs or losing a useful map clue.",
+          "knowledge_gained": [
+            "The missing item is the label card found inside the blue-marked map folder.",
+            "The card's rounded corner matches the empty display pocket.",
+            "The card has a printed label and a blue triangle.",
+            "The blue triangle on the card matches the schedule and the marked map page.",
+            "The card was reused or misplaced as a bookmark rather than shown to be stolen."
+          ],
+          "facts_established": [
+            "The blue-marked map folder contains the missing label card.",
+            "The marked map page appears useful for the scheduled object-label map activity.",
+            "Deniz does not know who placed the card in the folder."
+          ],
+          "clues_added": [
+            "The card, schedule, and map page share the same blue triangle.",
+            "The card's rounded corner and size fit the empty display pocket."
+          ],
+          "objects_changed": [
+            "Deniz removed the card from between the map pages and placed it on top of the folder.",
+            "The map folder remains open to the marked page.",
+            "Deniz kept her scrap paper and pencil ready."
+          ],
+          "relationships_changed": [
+            "The missing label card is linked to both the display pocket and the useful marked map page."
+          ],
+          "threads_opened": [
+            "How can Deniz restore the display while preserving the useful map marker?"
+          ],
+          "threads_resolved": [
+            "The missing card's location is found.",
+            "The card is identified as the label card needed by the repeated display pattern."
+          ],
+          "handoff_state": "Deniz has found the correct label card in the blue-marked map folder. Its rounded corner fits the empty display pocket, and its blue triangle matches the schedule and the marked map page. The card is currently resting on top of the open folder, while the useful map marker remains visible. Deniz must now decide how to restore the display without losing the map clue."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 14.675,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 365,
+          "usage": {
+            "input_tokens": 6152,
+            "output_tokens": 1151,
+            "total_tokens": 7303
+          },
+          "cost": {
+            "usd": 0.00291905,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4247,
+          "output_tokens": 188,
+          "cost": 0.000178374
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4247,
+            "output_tokens": 188,
+            "cost": 0.000178374
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.966
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.641
+    },
+    {
+      "scene": 5,
+      "target_words": 410,
+      "word_count": 382,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply all tested clues, restore the display, and choose a practical solution preserving both learning tools.",
+        "entry_state": "Deniz has found the correct label card but must solve the conflict between the display pocket and the marked map.",
+        "beats": [
+          "Deniz tests the card in the empty pocket; its label completes every row, while the blue triangle links the card, schedule, and map page.",
+          "Instead of removing the map marker, Deniz copies the triangle and page mark onto scrap paper, replaces the card, and leaves the copy in the folder."
+        ],
+        "must_include": [
+          "The decisive solution uses the repeated rows, card-pocket fit, schedule symbol, and matching map mark.",
+          "Deniz chooses a reversible, cooperative solution rather than guessing who moved the card.",
+          "The restored display now clearly points visitors toward the correct map activity."
+        ],
+        "must_not_do": [
+          "Do not solve the central problem before this scene.",
+          "Do not discard, damage, or permanently alter the useful map.",
+          "Do not make Deniz's solution depend on an adult doing the reasoning."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the label-card requirement from two complete rows and the schedule.",
+          "Scene 4 established the card's pocket fit, blue triangle, and matching map-page mark.",
+          "Scene 1 established scrap paper and pencils as available ordinary tools."
+        ],
+        "handoff": "The display pattern is restored, and a copied marker preserves the map clue; Deniz now needs to communicate what happened.",
+        "open_threads_after": [
+          "Staff should know why the card was moved and how the display was repaired."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz picked up the card and carried it back to the display. She held it over the empty pocket first, just as she had held it there before.\n\nThen she slid it in.\n\nThe rounded corner fit snugly. The printed label sat between the object and the tool. Deniz looked across the rows. In the first row, an object came before a label, and a tool came after it. The second row did the same. Now the third row did too.\n\n“Map, object, label, tool,” Deniz whispered. “Every row matches.”\n\nThe blue triangle on the card showed through the pocket. It matched the triangle on the three-o’clock schedule. It also matched the triangle on the map page.\n\nDeniz hurried back to the open folder. The map page was still marked, but without the card, someone might not know which page to use. She did not want to take away one useful tool just to fix another.\n\nHer scrap paper and pencil were beside the folder. Deniz drew a blue triangle as carefully as she could. Under it, she copied the small mark from the map page and wrote, “Use this map page.” She checked the page again, then checked her drawing. The triangle pointed the same way.\n\nShe placed the copy inside the folder, on top of the marked page. It was easy to see and easy to remove later. The real map was not changed, and the label card was back where its shape and the rows said it belonged.\n\nDeniz stepped back.\n\nThe display now showed the same order three times: map, object, label, tool. The blue triangle on the label pointed visitors toward the map activity on the schedule. The copied note in the folder would help them find the marked page too.\n\nDeniz smiled. She had not needed to guess who moved the card. She had tested the rows, the pocket, the schedule, and the map mark. Each clue had helped with the next choice.\n\nShe looked at the clock. There was still time before three.\n\nDeniz left the folder open just enough for the copy to be seen and kept her scrap paper in her hand. Now she needed to tell a staff member exactly what she had found and why she had placed the card back.",
+        "state_delta": {
+          "location": "Town public learning center, between the map display and the low shelf of map folders",
+          "character_goal": "Deniz wants to make sure the learning activity is restored before three o'clock while keeping the useful map marker available.",
+          "knowledge_gained": [
+            "The label card completes all three display rows.",
+            "The card's blue triangle connects the display to the scheduled map activity and the marked map page.",
+            "A copied marker can preserve the map clue without leaving the card out of the display."
+          ],
+          "facts_established": [
+            "The card fits the empty rounded pocket.",
+            "The restored display repeats map, object, label, tool in every row.",
+            "The marked map page remains unchanged and can still be found using the copied note."
+          ],
+          "clues_added": [
+            "A copied blue triangle and page note now mark the useful map page inside the folder.",
+            "The blue triangle on the restored label card points visitors toward the correct map activity."
+          ],
+          "objects_changed": [
+            "The missing label card was placed back in the third-row display pocket.",
+            "Deniz drew a blue triangle and copied the map-page mark onto scrap paper.",
+            "The copied marker was placed inside the map folder on the marked page.",
+            "The map page was not altered or damaged."
+          ],
+          "relationships_changed": [
+            "The restored display now clearly connects the label card, schedule, and map activity.",
+            "The copied marker connects the map folder to the scheduled activity without removing the display card."
+          ],
+          "threads_opened": [
+            "A staff member needs to hear how Deniz tested the clues and repaired the display."
+          ],
+          "threads_resolved": [
+            "The display pattern has been restored.",
+            "The useful map marker has been preserved in a reversible way.",
+            "Deniz has chosen a solution without guessing who moved the card."
+          ],
+          "handoff_state": "The label card is back in the third-row pocket, all three rows show map, object, label, tool, and the blue triangle points visitors toward the scheduled map activity. A copied triangle and page note sit inside the folder on the useful marked page. Deniz is holding her notes and is ready to explain the tested clues and her repair to staff."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.79,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 382,
+          "usage": {
+            "input_tokens": 6643,
+            "output_tokens": 1148,
+            "total_tokens": 7791
+          },
+          "cost": {
+            "usd": 0.0030382,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4804,
+          "output_tokens": 188,
+          "cost": 0.000201768
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4804,
+            "output_tokens": 188,
+            "cost": 0.000201768
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.614
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 14.405
+    },
+    {
+      "scene": 6,
+      "target_words": 340,
+      "word_count": 355,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve practical consequences, communicate the reasoning, and close the learning space's main problem.",
+        "entry_state": "The display works and the map clue is preserved, but staff have not yet heard Deniz's explanation.",
+        "beats": [
+          "Deniz tells staff the card was found in the map folder and explains each tested clue in simple order.",
+          "Staff accept the repaired display, add a clear bookmark copy, and the three-o'clock activity can begin without misleading visitors."
+        ],
+        "must_include": [
+          "Deniz explains that the first borrowing idea was checked and rejected by evidence.",
+          "The final explanation connects the repeated pattern, schedule, label, pocket, and map marker.",
+          "The ending reinforces checking patterns instead of guessing without becoming a lecture."
+        ],
+        "must_not_do": [
+          "Do not introduce a new mystery or future threat.",
+          "Do not leave the display, map, or schedule unresolved.",
+          "Do not make staff praise replace the causal explanation."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the restored display and copied map marker.",
+          "Scene 2 established the rejected borrowing hypothesis and its missing supporting evidence.",
+          "Scenes 3-5 established the linked pattern, schedule, card, pocket, and map clues."
+        ],
+        "handoff": "The learning activity begins with accurate materials, and Deniz leaves knowing that tested patterns can guide better choices.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz carried her notes to the front desk, where a staff member named Ms. Imani was sorting pencils.\n\n“Excuse me,” Deniz said. “I fixed the display, but I want to show you why.”\n\nMs. Imani walked with her to the map display. Deniz pointed to the three rows.\n\n“First I wrote down what I could see,” she said. “The first two rows were map, object, label, tool. The third row was missing the card between the object and the tool. So I thought it might be a label card.”\n\nShe tapped the returned card through its pocket. “This card fits the rounded pocket, and its printed label is in the right place.”\n\nMs. Imani nodded. “How did you find it?”\n\n“I checked the return tray first. The papers there were too wide or had different corners. Then I checked the sign-out sheet, but nobody had written down a borrowed card. I looked in the recycling bin too, and there was no matching paper edge.” Deniz paused. “I thought someone might still have borrowed it, but I had no evidence for that idea, so I kept looking instead of blaming anyone.”\n\nShe showed Ms. Imani the blue triangle on her notes. “This triangle was beside the three-o’clock map activity. Then I found the same triangle on the map folder. The card was being used as a bookmark on the marked map page.”\n\nDeniz opened the folder. “The triangle on the card, the schedule, and the map page all match. The map page is useful, so I copied the triangle and the page mark onto scrap paper before putting the real card back.”\n\nMs. Imani studied the copy. “That keeps both tools ready.”\n\nShe brought a stiff, clear bookmark from the supply drawer and slipped Deniz’s copy into it. Then she placed it neatly in the folder. The map page stayed marked, and the display stayed complete.\n\nAt three o’clock, visitors gathered. They saw the repeated rows, followed the blue triangle, and found the right map page.\n\nDeniz watched them begin. The answer had come from checking each clue, one at a time—not from the first guess.",
+        "state_delta": {
+          "location": "Town public learning center, beside the restored map display and the marked map folder",
+          "character_goal": "Deniz wants the learning activity to begin with accurate materials and without misleading visitors.",
+          "knowledge_gained": [
+            "Staff understand where the card was found and why it belongs in the display.",
+            "A clear bookmark can protect the copied map clue while keeping the original map page unchanged."
+          ],
+          "facts_established": [
+            "Deniz explained the investigation to Ms. Imani in the order she tested the clues.",
+            "The first borrowing idea was weakened because the return tray, sign-out sheet, and recycling bin offered no matching evidence.",
+            "The three-o'clock activity began with the correct display and map page."
+          ],
+          "clues_added": [
+            "The copied triangle and page mark are inside a clear bookmark in the map folder."
+          ],
+          "objects_changed": [
+            "The copied scrap-paper marker was placed inside a clear bookmark.",
+            "The clear bookmark was placed in the map folder on the marked page.",
+            "The display card remained in the third-row pocket."
+          ],
+          "relationships_changed": [
+            "Staff now understand the connection among the repeated rows, schedule, label card, pocket, and map marker.",
+            "The display and map folder work together as accurate guides for visitors."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "Staff were told how the card was found and why it was returned.",
+            "The display, schedule, and map materials were all made ready for the activity.",
+            "The missing-card problem was resolved through tested evidence rather than guessing."
+          ],
+          "handoff_state": "The three-o'clock learning activity has begun with the display showing map, object, label, tool in all three rows. The label card is in the third-row pocket, and a clear bookmark holding the copied triangle and page mark identifies the useful map page. Staff understand Deniz's evidence-based solution, and no story threads remain open."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.917,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 355,
+          "usage": {
+            "input_tokens": 6778,
+            "output_tokens": 1009,
+            "total_tokens": 7787
+          },
+          "cost": {
+            "usd": 0.00290515,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4851,
+          "output_tokens": 188,
+          "cost": 0.000203742
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4851,
+            "output_tokens": 188,
+            "cost": 0.000203742
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.511
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 14.429
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the public learning space, the broken display, and the goal of finding its missing pattern card.",
+      "word_count": 291,
+      "location": "Town public learning center, beside the map display",
+      "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+      "knowledge_gained": [
+        "The display repeats the sequence map, object, label, tool in its first two rows.",
+        "The third row has an empty pocket between an object and a tool.",
+        "The three-o'clock activity involves matching objects with labels and following a map."
+      ],
+      "facts_established": [
+        "Deniz is seven and investigates independently.",
+        "Deniz will seek staff help if her answer could affect other visitors.",
+        "The empty pocket has a rounded rectangular shape."
+      ],
+      "clues_added": [
+        "The recorded visible sequence is map, object, label, tool; map, object, label, tool; map, object, empty, tool.",
+        "A return tray, sign-out sheet, and recycling bin are near the display."
+      ],
+      "objects_changed": [
+        "Deniz wrote the visible sequence and drew the empty pocket on scrap paper.",
+        "No display materials were moved."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which card belongs in the empty pocket?",
+        "Was the missing card borrowed, misplaced, or used somewhere else?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz knows a card is missing from the repeated display but not what it is or where it went. She has recorded the pattern and is ready to check the return tray, sign-out sheet, and recycling bin without disturbing the display."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test a reasonable borrowing hypothesis and reject it when the room's records provide no support.",
+      "word_count": 315,
+      "location": "Town public learning center, beside the map display and its nearby return tray, sign-out sheet, and recycling bin",
+      "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+      "knowledge_gained": [
+        "Visitors might borrow display cards during activities, so borrowing is a reasonable possibility.",
+        "The return tray has no card matching the rounded pocket.",
+        "The sign-out sheet has no recorded display-card borrowing.",
+        "The recycling bin has no paper edge matching the pocket."
+      ],
+      "facts_established": [
+        "Deniz checks nearby evidence without moving the display materials.",
+        "The papers in the return tray are too wide or have the wrong corners.",
+        "The blue triangle is printed beside the map activity on the three-o'clock schedule."
+      ],
+      "clues_added": [
+        "The schedule's blue triangle may connect the map activity to the missing card.",
+        "The borrowing hypothesis has no supporting record or physical match, though it remains possible."
+      ],
+      "objects_changed": [
+        "Deniz added notes about the return tray, sign-out sheet, and recycling bin to her scrap paper.",
+        "Deniz circled the blue triangle on her scrap paper.",
+        "No display materials were moved."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What exact card completes the repeated rows?",
+        "Why does the schedule show a blue triangle?",
+        "Was the card borrowed without being recorded?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has checked the return tray, sign-out sheet, and recycling bin. No matching card, borrowing record, or matching paper edge was found, so borrowing is weaker but not ruled out. She has noticed and recorded a blue triangle beside the map activity and is ready to compare the complete display rows for another clue."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use repeated rows and the schedule to infer the missing card's type and narrow the search.",
+      "word_count": 343,
+      "location": "Town public learning center, beside the map display and the low shelf of map folders",
+      "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing which card belongs in the empty pocket.",
+      "knowledge_gained": [
+        "Both complete display rows place a label between an object and a tool.",
+        "The empty third-row pocket therefore needs a label card.",
+        "The labeled-card drawer is connected to the display but does not explain where the missing card went.",
+        "A map folder has the same blue triangle as the one beside the map activity on the schedule."
+      ],
+      "facts_established": [
+        "Deniz used both complete rows to check the repeated order.",
+        "The labeled-card drawer is an ordinary visible drawer beside the display.",
+        "The blue triangle on the map folder has three blue sides and points up."
+      ],
+      "clues_added": [
+        "The missing item is a label card.",
+        "The blue triangle connects a particular map folder to the scheduled map activity."
+      ],
+      "objects_changed": [
+        "Deniz wrote that the empty place needs a label card.",
+        "Deniz drew the blue triangle from the map folder on her scrap paper.",
+        "No display materials or cards were moved."
+      ],
+      "relationships_changed": [
+        "The repeated display pattern is linked to the object-label activity on the schedule.",
+        "The blue-marked map folder is linked to the scheduled map activity."
+      ],
+      "threads_opened": [
+        "Is the blue-marked map folder connected to the missing label card?",
+        "Should a card found there be returned to the display or left in the map folder?"
+      ],
+      "threads_resolved": [
+        "The missing card's type is identified as a label card."
+      ],
+      "handoff_state": "Deniz knows the missing item must be a label card and has narrowed the search to the map folder marked with the same blue triangle as the schedule. She has not opened the folder yet and does not know whether the card is inside or what purpose it may serve there."
+    },
+    {
+      "scene": 4,
+      "purpose": "Find the card in a map folder and discover that its placement may serve a useful purpose.",
+      "word_count": 365,
+      "location": "Town public learning center, beside the low shelf of map folders and the map display",
+      "character_goal": "Deniz wants to restore the learning activity before three o'clock without guessing where the missing card belongs or losing a useful map clue.",
+      "knowledge_gained": [
+        "The missing item is the label card found inside the blue-marked map folder.",
+        "The card's rounded corner matches the empty display pocket.",
+        "The card has a printed label and a blue triangle.",
+        "The blue triangle on the card matches the schedule and the marked map page.",
+        "The card was reused or misplaced as a bookmark rather than shown to be stolen."
+      ],
+      "facts_established": [
+        "The blue-marked map folder contains the missing label card.",
+        "The marked map page appears useful for the scheduled object-label map activity.",
+        "Deniz does not know who placed the card in the folder."
+      ],
+      "clues_added": [
+        "The card, schedule, and map page share the same blue triangle.",
+        "The card's rounded corner and size fit the empty display pocket."
+      ],
+      "objects_changed": [
+        "Deniz removed the card from between the map pages and placed it on top of the folder.",
+        "The map folder remains open to the marked page.",
+        "Deniz kept her scrap paper and pencil ready."
+      ],
+      "relationships_changed": [
+        "The missing label card is linked to both the display pocket and the useful marked map page."
+      ],
+      "threads_opened": [
+        "How can Deniz restore the display while preserving the useful map marker?"
+      ],
+      "threads_resolved": [
+        "The missing card's location is found.",
+        "The card is identified as the label card needed by the repeated display pattern."
+      ],
+      "handoff_state": "Deniz has found the correct label card in the blue-marked map folder. Its rounded corner fits the empty display pocket, and its blue triangle matches the schedule and the marked map page. The card is currently resting on top of the open folder, while the useful map marker remains visible. Deniz must now decide how to restore the display without losing the map clue."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply all tested clues, restore the display, and choose a practical solution preserving both learning tools.",
+      "word_count": 382,
+      "location": "Town public learning center, between the map display and the low shelf of map folders",
+      "character_goal": "Deniz wants to make sure the learning activity is restored before three o'clock while keeping the useful map marker available.",
+      "knowledge_gained": [
+        "The label card completes all three display rows.",
+        "The card's blue triangle connects the display to the scheduled map activity and the marked map page.",
+        "A copied marker can preserve the map clue without leaving the card out of the display."
+      ],
+      "facts_established": [
+        "The card fits the empty rounded pocket.",
+        "The restored display repeats map, object, label, tool in every row.",
+        "The marked map page remains unchanged and can still be found using the copied note."
+      ],
+      "clues_added": [
+        "A copied blue triangle and page note now mark the useful map page inside the folder.",
+        "The blue triangle on the restored label card points visitors toward the correct map activity."
+      ],
+      "objects_changed": [
+        "The missing label card was placed back in the third-row display pocket.",
+        "Deniz drew a blue triangle and copied the map-page mark onto scrap paper.",
+        "The copied marker was placed inside the map folder on the marked page.",
+        "The map page was not altered or damaged."
+      ],
+      "relationships_changed": [
+        "The restored display now clearly connects the label card, schedule, and map activity.",
+        "The copied marker connects the map folder to the scheduled activity without removing the display card."
+      ],
+      "threads_opened": [
+        "A staff member needs to hear how Deniz tested the clues and repaired the display."
+      ],
+      "threads_resolved": [
+        "The display pattern has been restored.",
+        "The useful map marker has been preserved in a reversible way.",
+        "Deniz has chosen a solution without guessing who moved the card."
+      ],
+      "handoff_state": "The label card is back in the third-row pocket, all three rows show map, object, label, tool, and the blue triangle points visitors toward the scheduled map activity. A copied triangle and page note sit inside the folder on the useful marked page. Deniz is holding her notes and is ready to explain the tested clues and her repair to staff."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve practical consequences, communicate the reasoning, and close the learning space's main problem.",
+      "word_count": 355,
+      "location": "Town public learning center, beside the restored map display and the marked map folder",
+      "character_goal": "Deniz wants the learning activity to begin with accurate materials and without misleading visitors.",
+      "knowledge_gained": [
+        "Staff understand where the card was found and why it belongs in the display.",
+        "A clear bookmark can protect the copied map clue while keeping the original map page unchanged."
+      ],
+      "facts_established": [
+        "Deniz explained the investigation to Ms. Imani in the order she tested the clues.",
+        "The first borrowing idea was weakened because the return tray, sign-out sheet, and recycling bin offered no matching evidence.",
+        "The three-o'clock activity began with the correct display and map page."
+      ],
+      "clues_added": [
+        "The copied triangle and page mark are inside a clear bookmark in the map folder."
+      ],
+      "objects_changed": [
+        "The copied scrap-paper marker was placed inside a clear bookmark.",
+        "The clear bookmark was placed in the map folder on the marked page.",
+        "The display card remained in the third-row pocket."
+      ],
+      "relationships_changed": [
+        "Staff now understand the connection among the repeated rows, schedule, label card, pocket, and map marker.",
+        "The display and map folder work together as accurate guides for visitors."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "Staff were told how the card was found and why it was returned.",
+        "The display, schedule, and map materials were all made ready for the activity.",
+        "The missing-card problem was resolved through tested evidence rather than guessing."
+      ],
+      "handoff_state": "The three-o'clock learning activity has begun with the display showing map, object, label, tool in all three rows. The label card is in the third-row pocket, and a clear bookmark holding the copied triangle and page mark identifies the useful map page. Staff understand Deniz's evidence-based solution, and no story threads remain open."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "Deniz was seven, and she liked figuring things out by herself. At the town learning center, she walked past shelves of objects, maps, labels, and ordinary tools. Near the map table stood a display with clear pockets.\n\nThe display had three rows. Deniz looked from left to right. The first row showed a map, an object, a label, and a tool. The second row showed the same kind of group. The third row showed a map, an object, an empty pocket, and a tool.\n\n“Something is missing,” Deniz whispered.\n\nShe leaned closer but did not touch the display. The empty pocket was a little rectangle with rounded corners, just the right shape for a card. Deniz took a pencil from the nearby cup and a piece of scrap paper. Before moving anything, she wrote:\n\nmap — object — label — tool\nmap — object — label — tool\nmap — object — empty — tool\n\nThen she drew the empty pocket with its rounded top corners.\n\nA return tray sat below the display. Beside it were a sign-out sheet and a recycling bin. Deniz noticed all three. If a visitor had moved something, one of those places might help explain it.\n\nAt the top of the display, a schedule said, “3:00: Match objects with labels and follow the map.” People would use the display soon. Deniz did not want to put a wrong card in the empty pocket and send visitors to the wrong activity.\n\nShe could keep looking on her own, but if the answer affected everyone, she knew she should ask a staff member for help. First, though, she would check the nearby places carefully. The empty pocket waited, holding its secret without giving away which card belonged there.\n\nDeniz started with the return tray. Visitors used the display cards during activities, so perhaps someone had borrowed the missing one and meant to bring it back.\n\nShe looked through the tray without disturbing the display. It held two folded activity sheets, a pencil, and a small square of paper. Deniz compared them with the empty pocket. The sheets were too wide, and the square had sharp corners. None had the same rounded shape she had drawn on her scrap paper.\n\n“Not this time,” she said softly.\n\nNext, she checked the sign-out sheet. A few names and times were written there, but no one had written down a display card. Deniz did not decide that nobody had moved it. Maybe someone had forgotten. Still, the sheet gave no support to her borrowing idea.\n\nShe peered into the recycling bin. A strip of blue paper stuck out near the top. Deniz took a pencil and nudged the strip so she could see it better. It was only a torn piece, with a straight edge. There was no rounded corner to match the empty pocket.\n\nDeniz wrote on her scrap paper:\n\nreturn tray — no matching card\nsign-out sheet — no card listed\nrecycling bin — no matching edge\n\nShe glanced back at the schedule. “3:00: Match objects with labels and follow the map,” it said. Beside the map part was a small blue triangle.\n\nDeniz circled the triangle on her scrap paper. She had not noticed it before.\n\nThe borrowing idea still seemed possible, but now it was weaker. The nearby places had not shown where the missing card went. The blue triangle might be important, or it might simply help people notice the map activity. Deniz would need another clue before choosing what to do.\n\nShe kept her pencil ready and looked again at the three display rows, careful not to touch any of them.\n\nDeniz kept her pencil ready and studied the display without touching it. She looked at the first complete row.\n\nMap, object, label, tool.\n\nThen she looked at the second row.\n\nMap, object, label, tool.\n\nShe said the words quietly as her eyes moved from left to right. In both rows, the label was between the object and the tool. The empty place in the third row was between an object and a tool too.\n\n“It needs a label,” Deniz said.\n\nShe wrote it on her scrap paper, then checked her idea again. She had not decided from only two cards beside the empty place. Both complete rows showed the same order. Also, the schedule said visitors would match objects with labels before following a map. The display and the schedule fit together.\n\nNear the display stood a short labeled-card drawer. Its front had a picture of a card and the words LABEL CARDS. Deniz pulled the drawer open just enough to look. Several cards rested inside, but none had a loose corner or an empty spot that explained the display. She did not take them out. The missing card might have been moved somewhere else.\n\nDeniz glanced at her notes. The blue triangle on the schedule caught her eye again. If it marked the map part of the activity, perhaps it appeared on the map materials too.\n\nShe walked to the low shelf beside the display. Map folders stood there in a neat row. One had a small blue triangle printed on its tab.\n\nDeniz stopped and drew the triangle on her scrap paper. She compared it with the one beside “follow the map” on the schedule. They looked the same: three blue sides, pointing up.\n\n“That is another clue,” she whispered. “But it does not prove the card is there.”\n\nThe folder was connected to the map activity, and the label drawer had shown her what kind of card to seek. Deniz now had a careful next step. She would look inside the blue-marked map folder, without assuming what she would find.\n\nDeniz lifted the blue-marked folder from the low shelf. She opened it carefully and looked at the first map page.\n\nA blue triangle was printed near one corner. It looked just like the triangle on the schedule.\n\nThen Deniz saw something tucked between the pages.\n\nIt was a card.\n\nShe slid it out only far enough to see it. The card had a printed label and a small picture. One corner was rounded, just like the empty pocket in the display. A blue triangle was printed on the card too.\n\nDeniz held the card beside the pocket without putting it in. The rounded corner matched the pocket’s shape. The card was the right size. It was the kind of card the third row needed.\n\nShe looked back at the map page. The card had been used as a bookmark. Its blue triangle pointed to the same place as the blue triangle on the map page.\n\n“So this is the missing card,” Deniz said softly.\n\nShe checked her notes. First, both complete rows had shown that a label belonged between an object and a tool. Next, the card-sized shape matched the empty pocket. Now the blue triangle connected the card, the schedule, and this map page.\n\nThe card had not vanished. It had been put here, or reused here, for a reason. Deniz did not know who had placed it in the folder, and she would not make up a guess.\n\nShe touched the edge of the map page. The marked page looked useful for the three-o’clock activity. Visitors were supposed to follow a map after matching objects with labels. If Deniz took the card away, the display would be complete, but the useful mark might be harder to find. If she left the card, the map would keep its bookmark, but the display would still have a hole.\n\nDeniz looked from the card to the empty pocket and back to the map.\n\n“I found the answer,” she said, “but I still need to choose carefully.”\n\nShe placed the card on top of the folder, not back inside yet, and reached for her pencil and scrap paper. Maybe one clue could be kept in two places.\n\nDeniz picked up the card and carried it back to the display. She held it over the empty pocket first, just as she had held it there before.\n\nThen she slid it in.\n\nThe rounded corner fit snugly. The printed label sat between the object and the tool. Deniz looked across the rows. In the first row, an object came before a label, and a tool came after it. The second row did the same. Now the third row did too.\n\n“Map, object, label, tool,” Deniz whispered. “Every row matches.”\n\nThe blue triangle on the card showed through the pocket. It matched the triangle on the three-o’clock schedule. It also matched the triangle on the map page.\n\nDeniz hurried back to the open folder. The map page was still marked, but without the card, someone might not know which page to use. She did not want to take away one useful tool just to fix another.\n\nHer scrap paper and pencil were beside the folder. Deniz drew a blue triangle as carefully as she could. Under it, she copied the small mark from the map page and wrote, “Use this map page.” She checked the page again, then checked her drawing. The triangle pointed the same way.\n\nShe placed the copy inside the folder, on top of the marked page. It was easy to see and easy to remove later. The real map was not changed, and the label card was back where its shape and the rows said it belonged.\n\nDeniz stepped back.\n\nThe display now showed the same order three times: map, object, label, tool. The blue triangle on the label pointed visitors toward the map activity on the schedule. The copied note in the folder would help them find the marked page too.\n\nDeniz smiled. She had not needed to guess who moved the card. She had tested the rows, the pocket, the schedule, and the map mark. Each clue had helped with the next choice.\n\nShe looked at the clock. There was still time before three.\n\nDeniz left the folder open just enough for the copy to be seen and kept her scrap paper in her hand. Now she needed to tell a staff member exactly what she had found and why she had placed the card back.\n\nDeniz carried her notes to the front desk, where a staff member named Ms. Imani was sorting pencils.\n\n“Excuse me,” Deniz said. “I fixed the display, but I want to show you why.”\n\nMs. Imani walked with her to the map display. Deniz pointed to the three rows.\n\n“First I wrote down what I could see,” she said. “The first two rows were map, object, label, tool. The third row was missing the card between the object and the tool. So I thought it might be a label card.”\n\nShe tapped the returned card through its pocket. “This card fits the rounded pocket, and its printed label is in the right place.”\n\nMs. Imani nodded. “How did you find it?”\n\n“I checked the return tray first. The papers there were too wide or had different corners. Then I checked the sign-out sheet, but nobody had written down a borrowed card. I looked in the recycling bin too, and there was no matching paper edge.” Deniz paused. “I thought someone might still have borrowed it, but I had no evidence for that idea, so I kept looking instead of blaming anyone.”\n\nShe showed Ms. Imani the blue triangle on her notes. “This triangle was beside the three-o’clock map activity. Then I found the same triangle on the map folder. The card was being used as a bookmark on the marked map page.”\n\nDeniz opened the folder. “The triangle on the card, the schedule, and the map page all match. The map page is useful, so I copied the triangle and the page mark onto scrap paper before putting the real card back.”\n\nMs. Imani studied the copy. “That keeps both tools ready.”\n\nShe brought a stiff, clear bookmark from the supply drawer and slipped Deniz’s copy into it. Then she placed it neatly in the folder. The map page stayed marked, and the display stayed complete.\n\nAt three o’clock, visitors gathered. They saw the repeated rows, followed the blue triangle, and found the right map page.\n\nDeniz watched them begin. The answer had come from checking each clue, one at a time—not from the first guess.",
+  "word_count": 2051,
+  "target_words": 2000,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.002446,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.85,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.87,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8906,
+      "output_tokens": 166,
+      "cost": 0.000374052
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.87,
+      "no_repeated_event": 0.85,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.87,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8906,
+      "output_tokens": 166,
+      "cost": 0.000374052
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully executes the StoryContract and six-scene plan. Deniz is consistently portrayed as a thoughtful, independent seven-year-old who investigates methodically without guessing. The narrative clearly demonstrates the theme: good solutions come from testing patterns rather than trusting first impressions.\n\nStrengths:\n- Vocabulary, sentence structure, and emotional intensity are well-calibrated for age 7 (C1).\n- Causality is explicit and age-appropriate; each clue logically leads to the next investigation (C2).\n- All tension is resolved through observation, reasoning, and cooperation; no combat or threats (C3).\n- Continuity is maintained across all six scenes; the Continuity Ledger and JEV evidence confirm no contradictions (C4).\n- The story never mentions benchmarks or tests (C5).\n- All clues are introduced before they are used; no unsupported dependencies (C6).\n- The borrowing hypothesis (Scene 2) is a reasonable false lead that is rejected by evidence—the return tray, sign-out sheet, and recycling bin yield no supporting proof (C7).\n- The final solution integrates multiple earlier clues: the repeated pattern (Scenes 1–3), the card's pocket fit (Scene 4), the blue triangle linking schedule and map (Scenes 2–4), and the marked map page (Scene 4) (C8).\n- Deniz's reasoning, independence, and age-appropriate problem-solving are consistent throughout (C9).\n\nThe ending resolves all open threads: the display is restored, the map marker is preserved via a copied bookmark, staff understand the evidence-based reasoning, and the three-o'clock activity begins with accurate materials. Deniz's explanation to Ms. Imani reinforces the theme without becoming didactic.\n\nWord count is approximately 2,051, within the 2,000-word target. The story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 2051,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.87,
+          "no_repeated_event": 0.85,
+          "ending_consistency": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8906,
+          "output_tokens": 166,
+          "cost": 0.000374052
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully executes the StoryContract and six-scene plan. Deniz is consistently portrayed as a thoughtful, independent seven-year-old who investigates methodically without guessing. The narrative clearly demonstrates the theme: good solutions come from testing patterns rather than trusting first impressions.\n\nStrengths:\n- Vocabulary, sentence structure, and emotional intensity are well-calibrated for age 7 (C1).\n- Causality is explicit and age-appropriate; each clue logically leads to the next investigation (C2).\n- All tension is resolved through observation, reasoning, and cooperation; no combat or threats (C3).\n- Continuity is maintained across all six scenes; the Continuity Ledger and JEV evidence confirm no contradictions (C4).\n- The story never mentions benchmarks or tests (C5).\n- All clues are introduced before they are used; no unsupported dependencies (C6).\n- The borrowing hypothesis (Scene 2) is a reasonable false lead that is rejected by evidence—the return tray, sign-out sheet, and recycling bin yield no supporting proof (C7).\n- The final solution integrates multiple earlier clues: the repeated pattern (Scenes 1–3), the card's pocket fit (Scene 4), the blue triangle linking schedule and map (Scenes 2–4), and the marked map page (Scene 4) (C8).\n- Deniz's reasoning, independence, and age-appropriate problem-solving are consistent throughout (C9).\n\nThe ending resolves all open threads: the display is restored, the map marker is preserved via a copied bookmark, staff understand the evidence-based reasoning, and the three-o'clock activity begins with accurate materials. Deniz's explanation to Ms. Imani reinforces the theme without becoming didactic.\n\nWord count is approximately 2,051, within the 2,000-word target. The story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000374052,
+      "final_judge_cost": {
+        "usd": 0.014912,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 62.192,
+    "scene_stage_seconds": 85.549,
+    "final_stage_seconds": 8.179,
+    "total_pipeline_seconds": 155.922
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.018808128,
+    "scene_generation_usd": 0.0162409,
+    "scene_continuity_evaluator_usd": 0.00097944,
+    "whole_continuity_evaluator_usd": 0.000374052,
+    "whole_continuity_evaluator_usd_total": 0.000374052,
+    "semantic_judge_usd": {
+      "usd": 0.014912,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014912,
+    "scene_jev_usd": 0.00097944,
+    "whole_jev_usd": 0.000374052,
+    "whole_jev_usd_total": 0.000374052,
+    "final_haiku": {
+      "usd": 0.014912,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014912,
+    "total_pipeline_usd": 0.05131452
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 8906,
+      "output_tokens": 166,
+      "cost": 0.000374052
+    },
+    "semantic_judge": {
+      "input_tokens": 11982,
+      "output_tokens": 586,
+      "total_tokens": 12568
+    },
+    "whole_jev": {
+      "input_tokens": 8906,
+      "output_tokens": 166,
+      "cost": 0.000374052
+    },
+    "final_haiku": {
+      "input_tokens": 11982,
+      "output_tokens": 586,
+      "total_tokens": 12568
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
