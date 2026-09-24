@@ -1,6 +1,6 @@
 # Luna v3 Sentinel Repeat — ADULT × puzzle_problem_solving
 
-Date: 2026-09-24  
+Date: 2026-09-24
 Status: **PERSISTENT REPAIR BURDEN ON ONE FIXTURE — diagnostic fixture required**
 
 ## Cell

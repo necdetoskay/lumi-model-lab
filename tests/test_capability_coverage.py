@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import tempfile
 import unittest
 from pathlib import Path
+
+import yaml
 
 from src.capability_coverage import build_coverage_plan, matrix_payload
 from src.capability_cube import build_evidence
@@ -204,6 +207,146 @@ class CapabilityCoverageTests(unittest.TestCase):
                 item["selection_lane"] == "SENTINEL_REPEAT"
                 for item in plan["selected"]
             )
+        )
+
+    def test_persistent_anomaly_on_one_fixture_requires_new_fixture(self) -> None:
+        spec = case_spec("ADULT", "puzzle_problem_solving")
+        evidence = [
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=9,
+                    semantic_repairs=2,
+                ),
+                spec_path=spec,
+                run_id="adult-puzzle-heavy-a",
+                source="unit_test",
+            ),
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=8,
+                    semantic_repairs=2,
+                ),
+                spec_path=spec,
+                run_id="adult-puzzle-heavy-b",
+                source="unit_test",
+            ),
+        ]
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=evidence)
+        candidate = next(
+            item
+            for item in plan["candidates"]
+            if item["age_tier"] == "ADULT"
+            and item["narrative_family"] == "puzzle_problem_solving"
+        )
+        self.assertEqual(candidate["current_distinct_spec_count"], 1)
+        self.assertEqual(candidate["current_anomalous_run_count"], 2)
+        self.assertEqual(candidate["current_anomalous_spec_count"], 1)
+        self.assertTrue(candidate["diagnostic_fixture_required"])
+        self.assertFalse(candidate["targeted_intervention_candidate"])
+        self.assertIn(
+            "adult--puzzle-problem-solving",
+            plan["summary"]["diagnostic_fixture_required_case_ids"],
+        )
+        self.assertNotIn(
+            "adult--puzzle-problem-solving",
+            {item["case_id"] for item in plan["selected"]},
+        )
+
+    def test_anomaly_on_two_fixtures_becomes_intervention_candidate(self) -> None:
+        spec = case_spec("ADULT", "puzzle_problem_solving")
+        with tempfile.TemporaryDirectory() as tmp:
+            variant = Path(tmp) / "adult-puzzle-variant.yaml"
+            payload = yaml.safe_load(spec.read_text(encoding="utf-8"))
+            payload["title_hint"] = "A Different Puzzle"
+            payload["premise"] = (
+                str(payload["premise"])
+                + " The observable evidence and final decision differ from the base fixture."
+            )
+            variant.write_text(
+                yaml.safe_dump(payload, sort_keys=False, allow_unicode=True),
+                encoding="utf-8",
+            )
+            evidence = [
+                build_evidence(
+                    result=fake_result(
+                        protocol="english-story-production.v3",
+                        attempts=9,
+                        semantic_repairs=2,
+                    ),
+                    spec_path=spec,
+                    run_id="adult-puzzle-base-heavy",
+                    source="unit_test",
+                ),
+                build_evidence(
+                    result=fake_result(
+                        protocol="english-story-production.v3",
+                        attempts=8,
+                        semantic_repairs=2,
+                    ),
+                    spec_path=variant,
+                    run_id="adult-puzzle-variant-heavy",
+                    source="unit_test",
+                ),
+            ]
+            plan = build_coverage_plan(WAVE, batch_size=8, evidence=evidence)
+            candidate = next(
+                item
+                for item in plan["candidates"]
+                if item["age_tier"] == "ADULT"
+                and item["narrative_family"] == "puzzle_problem_solving"
+            )
+            self.assertEqual(candidate["current_distinct_spec_count"], 2)
+            self.assertEqual(candidate["current_anomalous_spec_count"], 2)
+            self.assertFalse(candidate["diagnostic_fixture_required"])
+            self.assertTrue(candidate["targeted_intervention_candidate"])
+            self.assertIn(
+                "adult--puzzle-problem-solving",
+                plan["summary"]["targeted_intervention_candidate_case_ids"],
+            )
+            self.assertNotIn(
+                "adult--puzzle-problem-solving",
+                {item["case_id"] for item in plan["selected"]},
+            )
+
+    def test_one_heavy_and_one_clean_same_fixture_is_not_escalated(self) -> None:
+        spec = case_spec("MIDDLE_CHILD", "puzzle_problem_solving")
+        evidence = [
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=10,
+                    semantic_repairs=4,
+                ),
+                spec_path=spec,
+                run_id="middle-puzzle-heavy",
+                source="unit_test",
+            ),
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=6,
+                    semantic_repairs=0,
+                ),
+                spec_path=spec,
+                run_id="middle-puzzle-clean",
+                source="unit_test",
+            ),
+        ]
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=evidence)
+        candidate = next(
+            item
+            for item in plan["candidates"]
+            if item["age_tier"] == "MIDDLE_CHILD"
+            and item["narrative_family"] == "puzzle_problem_solving"
+        )
+        self.assertEqual(candidate["current_anomalous_run_count"], 1)
+        self.assertFalse(candidate["diagnostic_fixture_required"])
+        self.assertFalse(candidate["targeted_intervention_candidate"])
+        self.assertEqual(
+            plan["summary"]["sentinel_repeat_case_id"],
+            "middle-child--puzzle-problem-solving",
         )
 
     def test_different_evaluation_stack_is_ignored(self) -> None:
