@@ -383,6 +383,75 @@ profiles:
     source: application_contract
     expose_in_settings: true
 
+  - model_id: anthropic/claude-sonnet-5
+    display_name: Claude Sonnet 5
+    source: verified_runtime
+    expose_in_settings: false
+    judge:
+      ready: true
+      evidence: anthropic_official_release_plus_openrouter_model_metadata
+    qualification:
+      ready: true
+      evidence: anthropic_official_release_plus_openrouter_model_metadata
+    metadata:
+      verified_at: '2026-09-24'
+      provider_model_slug: anthropic/claude-sonnet-5
+      upstream_provider: Anthropic
+      release_date: '2026-06-30'
+      context_tokens: 1000000
+      max_output_tokens: 128000
+      modalities:
+        input: [text, image, file]
+        output: [text]
+      pricing_usd_per_million_tokens:
+        input: 2.00
+        output: 10.00
+        cache_read: 0.20
+        cache_write: 2.50
+      capabilities:
+        structured_output: true
+        tool_calling: true
+        reasoning: true
+      sources:
+        - https://www.anthropic.com/news/claude-sonnet-5
+        - https://openrouter.ai/anthropic/claude-sonnet-5
+    notes:
+      - Experimental strong judge profile for v5 pairwise calibration.
+      - Pairwise judging is blind to generator identity and is run in both A/B orders.
+    transport:
+      structured_output: json_object
+      reasoning:
+        mode: client_configurable
+        request:
+          effort: high
+          exclude: true
+      temperature:
+        mode: omit
+      max_tokens:
+        mode: send
+      seed:
+        mode: omit
+      stream:
+        mode: omit
+    production_policy:
+      request_classes:
+        pairwise_judge:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: high
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 2200
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+
   - model_id: anthropic/claude-haiku-4.5
     display_name: Claude Haiku 4.5
     source: verified_runtime
