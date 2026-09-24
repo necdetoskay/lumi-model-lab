@@ -1,0 +1,2008 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/adult--exploration-mystery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/adult--exploration-mystery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Quiet Signal",
+      "story_contract": {
+        "protagonist_goal": "Deniz must determine what the repeating signal means and choose a responsible response.",
+        "central_problem": "Repeated flashes near the public garden could be a deliberate message, an optical effect, or evidence of a dangerous mechanical fault.",
+        "solution_principle": "Compare repeatable observations from different positions, connect them with physical evidence, and test the strongest explanation safely.",
+        "theme_thread": "Careful observation turns uncertainty into understanding.",
+        "ending_state": "Deniz identifies the signal as sunlight reflected by a misaligned workshop roof cowl, helps secure it, and documents the evidence.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical confrontation.",
+          "No unexplained coincidence, supernatural cause, or convenient revelation.",
+          "Do not resolve the signal before Scene 5.",
+          "Do not mention benchmarks, tests, or story construction."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the repeating signal, and the disciplined decision to investigate without assuming its meaning.",
+          "entry_state": "Deniz crosses the public garden after work and notices an ordinary library wall catching unusual flashes.",
+          "beats": [
+            "Three brief flashes strike the library wall at regular intervals, then stop when cloud cover changes.",
+            "Deniz records the times, direction, weather, and visible surroundings instead of treating the flashes as a message."
+          ],
+          "must_include": [
+            "Deniz is 32, observant, independent, and careful about creating unnecessary alarm.",
+            "The signal repeats visibly before Deniz begins interpreting it.",
+            "The library, public garden, and distant old observation point are clearly situated."
+          ],
+          "must_not_do": [
+            "Do not identify the source or meaning of the signal.",
+            "Do not introduce danger, combat, or a younger-reader explanatory tone.",
+            "Do not mention benchmarks or tests."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has a timed record of repeated flashes, but their source, purpose, and significance remain unknown.",
+          "open_threads_after": [
+            "Which physical object produces the flashes?",
+            "Are the flashes intentional, accidental, or a warning?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Use the library to narrow the signal's geometry and introduce competing explanations grounded in records.",
+          "entry_state": "Deniz returns to the library with timed observations and needs a reliable way to compare possible sources.",
+          "beats": [
+            "A town map and library maintenance notes show the flashes align with the old observation point and the workshop roofline.",
+            "Archived photographs reveal the observation point once used reflective markers, while recent notes mention roof repairs near the workshop."
+          ],
+          "must_include": [
+            "Deniz compares the recorded direction with a map rather than trusting memory.",
+            "The old observation point and workshop become evidence-based possibilities, not answers.",
+            "The central mystery stays open."
+          ],
+          "must_not_do": [
+            "Do not claim the archival markers caused today's signal.",
+            "Do not treat an unverified maintenance note as proof.",
+            "Do not solve the central problem through library research alone."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established three timed flashes on the library wall.",
+            "Scene 1 established Deniz's viewing position in the public garden.",
+            "Scene 1 established the old observation point as visible across town."
+          ],
+          "handoff": "The map and records connect the signal's line of sight to the observation point and workshop, but neither source is confirmed.",
+          "open_threads_after": [
+            "Whether the old markers still function.",
+            "Whether the workshop roof repair created a reflective moving surface."
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Connect the workshop evidence to the signal while preserving uncertainty between deliberate signaling and mechanical reflection.",
+          "entry_state": "Deniz must examine the workshop possibility without trespassing or turning an incomplete clue into an accusation.",
+          "beats": [
+            "From the public lane, Deniz sees a silver ventilation cowl above the workshop, with three raised ribs matching the flash count.",
+            "A workshop message confirms the cowl was recently replaced and now turns freely in coastal wind."
+          ],
+          "must_include": [
+            "The cowl is observable before Deniz uses its ribs and movement as evidence.",
+            "Deniz communicates precisely, sharing times and direction rather than alleging a secret signal.",
+            "The workshop's cooperation enables a later controlled observation."
+          ],
+          "must_not_do": [
+            "Do not enter restricted areas or damage equipment.",
+            "Do not decide the cowl is responsible solely because it has three ribs.",
+            "Do not introduce a separate subplot or disposable suspect."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the line between the garden, observation point, and workshop roof.",
+            "Scene 2 established recent workshop roof repairs.",
+            "Scene 1 established that the flashes occur in a repeatable count."
+          ],
+          "handoff": "A freely turning, three-ribbed workshop cowl could explain the flashes, but timing and reflection must still be tested.",
+          "open_threads_after": [
+            "Whether cowl rotation produces the same three-flash pattern.",
+            "Whether the cowl's movement creates a safety problem."
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Test the competing explanations from the old observation point and reveal the practical consequence without resolving it yet.",
+          "entry_state": "Deniz and the workshop contact need a safe vantage point to compare the signal's timing, angle, and wind conditions.",
+          "beats": [
+            "At the old observation point, Deniz observes the flashes through the original viewing gap while noting wind direction and cowl rotation.",
+            "The archived marker remains fixed, but the moving cowl produces a matching sweep; its loose mounting visibly shifts during stronger gusts."
+          ],
+          "must_include": [
+            "Deniz records observations from a second position rather than relying on the garden view.",
+            "The cowl is a strong explanation, but the decisive controlled test remains for Scene 5.",
+            "The loose mounting establishes a reason for careful action."
+          ],
+          "must_not_do": [
+            "Do not fully prove or repair the cowl yet.",
+            "Do not have Deniz climb, grab, or endanger themselves.",
+            "Do not turn the signal into a human distress call."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the cowl's three ribs and free rotation.",
+            "Scene 3 established workshop cooperation for a controlled observation.",
+            "Scene 2 established the observation point's historical reflective markers."
+          ],
+          "handoff": "The cowl appears to create the signal and may loosen further, but controlled confirmation and a responsible response remain necessary.",
+          "open_threads_after": [
+            "Can the cowl's movement reproduce the exact signal under safe conditions?",
+            "What repair or temporary measure will prevent further risk?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the accumulated evidence in a controlled test, confirm the signal's cause, and make the decisive safety choice.",
+          "entry_state": "The cowl is the strongest explanation, but Deniz needs exact confirmation before recommending action.",
+          "beats": [
+            "With the workshop contact safely below, Deniz compares the cowl's rotation, sunlight angle, and flash intervals against the original garden record.",
+            "A temporary matte screen changes the wall flashes exactly as predicted; Deniz chooses to report and secure the loose cowl rather than chase a message."
+          ],
+          "must_include": [
+            "The test uses observable evidence gathered across the earlier scenes.",
+            "The prediction succeeds without coincidence or hidden information.",
+            "The workshop secures the cowl, and Deniz sends the library a clear explanation."
+          ],
+          "must_not_do": [
+            "Do not use a dangerous climb or improvised rescue.",
+            "Do not leave the loose cowl unresolved after confirmation.",
+            "Do not add a second mystery after the signal is explained."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C7",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the original flash count and intervals.",
+            "Scene 3 established the cowl's ribs, free rotation, and workshop cooperation.",
+            "Scene 4 established the matching sweep and visibly loose mounting."
+          ],
+          "handoff": "The controlled test confirms sunlight from the misaligned cowl caused the signal, and the cowl has been made safe.",
+          "open_threads_after": [
+            "How Deniz and the town will understand and remember the incident."
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the consequences, close the investigation, and show understanding replacing uncertainty.",
+          "entry_state": "The signal has stopped after the cowl is secured, and the town now has an evidence-based explanation.",
+          "beats": [
+            "From the public garden, Deniz sees the library wall remain unlit while the repaired workshop roof holds steady in the wind.",
+            "Deniz files the timed notes with the library, including the discarded marker theory and the test that proved the cowl's cause."
+          ],
+          "must_include": [
+            "The ending explains the signal through accumulated observations, not luck.",
+            "Deniz accepts that uncertainty was useful when handled carefully.",
+            "The library, garden, workshop, and observation point form one continuous chain of evidence."
+          ],
+          "must_not_do": [
+            "Do not reopen the mystery or add a future-discovery hook.",
+            "Do not imply the signal was secretly intentional.",
+            "Do not become didactic or change the established adult reading mode."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the controlled screen test and confirmed the cowl's reflection.",
+            "Scene 5 established that the cowl was secured and the flashes stopped.",
+            "Scenes 1 through 4 established Deniz's complete observation record."
+          ],
+          "handoff": "The signal is explained, the workshop hazard is resolved, and Deniz leaves a usable record showing how observation became understanding.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.73,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.86,
+        "no_early_resolution": 0.94,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.73
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.74,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3693,
+        "output_tokens": 185,
+        "cost": 0.000155106
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 3,
+          "risk": "Workshop contact introduction is minimal. Ensure the contact is introduced naturally (e.g., Deniz approaches during business hours, explains observations clearly without alarm) so their cooperation in Scene 4 feels earned rather than convenient."
+        },
+        {
+          "scene": 5,
+          "risk": "The 'temporary matte screen' test must be explained clearly: who provides it, how it's positioned safely, and why it definitively matches the original flashes. Avoid implying Deniz improvises a solution; the test should use available materials or workshop resources already established."
+        },
+        {
+          "scene": 6,
+          "risk": "The library filing scene risks becoming anticlimactic if it is purely administrative. Ensure Deniz's reflection on the process (how observation replaced fear, how uncertainty was productive) is woven into the action rather than stated as summary."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist motivation, and excellent information progression. Each scene builds on prior evidence without resets or redundant subplots. The central mystery remains open until Scene 5, where a controlled test confirms the signal's cause through accumulated observations rather than luck. Scene 6 resolves consequences consistently and closes the investigation.\n\nConstraint coverage is solid but shows minor exposure: C1 (age-appropriate vocabulary and pacing) and C9 (independent adult reader) depend entirely on prose execution—the plan itself is sound. C7 (every clue observable before use) is well-structured: the cowl is visible in Scene 3 before its ribs and rotation are used as evidence in Scene 4; the archived markers and maintenance notes are consulted before they inform Scene 4's observation point visit.\n\nNo unexplained dependencies exist. The workshop contact's cooperation (Scene 3) is grounded in Deniz's clear communication of times and direction. The observation point access (Scene 4) is historically established. The matte screen test (Scene 5) should be clarified in prose to confirm it uses workshop resources or standard materials, not an unexplained tool.\n\nThe ending is coherent: the signal is explained through evidence (sunlight + misaligned cowl + wind rotation), the hazard is resolved (cowl secured), and Deniz documents the process. No supernatural cause, coincidence, or convenient revelation is invoked.\n\n**Recommendation: APPROVE with prose-level attention to Scene 3 (workshop contact introduction), Scene 5 (matte screen test clarity), and Scene 6 (reflection integration).** The plan is ready for writing.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0048432,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000155106,
+      "haiku": {
+        "usd": 0.007445,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 906,
+        "output_tokens": 3885,
+        "total_tokens": 4791
+      },
+      "jev": {
+        "input_tokens": 3693,
+        "output_tokens": 185,
+        "cost": 0.000155106
+      },
+      "haiku": {
+        "input_tokens": 3880,
+        "output_tokens": 713,
+        "total_tokens": 4593
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    546,
+    651,
+    714,
+    714,
+    861,
+    714
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 546,
+      "word_count": 535,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the repeating signal, and the disciplined decision to investigate without assuming its meaning.",
+        "entry_state": "Deniz crosses the public garden after work and notices an ordinary library wall catching unusual flashes.",
+        "beats": [
+          "Three brief flashes strike the library wall at regular intervals, then stop when cloud cover changes.",
+          "Deniz records the times, direction, weather, and visible surroundings instead of treating the flashes as a message."
+        ],
+        "must_include": [
+          "Deniz is 32, observant, independent, and careful about creating unnecessary alarm.",
+          "The signal repeats visibly before Deniz begins interpreting it.",
+          "The library, public garden, and distant old observation point are clearly situated."
+        ],
+        "must_not_do": [
+          "Do not identify the source or meaning of the signal.",
+          "Do not introduce danger, combat, or a younger-reader explanatory tone.",
+          "Do not mention benchmarks or tests."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has a timed record of repeated flashes, but their source, purpose, and significance remain unknown.",
+        "open_threads_after": [
+          "Which physical object produces the flashes?",
+          "Are the flashes intentional, accidental, or a warning?"
+        ]
+      },
+      "envelope": {
+        "prose": "At thirty-two, Deniz had learned that noticing something was not the same as understanding it. After work, they crossed the public garden on the way home, carrying a canvas bag with a notebook, a pen, and the remains of a sandwich.\n\nThe garden lay between the library and the older streets that climbed toward the coast. Beyond the low stone wall at its far edge, the town fell away in terraces. On the opposite rise stood the old observation point, a round stone structure built above the harbor. Its narrow windows caught the late afternoon light, and from the garden Deniz could see the dark notch of its viewing gap.\n\nThey were halfway along the gravel path when the library wall flashed.\n\nIt was not a glow or a shimmer. A brief white reflection struck the pale stone beside the library’s entrance, bright enough to make Deniz stop. Then the wall became ordinary again.\n\nDeniz looked toward the street, the garden railings, and the roofs beyond them. Nothing obvious moved. A gull crossed the sky. Leaves trembled in the sea wind.\n\nThey checked the time: 17:18:42.\n\nAt 17:18:51, the wall flashed again.\n\nDeniz did not decide what it meant. They stepped off the path and stood where the library, the observation point, and the western roofs were all visible. Nine seconds later, at 17:19:00, the light appeared for a third time, almost exactly where it had appeared before.\n\nThree flashes. Nine seconds apart.\n\nThat repetition made the event worth recording. It did not make it a message.\n\nDeniz opened the notebook and wrote the times, adding the words: “Public garden, east path. Facing southwest. Clear intervals.” The afternoon was bright but unsettled. Thin clouds were moving in from the water, and the sun kept slipping behind them. The flashes had come from the direction of the library wall, though that described where the light landed, not where it began.\n\nThey drew a quick map: the garden as a rectangle, the library along its northern side, the old observation point across the lower harbor, and the line of rooftops between them. Then Deniz added what they could see—glass in the library doors, metal railings, windows, chimneys, and several flat roofs catching dull patches of sunlight.\n\nA fourth flash did not come.\n\nA cloud passed over the sun, turning the garden’s sharp shadows soft. Deniz waited another minute, then another. The wall stayed blank. When the cloud thinned, the brightness returned to the paving stones and the library windows, but not to the wall.\n\nThey considered telling someone immediately. The librarian was still inside, and the town office occupied the building next door. Yet saying “There may be a signal” would suggest a conclusion Deniz did not have evidence for. Saying nothing and forgetting it would be just as careless.\n\nSo they recorded the change in weather, the time the flashes stopped, and the fact that no person had appeared to react to them.\n\nThen Deniz closed the notebook. Tomorrow, they would return to the library and compare the direction with a proper map. For now, the flashes remained exactly what the notes showed: three repeatable bursts of light, with an unknown source and an unknown purpose.",
+        "state_delta": {
+          "location": "Public garden beside the library, with the old observation point visible across the harbor.",
+          "character_goal": "Deniz decides to determine what the repeating flashes mean without alarming people or assuming they are a message.",
+          "knowledge_gained": [
+            "Three brief flashes struck the same area of the library wall at 17:18:42, 17:18:51, and 17:19:00.",
+            "The flashes repeated at nine-second intervals and stopped when a cloud covered the sun.",
+            "No person appeared to react to the flashes during the observation."
+          ],
+          "facts_established": [
+            "Deniz is thirty-two and approaches uncertain observations independently and carefully.",
+            "The public garden lies between the library and the older streets leading toward the coast.",
+            "The old observation point stands across the lower harbor and is visible from the garden.",
+            "The flashes landed on the library wall, but their source is unknown."
+          ],
+          "clues_added": [
+            "The flashes came from a direction that includes the old observation point and a line of western rooftops.",
+            "The flashes depended in some way on changing sunlight or cloud cover."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now contains the three exact times, viewing position, direction, weather, cloud change, and visible surroundings."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which physical object produces the flashes?",
+            "Are the flashes intentional, accidental, or a warning?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has a timed record of three repeated flashes seen from the public garden. The flashes struck the library wall at nine-second intervals, stopped when cloud cover changed, and remain unexplained. Deniz plans to return to the library and compare the recorded direction with a proper town map."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.913,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 535,
+          "usage": {
+            "input_tokens": 4022,
+            "output_tokens": 1228,
+            "total_tokens": 5250
+          },
+          "cost": {
+            "usd": 0.00247895,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.88,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2942,
+          "output_tokens": 188,
+          "cost": 0.000123564
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.88,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2942,
+            "output_tokens": 188,
+            "cost": 0.000123564
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.46
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.374
+    },
+    {
+      "scene": 2,
+      "target_words": 651,
+      "word_count": 556,
+      "contract": {
+        "index": 2,
+        "purpose": "Use the library to narrow the signal's geometry and introduce competing explanations grounded in records.",
+        "entry_state": "Deniz returns to the library with timed observations and needs a reliable way to compare possible sources.",
+        "beats": [
+          "A town map and library maintenance notes show the flashes align with the old observation point and the workshop roofline.",
+          "Archived photographs reveal the observation point once used reflective markers, while recent notes mention roof repairs near the workshop."
+        ],
+        "must_include": [
+          "Deniz compares the recorded direction with a map rather than trusting memory.",
+          "The old observation point and workshop become evidence-based possibilities, not answers.",
+          "The central mystery stays open."
+        ],
+        "must_not_do": [
+          "Do not claim the archival markers caused today's signal.",
+          "Do not treat an unverified maintenance note as proof.",
+          "Do not solve the central problem through library research alone."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established three timed flashes on the library wall.",
+          "Scene 1 established Deniz's viewing position in the public garden.",
+          "Scene 1 established the old observation point as visible across town."
+        ],
+        "handoff": "The map and records connect the signal's line of sight to the observation point and workshop, but neither source is confirmed.",
+        "open_threads_after": [
+          "Whether the old markers still function.",
+          "Whether the workshop roof repair created a reflective moving surface."
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz returned to the library with the notebook in their canvas bag. They did not go straight to the wall. A wall showed where the light had landed; it could not show where the light had begun.\n\nAt the reference desk, Deniz asked Mara, the librarian, whether the town kept a detailed map. Mara brought out a large, laminated sheet from a flat drawer. It showed the harbor, the public garden, the library, the old observation point, and the workshops along the western road.\n\nDeniz placed the notebook beside the map and marked their position on the garden path. Using a ruler from the desk, they extended the direction they had recorded toward the library wall and beyond it. From that angle, the line passed near the observation point before continuing toward the roofs along the workshop road.\n\n“Near,” Deniz said. “Not necessarily from either place.”\n\nMara leaned over the map. “The observation point has a clearer view of the harbor. It used to be used for watching ships.”\n\n“Could it have reflective equipment?” Deniz asked.\n\n“Possibly. The archive may tell us what was there before.”\n\nThey moved to the local-history room, where the afternoon light fell across cabinets of photographs and town reports. Mara found a folder labelled OBSERVATION POINT—COASTAL MARKERS. One black-and-white photograph showed the stone structure with small bright plates fixed beside its narrow viewing gap. A typed note explained that the plates had helped boats identify the point from the water in poor visibility.\n\nThe note did not say whether the plates remained. The photograph was undated, and its pale sky made it impossible to tell whether the plates were metal, glass, or simply catching sunlight.\n\nDeniz copied the folder number and wrote: “Historical reflective markers—existence today unconfirmed.”\n\nA second folder contained maintenance reports for buildings along the western road. Most concerned gutters, shutters, and roof tiles. One recent entry mentioned repairs at a workshop after strong coastal winds. The wording was brief: “Roof ventilation fitting replaced; inspect alignment after installation.” There was no signature beside the entry, and no follow-up report.\n\nDeniz read it twice, then underlined “inspect alignment.”\n\n“Does that mean something is wrong?” Mara asked.\n\n“It means someone thought it should be checked,” Deniz replied. “It does not tell us whether it was checked, or whether it could reflect light.”\n\nThey returned to the map. The old markers offered one explanation: perhaps something at the observation point still caught the sun. The workshop roof offered another: perhaps the recent repair had left a bright surface at the right angle. Neither explanation accounted for the three flashes by itself.\n\nDeniz compared the map with the sketch from the garden. Memory had put the observation point almost directly behind the library. The map showed a small but important difference. The workshop roofs lay slightly west of that line, close enough to enter the same sweep of sight from the garden.\n\nBefore leaving, Deniz photographed the map’s relevant section with Mara’s permission and copied the archive references into the notebook. Beneath the three times—17:18:42, 17:18:51, and 17:19:00—they added two headings: “old observation markers” and “recent workshop roof repair.”\n\nThe labels were possibilities, not conclusions. To choose between them, Deniz would need to see what was actually above the workshop and observe the line of light without entering anyone’s property.",
+        "state_delta": {
+          "location": "Library reference desk and local-history room, using the town map and archived records.",
+          "character_goal": "Deniz aims to compare the recorded direction with reliable town information and narrow the possible source without alarming anyone or making an accusation.",
+          "knowledge_gained": [
+            "A map places the old observation point and the western workshop roofs within the recorded line of sight from the public garden.",
+            "The old observation point once had reflective plates beside its viewing gap, but their present existence is unconfirmed.",
+            "A recent maintenance note says a workshop roof ventilation fitting was replaced and should be inspected for alignment.",
+            "The maintenance note has no follow-up report and does not prove that the workshop fitting caused the flashes."
+          ],
+          "facts_established": [
+            "The workshop roofs lie slightly west of the line Deniz remembered from the garden and close enough to be a possible source.",
+            "The observation-point photograph is undated, and the material and current condition of its reflective plates are unknown.",
+            "Library records provide possible explanations but cannot determine the source of the flashes alone."
+          ],
+          "clues_added": [
+            "Historical reflective markers at the old observation point.",
+            "A recent workshop roof repair involving a ventilation fitting whose alignment was meant to be inspected.",
+            "The garden sightline includes both the observation point and the workshop roofline."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now contains the map comparison, archive references, and the headings 'old observation markers' and 'recent workshop roof repair.'",
+            "Deniz has permission to retain a photograph of the relevant map section."
+          ],
+          "relationships_changed": [
+            "Mara, the librarian, has helped Deniz access the town map and local-history records."
+          ],
+          "threads_opened": [
+            "Whether the old observation-point markers still exist or reflect sunlight.",
+            "Whether the workshop roof repair created a reflective, moving surface.",
+            "Whether either possible source can reproduce the three flashes at nine-second intervals."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "The map and records connect the signal's line of sight to the old observation point and the workshop roofline, but neither source is confirmed. Deniz must inspect the workshop possibility from a public lane without trespassing and communicate observations precisely rather than alleging a secret signal."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.473,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 556,
+          "usage": {
+            "input_tokens": 5197,
+            "output_tokens": 1318,
+            "total_tokens": 6515
+          },
+          "cost": {
+            "usd": 0.0028807,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3604,
+          "output_tokens": 188,
+          "cost": 0.000151368
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3604,
+            "output_tokens": 188,
+            "cost": 0.000151368
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.473
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.946
+    },
+    {
+      "scene": 3,
+      "target_words": 714,
+      "word_count": 663,
+      "contract": {
+        "index": 3,
+        "purpose": "Connect the workshop evidence to the signal while preserving uncertainty between deliberate signaling and mechanical reflection.",
+        "entry_state": "Deniz must examine the workshop possibility without trespassing or turning an incomplete clue into an accusation.",
+        "beats": [
+          "From the public lane, Deniz sees a silver ventilation cowl above the workshop, with three raised ribs matching the flash count.",
+          "A workshop message confirms the cowl was recently replaced and now turns freely in coastal wind."
+        ],
+        "must_include": [
+          "The cowl is observable before Deniz uses its ribs and movement as evidence.",
+          "Deniz communicates precisely, sharing times and direction rather than alleging a secret signal.",
+          "The workshop's cooperation enables a later controlled observation."
+        ],
+        "must_not_do": [
+          "Do not enter restricted areas or damage equipment.",
+          "Do not decide the cowl is responsible solely because it has three ribs.",
+          "Do not introduce a separate subplot or disposable suspect."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the line between the garden, observation point, and workshop roof.",
+          "Scene 2 established recent workshop roof repairs.",
+          "Scene 1 established that the flashes occur in a repeatable count."
+        ],
+        "handoff": "A freely turning, three-ribbed workshop cowl could explain the flashes, but timing and reflection must still be tested.",
+        "open_threads_after": [
+          "Whether cowl rotation produces the same three-flash pattern.",
+          "Whether the cowl's movement creates a safety problem."
+        ]
+      },
+      "envelope": {
+        "prose": "The following morning, Deniz walked along the public lane toward the workshop road. The lane ran beside a low stone wall, keeping the workshops on one side and the harbor slope on the other. Deniz stayed on the pavement and stopped where the rooflines came into view.\n\nAbove the nearest workshop stood a short silver ventilation cowl. It was wider than a chimney pipe and shaped like a shallow cap. Three raised ribs ran from its center toward its rim. In the clear light, the metal looked bright but not mirror-bright. Deniz first wrote down what was visible: silver cowl, three ribs, roof above the workshop, no person on the roof.\n\nThen a gust came in from the harbor. The cowl turned a few degrees with a soft, dry scrape. Its ribs changed position against the sky. Another gust turned it back.\n\nDeniz watched for several minutes without lifting the notebook. The movement was enough to make the cowl a reasonable possibility. It was not enough to make it the answer. The old observation point remained in the same line of sight, and the archive photograph still showed reflective plates beside its viewing gap. Three ribs also did not prove that three flashes had come from this roof.\n\nA side door opened below the roof. A person in a dark work jacket stepped out carrying a clipboard. Deniz approached only as far as the public gate.\n\n“Excuse me,” they said. “Are you the person responsible for this building?”\n\n“Today, yes,” the person replied. “I’m Sefa.”\n\nDeniz introduced themself and explained that they had seen three flashes on the library wall from the public garden the previous afternoon. They showed Sefa the notebook, not just the heading about the workshop repair. The times were written clearly beneath the description of the weather.\n\n“17:18:42, 17:18:51, and 17:19:00,” Deniz said. “They struck nearly the same part of the wall. They stopped when a cloud covered the sun. From the garden, the direction included this roof and the old observation point. I’m trying to determine whether the flashes came from a moving reflective surface, an old marker, or something else. I’m not reporting a message or accusing anyone of causing one.”\n\nSefa studied the page. “That fitting was replaced last week,” they said, looking up at the roof. “The old one was bent after the windstorm. This one is a ventilation cowl. It was supposed to be checked for alignment.”\n\n“Was it checked?”\n\n“Not properly. We checked that air could pass through, but not how freely it turned.” Sefa glanced toward the roof. “The installer said the cowl would rotate in coastal wind. It should have a little movement, though. It shouldn’t be loose.”\n\nThe cowl turned again. This time, a brief white glint slid across its rim and vanished. Deniz did not call it one of the flashes. The angle from the lane was different from the angle in the garden, and the sunlight had shifted since yesterday.\n\n“Could we compare it from another position?” Deniz asked. “I would like to stand at the old observation point and watch the roof through its original viewing gap. You could remain below and tell me when the wind changes. No one would need to climb up.”\n\nSefa considered this, then nodded. “That would be useful. I can bring the maintenance notes and check the roof from the ground. If the fitting is moving more than it should, I need evidence before I ask for a repair.”\n\nDeniz wrote down Sefa’s name and the workshop’s permission to observe from public places. They added: “Cowl replaced last week; rotates in coastal wind; alignment not properly checked.”\n\nBefore leaving, Deniz looked once more at the three ribs. They made the cowl worth testing, not worth blaming. The next observation would have to compare the flashes’ timing and direction from the old point, where the historical markers could be seen beside the gap. The signal still had more than one possible explanation.",
+        "state_delta": {
+          "location": "Public lane beside the western workshop road, viewing the workshop roof from outside the property.",
+          "character_goal": "Deniz aims to compare the workshop cowl with the old observation-point markers without trespassing, alarming people, or treating a possible reflection as a deliberate message.",
+          "knowledge_gained": [
+            "A silver ventilation cowl stands above the workshop.",
+            "The cowl has three raised ribs.",
+            "The cowl turns in coastal wind and produces occasional glints from the lane.",
+            "The cowl was replaced the previous week, and its alignment was not properly checked.",
+            "Sefa says the cowl should not be loose and agrees to cooperate with a safe observation."
+          ],
+          "facts_established": [
+            "Deniz communicated the exact flash times, direction, garden location, and cloud change to Sefa.",
+            "Deniz explicitly distinguished observing a possible reflection from alleging a secret signal.",
+            "The cowl is observable from the public lane without entering the workshop property."
+          ],
+          "clues_added": [
+            "The cowl's three ribs correspond to the observed count of three flashes, though this is not proof.",
+            "The cowl's wind-driven rotation could change the direction of reflected sunlight.",
+            "The cowl's unchecked alignment and possible looseness make a controlled observation and later safety assessment necessary."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now contains Sefa's name, the cowl's three ribs, its rotation in coastal wind, its recent replacement, and the uncompleted alignment check."
+          ],
+          "relationships_changed": [
+            "Sefa, the workshop contact, has agreed to cooperate with Deniz's observation from public locations and to provide maintenance information."
+          ],
+          "threads_opened": [
+            "Whether cowl rotation produces the same three-flash pattern at the original timing.",
+            "Whether the cowl's movement creates a safety problem.",
+            "Whether the old observation-point markers remain a competing explanation."
+          ],
+          "threads_resolved": [],
+          "handoff_state": "From the public lane, Deniz has observed a three-ribbed silver cowl that turns in coastal wind and can produce brief glints. Sefa confirms it was recently replaced, its alignment was not properly checked, and it should not be loose. Sefa agrees to cooperate from below while Deniz observes from the old observation point. The cowl is a plausible explanation, but timing, reflection, and the condition of the historical marker still require comparison."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 24.248,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 663,
+          "usage": {
+            "input_tokens": 5807,
+            "output_tokens": 1592,
+            "total_tokens": 7399
+          },
+          "cost": {
+            "usd": 0.003362,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4341,
+          "output_tokens": 188,
+          "cost": 0.000182322
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4341,
+            "output_tokens": 188,
+            "cost": 0.000182322
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.722
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 24.97
+    },
+    {
+      "scene": 4,
+      "target_words": 714,
+      "word_count": 705,
+      "contract": {
+        "index": 4,
+        "purpose": "Test the competing explanations from the old observation point and reveal the practical consequence without resolving it yet.",
+        "entry_state": "Deniz and the workshop contact need a safe vantage point to compare the signal's timing, angle, and wind conditions.",
+        "beats": [
+          "At the old observation point, Deniz observes the flashes through the original viewing gap while noting wind direction and cowl rotation.",
+          "The archived marker remains fixed, but the moving cowl produces a matching sweep; its loose mounting visibly shifts during stronger gusts."
+        ],
+        "must_include": [
+          "Deniz records observations from a second position rather than relying on the garden view.",
+          "The cowl is a strong explanation, but the decisive controlled test remains for Scene 5.",
+          "The loose mounting establishes a reason for careful action."
+        ],
+        "must_not_do": [
+          "Do not fully prove or repair the cowl yet.",
+          "Do not have Deniz climb, grab, or endanger themselves.",
+          "Do not turn the signal into a human distress call."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the cowl's three ribs and free rotation.",
+          "Scene 3 established workshop cooperation for a controlled observation.",
+          "Scene 2 established the observation point's historical reflective markers."
+        ],
+        "handoff": "The cowl appears to create the signal and may loosen further, but controlled confirmation and a responsible response remain necessary.",
+        "open_threads_after": [
+          "Can the cowl's movement reproduce the exact signal under safe conditions?",
+          "What repair or temporary measure will prevent further risk?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz took the harbor path to the old observation point. The route climbed behind a row of weathered houses and ended at a low stone platform above the water. From there, the town spread out in layers: the public garden near the library, the library’s pale side wall, and, farther west, the workshop roofs.\n\nSefa had stayed below the workshop, as promised. They had a clear view of the roof from the yard and kept their phone open. Deniz positioned themself behind the old observation wall, where a narrow viewing gap framed the harbor. The gap was smaller than Deniz had expected. It did not show the whole town. It showed a deliberate slice of it, including the workshop roofline.\n\nBeside the gap, a dull rectangular plate was set into the stone. It matched the shape in the archive photograph, though its surface was clouded with age. Deniz marked its position in the notebook, then stepped away and watched it for several minutes.\n\nThe plate did not move. Sunlight slid across its dull surface as the sun shifted, but it did not flash. When a breeze came up from the water, the plate remained fixed in the stone.\n\n“Wind from the southeast,” Sefa reported by phone. “The cowl is turning a little.”\n\nDeniz looked through the gap. The silver cowl was small at this distance, but its three ribs were distinct. It turned a few degrees, paused, and turned back. The movement was not smooth. Each gust seemed to push it past a point before it settled against the next.\n\n“Tell me when the stronger gust reaches you,” Deniz said. “I’m recording the time and what I can see from here.”\n\nAt 17:16:08, Sefa said, “Stronger gust now.”\n\nThe cowl swung. A bright line appeared along one rib, then slipped across the roofline toward the library. A second glint followed the first, and a third appeared at the rim before all three vanished. The library wall caught a pale sweep in the same direction. It was not the sharp, separate flash Deniz had seen from the garden, but the changing angle of the observation point made that difference unsurprising.\n\nDeniz wrote: “Three-part sweep visible through gap; fixed marker unchanged.”\n\nThe wind weakened. The cowl drifted back, and the roof became ordinary again. Deniz waited, listening to gulls and the faint clatter of a flagpole below. At 17:16:17, another gust reached the workshop. The same sequence crossed the cowl: rib, rib, rim. The library wall brightened and dimmed.\n\nNine seconds.\n\nDeniz did not circle the number. A repeated interval was important, but one pair of intervals was not a finished conclusion. They wrote the time, wind direction, cowl position, and the fact that the old marker had remained motionless.\n\n“Can you see the base clearly?” Deniz asked.\n\n“From the yard, yes,” Sefa replied. “Wait. I’m watching it now.”\n\nA stronger gust moved across the roofs. The cowl jerked sideways. Its lower edge lifted visibly from its seat, leaving a thin dark gap before dropping back with a metallic knock.\n\nSefa’s voice changed. “That is not the small movement I was told to expect.”\n\nDeniz lowered the notebook. “Did anything fall?”\n\n“No. But the mounting shifted. I’m keeping everyone away from that side of the yard.”\n\n“Good. Don’t go under it.”\n\n“I won’t.”\n\nFor several minutes they observed without approaching. The fixed plate beside the viewing gap remained a possible historical clue, but it had not produced the moving sweep. The cowl had. Its rotation also explained why the reflection appeared only under certain sunlight and wind conditions. Still, Deniz could not yet say that the cowl alone had caused the original three flashes. The angle, the intervals, and the changing brightness needed one controlled comparison.\n\nThey photographed the view through the gap and added a final note: “Strong gust causes visible lift at cowl base. Possible safety problem. No contact made; no repair attempted.”\n\nSefa agreed to speak with the workshop manager and arrange a controlled test from safe positions. Deniz left the observation point with the notebook pressed flat against the wind. The signal now had a strong physical explanation, but careful confirmation—and a responsible way to secure the loose fitting—still remained.",
+        "state_delta": {
+          "location": "Old observation point above the harbor, with Deniz observing through the original viewing gap while Sefa monitors the workshop roof from the ground.",
+          "character_goal": "Deniz aims to compare the historical marker and the moving workshop cowl from a second position, record repeatable evidence, and identify any safety consequence without approaching or touching the roof equipment.",
+          "knowledge_gained": [
+            "The old observation-point marker is fixed in place and does not produce the moving sweep observed from the gap.",
+            "The workshop cowl's three ribs produce a three-part moving glint and a pale sweep toward the library wall during stronger gusts.",
+            "A second observed sweep occurred nine seconds after the first.",
+            "A stronger gust visibly lifted the cowl's lower edge from its mounting."
+          ],
+          "facts_established": [
+            "Deniz made observations from the old observation point rather than relying only on the public garden view.",
+            "The archived marker remains a possible historical clue but did not move during the observation.",
+            "The cowl's movement is irregular and wind-driven.",
+            "The cowl's mounting may be loose enough to create a safety problem.",
+            "Deniz and Sefa did not touch the cowl or enter a dangerous area."
+          ],
+          "clues_added": [
+            "The cowl can reproduce a three-part sweep visible through the old observation-point gap.",
+            "The cowl's reflection reaches the library wall in the direction predicted by the garden and map observations.",
+            "The cowl's movement and reflected brightness depend on wind and sunlight angle.",
+            "The cowl visibly lifts at its base during a stronger gust."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now contains second-position observations, two timed sweep observations, wind direction, a photograph through the viewing gap, and a warning about the cowl's mounting.",
+            "Deniz has photographed the old marker and the workshop roofline from the observation point."
+          ],
+          "relationships_changed": [
+            "Sefa and Deniz have established a safe observation arrangement in which Sefa monitors the roof from below and keeps people away from the cowl's possible fall area.",
+            "Sefa agrees to arrange a controlled test with the workshop manager."
+          ],
+          "threads_opened": [
+            "Whether a controlled comparison can reproduce the original three flashes and nine-second intervals exactly.",
+            "What temporary or permanent measure can secure the loose cowl safely."
+          ],
+          "threads_resolved": [
+            "The old observation-point marker did not account for the moving sweep observed during this comparison."
+          ],
+          "handoff_state": "From the old observation point, Deniz has recorded a matching three-part sweep from the wind-driven cowl while the historical marker remained fixed. A stronger gust visibly lifted the cowl at its base, establishing a practical safety concern. The cowl is now the strongest explanation, but a controlled test must still confirm the original timing and reflection before the workshop secures it."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 27.782,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 705,
+          "usage": {
+            "input_tokens": 6486,
+            "output_tokens": 1860,
+            "total_tokens": 8346
+          },
+          "cost": {
+            "usd": 0.00385335,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5105,
+          "output_tokens": 188,
+          "cost": 0.00021441
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5105,
+            "output_tokens": 188,
+            "cost": 0.00021441
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.464
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 28.247
+    },
+    {
+      "scene": 5,
+      "target_words": 861,
+      "word_count": 737,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the accumulated evidence in a controlled test, confirm the signal's cause, and make the decisive safety choice.",
+        "entry_state": "The cowl is the strongest explanation, but Deniz needs exact confirmation before recommending action.",
+        "beats": [
+          "With the workshop contact safely below, Deniz compares the cowl's rotation, sunlight angle, and flash intervals against the original garden record.",
+          "A temporary matte screen changes the wall flashes exactly as predicted; Deniz chooses to report and secure the loose cowl rather than chase a message."
+        ],
+        "must_include": [
+          "The test uses observable evidence gathered across the earlier scenes.",
+          "The prediction succeeds without coincidence or hidden information.",
+          "The workshop secures the cowl, and Deniz sends the library a clear explanation."
+        ],
+        "must_not_do": [
+          "Do not use a dangerous climb or improvised rescue.",
+          "Do not leave the loose cowl unresolved after confirmation.",
+          "Do not add a second mystery after the signal is explained."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C7",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the original flash count and intervals.",
+          "Scene 3 established the cowl's ribs, free rotation, and workshop cooperation.",
+          "Scene 4 established the matching sweep and visibly loose mounting."
+        ],
+        "handoff": "The controlled test confirms sunlight from the misaligned cowl caused the signal, and the cowl has been made safe.",
+        "open_threads_after": [
+          "How Deniz and the town will understand and remember the incident."
+        ]
+      },
+      "envelope": {
+        "prose": "The controlled test took place the following afternoon, when the sun stood in nearly the same part of the sky as it had during Deniz’s first observation. Sefa arranged it with the workshop manager, who set an exclusion area below the roof and checked the fixed maintenance walkway before anyone approached the equipment. Deniz stayed in the public garden with the notebook and the original times open in front of them.\n\nSefa stood at ground level, well away from the cowl’s possible fall area. The manager and another worker remained on the approved roof walkway, where they could reach the fitting without stepping beneath it. No one climbed onto the roof itself or touched the cowl while it was loose.\n\n“We’ll begin with the cowl uncovered,” Sefa said over the phone. “The sun is bright, and the wind is southeast, as it was during your garden observation.”\n\nDeniz looked from the library wall to the workshop roofline. The arrangement was familiar now: the pale wall to the east, the garden between, and the silver cowl beyond the western roofs. The old observation point stood farther across the harbor, its fixed marker outside the line of the test.\n\nAt 17:18:33, the cowl turned a few degrees. One rib caught the sun, then the second, then the curved rim. Three distinct flashes struck the library wall.\n\nDeniz wrote the time and waited.\n\nAt 17:18:42, the same sequence appeared. At 17:18:51, it appeared again. The intervals matched the original record exactly, though the brightness varied when the wind shifted.\n\nSefa read the times back. “Nine seconds each.”\n\n“Record the wind as well,” Deniz said. “And the cowl’s resting position.”\n\nThe manager then placed a temporary matte screen on the maintenance frame beside the fitting. It was a dull, nonreflective panel used for checking ventilation equipment. The manager secured it from the walkway so it stood between the cowl’s bright outer edge and the library’s line of sight. It did not press against the cowl, and no one had to hold it near the loose mounting.\n\n“Screen in place,” the manager reported.\n\nThe wind continued at the same strength. The cowl rotated. Its three ribs still moved, but the sharp reflected light no longer reached the garden or the library wall. The wall stayed pale and unlit.\n\nDeniz checked the time. Nine seconds passed. Then another nine.\n\nNothing.\n\nSefa said, “The cowl is moving, but there’s no flash.”\n\n“Remove the screen without changing the cowl,” Deniz replied.\n\nThe manager slid the panel back onto the maintenance frame. The cowl continued its uneven turn. At 17:19:27, three flashes crossed the library wall. At 17:19:36, three more followed.\n\nDeniz compared the entries. The original flashes had occurred at 17:18:42, 17:18:51, and 17:19:00. The new flashes had the same count, the same nine-second spacing, and the same dependence on the cowl’s rotation and the sun’s angle. The matte screen had interrupted the reflection exactly as predicted, while the cowl itself continued moving.\n\nThe old marker had remained fixed. The cowl had moved. The garden record, the map line, the observation-point view, the wind-driven rotation, and now the screen test all pointed to one explanation.\n\n“It wasn’t a message,” Deniz said. “It was sunlight from the misaligned cowl.”\n\n“And the mounting still needs work,” Sefa answered.\n\nThe workshop manager lowered the cowl onto a secured support using the proper maintenance equipment. The workers replaced the loose fasteners and fitted a locking collar so the ventilation cap could turn only as designed, without lifting at its base. Sefa kept the area clear until the manager tested the fitting in several gusts. It held steady.\n\nDeniz photographed the screen in place, the cowl before and after the repair, and the unchanged view toward the library. Then they contacted Mara at the library and gave her a concise explanation: the original flashes had come from sunlight reflected by the misaligned, wind-driven workshop cowl, while the fixed marker at the observation point had not produced them. Deniz added that the cowl had been secured and that the screen test had stopped the flashes without stopping the cowl’s movement.\n\nMara repeated the essential points back to ensure she had them correctly. Deniz kept the notebook open beside the phone, ready to preserve the full sequence of times and observations for the library’s record. For now, the evidence had answered the question, and the repaired cowl held steady above the workshop.",
+        "state_delta": {
+          "location": "The public garden and library, with the workshop roof monitored through a safe controlled test.",
+          "character_goal": "Deniz confirms the signal's physical cause and chooses a documented safety response rather than treating it as an intentional message.",
+          "knowledge_gained": [
+            "The uncovered cowl reproduced three flashes at nine-second intervals under comparable sunlight and wind conditions.",
+            "A temporary matte screen stopped the flashes while the cowl continued rotating.",
+            "Removing the screen caused the three-flash sequence to return.",
+            "The workshop cowl was misaligned and its loose mounting required repair."
+          ],
+          "facts_established": [
+            "The old observation-point marker remained fixed during the controlled test.",
+            "The controlled test matched the original garden record without relying on coincidence.",
+            "The signal was caused by sunlight reflected from the wind-driven workshop cowl.",
+            "The cowl was secured with proper maintenance equipment, replacement fasteners, and a locking collar.",
+            "Mara received a clear explanation of the test and the cowl's cause."
+          ],
+          "clues_added": [
+            "The matte screen interrupted the reflection without stopping the cowl's movement.",
+            "The repaired cowl held steady during several gusts."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now contains the controlled-test times, screen result, photographs, and safety observations.",
+            "The workshop cowl has been secured and can no longer lift at its base as before."
+          ],
+          "relationships_changed": [
+            "The workshop team has completed the safe repair in cooperation with Deniz and Sefa.",
+            "Mara has received the essential explanation and is prepared to add Deniz's full observations to the library record."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The cowl caused the repeating signal.",
+            "The signal was not an intentional message.",
+            "The loose cowl's immediate safety problem was repaired."
+          ],
+          "handoff_state": "The controlled matte-screen test confirmed that sunlight reflected from the misaligned workshop cowl caused the original three flashes at nine-second intervals. The workshop secured the cowl and verified that it held steady in the wind. The flashes and the immediate hazard are resolved; Deniz has given Mara the clear explanation and retains the complete observation record for the library's record."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 30.262,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 779,
+          "usage": {
+            "input_tokens": 7204,
+            "output_tokens": 1962,
+            "total_tokens": 9166
+          },
+          "cost": {
+            "usd": 0.00415525,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 18.379,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.790<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 778,
+          "usage": {
+            "input_tokens": 7507,
+            "output_tokens": 1906,
+            "total_tokens": 9413
+          },
+          "cost": {
+            "usd": 0.0041638,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 20.019,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.750<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 737,
+          "usage": {
+            "input_tokens": 7471,
+            "output_tokens": 1977,
+            "total_tokens": 9448
+          },
+          "cost": {
+            "usd": 0.00424,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.9,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.89,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5723,
+          "output_tokens": 188,
+          "cost": 0.000240366
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.79,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.79
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5836,
+            "output_tokens": 188,
+            "cost": 0.000245112
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.75,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.75
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5802,
+            "output_tokens": 188,
+            "cost": 0.000243684
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.9,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.89,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5723,
+            "output_tokens": 188,
+            "cost": 0.000240366
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.486,
+        0.694,
+        0.502
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.9,
+              "no_contradiction": 0.88,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.79,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.93,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5836,
+              "output_tokens": 188,
+              "cost": 0.000245112
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 778,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.9,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.75,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.75
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.92,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5802,
+              "output_tokens": 188,
+              "cost": 0.000243684
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.9,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.75,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.75
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.92,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5802,
+              "output_tokens": 188,
+              "cost": 0.000243684
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 737,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.9,
+              "no_contradiction": 0.88,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.9,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.89,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5723,
+              "output_tokens": 188,
+              "cost": 0.000240366
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 70.344
+    },
+    {
+      "scene": 6,
+      "target_words": 714,
+      "word_count": 685,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the consequences, close the investigation, and show understanding replacing uncertainty.",
+        "entry_state": "The signal has stopped after the cowl is secured, and the town now has an evidence-based explanation.",
+        "beats": [
+          "From the public garden, Deniz sees the library wall remain unlit while the repaired workshop roof holds steady in the wind.",
+          "Deniz files the timed notes with the library, including the discarded marker theory and the test that proved the cowl's cause."
+        ],
+        "must_include": [
+          "The ending explains the signal through accumulated observations, not luck.",
+          "Deniz accepts that uncertainty was useful when handled carefully.",
+          "The library, garden, workshop, and observation point form one continuous chain of evidence."
+        ],
+        "must_not_do": [
+          "Do not reopen the mystery or add a future-discovery hook.",
+          "Do not imply the signal was secretly intentional.",
+          "Do not become didactic or change the established adult reading mode."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the controlled screen test and confirmed the cowl's reflection.",
+          "Scene 5 established that the cowl was secured and the flashes stopped.",
+          "Scenes 1 through 4 established Deniz's complete observation record."
+        ],
+        "handoff": "The signal is explained, the workshop hazard is resolved, and Deniz leaves a usable record showing how observation became understanding.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "The next evening, Deniz crossed the public garden on the way to the library. The wind came in from the harbor, strong enough to stir the plane-tree leaves and tug at the flags outside the workshop road. Above the western roofs, the repaired cowl turned within its new limits. Its silver surface shifted, but it did not lift, wobble, or cast a bright sweep toward the library.\n\nThe wall remained an ordinary pale rectangle.\n\nDeniz stopped beside the gravel path and checked the time. The sun was low enough, and the wind lively enough, to make the comparison useful. Yet no flash appeared. Not one. The cowl held steady through three stronger gusts, while the library wall stayed unlit.\n\nAcross the harbor, the old observation point stood against the darkening sky. From there, Deniz had seen the fixed marker remain fixed. From the garden, the map had established the sightline. From the public lane, the three-ribbed cowl had revealed its movement. The controlled test had connected all those separate observations: when the cowl was uncovered, the flashes returned at nine-second intervals; when the matte screen blocked its reflective edge, the cowl kept turning but the wall received no light.\n\nThe explanation no longer depended on what the signal might have meant. It depended on what each place had shown.\n\nInside the library, Mara had cleared a space on the reference desk. A folder lay open beside the town map and the photograph Deniz had been permitted to keep.\n\n“Do you want the short version or the complete sequence?” Mara asked.\n\n“The complete sequence,” Deniz said. “The short version is easy to misunderstand.”\n\nThey placed the notebook beside the folder. Deniz began with the first entry: three flashes on the library wall at 17:18:42, 17:18:51, and 17:19:00, observed from the public garden. The notes described the cloud covering the sun, the direction of the light, and the absence of anyone reacting as if they had received a message.\n\nThen Deniz added the map comparison. The line from the garden crossed the old observation point and the workshop roofline. Under a separate heading, they recorded the historical marker: reflective in the archived photograph, fixed during every recent observation, and not responsible for the moving sweep.\n\nMara read that page carefully. “You kept it as a possibility before you ruled it out.”\n\n“It was evidence,” Deniz said. “Just not enough evidence.”\n\nThe next pages described the workshop cowl, its three ribs, its wind-driven rotation, and the loose mounting Sefa and the manager had found. Deniz included the photographs from the observation point, where the cowl’s reflected sweep had reached toward the library, and the times of the matching nine-second interval.\n\nFinally, Deniz attached the controlled-test record. The uncovered cowl produced three flashes. The matte screen stopped them without stopping the cowl. Removing the screen brought them back. Afterward, the workshop had replaced the fasteners and fitted the locking collar. The cowl had held steady through the gust test.\n\nMara slid the pages into order. “This is more than an answer,” she said. “It shows how you got there.”\n\n“That matters,” Deniz replied. “If I had started with the idea that it was a message, I might have bent every observation around that idea. If I had started with danger, I might have alarmed people before knowing what needed doing.”\n\nThey signed the final page together: *Signal investigation—resolved; cause documented; workshop fitting secured.* Mara filed the photographs with the local records and placed a copy of the summary beside the town map.\n\nBefore leaving, Deniz looked once more through the library window. The garden path, the workshop roof, and the distant observation point lined up in the fading light. They were no longer competing stories. They were parts of one chain: a flash seen on a wall, a direction measured on a map, a moving cowl observed from two positions, and a safe test that changed one condition at a time.\n\nOutside, the wall stayed pale. Deniz closed the notebook. Uncertainty had not been an empty space to fill quickly. Handled carefully, it had shown where to look next.",
+        "state_delta": {
+          "location": "Public garden and library, with the repaired workshop roof and old observation point visible along the established line of evidence.",
+          "character_goal": "Deniz completes the investigation by preserving a clear, evidence-based account of the signal and its safe resolution.",
+          "knowledge_gained": [
+            "The repaired cowl remains steady in strong wind and produces no further flashes on the library wall.",
+            "The complete chain from garden observation to map comparison, observation-point comparison, and controlled screen test explains the signal."
+          ],
+          "facts_established": [
+            "The library wall remains unlit after the cowl is secured.",
+            "The old observation-point marker was documented as a considered but discarded explanation.",
+            "The workshop cowl caused the signal through wind-driven reflection of sunlight.",
+            "The library now holds a usable record of the investigation and repair."
+          ],
+          "clues_added": [
+            "The repaired cowl's stability and the absence of flashes provide final confirming evidence."
+          ],
+          "objects_changed": [
+            "Deniz's complete notebook record, photographs, and summary have been filed with the library's local records.",
+            "The town map is accompanied by the documented signal investigation."
+          ],
+          "relationships_changed": [
+            "Mara and Deniz have established a shared, documented understanding of the signal's cause and resolution."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The signal's meaning and physical cause are fully explained.",
+            "The old observation-point marker is ruled out as the source.",
+            "The workshop cowl hazard is resolved and documented."
+          ],
+          "handoff_state": "The signal is conclusively explained as sunlight reflected by the wind-driven, previously misaligned workshop cowl. The cowl has been secured, the flashes have stopped, and Deniz has filed the timed observations, map comparison, marker theory, photographs, and controlled-test results with Mara at the library. The garden, workshop, observation point, and library now form a complete evidence chain, and no unresolved threads remain."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.251,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 685,
+          "usage": {
+            "input_tokens": 7418,
+            "output_tokens": 1438,
+            "total_tokens": 8856
+          },
+          "cost": {
+            "usd": 0.00357995,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.94,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.89,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5698,
+          "output_tokens": 188,
+          "cost": 0.000239316
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.94,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.89,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5698,
+            "output_tokens": 188,
+            "cost": 0.000239316
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.544
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.796
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the repeating signal, and the disciplined decision to investigate without assuming its meaning.",
+      "word_count": 535,
+      "location": "Public garden beside the library, with the old observation point visible across the harbor.",
+      "character_goal": "Deniz decides to determine what the repeating flashes mean without alarming people or assuming they are a message.",
+      "knowledge_gained": [
+        "Three brief flashes struck the same area of the library wall at 17:18:42, 17:18:51, and 17:19:00.",
+        "The flashes repeated at nine-second intervals and stopped when a cloud covered the sun.",
+        "No person appeared to react to the flashes during the observation."
+      ],
+      "facts_established": [
+        "Deniz is thirty-two and approaches uncertain observations independently and carefully.",
+        "The public garden lies between the library and the older streets leading toward the coast.",
+        "The old observation point stands across the lower harbor and is visible from the garden.",
+        "The flashes landed on the library wall, but their source is unknown."
+      ],
+      "clues_added": [
+        "The flashes came from a direction that includes the old observation point and a line of western rooftops.",
+        "The flashes depended in some way on changing sunlight or cloud cover."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now contains the three exact times, viewing position, direction, weather, cloud change, and visible surroundings."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which physical object produces the flashes?",
+        "Are the flashes intentional, accidental, or a warning?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has a timed record of three repeated flashes seen from the public garden. The flashes struck the library wall at nine-second intervals, stopped when cloud cover changed, and remain unexplained. Deniz plans to return to the library and compare the recorded direction with a proper town map."
+    },
+    {
+      "scene": 2,
+      "purpose": "Use the library to narrow the signal's geometry and introduce competing explanations grounded in records.",
+      "word_count": 556,
+      "location": "Library reference desk and local-history room, using the town map and archived records.",
+      "character_goal": "Deniz aims to compare the recorded direction with reliable town information and narrow the possible source without alarming anyone or making an accusation.",
+      "knowledge_gained": [
+        "A map places the old observation point and the western workshop roofs within the recorded line of sight from the public garden.",
+        "The old observation point once had reflective plates beside its viewing gap, but their present existence is unconfirmed.",
+        "A recent maintenance note says a workshop roof ventilation fitting was replaced and should be inspected for alignment.",
+        "The maintenance note has no follow-up report and does not prove that the workshop fitting caused the flashes."
+      ],
+      "facts_established": [
+        "The workshop roofs lie slightly west of the line Deniz remembered from the garden and close enough to be a possible source.",
+        "The observation-point photograph is undated, and the material and current condition of its reflective plates are unknown.",
+        "Library records provide possible explanations but cannot determine the source of the flashes alone."
+      ],
+      "clues_added": [
+        "Historical reflective markers at the old observation point.",
+        "A recent workshop roof repair involving a ventilation fitting whose alignment was meant to be inspected.",
+        "The garden sightline includes both the observation point and the workshop roofline."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now contains the map comparison, archive references, and the headings 'old observation markers' and 'recent workshop roof repair.'",
+        "Deniz has permission to retain a photograph of the relevant map section."
+      ],
+      "relationships_changed": [
+        "Mara, the librarian, has helped Deniz access the town map and local-history records."
+      ],
+      "threads_opened": [
+        "Whether the old observation-point markers still exist or reflect sunlight.",
+        "Whether the workshop roof repair created a reflective, moving surface.",
+        "Whether either possible source can reproduce the three flashes at nine-second intervals."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "The map and records connect the signal's line of sight to the old observation point and the workshop roofline, but neither source is confirmed. Deniz must inspect the workshop possibility from a public lane without trespassing and communicate observations precisely rather than alleging a secret signal."
+    },
+    {
+      "scene": 3,
+      "purpose": "Connect the workshop evidence to the signal while preserving uncertainty between deliberate signaling and mechanical reflection.",
+      "word_count": 663,
+      "location": "Public lane beside the western workshop road, viewing the workshop roof from outside the property.",
+      "character_goal": "Deniz aims to compare the workshop cowl with the old observation-point markers without trespassing, alarming people, or treating a possible reflection as a deliberate message.",
+      "knowledge_gained": [
+        "A silver ventilation cowl stands above the workshop.",
+        "The cowl has three raised ribs.",
+        "The cowl turns in coastal wind and produces occasional glints from the lane.",
+        "The cowl was replaced the previous week, and its alignment was not properly checked.",
+        "Sefa says the cowl should not be loose and agrees to cooperate with a safe observation."
+      ],
+      "facts_established": [
+        "Deniz communicated the exact flash times, direction, garden location, and cloud change to Sefa.",
+        "Deniz explicitly distinguished observing a possible reflection from alleging a secret signal.",
+        "The cowl is observable from the public lane without entering the workshop property."
+      ],
+      "clues_added": [
+        "The cowl's three ribs correspond to the observed count of three flashes, though this is not proof.",
+        "The cowl's wind-driven rotation could change the direction of reflected sunlight.",
+        "The cowl's unchecked alignment and possible looseness make a controlled observation and later safety assessment necessary."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now contains Sefa's name, the cowl's three ribs, its rotation in coastal wind, its recent replacement, and the uncompleted alignment check."
+      ],
+      "relationships_changed": [
+        "Sefa, the workshop contact, has agreed to cooperate with Deniz's observation from public locations and to provide maintenance information."
+      ],
+      "threads_opened": [
+        "Whether cowl rotation produces the same three-flash pattern at the original timing.",
+        "Whether the cowl's movement creates a safety problem.",
+        "Whether the old observation-point markers remain a competing explanation."
+      ],
+      "threads_resolved": [],
+      "handoff_state": "From the public lane, Deniz has observed a three-ribbed silver cowl that turns in coastal wind and can produce brief glints. Sefa confirms it was recently replaced, its alignment was not properly checked, and it should not be loose. Sefa agrees to cooperate from below while Deniz observes from the old observation point. The cowl is a plausible explanation, but timing, reflection, and the condition of the historical marker still require comparison."
+    },
+    {
+      "scene": 4,
+      "purpose": "Test the competing explanations from the old observation point and reveal the practical consequence without resolving it yet.",
+      "word_count": 705,
+      "location": "Old observation point above the harbor, with Deniz observing through the original viewing gap while Sefa monitors the workshop roof from the ground.",
+      "character_goal": "Deniz aims to compare the historical marker and the moving workshop cowl from a second position, record repeatable evidence, and identify any safety consequence without approaching or touching the roof equipment.",
+      "knowledge_gained": [
+        "The old observation-point marker is fixed in place and does not produce the moving sweep observed from the gap.",
+        "The workshop cowl's three ribs produce a three-part moving glint and a pale sweep toward the library wall during stronger gusts.",
+        "A second observed sweep occurred nine seconds after the first.",
+        "A stronger gust visibly lifted the cowl's lower edge from its mounting."
+      ],
+      "facts_established": [
+        "Deniz made observations from the old observation point rather than relying only on the public garden view.",
+        "The archived marker remains a possible historical clue but did not move during the observation.",
+        "The cowl's movement is irregular and wind-driven.",
+        "The cowl's mounting may be loose enough to create a safety problem.",
+        "Deniz and Sefa did not touch the cowl or enter a dangerous area."
+      ],
+      "clues_added": [
+        "The cowl can reproduce a three-part sweep visible through the old observation-point gap.",
+        "The cowl's reflection reaches the library wall in the direction predicted by the garden and map observations.",
+        "The cowl's movement and reflected brightness depend on wind and sunlight angle.",
+        "The cowl visibly lifts at its base during a stronger gust."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now contains second-position observations, two timed sweep observations, wind direction, a photograph through the viewing gap, and a warning about the cowl's mounting.",
+        "Deniz has photographed the old marker and the workshop roofline from the observation point."
+      ],
+      "relationships_changed": [
+        "Sefa and Deniz have established a safe observation arrangement in which Sefa monitors the roof from below and keeps people away from the cowl's possible fall area.",
+        "Sefa agrees to arrange a controlled test with the workshop manager."
+      ],
+      "threads_opened": [
+        "Whether a controlled comparison can reproduce the original three flashes and nine-second intervals exactly.",
+        "What temporary or permanent measure can secure the loose cowl safely."
+      ],
+      "threads_resolved": [
+        "The old observation-point marker did not account for the moving sweep observed during this comparison."
+      ],
+      "handoff_state": "From the old observation point, Deniz has recorded a matching three-part sweep from the wind-driven cowl while the historical marker remained fixed. A stronger gust visibly lifted the cowl at its base, establishing a practical safety concern. The cowl is now the strongest explanation, but a controlled test must still confirm the original timing and reflection before the workshop secures it."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the accumulated evidence in a controlled test, confirm the signal's cause, and make the decisive safety choice.",
+      "word_count": 737,
+      "location": "The public garden and library, with the workshop roof monitored through a safe controlled test.",
+      "character_goal": "Deniz confirms the signal's physical cause and chooses a documented safety response rather than treating it as an intentional message.",
+      "knowledge_gained": [
+        "The uncovered cowl reproduced three flashes at nine-second intervals under comparable sunlight and wind conditions.",
+        "A temporary matte screen stopped the flashes while the cowl continued rotating.",
+        "Removing the screen caused the three-flash sequence to return.",
+        "The workshop cowl was misaligned and its loose mounting required repair."
+      ],
+      "facts_established": [
+        "The old observation-point marker remained fixed during the controlled test.",
+        "The controlled test matched the original garden record without relying on coincidence.",
+        "The signal was caused by sunlight reflected from the wind-driven workshop cowl.",
+        "The cowl was secured with proper maintenance equipment, replacement fasteners, and a locking collar.",
+        "Mara received a clear explanation of the test and the cowl's cause."
+      ],
+      "clues_added": [
+        "The matte screen interrupted the reflection without stopping the cowl's movement.",
+        "The repaired cowl held steady during several gusts."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now contains the controlled-test times, screen result, photographs, and safety observations.",
+        "The workshop cowl has been secured and can no longer lift at its base as before."
+      ],
+      "relationships_changed": [
+        "The workshop team has completed the safe repair in cooperation with Deniz and Sefa.",
+        "Mara has received the essential explanation and is prepared to add Deniz's full observations to the library record."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The cowl caused the repeating signal.",
+        "The signal was not an intentional message.",
+        "The loose cowl's immediate safety problem was repaired."
+      ],
+      "handoff_state": "The controlled matte-screen test confirmed that sunlight reflected from the misaligned workshop cowl caused the original three flashes at nine-second intervals. The workshop secured the cowl and verified that it held steady in the wind. The flashes and the immediate hazard are resolved; Deniz has given Mara the clear explanation and retains the complete observation record for the library's record."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the consequences, close the investigation, and show understanding replacing uncertainty.",
+      "word_count": 685,
+      "location": "Public garden and library, with the repaired workshop roof and old observation point visible along the established line of evidence.",
+      "character_goal": "Deniz completes the investigation by preserving a clear, evidence-based account of the signal and its safe resolution.",
+      "knowledge_gained": [
+        "The repaired cowl remains steady in strong wind and produces no further flashes on the library wall.",
+        "The complete chain from garden observation to map comparison, observation-point comparison, and controlled screen test explains the signal."
+      ],
+      "facts_established": [
+        "The library wall remains unlit after the cowl is secured.",
+        "The old observation-point marker was documented as a considered but discarded explanation.",
+        "The workshop cowl caused the signal through wind-driven reflection of sunlight.",
+        "The library now holds a usable record of the investigation and repair."
+      ],
+      "clues_added": [
+        "The repaired cowl's stability and the absence of flashes provide final confirming evidence."
+      ],
+      "objects_changed": [
+        "Deniz's complete notebook record, photographs, and summary have been filed with the library's local records.",
+        "The town map is accompanied by the documented signal investigation."
+      ],
+      "relationships_changed": [
+        "Mara and Deniz have established a shared, documented understanding of the signal's cause and resolution."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The signal's meaning and physical cause are fully explained.",
+        "The old observation-point marker is ruled out as the source.",
+        "The workshop cowl hazard is resolved and documented."
+      ],
+      "handoff_state": "The signal is conclusively explained as sunlight reflected by the wind-driven, previously misaligned workshop cowl. The cowl has been secured, the flashes have stopped, and Deniz has filed the timed observations, map comparison, marker theory, photographs, and controlled-test results with Mara at the library. The garden, workshop, observation point, and library now form a complete evidence chain, and no unresolved threads remain."
+    }
+  ],
+  "story_title": "The Quiet Signal",
+  "story": "At thirty-two, Deniz had learned that noticing something was not the same as understanding it. After work, they crossed the public garden on the way home, carrying a canvas bag with a notebook, a pen, and the remains of a sandwich.\n\nThe garden lay between the library and the older streets that climbed toward the coast. Beyond the low stone wall at its far edge, the town fell away in terraces. On the opposite rise stood the old observation point, a round stone structure built above the harbor. Its narrow windows caught the late afternoon light, and from the garden Deniz could see the dark notch of its viewing gap.\n\nThey were halfway along the gravel path when the library wall flashed.\n\nIt was not a glow or a shimmer. A brief white reflection struck the pale stone beside the library’s entrance, bright enough to make Deniz stop. Then the wall became ordinary again.\n\nDeniz looked toward the street, the garden railings, and the roofs beyond them. Nothing obvious moved. A gull crossed the sky. Leaves trembled in the sea wind.\n\nThey checked the time: 17:18:42.\n\nAt 17:18:51, the wall flashed again.\n\nDeniz did not decide what it meant. They stepped off the path and stood where the library, the observation point, and the western roofs were all visible. Nine seconds later, at 17:19:00, the light appeared for a third time, almost exactly where it had appeared before.\n\nThree flashes. Nine seconds apart.\n\nThat repetition made the event worth recording. It did not make it a message.\n\nDeniz opened the notebook and wrote the times, adding the words: “Public garden, east path. Facing southwest. Clear intervals.” The afternoon was bright but unsettled. Thin clouds were moving in from the water, and the sun kept slipping behind them. The flashes had come from the direction of the library wall, though that described where the light landed, not where it began.\n\nThey drew a quick map: the garden as a rectangle, the library along its northern side, the old observation point across the lower harbor, and the line of rooftops between them. Then Deniz added what they could see—glass in the library doors, metal railings, windows, chimneys, and several flat roofs catching dull patches of sunlight.\n\nA fourth flash did not come.\n\nA cloud passed over the sun, turning the garden’s sharp shadows soft. Deniz waited another minute, then another. The wall stayed blank. When the cloud thinned, the brightness returned to the paving stones and the library windows, but not to the wall.\n\nThey considered telling someone immediately. The librarian was still inside, and the town office occupied the building next door. Yet saying “There may be a signal” would suggest a conclusion Deniz did not have evidence for. Saying nothing and forgetting it would be just as careless.\n\nSo they recorded the change in weather, the time the flashes stopped, and the fact that no person had appeared to react to them.\n\nThen Deniz closed the notebook. Tomorrow, they would return to the library and compare the direction with a proper map. For now, the flashes remained exactly what the notes showed: three repeatable bursts of light, with an unknown source and an unknown purpose.\n\nThe next afternoon, Deniz returned to the library with the notebook in their canvas bag. They did not go straight to the wall. A wall showed where the light had landed; it could not show where the light had begun.\n\nAt the reference desk, Deniz asked Mara, the librarian, whether the town kept a detailed map. Mara brought out a large, laminated sheet from a flat drawer. It showed the harbor, the public garden, the library, the old observation point, and the workshops along the western road.\n\nDeniz placed the notebook beside the map and marked their position on the garden path. Using a ruler from the desk, they extended the direction they had recorded toward the library wall and beyond it. From that angle, the line passed near the observation point before continuing toward the roofs along the workshop road.\n\n“Near,” Deniz said. “Not necessarily from either place.”\n\nMara leaned over the map. “The observation point has a clearer view of the harbor. It used to be used for watching ships.”\n\n“Could it have reflective equipment?” Deniz asked.\n\n“Possibly. The archive may tell us what was there before.”\n\nThey moved to the local-history room, where the afternoon light fell across cabinets of photographs and town reports. Mara found a folder labelled OBSERVATION POINT—COASTAL MARKERS. One black-and-white photograph showed the stone structure with small bright plates fixed beside its narrow viewing gap. A typed note explained that the plates had helped boats identify the point from the water in poor visibility.\n\nThe note did not say whether the plates remained. The photograph was undated, and its pale sky made it impossible to tell whether the plates were metal, glass, or simply catching sunlight.\n\nDeniz copied the folder number and wrote: “Historical reflective markers—existence today unconfirmed.”\n\nA second folder contained maintenance reports for buildings along the western road. Most concerned gutters, shutters, and roof tiles. One recent entry mentioned repairs at a workshop after strong coastal winds. The wording was brief: “Roof ventilation fitting replaced; inspect alignment after installation.” There was no signature beside the entry, and no follow-up report.\n\nDeniz read it twice, then underlined “inspect alignment.”\n\n“Does that mean something is wrong?” Mara asked.\n\n“It means someone thought it should be checked,” Deniz replied. “It does not tell us whether it was checked, or whether it could reflect light.”\n\nThey returned to the map. The old markers offered one explanation: perhaps something at the observation point still caught the sun. The workshop roof offered another: perhaps the recent repair had left a bright surface at the right angle. Neither explanation accounted for the three flashes by itself.\n\nDeniz compared the map with the sketch from the garden. Memory had put the observation point almost directly behind the library. The map showed a small but important difference. The workshop roofs lay slightly west of that line, close enough to enter the same sweep of sight from the garden.\n\nBefore leaving, Deniz photographed the map’s relevant section with Mara’s permission and copied the archive references into the notebook. Beneath the three times—17:18:42, 17:18:51, and 17:19:00—they added two headings: “old observation markers” and “recent workshop roof repair.”\n\nThe labels were possibilities, not conclusions. To choose between them, Deniz would need to see what was actually above the workshop and observe the line of light without entering anyone’s property.\n\nThe following morning, Deniz walked along the public lane toward the workshop road. The lane ran beside a low stone wall, keeping the workshops on one side and the harbor slope on the other. Deniz stayed on the pavement and stopped where the rooflines came into view.\n\nAbove the nearest workshop stood a short silver ventilation cowl. It was wider than a chimney pipe and shaped like a shallow cap. Three raised ribs ran from its center toward its rim. In the clear light, the metal looked bright but not mirror-bright. Deniz first wrote down what was visible: silver cowl, three ribs, roof above the workshop, no person on the roof.\n\nThen a gust came in from the harbor. The cowl turned a few degrees with a soft, dry scrape. Its ribs changed position against the sky. Another gust turned it back.\n\nDeniz watched for several minutes without lifting the notebook. The movement was enough to make the cowl a reasonable possibility. It was not enough to make it the answer. The old observation point remained in the same line of sight, and the archive photograph still showed reflective plates beside its viewing gap. Three ribs also did not prove that three flashes had come from this roof.\n\nA side door opened below the roof. A person in a dark work jacket stepped out carrying a clipboard. Deniz approached only as far as the public gate.\n\n“Excuse me,” they said. “Are you the person responsible for this building?”\n\n“Today, yes,” the person replied. “I’m Sefa.”\n\nDeniz introduced themself and explained that they had seen three flashes on the library wall from the public garden the previous afternoon. They showed Sefa the notebook, not just the heading about the workshop repair. The times were written clearly beneath the description of the weather.\n\n“17:18:42, 17:18:51, and 17:19:00,” Deniz said. “They struck nearly the same part of the wall. They stopped when a cloud covered the sun. From the garden, the direction included this roof and the old observation point. I’m trying to determine whether the flashes came from a moving reflective surface, an old marker, or something else. I’m not reporting a message or accusing anyone of causing one.”\n\nSefa studied the page. “That fitting was replaced last week,” they said, looking up at the roof. “The old one was bent after the windstorm. This one is a ventilation cowl. It was supposed to be checked for alignment.”\n\n“Was it checked?”\n\n“Not properly. We checked that air could pass through, but not how freely it turned.” Sefa glanced toward the roof. “The installer said the cowl would rotate in coastal wind. It should have a little movement, though. It shouldn’t be loose.”\n\nThe cowl turned again. This time, a brief white glint slid across its rim and vanished. Deniz did not call it one of the flashes. The angle from the lane was different from the angle in the garden, and the sunlight had shifted since yesterday.\n\n“Could we compare it from another position?” Deniz asked. “I would like to stand at the old observation point and watch the roof through its original viewing gap. You could remain below and tell me when the wind changes. No one would need to climb up.”\n\nSefa considered this, then nodded. “That would be useful. I can bring the maintenance notes and check the roof from the ground. If the fitting is moving more than it should, I need evidence before I ask for a repair.”\n\nDeniz wrote down Sefa’s name and the workshop’s permission to observe from public places. They added: “Cowl replaced last week; rotates in coastal wind; alignment not properly checked.”\n\nBefore leaving, Deniz looked once more at the three ribs. They made the cowl worth testing, not worth blaming. The next observation would have to compare the flashes’ timing and direction from the old point, where the historical markers could be seen beside the gap. The signal still had more than one possible explanation.\n\nThe next afternoon, Deniz took the harbor path to the old observation point. The route climbed behind a row of weathered houses and ended at a low stone platform above the water. From there, the town spread out in layers: the public garden near the library, the library’s pale side wall, and, farther west, the workshop roofs.\n\nSefa had stayed below the workshop, as promised. They had a clear view of the roof from the yard and kept their phone open. Deniz positioned themself behind the old observation wall, where a narrow viewing gap framed the harbor. The gap was smaller than Deniz had expected. It did not show the whole town. It showed a deliberate slice of it, including the workshop roofline.\n\nBeside the gap, a dull rectangular plate was set into the stone. It matched the shape in the archive photograph, though its surface was clouded with age. Deniz marked its position in the notebook, then stepped away and watched it for several minutes.\n\nThe plate did not move. Sunlight slid across its dull surface as the sun shifted, but it did not flash. When a breeze came up from the water, the plate remained fixed in the stone.\n\n“Wind from the southeast,” Sefa reported by phone. “The cowl is turning a little.”\n\nDeniz looked through the gap. The silver cowl was small at this distance, but its three ribs were distinct. It turned a few degrees, paused, and turned back. The movement was not smooth. Each gust seemed to push it past a point before it settled against the next.\n\n“Tell me when the stronger gust reaches you,” Deniz said. “I’m recording the time and what I can see from here.”\n\nAt 17:16:08, Sefa said, “Stronger gust now.”\n\nThe cowl swung. A bright line appeared along one rib, then slipped across the roofline toward the library. A second glint followed the first, and a third appeared at the rim before all three vanished. The library wall caught a pale sweep in the same direction. It was not the sharp, separate flash Deniz had seen from the garden, but the changing angle of the observation point made that difference unsurprising.\n\nDeniz wrote: “Three-part sweep visible through gap; fixed marker unchanged.”\n\nThe wind weakened. The cowl drifted back, and the roof became ordinary again. Deniz waited, listening to gulls and the faint clatter of a flagpole below. At 17:16:17, another gust reached the workshop. The same sequence crossed the cowl: rib, rib, rim. The library wall brightened and dimmed.\n\nNine seconds.\n\nDeniz did not circle the number. A repeated interval was important, but one pair of intervals was not a finished conclusion. They wrote the time, wind direction, cowl position, and the fact that the old marker had remained motionless.\n\n“Can you see the base clearly?” Deniz asked.\n\n“From the yard, yes,” Sefa replied. “Wait. I’m watching it now.”\n\nA stronger gust moved across the roofs. The cowl jerked sideways. Its lower edge lifted visibly from its seat, leaving a thin dark gap before dropping back with a metallic knock.\n\nSefa’s voice changed. “That is not the small movement I was told to expect.”\n\nDeniz lowered the notebook. “Did anything fall?”\n\n“No. But the mounting shifted. I’m keeping everyone away from that side of the yard.”\n\n“Good. Don’t go under it.”\n\n“I won’t.”\n\nFor several minutes they observed without approaching. The fixed plate beside the viewing gap remained a possible historical clue, but it had not produced the moving sweep. The cowl had. Its rotation also explained why the reflection appeared only under certain sunlight and wind conditions. Still, Deniz could not yet say that the cowl alone had caused the original three flashes. The angle, the intervals, and the changing brightness needed one controlled comparison.\n\nThey photographed the view through the gap and added a final note: “Strong gust causes visible lift at cowl base. Possible safety problem. No contact made; no repair attempted.”\n\nSefa agreed to speak with the workshop manager and arrange a controlled test from safe positions. Deniz left the observation point with the notebook pressed flat against the wind. The signal now had a strong physical explanation, but careful confirmation—and a responsible way to secure the loose fitting—still remained.\n\nThe controlled test took place the following afternoon, when the sun stood in nearly the same part of the sky as it had during Deniz’s first observation. Sefa arranged it with the workshop manager, who set an exclusion area below the roof and checked the fixed maintenance walkway before anyone approached the equipment. Deniz stayed in the public garden with the notebook and the original times open in front of them.\n\nSefa stood at ground level, well away from the cowl’s possible fall area. The manager and another worker remained on the approved roof walkway, where they could reach the fitting without stepping beneath it. No one climbed onto the roof itself or touched the cowl while it was loose.\n\n“We’ll begin with the cowl uncovered,” Sefa said over the phone. “The sun is bright, and the wind is southeast, as it was during your garden observation.”\n\nDeniz looked from the library wall to the workshop roofline. The arrangement was familiar now: the pale wall to the east, the garden between, and the silver cowl beyond the western roofs. The old observation point stood farther across the harbor, its fixed marker outside the line of the test.\n\nAt 17:18:33, the cowl turned a few degrees. One rib caught the sun, then the second, then the curved rim. Three distinct flashes struck the library wall.\n\nDeniz wrote the time and waited.\n\nAt 17:18:42, the same sequence appeared. At 17:18:51, it appeared again. The intervals matched the original record exactly, though the brightness varied when the wind shifted.\n\nSefa read the times back. “Nine seconds each.”\n\n“Record the wind as well,” Deniz said. “And the cowl’s resting position.”\n\nThe manager then placed a temporary matte screen on the maintenance frame beside the fitting. It was a dull, nonreflective panel used for checking ventilation equipment. The manager secured it from the walkway so it stood between the cowl’s bright outer edge and the library’s line of sight. It did not press against the cowl, and no one had to hold it near the loose mounting.\n\n“Screen in place,” the manager reported.\n\nThe wind continued at the same strength. The cowl rotated. Its three ribs still moved, but the sharp reflected light no longer reached the garden or the library wall. The wall stayed pale and unlit.\n\nDeniz checked the time. Nine seconds passed. Then another nine.\n\nNothing.\n\nSefa said, “The cowl is moving, but there’s no flash.”\n\n“Remove the screen without changing the cowl,” Deniz replied.\n\nThe manager slid the panel back onto the maintenance frame. The cowl continued its uneven turn. At 17:19:27, three flashes crossed the library wall. At 17:19:36, three more followed.\n\nDeniz compared the entries. The original flashes had occurred at 17:18:42, 17:18:51, and 17:19:00. The new flashes had the same count, the same nine-second spacing, and the same dependence on the cowl’s rotation and the sun’s angle. The matte screen had interrupted the reflection exactly as predicted, while the cowl itself continued moving.\n\nThe old marker had remained fixed. The cowl had moved. The garden record, the map line, the observation-point view, the wind-driven rotation, and now the screen test all pointed to one explanation.\n\n“It wasn’t a message,” Deniz said. “It was sunlight from the misaligned cowl.”\n\n“And the mounting still needs work,” Sefa answered.\n\nThe workshop manager lowered the cowl onto a secured support using the proper maintenance equipment. The workers replaced the loose fasteners and fitted a locking collar so the ventilation cap could turn only as designed, without lifting at its base. Sefa kept the area clear until the manager tested the fitting in several gusts. It held steady.\n\nDeniz photographed the screen in place, the cowl before and after the repair, and the unchanged view toward the library. Then they contacted Mara at the library and gave her a concise explanation: the original flashes had come from sunlight reflected by the misaligned, wind-driven workshop cowl, while the fixed marker at the observation point had not produced them. Deniz added that the cowl had been secured and that the screen test had stopped the flashes without stopping the cowl’s movement.\n\nMara repeated the essential points back to ensure she had them correctly. Deniz kept the notebook open beside the phone, ready to preserve the full sequence of times and observations for the library’s record. For now, the evidence had answered the question, and the repaired cowl held steady above the workshop.\n\nThe next evening, Deniz crossed the public garden on the way to the library. The wind came in from the harbor, strong enough to stir the plane-tree leaves and tug at the flags outside the workshop road. Above the western roofs, the repaired cowl turned within its new limits. Its silver surface shifted, but it did not lift, wobble, or cast a bright sweep toward the library.\n\nThe wall remained an ordinary pale rectangle.\n\nDeniz stopped beside the gravel path and checked the time. The sun was low enough, and the wind lively enough, to make the comparison useful. Yet no flash appeared. Not one. The cowl held steady through three stronger gusts, while the library wall stayed unlit.\n\nAcross the harbor, the old observation point stood against the darkening sky. From there, Deniz had seen the fixed marker remain fixed. From the garden, the map had established the sightline. From the public lane, the three-ribbed cowl had revealed its movement. The controlled test had connected all those separate observations: when the cowl was uncovered, the flashes returned at nine-second intervals; when the matte screen blocked its reflective edge, the cowl kept turning but the wall received no light.\n\nThe explanation no longer depended on what the signal might have meant. It depended on what each place had shown.\n\nInside the library, Mara had cleared a space on the reference desk. A folder lay open beside the town map and the photograph Deniz had been permitted to keep.\n\n“Do you want the short version or the complete sequence?” Mara asked.\n\n“The complete sequence,” Deniz said. “The short version is easy to misunderstand.”\n\nThey placed the notebook beside the folder. Deniz began with the first entry: three flashes on the library wall at 17:18:42, 17:18:51, and 17:19:00, observed from the public garden. The notes described the cloud covering the sun, the direction of the light, and the absence of anyone reacting as if they had received a message.\n\nThen Deniz added the map comparison. The line from the garden crossed the old observation point and the workshop roofline. Under a separate heading, they recorded the historical marker: reflective in the archived photograph, fixed during every recent observation, and not responsible for the moving sweep.\n\nMara read that page carefully. “You kept it as a possibility before you ruled it out.”\n\n“It was evidence,” Deniz said. “Just not enough evidence.”\n\nThe next pages described the workshop cowl, its three ribs, its wind-driven rotation, and the loose mounting Sefa and the manager had found. Deniz included the photographs from the observation point, where the cowl’s reflected sweep had reached toward the library, and the times of the matching nine-second interval.\n\nFinally, Deniz attached the controlled-test record. The uncovered cowl produced three flashes. The matte screen stopped them without stopping the cowl. Removing the screen brought them back. Afterward, the workshop had replaced the fasteners and fitted the locking collar. The cowl had held steady through the gust test.\n\nMara slid the pages into order. “This is more than an answer,” she said. “It shows how you got there.”\n\n“That matters,” Deniz replied. “If I had started with the idea that it was a message, I might have bent every observation around that idea. If I had started with danger, I might have alarmed people before knowing what needed doing.”\n\nThey signed the final page together: *Signal investigation—resolved; cause documented; workshop fitting secured.* Mara filed the photographs with the local records and placed a copy of the summary beside the town map.\n\nBefore leaving, Deniz looked once more through the library window. The garden path, the workshop roof, and the distant observation point lined up in the fading light. They were no longer competing stories. They were parts of one chain: a flash seen on a wall, a direction measured on a map, a moving cowl observed from two positions, and a safe test that changed one condition at a time.\n\nOutside, the wall stayed pale. Deniz closed the notebook. Uncertainty had not been an empty space to fill quickly. Handled carefully, it had shown where to look next.",
+  "word_count": 3881,
+  "target_words": 4200,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.97,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.53,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11819,
+      "output_tokens": 166,
+      "cost": 0.000496398
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.97,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.53,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 11819,
+      "output_tokens": 166,
+      "cost": 0.000496398
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that meets the acceptance gate. The narrative successfully executes the StoryContract: Deniz, a carefully drawn 32-year-old protagonist, observes a repeating signal, systematically gathers evidence across six locations (garden, library, workshop lane, observation point, controlled test site, and final garden return), and resolves the mystery through accumulated observation rather than coincidence. The prose is sophisticated and age-appropriate for an independent adult reader, with sentence structure and vocabulary that reflect Deniz's careful, methodical thinking. Causality is explicit throughout—each scene builds on prior evidence without becoming didactic. The central mystery remains open until Scene 5, every clue is observable before use, and the ending explains the signal through the matte-screen test and physical evidence. Continuity across all six scenes is strong, with the Continuity Ledger and JEV evidence confirming no contradictions or unresolved threads. The theme—'careful observation turns uncertainty into understanding'—is woven throughout without becoming preachy. The story avoids combat, supernatural causes, and convenient coincidence. All required constraints (C1–C9) are satisfied. The controlled test in Scene 5 is the decisive moment where prediction meets evidence, and Scene 6 closes the investigation cleanly by showing the repaired cowl holding steady and Deniz filing the complete record. Minor optional refinements could strengthen the prose (e.g., slightly more sensory detail in the observation-point scene, or a touch more emotional resonance in the final garden moment), but these are non-blocking polish suggestions. The story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3881,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.97,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.85,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.53,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 11819,
+          "output_tokens": 166,
+          "cost": 0.000496398
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that meets the acceptance gate. The narrative successfully executes the StoryContract: Deniz, a carefully drawn 32-year-old protagonist, observes a repeating signal, systematically gathers evidence across six locations (garden, library, workshop lane, observation point, controlled test site, and final garden return), and resolves the mystery through accumulated observation rather than coincidence. The prose is sophisticated and age-appropriate for an independent adult reader, with sentence structure and vocabulary that reflect Deniz's careful, methodical thinking. Causality is explicit throughout—each scene builds on prior evidence without becoming didactic. The central mystery remains open until Scene 5, every clue is observable before use, and the ending explains the signal through the matte-screen test and physical evidence. Continuity across all six scenes is strong, with the Continuity Ledger and JEV evidence confirming no contradictions or unresolved threads. The theme—'careful observation turns uncertainty into understanding'—is woven throughout without becoming preachy. The story avoids combat, supernatural causes, and convenient coincidence. All required constraints (C1–C9) are satisfied. The controlled test in Scene 5 is the decisive moment where prediction meets evidence, and Scene 6 closes the investigation cleanly by showing the repaired cowl holding steady and Deniz filing the complete record. Minor optional refinements could strengthen the prose (e.g., slightly more sensory detail in the observation-point scene, or a touch more emotional resonance in the final garden moment), but these are non-blocking polish suggestions. The story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000496398,
+      "final_judge_cost": {
+        "usd": 0.019133,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 47.224,
+    "scene_stage_seconds": 183.677,
+    "final_stage_seconds": 7.975,
+    "total_pipeline_seconds": 238.876
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.012443306,
+    "scene_generation_usd": 0.028714,
+    "scene_continuity_evaluator_usd": 0.001640142,
+    "whole_continuity_evaluator_usd": 0.000496398,
+    "whole_continuity_evaluator_usd_total": 0.000496398,
+    "semantic_judge_usd": {
+      "usd": 0.019133,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.019133,
+    "scene_jev_usd": 0.001640142,
+    "whole_jev_usd": 0.000496398,
+    "whole_jev_usd_total": 0.000496398,
+    "final_haiku": {
+      "usd": 0.019133,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.019133,
+    "total_pipeline_usd": 0.062426846
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 11819,
+      "output_tokens": 166,
+      "cost": 0.000496398
+    },
+    "semantic_judge": {
+      "input_tokens": 16778,
+      "output_tokens": 471,
+      "total_tokens": 17249
+    },
+    "whole_jev": {
+      "input_tokens": 11819,
+      "output_tokens": 166,
+      "cost": 0.000496398
+    },
+    "final_haiku": {
+      "input_tokens": 16778,
+      "output_tokens": 471,
+      "total_tokens": 17249
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
