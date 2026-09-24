@@ -643,3 +643,80 @@ Covered fail-closed cases include:
 - presentation-order disagreement -> `INCONCLUSIVE`.
 
 An earlier test run failed because the positive fixture omitted entity version metadata while the validator already required it. The validator was not weakened. The test fixture was repaired to include the required revision/fingerprint preconditions, and the fresh run passed all contracts.
+
+
+## First production-like LUMI ContextPack run — 36024405327
+
+Evidence branch:
+
+`evidence/story-v5-production-like-36024405327`
+
+This run moved beyond brief-only synthetic generation and supplied a prototype StoryContextPack containing:
+
+- Profile/age/reading mode;
+- Character snapshot + revision/fingerprint;
+- World snapshot + local-area knowledge boundary;
+- Opportunity + revision/fingerprint;
+- Canon revision/fingerprint + hard rules;
+- Saga revision/fingerprint;
+- relevant prior memory.
+
+Scenario:
+
+Deniz, age 10, investigates a recurring bell-like tone in Harbor Garden using only known public areas.
+
+Important knowledge boundary:
+
+- HOME and COMMONS are EXPLORED;
+- MAINTENANCE_EDGE is DISCOVERED;
+- OLD_PUMP_PATH is RUMORED;
+- old pump-house interior is intentionally unknown;
+- no canonical connection between the pump house and the sound exists.
+
+### Result
+
+- accepted: true;
+- 1,672 / 1,500 words;
+- 5 dynamic scenes;
+- repetition: 0;
+- no deterministic error;
+- no prose repair;
+- no length normalization;
+- JEV context_authority: 0.96;
+- all JEV dimensions above threshold;
+- Haiku: 4.875;
+- StoryOutcome validation errors: none;
+- `commit_ready=true`;
+- elapsed: 90.368 s.
+
+The story respected the knowledge boundary:
+
+- OLD_PUMP_PATH was not entered or promoted to explored;
+- hidden pump-house facts were not revealed;
+- no unsupported supernatural/danger escalation was introduced;
+- the adult did not solve the investigation;
+- the final explanation explicitly preserved an unseen/uncertain contact point.
+
+This is the first strong evidence that the v5 whole-draft candidate can consume a LUMI-shaped context pack without obvious canon or character-knowledge leakage.
+
+### Epistemic persistence defect discovered
+
+The story itself correctly expressed the conclusion as a **best-supported explanation with bounded uncertainty**.
+
+However, the first state authority allowed that conclusion to be proposed as:
+
+`WORLD_FACT_SET / commons.sound_explanation`
+
+This is too strong. A story-supported hypothesis must not silently become a canonical fact merely because its prose is accepted.
+
+Decision:
+
+- replace that authority lane with:
+  `WORLD_HYPOTHESIS_SET / commons.sound_hypotheses`;
+- classify it as:
+  `BEST_SUPPORTED_HYPOTHESIS`;
+- require the extractor to copy the authority's `epistemic_class`;
+- reject epistemic-class mismatch deterministically;
+- explicitly prohibit hypothesis/uncertainty/rumor -> FACT upgrades.
+
+This is an important distinction between **narrative truth**, **character knowledge**, **best-supported world hypothesis**, and **canonical world fact**.
