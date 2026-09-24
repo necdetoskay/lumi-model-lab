@@ -215,48 +215,38 @@ Return the complete current draft again as JSON:
 """.strip()
 
 OUTCOME_PROMPT = """
-You are the LUMI StoryOutcome extractor.
+You are the LUMI typed StateMutationProposal extractor.
 
-Read the ACCEPTED final story and propose structured state changes. You are not allowed
-to invent state that is not supported by the story.
+Read the ACCEPTED final story and the APPLICATION-OWNED STATE AUTHORITY contract.
+You may propose only mutations that exactly match one allowed tuple:
+(mutation_type, entity_ref, field_key).
 
 Rules:
-- Every state change must cite one or more supporting scene indexes.
-- Distinguish explicit changes from merely mentioned possibilities.
-- Do not write to a database.
+- Never invent a database field, entity, operation, persistence class, or mutation type.
+- Every proposal must cite one or more supporting scene indexes.
+- Evidence support is necessary but not sufficient: emit a mutation only when the story
+  establishes an end-of-story state that the authority explicitly allows to persist.
+- Do NOT persist transient emotions, temporary current activity, brief handling of an item,
+  generic supportive behavior, descriptive details, or intermediate hypotheses unless an
+  allowed mutation explicitly represents them.
 - Do not infer secret knowledge for a character that the character never learned.
-- Do not convert an unresolved possibility into a fact.
-- Do not invent inventory, relationships, world events, locations or memories.
-- Keep changes minimal and canonical.
+- Do not turn unresolved possibilities into facts.
+- Do not write to a database.
+- Keep proposals minimal. Omit an allowed mutation when the story does not establish it.
 
 Return JSON only:
 {
-  "character_changes": [
+  "authority_revision": "",
+  "mutations": [
     {
-      "field": "",
-      "operation": "SET",
+      "mutation_type": "",
+      "entity_ref": "",
+      "field_key": "",
       "value": null,
       "evidence_scenes": [1],
       "reason": ""
     }
-  ],
-  "world_changes": [],
-  "relationship_changes": [],
-  "inventory_changes": [],
-  "knowledge_changes": [],
-  "resolved_threads": [],
-  "opened_threads": [],
-  "memory_candidates": [
-    {
-      "summary": "",
-      "importance": "LOW",
-      "evidence_scenes": [1]
-    }
-  ],
-  "opportunity_effects": {
-    "consumed_current": true,
-    "new_candidate_hints": []
-  }
+  ]
 }
 """.strip()
 
@@ -542,49 +532,83 @@ def run_judge(
     }
 
 
-def validate_outcome(outcome: dict[str, Any], scene_count: int) -> list[str]:
+def validate_outcome(
+    outcome: dict[str, Any],
+    scene_count: int,
+    authority: dict[str, Any],
+) -> list[str]:
     errors: list[str] = []
-    list_fields = (
-        "character_changes",
-        "world_changes",
-        "relationship_changes",
-        "inventory_changes",
-        "knowledge_changes",
-        "resolved_threads",
-        "opened_threads",
-        "memory_candidates",
-    )
-    for field in list_fields:
-        if not isinstance(outcome.get(field), list):
-            errors.append(f"outcome_{field}_not_list")
 
-    effects = outcome.get("opportunity_effects")
-    if not isinstance(effects, dict):
-        errors.append("outcome_opportunity_effects_missing")
+    expected_revision = str(authority.get("revision") or "")
+    if outcome.get("authority_revision") != expected_revision:
+        errors.append("outcome_authority_revision_mismatch")
 
-    evidence_bearing = (
-        "character_changes",
-        "world_changes",
-        "relationship_changes",
-        "inventory_changes",
-        "knowledge_changes",
-        "memory_candidates",
-    )
-    for field in evidence_bearing:
-        rows = outcome.get(field)
-        if not isinstance(rows, list):
+    allowed_rows = authority.get("allowed_mutations")
+    if not isinstance(allowed_rows, list) or not allowed_rows:
+        return errors + ["state_authority_allowed_mutations_missing"]
+
+    allowed: set[tuple[str, str, str]] = set()
+    for index, row in enumerate(allowed_rows):
+        if not isinstance(row, dict):
+            errors.append(f"state_authority_row_{index}_not_object")
             continue
-        for index, row in enumerate(rows):
-            if not isinstance(row, dict):
-                errors.append(f"{field}_{index}_not_object")
-                continue
-            scenes = row.get("evidence_scenes")
-            if not isinstance(scenes, list) or not scenes:
-                errors.append(f"{field}_{index}_evidence_missing")
-                continue
+        key = (
+            str(row.get("mutation_type") or ""),
+            str(row.get("entity_ref") or ""),
+            str(row.get("field_key") or ""),
+        )
+        if not all(key):
+            errors.append(f"state_authority_row_{index}_invalid")
+            continue
+        allowed.add(key)
+
+    mutations = outcome.get("mutations")
+    if not isinstance(mutations, list):
+        return errors + ["outcome_mutations_not_list"]
+
+    seen: set[tuple[str, str, str, str]] = set()
+    for index, row in enumerate(mutations):
+        if not isinstance(row, dict):
+            errors.append(f"mutation_{index}_not_object")
+            continue
+
+        key = (
+            str(row.get("mutation_type") or ""),
+            str(row.get("entity_ref") or ""),
+            str(row.get("field_key") or ""),
+        )
+        if key not in allowed:
+            errors.append(
+                "mutation_not_authorized:"
+                + "|".join(key)
+            )
+
+        scenes = row.get("evidence_scenes")
+        if not isinstance(scenes, list) or not scenes:
+            errors.append(f"mutation_{index}_evidence_missing")
+        else:
             for scene in scenes:
-                if not isinstance(scene, int) or isinstance(scene, bool) or not 1 <= scene <= scene_count:
-                    errors.append(f"{field}_{index}_invalid_evidence_scene:{scene!r}")
+                if (
+                    not isinstance(scene, int)
+                    or isinstance(scene, bool)
+                    or not 1 <= scene <= scene_count
+                ):
+                    errors.append(f"mutation_{index}_invalid_evidence_scene:{scene!r}")
+
+        reason = row.get("reason")
+        if not isinstance(reason, str) or not reason.strip():
+            errors.append(f"mutation_{index}_reason_missing")
+
+        value_identity = json.dumps(
+            row.get("value"),
+            sort_keys=True,
+            ensure_ascii=False,
+        )
+        duplicate_key = (*key, value_identity)
+        if duplicate_key in seen:
+            errors.append(f"mutation_{index}_duplicate")
+        seen.add(duplicate_key)
+
     return errors
 
 
@@ -604,12 +628,63 @@ def load_story_spec(path: str | None) -> tuple[StorySpec, str]:
     return StorySpec.model_validate(BUILTIN_SPEC), "<builtin-v5-prototype-spec>"
 
 
+def load_state_authority(path: str | None) -> tuple[dict[str, Any], str]:
+    if path:
+        authority_path = Path(path)
+        authority = json.loads(authority_path.read_text(encoding="utf-8"))
+        return authority, path
+
+    authority = {
+        "schema_version": "state-mutation-authority.v1",
+        "revision": "prototype-minimal-safe-r1",
+        "entities": [
+            {"entity_ref": "CHARACTER:PROTAGONIST", "entity_kind": "CHARACTER"},
+            {"entity_ref": "SAGA:CURRENT", "entity_kind": "SAGA"},
+            {"entity_ref": "OPPORTUNITY:CURRENT", "entity_kind": "OPPORTUNITY"},
+        ],
+        "allowed_mutations": [
+            {
+                "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+                "entity_ref": "CHARACTER:PROTAGONIST",
+                "field_key": "knowledge.discoveries",
+                "persistence": "PERSISTENT",
+            },
+            {
+                "mutation_type": "THREAD_RESOLVE",
+                "entity_ref": "SAGA:CURRENT",
+                "field_key": "threads.resolved",
+                "persistence": "PERSISTENT",
+            },
+            {
+                "mutation_type": "THREAD_OPEN",
+                "entity_ref": "SAGA:CURRENT",
+                "field_key": "threads.open",
+                "persistence": "PERSISTENT",
+            },
+            {
+                "mutation_type": "MEMORY_CANDIDATE_ADD",
+                "entity_ref": "CHARACTER:PROTAGONIST",
+                "field_key": "memory.candidates",
+                "persistence": "REVIEWABLE",
+            },
+            {
+                "mutation_type": "OPPORTUNITY_CONSUME",
+                "entity_ref": "OPPORTUNITY:CURRENT",
+                "field_key": "status",
+                "persistence": "PERSISTENT",
+            },
+        ],
+    }
+    return authority, "<builtin-minimal-safe-state-authority>"
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         raise RuntimeError("Missing OPENROUTER_API_KEY")
 
     spec, spec_source = load_story_spec(args.spec)
+    state_authority, state_authority_source = load_state_authority(args.state_authority)
     brief = build_labeled_brief(spec)
     started = time.perf_counter()
 
@@ -790,7 +865,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     outcome_meta: dict[str, Any] | None = None
     if accepted:
         outcome_user = (
-            "IMMUTABLE STORY CONTRACT\n"
+            "APPLICATION-OWNED STATE AUTHORITY\n"
+            + json.dumps(state_authority, ensure_ascii=False, indent=2)
+            + "\n\nIMMUTABLE STORY CONTRACT\n"
             + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
             + "\n\nSCENE GRAPH\n"
             + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
@@ -807,7 +884,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             seed=44,
             request_class="structured_large",
         )
-        outcome_errors = validate_outcome(outcome, len(plan["scenes"]))
+        outcome_errors = validate_outcome(
+            outcome,
+            len(plan["scenes"]),
+            state_authority,
+        )
         outcome_meta = {
             "parse_failures": outcome_parse,
             "usage": parse_usage(outcome_body).model_dump(mode="json"),
@@ -839,6 +920,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "outcome_extractor": args.outcome_extractor,
         },
         "spec": spec_source,
+        "state_authority_source": state_authority_source,
+        "state_authority": state_authority,
         "plan": plan,
         "plan_parse_failures": plan_parse,
         "draft": draft,
@@ -890,6 +973,7 @@ def main() -> None:
     parser.add_argument("--writer", default=DEFAULT_WRITER)
     parser.add_argument("--judge", default=DEFAULT_JUDGE)
     parser.add_argument("--outcome-extractor", default=DEFAULT_OUTCOME_EXTRACTOR)
+    parser.add_argument("--state-authority", default=None)
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
 
