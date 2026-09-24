@@ -227,14 +227,24 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             any(error.startswith("below_scene_word_budget:") for error in errors)
         )
 
-    def test_scene_hard_bound_uses_25_percent_tolerance(self):
-        self.assertEqual(scene_word_budget_bounds(100), (75, 125))
+    def test_scene_hard_bound_keeps_80_percent_floor_and_25_percent_ceiling(self):
+        self.assertEqual(scene_word_budget_bounds(100), (80, 125))
         envelope = good_envelope(125)
         errors, _ = validate_scene_envelope(
             envelope,
             target_words=100,
         )
         self.assertEqual(errors, [])
+
+    def test_scene_hard_bound_keeps_underlength_gate_at_80_percent(self):
+        envelope = good_envelope(79)
+        errors, _ = validate_scene_envelope(
+            envelope,
+            target_words=100,
+        )
+        self.assertTrue(
+            any(error.startswith("below_scene_word_budget:") for error in errors)
+        )
 
     def test_scene_hard_bound_rejects_beyond_25_percent(self):
         envelope = good_envelope(126)
@@ -246,8 +256,8 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             any(error.startswith("above_scene_word_budget:") for error in errors)
         )
 
-    def test_short_scene_uses_minimum_absolute_slack(self):
-        self.assertEqual(scene_word_budget_bounds(65), (45, 85))
+    def test_short_scene_uses_upper_minimum_absolute_slack_only(self):
+        self.assertEqual(scene_word_budget_bounds(65), (52, 85))
         accepted = good_envelope(84)
         errors, _ = validate_scene_envelope(
             accepted,
@@ -264,8 +274,8 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             any(error.startswith("above_scene_word_budget:") for error in errors)
         )
 
-    def test_child_scene_known_small_overage_is_not_repaired_in_v2(self):
-        self.assertEqual(scene_word_budget_bounds(255), (191, 319))
+    def test_child_scene_known_small_overage_is_not_repaired_in_v3(self):
+        self.assertEqual(scene_word_budget_bounds(255), (204, 319))
         accepted = good_envelope(311)
         errors, _ = validate_scene_envelope(
             accepted,
