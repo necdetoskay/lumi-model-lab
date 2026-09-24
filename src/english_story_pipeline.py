@@ -1057,7 +1057,6 @@ def repair_scene_for_final_judge(
             "scene_contract": scene["contract"],
             "observed_scene_context": observed_scene_context,
             "prior_ledger": ledger[:position],
-            "immutable_state_delta": original_envelope["state_delta"],
             "repair_issue": issue,
             "repair_round": repair_round,
             "strict_retry": repair_round > 1,
@@ -1067,7 +1066,7 @@ def repair_scene_for_final_judge(
                 round(scene["target_words"] * 1.20),
             ],
             "previous_scene_prose": previous_prose,
-            "current_scene_envelope": original_envelope,
+            "current_scene_prose": original_envelope["prose"],
             "next_scene_prose": next_prose,
         },
         ensure_ascii=False,
@@ -1086,10 +1085,19 @@ def repair_scene_for_final_judge(
         request_class="scene_repair",
     )
     model_state_delta_changed = (
-        repaired.get("state_delta") != original_envelope.get("state_delta")
+        "state_delta" in repaired
+        and repaired.get("state_delta") != original_envelope.get("state_delta")
     )
+    ignored_output_keys = sorted(
+        key for key in repaired if key != "prose"
+    )
+    repaired_prose = repaired.get("prose")
     repaired = {
-        **repaired,
+        "prose": (
+            repaired_prose.strip()
+            if isinstance(repaired_prose, str)
+            else ""
+        ),
         "state_delta": original_envelope["state_delta"],
     }
     raw_validation_errors, _ = validate_scene_envelope(
@@ -1110,6 +1118,7 @@ def repair_scene_for_final_judge(
         "repair_issue": issue,
         "repair_round": repair_round,
         "ignored_model_state_delta_change": model_state_delta_changed,
+        "ignored_output_keys": ignored_output_keys,
         "structured_parse_retries": parse_failures,
         "word_budget_warnings": word_budget_warnings,
         "errors": errors,

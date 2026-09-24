@@ -781,7 +781,7 @@ class EnglishStoryPipelineTests(unittest.TestCase):
     ):
         envelope = good_envelope(100)
         mock_call.return_value = (
-            __import__("json").dumps(envelope),
+            __import__("json").dumps({"prose": envelope["prose"]}),
             {
                 "usage": {
                     "prompt_tokens": 10,
@@ -823,6 +823,10 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         sent = __import__("json").loads(mock_call.call_args.kwargs["user_prompt"])
         self.assertTrue(sent["strict_retry"])
         self.assertEqual(sent["repair_round"], 2)
+        self.assertIn("current_scene_prose", sent)
+        self.assertNotIn("current_scene_envelope", sent)
+        self.assertNotIn("immutable_state_delta", sent)
+        self.assertEqual(attempt["ignored_output_keys"], [])
         self.assertEqual(attempt["repair_round"], 2)
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
 
@@ -871,6 +875,7 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(word_count, 100)
         self.assertEqual(repaired["state_delta"], original["state_delta"])
         self.assertTrue(attempt["ignored_model_state_delta_change"])
+        self.assertEqual(attempt["ignored_output_keys"], ["state_delta"])
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_antecedent_repair_receives_observed_scene_context(self, mock_call):

@@ -6,7 +6,7 @@ This is a bounded polish operation, not a rewrite.
 
 Rules:
 - Preserve the immutable StoryContract and SceneGraph.
-- Preserve the scene's state_delta exactly. Every field and list item in state_delta must remain unchanged.
+- This is a prose-only edit. Do not return, rewrite, or restate state_delta; application code preserves canonical state automatically.
 - Preserve the scene's handoff, established facts, clues, objects, relationships, opened threads, and resolved threads.
 - Do not introduce a new plot event, character, object, location, fact, clue, power, or solution.
 - Do not remove any required event.
@@ -21,19 +21,7 @@ Rules:
 - When observed_scene_context is supplied, use it only to understand the later defect; edit only the current repair scene.
 - If repairing earlier setup, add only information that is compatible with existing canon and already implied by the immutable SceneGraph; do not create a new clue, object, rule, or plot event.
 
-Return JSON only using exactly the same scene-envelope shape:
+Return JSON only with exactly this shape:
 {
-  "prose": "",
-  "state_delta": {
-    "location": "",
-    "character_goal": "",
-    "knowledge_gained": [""],
-    "facts_established": [""],
-    "clues_added": [""],
-    "objects_changed": [""],
-    "relationships_changed": [""],
-    "threads_opened": [""],
-    "threads_resolved": [""],
-    "handoff_state": ""
-  }
+  "prose": ""
 }
