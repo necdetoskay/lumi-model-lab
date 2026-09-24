@@ -82,6 +82,19 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(payload["max_tokens"], 1200)
         self.assertEqual(payload["response_format"], {"type": "json_object"})
 
+    def test_luna_is_qualification_ready_with_verified_metadata(self) -> None:
+        profile = require_qualification_runtime_profile("openai/gpt-5.6-luna")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertEqual(profile["source"], "verified_runtime")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["context_tokens"], 1050000)
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 128000)
+        self.assertEqual(profile["metadata"]["reasoning"]["default_effort"], "medium")
+        self.assertEqual(
+            profile["metadata"]["reasoning"]["supported_effort"],
+            ["none", "low", "medium", "high", "xhigh", "max"],
+        )
+
     def test_luna_omits_temperature_and_pins_provider_routing(self) -> None:
         payload = normalize_openrouter_request(
             "openai/gpt-5.6-luna",
@@ -93,6 +106,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         )
         self.assertNotIn("temperature", payload)
         self.assertEqual(payload["max_tokens"], 4000)
+        self.assertEqual(payload["seed"], 42)
         self.assertEqual(
             payload["provider"],
             {
@@ -102,6 +116,31 @@ class ModelRuntimeProfileTests(unittest.TestCase):
                 "sort": "latency",
             },
         )
+
+    def test_luna_scene_pipeline_uses_low_reasoning_without_client_token_cap(self) -> None:
+        for request_class in ("story_plan", "scene_story", "scene_repair"):
+            payload = normalize_openrouter_request(
+                "openai/gpt-5.6-luna",
+                {
+                    "temperature": 0.7,
+                    "max_tokens": 9000,
+                    "seed": 42,
+                },
+                request_class=request_class,
+                structured_output=True,
+            )
+            self.assertNotIn("temperature", payload)
+            self.assertNotIn("max_tokens", payload)
+            self.assertEqual(payload["seed"], 42)
+            self.assertEqual(
+                payload["reasoning"],
+                {"effort": "low", "exclude": True},
+            )
+            self.assertEqual(payload["response_format"], {"type": "json_object"})
+            self.assertNotIn("stream", payload)
+            self.assertEqual(payload["provider"]["order"], ["openai"])
+            self.assertFalse(payload["provider"]["allow_fallbacks"])
+            self.assertTrue(payload["provider"]["require_parameters"])
 
     def test_glm_flash_preserves_lab_verified_reasoning_and_budget(self) -> None:
         payload = normalize_openrouter_request(

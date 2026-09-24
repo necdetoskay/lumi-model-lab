@@ -74,9 +74,17 @@ Notable examples:
 
 ### GPT-5.6 Luna
 
-- temperature is omitted
-- OpenAI routing is pinned
-- provider fallback is disabled by the application contract
+- exact OpenRouter id: `openai/gpt-5.6-luna`
+- qualification-ready verified runtime profile
+- fixed model slug is required for reproducibility; the moving `gpt-luna-latest` alias is not qualification evidence
+- current verified limits: 1,050,000 context / 128,000 completion tokens
+- OpenRouter advertises `reasoning`, `seed`, `max_tokens`, `response_format`, `tools`, and `tool_choice`
+- temperature is omitted because it is not an advertised parameter for the verified model endpoint
+- GPT-5.6 defaults to medium reasoning; LUMI `story_plan`, `scene_story`, and `scene_repair` explicitly use low reasoning as the initial quality/latency baseline
+- scene structured output uses `json_object` in the current LUMI transport boundary; although Luna supports JSON Schema, the generic scene caller does not yet provide a per-request schema
+- `story_plan`, `scene_story`, and `scene_repair` omit client `max_tokens`
+- seed is retained for reproducible qualification attempts
+- OpenAI provider routing is pinned and fallback disabled so provider variance does not contaminate Qwen/Aion/Luna comparisons
 
 ### GLM 5.3 Flash
 
