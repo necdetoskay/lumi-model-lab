@@ -35,7 +35,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   produce:
@@ -92,10 +92,27 @@ jobs:
               --result "$EVIDENCE_SOURCE" \
               --spec "$SPEC_PATH" \
               --run-id "$GITHUB_RUN_ID" \
-              --output-root runs/english_story_pipeline/evidence-pack
+              --output-root evidence/model_qualification
             python -m src.capability_cube verify \
-              --evidence-root runs/english_story_pipeline/evidence-pack
+              --evidence-root evidence/model_qualification
           fi
+      - name: Archive qualification evidence branch
+        if: always()
+        shell: bash
+        run: |
+          if [ ! -d "evidence/model_qualification" ]; then
+            exit 0
+          fi
+          if git diff --quiet -- evidence/model_qualification && \
+             [ -z "$(git ls-files --others --exclude-standard evidence/model_qualification)" ]; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add evidence/model_qualification
+          git commit -m "evidence(models): archive qualification run $GITHUB_RUN_ID"
+          git push origin "HEAD:refs/heads/evidence/run-$GITHUB_RUN_ID"
+          echo "evidence_branch=evidence/run-$GITHUB_RUN_ID" >> "$GITHUB_STEP_SUMMARY"
       - name: Print accepted English master
         if: success()
         shell: bash
