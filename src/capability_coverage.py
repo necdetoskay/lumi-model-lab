@@ -57,6 +57,12 @@ class CoverageCandidate:
     spec_path: str
     current_run_count: int
     current_accepted_count: int
+    current_failure_count: int
+    current_semantic_repairs: int
+    current_scene_attempts: int
+    current_semantic_repairs_per_run: float
+    current_scene_attempts_per_run: float
+    current_minimum_final_criterion: int | None
     current_status: str
     family_observed_age_count: int
     historical_run_count: int
@@ -166,6 +172,41 @@ def _candidate_priority(candidate: CoverageCandidate) -> tuple[Any, ...]:
     )
 
 
+def _sentinel_repeat_candidate(
+    candidates: list[CoverageCandidate],
+) -> CoverageCandidate | None:
+    eligible = [
+        candidate
+        for candidate in candidates
+        if candidate.current_status in {"THIN", "PROVISIONAL"}
+        and (
+            candidate.current_failure_count > 0
+            or (
+                candidate.current_minimum_final_criterion is not None
+                and candidate.current_minimum_final_criterion <= 3
+            )
+            or candidate.current_semantic_repairs_per_run >= 2.0
+        )
+    ]
+    if not eligible:
+        return None
+
+    def priority(candidate: CoverageCandidate) -> tuple[Any, ...]:
+        low_minimum = (
+            candidate.current_minimum_final_criterion is not None
+            and candidate.current_minimum_final_criterion <= 3
+        )
+        return (
+            1 if candidate.current_failure_count > 0 else 0,
+            1 if low_minimum else 0,
+            candidate.current_semantic_repairs_per_run,
+            candidate.current_scene_attempts_per_run,
+            -candidate.current_run_count,
+        )
+
+    return max(eligible, key=priority)
+
+
 def build_coverage_candidates(
     wave_path: Path,
     *,
@@ -209,6 +250,25 @@ def build_coverage_candidates(
         ]
         run_count = len(current)
         accepted_count = sum(1 for row in current if row.accepted)
+        current_failures = run_count - accepted_count
+        current_repairs = sum(_semantic_repairs(row) for row in current)
+        current_attempts = sum(_scene_attempts(row) for row in current)
+        current_repair_rate = (
+            round(current_repairs / run_count, 4)
+            if run_count
+            else 0.0
+        )
+        current_attempt_rate = (
+            round(current_attempts / run_count, 4)
+            if run_count
+            else 0.0
+        )
+        current_minimums = [
+            row.final_judge_minimum
+            for row in current
+            if row.final_judge_minimum is not None
+        ]
+        current_minimum = min(current_minimums) if current_minimums else None
         history_runs = len(historical)
         history_failures = sum(1 for row in historical if not row.accepted)
         history_repairs = sum(_semantic_repairs(row) for row in historical)
@@ -234,6 +294,18 @@ def build_coverage_candidates(
                 f"{observed_age_count}/{len(wave['age_cases'])}"
             ),
         ]
+        if run_count:
+            reasons.append(f"CURRENT_FAILURES:{current_failures}")
+            reasons.append(
+                f"CURRENT_SEMANTIC_REPAIRS_PER_RUN:{current_repair_rate:.4f}"
+            )
+            reasons.append(
+                f"CURRENT_SCENE_ATTEMPTS_PER_RUN:{current_attempt_rate:.4f}"
+            )
+            if current_minimum is not None:
+                reasons.append(
+                    f"CURRENT_MINIMUM_FINAL_CRITERION:{current_minimum}"
+                )
         if history_runs:
             reasons.append(f"HISTORICAL_RUNS:{history_runs}")
             reasons.append(
@@ -257,6 +329,12 @@ def build_coverage_candidates(
                 spec_path=str(case.spec_path),
                 current_run_count=run_count,
                 current_accepted_count=accepted_count,
+                current_failure_count=current_failures,
+                current_semantic_repairs=current_repairs,
+                current_scene_attempts=current_attempts,
+                current_semantic_repairs_per_run=current_repair_rate,
+                current_scene_attempts_per_run=current_attempt_rate,
+                current_minimum_final_criterion=current_minimum,
                 current_status=status,
                 family_observed_age_count=observed_age_count,
                 historical_run_count=history_runs,
@@ -309,7 +387,7 @@ def select_coverage_batch(
     *,
     age_tier_order: list[str],
     batch_size: int,
-) -> list[CoverageCandidate]:
+) -> tuple[list[CoverageCandidate], str | None]:
     if batch_size < 1:
         raise ValueError("batch_size must be positive")
 
@@ -320,11 +398,22 @@ def select_coverage_batch(
     ]
     selected: list[CoverageCandidate] = []
     selected_ids: set[str] = set()
+    selected_age_tiers: set[str] = set()
 
-    # First pass: protect age coverage. At most one case per age tier.
+    sentinel = _sentinel_repeat_candidate(eligible)
+    sentinel_case_id: str | None = None
+    if sentinel is not None:
+        selected.append(sentinel)
+        selected_ids.add(sentinel.case_id)
+        selected_age_tiers.add(sentinel.age_tier)
+        sentinel_case_id = sentinel.case_id
+
+    # First pass: protect age coverage. The sentinel occupies its age-tier slot.
     for age_tier in age_tier_order:
         if len(selected) >= batch_size:
             break
+        if age_tier in selected_age_tiers:
+            continue
         age_candidates = [
             candidate
             for candidate in eligible
@@ -336,6 +425,7 @@ def select_coverage_batch(
         choice = max(age_candidates, key=_candidate_priority)
         selected.append(choice)
         selected_ids.add(choice.case_id)
+        selected_age_tiers.add(choice.age_tier)
 
     # Second pass: if the batch is larger than the age count, fill by priority.
     if len(selected) < batch_size:
@@ -354,7 +444,7 @@ def select_coverage_batch(
             selected.append(candidate)
             selected_ids.add(candidate.case_id)
 
-    return selected
+    return selected, sentinel_case_id
 
 
 def build_coverage_plan(
@@ -371,13 +461,21 @@ def build_coverage_plan(
         evidence=evidence,
         evidence_root=evidence_root,
     )
-    selected = select_coverage_batch(
+    selected, sentinel_case_id = select_coverage_batch(
         candidates,
         age_tier_order=list(capability["narrative_age_tiers"].keys()),
         batch_size=batch_size,
     )
     candidate_payload = [asdict(candidate) for candidate in candidates]
-    selected_payload = [asdict(candidate) for candidate in selected]
+    selected_payload = []
+    for candidate in selected:
+        payload = asdict(candidate)
+        payload["selection_lane"] = (
+            "SENTINEL_REPEAT"
+            if candidate.case_id == sentinel_case_id
+            else "COVERAGE_EXPANSION"
+        )
+        selected_payload.append(payload)
     return {
         "schema_version": "capability-coverage-plan.v1",
         "scope_wave": str(wave_path),
@@ -390,11 +488,21 @@ def build_coverage_plan(
                 "ESTABLISHED",
             ],
             "family_gap_before_historical_burden": True,
+            "sentinel_repeat": {
+                "max_slots_per_batch": 1,
+                "eligible_statuses": ["THIN", "PROVISIONAL"],
+                "terminal_failure_triggers": True,
+                "minimum_final_criterion_lte": 3,
+                "semantic_repairs_per_run_gte": 2.0,
+            },
             "production_frequency_weighting": "DISABLED_NO_TELEMETRY",
             "batch_size": batch_size,
         },
         "identity": asdict(identity),
-        "summary": summary,
+        "summary": {
+            **summary,
+            "sentinel_repeat_case_id": sentinel_case_id,
+        },
         "selected": selected_payload,
         "candidates": candidate_payload,
         "max_parallel": int(wave["max_parallel"]),
@@ -448,17 +556,19 @@ def render_plan_markdown(plan: dict[str, Any]) -> str:
             f"established **{summary['current_protocol_established_case_count']}**."
         ),
         "",
-        "| Case | Age tier | Family | Target | Current | Family age coverage | Historical repairs/run | Historical attempts/run |",
-        "|---|---|---|---:|---|---:|---:|---:|",
+        "| Lane | Case | Age tier | Family | Target | Current | Current repairs/run | Current attempts/run | Family age coverage | Historical repairs/run |",
+        "|---|---|---|---|---:|---|---:|---:|---:|---:|",
     ]
     for item in plan["selected"]:
         lines.append(
-            f"| {item['case_id']} | {item['age_tier']} | "
-            f"{item['narrative_family']} | {item['target_words']} | "
+            f"| {item['selection_lane']} | {item['case_id']} | "
+            f"{item['age_tier']} | {item['narrative_family']} | "
+            f"{item['target_words']} | "
             f"{item['current_status']} ({item['current_run_count']}) | "
+            f"{item['current_semantic_repairs_per_run']:.2f} | "
+            f"{item['current_scene_attempts_per_run']:.2f} | "
             f"{item['family_observed_age_count']}/{summary['executable_age_tier_count']} | "
-            f"{item['historical_semantic_repairs_per_run']:.2f} | "
-            f"{item['historical_scene_attempts_per_run']:.2f} |"
+            f"{item['historical_semantic_repairs_per_run']:.2f} |"
         )
     lines.extend(
         [
