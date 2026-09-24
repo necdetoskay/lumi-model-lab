@@ -351,3 +351,36 @@ The escalation order is:
 `observe -> exact repeat -> fixture-diverse diagnostic -> controlled intervention -> regression qualification -> promotion`
 
 This sequence is part of the canonical Model Lab architecture.
+
+
+## 2026-09-24 — Promote first world-lore all-age evidence
+
+Promotion PRs:
+
+- #180 EARLY_CHILD
+- #181 CHILD
+- #182 MIDDLE_CHILD
+- #183 TEEN
+- #184 YOUNG_ADULT
+- #185 ADULT
+- #186 MATURE_ADULT
+- #187 SENIOR
+
+Result after promotion:
+
+- active v3 STANDARD observed cells: **32/80**;
+- UNKNOWN cells: **48/80**;
+- active v3 governed runs: **53**;
+- accepted: **52/53**;
+- evidence density: 17 THIN, 15 PROVISIONAL, 0 ESTABLISHED.
+
+The canonical EARLY_CHILD world-lore run remains a failed observation because the hard repetition gate was exceeded, even though the semantic judge and continuity evaluator rated the story clean.
+
+The immediate same-run diagnostic produced a clean story with zero 8-gram repetition, but it cannot be counted as second evidence because the rerun reused the existing immutable evidence id.
+
+Decision:
+
+- preserve the failed first observation;
+- do not weaken the repetition threshold;
+- require a fresh workflow dispatch for any counted repeat;
+- continue UNKNOWN coverage from 32/80 using the deterministic planner.
