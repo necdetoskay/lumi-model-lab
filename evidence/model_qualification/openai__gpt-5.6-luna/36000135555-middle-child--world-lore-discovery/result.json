@@ -1,0 +1,1910 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v3-all-families/middle-child--world-lore-discovery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v3-all-families/middle-child--world-lore-discovery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Story Behind the Marker",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to explain why the familiar River Arch has three different descriptions.",
+        "central_problem": "An old map, an oral memory, and a present inscription partly agree but also conflict.",
+        "solution_principle": "Compare each source, separate observation from interpretation, and preserve both evidence and uncertainty.",
+        "theme_thread": "Understanding a place requires listening to evidence, memory, and incomplete stories together.",
+        "ending_state": "Deniz creates a careful account for the archive and leaves one evidence-based question for later research.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C10",
+          "C11"
+        ],
+        "prohibited_events": [
+          "No combat or physical confrontation.",
+          "No perfect explanation forced from incomplete evidence.",
+          "No source is treated as completely reliable without comparison.",
+          "No benchmark or test language appears."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the River Arch, and the question that begins the investigation.",
+          "entry_state": "Deniz visits the local archive after noticing the familiar River Arch’s confusing public marker.",
+          "beats": [
+            "Archivist Ms. Rana shows Deniz the old map room and a map labeling the arch differently from today.",
+            "Deniz decides to compare the map with the oral-history collection and the inscription at the landmark."
+          ],
+          "must_include": [
+            "Deniz observes the marker personally rather than accepting Ms. Rana’s explanation.",
+            "The old map is established as the first distinct historical source.",
+            "Deniz records the question: why does one landmark have different stories?"
+          ],
+          "must_not_do": [
+            "Do not reveal the final explanation.",
+            "Do not make Deniz sound older than ten or solve the conflict immediately."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C11"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has the map’s conflicting label and must investigate the recorded memory before judging either source.",
+          "open_threads_after": [
+            "What did the old map mean by its label?",
+            "What does the oral memory remember about the River Arch?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Examine the old map closely and establish what it can and cannot prove.",
+          "entry_state": "Deniz returns to the archive with the map’s unusual label and a plan for careful comparison.",
+          "beats": [
+            "Deniz notices the map dates the arch and labels it East Ferry Gate, but shows no explanation for the name.",
+            "Ms. Rana helps Deniz distinguish visible map details from guesses about the arch’s past use."
+          ],
+          "must_include": [
+            "The map is treated as evidence of a label and location, not complete proof of the landmark’s history.",
+            "Deniz writes known details separately from interpretations.",
+            "The map becomes a concrete reference for listening to the oral recording."
+          ],
+          "must_not_do": [
+            "Do not declare the map’s label the only true name.",
+            "Do not introduce a second landmark or unrelated historical mystery."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the familiar River Arch and its present marker.",
+            "Scene 1 established the old map as a source with a conflicting label.",
+            "Scene 1 established Deniz’s plan to compare the map with oral history."
+          ],
+          "handoff": "Deniz knows the map records East Ferry Gate but cannot explain its purpose, so the recording becomes necessary evidence.",
+          "open_threads_after": [
+            "Does the oral memory describe the same arch?",
+            "Was East Ferry Gate an older name, a use, or an interpretation?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use an oral memory to add lived experience while showing how memory can differ from records.",
+          "entry_state": "Deniz understands the map’s limits and listens to an archived recording about the River Arch.",
+          "beats": [
+            "A resident remembers families sheltering beneath the arch during a flood and calls it the Safe Arch.",
+            "Deniz notices the recording gives a vivid memory but no exact date, and marks its timing as uncertain."
+          ],
+          "must_include": [
+            "The recording clearly refers to the same arch through its nearby street and river details.",
+            "The oral source meaningfully differs from the map without being dismissed as false.",
+            "Deniz records remembered experience separately from documented map observations."
+          ],
+          "must_not_do": [
+            "Do not prove the flood memory explains the arch’s original name.",
+            "Do not treat vivid emotion as exact historical dating."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C11"
+          ],
+          "prior_evidence": [
+            "The map identified the landmark as East Ferry Gate.",
+            "Deniz had already separated visible map details from guesses.",
+            "The archive’s oral-history collection was established as the next source."
+          ],
+          "handoff": "Deniz now has two plausible, different accounts and must inspect the present inscription and landmark itself.",
+          "open_threads_after": [
+            "How does the present inscription describe the arch?",
+            "Can the map and memory both fit the same place?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Compare the inscription and present neighborhood evidence without forcing the sources into one story.",
+          "entry_state": "Deniz has the map and recording, which describe different past uses of the same River Arch.",
+          "beats": [
+            "At the landmark, Deniz reads an inscription calling it the First Market Gate and sketches its river-facing position.",
+            "Deniz compares the three sources with Ms. Rana, separating known, inferred, remembered, and still-uncertain claims."
+          ],
+          "must_include": [
+            "The inscription is the third distinct source and conflicts meaningfully with both earlier descriptions.",
+            "Present-day observation confirms the sources point to the same arch.",
+            "Deniz notices that different dates or uses could explain some disagreement, but cannot prove that yet."
+          ],
+          "must_not_do": [
+            "Do not reveal which source is ultimately most reliable.",
+            "Do not add an unexplained secret, hidden power, or new subplot."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The map labeled the arch East Ferry Gate.",
+            "The recording remembered families sheltering there during a flood.",
+            "Deniz had recorded map facts separately from remembered experience."
+          ],
+          "handoff": "The three sources identify one arch but different meanings; Deniz must build and test the most defensible layered account.",
+          "open_threads_after": [
+            "Can different names describe different times or functions?",
+            "Which claims belong in a trustworthy archive note?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the evidence by creating a careful account that explains disagreement without erasing uncertainty.",
+          "entry_state": "Deniz has three sources, direct observation, and a list of claims divided by certainty.",
+          "beats": [
+            "Deniz builds a timeline: the map records a ferry gate, the memory recalls flood shelter, and the inscription celebrates a market gate.",
+            "Deniz writes an archive card labeling each statement known, inferred, remembered, or uncertain, then checks it with Ms. Rana."
+          ],
+          "must_include": [
+            "The decisive payoff is Deniz’s evidence-based archive card about the River Arch.",
+            "The account explains that names and uses may have changed across time without claiming certainty.",
+            "Deniz preserves the unresolved date and original purpose instead of inventing an answer."
+          ],
+          "must_not_do": [
+            "Do not solve every ambiguity through an unsupported timeline.",
+            "Do not let Ms. Rana write the account instead of Deniz."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9",
+            "C11"
+          ],
+          "prior_evidence": [
+            "The map recorded East Ferry Gate without explaining its purpose.",
+            "The oral recording described flood shelter but lacked an exact date.",
+            "The inscription called the same arch the First Market Gate."
+          ],
+          "handoff": "Deniz’s archive card presents a defensible layered history, while the arch’s earliest construction and name remain uncertain.",
+          "open_threads_after": [
+            "When was the River Arch first built or renamed?",
+            "Could another record test the timeline?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Share the account, show its effect, and close the investigation with one bounded future question.",
+          "entry_state": "Deniz’s checked archive card is ready, but the River Arch’s earliest history remains unresolved.",
+          "beats": [
+            "The archive displays Deniz’s card beside copies of the map, recording notes, and inscription, inviting neighbors to see how evidence differs.",
+            "Deniz feels satisfied that uncertainty was preserved and asks whether an old building permit might confirm the arch’s first name."
+          ],
+          "must_include": [
+            "Deniz’s main goal is completed through a clear, cautious account rather than a single perfect answer.",
+            "The neighborhood can distinguish observed facts, remembered experience, inference, and uncertainty.",
+            "The ending opens only the evidence-based question of a possible old building permit."
+          ],
+          "must_not_do": [
+            "Do not introduce a new mystery beyond the possible building permit.",
+            "Do not undo Deniz’s account or present the remaining question as a failure."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C7",
+            "C8",
+            "C10",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Deniz created and checked the archive card using all three sources.",
+            "The card explained possible changing uses while preserving uncertainty.",
+            "The unresolved earliest name and date were identified in Scene 5."
+          ],
+          "handoff": "The archive now preserves a layered account of the River Arch; a future search may examine whether a building permit confirms its earliest name.",
+          "open_threads_after": [
+            "Could an old building permit confirm when the River Arch was first built or renamed?"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.97,
+        "constraint_coverage": 0.76,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.9,
+        "no_early_resolution": 0.9,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.76
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.91,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3703,
+        "output_tokens": 185,
+        "cost": 0.000155526
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Deniz's motivation to investigate must feel natural for a 10-year-old (curiosity about a familiar place) rather than academic. Ensure the marker's confusing label is concrete and observable, not abstract."
+        },
+        {
+          "scene": 2,
+          "risk": "The distinction between 'visible map details' and 'guesses' must be age-appropriate and concrete. Avoid meta-commentary about historical method; show Deniz noticing and recording through action."
+        },
+        {
+          "scene": 3,
+          "risk": "The oral recording must be vivid and emotionally resonant (families sheltering, flood danger) so Deniz's comparison feels meaningful, not mechanical. The lack of exact dating should emerge naturally from the memory's nature, not from exposition."
+        },
+        {
+          "scene": 4,
+          "risk": "Three conflicting names (East Ferry Gate, Safe Arch, First Market Gate) could overwhelm a 10-year-old reader if not anchored to the same visible landmark. Deniz's sketching and Ms. Rana's guidance must keep the landmark concrete and central."
+        },
+        {
+          "scene": 5,
+          "risk": "The archive card is the decisive payoff, but it must feel like Deniz's own reasoning, not a template Ms. Rana provides. Show Deniz organizing the evidence and making the labeling choices (known/inferred/remembered/uncertain) through trial and reflection."
+        },
+        {
+          "scene": 6,
+          "risk": "The ending question about a building permit must feel like a natural next step Deniz thinks of, not a dangling plot device. Ensure the display of the card alongside sources feels like a real, satisfying conclusion to the investigation, not a setup for a sequel."
+        }
+      ],
+      "summary": "This plan is well-structured and satisfies all critical requirements. Causal continuity is strong: each scene builds on prior evidence and enables the next investigation step. Deniz's goal remains stable (explain the three descriptions) and her actions are motivated by curiosity and the desire to compare sources. All eleven constraints are addressed in the plan, with particular strength in constraint coverage (three sources, meaningful disagreement, knowledge-type labeling, and a bounded future question). Information progression is excellent: clues accumulate without resets, and the archive card in Scene 5 represents the decisive payoff without forcing a false resolution. No unexplained dependencies exist; all characters, objects, and locations are introduced before use. The ending is coherent: Scene 5 delivers Deniz's evidence-based account, and Scene 6 shows its effect and opens only the building-permit question. The JEV advisory flagged constraint_coverage at 0.76, but detailed review shows all constraints are present in the plan; the flag likely reflects prose-execution risk rather than plan deficiency. Primary execution risks are maintaining age-appropriate voice, keeping the landmark concrete across three conflicting names, ensuring Deniz's reasoning feels like her own (not Ms. Rana's), and making the final question feel like a natural next step rather than a dangling hook. The plan is ready for prose development with attention to these voice and pacing details.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0041988,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000155526,
+      "haiku": {
+        "usd": 0.010324,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 978,
+        "output_tokens": 3336,
+        "total_tokens": 4314
+      },
+      "jev": {
+        "input_tokens": 3703,
+        "output_tokens": 185,
+        "cost": 0.000155526
+      },
+      "haiku": {
+        "input_tokens": 3894,
+        "output_tokens": 1286,
+        "total_tokens": 5180
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    364,
+    434,
+    476,
+    476,
+    574,
+    476
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 364,
+      "word_count": 393,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the River Arch, and the question that begins the investigation.",
+        "entry_state": "Deniz visits the local archive after noticing the familiar River Arch’s confusing public marker.",
+        "beats": [
+          "Archivist Ms. Rana shows Deniz the old map room and a map labeling the arch differently from today.",
+          "Deniz decides to compare the map with the oral-history collection and the inscription at the landmark."
+        ],
+        "must_include": [
+          "Deniz observes the marker personally rather than accepting Ms. Rana’s explanation.",
+          "The old map is established as the first distinct historical source.",
+          "Deniz records the question: why does one landmark have different stories?"
+        ],
+        "must_not_do": [
+          "Do not reveal the final explanation.",
+          "Do not make Deniz sound older than ten or solve the conflict immediately."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C11"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has the map’s conflicting label and must investigate the recorded memory before judging either source.",
+        "open_threads_after": [
+          "What did the old map mean by its label?",
+          "What does the oral memory remember about the River Arch?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz had crossed the River Arch hundreds of times, usually while hurrying to school or racing his cousin to the bakery. Today he stopped beneath its gray stone curve.\n\nA metal marker was fixed to one side. Deniz leaned close and read:\n\nFIRST MARKET GATE.\n\nHe looked through the arch at the river shining beyond it. Boats no longer passed there, but the river still pressed against the bank, and the old stones still held their wide, rounded shape.\n\n“First Market Gate?” Deniz murmured. “First for what?”\n\nAt the local archive, Ms. Rana found him staring at a photograph of the arch.\n\n“You noticed the marker,” she said.\n\n“I noticed what it says,” Deniz replied. “But I don’t know if that is the whole story.”\n\nMs. Rana smiled and led him into the old map room. The air smelled of paper and dust. Drawers covered one wall, and a large map lay beneath a sheet of clear plastic.\n\n“There it is,” she said, pointing near the river bend.\n\nThe map showed the same curved line of river, the same road beside it, and a small stone shape at the crossing. But beside that shape, in faded brown ink, were the words:\n\nEAST FERRY GATE.\n\nDeniz checked the river bend, then the road. They matched the arch he knew. He looked back at the marker’s words in his mind.\n\n“Why does one place have two names?” he asked.\n\n“Good question,” said Ms. Rana. “A map can tell us what someone wrote on it. It may not tell us everything about why they wrote it.”\n\nDeniz took out his notebook. He drew two columns. Under “Sources,” he wrote “present marker” and “old map.” Under “Questions,” he wrote:\n\nWhy does one landmark have different stories?\n\nHe tapped his pencil against the page. The answer might be in the archive’s oral-history recordings—or in the stones themselves.\n\n“I want to hear what people remember,” he said. “Then I’ll go back and read the inscription carefully.”\n\nMs. Rana placed a recording slip beside the map. Deniz copied the map’s words into his notebook, leaving room underneath.\n\nEast Ferry Gate: what did this name mean?\n\nBefore leaving, Deniz checked the label once more and copied the map reference so he could find it again. He planned to return to the archive for the recording before deciding what either name meant.",
+        "state_delta": {
+          "location": "The local archive's old map room",
+          "character_goal": "Deniz wants to explain why the familiar River Arch has different descriptions.",
+          "knowledge_gained": [
+            "The present marker calls the River Arch First Market Gate.",
+            "An old map labels the same landmark East Ferry Gate.",
+            "The archive contains oral-history recordings that may add another account."
+          ],
+          "facts_established": [
+            "Deniz personally observed the marker at the River Arch.",
+            "The old map shows the same river bend, road, and stone arch.",
+            "The present marker and old map use different names for the landmark."
+          ],
+          "clues_added": [
+            "The old map's label is East Ferry Gate.",
+            "The map does not explain why that name was used."
+          ],
+          "objects_changed": [
+            "Deniz began a notebook with source and question sections.",
+            "A recording slip was placed beside the old map for Deniz's next investigation.",
+            "Deniz copied the map reference so he could find it again."
+          ],
+          "relationships_changed": [
+            "Ms. Rana is helping Deniz investigate rather than giving him a ready-made explanation."
+          ],
+          "threads_opened": [
+            "What did East Ferry Gate mean?",
+            "What does the oral-history collection remember about the River Arch?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has personally seen the present marker calling the arch First Market Gate and has copied the old map's label, East Ferry Gate, into his notebook. He knows the map matches the familiar arch's location but does not yet know what the older label means. He has noted the map reference and is ready to return to the archive to listen to the oral-history recording before judging either source."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.563,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 358,
+          "usage": {
+            "input_tokens": 4199,
+            "output_tokens": 1084,
+            "total_tokens": 5283
+          },
+          "cost": {
+            "usd": 0.0023504,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 12.387,
+          "repair_reasons": [
+            "jev:continues_prior_state:0.790<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 393,
+          "usage": {
+            "input_tokens": 4441,
+            "output_tokens": 1223,
+            "total_tokens": 5664
+          },
+          "cost": {
+            "usd": 0.0025777,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.82,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.86,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2718,
+          "output_tokens": 188,
+          "cost": 0.000114156
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.79,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "continues_prior_state": 0.79
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2652,
+            "output_tokens": 188,
+            "cost": 0.000111384
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.82,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2718,
+            "output_tokens": 188,
+            "cost": 0.000114156
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.586,
+        0.374
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.79,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.88,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "continues_prior_state": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.93,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 2652,
+              "output_tokens": 188,
+              "cost": 0.000111384
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 393,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.82,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.86,
+              "no_contradiction": 0.9,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.96,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 2718,
+              "output_tokens": 188,
+              "cost": 0.000114156
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 29.911
+    },
+    {
+      "scene": 2,
+      "target_words": 434,
+      "word_count": 394,
+      "contract": {
+        "index": 2,
+        "purpose": "Examine the old map closely and establish what it can and cannot prove.",
+        "entry_state": "Deniz returns to the archive with the map’s unusual label and a plan for careful comparison.",
+        "beats": [
+          "Deniz notices the map dates the arch and labels it East Ferry Gate, but shows no explanation for the name.",
+          "Ms. Rana helps Deniz distinguish visible map details from guesses about the arch’s past use."
+        ],
+        "must_include": [
+          "The map is treated as evidence of a label and location, not complete proof of the landmark’s history.",
+          "Deniz writes known details separately from interpretations.",
+          "The map becomes a concrete reference for listening to the oral recording."
+        ],
+        "must_not_do": [
+          "Do not declare the map’s label the only true name.",
+          "Do not introduce a second landmark or unrelated historical mystery."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the familiar River Arch and its present marker.",
+          "Scene 1 established the old map as a source with a conflicting label.",
+          "Scene 1 established Deniz’s plan to compare the map with oral history."
+        ],
+        "handoff": "Deniz knows the map records East Ferry Gate but cannot explain its purpose, so the recording becomes necessary evidence.",
+        "open_threads_after": [
+          "Does the oral memory describe the same arch?",
+          "Was East Ferry Gate an older name, a use, or an interpretation?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz returned to the archive with his notebook tucked under his arm. Ms. Rana had left the old map beneath its clear cover, exactly where they had seen it.\n\n“Before we listen to the recording,” Deniz said, “I want to look harder.”\n\nHe bent over the map. In one corner, small writing gave its date: 1887. A thin blue line marked the river. A brown road curved beside it, and a tiny stone shape stood where the River Arch still stood today. The label was clear enough now:\n\nEAST FERRY GATE.\n\nDeniz copied the date and drew a box around the label. Then he made two headings in his notebook.\n\nKNOWN FROM THE MAP\n\n- It is dated 1887.\n- It shows the river bend and the road.\n- It marks a stone arch.\n- It calls the arch East Ferry Gate.\n\nHe paused before the second heading.\n\nGUESSES\n\n- People crossed the river there.\n- Boats stopped nearby.\n- The arch was built for a ferry.\n\n“Are those guesses too wild?” Deniz asked.\n\n“They are possible,” Ms. Rana said. “But which part can you actually see?”\n\n“The river, road, arch, and words.” Deniz pointed to each one. “I can’t see boats. And the map doesn’t draw a ferry.”\n\n“Good. A label is evidence that someone used those words. It is not proof of every story we might build around them.”\n\nDeniz erased the line about boats. He changed the next one to: “The name may connect to a ferry, but the map does not explain how.”\n\nThe map felt less like an answer now and more like a careful clue. It placed the arch in 1887 and recorded one name, but it did not tell him whether the name described the arch’s purpose, a nearby crossing, or something people had simply called it.\n\nMs. Rana picked up the recording slip. “The oral-history file mentions the river road. You can listen for details that help you decide whether it describes this same place.”\n\nDeniz wrote one more note beneath the map facts:\n\nLISTEN FOR: river bend, road, stone arch, nearby streets.\n\nHe looked at East Ferry Gate again. The words still raised questions, but now he knew which questions belonged to the map—and which would have to wait for another source.\n\n“I’m ready,” he said, sliding the notebook beside the recorder.",
+        "state_delta": {
+          "location": "The local archive's old map room",
+          "character_goal": "Deniz wants to compare the old map with the oral-history recording to explain the River Arch's different descriptions.",
+          "knowledge_gained": [
+            "The old map is dated 1887.",
+            "The map shows the same river bend, road, and stone arch as the present-day River Arch.",
+            "The map records the name East Ferry Gate but gives no explanation for the name."
+          ],
+          "facts_established": [
+            "The map can prove that someone used the label East Ferry Gate in 1887.",
+            "The map does not prove that boats stopped there or that the arch was built for a ferry.",
+            "The map provides location details that can be compared with the oral recording."
+          ],
+          "clues_added": [
+            "The name East Ferry Gate may connect to a ferry, a nearby crossing, or another meaning, but its purpose remains unknown.",
+            "The oral recording should be checked for the river bend, road, stone arch, and nearby streets."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now separates known map details from guesses.",
+            "Deniz recorded the map's 1887 date and the label East Ferry Gate.",
+            "The notebook is positioned beside the recorder for the next investigation."
+          ],
+          "relationships_changed": [
+            "Ms. Rana continues guiding Deniz to test his ideas without supplying the answer."
+          ],
+          "threads_opened": [
+            "Does the oral memory describe the same arch?",
+            "Was East Ferry Gate an older name, a use, or an interpretation?"
+          ],
+          "threads_resolved": [
+            "The map's date and visible location details have been identified."
+          ],
+          "handoff_state": "Deniz has confirmed that the 1887 map records the same River Arch and labels it East Ferry Gate, but he knows the map cannot explain the label's purpose. He has separated visible map facts from guesses in his notebook and is ready to listen to the oral-history recording, checking its river, road, arch, and nearby-street details against the map."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.005,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 394,
+          "usage": {
+            "input_tokens": 5208,
+            "output_tokens": 1091,
+            "total_tokens": 6299
+          },
+          "cost": {
+            "usd": 0.00261105,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.94,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3289,
+          "output_tokens": 188,
+          "cost": 0.000138138
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.94,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3289,
+            "output_tokens": 188,
+            "cost": 0.000138138
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.601
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.607
+    },
+    {
+      "scene": 3,
+      "target_words": 476,
+      "word_count": 498,
+      "contract": {
+        "index": 3,
+        "purpose": "Use an oral memory to add lived experience while showing how memory can differ from records.",
+        "entry_state": "Deniz understands the map’s limits and listens to an archived recording about the River Arch.",
+        "beats": [
+          "A resident remembers families sheltering beneath the arch during a flood and calls it the Safe Arch.",
+          "Deniz notices the recording gives a vivid memory but no exact date, and marks its timing as uncertain."
+        ],
+        "must_include": [
+          "The recording clearly refers to the same arch through its nearby street and river details.",
+          "The oral source meaningfully differs from the map without being dismissed as false.",
+          "Deniz records remembered experience separately from documented map observations."
+        ],
+        "must_not_do": [
+          "Do not prove the flood memory explains the arch’s original name.",
+          "Do not treat vivid emotion as exact historical dating."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C11"
+        ],
+        "prior_evidence": [
+          "The map identified the landmark as East Ferry Gate.",
+          "Deniz had already separated visible map details from guesses.",
+          "The archive’s oral-history collection was established as the next source."
+        ],
+        "handoff": "Deniz now has two plausible, different accounts and must inspect the present inscription and landmark itself.",
+        "open_threads_after": [
+          "How does the present inscription describe the arch?",
+          "Can the map and memory both fit the same place?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz pressed the play button. At first, the recording held only a soft hiss. Then an older woman’s voice filled the map room.\n\n“My name is Leyla Demir. I lived on Willow Street when I was little, in the house with the blue shutters.”\n\nDeniz glanced at Ms. Rana. Willow Street ran beside the river road, just as the map showed.\n\nLeyla continued. “When the river climbed over its banks, everyone hurried to the stone arch. The ground beneath it was higher than the street. Families crowded there with blankets, baskets, and sleepy children. My brother carried our cat inside his coat.”\n\nDeniz could almost see it: rain flashing on the river, wet shoes packed beneath the arch, a child peeking out at the rising water. The recording made the old stones seem warm with people, even though Leyla spoke from many years ago.\n\n“We called it the Safe Arch,” Leyla said. “Our parents told us to stay close until the water went down. I remember the bakery bell ringing across Willow Street, and the river rushing below the road.”\n\nThe recording ended with a click.\n\nFor a moment, Deniz said nothing. He looked again at the map’s thin blue river and brown road. The bakery was not drawn, but Willow Street matched the nearby street Leyla had named. The river bend matched too. Most importantly, the stone arch stood in the same place.\n\n“It’s the River Arch,” Deniz said. “She’s talking about the same one.”\n\n“I think so,” Ms. Rana replied. “What makes you think that?”\n\n“Willow Street, the river road, the bend, and the stone arch all fit.” Deniz tapped the map. “But she calls it the Safe Arch, not East Ferry Gate.”\n\nHe opened his notebook and turned to a fresh page. Under a heading called REMEMBERED EXPERIENCE, he wrote:\n\n- Leyla remembers families sheltering beneath the arch during a flood.\n- She remembers the name Safe Arch.\n- She remembers Willow Street, the river road, and the river rising.\n\nThen he added: “No exact date.”\n\n“Why is that important?” Ms. Rana asked.\n\n“Because she says ‘when I was little,’” Deniz answered. “That tells us it happened in her childhood, but not which year. And remembering something clearly doesn’t make the date exact.”\n\nHe drew a line between the two pages. On the map page, he had written: “In 1887, someone labeled the arch East Ferry Gate.” On the new page, he wrote: “At an unknown time, Leyla’s family used or heard the name Safe Arch.”\n\nThe two accounts did not match neatly. Still, Deniz did not cross either one out. The map recorded a name. Leyla remembered what the place meant to people during a flood. Both could be true, but he could not yet say how they connected.\n\nMs. Rana handed him the recording slip. “The inscription at the arch may give you a third description.”\n\nDeniz tucked the slip into his notebook. “Then I need to see what the stones say today.”",
+        "state_delta": {
+          "location": "The local archive's old map room",
+          "character_goal": "Deniz wants to compare the old map, the oral memory, and the present inscription to explain the River Arch's different descriptions.",
+          "knowledge_gained": [
+            "The oral recording is by Leyla Demir, who remembers living on Willow Street near the river.",
+            "Leyla remembers families sheltering beneath the stone arch during a flood.",
+            "Leyla remembers people calling the landmark the Safe Arch.",
+            "The recording's Willow Street, river road, river bend, and stone arch match the map's location."
+          ],
+          "facts_established": [
+            "The recording clearly refers to the same River Arch shown on the 1887 map.",
+            "Leyla's memory describes lived experience at the arch during a flood.",
+            "The recording does not give an exact date for the flood or for the use of the name Safe Arch."
+          ],
+          "clues_added": [
+            "The names East Ferry Gate and Safe Arch may describe different meanings, uses, or times connected to the same landmark.",
+            "The present inscription may provide a third description for comparison."
+          ],
+          "objects_changed": [
+            "Deniz's notebook now has a separate REMEMBERED EXPERIENCE section.",
+            "Deniz recorded Leyla's flood memory, the name Safe Arch, the matching location details, and the absence of an exact date.",
+            "The recording slip was placed in Deniz's notebook for the visit to the landmark."
+          ],
+          "relationships_changed": [
+            "Ms. Rana continues guiding Deniz with questions while allowing him to form and record his own comparison."
+          ],
+          "threads_opened": [
+            "How does the present inscription describe the River Arch?",
+            "Can East Ferry Gate and Safe Arch both fit the same place without having the same meaning?"
+          ],
+          "threads_resolved": [
+            "The oral recording has been identified as a memory about the same arch shown on the old map."
+          ],
+          "handoff_state": "Deniz has two different accounts of the same River Arch: the 1887 map records the label East Ferry Gate, while Leyla's undated oral memory recalls families sheltering there during a flood and calls it the Safe Arch. He has recorded the memory separately from map facts, noted that its timing is uncertain, and is ready to inspect the present inscription and landmark."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 14.919,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 498,
+          "usage": {
+            "input_tokens": 5693,
+            "output_tokens": 1265,
+            "total_tokens": 6958
+          },
+          "cost": {
+            "usd": 0.0029411,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3999,
+          "output_tokens": 188,
+          "cost": 0.000167958
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3999,
+            "output_tokens": 188,
+            "cost": 0.000167958
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.581
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.501
+    },
+    {
+      "scene": 4,
+      "target_words": 476,
+      "word_count": 495,
+      "contract": {
+        "index": 4,
+        "purpose": "Compare the inscription and present neighborhood evidence without forcing the sources into one story.",
+        "entry_state": "Deniz has the map and recording, which describe different past uses of the same River Arch.",
+        "beats": [
+          "At the landmark, Deniz reads an inscription calling it the First Market Gate and sketches its river-facing position.",
+          "Deniz compares the three sources with Ms. Rana, separating known, inferred, remembered, and still-uncertain claims."
+        ],
+        "must_include": [
+          "The inscription is the third distinct source and conflicts meaningfully with both earlier descriptions.",
+          "Present-day observation confirms the sources point to the same arch.",
+          "Deniz notices that different dates or uses could explain some disagreement, but cannot prove that yet."
+        ],
+        "must_not_do": [
+          "Do not reveal which source is ultimately most reliable.",
+          "Do not add an unexplained secret, hidden power, or new subplot."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The map labeled the arch East Ferry Gate.",
+          "The recording remembered families sheltering there during a flood.",
+          "Deniz had recorded map facts separately from remembered experience."
+        ],
+        "handoff": "The three sources identify one arch but different meanings; Deniz must build and test the most defensible layered account.",
+        "open_threads_after": [
+          "Can different names describe different times or functions?",
+          "Which claims belong in a trustworthy archive note?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz and Ms. Rana walked to the River Arch. It stood where the map said it would: beside the river bend, at the end of the road, with Willow Street opening behind it.\n\nUp close, the stones were larger than Deniz had imagined. Some were pale and smooth. Others had dark marks from rain and years of passing hands. A metal plaque was fixed to one side.\n\nDeniz read it aloud. “The First Market Gate. Built to welcome traders to the river market.”\n\nHe blinked. “That’s another name.”\n\nMs. Rana did not answer. She pointed toward the river. “What can you observe?”\n\nDeniz opened his notebook. He sketched the arch, the river-facing side, the road, and the corner where Willow Street began. “The arch faces the river. The road passes through it. Willow Street is nearby. It’s the same shape and place as the arch on the map.”\n\n“Good,” said Ms. Rana. “What does the plaque tell you?”\n\n“That someone calls it the First Market Gate now—or at least calls it that on this plaque.” Deniz copied the words carefully. “It says it welcomed traders. But it doesn’t say when the market began.”\n\nHe looked at the stones again. “And it doesn’t say anything about a ferry or a flood.”\n\n“Does that make the other accounts wrong?”\n\nDeniz thought about Leyla’s voice: families pressed together beneath the arch, blankets and baskets around them, the river rushing below the road. “No. The plaque describes a market. The map gives the name East Ferry Gate. Leyla remembers people calling it the Safe Arch.”\n\nHe drew three boxes in his notebook. At the top of the first he wrote KNOWN. In it, he listed the matching river bend, road, arch, and nearby Willow Street. In the second, he wrote REMEMBERED and copied Leyla’s flood memory. In the third, he wrote WRITTEN ON THE PLAQUE and recorded First Market Gate.\n\n“What belongs under INFERRED?” Ms. Rana asked.\n\nDeniz tapped his pencil against the page. “Maybe the arch had different uses at different times. A ferry could have crossed nearby. Later, people might have gathered there during floods. And a market might have used the road.”\n\n“Could you prove that from these sources?”\n\n“No.” He added a question mark beside the idea. “The dates are missing. The map is from 1887, but Leyla didn’t say when the flood happened, and the plaque doesn’t give a date either.”\n\nDeniz drew one last box: UNCERTAIN. He wrote: “We do not know which name came first, or what the arch was originally built for.”\n\nThe three names still felt untidy, like stones that did not quite fit. But his sketch showed that the names belonged to one real place, not three different arches.\n\nMs. Rana studied the page. “You have not forced them into one answer.”\n\n“I’m not ready to,” Deniz said. He closed his notebook. “I need to make the account show what each source can actually tell us.”",
+        "state_delta": {
+          "location": "The River Arch and its surrounding present-day neighborhood",
+          "character_goal": "Deniz wants to compare the old map, Leyla's oral memory, and the present inscription to explain why the same River Arch has different descriptions.",
+          "knowledge_gained": [
+            "The present plaque calls the landmark the First Market Gate.",
+            "The plaque describes welcoming traders to a river market but gives no date.",
+            "The arch's river-facing position, road, river bend, and nearby Willow Street match the map and recording."
+          ],
+          "facts_established": [
+            "Present-day observation confirms that the map, oral recording, and plaque refer to the same physical arch.",
+            "The third source conflicts meaningfully with the map's East Ferry Gate and Leyla's remembered Safe Arch.",
+            "The plaque does not explain the ferry name, flood memory, original construction, or exact dates."
+          ],
+          "clues_added": [
+            "Different names may have described different uses or times connected to the same arch.",
+            "The earliest name and original purpose remain unknown."
+          ],
+          "objects_changed": [
+            "Deniz sketched the arch, river-facing side, road, river bend, and nearby Willow Street.",
+            "Deniz copied the plaque's wording into his notebook.",
+            "Deniz organized his notes under KNOWN, REMEMBERED, WRITTEN ON THE PLAQUE, INFERRED, and UNCERTAIN."
+          ],
+          "relationships_changed": [
+            "Ms. Rana continues to guide Deniz by asking questions while Deniz makes the comparisons and conclusions himself."
+          ],
+          "threads_opened": [
+            "Can different names describe different times or functions?",
+            "Which claims belong in a trustworthy archive note?",
+            "What was the River Arch originally built for, and which name came first?"
+          ],
+          "threads_resolved": [
+            "The three sources and direct observation have been anchored to one physical landmark."
+          ],
+          "handoff_state": "Deniz has directly inspected the River Arch and confirmed that the 1887 map, Leyla's flood memory, and the present plaque all describe the same place. He now has three conflicting descriptions: East Ferry Gate, Safe Arch, and First Market Gate. His notebook separates known observations, remembered experience, plaque wording, inferences, and uncertainties. He suspects the names may reflect different times or uses but cannot prove that yet. He is ready to create a careful archive account without deciding which source is completely right."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.372,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 495,
+          "usage": {
+            "input_tokens": 6388,
+            "output_tokens": 1353,
+            "total_tokens": 7741
+          },
+          "cost": {
+            "usd": 0.00322045,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4608,
+          "output_tokens": 188,
+          "cost": 0.000193536
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4608,
+            "output_tokens": 188,
+            "cost": 0.000193536
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.55
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.922
+    },
+    {
+      "scene": 5,
+      "target_words": 574,
+      "word_count": 504,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the evidence by creating a careful account that explains disagreement without erasing uncertainty.",
+        "entry_state": "Deniz has three sources, direct observation, and a list of claims divided by certainty.",
+        "beats": [
+          "Deniz builds a timeline: the map records a ferry gate, the memory recalls flood shelter, and the inscription celebrates a market gate.",
+          "Deniz writes an archive card labeling each statement known, inferred, remembered, or uncertain, then checks it with Ms. Rana."
+        ],
+        "must_include": [
+          "The decisive payoff is Deniz’s evidence-based archive card about the River Arch.",
+          "The account explains that names and uses may have changed across time without claiming certainty.",
+          "Deniz preserves the unresolved date and original purpose instead of inventing an answer."
+        ],
+        "must_not_do": [
+          "Do not solve every ambiguity through an unsupported timeline.",
+          "Do not let Ms. Rana write the account instead of Deniz."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9",
+          "C11"
+        ],
+        "prior_evidence": [
+          "The map recorded East Ferry Gate without explaining its purpose.",
+          "The oral recording described flood shelter but lacked an exact date.",
+          "The inscription called the same arch the First Market Gate."
+        ],
+        "handoff": "Deniz’s archive card presents a defensible layered history, while the arch’s earliest construction and name remain uncertain.",
+        "open_threads_after": [
+          "When was the River Arch first built or renamed?",
+          "Could another record test the timeline?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next morning, Deniz returned to the old map room with his notebook, the recording slip, and a clean archive card.\n\nHe drew three lines across the card. At the top, he wrote: RIVER ARCH: THREE ACCOUNTS.\n\n“Start with what you can support,” Ms. Rana said. “Not what sounds most exciting.”\n\nDeniz nodded. He looked at the map copy first.\n\n“Known,” he said, writing as he spoke. “An 1887 map shows this arch at the river bend and labels it East Ferry Gate.” He paused. “But the map does not say that boats went through it. So I can’t write that it was definitely built for a ferry.”\n\nMs. Rana smiled. “That is an important difference.”\n\nDeniz moved to the recording notes. “Remembered: Leyla Demir recalled families sheltering beneath the arch during a flood. She remembered people calling it the Safe Arch.” He added, “The recording matches the river, road, Willow Street, and stone arch. But Leyla didn’t give the flood’s date.”\n\nHe tapped his pencil. “Her memory tells us what people experienced. It doesn’t give us every date from the past.”\n\n“Exactly.”\n\nLast came the plaque. Deniz copied its words carefully: First Market Gate. Built to welcome traders to the river market.\n\n“Known from the present plaque,” he said. “But it doesn’t tell us when the market began, either.”\n\nFor a moment, he stared at the three names. East Ferry Gate. Safe Arch. First Market Gate. They still looked like three people arguing over one hat.\n\nDeniz turned the card over and began again. This time he wrote a short account instead of three separate lists.\n\n“The River Arch is one landmark beside the river bend near Willow Street. An 1887 map calls it East Ferry Gate. A later memory calls it the Safe Arch because families sheltered there during a flood. A present-day plaque calls it the First Market Gate and connects it with traders and a river market.”\n\nHe read the sentence twice. Then he added:\n\n“These names may describe different uses or times. That is possible, but the sources do not prove exactly when the names changed, or whether the arch was first built for a ferry, a market, or something else.”\n\nDeniz looked at Ms. Rana. “Is ‘later memory’ all right? We don’t actually know when the flood happened.”\n\n“Good catch,” she said. “Use ‘an oral memory’ instead. It keeps the timing honest.”\n\nDeniz crossed out the words and replaced them. Under the account, he made four small labels: KNOWN, REMEMBERED, INFERRED, UNCERTAIN. He placed each claim where it belonged, checking that none had quietly slipped into the wrong box.\n\nAt the bottom, he wrote: “Further records are needed to learn the arch’s earliest name, construction date, and original purpose.”\n\nMs. Rana read the card without changing a word. “This is careful work.”\n\nDeniz let out a breath. He had wanted one answer that would make every name fit perfectly. Instead, he had made something better: an account that showed where each answer came from—and where the evidence stopped.",
+        "state_delta": {
+          "location": "The local archive's old map room",
+          "character_goal": "Deniz wants to explain the River Arch's three descriptions by comparing what each source can actually support.",
+          "knowledge_gained": [
+            "The three names can be presented as accounts connected to one physical landmark.",
+            "The sources may reflect different uses or times, but they do not prove exactly when the names changed.",
+            "The original purpose, earliest name, and construction date remain unresolved."
+          ],
+          "facts_established": [
+            "The 1887 map records East Ferry Gate.",
+            "The oral memory recalls flood shelter and the name Safe Arch without an exact date.",
+            "The present plaque calls the landmark First Market Gate and connects it with traders and a river market."
+          ],
+          "clues_added": [
+            "A careful layered account can explain the disagreement without choosing one source as completely correct.",
+            "Further records would be needed to determine the arch's earliest name, construction date, and original purpose."
+          ],
+          "objects_changed": [
+            "Deniz created an archive card titled RIVER ARCH: THREE ACCOUNTS.",
+            "The card labels claims as known, remembered, inferred, or uncertain.",
+            "Ms. Rana checked the card and did not change Deniz's account."
+          ],
+          "relationships_changed": [
+            "Ms. Rana confirms Deniz's reasoning while preserving his authorship of the archive account."
+          ],
+          "threads_opened": [
+            "When was the River Arch first built or renamed?",
+            "Could another record test the possible sequence of ferry, flood-shelter, and market uses?"
+          ],
+          "threads_resolved": [
+            "Deniz has completed a defensible archive account explaining the three descriptions without forcing certainty."
+          ],
+          "handoff_state": "Deniz's checked archive card presents the River Arch as one landmark described by three sources: the 1887 map's East Ferry Gate, Leyla's undated oral memory of the Safe Arch, and the present plaque's First Market Gate. It distinguishes known observations, remembered experience, inference, and uncertainty. The card explains that names or uses may have changed but preserves the unresolved earliest name, construction date, and original purpose."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.06,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 504,
+          "usage": {
+            "input_tokens": 6974,
+            "output_tokens": 1254,
+            "total_tokens": 8228
+          },
+          "cost": {
+            "usd": 0.00324815,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.91,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5201,
+          "output_tokens": 188,
+          "cost": 0.000218442
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.91,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5201,
+            "output_tokens": 188,
+            "cost": 0.000218442
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.391
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.455
+    },
+    {
+      "scene": 6,
+      "target_words": 476,
+      "word_count": 482,
+      "contract": {
+        "index": 6,
+        "purpose": "Share the account, show its effect, and close the investigation with one bounded future question.",
+        "entry_state": "Deniz’s checked archive card is ready, but the River Arch’s earliest history remains unresolved.",
+        "beats": [
+          "The archive displays Deniz’s card beside copies of the map, recording notes, and inscription, inviting neighbors to see how evidence differs.",
+          "Deniz feels satisfied that uncertainty was preserved and asks whether an old building permit might confirm the arch’s first name."
+        ],
+        "must_include": [
+          "Deniz’s main goal is completed through a clear, cautious account rather than a single perfect answer.",
+          "The neighborhood can distinguish observed facts, remembered experience, inference, and uncertainty.",
+          "The ending opens only the evidence-based question of a possible old building permit."
+        ],
+        "must_not_do": [
+          "Do not introduce a new mystery beyond the possible building permit.",
+          "Do not undo Deniz’s account or present the remaining question as a failure."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C7",
+          "C8",
+          "C10",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Deniz created and checked the archive card using all three sources.",
+          "The card explained possible changing uses while preserving uncertainty.",
+          "The unresolved earliest name and date were identified in Scene 5."
+        ],
+        "handoff": "The archive now preserves a layered account of the River Arch; a future search may examine whether a building permit confirms its earliest name.",
+        "open_threads_after": [
+          "Could an old building permit confirm when the River Arch was first built or renamed?"
+        ]
+      },
+      "envelope": {
+        "prose": "That afternoon, Ms. Rana placed Deniz’s archive card in the front room of the local archive.\n\nBeside it, she set a copy of the 1887 map, Deniz’s notes from Leyla Demir’s recording, and a photograph of the present-day plaque. A small sign invited visitors to compare the sources.\n\nDeniz stood nearby as neighbors came in from the street. Mr. Selim, who ran the bakery, leaned close to the map. “East Ferry Gate,” he read. “I’ve always called it the Market Arch.”\n\n“That is what the plaque calls it,” Deniz said, pointing to the photograph. “But the map is older, and it uses a different name.”\n\nA girl about Deniz’s age read the recording notes. “Safe Arch? Why?”\n\n“Leyla remembered families sheltering beneath it during a flood,” Deniz explained. “That part is remembered experience. We know she told the story, but we don’t know the flood’s exact date.”\n\nThe girl looked from the notes to the card. “So is one name right?”\n\nDeniz glanced at the three sources. He still felt a small tug inside him, the wish for one neat answer. Then he remembered the map’s blank space, the recording’s missing date, and the plaque’s confident words.\n\n“They can all be connected to the same arch,” he said. “The map proves that someone used the name East Ferry Gate in 1887. Leyla’s recording tells us what people remembered happening there. The plaque gives the present description. We can infer that the arch may have had different uses or names at different times, but we can’t prove the whole order yet.”\n\nMs. Rana nodded, but she let Deniz finish.\n\nHe showed the girl the four labels on the card. “Known means the source says it or we can see it. Remembered means someone recalled it. Inferred means it is a possible explanation. Uncertain means we still need evidence.”\n\nThe girl studied the labels. “That makes the card easier to trust.”\n\nDeniz smiled. His goal had not been to choose a winning name. It had been to explain why the names differed, and now the archive held an account that showed what each source could really tell them. The unanswered parts were not mistakes. They were marked honestly.\n\nBefore closing time, Deniz returned the copies to their folders. He paused beside the map.\n\n“Ms. Rana,” he said, “could an old building permit help? If the arch was repaired or built for a market, a permit might give its first name—or at least a date.”\n\n“It might,” she said. “That would be a sensible record to search.”\n\nDeniz wrote one final question in his notebook: Could an old building permit confirm when the River Arch was first built or renamed?\n\nThen he shut the notebook and looked once more at the card on display. The River Arch still had three descriptions, but now the neighborhood could see how they belonged together—and where the evidence stopped.",
+        "state_delta": {
+          "location": "The front room of the local archive",
+          "character_goal": "Deniz has completed his goal of explaining the River Arch's three descriptions through a cautious comparison of sources.",
+          "knowledge_gained": [
+            "Neighbors can distinguish observed facts, remembered experience, inference, and uncertainty when the sources are displayed together.",
+            "An old building permit might provide evidence about the River Arch's first name, construction, or renaming."
+          ],
+          "facts_established": [
+            "Deniz's archive card is displayed beside copies of the 1887 map, the oral-history notes, and the present plaque.",
+            "The card explains the three descriptions without declaring one source completely correct.",
+            "The earliest name and construction date remain unknown."
+          ],
+          "clues_added": [
+            "A building permit may confirm when the River Arch was first built or renamed."
+          ],
+          "objects_changed": [
+            "Deniz's checked archive card is now on public display.",
+            "Copies of the map, recording notes, and plaque photograph are arranged beside the card.",
+            "Deniz added the building-permit question to his notebook."
+          ],
+          "relationships_changed": [
+            "Neighbors now understand Deniz's layered account and see him as the author of a careful archive record.",
+            "Ms. Rana supports Deniz's possible next source without solving the question for him."
+          ],
+          "threads_opened": [
+            "Could an old building permit confirm when the River Arch was first built or renamed?"
+          ],
+          "threads_resolved": [
+            "Deniz's main investigation is complete through a clear, evidence-based account.",
+            "The archive now preserves the differences among the map, oral memory, plaque, and direct observation."
+          ],
+          "handoff_state": "The archive displays Deniz's checked card beside the three source copies. The neighborhood understands that East Ferry Gate, Safe Arch, and First Market Gate are descriptions connected to one landmark, while the card separates known, remembered, inferred, and uncertain claims. Deniz is satisfied that he preserved uncertainty instead of forcing a perfect answer. The only open question is whether an old building permit could confirm when the River Arch was first built or renamed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.55,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 482,
+          "usage": {
+            "input_tokens": 7127,
+            "output_tokens": 1174,
+            "total_tokens": 8301
+          },
+          "cost": {
+            "usd": 0.0031904,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.85,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5252,
+          "output_tokens": 188,
+          "cost": 0.000220584
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5252,
+            "output_tokens": 188,
+            "cost": 0.000220584
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.397
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.947
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the River Arch, and the question that begins the investigation.",
+      "word_count": 393,
+      "location": "The local archive's old map room",
+      "character_goal": "Deniz wants to explain why the familiar River Arch has different descriptions.",
+      "knowledge_gained": [
+        "The present marker calls the River Arch First Market Gate.",
+        "An old map labels the same landmark East Ferry Gate.",
+        "The archive contains oral-history recordings that may add another account."
+      ],
+      "facts_established": [
+        "Deniz personally observed the marker at the River Arch.",
+        "The old map shows the same river bend, road, and stone arch.",
+        "The present marker and old map use different names for the landmark."
+      ],
+      "clues_added": [
+        "The old map's label is East Ferry Gate.",
+        "The map does not explain why that name was used."
+      ],
+      "objects_changed": [
+        "Deniz began a notebook with source and question sections.",
+        "A recording slip was placed beside the old map for Deniz's next investigation.",
+        "Deniz copied the map reference so he could find it again."
+      ],
+      "relationships_changed": [
+        "Ms. Rana is helping Deniz investigate rather than giving him a ready-made explanation."
+      ],
+      "threads_opened": [
+        "What did East Ferry Gate mean?",
+        "What does the oral-history collection remember about the River Arch?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has personally seen the present marker calling the arch First Market Gate and has copied the old map's label, East Ferry Gate, into his notebook. He knows the map matches the familiar arch's location but does not yet know what the older label means. He has noted the map reference and is ready to return to the archive to listen to the oral-history recording before judging either source."
+    },
+    {
+      "scene": 2,
+      "purpose": "Examine the old map closely and establish what it can and cannot prove.",
+      "word_count": 394,
+      "location": "The local archive's old map room",
+      "character_goal": "Deniz wants to compare the old map with the oral-history recording to explain the River Arch's different descriptions.",
+      "knowledge_gained": [
+        "The old map is dated 1887.",
+        "The map shows the same river bend, road, and stone arch as the present-day River Arch.",
+        "The map records the name East Ferry Gate but gives no explanation for the name."
+      ],
+      "facts_established": [
+        "The map can prove that someone used the label East Ferry Gate in 1887.",
+        "The map does not prove that boats stopped there or that the arch was built for a ferry.",
+        "The map provides location details that can be compared with the oral recording."
+      ],
+      "clues_added": [
+        "The name East Ferry Gate may connect to a ferry, a nearby crossing, or another meaning, but its purpose remains unknown.",
+        "The oral recording should be checked for the river bend, road, stone arch, and nearby streets."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now separates known map details from guesses.",
+        "Deniz recorded the map's 1887 date and the label East Ferry Gate.",
+        "The notebook is positioned beside the recorder for the next investigation."
+      ],
+      "relationships_changed": [
+        "Ms. Rana continues guiding Deniz to test his ideas without supplying the answer."
+      ],
+      "threads_opened": [
+        "Does the oral memory describe the same arch?",
+        "Was East Ferry Gate an older name, a use, or an interpretation?"
+      ],
+      "threads_resolved": [
+        "The map's date and visible location details have been identified."
+      ],
+      "handoff_state": "Deniz has confirmed that the 1887 map records the same River Arch and labels it East Ferry Gate, but he knows the map cannot explain the label's purpose. He has separated visible map facts from guesses in his notebook and is ready to listen to the oral-history recording, checking its river, road, arch, and nearby-street details against the map."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use an oral memory to add lived experience while showing how memory can differ from records.",
+      "word_count": 498,
+      "location": "The local archive's old map room",
+      "character_goal": "Deniz wants to compare the old map, the oral memory, and the present inscription to explain the River Arch's different descriptions.",
+      "knowledge_gained": [
+        "The oral recording is by Leyla Demir, who remembers living on Willow Street near the river.",
+        "Leyla remembers families sheltering beneath the stone arch during a flood.",
+        "Leyla remembers people calling the landmark the Safe Arch.",
+        "The recording's Willow Street, river road, river bend, and stone arch match the map's location."
+      ],
+      "facts_established": [
+        "The recording clearly refers to the same River Arch shown on the 1887 map.",
+        "Leyla's memory describes lived experience at the arch during a flood.",
+        "The recording does not give an exact date for the flood or for the use of the name Safe Arch."
+      ],
+      "clues_added": [
+        "The names East Ferry Gate and Safe Arch may describe different meanings, uses, or times connected to the same landmark.",
+        "The present inscription may provide a third description for comparison."
+      ],
+      "objects_changed": [
+        "Deniz's notebook now has a separate REMEMBERED EXPERIENCE section.",
+        "Deniz recorded Leyla's flood memory, the name Safe Arch, the matching location details, and the absence of an exact date.",
+        "The recording slip was placed in Deniz's notebook for the visit to the landmark."
+      ],
+      "relationships_changed": [
+        "Ms. Rana continues guiding Deniz with questions while allowing him to form and record his own comparison."
+      ],
+      "threads_opened": [
+        "How does the present inscription describe the River Arch?",
+        "Can East Ferry Gate and Safe Arch both fit the same place without having the same meaning?"
+      ],
+      "threads_resolved": [
+        "The oral recording has been identified as a memory about the same arch shown on the old map."
+      ],
+      "handoff_state": "Deniz has two different accounts of the same River Arch: the 1887 map records the label East Ferry Gate, while Leyla's undated oral memory recalls families sheltering there during a flood and calls it the Safe Arch. He has recorded the memory separately from map facts, noted that its timing is uncertain, and is ready to inspect the present inscription and landmark."
+    },
+    {
+      "scene": 4,
+      "purpose": "Compare the inscription and present neighborhood evidence without forcing the sources into one story.",
+      "word_count": 495,
+      "location": "The River Arch and its surrounding present-day neighborhood",
+      "character_goal": "Deniz wants to compare the old map, Leyla's oral memory, and the present inscription to explain why the same River Arch has different descriptions.",
+      "knowledge_gained": [
+        "The present plaque calls the landmark the First Market Gate.",
+        "The plaque describes welcoming traders to a river market but gives no date.",
+        "The arch's river-facing position, road, river bend, and nearby Willow Street match the map and recording."
+      ],
+      "facts_established": [
+        "Present-day observation confirms that the map, oral recording, and plaque refer to the same physical arch.",
+        "The third source conflicts meaningfully with the map's East Ferry Gate and Leyla's remembered Safe Arch.",
+        "The plaque does not explain the ferry name, flood memory, original construction, or exact dates."
+      ],
+      "clues_added": [
+        "Different names may have described different uses or times connected to the same arch.",
+        "The earliest name and original purpose remain unknown."
+      ],
+      "objects_changed": [
+        "Deniz sketched the arch, river-facing side, road, river bend, and nearby Willow Street.",
+        "Deniz copied the plaque's wording into his notebook.",
+        "Deniz organized his notes under KNOWN, REMEMBERED, WRITTEN ON THE PLAQUE, INFERRED, and UNCERTAIN."
+      ],
+      "relationships_changed": [
+        "Ms. Rana continues to guide Deniz by asking questions while Deniz makes the comparisons and conclusions himself."
+      ],
+      "threads_opened": [
+        "Can different names describe different times or functions?",
+        "Which claims belong in a trustworthy archive note?",
+        "What was the River Arch originally built for, and which name came first?"
+      ],
+      "threads_resolved": [
+        "The three sources and direct observation have been anchored to one physical landmark."
+      ],
+      "handoff_state": "Deniz has directly inspected the River Arch and confirmed that the 1887 map, Leyla's flood memory, and the present plaque all describe the same place. He now has three conflicting descriptions: East Ferry Gate, Safe Arch, and First Market Gate. His notebook separates known observations, remembered experience, plaque wording, inferences, and uncertainties. He suspects the names may reflect different times or uses but cannot prove that yet. He is ready to create a careful archive account without deciding which source is completely right."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the evidence by creating a careful account that explains disagreement without erasing uncertainty.",
+      "word_count": 504,
+      "location": "The local archive's old map room",
+      "character_goal": "Deniz wants to explain the River Arch's three descriptions by comparing what each source can actually support.",
+      "knowledge_gained": [
+        "The three names can be presented as accounts connected to one physical landmark.",
+        "The sources may reflect different uses or times, but they do not prove exactly when the names changed.",
+        "The original purpose, earliest name, and construction date remain unresolved."
+      ],
+      "facts_established": [
+        "The 1887 map records East Ferry Gate.",
+        "The oral memory recalls flood shelter and the name Safe Arch without an exact date.",
+        "The present plaque calls the landmark First Market Gate and connects it with traders and a river market."
+      ],
+      "clues_added": [
+        "A careful layered account can explain the disagreement without choosing one source as completely correct.",
+        "Further records would be needed to determine the arch's earliest name, construction date, and original purpose."
+      ],
+      "objects_changed": [
+        "Deniz created an archive card titled RIVER ARCH: THREE ACCOUNTS.",
+        "The card labels claims as known, remembered, inferred, or uncertain.",
+        "Ms. Rana checked the card and did not change Deniz's account."
+      ],
+      "relationships_changed": [
+        "Ms. Rana confirms Deniz's reasoning while preserving his authorship of the archive account."
+      ],
+      "threads_opened": [
+        "When was the River Arch first built or renamed?",
+        "Could another record test the possible sequence of ferry, flood-shelter, and market uses?"
+      ],
+      "threads_resolved": [
+        "Deniz has completed a defensible archive account explaining the three descriptions without forcing certainty."
+      ],
+      "handoff_state": "Deniz's checked archive card presents the River Arch as one landmark described by three sources: the 1887 map's East Ferry Gate, Leyla's undated oral memory of the Safe Arch, and the present plaque's First Market Gate. It distinguishes known observations, remembered experience, inference, and uncertainty. The card explains that names or uses may have changed but preserves the unresolved earliest name, construction date, and original purpose."
+    },
+    {
+      "scene": 6,
+      "purpose": "Share the account, show its effect, and close the investigation with one bounded future question.",
+      "word_count": 482,
+      "location": "The front room of the local archive",
+      "character_goal": "Deniz has completed his goal of explaining the River Arch's three descriptions through a cautious comparison of sources.",
+      "knowledge_gained": [
+        "Neighbors can distinguish observed facts, remembered experience, inference, and uncertainty when the sources are displayed together.",
+        "An old building permit might provide evidence about the River Arch's first name, construction, or renaming."
+      ],
+      "facts_established": [
+        "Deniz's archive card is displayed beside copies of the 1887 map, the oral-history notes, and the present plaque.",
+        "The card explains the three descriptions without declaring one source completely correct.",
+        "The earliest name and construction date remain unknown."
+      ],
+      "clues_added": [
+        "A building permit may confirm when the River Arch was first built or renamed."
+      ],
+      "objects_changed": [
+        "Deniz's checked archive card is now on public display.",
+        "Copies of the map, recording notes, and plaque photograph are arranged beside the card.",
+        "Deniz added the building-permit question to his notebook."
+      ],
+      "relationships_changed": [
+        "Neighbors now understand Deniz's layered account and see him as the author of a careful archive record.",
+        "Ms. Rana supports Deniz's possible next source without solving the question for him."
+      ],
+      "threads_opened": [
+        "Could an old building permit confirm when the River Arch was first built or renamed?"
+      ],
+      "threads_resolved": [
+        "Deniz's main investigation is complete through a clear, evidence-based account.",
+        "The archive now preserves the differences among the map, oral memory, plaque, and direct observation."
+      ],
+      "handoff_state": "The archive displays Deniz's checked card beside the three source copies. The neighborhood understands that East Ferry Gate, Safe Arch, and First Market Gate are descriptions connected to one landmark, while the card separates known, remembered, inferred, and uncertain claims. Deniz is satisfied that he preserved uncertainty instead of forcing a perfect answer. The only open question is whether an old building permit could confirm when the River Arch was first built or renamed."
+    }
+  ],
+  "story_title": "The Story Behind the Marker",
+  "story": "Deniz had crossed the River Arch hundreds of times, usually while hurrying to school or racing his cousin to the bakery. Today he stopped beneath its gray stone curve.\n\nA metal marker was fixed to one side. Deniz leaned close and read:\n\nFIRST MARKET GATE.\n\nHe looked through the arch at the river shining beyond it. Boats no longer passed there, but the river still pressed against the bank, and the old stones still held their wide, rounded shape.\n\n“First Market Gate?” Deniz murmured. “First for what?”\n\nAt the local archive, Ms. Rana found him staring at a photograph of the arch.\n\n“You noticed the marker,” she said.\n\n“I noticed what it says,” Deniz replied. “But I don’t know if that is the whole story.”\n\nMs. Rana smiled and led him into the old map room. The air smelled of paper and dust. Drawers covered one wall, and a large map lay beneath a sheet of clear plastic.\n\n“There it is,” she said, pointing near the river bend.\n\nThe map showed the same curved line of river, the same road beside it, and a small stone shape at the crossing. But beside that shape, in faded brown ink, were the words:\n\nEAST FERRY GATE.\n\nDeniz checked the river bend, then the road. They matched the arch he knew. He looked back at the marker’s words in his mind.\n\n“Why does one place have two names?” he asked.\n\n“Good question,” said Ms. Rana. “A map can tell us what someone wrote on it. It may not tell us everything about why they wrote it.”\n\nDeniz took out his notebook. He drew two columns. Under “Sources,” he wrote “present marker” and “old map.” Under “Questions,” he wrote:\n\nWhy does one landmark have different stories?\n\nHe tapped his pencil against the page. The answer might be in the archive’s oral-history recordings—or in the stones themselves.\n\n“I want to hear what people remember,” he said. “Then I’ll go back and read the inscription carefully.”\n\nMs. Rana placed a recording slip beside the map. Deniz copied the map’s words into his notebook, leaving room underneath.\n\nEast Ferry Gate: what did this name mean?\n\nBefore leaving, Deniz checked the label once more and copied the map reference so he could find it again. He planned to return to the archive for the recording before deciding what either name meant.\n\nThe next afternoon, Deniz returned to the archive with his notebook tucked under his arm. Ms. Rana had left the old map beneath its clear cover, exactly where they had seen it.\n\n“Before we listen to the recording,” Deniz said, “I want to look harder.”\n\nHe bent over the map. In one corner, small writing gave its date: 1887. A thin blue line marked the river. A brown road curved beside it, and a tiny stone shape stood where the River Arch still stood today. The label was clear enough now:\n\nEAST FERRY GATE.\n\nDeniz copied the date and drew a box around the label. Then he made two headings in his notebook.\n\nKNOWN FROM THE MAP\n\n- It is dated 1887.\n- It shows the river bend and the road.\n- It marks a stone arch.\n- It calls the arch East Ferry Gate.\n\nHe paused before the second heading.\n\nGUESSES\n\n- People crossed the river there.\n- Boats stopped nearby.\n- The arch was built for a ferry.\n\n“Are those guesses too wild?” Deniz asked.\n\n“They are possible,” Ms. Rana said. “But which part can you actually see?”\n\n“The river, road, arch, and words.” Deniz pointed to each one. “I can’t see boats. And the map doesn’t draw a ferry.”\n\n“Good. A label is evidence that someone used those words. It is not proof of every story we might build around them.”\n\nDeniz erased the line about boats. He changed the next one to: “The name may connect to a ferry, but the map does not explain how.”\n\nThe map felt less like an answer now and more like a careful clue. It placed the arch in 1887 and recorded one name, but it did not tell him whether the name described the arch’s purpose, a nearby crossing, or something people had simply called it.\n\nMs. Rana picked up the recording slip. “The oral-history file mentions the river road. You can listen for details that help you decide whether it describes this same place.”\n\nDeniz wrote one more note beneath the map facts:\n\nLISTEN FOR: river bend, road, stone arch, nearby streets.\n\nHe looked at East Ferry Gate again. The words still raised questions, but now he knew which questions belonged to the map—and which would have to wait for another source.\n\n“I’m ready,” he said, sliding the notebook beside the recorder.\n\nDeniz pressed the play button. At first, the recording held only a soft hiss. Then an older woman’s voice filled the map room.\n\n“My name is Leyla Demir. I lived on Willow Street when I was little, in the house with the blue shutters.”\n\nDeniz glanced at Ms. Rana. Willow Street ran beside the river road, just as the map showed.\n\nLeyla continued. “When the river climbed over its banks, everyone hurried to the stone arch. The ground beneath it was higher than the street. Families crowded there with blankets, baskets, and sleepy children. My brother carried our cat inside his coat.”\n\nDeniz could almost see it: rain flashing on the river, wet shoes packed beneath the arch, a child peeking out at the rising water. The recording made the old stones seem warm with people, even though Leyla spoke from many years ago.\n\n“We called it the Safe Arch,” Leyla said. “Our parents told us to stay close until the water went down. I remember the bakery bell ringing across Willow Street, and the river rushing below the road.”\n\nThe recording ended with a click.\n\nFor a moment, Deniz said nothing. He looked again at the map’s thin blue river and brown road. The bakery was not drawn, but Willow Street matched the nearby street Leyla had named. The river bend matched too. Most importantly, the stone arch stood in the same place.\n\n“It’s the River Arch,” Deniz said. “She’s talking about the same one.”\n\n“I think so,” Ms. Rana replied. “What makes you think that?”\n\n“Willow Street, the river road, the bend, and the stone arch all fit.” Deniz tapped the map. “But she calls it the Safe Arch, not East Ferry Gate.”\n\nHe opened his notebook and turned to a fresh page. Under a heading called REMEMBERED EXPERIENCE, he wrote:\n\n- Leyla remembers families sheltering beneath the arch during a flood.\n- She remembers the name Safe Arch.\n- She remembers Willow Street, the river road, and the river rising.\n\nThen he added: “No exact date.”\n\n“Why is that important?” Ms. Rana asked.\n\n“Because she says ‘when I was little,’” Deniz answered. “That tells us it happened in her childhood, but not which year. And remembering something clearly doesn’t make the date exact.”\n\nHe drew a line between the two pages. On the map page, he had written: “In 1887, someone labeled the arch East Ferry Gate.” On the new page, he wrote: “At an unknown time, Leyla’s family used or heard the name Safe Arch.”\n\nThe two accounts did not match neatly. Still, Deniz did not cross either one out. The map recorded a name. Leyla remembered what the place meant to people during a flood. Both could be true, but he could not yet say how they connected.\n\nMs. Rana handed him the recording slip. “The inscription at the arch may give you a third description.”\n\nDeniz tucked the slip into his notebook. “Then I need to see what the stones say today.”\n\nThe next afternoon, Deniz and Ms. Rana walked to the River Arch. It stood where the map said it would: beside the river bend, at the end of the road, with Willow Street opening behind it.\n\nUp close, the stones were larger than Deniz had imagined. Some were pale and smooth. Others had dark marks from rain and years of passing hands. A metal plaque was fixed to one side.\n\nDeniz read it aloud. “The First Market Gate. Built to welcome traders to the river market.”\n\nHe blinked. “That’s another name.”\n\nMs. Rana did not answer. She pointed toward the river. “What can you observe?”\n\nDeniz opened his notebook. He sketched the arch, the river-facing side, the road, and the corner where Willow Street began. “The arch faces the river. The road passes through it. Willow Street is nearby. It’s the same shape and place as the arch on the map.”\n\n“Good,” said Ms. Rana. “What does the plaque tell you?”\n\n“That someone calls it the First Market Gate now—or at least calls it that on this plaque.” Deniz copied the words carefully. “It says it welcomed traders. But it doesn’t say when the market began.”\n\nHe looked at the stones again. “And it doesn’t say anything about a ferry or a flood.”\n\n“Does that make the other accounts wrong?”\n\nDeniz thought about Leyla’s voice: families pressed together beneath the arch, blankets and baskets around them, the river rushing below the road. “No. The plaque describes a market. The map gives the name East Ferry Gate. Leyla remembers people calling it the Safe Arch.”\n\nHe drew three boxes in his notebook. At the top of the first he wrote KNOWN. In it, he listed the matching river bend, road, arch, and nearby Willow Street. In the second, he wrote REMEMBERED and copied Leyla’s flood memory. In the third, he wrote WRITTEN ON THE PLAQUE and recorded First Market Gate.\n\n“What belongs under INFERRED?” Ms. Rana asked.\n\nDeniz tapped his pencil against the page. “Maybe the arch had different uses at different times. A ferry could have crossed nearby. Later, people might have gathered there during floods. And a market might have used the road.”\n\n“Could you prove that from these sources?”\n\n“No.” He added a question mark beside the idea. “The dates are missing. The map is from 1887, but Leyla didn’t say when the flood happened, and the plaque doesn’t give a date either.”\n\nDeniz drew one last box: UNCERTAIN. He wrote: “We do not know which name came first, or what the arch was originally built for.”\n\nThe three names still felt untidy, like stones that did not quite fit. But his sketch showed that the names belonged to one real place, not three different arches.\n\nMs. Rana studied the page. “You have not forced them into one answer.”\n\n“I’m not ready to,” Deniz said. He closed his notebook. “I need to make the account show what each source can actually tell us.”\n\nThe next morning, Deniz returned to the old map room with his notebook, the recording slip, and a clean archive card.\n\nHe drew three lines across the card. At the top, he wrote: RIVER ARCH: THREE ACCOUNTS.\n\n“Start with what you can support,” Ms. Rana said. “Not what sounds most exciting.”\n\nDeniz nodded. He looked at the map copy first.\n\n“Known,” he said, writing as he spoke. “An 1887 map shows this arch at the river bend and labels it East Ferry Gate.” He paused. “But the map does not say that boats went through it. So I can’t write that it was definitely built for a ferry.”\n\nMs. Rana smiled. “That is an important difference.”\n\nDeniz moved to the recording notes. “Remembered: Leyla Demir recalled families sheltering beneath the arch during a flood. She remembered people calling it the Safe Arch.” He added, “The recording matches the river, road, Willow Street, and stone arch. But Leyla didn’t give the flood’s date.”\n\nHe tapped his pencil. “Her memory tells us what people experienced. It doesn’t give us every date from the past.”\n\n“Exactly.”\n\nLast came the plaque. Deniz copied its words carefully: First Market Gate. Built to welcome traders to the river market.\n\n“Known from the present plaque,” he said. “But it doesn’t tell us when the market began, either.”\n\nFor a moment, he stared at the three names. East Ferry Gate. Safe Arch. First Market Gate. They still looked like three people arguing over one hat.\n\nDeniz turned the card over and began again. This time he wrote a short account instead of three separate lists.\n\n“The River Arch is one landmark beside the river bend near Willow Street. An 1887 map calls it East Ferry Gate. A later memory calls it the Safe Arch because families sheltered there during a flood. A present-day plaque calls it the First Market Gate and connects it with traders and a river market.”\n\nHe read the sentence twice. Then he added:\n\n“These names may describe different uses or times. That is possible, but the sources do not prove exactly when the names changed, or whether the arch was first built for a ferry, a market, or something else.”\n\nDeniz looked at Ms. Rana. “Is ‘later memory’ all right? We don’t actually know when the flood happened.”\n\n“Good catch,” she said. “Use ‘an oral memory’ instead. It keeps the timing honest.”\n\nDeniz crossed out the words and replaced them. Under the account, he made four small labels: KNOWN, REMEMBERED, INFERRED, UNCERTAIN. He placed each claim where it belonged, checking that none had quietly slipped into the wrong box.\n\nAt the bottom, he wrote: “Further records are needed to learn the arch’s earliest name, construction date, and original purpose.”\n\nMs. Rana read the card without changing a word. “This is careful work.”\n\nDeniz let out a breath. He had wanted one answer that would make every name fit perfectly. Instead, he had made something better: an account that showed where each answer came from—and where the evidence stopped.\n\nThat afternoon, Ms. Rana placed Deniz’s archive card in the front room of the local archive.\n\nBeside it, she set a copy of the 1887 map, Deniz’s notes from Leyla Demir’s recording, and a photograph of the present-day plaque. A small sign invited visitors to compare the sources.\n\nDeniz stood nearby as neighbors came in from the street. Mr. Selim, who ran the bakery, leaned close to the map. “East Ferry Gate,” he read. “I’ve always called it the Market Arch.”\n\n“That is what the plaque calls it,” Deniz said, pointing to the photograph. “But the map is older, and it uses a different name.”\n\nA girl about Deniz’s age read the recording notes. “Safe Arch? Why?”\n\n“Leyla remembered families sheltering beneath it during a flood,” Deniz explained. “That part is remembered experience. We know she told the story, but we don’t know the flood’s exact date.”\n\nThe girl looked from the notes to the card. “So is one name right?”\n\nDeniz glanced at the three sources. He still felt a small tug inside him, the wish for one neat answer. Then he remembered the map’s blank space, the recording’s missing date, and the plaque’s confident words.\n\n“They can all be connected to the same arch,” he said. “The map proves that someone used the name East Ferry Gate in 1887. Leyla’s recording tells us what people remembered happening there. The plaque gives the present description. We can infer that the arch may have had different uses or names at different times, but we can’t prove the whole order yet.”\n\nMs. Rana nodded, but she let Deniz finish.\n\nHe showed the girl the four labels on the card. “Known means the source says it or we can see it. Remembered means someone recalled it. Inferred means it is a possible explanation. Uncertain means we still need evidence.”\n\nThe girl studied the labels. “That makes the card easier to trust.”\n\nDeniz smiled. His goal had not been to choose a winning name. It had been to explain why the names differed, and now the archive held an account that showed what each source could really tell them. The unanswered parts were not mistakes. They were marked honestly.\n\nBefore closing time, Deniz returned the copies to their folders. He paused beside the map.\n\n“Ms. Rana,” he said, “could an old building permit help? If the arch was repaired or built for a market, a permit might give its first name—or at least a date.”\n\n“It might,” she said. “That would be a sensible record to search.”\n\nDeniz wrote one final question in his notebook: Could an old building permit confirm when the River Arch was first built or renamed?\n\nThen he shut the notebook and looked once more at the card on display. The River Arch still had three descriptions, but now the neighborhood could see how they belonged together—and where the evidence stopped.",
+  "word_count": 2766,
+  "target_words": 2800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.00145,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.88,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10176,
+      "output_tokens": 166,
+      "cost": 0.000427392
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.88,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10176,
+      "output_tokens": 166,
+      "cost": 0.000427392
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully meets the acceptance gate. The narrative demonstrates strong instruction-following across all required constraints: vocabulary and pacing are calibrated precisely for a 10-year-old independent reader; causality is explicit without didacticism; tension resolves through observation and reasoning rather than conflict; continuity is maintained across all six scenes; and the ending preserves uncertainty while opening a bounded, evidence-based question about a possible building permit.\n\nThe story fulfills all immutable contract requirements. Deniz's goal—explaining why the River Arch has three different descriptions—is achieved through a careful comparison of sources. The central problem (conflicting descriptions from an old map, oral memory, and present inscription) is resolved via the solution principle: comparing each source, separating observation from inference, and preserving both evidence and uncertainty. The theme thread (understanding a place requires listening to evidence, memory, and incomplete stories together) is woven throughout, culminating in Deniz's archive card that distinguishes known, remembered, inferred, and uncertain claims.\n\nAll six required sources/evidence types are present and meaningfully deployed: the 1887 map (East Ferry Gate), Leyla's oral recording (Safe Arch), the present plaque (First Market Gate), direct observation of the arch, Deniz's notebook documentation, and the archive card itself. The three sources meaningfully disagree (C7): the map records a ferry-related name, the memory recalls flood shelter, and the plaque celebrates a market—yet all refer to the same physical landmark, allowing Deniz to infer possible changing uses without forcing certainty.\n\nCharacter consistency is strong. Deniz behaves plausibly for age 10: curious, methodical, willing to ask questions, capable of distinguishing observation from interpretation, but not precociously adult. Ms. Rana's role as a guide who asks questions rather than supplying answers is consistent and age-appropriate. The pacing allows Deniz to make discoveries himself rather than receiving exposition.\n\nThe ending is particularly effective. Deniz's satisfaction comes not from solving the mystery completely but from creating a defensible, honest account that preserves uncertainty. The final question about a building permit is evidence-based, bounded, and genuinely open—it does not undo the investigation but extends it naturally.\n\nMinor strengths worth noting: the sensory details (dust and paper smell in the archive, rain on the river, the cat inside the brother's coat) ground the story in concrete experience appropriate for the age group. The dialogue feels natural and supports Deniz's reasoning without becoming didactic. The notebook as a tool for organizing evidence is both age-appropriate and thematically central.\n\nThe story averages 4.0 across all criteria, with no criterion below 3. All continuity checks passed with high confidence (0.93–0.99). No critical failures are present. The story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 2766,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.93,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.88,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 10176,
+          "output_tokens": 166,
+          "cost": 0.000427392
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully meets the acceptance gate. The narrative demonstrates strong instruction-following across all required constraints: vocabulary and pacing are calibrated precisely for a 10-year-old independent reader; causality is explicit without didacticism; tension resolves through observation and reasoning rather than conflict; continuity is maintained across all six scenes; and the ending preserves uncertainty while opening a bounded, evidence-based question about a possible building permit.\n\nThe story fulfills all immutable contract requirements. Deniz's goal—explaining why the River Arch has three different descriptions—is achieved through a careful comparison of sources. The central problem (conflicting descriptions from an old map, oral memory, and present inscription) is resolved via the solution principle: comparing each source, separating observation from inference, and preserving both evidence and uncertainty. The theme thread (understanding a place requires listening to evidence, memory, and incomplete stories together) is woven throughout, culminating in Deniz's archive card that distinguishes known, remembered, inferred, and uncertain claims.\n\nAll six required sources/evidence types are present and meaningfully deployed: the 1887 map (East Ferry Gate), Leyla's oral recording (Safe Arch), the present plaque (First Market Gate), direct observation of the arch, Deniz's notebook documentation, and the archive card itself. The three sources meaningfully disagree (C7): the map records a ferry-related name, the memory recalls flood shelter, and the plaque celebrates a market—yet all refer to the same physical landmark, allowing Deniz to infer possible changing uses without forcing certainty.\n\nCharacter consistency is strong. Deniz behaves plausibly for age 10: curious, methodical, willing to ask questions, capable of distinguishing observation from interpretation, but not precociously adult. Ms. Rana's role as a guide who asks questions rather than supplying answers is consistent and age-appropriate. The pacing allows Deniz to make discoveries himself rather than receiving exposition.\n\nThe ending is particularly effective. Deniz's satisfaction comes not from solving the mystery completely but from creating a defensible, honest account that preserves uncertainty. The final question about a building permit is evidence-based, bounded, and genuinely open—it does not undo the investigation but extends it naturally.\n\nMinor strengths worth noting: the sensory details (dust and paper smell in the archive, rain on the river, the cat inside the brother's coat) ground the story in concrete experience appropriate for the age group. The dialogue feels natural and supports Deniz's reasoning without becoming didactic. The notebook as a tool for organizing evidence is both age-appropriate and thematically central.\n\nThe story averages 4.0 across all criteria, with no criterion below 3. All continuity checks passed with high confidence (0.93–0.99). No critical failures are present. The story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000427392,
+      "final_judge_cost": {
+        "usd": 0.018043,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 53.687,
+    "scene_stage_seconds": 109.343,
+    "final_stage_seconds": 10.734,
+    "total_pipeline_seconds": 173.765
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.014678326,
+    "scene_generation_usd": 0.02013925,
+    "scene_continuity_evaluator_usd": 0.001164198,
+    "whole_continuity_evaluator_usd": 0.000427392,
+    "whole_continuity_evaluator_usd_total": 0.000427392,
+    "semantic_judge_usd": {
+      "usd": 0.018043,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.018043,
+    "scene_jev_usd": 0.001164198,
+    "whole_jev_usd": 0.000427392,
+    "whole_jev_usd_total": 0.000427392,
+    "final_haiku": {
+      "usd": 0.018043,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.018043,
+    "total_pipeline_usd": 0.054452166
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 10176,
+      "output_tokens": 166,
+      "cost": 0.000427392
+    },
+    "semantic_judge": {
+      "input_tokens": 14248,
+      "output_tokens": 759,
+      "total_tokens": 15007
+    },
+    "whole_jev": {
+      "input_tokens": 10176,
+      "output_tokens": 166,
+      "cost": 0.000427392
+    },
+    "final_haiku": {
+      "input_tokens": 14248,
+      "output_tokens": 759,
+      "total_tokens": 15007
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
