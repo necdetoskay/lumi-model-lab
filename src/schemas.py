@@ -13,6 +13,8 @@ class StorySpec(BaseModel):
     language: str = "tr"
     target_words: int = Field(default=2000, ge=300, le=5000)
     narrative_family: str | None = None
+    reading_mode: str | None = None
+    relative_length_class: str | None = None
     protagonist: str
     setting: str
     theme: str

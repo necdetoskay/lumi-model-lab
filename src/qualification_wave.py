@@ -10,13 +10,15 @@ from typing import Any
 import yaml
 
 from src.capability_cube import (
-    length_band_for_target_words,
+    default_reading_mode_for_age_tier,
     load_capability_config,
     narrative_age_tier_for_range,
+    resolve_relative_length_class,
+    standard_target_words_for_age_tier,
 )
 from src.schemas import StorySpec
 
-WAVE_SCHEMA_VERSION = "qualification-wave.v1"
+WAVE_SCHEMA_VERSION = "qualification-wave.v2"
 DEFAULT_OUTPUT_ROOT = Path("data/specifications/waves")
 
 
@@ -25,6 +27,8 @@ class WaveCase:
     case_id: str
     age_tier: str
     exact_age: int
+    reading_mode: str
+    relative_length_class: str
     narrative_family: str
     target_words: int
     spec_path: Path
@@ -43,14 +47,17 @@ def load_wave(path: Path) -> dict[str, Any]:
         raise RuntimeError(
             f"Unsupported qualification wave schema: {payload.get('schema_version')!r}"
         )
+    if payload.get("status") != "ACTIVE":
+        raise RuntimeError(
+            f"Qualification wave is not ACTIVE: {payload.get('status')!r}"
+        )
 
     capability = load_capability_config()
     expected_tiers = list(capability["narrative_age_tiers"].keys())
-    representative = payload.get("representative_ages") or {}
-    if list(representative.keys()) != expected_tiers:
+    age_cases = payload.get("age_cases") or {}
+    if list(age_cases.keys()) != expected_tiers:
         raise ValueError(
-            "representative_ages must list every canonical NarrativeAgeTier "
-            "in canonical order"
+            "age_cases must list every canonical NarrativeAgeTier in canonical order"
         )
 
     families = payload.get("families") or {}
@@ -60,19 +67,46 @@ def load_wave(path: Path) -> dict[str, Any]:
     if unknown:
         raise ValueError(f"unknown narrative families: {unknown}")
 
-    target_words = int(payload.get("target_words") or 0)
-    if length_band_for_target_words(target_words) != "STANDARD":
-        raise ValueError(
-            "age-standard-v1 requires a STANDARD target length; "
-            f"got {target_words}"
-        )
-
-    for tier, exact_age in representative.items():
-        exact_age = int(exact_age)
+    for tier, case in age_cases.items():
+        exact_age = int(case["exact_age"])
         actual_tier = narrative_age_tier_for_range(exact_age, exact_age)
         if actual_tier != tier:
             raise ValueError(
                 f"representative age {exact_age} maps to {actual_tier}, not {tier}"
+            )
+
+        reading_mode = str(case["reading_mode"])
+        canonical_mode = default_reading_mode_for_age_tier(tier)
+        if reading_mode != canonical_mode:
+            raise ValueError(
+                f"{tier} reading_mode must be {canonical_mode}, got {reading_mode}"
+            )
+
+        relative_class = str(case["relative_length_class"])
+        if relative_class != "STANDARD":
+            raise ValueError(
+                "age-relative-standard-v2 only supports STANDARD; "
+                "other relative length classes are not canonical yet"
+            )
+
+        target_words = int(case["target_words"])
+        canonical_target = standard_target_words_for_age_tier(tier)
+        if target_words != canonical_target:
+            raise ValueError(
+                f"{tier} STANDARD target_words must be {canonical_target}, "
+                f"got {target_words}"
+            )
+
+        resolved_mode, resolved_class = resolve_relative_length_class(
+            age_min=exact_age,
+            age_max=exact_age,
+            target_words=target_words,
+            reading_mode=reading_mode,
+        )
+        if resolved_mode != reading_mode or resolved_class != relative_class:
+            raise ValueError(
+                f"{tier} policy resolution mismatch: "
+                f"{resolved_mode}/{resolved_class}"
             )
 
     max_parallel = int(payload.get("max_parallel") or 0)
@@ -97,10 +131,12 @@ def wave_cases(
 ) -> list[WaveCase]:
     wave = load_wave(wave_path)
     wave_id = _slug(str(wave["wave_id"]))
-    target_words = int(wave["target_words"])
     rows: list[WaveCase] = []
-    for tier, exact_age_raw in wave["representative_ages"].items():
-        exact_age = int(exact_age_raw)
+    for tier, age_case in wave["age_cases"].items():
+        exact_age = int(age_case["exact_age"])
+        reading_mode = str(age_case["reading_mode"])
+        relative_class = str(age_case["relative_length_class"])
+        target_words = int(age_case["target_words"])
         for family in wave["families"]:
             case_id = f"{_slug(tier)}--{_slug(family)}"
             spec_path = output_root / wave_id / f"{case_id}.yaml"
@@ -109,6 +145,8 @@ def wave_cases(
                     case_id=case_id,
                     age_tier=tier,
                     exact_age=exact_age,
+                    reading_mode=reading_mode,
+                    relative_length_class=relative_class,
                     narrative_family=family,
                     target_words=target_words,
                     spec_path=spec_path,
@@ -138,8 +176,9 @@ def materialize_wave(
             *global_constraints,
             *[str(x) for x in family.get("constraints") or []],
             (
-                f"The intended reader is exactly age {case.exact_age}; do not write "
-                "for a younger or older audience."
+                f"The intended reader is exactly age {case.exact_age}; "
+                f"reading mode is {case.reading_mode}; do not write for a "
+                "younger or older audience."
             ),
         ]
         spec = StorySpec(
@@ -149,6 +188,8 @@ def materialize_wave(
             language=str(wave.get("language") or "en"),
             target_words=case.target_words,
             narrative_family=case.narrative_family,
+            reading_mode=case.reading_mode,
+            relative_length_class=case.relative_length_class,
             protagonist=_protagonist(case.exact_age),
             setting=str(family["setting"]),
             theme=str(family["theme"]),
@@ -181,6 +222,8 @@ def matrix_payload(
                 "case_id": case.case_id,
                 "age_tier": case.age_tier,
                 "exact_age": case.exact_age,
+                "reading_mode": case.reading_mode,
+                "relative_length_class": case.relative_length_class,
                 "narrative_family": case.narrative_family,
                 "target_words": case.target_words,
                 "spec_path": str(case.spec_path),
@@ -228,12 +271,27 @@ def validate_materialized_wave(
             errors.append(f"tier_mismatch:{case.case_id}")
         if spec.narrative_family != case.narrative_family:
             errors.append(f"family_mismatch:{case.case_id}")
-        if spec.target_words != int(wave["target_words"]):
+        if spec.target_words != case.target_words:
             errors.append(f"target_words_mismatch:{case.case_id}")
-        if length_band_for_target_words(spec.target_words) != "STANDARD":
-            errors.append(f"length_band_mismatch:{case.case_id}")
+        if spec.reading_mode != case.reading_mode:
+            errors.append(f"reading_mode_mismatch:{case.case_id}")
+        if spec.relative_length_class != case.relative_length_class:
+            errors.append(f"relative_length_class_mismatch:{case.case_id}")
 
-    expected = len(wave["representative_ages"]) * len(wave["families"])
+        try:
+            mode, relative_class = resolve_relative_length_class(
+                age_min=spec.age_min,
+                age_max=spec.age_max,
+                target_words=spec.target_words,
+                reading_mode=spec.reading_mode,
+            )
+        except ValueError as exc:
+            errors.append(f"length_policy_mismatch:{case.case_id}:{exc}")
+            continue
+        if mode != case.reading_mode or relative_class != case.relative_length_class:
+            errors.append(f"resolved_policy_mismatch:{case.case_id}")
+
+    expected = len(wave["age_cases"]) * len(wave["families"])
     if len(cases) != expected:
         errors.append(f"case_count:{len(cases)}:{expected}")
     return errors
@@ -243,7 +301,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Compile LUMI qualification waves.")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    for name in ("materialize", "validate", "matrix"):
+    for name in ("materialize", "validate", "matrix", "max-parallel"):
         cmd = sub.add_parser(name)
         cmd.add_argument("--wave", required=True)
         cmd.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
@@ -273,6 +331,10 @@ def main() -> None:
                 indent=2,
             )
         )
+        return
+
+    if args.command == "max-parallel":
+        print(int(load_wave(wave_path)["max_parallel"]))
         return
 
     print(

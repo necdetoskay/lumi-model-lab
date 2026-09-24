@@ -90,12 +90,13 @@ The canonical stability matrix is recorded in:
 The migrated immutable run evidence and derived multidimensional capability
 view are governed by:
 
-`docs/canonical/MODEL_CAPABILITY_CUBE_V1.md`
+`docs/canonical/MODEL_CAPABILITY_CUBE_V2.md`
 
-The initial cube deliberately marks these five CHILD × STANDARD cells as
-PROVISIONAL because each currently has only two retained runs. Promotion as a
-Model Lab integration candidate and evidence-density status are separate
-concepts.
+The original promotion evidence was produced under the historical v1 global
+length taxonomy. Capability Cube v2 preserves those runs as
+`LEGACY_UNSPECIFIED` rather than silently reclassifying them into age-relative
+STANDARD cells. Promotion as a Model Lab integration candidate and v2
+age/length qualification are separate concepts.
 
 Promotion requirements:
 

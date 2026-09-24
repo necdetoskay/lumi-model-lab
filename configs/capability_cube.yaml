@@ -1,6 +1,7 @@
-schema_version: capability-cube.v1
+schema_version: capability-cube.v2
 
-# Project_LUMI canonical narrative age tiers. Exact age remains in every run.
+# Project_LUMI canonical NarrativeAgeTier policy.
+# Exact age/range remains in every evidence record.
 narrative_age_tiers:
   EARLY_CHILD: {min_age: 3, max_age: 5}
   CHILD: {min_age: 6, max_age: 8}
@@ -11,14 +12,49 @@ narrative_age_tiers:
   MATURE_ADULT: {min_age: 40, max_age: 59}
   SENIOR: {min_age: 60, max_age: 120}
 
-# Qualification grouping only. Exact target_words is always preserved.
-length_bands:
-  SHORT: {min_words: 300, max_words: 1499}
-  STANDARD: {min_words: 1500, max_words: 2499}
-  LONG: {min_words: 2500, max_words: 3999}
-  EXTENDED: {min_words: 4000, max_words: 5000}
+# Qualification vocabulary. v2 only qualifies the canonical default mode for
+# each age tier. Alternative accessibility/reading modes require their own
+# evidence cohort.
+reading_modes:
+  - READ_ALOUD
+  - EARLY_READER
+  - INDEPENDENT_READER
 
-# Reuses the canonical Project_LUMI story-corpus narrative family taxonomy.
+# Relative story length is resolved against age policy. v2 intentionally
+# defines only STANDARD. SHORT/LONG/extreme classes are future qualifications.
+relative_length_classes:
+  - STANDARD
+
+# LUMI single-session story policy. These targets are engineering policy
+# informed by children's publishing guidance and reading-rate evidence.
+# They are not claimed to be universal publishing standards.
+age_length_policy:
+  EARLY_CHILD:
+    default_reading_mode: READ_ALOUD
+    STANDARD: {target_words: 500, min_words: 300, max_words: 800}
+  CHILD:
+    default_reading_mode: EARLY_READER
+    STANDARD: {target_words: 1500, min_words: 900, max_words: 2200}
+  MIDDLE_CHILD:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 2800, min_words: 2200, max_words: 3500}
+  TEEN:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 3800, min_words: 3000, max_words: 4800}
+  YOUNG_ADULT:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 4200, min_words: 3200, max_words: 5000}
+  ADULT:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 4200, min_words: 3200, max_words: 5000}
+  MATURE_ADULT:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 4200, min_words: 3200, max_words: 5000}
+  SENIOR:
+    default_reading_mode: INDEPENDENT_READER
+    STANDARD: {target_words: 4200, min_words: 3200, max_words: 5000}
+
+# Reuses Project_LUMI's canonical story-corpus narrative-family taxonomy.
 narrative_families:
   - exploration_mystery
   - friendship_social_problem
