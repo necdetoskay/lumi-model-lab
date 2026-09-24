@@ -16,6 +16,12 @@ Score each criterion from 1 to 5:
 
 A 5 is exceptional; a production-quality story will often contain 4s.
 
+Acceptance gate semantics:
+- The story passes when the average score is at least 4.0, every criterion is at least 3, and there are no critical failures.
+- If the current story meets that gate, return `repair_targets: []`. Optional refinements or "could be stronger" suggestions are non-blocking and may appear in `summary` only.
+- Emit repair targets only for concrete defects that materially contribute to the current story missing the acceptance gate. Do not turn optional polish into a blocking repair target.
+- Do not call a story production-ready while also emitting blocking repair targets.
+
 Critical failures are severe defects that independently block acceptance: contradiction with the immutable StoryContract, unsafe content, incoherent story, missing required solution/ending, or a major unresolved continuity break.
 
 For each repair target:
