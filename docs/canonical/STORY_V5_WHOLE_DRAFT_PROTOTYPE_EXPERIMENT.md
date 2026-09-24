@@ -899,3 +899,123 @@ Next engineering target:
 `Validated StateMutationProposal[] -> Atomic/Idempotent Commit Simulator -> conflict/no-partial-write tests`
 
 No real LUMI database write is authorized by this experiment.
+
+
+## Atomic/idempotent state commit simulation — 36025700209
+
+Evidence:
+
+`evidence/story-v5-state-commit-36025700209`
+
+Protocol:
+
+`state-commit-simulator.v1`
+
+The accepted production-like typed outcome from the epistemic-state run was applied to a deterministic state-store simulator.
+
+### First commit
+
+Status:
+
+`COMMITTED`
+
+Mutated entities:
+
+- `CHARACTER:PROTAGONIST`;
+- `WORLD:CURRENT`;
+- `SAGA:CURRENT`;
+- `OPPORTUNITY:CURRENT`.
+
+Each touched entity advanced exactly one revision:
+
+- Character 21 -> 22;
+- World 34 -> 35;
+- Saga 9 -> 10;
+- Opportunity 7 -> 8.
+
+New deterministic fingerprints were generated after mutation.
+
+Important invariant:
+
+`OLD_PUMP_PATH` remained `RUMORED` in committed world state.
+
+The opportunity moved from `AVAILABLE` to `CONSUMED`.
+
+The bounded sound explanation persisted under `commons.sound_hypotheses`, not as a world fact.
+
+### Identical replay
+
+The same outcome with the same idempotency key was submitted again.
+
+Status:
+
+`IDEMPOTENT_REPLAY`
+
+Results:
+
+- no entity mutated;
+- no revision incremented;
+- no duplicate knowledge appended;
+- state hash before replay == state hash after replay.
+
+### Stale-state conflict
+
+A controlled fixture advanced the World revision from 34 to 35 before attempting the original outcome whose base revision remained 34.
+
+Status:
+
+`CONFLICT`
+
+Conflict evidence:
+
+`mutation_1_stale_revision:35!=34`
+
+Results:
+
+- zero mutated entities;
+- state hash before == state hash after;
+- no Character mutation leaked through;
+- no Opportunity consumption occurred;
+- no partial write.
+
+### Deterministic contract suite
+
+The expanded v5 contract suite passed 18/18 tests, including:
+
+- authorized mutation success;
+- invented field rejection;
+- transient emotion rejection;
+- stale authority revision rejection;
+- stale entity base revision rejection;
+- stale entity fingerprint rejection;
+- epistemic-class mismatch rejection;
+- invalid evidence rejection;
+- duplicate mutation rejection;
+- blind pairwise order-swap policy;
+- atomic successful commit;
+- identical idempotent replay;
+- stale revision atomic abort;
+- stale fingerprint atomic abort;
+- idempotency-key collision rejection;
+- rollback after an apply-stage failure occurring after a prior working-copy mutation.
+
+Decision:
+
+> State commit is validate-all-first, apply-to-working-copy, then publish atomically. Any authority, concurrency, or apply failure produces zero authoritative partial writes.
+
+## Updated v5 production-candidate boundary
+
+The experimental pipeline has now demonstrated, in Model Lab:
+
+`Compiled Context -> Dynamic Architect -> Whole Draft -> Deterministic Gates -> JEV Context Gate -> Haiku Acceptance -> Typed/Epistemic Mutation Proposal -> Atomic/Idempotent Commit Simulation`
+
+The Model Lab simulator does not authorize direct production database writes.
+
+Remaining proof obligations before LUMI integration:
+
+1. map the simulator contract to LUMI's real G2 entity/revision transaction boundary;
+2. durable story-job lifecycle and process/provider recovery;
+3. production-like multi-context reliability sample;
+4. real application transaction rollback/idempotency tests;
+5. end-to-end user delivery semantics after commit.
+
