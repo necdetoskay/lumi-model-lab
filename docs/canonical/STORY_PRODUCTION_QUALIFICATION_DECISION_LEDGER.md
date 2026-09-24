@@ -635,3 +635,30 @@ Do not return to broad synthetic 80-cell spend yet.
 The next architecture boundary to prove is the bridge from Model Lab's production-candidate contracts to the **actual LUMI G2 Character/World/Opportunity/Canon/Saga contracts and application-owned commit path**.
 
 The model never becomes database authority.
+
+
+## 2026-09-24 — Bind ContextPack and mutation authority to one snapshot
+
+Run:
+
+`36026587554`
+
+Reason:
+
+Internal validity of StoryContextPack and StateMutationAuthority is not enough. A stale authority could otherwise authorize mutations against a story generated from a newer Character/World/Opportunity/Saga snapshot.
+
+Decision:
+
+- when a production-like ContextPack is present, StateMutationAuthority must reference the same entity revisions and fingerprints;
+- an authority entity absent from the ContextPack is invalid;
+- an allowed mutation targeting an undeclared authority entity is invalid;
+- mismatch fails **before paid model generation**;
+- ContextPack and mutation authority must be compiled from the same application-owned snapshot transaction.
+
+Fresh deterministic regression:
+
+**23 / 23 PASS**
+
+This extends the v5 fail-closed boundary through:
+
+`Context snapshot -> story generation -> typed/epistemic proposal -> atomic/idempotent commit`.
