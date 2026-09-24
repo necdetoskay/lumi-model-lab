@@ -899,3 +899,161 @@ Next engineering target:
 `Validated StateMutationProposal[] -> Atomic/Idempotent Commit Simulator -> conflict/no-partial-write tests`
 
 No real LUMI database write is authorized by this experiment.
+
+
+## Production-like LUMI ContextPack validation
+
+The next validation step moved beyond brief-only fixtures and supplied a LUMI-shaped ContextPack:
+
+`Character + World + Opportunity + Canon + Saga + relevant memories`
+
+The scenario intentionally included a knowledge boundary:
+
+- HOME and COMMONS: EXPLORED;
+- MAINTENANCE_EDGE: DISCOVERED;
+- OLD_PUMP_PATH: RUMORED;
+- pump-house interior state: unknown;
+- no canonical link from the pump house to the recurring sound.
+
+The character was required to investigate only from known public areas and preserve uncertainty rather than invent hidden facts.
+
+### First production-like run — 36024405327
+
+Evidence:
+
+`evidence/story-v5-production-like-36024405327`
+
+Result:
+
+- accepted: true;
+- target: 1,500 words;
+- final: 1,672 words;
+- dynamic scenes: 5;
+- repetition: 0;
+- prose repair: none;
+- length normalization: none;
+- JEV context_authority: 0.96;
+- all JEV dimensions above threshold;
+- Haiku: 4.875;
+- StoryOutcome validation errors: none;
+- `commit_ready=true`;
+- elapsed: 90.368 s.
+
+The story did not cross or explore OLD_PUMP_PATH, reveal pump-house interior facts, invent danger, or let an adult solve the investigation.
+
+However, state governance exposed an epistemic bug: the accepted story correctly preserved a **best-supported explanation with uncertainty**, while the authority still allowed that explanation to be proposed as a canonical `WORLD_FACT_SET`.
+
+Decision:
+
+> Narrative acceptance does not upgrade uncertainty into canonical fact.
+
+The state authority was hardened to distinguish epistemic classes.
+
+### Epistemic authority hardening
+
+The world lane became:
+
+- mutation type: `WORLD_HYPOTHESIS_SET`;
+- field: `commons.sound_hypotheses`;
+- epistemic class: `BEST_SUPPORTED_HYPOTHESIS`.
+
+The extractor must copy the application-provided epistemic class, and the deterministic validator rejects a mismatch.
+
+The outcome prompt also explicitly prohibits:
+
+`hypothesis / uncertainty / rumor / best-supported explanation -> FACT`
+
+upgrades.
+
+A dedicated fail-closed regression test was added.
+
+### Epistemic-hardening rerun — 36024864692
+
+Evidence:
+
+`evidence/story-v5-production-like-36024864692`
+
+Result:
+
+- accepted: true;
+- 1,468 / 1,500 words;
+- 5 dynamic scenes;
+- repetition: 0;
+- deterministic errors: none;
+- no prose repair;
+- no length normalization;
+- JEV context_authority: **0.97**;
+- all JEV dimensions above threshold;
+- Haiku: 4.875;
+- Outcome validation errors: none;
+- `commit_ready=true`;
+- elapsed: 82.466 s.
+
+The final world-state proposal was correctly typed as:
+
+`WORLD_HYPOTHESIS_SET / BEST_SUPPORTED_HYPOTHESIS`
+
+with value equivalent to:
+
+> the repaired sign bracket is the most likely source when wind moves it against the nearby support, but this may not explain every occurrence.
+
+The proposal preserved:
+
+- World base revision 34;
+- World base fingerprint;
+- story evidence scenes;
+- bounded uncertainty.
+
+Character knowledge was stored separately as `CHARACTER_KNOWLEDGE`, and workflow/thread mutations kept their own epistemic classes.
+
+### Knowledge-boundary red-team
+
+A direct scan of the final accepted prose confirmed:
+
+- no entry into OLD_PUMP_PATH;
+- no exploration of OLD_PUMP_PATH;
+- no entry into the pump house;
+- no claim about pump machinery causing the sound;
+- fenced/public-path boundary remained explicit.
+
+The prose itself reinforced the authority principle by distinguishing rumor, observation and unknown areas.
+
+### Deterministic epistemic regression
+
+Fresh contract run:
+
+`36024871502`
+
+Result:
+
+**12 / 12 PASS**
+
+The suite includes fail-closed coverage for:
+
+- unauthorized mutation tuple;
+- transient emotional-state persistence;
+- stale authority revision;
+- stale entity revision;
+- wrong entity fingerprint;
+- invalid evidence scene;
+- duplicate mutation;
+- epistemic-class mismatch;
+- valid authorized mutation;
+- pairwise label reversal;
+- order-sensitive pairwise decision -> INCONCLUSIVE.
+
+## Updated v5 assessment after production-like context
+
+The remaining risk has shifted again.
+
+The primary concern is no longer whether Luna can write a coherent story from a dynamic plan. Evidence now shows that the v5 whole-draft candidate can also respect a LUMI-shaped knowledge/canon boundary in at least one realistic scenario.
+
+The highest-value remaining work is:
+
+1. map the prototype StoryContextPack and StateMutationAuthority to the **real LUMI G2 contracts and entity identifiers**;
+2. verify the application-side atomic/idempotent commit boundary;
+3. test a small number of real LUMI-shaped contexts with different world/character/opportunity structures;
+4. retain Haiku as an acceptance signal but not a high-resolution ranking metric;
+5. use blind order-swapped pairwise comparison only as aggregate Model Lab evidence, never as a single-model-selection verdict.
+
+Broad 80-cell synthetic qualification remains lower priority than proving the real LUMI bridge.
