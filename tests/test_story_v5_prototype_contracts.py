@@ -26,6 +26,20 @@ class TypedStateMutationContractTests(unittest.TestCase):
     def setUp(self) -> None:
         self.authority = {
             "revision": "r1",
+            "entities": [
+                {
+                    "entity_ref": "CHARACTER:PROTAGONIST",
+                    "entity_kind": "CHARACTER",
+                    "expected_revision": 12,
+                    "expected_fingerprint": "char-r12-fp",
+                },
+                {
+                    "entity_ref": "WORLD:CURRENT",
+                    "entity_kind": "WORLD",
+                    "expected_revision": 8,
+                    "expected_fingerprint": "world-r8-fp",
+                },
+            ],
             "allowed_mutations": [
                 {
                     "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
@@ -48,6 +62,8 @@ class TypedStateMutationContractTests(unittest.TestCase):
                     "mutation_type": "WORLD_FACT_SET",
                     "entity_ref": "WORLD:CURRENT",
                     "field_key": "garden.marker_status",
+                    "base_revision": 8,
+                    "base_fingerprint": "world-r8-fp",
                     "value": "restored",
                     "evidence_scenes": [4],
                     "reason": "The final scene explicitly restores the marker.",
@@ -64,6 +80,8 @@ class TypedStateMutationContractTests(unittest.TestCase):
                     "mutation_type": "WORLD_FACT_SET",
                     "entity_ref": "WORLD:CURRENT",
                     "field_key": "invented.secret_field",
+                    "base_revision": 8,
+                    "base_fingerprint": "world-r8-fp",
                     "value": "anything",
                     "evidence_scenes": [2],
                     "reason": "Attempted free-form persistence.",
@@ -81,6 +99,8 @@ class TypedStateMutationContractTests(unittest.TestCase):
                     "mutation_type": "CHARACTER_STATE_SET",
                     "entity_ref": "CHARACTER:PROTAGONIST",
                     "field_key": "emotional_state",
+                    "base_revision": 12,
+                    "base_fingerprint": "char-r12-fp",
                     "value": "proud",
                     "evidence_scenes": [4],
                     "reason": "The protagonist feels proud in the ending.",
@@ -98,6 +118,44 @@ class TypedStateMutationContractTests(unittest.TestCase):
         errors = v5.validate_outcome(outcome, 4, self.authority)
         self.assertIn("outcome_authority_revision_mismatch", errors)
 
+    def test_wrong_entity_base_revision_fails_closed(self) -> None:
+        outcome = {
+            "authority_revision": "r1",
+            "mutations": [
+                {
+                    "mutation_type": "WORLD_FACT_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "garden.marker_status",
+                    "base_revision": 7,
+                    "base_fingerprint": "world-r8-fp",
+                    "value": "restored",
+                    "evidence_scenes": [4],
+                    "reason": "Stale revision must not commit.",
+                }
+            ],
+        }
+        errors = v5.validate_outcome(outcome, 4, self.authority)
+        self.assertIn("mutation_0_base_revision_mismatch", errors)
+
+    def test_wrong_entity_fingerprint_fails_closed(self) -> None:
+        outcome = {
+            "authority_revision": "r1",
+            "mutations": [
+                {
+                    "mutation_type": "WORLD_FACT_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "garden.marker_status",
+                    "base_revision": 8,
+                    "base_fingerprint": "stale-world-fp",
+                    "value": "restored",
+                    "evidence_scenes": [4],
+                    "reason": "Stale fingerprint must not commit.",
+                }
+            ],
+        }
+        errors = v5.validate_outcome(outcome, 4, self.authority)
+        self.assertIn("mutation_0_base_fingerprint_mismatch", errors)
+
     def test_invalid_evidence_scene_fails_closed(self) -> None:
         outcome = {
             "authority_revision": "r1",
@@ -106,6 +164,8 @@ class TypedStateMutationContractTests(unittest.TestCase):
                     "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
                     "entity_ref": "CHARACTER:PROTAGONIST",
                     "field_key": "knowledge.discoveries",
+                    "base_revision": 12,
+                    "base_fingerprint": "char-r12-fp",
                     "value": "learned fact",
                     "evidence_scenes": [5],
                     "reason": "Scene 5 does not exist in this four-scene story.",
@@ -120,6 +180,8 @@ class TypedStateMutationContractTests(unittest.TestCase):
             "mutation_type": "WORLD_FACT_SET",
             "entity_ref": "WORLD:CURRENT",
             "field_key": "garden.marker_status",
+            "base_revision": 8,
+            "base_fingerprint": "world-r8-fp",
             "value": "restored",
             "evidence_scenes": [4],
             "reason": "Supported by ending.",
