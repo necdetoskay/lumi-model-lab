@@ -1,8 +1,11 @@
 # Production Story Generator Baseline
 
-Status: **FROZEN**
+Status: **SUPERSEDED**
 Date: 2026-08-31
-Scope: LUMI Model Lab story-generation experiments
+Superseded: 2026-09-24 by `production-story-generator-baseline-v2.md`
+Scope: Historical LUMI Model Lab `story_scene_first_v0.3` generator qualification
+
+> This decision remains preserved as historical evidence. It must not be interpreted as the active generator baseline for the current English-first story pipeline. The old GLM qualification and the newer Luna qualification use materially different production protocols, so their raw scores are not treated as an apples-to-apples benchmark.
 
 ## Canonical production generator
 
