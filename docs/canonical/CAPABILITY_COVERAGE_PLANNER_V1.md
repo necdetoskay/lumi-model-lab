@@ -90,12 +90,20 @@ A pure `UNKNOWN > THIN` expansion rule can leave a suspicious successful cell
 unrepeated for too long. v1 therefore reserves **at most one** sentinel-repeat
 slot per batch.
 
-A THIN or PROVISIONAL current-protocol cell is sentinel-eligible when any of
-these is true:
+A THIN or PROVISIONAL current-protocol cell is sentinel-eligible only when
+its **latest** governed run is anomalous. A run is anomalous when any of these
+is true:
 
-- at least one current run failed;
-- the observed minimum final semantic-judge criterion is `<= 3`;
-- semantic repairs average `>= 2.0` per current run.
+- the run failed;
+- its final semantic-judge minimum is `<= 3`;
+- it required at least 2 semantic repairs.
+
+Aggregate failure, judge and repair history remains visible in the candidate
+record and priority diagnostics, but an older anomaly does not keep a cell in
+the sentinel lane forever. When a single anomalous run is followed by a clean
+governed repeat, the planner records `SENTINEL_RESOLVED_BY_CLEAN_REPEAT` and
+releases the sentinel slot unless the fixture-diversity escalation rules below
+still apply.
 
 The sentinel occupies its age-tier slot in the age-balanced first pass. This
 keeps total age coverage balanced while allowing one bounded repeat to resolve
@@ -148,6 +156,12 @@ The first real cell to exercise this guard is
 spec both passed final judge 4/4 but each required two semantic repairs. The
 planner therefore requests a second diagnostic fixture rather than repeating
 that benchmark again.
+
+The `MIDDLE_CHILD × puzzle_problem_solving` sequence demonstrates the clean
+repeat release rule: its first v3 observation required four semantic repairs,
+while the next governed repeat required zero. The earlier anomaly remains in
+the Capability Cube, but that clean latest repeat closes automatic sentinel
+eligibility unless a new anomalous run appears.
 
 ## No invented production-frequency signal
 

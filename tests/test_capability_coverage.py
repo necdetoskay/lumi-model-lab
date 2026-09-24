@@ -310,7 +310,7 @@ class CapabilityCoverageTests(unittest.TestCase):
                 {item["case_id"] for item in plan["selected"]},
             )
 
-    def test_one_heavy_and_one_clean_same_fixture_is_not_escalated(self) -> None:
+    def test_one_heavy_then_clean_repeat_resolves_sentinel(self) -> None:
         spec = case_spec("MIDDLE_CHILD", "puzzle_problem_solving")
         evidence = [
             build_evidence(
@@ -342,8 +342,45 @@ class CapabilityCoverageTests(unittest.TestCase):
             and item["narrative_family"] == "puzzle_problem_solving"
         )
         self.assertEqual(candidate["current_anomalous_run_count"], 1)
+        self.assertFalse(candidate["latest_current_run_anomalous"])
+        self.assertTrue(candidate["sentinel_resolved_by_clean_repeat"])
         self.assertFalse(candidate["diagnostic_fixture_required"])
         self.assertFalse(candidate["targeted_intervention_candidate"])
+        self.assertIsNone(plan["summary"]["sentinel_repeat_case_id"])
+
+    def test_clean_then_heavy_repeat_reopens_sentinel(self) -> None:
+        spec = case_spec("MIDDLE_CHILD", "puzzle_problem_solving")
+        evidence = [
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=6,
+                    semantic_repairs=0,
+                ),
+                spec_path=spec,
+                run_id="middle-puzzle-clean-first",
+                source="unit_test",
+            ),
+            build_evidence(
+                result=fake_result(
+                    protocol="english-story-production.v3",
+                    attempts=10,
+                    semantic_repairs=4,
+                ),
+                spec_path=spec,
+                run_id="middle-puzzle-heavy-latest",
+                source="unit_test",
+            ),
+        ]
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=evidence)
+        candidate = next(
+            item
+            for item in plan["candidates"]
+            if item["age_tier"] == "MIDDLE_CHILD"
+            and item["narrative_family"] == "puzzle_problem_solving"
+        )
+        self.assertTrue(candidate["latest_current_run_anomalous"])
+        self.assertFalse(candidate["sentinel_resolved_by_clean_repeat"])
         self.assertEqual(
             plan["summary"]["sentinel_repeat_case_id"],
             "middle-child--puzzle-problem-solving",
