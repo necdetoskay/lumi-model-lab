@@ -175,6 +175,44 @@ class TypedStateMutationContractTests(unittest.TestCase):
         errors = v5.validate_outcome(outcome, 4, self.authority)
         self.assertIn("mutation_0_invalid_evidence_scene:5", errors)
 
+    def test_stale_entity_revision_fails_closed(self) -> None:
+        outcome = {
+            "authority_revision": "r1",
+            "mutations": [
+                {
+                    "mutation_type": "WORLD_FACT_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "garden.marker_status",
+                    "base_revision": 7,
+                    "base_fingerprint": "world-r8-fp",
+                    "value": "restored",
+                    "evidence_scenes": [4],
+                    "reason": "Attempt based on a stale entity revision.",
+                }
+            ],
+        }
+        errors = v5.validate_outcome(outcome, 4, self.authority)
+        self.assertIn("mutation_0_base_revision_mismatch", errors)
+
+    def test_wrong_entity_fingerprint_fails_closed(self) -> None:
+        outcome = {
+            "authority_revision": "r1",
+            "mutations": [
+                {
+                    "mutation_type": "WORLD_FACT_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "garden.marker_status",
+                    "base_revision": 8,
+                    "base_fingerprint": "wrong-fingerprint",
+                    "value": "restored",
+                    "evidence_scenes": [4],
+                    "reason": "Attempt based on the wrong snapshot fingerprint.",
+                }
+            ],
+        }
+        errors = v5.validate_outcome(outcome, 4, self.authority)
+        self.assertIn("mutation_0_base_fingerprint_mismatch", errors)
+
     def test_duplicate_mutation_fails_closed(self) -> None:
         row = {
             "mutation_type": "WORLD_FACT_SET",
