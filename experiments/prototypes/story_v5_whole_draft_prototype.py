@@ -223,6 +223,7 @@ You may propose only mutations that exactly match one allowed tuple:
 
 Rules:
 - Never invent a database field, entity, operation, persistence class, or mutation type.
+- Copy base_revision and base_fingerprint exactly from the matching authority entity.
 - Every proposal must cite one or more supporting scene indexes.
 - Evidence support is necessary but not sufficient: emit a mutation only when the story
   establishes an end-of-story state that the authority explicitly allows to persist.
@@ -242,6 +243,8 @@ Return JSON only:
       "mutation_type": "",
       "entity_ref": "",
       "field_key": "",
+      "base_revision": 1,
+      "base_fingerprint": "",
       "value": null,
       "evidence_scenes": [1],
       "reason": ""
@@ -547,6 +550,25 @@ def validate_outcome(
     if not isinstance(allowed_rows, list) or not allowed_rows:
         return errors + ["state_authority_allowed_mutations_missing"]
 
+    entity_versions: dict[str, tuple[int, str]] = {}
+    for index, entity in enumerate(authority.get("entities") or []):
+        if not isinstance(entity, dict):
+            errors.append(f"state_authority_entity_{index}_not_object")
+            continue
+        entity_ref = str(entity.get("entity_ref") or "")
+        revision = entity.get("expected_revision")
+        fingerprint = str(entity.get("expected_fingerprint") or "")
+        if (
+            not entity_ref
+            or not isinstance(revision, int)
+            or isinstance(revision, bool)
+            or revision < 0
+            or not fingerprint
+        ):
+            errors.append(f"state_authority_entity_{index}_version_invalid")
+            continue
+        entity_versions[entity_ref] = (revision, fingerprint)
+
     allowed: set[tuple[str, str, str]] = set()
     for index, row in enumerate(allowed_rows):
         if not isinstance(row, dict):
@@ -582,6 +604,16 @@ def validate_outcome(
                 "mutation_not_authorized:"
                 + "|".join(key)
             )
+
+        expected_version = entity_versions.get(key[1])
+        if expected_version is None:
+            errors.append(f"mutation_{index}_entity_version_missing")
+        else:
+            expected_revision, expected_fingerprint = expected_version
+            if row.get("base_revision") != expected_revision:
+                errors.append(f"mutation_{index}_base_revision_mismatch")
+            if row.get("base_fingerprint") != expected_fingerprint:
+                errors.append(f"mutation_{index}_base_fingerprint_mismatch")
 
         scenes = row.get("evidence_scenes")
         if not isinstance(scenes, list) or not scenes:
