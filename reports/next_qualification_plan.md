@@ -6,8 +6,6 @@ Active generation protocol: `english-story-production.v3`
 Executable scope: **24** cases; canonical STANDARD scope: **80**; fixture-backed out-of-scope: **56**.
 Current protocol inside executable scope: observed **24**, unknown **0**, thin **16**, provisional **8**, established **0**.
 
-Diagnostic fixture required: adult--puzzle-problem-solving
-
 | Lane | Case | Age tier | Family | Target | Current | Current repairs/run | Current attempts/run | Family age coverage | Historical repairs/run |
 |---|---|---|---|---:|---|---:|---:|---:|---:|
 | SENTINEL_REPEAT | middle-child--puzzle-problem-solving | MIDDLE_CHILD | puzzle_problem_solving | 2800 | PROVISIONAL (2) | 2.00 | 8.00 | 8/8 | 0.00 |
