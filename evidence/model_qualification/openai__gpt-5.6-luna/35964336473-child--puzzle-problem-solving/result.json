@@ -1,0 +1,2049 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_repair_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to restore the Map Path activity and choose a route everyone can use before the afternoon session.",
+        "central_problem": "The fifth card in a route pattern is missing, leaving Deniz unsure whether the group should use the stairs or ramp.",
+        "solution_principle": "Deniz tests the card pattern against the labeled map, schedule, objects, and tools instead of guessing.",
+        "theme_thread": "Careful testing makes a better solution than a quick guess.",
+        "ending_state": "Deniz finds the ramp card, completes the pattern, chooses the accessible route, and helps make the activity ready.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat, magic, or unexplained discovery.",
+          "No clue appears before its supporting information.",
+          "Do not solve the route before Scene 5.",
+          "Do not give Deniz responsibilities, language, or reasoning beyond age seven.",
+          "Do not introduce unrelated characters, objects, locations, or subplots."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the Map Path activity, the missing card, and the need to prepare before the afternoon session.",
+          "entry_state": "Deniz is visiting a public learning space with maps, labeled objects, schedules, and ordinary tools.",
+          "beats": [
+            "Deniz notices six route-card spaces: Door, Map, Objects, Schedule, a blank space, and Table.",
+            "The guide explains that the activity begins soon, gives Deniz permission to look only in the labeled learning areas, and stays nearby while Deniz investigates.",
+            "The guide mentions that the display was rearranged that morning and that extra route tools are kept in labeled drawers.",
+            "Deniz asks a clear question about the blank space and decides to investigate before choosing a route."
+          ],
+          "must_include": [
+            "Deniz is seven and works independently in a safe, familiar space while asking the trusted guide clear, age-appropriate questions.",
+            "The prose uses short, concrete sentences, familiar vocabulary, simple cause-and-effect, and calm age-appropriate pacing for an EARLY_READER exactly age seven.",
+            "The cards visibly alternate blue and yellow borders, with the blank space bordered blue.",
+            "The schedule shows Map Path at three o'clock.",
+            "The guide says the display was rearranged and that route tools are kept in labeled drawers."
+          ],
+          "must_not_do": [
+            "Do not reveal whether the missing card shows stairs or ramp.",
+            "Do not make Deniz search unsafely or leave the learning space.",
+            "Do not mention benchmarks, tests, or older-child knowledge.",
+            "Do not give Deniz adult-level responsibility or abstract vocabulary."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows a blue route card is missing, the display was rearranged, and labeled route tools are stored in drawers; Deniz must determine the card's picture before the Map Path session.",
+          "open_threads_after": [
+            "What picture belongs in the blue blank space?",
+            "Where could the missing card be?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test the visible pattern and reject the first reasonable guess that the missing card simply fell away.",
+          "entry_state": "Deniz has identified the blue blank space but does not know its route picture or location.",
+          "beats": [
+            "Deniz notices that the borders alternate blue and yellow and uses the small ruler to compare every card instead of deciding from the empty space alone.",
+            "Because Deniz sees a stairs picture on a nearby activity sign, Deniz reasonably guesses that the missing card may show stairs.",
+            "Deniz checks beneath the table and finds no card, matching label, or loose paper.",
+            "Deniz and the guide notice that the blank space is clean, so the card was probably moved rather than dropped there."
+          ],
+          "must_include": [
+            "The pattern proves the missing card belongs to the blue route group, not the yellow place group.",
+            "The stairs idea is a reasoned, testable guess based on the nearby sign, not a careless answer.",
+            "The guide helps Deniz check without supplying the answer.",
+            "Deniz uses simple, concrete questions and observations appropriate for age seven."
+          ],
+          "must_not_do": [
+            "Do not treat Deniz's stairs idea as correct.",
+            "Do not introduce a clue from outside the learning space.",
+            "Do not fully identify the missing card yet.",
+            "Do not use abstract explanations beyond Deniz's reading level."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the alternating blue-yellow borders and the blue blank space.",
+            "Scene 1 established the labeled activity table and the three o'clock Map Path schedule.",
+            "Scene 1 established that the display was rearranged and that route tools are stored in labeled drawers.",
+            "Scene 1 established the guide's permission for Deniz to investigate safely."
+          ],
+          "handoff": "Deniz knows the missing item is a moved blue route card, while stairs remain only a plausible guess.",
+          "open_threads_after": [
+            "Which route does the blue card show?",
+            "Where was the card moved?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use the schedule and wall map to compare the two plausible routes and narrow the answer.",
+          "entry_state": "Deniz knows the missing card is a moved blue route card but has not found it.",
+          "beats": [
+            "Deniz reads the simple schedule note, 'Choose a path everyone can use,' and asks the guide about the words only after trying to understand them.",
+            "Deniz compares the labeled stairs and ramp on the wall map.",
+            "The map shows stairs are shorter, but the ramp connects the same places without steps.",
+            "Deniz changes the stairs guess because the schedule says everyone should be able to use the path."
+          ],
+          "must_include": [
+            "The schedule note uses simple language a seven-year-old can read and understand: 'Choose a path everyone can use.'",
+            "Deniz changes the stairs guess because the schedule adds a clear requirement.",
+            "The ramp remains a tested possibility, not yet a confirmed answer.",
+            "Deniz notices a map label reading Tools near the activity supplies.",
+            "Deniz's reasoning stays concrete and uses no terms such as 'accessibility' or 'inclusive design.'"
+          ],
+          "must_not_do": [
+            "Do not claim the ramp card has been found.",
+            "Do not make the schedule magically reveal the card's location.",
+            "Do not add a new route or inaccessible area.",
+            "Do not make the guide give the conclusion for Deniz."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the schedule's Map Path time and route-card display.",
+            "Scene 1 established that the display was rearranged and that route tools are kept in labeled drawers.",
+            "Scene 2 established that the missing card is blue and was probably moved.",
+            "Scene 1 established the wall map and its location labels."
+          ],
+          "handoff": "Deniz suspects the missing card shows the ramp and decides to check the labeled tools area.",
+          "open_threads_after": [
+            "Can Deniz find a ramp card in the tools area?",
+            "Will the ramp fit the complete pattern?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Find the moved card in an ordinary tool drawer and test it against every clue without applying the final choice.",
+          "entry_state": "Deniz suspects the ramp card is stored near the labeled tools but has not confirmed it.",
+          "beats": [
+            "Deniz checks the labeled tool drawer with the guide and finds a card beside tape, pencils, and a small ruler.",
+            "A small rearrangement note on the drawer says that route cards were put away with the tools during the morning display change.",
+            "The card shows a ramp; its blue border fits the blank space, and its arrow matches the ramp line on the map.",
+            "The guide asks Deniz to explain the evidence before letting Deniz place the card."
+          ],
+          "must_include": [
+            "The card was not lost; it had been filed with route tools after the display was rearranged.",
+            "The drawer, the rearrangement note, and the earlier guide explanation make the card's location understandable before Deniz finds it.",
+            "Deniz compares the card's border, picture, arrow, storage location, and map label.",
+            "The explanation remains concrete and age-appropriate rather than using abstract terms."
+          ],
+          "must_not_do": [
+            "Do not call the solution complete before Scene 5.",
+            "Do not make the card appear without a search.",
+            "Do not let one clue alone prove the answer.",
+            "Do not make Deniz read or infer information beyond age-seven ability."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established that the display was rearranged and that route tools are stored in labeled drawers.",
+            "Scene 2 established that the card was probably moved rather than dropped.",
+            "Scene 3 established the ramp, stairs, schedule requirement, and Tools label.",
+            "Scene 1 established that the cards use alternating blue and yellow borders."
+          ],
+          "handoff": "Deniz has the likely ramp card and must apply all evidence by completing the display and choosing the route.",
+          "open_threads_after": [
+            "Will the ramp card complete the pattern and meet the schedule's requirement?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Deliver the decisive payoff: complete the pattern, apply the evidence, and choose the ramp route.",
+          "entry_state": "Deniz holds the ramp card, which matches the blue space, map arrow, and everyone-can-use instruction.",
+          "beats": [
+            "Deniz places the ramp card between Schedule and Table, completing the blue-yellow pattern and the route.",
+            "Deniz checks the completed display against the schedule, map, and drawer label.",
+            "Deniz chooses the longer ramp path instead of the shorter stairs and explains the choice to the guide in simple words."
+          ],
+          "must_include": [
+            "The final solution uses the border pattern, schedule note, map route, and labeled tools drawer.",
+            "Deniz says, 'The ramp is better because everyone can use it. Some people cannot use stairs.'",
+            "The guide accepts Deniz's tested explanation rather than simply praising a guess.",
+            "The decisive route problem is fully solved in this scene.",
+            "Deniz's vocabulary, sentence length, emotional response, and responsibility remain plausible for exactly age seven."
+          ],
+          "must_not_do": [
+            "Do not introduce a new obstacle after the ramp is chosen.",
+            "Do not make the stairs dangerous or villainous.",
+            "Do not replace reasoning with luck.",
+            "Do not use adult-level terms such as 'accessibility' or 'inclusive design.'"
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the blue route-card pattern and rejected the stairs guess as untested.",
+            "Scene 3 established the schedule's everyone-can-use requirement and the ramp map line.",
+            "Scene 4 established the ramp card's matching border, arrow, and storage location.",
+            "Scene 1 established the display rearrangement and labeled tool drawer."
+          ],
+          "handoff": "The display is complete, and Deniz has chosen the accessible ramp route; the Map Path session can begin.",
+          "open_threads_after": []
+        },
+        {
+          "index": 6,
+          "purpose": "Show the practical consequence, reinforce the theme, and close the route puzzle.",
+          "entry_state": "The ramp card completes the display, and Deniz has chosen the ramp for the Map Path session.",
+          "beats": [
+            "The session begins on time as the guide leads learners from Door to Table using the completed map and route cards.",
+            "Deniz traces the completed cards with a pencil and follows with the group, helping only by pointing to the labels.",
+            "The guide thanks Deniz for checking the pattern; Deniz says that testing worked better than guessing stairs."
+          ],
+          "must_include": [
+            "The session begins on time using the completed map and route cards.",
+            "Deniz helps prepare and follow the route but does not become the guide or teacher.",
+            "Deniz's choice helps every learner follow the same path.",
+            "The ending clearly connects careful observation with a better solution using simple, age-appropriate language.",
+            "The prose keeps short sentences, concrete vocabulary, and a warm but restrained emotional ending."
+          ],
+          "must_not_do": [
+            "Do not reopen the missing-card mystery.",
+            "Do not add a new problem or future-discovery hook.",
+            "Do not turn the ending into a lecture.",
+            "Do not give Deniz responsibilities beyond helping with the prepared activity."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 4 established the ramp card's location and matching evidence.",
+            "Scene 5 established the completed pattern, the tested explanation, and Deniz's route choice.",
+            "Scene 1 established the Map Path session time and public learning space."
+          ],
+          "handoff": "No unresolved main thread remains; the Map Path activity is ready, accessible, and explained through tested evidence.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.69,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.88,
+        "no_early_resolution": 0.93,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.69
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.68,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 4382,
+        "output_tokens": 185,
+        "cost": 0.000184044
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "C1 (age-appropriate vocabulary and pacing): Must verify that explanations of 'route cards,' 'pattern,' and 'display' use only words and concepts a 7-year-old EARLY_READER encounters naturally. Avoid abstract framing."
+        },
+        {
+          "scene": 2,
+          "risk": "C7 (false hypothesis): The stairs guess is well-motivated by the nearby sign, but prose must show Deniz forming this as a testable idea, not a careless assumption. The rejection in Scene 3 must feel earned, not imposed."
+        },
+        {
+          "scene": 3,
+          "risk": "C1 and C2 (age-appropriate reasoning): The phrase 'everyone can use' must be explained through concrete observation (e.g., 'Some people use wheels' or 'Some people cannot climb stairs'), not abstract accessibility language. Deniz's reasoning shift must feel natural for age 7."
+        },
+        {
+          "scene": 4,
+          "risk": "C6 (no clue before supporting information): The rearrangement note in the drawer must be consistent with the guide's earlier mention in Scene 1 that 'the display was rearranged.' Verify the note does not introduce new information about *why* or *who* rearranged it."
+        },
+        {
+          "scene": 5,
+          "risk": "C8 (multiple earlier clues): Deniz's final explanation must explicitly reference at least three of: border pattern, schedule note, map route, and drawer label. Prose must show Deniz connecting them, not the guide doing so."
+        },
+        {
+          "scene": 6,
+          "risk": "C1 and C3 (age-appropriate closure): Deniz must help *follow* the route, not lead or teach it. The guide remains in charge. Deniz's reflection ('testing worked better than guessing') must use simple past tense and concrete language, not meta-cognitive abstraction."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. Each scene builds on prior evidence without resets or unexplained dependencies. The central problem (missing card) is not solved until Scene 5, and Scene 6 resolves consequences consistently. The false hypothesis (stairs) is well-motivated and rejected by evidence. Constraint coverage scores 4/5 because C1 (age-appropriate language and pacing for EARLY_READER age 7) requires careful prose execution: vocabulary must remain concrete, sentence structure simple, and Deniz's reasoning must feel natural for a 7-year-old, not precocious. The plan structure supports this, but execution risk is moderate. No critical failures detected. The story satisfies all nine required constraints at the plan level; prose must preserve this during writing. Recommend proceeding to prose with close attention to C1 (vocabulary, sentence length, emotional intensity, pacing) and C2 (explicit causality without didacticism) in every scene.",
+      "accepted": true
+    },
+    "costs": {
+      "planner_repair": {
+        "usd": 0.00505735,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000184044,
+      "haiku": {
+        "usd": 0.008815,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner_repair": {
+        "input_tokens": 4366,
+        "output_tokens": 3305,
+        "total_tokens": 7671
+      },
+      "jev": {
+        "input_tokens": 4382,
+        "output_tokens": 185,
+        "cost": 0.000184044
+      },
+      "haiku": {
+        "input_tokens": 4660,
+        "output_tokens": 831,
+        "total_tokens": 5491
+      }
+    },
+    "request_evidence": {
+      "structured_parse_retries": [],
+      "planner_repair": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        },
+        "max_tokens": null
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": [
+      {
+        "repair": 1,
+        "before": {
+          "deterministic_errors": [],
+          "jev": {
+            "threshold": 0.8,
+            "below_threshold": {
+              "constraint_coverage": 0.52
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.7
+          },
+          "haiku": {
+            "scores": {
+              "causal_continuity": 5,
+              "protagonist_goal_continuity": 5,
+              "constraint_coverage": 3,
+              "information_progression": 5,
+              "no_unexplained_dependencies": 5,
+              "no_early_resolution": 5,
+              "ending_coherence": 5
+            },
+            "critical_failures": [
+              "C1 (age-appropriate vocabulary, sentence structure, emotional intensity, exposition, pacing, concept complexity) is not explicitly verified in the plan. The plan describes *what* Deniz does but does not confirm that prose will use only 7-year-old vocabulary, short sentences, concrete reasoning, and appropriate pacing for EARLY_READER mode. Risk: prose may inadvertently use past-perfect tense, abstract reasoning, or multi-clause sentences that exceed typical 7-year-old comprehension.",
+              "C6 (no clue may depend on information the reader has not yet been given) is at risk in Scene 4. The plan states 'The card was not lost; it had been filed with route tools after the display was rearranged.' This explanation appears *after* Deniz finds the card. If the prose does not establish *before* Scene 4 that the display was rearranged or that tools are stored in drawers, the reader will not understand why the card is there. The plan must confirm that Scene 1, 2, or 3 mentions rearrangement or tool storage.",
+              "C9 (intended reader is exactly age 7; do not write for younger or older audience) depends entirely on prose execution. The plan structure is sound, but the brief warns that Deniz's 'judgment, independence, vocabulary, social context, and responsibilities must be plausible for that exact age.' The plan does not detail how Deniz will ask questions, react emotionally, or interact with the guide in age-appropriate ways. Risk: prose may make Deniz too independent (older) or too dependent (younger)."
+            ],
+            "scene_risks": [
+              {
+                "scene": 1,
+                "risk": "Must establish that the learning space is safe for independent exploration and that the guide is present and approachable. If Deniz's independence is not grounded in a trusted adult's permission, Scene 2–4 investigations may feel unsafe or implausible for age 7."
+              },
+              {
+                "scene": 2,
+                "risk": "The 'stairs guess' must be presented as a plausible but testable hypothesis, not as Deniz's careless assumption. If Deniz guesses without reasoning, the false hypothesis will not feel earned and the rejection will not teach the theme. Prose must show Deniz noticing stairs near the table and forming a hypothesis, not just blurting an answer."
+              },
+              {
+                "scene": 3,
+                "risk": "The schedule note 'choose a path everyone can use' must be written in language a 7-year-old can read and understand independently. If the note uses abstract language like 'accessibility' or 'inclusive design,' Deniz cannot apply it without adult explanation, breaking C2 (explicit causality without didacticism)."
+              },
+              {
+                "scene": 4,
+                "risk": "Critical: The plan states the card 'had been filed with route tools after the display was rearranged,' but does not confirm this fact is established *before* Scene 4. If the prose does not mention rearrangement or tool storage in Scenes 1–3, the reader will not understand why the card is in the drawer. Prose must either (a) have the guide mention rearrangement in Scene 1 or 2, or (b) have Deniz discover a note or label explaining it in Scene 4."
+              },
+              {
+                "scene": 5,
+                "risk": "Deniz's explanation to the guide ('the ramp is better because everyone can use it') must use only words and reasoning a 7-year-old would naturally use. If the prose uses phrases like 'accessibility' or 'inclusive,' it will violate C1 and C9. Deniz should say something like 'Everyone can walk on the ramp, but some people can't use stairs.'"
+              },
+              {
+                "scene": 6,
+                "risk": "The ending must show the Map Path session *beginning* and Deniz's role *completing* the preparation, not Deniz leading the entire session. If Deniz becomes the guide or teacher, the ending will exceed age-appropriate responsibility and violate C1 and C9."
+              }
+            ],
+            "summary": "The plan demonstrates strong causal continuity, goal stability, information progression, and ending coherence. The six scenes form a unified story with no unexplained dependencies or early resolution. However, constraint_coverage scores 3/5 because three critical constraints require explicit prose verification: (1) C1 demands age-appropriate vocabulary, sentence structure, and pacing that the plan structure does not guarantee; (2) C6 requires that the explanation for why the card is in the tool drawer must be established *before* Scene 4, but the plan does not confirm this; (3) C9 requires that Deniz's independence, emotional reactions, and social interactions be plausible for exactly age 7, which depends on prose execution. The plan is sound and ready for prose development, but the writer must (a) use only 7-year-old vocabulary and short sentences throughout; (b) establish in Scene 1 or 2 that the display was rearranged or that tools are stored in drawers; and (c) ensure Deniz's reasoning, questions, and reactions feel natural for a 7-year-old working with a trusted guide. No critical story failures are present; all risks are prose-level execution issues."
+          }
+        },
+        "after": {
+          "deterministic_errors": [],
+          "jev": {
+            "threshold": 0.8,
+            "below_threshold": {
+              "constraint_coverage": 0.69
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.68
+          },
+          "haiku": {
+            "scores": {
+              "causal_continuity": 5,
+              "protagonist_goal_continuity": 5,
+              "constraint_coverage": 4,
+              "information_progression": 5,
+              "no_unexplained_dependencies": 5,
+              "no_early_resolution": 5,
+              "ending_coherence": 5
+            },
+            "critical_failures": [],
+            "scene_risks": [
+              {
+                "scene": 1,
+                "risk": "C1 (age-appropriate vocabulary and pacing): Must verify that explanations of 'route cards,' 'pattern,' and 'display' use only words and concepts a 7-year-old EARLY_READER encounters naturally. Avoid abstract framing."
+              },
+              {
+                "scene": 2,
+                "risk": "C7 (false hypothesis): The stairs guess is well-motivated by the nearby sign, but prose must show Deniz forming this as a testable idea, not a careless assumption. The rejection in Scene 3 must feel earned, not imposed."
+              },
+              {
+                "scene": 3,
+                "risk": "C1 and C2 (age-appropriate reasoning): The phrase 'everyone can use' must be explained through concrete observation (e.g., 'Some people use wheels' or 'Some people cannot climb stairs'), not abstract accessibility language. Deniz's reasoning shift must feel natural for age 7."
+              },
+              {
+                "scene": 4,
+                "risk": "C6 (no clue before supporting information): The rearrangement note in the drawer must be consistent with the guide's earlier mention in Scene 1 that 'the display was rearranged.' Verify the note does not introduce new information about *why* or *who* rearranged it."
+              },
+              {
+                "scene": 5,
+                "risk": "C8 (multiple earlier clues): Deniz's final explanation must explicitly reference at least three of: border pattern, schedule note, map route, and drawer label. Prose must show Deniz connecting them, not the guide doing so."
+              },
+              {
+                "scene": 6,
+                "risk": "C1 and C3 (age-appropriate closure): Deniz must help *follow* the route, not lead or teach it. The guide remains in charge. Deniz's reflection ('testing worked better than guessing') must use simple past tense and concrete language, not meta-cognitive abstraction."
+              }
+            ],
+            "summary": "The plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. Each scene builds on prior evidence without resets or unexplained dependencies. The central problem (missing card) is not solved until Scene 5, and Scene 6 resolves consequences consistently. The false hypothesis (stairs) is well-motivated and rejected by evidence. Constraint coverage scores 4/5 because C1 (age-appropriate language and pacing for EARLY_READER age 7) requires careful prose execution: vocabulary must remain concrete, sentence structure simple, and Deniz's reasoning must feel natural for a 7-year-old, not precocious. The plan structure supports this, but execution risk is moderate. No critical failures detected. The story satisfies all nine required constraints at the plan level; prose must preserve this during writing. Recommend proceeding to prose with close attention to C1 (vocabulary, sentence length, emotional intensity, pacing) and C2 (explicit causality without didacticism) in every scene."
+          }
+        },
+        "accepted": true,
+        "usage": {
+          "planner_repair": {
+            "input_tokens": 4366,
+            "output_tokens": 3305,
+            "total_tokens": 7671
+          },
+          "jev": {
+            "input_tokens": 4382,
+            "output_tokens": 185,
+            "cost": 0.000184044
+          },
+          "haiku": {
+            "input_tokens": 4660,
+            "output_tokens": 831,
+            "total_tokens": 5491
+          }
+        },
+        "costs": {
+          "planner_repair": {
+            "usd": 0.00505735,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "jev": 0.000184044,
+          "haiku": {
+            "usd": 0.008815,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "request_evidence": {
+          "structured_parse_retries": [],
+          "planner_repair": {
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            },
+            "max_tokens": null
+          },
+          "haiku_structured_parse_retries": [],
+          "haiku": {
+            "reasoning": {
+              "effort": "none",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "scene_budgets": [
+    195,
+    232,
+    255,
+    255,
+    308,
+    255
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 195,
+      "word_count": 202,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the Map Path activity, the missing card, and the need to prepare before the afternoon session.",
+        "entry_state": "Deniz is visiting a public learning space with maps, labeled objects, schedules, and ordinary tools.",
+        "beats": [
+          "Deniz notices six route-card spaces: Door, Map, Objects, Schedule, a blank space, and Table.",
+          "The guide explains that the activity begins soon, gives Deniz permission to look only in the labeled learning areas, and stays nearby while Deniz investigates.",
+          "The guide mentions that the display was rearranged that morning and that extra route tools are kept in labeled drawers.",
+          "Deniz asks a clear question about the blank space and decides to investigate before choosing a route."
+        ],
+        "must_include": [
+          "Deniz is seven and works independently in a safe, familiar space while asking the trusted guide clear, age-appropriate questions.",
+          "The prose uses short, concrete sentences, familiar vocabulary, simple cause-and-effect, and calm age-appropriate pacing for an EARLY_READER exactly age seven.",
+          "The cards visibly alternate blue and yellow borders, with the blank space bordered blue.",
+          "The schedule shows Map Path at three o'clock.",
+          "The guide says the display was rearranged and that route tools are kept in labeled drawers."
+        ],
+        "must_not_do": [
+          "Do not reveal whether the missing card shows stairs or ramp.",
+          "Do not make Deniz search unsafely or leave the learning space.",
+          "Do not mention benchmarks, tests, or older-child knowledge.",
+          "Do not give Deniz adult-level responsibility or abstract vocabulary."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows a blue route card is missing, the display was rearranged, and labeled route tools are stored in drawers; Deniz must determine the card's picture before the Map Path session.",
+        "open_threads_after": [
+          "What picture belongs in the blue blank space?",
+          "Where could the missing card be?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz was seven and knew this learning room well. Maps covered one wall. Labeled objects stood on low shelves. A big activity table waited near the window.\n\nOn the table was a row of six route-card spaces. The labels read Door, Map, Objects, Schedule, blank, and Table. The card borders took turns: blue, yellow, blue, yellow, blue, yellow. But the fifth space was empty. Only its blue border showed.\n\nDeniz looked at the schedule beside the cards. It said, “Map Path — 3:00.” That was soon.\n\n“May I look for the missing card?” Deniz asked the guide.\n\n“Yes,” said the guide. “You may check the labeled learning areas. I will stay right here.”\n\nDeniz pointed to the empty space. “What picture belongs there?”\n\n“I do not know yet,” said the guide. “The display was rearranged this morning. Extra route tools are in the labeled drawers.”\n\nDeniz nodded. The drawers were low and easy to reach. Deniz could look safely without leaving the room.\n\nFirst, Deniz touched the blue border around the empty space. Then Deniz looked at the cards on both sides.\n\n“I need to find out before we choose a path,” Deniz said.\n\nThe guide smiled. “That is a good plan.”",
+        "state_delta": {
+          "location": "Public learning room, at the Map Path activity table and nearby labeled drawers.",
+          "character_goal": "Deniz wants to find the missing route card before the three o'clock Map Path session and choose a path later.",
+          "knowledge_gained": [
+            "The Map Path activity begins at three o'clock.",
+            "The display was rearranged that morning.",
+            "Extra route tools are kept in labeled drawers."
+          ],
+          "facts_established": [
+            "There are six route-card spaces labeled Door, Map, Objects, Schedule, blank, and Table.",
+            "The card borders alternate blue and yellow.",
+            "The empty fifth space has a blue border.",
+            "Deniz is seven and may investigate safely in the labeled learning areas."
+          ],
+          "clues_added": [
+            "The missing card belongs in the blue-bordered fifth space.",
+            "The card may be among the labeled route-tool drawers."
+          ],
+          "objects_changed": [
+            "The fifth route-card space remains empty."
+          ],
+          "relationships_changed": [
+            "The guide gives Deniz permission to investigate and stays nearby."
+          ],
+          "threads_opened": [
+            "What picture belongs in the blue blank space?",
+            "Where was the missing card moved?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz knows a blue route card is missing, the display was rearranged, and labeled route tools are stored in drawers. Deniz must determine the card's picture before the three o'clock Map Path session."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.217,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 202,
+          "usage": {
+            "input_tokens": 5197,
+            "output_tokens": 784,
+            "total_tokens": 5981
+          },
+          "cost": {
+            "usd": 0.0022399,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.88,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2765,
+          "output_tokens": 188,
+          "cost": 0.00011613
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.88,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2765,
+            "output_tokens": 188,
+            "cost": 0.00011613
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.497
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 12.715
+    },
+    {
+      "scene": 2,
+      "target_words": 232,
+      "word_count": 240,
+      "contract": {
+        "index": 2,
+        "purpose": "Test the visible pattern and reject the first reasonable guess that the missing card simply fell away.",
+        "entry_state": "Deniz has identified the blue blank space but does not know its route picture or location.",
+        "beats": [
+          "Deniz notices that the borders alternate blue and yellow and uses the small ruler to compare every card instead of deciding from the empty space alone.",
+          "Because Deniz sees a stairs picture on a nearby activity sign, Deniz reasonably guesses that the missing card may show stairs.",
+          "Deniz checks beneath the table and finds no card, matching label, or loose paper.",
+          "Deniz and the guide notice that the blank space is clean, so the card was probably moved rather than dropped there."
+        ],
+        "must_include": [
+          "The pattern proves the missing card belongs to the blue route group, not the yellow place group.",
+          "The stairs idea is a reasoned, testable guess based on the nearby sign, not a careless answer.",
+          "The guide helps Deniz check without supplying the answer.",
+          "Deniz uses simple, concrete questions and observations appropriate for age seven."
+        ],
+        "must_not_do": [
+          "Do not treat Deniz's stairs idea as correct.",
+          "Do not introduce a clue from outside the learning space.",
+          "Do not fully identify the missing card yet.",
+          "Do not use abstract explanations beyond Deniz's reading level."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the alternating blue-yellow borders and the blue blank space.",
+          "Scene 1 established the labeled activity table and the three o'clock Map Path schedule.",
+          "Scene 1 established that the display was rearranged and that route tools are stored in labeled drawers.",
+          "Scene 1 established the guide's permission for Deniz to investigate safely."
+        ],
+        "handoff": "Deniz knows the missing item is a moved blue route card, while stairs remain only a plausible guess.",
+        "open_threads_after": [
+          "Which route does the blue card show?",
+          "Where was the card moved?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz took a small ruler from the table. First, Deniz laid it beside each card and looked at the borders.\n\n“Blue, yellow, blue, yellow, blue, yellow,” Deniz said. “The blank space is blue, too.”\n\nThe guide nodded. “What does that tell you?”\n\n“The missing card is in the blue route group,” Deniz said. “The yellow cards are for places.”\n\nThen Deniz noticed a nearby activity sign. It showed a picture of stairs.\n\n“Maybe the missing card shows stairs,” Deniz said. “The sign has stairs. Can we check that idea?”\n\n“Yes,” said the guide. “What could we check?”\n\nDeniz got down on one knee. “Maybe it fell under the table.”\n\nTogether, they looked under the activity table. Deniz checked the corners and felt along the floor. There was no card, no matching label, and no loose paper.\n\n“Could it be behind a leg?” Deniz asked.\n\nThe guide helped move a chair, but nothing was there.\n\nDeniz went back to the display and touched the empty space. It was clean. No dust mark showed where a card had slipped out. The blue border was not bent, either.\n\n“If the card fell here, we might see a mark,” Deniz said. “But there is no mark.”\n\n“So what might have happened?” asked the guide.\n\nDeniz looked toward the low labeled drawers. “Maybe someone moved it when the display was changed.”\n\nThe stairs idea was still a guess. The missing card was probably somewhere else.",
+        "state_delta": {
+          "location": "Public learning room, at the Map Path table and nearby labeled drawers.",
+          "character_goal": "Deniz wants to find the moved blue route card before the three o'clock Map Path session.",
+          "knowledge_gained": [
+            "The card spaces alternate blue and yellow.",
+            "The missing card belongs to the blue route group, not the yellow place group.",
+            "The empty space is clean and shows no sign that a card fell there."
+          ],
+          "facts_established": [
+            "A nearby activity sign shows stairs.",
+            "The stairs picture gives Deniz a reasonable guess, but it is not confirmed.",
+            "No card, matching label, or loose paper is under the activity table."
+          ],
+          "clues_added": [
+            "The missing card was probably moved during the display rearrangement.",
+            "The labeled drawers remain a possible place to look."
+          ],
+          "objects_changed": [
+            "The small ruler was used to compare the card borders.",
+            "The fifth route-card space remains empty."
+          ],
+          "relationships_changed": [
+            "The guide helps Deniz test the stairs idea without giving the answer."
+          ],
+          "threads_opened": [
+            "Which route does the blue card show?",
+            "Where was the card moved?"
+          ],
+          "threads_resolved": [
+            "The missing card probably did not simply fall under the table."
+          ],
+          "handoff_state": "Deniz knows the missing item is a moved blue route card, while stairs remain only a plausible guess. Deniz is ready to use the schedule and wall map to compare the possible routes."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.199,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 240,
+          "usage": {
+            "input_tokens": 5859,
+            "output_tokens": 965,
+            "total_tokens": 6824
+          },
+          "cost": {
+            "usd": 0.0026226,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3221,
+          "output_tokens": 188,
+          "cost": 0.000135282
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3221,
+            "output_tokens": 188,
+            "cost": 0.000135282
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.448
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.648
+    },
+    {
+      "scene": 3,
+      "target_words": 255,
+      "word_count": 282,
+      "contract": {
+        "index": 3,
+        "purpose": "Use the schedule and wall map to compare the two plausible routes and narrow the answer.",
+        "entry_state": "Deniz knows the missing card is a moved blue route card but has not found it.",
+        "beats": [
+          "Deniz reads the simple schedule note, 'Choose a path everyone can use,' and asks the guide about the words only after trying to understand them.",
+          "Deniz compares the labeled stairs and ramp on the wall map.",
+          "The map shows stairs are shorter, but the ramp connects the same places without steps.",
+          "Deniz changes the stairs guess because the schedule says everyone should be able to use the path."
+        ],
+        "must_include": [
+          "The schedule note uses simple language a seven-year-old can read and understand: 'Choose a path everyone can use.'",
+          "Deniz changes the stairs guess because the schedule adds a clear requirement.",
+          "The ramp remains a tested possibility, not yet a confirmed answer.",
+          "Deniz notices a map label reading Tools near the activity supplies.",
+          "Deniz's reasoning stays concrete and uses no terms such as 'accessibility' or 'inclusive design.'"
+        ],
+        "must_not_do": [
+          "Do not claim the ramp card has been found.",
+          "Do not make the schedule magically reveal the card's location.",
+          "Do not add a new route or inaccessible area.",
+          "Do not make the guide give the conclusion for Deniz."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the schedule's Map Path time and route-card display.",
+          "Scene 1 established that the display was rearranged and that route tools are kept in labeled drawers.",
+          "Scene 2 established that the missing card is blue and was probably moved.",
+          "Scene 1 established the wall map and its location labels."
+        ],
+        "handoff": "Deniz suspects the missing card shows the ramp and decides to check the labeled tools area.",
+        "open_threads_after": [
+          "Can Deniz find a ramp card in the tools area?",
+          "Will the ramp fit the complete pattern?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz stood beside the schedule. A small note was taped under the three o'clock Map Path time.\n\n“Choose a path everyone can use,” Deniz read slowly.\n\nDeniz thought for a moment. “I know what ‘path’ means. What does ‘everyone’ mean here?”\n\nThe guide pointed to the wall map. “What do you think it means?”\n\nDeniz looked at the map. It showed two lines from Door to Table. One line was labeled Stairs. The other was labeled Ramp.\n\n“The stairs line is shorter,” Deniz said. “Maybe that is why the sign showed stairs.”\n\nDeniz traced the other line with one finger. “But the ramp goes to the same places.”\n\nThe guide nodded. “What else do you notice?”\n\n“There are no steps on the ramp line,” Deniz said. Then Deniz looked at the schedule again. “Some people may use wheels. Stairs would not work for them. The ramp would.”\n\nThe guide stayed quiet.\n\nDeniz tapped the note. “So ‘everyone’ means the path should work for all the people in the group.”\n\n“That is what I think,” said the guide. “What do you think now?”\n\nDeniz looked back at the stairs picture on the nearby sign. “I thought the missing card might show stairs. But the schedule says to choose a path everyone can use. The ramp is a better guess now.”\n\nDeniz checked the map again. Near the activity supplies was a label that said Tools.\n\n“Tools,” Deniz read. “Could the moved card be there?”\n\n“It could,” said the guide. “How can we check?”\n\nDeniz pointed to the low drawers. “We can look in the drawer marked Tools.”\n\nThe ramp was still only a guess, but now it was a guess Deniz could test.",
+        "state_delta": {
+          "location": "Public learning room, at the Map Path display, wall map, schedule, and labeled tool drawers.",
+          "character_goal": "Deniz wants to find the moved blue route card and choose a path everyone can use before the three o'clock Map Path session.",
+          "knowledge_gained": [
+            "The schedule says, 'Choose a path everyone can use.'",
+            "The stairs route is shorter.",
+            "The ramp connects the same places without steps.",
+            "Some people may use wheels, so stairs may not work for everyone.",
+            "The map has a label reading Tools near the activity supplies."
+          ],
+          "facts_established": [
+            "The wall map shows labeled Stairs and Ramp routes from Door to Table.",
+            "The schedule adds the requirement that the route work for everyone."
+          ],
+          "clues_added": [
+            "The missing card may show the ramp.",
+            "The moved card may be in the drawer marked Tools."
+          ],
+          "objects_changed": [
+            "Deniz traced the stairs and ramp lines on the wall map.",
+            "The fifth route-card space remains empty."
+          ],
+          "relationships_changed": [
+            "The guide continues helping Deniz test ideas without supplying the answer."
+          ],
+          "threads_opened": [
+            "Can Deniz find a ramp card in the Tools drawer?",
+            "Will the ramp card fit the complete pattern?"
+          ],
+          "threads_resolved": [
+            "Deniz changes the stairs idea because the schedule requires a path everyone can use."
+          ],
+          "handoff_state": "Deniz suspects the missing blue card shows the ramp and decides to check the labeled Tools drawer, but the card has not been found or confirmed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.876,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 282,
+          "usage": {
+            "input_tokens": 6301,
+            "output_tokens": 882,
+            "total_tokens": 7183
+          },
+          "cost": {
+            "usd": 0.0026335,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.87,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3702,
+          "output_tokens": 188,
+          "cost": 0.000155484
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.87,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3702,
+            "output_tokens": 188,
+            "cost": 0.000155484
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.396
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.272
+    },
+    {
+      "scene": 4,
+      "target_words": 255,
+      "word_count": 302,
+      "contract": {
+        "index": 4,
+        "purpose": "Find the moved card in an ordinary tool drawer and test it against every clue without applying the final choice.",
+        "entry_state": "Deniz suspects the ramp card is stored near the labeled tools but has not confirmed it.",
+        "beats": [
+          "Deniz checks the labeled tool drawer with the guide and finds a card beside tape, pencils, and a small ruler.",
+          "A small rearrangement note on the drawer says that route cards were put away with the tools during the morning display change.",
+          "The card shows a ramp; its blue border fits the blank space, and its arrow matches the ramp line on the map.",
+          "The guide asks Deniz to explain the evidence before letting Deniz place the card."
+        ],
+        "must_include": [
+          "The card was not lost; it had been filed with route tools after the display was rearranged.",
+          "The drawer, the rearrangement note, and the earlier guide explanation make the card's location understandable before Deniz finds it.",
+          "Deniz compares the card's border, picture, arrow, storage location, and map label.",
+          "The explanation remains concrete and age-appropriate rather than using abstract terms."
+        ],
+        "must_not_do": [
+          "Do not call the solution complete before Scene 5.",
+          "Do not make the card appear without a search.",
+          "Do not let one clue alone prove the answer.",
+          "Do not make Deniz read or infer information beyond age-seven ability."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established that the display was rearranged and that route tools are stored in labeled drawers.",
+          "Scene 2 established that the card was probably moved rather than dropped.",
+          "Scene 3 established the ramp, stairs, schedule requirement, and Tools label.",
+          "Scene 1 established that the cards use alternating blue and yellow borders."
+        ],
+        "handoff": "Deniz has the likely ramp card and must apply all evidence by completing the display and choosing the route.",
+        "open_threads_after": [
+          "Will the ramp card complete the pattern and meet the schedule's requirement?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz knelt beside the drawers. One front said TOOLS.\n\n“Let us check this one,” said the guide.\n\nDeniz pulled it open. Inside were tape, pencils, and the small ruler Deniz had used before. Deniz moved the pencils aside and looked under the tape.\n\nA paper was stuck to the back of the drawer. Deniz read it aloud. “During the morning display change, route cards were put away with the tools.”\n\n“So the card was moved,” Deniz said. “It was not lost under the table.”\n\n“Look carefully,” said the guide.\n\nDeniz searched between the tools. A card peeked out beside the ruler. It had a blue border. Its picture showed a ramp. A small arrow pointed along it.\n\nDeniz carried the card to the display but did not put it in yet.\n\nFirst, Deniz looked at the empty space. It had a blue border too. The other borders went blue, yellow, blue, yellow. This card would fit the pattern.\n\nNext, Deniz looked at the wall map. The arrow on the card pointed the same way as the line marked Ramp. The map’s label near the drawer said Tools. The card had been found in the Tools drawer, just as the note said.\n\nThe guide pointed to the empty space. “Tell me what you found before you place it.”\n\nDeniz held the card with both hands. “It was in the Tools drawer because the display was changed. It has a blue border for the blue space. It shows the ramp, and its arrow matches the ramp line on the map.”\n\nDeniz glanced at the schedule note. “The ramp might be the path everyone can use, too.”\n\nThe guide smiled. “You checked more than one clue.”\n\nDeniz nodded, still holding the card. The pattern was ready, but the card was not in its place yet.",
+        "state_delta": {
+          "location": "Public learning room, at the Map Path display and the labeled Tools drawer.",
+          "character_goal": "Deniz wants to complete the route display and choose a path everyone can use before the three o'clock Map Path session.",
+          "knowledge_gained": [
+            "The missing card was put away with the tools during the morning display change.",
+            "The card shows a ramp.",
+            "The card's blue border fits the empty blue space.",
+            "The card's arrow matches the ramp line on the wall map."
+          ],
+          "facts_established": [
+            "The Tools drawer contains tape, pencils, a small ruler, and the moved route card.",
+            "A drawer note explains that route cards were put away with the tools.",
+            "The ramp card matches the blue-yellow border pattern."
+          ],
+          "clues_added": [
+            "The card's arrow matches the labeled Ramp line on the map.",
+            "The card's storage location matches the drawer note and the earlier Tools label.",
+            "The ramp may meet the schedule's everyone-can-use requirement."
+          ],
+          "objects_changed": [
+            "Deniz removed the ramp card from the Tools drawer.",
+            "Deniz is holding the ramp card beside the display.",
+            "The fifth route-card space remains empty."
+          ],
+          "relationships_changed": [
+            "The guide asks Deniz to explain the evidence before placing the card."
+          ],
+          "threads_opened": [
+            "Will the ramp card complete the pattern and meet the schedule's requirement?"
+          ],
+          "threads_resolved": [
+            "The card was not lost under the table.",
+            "The missing card's picture and likely location have been identified."
+          ],
+          "handoff_state": "Deniz holds the ramp card. It matches the blue space, the border pattern, the map's Ramp line, the Tools drawer note, and the schedule's possible everyone-can-use requirement. Deniz has not placed the card yet."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 14.359,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:315>306"
+          ],
+          "word_count": 315,
+          "usage": {
+            "input_tokens": 6730,
+            "output_tokens": 955,
+            "total_tokens": 7685
+          },
+          "cost": {
+            "usd": 0.00282835,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 9.711,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:308>306"
+          ],
+          "word_count": 308,
+          "usage": {
+            "input_tokens": 6416,
+            "output_tokens": 947,
+            "total_tokens": 7363
+          },
+          "cost": {
+            "usd": 0.00274025,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_2",
+          "elapsed_seconds": 11.051,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 302,
+          "usage": {
+            "input_tokens": 6408,
+            "output_tokens": 980,
+            "total_tokens": 7388
+          },
+          "cost": {
+            "usd": 0.00277785,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4148,
+          "output_tokens": 188,
+          "cost": 0.000174216
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4148,
+            "output_tokens": 188,
+            "cost": 0.000174216
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.604
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 35.727
+    },
+    {
+      "scene": 5,
+      "target_words": 308,
+      "word_count": 313,
+      "contract": {
+        "index": 5,
+        "purpose": "Deliver the decisive payoff: complete the pattern, apply the evidence, and choose the ramp route.",
+        "entry_state": "Deniz holds the ramp card, which matches the blue space, map arrow, and everyone-can-use instruction.",
+        "beats": [
+          "Deniz places the ramp card between Schedule and Table, completing the blue-yellow pattern and the route.",
+          "Deniz checks the completed display against the schedule, map, and drawer label.",
+          "Deniz chooses the longer ramp path instead of the shorter stairs and explains the choice to the guide in simple words."
+        ],
+        "must_include": [
+          "The final solution uses the border pattern, schedule note, map route, and labeled tools drawer.",
+          "Deniz says, 'The ramp is better because everyone can use it. Some people cannot use stairs.'",
+          "The guide accepts Deniz's tested explanation rather than simply praising a guess.",
+          "The decisive route problem is fully solved in this scene.",
+          "Deniz's vocabulary, sentence length, emotional response, and responsibility remain plausible for exactly age seven."
+        ],
+        "must_not_do": [
+          "Do not introduce a new obstacle after the ramp is chosen.",
+          "Do not make the stairs dangerous or villainous.",
+          "Do not replace reasoning with luck.",
+          "Do not use adult-level terms such as 'accessibility' or 'inclusive design.'"
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the blue route-card pattern and rejected the stairs guess as untested.",
+          "Scene 3 established the schedule's everyone-can-use requirement and the ramp map line.",
+          "Scene 4 established the ramp card's matching border, arrow, and storage location.",
+          "Scene 1 established the display rearrangement and labeled tool drawer."
+        ],
+        "handoff": "The display is complete, and Deniz has chosen the accessible ramp route; the Map Path session can begin.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz carried the ramp card back to the display. The empty space waited between Schedule and Table.\n\nDeniz looked once more at the borders. Blue, yellow, blue, yellow, blue, yellow. The ramp card belonged in the blue space.\n\nSlowly, Deniz slid it into place. It fit.\n\nNow the six cards made a path from Door to Table. Deniz traced the pictures with one finger. The map, the objects, the schedule, the ramp, and the table all matched the display.\n\nThe guide pointed to the schedule note. “What does it say?”\n\nDeniz read, “Choose a path everyone can use.”\n\nDeniz looked at the wall map. The stairs line was shorter. The ramp line was longer, but it went from the same Door to the same Table. It had no steps.\n\nThen Deniz looked at the Tools drawer. The small note still showed why the card had been there. The display had been changed that morning, so the route card had been put away with the tools.\n\nDeniz touched the blue border. “The pattern says it goes here. The map says it is the ramp. The schedule says everyone can use the path. The card was in the Tools drawer because of the note.”\n\nThe guide nodded. “Which path will you choose?”\n\nDeniz stood tall and looked at both lines on the map.\n\n“The ramp is better because everyone can use it. Some people cannot use stairs.”\n\n“The stairs are shorter,” said the guide. “Is it wrong to have stairs?”\n\nDeniz shook their head. “No. Stairs can work for some people. But the ramp can work for everyone.”\n\nThe guide smiled. “You checked the pattern, the map, the schedule, and the drawer. Your choice comes from all four clues.”\n\nDeniz pressed the ramp card flat. The Map Path display was ready for three o’clock. The longer line was the better line for the whole group.",
+        "state_delta": {
+          "location": "Public learning room, at the completed Map Path display beside the wall map and labeled Tools drawer.",
+          "character_goal": "Deniz wants to restore the Map Path activity and choose a route everyone can use before the three o'clock session.",
+          "knowledge_gained": [
+            "The ramp card completes the blue-yellow border pattern.",
+            "The completed display matches the wall map and the schedule.",
+            "The ramp is longer than the stairs but can be used by everyone."
+          ],
+          "facts_established": [
+            "The ramp card belongs between Schedule and Table.",
+            "The Map Path route is complete from Door to Table.",
+            "The schedule requires a path everyone can use.",
+            "The stairs are shorter but do not work for everyone."
+          ],
+          "clues_added": [
+            "The border pattern, schedule note, map route, and Tools drawer note all support choosing the ramp."
+          ],
+          "objects_changed": [
+            "Deniz placed the ramp card in the fifth route-card space.",
+            "The Map Path display is complete."
+          ],
+          "relationships_changed": [
+            "The guide accepts Deniz's choice because Deniz explains several tested clues."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The missing card was identified and placed.",
+            "The route pattern was completed.",
+            "Deniz chose the ramp route everyone can use."
+          ],
+          "handoff_state": "The display is complete, the ramp card is in place, and Deniz has chosen the ramp for the three o'clock Map Path session. The route puzzle is solved, and the guide can begin the activity."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.129,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 313,
+          "usage": {
+            "input_tokens": 7104,
+            "output_tokens": 832,
+            "total_tokens": 7936
+          },
+          "cost": {
+            "usd": 0.00277425,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.87,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.9,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.81,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4523,
+          "output_tokens": 188,
+          "cost": 0.000189966
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.87,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.9,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.81,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4523,
+            "output_tokens": 188,
+            "cost": 0.000189966
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.612
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 12.742
+    },
+    {
+      "scene": 6,
+      "target_words": 255,
+      "word_count": 240,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the practical consequence, reinforce the theme, and close the route puzzle.",
+        "entry_state": "The ramp card completes the display, and Deniz has chosen the ramp for the Map Path session.",
+        "beats": [
+          "The session begins on time as the guide leads learners from Door to Table using the completed map and route cards.",
+          "Deniz traces the completed cards with a pencil and follows with the group, helping only by pointing to the labels.",
+          "The guide thanks Deniz for checking the pattern; Deniz says that testing worked better than guessing stairs."
+        ],
+        "must_include": [
+          "The session begins on time using the completed map and route cards.",
+          "Deniz helps prepare and follow the route but does not become the guide or teacher.",
+          "Deniz's choice helps every learner follow the same path.",
+          "The ending clearly connects careful observation with a better solution using simple, age-appropriate language.",
+          "The prose keeps short sentences, concrete vocabulary, and a warm but restrained emotional ending."
+        ],
+        "must_not_do": [
+          "Do not reopen the missing-card mystery.",
+          "Do not add a new problem or future-discovery hook.",
+          "Do not turn the ending into a lecture.",
+          "Do not give Deniz responsibilities beyond helping with the prepared activity."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 4 established the ramp card's location and matching evidence.",
+          "Scene 5 established the completed pattern, the tested explanation, and Deniz's route choice.",
+          "Scene 1 established the Map Path session time and public learning space."
+        ],
+        "handoff": "No unresolved main thread remains; the Map Path activity is ready, accessible, and explained through tested evidence.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "At three o’clock, the Map Path session began.\n\nThe guide stood by the Door card. A small group gathered around the display. The guide held the map and led everyone along the ramp. The ramp line went from Door to Table, just as the card showed.\n\nDeniz walked with the group. In one hand, Deniz held a pencil. At each stop, Deniz traced the matching card: Door, Map, Objects, Schedule, Ramp, Table.\n\nWhen a learner looked unsure, Deniz pointed to the label on the wall. “Here is Map,” Deniz said. Then the guide led the group to the map.\n\nAt the ramp, everyone could follow the same path. No one had to split away. The route was longer than the stairs, but the whole group reached the Table together.\n\nThe guide placed the map beside the finished cards. “Thank you for checking the pattern,” the guide said. “How did you choose?”\n\nDeniz looked at the blue and yellow borders. Then Deniz looked at the map and the schedule.\n\n“I tested it,” Deniz said. “The pattern fit the ramp card. The map showed the ramp. The schedule said everyone could use it. Guessing stairs would not have worked as well.”\n\nThe guide nodded. “You checked before you chose.”\n\nDeniz smiled and tapped the Ramp card with the pencil. The labels, the map, and the cards all pointed the same way. The activity was ready, and everyone could follow the path together.",
+        "state_delta": {
+          "location": "Public learning room, during the Map Path session from Door to Table.",
+          "character_goal": "Deniz wants to help the group follow the completed route everyone can use.",
+          "knowledge_gained": [
+            "The completed map and route cards guide the group from Door to Table.",
+            "Everyone can follow the same ramp path together.",
+            "Testing the pattern, map, and schedule worked better than guessing stairs."
+          ],
+          "facts_established": [
+            "The Map Path session begins on time at three o'clock.",
+            "The guide leads the group while Deniz helps by pointing to labels.",
+            "The completed route helps every learner follow the same path."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "Deniz traces the completed route cards with a pencil.",
+            "The map is placed beside the finished route-card display."
+          ],
+          "relationships_changed": [
+            "The guide thanks Deniz for checking the pattern and accepts Deniz's tested explanation."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The Map Path activity begins successfully using the completed route.",
+            "The story's route puzzle is closed through careful testing rather than guessing."
+          ],
+          "handoff_state": "No unresolved main thread remains. The completed Map Path activity has begun on time, the guide has led everyone from Door to Table by the ramp, and Deniz has helped the group follow the labels without becoming the guide."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 11.325,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 240,
+          "usage": {
+            "input_tokens": 7052,
+            "output_tokens": 718,
+            "total_tokens": 7770
+          },
+          "cost": {
+            "usd": 0.00262445,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.88,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4298,
+          "output_tokens": 188,
+          "cost": 0.000180516
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.88,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4298,
+            "output_tokens": 188,
+            "cost": 0.000180516
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.596
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 11.921
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the Map Path activity, the missing card, and the need to prepare before the afternoon session.",
+      "word_count": 202,
+      "location": "Public learning room, at the Map Path activity table and nearby labeled drawers.",
+      "character_goal": "Deniz wants to find the missing route card before the three o'clock Map Path session and choose a path later.",
+      "knowledge_gained": [
+        "The Map Path activity begins at three o'clock.",
+        "The display was rearranged that morning.",
+        "Extra route tools are kept in labeled drawers."
+      ],
+      "facts_established": [
+        "There are six route-card spaces labeled Door, Map, Objects, Schedule, blank, and Table.",
+        "The card borders alternate blue and yellow.",
+        "The empty fifth space has a blue border.",
+        "Deniz is seven and may investigate safely in the labeled learning areas."
+      ],
+      "clues_added": [
+        "The missing card belongs in the blue-bordered fifth space.",
+        "The card may be among the labeled route-tool drawers."
+      ],
+      "objects_changed": [
+        "The fifth route-card space remains empty."
+      ],
+      "relationships_changed": [
+        "The guide gives Deniz permission to investigate and stays nearby."
+      ],
+      "threads_opened": [
+        "What picture belongs in the blue blank space?",
+        "Where was the missing card moved?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz knows a blue route card is missing, the display was rearranged, and labeled route tools are stored in drawers. Deniz must determine the card's picture before the three o'clock Map Path session."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test the visible pattern and reject the first reasonable guess that the missing card simply fell away.",
+      "word_count": 240,
+      "location": "Public learning room, at the Map Path table and nearby labeled drawers.",
+      "character_goal": "Deniz wants to find the moved blue route card before the three o'clock Map Path session.",
+      "knowledge_gained": [
+        "The card spaces alternate blue and yellow.",
+        "The missing card belongs to the blue route group, not the yellow place group.",
+        "The empty space is clean and shows no sign that a card fell there."
+      ],
+      "facts_established": [
+        "A nearby activity sign shows stairs.",
+        "The stairs picture gives Deniz a reasonable guess, but it is not confirmed.",
+        "No card, matching label, or loose paper is under the activity table."
+      ],
+      "clues_added": [
+        "The missing card was probably moved during the display rearrangement.",
+        "The labeled drawers remain a possible place to look."
+      ],
+      "objects_changed": [
+        "The small ruler was used to compare the card borders.",
+        "The fifth route-card space remains empty."
+      ],
+      "relationships_changed": [
+        "The guide helps Deniz test the stairs idea without giving the answer."
+      ],
+      "threads_opened": [
+        "Which route does the blue card show?",
+        "Where was the card moved?"
+      ],
+      "threads_resolved": [
+        "The missing card probably did not simply fall under the table."
+      ],
+      "handoff_state": "Deniz knows the missing item is a moved blue route card, while stairs remain only a plausible guess. Deniz is ready to use the schedule and wall map to compare the possible routes."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use the schedule and wall map to compare the two plausible routes and narrow the answer.",
+      "word_count": 282,
+      "location": "Public learning room, at the Map Path display, wall map, schedule, and labeled tool drawers.",
+      "character_goal": "Deniz wants to find the moved blue route card and choose a path everyone can use before the three o'clock Map Path session.",
+      "knowledge_gained": [
+        "The schedule says, 'Choose a path everyone can use.'",
+        "The stairs route is shorter.",
+        "The ramp connects the same places without steps.",
+        "Some people may use wheels, so stairs may not work for everyone.",
+        "The map has a label reading Tools near the activity supplies."
+      ],
+      "facts_established": [
+        "The wall map shows labeled Stairs and Ramp routes from Door to Table.",
+        "The schedule adds the requirement that the route work for everyone."
+      ],
+      "clues_added": [
+        "The missing card may show the ramp.",
+        "The moved card may be in the drawer marked Tools."
+      ],
+      "objects_changed": [
+        "Deniz traced the stairs and ramp lines on the wall map.",
+        "The fifth route-card space remains empty."
+      ],
+      "relationships_changed": [
+        "The guide continues helping Deniz test ideas without supplying the answer."
+      ],
+      "threads_opened": [
+        "Can Deniz find a ramp card in the Tools drawer?",
+        "Will the ramp card fit the complete pattern?"
+      ],
+      "threads_resolved": [
+        "Deniz changes the stairs idea because the schedule requires a path everyone can use."
+      ],
+      "handoff_state": "Deniz suspects the missing blue card shows the ramp and decides to check the labeled Tools drawer, but the card has not been found or confirmed."
+    },
+    {
+      "scene": 4,
+      "purpose": "Find the moved card in an ordinary tool drawer and test it against every clue without applying the final choice.",
+      "word_count": 302,
+      "location": "Public learning room, at the Map Path display and the labeled Tools drawer.",
+      "character_goal": "Deniz wants to complete the route display and choose a path everyone can use before the three o'clock Map Path session.",
+      "knowledge_gained": [
+        "The missing card was put away with the tools during the morning display change.",
+        "The card shows a ramp.",
+        "The card's blue border fits the empty blue space.",
+        "The card's arrow matches the ramp line on the wall map."
+      ],
+      "facts_established": [
+        "The Tools drawer contains tape, pencils, a small ruler, and the moved route card.",
+        "A drawer note explains that route cards were put away with the tools.",
+        "The ramp card matches the blue-yellow border pattern."
+      ],
+      "clues_added": [
+        "The card's arrow matches the labeled Ramp line on the map.",
+        "The card's storage location matches the drawer note and the earlier Tools label.",
+        "The ramp may meet the schedule's everyone-can-use requirement."
+      ],
+      "objects_changed": [
+        "Deniz removed the ramp card from the Tools drawer.",
+        "Deniz is holding the ramp card beside the display.",
+        "The fifth route-card space remains empty."
+      ],
+      "relationships_changed": [
+        "The guide asks Deniz to explain the evidence before placing the card."
+      ],
+      "threads_opened": [
+        "Will the ramp card complete the pattern and meet the schedule's requirement?"
+      ],
+      "threads_resolved": [
+        "The card was not lost under the table.",
+        "The missing card's picture and likely location have been identified."
+      ],
+      "handoff_state": "Deniz holds the ramp card. It matches the blue space, the border pattern, the map's Ramp line, the Tools drawer note, and the schedule's possible everyone-can-use requirement. Deniz has not placed the card yet."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deliver the decisive payoff: complete the pattern, apply the evidence, and choose the ramp route.",
+      "word_count": 313,
+      "location": "Public learning room, at the completed Map Path display beside the wall map and labeled Tools drawer.",
+      "character_goal": "Deniz wants to restore the Map Path activity and choose a route everyone can use before the three o'clock session.",
+      "knowledge_gained": [
+        "The ramp card completes the blue-yellow border pattern.",
+        "The completed display matches the wall map and the schedule.",
+        "The ramp is longer than the stairs but can be used by everyone."
+      ],
+      "facts_established": [
+        "The ramp card belongs between Schedule and Table.",
+        "The Map Path route is complete from Door to Table.",
+        "The schedule requires a path everyone can use.",
+        "The stairs are shorter but do not work for everyone."
+      ],
+      "clues_added": [
+        "The border pattern, schedule note, map route, and Tools drawer note all support choosing the ramp."
+      ],
+      "objects_changed": [
+        "Deniz placed the ramp card in the fifth route-card space.",
+        "The Map Path display is complete."
+      ],
+      "relationships_changed": [
+        "The guide accepts Deniz's choice because Deniz explains several tested clues."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The missing card was identified and placed.",
+        "The route pattern was completed.",
+        "Deniz chose the ramp route everyone can use."
+      ],
+      "handoff_state": "The display is complete, the ramp card is in place, and Deniz has chosen the ramp for the three o'clock Map Path session. The route puzzle is solved, and the guide can begin the activity."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the practical consequence, reinforce the theme, and close the route puzzle.",
+      "word_count": 240,
+      "location": "Public learning room, during the Map Path session from Door to Table.",
+      "character_goal": "Deniz wants to help the group follow the completed route everyone can use.",
+      "knowledge_gained": [
+        "The completed map and route cards guide the group from Door to Table.",
+        "Everyone can follow the same ramp path together.",
+        "Testing the pattern, map, and schedule worked better than guessing stairs."
+      ],
+      "facts_established": [
+        "The Map Path session begins on time at three o'clock.",
+        "The guide leads the group while Deniz helps by pointing to labels.",
+        "The completed route helps every learner follow the same path."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "Deniz traces the completed route cards with a pencil.",
+        "The map is placed beside the finished route-card display."
+      ],
+      "relationships_changed": [
+        "The guide thanks Deniz for checking the pattern and accepts Deniz's tested explanation."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The Map Path activity begins successfully using the completed route.",
+        "The story's route puzzle is closed through careful testing rather than guessing."
+      ],
+      "handoff_state": "No unresolved main thread remains. The completed Map Path activity has begun on time, the guide has led everyone from Door to Table by the ramp, and Deniz has helped the group follow the labels without becoming the guide."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "Deniz was seven and knew this learning room well. Maps covered one wall. Labeled objects stood on low shelves. A big activity table waited near the window.\n\nOn the table was a row of six route-card spaces. The labels read Door, Map, Objects, Schedule, blank, and Table. The card borders took turns: blue, yellow, blue, yellow, blue, yellow. But the fifth space was empty. Only its blue border showed.\n\nDeniz looked at the schedule beside the cards. It said, “Map Path — 3:00.” That was soon.\n\n“May I look for the missing card?” Deniz asked the guide.\n\n“Yes,” said the guide. “You may check the labeled learning areas. I will stay right here.”\n\nDeniz pointed to the empty space. “What picture belongs there?”\n\n“I do not know yet,” said the guide. “The display was rearranged this morning. Extra route tools are in the labeled drawers.”\n\nDeniz nodded. The drawers were low and easy to reach. Deniz could look safely without leaving the room.\n\nFirst, Deniz touched the blue border around the empty space. Then Deniz looked at the cards on both sides.\n\n“I need to find out before we choose a path,” Deniz said.\n\nThe guide smiled. “That is a good plan.”\n\nDeniz took a small ruler from the table. First, Deniz laid it beside each card and looked at the borders.\n\n“Blue, yellow, blue, yellow, blue, yellow,” Deniz said. “The blank space is blue, too.”\n\nThe guide nodded. “What does that tell you?”\n\n“The missing card is in the blue route group,” Deniz said. “The yellow cards are for places.”\n\nThen Deniz noticed a nearby activity sign. It showed a picture of stairs.\n\n“Maybe the missing card shows stairs,” Deniz said. “The sign has stairs. Can we check that idea?”\n\n“Yes,” said the guide. “What could we check?”\n\nDeniz got down on one knee. “Maybe it fell under the table.”\n\nTogether, they looked under the activity table. Deniz checked the corners and felt along the floor. There was no card, no matching label, and no loose paper.\n\n“Could it be behind a leg?” Deniz asked.\n\nThe guide helped move a chair, but nothing was there.\n\nDeniz went back to the display and touched the empty space. It was clean. No dust mark showed where a card had slipped out. The blue border was not bent, either.\n\n“If the card fell here, we might see a mark,” Deniz said. “But there is no mark.”\n\n“So what might have happened?” asked the guide.\n\nDeniz looked toward the low labeled drawers. “Maybe someone moved it when the display was changed.”\n\nThe stairs idea was still a guess. The missing card was probably somewhere else.\n\nDeniz stood beside the schedule. A small note was taped under the three o'clock Map Path time.\n\n“Choose a path everyone can use,” Deniz read slowly.\n\nDeniz thought for a moment. “I know what ‘path’ means. What does ‘everyone’ mean here?”\n\nThe guide pointed to the wall map. “What do you think it means?”\n\nDeniz looked at the map. It showed two lines from Door to Table. One line was labeled Stairs. The other was labeled Ramp.\n\n“The stairs line is shorter,” Deniz said. “Maybe that is why the sign showed stairs.”\n\nDeniz traced the other line with one finger. “But the ramp goes to the same places.”\n\nThe guide nodded. “What else do you notice?”\n\n“There are no steps on the ramp line,” Deniz said. Then Deniz looked at the schedule again. “Some people may use wheels. Stairs would not work for them. The ramp would.”\n\nThe guide stayed quiet.\n\nDeniz tapped the note. “So ‘everyone’ means the path should work for all the people in the group.”\n\n“That is what I think,” said the guide. “What do you think now?”\n\nDeniz looked back at the stairs picture on the nearby sign. “I thought the missing card might show stairs. But the schedule says to choose a path everyone can use. The ramp is a better guess now.”\n\nDeniz checked the map again. Near the activity supplies was a label that said Tools.\n\n“Tools,” Deniz read. “Could the moved card be there?”\n\n“It could,” said the guide. “How can we check?”\n\nDeniz pointed to the low drawers. “We can look in the drawer marked Tools.”\n\nThe ramp was still only a guess, but now it was a guess Deniz could test.\n\nDeniz knelt beside the drawers. One front said TOOLS.\n\n“Let us check this one,” said the guide.\n\nDeniz pulled it open. Inside were tape, pencils, and the small ruler Deniz had used before. Deniz moved the pencils aside and looked under the tape.\n\nA paper was stuck to the back of the drawer. Deniz read it aloud. “During the morning display change, route cards were put away with the tools.”\n\n“So the card was moved,” Deniz said. “It was not lost under the table.”\n\n“Look carefully,” said the guide.\n\nDeniz searched between the tools. A card peeked out beside the ruler. It had a blue border. Its picture showed a ramp. A small arrow pointed along it.\n\nDeniz carried the card to the display but did not put it in yet.\n\nFirst, Deniz looked at the empty space. It had a blue border too. The other borders went blue, yellow, blue, yellow. This card would fit the pattern.\n\nNext, Deniz looked at the wall map. The arrow on the card pointed the same way as the line marked Ramp. The map’s label near the drawer said Tools. The card had been found in the Tools drawer, just as the note said.\n\nThe guide pointed to the empty space. “Tell me what you found before you place it.”\n\nDeniz held the card with both hands. “It was in the Tools drawer because the display was changed. It has a blue border for the blue space. It shows the ramp, and its arrow matches the ramp line on the map.”\n\nDeniz glanced at the schedule note. “The ramp might be the path everyone can use, too.”\n\nThe guide smiled. “You checked more than one clue.”\n\nDeniz nodded, still holding the card. The pattern was ready, but the card was not in its place yet.\n\nDeniz carried the ramp card back to the display. The empty space waited between Schedule and Table.\n\nDeniz looked once more at the borders. Blue, yellow, blue, yellow, blue, yellow. The ramp card belonged in the blue space.\n\nSlowly, Deniz slid it into place. It fit.\n\nNow the six cards made a path from Door to Table. Deniz traced the pictures with one finger. The map, the objects, the schedule, the ramp, and the table all matched the display.\n\nThe guide pointed to the schedule note. “What does it say?”\n\nDeniz read, “Choose a path everyone can use.”\n\nDeniz looked at the wall map. The stairs line was shorter. The ramp line was longer, but it went from the same Door to the same Table. It had no steps.\n\nThen Deniz looked at the Tools drawer. The small note still showed why the card had been there. The display had been changed that morning, so the route card had been put away with the tools.\n\nDeniz touched the blue border. “The pattern says it goes here. The map says it is the ramp. The schedule says everyone can use the path. The card was in the Tools drawer because of the note.”\n\nThe guide nodded. “Which path will you choose?”\n\nDeniz stood tall and looked at both lines on the map.\n\n“The ramp is better because everyone can use it. Some people cannot use stairs.”\n\n“The stairs are shorter,” said the guide. “Is it wrong to have stairs?”\n\nDeniz shook their head. “No. Stairs can work for some people. But the ramp can work for everyone.”\n\nThe guide smiled. “You checked the pattern, the map, the schedule, and the drawer. Your choice comes from all four clues.”\n\nDeniz pressed the ramp card flat. The Map Path display was ready for three o’clock. The longer line was the better line for the whole group.\n\nAt three o’clock, the Map Path session began.\n\nThe guide stood by the Door card. A small group gathered around the display. The guide held the map and led everyone along the ramp. The ramp line went from Door to Table, just as the card showed.\n\nDeniz walked with the group. In one hand, Deniz held a pencil. At each stop, Deniz traced the matching card: Door, Map, Objects, Schedule, Ramp, Table.\n\nWhen a learner looked unsure, Deniz pointed to the label on the wall. “Here is Map,” Deniz said. Then the guide led the group to the map.\n\nAt the ramp, everyone could follow the same path. No one had to split away. The route was longer than the stairs, but the whole group reached the Table together.\n\nThe guide placed the map beside the finished cards. “Thank you for checking the pattern,” the guide said. “How did you choose?”\n\nDeniz looked at the blue and yellow borders. Then Deniz looked at the map and the schedule.\n\n“I tested it,” Deniz said. “The pattern fit the ramp card. The map showed the ramp. The schedule said everyone could use it. Guessing stairs would not have worked as well.”\n\nThe guide nodded. “You checked before you chose.”\n\nDeniz smiled and tapped the Ramp card with the pencil. The labels, the map, and the cards all pointed the same way. The activity was ready, and everyone could follow the path together.",
+  "word_count": 1579,
+  "target_words": 1500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.84,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.92,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8592,
+      "output_tokens": 166,
+      "cost": 0.000360864
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.84,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.92,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8592,
+      "output_tokens": 166,
+      "cost": 0.000360864
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.75,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that meets the acceptance gate with an average score of 4.75 and no criterion below 3. The narrative successfully delivers the StoryContract: Deniz encounters a layered practical puzzle, tests multiple clues (border pattern, schedule requirement, wall map, labeled drawer), rejects a reasonable false hypothesis (stairs), and applies all evidence to choose the accessible ramp route. The prose is precisely calibrated for age 7 EARLY_READER: short sentences, concrete vocabulary, explicit cause-and-effect, and age-appropriate emotional pacing throughout. Continuity is flawless across all six scenes, with each handoff state properly established and carried forward. The theme—careful testing makes a better solution than guessing—emerges naturally from Deniz's reasoning rather than didactic exposition. The ending shows practical consequence (the session begins on time, everyone follows the same path) and reinforces the theme through Deniz's own reflection without becoming a lecture. Creativity scores 4 rather than 5 because the puzzle structure, while well-executed, follows a fairly conventional pattern-matching-and-deduction arc; the originality lies in the execution and age-appropriate calibration rather than conceptual novelty. Style quality scores 4 because while the prose is clear and engaging, it occasionally repeats structural patterns (e.g., 'Deniz looked at X. Then Deniz looked at Y.') that, while appropriate for the target age, do not reach the subtle variety of a 5. These are minor refinements; the story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 1579,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.84,
+          "no_repeated_event": 0.92,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8592,
+          "output_tokens": 166,
+          "cost": 0.000360864
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 5,
+          "coherence": 5,
+          "character_consistency": 5,
+          "age_appropriateness": 5,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 5,
+          "ending_quality": 5
+        },
+        "average": 4.75,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that meets the acceptance gate with an average score of 4.75 and no criterion below 3. The narrative successfully delivers the StoryContract: Deniz encounters a layered practical puzzle, tests multiple clues (border pattern, schedule requirement, wall map, labeled drawer), rejects a reasonable false hypothesis (stairs), and applies all evidence to choose the accessible ramp route. The prose is precisely calibrated for age 7 EARLY_READER: short sentences, concrete vocabulary, explicit cause-and-effect, and age-appropriate emotional pacing throughout. Continuity is flawless across all six scenes, with each handoff state properly established and carried forward. The theme—careful testing makes a better solution than guessing—emerges naturally from Deniz's reasoning rather than didactic exposition. The ending shows practical consequence (the session begins on time, everyone follows the same path) and reinforces the theme through Deniz's own reflection without becoming a lecture. Creativity scores 4 rather than 5 because the puzzle structure, while well-executed, follows a fairly conventional pattern-matching-and-deduction arc; the originality lies in the execution and age-appropriate calibration rather than conceptual novelty. Style quality scores 4 because while the prose is clear and engaging, it occasionally repeats structural patterns (e.g., 'Deniz looked at X. Then Deniz looked at Y.') that, while appropriate for the target age, do not reach the subtle variety of a 5. These are minor refinements; the story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000360864,
+      "final_judge_cost": {
+        "usd": 0.014058,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 109.277,
+    "scene_stage_seconds": 102.025,
+    "final_stage_seconds": 10.242,
+    "total_pipeline_seconds": 221.544
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.031126244,
+    "scene_generation_usd": 0.02124115,
+    "scene_continuity_evaluator_usd": 0.000951594,
+    "whole_continuity_evaluator_usd": 0.000360864,
+    "whole_continuity_evaluator_usd_total": 0.000360864,
+    "semantic_judge_usd": {
+      "usd": 0.014058,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014058,
+    "scene_jev_usd": 0.000951594,
+    "whole_jev_usd": 0.000360864,
+    "whole_jev_usd_total": 0.000360864,
+    "final_haiku": {
+      "usd": 0.014058,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014058,
+    "total_pipeline_usd": 0.067737852
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 8592,
+      "output_tokens": 166,
+      "cost": 0.000360864
+    },
+    "semantic_judge": {
+      "input_tokens": 11748,
+      "output_tokens": 462,
+      "total_tokens": 12210
+    },
+    "whole_jev": {
+      "input_tokens": 8592,
+      "output_tokens": 166,
+      "cost": 0.000360864
+    },
+    "final_haiku": {
+      "input_tokens": 11748,
+      "output_tokens": 462,
+      "total_tokens": 12210
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
