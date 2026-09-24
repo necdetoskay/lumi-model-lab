@@ -616,7 +616,11 @@ class EnglishStoryPipelineTests(unittest.TestCase):
                 "target_resolved": {
                     "type": "noul",
                     "noul": 0.91,
-                }
+                },
+                "no_residual_ambiguity": {
+                    "type": "noul",
+                    "noul": 0.93,
+                },
             },
             "usage": {"cost": 0.00001},
             "model": "typesafe/jev-1.13-20260917",
@@ -638,13 +642,64 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         )
         self.assertTrue(result["verified"])
         self.assertEqual(result["probability"], 0.91)
+        self.assertEqual(
+            result["probabilities"],
+            {"target_resolved": 0.91, "no_residual_ambiguity": 0.93},
+        )
         questions = mock_jev.call_args.kwargs["questions"]
-        self.assertEqual(list(questions), ["target_resolved"])
+        self.assertEqual(
+            list(questions),
+            ["target_resolved", "no_residual_ambiguity"],
+        )
         self.assertEqual(questions["target_resolved"]["type"], "noul")
+        self.assertEqual(questions["no_residual_ambiguity"]["type"], "noul")
         sent_state = mock_jev.call_args.kwargs["state"]
         self.assertEqual(
             sent_state["repair_issue"],
             "The timing statement is contradictory.",
+        )
+
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_final_repair_verification_rejects_residual_ambiguity(
+        self,
+        mock_jev,
+    ):
+        mock_jev.return_value = {
+            "answers": {
+                "target_resolved": {
+                    "type": "noul",
+                    "noul": 0.94,
+                },
+                "no_residual_ambiguity": {
+                    "type": "noul",
+                    "noul": 0.61,
+                },
+            },
+            "usage": {"cost": 0.00001},
+        }
+        scenes = [
+            {
+                "scene": 1,
+                "contract": {"purpose": "observe"},
+                "envelope": good_envelope(100),
+            }
+        ]
+        result = verify_final_repair_target(
+            api_key="test",
+            plan={"story_contract": {"central_problem": "signal"}},
+            scenes=scenes,
+            scene_index=1,
+            issue="The first wording remains ambiguous until a later clarification.",
+        )
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["probability"], 0.61)
+        self.assertEqual(
+            result["probabilities"]["target_resolved"],
+            0.94,
+        )
+        self.assertEqual(
+            result["probabilities"]["no_residual_ambiguity"],
+            0.61,
         )
 
     @patch("src.english_story_pipeline.call_openrouter")
@@ -686,11 +741,17 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             issue="add one clarifying sentence",
             seed=7601,
             observed_scene_indices=[1],
+            repair_round=2,
         )
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 100)
         self.assertEqual(repaired["state_delta"], envelope["state_delta"])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
+        self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
+        sent = __import__("json").loads(mock_call.call_args.kwargs["user_prompt"])
+        self.assertTrue(sent["strict_retry"])
+        self.assertEqual(sent["repair_round"], 2)
+        self.assertEqual(attempt["repair_round"], 2)
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
 
     @patch("src.english_story_pipeline.call_openrouter")

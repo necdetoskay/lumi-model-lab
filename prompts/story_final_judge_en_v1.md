@@ -24,6 +24,9 @@ For each repair target:
 - repair_scene may be earlier than scene when the defect is missing setup/foreshadowing.
 - choose the earliest minimal prose-only repair that can solve the issue without changing StoryContract, SceneGraph, state_delta, facts, clues, objects, relationships, or thread state.
 - if the observed scene itself is the correct repair location, set repair_scene equal to scene.
+- Judge only the current assembled story. Historical repair attempts or earlier JEV warnings are advisory context and must not be treated as defects if the current prose has already resolved them.
+- Do not emit duplicate repair targets for the same underlying defect. Merge equivalent observations into one repair target with one precise issue description.
+- A repair target must describe a defect that is still present in the current prose. Do not repeat a target solely because it appeared in earlier evaluation evidence.
 
 Return JSON only:
 {

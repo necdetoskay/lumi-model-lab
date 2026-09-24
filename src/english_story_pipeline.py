@@ -1026,6 +1026,7 @@ def repair_scene_for_final_judge(
     issue: str,
     seed: int,
     observed_scene_indices: list[int] | None = None,
+    repair_round: int = 1,
 ) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
     position = scene_index - 1
     scene = scenes[position]
@@ -1058,6 +1059,8 @@ def repair_scene_for_final_judge(
             "prior_ledger": ledger[:position],
             "immutable_state_delta": original_envelope["state_delta"],
             "repair_issue": issue,
+            "repair_round": repair_round,
+            "strict_retry": repair_round > 1,
             "target_words": scene["target_words"],
             "allowed_word_range": [
                 round(scene["target_words"] * 0.80),
@@ -1077,7 +1080,7 @@ def repair_scene_for_final_judge(
             encoding="utf-8"
         ).strip(),
         user_prompt=payload,
-        temperature=0.20,
+        temperature=0.0,
         max_tokens=None,
         seed=seed,
         request_class="scene_repair",
@@ -1098,6 +1101,7 @@ def repair_scene_for_final_judge(
         "kind": "final_haiku_targeted_repair",
         "scene": scene_index,
         "repair_issue": issue,
+        "repair_round": repair_round,
         "structured_parse_retries": parse_failures,
         "word_budget_warnings": word_budget_warnings,
         "errors": errors,
@@ -1272,7 +1276,22 @@ def verify_final_repair_target(
                 "The named issue remains, is only partially addressed, or the repair "
                 "creates a new contradiction with adjacent prose or the SceneContract."
             ),
-        )
+        ),
+        "no_residual_ambiguity": noul_question(
+            (
+                "At the first wording relevant to this exact repair issue, is the intended "
+                "meaning now explicit and free of the ambiguity or contradiction described "
+                f"by the judge? Repair issue: {issue}"
+            ),
+            true_criteria=(
+                "The cited ambiguity is eliminated at its first relevant mention; a careful "
+                "reader does not need a later sentence to reinterpret or rescue the wording."
+            ),
+            false_criteria=(
+                "The problematic or equivalently ambiguous wording remains, or the intended "
+                "meaning only becomes clear later in the scene."
+            ),
+        ),
     }
     body = call_openrouter_jev(
         api_key=api_key,
@@ -1297,12 +1316,17 @@ def verify_final_repair_target(
         },
         questions=questions,
     )
-    probability = noul_probability(body["answers"]["target_resolved"])
+    probabilities = {
+        key: noul_probability(body["answers"][key])
+        for key in questions
+    }
+    probability = min(probabilities.values())
     threshold = load_jev_profile().positive_probability_threshold
     return {
         "probability": probability,
+        "probabilities": probabilities,
         "threshold": threshold,
-        "verified": probability >= threshold,
+        "verified": all(value >= threshold for value in probabilities.values()),
         "usage": body.get("usage") or {},
         "resolved_model": body.get("model"),
         "provider": body.get("provider"),
@@ -1352,6 +1376,7 @@ def apply_final_haiku_repairs(
                 issue=issue,
                 seed=7600 + scene_index * 10 + repair_round,
                 observed_scene_indices=observed_scene_indices,
+                repair_round=repair_round,
             )
             attempt["repair_round"] = repair_round
             repair_attempts.append(attempt)

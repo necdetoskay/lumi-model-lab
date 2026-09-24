@@ -11,6 +11,10 @@ Rules:
 - Do not introduce a new plot event, character, object, location, fact, clue, power, or solution.
 - Do not remove any required event.
 - Change only wording or add the smallest explanatory/observational sentence needed to resolve the supplied repair issue.
+- Treat repair_issue as an acceptance contract, not a suggestion. If it quotes misleading, contradictory, or ambiguous wording, remove or rewrite that wording at its first occurrence; do not leave the cited wording unchanged and rely on a later sentence to clarify it.
+- If repair_issue supplies a recommended replacement or an explicit intended meaning, implement that meaning directly unless doing so would violate immutable state.
+- On strict_retry=true, assume the previous polish was judged insufficient. Make the smallest stronger wording change that eliminates the exact residual ambiguity; do not merely paraphrase the previous repair.
+- Before returning, self-check the repaired prose against repair_issue and ensure a careful reader cannot still make the interpretation the judge flagged.
 - Keep the repaired prose within the supplied scene word range.
 - Preserve age appropriateness and the existing narrative voice.
 - Never modify later scenes or solve a later scene's work early.
