@@ -1085,6 +1085,13 @@ def repair_scene_for_final_judge(
         seed=seed,
         request_class="scene_repair",
     )
+    model_state_delta_changed = (
+        repaired.get("state_delta") != original_envelope.get("state_delta")
+    )
+    repaired = {
+        **repaired,
+        "state_delta": original_envelope["state_delta"],
+    }
     raw_validation_errors, _ = validate_scene_envelope(
         repaired,
         target_words=scene["target_words"],
@@ -1102,6 +1109,7 @@ def repair_scene_for_final_judge(
         "scene": scene_index,
         "repair_issue": issue,
         "repair_round": repair_round,
+        "ignored_model_state_delta_change": model_state_delta_changed,
         "structured_parse_retries": parse_failures,
         "word_budget_warnings": word_budget_warnings,
         "errors": errors,

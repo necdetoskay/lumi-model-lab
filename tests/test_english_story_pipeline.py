@@ -827,6 +827,52 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
 
     @patch("src.english_story_pipeline.call_openrouter")
+    def test_final_scene_repair_ignores_model_state_delta_mutation(
+        self,
+        mock_call,
+    ):
+        original = good_envelope(100)
+        model_output = good_envelope(100)
+        model_output["state_delta"]["location"] = "invented location"
+        mock_call.return_value = (
+            __import__("json").dumps(model_output),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "contract": {"purpose": "observe"},
+                "envelope": original,
+            }
+        ]
+        repaired, errors, word_count, attempt = repair_scene_for_final_judge(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={"story_contract": {}, "scenes": [{"purpose": "observe"}]},
+            ledger=[{"scene": 1, "word_count": 100}],
+            scenes=scenes,
+            scene_index=1,
+            issue="clarify one phrase",
+            seed=7601,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 100)
+        self.assertEqual(repaired["state_delta"], original["state_delta"])
+        self.assertTrue(attempt["ignored_model_state_delta_change"])
+
+    @patch("src.english_story_pipeline.call_openrouter")
     def test_antecedent_repair_receives_observed_scene_context(self, mock_call):
         scene1 = good_envelope(100)
         scene2 = good_envelope(100)
@@ -1099,6 +1145,33 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         result = validate_final_judge(payload)
         self.assertTrue(result["accepted"])
         self.assertGreaterEqual(result["average"], 4.0)
+
+    def test_final_haiku_gate_keeps_optional_repairs_non_blocking_when_scores_pass(self):
+        payload = {
+            "scores": {
+                "instruction_following": 4,
+                "coherence": 4,
+                "character_consistency": 4,
+                "age_appropriateness": 4,
+                "creativity": 4,
+                "style_quality": 4,
+                "continuity": 4,
+                "ending_quality": 4,
+            },
+            "critical_failures": [],
+            "repair_targets": [
+                {
+                    "scene": 6,
+                    "repair_scene": 6,
+                    "issue": "Optional thematic reflection could be stronger.",
+                }
+            ],
+            "summary": "Production-ready with optional polish.",
+        }
+        result = validate_final_judge(payload)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["average"], 4.0)
+        self.assertEqual(len(result["repair_targets"]), 1)
 
     def test_final_haiku_gate_rejects_critical_failure(self):
         payload = {
