@@ -16,7 +16,22 @@ from src.qualification_wave import (
 from src.schemas import StorySpec
 
 WAVE = Path("configs/qualification_waves/age-relative-standard-v2.yaml")
+WAVE_V3 = Path(
+    "configs/qualification_waves/age-relative-standard-v3-all-families.yaml"
+)
 OLD_WAVE = Path("configs/qualification_waves/age-standard-v1.yaml")
+CANONICAL_FAMILIES = {
+    "exploration_mystery",
+    "friendship_social_problem",
+    "puzzle_problem_solving",
+    "nature_environment",
+    "scientific_curiosity",
+    "adventure_journey",
+    "emotional_development",
+    "cooperation_teamwork",
+    "everyday_fantastical_discovery",
+    "world_lore_discovery",
+}
 
 
 class QualificationWaveTests(unittest.TestCase):
@@ -94,6 +109,69 @@ class QualificationWaveTests(unittest.TestCase):
                 self.assertTrue(spec.narrative_family)
                 self.assertTrue(spec.reading_mode)
                 self.assertEqual(spec.relative_length_class, "STANDARD")
+
+    def test_all_family_wave_has_80_cases_and_all_canonical_families(self) -> None:
+        rows = matrix_payload(WAVE_V3)["include"]
+        self.assertEqual(len(rows), 80)
+        self.assertEqual(
+            {row["narrative_family"] for row in rows},
+            CANONICAL_FAMILIES,
+        )
+        self.assertEqual(
+            {row["age_tier"] for row in rows},
+            {
+                "EARLY_CHILD",
+                "CHILD",
+                "MIDDLE_CHILD",
+                "TEEN",
+                "YOUNG_ADULT",
+                "ADULT",
+                "MATURE_ADULT",
+                "SENIOR",
+            },
+        )
+
+    def test_v3_preserves_original_three_family_fixture_bytes(self) -> None:
+        preserved = {
+            "exploration-mystery",
+            "emotional-development",
+            "puzzle-problem-solving",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            v2_root = root / "v2"
+            v3_root = root / "v3"
+            materialize_wave(WAVE, output_root=v2_root)
+            materialize_wave(WAVE_V3, output_root=v3_root)
+            v2_files = {
+                path.name: path.read_bytes()
+                for path in v2_root.rglob("*.yaml")
+                if any(token in path.name for token in preserved)
+            }
+            v3_files = {
+                path.name: path.read_bytes()
+                for path in v3_root.rglob("*.yaml")
+                if any(token in path.name for token in preserved)
+            }
+            self.assertEqual(len(v2_files), 24)
+            self.assertEqual(v2_files, v3_files)
+
+    def test_v3_materialized_specs_are_deterministic_and_valid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            materialize_wave(WAVE_V3, output_root=root)
+            first = {
+                path.relative_to(root): path.read_bytes()
+                for path in sorted(root.rglob("*.yaml"))
+            }
+            self.assertEqual(len(first), 80)
+            materialize_wave(WAVE_V3, output_root=root)
+            second = {
+                path.relative_to(root): path.read_bytes()
+                for path in sorted(root.rglob("*.yaml"))
+            }
+            self.assertEqual(first, second)
+            self.assertEqual(validate_materialized_wave(WAVE_V3, output_root=root), [])
 
     def test_wave_fails_if_representative_age_is_in_wrong_tier(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

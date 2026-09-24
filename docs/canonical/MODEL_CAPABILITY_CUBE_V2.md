@@ -269,13 +269,13 @@ Evidence-density labels remain:
 
 These describe evidence density, not quality.
 
-## 13. Controlled qualification wave v2
+## 13. Controlled qualification wave v3
 
-The active sparse age wave is:
+The active full STANDARD wave is:
 
-`configs/qualification_waves/age-relative-standard-v2.yaml`
+`configs/qualification_waves/age-relative-standard-v3-all-families.yaml`
 
-Representative exact ages:
+Representative exact ages remain:
 
 | Tier | Age | Mode | STANDARD words |
 |---|---:|---|---:|
@@ -288,13 +288,13 @@ Representative exact ages:
 | MATURE_ADULT | 50 | INDEPENDENT_READER | 4,200 |
 | SENIOR | 70 | INDEPENDENT_READER | 4,200 |
 
-Each age is crossed with three deliberately different families:
+Each age is crossed with all ten canonical NarrativeFamilies, producing
+**80 executable STANDARD cases**.
 
-- `exploration_mystery`
-- `emotional_development`
-- `puzzle_problem_solving`
-
-Total: **24 cases**.
+The earlier `age-relative-standard-v2.yaml` remains an immutable provenance
+artifact for the original three-family 24-case phase. The corresponding
+v2/v3 specs for `exploration_mystery`, `emotional_development`, and
+`puzzle_problem_solving` are required by test to remain byte-equivalent.
 
 The manifest is the authority for maximum parallelism. The workflow reads
 `max_parallel` from the manifest rather than maintaining a second hard-coded

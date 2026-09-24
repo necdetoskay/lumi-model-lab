@@ -85,7 +85,7 @@ def load_wave(path: Path) -> dict[str, Any]:
         relative_class = str(case["relative_length_class"])
         if relative_class != "STANDARD":
             raise ValueError(
-                "age-relative-standard-v2 only supports STANDARD; "
+                "qualification-wave.v2 currently supports STANDARD only; "
                 "other relative length classes are not canonical yet"
             )
 
