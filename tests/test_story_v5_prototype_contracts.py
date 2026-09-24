@@ -271,6 +271,143 @@ class TypedStateMutationContractTests(unittest.TestCase):
         self.assertIn("mutation_1_duplicate", errors)
 
 
+class ContextAuthorityAlignmentTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.context = {
+            "character": {
+                "entity_ref": "CHARACTER:PROTAGONIST",
+                "revision": 21,
+                "fingerprint": "char-r21-fp",
+            },
+            "world": {
+                "entity_ref": "WORLD:CURRENT",
+                "revision": 34,
+                "fingerprint": "world-r34-fp",
+            },
+            "opportunity": {
+                "entity_ref": "OPPORTUNITY:CURRENT",
+                "revision": 7,
+                "fingerprint": "opp-r7-fp",
+            },
+            "saga": {
+                "entity_ref": "SAGA:CURRENT",
+                "revision": 9,
+                "fingerprint": "saga-r9-fp",
+            },
+        }
+        self.authority = {
+            "entities": [
+                {
+                    "entity_ref": "CHARACTER:PROTAGONIST",
+                    "expected_revision": 21,
+                    "expected_fingerprint": "char-r21-fp",
+                },
+                {
+                    "entity_ref": "WORLD:CURRENT",
+                    "expected_revision": 34,
+                    "expected_fingerprint": "world-r34-fp",
+                },
+                {
+                    "entity_ref": "OPPORTUNITY:CURRENT",
+                    "expected_revision": 7,
+                    "expected_fingerprint": "opp-r7-fp",
+                },
+                {
+                    "entity_ref": "SAGA:CURRENT",
+                    "expected_revision": 9,
+                    "expected_fingerprint": "saga-r9-fp",
+                },
+            ],
+            "allowed_mutations": [
+                {
+                    "mutation_type": "WORLD_HYPOTHESIS_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "commons.sound_hypotheses",
+                }
+            ],
+        }
+
+    def test_exact_context_snapshot_alignment_passes(self) -> None:
+        self.assertEqual(
+            v5.validate_state_authority_context_alignment(
+                self.context,
+                self.authority,
+            ),
+            [],
+        )
+
+    def test_stale_authority_revision_vs_context_fails_closed(self) -> None:
+        authority = {
+            **self.authority,
+            "entities": [dict(row) for row in self.authority["entities"]],
+        }
+        authority["entities"][1]["expected_revision"] = 33
+        errors = v5.validate_state_authority_context_alignment(
+            self.context,
+            authority,
+        )
+        self.assertIn(
+            "state_authority_context_revision_mismatch:WORLD:CURRENT",
+            errors,
+        )
+
+    def test_stale_authority_fingerprint_vs_context_fails_closed(self) -> None:
+        authority = {
+            **self.authority,
+            "entities": [dict(row) for row in self.authority["entities"]],
+        }
+        authority["entities"][0]["expected_fingerprint"] = "stale-char-fp"
+        errors = v5.validate_state_authority_context_alignment(
+            self.context,
+            authority,
+        )
+        self.assertIn(
+            "state_authority_context_fingerprint_mismatch:CHARACTER:PROTAGONIST",
+            errors,
+        )
+
+    def test_authority_entity_absent_from_context_fails_closed(self) -> None:
+        authority = {
+            **self.authority,
+            "entities": [
+                *[dict(row) for row in self.authority["entities"]],
+                {
+                    "entity_ref": "NPC:UNSCOPED",
+                    "expected_revision": 1,
+                    "expected_fingerprint": "npc-fp",
+                },
+            ],
+        }
+        errors = v5.validate_state_authority_context_alignment(
+            self.context,
+            authority,
+        )
+        self.assertIn(
+            "state_authority_entity_not_in_context:NPC:UNSCOPED",
+            errors,
+        )
+
+    def test_mutation_entity_must_be_declared_by_authority(self) -> None:
+        authority = {
+            **self.authority,
+            "allowed_mutations": [
+                {
+                    "mutation_type": "NPC_STATE_SET",
+                    "entity_ref": "NPC:UNDECLARED",
+                    "field_key": "status",
+                }
+            ],
+        }
+        errors = v5.validate_state_authority_context_alignment(
+            self.context,
+            authority,
+        )
+        self.assertIn(
+            "state_authority_mutation_entity_undeclared:0:NPC:UNDECLARED",
+            errors,
+        )
+
+
 class PairwiseCalibrationContractTests(unittest.TestCase):
     def test_reverse_winner_maps_labels_back_to_original_candidates(self) -> None:
         self.assertEqual(pairwise.reverse_winner("A"), "B")
