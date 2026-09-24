@@ -17,22 +17,22 @@ from src.model_registry import runtime_profile_identity
 from src.schemas import StorySpec
 
 CAPABILITY_CONFIG_PATH = Path("configs/capability_cube.yaml")
-EVIDENCE_SCHEMA_VERSION = "model-qualification-evidence.v1"
+EVIDENCE_SCHEMA_VERSION = "model-qualification-evidence.v2"
 DEFAULT_EVIDENCE_ROOT = Path("evidence/model_qualification")
 DEFAULT_REPORT_JSON = Path("reports/model_capability_cube.json")
 DEFAULT_REPORT_MD = Path("reports/model_capability_cube.md")
 
 GENERATION_PROTOCOL_ARTIFACTS = (
-    Path("prompts/story_scene_plan_en_v1.md"),
-    Path("prompts/story_scene_plan_repair_en_v1.md"),
-    Path("prompts/story_scene_writer_en_v1.md"),
+    Path("prompts/story_scene_plan_en_v2.md"),
+    Path("prompts/story_scene_plan_repair_en_v2.md"),
+    Path("prompts/story_scene_writer_en_v2.md"),
     Path("prompts/story_scene_repair_en_v1.md"),
     Path("prompts/story_scene_word_budget_repair_en_v1.md"),
     Path("prompts/story_final_targeted_repair_en_v1.md"),
 )
 EVALUATION_PROTOCOL_ARTIFACTS = (
-    Path("prompts/story_scene_plan_judge_en_v1.md"),
-    Path("prompts/story_final_judge_en_v1.md"),
+    Path("prompts/story_scene_plan_judge_en_v2.md"),
+    Path("prompts/story_final_judge_en_v2.md"),
 )
 
 
@@ -42,7 +42,9 @@ class QualificationAxes(BaseModel):
     narrative_age_tier: str
     narrative_family: str
     target_words: int
-    length_band: str
+    reading_mode: str = "LEGACY_UNSPECIFIED"
+    relative_length_class: str = "LEGACY_UNSPECIFIED"
+    length_band: str | None = None
 
 
 class SceneEvidence(BaseModel):
@@ -102,7 +104,7 @@ class QualificationEvidence(BaseModel):
 
 def load_capability_config(path: Path = CAPABILITY_CONFIG_PATH) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    if payload.get("schema_version") != "capability-cube.v1":
+    if payload.get("schema_version") != "capability-cube.v2":
         raise RuntimeError("Unsupported capability cube schema")
     return payload
 
@@ -195,16 +197,76 @@ def narrative_age_tier_for_range(
     return matches[0]
 
 
-def length_band_for_target_words(
-    target_words: int,
+def default_reading_mode_for_age_tier(
+    age_tier: str,
     *,
     config: dict[str, Any] | None = None,
 ) -> str:
     config = config or load_capability_config()
-    for band, bounds in config["length_bands"].items():
+    try:
+        mode = str(config["age_length_policy"][age_tier]["default_reading_mode"])
+    except KeyError as exc:
+        raise ValueError(f"No age-length policy for age tier {age_tier}") from exc
+    if mode not in config["reading_modes"]:
+        raise ValueError(f"Unknown reading mode in policy: {mode}")
+    return mode
+
+
+def standard_length_policy_for_age_tier(
+    age_tier: str,
+    *,
+    config: dict[str, Any] | None = None,
+) -> dict[str, int]:
+    config = config or load_capability_config()
+    try:
+        policy = config["age_length_policy"][age_tier]["STANDARD"]
+    except KeyError as exc:
+        raise ValueError(f"No STANDARD length policy for age tier {age_tier}") from exc
+    return {
+        "target_words": int(policy["target_words"]),
+        "min_words": int(policy["min_words"]),
+        "max_words": int(policy["max_words"]),
+    }
+
+
+def resolve_relative_length_class(
+    *,
+    age_min: int,
+    age_max: int,
+    target_words: int,
+    reading_mode: str | None = None,
+    config: dict[str, Any] | None = None,
+) -> tuple[str, str]:
+    config = config or load_capability_config()
+    age_tier = narrative_age_tier_for_range(age_min, age_max, config=config)
+    canonical_mode = default_reading_mode_for_age_tier(age_tier, config=config)
+    resolved_mode = reading_mode or canonical_mode
+    if resolved_mode not in config["reading_modes"]:
+        raise ValueError(f"Unknown reading_mode: {resolved_mode}")
+    if resolved_mode != canonical_mode:
+        raise ValueError(
+            "Alternative reading modes are not qualified in capability-cube.v2 yet: "
+            f"{age_tier} expects {canonical_mode}, got {resolved_mode}"
+        )
+
+    for relative_class in config["relative_length_classes"]:
+        bounds = config["age_length_policy"][age_tier][relative_class]
         if int(bounds["min_words"]) <= target_words <= int(bounds["max_words"]):
-            return band
-    raise ValueError(f"No capability-cube length band for target_words={target_words}")
+            return resolved_mode, str(relative_class)
+    raise ValueError(
+        "target_words is outside every qualified relative length class for "
+        f"{age_tier}/{resolved_mode}: {target_words}"
+    )
+
+
+def standard_target_words_for_age_tier(
+    age_tier: str,
+    *,
+    config: dict[str, Any] | None = None,
+) -> int:
+    return standard_length_policy_for_age_tier(
+        age_tier, config=config
+    )["target_words"]
 
 
 def _scene_evidence(result: dict[str, Any]) -> list[SceneEvidence]:
@@ -259,6 +321,15 @@ def _scene_evidence(result: dict[str, Any]) -> list[SceneEvidence]:
     return rows
 
 
+def assert_spec_is_qualifiable(spec_path: Path) -> None:
+    marker = spec_path.parent / "INVALID_FOR_QUALIFICATION.md"
+    if marker.exists():
+        raise ValueError(
+            "StorySpec is marked invalid for canonical qualification: "
+            f"{spec_path}"
+        )
+
+
 def build_evidence(
     *,
     result: dict[str, Any],
@@ -271,6 +342,7 @@ def build_evidence(
     workflow_job_id: str | None = None,
     limitations: list[str] | None = None,
 ) -> QualificationEvidence:
+    assert_spec_is_qualifiable(spec_path)
     spec = StorySpec.model_validate(yaml.safe_load(spec_path.read_text(encoding="utf-8")))
     if not spec.narrative_family:
         raise ValueError("Qualification StorySpec requires narrative_family")
@@ -304,6 +376,22 @@ def build_evidence(
         generation_protocol_identity,
         generation_protocol_sha256,
     ) = build_generation_protocol_identity(result)
+    age_tier = narrative_age_tier_for_range(
+        spec.age_min, spec.age_max, config=config
+    )
+    reading_mode, relative_length_class = resolve_relative_length_class(
+        age_min=spec.age_min,
+        age_max=spec.age_max,
+        target_words=spec.target_words,
+        reading_mode=spec.reading_mode,
+        config=config,
+    )
+    if spec.relative_length_class and spec.relative_length_class != relative_length_class:
+        raise ValueError(
+            "StorySpec relative_length_class does not match age-aware policy: "
+            f"{spec.relative_length_class} != {relative_length_class}"
+        )
+
     return QualificationEvidence(
         run_id=run_id,
         created_at=datetime.now(timezone.utc).isoformat(),
@@ -327,14 +415,11 @@ def build_evidence(
         axes=QualificationAxes(
             age_min=spec.age_min,
             age_max=spec.age_max,
-            narrative_age_tier=narrative_age_tier_for_range(
-                spec.age_min, spec.age_max, config=config
-            ),
+            narrative_age_tier=age_tier,
             narrative_family=spec.narrative_family,
             target_words=spec.target_words,
-            length_band=length_band_for_target_words(
-                spec.target_words, config=config
-            ),
+            reading_mode=reading_mode,
+            relative_length_class=relative_length_class,
         ),
         accepted=bool(result.get("accepted")),
         word_count=int(result.get("word_count") or 0),
@@ -506,8 +591,9 @@ def build_capability_cube(
             row.generation_protocol_sha256,
             row.evaluation_stack_sha256,
             row.axes.narrative_age_tier,
+            row.axes.reading_mode,
             row.axes.narrative_family,
-            row.axes.length_band,
+            row.axes.relative_length_class,
         )
         groups.setdefault(key, []).append(row)
 
@@ -520,8 +606,9 @@ def build_capability_cube(
             generation_protocol_sha,
             evaluation_stack_sha,
             age_tier,
+            reading_mode,
             family,
-            length_band,
+            relative_length_class,
         ) = key
         judge = [x.final_judge_average for x in items if x.final_judge_average is not None]
         judge_min = [x.final_judge_minimum for x in items if x.final_judge_minimum is not None]
@@ -645,8 +732,9 @@ def build_capability_cube(
                 "semantic_judge_model": items[0].semantic_judge_model,
                 "evaluation_protocol_version": items[0].evaluation_protocol_version,
                 "narrative_age_tier": age_tier,
+                "reading_mode": reading_mode,
                 "narrative_family": family,
-                "length_band": length_band,
+                "relative_length_class": relative_length_class,
                 "run_count": len(items),
                 "accepted_count": sum(1 for x in items if x.accepted),
                 "pass_rate": round(sum(1 for x in items if x.accepted) / len(items), 6),
@@ -720,16 +808,17 @@ def build_capability_cube(
         len(known_measurement_variants)
         * len(config["narrative_age_tiers"])
         * len(config["narrative_families"])
-        * len(config["length_bands"])
+        * len(config["relative_length_classes"])
     )
     return {
-        "schema_version": "model-capability-cube.v1",
+        "schema_version": "model-capability-cube.v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "dimensions": {
             "models": known_models,
             "narrative_age_tiers": list(config["narrative_age_tiers"].keys()),
+            "reading_modes": list(config["reading_modes"]),
             "narrative_families": list(config["narrative_families"]),
-            "length_bands": list(config["length_bands"].keys()),
+            "relative_length_classes": list(config["relative_length_classes"]),
         },
         "observed_cell_count": len(cells),
         "possible_cell_count_for_observed_models": total_possible,
@@ -748,8 +837,8 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         f"**{cube['possible_cell_count_for_observed_models']}** "
         f"(unknown: **{cube['unknown_cell_count']}**)",
         "",
-        "| Model | Age tier | Narrative family | Length | Runs | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
-        "|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
+        "| Model | Age tier | Reading mode | Narrative family | Relative length | Runs | Pass | Judge avg | Min | Repairs/run | Avg sec | Avg USD | Coverage |",
+        "|---|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
     for cell in cube["cells"]:
         sec = "—" if cell["average_pipeline_seconds"] is None else f"{cell['average_pipeline_seconds']:.1f}"
@@ -758,7 +847,8 @@ def render_cube_markdown(cube: dict[str, Any]) -> str:
         minimum = "—" if cell["minimum_final_criterion"] is None else str(cell["minimum_final_criterion"])
         lines.append(
             f"| {cell['model_id']} | {cell['narrative_age_tier']} | "
-            f"{cell['narrative_family']} | {cell['length_band']} | "
+            f"{cell['reading_mode']} | {cell['narrative_family']} | "
+            f"{cell['relative_length_class']} | "
             f"{cell['run_count']} | {cell['pass_rate']:.0%} | {judge} | {minimum} | "
             f"{cell['semantic_repairs_per_run']:.2f} | {sec} | {usd} | "
             f"{cell['coverage_status']} |"

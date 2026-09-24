@@ -1,8 +1,13 @@
 # Model Capability Cube & Qualification Evidence v1
 
-Status: **Canonical**
+Status: **SUPERSEDED**
 Date: 2026-09-24
-Scope: LUMI Model Lab production-generator qualification
+Superseded by: `MODEL_CAPABILITY_CUBE_V2.md`
+Scope: Historical global-length-band qualification design
+
+> Historical note: v1 used age-independent word-count bands. That design was
+> invalidated before broad qualification because the same absolute word target
+> is not age-appropriate across preschool, child, teen, and adult readers.
 
 ## 1. Purpose
 

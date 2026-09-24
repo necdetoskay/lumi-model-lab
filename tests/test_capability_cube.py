@@ -7,9 +7,11 @@ from pathlib import Path
 from src.capability_cube import (
     build_capability_cube,
     build_evidence,
-    length_band_for_target_words,
+    default_reading_mode_for_age_tier,
     materialize_evidence,
     narrative_age_tier_for_range,
+    resolve_relative_length_class,
+    standard_target_words_for_age_tier,
     verify_evidence_integrity,
 )
 from src.schemas import StorySpec
@@ -138,11 +140,80 @@ class CapabilityCubeTests(unittest.TestCase):
         )
         self.assertEqual(spec.age_max, 39)
 
-    def test_length_bands_preserve_exact_target_separately(self) -> None:
-        self.assertEqual(length_band_for_target_words(1200), "SHORT")
-        self.assertEqual(length_band_for_target_words(2000), "STANDARD")
-        self.assertEqual(length_band_for_target_words(3000), "LONG")
-        self.assertEqual(length_band_for_target_words(4500), "EXTENDED")
+    def test_age_aware_standard_targets_and_reading_modes(self) -> None:
+        expected = {
+            "EARLY_CHILD": (500, "READ_ALOUD"),
+            "CHILD": (1500, "EARLY_READER"),
+            "MIDDLE_CHILD": (2800, "INDEPENDENT_READER"),
+            "TEEN": (3800, "INDEPENDENT_READER"),
+            "YOUNG_ADULT": (4200, "INDEPENDENT_READER"),
+            "ADULT": (4200, "INDEPENDENT_READER"),
+            "MATURE_ADULT": (4200, "INDEPENDENT_READER"),
+            "SENIOR": (4200, "INDEPENDENT_READER"),
+        }
+        for tier, (words, mode) in expected.items():
+            with self.subTest(tier=tier):
+                self.assertEqual(standard_target_words_for_age_tier(tier), words)
+                self.assertEqual(default_reading_mode_for_age_tier(tier), mode)
+
+    def test_relative_standard_is_age_dependent(self) -> None:
+        self.assertEqual(
+            resolve_relative_length_class(
+                age_min=4,
+                age_max=4,
+                target_words=500,
+                reading_mode="READ_ALOUD",
+            ),
+            ("READ_ALOUD", "STANDARD"),
+        )
+        self.assertEqual(
+            resolve_relative_length_class(
+                age_min=15,
+                age_max=15,
+                target_words=3800,
+                reading_mode="INDEPENDENT_READER",
+            ),
+            ("INDEPENDENT_READER", "STANDARD"),
+        )
+        with self.assertRaisesRegex(ValueError, "outside every qualified"):
+            resolve_relative_length_class(
+                age_min=4,
+                age_max=4,
+                target_words=2000,
+                reading_mode="READ_ALOUD",
+            )
+
+    def test_invalidated_wave_spec_cannot_be_packed(self) -> None:
+        spec_path = Path(
+            "data/specifications/waves/age-standard-v1/"
+            "child--exploration-mystery.yaml"
+        )
+        with self.assertRaisesRegex(ValueError, "marked invalid"):
+            build_evidence(
+                result=fake_result(),
+                spec_path=spec_path,
+                run_id="invalidated-wave",
+                source="unit_test",
+            )
+
+    def test_evidence_rejects_age_inappropriate_word_target(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_path = root / "bad-early-child.yaml"
+            write_spec(
+                spec_path,
+                age_min=4,
+                age_max=4,
+                family="exploration_mystery",
+                words=2000,
+            )
+            with self.assertRaisesRegex(ValueError, "outside every qualified"):
+                build_evidence(
+                    result=fake_result(),
+                    spec_path=spec_path,
+                    run_id="bad-age-length",
+                    source="unit_test",
+                )
 
     def test_evidence_materialization_is_immutable(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -228,9 +299,10 @@ class CapabilityCubeTests(unittest.TestCase):
             )
             write_spec(
                 spec_teen,
-                age_min=13,
-                age_max=17,
+                age_min=15,
+                age_max=15,
                 family="exploration_mystery",
+                words=3800,
             )
             write_spec(
                 spec_social,
@@ -263,25 +335,26 @@ class CapabilityCubeTests(unittest.TestCase):
             keyed = {
                 (
                     x["narrative_age_tier"],
+                    x["reading_mode"],
                     x["narrative_family"],
-                    x["length_band"],
+                    x["relative_length_class"],
                 ): x
                 for x in cube["cells"]
             }
             self.assertEqual(
-                keyed[("CHILD", "exploration_mystery", "STANDARD")][
+                keyed[("CHILD", "EARLY_READER", "exploration_mystery", "STANDARD")][
                     "average_final_judge"
                 ],
                 4.5,
             )
             self.assertEqual(
-                keyed[("TEEN", "exploration_mystery", "STANDARD")][
+                keyed[("TEEN", "INDEPENDENT_READER", "exploration_mystery", "STANDARD")][
                     "average_final_judge"
                 ],
                 3.5,
             )
             self.assertEqual(
-                keyed[("CHILD", "friendship_social_problem", "STANDARD")][
+                keyed[("CHILD", "EARLY_READER", "friendship_social_problem", "STANDARD")][
                     "average_final_judge"
                 ],
                 4.0,
