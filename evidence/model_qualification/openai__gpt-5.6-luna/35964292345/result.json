@@ -1,0 +1,2081 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/early-child--exploration-mystery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/early-child--exploration-mystery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Quiet Signal",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+        "central_problem": "A quiet three-tap signal has an unknown source and meaning near the coastal town's old observation point.",
+        "solution_principle": "Deniz watches when the taps happen, follows their direction, compares physical clues, and asks an adult to test the safest explanation.",
+        "theme_thread": "Careful observation can turn uncertainty into understanding.",
+        "ending_state": "The loose weather vane is safely repaired, the taps stop, and Deniz understands why they happened.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat, danger chase, magical explanation, convenient coincidence, benchmark mention, or premature mystery resolution."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the repeating signal, and the question of whether it means something important.",
+          "entry_state": "Deniz visits the quiet library in a contemporary coastal town with a listening adult nearby.",
+          "beats": [
+            "Deniz hears three soft taps, a pause, then three taps again.",
+            "Deniz looks toward the window and sees the old observation point across town, but cannot find the source.",
+            "Deniz tells the librarian, who helps remember the rhythm instead of guessing its meaning."
+          ],
+          "must_include": [
+            "Deniz is four and uses simple words, careful looking, and an age-appropriate request for help.",
+            "The signal repeats clearly enough to observe but not explain.",
+            "The library, coast, and old observation point are established."
+          ],
+          "must_not_do": [
+            "Do not explain the signal yet or make Deniz investigate alone.",
+            "Do not use advanced vocabulary, frightening intensity, or an adult solving the mystery immediately."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows the exact three-tap rhythm and its direction seems near the old observation point, but the meaning remains unknown.",
+          "open_threads_after": [
+            "What makes the three taps?",
+            "Does the signal ask for help?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Add timing and direction clues without settling the signal's meaning.",
+          "entry_state": "Deniz leaves the library with the remembered rhythm and looks for observable changes near the public garden.",
+          "beats": [
+            "In the garden, Deniz hears the same three taps after a strong sea breeze.",
+            "Deniz watches leaves and a garden flag move before each tapping sound.",
+            "The taps seem to come from the workshop side of the old observation point, but Deniz cannot see the source."
+          ],
+          "must_include": [
+            "The breeze happens before the taps, giving Deniz a clear sequence to remember.",
+            "Deniz checks the sound more than once instead of trusting one guess.",
+            "The public garden provides visible movement connected to the signal."
+          ],
+          "must_not_do": [
+            "Do not identify the exact object yet.",
+            "Do not let the wind create a lucky answer without repeated observation."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "The library signal repeated as three taps, followed by a pause.",
+            "The old observation point was visible in the signal's apparent direction.",
+            "Deniz and the librarian agreed to remember the rhythm carefully."
+          ],
+          "handoff": "Deniz has a repeated wind-and-taps pattern pointing toward the workshop and observation point, but no confirmed source.",
+          "open_threads_after": [
+            "Which object moves in the breeze?",
+            "Is the repeated pattern intentional?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Connect the garden observations to a plausible mechanical source at the workshop.",
+          "entry_state": "Deniz brings the repeated rhythm and wind sequence to the nearby workshop for careful comparison.",
+          "beats": [
+            "At the workshop, Deniz sees a drawing of the old observation point's weather vane.",
+            "A rubbing mark on the drawing shows where a metal edge could strike wood three times.",
+            "The workshop guide says this is a good idea to test, not proof yet."
+          ],
+          "must_include": [
+            "Deniz points out the wind-before-taps pattern before the adult offers the mechanical idea.",
+            "The possible weather vane source is observable through the drawing and rubbing mark.",
+            "The central question remains whether the taps signal help or only movement."
+          ],
+          "must_not_do": [
+            "Do not confirm the weather vane before visiting it.",
+            "Do not let the workshop guide introduce unrelated tools, people, or explanations."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "In the garden, each observed tapping followed a visible sea breeze.",
+            "The sound seemed to come from the workshop side of the observation point.",
+            "The library established the same three-tap rhythm."
+          ],
+          "handoff": "A weather vane may strike the observation point's wooden post, but Deniz still needs direct evidence before choosing what to do.",
+          "open_threads_after": [
+            "Does the weather vane really make all three taps?",
+            "Is the sound a request for help or an accidental noise?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Test the mechanical explanation at the old observation point while preserving the need for a final choice.",
+          "entry_state": "Deniz reaches the old observation point with the workshop guide and the weather-vane hypothesis.",
+          "beats": [
+            "A sea breeze turns the vane, and its loose metal edge makes three taps against the wooden post.",
+            "Deniz sees fresh scratches beside the edge and watches the same pattern happen again.",
+            "Holding the vane safely still stops the taps, but the worn part needs an adult repair."
+          ],
+          "must_include": [
+            "The direct test links breeze, vane movement, scratches, and three taps.",
+            "Deniz does not climb or touch unsafe parts without the workshop guide.",
+            "The signal's source is strongly supported, but repair and response remain unresolved."
+          ],
+          "must_not_do": [
+            "Do not repair the vane in this scene.",
+            "Do not treat the taps as a real emergency or reveal the final consequence early."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "The garden showed that wind came before repeated taps.",
+            "The workshop drawing showed a possible striking edge and rubbing mark.",
+            "The signal always used three taps and a pause."
+          ],
+          "handoff": "Deniz knows the loose vane creates the signal and must decide how to report the evidence and make the safe next choice.",
+          "open_threads_after": [
+            "How should the worn vane be repaired?",
+            "Can Deniz explain the evidence clearly?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Deliver the decisive application: Deniz uses accumulated evidence to choose safe cooperation and support the repair.",
+          "entry_state": "Deniz returns to the workshop with direct observations showing exactly how the vane makes the taps.",
+          "beats": [
+            "Deniz explains: wind moves the vane, the edge touches the post, scratches show the touching place, and three taps follow.",
+            "Deniz chooses not to climb or wedge the vane alone and asks the workshop guide to repair it.",
+            "The guide fits a small spacer at the worn place, then tests the vane through several breezes."
+          ],
+          "must_include": [
+            "Deniz's final choice is based on observed evidence, not fear or a lucky guess.",
+            "The repair directly addresses the visible scratches and loose edge.",
+            "Several breezes pass without the three taps, confirming the explanation."
+          ],
+          "must_not_do": [
+            "Do not make Deniz perform unsafe repair work.",
+            "Do not introduce a new cause, magical answer, or unrelated reward."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "At the observation point, the vane made three taps after each observed breeze.",
+            "Deniz saw scratches beside the vane's striking edge.",
+            "Holding the vane still stopped the taps."
+          ],
+          "handoff": "The vane is repaired and quiet through several breezes; Deniz understands the signal, and only its everyday consequence remains.",
+          "open_threads_after": [
+            "Will the observation point stay quiet during another strong breeze?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the consequence, reinforce the theme, and close Deniz's mystery with calm understanding.",
+          "entry_state": "The repaired weather vane is quiet, while the town's breeze continues around the observation point.",
+          "beats": [
+            "Deniz listens from the garden and hears wind, leaves, and the sea, but no three taps.",
+            "At the library, Deniz tells the librarian that the signal was a loose vane, not a hidden call.",
+            "Deniz feels proud of watching, checking, and asking for safe help."
+          ],
+          "must_include": [
+            "The ending explains the signal through the observed wind, vane, scratches, and repair.",
+            "Deniz's understanding changes uncertainty into calm confidence.",
+            "The library, garden, workshop, and observation point remain connected in the completed story."
+          ],
+          "must_not_do": [
+            "Do not reopen the mystery or add a new signal.",
+            "Do not turn the lesson into a long explanation or moral lecture."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The workshop repaired the vane at the visible worn place.",
+            "Several breezes passed without taps during the repair test.",
+            "Deniz had already observed the complete wind, vane, scratch, and tapping sequence."
+          ],
+          "handoff": "The signal is explained and stopped; Deniz safely understands that careful looking can make a strange sound clear.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.94,
+        "goal_continuity": 0.95,
+        "constraint_coverage": 0.8,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.89,
+        "no_early_resolution": 0.66,
+        "ending_coherence": 0.93
+      },
+      "below_threshold": {
+        "no_early_resolution": 0.66
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.77,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3600,
+        "output_tokens": 185,
+        "cost": 0.0001512
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 4,
+        "ending_coherence": 5
+      },
+      "average": 4.714,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 4,
+          "risk": "Scene 4 comes very close to full resolution: Deniz directly observes the vane making three taps, sees scratches, and stops the sound by holding it still. This is 95% of the mystery solved. Scene 5 must deliver a meaningfully different payoff (the repair choice and its execution) rather than merely confirming what is already known. Risk is moderate because Scene 5 does shift focus to *safe cooperation and repair*, not just observation—but the mystery itself is functionally closed."
+        },
+        {
+          "scene": 5,
+          "risk": "Scene 5 risks becoming a simple confirmation loop if the repair test (breezes passing without taps) is treated as mere verification rather than Deniz's decisive application of evidence to a real choice. The plan mitigates this by framing the choice as *how to respond safely* rather than *whether the vane is the cause*, but prose execution must ensure Deniz's reasoning and decision feel consequential, not automatic."
+        }
+      ],
+      "summary": "This is a strong, well-structured plan that meets all critical requirements for a 4-year-old read-aloud story. Causal continuity is explicit and age-appropriate: each scene builds on observable evidence without requiring leaps of logic. Deniz's goal (understand the signal and choose a safe response) remains stable throughout. All nine constraints are scheduled and traceable. Information accumulates without resets: library rhythm → garden wind pattern → workshop hypothesis → observation point test → repair choice → quiet resolution. No unexplained dependencies exist; every object, location, and adult is introduced before use. The ending coherence is strong: Scene 5 delivers the repair decision and test, Scene 6 confirms quiet and closes with Deniz's pride in careful observation.\n\nThe only moderate concern is *no_early_resolution*: Scene 4 solves the mystery (vane + scratches + three taps confirmed) before Scene 5. However, this is not a critical failure because Scene 5 shifts the narrative focus from *discovery* to *safe response and repair execution*—a meaningful payoff distinct from Scene 4's observation. The plan explicitly preserves this distinction in Scene 5's purpose and beats. Prose must ensure the repair choice feels like Deniz's active reasoning (not just watching an adult fix it) and that the multi-breeze test in Scene 5 is framed as Deniz's verification of her own hypothesis, not a passive confirmation.\n\nVocabulary, pacing, and emotional intensity are age-appropriate throughout: no frightening language, no complex causality, no adult-driven exposition. The theme (careful observation turns uncertainty into understanding) is woven through all six scenes without didacticism.\n\n**Recommendation: APPROVE with minor prose attention to Scene 5 execution.** Ensure Deniz's repair choice and the multi-breeze test feel like her active reasoning and decision, not a passive follow-along. The plan is sound; delivery will determine whether Scene 5 feels like a decisive payoff or a redundant confirmation.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0055712,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.0001512,
+      "haiku": {
+        "usd": 0.008585,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 4492,
+        "total_tokens": 5396
+      },
+      "jev": {
+        "input_tokens": 3600,
+        "output_tokens": 185,
+        "cost": 0.0001512
+      },
+      "haiku": {
+        "input_tokens": 3835,
+        "output_tokens": 950,
+        "total_tokens": 4785
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    65,
+    78,
+    85,
+    85,
+    102,
+    85
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 65,
+      "word_count": 74,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the repeating signal, and the question of whether it means something important.",
+        "entry_state": "Deniz visits the quiet library in a contemporary coastal town with a listening adult nearby.",
+        "beats": [
+          "Deniz hears three soft taps, a pause, then three taps again.",
+          "Deniz looks toward the window and sees the old observation point across town, but cannot find the source.",
+          "Deniz tells the librarian, who helps remember the rhythm instead of guessing its meaning."
+        ],
+        "must_include": [
+          "Deniz is four and uses simple words, careful looking, and an age-appropriate request for help.",
+          "The signal repeats clearly enough to observe but not explain.",
+          "The library, coast, and old observation point are established."
+        ],
+        "must_not_do": [
+          "Do not explain the signal yet or make Deniz investigate alone.",
+          "Do not use advanced vocabulary, frightening intensity, or an adult solving the mystery immediately."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows the exact three-tap rhythm and its direction seems near the old observation point, but the meaning remains unknown.",
+        "open_threads_after": [
+          "What makes the three taps?",
+          "Does the signal ask for help?"
+        ]
+      },
+      "envelope": {
+        "prose": "Four-year-old Deniz sat by the quiet library window. Beyond it were the blue coast and the old observation point on a hill.\n\nTap, tap, tap. A pause. Tap, tap, tap.\n\nDeniz looked out but could not see what made the sound.\n\n“Please help me listen,” he told the librarian.\n\nHe tapped the rhythm on his knee.\n\n“Let’s remember it first,” she said. “We won’t guess.”\n\nDeniz watched the hill. Did the taps mean help?",
+        "state_delta": {
+          "location": "Quiet library near the coast",
+          "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The signal is three taps, a pause, then three taps again.",
+            "The sound seems connected to the direction of the old observation point."
+          ],
+          "facts_established": [
+            "Deniz is four years old.",
+            "The library, coast, and old observation point are connected in the town."
+          ],
+          "clues_added": [
+            "The exact repeating rhythm is three taps, a pause, and three taps.",
+            "The source cannot yet be seen from the library window."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [
+            "Deniz asks the librarian for help, and she agrees to listen without guessing."
+          ],
+          "threads_opened": [
+            "What makes the three taps?",
+            "Do the taps mean help?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz leaves the library knowing the exact three-tap rhythm. The sound seems to come from near the old observation point, but its source and meaning remain unknown."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.656,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:84>78"
+          ],
+          "word_count": 84,
+          "usage": {
+            "input_tokens": 3972,
+            "output_tokens": 918,
+            "total_tokens": 4890
+          },
+          "cost": {
+            "usd": 0.00209445,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 8.175,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:80>78"
+          ],
+          "word_count": 80,
+          "usage": {
+            "input_tokens": 3814,
+            "output_tokens": 577,
+            "total_tokens": 4391
+          },
+          "cost": {
+            "usd": 0.00164575,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_2",
+          "elapsed_seconds": 9.499,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 74,
+          "usage": {
+            "input_tokens": 3807,
+            "output_tokens": 667,
+            "total_tokens": 4474
+          },
+          "cost": {
+            "usd": 0.001752,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.88,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2168,
+          "output_tokens": 188,
+          "cost": 9.1056e-05
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.88,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2168,
+            "output_tokens": 188,
+            "cost": 9.1056e-05
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.589
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 31.92
+    },
+    {
+      "scene": 2,
+      "target_words": 78,
+      "word_count": 93,
+      "contract": {
+        "index": 2,
+        "purpose": "Add timing and direction clues without settling the signal's meaning.",
+        "entry_state": "Deniz leaves the library with the remembered rhythm and looks for observable changes near the public garden.",
+        "beats": [
+          "In the garden, Deniz hears the same three taps after a strong sea breeze.",
+          "Deniz watches leaves and a garden flag move before each tapping sound.",
+          "The taps seem to come from the workshop side of the old observation point, but Deniz cannot see the source."
+        ],
+        "must_include": [
+          "The breeze happens before the taps, giving Deniz a clear sequence to remember.",
+          "Deniz checks the sound more than once instead of trusting one guess.",
+          "The public garden provides visible movement connected to the signal."
+        ],
+        "must_not_do": [
+          "Do not identify the exact object yet.",
+          "Do not let the wind create a lucky answer without repeated observation."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "The library signal repeated as three taps, followed by a pause.",
+          "The old observation point was visible in the signal's apparent direction.",
+          "Deniz and the librarian agreed to remember the rhythm carefully."
+        ],
+        "handoff": "Deniz has a repeated wind-and-taps pattern pointing toward the workshop and observation point, but no confirmed source.",
+        "open_threads_after": [
+          "Which object moves in the breeze?",
+          "Is the repeated pattern intentional?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz went to the public garden with the librarian nearby. A strong sea breeze came. Leaves shivered, and a garden flag waved toward the old observation point.\n\nThen: tap, tap, tap. A pause. Tap, tap, tap.\n\nDeniz pointed. “Wind first. Taps next.”\n\nThey watched again. The breeze came. Leaves moved. The flag waved. Then came the same taps.\n\nDeniz turned toward the workshop side of the old observation point. The sound seemed to come from there, but no source showed itself.\n\n“Is it asking for help?” Deniz asked. “We need to look more.”",
+        "state_delta": {
+          "location": "Public garden near the workshop side of the old observation point",
+          "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "A strong sea breeze happens before the three taps.",
+            "The leaves and garden flag move before the taps.",
+            "The taps seem to come from the workshop side of the old observation point."
+          ],
+          "facts_established": [
+            "The public garden has leaves and a garden flag that visibly move in the sea breeze.",
+            "The three-tap pattern repeats after the breeze."
+          ],
+          "clues_added": [
+            "Wind first, then moving leaves and flag, then three taps.",
+            "The apparent sound direction points toward the workshop side of the observation point."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which object moves in the breeze?",
+            "Is the repeated pattern intentional?",
+            "Is the sound asking for help?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has watched the same sequence more than once: a sea breeze moves the leaves and garden flag, then three taps sound after a pause. The taps seem to come from the workshop side of the old observation point, but Deniz cannot see the source or know whether the sound is a request for help."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 11.801,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:96>94"
+          ],
+          "word_count": 96,
+          "usage": {
+            "input_tokens": 4423,
+            "output_tokens": 795,
+            "total_tokens": 5218
+          },
+          "cost": {
+            "usd": 0.0020596,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 9.095,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 93,
+          "usage": {
+            "input_tokens": 4208,
+            "output_tokens": 764,
+            "total_tokens": 4972
+          },
+          "cost": {
+            "usd": 0.00196865,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.87,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2584,
+          "output_tokens": 188,
+          "cost": 0.000108528
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.87,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2584,
+            "output_tokens": 188,
+            "cost": 0.000108528
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.547
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 21.444
+    },
+    {
+      "scene": 3,
+      "target_words": 85,
+      "word_count": 95,
+      "contract": {
+        "index": 3,
+        "purpose": "Connect the garden observations to a plausible mechanical source at the workshop.",
+        "entry_state": "Deniz brings the repeated rhythm and wind sequence to the nearby workshop for careful comparison.",
+        "beats": [
+          "At the workshop, Deniz sees a drawing of the old observation point's weather vane.",
+          "A rubbing mark on the drawing shows where a metal edge could strike wood three times.",
+          "The workshop guide says this is a good idea to test, not proof yet."
+        ],
+        "must_include": [
+          "Deniz points out the wind-before-taps pattern before the adult offers the mechanical idea.",
+          "The possible weather vane source is observable through the drawing and rubbing mark.",
+          "The central question remains whether the taps signal help or only movement."
+        ],
+        "must_not_do": [
+          "Do not confirm the weather vane before visiting it.",
+          "Do not let the workshop guide introduce unrelated tools, people, or explanations."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "In the garden, each observed tapping followed a visible sea breeze.",
+          "The sound seemed to come from the workshop side of the observation point.",
+          "The library established the same three-tap rhythm."
+        ],
+        "handoff": "A weather vane may strike the observation point's wooden post, but Deniz still needs direct evidence before choosing what to do.",
+        "open_threads_after": [
+          "Does the weather vane really make all three taps?",
+          "Is the sound a request for help or an accidental noise?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz and the librarian walked to the nearby workshop. Deniz told the workshop guide, “Wind first. Leaves move. Then tap, tap, tap.”\n\nThe guide showed Deniz a drawing of the old observation point. At its top was a weather vane. Beside it, a dark rubbing mark crossed the wooden post.\n\n“Maybe a metal edge touches the wood three times,” said the guide. “This is a good idea to test, not proof yet.”\n\nDeniz looked toward the observation point. “Is it asking for help, or is it only moving?”\n\n“We must watch there,” said the guide.",
+        "state_delta": {
+          "location": "Nearby workshop",
+          "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The wind-before-taps pattern may match a moving weather vane.",
+            "The source still needs to be tested at the old observation point."
+          ],
+          "facts_established": [
+            "The workshop has a drawing of the old observation point.",
+            "The drawing shows a weather vane and a rubbing mark on the wooden post."
+          ],
+          "clues_added": [
+            "A metal edge on the weather vane might strike the wood three times.",
+            "The possible source remains only a testable idea, not proof."
+          ],
+          "objects_changed": [],
+          "relationships_changed": [
+            "The workshop guide agrees to help Deniz test the idea safely."
+          ],
+          "threads_opened": [
+            "Does the weather vane really make all three taps?",
+            "Is the sound a request for help or only movement?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz and the workshop guide are ready to visit the old observation point. A drawing and rubbing mark suggest that a weather vane may strike the wooden post three times, but the source and meaning remain unconfirmed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.078,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 95,
+          "usage": {
+            "input_tokens": 4787,
+            "output_tokens": 480,
+            "total_tokens": 5267
+          },
+          "cost": {
+            "usd": 0.0017726,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.86,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2916,
+          "output_tokens": 188,
+          "cost": 0.000122472
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.86,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2916,
+            "output_tokens": 188,
+            "cost": 0.000122472
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.646
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 7.725
+    },
+    {
+      "scene": 4,
+      "target_words": 85,
+      "word_count": 102,
+      "contract": {
+        "index": 4,
+        "purpose": "Test the mechanical explanation at the old observation point while preserving the need for a final choice.",
+        "entry_state": "Deniz reaches the old observation point with the workshop guide and the weather-vane hypothesis.",
+        "beats": [
+          "A sea breeze turns the vane, and its loose metal edge makes three taps against the wooden post.",
+          "Deniz sees fresh scratches beside the edge and watches the same pattern happen again.",
+          "Holding the vane safely still stops the taps, but the worn part needs an adult repair."
+        ],
+        "must_include": [
+          "The direct test links breeze, vane movement, scratches, and three taps.",
+          "Deniz does not climb or touch unsafe parts without the workshop guide.",
+          "The signal's source is strongly supported, but repair and response remain unresolved."
+        ],
+        "must_not_do": [
+          "Do not repair the vane in this scene.",
+          "Do not treat the taps as a real emergency or reveal the final consequence early."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "The garden showed that wind came before repeated taps.",
+          "The workshop drawing showed a possible striking edge and rubbing mark.",
+          "The signal always used three taps and a pause."
+        ],
+        "handoff": "Deniz knows the loose vane creates the signal and must decide how to report the evidence and make the safe next choice.",
+        "open_threads_after": [
+          "How should the worn vane be repaired?",
+          "Can Deniz explain the evidence clearly?"
+        ]
+      },
+      "envelope": {
+        "prose": "At the old observation point, Deniz stood beside the workshop guide. The sea breeze blew. The weather vane turned, and its loose metal edge went tap, tap, tap against the wooden post. Then came a pause.\n\nDeniz looked. Fresh scratches were beside the metal edge.\n\n“Watch again,” said the guide.\n\nA breeze came. The vane turned. Tap, tap, tap. The scratches showed the touching place.\n\nThe guide safely held the vane still. No taps came.\n\nDeniz stayed on the ground. “It needs an adult to fix,” said the guide. The sound had a source, but the next safe choice was still waiting.",
+        "state_delta": {
+          "location": "Old observation point",
+          "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The sea breeze turns the weather vane.",
+            "The vane's loose metal edge makes three taps against the wooden post.",
+            "Holding the vane still stops the taps."
+          ],
+          "facts_established": [
+            "Fresh scratches are beside the vane's striking edge.",
+            "The weather vane needs an adult repair."
+          ],
+          "clues_added": [
+            "The complete sequence is breeze, vane movement, three taps, and scratches at the touching place."
+          ],
+          "objects_changed": [
+            "The weather vane was safely held still during the test but was not repaired."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "How should the worn vane be repaired?",
+            "Can Deniz explain the evidence clearly?"
+          ],
+          "threads_resolved": [
+            "The vane is strongly supported as the source of the three taps."
+          ],
+          "handoff_state": "Deniz knows that the loose weather vane makes three taps when the breeze moves it. Deniz has seen the scratches and the taps stop when the vane is held still, but the worn part is not repaired and Deniz must report the evidence and choose safe adult help."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.045,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:103>102"
+          ],
+          "word_count": 103,
+          "usage": {
+            "input_tokens": 5094,
+            "output_tokens": 599,
+            "total_tokens": 5693
+          },
+          "cost": {
+            "usd": 0.00199215,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 8.118,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:103>102"
+          ],
+          "word_count": 103,
+          "usage": {
+            "input_tokens": 4847,
+            "output_tokens": 599,
+            "total_tokens": 5446
+          },
+          "cost": {
+            "usd": 0.0019304,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_2",
+          "elapsed_seconds": 8.034,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 102,
+          "usage": {
+            "input_tokens": 4847,
+            "output_tokens": 613,
+            "total_tokens": 5460
+          },
+          "cost": {
+            "usd": 0.0019472,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3265,
+          "output_tokens": 188,
+          "cost": 0.00013713
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3265,
+            "output_tokens": 188,
+            "cost": 0.00013713
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.557
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 26.756
+    },
+    {
+      "scene": 5,
+      "target_words": 102,
+      "word_count": 108,
+      "contract": {
+        "index": 5,
+        "purpose": "Deliver the decisive application: Deniz uses accumulated evidence to choose safe cooperation and support the repair.",
+        "entry_state": "Deniz returns to the workshop with direct observations showing exactly how the vane makes the taps.",
+        "beats": [
+          "Deniz explains: wind moves the vane, the edge touches the post, scratches show the touching place, and three taps follow.",
+          "Deniz chooses not to climb or wedge the vane alone and asks the workshop guide to repair it.",
+          "The guide fits a small spacer at the worn place, then tests the vane through several breezes."
+        ],
+        "must_include": [
+          "Deniz's final choice is based on observed evidence, not fear or a lucky guess.",
+          "The repair directly addresses the visible scratches and loose edge.",
+          "Several breezes pass without the three taps, confirming the explanation."
+        ],
+        "must_not_do": [
+          "Do not make Deniz perform unsafe repair work.",
+          "Do not introduce a new cause, magical answer, or unrelated reward."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "At the observation point, the vane made three taps after each observed breeze.",
+          "Deniz saw scratches beside the vane's striking edge.",
+          "Holding the vane still stopped the taps."
+        ],
+        "handoff": "The vane is repaired and quiet through several breezes; Deniz understands the signal, and only its everyday consequence remains.",
+        "open_threads_after": [
+          "Will the observation point stay quiet during another strong breeze?"
+        ]
+      },
+      "envelope": {
+        "prose": "Back at the workshop, Deniz told the guide, “The wind moves the vane. Its edge touches the post. The scratches show where. Then come three taps.”\n\n“Should I climb and fix it?” Deniz asked.\n\n“No,” said the guide. “We will do it safely.”\n\nThe guide fitted a small spacer at the worn place, keeping the loose edge from hitting the post. They watched the vane.\n\nA breeze came. The vane turned. No taps.\n\nAnother breeze came. Still no taps.\n\nA stronger breeze moved the vane, but the post stayed quiet.\n\nDeniz smiled. The careful choice was clear: ask for help, make one safe change, and check what happened.",
+        "state_delta": {
+          "location": "Nearby workshop",
+          "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+          "knowledge_gained": [
+            "The wind moved the vane, the loose edge touched the post, and the touching made three taps.",
+            "The visible scratches showed where the edge struck the post.",
+            "A spacer stopped the edge from making taps."
+          ],
+          "facts_established": [
+            "The workshop guide repaired the worn place with a small spacer.",
+            "Several breezes passed without three taps."
+          ],
+          "clues_added": [
+            "The repair directly changed the tapping result while the wind continued."
+          ],
+          "objects_changed": [
+            "The weather vane was repaired with a small spacer at its worn place."
+          ],
+          "relationships_changed": [
+            "Deniz cooperated with the workshop guide and asked for safe adult help."
+          ],
+          "threads_opened": [
+            "Will the observation point stay quiet during another strong breeze?"
+          ],
+          "threads_resolved": [
+            "Deniz chose a safe response instead of climbing or repairing the vane alone.",
+            "The loose vane was repaired and stayed quiet through several breezes."
+          ],
+          "handoff_state": "The weather vane is repaired and quiet through several breezes. Deniz understands the signal and has chosen safe cooperation; the remaining consequence is to listen from the garden and see whether the observation point stays quiet."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.647,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 107,
+          "usage": {
+            "input_tokens": 5416,
+            "output_tokens": 719,
+            "total_tokens": 6135
+          },
+          "cost": {
+            "usd": 0.00221665,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 10.761,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.630<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 116,
+          "usage": {
+            "input_tokens": 5358,
+            "output_tokens": 748,
+            "total_tokens": 6106
+          },
+          "cost": {
+            "usd": 0.00223695,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 10.506,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.690<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 108,
+          "usage": {
+            "input_tokens": 5368,
+            "output_tokens": 729,
+            "total_tokens": 6097
+          },
+          "cost": {
+            "usd": 0.00221665,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.71,
+          "handoff_valid": 0.93
+        },
+        "below_threshold": {
+          "no_future_leakage": 0.71
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3653,
+          "output_tokens": 188,
+          "cost": 0.000153426
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.63,
+            "handoff_valid": 0.93
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.63
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3653,
+            "output_tokens": 188,
+            "cost": 0.000153426
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.69,
+            "handoff_valid": 0.89
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.69
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.89,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3663,
+            "output_tokens": 188,
+            "cost": 0.000153846
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.71,
+            "handoff_valid": 0.93
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.71
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3653,
+            "output_tokens": 188,
+            "cost": 0.000153426
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.483,
+        0.983,
+        0.375
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.63,
+              "handoff_valid": 0.93
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.63
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.9,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3653,
+              "output_tokens": 188,
+              "cost": 0.000153426
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 116,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.69,
+              "handoff_valid": 0.89
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.69
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.89,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3663,
+              "output_tokens": 188,
+              "cost": 0.000153846
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.69,
+              "handoff_valid": 0.89
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.69
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.89,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3663,
+              "output_tokens": 188,
+              "cost": 0.000153846
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 108,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.89,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.71,
+              "handoff_valid": 0.93
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.71
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.92,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3653,
+              "output_tokens": 188,
+              "cost": 0.000153426
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": true,
+      "elapsed_seconds": 33.757
+    },
+    {
+      "scene": 6,
+      "target_words": 85,
+      "word_count": 91,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the consequence, reinforce the theme, and close Deniz's mystery with calm understanding.",
+        "entry_state": "The repaired weather vane is quiet, while the town's breeze continues around the observation point.",
+        "beats": [
+          "Deniz listens from the garden and hears wind, leaves, and the sea, but no three taps.",
+          "At the library, Deniz tells the librarian that the signal was a loose vane, not a hidden call.",
+          "Deniz feels proud of watching, checking, and asking for safe help."
+        ],
+        "must_include": [
+          "The ending explains the signal through the observed wind, vane, scratches, and repair.",
+          "Deniz's understanding changes uncertainty into calm confidence.",
+          "The library, garden, workshop, and observation point remain connected in the completed story."
+        ],
+        "must_not_do": [
+          "Do not reopen the mystery or add a new signal.",
+          "Do not turn the lesson into a long explanation or moral lecture."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The workshop repaired the vane at the visible worn place.",
+          "Several breezes passed without taps during the repair test.",
+          "Deniz had already observed the complete wind, vane, scratch, and tapping sequence."
+        ],
+        "handoff": "The signal is explained and stopped; Deniz safely understands that careful looking can make a strange sound clear.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Later, Deniz stood in the public garden. Wind rustled the leaves and waved the flag. The sea rolled and shimmered. Deniz listened, but no three taps came from the old observation point.\n\nAt the library, Deniz told the librarian, “The wind moved the vane. The loose edge touched the post. The scratches showed where. The workshop fixed it with a spacer. Then the taps stopped.”\n\nThe librarian smiled. Deniz felt calm and proud. Watching, checking, and asking the workshop guide for safe help had turned a strange sound into something clear.",
+        "state_delta": {
+          "location": "Public garden, then the library",
+          "character_goal": "Deniz understands the signal and feels calm after choosing safe, helpful cooperation.",
+          "knowledge_gained": [
+            "The repaired weather vane stays quiet while the wind continues.",
+            "The signal came from wind moving a loose vane edge against the wooden post."
+          ],
+          "facts_established": [
+            "The garden, library, workshop, and old observation point are connected by the investigation.",
+            "The signal stopped after the worn vane was safely repaired."
+          ],
+          "clues_added": [
+            "Wind, leaves, and the sea continued without producing three taps.",
+            "The scratches marked the place where the loose vane edge had touched the post."
+          ],
+          "objects_changed": [
+            "The weather vane remains repaired with a small spacer."
+          ],
+          "relationships_changed": [
+            "Deniz shares the complete explanation with the librarian."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The three-tap signal is explained through the wind, vane, scratches, and repair.",
+            "Deniz's uncertainty changes into calm understanding."
+          ],
+          "handoff_state": "The repaired weather vane remains quiet as wind moves through the observation point. Deniz has told the librarian that the wind moved the loose vane edge against the scratched wooden post, making three taps, and that the workshop's spacer stopped them. The mystery is fully resolved."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.208,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 91,
+          "usage": {
+            "input_tokens": 5402,
+            "output_tokens": 553,
+            "total_tokens": 5955
+          },
+          "cost": {
+            "usd": 0.00201395,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.82,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.85,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3583,
+          "output_tokens": 188,
+          "cost": 0.000150486
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.82,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.85,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3583,
+            "output_tokens": 188,
+            "cost": 0.000150486
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.633
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.842
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the repeating signal, and the question of whether it means something important.",
+      "word_count": 74,
+      "location": "Quiet library near the coast",
+      "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The signal is three taps, a pause, then three taps again.",
+        "The sound seems connected to the direction of the old observation point."
+      ],
+      "facts_established": [
+        "Deniz is four years old.",
+        "The library, coast, and old observation point are connected in the town."
+      ],
+      "clues_added": [
+        "The exact repeating rhythm is three taps, a pause, and three taps.",
+        "The source cannot yet be seen from the library window."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [
+        "Deniz asks the librarian for help, and she agrees to listen without guessing."
+      ],
+      "threads_opened": [
+        "What makes the three taps?",
+        "Do the taps mean help?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz leaves the library knowing the exact three-tap rhythm. The sound seems to come from near the old observation point, but its source and meaning remain unknown."
+    },
+    {
+      "scene": 2,
+      "purpose": "Add timing and direction clues without settling the signal's meaning.",
+      "word_count": 93,
+      "location": "Public garden near the workshop side of the old observation point",
+      "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "A strong sea breeze happens before the three taps.",
+        "The leaves and garden flag move before the taps.",
+        "The taps seem to come from the workshop side of the old observation point."
+      ],
+      "facts_established": [
+        "The public garden has leaves and a garden flag that visibly move in the sea breeze.",
+        "The three-tap pattern repeats after the breeze."
+      ],
+      "clues_added": [
+        "Wind first, then moving leaves and flag, then three taps.",
+        "The apparent sound direction points toward the workshop side of the observation point."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which object moves in the breeze?",
+        "Is the repeated pattern intentional?",
+        "Is the sound asking for help?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has watched the same sequence more than once: a sea breeze moves the leaves and garden flag, then three taps sound after a pause. The taps seem to come from the workshop side of the old observation point, but Deniz cannot see the source or know whether the sound is a request for help."
+    },
+    {
+      "scene": 3,
+      "purpose": "Connect the garden observations to a plausible mechanical source at the workshop.",
+      "word_count": 95,
+      "location": "Nearby workshop",
+      "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The wind-before-taps pattern may match a moving weather vane.",
+        "The source still needs to be tested at the old observation point."
+      ],
+      "facts_established": [
+        "The workshop has a drawing of the old observation point.",
+        "The drawing shows a weather vane and a rubbing mark on the wooden post."
+      ],
+      "clues_added": [
+        "A metal edge on the weather vane might strike the wood three times.",
+        "The possible source remains only a testable idea, not proof."
+      ],
+      "objects_changed": [],
+      "relationships_changed": [
+        "The workshop guide agrees to help Deniz test the idea safely."
+      ],
+      "threads_opened": [
+        "Does the weather vane really make all three taps?",
+        "Is the sound a request for help or only movement?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz and the workshop guide are ready to visit the old observation point. A drawing and rubbing mark suggest that a weather vane may strike the wooden post three times, but the source and meaning remain unconfirmed."
+    },
+    {
+      "scene": 4,
+      "purpose": "Test the mechanical explanation at the old observation point while preserving the need for a final choice.",
+      "word_count": 102,
+      "location": "Old observation point",
+      "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The sea breeze turns the weather vane.",
+        "The vane's loose metal edge makes three taps against the wooden post.",
+        "Holding the vane still stops the taps."
+      ],
+      "facts_established": [
+        "Fresh scratches are beside the vane's striking edge.",
+        "The weather vane needs an adult repair."
+      ],
+      "clues_added": [
+        "The complete sequence is breeze, vane movement, three taps, and scratches at the touching place."
+      ],
+      "objects_changed": [
+        "The weather vane was safely held still during the test but was not repaired."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "How should the worn vane be repaired?",
+        "Can Deniz explain the evidence clearly?"
+      ],
+      "threads_resolved": [
+        "The vane is strongly supported as the source of the three taps."
+      ],
+      "handoff_state": "Deniz knows that the loose weather vane makes three taps when the breeze moves it. Deniz has seen the scratches and the taps stop when the vane is held still, but the worn part is not repaired and Deniz must report the evidence and choose safe adult help."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deliver the decisive application: Deniz uses accumulated evidence to choose safe cooperation and support the repair.",
+      "word_count": 108,
+      "location": "Nearby workshop",
+      "character_goal": "Deniz wants to understand the repeating taps and choose a safe, helpful response.",
+      "knowledge_gained": [
+        "The wind moved the vane, the loose edge touched the post, and the touching made three taps.",
+        "The visible scratches showed where the edge struck the post.",
+        "A spacer stopped the edge from making taps."
+      ],
+      "facts_established": [
+        "The workshop guide repaired the worn place with a small spacer.",
+        "Several breezes passed without three taps."
+      ],
+      "clues_added": [
+        "The repair directly changed the tapping result while the wind continued."
+      ],
+      "objects_changed": [
+        "The weather vane was repaired with a small spacer at its worn place."
+      ],
+      "relationships_changed": [
+        "Deniz cooperated with the workshop guide and asked for safe adult help."
+      ],
+      "threads_opened": [
+        "Will the observation point stay quiet during another strong breeze?"
+      ],
+      "threads_resolved": [
+        "Deniz chose a safe response instead of climbing or repairing the vane alone.",
+        "The loose vane was repaired and stayed quiet through several breezes."
+      ],
+      "handoff_state": "The weather vane is repaired and quiet through several breezes. Deniz understands the signal and has chosen safe cooperation; the remaining consequence is to listen from the garden and see whether the observation point stays quiet."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the consequence, reinforce the theme, and close Deniz's mystery with calm understanding.",
+      "word_count": 91,
+      "location": "Public garden, then the library",
+      "character_goal": "Deniz understands the signal and feels calm after choosing safe, helpful cooperation.",
+      "knowledge_gained": [
+        "The repaired weather vane stays quiet while the wind continues.",
+        "The signal came from wind moving a loose vane edge against the wooden post."
+      ],
+      "facts_established": [
+        "The garden, library, workshop, and old observation point are connected by the investigation.",
+        "The signal stopped after the worn vane was safely repaired."
+      ],
+      "clues_added": [
+        "Wind, leaves, and the sea continued without producing three taps.",
+        "The scratches marked the place where the loose vane edge had touched the post."
+      ],
+      "objects_changed": [
+        "The weather vane remains repaired with a small spacer."
+      ],
+      "relationships_changed": [
+        "Deniz shares the complete explanation with the librarian."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The three-tap signal is explained through the wind, vane, scratches, and repair.",
+        "Deniz's uncertainty changes into calm understanding."
+      ],
+      "handoff_state": "The repaired weather vane remains quiet as wind moves through the observation point. Deniz has told the librarian that the wind moved the loose vane edge against the scratched wooden post, making three taps, and that the workshop's spacer stopped them. The mystery is fully resolved."
+    }
+  ],
+  "story_title": "The Quiet Signal",
+  "story": "Four-year-old Deniz sat by the quiet library window. Beyond it were the blue coast and the old observation point on a hill.\n\nTap, tap, tap. A pause. Tap, tap, tap.\n\nDeniz looked out but could not see what made the sound.\n\n“Please help me listen,” he told the librarian.\n\nHe tapped the rhythm on his knee.\n\n“Let’s remember it first,” she said. “We won’t guess.”\n\nDeniz watched the hill. Did the taps mean help?\n\nDeniz went to the public garden with the librarian nearby. A strong sea breeze came. Leaves shivered, and a garden flag waved toward the old observation point.\n\nThen: tap, tap, tap. A pause. Tap, tap, tap.\n\nDeniz pointed. “Wind first. Taps next.”\n\nThey watched again. The breeze came. Leaves moved. The flag waved. Then came the same taps.\n\nDeniz turned toward the workshop side of the old observation point. The sound seemed to come from there, but no source showed itself.\n\n“Is it asking for help?” Deniz asked. “We need to look more.”\n\nDeniz and the librarian walked to the nearby workshop. Deniz told the workshop guide, “Wind first. Leaves move. Then tap, tap, tap.”\n\nThe guide showed Deniz a drawing of the old observation point. At its top was a weather vane. Beside it, a dark rubbing mark crossed the wooden post.\n\n“Maybe a metal edge touches the wood three times,” said the guide. “This is a good idea to test, not proof yet.”\n\nDeniz looked toward the observation point. “Is it asking for help, or is it only moving?”\n\n“We must watch there,” said the guide.\n\nAt the old observation point, Deniz stood beside the workshop guide. The sea breeze blew. The weather vane turned, and its loose metal edge went tap, tap, tap against the wooden post. Then came a pause.\n\nDeniz looked. Fresh scratches were beside the metal edge.\n\n“Watch again,” said the guide.\n\nA breeze came. The vane turned. Tap, tap, tap. The scratches showed the touching place.\n\nThe guide safely held the vane still. No taps came.\n\nDeniz stayed on the ground. “It needs an adult to fix,” said the guide. The sound had a source, but the next safe choice was still waiting.\n\nBack at the workshop, Deniz told the guide, “The wind moves the vane. Its edge touches the post. The scratches show where. Then come three taps.”\n\n“Should I climb and fix it?” Deniz asked.\n\n“No,” said the guide. “We will do it safely.”\n\nThe guide fitted a small spacer at the worn place, keeping the loose edge from hitting the post. They watched the vane.\n\nA breeze came. The vane turned. No taps.\n\nAnother breeze came. Still no taps.\n\nA stronger breeze moved the vane, but the post stayed quiet.\n\nDeniz smiled. The careful choice was clear: ask for help, make one safe change, and check what happened.\n\nLater, Deniz stood in the public garden. Wind rustled the leaves and waved the flag. The sea rolled and shimmered. Deniz listened, but no three taps came from the old observation point.\n\nAt the library, Deniz told the librarian, “The wind moved the vane. The loose edge touched the post. The scratches showed where. The workshop fixed it with a spacer. Then the taps stopped.”\n\nThe librarian smiled. Deniz felt calm and proud. Watching, checking, and asking the workshop guide for safe help had turned a strange sound into something clear.",
+  "word_count": 563,
+  "target_words": 500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.001799,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.86,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.74,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6061,
+      "output_tokens": 166,
+      "cost": 0.000254562
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.97,
+      "no_contradictions": 0.86,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.74,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6061,
+      "output_tokens": 166,
+      "cost": 0.000254562
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with strong fidelity. Deniz is consistently portrayed as a four-year-old using simple vocabulary, careful observation, and appropriate requests for adult help. The central mystery—a repeating three-tap signal—is introduced without explanation, developed through observable clues (wind, leaves, garden flag, workshop drawing, scratches, vane movement), and resolved through evidence-based reasoning rather than luck or coincidence. The theme of careful observation turning uncertainty into understanding is woven throughout without didacticism. Continuity is maintained across all six scenes: the library establishes the rhythm, the garden adds timing and direction, the workshop provides a testable hypothesis, the observation point confirms the mechanical source, the workshop repair demonstrates safe cooperation, and the final scenes show resolution and calm understanding. Vocabulary, sentence structure, pacing, and emotional intensity are appropriate for read-aloud delivery to a four-year-old. The ending explains the signal through accumulated evidence (wind, vane, scratches, repair) and avoids reopening the mystery or adding unrelated elements. All required constraints are satisfied: no combat, no magical explanation, no convenient coincidence, no benchmark mention, and no premature resolution. The story is production-ready.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 563,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.97,
+          "no_contradictions": 0.86,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.74,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6061,
+          "output_tokens": 166,
+          "cost": 0.000254562
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with strong fidelity. Deniz is consistently portrayed as a four-year-old using simple vocabulary, careful observation, and appropriate requests for adult help. The central mystery—a repeating three-tap signal—is introduced without explanation, developed through observable clues (wind, leaves, garden flag, workshop drawing, scratches, vane movement), and resolved through evidence-based reasoning rather than luck or coincidence. The theme of careful observation turning uncertainty into understanding is woven throughout without didacticism. Continuity is maintained across all six scenes: the library establishes the rhythm, the garden adds timing and direction, the workshop provides a testable hypothesis, the observation point confirms the mechanical source, the workshop repair demonstrates safe cooperation, and the final scenes show resolution and calm understanding. Vocabulary, sentence structure, pacing, and emotional intensity are appropriate for read-aloud delivery to a four-year-old. The ending explains the signal through accumulated evidence (wind, vane, scratches, repair) and avoids reopening the mystery or adding unrelated elements. All required constraints are satisfied: no combat, no magical explanation, no convenient coincidence, no benchmark mention, and no premature resolution. The story is production-ready.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000254562,
+      "final_judge_cost": {
+        "usd": 0.012912,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 50.042,
+    "scene_stage_seconds": 130.444,
+    "final_stage_seconds": 6.822,
+    "total_pipeline_seconds": 187.309
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.0143074,
+    "scene_generation_usd": 0.025847,
+    "scene_continuity_evaluator_usd": 0.00107037,
+    "whole_continuity_evaluator_usd": 0.000254562,
+    "whole_continuity_evaluator_usd_total": 0.000254562,
+    "semantic_judge_usd": {
+      "usd": 0.012912,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.012912,
+    "scene_jev_usd": 0.00107037,
+    "whole_jev_usd": 0.000254562,
+    "whole_jev_usd_total": 0.000254562,
+    "final_haiku": {
+      "usd": 0.012912,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.012912,
+    "total_pipeline_usd": 0.054391332
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 6061,
+      "output_tokens": 166,
+      "cost": 0.000254562
+    },
+    "semantic_judge": {
+      "input_tokens": 10887,
+      "output_tokens": 405,
+      "total_tokens": 11292
+    },
+    "whole_jev": {
+      "input_tokens": 6061,
+      "output_tokens": 166,
+      "cost": 0.000254562
+    },
+    "final_haiku": {
+      "input_tokens": 10887,
+      "output_tokens": 405,
+      "total_tokens": 11292
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}

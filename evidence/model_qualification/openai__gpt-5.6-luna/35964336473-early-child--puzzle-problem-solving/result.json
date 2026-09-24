@@ -1,0 +1,2293 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v1",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/early-child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/early-child--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to complete the learning-space pattern before the next activity begins.",
+        "central_problem": "A circle card is missing from a repeating pattern, but a similar card may belong to another activity.",
+        "solution_principle": "Test the pattern against labels, the map, and the schedule before choosing what to move or make.",
+        "theme_thread": "Careful testing is better than guessing.",
+        "ending_state": "Deniz makes the correct replacement, completes the pattern, and leaves the map marker ready for the next activity.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or frightening danger.",
+          "No premature certainty before the pattern, map, labels, and schedule are tested.",
+          "No clue uses information not already introduced.",
+          "No benchmark or test language."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz, the public learning space, the repeating pattern, and the missing card.",
+          "entry_state": "Deniz visits a room with maps, labeled objects, a picture schedule, and a pattern board.",
+          "beats": [
+            "Deniz sees red circle, yellow square, red circle, yellow square, then an empty place.",
+            "Deniz wants to fix the board but pauses because a blue triangle and yellow square sit nearby."
+          ],
+          "must_include": [
+            "Deniz notices the empty place without being told what it means.",
+            "The guide says Deniz may look, compare, and ask before moving anything.",
+            "The goal is to complete the pattern before the next scheduled activity."
+          ],
+          "must_not_do": [
+            "Do not identify the missing card yet.",
+            "Do not let Deniz move the map marker or use tools yet."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz knows the board has a gap but not which card belongs there or whether a nearby card is safe to move.",
+          "open_threads_after": [
+            "Which card completes the pattern?",
+            "Why are the nearby cards there?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test the visible sequence and reject the first guess using labels.",
+          "entry_state": "Deniz must identify the missing pattern card without guessing from color or shape alone.",
+          "beats": [
+            "Deniz points to the labels and says circle, square, circle, square; the next shape should be circle.",
+            "Deniz rejects the blue triangle guess because neither the board nor its labels supports it."
+          ],
+          "must_include": [
+            "The labels name circle, square, and triangle in simple words.",
+            "Deniz repeats the sequence aloud and notices the alternating pattern.",
+            "The empty place needs a circle, but no loose circle is available."
+          ],
+          "must_not_do": [
+            "Do not reveal where the circle card is yet.",
+            "Do not treat the pattern answer as permission to take any circle."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the board sequence: red circle, yellow square, red circle, yellow square, gap.",
+            "Scene 1 established nearby blue triangle and yellow square cards.",
+            "Scene 1 established the shape labels beside the board."
+          ],
+          "handoff": "Deniz knows the missing shape is a circle and must search carefully for its purpose before moving anything.",
+          "open_threads_after": [
+            "Where is the circle card?",
+            "Does a found circle belong to the board?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Find a plausible circle card and create the false hypothesis that it belongs on the board.",
+          "entry_state": "Deniz searches the labeled learning space for a circle while preserving other activities.",
+          "beats": [
+            "At the map, Deniz finds a red circle marker beside a route and thinks, I found it!",
+            "The picture schedule shows Map first and Pattern next, so Deniz waits and looks at the map marker."
+          ],
+          "must_include": [
+            "The map has a route with circle and square markers.",
+            "The red circle is visibly placed on the map route, not lying loose.",
+            "The schedule visibly places the map activity before the pattern activity."
+          ],
+          "must_not_do": [
+            "Do not let Deniz remove the circle marker.",
+            "Do not resolve whether the marker belongs on the board."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 2 established that the board needs a circle.",
+            "Scene 1 established maps, labels, and the picture schedule as available clues.",
+            "Scene 2 established that Deniz should test a card's purpose before moving it."
+          ],
+          "handoff": "Deniz has found a matching circle, but it is actively marking a map route and may be needed for the next activity.",
+          "open_threads_after": [
+            "Can the map circle be moved?",
+            "How can Deniz complete the board without taking it?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Use the map label and schedule to reject the false hypothesis and discover a safe replacement method.",
+          "entry_state": "Deniz must choose between taking the map marker and finding another way to complete the pattern.",
+          "beats": [
+            "The map label says route markers stay on the map; the schedule shows children will use the route soon.",
+            "Deniz sees labeled paper and crayons in an ordinary tools tray and chooses to make a circle card instead."
+          ],
+          "must_include": [
+            "The guide confirms that the map marker must stay for the scheduled map activity.",
+            "Deniz connects the board sequence, map purpose, and schedule before choosing.",
+            "The paper and crayons are clearly available for making a simple replacement."
+          ],
+          "must_not_do": [
+            "Do not let Deniz take the map marker.",
+            "Do not make the guide solve the puzzle for Deniz.",
+            "Do not complete the board before Scene 5."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Scene 2 established that the missing board shape is a circle.",
+            "Scene 3 established that a red circle is already marking the map route.",
+            "Scene 3 established that the map activity happens before the pattern activity."
+          ],
+          "handoff": "Deniz has tested the matching marker, decided not to move it, and is ready to make a replacement circle.",
+          "open_threads_after": [
+            "Will Deniz make the right replacement?",
+            "Will the completed pattern work?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the tested solution and complete the pattern without disturbing the map.",
+          "entry_state": "Deniz has paper, crayons, the tested circle answer, and a clear reason to leave the map marker.",
+          "beats": [
+            "Deniz draws a red circle on paper, checks it against the labels and repeating sequence, and cuts no complicated shape.",
+            "Deniz places the new circle in the gap and tells the guide why the map circle stayed."
+          ],
+          "must_include": [
+            "The replacement uses multiple clues: alternating sequence, circle label, map purpose, and schedule.",
+            "Deniz checks the completed sequence aloud: circle, square, circle, square, circle.",
+            "The guide praises checking, not lucky guessing."
+          ],
+          "must_not_do": [
+            "Do not introduce a new clue or object.",
+            "Do not imply Deniz solved the puzzle by copying without testing.",
+            "Do not move the map marker."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the alternating sequence and circle label.",
+            "Scene 3 established the circle marker's place on the map.",
+            "Scene 4 established the map marker must remain and paper and crayons can make a replacement."
+          ],
+          "handoff": "The pattern is complete, the map marker remains ready, and Deniz has explained the tested choice to the guide.",
+          "open_threads_after": [
+            "How does the next activity use the two completed learning tools?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the practical consequence, reinforce the theme, and close the story.",
+          "entry_state": "The completed pattern and undisturbed map are ready for the scheduled learning activities.",
+          "beats": [
+            "The guide uses the pattern for the next activity, then points to the map marker that Deniz wisely left in place.",
+            "Deniz smiles and says, I looked, checked, and then chose."
+          ],
+          "must_include": [
+            "Both the pattern and map work as intended.",
+            "The consequence directly confirms why Deniz made the replacement.",
+            "The main puzzle closes without opening another mystery."
+          ],
+          "must_not_do": [
+            "Do not add a new missing object, character, or problem.",
+            "Do not reopen the choice about the map marker."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the completed pattern and Deniz's explanation.",
+            "Scene 4 established that the map marker was needed for the scheduled map activity.",
+            "Scene 3 established the map route and its circle marker."
+          ],
+          "handoff": "The learning space is ready, Deniz's careful choice has succeeded, and the central problem is fully resolved.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.95,
+        "constraint_coverage": 0.55,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.91,
+        "no_early_resolution": 0.89,
+        "ending_coherence": 0.95
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.55
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.65,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3512,
+        "output_tokens": 185,
+        "cost": 0.000147504
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must ensure the guide's permission to 'look, compare, and ask' is age-appropriate and does not telegraph the solution method too early."
+        },
+        {
+          "scene": 2,
+          "risk": "The label-reading and sequence-naming must be plausible for a 4-year-old in read-aloud mode; vocabulary and sentence length are critical. Verify that 'alternating pattern' concept is introduced through observation, not abstract naming."
+        },
+        {
+          "scene": 3,
+          "risk": "The false hypothesis (map circle belongs on board) must feel genuinely plausible to the reader, not obviously wrong. The schedule visibility is the key to making this work; ensure it is introduced clearly in Scene 1 or early Scene 3."
+        },
+        {
+          "scene": 4,
+          "risk": "The guide's confirmation that 'route markers stay on the map' must not feel like the guide is solving the puzzle for Deniz. Deniz should initiate the question or observation; the guide confirms, not leads."
+        },
+        {
+          "scene": 4,
+          "risk": "The availability of 'labeled paper and crayons' must be established in Scene 1 as part of the learning space inventory, not introduced here as a convenient solution. Verify this is in the Scene 1 entry state or beats."
+        },
+        {
+          "scene": 5,
+          "risk": "The act of drawing and cutting must be age-appropriate and not require fine motor skills beyond a 4-year-old's typical range. Simplify to 'draws a circle' without complex cutting or assembly."
+        },
+        {
+          "scene": 6,
+          "risk": "The phrase 'I looked, checked, and then chose' must sound natural for a 4-year-old, not like a lesson summary. Ensure it emerges from Deniz's own reflection, not the guide's prompt."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. The central problem is preserved until Scene 5, and the ending coherence is solid. The false hypothesis (map circle) is well-structured and rejected by evidence (schedule + map label). All eight required constraints are scheduled and traceable. Constraint coverage scores 4 rather than 5 because C1 (age-appropriate vocabulary, sentence structure, and pacing) depends entirely on prose execution and cannot be fully verified from the plan alone; the plan structure supports it, but the actual read-aloud text must be validated. No critical failures detected. The story functions as a single causal chain, not disconnected episodes. Recommend proceeding to prose with close attention to Scene 2 vocabulary, Scene 3 false-hypothesis plausibility, Scene 4 guide dialogue tone, and Scene 5 motor-skill realism.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0046888,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000147504,
+      "haiku": {
+        "usd": 0.01268,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 902,
+        "output_tokens": 3757,
+        "total_tokens": 4659
+      },
+      "jev": {
+        "input_tokens": 3512,
+        "output_tokens": 185,
+        "cost": 0.000147504
+      },
+      "haiku": {
+        "input_tokens": 3680,
+        "output_tokens": 1800,
+        "total_tokens": 5480
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    65,
+    78,
+    85,
+    85,
+    102,
+    85
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 65,
+      "word_count": 76,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz, the public learning space, the repeating pattern, and the missing card.",
+        "entry_state": "Deniz visits a room with maps, labeled objects, a picture schedule, and a pattern board.",
+        "beats": [
+          "Deniz sees red circle, yellow square, red circle, yellow square, then an empty place.",
+          "Deniz wants to fix the board but pauses because a blue triangle and yellow square sit nearby."
+        ],
+        "must_include": [
+          "Deniz notices the empty place without being told what it means.",
+          "The guide says Deniz may look, compare, and ask before moving anything.",
+          "The goal is to complete the pattern before the next scheduled activity."
+        ],
+        "must_not_do": [
+          "Do not identify the missing card yet.",
+          "Do not let Deniz move the map marker or use tools yet."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz knows the board has a gap but not which card belongs there or whether a nearby card is safe to move.",
+        "open_threads_after": [
+          "Which card completes the pattern?",
+          "Why are the nearby cards there?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz entered the learning room. Maps, labels, and a picture schedule filled the walls and shelves. The pattern board showed a red circle, yellow square, red circle, yellow square, and an empty place. A blue triangle and a yellow square sat nearby. Deniz reached out but paused. “You may look, compare, and ask before moving anything,” said the guide. Paper and crayons waited in a tray. Deniz wanted to finish the pattern before the next activity.",
+        "state_delta": {
+          "location": "Public learning room",
+          "character_goal": "Deniz wants to complete the pattern before the next scheduled activity.",
+          "knowledge_gained": [
+            "The pattern board has an empty place.",
+            "A picture schedule shows another activity will happen next."
+          ],
+          "facts_established": [
+            "The learning room contains maps, labeled objects, a picture schedule, and a pattern board.",
+            "The board shows red circle, yellow square, red circle, yellow square, then an empty place.",
+            "A blue triangle and another yellow square are nearby.",
+            "Paper and crayons are in a tools tray."
+          ],
+          "clues_added": [
+            "The visible board sequence may help explain the empty place.",
+            "Nearby cards may not be safe to move without checking."
+          ],
+          "objects_changed": [
+            "None; Deniz did not move any cards or tools."
+          ],
+          "relationships_changed": [
+            "The guide gives Deniz permission to look, compare, and ask before moving anything."
+          ],
+          "threads_opened": [
+            "Which card completes the pattern?",
+            "Why are the nearby cards there?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz knows the board has a gap and wants to complete it before the next activity, but does not yet know which card belongs there or whether either nearby card is safe to move."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.77,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:90>78"
+          ],
+          "word_count": 90,
+          "usage": {
+            "input_tokens": 4043,
+            "output_tokens": 753,
+            "total_tokens": 4796
+          },
+          "cost": {
+            "usd": 0.0019142,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 10.414,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:79>78"
+          ],
+          "word_count": 79,
+          "usage": {
+            "input_tokens": 3715,
+            "output_tokens": 729,
+            "total_tokens": 4444
+          },
+          "cost": {
+            "usd": 0.0018034,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_2",
+          "elapsed_seconds": 13.619,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 76,
+          "usage": {
+            "input_tokens": 3704,
+            "output_tokens": 1281,
+            "total_tokens": 4985
+          },
+          "cost": {
+            "usd": 0.00246305,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.91,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.86,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2181,
+          "output_tokens": 188,
+          "cost": 9.1602e-05
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.91,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2181,
+            "output_tokens": 188,
+            "cost": 9.1602e-05
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.327
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 35.131
+    },
+    {
+      "scene": 2,
+      "target_words": 78,
+      "word_count": 89,
+      "contract": {
+        "index": 2,
+        "purpose": "Test the visible sequence and reject the first guess using labels.",
+        "entry_state": "Deniz must identify the missing pattern card without guessing from color or shape alone.",
+        "beats": [
+          "Deniz points to the labels and says circle, square, circle, square; the next shape should be circle.",
+          "Deniz rejects the blue triangle guess because neither the board nor its labels supports it."
+        ],
+        "must_include": [
+          "The labels name circle, square, and triangle in simple words.",
+          "Deniz repeats the sequence aloud and notices the alternating pattern.",
+          "The empty place needs a circle, but no loose circle is available."
+        ],
+        "must_not_do": [
+          "Do not reveal where the circle card is yet.",
+          "Do not treat the pattern answer as permission to take any circle."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the board sequence: red circle, yellow square, red circle, yellow square, gap.",
+          "Scene 1 established nearby blue triangle and yellow square cards.",
+          "Scene 1 established the shape labels beside the board."
+        ],
+        "handoff": "Deniz knows the missing shape is a circle and must search carefully for its purpose before moving anything.",
+        "open_threads_after": [
+          "Where is the circle card?",
+          "Does a found circle belong to the board?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz pointed to the labels beside the board. “Circle, square, triangle,” Deniz read. Then Deniz said, “Circle, square, circle, square.” The shapes alternated, so the empty place needed a circle. Deniz picked up the blue triangle, then put it back. “Triangle is not next. The board does not support it.” The nearby yellow square did not fit either. Deniz searched, but no loose circle was available. Remembering the guide’s words, Deniz paused. “I need a circle,” Deniz said, “but I must check what it is for before moving anything.”",
+        "state_delta": {
+          "location": "Public learning room, at the pattern board",
+          "character_goal": "Deniz wants to find the correct circle for the empty place and complete the pattern before the next activity.",
+          "knowledge_gained": [
+            "The board repeats circle, square, circle, square.",
+            "The empty place needs a circle.",
+            "The nearby blue triangle and yellow square do not fit the pattern.",
+            "There is no loose circle beside the pattern board."
+          ],
+          "facts_established": [
+            "The labels name circle, square, and triangle.",
+            "Deniz must check a circle's purpose before moving it."
+          ],
+          "clues_added": [
+            "The pattern itself identifies the needed shape, but not which circle may be moved."
+          ],
+          "objects_changed": [
+            "Deniz briefly picked up the blue triangle and put it back; no card was moved to the board."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Where is the circle card?",
+            "Does a found circle belong on the board?"
+          ],
+          "threads_resolved": [
+            "The blue triangle is rejected as the missing card.",
+            "The yellow square is rejected as the missing card."
+          ],
+          "handoff_state": "Deniz knows the missing shape is a circle, but no loose circle is available. Deniz will search carefully and check a circle's purpose before moving anything."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.22,
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:116>94"
+          ],
+          "word_count": 116,
+          "usage": {
+            "input_tokens": 4516,
+            "output_tokens": 604,
+            "total_tokens": 5120
+          },
+          "cost": {
+            "usd": 0.00185365,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 9.593,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 89,
+          "usage": {
+            "input_tokens": 4147,
+            "output_tokens": 745,
+            "total_tokens": 4892
+          },
+          "cost": {
+            "usd": 0.0019306,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2605,
+          "output_tokens": 188,
+          "cost": 0.00010941
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2605,
+            "output_tokens": 188,
+            "cost": 0.00010941
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.399
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.213
+    },
+    {
+      "scene": 3,
+      "target_words": 85,
+      "word_count": 90,
+      "contract": {
+        "index": 3,
+        "purpose": "Find a plausible circle card and create the false hypothesis that it belongs on the board.",
+        "entry_state": "Deniz searches the labeled learning space for a circle while preserving other activities.",
+        "beats": [
+          "At the map, Deniz finds a red circle marker beside a route and thinks, I found it!",
+          "The picture schedule shows Map first and Pattern next, so Deniz waits and looks at the map marker."
+        ],
+        "must_include": [
+          "The map has a route with circle and square markers.",
+          "The red circle is visibly placed on the map route, not lying loose.",
+          "The schedule visibly places the map activity before the pattern activity."
+        ],
+        "must_not_do": [
+          "Do not let Deniz remove the circle marker.",
+          "Do not resolve whether the marker belongs on the board."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 2 established that the board needs a circle.",
+          "Scene 1 established maps, labels, and the picture schedule as available clues.",
+          "Scene 2 established that Deniz should test a card's purpose before moving it."
+        ],
+        "handoff": "Deniz has found a matching circle, but it is actively marking a map route and may be needed for the next activity.",
+        "open_threads_after": [
+          "Can the map circle be moved?",
+          "How can Deniz complete the board without taking it?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz walked to the map. A blue route curled across it. Along the route sat a red circle and a yellow square. “A circle!” Deniz said. “I found one!” It looked just like the shape the pattern needed. Deniz reached toward it, then stopped. The circle was sitting on the map route, not loose nearby. The picture schedule showed a map first and a pattern next. “Map comes first. Pattern comes next,” Deniz said. “Maybe this circle goes on my board. Maybe it stays here.” Deniz looked closely and waited.",
+        "state_delta": {
+          "location": "Public learning room, at the map",
+          "character_goal": "Deniz wants to complete the pattern before the next activity without moving the wrong circle.",
+          "knowledge_gained": [
+            "The map has a blue route with a red circle and a yellow square on it.",
+            "The picture schedule shows Map before Pattern.",
+            "The red circle is placed on the map route, not lying loose."
+          ],
+          "facts_established": [
+            "The red circle looks like the shape needed by the pattern.",
+            "The map circle may have its own purpose."
+          ],
+          "clues_added": [
+            "The schedule may help decide whether the map circle can be moved.",
+            "The circle's placement on the route suggests it is being used."
+          ],
+          "objects_changed": [
+            "None; Deniz did not move the map circle."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Can the map circle be moved?",
+            "How can Deniz complete the board without taking it?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has found a matching red circle, but it is actively marking a map route. Deniz knows the map activity comes before the pattern activity and is waiting to learn whether the circle belongs on the map."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.946,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 90,
+          "usage": {
+            "input_tokens": 4908,
+            "output_tokens": 690,
+            "total_tokens": 5598
+          },
+          "cost": {
+            "usd": 0.00205485,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.93,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.87,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2956,
+          "output_tokens": 188,
+          "cost": 0.000124152
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.93,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.87,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2956,
+            "output_tokens": 188,
+            "cost": 0.000124152
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.437
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 11.384
+    },
+    {
+      "scene": 4,
+      "target_words": 85,
+      "word_count": 101,
+      "contract": {
+        "index": 4,
+        "purpose": "Use the map label and schedule to reject the false hypothesis and discover a safe replacement method.",
+        "entry_state": "Deniz must choose between taking the map marker and finding another way to complete the pattern.",
+        "beats": [
+          "The map label says route markers stay on the map; the schedule shows children will use the route soon.",
+          "Deniz sees labeled paper and crayons in an ordinary tools tray and chooses to make a circle card instead."
+        ],
+        "must_include": [
+          "The guide confirms that the map marker must stay for the scheduled map activity.",
+          "Deniz connects the board sequence, map purpose, and schedule before choosing.",
+          "The paper and crayons are clearly available for making a simple replacement."
+        ],
+        "must_not_do": [
+          "Do not let Deniz take the map marker.",
+          "Do not make the guide solve the puzzle for Deniz.",
+          "Do not complete the board before Scene 5."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Scene 2 established that the missing board shape is a circle.",
+          "Scene 3 established that a red circle is already marking the map route.",
+          "Scene 3 established that the map activity happens before the pattern activity."
+        ],
+        "handoff": "Deniz has tested the matching marker, decided not to move it, and is ready to make a replacement circle.",
+        "open_threads_after": [
+          "Will Deniz make the right replacement?",
+          "Will the completed pattern work?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz bent close to the map. A label beside it said, “Route markers stay on the map.” “Does this red circle stay here?” Deniz asked. “Yes,” said the guide. “Children will use the map soon.” Deniz looked at the picture schedule. Map came first. Pattern came next. Then Deniz looked back at the board in the distance. “The board goes circle, square, circle, square,” Deniz said. “It needs a circle, but this circle helps the map.” In the tools tray, labeled paper and crayons waited. Deniz picked up a paper and a red crayon. “I can make another circle,” Deniz said.",
+        "state_delta": {
+          "location": "Public learning room, between the map and the tools tray",
+          "character_goal": "Deniz wants to make a safe replacement circle for the pattern before the next activity.",
+          "knowledge_gained": [
+            "The red map circle is a route marker and must stay on the map.",
+            "The map activity happens soon, before the pattern activity.",
+            "Paper and crayons are available for making a replacement."
+          ],
+          "facts_established": [
+            "The map label says route markers stay on the map.",
+            "The guide confirms that children will use the map soon.",
+            "The pattern needs a circle, but the map circle has a different purpose."
+          ],
+          "clues_added": [
+            "The board sequence, map purpose, and schedule together show that the map circle should not be moved.",
+            "A paper circle can replace the unavailable loose circle."
+          ],
+          "objects_changed": [
+            "Deniz picked up a paper and a red crayon from the tools tray.",
+            "The map circle stayed in place."
+          ],
+          "relationships_changed": [
+            "The guide confirms Deniz's observation about the map marker without choosing the replacement for Deniz."
+          ],
+          "threads_opened": [
+            "Will Deniz draw the right replacement circle?",
+            "Will the completed pattern work?"
+          ],
+          "threads_resolved": [
+            "The map circle will not be moved to the pattern board."
+          ],
+          "handoff_state": "Deniz has paper and a red crayon, understands that the map circle must remain for the scheduled map activity, and is ready to draw a replacement circle without yet completing the pattern."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.653,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 101,
+          "usage": {
+            "input_tokens": 5230,
+            "output_tokens": 624,
+            "total_tokens": 5854
+          },
+          "cost": {
+            "usd": 0.00205615,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3400,
+          "output_tokens": 188,
+          "cost": 0.0001428
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3400,
+            "output_tokens": 188,
+            "cost": 0.0001428
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.406
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.06
+    },
+    {
+      "scene": 5,
+      "target_words": 102,
+      "word_count": 124,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the tested solution and complete the pattern without disturbing the map.",
+        "entry_state": "Deniz has paper, crayons, the tested circle answer, and a clear reason to leave the map marker.",
+        "beats": [
+          "Deniz draws a red circle on paper, checks it against the labels and repeating sequence, and cuts no complicated shape.",
+          "Deniz places the new circle in the gap and tells the guide why the map circle stayed."
+        ],
+        "must_include": [
+          "The replacement uses multiple clues: alternating sequence, circle label, map purpose, and schedule.",
+          "Deniz checks the completed sequence aloud: circle, square, circle, square, circle.",
+          "The guide praises checking, not lucky guessing."
+        ],
+        "must_not_do": [
+          "Do not introduce a new clue or object.",
+          "Do not imply Deniz solved the puzzle by copying without testing.",
+          "Do not move the map marker."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the alternating sequence and circle label.",
+          "Scene 3 established the circle marker's place on the map.",
+          "Scene 4 established the map marker must remain and paper and crayons can make a replacement."
+        ],
+        "handoff": "The pattern is complete, the map marker remains ready, and Deniz has explained the tested choice to the guide.",
+        "open_threads_after": [
+          "How does the next activity use the two completed learning tools?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz put the paper on the table and drew a red circle with the crayon. “Circle,” Deniz said, checking the circle label. Then Deniz faced the board. “Circle, square, circle, square,” Deniz repeated. “The next shape is circle.” Deniz remembered the red circle on the map. The map label said route markers stay on the map, and the guide had confirmed that children would use the route before the pattern activity. So the map circle had to remain there. Deniz placed the paper circle in the empty place and checked aloud: “Circle, square, circle, square, circle!” “I used the sequence and labels,” Deniz told the guide. “I left the map circle because it marks the route.” The guide smiled. “You checked instead of guessing.”",
+        "state_delta": {
+          "location": "Public learning room, at the completed pattern board",
+          "character_goal": "Deniz has completed the pattern without moving the map marker.",
+          "knowledge_gained": [
+            "A hand-drawn red paper circle correctly completes the repeating pattern.",
+            "The map circle and the paper circle have different purposes."
+          ],
+          "facts_established": [
+            "The completed board reads circle, square, circle, square, circle.",
+            "The map circle remains in place as a route marker."
+          ],
+          "clues_added": [
+            "The replacement works because it matches the alternating sequence and circle label while preserving the map route marker."
+          ],
+          "objects_changed": [
+            "Deniz drew a red circle on paper.",
+            "Deniz placed the paper circle in the pattern board's empty place.",
+            "The map marker remained unmoved."
+          ],
+          "relationships_changed": [
+            "The guide praises Deniz for checking rather than guessing."
+          ],
+          "threads_opened": [
+            "The completed pattern and map remain available as learning tools."
+          ],
+          "threads_resolved": [
+            "The pattern is complete.",
+            "The correct replacement was made without taking the map circle."
+          ],
+          "handoff_state": "The pattern is complete with a red paper circle, the map route still has its red circle marker, and Deniz has explained that the sequence, labels, map purpose, and schedule guided the choice."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.277,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 110,
+          "usage": {
+            "input_tokens": 5583,
+            "output_tokens": 543,
+            "total_tokens": 6126
+          },
+          "cost": {
+            "usd": 0.0020472,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 11.248,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 118,
+          "usage": {
+            "input_tokens": 5351,
+            "output_tokens": 770,
+            "total_tokens": 6121
+          },
+          "cost": {
+            "usd": 0.0022616,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 11.367,
+          "repair_reasons": [
+            "jev:no_contradiction:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [
+            "above_scene_word_budget:124>122"
+          ],
+          "word_count": 124,
+          "usage": {
+            "input_tokens": 5334,
+            "output_tokens": 678,
+            "total_tokens": 6012
+          },
+          "cost": {
+            "usd": 0.00214695,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.8,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.87,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.86,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3749,
+          "output_tokens": 188,
+          "cost": 0.000157458
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.82,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.78,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.85,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3758,
+            "output_tokens": 188,
+            "cost": 0.000157836
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.78,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.87,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3743,
+            "output_tokens": 188,
+            "cost": 0.000157206
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.8,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.87,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3749,
+            "output_tokens": 188,
+            "cost": 0.000157458
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.413,
+        0.437,
+        0.499
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.82,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.78,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.85,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3758,
+              "output_tokens": 188,
+              "cost": 0.000157836
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 118,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.78,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.87,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.9,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3743,
+              "output_tokens": 188,
+              "cost": 0.000157206
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.78,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.87,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.9,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3743,
+              "output_tokens": 188,
+              "cost": 0.000157206
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [
+            "above_scene_word_budget:124>122"
+          ],
+          "word_count": 124,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.8,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.87,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.86,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3749,
+              "output_tokens": 188,
+              "cost": 0.000157458
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [
+        "above_scene_word_budget:124>122"
+      ],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 32.242
+    },
+    {
+      "scene": 6,
+      "target_words": 85,
+      "word_count": 90,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the practical consequence, reinforce the theme, and close the story.",
+        "entry_state": "The completed pattern and undisturbed map are ready for the scheduled learning activities.",
+        "beats": [
+          "The guide uses the pattern for the next activity, then points to the map marker that Deniz wisely left in place.",
+          "Deniz smiles and says, I looked, checked, and then chose."
+        ],
+        "must_include": [
+          "Both the pattern and map work as intended.",
+          "The consequence directly confirms why Deniz made the replacement.",
+          "The main puzzle closes without opening another mystery."
+        ],
+        "must_not_do": [
+          "Do not add a new missing object, character, or problem.",
+          "Do not reopen the choice about the map marker."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the completed pattern and Deniz's explanation.",
+          "Scene 4 established that the map marker was needed for the scheduled map activity.",
+          "Scene 3 established the map route and its circle marker."
+        ],
+        "handoff": "The learning space is ready, Deniz's careful choice has succeeded, and the central problem is fully resolved.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Soon it was Map time. The children followed the route, using the red circle that still marked it. Deniz watched the marker stay in place. After the map activity, it was Pattern time. At the board, the guide touched each card, and everyone said, “Circle, square, circle, square, circle.” The paper circle fit the empty place, so the pattern worked. Then the guide pointed back to the map. “Your circle stayed there because the map needed it.” Deniz smiled. “I looked, checked, and then chose.” Both learning tools were ready.",
+        "state_delta": {
+          "location": "Public learning room, at the pattern board and map",
+          "character_goal": "Deniz has completed the pattern and is ready for the learning activities.",
+          "knowledge_gained": [
+            "The completed pattern works for the activity.",
+            "Leaving the map circle in place lets children use the map route."
+          ],
+          "facts_established": [
+            "Both the pattern board and map work as intended.",
+            "The paper circle belongs on the pattern board, while the red circle belongs on the map."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The map route was used with its red circle marker still in place.",
+            "The completed pattern was used."
+          ],
+          "relationships_changed": [
+            "The guide affirms Deniz's careful checking."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The central puzzle is fully resolved.",
+            "The pattern is complete and the map marker remains ready for the activity."
+          ],
+          "handoff_state": "The learning space is ready: the paper circle completes the pattern, the red circle remains on the map route, and Deniz's careful choice has succeeded."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.509,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 86,
+          "usage": {
+            "input_tokens": 5589,
+            "output_tokens": 430,
+            "total_tokens": 6019
+          },
+          "cost": {
+            "usd": 0.0019131,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 7.847,
+          "repair_reasons": [
+            "jev:no_contradiction:0.660<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 79,
+          "usage": {
+            "input_tokens": 5220,
+            "output_tokens": 568,
+            "total_tokens": 5788
+          },
+          "cost": {
+            "usd": 0.00198645,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 10.709,
+          "repair_reasons": [
+            "jev:no_contradiction:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 90,
+          "usage": {
+            "input_tokens": 5212,
+            "output_tokens": 760,
+            "total_tokens": 5972
+          },
+          "cost": {
+            "usd": 0.00221485,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.85,
+          "goal_preserved": 0.84,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.88,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3622,
+          "output_tokens": 188,
+          "cost": 0.000152124
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.88,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.88,
+            "no_contradiction": 0.66,
+            "goal_preserved": 0.83,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.66
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.57,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3618,
+            "output_tokens": 188,
+            "cost": 0.000151956
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.78,
+            "goal_preserved": 0.83,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {
+            "no_contradiction": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.85,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3610,
+            "output_tokens": 188,
+            "cost": 0.00015162
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.85,
+            "goal_preserved": 0.84,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.88,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3622,
+            "output_tokens": 188,
+            "cost": 0.000152124
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.396,
+        0.448,
+        0.429
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.88,
+              "scene_purpose_obeyed": 0.95,
+              "no_unexplained_dependency": 0.88,
+              "no_contradiction": 0.66,
+              "goal_preserved": 0.83,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.66
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.57,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3618,
+              "output_tokens": 188,
+              "cost": 0.000151956
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 79,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.91,
+              "no_contradiction": 0.78,
+              "goal_preserved": 0.83,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {
+              "no_contradiction": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.85,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3610,
+              "output_tokens": 188,
+              "cost": 0.00015162
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.91,
+              "no_contradiction": 0.78,
+              "goal_preserved": 0.83,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {
+              "no_contradiction": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.85,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3610,
+              "output_tokens": 188,
+              "cost": 0.00015162
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 90,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.85,
+              "goal_preserved": 0.84,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.88,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3622,
+              "output_tokens": 188,
+              "cost": 0.000152124
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 27.339
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz, the public learning space, the repeating pattern, and the missing card.",
+      "word_count": 76,
+      "location": "Public learning room",
+      "character_goal": "Deniz wants to complete the pattern before the next scheduled activity.",
+      "knowledge_gained": [
+        "The pattern board has an empty place.",
+        "A picture schedule shows another activity will happen next."
+      ],
+      "facts_established": [
+        "The learning room contains maps, labeled objects, a picture schedule, and a pattern board.",
+        "The board shows red circle, yellow square, red circle, yellow square, then an empty place.",
+        "A blue triangle and another yellow square are nearby.",
+        "Paper and crayons are in a tools tray."
+      ],
+      "clues_added": [
+        "The visible board sequence may help explain the empty place.",
+        "Nearby cards may not be safe to move without checking."
+      ],
+      "objects_changed": [
+        "None; Deniz did not move any cards or tools."
+      ],
+      "relationships_changed": [
+        "The guide gives Deniz permission to look, compare, and ask before moving anything."
+      ],
+      "threads_opened": [
+        "Which card completes the pattern?",
+        "Why are the nearby cards there?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz knows the board has a gap and wants to complete it before the next activity, but does not yet know which card belongs there or whether either nearby card is safe to move."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test the visible sequence and reject the first guess using labels.",
+      "word_count": 89,
+      "location": "Public learning room, at the pattern board",
+      "character_goal": "Deniz wants to find the correct circle for the empty place and complete the pattern before the next activity.",
+      "knowledge_gained": [
+        "The board repeats circle, square, circle, square.",
+        "The empty place needs a circle.",
+        "The nearby blue triangle and yellow square do not fit the pattern.",
+        "There is no loose circle beside the pattern board."
+      ],
+      "facts_established": [
+        "The labels name circle, square, and triangle.",
+        "Deniz must check a circle's purpose before moving it."
+      ],
+      "clues_added": [
+        "The pattern itself identifies the needed shape, but not which circle may be moved."
+      ],
+      "objects_changed": [
+        "Deniz briefly picked up the blue triangle and put it back; no card was moved to the board."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Where is the circle card?",
+        "Does a found circle belong on the board?"
+      ],
+      "threads_resolved": [
+        "The blue triangle is rejected as the missing card.",
+        "The yellow square is rejected as the missing card."
+      ],
+      "handoff_state": "Deniz knows the missing shape is a circle, but no loose circle is available. Deniz will search carefully and check a circle's purpose before moving anything."
+    },
+    {
+      "scene": 3,
+      "purpose": "Find a plausible circle card and create the false hypothesis that it belongs on the board.",
+      "word_count": 90,
+      "location": "Public learning room, at the map",
+      "character_goal": "Deniz wants to complete the pattern before the next activity without moving the wrong circle.",
+      "knowledge_gained": [
+        "The map has a blue route with a red circle and a yellow square on it.",
+        "The picture schedule shows Map before Pattern.",
+        "The red circle is placed on the map route, not lying loose."
+      ],
+      "facts_established": [
+        "The red circle looks like the shape needed by the pattern.",
+        "The map circle may have its own purpose."
+      ],
+      "clues_added": [
+        "The schedule may help decide whether the map circle can be moved.",
+        "The circle's placement on the route suggests it is being used."
+      ],
+      "objects_changed": [
+        "None; Deniz did not move the map circle."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Can the map circle be moved?",
+        "How can Deniz complete the board without taking it?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has found a matching red circle, but it is actively marking a map route. Deniz knows the map activity comes before the pattern activity and is waiting to learn whether the circle belongs on the map."
+    },
+    {
+      "scene": 4,
+      "purpose": "Use the map label and schedule to reject the false hypothesis and discover a safe replacement method.",
+      "word_count": 101,
+      "location": "Public learning room, between the map and the tools tray",
+      "character_goal": "Deniz wants to make a safe replacement circle for the pattern before the next activity.",
+      "knowledge_gained": [
+        "The red map circle is a route marker and must stay on the map.",
+        "The map activity happens soon, before the pattern activity.",
+        "Paper and crayons are available for making a replacement."
+      ],
+      "facts_established": [
+        "The map label says route markers stay on the map.",
+        "The guide confirms that children will use the map soon.",
+        "The pattern needs a circle, but the map circle has a different purpose."
+      ],
+      "clues_added": [
+        "The board sequence, map purpose, and schedule together show that the map circle should not be moved.",
+        "A paper circle can replace the unavailable loose circle."
+      ],
+      "objects_changed": [
+        "Deniz picked up a paper and a red crayon from the tools tray.",
+        "The map circle stayed in place."
+      ],
+      "relationships_changed": [
+        "The guide confirms Deniz's observation about the map marker without choosing the replacement for Deniz."
+      ],
+      "threads_opened": [
+        "Will Deniz draw the right replacement circle?",
+        "Will the completed pattern work?"
+      ],
+      "threads_resolved": [
+        "The map circle will not be moved to the pattern board."
+      ],
+      "handoff_state": "Deniz has paper and a red crayon, understands that the map circle must remain for the scheduled map activity, and is ready to draw a replacement circle without yet completing the pattern."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the tested solution and complete the pattern without disturbing the map.",
+      "word_count": 124,
+      "location": "Public learning room, at the completed pattern board",
+      "character_goal": "Deniz has completed the pattern without moving the map marker.",
+      "knowledge_gained": [
+        "A hand-drawn red paper circle correctly completes the repeating pattern.",
+        "The map circle and the paper circle have different purposes."
+      ],
+      "facts_established": [
+        "The completed board reads circle, square, circle, square, circle.",
+        "The map circle remains in place as a route marker."
+      ],
+      "clues_added": [
+        "The replacement works because it matches the alternating sequence and circle label while preserving the map route marker."
+      ],
+      "objects_changed": [
+        "Deniz drew a red circle on paper.",
+        "Deniz placed the paper circle in the pattern board's empty place.",
+        "The map marker remained unmoved."
+      ],
+      "relationships_changed": [
+        "The guide praises Deniz for checking rather than guessing."
+      ],
+      "threads_opened": [
+        "The completed pattern and map remain available as learning tools."
+      ],
+      "threads_resolved": [
+        "The pattern is complete.",
+        "The correct replacement was made without taking the map circle."
+      ],
+      "handoff_state": "The pattern is complete with a red paper circle, the map route still has its red circle marker, and Deniz has explained that the sequence, labels, map purpose, and schedule guided the choice."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the practical consequence, reinforce the theme, and close the story.",
+      "word_count": 90,
+      "location": "Public learning room, at the pattern board and map",
+      "character_goal": "Deniz has completed the pattern and is ready for the learning activities.",
+      "knowledge_gained": [
+        "The completed pattern works for the activity.",
+        "Leaving the map circle in place lets children use the map route."
+      ],
+      "facts_established": [
+        "Both the pattern board and map work as intended.",
+        "The paper circle belongs on the pattern board, while the red circle belongs on the map."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The map route was used with its red circle marker still in place.",
+        "The completed pattern was used."
+      ],
+      "relationships_changed": [
+        "The guide affirms Deniz's careful checking."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The central puzzle is fully resolved.",
+        "The pattern is complete and the map marker remains ready for the activity."
+      ],
+      "handoff_state": "The learning space is ready: the paper circle completes the pattern, the red circle remains on the map route, and Deniz's careful choice has succeeded."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "Deniz entered the learning room. Maps, labels, and a picture schedule filled the walls and shelves. The pattern board showed a red circle, yellow square, red circle, yellow square, and an empty place. A blue triangle and a yellow square sat nearby. Deniz reached out but paused. “You may look, compare, and ask before moving anything,” said the guide. Paper and crayons waited in a tray. Deniz wanted to finish the pattern before the next activity.\n\nDeniz pointed to the labels beside the board. “Circle, square, triangle,” Deniz read. Then Deniz said, “Circle, square, circle, square.” The shapes alternated, so the empty place needed a circle. Deniz picked up the blue triangle, then put it back. “Triangle is not next. The board does not support it.” The nearby yellow square did not fit either. Deniz searched, but no loose circle was available. Remembering the guide’s words, Deniz paused. “I need a circle,” Deniz said, “but I must check what it is for before moving anything.”\n\nDeniz walked to the map. A blue route curled across it. Along the route sat a red circle and a yellow square. “A circle!” Deniz said. “I found one!” It looked just like the shape the pattern needed. Deniz reached toward it, then stopped. The circle was sitting on the map route, not loose nearby. The picture schedule showed a map first and a pattern next. “Map comes first. Pattern comes next,” Deniz said. “Maybe this circle goes on my board. Maybe it stays here.” Deniz looked closely and waited.\n\nDeniz bent close to the map. A label beside it said, “Route markers stay on the map.” “Does this red circle stay here?” Deniz asked. “Yes,” said the guide. “Children will use the map soon.” Deniz looked at the picture schedule. Map came first. Pattern came next. Then Deniz looked back at the board in the distance. “The board goes circle, square, circle, square,” Deniz said. “It needs a circle, but this circle helps the map.” In the tools tray, labeled paper and crayons waited. Deniz picked up a paper and a red crayon. “I can make another circle,” Deniz said.\n\nDeniz put the paper on the table and drew a red circle with the crayon. “Circle,” Deniz said, checking the circle label. Then Deniz faced the board. “Circle, square, circle, square,” Deniz repeated. “The next shape is circle.” Deniz remembered the red circle on the map. The map label said route markers stay on the map, and the guide had confirmed that children would use the route before the pattern activity. So the map circle had to remain there. Deniz placed the paper circle in the empty place and checked aloud: “Circle, square, circle, square, circle!” “I used the sequence and labels,” Deniz told the guide. “I left the map circle because it marks the route.” The guide smiled. “You checked instead of guessing.”\n\nSoon it was Map time. The children followed the route, using the red circle that still marked it. Deniz watched the marker stay in place. After the map activity, it was Pattern time. At the board, the guide touched each card, and everyone said, “Circle, square, circle, square, circle.” The paper circle fit the empty place, so the pattern worked. Then the guide pointed back to the map. “Your circle stayed there because the map needed it.” Deniz smiled. “I looked, checked, and then chose.” Both learning tools were ready.",
+  "word_count": 570,
+  "target_words": 500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.9,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6007,
+      "output_tokens": 166,
+      "cost": 0.000252294
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.92,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.9,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 6007,
+      "output_tokens": 166,
+      "cost": 0.000252294
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with strong fidelity. Deniz is portrayed as a plausible 4-year-old with appropriate vocabulary, reasoning, and emotional responses. The puzzle structure is sound: the repeating pattern is identified through labels and observation (Scene 2), a plausible false hypothesis emerges when the map circle is discovered (Scene 3), the hypothesis is rejected using the map label and schedule (Scene 4), and the solution uses multiple clues—sequence, labels, map purpose, and schedule—to justify making a paper replacement (Scenes 5–6). The theme of testing before guessing is reinforced throughout without didacticism. Continuity is maintained across all six scenes, with each handoff state properly establishing the next scene's entry conditions. The ending shows practical consequence: both the pattern and map work as intended, confirming Deniz's careful choice. Word counts are within acceptable range (total ~570 words across six scenes, targeting ~500). The prose is clear, uses simple sentence structures appropriate for read-aloud delivery to a 4-year-old, and avoids combat, benchmark language, and unsafe content. JEV advisory evidence confirms strong causal chain, goal continuity, clue-solution progression, and ending consistency. No clue depends on information not yet introduced. The story is production-ready.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 570,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.85,
+          "no_repeated_event": 0.92,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6007,
+          "output_tokens": 166,
+          "cost": 0.000252294
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully meets the acceptance gate. It is a coherent, age-appropriate narrative that follows the StoryContract and six-scene plan with strong fidelity. Deniz is portrayed as a plausible 4-year-old with appropriate vocabulary, reasoning, and emotional responses. The puzzle structure is sound: the repeating pattern is identified through labels and observation (Scene 2), a plausible false hypothesis emerges when the map circle is discovered (Scene 3), the hypothesis is rejected using the map label and schedule (Scene 4), and the solution uses multiple clues—sequence, labels, map purpose, and schedule—to justify making a paper replacement (Scenes 5–6). The theme of testing before guessing is reinforced throughout without didacticism. Continuity is maintained across all six scenes, with each handoff state properly establishing the next scene's entry conditions. The ending shows practical consequence: both the pattern and map work as intended, confirming Deniz's careful choice. Word counts are within acceptable range (total ~570 words across six scenes, targeting ~500). The prose is clear, uses simple sentence structures appropriate for read-aloud delivery to a 4-year-old, and avoids combat, benchmark language, and unsafe content. JEV advisory evidence confirms strong causal chain, goal continuity, clue-solution progression, and ending consistency. No clue depends on information not yet introduced. The story is production-ready.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000252294,
+      "final_judge_cost": {
+        "usd": 0.014496,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 53.655,
+    "scene_stage_seconds": 136.369,
+    "final_stage_seconds": 7.105,
+    "total_pipeline_seconds": 197.128
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.017516304,
+    "scene_generation_usd": 0.02664605,
+    "scene_continuity_evaluator_usd": 0.001396164,
+    "whole_continuity_evaluator_usd": 0.000252294,
+    "whole_continuity_evaluator_usd_total": 0.000252294,
+    "semantic_judge_usd": {
+      "usd": 0.014496,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014496,
+    "scene_jev_usd": 0.001396164,
+    "whole_jev_usd": 0.000252294,
+    "whole_jev_usd_total": 0.000252294,
+    "final_haiku": {
+      "usd": 0.014496,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014496,
+    "total_pipeline_usd": 0.060306812
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 6007,
+      "output_tokens": 166,
+      "cost": 0.000252294
+    },
+    "semantic_judge": {
+      "input_tokens": 12346,
+      "output_tokens": 430,
+      "total_tokens": 12776
+    },
+    "whole_jev": {
+      "input_tokens": 6007,
+      "output_tokens": 166,
+      "cost": 0.000252294
+    },
+    "final_haiku": {
+      "input_tokens": 12346,
+      "output_tokens": 430,
+      "total_tokens": 12776
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
