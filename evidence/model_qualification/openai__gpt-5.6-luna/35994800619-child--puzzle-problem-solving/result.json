@@ -1,0 +1,1893 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/child--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to restore the Map Makers' Trail before the other children arrive.",
+        "central_problem": "The fourth card is missing, and Deniz must identify its correct place and use without guessing.",
+        "solution_principle": "Test the repeating arrow, material, map-route, and schedule patterns against every possible card.",
+        "theme_thread": "Good solutions come from checking patterns and evidence instead of choosing the first explanation.",
+        "ending_state": "Deniz correctly restores and relocates the trail, and children use the completed activity safely.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat, frightening danger, or unsafe risky behavior.",
+          "No unexplained clues, new powers, disposable subplots, or age-inappropriate reasoning.",
+          "Do not solve the missing-card problem before Scene 5.",
+          "Do not mention benchmarks, tests, or story construction."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz's goal and the incomplete trail in the public learning space.",
+          "entry_state": "Deniz arrives early at the learning room to help prepare the Map Makers' Trail.",
+          "beats": [
+            "Deniz finds five displayed cards, one blank space, three loose candidate cards, and a note asking for the trail before ten-thirty.",
+            "He copies the visible arrows, materials, locations, map route, and times into a notebook instead of choosing immediately."
+          ],
+          "must_include": [
+            "Maps, labeled objects, a schedule board, a sorting tray, pencils, and a ruler appear naturally.",
+            "Deniz notices the displayed cards alternate right and down arrows.",
+            "Deniz notices paper, wood, and metal labels begin a repeating material pattern."
+          ],
+          "must_not_do": [
+            "Do not reveal the correct candidate card.",
+            "Do not let Deniz assume a child or adult caused the missing card.",
+            "Do not use vocabulary or reasoning beyond an exact seven-year-old early reader."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has recorded the visible patterns but still has three plausible cards and several possible explanations.",
+          "open_threads_after": [
+            "Which candidate completes every pattern?",
+            "Why is the card missing?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test the first explanations and reject the tempting idea that the activity was changed.",
+          "entry_state": "Deniz has five cards, three candidates, and written observations but no confirmed answer.",
+          "beats": [
+            "He checks the schedule and sees six trail times, so the blank is not a canceled stop.",
+            "He compares the labels and finds that the trail uses the same paper, wood, metal cycle as the visible cards.",
+            "He tests each candidate with the arrow and material patterns; one fits both, while another fits only the arrow."
+          ],
+          "must_include": [
+            "The reasonable false hypothesis is that the schedule changed and the fourth stop was removed.",
+            "Deniz rejects that hypothesis because all six times remain listed.",
+            "The correct candidate is not yet placed; its map location still needs checking."
+          ],
+          "must_not_do": [
+            "Do not treat the first pattern match as final proof.",
+            "Do not introduce information absent from Scene 1.",
+            "Do not solve the central problem before the map and schedule clues agree."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established five cards, three loose candidates, six times, alternating arrows, and the paper-wood-metal cycle.",
+            "Scene 1 established that Deniz recorded locations and times in his notebook.",
+            "Scene 1 established the schedule board and labeled sorting tray."
+          ],
+          "handoff": "One candidate fits the repeating arrows and materials, but Deniz must verify its location on the room map.",
+          "open_threads_after": [
+            "Does the candidate's location complete the map route?",
+            "Where did the missing card come from?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use the room map to confirm the candidate's route and uncover where the card was placed.",
+          "entry_state": "Deniz has a strong candidate but knows its arrow and material match are not enough.",
+          "beats": [
+            "He traces the displayed route with a ruler and sees the missing fourth step must point down to the schedule board.",
+            "The candidate says schedule board, down, and paper, matching the route and both repeating patterns.",
+            "Deniz notices the same label on a paper card in the sorting tray and realizes it was filed there, not removed."
+          ],
+          "must_include": [
+            "The map route independently confirms the candidate's destination.",
+            "Deniz compares the candidate's label with the schedule board label.",
+            "He explains that three matching clues are stronger than one guess."
+          ],
+          "must_not_do": [
+            "Do not reveal the schedule's later location change yet.",
+            "Do not make the card appear magically or through an unexplained action.",
+            "Do not add a second mystery unrelated to the trail."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established that the schedule still contains six stops.",
+            "Scene 2 established one candidate matches the arrow and material cycles.",
+            "Scene 1 established the room map, schedule board, and card locations."
+          ],
+          "handoff": "Deniz has identified the misplaced fourth card, but he must apply it and read the completed schedule before setting up the trail.",
+          "open_threads_after": [
+            "What does the completed trail tell Deniz to do?",
+            "Where should the activity stand at ten-thirty?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Prepare the decisive application while showing that solving the pattern changes the setup choice.",
+          "entry_state": "Deniz has confirmed the fourth card and found it in the sorting tray.",
+          "beats": [
+            "He places the card temporarily, then follows the full route to the schedule board with his ruler.",
+            "The completed schedule shows the usual trail table becomes busy at ten-thirty because story circle begins there.",
+            "Deniz finds the quiet side table listed as the alternate activity space and decides to move the trail there."
+          ],
+          "must_include": [
+            "The schedule's alternate location was already visible but became useful only after the route was completed.",
+            "Deniz asks the nearby learning-room adult before moving the public materials.",
+            "The adult agrees, and Deniz gathers the labeled cards, objects, pencil, and ruler."
+          ],
+          "must_not_do": [
+            "Do not present moving the activity as a random preference.",
+            "Do not fully resolve the trail until Scene 5.",
+            "Do not create danger, conflict, or an unnecessary new character."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the fourth card's destination as the schedule board.",
+            "Scene 3 established the card was misplaced in the sorting tray.",
+            "Scene 1 established the schedule board and the ordinary setup tools."
+          ],
+          "handoff": "Deniz has permission, the confirmed card, and the alternate table; he still must place and test the completed trail.",
+          "open_threads_after": [
+            "Will the completed trail work at the new table?",
+            "Can other children follow its instructions?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the solution and resolve the missing-card problem through multiple tested clues.",
+          "entry_state": "Deniz has moved the materials to the quiet table and is ready to complete the trail.",
+          "beats": [
+            "He inserts the down-paper card, arranges all six cards by time, and checks the right-down arrows, material cycle, and map route.",
+            "The final route leads correctly to the schedule board and confirms the quiet table avoids the story-circle crowd.",
+            "Deniz labels the restored trail, places the ruler and pencil beside it, and chooses to leave a clear note about the new location."
+          ],
+          "must_include": [
+            "The decisive solution uses the arrow pattern, material pattern, map route, and schedule together.",
+            "The missing card is fully restored without guessing.",
+            "Deniz's final choice changes because the completed answer reveals the better activity location."
+          ],
+          "must_not_do": [
+            "Do not introduce a new clue after the solution is tested.",
+            "Do not leave the card's identity uncertain.",
+            "Do not make the adult solve the puzzle for Deniz."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 4 established the confirmed card, alternate table, adult permission, and complete materials.",
+            "Scene 3 established the card's down direction, paper material, and schedule-board destination.",
+            "Scene 4 established that the usual table becomes busy at ten-thirty."
+          ],
+          "handoff": "The trail is complete, tested, and clearly moved; the remaining question is how the arriving children respond.",
+          "open_threads_after": []
+        },
+        {
+          "index": 6,
+          "purpose": "Show consequences, reinforce the theme, and close Deniz's responsibility.",
+          "entry_state": "The completed trail waits at the quiet table with its location note and tools.",
+          "beats": [
+            "Children follow the six cards, use the labels and ruler, and reach the schedule board without crowding the story circle.",
+            "Deniz explains how he checked several patterns, while the adult confirms the sorting tray had held the misplaced card.",
+            "Deniz feels proud because testing changed both his answer and his practical choice."
+          ],
+          "must_include": [
+            "The children can use the restored activity successfully.",
+            "The adult confirms the card was misplaced, not lost through a mysterious cause.",
+            "The ending clearly connects careful testing with a helpful decision."
+          ],
+          "must_not_do": [
+            "Do not reopen the missing-card mystery.",
+            "Do not add a new future-discovery hook.",
+            "Do not turn the ending into a lecture or use older-child emotional language."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the fully tested trail, clear location note, and arranged ordinary tools.",
+            "Scene 5 established that the route and schedule supported the quiet-table choice.",
+            "Scene 3 established the card's ordinary explanation: it was in the sorting tray."
+          ],
+          "handoff": "Deniz's trail works at its new location, the missing card is explained, and the main problem is closed.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.94,
+        "goal_continuity": 0.94,
+        "constraint_coverage": 0.65,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.8,
+        "no_early_resolution": 0.65,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.65,
+        "no_early_resolution": 0.65
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.7,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3790,
+        "output_tokens": 185,
+        "cost": 0.00015918
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 4,
+        "ending_coherence": 5
+      },
+      "average": 4.714,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 2,
+          "risk": "The false hypothesis (schedule changed, stop removed) is introduced and rejected quickly. Risk: if the schedule board is not visually prominent or the six times not clearly countable by a 7-year-old early reader, the rejection may feel unmotivated. Mitigation: ensure the schedule is labeled, numbered, and Deniz's observation is explicit ('I see six times, so the stop is still there')."
+        },
+        {
+          "scene": 3,
+          "risk": "The card's discovery in the sorting tray must feel like a natural observation, not a plot convenience. Risk: if the sorting tray is not established as a visible, labeled location in Scene 1, the card's presence there will seem unexplained. Mitigation: confirm Scene 1 explicitly shows the sorting tray as part of the room setup."
+        },
+        {
+          "scene": 4,
+          "risk": "The decision to move the trail to the quiet table depends on reading the schedule's alternate location. Risk: if the schedule's alternate location is not already written and visible in Scene 1, it will appear as new information introduced to justify the move. Mitigation: ensure the schedule board lists both the usual table and the quiet table as options before Scene 4."
+        },
+        {
+          "scene": 5,
+          "risk": "The solution uses four independent clues (arrows, materials, map route, schedule). Risk: if any clue is not fully tested or if one clue is treated as sufficient, the theme ('testing patterns instead of guessing') weakens. Mitigation: ensure Deniz explicitly checks all four clues against the candidate card before placing it."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist motivation, and excellent information progression. All six scenes form a coherent single story with no disconnected episodes. The central problem (missing fourth card) is not solved until Scene 5, and Scene 6 resolves consequences consistently. Constraint coverage is solid: C1–C9 are all addressed, though C1 (age-appropriate vocabulary and pacing) and C9 (exact age 7, early reader) require careful execution in prose to avoid either oversimplification or subtle complexity creep. The false hypothesis (C7) is present and rejected by evidence. The final solution uses multiple earlier clues (C8). No unexplained dependencies exist; all later events depend only on information established earlier. The plan satisfies all required constraints and avoids all prohibited events. The JEV advisory flagged constraint_coverage and no_early_resolution at 0.65 probability; this plan mitigates both: the schedule board, sorting tray, and map are all introduced in Scene 1 (coverage), and the card is not placed or the trail moved until Scene 5 (early resolution). Recommend proceeding to prose with attention to: (1) making the sorting tray visually clear in Scene 1, (2) ensuring the schedule's alternate location is visible before Scene 4, (3) having Deniz explicitly test all four clues in Scene 5, and (4) maintaining exact age-7 vocabulary and sentence rhythm throughout.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0057078,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.00015918,
+      "haiku": {
+        "usd": 0.008176,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 903,
+        "output_tokens": 4606,
+        "total_tokens": 5509
+      },
+      "jev": {
+        "input_tokens": 3790,
+        "output_tokens": 185,
+        "cost": 0.00015918
+      },
+      "haiku": {
+        "input_tokens": 3981,
+        "output_tokens": 839,
+        "total_tokens": 4820
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    195,
+    232,
+    255,
+    255,
+    308,
+    255
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 195,
+      "word_count": 206,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz's goal and the incomplete trail in the public learning space.",
+        "entry_state": "Deniz arrives early at the learning room to help prepare the Map Makers' Trail.",
+        "beats": [
+          "Deniz finds five displayed cards, one blank space, three loose candidate cards, and a note asking for the trail before ten-thirty.",
+          "He copies the visible arrows, materials, locations, map route, and times into a notebook instead of choosing immediately."
+        ],
+        "must_include": [
+          "Maps, labeled objects, a schedule board, a sorting tray, pencils, and a ruler appear naturally.",
+          "Deniz notices the displayed cards alternate right and down arrows.",
+          "Deniz notices paper, wood, and metal labels begin a repeating material pattern."
+        ],
+        "must_not_do": [
+          "Do not reveal the correct candidate card.",
+          "Do not let Deniz assume a child or adult caused the missing card.",
+          "Do not use vocabulary or reasoning beyond an exact seven-year-old early reader."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has recorded the visible patterns but still has three plausible cards and several possible explanations.",
+        "open_threads_after": [
+          "Which candidate completes every pattern?",
+          "Why is the card missing?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz came early to the learning room. He wanted to fix the Map Makers’ Trail before the other children came.\n\nMaps covered one wall. A room map showed a path past the globe shelf, the object table, and the schedule board. Labeled objects sat on shelves. Pencils and a ruler waited beside a sorting tray.\n\nThe trail had six places. Five cards hung there, but the fourth place was blank. A note said, “Please finish the trail before 10:30.” Three loose cards lay in the tray.\n\nDeniz looked closely. The arrows read right, down, right, blank, right, down. The missing arrow should keep the right-down pattern. The labels read paper, wood, metal, blank, wood, metal. He copied both patterns into his notebook.\n\nHe also copied each card’s place and time from the schedule board. The board listed six times. It showed the usual trail table and a quiet table, too.\n\nDeniz picked up the three loose cards, one at a time. Each seemed possible in some way. He did not choose yet. He drew the arrows, materials, places, and times with a pencil, then checked the lines with his ruler.\n\n“The missing card must fit more than one clue,” he said. “I need to test them.”",
+        "state_delta": {
+          "location": "Learning room, beside the Map Makers’ Trail display",
+          "character_goal": "Deniz wants to restore the trail before 10:30 without guessing.",
+          "knowledge_gained": [
+            "The trail has six places, with five displayed cards and one blank space.",
+            "Three loose candidate cards are in the sorting tray.",
+            "The displayed arrows show a repeating right, down pattern with the fourth arrow missing.",
+            "The visible materials show a repeating paper, wood, metal pattern with the fourth material missing.",
+            "The schedule board lists six times and shows a usual trail table and a quiet table."
+          ],
+          "facts_established": [
+            "The room contains maps, labeled objects, a schedule board, a sorting tray, pencils, and a ruler.",
+            "The room map shows a route past the globe shelf, object table, and schedule board.",
+            "A note asks for the trail to be finished before 10:30."
+          ],
+          "clues_added": [
+            "The missing card must match the repeating arrow pattern.",
+            "The missing card must match the repeating material pattern.",
+            "Each card has a place and time that Deniz has copied into his notebook."
+          ],
+          "objects_changed": [
+            "Deniz recorded the visible arrows, materials, places, and times in his notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which of the three candidates fits every pattern?",
+            "Why is the fourth card missing?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has five displayed cards, one blank space, three plausible loose candidates, and notebook observations of the arrows, materials, locations, map route, and times. He has not chosen or placed a candidate."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.675,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 210,
+          "usage": {
+            "input_tokens": 4359,
+            "output_tokens": 992,
+            "total_tokens": 5351
+          },
+          "cost": {
+            "usd": 0.00228,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 15.032,
+          "repair_reasons": [
+            "jev:no_contradiction:0.770<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 206,
+          "usage": {
+            "input_tokens": 4467,
+            "output_tokens": 1543,
+            "total_tokens": 6010
+          },
+          "cost": {
+            "usd": 0.0029682,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.86,
+          "no_contradiction": 0.8,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.78,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2561,
+          "output_tokens": 188,
+          "cost": 0.000107562
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.77,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.77
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.6,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2547,
+            "output_tokens": 188,
+            "cost": 0.000106974
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.8,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.78,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2561,
+            "output_tokens": 188,
+            "cost": 0.000107562
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.553,
+        0.576
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.92,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.86,
+              "no_contradiction": 0.77,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.77
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.6,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 2547,
+              "output_tokens": 188,
+              "cost": 0.000106974
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 206,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.92,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.86,
+              "no_contradiction": 0.8,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.78,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 2561,
+              "output_tokens": 188,
+              "cost": 0.000107562
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 25.838
+    },
+    {
+      "scene": 2,
+      "target_words": 232,
+      "word_count": 243,
+      "contract": {
+        "index": 2,
+        "purpose": "Test the first explanations and reject the tempting idea that the activity was changed.",
+        "entry_state": "Deniz has five cards, three candidates, and written observations but no confirmed answer.",
+        "beats": [
+          "He checks the schedule and sees six trail times, so the blank is not a canceled stop.",
+          "He compares the labels and finds that the trail uses the same paper, wood, metal cycle as the visible cards.",
+          "He tests each candidate with the arrow and material patterns; one fits both, while another fits only the arrow."
+        ],
+        "must_include": [
+          "The reasonable false hypothesis is that the schedule changed and the fourth stop was removed.",
+          "Deniz rejects that hypothesis because all six times remain listed.",
+          "The correct candidate is not yet placed; its map location still needs checking."
+        ],
+        "must_not_do": [
+          "Do not treat the first pattern match as final proof.",
+          "Do not introduce information absent from Scene 1.",
+          "Do not solve the central problem before the map and schedule clues agree."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established five cards, three loose candidates, six times, alternating arrows, and the paper-wood-metal cycle.",
+          "Scene 1 established that Deniz recorded locations and times in his notebook.",
+          "Scene 1 established the schedule board and labeled sorting tray."
+        ],
+        "handoff": "One candidate fits the repeating arrows and materials, but Deniz must verify its location on the room map.",
+        "open_threads_after": [
+          "Does the candidate's location complete the map route?",
+          "Where did the missing card come from?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz looked again at the schedule board. It had six times in a neat list: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.\n\nHe counted them twice.\n\n“If there are six times, the fourth stop was not canceled,” he said. “The schedule did not change.”\n\nThat idea had seemed possible. The blank card might mean the trail had only five stops now. But the six times showed that the fourth stop was still needed.\n\nDeniz turned to the cards. He read the labels aloud. “Paper, wood, metal, blank, wood, metal.”\n\nHe pointed to the first three. Paper, wood, metal. Then the pattern began again. The missing card needed to be paper.\n\nNext, he checked the arrows in his notebook. “Right, down, right, blank, right, down.” The missing arrow needed to point down.\n\nDeniz tested the loose cards one by one. The first card pointed down, but it was made of wood. It matched the arrow and failed the material pattern.\n\nThe second card was paper, but its arrow pointed right. It matched the material and failed the arrow pattern.\n\nThe third card was made of paper and pointed down. Its label said “Schedule Board.” It matched both patterns.\n\nDeniz set it beside his notebook, but he did not hang it up.\n\n“It fits two clues,” he said. “That is a strong start. But I still need to check its place on the room map.”\n\nHe picked up the ruler and walked to the map.",
+        "state_delta": {
+          "location": "Learning room, beside the schedule board and room map",
+          "character_goal": "Deniz wants to verify the strongest candidate before placing it and restoring the trail.",
+          "knowledge_gained": [
+            "The schedule still has six trail times, so the fourth stop was not canceled.",
+            "The repeating material pattern requires a paper card.",
+            "The repeating arrow pattern requires a down arrow.",
+            "One candidate matches both the down arrow and paper material patterns.",
+            "Another candidate matches only the arrow, and another matches only the material."
+          ],
+          "facts_established": [
+            "The schedule board visibly lists six times: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.",
+            "The strongest candidate is labeled Schedule Board, points down, and is made of paper."
+          ],
+          "clues_added": [
+            "The fourth card is not a canceled stop.",
+            "The correct candidate must be paper and point down.",
+            "The Schedule Board candidate fits two repeating patterns but still needs map verification."
+          ],
+          "objects_changed": [
+            "Deniz placed the strongest candidate beside his notebook instead of hanging it up.",
+            "Deniz picked up the ruler to check the room map."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Does the Schedule Board candidate complete the map route?",
+            "Why was the matching card in the sorting tray?"
+          ],
+          "threads_resolved": [
+            "The hypothesis that the schedule changed and the fourth stop was removed was rejected."
+          ],
+          "handoff_state": "Deniz has identified one strong candidate: a paper card with a down arrow labeled Schedule Board. It matches the arrow and material patterns, but he has not placed it because its location must still be checked against the room map."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 8.988,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 243,
+          "usage": {
+            "input_tokens": 5119,
+            "output_tokens": 879,
+            "total_tokens": 5998
+          },
+          "cost": {
+            "usd": 0.0023344,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3166,
+          "output_tokens": 188,
+          "cost": 0.000132972
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3166,
+            "output_tokens": 188,
+            "cost": 0.000132972
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.561
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.549
+    },
+    {
+      "scene": 3,
+      "target_words": 255,
+      "word_count": 244,
+      "contract": {
+        "index": 3,
+        "purpose": "Use the room map to confirm the candidate's route and uncover where the card was placed.",
+        "entry_state": "Deniz has a strong candidate but knows its arrow and material match are not enough.",
+        "beats": [
+          "He traces the displayed route with a ruler and sees the missing fourth step must point down to the schedule board.",
+          "The candidate says schedule board, down, and paper, matching the route and both repeating patterns.",
+          "Deniz notices the same label on a paper card in the sorting tray and realizes it was filed there, not removed."
+        ],
+        "must_include": [
+          "The map route independently confirms the candidate's destination.",
+          "Deniz compares the candidate's label with the schedule board label.",
+          "He explains that three matching clues are stronger than one guess."
+        ],
+        "must_not_do": [
+          "Do not reveal the schedule's later location change yet.",
+          "Do not make the card appear magically or through an unexplained action.",
+          "Do not add a second mystery unrelated to the trail."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established that the schedule still contains six stops.",
+          "Scene 2 established one candidate matches the arrow and material cycles.",
+          "Scene 1 established the room map, schedule board, and card locations."
+        ],
+        "handoff": "Deniz has identified the misplaced fourth card, but he must apply it and read the completed schedule before setting up the trail.",
+        "open_threads_after": [
+          "What does the completed trail tell Deniz to do?",
+          "Where should the activity stand at ten-thirty?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz set the ruler on the room map. He started at the first card’s place, the globe shelf. Then he traced the trail to the object table.\n\n“Right,” he said. “Then down.”\n\nHe moved the ruler to the next mark. The trail went right again. At the fourth mark, the line went down to the schedule board.\n\nDeniz looked at the card beside his notebook. Its label said “Schedule Board.” Its arrow pointed down, and its paper matched the material pattern.\n\nHe checked the real schedule board. Its label was the same.\n\n“Now I have three clues,” Deniz said. “The arrow, the material, and the map all agree. Three matching clues are stronger than one guess.”\n\nHe still did not hang up the card. First, he looked at the sorting tray. It had small spaces with labels: Globe Shelf, Object Table, and Schedule Board. In the Schedule Board space lay a paper card.\n\nDeniz picked it up and read the label. “Schedule Board.”\n\nHe compared it with the card beside his notebook. They were the same kind of card. The missing card had not vanished. It had been filed in the sorting tray.\n\n“Someone put it in the wrong place,” Deniz said. “The pattern helped me find it.”\n\nHe carried the card back to the display and held it near the blank space. It fit the fourth place. He was ready to complete the trail, but he wanted to read the whole route first.",
+        "state_delta": {
+          "location": "Learning room, beside the room map, schedule board, and sorting tray",
+          "character_goal": "Deniz wants to apply the confirmed fourth card and read the completed route before setting up the trail.",
+          "knowledge_gained": [
+            "The room map shows that the fourth step goes down to the schedule board.",
+            "The candidate labeled Schedule Board matches the map destination.",
+            "The missing card was filed in the Schedule Board space of the sorting tray."
+          ],
+          "facts_established": [
+            "The map route independently confirms the candidate's destination.",
+            "The candidate's label matches the schedule board label.",
+            "The card was misplaced in the sorting tray rather than removed."
+          ],
+          "clues_added": [
+            "The fourth card matches three clues: its down arrow, paper material, and map destination.",
+            "Three matching clues are stronger than one guess."
+          ],
+          "objects_changed": [
+            "Deniz traced the route with the ruler.",
+            "Deniz picked up the paper Schedule Board card from the sorting tray and brought it to the display."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What does the completed trail tell Deniz to do?",
+            "Where should the activity stand at ten-thirty?"
+          ],
+          "threads_resolved": [
+            "The candidate's map destination was confirmed.",
+            "The missing card's ordinary location in the sorting tray was explained."
+          ],
+          "handoff_state": "Deniz has confirmed that the paper, down-arrow Schedule Board card belongs in the fourth space and has found it in the sorting tray. He is holding it beside the blank display space and is ready to complete the trail and read the route."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.212,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 244,
+          "usage": {
+            "input_tokens": 5617,
+            "output_tokens": 874,
+            "total_tokens": 6491
+          },
+          "cost": {
+            "usd": 0.0024529,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.83,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3540,
+          "output_tokens": 188,
+          "cost": 0.00014868
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.83,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3540,
+            "output_tokens": 188,
+            "cost": 0.00014868
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.57
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.783
+    },
+    {
+      "scene": 4,
+      "target_words": 255,
+      "word_count": 259,
+      "contract": {
+        "index": 4,
+        "purpose": "Prepare the decisive application while showing that solving the pattern changes the setup choice.",
+        "entry_state": "Deniz has confirmed the fourth card and found it in the sorting tray.",
+        "beats": [
+          "He places the card temporarily, then follows the full route to the schedule board with his ruler.",
+          "The completed schedule shows the usual trail table becomes busy at ten-thirty because story circle begins there.",
+          "Deniz finds the quiet side table listed as the alternate activity space and decides to move the trail there."
+        ],
+        "must_include": [
+          "The schedule's alternate location was already visible but became useful only after the route was completed.",
+          "Deniz asks the nearby learning-room adult before moving the public materials.",
+          "The adult agrees, and Deniz gathers the labeled cards, objects, pencil, and ruler."
+        ],
+        "must_not_do": [
+          "Do not present moving the activity as a random preference.",
+          "Do not fully resolve the trail until Scene 5.",
+          "Do not create danger, conflict, or an unnecessary new character."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the fourth card's destination as the schedule board.",
+          "Scene 3 established the card was misplaced in the sorting tray.",
+          "Scene 1 established the schedule board and the ordinary setup tools."
+        ],
+        "handoff": "Deniz has permission, the confirmed card, and the alternate table; he still must place and test the completed trail.",
+        "open_threads_after": [
+          "Will the completed trail work at the new table?",
+          "Can other children follow its instructions?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz slid the paper “Schedule Board” card into the blank space, but he did not press it down yet. He wanted to follow the whole trail.\n\nHe set the ruler on the first card. The route went right to the globe shelf, then down to the object table. It went right again, then down to the schedule board.\n\n“Each step leads somewhere,” Deniz said.\n\nAt the schedule board, he read the completed line. The usual trail table was listed for the activity. But beside it was another choice: quiet side table. At 10:30, the usual table would be busy. Story circle would begin there.\n\nDeniz looked at the rows of chairs near the usual table. Then he looked at the quiet side table near the wall. It had room for maps and cards.\n\n“The schedule shows us where to go,” he said. “The quiet table will work better.”\n\nA learning-room adult was sorting books nearby. Deniz walked over with the ruler in his hand.\n\n“May I move the Map Makers’ Trail to the quiet side table?” he asked. “The schedule says the usual table will be busy at 10:30.”\n\nThe adult checked the board. “Yes. Please move the materials carefully.”\n\nDeniz smiled. He lifted the labeled cards from the display. Then he gathered the small labeled objects, the pencil, and the ruler. He carried each item to the quiet table and set them down in a neat row.\n\nThe confirmed card rested beside the fourth space. Soon, Deniz would place it firmly and test every part of the trail.",
+        "state_delta": {
+          "location": "Learning room, at the quiet side table beside the schedule board",
+          "character_goal": "Deniz wants to place and test the restored trail at the best location before the other children arrive.",
+          "knowledge_gained": [
+            "The completed route leads to the schedule board.",
+            "The usual trail table will be busy at 10:30 because story circle begins there.",
+            "The schedule lists the quiet side table as an alternate activity space."
+          ],
+          "facts_established": [
+            "The schedule's alternate location was visible before Deniz needed it.",
+            "The quiet side table has room for the maps and cards.",
+            "A nearby learning-room adult gave Deniz permission to move the public materials."
+          ],
+          "clues_added": [
+            "The schedule pattern changes Deniz's setup choice from the usual table to the quiet side table."
+          ],
+          "objects_changed": [
+            "Deniz placed the confirmed card temporarily in the fourth space.",
+            "Deniz gathered the labeled cards, small labeled objects, pencil, and ruler.",
+            "The trail materials were moved to the quiet side table."
+          ],
+          "relationships_changed": [
+            "The learning-room adult agreed to let Deniz move and set up the trail."
+          ],
+          "threads_opened": [
+            "Will the completed trail work at the new table?",
+            "Can other children follow its instructions?"
+          ],
+          "threads_resolved": [
+            "The better location for the trail at 10:30 was chosen using the completed schedule."
+          ],
+          "handoff_state": "Deniz has permission, the confirmed paper Schedule Board card, all labeled cards and objects, a pencil, and a ruler at the quiet side table. The card is only temporarily in the fourth space. He must still place it firmly and test the arrows, materials, map route, and schedule together."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 7.886,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 259,
+          "usage": {
+            "input_tokens": 5975,
+            "output_tokens": 818,
+            "total_tokens": 6793
+          },
+          "cost": {
+            "usd": 0.0024752,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.86,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3996,
+          "output_tokens": 188,
+          "cost": 0.000167832
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3996,
+            "output_tokens": 188,
+            "cost": 0.000167832
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.653
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 8.54
+    },
+    {
+      "scene": 5,
+      "target_words": 308,
+      "word_count": 297,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the solution and resolve the missing-card problem through multiple tested clues.",
+        "entry_state": "Deniz has moved the materials to the quiet table and is ready to complete the trail.",
+        "beats": [
+          "He inserts the down-paper card, arranges all six cards by time, and checks the right-down arrows, material cycle, and map route.",
+          "The final route leads correctly to the schedule board and confirms the quiet table avoids the story-circle crowd.",
+          "Deniz labels the restored trail, places the ruler and pencil beside it, and chooses to leave a clear note about the new location."
+        ],
+        "must_include": [
+          "The decisive solution uses the arrow pattern, material pattern, map route, and schedule together.",
+          "The missing card is fully restored without guessing.",
+          "Deniz's final choice changes because the completed answer reveals the better activity location."
+        ],
+        "must_not_do": [
+          "Do not introduce a new clue after the solution is tested.",
+          "Do not leave the card's identity uncertain.",
+          "Do not make the adult solve the puzzle for Deniz."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 4 established the confirmed card, alternate table, adult permission, and complete materials.",
+          "Scene 3 established the card's down direction, paper material, and schedule-board destination.",
+          "Scene 4 established that the usual table becomes busy at ten-thirty."
+        ],
+        "handoff": "The trail is complete, tested, and clearly moved; the remaining question is how the arriving children respond.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz picked up the paper “Schedule Board” card. He pressed it into the fourth space.\n\nNow all six cards were in place. He put them in time order: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.\n\nHe checked the arrows first. Right, down, right, down, right, down. The pattern held.\n\nNext, he checked the card materials. Paper, wood, metal, paper, wood, metal. The fourth card had to be paper. The card in his hand was paper.\n\nDeniz ran his finger over the labels. Then he used the ruler on the map route. The trail went right to the globe shelf, down to the object table, right again, and down to the schedule board. The fourth card said “Schedule Board” and showed a down arrow. It fit the route, too.\n\n“Four checks,” Deniz said. “The arrow, the material, the map, and the schedule. Now I know. I did not just guess.”\n\nHe looked at the schedule one more time. At 10:30, the usual trail table would be full for story circle. The quiet side table was the better place for the trail. The completed cards had helped him choose it.\n\nDeniz wrote a neat label: MAP MAKERS’ TRAIL. He placed it beside the first card. Then he set the ruler and pencil beside the last card, where everyone could reach them.\n\nOn a small note, he wrote:\n\n“Trail is at the quiet side table. Follow the cards in time order.”\n\nHe set the note where it could be seen. The fourth card was no longer missing. It was back in its right place, with every clue agreeing.\n\nDeniz stepped back. The maps, cards, labels, ruler, and pencil were ready for the children. The trail was complete, and the quiet table would keep it away from the busy story circle.",
+        "state_delta": {
+          "location": "Quiet side table in the learning room",
+          "character_goal": "Deniz wants the restored Map Makers’ Trail to be clear and ready for the arriving children.",
+          "knowledge_gained": [
+            "The paper Schedule Board card completes the arrow, material, map-route, and schedule patterns.",
+            "The quiet side table is the better activity location because the usual table will be busy at 10:30."
+          ],
+          "facts_established": [
+            "All six cards are arranged in time order.",
+            "The arrows repeat right, down, right, down, right, down.",
+            "The materials repeat paper, wood, metal, paper, wood, metal.",
+            "The route ends at the schedule board.",
+            "The fourth card was fully restored without guessing."
+          ],
+          "clues_added": [
+            "Four tested clues agree: arrow, material, map route, and schedule."
+          ],
+          "objects_changed": [
+            "The paper Schedule Board card was pressed into the fourth space.",
+            "The six cards were arranged by time.",
+            "The trail was labeled Map Makers’ Trail.",
+            "The ruler and pencil were placed beside the trail.",
+            "A note was placed beside the trail explaining its quiet-table location."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The missing card was restored and its correct place and use were confirmed.",
+            "The best location for the activity was chosen using the completed pattern and schedule."
+          ],
+          "handoff_state": "The completed Map Makers’ Trail waits at the quiet side table. All six cards are in time order, the fourth paper Schedule Board card is firmly placed, the arrows, materials, map route, and schedule have all been checked, and a clear location note, ruler, and pencil are beside the trail. The children can now use it."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.06,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 297,
+          "usage": {
+            "input_tokens": 6384,
+            "output_tokens": 937,
+            "total_tokens": 7321
+          },
+          "cost": {
+            "usd": 0.00272025,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4543,
+          "output_tokens": 188,
+          "cost": 0.000190806
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4543,
+            "output_tokens": 188,
+            "cost": 0.000190806
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.604
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.665
+    },
+    {
+      "scene": 6,
+      "target_words": 255,
+      "word_count": 263,
+      "contract": {
+        "index": 6,
+        "purpose": "Show consequences, reinforce the theme, and close Deniz's responsibility.",
+        "entry_state": "The completed trail waits at the quiet table with its location note and tools.",
+        "beats": [
+          "Children follow the six cards, use the labels and ruler, and reach the schedule board without crowding the story circle.",
+          "Deniz explains how he checked several patterns, while the adult confirms the sorting tray had held the misplaced card.",
+          "Deniz feels proud because testing changed both his answer and his practical choice."
+        ],
+        "must_include": [
+          "The children can use the restored activity successfully.",
+          "The adult confirms the card was misplaced, not lost through a mysterious cause.",
+          "The ending clearly connects careful testing with a helpful decision."
+        ],
+        "must_not_do": [
+          "Do not reopen the missing-card mystery.",
+          "Do not add a new future-discovery hook.",
+          "Do not turn the ending into a lecture or use older-child emotional language."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the fully tested trail, clear location note, and arranged ordinary tools.",
+          "Scene 5 established that the route and schedule supported the quiet-table choice.",
+          "Scene 3 established the card's ordinary explanation: it was in the sorting tray."
+        ],
+        "handoff": "Deniz's trail works at its new location, the missing card is explained, and the main problem is closed.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "At ten-thirty, the first children came into the learning room. They saw Deniz’s note and went to the quiet side table.\n\n“Follow the cards in time order,” said Noor. “That is what the note says.”\n\nThe children began with the 9:00 card. They followed its arrow to the globe shelf. They looked for the labeled object there, then read the next card. At each step, they checked the time, the arrow, and the label.\n\nDeniz let them use the ruler. They placed it along the map route: right to the globe shelf, down to the object table, right again, and down to the schedule board. The cards led them all the way there.\n\nNo one had to squeeze past the story circle. The usual trail table was busy, but the quiet table had plenty of room.\n\nThe learning-room adult came over and smiled. “You found the missing card in the sorting tray,” she said. “It was misplaced, not lost. Your paper Schedule Board card belongs in that fourth space.”\n\nDeniz nodded. “I checked more than one thing,” he said. “The arrows went right, down, right, down. The materials repeated, too. Then the map and the schedule agreed.”\n\nHe pointed to the note. “That is why I moved the trail here. The pattern helped me choose the better place.”\n\nThe children reached the schedule board and gave a happy clap. Then they went back to try the trail again.\n\nDeniz felt warm and proud. His careful checks had brought back the missing card. They had also helped him make a useful choice for everyone.",
+        "state_delta": {
+          "location": "Quiet side table and schedule board in the learning room",
+          "character_goal": "Deniz wants the children to use the restored Map Makers’ Trail clearly and safely.",
+          "knowledge_gained": [
+            "The children can follow all six cards successfully.",
+            "The completed route leads to the schedule board without crowding the story circle.",
+            "The learning-room adult confirms that the fourth card was misplaced in the sorting tray."
+          ],
+          "facts_established": [
+            "The restored activity works at the quiet side table.",
+            "The children use the labels, map route, and ruler to complete the trail.",
+            "The missing card was misplaced, not mysteriously lost."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The children used the six arranged cards, labels, ruler, and location note.",
+            "The trail remained complete and ready for use."
+          ],
+          "relationships_changed": [
+            "The children trust Deniz’s clear trail setup.",
+            "The adult confirms Deniz’s careful solution."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The children successfully used the restored trail.",
+            "The missing card’s ordinary explanation was confirmed.",
+            "Deniz’s testing led to both the correct card placement and the better activity location."
+          ],
+          "handoff_state": "Deniz’s Map Makers’ Trail works at the quiet side table. The children have followed all six cards to the schedule board, the adult has confirmed that the fourth card was misplaced in the sorting tray, and the story is complete."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 9.422,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 263,
+          "usage": {
+            "input_tokens": 6518,
+            "output_tokens": 854,
+            "total_tokens": 7372
+          },
+          "cost": {
+            "usd": 0.00265415,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.9,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4440,
+          "output_tokens": 188,
+          "cost": 0.00018648
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.9,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4440,
+            "output_tokens": 188,
+            "cost": 0.00018648
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.545
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 9.967
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz's goal and the incomplete trail in the public learning space.",
+      "word_count": 206,
+      "location": "Learning room, beside the Map Makers’ Trail display",
+      "character_goal": "Deniz wants to restore the trail before 10:30 without guessing.",
+      "knowledge_gained": [
+        "The trail has six places, with five displayed cards and one blank space.",
+        "Three loose candidate cards are in the sorting tray.",
+        "The displayed arrows show a repeating right, down pattern with the fourth arrow missing.",
+        "The visible materials show a repeating paper, wood, metal pattern with the fourth material missing.",
+        "The schedule board lists six times and shows a usual trail table and a quiet table."
+      ],
+      "facts_established": [
+        "The room contains maps, labeled objects, a schedule board, a sorting tray, pencils, and a ruler.",
+        "The room map shows a route past the globe shelf, object table, and schedule board.",
+        "A note asks for the trail to be finished before 10:30."
+      ],
+      "clues_added": [
+        "The missing card must match the repeating arrow pattern.",
+        "The missing card must match the repeating material pattern.",
+        "Each card has a place and time that Deniz has copied into his notebook."
+      ],
+      "objects_changed": [
+        "Deniz recorded the visible arrows, materials, places, and times in his notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which of the three candidates fits every pattern?",
+        "Why is the fourth card missing?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has five displayed cards, one blank space, three plausible loose candidates, and notebook observations of the arrows, materials, locations, map route, and times. He has not chosen or placed a candidate."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test the first explanations and reject the tempting idea that the activity was changed.",
+      "word_count": 243,
+      "location": "Learning room, beside the schedule board and room map",
+      "character_goal": "Deniz wants to verify the strongest candidate before placing it and restoring the trail.",
+      "knowledge_gained": [
+        "The schedule still has six trail times, so the fourth stop was not canceled.",
+        "The repeating material pattern requires a paper card.",
+        "The repeating arrow pattern requires a down arrow.",
+        "One candidate matches both the down arrow and paper material patterns.",
+        "Another candidate matches only the arrow, and another matches only the material."
+      ],
+      "facts_established": [
+        "The schedule board visibly lists six times: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.",
+        "The strongest candidate is labeled Schedule Board, points down, and is made of paper."
+      ],
+      "clues_added": [
+        "The fourth card is not a canceled stop.",
+        "The correct candidate must be paper and point down.",
+        "The Schedule Board candidate fits two repeating patterns but still needs map verification."
+      ],
+      "objects_changed": [
+        "Deniz placed the strongest candidate beside his notebook instead of hanging it up.",
+        "Deniz picked up the ruler to check the room map."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Does the Schedule Board candidate complete the map route?",
+        "Why was the matching card in the sorting tray?"
+      ],
+      "threads_resolved": [
+        "The hypothesis that the schedule changed and the fourth stop was removed was rejected."
+      ],
+      "handoff_state": "Deniz has identified one strong candidate: a paper card with a down arrow labeled Schedule Board. It matches the arrow and material patterns, but he has not placed it because its location must still be checked against the room map."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use the room map to confirm the candidate's route and uncover where the card was placed.",
+      "word_count": 244,
+      "location": "Learning room, beside the room map, schedule board, and sorting tray",
+      "character_goal": "Deniz wants to apply the confirmed fourth card and read the completed route before setting up the trail.",
+      "knowledge_gained": [
+        "The room map shows that the fourth step goes down to the schedule board.",
+        "The candidate labeled Schedule Board matches the map destination.",
+        "The missing card was filed in the Schedule Board space of the sorting tray."
+      ],
+      "facts_established": [
+        "The map route independently confirms the candidate's destination.",
+        "The candidate's label matches the schedule board label.",
+        "The card was misplaced in the sorting tray rather than removed."
+      ],
+      "clues_added": [
+        "The fourth card matches three clues: its down arrow, paper material, and map destination.",
+        "Three matching clues are stronger than one guess."
+      ],
+      "objects_changed": [
+        "Deniz traced the route with the ruler.",
+        "Deniz picked up the paper Schedule Board card from the sorting tray and brought it to the display."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What does the completed trail tell Deniz to do?",
+        "Where should the activity stand at ten-thirty?"
+      ],
+      "threads_resolved": [
+        "The candidate's map destination was confirmed.",
+        "The missing card's ordinary location in the sorting tray was explained."
+      ],
+      "handoff_state": "Deniz has confirmed that the paper, down-arrow Schedule Board card belongs in the fourth space and has found it in the sorting tray. He is holding it beside the blank display space and is ready to complete the trail and read the route."
+    },
+    {
+      "scene": 4,
+      "purpose": "Prepare the decisive application while showing that solving the pattern changes the setup choice.",
+      "word_count": 259,
+      "location": "Learning room, at the quiet side table beside the schedule board",
+      "character_goal": "Deniz wants to place and test the restored trail at the best location before the other children arrive.",
+      "knowledge_gained": [
+        "The completed route leads to the schedule board.",
+        "The usual trail table will be busy at 10:30 because story circle begins there.",
+        "The schedule lists the quiet side table as an alternate activity space."
+      ],
+      "facts_established": [
+        "The schedule's alternate location was visible before Deniz needed it.",
+        "The quiet side table has room for the maps and cards.",
+        "A nearby learning-room adult gave Deniz permission to move the public materials."
+      ],
+      "clues_added": [
+        "The schedule pattern changes Deniz's setup choice from the usual table to the quiet side table."
+      ],
+      "objects_changed": [
+        "Deniz placed the confirmed card temporarily in the fourth space.",
+        "Deniz gathered the labeled cards, small labeled objects, pencil, and ruler.",
+        "The trail materials were moved to the quiet side table."
+      ],
+      "relationships_changed": [
+        "The learning-room adult agreed to let Deniz move and set up the trail."
+      ],
+      "threads_opened": [
+        "Will the completed trail work at the new table?",
+        "Can other children follow its instructions?"
+      ],
+      "threads_resolved": [
+        "The better location for the trail at 10:30 was chosen using the completed schedule."
+      ],
+      "handoff_state": "Deniz has permission, the confirmed paper Schedule Board card, all labeled cards and objects, a pencil, and a ruler at the quiet side table. The card is only temporarily in the fourth space. He must still place it firmly and test the arrows, materials, map route, and schedule together."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the solution and resolve the missing-card problem through multiple tested clues.",
+      "word_count": 297,
+      "location": "Quiet side table in the learning room",
+      "character_goal": "Deniz wants the restored Map Makers’ Trail to be clear and ready for the arriving children.",
+      "knowledge_gained": [
+        "The paper Schedule Board card completes the arrow, material, map-route, and schedule patterns.",
+        "The quiet side table is the better activity location because the usual table will be busy at 10:30."
+      ],
+      "facts_established": [
+        "All six cards are arranged in time order.",
+        "The arrows repeat right, down, right, down, right, down.",
+        "The materials repeat paper, wood, metal, paper, wood, metal.",
+        "The route ends at the schedule board.",
+        "The fourth card was fully restored without guessing."
+      ],
+      "clues_added": [
+        "Four tested clues agree: arrow, material, map route, and schedule."
+      ],
+      "objects_changed": [
+        "The paper Schedule Board card was pressed into the fourth space.",
+        "The six cards were arranged by time.",
+        "The trail was labeled Map Makers’ Trail.",
+        "The ruler and pencil were placed beside the trail.",
+        "A note was placed beside the trail explaining its quiet-table location."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The missing card was restored and its correct place and use were confirmed.",
+        "The best location for the activity was chosen using the completed pattern and schedule."
+      ],
+      "handoff_state": "The completed Map Makers’ Trail waits at the quiet side table. All six cards are in time order, the fourth paper Schedule Board card is firmly placed, the arrows, materials, map route, and schedule have all been checked, and a clear location note, ruler, and pencil are beside the trail. The children can now use it."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show consequences, reinforce the theme, and close Deniz's responsibility.",
+      "word_count": 263,
+      "location": "Quiet side table and schedule board in the learning room",
+      "character_goal": "Deniz wants the children to use the restored Map Makers’ Trail clearly and safely.",
+      "knowledge_gained": [
+        "The children can follow all six cards successfully.",
+        "The completed route leads to the schedule board without crowding the story circle.",
+        "The learning-room adult confirms that the fourth card was misplaced in the sorting tray."
+      ],
+      "facts_established": [
+        "The restored activity works at the quiet side table.",
+        "The children use the labels, map route, and ruler to complete the trail.",
+        "The missing card was misplaced, not mysteriously lost."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The children used the six arranged cards, labels, ruler, and location note.",
+        "The trail remained complete and ready for use."
+      ],
+      "relationships_changed": [
+        "The children trust Deniz’s clear trail setup.",
+        "The adult confirms Deniz’s careful solution."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The children successfully used the restored trail.",
+        "The missing card’s ordinary explanation was confirmed.",
+        "Deniz’s testing led to both the correct card placement and the better activity location."
+      ],
+      "handoff_state": "Deniz’s Map Makers’ Trail works at the quiet side table. The children have followed all six cards to the schedule board, the adult has confirmed that the fourth card was misplaced in the sorting tray, and the story is complete."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "Deniz came early to the learning room. He wanted to fix the Map Makers’ Trail before the other children came.\n\nMaps covered one wall. A room map showed a path past the globe shelf, the object table, and the schedule board. Labeled objects sat on shelves. Pencils and a ruler waited beside a sorting tray.\n\nThe trail had six places. Five cards hung there, but the fourth place was blank. A note said, “Please finish the trail before 10:30.” Three loose cards lay in the tray.\n\nDeniz looked closely. The arrows read right, down, right, blank, right, down. The missing arrow should keep the right-down pattern. The labels read paper, wood, metal, blank, wood, metal. He copied both patterns into his notebook.\n\nHe also copied each card’s place and time from the schedule board. The board listed six times. It showed the usual trail table and a quiet table, too.\n\nDeniz picked up the three loose cards, one at a time. Each seemed possible in some way. He did not choose yet. He drew the arrows, materials, places, and times with a pencil, then checked the lines with his ruler.\n\n“The missing card must fit more than one clue,” he said. “I need to test them.”\n\nDeniz looked again at the schedule board. It had six times in a neat list: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.\n\nHe counted them twice.\n\n“If there are six times, the fourth stop was not canceled,” he said. “The schedule did not change.”\n\nThat idea had seemed possible. The blank card might mean the trail had only five stops now. But the six times showed that the fourth stop was still needed.\n\nDeniz turned to the cards. He read the labels aloud. “Paper, wood, metal, blank, wood, metal.”\n\nHe pointed to the first three. Paper, wood, metal. Then the pattern began again. The missing card needed to be paper.\n\nNext, he checked the arrows in his notebook. “Right, down, right, blank, right, down.” The missing arrow needed to point down.\n\nDeniz tested the loose cards one by one. The first card pointed down, but it was made of wood. It matched the arrow and failed the material pattern.\n\nThe second card was paper, but its arrow pointed right. It matched the material and failed the arrow pattern.\n\nThe third card was made of paper and pointed down. Its label said “Schedule Board.” It matched both patterns.\n\nDeniz set it beside his notebook, but he did not hang it up.\n\n“It fits two clues,” he said. “That is a strong start. But I still need to check its place on the room map.”\n\nHe picked up the ruler and walked to the map.\n\nDeniz set the ruler on the room map. He started at the first card’s place, the globe shelf. Then he traced the trail to the object table.\n\n“Right,” he said. “Then down.”\n\nHe moved the ruler to the next mark. The trail went right again. At the fourth mark, the line went down to the schedule board.\n\nDeniz looked at the card beside his notebook. Its label said “Schedule Board.” Its arrow pointed down, and its paper matched the material pattern.\n\nHe checked the real schedule board. Its label was the same.\n\n“Now I have three clues,” Deniz said. “The arrow, the material, and the map all agree. Three matching clues are stronger than one guess.”\n\nHe still did not hang up the card. First, he looked at the sorting tray. It had small spaces with labels: Globe Shelf, Object Table, and Schedule Board. In the Schedule Board space lay a paper card.\n\nDeniz picked it up and read the label. “Schedule Board.”\n\nHe compared it with the card beside his notebook. They were the same kind of card. The missing card had not vanished. It had been filed in the sorting tray.\n\n“Someone put it in the wrong place,” Deniz said. “The pattern helped me find it.”\n\nHe carried the card back to the display and held it near the blank space. It fit the fourth place. He was ready to complete the trail, but he wanted to read the whole route first.\n\nDeniz slid the paper “Schedule Board” card into the blank space, but he did not press it down yet. He wanted to follow the whole trail.\n\nHe set the ruler on the first card. The route went right to the globe shelf, then down to the object table. It went right again, then down to the schedule board.\n\n“Each step leads somewhere,” Deniz said.\n\nAt the schedule board, he read the completed line. The usual trail table was listed for the activity. But beside it was another choice: quiet side table. At 10:30, the usual table would be busy. Story circle would begin there.\n\nDeniz looked at the rows of chairs near the usual table. Then he looked at the quiet side table near the wall. It had room for maps and cards.\n\n“The schedule shows us where to go,” he said. “The quiet table will work better.”\n\nA learning-room adult was sorting books nearby. Deniz walked over with the ruler in his hand.\n\n“May I move the Map Makers’ Trail to the quiet side table?” he asked. “The schedule says the usual table will be busy at 10:30.”\n\nThe adult checked the board. “Yes. Please move the materials carefully.”\n\nDeniz smiled. He lifted the labeled cards from the display. Then he gathered the small labeled objects, the pencil, and the ruler. He carried each item to the quiet table and set them down in a neat row.\n\nThe confirmed card rested beside the fourth space. Soon, Deniz would place it firmly and test every part of the trail.\n\nDeniz picked up the paper “Schedule Board” card. He pressed it into the fourth space.\n\nNow all six cards were in place. He put them in time order: 9:00, 9:20, 9:40, 10:00, 10:20, and 10:30.\n\nHe checked the arrows first. Right, down, right, down, right, down. The pattern held.\n\nNext, he checked the card materials. Paper, wood, metal, paper, wood, metal. The fourth card had to be paper. The card in his hand was paper.\n\nDeniz ran his finger over the labels. Then he used the ruler on the map route. The trail went right to the globe shelf, down to the object table, right again, and down to the schedule board. The fourth card said “Schedule Board” and showed a down arrow. It fit the route, too.\n\n“Four checks,” Deniz said. “The arrow, the material, the map, and the schedule. Now I know. I did not just guess.”\n\nHe looked at the schedule one more time. At 10:30, the usual trail table would be full for story circle. The quiet side table was the better place for the trail. The completed cards had helped him choose it.\n\nDeniz wrote a neat label: MAP MAKERS’ TRAIL. He placed it beside the first card. Then he set the ruler and pencil beside the last card, where everyone could reach them.\n\nOn a small note, he wrote:\n\n“Trail is at the quiet side table. Follow the cards in time order.”\n\nHe set the note where it could be seen. The fourth card was no longer missing. It was back in its right place, with every clue agreeing.\n\nDeniz stepped back. The maps, cards, labels, ruler, and pencil were ready for the children. The trail was complete, and the quiet table would keep it away from the busy story circle.\n\nAt ten-thirty, the first children came into the learning room. They saw Deniz’s note and went to the quiet side table.\n\n“Follow the cards in time order,” said Noor. “That is what the note says.”\n\nThe children began with the 9:00 card. They followed its arrow to the globe shelf. They looked for the labeled object there, then read the next card. At each step, they checked the time, the arrow, and the label.\n\nDeniz let them use the ruler. They placed it along the map route: right to the globe shelf, down to the object table, right again, and down to the schedule board. The cards led them all the way there.\n\nNo one had to squeeze past the story circle. The usual trail table was busy, but the quiet table had plenty of room.\n\nThe learning-room adult came over and smiled. “You found the missing card in the sorting tray,” she said. “It was misplaced, not lost. Your paper Schedule Board card belongs in that fourth space.”\n\nDeniz nodded. “I checked more than one thing,” he said. “The arrows went right, down, right, down. The materials repeated, too. Then the map and the schedule agreed.”\n\nHe pointed to the note. “That is why I moved the trail here. The pattern helped me choose the better place.”\n\nThe children reached the schedule board and gave a happy clap. Then they went back to try the trail again.\n\nDeniz felt warm and proud. His careful checks had brought back the missing card. They had also helped him make a useful choice for everyone.",
+  "word_count": 1512,
+  "target_words": 1500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.008638,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.79,
+      "no_repeated_event": 0.9,
+      "ending_consistency": 0.93
+    },
+    "below_threshold": {
+      "no_contradictions": 0.79
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.9,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8107,
+      "output_tokens": 166,
+      "cost": 0.000340494
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.79,
+      "no_repeated_event": 0.9,
+      "ending_consistency": 0.93
+    },
+    "below_threshold": {
+      "no_contradictions": 0.79
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.9,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8107,
+      "output_tokens": 166,
+      "cost": 0.000340494
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "The story successfully fulfills the StoryContract and all six scene purposes. Deniz's goal to restore the Map Makers' Trail before 10:30 is clearly established and achieved through systematic pattern testing rather than guessing. The narrative demonstrates the theme—good solutions come from testing patterns and evidence—through explicit reasoning: Deniz checks the arrow pattern (right-down), material pattern (paper-wood-metal), map route, and schedule before placing the fourth card. The false hypothesis (that the schedule changed and the fourth stop was canceled) is introduced in Scene 2 and rejected when Deniz counts six times on the schedule board. The solution uses multiple clues: the down arrow, paper material, map destination to the schedule board, and the schedule's indication that the quiet table is better at 10:30. Vocabulary, sentence structure, and pacing are appropriate for a 7-year-old early reader—short sentences, concrete objects, simple reasoning steps, and no abstract concepts. Continuity across all six scenes is maintained: the notebook observations from Scene 1 enable the pattern testing in Scene 2; the map verification in Scene 3 confirms the candidate; the schedule reading in Scene 4 justifies moving the trail; Scene 5 applies all four clues together; and Scene 6 shows the children using the completed trail successfully. The ending reinforces the theme by having Deniz explain his careful checks and the adult confirm the ordinary explanation (the card was misplaced in the sorting tray). Word count is approximately 1,512 words, within the 1,500-word target. No combat, unsafe behavior, or age-inappropriate reasoning appears. The story does not mention benchmarks or tests. All required constraints (C1–C9) are satisfied. The narrative is coherent, characters are consistent, and the ending clearly connects testing with both the correct card placement and the practical choice to move the activity. Average score: 4.0. The story meets the acceptance gate.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 1512,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.79,
+          "no_repeated_event": 0.9,
+          "ending_consistency": 0.93
+        },
+        "below_threshold": {
+          "no_contradictions": 0.79
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8107,
+          "output_tokens": 166,
+          "cost": 0.000340494
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "The story successfully fulfills the StoryContract and all six scene purposes. Deniz's goal to restore the Map Makers' Trail before 10:30 is clearly established and achieved through systematic pattern testing rather than guessing. The narrative demonstrates the theme—good solutions come from testing patterns and evidence—through explicit reasoning: Deniz checks the arrow pattern (right-down), material pattern (paper-wood-metal), map route, and schedule before placing the fourth card. The false hypothesis (that the schedule changed and the fourth stop was canceled) is introduced in Scene 2 and rejected when Deniz counts six times on the schedule board. The solution uses multiple clues: the down arrow, paper material, map destination to the schedule board, and the schedule's indication that the quiet table is better at 10:30. Vocabulary, sentence structure, and pacing are appropriate for a 7-year-old early reader—short sentences, concrete objects, simple reasoning steps, and no abstract concepts. Continuity across all six scenes is maintained: the notebook observations from Scene 1 enable the pattern testing in Scene 2; the map verification in Scene 3 confirms the candidate; the schedule reading in Scene 4 justifies moving the trail; Scene 5 applies all four clues together; and Scene 6 shows the children using the completed trail successfully. The ending reinforces the theme by having Deniz explain his careful checks and the adult confirm the ordinary explanation (the card was misplaced in the sorting tray). Word count is approximately 1,512 words, within the 1,500-word target. No combat, unsafe behavior, or age-inappropriate reasoning appears. The story does not mention benchmarks or tests. All required constraints (C1–C9) are satisfied. The narrative is coherent, characters are consistent, and the ending clearly connects testing with both the correct card placement and the practical choice to move the activity. Average score: 4.0. The story meets the acceptance gate.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000340494,
+      "final_judge_cost": {
+        "usd": 0.014563,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 54.458,
+    "scene_stage_seconds": 73.342,
+    "final_stage_seconds": 8.469,
+    "total_pipeline_seconds": 136.27
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.01404298,
+    "scene_generation_usd": 0.0178851,
+    "scene_continuity_evaluator_usd": 0.001041306,
+    "whole_continuity_evaluator_usd": 0.000340494,
+    "whole_continuity_evaluator_usd_total": 0.000340494,
+    "semantic_judge_usd": {
+      "usd": 0.014563,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014563,
+    "scene_jev_usd": 0.001041306,
+    "whole_jev_usd": 0.000340494,
+    "whole_jev_usd_total": 0.000340494,
+    "final_haiku": {
+      "usd": 0.014563,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014563,
+    "total_pipeline_usd": 0.04787288
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 8107,
+      "output_tokens": 166,
+      "cost": 0.000340494
+    },
+    "semantic_judge": {
+      "input_tokens": 11838,
+      "output_tokens": 545,
+      "total_tokens": 12383
+    },
+    "whole_jev": {
+      "input_tokens": 8107,
+      "output_tokens": 166,
+      "cost": 0.000340494
+    },
+    "final_haiku": {
+      "input_tokens": 11838,
+      "output_tokens": 545,
+      "total_tokens": 12383
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
