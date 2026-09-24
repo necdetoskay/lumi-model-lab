@@ -1339,3 +1339,120 @@ The next highest-value work is:
 4. then run a bounded production-like reliability cohort through the real application bridge.
 
 Broad 80-cell synthetic qualification remains lower priority until that bridge exists.
+
+
+## Production-like state-commit cohort — 36028239880
+
+Evidence branch:
+
+`evidence/story-v5-state-commit-cohort-36028239880`
+
+The three accepted production-like cohort outcomes were then applied to the deterministic atomic/idempotent commit simulator.
+
+### Result
+
+All three first applications returned:
+
+`COMMITTED`
+
+All three identical replays returned:
+
+`IDEMPOTENT_REPLAY`
+
+No replay changed authoritative state.
+
+#### Ece
+
+Touched entities:
+
+- Character;
+- Saga;
+- Opportunity.
+
+World was **not** touched because the accepted outcome did not propose a world mutation.
+
+Revisions after commit:
+
+- Character: 5 -> 6;
+- World: **11 -> 11**;
+- Saga: 4 -> 5;
+- Opportunity: 3 -> 4.
+
+Preserved boundary:
+
+`GLASS_PASSAGE = RUMORED`
+
+This confirms an important commit rule:
+
+> An accepted story does not imply every context entity must receive a new revision. Only entities with validated mutations advance.
+
+#### Arda
+
+Touched:
+
+- Character;
+- World;
+- Saga;
+- Opportunity.
+
+Revisions:
+
+- Character: 17 -> 18;
+- World: 28 -> 29;
+- Saga: 12 -> 13;
+- Opportunity: 6 -> 7.
+
+Persisted world state remained a bounded hypothesis:
+
+`workshop.schedule_hypotheses = BEST_SUPPORTED_HYPOTHESIS value`
+
+Preserved boundary:
+
+`ARCHIVE_STAIR = RUMORED`
+
+#### Ada
+
+Touched:
+
+- Character;
+- World;
+- Saga;
+- Opportunity.
+
+Revisions:
+
+- Character: 41 -> 42;
+- World: 63 -> 64;
+- Saga: 18 -> 19;
+- Opportunity: 14 -> 15.
+
+The world hypothesis value retained structured evidence and explicit uncertainty rather than collapsing into a fact.
+
+Preserved boundary:
+
+`SEALED_SURVEY_ROOM = RUMORED`
+
+### Diagnostic repair
+
+The first commit-cohort assertion incorrectly assumed every case must advance World revision.
+
+Ece correctly produced no World mutation, so World revision correctly remained unchanged.
+
+The assertion was repaired to validate revision increments according to the actual touched-entity set rather than assuming a fixed entity set.
+
+The simulator itself was not weakened or changed.
+
+### Architectural consequence
+
+The production-candidate boundary now has multi-context evidence for:
+
+`ContextPack + StateAuthority exact snapshot`
+→ `whole-draft story`
+→ `JEV/Haiku acceptance`
+→ `typed/epistemic mutation proposal`
+→ `atomic commit`
+→ `idempotent replay`
+
+with RUMORED knowledge boundaries preserved both in prose and post-commit state.
+
+The next meaningful boundary is the real LUMI G2 application bridge. Additional synthetic commit simulation has sharply diminishing value unless the real contract mapping exposes a new mutation class or transaction risk.
