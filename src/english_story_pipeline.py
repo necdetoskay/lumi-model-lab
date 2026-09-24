@@ -66,6 +66,19 @@ def allocate_scene_budgets(target_words: int) -> list[int]:
     return budgets
 
 
+def sum_plan_stage_cost_usd(cost_history: list[dict[str, Any]]) -> float:
+    total = 0.0
+    for costs in cost_history:
+        for value in costs.values():
+            if isinstance(value, dict):
+                usd = value.get("usd")
+                if isinstance(usd, (int, float)):
+                    total += float(usd)
+            elif isinstance(value, (int, float)):
+                total += float(value)
+    return total
+
+
 def validate_scene_envelope(
     envelope: dict[str, Any],
     *,
@@ -1580,6 +1593,7 @@ def run(
         raise RuntimeError("English story pipeline requires language=en.")
 
     plan_result = run_plan_smoke(model, jev_model, judge_model, spec_path)
+    plan_cost_history: list[dict[str, Any]] = [dict(plan_result.get("costs") or {})]
     plan_repair_attempts: list[dict[str, Any]] = []
     for repair_index in range(1, 3):
         if plan_result["accepted"]:
@@ -1593,6 +1607,7 @@ def run(
             repair_index=repair_index,
         )
         plan_repair_attempts.append(repair_attempt)
+        plan_cost_history.append(dict(plan_result.get("costs") or {}))
         print(
             json.dumps(
                 {
@@ -1871,6 +1886,7 @@ def run(
     final_judge = final_evaluation["final_judge"]
     accepted = final_evaluation["accepted"]
 
+    total_plan_stage_cost = sum_plan_stage_cost_usd(plan_cost_history)
     total_generator_cost = 0.0
     total_scene_jev_cost = 0.0
     for scene in scenes:
@@ -1882,6 +1898,22 @@ def run(
             cost = (evaluation.get("usage") or {}).get("cost")
             if cost is not None:
                 total_scene_jev_cost += float(cost)
+
+    total_whole_jev_cost = sum(
+        float(item.get("whole_jev_cost") or 0.0)
+        for item in final_evaluations
+    )
+    total_final_haiku_cost = sum(
+        float((item.get("final_judge_cost") or {}).get("usd") or 0.0)
+        for item in final_evaluations
+    )
+    total_pipeline_cost = (
+        total_plan_stage_cost
+        + total_generator_cost
+        + total_scene_jev_cost
+        + total_whole_jev_cost
+        + total_final_haiku_cost
+    )
 
     return {
         "pipeline": "english_story_pipeline_v1",
@@ -1918,12 +1950,14 @@ def run(
             for item in final_evaluations
         ],
         "costs": {
+            "plan_stage_usd_total": round(total_plan_stage_cost, 9),
             "scene_generation_usd": round(total_generator_cost, 9),
             "scene_jev_usd": round(total_scene_jev_cost, 9),
             "whole_jev_usd": final_evaluation["whole_jev_cost"],
-            "whole_jev_usd_total": round(sum(float(item.get("whole_jev_cost") or 0.0) for item in final_evaluations), 9),
+            "whole_jev_usd_total": round(total_whole_jev_cost, 9),
             "final_haiku": final_evaluation["final_judge_cost"],
-            "final_haiku_usd_total": round(sum(float((item.get("final_judge_cost") or {}).get("usd") or 0.0) for item in final_evaluations), 9),
+            "final_haiku_usd_total": round(total_final_haiku_cost, 9),
+            "total_pipeline_usd": round(total_pipeline_cost, 9),
         },
         "usage": {
             "whole_jev": final_evaluation["whole_jev_usage"],

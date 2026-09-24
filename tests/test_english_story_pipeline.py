@@ -24,6 +24,7 @@ from src.english_story_pipeline import (
     repair_scene_word_budget,
     repair_scene_for_final_judge,
     run_final_polish_cycles,
+    sum_plan_stage_cost_usd,
     validate_final_judge,
     validate_prose_only_repair,
     validate_scene_envelope,
@@ -50,6 +51,23 @@ def good_envelope(words: int = 100) -> dict:
 
 
 class EnglishStoryPipelineTests(unittest.TestCase):
+    def test_plan_stage_cost_includes_generation_jev_and_haiku(self):
+        total = sum_plan_stage_cost_usd(
+            [
+                {
+                    "planner": {"usd": 0.01},
+                    "jev": 0.002,
+                    "haiku": {"usd": 0.003},
+                },
+                {
+                    "planner_repair": {"usd": 0.004},
+                    "jev": 0.001,
+                    "haiku": {"usd": 0.005},
+                },
+            ]
+        )
+        self.assertAlmostEqual(total, 0.025)
+
     @patch("src.english_story_pipeline.call_openrouter")
     def test_structured_json_retry_recovers_malformed_response(self, mock_call):
         valid = good_envelope(100)
