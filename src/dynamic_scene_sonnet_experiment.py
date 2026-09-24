@@ -28,7 +28,7 @@ PLAN_JUDGE_PROMPT = Path("prompts/story_scene_plan_dynamic_judge_en_v4.md")
 SCENE_WRITER_PROMPT = Path("prompts/story_scene_writer_dynamic_en_v4.md")
 FINAL_JUDGE_PROMPT = Path("prompts/story_final_judge_dynamic_en_v4.md")
 DEFAULT_SPEC = Path(
-    "data/specifications/waves/age-relative-standard-v3-all-families/"
+    "data/specifications/experiments/dynamic-v4/"
     "middle-child--puzzle-problem-solving.yaml"
 )
 
@@ -43,6 +43,26 @@ PLAN_CRITERIA = (
 )
 
 _ACTIVE_PLAN: dict[str, Any] | None = None
+
+
+def reject_fixed_scene_fixture(spec: StorySpec) -> None:
+    forbidden_markers = (
+        "all six scenes",
+        "six-scene",
+        "exactly six scenes",
+        "scene 5",
+        "scene 6",
+    )
+    violations = [
+        constraint
+        for constraint in spec.constraints
+        if any(marker in constraint.casefold() for marker in forbidden_markers)
+    ]
+    if violations:
+        raise RuntimeError(
+            "DYNAMIC_SCENE_FIXTURE_LEAKS_FIXED_SCENE_ARCHITECTURE: "
+            + json.dumps(violations, ensure_ascii=False)
+        )
 
 
 def dynamic_plan_jev_questions() -> dict[str, dict[str, Any]]:
@@ -321,6 +341,7 @@ def run_dynamic_plan(
     if jev_model != jev_profile.model_id:
         raise RuntimeError(f"JEV model mismatch: expected {jev_profile.model_id}, got {jev_model}")
     spec = StorySpec.model_validate(load_yaml(spec_path))
+    reject_fixed_scene_fixture(spec)
     brief = plan_v3.build_labeled_brief(spec)
 
     plan, plan_body, request, parse_failures = plan_v3.call_structured_json_with_retry(
