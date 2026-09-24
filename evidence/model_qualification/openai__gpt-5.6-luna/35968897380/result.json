@@ -1,0 +1,2358 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v2",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz must restore an accurate route display before the afternoon workshop and choose a safe route for learners.",
+        "central_problem": "A missing schedule card breaks a layered map pattern and may direct learners through a route closed at workshop time.",
+        "solution_principle": "Test repeated relationships among map edges, landmark labels, objects, and schedules instead of guessing from one clue.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz restores the display, marks the safe detour, and explains the tested reasoning to the workshop learners.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical intimidation.",
+          "No clue relies on information not previously established.",
+          "No complete solution before Scene 5.",
+          "No benchmark or testing language appears in the story."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Introduce Deniz's responsibility, the broken route display, and the central need to reconstruct its pattern.",
+          "entry_state": "Deniz arrives at the public learning space to prepare the map-reading table before the afternoon workshop.",
+          "beats": [
+            "Deniz finds five connected map tiles, landmark objects, labeled slots, schedule slips, and one empty position.",
+            "Using a ruler and pencil, Deniz records matching arrows, labels, and times before moving anything."
+          ],
+          "must_include": [
+            "Deniz is exactly fifteen and independently preparing a public learning activity.",
+            "The setting visibly contains maps, objects, schedules, labels, and ordinary tools.",
+            "The empty position prevents Deniz from confirming the route."
+          ],
+          "must_not_do": [
+            "Do not solve the missing position or explain the whole pattern.",
+            "Do not make Deniz behave younger or older than fifteen."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has documented five linked positions but still lacks the card needed to verify the route.",
+          "open_threads_after": [
+            "Which position is missing?",
+            "What route and time does the missing card represent?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test a reasonable chronological hypothesis and reject it through visible map evidence.",
+          "entry_state": "Deniz has five recorded map, object, label, and schedule relationships surrounding one empty position.",
+          "beats": [
+            "Deniz hypothesizes that the missing card simply continues the visible times in order.",
+            "The ruler test shows map edges connect differently; the times repeat, so chronology cannot determine the gap."
+          ],
+          "must_include": [
+            "The chronological explanation is reasonable but later rejected.",
+            "Deniz tests the hypothesis against at least two existing map connections.",
+            "The repeated times provide evidence against choosing the next number."
+          ],
+          "must_not_do": [
+            "Do not introduce an unseen rule or reveal the missing card.",
+            "Do not let Deniz guess correctly without testing."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established five visible schedule times beside five connected map tiles.",
+            "Scene 1 established a ruler, pencil, labeled slots, and visible map arrows.",
+            "Scene 1 established one empty position interrupting the display."
+          ],
+          "handoff": "Chronology is rejected; Deniz must use the map edges and landmark labels to identify the missing position.",
+          "open_threads_after": [
+            "Which map edges actually meet?",
+            "Which landmark label belongs in the gap?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use tested map connections and landmark objects to narrow the missing card's location.",
+          "entry_state": "Deniz knows time order is unreliable and must follow physical map connections and repeated labels.",
+          "beats": [
+            "Deniz aligns the map tiles and finds the gap between the Clock Tower arrow and the Canal Gate line.",
+            "The matching Canal Gate object and label identify position four, while the surrounding slips reveal a drawer code."
+          ],
+          "must_include": [
+            "The map-edge test identifies a specific gap rather than merely suggesting one.",
+            "A physical landmark object confirms the matching label.",
+            "The surrounding schedule slips provide a concrete code for searching."
+          ],
+          "must_not_do": [
+            "Do not treat the landmark match as proof of the route's safety.",
+            "Do not reveal the maintenance closure yet."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the Clock Tower and Canal Gate labels, objects, and map arrows.",
+            "Scene 2 established that repeated times cannot determine the missing position.",
+            "Scene 2 established that the empty position interrupts connected map edges."
+          ],
+          "handoff": "Deniz has identified position four and a drawer code, but the missing card's practical route consequence remains unknown.",
+          "open_threads_after": [
+            "Where is the position-four card?",
+            "Can its route be used at workshop time?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Locate the missing card and expose the separate schedule evidence that makes its route questionable.",
+          "entry_state": "Deniz has a tested position-four match and a drawer code, but not the card or its current route status.",
+          "beats": [
+            "The coded returns drawer contains the missing card, folded beneath the Canal Gate object and labeled for four o'clock.",
+            "Deniz compares its route symbol with the public maintenance schedule and sees Canal Gate closes before four."
+          ],
+          "must_include": [
+            "The card is found through the established code, not coincidence.",
+            "The maintenance schedule is publicly posted in the same learning space.",
+            "The original route is now shown to be unsuitable, not merely incomplete."
+          ],
+          "must_not_do": [
+            "Do not fully resolve the route before Deniz tests a replacement.",
+            "Do not blame a person for misplacing the card."
+          ],
+          "constraint_ids": [
+            "C3",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 3 established position four and the coded drawer search.",
+            "Scene 3 established Canal Gate as the matching landmark label and object.",
+            "Scene 1 established the display's schedule slips and public learning-space setting."
+          ],
+          "handoff": "Deniz has recovered the card and confirmed its four-o'clock route crosses a closed gate, requiring a tested detour.",
+          "open_threads_after": [
+            "Which available route safely replaces Canal Gate?",
+            "How should Deniz update the display and workshop?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply all accumulated clues to verify the safe detour and decisively solve the display problem.",
+          "entry_state": "The recovered card fits position four, but its original four-o'clock route is blocked by the posted closure.",
+          "beats": [
+            "Deniz traces the alternative map line, matching its object label, arrow direction, and earlier schedule sequence.",
+            "After confirming every link, Deniz tapes the detour mark, replaces the card, and chooses to brief learners rather than hide the error."
+          ],
+          "must_include": [
+            "The final solution uses map edges, landmark objects, labels, repeated schedules, and the closure notice.",
+            "Deniz tests the alternative route before applying it.",
+            "The decisive choice changes the workshop plan."
+          ],
+          "must_not_do": [
+            "Do not make the detour work through intuition alone.",
+            "Do not leave the display or safety issue unresolved."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the map-edge pattern, landmark match, and position-four code.",
+            "Scene 4 established the recovered card's four-o'clock timing and Canal Gate closure.",
+            "Scene 4 established that the original route cannot serve the workshop."
+          ],
+          "handoff": "The display now shows a verified detour, and Deniz has chosen to explain the correction before learners follow the route.",
+          "open_threads_after": [
+            "How will learners respond to the corrected route?",
+            "What will Deniz learn from the completed pattern?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Resolve the practical consequences and close the theme through Deniz's clear explanation.",
+          "entry_state": "The route display is corrected, the detour is marked, and Deniz is ready to guide the workshop.",
+          "beats": [
+            "Deniz explains how each clue was tested, allowing learners to see why the detour is safer than the original path.",
+            "The workshop begins smoothly, and Deniz leaves the display documented for the next group."
+          ],
+          "must_include": [
+            "The workshop uses the corrected route without crossing Canal Gate.",
+            "Deniz communicates reasoning without turning the explanation into a lecture.",
+            "The ending reinforces testing patterns instead of guessing."
+          ],
+          "must_not_do": [
+            "Do not introduce a new mystery, danger, character, or unresolved subplot.",
+            "Do not undo the verified solution or reopen the central problem."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the verified detour and Deniz's decision to brief learners.",
+            "Scene 5 established that multiple earlier clues jointly confirmed the solution.",
+            "Scene 4 established the closure that makes the detour necessary."
+          ],
+          "handoff": "The display is accurate, the workshop follows the safe detour, and the central problem is closed.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.49,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.82,
+        "no_early_resolution": 0.95,
+        "ending_coherence": 0.94
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.49
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.69,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3459,
+        "output_tokens": 185,
+        "cost": 0.000145278
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must establish Deniz's age-appropriate independence and vocabulary naturally; avoid exposition that reads as tutorial rather than narrative."
+        },
+        {
+          "scene": 2,
+          "risk": "The chronological hypothesis rejection depends on visible repeated times in the schedule slips. Plan must ensure these times are clearly shown in Scene 1 so the reader can follow the logic."
+        },
+        {
+          "scene": 3,
+          "risk": "The map-edge alignment test must be concrete and visual enough for a 15-year-old independent reader to verify mentally. Avoid abstract geometry; use ruler, pencil, and physical landmark objects as anchors."
+        },
+        {
+          "scene": 4,
+          "risk": "The maintenance schedule must be visibly posted in the learning space from Scene 1 (or established as part of the setting) so its discovery in Scene 4 feels like pattern-matching, not new information."
+        },
+        {
+          "scene": 5,
+          "risk": "The final detour verification must explicitly trace map edges, landmark labels, and schedule consistency. If any step is skipped or assumed, the theme (test patterns, don't guess) collapses."
+        },
+        {
+          "scene": 6,
+          "risk": "Deniz's explanation to learners must be brief and conversational, not didactic. The theme should emerge from action, not from Deniz stating it."
+        }
+      ],
+      "summary": "The plan demonstrates strong causal continuity, stable protagonist goal, and excellent information progression. Each scene builds on prior evidence without resets or unexplained dependencies. The false hypothesis (chronological order) is introduced and rejected through testing, satisfying C7. The final solution in Scene 5 integrates map edges, landmark objects, labels, schedules, and the closure notice, meeting C8. Scene 6 resolves consequences consistently without reopening the central problem.\n\nConstraint coverage scores 4 rather than 5 due to a minor dependency: the maintenance schedule's visibility in the learning space must be established in Scene 1 or the opening of Scene 4 to avoid the appearance of new information. The plan states it is 'publicly posted' but does not explicitly confirm it is visible during Deniz's initial setup. This is a low-risk issue—easily corrected in prose—but represents a gap in the written plan.\n\nAll nine required constraints (C1–C9) are addressable within the plan structure. Age-appropriate vocabulary and pacing (C1, C9) depend on execution but are well-supported by the scene beats. Causality is explicit (C2). No combat appears (C3). Continuity is preserved across all six scenes (C4). No benchmark language is present (C5). All clues depend on prior information (C6). The false hypothesis is clear (C7). The final solution uses multiple clues (C8).\n\nThe plan is ready for prose development. Recommend confirming the maintenance schedule's visibility in Scene 1 and ensuring the detour verification in Scene 5 traces every link aloud or through Deniz's internal reasoning.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0056336,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000145278,
+      "haiku": {
+        "usd": 0.008173,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 4544,
+        "total_tokens": 5448
+      },
+      "jev": {
+        "input_tokens": 3459,
+        "output_tokens": 185,
+        "cost": 0.000145278
+      },
+      "haiku": {
+        "input_tokens": 3633,
+        "output_tokens": 908,
+        "total_tokens": 4541
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    494,
+    589,
+    646,
+    646,
+    779,
+    646
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 494,
+      "word_count": 424,
+      "contract": {
+        "index": 1,
+        "purpose": "Introduce Deniz's responsibility, the broken route display, and the central need to reconstruct its pattern.",
+        "entry_state": "Deniz arrives at the public learning space to prepare the map-reading table before the afternoon workshop.",
+        "beats": [
+          "Deniz finds five connected map tiles, landmark objects, labeled slots, schedule slips, and one empty position.",
+          "Using a ruler and pencil, Deniz records matching arrows, labels, and times before moving anything."
+        ],
+        "must_include": [
+          "Deniz is exactly fifteen and independently preparing a public learning activity.",
+          "The setting visibly contains maps, objects, schedules, labels, and ordinary tools.",
+          "The empty position prevents Deniz from confirming the route."
+        ],
+        "must_not_do": [
+          "Do not solve the missing position or explain the whole pattern.",
+          "Do not make Deniz behave younger or older than fifteen."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has documented five linked positions but still lacks the card needed to verify the route.",
+        "open_threads_after": [
+          "Which position is missing?",
+          "What route and time does the missing card represent?"
+        ]
+      },
+      "envelope": {
+        "prose": "At fifteen, Deniz was old enough to run the map-reading table without someone hovering nearby, which was useful because the afternoon workshop began in less than an hour. She unlocked the side room of the public learning center, switched on the lights, and carried the activity box to the long table beneath the wall of local maps.\n\nThe room held the ordinary evidence of people trying to understand a place: rolled maps in a rack, labeled drawers, measuring tapes, pencils, a metal ruler, and small landmark models. A wooden Clock Tower stood beside a blue-painted Canal Gate. On the wall, a maintenance schedule listed public notices, including a line about Canal Gate, though Deniz did not need it yet. She set out six labeled slots for the route display.\n\nFive map tiles were already in the box. Each showed part of a walking route, with colored arrows printed along its edges. Deniz placed them in the slots as the instruction sheet indicated. The tiles formed a crooked chain across the table, but the fourth slot was empty. A white space broke the route between the third and fifth tiles.\n\n“That is not helpful,” Deniz muttered.\n\nBeside each occupied slot lay a schedule slip. She read them before touching anything else: 1:00, 2:00, 1:00, 3:00, and 2:00. The times did not look like a simple march through the afternoon, but she copied them into her notebook anyway. Each slip also carried a short label. Clock Tower appeared on one; Canal Gate appeared on another. The remaining labels matched the tiny pictures on the tiles.\n\nDeniz placed the model Clock Tower beside its label and did the same with Canal Gate. Then she drew a narrow table in her notebook: slot, arrow direction, landmark label, time. She used the ruler to record where each visible arrow ended, noting the line that pointed toward the empty fourth slot.\n\nThe missing position was more than an untidy gap. Without its tile or schedule card, Deniz could not tell whether the route continued toward the river, turned through the market, or crossed a path that should be avoided. She checked the workshop list on her phone. Twelve learners were coming, and they would expect her to lead them through the display rather than improvise at the last minute.\n\nShe looked again at the five filled slots. The pattern was there, somewhere—inside the arrows, the labels, or the repeated times. Guessing would only make the blank look finished. Deniz sharpened her pencil and began measuring the connections one by one.",
+        "state_delta": {
+          "location": "Public learning center side room, at the map-reading table.",
+          "character_goal": "Deniz must reconstruct the broken route display before the afternoon workshop so she can guide twelve learners accurately and safely.",
+          "knowledge_gained": [
+            "Five map tiles are arranged around an empty fourth slot.",
+            "The visible schedule times are 1:00, 2:00, 1:00, 3:00, and 2:00.",
+            "The visible tiles include Clock Tower and Canal Gate labels and matching landmark models.",
+            "A public maintenance schedule is posted on the wall and includes a notice about Canal Gate."
+          ],
+          "facts_established": [
+            "Deniz is fifteen and is independently preparing the public map-reading activity.",
+            "The learning space contains maps, landmark objects, schedules, labels, a ruler, pencils, and other ordinary tools.",
+            "Five map tiles form a connected but incomplete route display.",
+            "The fourth position is empty, interrupting the route."
+          ],
+          "clues_added": [
+            "Map tiles have colored arrows along their edges.",
+            "Schedule times repeat rather than forming a simple sequence.",
+            "The labels on the slips correspond to landmark pictures or models.",
+            "An arrow points toward the empty fourth position."
+          ],
+          "objects_changed": [
+            "Deniz placed five map tiles into the labeled slots.",
+            "Deniz positioned the Clock Tower and Canal Gate models beside their labels.",
+            "Deniz recorded the visible arrows, labels, and times in her notebook."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which position is missing?",
+            "What route and time does the missing card represent?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has documented five linked positions, their visible arrows, labels, and repeated schedule times, but the empty fourth position still prevents her from confirming the route."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.183,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 424,
+          "usage": {
+            "input_tokens": 3850,
+            "output_tokens": 1210,
+            "total_tokens": 5060
+          },
+          "cost": {
+            "usd": 0.00241435,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.89,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.83,
+          "no_contradiction": 0.81,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.81,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2730,
+          "output_tokens": 188,
+          "cost": 0.00011466
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.89,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.83,
+            "no_contradiction": 0.81,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.81,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2730,
+            "output_tokens": 188,
+            "cost": 0.00011466
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.326
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 12.509
+    },
+    {
+      "scene": 2,
+      "target_words": 589,
+      "word_count": 450,
+      "contract": {
+        "index": 2,
+        "purpose": "Test a reasonable chronological hypothesis and reject it through visible map evidence.",
+        "entry_state": "Deniz has five recorded map, object, label, and schedule relationships surrounding one empty position.",
+        "beats": [
+          "Deniz hypothesizes that the missing card simply continues the visible times in order.",
+          "The ruler test shows map edges connect differently; the times repeat, so chronology cannot determine the gap."
+        ],
+        "must_include": [
+          "The chronological explanation is reasonable but later rejected.",
+          "Deniz tests the hypothesis against at least two existing map connections.",
+          "The repeated times provide evidence against choosing the next number."
+        ],
+        "must_not_do": [
+          "Do not introduce an unseen rule or reveal the missing card.",
+          "Do not let Deniz guess correctly without testing."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established five visible schedule times beside five connected map tiles.",
+          "Scene 1 established a ruler, pencil, labeled slots, and visible map arrows.",
+          "Scene 1 established one empty position interrupting the display."
+        ],
+        "handoff": "Chronology is rejected; Deniz must use the map edges and landmark labels to identify the missing position.",
+        "open_threads_after": [
+          "Which map edges actually meet?",
+          "Which landmark label belongs in the gap?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz began with the most tempting explanation: perhaps the route cards were arranged by time, and the empty card should simply continue the afternoon schedule.\n\nShe wrote 4:00 in the margin of her notebook, then paused. The guess was not random. The workshop began in the afternoon, and a route display that moved forward through time would be easy for learners to follow. If the visible 1:00 and 2:00 slips marked the beginning, perhaps the 3:00 slip came later, with the missing card meant to carry the next hour.\n\nStill, a pattern had to survive contact with the map.\n\nDeniz placed the metal ruler along the colored arrow on the first tile. Its line reached the edge of the second tile, where a matching blue mark continued toward the next landmark. She drew a tiny blue line in her notebook and labeled it connection one. The edges met cleanly, not because their times were consecutive, but because the arrow shapes and directions agreed.\n\nShe tested another pair. The arrow leaving the tile after the empty slot pointed toward the lower edge of the next occupied tile. Deniz slid the ruler beneath it and compared the angle with the printed line. Again, the map edges matched. The schedule slips beside those tiles read 3:00 and 2:00—not 3:00 followed by 4:00, as her first idea required.\n\n“Fine,” she said quietly. “The route does not care what order the clocks prefer.”\n\nShe checked the other visible connections instead of trusting one awkward example. One line ran east across a tile and met a short green arrow. Another turned down at a corner where the neighboring edge continued it. Their physical joins were consistent. The times were not. Two different tiles carried 1:00, and two carried 2:00. The 3:00 slip stood between them like a useful detail, but not like the next step in a counting sequence.\n\nDeniz crossed out 4:00, though she left it readable beneath the pencil line. Choosing it would have made the display look orderly without proving that it belonged there. The ruler had shown her something stronger: the map edges repeated a connection pattern while the schedule times repeated independently.\n\nShe leaned back and studied the empty fourth slot. The gap was no longer just a missing number in a series. It interrupted lines that were trying to meet. The labels and landmark models might explain which lines belonged together, but the clock slips could not decide that for her.\n\nDeniz turned to a fresh page and wrote two questions:\n\nWhich map edges actually meet?\n\nWhich landmark label belongs in the gap?\n\nThen she picked up the ruler again and began following the colored lines toward the empty position.",
+        "state_delta": {
+          "location": "Public learning center side room, at the map-reading table.",
+          "character_goal": "Deniz must identify the missing route position and restore an accurate display before the afternoon workshop.",
+          "knowledge_gained": [
+            "A chronological sequence is a reasonable possibility but does not fit the visible map connections.",
+            "The map edges connect through matching arrow directions and shapes.",
+            "The schedule times repeat independently: two slips show 1:00, two show 2:00, and one shows 3:00.",
+            "The missing card cannot be selected simply by choosing the next clock time."
+          ],
+          "facts_established": [
+            "Deniz tested at least two existing map connections with the metal ruler.",
+            "The empty fourth position interrupts physical map lines rather than merely omitting a number.",
+            "Map-edge relationships are more consistent than the visible chronological order."
+          ],
+          "clues_added": [
+            "A blue arrow from one tile meets a matching blue mark on the next tile.",
+            "Another tested connection runs from a tile after the gap to the lower edge of the following occupied tile.",
+            "A green arrow continues across a turn at a neighboring tile.",
+            "Repeated schedule times provide evidence against choosing 4:00 as the missing card."
+          ],
+          "objects_changed": [
+            "Deniz wrote tested map connections in her notebook.",
+            "Deniz crossed out the unproven 4:00 hypothesis while leaving it visible for comparison."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which map edges actually meet at the empty position?",
+            "Which landmark label belongs in the gap?"
+          ],
+          "threads_resolved": [
+            "The chronological explanation that the missing card simply continues the visible times has been rejected."
+          ],
+          "handoff_state": "Deniz has used the ruler to test multiple map connections and learned that repeated arrow relationships, not chronology, organize the display. The repeated 1:00 and 2:00 times rule out choosing the next number, so she must now align the map edges and use landmark labels to identify the missing position."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.307,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 450,
+          "usage": {
+            "input_tokens": 4866,
+            "output_tokens": 1308,
+            "total_tokens": 6174
+          },
+          "cost": {
+            "usd": 0.00278595,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.8,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3325,
+          "output_tokens": 188,
+          "cost": 0.00013965
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.8,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3325,
+            "output_tokens": 188,
+            "cost": 0.00013965
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.361
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.669
+    },
+    {
+      "scene": 3,
+      "target_words": 646,
+      "word_count": 574,
+      "contract": {
+        "index": 3,
+        "purpose": "Use tested map connections and landmark objects to narrow the missing card's location.",
+        "entry_state": "Deniz knows time order is unreliable and must follow physical map connections and repeated labels.",
+        "beats": [
+          "Deniz aligns the map tiles and finds the gap between the Clock Tower arrow and the Canal Gate line.",
+          "The matching Canal Gate object and label identify position four, while the surrounding slips reveal a drawer code."
+        ],
+        "must_include": [
+          "The map-edge test identifies a specific gap rather than merely suggesting one.",
+          "A physical landmark object confirms the matching label.",
+          "The surrounding schedule slips provide a concrete code for searching."
+        ],
+        "must_not_do": [
+          "Do not treat the landmark match as proof of the route's safety.",
+          "Do not reveal the maintenance closure yet."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the Clock Tower and Canal Gate labels, objects, and map arrows.",
+          "Scene 2 established that repeated times cannot determine the missing position.",
+          "Scene 2 established that the empty position interrupts connected map edges."
+        ],
+        "handoff": "Deniz has identified position four and a drawer code, but the missing card's practical route consequence remains unknown.",
+        "open_threads_after": [
+          "Where is the position-four card?",
+          "Can its route be used at workshop time?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz started at the empty fourth slot. She did not lift the tiles immediately. Instead, she placed the ruler against the red edge of the Clock Tower tile and extended the line toward the gap.\n\nThe arrow pointed right, then bent slightly downward at the border. On the tile beyond the empty space, a thin red line began at exactly that angle. There was no way for the two edges to meet while the tile remained in its current position. The missing tile had to sit between them.\n\n“First boundary,” Deniz murmured, marking it in her notebook.\n\nShe tested the other side. A green line from the empty slot should continue toward the Canal Gate line on the neighboring tile. Deniz shifted the ruler a few millimeters, checked the direction twice, and found the same result: the line from the gap ended where the Canal Gate line began. The empty space was not just somewhere in the display. It was specifically between the Clock Tower connection and the Canal Gate connection.\n\nTo check that she was not forcing the answer, Deniz compared the labels. The Clock Tower model stood beside its printed label on one side of the table. On the other side sat a small stone-colored model with a narrow opening through its middle. Its label read CANAL GATE.\n\nShe picked up the model and held it over the picture printed on the map tile after the gap. The arch, side walls, and little blue strip representing water matched. Even the tiny notch on the left side was in the same place.\n\n“That is too many matches to ignore,” she said.\n\nThe model did not prove that the route was usable. It only confirmed which landmark belonged to the missing position. Deniz wrote POSITION 4 beside CANAL GATE, then looked at the schedule slips surrounding the gap.\n\nIn clockwise order, the slips showed 1:00, 3:00, and 2:00. The times did not count upward, but they did form a clear three-part group. Deniz copied their hour numbers into a box: 1-3-2. She wrote the sequence again beneath it, this time without the colons. The surrounding slips supplied a concrete code, not a new time in the schedule.\n\nAt the back of the room stood the wooden drawers used for returned activity materials. One drawer was marked RETURNS and had a small brass number wheel beside its handle. Deniz had no reason to choose a different drawer: the missing item was a map-display card, and the code had come from the three slips around its empty position.\n\nShe set the wheels to 1, 3, and 2. They clicked into place.\n\nBefore pulling the handle, she glanced back at the table. The ruler still lay across the two matching map edges. The Canal Gate model still covered the matching picture. Nothing about the answer came from the clock sequence alone; the map test had identified the position, the model had confirmed the label, and the surrounding slips had supplied the search code.\n\nShe opened her notebook and wrote:\n\nPosition four: Canal Gate.\nSearch code: 132.\nCard still needed. Route safety unknown.\n\nThen she rested her fingers on the drawer handle and pulled. The latch released with a quiet click. Deniz paused before looking inside, keeping the route question separate from the location question. Finding the card would show what the original display intended; it would not yet show whether that route was safe at workshop time.",
+        "state_delta": {
+          "location": "Public learning center side room, at the map-reading table and coded returns drawers.",
+          "character_goal": "Deniz must locate the position-four card and determine whether its route can be used safely before the afternoon workshop.",
+          "knowledge_gained": [
+            "The empty fourth position lies between the Clock Tower arrow and the Canal Gate line.",
+            "The Canal Gate landmark model matches the map picture and label for position four.",
+            "The missing card can be searched for using the code 132.",
+            "The surrounding schedule hours, read clockwise, provide the three-digit search code."
+          ],
+          "facts_established": [
+            "Map-edge alignment identifies a specific gap rather than only suggesting a general location.",
+            "A physical Canal Gate model confirms the matching landmark label.",
+            "The surrounding schedule slips show 1:00, 3:00, and 2:00 in clockwise order.",
+            "The coded returns drawer has been selected and prepared for the missing card search."
+          ],
+          "clues_added": [
+            "The Clock Tower red edge and the neighboring red line meet only across the fourth position.",
+            "The green line from the gap continues toward the Canal Gate line.",
+            "The schedule-hour sequence 1-3-2 forms the search code 132.",
+            "The returns drawer has a three-number wheel that accepts the code."
+          ],
+          "objects_changed": [
+            "Deniz marked position four as Canal Gate in her notebook.",
+            "Deniz recorded the code 132.",
+            "Deniz set the returns drawer wheels to 1-3-2 and released the latch."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Where is the position-four card?",
+            "Can the Canal Gate route be used at workshop time?"
+          ],
+          "threads_resolved": [
+            "The missing position has been identified as position four.",
+            "The landmark label belonging in the gap has been identified as Canal Gate."
+          ],
+          "handoff_state": "Deniz has tested the map edges, confirmed position four with the Canal Gate model and label, and used the surrounding schedule slips as code 132 for the returns drawer. She is ready to inspect the drawer, but she has not yet found the card or checked whether its route is safe."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.592,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 488,
+          "usage": {
+            "input_tokens": 5411,
+            "output_tokens": 1424,
+            "total_tokens": 6835
+          },
+          "cost": {
+            "usd": 0.0030614,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 20.52,
+          "repair_reasons": [
+            "jev:no_unexplained_dependency:0.790<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 528,
+          "usage": {
+            "input_tokens": 5436,
+            "output_tokens": 1761,
+            "total_tokens": 7197
+          },
+          "cost": {
+            "usd": 0.00347205,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 23.524,
+          "repair_reasons": [
+            "jev:no_unexplained_dependency:0.770<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 574,
+          "usage": {
+            "input_tokens": 5532,
+            "output_tokens": 1950,
+            "total_tokens": 7482
+          },
+          "cost": {
+            "usd": 0.00372285,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.78,
+          "no_contradiction": 0.86,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {
+          "no_unexplained_dependency": 0.78
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4031,
+          "output_tokens": 188,
+          "cost": 0.000169302
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.79,
+            "no_contradiction": 0.82,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_unexplained_dependency": 0.79
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3897,
+            "output_tokens": 188,
+            "cost": 0.000163674
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.77,
+            "no_contradiction": 0.83,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_unexplained_dependency": 0.77
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.84,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3995,
+            "output_tokens": 188,
+            "cost": 0.00016779
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.78,
+            "no_contradiction": 0.86,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_unexplained_dependency": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4031,
+            "output_tokens": 188,
+            "cost": 0.000169302
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.403,
+        0.36,
+        0.374
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.79,
+              "no_contradiction": 0.82,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.94,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.86,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3897,
+              "output_tokens": 188,
+              "cost": 0.000163674
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 528,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.77,
+              "no_contradiction": 0.83,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.94,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.77
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.84,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3995,
+              "output_tokens": 188,
+              "cost": 0.00016779
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.94,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.77,
+              "no_contradiction": 0.83,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.94,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.77
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.84,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3995,
+              "output_tokens": 188,
+              "cost": 0.00016779
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 574,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.86,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.87,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4031,
+              "output_tokens": 188,
+              "cost": 0.000169302
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": true,
+      "elapsed_seconds": 58.775
+    },
+    {
+      "scene": 4,
+      "target_words": 646,
+      "word_count": 590,
+      "contract": {
+        "index": 4,
+        "purpose": "Locate the missing card and expose the separate schedule evidence that makes its route questionable.",
+        "entry_state": "Deniz has a tested position-four match and a drawer code, but not the card or its current route status.",
+        "beats": [
+          "The coded returns drawer contains the missing card, folded beneath the Canal Gate object and labeled for four o'clock.",
+          "Deniz compares its route symbol with the public maintenance schedule and sees Canal Gate closes before four."
+        ],
+        "must_include": [
+          "The card is found through the established code, not coincidence.",
+          "The maintenance schedule is publicly posted in the same learning space.",
+          "The original route is now shown to be unsuitable, not merely incomplete."
+        ],
+        "must_not_do": [
+          "Do not fully resolve the route before Deniz tests a replacement.",
+          "Do not blame a person for misplacing the card."
+        ],
+        "constraint_ids": [
+          "C3",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 3 established position four and the coded drawer search.",
+          "Scene 3 established Canal Gate as the matching landmark label and object.",
+          "Scene 1 established the display's schedule slips and public learning-space setting."
+        ],
+        "handoff": "Deniz has recovered the card and confirmed its four-o'clock route crosses a closed gate, requiring a tested detour.",
+        "open_threads_after": [
+          "Which available route safely replaces Canal Gate?",
+          "How should Deniz update the display and workshop?"
+        ]
+      },
+      "envelope": {
+        "prose": "The drawer opened onto returned activity materials: colored pencils, string, two magnifying glasses, and a bundle of folded cards. Beneath the Canal Gate model lay a stiff rectangle of blue card.\n\nDeniz lifted the model carefully. The card underneath was marked with a small number four and the same arched-gate picture she had matched on the map. Along its bottom edge, printed in clear black type, were the words: ROUTE 4 — 4:00.\n\nShe checked the brass wheels again. They still read 1-3-2. The code had led her to the right drawer; the matching model had not been a coincidence. She slid the card from beneath the model and carried both back to the table.\n\nFor a moment, the missing space looked ready to be filled. Deniz held the card above position four, but she did not place it down. The route symbol on the card showed a solid green line passing through a gate shape. If the card belonged there, that line would send learners through Canal Gate at four o’clock.\n\nShe turned toward the wall.\n\nThe public maintenance schedule hung beside the room’s exit, partly hidden behind a poster about weekend workshops. Deniz had noticed it when she arrived, but until now it had been background information: a list of ordinary repairs, cleaning times, and building notices. She stepped closer and read the rows from top to bottom.\n\nLIBRARY LIFT — 9:00–10:00.\n\nNORTH STAIRS — 2:30–3:00.\n\nCANAL GATE — CLOSED 3:30–5:00, MAINTENANCE.\n\nDeniz looked at the card again. Its printed time was 4:00. The route did not merely lack a detail. It led directly through a place that the building’s own schedule said would be closed.\n\n“Not usable,” she said quietly.\n\nShe took her pencil to the notice and copied the important line into her notebook, including the times. Then she compared it with the card’s symbol a second time. The gate shape was unmistakable: the route entered on one side and continued out the other. There was no small bypass mark, no alternate arrow, and no note suggesting that the closure could be ignored.\n\nDeniz placed the card beside the empty slot instead of inside it. The position-four match was certain. The four-o’clock route was not.\n\nA learner following the display would have good reason to trust the card. That was exactly why leaving the old route in place would be risky. Deniz imagined twelve people arriving at the gate, reading the closure notice, and having to turn around without knowing where the map meant them to go next. The workshop would lose time, and someone might try to squeeze around the barrier to stay on schedule.\n\nShe drew a firm line beneath her notes:\n\nPOSITION 4: CANAL GATE — CONFIRMED.\nCARD TIME: 4:00 — CONFIRMED.\nORIGINAL ROUTE: CLOSED.\n\nThen she added a question mark beside the blank space below it.\n\nWhich available line could replace it?\n\nDeniz returned to the map table. The other tiles remained exactly where she had tested them. The red Clock Tower edge still pointed toward the fourth position. The green line still continued toward Canal Gate. Somewhere among the connected tiles, another line might lead around the gate—but “might” was not enough. She would need to test its direction, match its landmark, and check its timing before changing anything.\n\nShe set the recovered card near the ruler and opened a fresh page in her notebook. The afternoon workshop was getting closer. The display now told her what not to do. Next, she had to find a route it could honestly recommend.",
+        "state_delta": {
+          "location": "Public learning center side room, at the map-reading table and the public maintenance schedule.",
+          "character_goal": "Deniz must find and test a safe replacement for the recovered position-four route before the afternoon workshop.",
+          "knowledge_gained": [
+            "The coded returns drawer contains the missing position-four card.",
+            "The card is labeled ROUTE 4 — 4:00 and shows a route through Canal Gate.",
+            "The public maintenance schedule states that Canal Gate is closed from 3:30 to 5:00."
+          ],
+          "facts_established": [
+            "The card was located using the established drawer code 132.",
+            "The Canal Gate model and the recovered card both match the position-four landmark.",
+            "The original four-o'clock Canal Gate route is unsuitable because it crosses a posted closure."
+          ],
+          "clues_added": [
+            "The recovered card has a solid green route line passing through a gate symbol.",
+            "The maintenance notice gives the closure window as 3:30–5:00.",
+            "The position-four match is confirmed separately from the route's practical safety."
+          ],
+          "objects_changed": [
+            "Deniz removed the position-four card from beneath the Canal Gate model in the coded returns drawer.",
+            "Deniz copied the Canal Gate closure notice into her notebook.",
+            "Deniz placed the recovered card beside, rather than inside, the empty fourth slot."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which available map line safely replaces the closed Canal Gate route?",
+            "How should Deniz update the display and workshop plan?"
+          ],
+          "threads_resolved": [
+            "The missing position-four card has been located.",
+            "The original four-o'clock route through Canal Gate has been shown to be unsuitable."
+          ],
+          "handoff_state": "Deniz has recovered the card labeled Route 4 — 4:00 and confirmed that its green route crosses Canal Gate, which is publicly posted as closed from 3:30 to 5:00. The card belongs in position four, but Deniz has not inserted it or chosen a replacement. She is ready to test an alternative map line using its edges, landmark label, object match, and schedule evidence."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.118,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 590,
+          "usage": {
+            "input_tokens": 6091,
+            "output_tokens": 1437,
+            "total_tokens": 7528
+          },
+          "cost": {
+            "usd": 0.003247,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.88,
+          "no_contradiction": 0.8,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4685,
+          "output_tokens": 188,
+          "cost": 0.00019677
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.88,
+            "no_contradiction": 0.8,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4685,
+            "output_tokens": 188,
+            "cost": 0.00019677
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.365
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.484
+    },
+    {
+      "scene": 5,
+      "target_words": 779,
+      "word_count": 713,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply all accumulated clues to verify the safe detour and decisively solve the display problem.",
+        "entry_state": "The recovered card fits position four, but its original four-o'clock route is blocked by the posted closure.",
+        "beats": [
+          "Deniz traces the alternative map line, matching its object label, arrow direction, and earlier schedule sequence.",
+          "After confirming every link, Deniz tapes the detour mark, replaces the card, and chooses to brief learners rather than hide the error."
+        ],
+        "must_include": [
+          "The final solution uses map edges, landmark objects, labels, repeated schedules, and the closure notice.",
+          "Deniz tests the alternative route before applying it.",
+          "The decisive choice changes the workshop plan."
+        ],
+        "must_not_do": [
+          "Do not make the detour work through intuition alone.",
+          "Do not leave the display or safety issue unresolved."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the map-edge pattern, landmark match, and position-four code.",
+          "Scene 4 established the recovered card's four-o'clock timing and Canal Gate closure.",
+          "Scene 4 established that the original route cannot serve the workshop."
+        ],
+        "handoff": "The display now shows a verified detour, and Deniz has chosen to explain the correction before learners follow the route.",
+        "open_threads_after": [
+          "How will learners respond to the corrected route?",
+          "What will Deniz learn from the completed pattern?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz placed the ruler against the fourth slot and studied the map again. The recovered card lay beside her notebook, its printed green line ending at the closed Canal Gate. She did not erase the card's route or bend it to fit a different answer.\n\nInstead, she followed the unused line printed along the lower edge of the neighboring tile. It was pale blue, almost hidden beneath a strip of tape. She extended the line with her pencil, keeping the ruler pressed against the map’s edge. The line turned left at the fourth position, then continued toward the Clock Tower tile.\n\n“Direction first,” Deniz murmured.\n\nThe blue arrow on the fourth-position edge pointed left. On the Clock Tower tile, a blue mark faced it from the opposite side. Deniz slid the tiles together without lifting them. The marks met exactly—not at a corner, and not a few millimeters apart as the wrong connections had done.\n\nShe tested the next link. The blue line continued around the Clock Tower tile and ended beside the printed Clock Tower label. Deniz picked up the small tower model and placed it over the picture. Its square base covered the outline precisely. The label, the object, and the map line agreed.\n\nThat was one link. She needed more.\n\nDeniz opened her notebook to the schedule notes. Around the empty position, the hours had appeared in clockwise order as 1:00, 3:00, and 2:00. The times repeated elsewhere on the display; they were not steps in a simple count. She found the other 2:00 slip and laid it beside the blue route. Its arrow faced the same way as the alternative line, while the 3:00 slip belonged to the green line that led through Canal Gate. The repeated schedule relationship supported the map connection, but it did not change the recovered card’s own time of 4:00 or erase the green route printed on it.\n\nShe glanced at the maintenance notice.\n\nCANAL GATE — CLOSED 3:30–5:00.\n\nThe recovered card said 4:00. Its green route matched the position and the gate, but its timing placed learners at the closed entrance. The blue line turned away from the gate before reaching it. No edge crossed the gate symbol.\n\nDeniz traced the whole alternative with her pencil: from the fourth slot, along the blue arrow, around the Clock Tower tile, past the Clock Tower model, and toward the open side of the map. She checked each join twice. Every arrow faced the next line. Every label matched its object. The repeated schedule marks supported the connection, and the closure notice ruled out the original path.\n\nOnly then did she make the change.\n\nFrom a drawer, she took a strip of yellow removable tape and cut it into a narrow arrow. She placed the recovered Route 4 card into the fourth slot, leaving its printed 4:00 green route visible as the route that had failed the safety check. Then she laid the yellow arrow over that route just before the gate symbol. Its point turned left toward the tested blue line. Beside it, she wrote in neat block letters:\n\nDETOUR — FOLLOW BLUE ARROWS TO CLOCK TOWER.\n\nShe added the time, 4:00, and underneath it: CANAL GATE CLOSED 3:30–5:00. The notice was not hidden or treated as an inconvenience. It was part of the route information now.\n\nDeniz stepped back. The display showed the card’s correct position and time, the reason its printed route failed, and the replacement that had passed every check. The card had not been altered; the yellow mark made the safe workshop instruction clear.\n\nShe could have left the yellow arrow unexplained and let the learners assume it had always been there. Instead, she opened the workshop folder and changed the first instruction on the activity sheet: “At position four, pause and compare the blue detour with the closure notice.”\n\nThen she wrote a short note for the group: “We will test the route before we follow it.”\n\nDeniz gathered the ruler, pencil, and notebook but left the map display open for inspection. When the learners arrived, she would show them the repeated times, the matching edges, the Clock Tower model, and the notice on the wall. The route was ready—but so was the explanation of how she had checked it.",
+        "state_delta": {
+          "location": "Public learning center side room, at the corrected map-reading table.",
+          "character_goal": "Deniz must brief the afternoon workshop learners on the verified detour so they can follow the route safely.",
+          "knowledge_gained": [
+            "The blue alternative line connects correctly through the fourth position and turns away from Canal Gate.",
+            "The blue route matches the Clock Tower arrow, label, and landmark model.",
+            "The repeated schedule relationships support the alternative map connection, while the 4:00 Canal Gate route conflicts with the closure notice."
+          ],
+          "facts_established": [
+            "The alternative route was tested through map edges, arrow direction, landmark label, landmark object, repeated schedule relationships, and the maintenance closure.",
+            "The original green route printed on the recovered card crosses Canal Gate during its 3:30–5:00 closure.",
+            "The recovered Route 4 card remains labeled 4:00 and visibly shows the unsuitable green route; a separate yellow detour mark directs learners along the verified blue route toward the Clock Tower."
+          ],
+          "clues_added": [
+            "The blue arrow at position four meets the matching blue mark on the Clock Tower tile.",
+            "The Clock Tower model fits the map picture and label beside the alternative route.",
+            "The repeated schedule marks support the blue detour’s map connection without changing the recovered card’s 4:00 time."
+          ],
+          "objects_changed": [
+            "Deniz inserted the recovered Route 4 card into the fourth slot without altering its printed route.",
+            "Deniz taped a yellow detour arrow over the unusable green route.",
+            "Deniz labeled the display with the detour, the Clock Tower direction, and the Canal Gate closure.",
+            "Deniz changed the workshop activity sheet to include a route check."
+          ],
+          "relationships_changed": [
+            "The fourth-position card is now associated on the display with a verified blue detour instead of being used to direct learners through its unsuitable Canal Gate path.",
+            "The display, the maintenance notice, and the workshop instructions now communicate the same safe route."
+          ],
+          "threads_opened": [
+            "Deniz must explain the tested reasoning to the arriving learners."
+          ],
+          "threads_resolved": [
+            "The safe replacement for the closed Canal Gate route has been identified and verified.",
+            "The route display has been restored and marked for workshop use.",
+            "Deniz has chosen to brief learners about the correction rather than hide the original error."
+          ],
+          "handoff_state": "The position-four card is correctly placed with its original 4:00 green route visible, while the yellow-marked blue detour directs learners toward the Clock Tower and the display states that Canal Gate is closed from 3:30 to 5:00. Deniz has updated the workshop instructions and is ready to explain the tested route to the learners before they begin."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 22.833,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 671,
+          "usage": {
+            "input_tokens": 6651,
+            "output_tokens": 1999,
+            "total_tokens": 8650
+          },
+          "cost": {
+            "usd": 0.0040614,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 18.816,
+          "repair_reasons": [
+            "jev:no_contradiction:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 681,
+          "usage": {
+            "input_tokens": 6806,
+            "output_tokens": 1945,
+            "total_tokens": 8751
+          },
+          "cost": {
+            "usd": 0.00403535,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 16.62,
+          "repair_reasons": [
+            "jev:no_contradiction:0.790<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 713,
+          "usage": {
+            "input_tokens": 6849,
+            "output_tokens": 1830,
+            "total_tokens": 8679
+          },
+          "cost": {
+            "usd": 0.0039081,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.85,
+          "no_contradiction": 0.8,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.88,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.86,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5489,
+          "output_tokens": 188,
+          "cost": 0.000230538
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.78,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.89,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.85,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5373,
+            "output_tokens": 188,
+            "cost": 0.000225666
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.79,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.88,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.79
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5416,
+            "output_tokens": 188,
+            "cost": 0.000227472
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.85,
+            "no_contradiction": 0.8,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.88,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5489,
+            "output_tokens": 188,
+            "cost": 0.000230538
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.373,
+        0.388,
+        0.371
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.78,
+              "goal_preserved": 0.95,
+              "no_future_leakage": 0.89,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.85,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5373,
+              "output_tokens": 188,
+              "cost": 0.000225666
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 681,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.79,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.88,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.87,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5416,
+              "output_tokens": 188,
+              "cost": 0.000227472
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.79,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.88,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.87,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5416,
+              "output_tokens": 188,
+              "cost": 0.000227472
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 713,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.85,
+              "no_contradiction": 0.8,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.88,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.86,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5489,
+              "output_tokens": 188,
+              "cost": 0.000230538
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 59.403
+    },
+    {
+      "scene": 6,
+      "target_words": 646,
+      "word_count": 493,
+      "contract": {
+        "index": 6,
+        "purpose": "Resolve the practical consequences and close the theme through Deniz's clear explanation.",
+        "entry_state": "The route display is corrected, the detour is marked, and Deniz is ready to guide the workshop.",
+        "beats": [
+          "Deniz explains how each clue was tested, allowing learners to see why the detour is safer than the original path.",
+          "The workshop begins smoothly, and Deniz leaves the display documented for the next group."
+        ],
+        "must_include": [
+          "The workshop uses the corrected route without crossing Canal Gate.",
+          "Deniz communicates reasoning without turning the explanation into a lecture.",
+          "The ending reinforces testing patterns instead of guessing."
+        ],
+        "must_not_do": [
+          "Do not introduce a new mystery, danger, character, or unresolved subplot.",
+          "Do not undo the verified solution or reopen the central problem."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the verified detour and Deniz's decision to brief learners.",
+          "Scene 5 established that multiple earlier clues jointly confirmed the solution.",
+          "Scene 4 established the closure that makes the detour necessary."
+        ],
+        "handoff": "The display is accurate, the workshop follows the safe detour, and the central problem is closed.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "The twelve learners arrived in a noisy cluster, carrying notebooks and pencils. Deniz waited until they had gathered around the table, then pointed to the corrected display.\n\n“Before anyone chooses a path, look at position four,” she said. “What do you notice?”\n\nA learner leaned closer. “The card says four o’clock, but the green line goes through Canal Gate.”\n\n“And what does the wall notice say?”\n\n“Canal Gate is closed from three-thirty to five.”\n\n“Right. So we do not follow the printed green line today.” Deniz tapped the yellow arrow. “But I didn’t place this detour just because it looked convenient. Let’s check it.”\n\nShe handed the ruler to the nearest learner. Together they lined it up with the blue edge at position four. The blue arrow pointed left, and the matching blue mark on the Clock Tower tile faced it exactly. No gap interrupted the connection.\n\nAnother learner picked up the small Clock Tower model. “This matches the picture.”\n\n“And the label,” Deniz said. “Now check the schedule slips around the gap.”\n\nThe learners read them clockwise: 1:00, 3:00, 2:00. Someone frowned. “That isn’t counting up.”\n\n“It doesn’t need to,” Deniz replied. “The times repeat elsewhere. They help us compare the connected routes, but they don’t tell us to invent a new time. The recovered card still says 4:00.”\n\nA learner traced the blue line with one finger. “It turns away before the gate.”\n\n“Exactly,” Deniz said. “The map edge, arrow, label, and model confirm the blue connection. The repeated schedules fit that pattern, while the closure notice tells us why the green route cannot be used at four o’clock.”\n\nShe gave each learner a copy of the revised activity sheet. The first instruction read: PAUSE AT POSITION FOUR. CHECK THE ROUTE.\n\nThe group began. At the first turn, one learner started toward the green line, then stopped and compared it with the yellow arrow.\n\n“Blue arrows to the Clock Tower,” they said, correcting course.\n\n“Good catch,” Deniz replied. “What made you stop?”\n\n“The pattern matched the other clues. I didn’t want to guess.”\n\nThey continued along the blue route, keeping clear of the Canal Gate symbol. The learners marked each connection they checked on their sheets, and the activity became less about finding a mysterious answer than proving each step before moving on. When they reached the open side of the map, nobody had crossed the closed gate.\n\nBefore the workshop ended, Deniz returned the ruler, pencil, and spare tape to their drawer. She checked that the Route 4 card remained in its proper slot, that the yellow detour arrow was firmly attached, and that the closure notice was still visible. Beneath her earlier note, she added the date and wrote:\n\nDISPLAY CHECKED WITH MAP EDGES, LABELS, OBJECTS, AND SCHEDULES.\n\nThe next group would not have to trust a loose card or a quick guess. They would have the route, the reason for it, and a clear place to begin checking.",
+        "state_delta": {
+          "location": "Public learning center side room, at the corrected map-reading table.",
+          "character_goal": "Deniz must guide the workshop learners safely through the verified detour and leave the route display documented for the next group.",
+          "knowledge_gained": [
+            "The learners understand that the blue detour avoids Canal Gate during its closure.",
+            "The route can be checked through matching map edges, arrows, labels, objects, and repeated schedule relationships."
+          ],
+          "facts_established": [
+            "The workshop follows the corrected blue route without crossing Canal Gate.",
+            "The Route 4 card remains in position four with its original 4:00 time and green route visible.",
+            "The yellow detour and closure notice clearly communicate the safe workshop instruction.",
+            "Deniz documents the completed route check for the next group."
+          ],
+          "clues_added": [
+            "The learners independently notice the conflict between the 4:00 card route and the Canal Gate closure.",
+            "The learners verify the blue connection with the ruler and Clock Tower model.",
+            "The activity sheet instructs future users to pause at position four and check the route."
+          ],
+          "objects_changed": [
+            "Deniz distributes revised activity sheets.",
+            "Deniz returns the ruler, pencil, and spare tape to their drawer.",
+            "Deniz adds the date and a route-check note beneath the display documentation."
+          ],
+          "relationships_changed": [
+            "The learners now understand and use the verified blue detour instead of the unsuitable green Canal Gate route.",
+            "The display and workshop materials consistently communicate the same safe route."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "The workshop proceeds safely without crossing Canal Gate.",
+            "Deniz explains the tested reasoning conversationally to the learners.",
+            "The corrected route display is documented for future groups.",
+            "The central route problem is fully closed."
+          ],
+          "handoff_state": "The display is accurate and documented, the learners have completed the workshop using the verified blue detour toward the Clock Tower, and no one crosses Canal Gate during its closure. Deniz has shown that the route was chosen by checking connected patterns rather than guessing."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.23,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 492,
+          "usage": {
+            "input_tokens": 7071,
+            "output_tokens": 1275,
+            "total_tokens": 8346
+          },
+          "cost": {
+            "usd": 0.0032976,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 16.795,
+          "repair_reasons": [
+            "jev:no_contradiction:0.750<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 493,
+          "usage": {
+            "input_tokens": 6833,
+            "output_tokens": 1659,
+            "total_tokens": 8492
+          },
+          "cost": {
+            "usd": 0.0036989,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.82,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.92,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5412,
+          "output_tokens": 188,
+          "cost": 0.000227304
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.75,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.75
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.83,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5405,
+            "output_tokens": 188,
+            "cost": 0.00022701
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.82,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.92,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5412,
+            "output_tokens": 188,
+            "cost": 0.000227304
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.378,
+        0.406
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.92,
+              "no_contradiction": 0.75,
+              "goal_preserved": 0.95,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.75
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.83,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5405,
+              "output_tokens": 188,
+              "cost": 0.00022701
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 493,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.97,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.92,
+              "no_contradiction": 0.82,
+              "goal_preserved": 0.95,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.97
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.92,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5412,
+              "output_tokens": 188,
+              "cost": 0.000227304
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 29.81
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Introduce Deniz's responsibility, the broken route display, and the central need to reconstruct its pattern.",
+      "word_count": 424,
+      "location": "Public learning center side room, at the map-reading table.",
+      "character_goal": "Deniz must reconstruct the broken route display before the afternoon workshop so she can guide twelve learners accurately and safely.",
+      "knowledge_gained": [
+        "Five map tiles are arranged around an empty fourth slot.",
+        "The visible schedule times are 1:00, 2:00, 1:00, 3:00, and 2:00.",
+        "The visible tiles include Clock Tower and Canal Gate labels and matching landmark models.",
+        "A public maintenance schedule is posted on the wall and includes a notice about Canal Gate."
+      ],
+      "facts_established": [
+        "Deniz is fifteen and is independently preparing the public map-reading activity.",
+        "The learning space contains maps, landmark objects, schedules, labels, a ruler, pencils, and other ordinary tools.",
+        "Five map tiles form a connected but incomplete route display.",
+        "The fourth position is empty, interrupting the route."
+      ],
+      "clues_added": [
+        "Map tiles have colored arrows along their edges.",
+        "Schedule times repeat rather than forming a simple sequence.",
+        "The labels on the slips correspond to landmark pictures or models.",
+        "An arrow points toward the empty fourth position."
+      ],
+      "objects_changed": [
+        "Deniz placed five map tiles into the labeled slots.",
+        "Deniz positioned the Clock Tower and Canal Gate models beside their labels.",
+        "Deniz recorded the visible arrows, labels, and times in her notebook."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which position is missing?",
+        "What route and time does the missing card represent?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has documented five linked positions, their visible arrows, labels, and repeated schedule times, but the empty fourth position still prevents her from confirming the route."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test a reasonable chronological hypothesis and reject it through visible map evidence.",
+      "word_count": 450,
+      "location": "Public learning center side room, at the map-reading table.",
+      "character_goal": "Deniz must identify the missing route position and restore an accurate display before the afternoon workshop.",
+      "knowledge_gained": [
+        "A chronological sequence is a reasonable possibility but does not fit the visible map connections.",
+        "The map edges connect through matching arrow directions and shapes.",
+        "The schedule times repeat independently: two slips show 1:00, two show 2:00, and one shows 3:00.",
+        "The missing card cannot be selected simply by choosing the next clock time."
+      ],
+      "facts_established": [
+        "Deniz tested at least two existing map connections with the metal ruler.",
+        "The empty fourth position interrupts physical map lines rather than merely omitting a number.",
+        "Map-edge relationships are more consistent than the visible chronological order."
+      ],
+      "clues_added": [
+        "A blue arrow from one tile meets a matching blue mark on the next tile.",
+        "Another tested connection runs from a tile after the gap to the lower edge of the following occupied tile.",
+        "A green arrow continues across a turn at a neighboring tile.",
+        "Repeated schedule times provide evidence against choosing 4:00 as the missing card."
+      ],
+      "objects_changed": [
+        "Deniz wrote tested map connections in her notebook.",
+        "Deniz crossed out the unproven 4:00 hypothesis while leaving it visible for comparison."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which map edges actually meet at the empty position?",
+        "Which landmark label belongs in the gap?"
+      ],
+      "threads_resolved": [
+        "The chronological explanation that the missing card simply continues the visible times has been rejected."
+      ],
+      "handoff_state": "Deniz has used the ruler to test multiple map connections and learned that repeated arrow relationships, not chronology, organize the display. The repeated 1:00 and 2:00 times rule out choosing the next number, so she must now align the map edges and use landmark labels to identify the missing position."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use tested map connections and landmark objects to narrow the missing card's location.",
+      "word_count": 574,
+      "location": "Public learning center side room, at the map-reading table and coded returns drawers.",
+      "character_goal": "Deniz must locate the position-four card and determine whether its route can be used safely before the afternoon workshop.",
+      "knowledge_gained": [
+        "The empty fourth position lies between the Clock Tower arrow and the Canal Gate line.",
+        "The Canal Gate landmark model matches the map picture and label for position four.",
+        "The missing card can be searched for using the code 132.",
+        "The surrounding schedule hours, read clockwise, provide the three-digit search code."
+      ],
+      "facts_established": [
+        "Map-edge alignment identifies a specific gap rather than only suggesting a general location.",
+        "A physical Canal Gate model confirms the matching landmark label.",
+        "The surrounding schedule slips show 1:00, 3:00, and 2:00 in clockwise order.",
+        "The coded returns drawer has been selected and prepared for the missing card search."
+      ],
+      "clues_added": [
+        "The Clock Tower red edge and the neighboring red line meet only across the fourth position.",
+        "The green line from the gap continues toward the Canal Gate line.",
+        "The schedule-hour sequence 1-3-2 forms the search code 132.",
+        "The returns drawer has a three-number wheel that accepts the code."
+      ],
+      "objects_changed": [
+        "Deniz marked position four as Canal Gate in her notebook.",
+        "Deniz recorded the code 132.",
+        "Deniz set the returns drawer wheels to 1-3-2 and released the latch."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Where is the position-four card?",
+        "Can the Canal Gate route be used at workshop time?"
+      ],
+      "threads_resolved": [
+        "The missing position has been identified as position four.",
+        "The landmark label belonging in the gap has been identified as Canal Gate."
+      ],
+      "handoff_state": "Deniz has tested the map edges, confirmed position four with the Canal Gate model and label, and used the surrounding schedule slips as code 132 for the returns drawer. She is ready to inspect the drawer, but she has not yet found the card or checked whether its route is safe."
+    },
+    {
+      "scene": 4,
+      "purpose": "Locate the missing card and expose the separate schedule evidence that makes its route questionable.",
+      "word_count": 590,
+      "location": "Public learning center side room, at the map-reading table and the public maintenance schedule.",
+      "character_goal": "Deniz must find and test a safe replacement for the recovered position-four route before the afternoon workshop.",
+      "knowledge_gained": [
+        "The coded returns drawer contains the missing position-four card.",
+        "The card is labeled ROUTE 4 — 4:00 and shows a route through Canal Gate.",
+        "The public maintenance schedule states that Canal Gate is closed from 3:30 to 5:00."
+      ],
+      "facts_established": [
+        "The card was located using the established drawer code 132.",
+        "The Canal Gate model and the recovered card both match the position-four landmark.",
+        "The original four-o'clock Canal Gate route is unsuitable because it crosses a posted closure."
+      ],
+      "clues_added": [
+        "The recovered card has a solid green route line passing through a gate symbol.",
+        "The maintenance notice gives the closure window as 3:30–5:00.",
+        "The position-four match is confirmed separately from the route's practical safety."
+      ],
+      "objects_changed": [
+        "Deniz removed the position-four card from beneath the Canal Gate model in the coded returns drawer.",
+        "Deniz copied the Canal Gate closure notice into her notebook.",
+        "Deniz placed the recovered card beside, rather than inside, the empty fourth slot."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which available map line safely replaces the closed Canal Gate route?",
+        "How should Deniz update the display and workshop plan?"
+      ],
+      "threads_resolved": [
+        "The missing position-four card has been located.",
+        "The original four-o'clock route through Canal Gate has been shown to be unsuitable."
+      ],
+      "handoff_state": "Deniz has recovered the card labeled Route 4 — 4:00 and confirmed that its green route crosses Canal Gate, which is publicly posted as closed from 3:30 to 5:00. The card belongs in position four, but Deniz has not inserted it or chosen a replacement. She is ready to test an alternative map line using its edges, landmark label, object match, and schedule evidence."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply all accumulated clues to verify the safe detour and decisively solve the display problem.",
+      "word_count": 713,
+      "location": "Public learning center side room, at the corrected map-reading table.",
+      "character_goal": "Deniz must brief the afternoon workshop learners on the verified detour so they can follow the route safely.",
+      "knowledge_gained": [
+        "The blue alternative line connects correctly through the fourth position and turns away from Canal Gate.",
+        "The blue route matches the Clock Tower arrow, label, and landmark model.",
+        "The repeated schedule relationships support the alternative map connection, while the 4:00 Canal Gate route conflicts with the closure notice."
+      ],
+      "facts_established": [
+        "The alternative route was tested through map edges, arrow direction, landmark label, landmark object, repeated schedule relationships, and the maintenance closure.",
+        "The original green route printed on the recovered card crosses Canal Gate during its 3:30–5:00 closure.",
+        "The recovered Route 4 card remains labeled 4:00 and visibly shows the unsuitable green route; a separate yellow detour mark directs learners along the verified blue route toward the Clock Tower."
+      ],
+      "clues_added": [
+        "The blue arrow at position four meets the matching blue mark on the Clock Tower tile.",
+        "The Clock Tower model fits the map picture and label beside the alternative route.",
+        "The repeated schedule marks support the blue detour’s map connection without changing the recovered card’s 4:00 time."
+      ],
+      "objects_changed": [
+        "Deniz inserted the recovered Route 4 card into the fourth slot without altering its printed route.",
+        "Deniz taped a yellow detour arrow over the unusable green route.",
+        "Deniz labeled the display with the detour, the Clock Tower direction, and the Canal Gate closure.",
+        "Deniz changed the workshop activity sheet to include a route check."
+      ],
+      "relationships_changed": [
+        "The fourth-position card is now associated on the display with a verified blue detour instead of being used to direct learners through its unsuitable Canal Gate path.",
+        "The display, the maintenance notice, and the workshop instructions now communicate the same safe route."
+      ],
+      "threads_opened": [
+        "Deniz must explain the tested reasoning to the arriving learners."
+      ],
+      "threads_resolved": [
+        "The safe replacement for the closed Canal Gate route has been identified and verified.",
+        "The route display has been restored and marked for workshop use.",
+        "Deniz has chosen to brief learners about the correction rather than hide the original error."
+      ],
+      "handoff_state": "The position-four card is correctly placed with its original 4:00 green route visible, while the yellow-marked blue detour directs learners toward the Clock Tower and the display states that Canal Gate is closed from 3:30 to 5:00. Deniz has updated the workshop instructions and is ready to explain the tested route to the learners before they begin."
+    },
+    {
+      "scene": 6,
+      "purpose": "Resolve the practical consequences and close the theme through Deniz's clear explanation.",
+      "word_count": 493,
+      "location": "Public learning center side room, at the corrected map-reading table.",
+      "character_goal": "Deniz must guide the workshop learners safely through the verified detour and leave the route display documented for the next group.",
+      "knowledge_gained": [
+        "The learners understand that the blue detour avoids Canal Gate during its closure.",
+        "The route can be checked through matching map edges, arrows, labels, objects, and repeated schedule relationships."
+      ],
+      "facts_established": [
+        "The workshop follows the corrected blue route without crossing Canal Gate.",
+        "The Route 4 card remains in position four with its original 4:00 time and green route visible.",
+        "The yellow detour and closure notice clearly communicate the safe workshop instruction.",
+        "Deniz documents the completed route check for the next group."
+      ],
+      "clues_added": [
+        "The learners independently notice the conflict between the 4:00 card route and the Canal Gate closure.",
+        "The learners verify the blue connection with the ruler and Clock Tower model.",
+        "The activity sheet instructs future users to pause at position four and check the route."
+      ],
+      "objects_changed": [
+        "Deniz distributes revised activity sheets.",
+        "Deniz returns the ruler, pencil, and spare tape to their drawer.",
+        "Deniz adds the date and a route-check note beneath the display documentation."
+      ],
+      "relationships_changed": [
+        "The learners now understand and use the verified blue detour instead of the unsuitable green Canal Gate route.",
+        "The display and workshop materials consistently communicate the same safe route."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "The workshop proceeds safely without crossing Canal Gate.",
+        "Deniz explains the tested reasoning conversationally to the learners.",
+        "The corrected route display is documented for future groups.",
+        "The central route problem is fully closed."
+      ],
+      "handoff_state": "The display is accurate and documented, the learners have completed the workshop using the verified blue detour toward the Clock Tower, and no one crosses Canal Gate during its closure. Deniz has shown that the route was chosen by checking connected patterns rather than guessing."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "At fifteen, Deniz was old enough to run the map-reading table without someone hovering nearby, which was useful because the afternoon workshop began in less than an hour. She unlocked the side room of the public learning center, switched on the lights, and carried the activity box to the long table beneath the wall of local maps.\n\nThe room held the ordinary evidence of people trying to understand a place: rolled maps in a rack, labeled drawers, measuring tapes, pencils, a metal ruler, and small landmark models. A wooden Clock Tower stood beside a blue-painted Canal Gate. On the wall, a maintenance schedule listed public notices, including a line about Canal Gate, though Deniz did not need it yet. She set out six labeled slots for the route display.\n\nFive map tiles were already in the box. Each showed part of a walking route, with colored arrows printed along its edges. Deniz placed them in the slots as the instruction sheet indicated. The tiles formed a crooked chain across the table, but the fourth slot was empty. A white space broke the route between the third and fifth tiles.\n\n“That is not helpful,” Deniz muttered.\n\nBeside each occupied slot lay a schedule slip. She read them before touching anything else: 1:00, 2:00, 1:00, 3:00, and 2:00. The times did not look like a simple march through the afternoon, but she copied them into her notebook anyway. Each slip also carried a short label. Clock Tower appeared on one; Canal Gate appeared on another. The remaining labels matched the tiny pictures on the tiles.\n\nDeniz placed the model Clock Tower beside its label and did the same with Canal Gate. Then she drew a narrow table in her notebook: slot, arrow direction, landmark label, time. She used the ruler to record where each visible arrow ended, noting the line that pointed toward the empty fourth slot.\n\nThe missing position was more than an untidy gap. Without its tile or schedule card, Deniz could not tell whether the route continued toward the river, turned through the market, or crossed a path that should be avoided. She checked the workshop list on her phone. Twelve learners were coming, and they would expect her to lead them through the display rather than improvise at the last minute.\n\nShe looked again at the five filled slots. The pattern was there, somewhere—inside the arrows, the labels, or the repeated times. Guessing would only make the blank look finished. Deniz sharpened her pencil and began measuring the connections one by one.\n\nDeniz began with the most tempting explanation: perhaps the route cards were arranged by time, and the empty card should simply continue the afternoon schedule.\n\nShe wrote 4:00 in the margin of her notebook, then paused. The guess was not random. The workshop began in the afternoon, and a route display that moved forward through time would be easy for learners to follow. If the visible 1:00 and 2:00 slips marked the beginning, perhaps the 3:00 slip came later, with the missing card meant to carry the next hour.\n\nStill, a pattern had to survive contact with the map.\n\nDeniz placed the metal ruler along the colored arrow on the first tile. Its line reached the edge of the second tile, where a matching blue mark continued toward the next landmark. She drew a tiny blue line in her notebook and labeled it connection one. The edges met cleanly, not because their times were consecutive, but because the arrow shapes and directions agreed.\n\nShe tested another pair. The arrow leaving the tile after the empty slot pointed toward the lower edge of the next occupied tile. Deniz slid the ruler beneath it and compared the angle with the printed line. Again, the map edges matched. The schedule slips beside those tiles read 3:00 and 2:00—not 3:00 followed by 4:00, as her first idea required.\n\n“Fine,” she said quietly. “The route does not care what order the clocks prefer.”\n\nShe checked the other visible connections instead of trusting one awkward example. One line ran east across a tile and met a short green arrow. Another turned down at a corner where the neighboring edge continued it. Their physical joins were consistent. The times were not. Two different tiles carried 1:00, and two carried 2:00. The 3:00 slip stood between them like a useful detail, but not like the next step in a counting sequence.\n\nDeniz crossed out 4:00, though she left it readable beneath the pencil line. Choosing it would have made the display look orderly without proving that it belonged there. The ruler had shown her something stronger: the map edges repeated a connection pattern while the schedule times repeated independently.\n\nShe leaned back and studied the empty fourth slot. The gap was no longer just a missing number in a series. It interrupted lines that were trying to meet. The labels and landmark models might explain which lines belonged together, but the clock slips could not decide that for her.\n\nDeniz turned to a fresh page and wrote two questions:\n\nWhich map edges actually meet?\n\nWhich landmark label belongs in the gap?\n\nThen she picked up the ruler again and began following the colored lines toward the empty position.\n\nDeniz started at the empty fourth slot. She did not lift the tiles immediately. Instead, she placed the ruler against the red edge of the Clock Tower tile and extended the line toward the gap.\n\nThe arrow pointed right, then bent slightly downward at the border. On the tile beyond the empty space, a thin red line began at exactly that angle. There was no way for the two edges to meet while the tile remained in its current position. The missing tile had to sit between them.\n\n“First boundary,” Deniz murmured, marking it in her notebook.\n\nShe tested the other side. A green line from the empty slot should continue toward the Canal Gate line on the neighboring tile. Deniz shifted the ruler a few millimeters, checked the direction twice, and found the same result: the line from the gap ended where the Canal Gate line began. The empty space was not just somewhere in the display. It was specifically between the Clock Tower connection and the Canal Gate connection.\n\nTo check that she was not forcing the answer, Deniz compared the labels. The Clock Tower model stood beside its printed label on one side of the table. On the other side sat a small stone-colored model with a narrow opening through its middle. Its label read CANAL GATE.\n\nShe picked up the model and held it over the picture printed on the map tile after the gap. The arch, side walls, and little blue strip representing water matched. Even the tiny notch on the left side was in the same place.\n\n“That is too many matches to ignore,” she said.\n\nThe model did not prove that the route was usable. It only confirmed which landmark belonged to the missing position. Deniz wrote POSITION 4 beside CANAL GATE, then looked at the schedule slips surrounding the gap.\n\nIn clockwise order, the slips showed 1:00, 3:00, and 2:00. The times did not count upward, but they did form a clear three-part group. Deniz copied their hour numbers into a box: 1-3-2. She wrote the sequence again beneath it, this time without the colons. The surrounding slips supplied a concrete code, not a new time in the schedule.\n\nAt the back of the room stood the wooden drawers used for returned activity materials. One drawer was marked RETURNS and had a small brass number wheel beside its handle. Deniz had no reason to choose a different drawer: the missing item was a map-display card, and the code had come from the three slips around its empty position.\n\nShe set the wheels to 1, 3, and 2. They clicked into place.\n\nBefore pulling the handle, she glanced back at the table. The ruler still lay across the two matching map edges. The Canal Gate model still covered the matching picture. Nothing about the answer came from the clock sequence alone; the map test had identified the position, the model had confirmed the label, and the surrounding slips had supplied the search code.\n\nShe opened her notebook and wrote:\n\nPosition four: Canal Gate.\nSearch code: 132.\nCard still needed. Route safety unknown.\n\nThen she rested her fingers on the drawer handle and pulled. The latch released with a quiet click. Deniz paused before looking inside, keeping the route question separate from the location question. Finding the card would show what the original display intended; it would not yet show whether that route was safe at workshop time.\n\nThe drawer opened onto returned activity materials: colored pencils, string, two magnifying glasses, and a bundle of folded cards. Beneath the Canal Gate model lay a stiff rectangle of blue card.\n\nDeniz lifted the model carefully. The card underneath was marked with a small number four and the same arched-gate picture she had matched on the map. Along its bottom edge, printed in clear black type, were the words: ROUTE 4 — 4:00.\n\nShe checked the brass wheels again. They still read 1-3-2. The code had led her to the right drawer; the matching model had not been a coincidence. She slid the card from beneath the model and carried both back to the table.\n\nFor a moment, the missing space looked ready to be filled. Deniz held the card above position four, but she did not place it down. The route symbol on the card showed a solid green line passing through a gate shape. If the card belonged there, that line would send learners through Canal Gate at four o’clock.\n\nShe turned toward the wall.\n\nThe public maintenance schedule hung beside the room’s exit, partly hidden behind a poster about weekend workshops. Deniz had noticed it when she arrived, but until now it had been background information: a list of ordinary repairs, cleaning times, and building notices. She stepped closer and read the rows from top to bottom.\n\nLIBRARY LIFT — 9:00–10:00.\n\nNORTH STAIRS — 2:30–3:00.\n\nCANAL GATE — CLOSED 3:30–5:00, MAINTENANCE.\n\nDeniz looked at the card again. Its printed time was 4:00. The route did not merely lack a detail. It led directly through a place that the building’s own schedule said would be closed.\n\n“Not usable,” she said quietly.\n\nShe took her pencil to the notice and copied the important line into her notebook, including the times. Then she compared it with the card’s symbol a second time. The gate shape was unmistakable: the route entered on one side and continued out the other. There was no small bypass mark, no alternate arrow, and no note suggesting that the closure could be ignored.\n\nDeniz placed the card beside the empty slot instead of inside it. The position-four match was certain. The four-o’clock route was not.\n\nA learner following the display would have good reason to trust the card. That was exactly why leaving the old route in place would be risky. Deniz imagined twelve people arriving at the gate, reading the closure notice, and having to turn around without knowing where the map meant them to go next. The workshop would lose time, and someone might try to squeeze around the barrier to stay on schedule.\n\nShe drew a firm line beneath her notes:\n\nPOSITION 4: CANAL GATE — CONFIRMED.\nCARD TIME: 4:00 — CONFIRMED.\nORIGINAL ROUTE: CLOSED.\n\nThen she added a question mark beside the blank space below it.\n\nWhich available line could replace it?\n\nDeniz returned to the map table. The other tiles remained exactly where she had tested them. The red Clock Tower edge still pointed toward the fourth position. The green line still continued toward Canal Gate. Somewhere among the connected tiles, another line might lead around the gate—but “might” was not enough. She would need to test its direction, match its landmark, and check its timing before changing anything.\n\nShe set the recovered card near the ruler and opened a fresh page in her notebook. The afternoon workshop was getting closer. The display now told her what not to do. Next, she had to find a route it could honestly recommend.\n\nDeniz placed the ruler against the fourth slot and studied the map again. The recovered card lay beside her notebook, its printed green line ending at the closed Canal Gate. She did not erase the card's route or bend it to fit a different answer.\n\nInstead, she followed the unused line printed along the lower edge of the neighboring tile. It was pale blue, almost hidden beneath a strip of tape. She extended the line with her pencil, keeping the ruler pressed against the map’s edge. The line turned left at the fourth position, then continued toward the Clock Tower tile.\n\n“Direction first,” Deniz murmured.\n\nThe blue arrow on the fourth-position edge pointed left. On the Clock Tower tile, a blue mark faced it from the opposite side. Deniz slid the tiles together without lifting them. The marks met exactly—not at a corner, and not a few millimeters apart as the wrong connections had done.\n\nShe tested the next link. The blue line continued around the Clock Tower tile and ended beside the printed Clock Tower label. Deniz picked up the small tower model and placed it over the picture. Its square base covered the outline precisely. The label, the object, and the map line agreed.\n\nThat was one link. She needed more.\n\nDeniz opened her notebook to the schedule notes. Around the empty position, the hours had appeared in clockwise order as 1:00, 3:00, and 2:00. The times repeated elsewhere on the display; they were not steps in a simple count. She found the other 2:00 slip and laid it beside the blue route. Its arrow faced the same way as the alternative line, while the 3:00 slip belonged to the green line that led through Canal Gate. The repeated schedule relationship supported the map connection, but it did not change the recovered card’s own time of 4:00 or erase the green route printed on it.\n\nShe glanced at the maintenance notice.\n\nCANAL GATE — CLOSED 3:30–5:00.\n\nThe recovered card said 4:00. Its green route matched the position and the gate, but its timing placed learners at the closed entrance. The blue line turned away from the gate before reaching it. No edge crossed the gate symbol.\n\nDeniz traced the whole alternative with her pencil: from the fourth slot, along the blue arrow, around the Clock Tower tile, past the Clock Tower model, and toward the open side of the map. She checked each join twice. Every arrow faced the next line. Every label matched its object. The repeated schedule marks supported the connection, and the closure notice ruled out the original path.\n\nOnly then did she make the change.\n\nFrom a drawer, she took a strip of yellow removable tape and cut it into a narrow arrow. She placed the recovered Route 4 card into the fourth slot, leaving its printed 4:00 green route visible as the route that had failed the safety check. Then she laid the yellow arrow over that route just before the gate symbol. Its point turned left toward the tested blue line. Beside it, she wrote in neat block letters:\n\nDETOUR — FOLLOW BLUE ARROWS TO CLOCK TOWER.\n\nShe added the time, 4:00, and underneath it: CANAL GATE CLOSED 3:30–5:00. The notice was not hidden or treated as an inconvenience. It was part of the route information now.\n\nDeniz stepped back. The display showed the card’s correct position and time, the reason its printed route failed, and the replacement that had passed every check. The card had not been altered; the yellow mark made the safe workshop instruction clear.\n\nShe could have left the yellow arrow unexplained and let the learners assume it had always been there. Instead, she opened the workshop folder and changed the first instruction on the activity sheet: “At position four, pause and compare the blue detour with the closure notice.”\n\nThen she wrote a short note for the group: “We will test the route before we follow it.”\n\nDeniz gathered the ruler, pencil, and notebook but left the map display open for inspection. When the learners arrived, she would show them the repeated times, the matching edges, the Clock Tower model, and the notice on the wall. The route was ready—but so was the explanation of how she had checked it.\n\nThe twelve learners arrived in a noisy cluster, carrying notebooks and pencils. Deniz waited until they had gathered around the table, then pointed to the corrected display.\n\n“Before anyone chooses a path, look at position four,” she said. “What do you notice?”\n\nA learner leaned closer. “The card says four o’clock, but the green line goes through Canal Gate.”\n\n“And what does the wall notice say?”\n\n“Canal Gate is closed from three-thirty to five.”\n\n“Right. So we do not follow the printed green line today.” Deniz tapped the yellow arrow. “But I didn’t place this detour just because it looked convenient. Let’s check it.”\n\nShe handed the ruler to the nearest learner. Together they lined it up with the blue edge at position four. The blue arrow pointed left, and the matching blue mark on the Clock Tower tile faced it exactly. No gap interrupted the connection.\n\nAnother learner picked up the small Clock Tower model. “This matches the picture.”\n\n“And the label,” Deniz said. “Now check the schedule slips around the gap.”\n\nThe learners read them clockwise: 1:00, 3:00, 2:00. Someone frowned. “That isn’t counting up.”\n\n“It doesn’t need to,” Deniz replied. “The times repeat elsewhere. They help us compare the connected routes, but they don’t tell us to invent a new time. The recovered card still says 4:00.”\n\nA learner traced the blue line with one finger. “It turns away before the gate.”\n\n“Exactly,” Deniz said. “The map edge, arrow, label, and model confirm the blue connection. The repeated schedules fit that pattern, while the closure notice tells us why the green route cannot be used at four o’clock.”\n\nShe gave each learner a copy of the revised activity sheet. The first instruction read: PAUSE AT POSITION FOUR. CHECK THE ROUTE.\n\nThe group began. At the first turn, one learner started toward the green line, then stopped and compared it with the yellow arrow.\n\n“Blue arrows to the Clock Tower,” they said, correcting course.\n\n“Good catch,” Deniz replied. “What made you stop?”\n\n“The pattern matched the other clues. I didn’t want to guess.”\n\nThey continued along the blue route, keeping clear of the Canal Gate symbol. The learners marked each connection they checked on their sheets, and the activity became less about finding a mysterious answer than proving each step before moving on. When they reached the open side of the map, nobody had crossed the closed gate.\n\nBefore the workshop ended, Deniz returned the ruler, pencil, and spare tape to their drawer. She checked that the Route 4 card remained in its proper slot, that the yellow detour arrow was firmly attached, and that the closure notice was still visible. Beneath her earlier note, she added the date and wrote:\n\nDISPLAY CHECKED WITH MAP EDGES, LABELS, OBJECTS, AND SCHEDULES.\n\nThe next group would not have to trust a loose card or a quick guess. They would have the route, the reason for it, and a clear place to begin checking.",
+  "word_count": 3244,
+  "target_words": 3800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.000309,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.81,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.85,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10620,
+      "output_tokens": 166,
+      "cost": 0.00044604
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.81,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.85,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10620,
+      "output_tokens": 166,
+      "cost": 0.00044604
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a strong, production-ready story that meets the acceptance gate with an average score of 4.0 across all criteria and no scores below 3. The narrative successfully executes the StoryContract: Deniz, a plausible fifteen-year-old, independently reconstructs a broken route display by testing patterns rather than guessing. The story demonstrates explicit causality throughout—each clue (map edges, landmark objects, labels, repeated schedules, and the maintenance closure) is established before use, and the false hypothesis (chronological ordering) is tested and rejected through visible evidence. The central problem (missing position-four card and its unsafe route) is solved through accumulated evidence in Scene 5, and the ending (Scene 6) resolves practical consequences while reinforcing the theme. Vocabulary, sentence structure, and pacing are well-calibrated for an independent fifteen-year-old reader. The prose is clear and engaging without becoming didactic. All six scenes maintain continuity, and no clue depends on information not yet provided. The story avoids combat, benchmark language, and unresolved subplots. JEV advisory evidence confirms strong causal chain (0.95), goal continuity (0.96), and clue-solution progression (0.96). Minor observations: Scene 3 and Scene 5 showed marginal JEV signals on unexplained dependencies and contradictions during development, but the current prose resolves these through explicit testing and clear reasoning. The story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3244,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.95,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.81,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.85,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 10620,
+          "output_tokens": 166,
+          "cost": 0.00044604
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a strong, production-ready story that meets the acceptance gate with an average score of 4.0 across all criteria and no scores below 3. The narrative successfully executes the StoryContract: Deniz, a plausible fifteen-year-old, independently reconstructs a broken route display by testing patterns rather than guessing. The story demonstrates explicit causality throughout—each clue (map edges, landmark objects, labels, repeated schedules, and the maintenance closure) is established before use, and the false hypothesis (chronological ordering) is tested and rejected through visible evidence. The central problem (missing position-four card and its unsafe route) is solved through accumulated evidence in Scene 5, and the ending (Scene 6) resolves practical consequences while reinforcing the theme. Vocabulary, sentence structure, and pacing are well-calibrated for an independent fifteen-year-old reader. The prose is clear and engaging without becoming didactic. All six scenes maintain continuity, and no clue depends on information not yet provided. The story avoids combat, benchmark language, and unresolved subplots. JEV advisory evidence confirms strong causal chain (0.95), goal continuity (0.96), and clue-solution progression (0.96). Minor observations: Scene 3 and Scene 5 showed marginal JEV signals on unexplained dependencies and contradictions during development, but the current prose resolves these through explicit testing and clear reasoning. The story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.00044604,
+      "final_judge_cost": {
+        "usd": 0.020099,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 61.529,
+    "scene_stage_seconds": 189.65,
+    "final_stage_seconds": 7.113,
+    "total_pipeline_seconds": 258.292
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.013951878,
+    "scene_generation_usd": 0.03770495,
+    "scene_continuity_evaluator_usd": 0.002089836,
+    "whole_continuity_evaluator_usd": 0.00044604,
+    "whole_continuity_evaluator_usd_total": 0.00044604,
+    "semantic_judge_usd": {
+      "usd": 0.020099,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.020099,
+    "scene_jev_usd": 0.002089836,
+    "whole_jev_usd": 0.00044604,
+    "whole_jev_usd_total": 0.00044604,
+    "final_haiku": {
+      "usd": 0.020099,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.020099,
+    "total_pipeline_usd": 0.074291704
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 10620,
+      "output_tokens": 166,
+      "cost": 0.00044604
+    },
+    "semantic_judge": {
+      "input_tokens": 17899,
+      "output_tokens": 440,
+      "total_tokens": 18339
+    },
+    "whole_jev": {
+      "input_tokens": 10620,
+      "output_tokens": 166,
+      "cost": 0.00044604
+    },
+    "final_haiku": {
+      "input_tokens": 17899,
+      "output_tokens": 440,
+      "total_tokens": 18339
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
