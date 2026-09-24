@@ -1,0 +1,1810 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v3-all-families/young-adult--world-lore-discovery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v3-all-families/young-adult--world-lore-discovery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Story Behind the Marker",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to build and share the most defensible account of the familiar landmark's history.",
+        "central_problem": "An old map, an oral memory, and the landmark's inscription describe the same marker differently.",
+        "solution_principle": "Compare sources by separating direct observation, inference, memory, and uncertainty rather than forcing agreement.",
+        "theme_thread": "Understanding a place requires testing evidence against memory while respecting incomplete stories.",
+        "ending_state": "Deniz's evidence-labeled account is preserved, the conflicting descriptions are explained, and one bounded historical question remains open.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C10",
+          "C11"
+        ],
+        "prohibited_events": [
+          "No combat or physical intimidation.",
+          "No omniscient confirmation that removes every ambiguity.",
+          "No premature final explanation before Scene 5.",
+          "No disposable characters, objects, locations, powers, or subplots.",
+          "No benchmark or test language."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Establish Deniz's investigation, the familiar marker, and the central conflict between its inscription and older descriptions.",
+          "entry_state": "Deniz, age twenty-one, knows the neighborhood marker but has not investigated its history.",
+          "beats": [
+            "While preparing an archive note independently, Deniz notices the inscription calls the marker a founding stone.",
+            "A catalog reference points Deniz toward an old map and an oral-history recording describing the same landmark differently."
+          ],
+          "must_include": [
+            "Deniz records the inscription as direct observation, not proof of the marker's complete history.",
+            "The investigation centers on one landmark and one question: why do its descriptions conflict?"
+          ],
+          "must_not_do": [
+            "Do not explain the landmark's history yet.",
+            "Do not introduce a second protagonist or unrelated research goal."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C11"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has the inscription's claim and leads pointing to two older sources, but does not know whether they describe different moments or different stories.",
+          "open_threads_after": [
+            "What does the old map actually show?",
+            "What does the recorded memory remember?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Use the old map and oral-history recording to establish meaningful disagreement without deciding which source is correct.",
+          "entry_state": "Deniz has documented the present inscription and located the map and recording references.",
+          "beats": [
+            "In the map room, Deniz observes the marker beside a former road and notes the map's label, distance, and date.",
+            "The recording remembers neighbors gathering at the marker during annual floods, calling it an old boundary stone."
+          ],
+          "must_include": [
+            "The map provides dated placement and label evidence.",
+            "The recording provides remembered community use while clearly remaining a person's recollection.",
+            "The map and recording disagree about the marker's identity or purpose."
+          ],
+          "must_not_do": [
+            "Do not treat the recording as exact eyewitness proof.",
+            "Do not reconcile the sources before examining the present neighborhood."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the inscription's wording and Deniz's distinction between observing text and interpreting history.",
+            "Scene 1 established the archive references to an old map and an oral-history recording.",
+            "Scene 1 established the investigation's single landmark and central question."
+          ],
+          "handoff": "Deniz now has a dated map placement and a remembered flood tradition that conflict; the landmark's current setting may explain the difference.",
+          "open_threads_after": [
+            "Did the road, shoreline, or marker move?",
+            "What can the present neighborhood verify?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Test both older accounts against the present neighborhood and gather physical evidence that permits several interpretations.",
+          "entry_state": "Deniz knows the map's label and the recording's boundary-stone memory, but their relationship remains unresolved.",
+          "beats": [
+            "Walking the neighborhood, Deniz compares the map's former road alignment with the marker's current position and finds later paving changed the route.",
+            "Deniz inspects worn lettering and a repair seam, recording visible facts without claiming they prove relocation or original purpose."
+          ],
+          "must_include": [
+            "The changed route makes the map's placement plausible without proving the marker moved.",
+            "The repair seam and worn lettering complicate the inscription's confident founding claim.",
+            "Deniz separates known observations from inferences in investigation notes."
+          ],
+          "must_not_do": [
+            "Do not reveal a hidden inscription or definitive relocation record.",
+            "Do not dismiss the remembered flood gatherings because physical proof is incomplete."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the map's dated road placement and boundary-stone label.",
+            "Scene 2 established the recording's flood-gathering memory.",
+            "Scene 1 established the present inscription calling the marker a founding stone."
+          ],
+          "handoff": "Deniz has compatible physical clues but no decisive sequence; the evidence must be organized before an account can responsibly be presented.",
+          "open_threads_after": [
+            "Can the sources describe successive uses rather than one identical purpose?",
+            "Which claims remain only plausible?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Organize the accumulated evidence into competing explanations and choose a defensible account without erasing uncertainty.",
+          "entry_state": "Deniz has three sources and neighborhood observations, including route change, worn lettering, and a repair seam.",
+          "beats": [
+            "Deniz makes a source table marking each claim as known, inferred, remembered, or uncertain.",
+            "Comparing dates and locations, Deniz drafts a sequence: a boundary marker, later community meeting place, and eventual civic founding symbol.",
+            "Deniz rejects both a perfectly unchanged monument and a wholly unreliable memory, then seeks a responsible way to publish the account."
+          ],
+          "must_include": [
+            "At least two source disagreements remain visible in the table.",
+            "Deniz identifies the marker's exact original purpose and possible relocation as unresolved.",
+            "The draft explains why each source could be truthful about a different period."
+          ],
+          "must_not_do": [
+            "Do not present the sequence as proven fact.",
+            "Do not solve the investigation through authority, intuition, or a newly introduced source."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C7",
+            "C8",
+            "C9",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Scene 2 established the dated map and remembered flood gatherings as conflicting source claims.",
+            "Scene 3 established the changed route, worn lettering, and repair seam as physical observations.",
+            "Scene 3 established that relocation and original purpose remain unproven."
+          ],
+          "handoff": "Deniz has a cautiously sequenced, evidence-labeled account and must apply it in the archive's public landmark note without overstating certainty.",
+          "open_threads_after": [
+            "Will the archive accept an account that preserves disagreement?",
+            "Can the wording distinguish the likely sequence from its unresolved details?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the reasoning decisively by creating the archive's public account, resolving the central conflict while preserving qualified uncertainty.",
+          "entry_state": "Deniz has a source table and cautious sequence but has not yet committed it to the archive's public record.",
+          "beats": [
+            "Deniz writes a landmark note separating map observation, recorded memory, inscription claim, neighborhood evidence, and interpretation.",
+            "The note explains that the marker's uses likely changed over time, so each source preserves a different layer of its story.",
+            "Deniz labels exact original purpose and relocation as uncertain instead of choosing a false single answer."
+          ],
+          "must_include": [
+            "The note directly addresses why the three descriptions differ.",
+            "The decisive payoff is Deniz's evidence-labeled explanation, not discovery of a perfect source.",
+            "The archive can preserve both agreement and disagreement for readers."
+          ],
+          "must_not_do": [
+            "Do not add evidence unavailable in earlier scenes.",
+            "Do not claim the sequence or relocation is certain.",
+            "Do not leave the central conflict unexplained."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C9",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Scene 4 established Deniz's source table and categories of known, inferred, remembered, and uncertain.",
+            "Scene 4 established the plausible sequence connecting boundary use, gatherings, and civic commemoration.",
+            "Scene 4 established the unresolved questions about original purpose and relocation."
+          ],
+          "handoff": "The archive now holds Deniz's qualified account; its public use will test whether preserving uncertainty changes how neighbors understand the marker.",
+          "open_threads_after": [
+            "How will readers and residents respond to the account's distinction between likely history and uncertainty?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the account's consequence in the neighborhood and close the investigation while opening one bounded, evidence-based question.",
+          "entry_state": "Deniz's source-labeled note has been accepted for the archive's landmark record but has not yet shaped public understanding.",
+          "beats": [
+            "At the marker, Deniz sees the note read alongside the inscription; residents recognize their memory without treating it as the whole history.",
+            "Deniz updates the archive record to preserve the conflicting sources and marks the likely sequence as interpretation.",
+            "A gap beneath the repair seam suggests a future search for relocation records, leaving one precise question about when the marker changed position."
+          ],
+          "must_include": [
+            "The main problem is closed: differing descriptions reflect changing uses, dates, and perspectives.",
+            "Deniz remains independent and responsible by preserving uncertainty rather than correcting everyone into agreement.",
+            "The ending question follows from the repair seam and route change, not a random mystery."
+          ],
+          "must_not_do": [
+            "Do not introduce a new major plot or definitive answer to the relocation question.",
+            "Do not undo the archive's acceptance or Deniz's evidence-based conclusion."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9",
+            "C10",
+            "C11"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the archive's accepted note explaining the three descriptions through changing uses and preserved uncertainty.",
+            "Scene 3 established the repair seam and changed route as physical clues.",
+            "Scene 4 established relocation as an unresolved question rather than a proven fact."
+          ],
+          "handoff": "Deniz's account is preserved and publicly legible; one bounded question remains: when, if ever, was the marker moved?",
+          "open_threads_after": [
+            "When, if ever, was the marker moved after the road changed?"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.7,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.9,
+        "no_early_resolution": 0.83,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.7
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.88,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3911,
+        "output_tokens": 185,
+        "cost": 0.000164262
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 2,
+          "risk": "The oral-history recording must be clearly attributed to a named or identified speaker to avoid feeling like an omniscient source. Plan specifies 'the recording remembers' but prose must show whose memory this is and when it was recorded, to satisfy C8 (distinguish memory from fact) and C11 (age-appropriate independent reading)."
+        },
+        {
+          "scene": 3,
+          "risk": "The 'repair seam' is introduced as a physical observation but its significance is not yet explained. Prose must show Deniz's reasoning about what the seam suggests (relocation? maintenance? age?) without claiming certainty, or it risks feeling like a planted clue rather than evidence Deniz interprets."
+        },
+        {
+          "scene": 4,
+          "risk": "The source table is a strong organizational tool but must be shown or summarized in prose in a way that feels natural to a 21-year-old's independent research process—not as a didactic chart. The table's categories (known, inferred, remembered, uncertain) must emerge from Deniz's reasoning, not be imposed by narration."
+        },
+        {
+          "scene": 5,
+          "risk": "The landmark note is the decisive payoff, but its exact wording and tone are critical. It must sound like a responsible archive entry written by a 21-year-old researcher—clear, evidence-grounded, and honest about limits—without sounding either too formal or too casual. The note must directly address the three conflicting descriptions by name/date/source."
+        },
+        {
+          "scene": 6,
+          "risk": "The ending question ('when was the marker moved?') must feel bounded and evidence-based, not open-ended. The plan correctly ties it to the repair seam and route change, but prose must show why this specific question is answerable in principle (e.g., relocation records might exist) rather than speculative."
+        }
+      ],
+      "summary": "The plan is structurally sound and meets all critical requirements. Causal continuity is explicit: each scene builds on prior evidence and enables the next investigation step. Deniz's goal (build and share a defensible account) remains stable and motivates all actions. Information accumulates without reset: the inscription, map, recording, and neighborhood observations are all preserved and integrated. No unexplained dependencies exist; all sources and locations are introduced before use. The central problem is not solved before Scene 5—Scene 4 organizes evidence into a cautious sequence, and Scene 5 commits it to the archive record as the decisive payoff. Scene 6 resolves consequences (public legibility, preserved uncertainty) and opens one bounded question (relocation timing) grounded in the repair seam.\n\nConstraint coverage is strong but requires careful prose execution: C1 (age 21, independent reader) must be maintained in Deniz's voice, reasoning complexity, and emotional register throughout. C6 (three sources) is met: inscription, map, recording. C7 (meaningful disagreement) is met: map labels the marker a boundary stone; recording remembers flood gatherings; inscription claims founding stone. C8 (distinguish known/inferred/remembered/uncertain) is central to Scene 4's table and Scene 5's note—prose must make these distinctions visible without didacticism. C10 (open question) is satisfied by the relocation timing question tied to physical evidence.\n\nMinor prose risks: the oral-history speaker must be identified (not anonymous); the repair seam's significance must emerge from Deniz's interpretation; the source table must feel like natural research work, not imposed structure; the landmark note must sound authentically written by a 21-year-old; the ending question must be bounded and answerable in principle. None of these are plan failures—all are execution details well within scope.\n\nRecommendation: **APPROVE FOR PROSE DEVELOPMENT.** The plan is coherent, constraint-aligned, and ready for writing. Prioritize prose clarity on the oral-history attribution, the repair seam's interpretive significance, and the landmark note's tone and wording.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0041472,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000164262,
+      "haiku": {
+        "usd": 0.009421,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 978,
+        "output_tokens": 3293,
+        "total_tokens": 4271
+      },
+      "jev": {
+        "input_tokens": 3911,
+        "output_tokens": 185,
+        "cost": 0.000164262
+      },
+      "haiku": {
+        "input_tokens": 4131,
+        "output_tokens": 1058,
+        "total_tokens": 5189
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    546,
+    651,
+    714,
+    714,
+    861,
+    714
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 546,
+      "word_count": 488,
+      "contract": {
+        "index": 1,
+        "purpose": "Establish Deniz's investigation, the familiar marker, and the central conflict between its inscription and older descriptions.",
+        "entry_state": "Deniz, age twenty-one, knows the neighborhood marker but has not investigated its history.",
+        "beats": [
+          "While preparing an archive note independently, Deniz notices the inscription calls the marker a founding stone.",
+          "A catalog reference points Deniz toward an old map and an oral-history recording describing the same landmark differently."
+        ],
+        "must_include": [
+          "Deniz records the inscription as direct observation, not proof of the marker's complete history.",
+          "The investigation centers on one landmark and one question: why do its descriptions conflict?"
+        ],
+        "must_not_do": [
+          "Do not explain the landmark's history yet.",
+          "Do not introduce a second protagonist or unrelated research goal."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C11"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has the inscription's claim and leads pointing to two older sources, but does not know whether they describe different moments or different stories.",
+        "open_threads_after": [
+          "What does the old map actually show?",
+          "What does the recorded memory remember?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz had passed the stone marker almost every day for three years without asking it a serious question. It stood beside the small square where the old market street met the river path, waist-high and gray, with a metal plaque fixed to its front.\n\nThat afternoon, Deniz sat in the local archive's map room preparing a short note about familiar neighborhood landmarks. The assignment was self-directed: choose one place, describe what could be verified, and identify any gaps in its record. Deniz chose the marker because it seemed simple. Everyone knew what it was supposed to be.\n\nThe plaque said:\n\nFOUNDING STONE\n\nPLACED HERE TO MARK THE BEGINNING OF OUR COMMUNITY\n\nDeniz copied the wording into a notebook, including the capital letters and the line break. Then, beneath it, Deniz wrote:\n\n“Direct observation: the present plaque calls the marker a founding stone and says it marks the beginning of the community.”\n\nAfter a pause, Deniz added, “This is evidence of what the plaque claims, not proof of the marker's complete history.”\n\nThat distinction felt almost fussy, but it mattered. The inscription described the marker confidently, while the stone itself offered no date and no explanation of who had placed it. Deniz had seen people use the square for food stalls, election posters, and summer concerts, but none of those observations proved why the stone was there.\n\nAt the archive computer, Deniz searched the landmark catalog. The first results were recent photographs and maintenance records. Then an older entry appeared under a plain reference number:\n\nMARKER BESIDE FORMER RIVER ROAD — MAP ROOM, FOLDER 18\n\nA second line pointed to the oral-history collection:\n\nINTERVIEW 42 — FLOOD MEMORIES AND NEIGHBORHOOD BOUNDARIES\n\nDeniz leaned closer to the screen. The catalog did not say that either source agreed with the plaque. It did not even use the same name. One reference called the object a marker beside a former road. The other connected it to memories of floods and boundaries. The present inscription called it a founding stone.\n\nDeniz opened a fresh page and wrote a heading:\n\nONE LANDMARK, ONE QUESTION\n\nWhy do its descriptions conflict?\n\nUnder the question, Deniz made three columns: present inscription, older map, recorded memory. The first column already contained the plaque's wording. The other two were blank, waiting for evidence rather than guesses.\n\nOutside the tall windows, the river path curved behind the square. From that angle, the marker looked fixed and obvious, as if it had always belonged exactly where it stood. But “always” was not an observation. It was an assumption.\n\nDeniz saved the note, copied the two catalog references onto a library slip, and placed the slip inside the notebook. The map room was closed for the evening, but the references gave the investigation a direction.\n\nTomorrow, Deniz would examine the old map and listen to the recording. Until then, the founding stone remained a claim on a plaque, not a settled answer.",
+        "state_delta": {
+          "location": "Local archive map room, with the investigation focused on the familiar stone marker beside the neighborhood square and river path.",
+          "character_goal": "Deniz wants to build and share the most defensible account of why the landmark is described differently across sources.",
+          "knowledge_gained": [
+            "The present plaque calls the landmark a founding stone.",
+            "The archive catalog points to an old map in Map Room, Folder 18.",
+            "The archive catalog points to Oral-History Interview 42 about flood memories and neighborhood boundaries."
+          ],
+          "facts_established": [
+            "The marker stands beside the square where the old market street meets the river path.",
+            "The plaque says, \"FOUNDING STONE\" and claims it marks the beginning of the community.",
+            "The marker has no visible date or explanation of who placed it."
+          ],
+          "clues_added": [
+            "The map catalog entry describes the object as a marker beside a former river road.",
+            "The oral-history catalog entry links the marker to memories of floods and neighborhood boundaries.",
+            "The catalog sources use descriptions that differ from the present inscription."
+          ],
+          "objects_changed": [
+            "Deniz created an archive notebook page with the plaque wording, a direct-observation distinction, and three source columns.",
+            "Deniz saved the preliminary note and copied both catalog references onto a library slip."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What does the old map actually show?",
+            "What does the recorded memory remember?",
+            "Why do the landmark's descriptions conflict?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has documented the present inscription as a claim rather than complete proof and has located references to an old map and an oral-history recording about the same marker. Deniz does not yet know whether the sources describe different moments, different uses, or different stories."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.031,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 488,
+          "usage": {
+            "input_tokens": 4431,
+            "output_tokens": 1153,
+            "total_tokens": 5584
+          },
+          "cost": {
+            "usd": 0.0024912,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.92,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2890,
+          "output_tokens": 188,
+          "cost": 0.00012138
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.92,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2890,
+            "output_tokens": 188,
+            "cost": 0.00012138
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.383
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 15.414
+    },
+    {
+      "scene": 2,
+      "target_words": 651,
+      "word_count": 544,
+      "contract": {
+        "index": 2,
+        "purpose": "Use the old map and oral-history recording to establish meaningful disagreement without deciding which source is correct.",
+        "entry_state": "Deniz has documented the present inscription and located the map and recording references.",
+        "beats": [
+          "In the map room, Deniz observes the marker beside a former road and notes the map's label, distance, and date.",
+          "The recording remembers neighbors gathering at the marker during annual floods, calling it an old boundary stone."
+        ],
+        "must_include": [
+          "The map provides dated placement and label evidence.",
+          "The recording provides remembered community use while clearly remaining a person's recollection.",
+          "The map and recording disagree about the marker's identity or purpose."
+        ],
+        "must_not_do": [
+          "Do not treat the recording as exact eyewitness proof.",
+          "Do not reconcile the sources before examining the present neighborhood."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the inscription's wording and Deniz's distinction between observing text and interpreting history.",
+          "Scene 1 established the archive references to an old map and an oral-history recording.",
+          "Scene 1 established the investigation's single landmark and central question."
+        ],
+        "handoff": "Deniz now has a dated map placement and a remembered flood tradition that conflict; the landmark's current setting may explain the difference.",
+        "open_threads_after": [
+          "Did the road, shoreline, or marker move?",
+          "What can the present neighborhood verify?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next morning, Deniz returned to the map room with the notebook and library slip. Folder 18 was thinner than expected. Inside lay a single folded sheet under a protective sleeve, its edges softened by use.\n\nThe map was dated 1912. A blue line marked the river, and a narrower brown line followed what the title called the Old Riverside Road. Near the bend stood a small black square. Beside it, in cramped ink, someone had written: “old boundary stone.”\n\nDeniz checked the scale at the bottom of the page. The square was drawn about eighteen feet from the road’s edge. That distance was useful, but it was not a complete explanation. A map showed where a surveyor had placed a symbol in 1912. It did not say who had set the stone there, or whether people used it for anything else.\n\nDeniz copied the date, label, road name, and distance into the second column of the notebook. Under “source type,” Deniz wrote: “dated map observation.” Then, after considering the wording, Deniz added: “The label is the mapmaker’s, not necessarily the marker’s original name.”\n\nThe oral-history collection was kept in a small listening booth across the hall. Interview 42 had been recorded in 1986 with Mara Vuković, who had lived near the river since childhood. Deniz read the archivist’s note before pressing play: Vuković was recalling neighborhood life during annual floods, more than forty years after many of the events she described.\n\nHer voice came through softly, with the faint hiss of an old tape.\n\n“Every year, when the river came up, people met by the stone,” she said. “They brought lanterns, watched the water, and counted which steps were still dry. My father called it the old boundary stone, though nobody stood there to measure a boundary. It was where everyone knew to gather.”\n\nVuković continued, describing neighbors carrying notices from one side of the road to the other and children being kept close to the square. She did not give a precise year for any particular flood. Sometimes she said “when I was small,” and sometimes “before the new paving.”\n\nDeniz let the recording finish before writing. “Mara Vuković’s recollection: recurring flood gatherings at the marker; family phrase ‘old boundary stone’; community meeting and observation point.” Beneath that, Deniz wrote, “Remembered account, not exact eyewitness proof of the marker’s original purpose.”\n\nThe map presented the object as a boundary stone beside a road. Vuković remembered it as a place where neighbors gathered, while also repeating the boundary-stone name. Neither description matched the plaque’s confident claim that it was a founding stone marking the beginning of the community.\n\nDeniz drew a line between the three columns, then stopped before adding an explanation. The map might describe an official boundary. Vuković might describe a later use. Or both accounts might preserve only part of what happened. Those were possibilities, not findings.\n\nDeniz closed the folder and rewound the tape once, saving the recording number and speaker’s name. The sources now disagreed in a more specific way: one labeled the marker, one remembered what people did there, and the plaque declared what the place meant. To test them, Deniz would have to leave the archive and compare the old road with the marker’s present surroundings.",
+        "state_delta": {
+          "location": "Local archive map room and oral-history listening booth.",
+          "character_goal": "Deniz wants to build and share the most defensible account of why the landmark is described differently across sources.",
+          "knowledge_gained": [
+            "The 1912 map places a small marker symbol about eighteen feet from the Old Riverside Road.",
+            "The map labels the object \"old boundary stone.\"",
+            "Interview 42 was recorded in 1986 with Mara Vuković, who remembered annual flood gatherings at the marker.",
+            "Vuković recalled the phrase \"old boundary stone\" but remembered the marker primarily as a neighborhood gathering and observation point."
+          ],
+          "facts_established": [
+            "The old map is dated 1912.",
+            "The map shows the marker beside a former river road.",
+            "Mara Vuković's account is a later recollection, not a precise record of the marker's original purpose."
+          ],
+          "clues_added": [
+            "The map's boundary-stone label differs in emphasis from the present plaque's founding-stone claim.",
+            "The recording links the marker to recurring flood gatherings and community use.",
+            "The older sources may preserve different aspects or periods of the marker's history, but this remains untested."
+          ],
+          "objects_changed": [
+            "Deniz added the map's date, road, label, and approximate distance to the archive notebook.",
+            "Deniz recorded Mara Vuković's name, the 1986 interview date, and the flood-gathering recollection.",
+            "Deniz preserved the distinction between a dated map observation, a remembered account, and an interpretation."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Did the former road or surrounding route change?",
+            "Did the marker's use change over time?",
+            "Can the present neighborhood verify any part of the map or recording?"
+          ],
+          "threads_resolved": [
+            "Deniz now knows what the old map shows and what the recorded memory recalls, though their disagreement remains unresolved."
+          ],
+          "handoff_state": "Deniz has a dated 1912 map placing the marker about eighteen feet from the Old Riverside Road and labeling it an old boundary stone. Deniz also has Mara Vuković's 1986 recollection of neighbors gathering there during annual floods. The map offers dated placement and a label; the recording offers remembered community use. Neither explains the present founding-stone inscription, and Deniz has not decided which account is correct."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.521,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 544,
+          "usage": {
+            "input_tokens": 5600,
+            "output_tokens": 1550,
+            "total_tokens": 7150
+          },
+          "cost": {
+            "usd": 0.00325985,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3685,
+          "output_tokens": 188,
+          "cost": 0.00015477
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3685,
+            "output_tokens": 188,
+            "cost": 0.00015477
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.361
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 18.883
+    },
+    {
+      "scene": 3,
+      "target_words": 714,
+      "word_count": 652,
+      "contract": {
+        "index": 3,
+        "purpose": "Test both older accounts against the present neighborhood and gather physical evidence that permits several interpretations.",
+        "entry_state": "Deniz knows the map's label and the recording's boundary-stone memory, but their relationship remains unresolved.",
+        "beats": [
+          "Walking the neighborhood, Deniz compares the map's former road alignment with the marker's current position and finds later paving changed the route.",
+          "Deniz inspects worn lettering and a repair seam, recording visible facts without claiming they prove relocation or original purpose."
+        ],
+        "must_include": [
+          "The changed route makes the map's placement plausible without proving the marker moved.",
+          "The repair seam and worn lettering complicate the inscription's confident founding claim.",
+          "Deniz separates known observations from inferences in investigation notes."
+        ],
+        "must_not_do": [
+          "Do not reveal a hidden inscription or definitive relocation record.",
+          "Do not dismiss the remembered flood gatherings because physical proof is incomplete."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the map's dated road placement and boundary-stone label.",
+          "Scene 2 established the recording's flood-gathering memory.",
+          "Scene 1 established the present inscription calling the marker a founding stone."
+        ],
+        "handoff": "Deniz has compatible physical clues but no decisive sequence; the evidence must be organized before an account can responsibly be presented.",
+        "open_threads_after": [
+          "Can the sources describe successive uses rather than one identical purpose?",
+          "Which claims remain only plausible?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz left the archive after copying the map’s small road bend into the notebook. The walk to the square took less than ten minutes, but the neighborhood looked different when measured against a century-old line. The river path ran beside the water as before. The road did not.\n\nAt the square, Deniz stood beside the marker and opened the map flat against one forearm. In 1912, the Old Riverside Road curved inward toward the river, passing about eighteen feet from the marked stone. Today’s paving made a straighter route. It crossed the old curve farther from the water, then widened around the square before joining the river path.\n\nDeniz followed the change with a shoe, tracing the faint edge where older paving disappeared beneath newer blocks. The marker still stood near the square, but the road around it had been altered. That made the map’s placement possible without proving that the stone had stayed in place. The road might have moved around the marker. The marker might have been moved when the road changed. The map alone could not decide.\n\nIn the notebook, Deniz wrote:\n\n“Known: the 1912 map places a marker beside the former road, eighteen feet from its edge. Known: the present paving follows a different line. Inferred: the surroundings changed after 1912. Uncertain: whether the stone moved, whether the road alone moved, or whether both changes occurred.”\n\nThe words looked less satisfying than a definite answer, but they also seemed harder to argue with.\n\nDeniz turned to the marker. From a distance, the plaque’s inscription still sounded certain: FOUNDING STONE. Up close, the letters were uneven. The first word was clearer than the last, where weather had softened the edges of the carved lines. A pale scratch crossed part of the surface, and dirt had collected in the deeper cuts.\n\nDeniz ran a fingertip beside the carving without pressing into it. Worn lettering could mean age, repeated cleaning, weather, or some combination. It showed that the inscription had been exposed for a long time, perhaps, but it did not prove when the words were added or whether “founding” described the marker’s first purpose.\n\nAt the lower third of the stone, a narrow repair seam crossed from one side to the other. The mortar was a different color from the surrounding material. On the river-facing side, the seam was almost hidden; on the square-facing side, it remained plainly visible.\n\nDeniz crouched to look along it. The seam could mark a crack that had been repaired. It could also indicate that the stone had been reset or joined during maintenance. There was no label explaining it, and no record in hand that connected the seam to a particular year. Deniz wrote the observation first, then the possibilities beneath it.\n\n“Known: a visible repair seam crosses the lower section. Known: the plaque’s lettering is worn. Inferred: the marker or its inscription has undergone alteration or maintenance. Uncertain: whether the seam records damage, resetting, or another repair.”\n\nFor a moment, the recording returned to Deniz’s thoughts: neighbors meeting there during floods, watching the water, counting the dry steps. Nothing about the worn letters or changed road disproved that memory. A place could serve as a gathering point even if its earlier function had been different. Physical evidence might limit a story without erasing what people remembered doing there.\n\nDeniz photographed the road junction from the square, then sketched the marker, the paving lines, and the seam. The page now held four kinds of information: what the map showed, what Mara Vuković remembered, what the plaque claimed, and what the neighborhood revealed in the present. None supplied a decisive sequence. Together, however, they made one thing clear: the marker’s story had probably not been a single, unchanged event.\n\nDeniz closed the notebook. Before writing for the public, the evidence would have to be arranged so that a plausible connection did not masquerade as proof.",
+        "state_delta": {
+          "location": "The present-day neighborhood square, beside the stone marker, former road alignment, river path, and later paving.",
+          "character_goal": "Deniz wants to organize the map, oral memory, inscription, and physical observations into the most defensible account of the landmark.",
+          "knowledge_gained": [
+            "Later paving changed the route of the Old Riverside Road near the marker.",
+            "The changed route makes the 1912 map placement plausible without proving whether the road, the marker, or both changed position.",
+            "The marker's plaque has worn lettering.",
+            "A visible repair seam crosses the lower section of the stone."
+          ],
+          "facts_established": [
+            "The present road follows a straighter line than the curved 1912 route.",
+            "The plaque still reads \"FOUNDING STONE,\" though parts of the lettering are worn.",
+            "The repair seam is visible and made with material different from the surrounding stone."
+          ],
+          "clues_added": [
+            "The altered road may explain the difference between the map's placement and the marker's current surroundings.",
+            "The repair seam may indicate damage, maintenance, or resetting, but no conclusion is proven.",
+            "Worn lettering complicates the plaque's confident founding claim without disproving it.",
+            "The marker could plausibly have served as a flood gathering point even if its earlier purpose differed."
+          ],
+          "objects_changed": [
+            "Deniz added a sketch and photograph of the current road junction, marker, paving lines, and repair seam to the notebook.",
+            "Deniz recorded separate known, inferred, and uncertain observations about the route, lettering, and seam."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Can the map, memory, inscription, and physical clues describe successive uses of the marker?",
+            "Was the marker reset, or did the road change around it?",
+            "Which connections among the sources remain only plausible?"
+          ],
+          "threads_resolved": [
+            "The present neighborhood confirms that the route changed after the 1912 map, though it does not establish what happened to the marker."
+          ],
+          "handoff_state": "Deniz has compared the 1912 road alignment with the present neighborhood and recorded a changed route, worn plaque lettering, and a repair seam. These clues make several interpretations possible but prove neither the marker's original purpose nor any relocation. Deniz has preserved the flood-gathering memory as a meaningful remembered account rather than dismissing it, and must now organize all evidence before presenting a cautious explanation."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 21.615,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 652,
+          "usage": {
+            "input_tokens": 6284,
+            "output_tokens": 1651,
+            "total_tokens": 7935
+          },
+          "cost": {
+            "usd": 0.00355205,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4473,
+          "output_tokens": 188,
+          "cost": 0.000187866
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4473,
+            "output_tokens": 188,
+            "cost": 0.000187866
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.347
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 21.962
+    },
+    {
+      "scene": 4,
+      "target_words": 714,
+      "word_count": 696,
+      "contract": {
+        "index": 4,
+        "purpose": "Organize the accumulated evidence into competing explanations and choose a defensible account without erasing uncertainty.",
+        "entry_state": "Deniz has three sources and neighborhood observations, including route change, worn lettering, and a repair seam.",
+        "beats": [
+          "Deniz makes a source table marking each claim as known, inferred, remembered, or uncertain.",
+          "Comparing dates and locations, Deniz drafts a sequence: a boundary marker, later community meeting place, and eventual civic founding symbol.",
+          "Deniz rejects both a perfectly unchanged monument and a wholly unreliable memory, then seeks a responsible way to publish the account."
+        ],
+        "must_include": [
+          "At least two source disagreements remain visible in the table.",
+          "Deniz identifies the marker's exact original purpose and possible relocation as unresolved.",
+          "The draft explains why each source could be truthful about a different period."
+        ],
+        "must_not_do": [
+          "Do not present the sequence as proven fact.",
+          "Do not solve the investigation through authority, intuition, or a newly introduced source."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C7",
+          "C8",
+          "C9",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Scene 2 established the dated map and remembered flood gatherings as conflicting source claims.",
+          "Scene 3 established the changed route, worn lettering, and repair seam as physical observations.",
+          "Scene 3 established that relocation and original purpose remain unproven."
+        ],
+        "handoff": "Deniz has a cautiously sequenced, evidence-labeled account and must apply it in the archive's public landmark note without overstating certainty.",
+        "open_threads_after": [
+          "Will the archive accept an account that preserves disagreement?",
+          "Can the wording distinguish the likely sequence from its unresolved details?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz returned to the archive with the notebook, photographs, and the copied curve of the 1912 road. At a long table near the map cases, Deniz turned to a clean page and drew four columns: Known, Inferred, Remembered, Uncertain.\n\nThe headings were not four levels of truth. They were four ways a claim had entered the investigation.\n\nUnder Known, Deniz wrote that the 1912 map was dated and placed a small marker about eighteen feet from the Old Riverside Road. The map labeled it “old boundary stone.” It was also known that Mara Vuković’s interview had been recorded in 1986, and that she remembered neighbors gathering at the marker during annual floods. The present plaque was visible and readable, at least in part: “FOUNDING STONE.” The road now followed a straighter line, and the stone had a worn inscription and a repair seam.\n\nDeniz paused over the map’s label. “Old boundary stone” and “founding stone” were not the same description. Neither could simply be corrected by the other. One was written on a dated map; the other was carved into the present marker, though the date of the carving was unknown.\n\nIn the Remembered column, Deniz placed Vuković’s account. The annual gatherings might have happened as she recalled them, but memory did not provide an exact date for the first gathering or prove what the stone had been made to do. The recording showed that the marker had mattered to residents as a place to watch floodwater and meet one another. It did not settle the marker’s original purpose.\n\nThe Inferred column took longer. The changed road made it plausible that the marker had once stood beside a route that no longer existed in the same form. The gatherings suggested a later community use, whether or not that use had been planned when the stone was placed. The plaque’s wording suggested that, at some point, the marker had been given a civic meaning connected to the community’s beginning. The worn lettering and repair seam supported a history of alteration or maintenance, but not one particular sequence.\n\nAt the bottom of the page, Deniz wrote in the Uncertain column: “Exact original purpose: unresolved. Relocation: possible, not demonstrated. Date of plaque: unknown. Date and reason for repair: unknown.”\n\nSeeing the disagreements together made two tempting explanations look inadequate. The first imagined a perfectly unchanged monument: boundary stone from the beginning, founding stone forever, gathering place only by accident. That account ignored the changed road, the worn plaque, and the way people had used the marker during floods. The second dismissed the recording as unreliable because it was a later memory. That account treated remembered experience as useless simply because it was not a survey.\n\nDeniz drew a line beneath both and began a different draft.\n\n“An interpretation supported by the available evidence is that the marker may have passed through several roles. It may first have served as a boundary marker beside the earlier river road. In a later period, residents may have used the same place for flood gatherings and observation. At another point, the marker may have been presented as a civic founding symbol. These stages are plausible, not proven.”\n\nDeniz read the sentence twice. “May have” appeared three times. It sounded cautious, but not empty. Each possibility was attached to something specific: the map, Vuković’s recollection, or the plaque. The physical evidence explained why a simple unchanged story was difficult, while stopping short of proving that the stone had been moved.\n\nOn the next page, Deniz added a note for the eventual public record: “Different sources may be truthful about different periods. The map records a label and location in 1912. The interview preserves a resident’s memory of later use. The inscription records a civic claim visible today.”\n\nDeniz closed the notebook, then reopened it to add one final instruction to the future note: preserve the disagreements, and label the sequence as interpretation. The account did not need to make every source say the same thing. It needed to show why they might not.\n\nThe next step was to write it for the archive’s public landmark record, without turning a careful possibility into a fact.",
+        "state_delta": {
+          "location": "Local archive reading table near the map cases.",
+          "character_goal": "Deniz wants to turn the map, oral memory, inscription, and physical observations into the most defensible public account of the marker's history.",
+          "knowledge_gained": [
+            "The sources can be organized by how claims entered the investigation: known, inferred, remembered, and uncertain.",
+            "The map, interview, inscription, and neighborhood evidence may each describe a different period or use of the marker.",
+            "A cautious sequence can connect boundary use, later flood gatherings, and eventual civic commemoration without proving the sequence."
+          ],
+          "facts_established": [
+            "The 1912 map labels the marker an old boundary stone and places it near the former Old Riverside Road.",
+            "Mara Vuković's 1986 interview remembers annual flood gatherings at the marker.",
+            "The present plaque calls the marker a founding stone.",
+            "The current route differs from the 1912 road alignment, and the marker has worn lettering and a repair seam."
+          ],
+          "clues_added": [
+            "The map's label and the present plaque disagree about the marker's identity or purpose.",
+            "The remembered flood gatherings provide evidence of later community use rather than proof of the marker's original purpose.",
+            "The repair seam and worn lettering support alteration or maintenance but do not establish a date, cause, or relocation."
+          ],
+          "objects_changed": [
+            "Deniz created a source table with Known, Inferred, Remembered, and Uncertain columns.",
+            "Deniz drafted a cautious sequence linking possible boundary use, later flood gatherings, and eventual civic founding symbolism.",
+            "Deniz added instructions for the future public note to preserve disagreements and label the sequence as interpretation."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Will the archive accept an account that preserves disagreement and qualified uncertainty?",
+            "Can the public landmark note explain the likely sequence without overstating it?"
+          ],
+          "threads_resolved": [
+            "Deniz rejected both the idea of a perfectly unchanged monument and the dismissal of Vuković's memory as useless.",
+            "Deniz now has a defensible explanation for how the conflicting descriptions could each relate truthfully to different periods."
+          ],
+          "handoff_state": "Deniz has organized all evidence into known, inferred, remembered, and uncertain claims. The working interpretation is that the marker may have served first as a boundary marker, later as a flood-gathering place, and eventually as a civic founding symbol, but this sequence is not proven. The exact original purpose, the plaque's date, the repair's date and reason, and any relocation remain unresolved. Deniz is ready to write the qualified account for the archive's public landmark record."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.139,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 696,
+          "usage": {
+            "input_tokens": 7012,
+            "output_tokens": 1546,
+            "total_tokens": 8558
+          },
+          "cost": {
+            "usd": 0.00360805,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5217,
+          "output_tokens": 188,
+          "cost": 0.000219114
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5217,
+            "output_tokens": 188,
+            "cost": 0.000219114
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.417
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 17.556
+    },
+    {
+      "scene": 5,
+      "target_words": 861,
+      "word_count": 857,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the reasoning decisively by creating the archive's public account, resolving the central conflict while preserving qualified uncertainty.",
+        "entry_state": "Deniz has a source table and cautious sequence but has not yet committed it to the archive's public record.",
+        "beats": [
+          "Deniz writes a landmark note separating map observation, recorded memory, inscription claim, neighborhood evidence, and interpretation.",
+          "The note explains that the marker's uses likely changed over time, so each source preserves a different layer of its story.",
+          "Deniz labels exact original purpose and relocation as uncertain instead of choosing a false single answer."
+        ],
+        "must_include": [
+          "The note directly addresses why the three descriptions differ.",
+          "The decisive payoff is Deniz's evidence-labeled explanation, not discovery of a perfect source.",
+          "The archive can preserve both agreement and disagreement for readers."
+        ],
+        "must_not_do": [
+          "Do not add evidence unavailable in earlier scenes.",
+          "Do not claim the sequence or relocation is certain.",
+          "Do not leave the central conflict unexplained."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Scene 4 established Deniz's source table and categories of known, inferred, remembered, and uncertain.",
+          "Scene 4 established the plausible sequence connecting boundary use, gatherings, and civic commemoration.",
+          "Scene 4 established the unresolved questions about original purpose and relocation."
+        ],
+        "handoff": "The archive now holds Deniz's qualified account; its public use will test whether preserving uncertainty changes how neighbors understand the marker.",
+        "open_threads_after": [
+          "How will readers and residents respond to the account's distinction between likely history and uncertainty?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next morning, Deniz opened a fresh document in the archive’s landmark-record system. The source table remained beside the keyboard, its four headings visible on the notebook page: Known, Inferred, Remembered, Uncertain.\n\nThis time, Deniz did not begin with a conclusion. The first section was titled “What the sources say.”\n\n“Present inscription: The plaque on the marker reads ‘FOUNDING STONE’ and states that the stone marks the beginning of the community. The plaque is a direct observation of the marker’s current wording. Its date and original purpose are not given.”\n\nDeniz read the sentence twice. The inscription could be recorded exactly without being treated as a complete history. That distinction had seemed obvious when written in the notebook. On a public page, it needed to be just as clear.\n\nThe next paragraph concerned the map.\n\n“1912 map: A dated map places a small marker approximately eighteen feet from the Old Riverside Road and labels it ‘old boundary stone.’ This is evidence of the marker’s mapped location and label in 1912. It does not prove when the stone was placed, why it was placed, or whether its position later changed.”\n\nDeniz added the distance because it was precise enough to matter. Then came the recording.\n\n“Oral-History Interview 42, recorded in 1986: Mara Vuković remembered neighbors gathering at the marker during annual floods. Her account preserves a community memory of the place as a meeting and observation point. It does not provide an exact date for the first gathering or establish the stone’s original purpose.”\n\nThe wording felt less dramatic than “the stone was used for flood gatherings.” It was also more accurate. Vuković had not been present when the 1912 map was made. Her memory was evidence of what the marker meant to residents in the period she recalled, not a time machine reaching back to its beginning.\n\nDeniz turned to the neighborhood observations.\n\n“Present surroundings: The current road follows a straighter line than the curved route shown on the 1912 map. The plaque’s lettering is worn. A repair seam crosses the lower section of the stone and is made from material different from the surrounding surface. These observations support the possibility of alteration, maintenance, or resetting, but they do not establish which occurred, when it occurred, or why.”\n\nFor a moment, Deniz hovered over the phrase “or resetting.” It was tempting to write “the stone was reset.” The changed road made that possible. The seam made it imaginable. Neither made it known.\n\nDeniz kept the careful wording and began the interpretation section.\n\n“The three descriptions differ because they may preserve different periods and uses of the same marker. The 1912 map records a boundary-stone label beside an earlier road. Vuković’s later recollection records the marker as a place where neighbors gathered to watch floodwater. The present inscription gives the marker a civic meaning as a founding stone. These accounts do not need to describe one identical purpose at one identical moment in order to contain truthful information.”\n\nDeniz continued:\n\n“Taken together, the available evidence supports a cautious interpretation: the marker may first have served as a boundary marker, may later have become a place for flood gatherings, and may eventually have been presented as a symbol of the community’s founding. This sequence is plausible, not proven. The exact original purpose remains uncertain. The repair seam does not prove relocation, and the changed road does not show whether the road moved around the marker or the marker was moved after the road changed.”\n\nThat paragraph was the center of the note. It explained the disagreement without forcing the sources into agreement. The map was not wrong because it failed to mention flood gatherings. Vuković’s memory was not useless because it did not describe the stone’s first purpose. The plaque was not proof of every earlier event simply because it was carved into the marker.\n\nAt the end, Deniz added a short heading: “Status of claims.”\n\n“Known: the wording of the inscription, the date and label of the map, the recorded speaker and date of the interview, the changed road alignment, the worn lettering, and the repair seam.\n\n“Inferred: that the marker’s meaning or use may have changed over time; that the sources may refer to successive periods.\n\n“Remembered: Vuković’s account of annual flood gatherings.\n\n“Uncertain: the exact original purpose, the date and reason for the repair, the date of the plaque, and whether the marker was ever relocated.”\n\nDeniz attached the photograph and road sketch already made in the neighborhood, then read the entire note from the beginning. It did not provide the satisfying neatness of a single origin story. Instead, each claim carried its own label and its own limit.\n\nAfter the archive’s review, the note was accepted for the public landmark record. Deniz saved the final version alongside the map reference, Interview 42 reference, and neighborhood observations. The record now preserved the inscription and the disagreement together. No source had been erased to make the account smoother.\n\nDeniz closed the notebook only after adding one final line beneath the table: “A defensible account explains why the evidence differs; it does not pretend the gaps are filled.”",
+        "state_delta": {
+          "location": "Local archive, at Deniz's computer and reading table near the map cases.",
+          "character_goal": "Deniz has applied the organized evidence to create and preserve the most defensible public account of the marker's history.",
+          "knowledge_gained": [
+            "The three descriptions can be explained as evidence from different periods or uses of the same marker.",
+            "The map records a 1912 label and placement, the oral history records remembered later community use, and the plaque records a present civic claim.",
+            "A public account can preserve disagreement while still offering a cautious interpretation."
+          ],
+          "facts_established": [
+            "Deniz completed a public landmark note separating direct observations, remembered testimony, inferences, and uncertainties.",
+            "The archive accepted the qualified note for its public landmark record.",
+            "The note states that the marker may have moved through boundary use, flood-gathering use, and civic commemoration, but presents this sequence as plausible rather than proven."
+          ],
+          "clues_added": [
+            "The changed road, worn lettering, and repair seam support the possibility of alteration or resetting without proving relocation.",
+            "The different source descriptions can each contain truthful information without describing the same purpose at the same time."
+          ],
+          "objects_changed": [
+            "Deniz converted the notebook's source table into a completed public landmark note.",
+            "The archive record now includes the note, map reference, Interview 42 reference, photograph, and road sketch.",
+            "The note explicitly labels the exact original purpose, repair date and reason, plaque date, and relocation as uncertain."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "How will residents respond when the accepted note is read alongside the present inscription?",
+            "When, if ever, was the marker moved after the road changed?"
+          ],
+          "threads_resolved": [
+            "The central conflict is explained: the map, oral memory, and inscription likely reflect different dates, uses, and perspectives.",
+            "The archive now preserves both agreement and disagreement instead of selecting one source as the complete history."
+          ],
+          "handoff_state": "The archive has accepted Deniz's evidence-labeled landmark note for public use. It explains that the 1912 map, Mara Vuković's 1986 recollection, and the present founding-stone inscription may describe successive uses or meanings of the marker. The likely sequence is explicitly marked as interpretation, while the exact original purpose and any relocation remain unresolved."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 21.944,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 857,
+          "usage": {
+            "input_tokens": 7681,
+            "output_tokens": 1913,
+            "total_tokens": 9594
+          },
+          "cost": {
+            "usd": 0.0042157,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.83,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6074,
+          "output_tokens": 188,
+          "cost": 0.000255108
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.83,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 6074,
+            "output_tokens": 188,
+            "cost": 0.000255108
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.461
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 22.407
+    },
+    {
+      "scene": 6,
+      "target_words": 714,
+      "word_count": 611,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the account's consequence in the neighborhood and close the investigation while opening one bounded, evidence-based question.",
+        "entry_state": "Deniz's source-labeled note has been accepted for the archive's landmark record but has not yet shaped public understanding.",
+        "beats": [
+          "At the marker, Deniz sees the note read alongside the inscription; residents recognize their memory without treating it as the whole history.",
+          "Deniz updates the archive record to preserve the conflicting sources and marks the likely sequence as interpretation.",
+          "A gap beneath the repair seam suggests a future search for relocation records, leaving one precise question about when the marker changed position."
+        ],
+        "must_include": [
+          "The main problem is closed: differing descriptions reflect changing uses, dates, and perspectives.",
+          "Deniz remains independent and responsible by preserving uncertainty rather than correcting everyone into agreement.",
+          "The ending question follows from the repair seam and route change, not a random mystery."
+        ],
+        "must_not_do": [
+          "Do not introduce a new major plot or definitive answer to the relocation question.",
+          "Do not undo the archive's acceptance or Deniz's evidence-based conclusion."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9",
+          "C10",
+          "C11"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the archive's accepted note explaining the three descriptions through changing uses and preserved uncertainty.",
+          "Scene 3 established the repair seam and changed route as physical clues.",
+          "Scene 4 established relocation as an unresolved question rather than a proven fact."
+        ],
+        "handoff": "Deniz's account is preserved and publicly legible; one bounded question remains: when, if ever, was the marker moved?",
+        "open_threads_after": [
+          "When, if ever, was the marker moved after the road changed?"
+        ]
+      },
+      "envelope": {
+        "prose": "Three days later, the archive placed a weatherproof copy of Deniz’s landmark note beside the square’s notice board. The stone marker stood a few steps away, its plaque still announcing, “FOUNDING STONE.” The note did not replace the plaque. It sat beside it, with the map reference, Interview 42 reference, and a small photograph of the marker.\n\nDeniz arrived before the afternoon foot traffic thickened. A woman who had been studying the plaque read the first paragraph of the note, then looked from the words to the stone.\n\n“So it was a boundary stone?” she asked.\n\n“Possibly,” Deniz said. “The 1912 map labels it that way. But the map doesn’t tell us exactly when it was placed or what happened later.”\n\nThe woman read the next section. “And people gathered here during floods?”\n\n“That’s what Mara Vuković remembered in the 1986 interview. It’s a recorded memory of how residents used the place. It isn’t proof that the stone was originally made for that purpose.”\n\nThe woman nodded slowly. “My father used to point it out as the place where the neighborhood began.”\n\n“That may be part of its later meaning,” Deniz said. “The plaque records that civic story. The sources don’t all have to be describing the same use at the same time.”\n\nA few more residents stopped to read. One recognized the flood gatherings. Another remembered the old road curving closer to the river. No one had to surrender a memory, and no one was asked to treat a memory as a complete record. The note allowed the accounts to stand beside one another without pretending they were identical.\n\nDeniz watched a man trace the route on the attached sketch with one finger. The present road ran straight past the square, while the 1912 line bent toward the river path. The difference no longer seemed like a contest between a correct map and an incorrect landmark. It was evidence of change, though not evidence of exactly what had changed.\n\nThat evening, back at the archive, Deniz opened the public record and checked its final labels. The map’s date, label, and approximate distance remained under direct evidence. Vuković’s flood account remained under remembered testimony. The inscription remained a present observation. The proposed sequence—boundary marker, later flood-gathering place, eventual founding symbol—was marked interpretation.\n\nDeniz added a sentence beneath it: “The differing descriptions are best explained as records of changing uses, dates, and perspectives. The exact original purpose remains uncertain.”\n\nThen Deniz returned to the photograph of the repair seam. At the marker, the seam had looked like one clear line. Enlarged on the screen, it showed something else: a narrow gap beneath the lower edge, where the repaired section met the paving. Grit filled part of it. The gap did not reveal whether the stone had been lifted, reset, or simply repaired in place. It did not establish a date.\n\nBut together with the changed road alignment, it gave the investigation one precise next question. If the marker had been moved after the road changed, a paving record, maintenance order, or municipal repair file might show when. If it had not moved, those records might show that instead.\n\nDeniz did not add “the marker was relocated” to the archive note. Instead, the final entry read: “Open question: When, if ever, was the marker moved after the Old Riverside Road changed?”\n\nThe account was complete enough to explain the disagreement and careful enough to preserve what remained unknown. Beside the square, the plaque and the note continued to face the same stone. One named it a beginning. The other showed how several beginnings, memories, and uses might have gathered around it over time.",
+        "state_delta": {
+          "location": "Present-day neighborhood square beside the stone marker, then the local archive record system.",
+          "character_goal": "Deniz has completed and publicly sustained the most defensible account of the marker while preserving uncertainty about its exact original purpose and possible relocation.",
+          "knowledge_gained": [
+            "Residents can recognize their memories in the accepted note without treating those memories as the marker's entire history.",
+            "The three descriptions are best understood as records of changing uses, dates, and perspectives.",
+            "A narrow gap beneath the repair seam provides a reason to investigate relocation or maintenance records, but does not prove that the marker moved."
+          ],
+          "facts_established": [
+            "The archive's note is publicly readable beside the marker.",
+            "Residents read the note alongside the founding-stone inscription.",
+            "The public record labels the map, interview, inscription, and proposed sequence according to their evidentiary status.",
+            "The central conflict is closed through an explanation based on changing uses and perspectives rather than a single source being declared complete."
+          ],
+          "clues_added": [
+            "The gap beneath the repair seam may be relevant to determining whether the marker was lifted or reset.",
+            "A paving record, maintenance order, or municipal repair file could potentially establish when the marker changed position, if it ever did."
+          ],
+          "objects_changed": [
+            "A weatherproof copy of Deniz's landmark note was placed beside the square's notice board.",
+            "The public archive record was updated to state explicitly that the differing descriptions reflect changing uses, dates, and perspectives.",
+            "The open relocation question was added to the archive record."
+          ],
+          "relationships_changed": [
+            "Residents' personal memories now sit in public conversation with the map, interview, inscription, and qualified interpretation."
+          ],
+          "threads_opened": [
+            "When, if ever, was the marker moved after the Old Riverside Road changed?",
+            "Could municipal paving, maintenance, or repair records answer that bounded question?"
+          ],
+          "threads_resolved": [
+            "The map, oral memory, and present inscription are no longer treated as mutually exclusive accounts of one unchanging purpose.",
+            "The main investigation is resolved: the descriptions differ because they preserve different dates, uses, and perspectives.",
+            "Deniz preserves the uncertainty instead of claiming that relocation or the original purpose has been proven."
+          ],
+          "handoff_state": "Deniz's evidence-labeled account is publicly displayed and preserved in the archive. Residents recognize their memories without treating them as the whole history. The map, oral history, inscription, and physical observations are explained as evidence from different periods or uses, while the likely sequence remains an interpretation. One bounded question remains open: when, if ever, was the marker moved after the road changed?"
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.036,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 611,
+          "usage": {
+            "input_tokens": 8060,
+            "output_tokens": 1604,
+            "total_tokens": 9664
+          },
+          "cost": {
+            "usd": 0.00393965,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5944,
+          "output_tokens": 188,
+          "cost": 0.000249648
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5944,
+            "output_tokens": 188,
+            "cost": 0.000249648
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.401
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.438
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish Deniz's investigation, the familiar marker, and the central conflict between its inscription and older descriptions.",
+      "word_count": 488,
+      "location": "Local archive map room, with the investigation focused on the familiar stone marker beside the neighborhood square and river path.",
+      "character_goal": "Deniz wants to build and share the most defensible account of why the landmark is described differently across sources.",
+      "knowledge_gained": [
+        "The present plaque calls the landmark a founding stone.",
+        "The archive catalog points to an old map in Map Room, Folder 18.",
+        "The archive catalog points to Oral-History Interview 42 about flood memories and neighborhood boundaries."
+      ],
+      "facts_established": [
+        "The marker stands beside the square where the old market street meets the river path.",
+        "The plaque says, \"FOUNDING STONE\" and claims it marks the beginning of the community.",
+        "The marker has no visible date or explanation of who placed it."
+      ],
+      "clues_added": [
+        "The map catalog entry describes the object as a marker beside a former river road.",
+        "The oral-history catalog entry links the marker to memories of floods and neighborhood boundaries.",
+        "The catalog sources use descriptions that differ from the present inscription."
+      ],
+      "objects_changed": [
+        "Deniz created an archive notebook page with the plaque wording, a direct-observation distinction, and three source columns.",
+        "Deniz saved the preliminary note and copied both catalog references onto a library slip."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What does the old map actually show?",
+        "What does the recorded memory remember?",
+        "Why do the landmark's descriptions conflict?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has documented the present inscription as a claim rather than complete proof and has located references to an old map and an oral-history recording about the same marker. Deniz does not yet know whether the sources describe different moments, different uses, or different stories."
+    },
+    {
+      "scene": 2,
+      "purpose": "Use the old map and oral-history recording to establish meaningful disagreement without deciding which source is correct.",
+      "word_count": 544,
+      "location": "Local archive map room and oral-history listening booth.",
+      "character_goal": "Deniz wants to build and share the most defensible account of why the landmark is described differently across sources.",
+      "knowledge_gained": [
+        "The 1912 map places a small marker symbol about eighteen feet from the Old Riverside Road.",
+        "The map labels the object \"old boundary stone.\"",
+        "Interview 42 was recorded in 1986 with Mara Vuković, who remembered annual flood gatherings at the marker.",
+        "Vuković recalled the phrase \"old boundary stone\" but remembered the marker primarily as a neighborhood gathering and observation point."
+      ],
+      "facts_established": [
+        "The old map is dated 1912.",
+        "The map shows the marker beside a former river road.",
+        "Mara Vuković's account is a later recollection, not a precise record of the marker's original purpose."
+      ],
+      "clues_added": [
+        "The map's boundary-stone label differs in emphasis from the present plaque's founding-stone claim.",
+        "The recording links the marker to recurring flood gatherings and community use.",
+        "The older sources may preserve different aspects or periods of the marker's history, but this remains untested."
+      ],
+      "objects_changed": [
+        "Deniz added the map's date, road, label, and approximate distance to the archive notebook.",
+        "Deniz recorded Mara Vuković's name, the 1986 interview date, and the flood-gathering recollection.",
+        "Deniz preserved the distinction between a dated map observation, a remembered account, and an interpretation."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Did the former road or surrounding route change?",
+        "Did the marker's use change over time?",
+        "Can the present neighborhood verify any part of the map or recording?"
+      ],
+      "threads_resolved": [
+        "Deniz now knows what the old map shows and what the recorded memory recalls, though their disagreement remains unresolved."
+      ],
+      "handoff_state": "Deniz has a dated 1912 map placing the marker about eighteen feet from the Old Riverside Road and labeling it an old boundary stone. Deniz also has Mara Vuković's 1986 recollection of neighbors gathering there during annual floods. The map offers dated placement and a label; the recording offers remembered community use. Neither explains the present founding-stone inscription, and Deniz has not decided which account is correct."
+    },
+    {
+      "scene": 3,
+      "purpose": "Test both older accounts against the present neighborhood and gather physical evidence that permits several interpretations.",
+      "word_count": 652,
+      "location": "The present-day neighborhood square, beside the stone marker, former road alignment, river path, and later paving.",
+      "character_goal": "Deniz wants to organize the map, oral memory, inscription, and physical observations into the most defensible account of the landmark.",
+      "knowledge_gained": [
+        "Later paving changed the route of the Old Riverside Road near the marker.",
+        "The changed route makes the 1912 map placement plausible without proving whether the road, the marker, or both changed position.",
+        "The marker's plaque has worn lettering.",
+        "A visible repair seam crosses the lower section of the stone."
+      ],
+      "facts_established": [
+        "The present road follows a straighter line than the curved 1912 route.",
+        "The plaque still reads \"FOUNDING STONE,\" though parts of the lettering are worn.",
+        "The repair seam is visible and made with material different from the surrounding stone."
+      ],
+      "clues_added": [
+        "The altered road may explain the difference between the map's placement and the marker's current surroundings.",
+        "The repair seam may indicate damage, maintenance, or resetting, but no conclusion is proven.",
+        "Worn lettering complicates the plaque's confident founding claim without disproving it.",
+        "The marker could plausibly have served as a flood gathering point even if its earlier purpose differed."
+      ],
+      "objects_changed": [
+        "Deniz added a sketch and photograph of the current road junction, marker, paving lines, and repair seam to the notebook.",
+        "Deniz recorded separate known, inferred, and uncertain observations about the route, lettering, and seam."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Can the map, memory, inscription, and physical clues describe successive uses of the marker?",
+        "Was the marker reset, or did the road change around it?",
+        "Which connections among the sources remain only plausible?"
+      ],
+      "threads_resolved": [
+        "The present neighborhood confirms that the route changed after the 1912 map, though it does not establish what happened to the marker."
+      ],
+      "handoff_state": "Deniz has compared the 1912 road alignment with the present neighborhood and recorded a changed route, worn plaque lettering, and a repair seam. These clues make several interpretations possible but prove neither the marker's original purpose nor any relocation. Deniz has preserved the flood-gathering memory as a meaningful remembered account rather than dismissing it, and must now organize all evidence before presenting a cautious explanation."
+    },
+    {
+      "scene": 4,
+      "purpose": "Organize the accumulated evidence into competing explanations and choose a defensible account without erasing uncertainty.",
+      "word_count": 696,
+      "location": "Local archive reading table near the map cases.",
+      "character_goal": "Deniz wants to turn the map, oral memory, inscription, and physical observations into the most defensible public account of the marker's history.",
+      "knowledge_gained": [
+        "The sources can be organized by how claims entered the investigation: known, inferred, remembered, and uncertain.",
+        "The map, interview, inscription, and neighborhood evidence may each describe a different period or use of the marker.",
+        "A cautious sequence can connect boundary use, later flood gatherings, and eventual civic commemoration without proving the sequence."
+      ],
+      "facts_established": [
+        "The 1912 map labels the marker an old boundary stone and places it near the former Old Riverside Road.",
+        "Mara Vuković's 1986 interview remembers annual flood gatherings at the marker.",
+        "The present plaque calls the marker a founding stone.",
+        "The current route differs from the 1912 road alignment, and the marker has worn lettering and a repair seam."
+      ],
+      "clues_added": [
+        "The map's label and the present plaque disagree about the marker's identity or purpose.",
+        "The remembered flood gatherings provide evidence of later community use rather than proof of the marker's original purpose.",
+        "The repair seam and worn lettering support alteration or maintenance but do not establish a date, cause, or relocation."
+      ],
+      "objects_changed": [
+        "Deniz created a source table with Known, Inferred, Remembered, and Uncertain columns.",
+        "Deniz drafted a cautious sequence linking possible boundary use, later flood gatherings, and eventual civic founding symbolism.",
+        "Deniz added instructions for the future public note to preserve disagreements and label the sequence as interpretation."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Will the archive accept an account that preserves disagreement and qualified uncertainty?",
+        "Can the public landmark note explain the likely sequence without overstating it?"
+      ],
+      "threads_resolved": [
+        "Deniz rejected both the idea of a perfectly unchanged monument and the dismissal of Vuković's memory as useless.",
+        "Deniz now has a defensible explanation for how the conflicting descriptions could each relate truthfully to different periods."
+      ],
+      "handoff_state": "Deniz has organized all evidence into known, inferred, remembered, and uncertain claims. The working interpretation is that the marker may have served first as a boundary marker, later as a flood-gathering place, and eventually as a civic founding symbol, but this sequence is not proven. The exact original purpose, the plaque's date, the repair's date and reason, and any relocation remain unresolved. Deniz is ready to write the qualified account for the archive's public landmark record."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the reasoning decisively by creating the archive's public account, resolving the central conflict while preserving qualified uncertainty.",
+      "word_count": 857,
+      "location": "Local archive, at Deniz's computer and reading table near the map cases.",
+      "character_goal": "Deniz has applied the organized evidence to create and preserve the most defensible public account of the marker's history.",
+      "knowledge_gained": [
+        "The three descriptions can be explained as evidence from different periods or uses of the same marker.",
+        "The map records a 1912 label and placement, the oral history records remembered later community use, and the plaque records a present civic claim.",
+        "A public account can preserve disagreement while still offering a cautious interpretation."
+      ],
+      "facts_established": [
+        "Deniz completed a public landmark note separating direct observations, remembered testimony, inferences, and uncertainties.",
+        "The archive accepted the qualified note for its public landmark record.",
+        "The note states that the marker may have moved through boundary use, flood-gathering use, and civic commemoration, but presents this sequence as plausible rather than proven."
+      ],
+      "clues_added": [
+        "The changed road, worn lettering, and repair seam support the possibility of alteration or resetting without proving relocation.",
+        "The different source descriptions can each contain truthful information without describing the same purpose at the same time."
+      ],
+      "objects_changed": [
+        "Deniz converted the notebook's source table into a completed public landmark note.",
+        "The archive record now includes the note, map reference, Interview 42 reference, photograph, and road sketch.",
+        "The note explicitly labels the exact original purpose, repair date and reason, plaque date, and relocation as uncertain."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "How will residents respond when the accepted note is read alongside the present inscription?",
+        "When, if ever, was the marker moved after the road changed?"
+      ],
+      "threads_resolved": [
+        "The central conflict is explained: the map, oral memory, and inscription likely reflect different dates, uses, and perspectives.",
+        "The archive now preserves both agreement and disagreement instead of selecting one source as the complete history."
+      ],
+      "handoff_state": "The archive has accepted Deniz's evidence-labeled landmark note for public use. It explains that the 1912 map, Mara Vuković's 1986 recollection, and the present founding-stone inscription may describe successive uses or meanings of the marker. The likely sequence is explicitly marked as interpretation, while the exact original purpose and any relocation remain unresolved."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the account's consequence in the neighborhood and close the investigation while opening one bounded, evidence-based question.",
+      "word_count": 611,
+      "location": "Present-day neighborhood square beside the stone marker, then the local archive record system.",
+      "character_goal": "Deniz has completed and publicly sustained the most defensible account of the marker while preserving uncertainty about its exact original purpose and possible relocation.",
+      "knowledge_gained": [
+        "Residents can recognize their memories in the accepted note without treating those memories as the marker's entire history.",
+        "The three descriptions are best understood as records of changing uses, dates, and perspectives.",
+        "A narrow gap beneath the repair seam provides a reason to investigate relocation or maintenance records, but does not prove that the marker moved."
+      ],
+      "facts_established": [
+        "The archive's note is publicly readable beside the marker.",
+        "Residents read the note alongside the founding-stone inscription.",
+        "The public record labels the map, interview, inscription, and proposed sequence according to their evidentiary status.",
+        "The central conflict is closed through an explanation based on changing uses and perspectives rather than a single source being declared complete."
+      ],
+      "clues_added": [
+        "The gap beneath the repair seam may be relevant to determining whether the marker was lifted or reset.",
+        "A paving record, maintenance order, or municipal repair file could potentially establish when the marker changed position, if it ever did."
+      ],
+      "objects_changed": [
+        "A weatherproof copy of Deniz's landmark note was placed beside the square's notice board.",
+        "The public archive record was updated to state explicitly that the differing descriptions reflect changing uses, dates, and perspectives.",
+        "The open relocation question was added to the archive record."
+      ],
+      "relationships_changed": [
+        "Residents' personal memories now sit in public conversation with the map, interview, inscription, and qualified interpretation."
+      ],
+      "threads_opened": [
+        "When, if ever, was the marker moved after the Old Riverside Road changed?",
+        "Could municipal paving, maintenance, or repair records answer that bounded question?"
+      ],
+      "threads_resolved": [
+        "The map, oral memory, and present inscription are no longer treated as mutually exclusive accounts of one unchanging purpose.",
+        "The main investigation is resolved: the descriptions differ because they preserve different dates, uses, and perspectives.",
+        "Deniz preserves the uncertainty instead of claiming that relocation or the original purpose has been proven."
+      ],
+      "handoff_state": "Deniz's evidence-labeled account is publicly displayed and preserved in the archive. Residents recognize their memories without treating them as the whole history. The map, oral history, inscription, and physical observations are explained as evidence from different periods or uses, while the likely sequence remains an interpretation. One bounded question remains open: when, if ever, was the marker moved after the road changed?"
+    }
+  ],
+  "story_title": "The Story Behind the Marker",
+  "story": "Deniz had passed the stone marker almost every day for three years without asking it a serious question. It stood beside the small square where the old market street met the river path, waist-high and gray, with a metal plaque fixed to its front.\n\nThat afternoon, Deniz sat in the local archive's map room preparing a short note about familiar neighborhood landmarks. The assignment was self-directed: choose one place, describe what could be verified, and identify any gaps in its record. Deniz chose the marker because it seemed simple. Everyone knew what it was supposed to be.\n\nThe plaque said:\n\nFOUNDING STONE\n\nPLACED HERE TO MARK THE BEGINNING OF OUR COMMUNITY\n\nDeniz copied the wording into a notebook, including the capital letters and the line break. Then, beneath it, Deniz wrote:\n\n“Direct observation: the present plaque calls the marker a founding stone and says it marks the beginning of the community.”\n\nAfter a pause, Deniz added, “This is evidence of what the plaque claims, not proof of the marker's complete history.”\n\nThat distinction felt almost fussy, but it mattered. The inscription described the marker confidently, while the stone itself offered no date and no explanation of who had placed it. Deniz had seen people use the square for food stalls, election posters, and summer concerts, but none of those observations proved why the stone was there.\n\nAt the archive computer, Deniz searched the landmark catalog. The first results were recent photographs and maintenance records. Then an older entry appeared under a plain reference number:\n\nMARKER BESIDE FORMER RIVER ROAD — MAP ROOM, FOLDER 18\n\nA second line pointed to the oral-history collection:\n\nINTERVIEW 42 — FLOOD MEMORIES AND NEIGHBORHOOD BOUNDARIES\n\nDeniz leaned closer to the screen. The catalog did not say that either source agreed with the plaque. It did not even use the same name. One reference called the object a marker beside a former road. The other connected it to memories of floods and boundaries. The present inscription called it a founding stone.\n\nDeniz opened a fresh page and wrote a heading:\n\nONE LANDMARK, ONE QUESTION\n\nWhy do its descriptions conflict?\n\nUnder the question, Deniz made three columns: present inscription, older map, recorded memory. The first column already contained the plaque's wording. The other two were blank, waiting for evidence rather than guesses.\n\nOutside the tall windows, the river path curved behind the square. From that angle, the marker looked fixed and obvious, as if it had always belonged exactly where it stood. But “always” was not an observation. It was an assumption.\n\nDeniz saved the note, copied the two catalog references onto a library slip, and placed the slip inside the notebook. The map room was closed for the evening, but the references gave the investigation a direction.\n\nTomorrow, Deniz would examine the old map and listen to the recording. Until then, the founding stone remained a claim on a plaque, not a settled answer.\n\nThe next morning, Deniz returned to the map room with the notebook and library slip. Folder 18 was thinner than expected. Inside lay a single folded sheet under a protective sleeve, its edges softened by use.\n\nThe map was dated 1912. A blue line marked the river, and a narrower brown line followed what the title called the Old Riverside Road. Near the bend stood a small black square. Beside it, in cramped ink, someone had written: “old boundary stone.”\n\nDeniz checked the scale at the bottom of the page. The square was drawn about eighteen feet from the road’s edge. That distance was useful, but it was not a complete explanation. A map showed where a surveyor had placed a symbol in 1912. It did not say who had set the stone there, or whether people used it for anything else.\n\nDeniz copied the date, label, road name, and distance into the second column of the notebook. Under “source type,” Deniz wrote: “dated map observation.” Then, after considering the wording, Deniz added: “The label is the mapmaker’s, not necessarily the marker’s original name.”\n\nThe oral-history collection was kept in a small listening booth across the hall. Interview 42 had been recorded in 1986 with Mara Vuković, who had lived near the river since childhood. Deniz read the archivist’s note before pressing play: Vuković was recalling neighborhood life during annual floods, more than forty years after many of the events she described.\n\nHer voice came through softly, with the faint hiss of an old tape.\n\n“Every year, when the river came up, people met by the stone,” she said. “They brought lanterns, watched the water, and counted which steps were still dry. My father called it the old boundary stone, though nobody stood there to measure a boundary. It was where everyone knew to gather.”\n\nVuković continued, describing neighbors carrying notices from one side of the road to the other and children being kept close to the square. She did not give a precise year for any particular flood. Sometimes she said “when I was small,” and sometimes “before the new paving.”\n\nDeniz let the recording finish before writing. “Mara Vuković’s recollection: recurring flood gatherings at the marker; family phrase ‘old boundary stone’; community meeting and observation point.” Beneath that, Deniz wrote, “Remembered account, not exact eyewitness proof of the marker’s original purpose.”\n\nThe map presented the object as a boundary stone beside a road. Vuković remembered it as a place where neighbors gathered, while also repeating the boundary-stone name. Neither description matched the plaque’s confident claim that it was a founding stone marking the beginning of the community.\n\nDeniz drew a line between the three columns, then stopped before adding an explanation. The map might describe an official boundary. Vuković might describe a later use. Or both accounts might preserve only part of what happened. Those were possibilities, not findings.\n\nDeniz closed the folder and rewound the tape once, saving the recording number and speaker’s name. The sources now disagreed in a more specific way: one labeled the marker, one remembered what people did there, and the plaque declared what the place meant. To test them, Deniz would have to leave the archive and compare the old road with the marker’s present surroundings.\n\nDeniz left the archive after copying the map’s small road bend into the notebook. The walk to the square took less than ten minutes, but the neighborhood looked different when measured against a century-old line. The river path ran beside the water as before. The road did not.\n\nAt the square, Deniz stood beside the marker and opened the map flat against one forearm. In 1912, the Old Riverside Road curved inward toward the river, passing about eighteen feet from the marked stone. Today’s paving made a straighter route. It crossed the old curve farther from the water, then widened around the square before joining the river path.\n\nDeniz followed the change with a shoe, tracing the faint edge where older paving disappeared beneath newer blocks. The marker still stood near the square, but the road around it had been altered. That made the map’s placement possible without proving that the stone had stayed in place. The road might have moved around the marker. The marker might have been moved when the road changed. The map alone could not decide.\n\nIn the notebook, Deniz wrote:\n\n“Known: the 1912 map places a marker beside the former road, eighteen feet from its edge. Known: the present paving follows a different line. Inferred: the surroundings changed after 1912. Uncertain: whether the stone moved, whether the road alone moved, or whether both changes occurred.”\n\nThe words looked less satisfying than a definite answer, but they also seemed harder to argue with.\n\nDeniz turned to the marker. From a distance, the plaque’s inscription still sounded certain: FOUNDING STONE. Up close, the letters were uneven. The first word was clearer than the last, where weather had softened the edges of the carved lines. A pale scratch crossed part of the surface, and dirt had collected in the deeper cuts.\n\nDeniz ran a fingertip beside the carving without pressing into it. Worn lettering could mean age, repeated cleaning, weather, or some combination. It showed that the inscription had been exposed for a long time, perhaps, but it did not prove when the words were added or whether “founding” described the marker’s first purpose.\n\nAt the lower third of the stone, a narrow repair seam crossed from one side to the other. The mortar was a different color from the surrounding material. On the river-facing side, the seam was almost hidden; on the square-facing side, it remained plainly visible.\n\nDeniz crouched to look along it. The seam could mark a crack that had been repaired. It could also indicate that the stone had been reset or joined during maintenance. There was no label explaining it, and no record in hand that connected the seam to a particular year. Deniz wrote the observation first, then the possibilities beneath it.\n\n“Known: a visible repair seam crosses the lower section. Known: the plaque’s lettering is worn. Inferred: the marker or its inscription has undergone alteration or maintenance. Uncertain: whether the seam records damage, resetting, or another repair.”\n\nFor a moment, the recording returned to Deniz’s thoughts: neighbors meeting there during floods, watching the water, counting the dry steps. Nothing about the worn letters or changed road disproved that memory. A place could serve as a gathering point even if its earlier function had been different. Physical evidence might limit a story without erasing what people remembered doing there.\n\nDeniz photographed the road junction from the square, then sketched the marker, the paving lines, and the seam. The page now held four kinds of information: what the map showed, what Mara Vuković remembered, what the plaque claimed, and what the neighborhood revealed in the present. None supplied a decisive sequence. Together, however, they made one thing clear: the marker’s story had probably not been a single, unchanged event.\n\nDeniz closed the notebook. Before writing for the public, the evidence would have to be arranged so that a plausible connection did not masquerade as proof.\n\nDeniz returned to the archive with the notebook, photographs, and the copied curve of the 1912 road. At a long table near the map cases, Deniz turned to a clean page and drew four columns: Known, Inferred, Remembered, Uncertain.\n\nThe headings were not four levels of truth. They were four ways a claim had entered the investigation.\n\nUnder Known, Deniz wrote that the 1912 map was dated and placed a small marker about eighteen feet from the Old Riverside Road. The map labeled it “old boundary stone.” It was also known that Mara Vuković’s interview had been recorded in 1986, and that she remembered neighbors gathering at the marker during annual floods. The present plaque was visible and readable, at least in part: “FOUNDING STONE.” The road now followed a straighter line, and the stone had a worn inscription and a repair seam.\n\nDeniz paused over the map’s label. “Old boundary stone” and “founding stone” were not the same description. Neither could simply be corrected by the other. One was written on a dated map; the other was carved into the present marker, though the date of the carving was unknown.\n\nIn the Remembered column, Deniz placed Vuković’s account. The annual gatherings might have happened as she recalled them, but memory did not provide an exact date for the first gathering or prove what the stone had been made to do. The recording showed that the marker had mattered to residents as a place to watch floodwater and meet one another. It did not settle the marker’s original purpose.\n\nThe Inferred column took longer. The changed road made it plausible that the marker had once stood beside a route that no longer existed in the same form. The gatherings suggested a later community use, whether or not that use had been planned when the stone was placed. The plaque’s wording suggested that, at some point, the marker had been given a civic meaning connected to the community’s beginning. The worn lettering and repair seam supported a history of alteration or maintenance, but not one particular sequence.\n\nAt the bottom of the page, Deniz wrote in the Uncertain column: “Exact original purpose: unresolved. Relocation: possible, not demonstrated. Date of plaque: unknown. Date and reason for repair: unknown.”\n\nSeeing the disagreements together made two tempting explanations look inadequate. The first imagined a perfectly unchanged monument: boundary stone from the beginning, founding stone forever, gathering place only by accident. That account ignored the changed road, the worn plaque, and the way people had used the marker during floods. The second dismissed the recording as unreliable because it was a later memory. That account treated remembered experience as useless simply because it was not a survey.\n\nDeniz drew a line beneath both and began a different draft.\n\n“An interpretation supported by the available evidence is that the marker may have passed through several roles. It may first have served as a boundary marker beside the earlier river road. In a later period, residents may have used the same place for flood gatherings and observation. At another point, the marker may have been presented as a civic founding symbol. These stages are plausible, not proven.”\n\nDeniz read the sentence twice. “May have” appeared three times. It sounded cautious, but not empty. Each possibility was attached to something specific: the map, Vuković’s recollection, or the plaque. The physical evidence explained why a simple unchanged story was difficult, while stopping short of proving that the stone had been moved.\n\nOn the next page, Deniz added a note for the eventual public record: “Different sources may be truthful about different periods. The map records a label and location in 1912. The interview preserves a resident’s memory of later use. The inscription records a civic claim visible today.”\n\nDeniz closed the notebook, then reopened it to add one final instruction to the future note: preserve the disagreements, and label the sequence as interpretation. The account did not need to make every source say the same thing. It needed to show why they might not.\n\nThe next step was to write it for the archive’s public landmark record, without turning a careful possibility into a fact.\n\nThe next morning, Deniz opened a fresh document in the archive’s landmark-record system. The source table remained beside the keyboard, its four headings visible on the notebook page: Known, Inferred, Remembered, Uncertain.\n\nThis time, Deniz did not begin with a conclusion. The first section was titled “What the sources say.”\n\n“Present inscription: The plaque on the marker reads ‘FOUNDING STONE’ and states that the stone marks the beginning of the community. The plaque is a direct observation of the marker’s current wording. Its date and original purpose are not given.”\n\nDeniz read the sentence twice. The inscription could be recorded exactly without being treated as a complete history. That distinction had seemed obvious when written in the notebook. On a public page, it needed to be just as clear.\n\nThe next paragraph concerned the map.\n\n“1912 map: A dated map places a small marker approximately eighteen feet from the Old Riverside Road and labels it ‘old boundary stone.’ This is evidence of the marker’s mapped location and label in 1912. It does not prove when the stone was placed, why it was placed, or whether its position later changed.”\n\nDeniz added the distance because it was precise enough to matter. Then came the recording.\n\n“Oral-History Interview 42, recorded in 1986: Mara Vuković remembered neighbors gathering at the marker during annual floods. Her account preserves a community memory of the place as a meeting and observation point. It does not provide an exact date for the first gathering or establish the stone’s original purpose.”\n\nThe wording felt less dramatic than “the stone was used for flood gatherings.” It was also more accurate. Vuković had not been present when the 1912 map was made. Her memory was evidence of what the marker meant to residents in the period she recalled, not a time machine reaching back to its beginning.\n\nDeniz turned to the neighborhood observations.\n\n“Present surroundings: The current road follows a straighter line than the curved route shown on the 1912 map. The plaque’s lettering is worn. A repair seam crosses the lower section of the stone and is made from material different from the surrounding surface. These observations support the possibility of alteration, maintenance, or resetting, but they do not establish which occurred, when it occurred, or why.”\n\nFor a moment, Deniz hovered over the phrase “or resetting.” It was tempting to write “the stone was reset.” The changed road made that possible. The seam made it imaginable. Neither made it known.\n\nDeniz kept the careful wording and began the interpretation section.\n\n“The three descriptions differ because they may preserve different periods and uses of the same marker. The 1912 map records a boundary-stone label beside an earlier road. Vuković’s later recollection records the marker as a place where neighbors gathered to watch floodwater. The present inscription gives the marker a civic meaning as a founding stone. These accounts do not need to describe one identical purpose at one identical moment in order to contain truthful information.”\n\nDeniz continued:\n\n“Taken together, the available evidence supports a cautious interpretation: the marker may first have served as a boundary marker, may later have become a place for flood gatherings, and may eventually have been presented as a symbol of the community’s founding. This sequence is plausible, not proven. The exact original purpose remains uncertain. The repair seam does not prove relocation, and the changed road does not show whether the road moved around the marker or the marker was moved after the road changed.”\n\nThat paragraph was the center of the note. It explained the disagreement without forcing the sources into agreement. The map was not wrong because it failed to mention flood gatherings. Vuković’s memory was not useless because it did not describe the stone’s first purpose. The plaque was not proof of every earlier event simply because it was carved into the marker.\n\nAt the end, Deniz added a short heading: “Status of claims.”\n\n“Known: the wording of the inscription, the date and label of the map, the recorded speaker and date of the interview, the changed road alignment, the worn lettering, and the repair seam.\n\n“Inferred: that the marker’s meaning or use may have changed over time; that the sources may refer to successive periods.\n\n“Remembered: Vuković’s account of annual flood gatherings.\n\n“Uncertain: the exact original purpose, the date and reason for the repair, the date of the plaque, and whether the marker was ever relocated.”\n\nDeniz attached the photograph and road sketch already made in the neighborhood, then read the entire note from the beginning. It did not provide the satisfying neatness of a single origin story. Instead, each claim carried its own label and its own limit.\n\nAfter the archive’s review, the note was accepted for the public landmark record. Deniz saved the final version alongside the map reference, Interview 42 reference, and neighborhood observations. The record now preserved the inscription and the disagreement together. No source had been erased to make the account smoother.\n\nDeniz closed the notebook only after adding one final line beneath the table: “A defensible account explains why the evidence differs; it does not pretend the gaps are filled.”\n\nThree days later, the archive placed a weatherproof copy of Deniz’s landmark note beside the square’s notice board. The stone marker stood a few steps away, its plaque still announcing, “FOUNDING STONE.” The note did not replace the plaque. It sat beside it, with the map reference, Interview 42 reference, and a small photograph of the marker.\n\nDeniz arrived before the afternoon foot traffic thickened. A woman who had been studying the plaque read the first paragraph of the note, then looked from the words to the stone.\n\n“So it was a boundary stone?” she asked.\n\n“Possibly,” Deniz said. “The 1912 map labels it that way. But the map doesn’t tell us exactly when it was placed or what happened later.”\n\nThe woman read the next section. “And people gathered here during floods?”\n\n“That’s what Mara Vuković remembered in the 1986 interview. It’s a recorded memory of how residents used the place. It isn’t proof that the stone was originally made for that purpose.”\n\nThe woman nodded slowly. “My father used to point it out as the place where the neighborhood began.”\n\n“That may be part of its later meaning,” Deniz said. “The plaque records that civic story. The sources don’t all have to be describing the same use at the same time.”\n\nA few more residents stopped to read. One recognized the flood gatherings. Another remembered the old road curving closer to the river. No one had to surrender a memory, and no one was asked to treat a memory as a complete record. The note allowed the accounts to stand beside one another without pretending they were identical.\n\nDeniz watched a man trace the route on the attached sketch with one finger. The present road ran straight past the square, while the 1912 line bent toward the river path. The difference no longer seemed like a contest between a correct map and an incorrect landmark. It was evidence of change, though not evidence of exactly what had changed.\n\nThat evening, back at the archive, Deniz opened the public record and checked its final labels. The map’s date, label, and approximate distance remained under direct evidence. Vuković’s flood account remained under remembered testimony. The inscription remained a present observation. The proposed sequence—boundary marker, later flood-gathering place, eventual founding symbol—was marked interpretation.\n\nDeniz added a sentence beneath it: “The differing descriptions are best explained as records of changing uses, dates, and perspectives. The exact original purpose remains uncertain.”\n\nThen Deniz returned to the photograph of the repair seam. At the marker, the seam had looked like one clear line. Enlarged on the screen, it showed something else: a narrow gap beneath the lower edge, where the repaired section met the paving. Grit filled part of it. The gap did not reveal whether the stone had been lifted, reset, or simply repaired in place. It did not establish a date.\n\nBut together with the changed road alignment, it gave the investigation one precise next question. If the marker had been moved after the road changed, a paving record, maintenance order, or municipal repair file might show when. If it had not moved, those records might show that instead.\n\nDeniz did not add “the marker was relocated” to the archive note. Instead, the final entry read: “Open question: When, if ever, was the marker moved after the Old Riverside Road changed?”\n\nThe account was complete enough to explain the disagreement and careful enough to preserve what remained unknown. Beside the square, the plaque and the note continued to face the same stone. One named it a beginning. The other showed how several beginnings, memories, and uses might have gathered around it over time.",
+  "word_count": 3848,
+  "target_words": 4200,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.001302,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.9,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 12093,
+      "output_tokens": 166,
+      "cost": 0.000507906
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.9,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.95,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 12093,
+      "output_tokens": 166,
+      "cost": 0.000507906
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully executes the StoryContract and meets all required constraints. Deniz, age 21, investigates why a familiar neighborhood marker is described differently across three sources: a present plaque calling it a 'founding stone,' a 1912 map labeling it an 'old boundary stone,' and a 1986 oral-history recording remembering it as a flood-gathering place. The narrative demonstrates sophisticated reasoning appropriate to an independent adult reader: Deniz carefully distinguishes observation from interpretation, separates known facts from inferences and memories, and resists the temptation to force sources into false agreement. The story preserves meaningful disagreement (C7) through three distinct sources (C6), explicitly labels evidentiary status (C8), and avoids omniscient resolution (C9). The ending opens a bounded, evidence-based question about relocation records (C10) without introducing new mysteries. Vocabulary, pacing, and conceptual complexity are well-calibrated to age 21 (C1, C11). Causality is explicit without didacticism (C2). No combat or physical intimidation occurs (C3). Continuity is maintained across all six scenes (C4), and no benchmark language appears (C5). The prose is clear and engaging, with strong scene-to-scene progression. The source table, neighborhood observations, and final archive note all demonstrate Deniz's independent judgment and responsibility. The story closes with residents reading the note beside the marker, showing the account's real-world consequence while preserving uncertainty. Average score: 4.0. All criteria meet or exceed the acceptance threshold of 3, with no critical failures. The story is ready for publication.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3848,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.95,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.9,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 12093,
+          "output_tokens": 166,
+          "cost": 0.000507906
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully executes the StoryContract and meets all required constraints. Deniz, age 21, investigates why a familiar neighborhood marker is described differently across three sources: a present plaque calling it a 'founding stone,' a 1912 map labeling it an 'old boundary stone,' and a 1986 oral-history recording remembering it as a flood-gathering place. The narrative demonstrates sophisticated reasoning appropriate to an independent adult reader: Deniz carefully distinguishes observation from interpretation, separates known facts from inferences and memories, and resists the temptation to force sources into false agreement. The story preserves meaningful disagreement (C7) through three distinct sources (C6), explicitly labels evidentiary status (C8), and avoids omniscient resolution (C9). The ending opens a bounded, evidence-based question about relocation records (C10) without introducing new mysteries. Vocabulary, pacing, and conceptual complexity are well-calibrated to age 21 (C1, C11). Causality is explicit without didacticism (C2). No combat or physical intimidation occurs (C3). Continuity is maintained across all six scenes (C4), and no benchmark language appears (C5). The prose is clear and engaging, with strong scene-to-scene progression. The source table, neighborhood observations, and final archive note all demonstrate Deniz's independent judgment and responsibility. The story closes with residents reading the note beside the marker, showing the account's real-world consequence while preserving uncertainty. Average score: 4.0. All criteria meet or exceed the acceptance threshold of 3, with no critical failures. The story is ready for publication.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000507906,
+      "final_judge_cost": {
+        "usd": 0.017706,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 46.776,
+    "scene_stage_seconds": 115.66,
+    "final_stage_seconds": 10.255,
+    "total_pipeline_seconds": 172.69
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.013732462,
+    "scene_generation_usd": 0.0210665,
+    "scene_continuity_evaluator_usd": 0.001187886,
+    "whole_continuity_evaluator_usd": 0.000507906,
+    "whole_continuity_evaluator_usd_total": 0.000507906,
+    "semantic_judge_usd": {
+      "usd": 0.017706,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.017706,
+    "scene_jev_usd": 0.001187886,
+    "whole_jev_usd": 0.000507906,
+    "whole_jev_usd_total": 0.000507906,
+    "final_haiku": {
+      "usd": 0.017706,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.017706,
+    "total_pipeline_usd": 0.054200754
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 12093,
+      "output_tokens": 166,
+      "cost": 0.000507906
+    },
+    "semantic_judge": {
+      "input_tokens": 15271,
+      "output_tokens": 487,
+      "total_tokens": 15758
+    },
+    "whole_jev": {
+      "input_tokens": 12093,
+      "output_tokens": 166,
+      "cost": 0.000507906
+    },
+    "final_haiku": {
+      "input_tokens": 15271,
+      "output_tokens": 487,
+      "total_tokens": 15758
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
