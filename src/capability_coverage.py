@@ -30,6 +30,9 @@ STATUS_RANK = {
     "PROVISIONAL": 1,
     "ESTABLISHED": 0,
 }
+SENTINEL_MINIMUM_FINAL_CRITERION_LTE = 3
+SENTINEL_SEMANTIC_REPAIRS_PER_RUN_GTE = 2
+PERSISTENT_ANOMALY_RUN_COUNT_GTE = 2
 
 
 @dataclass(frozen=True)
@@ -63,6 +66,11 @@ class CoverageCandidate:
     current_semantic_repairs_per_run: float
     current_scene_attempts_per_run: float
     current_minimum_final_criterion: int | None
+    current_distinct_spec_count: int
+    current_anomalous_run_count: int
+    current_anomalous_spec_count: int
+    diagnostic_fixture_required: bool
+    targeted_intervention_candidate: bool
     current_status: str
     family_observed_age_count: int
     historical_run_count: int
@@ -159,6 +167,17 @@ def _semantic_repairs(row: QualificationEvidence) -> int:
     return sum(scene.semantic_repair_count for scene in row.scenes)
 
 
+def _is_current_anomaly(row: QualificationEvidence) -> bool:
+    return (
+        not row.accepted
+        or (
+            row.final_judge_minimum is not None
+            and row.final_judge_minimum <= SENTINEL_MINIMUM_FINAL_CRITERION_LTE
+        )
+        or _semantic_repairs(row) >= SENTINEL_SEMANTIC_REPAIRS_PER_RUN_GTE
+    )
+
+
 def _candidate_priority(candidate: CoverageCandidate) -> tuple[Any, ...]:
     return (
         STATUS_RANK[candidate.current_status],
@@ -179,13 +198,17 @@ def _sentinel_repeat_candidate(
         candidate
         for candidate in candidates
         if candidate.current_status in {"THIN", "PROVISIONAL"}
+        and not candidate.diagnostic_fixture_required
+        and not candidate.targeted_intervention_candidate
         and (
             candidate.current_failure_count > 0
             or (
                 candidate.current_minimum_final_criterion is not None
-                and candidate.current_minimum_final_criterion <= 3
+                and candidate.current_minimum_final_criterion
+                <= SENTINEL_MINIMUM_FINAL_CRITERION_LTE
             )
-            or candidate.current_semantic_repairs_per_run >= 2.0
+            or candidate.current_semantic_repairs_per_run
+            >= SENTINEL_SEMANTIC_REPAIRS_PER_RUN_GTE
         )
     ]
     if not eligible:
@@ -194,7 +217,8 @@ def _sentinel_repeat_candidate(
     def priority(candidate: CoverageCandidate) -> tuple[Any, ...]:
         low_minimum = (
             candidate.current_minimum_final_criterion is not None
-            and candidate.current_minimum_final_criterion <= 3
+            and candidate.current_minimum_final_criterion
+            <= SENTINEL_MINIMUM_FINAL_CRITERION_LTE
         )
         return (
             1 if candidate.current_failure_count > 0 else 0,
@@ -269,6 +293,17 @@ def build_coverage_candidates(
             if row.final_judge_minimum is not None
         ]
         current_minimum = min(current_minimums) if current_minimums else None
+        current_distinct_specs = len({row.spec_sha256 for row in current})
+        anomalous_rows = [row for row in current if _is_current_anomaly(row)]
+        current_anomalous_run_count = len(anomalous_rows)
+        current_anomalous_spec_count = len(
+            {row.spec_sha256 for row in anomalous_rows}
+        )
+        diagnostic_fixture_required = (
+            current_anomalous_run_count >= PERSISTENT_ANOMALY_RUN_COUNT_GTE
+            and current_distinct_specs < 2
+        )
+        targeted_intervention_candidate = current_anomalous_spec_count >= 2
         history_runs = len(historical)
         history_failures = sum(1 for row in historical if not row.accepted)
         history_repairs = sum(_semantic_repairs(row) for row in historical)
@@ -302,10 +337,23 @@ def build_coverage_candidates(
             reasons.append(
                 f"CURRENT_SCENE_ATTEMPTS_PER_RUN:{current_attempt_rate:.4f}"
             )
+            reasons.append(
+                f"CURRENT_DISTINCT_SPEC_COUNT:{current_distinct_specs}"
+            )
+            reasons.append(
+                f"CURRENT_ANOMALOUS_RUN_COUNT:{current_anomalous_run_count}"
+            )
+            reasons.append(
+                f"CURRENT_ANOMALOUS_SPEC_COUNT:{current_anomalous_spec_count}"
+            )
             if current_minimum is not None:
                 reasons.append(
                     f"CURRENT_MINIMUM_FINAL_CRITERION:{current_minimum}"
                 )
+            if diagnostic_fixture_required:
+                reasons.append("DIAGNOSTIC_FIXTURE_REQUIRED")
+            if targeted_intervention_candidate:
+                reasons.append("TARGETED_INTERVENTION_CANDIDATE")
         if history_runs:
             reasons.append(f"HISTORICAL_RUNS:{history_runs}")
             reasons.append(
@@ -335,6 +383,11 @@ def build_coverage_candidates(
                 current_semantic_repairs_per_run=current_repair_rate,
                 current_scene_attempts_per_run=current_attempt_rate,
                 current_minimum_final_criterion=current_minimum,
+                current_distinct_spec_count=current_distinct_specs,
+                current_anomalous_run_count=current_anomalous_run_count,
+                current_anomalous_spec_count=current_anomalous_spec_count,
+                diagnostic_fixture_required=diagnostic_fixture_required,
+                targeted_intervention_candidate=targeted_intervention_candidate,
                 current_status=status,
                 family_observed_age_count=observed_age_count,
                 historical_run_count=history_runs,
@@ -378,6 +431,14 @@ def build_coverage_candidates(
             for candidate in candidates
             if candidate.current_status == "ESTABLISHED"
         ),
+        "diagnostic_fixture_required_count": sum(
+            1 for candidate in candidates if candidate.diagnostic_fixture_required
+        ),
+        "targeted_intervention_candidate_count": sum(
+            1
+            for candidate in candidates
+            if candidate.targeted_intervention_candidate
+        ),
     }
     return identity, candidates, summary
 
@@ -395,6 +456,8 @@ def select_coverage_batch(
         candidate
         for candidate in candidates
         if candidate.current_status != "ESTABLISHED"
+        and not candidate.diagnostic_fixture_required
+        and not candidate.targeted_intervention_candidate
     ]
     selected: list[CoverageCandidate] = []
     selected_ids: set[str] = set()
@@ -467,6 +530,16 @@ def build_coverage_plan(
         batch_size=batch_size,
     )
     candidate_payload = [asdict(candidate) for candidate in candidates]
+    diagnostic_fixture_required_case_ids = [
+        candidate.case_id
+        for candidate in candidates
+        if candidate.diagnostic_fixture_required
+    ]
+    targeted_intervention_candidate_case_ids = [
+        candidate.case_id
+        for candidate in candidates
+        if candidate.targeted_intervention_candidate
+    ]
     selected_payload = []
     for candidate in selected:
         payload = asdict(candidate)
@@ -493,7 +566,17 @@ def build_coverage_plan(
                 "eligible_statuses": ["THIN", "PROVISIONAL"],
                 "terminal_failure_triggers": True,
                 "minimum_final_criterion_lte": 3,
-                "semantic_repairs_per_run_gte": 2.0,
+                "semantic_repairs_per_run_gte": (
+                    SENTINEL_SEMANTIC_REPAIRS_PER_RUN_GTE
+                ),
+            },
+            "fixture_diversity_guard": {
+                "persistent_anomaly_run_count_gte": (
+                    PERSISTENT_ANOMALY_RUN_COUNT_GTE
+                ),
+                "same_fixture_action": "DIAGNOSTIC_FIXTURE_REQUIRED",
+                "multi_fixture_action": "TARGETED_INTERVENTION_CANDIDATE",
+                "automatic_repeat_when_escalated": False,
             },
             "production_frequency_weighting": "DISABLED_NO_TELEMETRY",
             "batch_size": batch_size,
@@ -502,6 +585,12 @@ def build_coverage_plan(
         "summary": {
             **summary,
             "sentinel_repeat_case_id": sentinel_case_id,
+            "diagnostic_fixture_required_case_ids": (
+                diagnostic_fixture_required_case_ids
+            ),
+            "targeted_intervention_candidate_case_ids": (
+                targeted_intervention_candidate_case_ids
+            ),
         },
         "selected": selected_payload,
         "candidates": candidate_payload,
@@ -556,9 +645,31 @@ def render_plan_markdown(plan: dict[str, Any]) -> str:
             f"established **{summary['current_protocol_established_case_count']}**."
         ),
         "",
-        "| Lane | Case | Age tier | Family | Target | Current | Current repairs/run | Current attempts/run | Family age coverage | Historical repairs/run |",
-        "|---|---|---|---|---:|---|---:|---:|---:|---:|",
     ]
+    if summary["diagnostic_fixture_required_case_ids"]:
+        lines.extend(
+            [
+                "Diagnostic fixture required: "
+                + ", ".join(summary["diagnostic_fixture_required_case_ids"]),
+                "",
+            ]
+        )
+    if summary["targeted_intervention_candidate_case_ids"]:
+        lines.extend(
+            [
+                "Targeted intervention candidates: "
+                + ", ".join(
+                    summary["targeted_intervention_candidate_case_ids"]
+                ),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "| Lane | Case | Age tier | Family | Target | Current | Current repairs/run | Current attempts/run | Family age coverage | Historical repairs/run |",
+            "|---|---|---|---|---:|---|---:|---:|---:|---:|",
+        ]
+    )
     for item in plan["selected"]:
         lines.append(
             f"| {item['selection_lane']} | {item['case_id']} | "

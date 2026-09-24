@@ -108,6 +108,47 @@ The first real sentinel selected by this rule is
 `MIDDLE_CHILD × emotional_development` after its initial v3 run passed final
 quality gates but required 3 semantic repairs across 9 scene attempts.
 
+## Fixture-diversity escalation guard
+
+Repeating one frozen benchmark fixture is useful for separating stochastic
+variance from a one-off bad run, but repeated sampling of the same fixture can
+become benchmark overfitting.
+
+A current-protocol run is anomalous for this guard when any of the existing
+sentinel conditions is true at run level:
+
+- the run is not accepted;
+- final semantic-judge minimum is `<= 3`;
+- the run required at least 2 semantic repairs.
+
+The planner tracks both distinct current spec fingerprints and distinct
+anomalous spec fingerprints.
+
+Escalation rules:
+
+1. two or more anomalous runs with only one distinct current spec fingerprint
+   -> `DIAGNOSTIC_FIXTURE_REQUIRED`;
+2. anomalous runs observed on two or more distinct spec fingerprints
+   -> `TARGETED_INTERVENTION_CANDIDATE`.
+
+Cells in either escalation state are excluded from automatic same-fixture
+qualification matrices. The planner reports them separately instead.
+
+`DIAGNOSTIC_FIXTURE_REQUIRED` means the next evidence must come from a second
+frozen premise with the same governed axes. It does **not** authorize a prompt
+or runtime-policy change.
+
+`TARGETED_INTERVENTION_CANDIDATE` means the anomaly generalized across
+fixtures and a controlled intervention experiment may be designed. It still
+does not authorize direct production tuning; the intervention must pass the
+same-cell diagnostic set and regression controls before promotion.
+
+The first real cell to exercise this guard is
+`ADULT × puzzle_problem_solving`: two independent v3 runs on the same frozen
+spec both passed final judge 4/4 but each required two semantic repairs. The
+planner therefore requests a second diagnostic fixture rather than repeating
+that benchmark again.
+
 ## No invented production-frequency signal
 
 v1 deliberately has no production-frequency weighting.
