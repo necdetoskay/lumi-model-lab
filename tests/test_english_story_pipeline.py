@@ -110,6 +110,78 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertNotEqual(second["seed"], 42)
         self.assertIn("FORMAT RECOVERY", second["user_prompt"])
 
+    @patch("src.english_story_pipeline.parse_json_object")
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_recovers_direct_jsondecodeerror(
+        self,
+        mock_call,
+        mock_parse,
+    ):
+        valid = good_envelope(100)
+        decode_error = __import__("json").JSONDecodeError(
+            "Expecting ',' delimiter",
+            '{"broken": true}',
+            14,
+        )
+        mock_parse.side_effect = [decode_error, valid]
+        mock_call.side_effect = [
+            (
+                '{"broken": true}',
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.0,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+            (
+                __import__("json").dumps(valid),
+                {
+                    "choices": [{"finish_reason": "stop"}],
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 20,
+                        "total_tokens": 30,
+                        "cost": 0.001,
+                    },
+                },
+                {
+                    "temperature": 0.0,
+                    "reasoning": {"effort": "none", "exclude": True},
+                    "response_format": {"type": "json_object"},
+                },
+            ),
+        ]
+
+        payload, _, _, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="anthropic/claude-haiku-4.5",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.0,
+            max_tokens=2500,
+            seed=None,
+            request_class="judge",
+        )
+
+        self.assertEqual(payload, valid)
+        self.assertEqual(len(failures), 1)
+        self.assertIn("Expecting ',' delimiter", failures[0]["error"])
+        self.assertEqual(mock_call.call_count, 2)
+        self.assertEqual(mock_parse.call_count, 2)
+        self.assertIn(
+            "FORMAT RECOVERY",
+            mock_call.call_args_list[1].kwargs["user_prompt"],
+        )
+
     def test_default_2000_word_budget_distribution(self):
         self.assertEqual(
             allocate_scene_budgets(2000),
@@ -616,7 +688,11 @@ class EnglishStoryPipelineTests(unittest.TestCase):
                 "target_resolved": {
                     "type": "noul",
                     "noul": 0.91,
-                }
+                },
+                "no_residual_ambiguity": {
+                    "type": "noul",
+                    "noul": 0.93,
+                },
             },
             "usage": {"cost": 0.00001},
             "model": "typesafe/jev-1.13-20260917",
@@ -638,13 +714,64 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         )
         self.assertTrue(result["verified"])
         self.assertEqual(result["probability"], 0.91)
+        self.assertEqual(
+            result["probabilities"],
+            {"target_resolved": 0.91, "no_residual_ambiguity": 0.93},
+        )
         questions = mock_jev.call_args.kwargs["questions"]
-        self.assertEqual(list(questions), ["target_resolved"])
+        self.assertEqual(
+            list(questions),
+            ["target_resolved", "no_residual_ambiguity"],
+        )
         self.assertEqual(questions["target_resolved"]["type"], "noul")
+        self.assertEqual(questions["no_residual_ambiguity"]["type"], "noul")
         sent_state = mock_jev.call_args.kwargs["state"]
         self.assertEqual(
             sent_state["repair_issue"],
             "The timing statement is contradictory.",
+        )
+
+    @patch("src.english_story_pipeline.call_openrouter_jev")
+    def test_final_repair_verification_rejects_residual_ambiguity(
+        self,
+        mock_jev,
+    ):
+        mock_jev.return_value = {
+            "answers": {
+                "target_resolved": {
+                    "type": "noul",
+                    "noul": 0.94,
+                },
+                "no_residual_ambiguity": {
+                    "type": "noul",
+                    "noul": 0.61,
+                },
+            },
+            "usage": {"cost": 0.00001},
+        }
+        scenes = [
+            {
+                "scene": 1,
+                "contract": {"purpose": "observe"},
+                "envelope": good_envelope(100),
+            }
+        ]
+        result = verify_final_repair_target(
+            api_key="test",
+            plan={"story_contract": {"central_problem": "signal"}},
+            scenes=scenes,
+            scene_index=1,
+            issue="The first wording remains ambiguous until a later clarification.",
+        )
+        self.assertFalse(result["verified"])
+        self.assertEqual(result["probability"], 0.61)
+        self.assertEqual(
+            result["probabilities"]["target_resolved"],
+            0.94,
+        )
+        self.assertEqual(
+            result["probabilities"]["no_residual_ambiguity"],
+            0.61,
         )
 
     @patch("src.english_story_pipeline.call_openrouter")
@@ -686,12 +813,64 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             issue="add one clarifying sentence",
             seed=7601,
             observed_scene_indices=[1],
+            repair_round=2,
         )
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 100)
         self.assertEqual(repaired["state_delta"], envelope["state_delta"])
         self.assertIsNone(mock_call.call_args.kwargs["max_tokens"])
+        self.assertEqual(mock_call.call_args.kwargs["temperature"], 0.0)
+        sent = __import__("json").loads(mock_call.call_args.kwargs["user_prompt"])
+        self.assertTrue(sent["strict_retry"])
+        self.assertEqual(sent["repair_round"], 2)
+        self.assertEqual(attempt["repair_round"], 2)
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_final_scene_repair_ignores_model_state_delta_mutation(
+        self,
+        mock_call,
+    ):
+        original = good_envelope(100)
+        model_output = good_envelope(100)
+        model_output["state_delta"]["location"] = "invented location"
+        mock_call.return_value = (
+            __import__("json").dumps(model_output),
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 20,
+                    "total_tokens": 30,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "reasoning": {"effort": "none", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+        )
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "contract": {"purpose": "observe"},
+                "envelope": original,
+            }
+        ]
+        repaired, errors, word_count, attempt = repair_scene_for_final_judge(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={"story_contract": {}, "scenes": [{"purpose": "observe"}]},
+            ledger=[{"scene": 1, "word_count": 100}],
+            scenes=scenes,
+            scene_index=1,
+            issue="clarify one phrase",
+            seed=7601,
+        )
+        self.assertEqual(errors, [])
+        self.assertEqual(word_count, 100)
+        self.assertEqual(repaired["state_delta"], original["state_delta"])
+        self.assertTrue(attempt["ignored_model_state_delta_change"])
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_antecedent_repair_receives_observed_scene_context(self, mock_call):
@@ -966,6 +1145,33 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         result = validate_final_judge(payload)
         self.assertTrue(result["accepted"])
         self.assertGreaterEqual(result["average"], 4.0)
+
+    def test_final_haiku_gate_keeps_optional_repairs_non_blocking_when_scores_pass(self):
+        payload = {
+            "scores": {
+                "instruction_following": 4,
+                "coherence": 4,
+                "character_consistency": 4,
+                "age_appropriateness": 4,
+                "creativity": 4,
+                "style_quality": 4,
+                "continuity": 4,
+                "ending_quality": 4,
+            },
+            "critical_failures": [],
+            "repair_targets": [
+                {
+                    "scene": 6,
+                    "repair_scene": 6,
+                    "issue": "Optional thematic reflection could be stronger.",
+                }
+            ],
+            "summary": "Production-ready with optional polish.",
+        }
+        result = validate_final_judge(payload)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["average"], 4.0)
+        self.assertEqual(len(result["repair_targets"]), 1)
 
     def test_final_haiku_gate_rejects_critical_failure(self):
         payload = {
