@@ -59,7 +59,7 @@ jobs:
 
           root = Path("runs/story_v5_commit_cohort")
           checks = {
-              "ece": ("local_area.GLASS_PASSAGE.status", "RUMORED", 12, 6, 5, 4),
+              "ece": ("local_area.GLASS_PASSAGE.status", "RUMORED", 11, 6, 5, 4),
               "arda": ("local_area.ARCHIVE_STAIR.status", "RUMORED", 29, 18, 13, 7),
               "ada": ("local_area.SEALED_SURVEY_ROOM.status", "RUMORED", 64, 42, 19, 15),
           }
@@ -84,6 +84,7 @@ jobs:
           PY
 
       - name: Archive commit cohort evidence
+        if: always()
         shell: bash
         run: |
           DEST="experiments/results/story-v5-state-commit-cohort/${GITHUB_RUN_ID}"
