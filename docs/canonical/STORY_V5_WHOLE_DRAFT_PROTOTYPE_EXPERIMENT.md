@@ -304,3 +304,144 @@ The desired production default is:
 `Context Compiler -> Narrative Architect -> Whole Draft Writer -> Deterministic/JEV/Judge Acceptance -> StoryOutcome -> Atomic State Commit -> DELIVERED`
 
 Repair remains an exception and must be routed by defect ownership.
+
+
+## Four-length validation sweep — 36018357054
+
+Evidence branch:
+
+`evidence/story-v5-length-sweep-36018357054`
+
+Purpose:
+
+Test the same v5 whole-draft protocol across materially different story lengths, ages, and narrative families without changing model roles or acceptance thresholds.
+
+Cases:
+
+| Case | Target | Final | Scenes | Normalization | Repair | Haiku | Outcome |
+| --- | ---: | ---: | ---: | --- | --- | ---: | --- |
+| age 5 / nature | 500 | 564 | 4 | no | no | 4.875 | commit-ready |
+| age 9 / exploration | 1500 | 1783 | 5 | no | no | 4.875 | commit-ready |
+| age 12 / puzzle | 2800 | 2994 | 5 | no | no | 4.875 | commit-ready |
+| adult / world-lore | 4200 | 5001 | 7 | no | no | 4.875 | commit-ready |
+
+All four stories:
+
+- passed the deterministic word and repetition gates on the first whole draft;
+- required zero length normalization;
+- required zero semantic prose repair;
+- had repeated 8-gram ratios at or near zero;
+- passed every whole-story JEV threshold;
+- produced schema-valid StoryOutcome proposals;
+- did not write to the database.
+
+### Dynamic scene-count evidence
+
+The architect did not collapse onto a fixed six-scene pattern:
+
+- 500 words -> 4 scenes;
+- 1500 words -> 5 scenes;
+- 2800 words -> 5 scenes;
+- 4200 words -> 7 scenes.
+
+This is positive evidence that scene count can be owned by the Narrative Architect while PAYOFF and RESOLUTION remain role-based rather than position-based.
+
+### Continuity trend
+
+JEV remained above threshold in every case.
+
+Notable values:
+
+- causal chain: 0.95 in all four cases;
+- goal continuity: 0.97–0.98;
+- evidence progression: 0.95–0.96;
+- no contradictions: 0.90 / 0.91 / 0.84 / 0.84 as stories became more complex;
+- decomposition fitness: 0.91 / 0.89 / 0.88 / 0.87.
+
+The decline in contradiction confidence and decomposition fitness at higher complexity is not a failure, but it is a useful signal for future qualification. Longer stories should not be declared equally easy merely because they pass.
+
+### Cost and latency at the observed 2026-09-24 exchange rate
+
+Reported per-run model costs including whole-story JEV:
+
+- 500-word story: about 0.61 TL, 59.7 s;
+- 1500-word story: about 0.91 TL, 83.9 s;
+- 2800-word story: about 1.16 TL, 104.5 s;
+- 4200-word story: about 1.53 TL, 134.7 s.
+
+Reported total for the four-story sweep: about 4.21 TL.
+
+Provider preflight usage before/after the sweep moved by less than the sum of per-call reported costs, likely because provider account usage reporting is not guaranteed to update synchronously. For experiment accounting, immutable per-call evidence remains primary.
+
+### Judge saturation discovered
+
+All four materially different stories received the exact same Haiku pattern:
+
+- instruction following: 5;
+- coherence: 5;
+- character consistency: 5;
+- age appropriateness: 5;
+- creativity: 4;
+- style quality: 5;
+- continuity: 5;
+- ending quality: 5;
+- average: 4.875.
+
+This is too uniform to treat Haiku's scalar score as a high-resolution quality metric.
+
+Decision:
+
+> Haiku may remain a candidate production acceptance gate, but its 1–5 score must not be treated as sufficient evidence for relative story quality or model ranking.
+
+Model Lab comparisons should add a calibrated pairwise/relative judge path before using judge scores to choose one generator/architect over another.
+
+### StoryOutcome over-extraction discovered
+
+The untyped prototype extractor sometimes proposes transient facts as persistent state, for example:
+
+- a child's current activity;
+- a temporary emotional state;
+- an item briefly picked up and then put back;
+- generic adult-support relationship wording.
+
+These are story-supported facts, but they are not automatically canonical database mutations.
+
+Decision:
+
+> Evidence support is necessary but not sufficient for persistence.
+
+Production state extraction must be closed by application-provided authority:
+
+- canonical entity IDs;
+- current revisions/fingerprints;
+- allowed mutation types;
+- persistence class;
+- legal fields;
+- old/current value where relevant.
+
+The model must emit only typed `StateMutationProposal` records inside that closed contract. Transient scene facts should remain story evidence or memory candidates unless the application schema explicitly allows persistence.
+
+## Updated v5 assessment after the four-length sweep
+
+The whole-draft candidate is now materially stronger than a one-story proof of concept.
+
+Positive evidence:
+
+- 4/4 first-draft deterministic PASS;
+- 4/4 JEV PASS;
+- 4/4 semantic gate PASS;
+- 4/4 outcome-schema PASS;
+- zero prose repairs;
+- zero length normalization in the sweep;
+- scene count adapted to story length/complexity;
+- low cost and latency relative to the earlier scene-by-scene Sonnet sample.
+
+Remaining blockers are now less about basic prose generation and more about governance:
+
+1. typed state-mutation authority;
+2. judge calibration / pairwise quality discrimination;
+3. production-like Character + World + Opportunity + Canon + Saga context;
+4. atomic/idempotent application commit;
+5. larger reliability sample before any SaaS SLO claim.
+
+The evidence does **not** justify 80-cell qualification yet, but it does justify treating v5 whole-draft as the leading production-candidate architecture.
