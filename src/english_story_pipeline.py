@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +37,8 @@ FINAL_TARGETED_REPAIR_PROMPT = Path("prompts/story_final_targeted_repair_en_v1.m
 TOTAL_STORY_MIN_RATIO = 0.75
 TOTAL_STORY_MAX_RATIO = 1.25
 DEFAULT_SPEC = Path("data/specifications/benchmark_en/01_exploration_mystery.yaml")
+GENERATION_PROTOCOL_VERSION = "english-story-production.v1"
+EVALUATION_PROTOCOL_VERSION = "english-story-evaluation.v1"
 
 FINAL_CRITERIA = (
     "instruction_following",
@@ -387,6 +390,7 @@ def repair_scene_for_jev(
         ensure_ascii=False,
         indent=2,
     )
+    attempt_started = time.perf_counter()
     repaired, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
@@ -403,6 +407,7 @@ def repair_scene_for_jev(
     )
     attempt = {
         "kind": f"jev_repair_{repair_index}",
+        "elapsed_seconds": round(time.perf_counter() - attempt_started, 3),
         "repair_reasons": repair_reasons,
         "structured_parse_retries": parse_failures,
         "errors": errors,
@@ -669,6 +674,7 @@ def repair_scene_word_budget(
         ensure_ascii=False,
         indent=2,
     )
+    attempt_started = time.perf_counter()
     payload, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
@@ -706,6 +712,7 @@ def repair_scene_word_budget(
 
     attempt = {
         "kind": f"word_budget_repair_{repair_index}",
+        "elapsed_seconds": round(time.perf_counter() - attempt_started, 3),
         "mode": mode,
         "required_word_range": [required_min, required_max],
         "aggressiveness": aggressiveness,
@@ -753,6 +760,7 @@ def produce_scene(
         plan_review=plan_review,
     )
 
+    attempt_started = time.perf_counter()
     envelope, body, request, parse_failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
@@ -770,6 +778,7 @@ def produce_scene(
     attempts.append(
         {
             "kind": "generate",
+            "elapsed_seconds": round(time.perf_counter() - attempt_started, 3),
             "structured_parse_retries": parse_failures,
             "errors": errors,
             "word_count": word_count,
@@ -801,6 +810,7 @@ def produce_scene(
             ensure_ascii=False,
             indent=2,
         )
+        attempt_started = time.perf_counter()
         envelope, body, request, parse_failures = call_structured_json_with_retry(
             api_key=api_key,
             model=model,
@@ -818,6 +828,7 @@ def produce_scene(
         attempts.append(
             {
                 "kind": f"repair_{repair_index}",
+                "elapsed_seconds": round(time.perf_counter() - attempt_started, 3),
                 "structured_parse_retries": parse_failures,
                 "errors": errors,
                 "word_count": word_count,
@@ -1592,6 +1603,8 @@ def run(
     if spec.language.lower() != "en":
         raise RuntimeError("English story pipeline requires language=en.")
 
+    pipeline_started = time.perf_counter()
+    plan_started = time.perf_counter()
     plan_result = run_plan_smoke(model, jev_model, judge_model, spec_path)
     plan_cost_history: list[dict[str, Any]] = [dict(plan_result.get("costs") or {})]
     plan_repair_attempts: list[dict[str, Any]] = []
@@ -1643,6 +1656,7 @@ def run(
         )
 
     plan_result["repair_attempts"] = plan_repair_attempts
+    plan_elapsed_seconds = round(time.perf_counter() - plan_started, 3)
     plan = plan_result["plan"]
     budgets = allocate_scene_budgets(spec.target_words)
     ledger: list[dict[str, Any]] = []
@@ -1654,6 +1668,7 @@ def run(
     }
 
     for position, scene_contract in enumerate(plan["scenes"]):
+        scene_started = time.perf_counter()
         scene_index = position + 1
         next_scene = (
             plan["scenes"][position + 1]
@@ -1712,6 +1727,7 @@ def run(
                 flush=True,
             )
 
+        continuity_eval_started = time.perf_counter()
         jev = evaluate_scene_jev(
             api_key=api_key,
             scene_index=scene_index,
@@ -1722,6 +1738,9 @@ def run(
             envelope=envelope,
         )
         jev_history = [jev]
+        continuity_evaluator_elapsed_seconds = [
+            round(time.perf_counter() - continuity_eval_started, 3)
+        ]
         semantic_repairs: list[dict[str, Any]] = []
         semantic_errors: list[str] = []
 
@@ -1766,6 +1785,7 @@ def run(
                 "word_count": word_count,
             }
             if not semantic_errors:
+                continuity_eval_started = time.perf_counter()
                 jev = evaluate_scene_jev(
                     api_key=api_key,
                     scene_index=scene_index,
@@ -1776,6 +1796,9 @@ def run(
                     envelope=envelope,
                 )
                 jev_history.append(jev)
+                continuity_evaluator_elapsed_seconds.append(
+                    round(time.perf_counter() - continuity_eval_started, 3)
+                )
                 repair_record["after_jev"] = jev
             semantic_repairs.append(repair_record)
 
@@ -1813,9 +1836,13 @@ def run(
                 "attempts": attempts,
                 "jev": jev,
                 "jev_history": jev_history,
+                "continuity_evaluator_elapsed_seconds": (
+                    continuity_evaluator_elapsed_seconds
+                ),
                 "semantic_repairs": semantic_repairs,
                 "word_budget_warnings": scene_word_budget_warnings,
                 "continuity_escalation_required": continuity_escalation_required,
+                "elapsed_seconds": round(time.perf_counter() - scene_started, 3),
             }
         )
         print(
@@ -1838,6 +1865,7 @@ def run(
         )
         previous_prose = envelope["prose"]
 
+    final_stage_started = time.perf_counter()
     (
         final_evaluation,
         final_evaluations,
@@ -1877,6 +1905,11 @@ def run(
             ),
             flush=True,
         )
+
+    final_stage_elapsed_seconds = round(
+        time.perf_counter() - final_stage_started, 3
+    )
+    total_pipeline_seconds = round(time.perf_counter() - pipeline_started, 3)
 
     story = final_evaluation["story"]
     total_words = final_evaluation["word_count"]
@@ -1919,9 +1952,13 @@ def run(
         "pipeline": "english_story_pipeline_v1",
         "models": {
             "generator": model,
+            "continuity_evaluator": jev_model,
+            "semantic_judge": judge_model,
             "jev": jev_model,
             "judge": judge_model,
         },
+        "generation_protocol_version": GENERATION_PROTOCOL_VERSION,
+        "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
         "spec": str(spec_path),
         "accepted": accepted,
         "plan_result": plan_result,
@@ -1934,6 +1971,7 @@ def run(
         "target_words": spec.target_words,
         "deterministic_errors": deterministic_errors,
         "repeat_8gram_ratio": repetition,
+        "whole_story_continuity": whole_jev,
         "whole_story_jev": whole_jev,
         "final_judge": final_judge,
         "final_polish_cycles": final_polish_cycles,
@@ -1949,9 +1987,22 @@ def run(
             }
             for item in final_evaluations
         ],
+        "timings": {
+            "plan_stage_seconds": plan_elapsed_seconds,
+            "scene_stage_seconds": round(
+                sum(float(scene.get("elapsed_seconds") or 0.0) for scene in scenes), 3
+            ),
+            "final_stage_seconds": final_stage_elapsed_seconds,
+            "total_pipeline_seconds": total_pipeline_seconds,
+        },
         "costs": {
             "plan_stage_usd_total": round(total_plan_stage_cost, 9),
             "scene_generation_usd": round(total_generator_cost, 9),
+            "scene_continuity_evaluator_usd": round(total_scene_jev_cost, 9),
+            "whole_continuity_evaluator_usd": final_evaluation["whole_jev_cost"],
+            "whole_continuity_evaluator_usd_total": round(total_whole_jev_cost, 9),
+            "semantic_judge_usd": final_evaluation["final_judge_cost"],
+            "semantic_judge_usd_total": round(total_final_haiku_cost, 9),
             "scene_jev_usd": round(total_scene_jev_cost, 9),
             "whole_jev_usd": final_evaluation["whole_jev_cost"],
             "whole_jev_usd_total": round(total_whole_jev_cost, 9),
@@ -1960,6 +2011,8 @@ def run(
             "total_pipeline_usd": round(total_pipeline_cost, 9),
         },
         "usage": {
+            "whole_continuity_evaluator": final_evaluation["whole_jev_usage"],
+            "semantic_judge": final_evaluation["final_judge_usage"],
             "whole_jev": final_evaluation["whole_jev_usage"],
             "final_haiku": final_evaluation["final_judge_usage"],
         },
@@ -1985,9 +2038,19 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Run the English-first LUMI scene production pipeline."
     )
-    parser.add_argument("--model", default="qwen/qwen3.8-flash")
-    parser.add_argument("--jev-model", default="typesafe/jev-1.13")
-    parser.add_argument("--judge-model", default="anthropic/claude-haiku-4.5")
+    parser.add_argument("--model", default="openai/gpt-5.6-luna")
+    parser.add_argument(
+        "--continuity-evaluator-model",
+        "--jev-model",
+        dest="continuity_evaluator_model",
+        default="typesafe/jev-1.13",
+    )
+    parser.add_argument(
+        "--semantic-judge-model",
+        "--judge-model",
+        dest="semantic_judge_model",
+        default="anthropic/claude-haiku-4.5",
+    )
     parser.add_argument("--spec", default=str(DEFAULT_SPEC))
     parser.add_argument(
         "--output",
@@ -1995,14 +2058,59 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    result = run(
-        model=args.model,
-        jev_model=args.jev_model,
-        judge_model=args.judge_model,
-        spec_path=Path(args.spec),
-    )
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
+    cli_started = time.perf_counter()
+    try:
+        result = run(
+            model=args.model,
+            jev_model=args.continuity_evaluator_model,
+            judge_model=args.semantic_judge_model,
+            spec_path=Path(args.spec),
+        )
+    except Exception as exc:
+        failure = {
+            "pipeline": "english_story_pipeline_v1",
+            "generation_protocol_version": GENERATION_PROTOCOL_VERSION,
+            "evaluation_protocol_version": EVALUATION_PROTOCOL_VERSION,
+            "models": {
+                "generator": args.model,
+                "continuity_evaluator": args.continuity_evaluator_model,
+                "semantic_judge": args.semantic_judge_model,
+            },
+            "spec": args.spec,
+            "accepted": False,
+            "word_count": 0,
+            "deterministic_errors": [],
+            "terminal_error": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+            },
+            "timings": {
+                "total_pipeline_seconds": round(
+                    time.perf_counter() - cli_started, 3
+                )
+            },
+            "costs": {},
+            "usage": {},
+        }
+        failure_path = output.with_name("failure.json")
+        failure_path.write_text(
+            json.dumps(failure, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        print(
+            json.dumps(
+                {
+                    "checkpoint": "pipeline_failed",
+                    "error": failure["terminal_error"],
+                    "failure_path": str(failure_path),
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+        raise
     output.write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -2037,6 +2145,7 @@ def main() -> None:
                 ],
                 "whole_story_jev": result["whole_story_jev"],
                 "final_judge": result["final_judge"],
+                "timings": result["timings"],
                 "costs": result["costs"],
                 "output": str(output),
                 "story_path": str(story_path),

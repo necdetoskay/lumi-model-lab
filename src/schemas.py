@@ -3,20 +3,27 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class StorySpec(BaseModel):
     title_hint: str | None = None
-    age_min: int = Field(default=6, ge=3, le=12)
-    age_max: int = Field(default=8, ge=3, le=12)
+    age_min: int = Field(default=6, ge=3, le=120)
+    age_max: int = Field(default=8, ge=3, le=120)
     language: str = "tr"
     target_words: int = Field(default=2000, ge=300, le=5000)
+    narrative_family: str | None = None
     protagonist: str
     setting: str
     theme: str
     premise: str
     constraints: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_age_range(self) -> "StorySpec":
+        if self.age_min > self.age_max:
+            raise ValueError("age_min must be less than or equal to age_max")
+        return self
 
 
 class TokenUsage(BaseModel):
