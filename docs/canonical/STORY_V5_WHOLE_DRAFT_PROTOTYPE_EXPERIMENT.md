@@ -1164,3 +1164,45 @@ Model Lab now has governed evidence for:
 This still does **not** authorize a real production database write.
 
 The next highest-value step is no longer another synthetic story sweep. It is mapping the proven prototype contracts onto LUMI's real G2 transaction/job boundary, followed by a small production-like reliability sample.
+
+
+## ContextPack ↔ StateAuthority snapshot alignment — 36026587554
+
+A remaining concurrency gap was identified after the commit simulation:
+
+A StoryContextPack and a StateMutationAuthority could each be internally valid while referring to different entity revisions/fingerprints.
+
+That would allow a story to be generated from one snapshot while mutation permission was derived from another.
+
+The v5 prototype now performs a **pre-generation fail-closed alignment check** whenever a ContextPack is supplied.
+
+For every authority-bound mutable entity:
+
+- entity_ref must exist in the ContextPack;
+- authority expected_revision must equal ContextPack revision;
+- authority expected_fingerprint must equal ContextPack fingerprint;
+- every allowed mutation entity_ref must be explicitly declared by the authority.
+
+If any mismatch exists, the run stops before paid model generation.
+
+Fresh deterministic regression:
+
+`36026587554`
+
+Result:
+
+**23 / 23 PASS**
+
+New alignment coverage includes:
+
+- exact snapshot alignment PASS;
+- stale authority revision vs ContextPack FAIL;
+- stale authority fingerprint vs ContextPack FAIL;
+- authority entity absent from ContextPack FAIL;
+- mutation targeting an undeclared authority entity FAIL.
+
+The same suite also retains typed mutation, epistemic-class, revision/fingerprint, pairwise-order and atomic/idempotent commit contracts.
+
+Decision:
+
+> StoryContextPack and StateMutationAuthority must be compiled from the same authoritative application snapshot. Independent validity is insufficient; cross-contract identity is mandatory.
