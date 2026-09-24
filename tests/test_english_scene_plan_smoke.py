@@ -89,6 +89,47 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
             mock_call.call_args_list[1].kwargs["user_prompt"],
         )
 
+    @patch("src.english_scene_plan_smoke.call_openrouter")
+    def test_plan_structured_json_retry_recovers_malformed_braced_object(
+        self,
+        mock_call,
+    ):
+        body = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 10,
+                "completion_tokens": 10,
+                "total_tokens": 20,
+                "cost": 0.001,
+            },
+        }
+        mock_call.side_effect = [
+            (
+                '{"story_title":"Signal" "story_contract":{}}',
+                body,
+                {"temperature": 0.2, "response_format": {"type": "json_object"}},
+            ),
+            (
+                __import__("json").dumps(_plan()),
+                body,
+                {"temperature": 0.2, "response_format": {"type": "json_object"}},
+            ),
+        ]
+        payload, _, _, failures = call_structured_json_with_retry(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            system_prompt="system",
+            user_prompt="user",
+            temperature=0.2,
+            max_tokens=None,
+            seed=42,
+            request_class="story_plan",
+        )
+        self.assertEqual(payload["story_title"], "Signal")
+        self.assertEqual(len(failures), 1)
+        self.assertIn("malformed JSON object", failures[0]["error"])
+        self.assertEqual(mock_call.call_count, 2)
+
     def test_valid_plan_shape(self):
         self.assertEqual(validate_plan(_plan(), _spec()), [])
 

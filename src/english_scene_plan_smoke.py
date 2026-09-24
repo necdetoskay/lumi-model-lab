@@ -67,7 +67,12 @@ def parse_json_object(text: str) -> dict[str, Any]:
         start, end = cleaned.find("{"), cleaned.rfind("}")
         if start < 0 or end <= start:
             raise RuntimeError("Response did not contain a JSON object.")
-        value = json.loads(cleaned[start:end + 1])
+        try:
+            value = json.loads(cleaned[start:end + 1])
+        except json.JSONDecodeError as exc:
+            raise RuntimeError(
+                "Response contained a malformed JSON object."
+            ) from exc
     if not isinstance(value, dict):
         raise RuntimeError("Response JSON must be an object.")
     return value
