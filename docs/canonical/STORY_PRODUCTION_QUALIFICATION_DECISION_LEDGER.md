@@ -384,3 +384,92 @@ Decision:
 - do not weaken the repetition threshold;
 - require a fresh workflow dispatch for any counted repeat;
 - continue UNKNOWN coverage from 32/80 using the deterministic planner.
+
+
+## 2026-09-24 — Freeze fixed-six coverage expansion at 32/80
+
+Reason:
+
+The product requirement does not require a fixed six-scene story. Review of the v3 implementation showed that six scenes were encoded in planner validation, scene budgets, scene/whole-story evaluator prompts, payoff/resolution positions, and qualification fixtures.
+
+Decision:
+
+- stop the v3 32/80 -> 80/80 spend before expanding the wrong structural assumption;
+- retain all existing v3 evidence as historical evidence under its frozen protocol identity;
+- do not mix dynamic-scene evidence into the v3 Capability Cube;
+- evaluate a variable-scene v4 candidate before resuming broad coverage.
+
+Reference:
+
+`docs/canonical/DYNAMIC_SCENE_NARRATIVE_ARCHITECT_V4_EXPERIMENT.md`
+
+## 2026-09-24 — Dynamic Scene v4 Run 1 exposed fixture and repair-ownership defects
+
+Run:
+
+`36008607397`
+
+Result:
+
+- Sonnet selected six scenes only because the inherited fixture explicitly required continuity across all six scenes;
+- therefore the run did not test free scene-count selection;
+- final story was produced but failed the semantic gate at 3.875 average;
+- total cost: USD 0.16752763;
+- an ambiguity originating in the immutable SceneGraph survived repeated prose repairs.
+
+Decision:
+
+- classify Run 1 as diagnostic, not valid dynamic-scene evidence;
+- make qualification fixtures scene-count-neutral unless count is an explicit product requirement;
+- route repair according to defect ownership;
+- a plan defect must not be chased indefinitely with prose-only repair.
+
+## 2026-09-24 — First valid dynamic-scene observation passed with five scenes
+
+Run:
+
+`36009516596`
+
+Changes from Run 1:
+
+Only the experimental fixture's fixed-six continuity constraint was replaced by continuity across the complete story and the planner-selected SceneGraph.
+
+Sonnet selected:
+
+`SETUP -> RISING_ACTION -> RISING_ACTION -> PAYOFF -> RESOLUTION`
+
+with five scenes.
+
+Result:
+
+- accepted: yes;
+- 2,607 / 2,800 words;
+- repeated 8-gram ratio: 0.0;
+- final Haiku: 4.0 average, minimum 4;
+- whole-story JEV: all dimensions above threshold;
+- total scene attempts: 8;
+- semantic repairs: 3;
+- final targeted repairs: 0;
+- total cost: USD 0.131251818;
+- total time: 277.160 s.
+
+Important unresolved governance signals:
+
+- plan JEV had below-threshold `constraint_coverage=0.65` and `no_unexplained_dependencies=0.79`, while Haiku accepted the plan;
+- Scene 4 still ended with `no_contradiction=0.77<0.80` and `continuity_escalation_required=true`;
+- the whole-story evaluators later accepted the assembled story.
+
+Decision:
+
+Do not promote v4 from one successful story. Before broad qualification, define repair ownership, stale-evidence isolation, plan-JEV authority, and cross-level continuity-gate semantics.
+
+## Superseding operating plan after dynamic-scene discovery
+
+1. Keep v3 coverage frozen at 32/80.
+2. Preserve all v3 evidence under its existing protocol identity.
+3. Harden v4 repair ownership and evaluator authority boundaries.
+4. Use scene-count-neutral fixtures.
+5. Run a small, diverse dynamic-v4 validation set before spending on 80-cell coverage.
+6. Compare Luna vs Sonnet as Narrative Architect under the same v4 protocol.
+7. Promote only with evidence that the higher-cost planner materially improves reliability/quality or reduces repair burden.
+8. Restart broad Capability Cube qualification only under the promoted protocol identity.
