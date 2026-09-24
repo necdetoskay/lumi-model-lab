@@ -1206,3 +1206,136 @@ The same suite also retains typed mutation, epistemic-class, revision/fingerprin
 Decision:
 
 > StoryContextPack and StateMutationAuthority must be compiled from the same authoritative application snapshot. Independent validity is insufficient; cross-contract identity is mandatory.
+
+
+## Production-like multi-context cohort — 36027213240
+
+Evidence branch:
+
+`evidence/story-v5-production-cohort-36027213240`
+
+Purpose:
+
+Move beyond a single Deniz scenario and test the frozen v5 whole-draft candidate against three materially different LUMI-shaped contexts:
+
+1. age 7 friendship/social misunderstanding with a rumored-location boundary;
+2. age 13 puzzle with an NPC-knowledge boundary;
+3. adult world-lore with historical uncertainty and a rumored archive boundary.
+
+All cases used:
+
+`StoryContextPack -> Dynamic Architect -> Whole Draft -> Deterministic Gates -> whole-story JEV -> Haiku acceptance -> typed/epistemic StateMutationProposal`
+
+with ContextPack ↔ StateAuthority snapshot alignment checked before paid generation.
+
+### Cohort result
+
+| Case | Target | Final | Scenes | Repair | Normalize | JEV context authority | Outcome |
+| --- | ---: | ---: | ---: | --- | --- | ---: | --- |
+| Ece / friendship | 900 | 972 | 5 | no | no | 0.97 | commit-ready |
+| Arda / puzzle | 2300 | 2051 | 5 | no | no | 0.96 | commit-ready |
+| Ada / world-lore | 3600 | 3816 | 5 | no | no | 0.96 | commit-ready |
+
+All three:
+
+- accepted on the first whole draft;
+- passed deterministic word/repetition gates;
+- required zero semantic repair;
+- required zero length normalization;
+- had all JEV dimensions above threshold;
+- produced typed StoryOutcome proposals with zero validation errors;
+- preserved ContextPack/StateAuthority snapshot alignment;
+- remained dry-run only; no real database write occurred.
+
+### Knowledge-boundary red-team
+
+#### Ece — social / rumored location
+
+The story:
+
+- did not enter or explore `GLASS_PASSAGE`;
+- explicitly treated the passage as rumor;
+- did not identify the chalk-arrow author;
+- did not accuse a person without evidence;
+- resolved the immediate seed-box problem while preserving the arrow's authorship/purpose as unknown.
+
+The outcome stored character knowledge and thread resolution but did not convert the unresolved arrow explanation into a world fact.
+
+#### Arda — NPC knowledge / restricted location
+
+The story:
+
+- did not enter `ARCHIVE_STAIR`;
+- repeated only the two facts Selin was authorized to communicate:
+  - Room B changed use last week;
+  - the public clock was checked that morning;
+- did not invent who printed the cards;
+- did not invent private staff discussion;
+- rejected the clock-error hypothesis using visible/public evidence;
+- persisted the Room-B/card relationship only as `BEST_SUPPORTED_HYPOTHESIS`;
+- kept card origin/history as an open thread.
+
+This is positive evidence that NPC dialogue does not need to become an uncontrolled canon backdoor when the ContextPack carries an explicit NPC-knowledge boundary.
+
+#### Ada — adult world lore / historical uncertainty
+
+The story:
+
+- did not enter `SEALED_SURVEY_ROOM`;
+- did not invent sealed-room records;
+- used physical marks, the 1972 maintenance ledger and the 1974 map as independent evidence;
+- explicitly rejected the overconfident public claim `The quay was raised in 1972`;
+- kept exact raising year and campaign relationship unresolved;
+- persisted the preferred account only as `WORLD_HYPOTHESIS_SET / BEST_SUPPORTED_HYPOTHESIS`;
+- opened a durable unresolved thread for the remaining historical questions.
+
+The appearance of `1972` in prose is not a fact leak: it is the original exhibit claim, documented maintenance year, and a claim the protagonist explicitly narrows/rejects.
+
+### Cost and latency
+
+Per-call evidence including whole-story JEV:
+
+- Ece: USD 0.017184468; 53.123 s;
+- Arda: USD 0.023250666; 81.765 s;
+- Ada: USD 0.029893768; 114.667 s.
+
+Cohort total:
+
+- USD 0.070328902;
+- summed pipeline time: 249.555 s.
+
+OpenRouter account preflight moved from USD 8.777137832 remaining to USD 8.717339704 remaining during the workflow. That provider-account delta is smaller than the sum of immutable per-call cost evidence, consistent with previously observed asynchronous provider usage reporting. Per-call evidence remains the experiment accounting authority.
+
+### Judge saturation persists
+
+Haiku again produced the same structured pattern for all three cases:
+
+- seven criteria at 5;
+- creativity at 4;
+- average 4.875.
+
+This reinforces the existing decision:
+
+> Haiku is useful as a production acceptance signal but its scalar score is not a high-resolution model-quality metric.
+
+### Architectural consequence
+
+The v5 candidate now has production-like evidence across:
+
+- early-child social reasoning;
+- adolescent multi-source puzzle reasoning with NPC authority;
+- adult world-lore uncertainty;
+- contemporary and institutional settings;
+- multiple RUMORED-location boundaries;
+- Character knowledge, best-supported world hypothesis, thread resolve/open, and workflow consumption mutations.
+
+The primary unresolved architecture risk is no longer basic story generation or basic state governance.
+
+The next highest-value work is:
+
+1. map StoryContextPack compilation to the **actual LUMI G2 Character/World/Opportunity/Canon/Saga entities**;
+2. map StateMutationAuthority to real application mutation contracts;
+3. run the same validate-all-first / atomic / idempotent commit semantics against the real LUMI transaction boundary;
+4. then run a bounded production-like reliability cohort through the real application bridge.
+
+Broad 80-cell synthetic qualification remains lower priority until that bridge exists.

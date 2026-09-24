@@ -662,3 +662,63 @@ Fresh deterministic regression:
 This extends the v5 fail-closed boundary through:
 
 `Context snapshot -> story generation -> typed/epistemic proposal -> atomic/idempotent commit`.
+
+
+## 2026-09-24 — v5 production-like cohort passes across three distinct authority boundaries
+
+Run:
+
+`36027213240`
+
+Evidence:
+
+`evidence/story-v5-production-cohort-36027213240`
+
+Cases:
+
+- age 7 friendship/social problem — 972 / 900 words;
+- age 13 puzzle/NPC-boundary — 2051 / 2300 words;
+- adult world-lore/uncertainty — 3816 / 3600 words.
+
+All three:
+
+- first whole draft accepted;
+- no length normalization;
+- no semantic repair;
+- all JEV dimensions above threshold;
+- JEV context authority 0.97 / 0.96 / 0.96;
+- typed outcome validation errors: zero;
+- `commit_ready=true`;
+- no real DB write.
+
+Red-team findings:
+
+- Ece did not enter or explore GLASS_PASSAGE and did not invent the arrow author.
+- Arda did not enter ARCHIVE_STAIR and attributed to Selin only the two ContextPack-authorized facts.
+- Ada did not enter SEALED_SURVEY_ROOM, did not invent hidden records, and explicitly rejected the overconfident exact-year claim.
+
+Epistemic persistence remained correct:
+
+- unknown authorship stayed unknown;
+- schedule/card cause stayed BEST_SUPPORTED_HYPOTHESIS;
+- quay interpretation stayed BEST_SUPPORTED_HYPOTHESIS;
+- unresolved historical questions became open thread state rather than facts.
+
+Decision:
+
+> v5 whole-draft is now the leading Model Lab production-candidate architecture. The highest-value next work is the real LUMI G2 bridge, not broad synthetic 80-cell expansion.
+
+Do not infer SaaS reliability from 3/3. These observations demonstrate architectural viability across distinct context/authority boundaries, not a production SLO.
+
+## 2026-09-24 — Production acceptance judge remains low-resolution
+
+The three production-like cohort cases again received the identical Haiku structured score pattern:
+
+`5,5,5,5,4,5,5,5 -> 4.875`
+
+Decision:
+
+- retain Haiku as a production acceptance/gating signal for the current candidate;
+- do not use its scalar score to rank close stories or generators;
+- keep blind, order-swapped pairwise evaluation as aggregate Model Lab evidence only;
+- no single judge output is model-routing authority.
