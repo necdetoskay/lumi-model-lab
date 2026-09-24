@@ -354,6 +354,28 @@ def assemble_story(draft: dict[str, Any]) -> str:
     return "\n\n".join(str(s["prose"]).strip() for s in draft["scenes"])
 
 
+def allocate_scene_word_targets(plan: dict[str, Any], target_words: int) -> list[dict[str, int]]:
+    scenes = plan["scenes"]
+    weights = [int(scene["relative_weight"]) for scene in scenes]
+    total_weight = sum(weights)
+    if total_weight <= 0:
+        raise RuntimeError("scene_weight_sum_invalid")
+    exact = [target_words * weight / total_weight for weight in weights]
+    targets = [int(value) for value in exact]
+    remainder = target_words - sum(targets)
+    order = sorted(
+        range(len(exact)),
+        key=lambda index: exact[index] - int(exact[index]),
+        reverse=True,
+    )
+    for index in range(remainder):
+        targets[order[index % len(order)]] += 1
+    return [
+        {"scene": scene["index"], "target_words": targets[index]}
+        for index, scene in enumerate(scenes)
+    ]
+
+
 def whole_story_questions() -> dict[str, dict[str, Any]]:
     checks = {
         "causal_chain": (
@@ -605,6 +627,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     if plan_errors:
         raise RuntimeError("PLAN_INVALID:" + ",".join(plan_errors))
 
+    min_words = round(spec.target_words * 0.75)
+    max_words = round(spec.target_words * 1.25)
+    scene_word_targets = allocate_scene_word_targets(plan, spec.target_words)
     draft_user = (
         "STORY BRIEF\n"
         + brief
@@ -612,7 +637,11 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         + json.dumps(plan["story_contract"], ensure_ascii=False, indent=2)
         + "\n\nDYNAMIC SCENE GRAPH\n"
         + json.dumps(plan["scenes"], ensure_ascii=False, indent=2)
+        + "\n\nNORMALIZED SCENE WORD TARGETS\n"
+        + json.dumps(scene_word_targets, ensure_ascii=False, indent=2)
         + f"\n\nTARGET TOTAL WORDS: {spec.target_words}"
+        + f"\nHARD ACCEPTABLE TOTAL RANGE: {min_words}-{max_words} words."
+        + "\nStay close to each scene target and DO NOT exceed the hard total maximum."
     )
     draft, draft_body, _, draft_parse = call_structured_json_with_retry(
         api_key=api_key,
@@ -632,8 +661,6 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     word_count = count_words(story)
     repeat_ratio = repeated_ngram_ratio(story, 8)
     deterministic_errors: list[str] = []
-    min_words = round(spec.target_words * 0.75)
-    max_words = round(spec.target_words * 1.25)
     if word_count < min_words:
         deterministic_errors.append(f"below_total_word_budget:{word_count}<{min_words}")
     if word_count > max_words:
@@ -756,6 +783,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "scene_count": len(plan["scenes"]),
             "word_count": word_count,
             "target_words": spec.target_words,
+            "scene_word_targets": scene_word_targets,
             "repeat_8gram_ratio": repeat_ratio,
             "deterministic_errors": deterministic_errors,
         },
