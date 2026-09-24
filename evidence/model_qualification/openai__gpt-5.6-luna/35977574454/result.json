@@ -1,0 +1,1867 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/teen--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz must make a public map-learning station accurate and usable before its scheduled session.",
+        "central_problem": "A missing route marker leaves the station incomplete and may direct visitors toward an outdated, inaccessible path.",
+        "solution_principle": "Test repeated relationships among maps, objects, labels, schedules, and tools instead of trusting the first explanation.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz marks the current accessible route, explains the evidence, and leaves the station ready for visitors.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical confrontation.",
+          "No unexplained clue, object, location, or fact.",
+          "No premature solution before Scene 5.",
+          "No benchmark, test, or age-targeting language."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Establish Deniz's task, the incomplete station, its deadline, and the first visible pattern.",
+          "entry_state": "Deniz arrives at the public learning space to prepare the map-learning station before the four-o'clock session.",
+          "beats": [
+            "Deniz finds six map panels, matching object tokens, labels, schedules, and one empty slot where a route marker should be.",
+            "The map's path ends at a side entrance, while the schedule says to check the current access map before opening."
+          ],
+          "must_include": [
+            "Deniz independently takes responsibility for making the station usable.",
+            "The missing marker is clearly connected to the route, labels, and scheduled session.",
+            "A reasonable first thought is that a previous visitor borrowed or misplaced the marker."
+          ],
+          "must_not_do": [
+            "Do not identify the marker's correct replacement or the route's problem yet.",
+            "Do not introduce an adult helper who solves the puzzle for Deniz.",
+            "Do not make the missing marker depend on unseen information."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has an incomplete station, a possible borrowing explanation, and a schedule warning requiring evidence before choosing a route.",
+          "open_threads_after": [
+            "Where is the missing route marker?",
+            "Is the displayed route still current?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test the borrowing hypothesis against the station's repeated labeling and inventory patterns.",
+          "entry_state": "Deniz must locate the missing marker and determine whether someone simply moved it.",
+          "beats": [
+            "Deniz compares object labels with map-panel numbers and finds every token accounted for except the marker's position.",
+            "A shelf sequence and return notation show the marker was not checked out; the borrowing hypothesis no longer fits the evidence."
+          ],
+          "must_include": [
+            "Deniz checks labels and inventory rather than guessing from the empty slot.",
+            "The repeated sequence gives a concrete location or category to investigate next.",
+            "The rejected hypothesis remains reasonable until the records contradict it."
+          ],
+          "must_not_do": [
+            "Do not reveal the route's closure or final solution.",
+            "Do not treat an unexplained record as proof without showing its established pattern.",
+            "Do not reset Deniz's knowledge from Scene 1."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the empty route-marker slot and the connected map panels.",
+            "Scene 1 established the labels, object tokens, and schedule warning.",
+            "Scene 1 established borrowing as Deniz's initial explanation."
+          ],
+          "handoff": "The marker was not borrowed; its patterned category points Deniz toward the route map and the station's current-access warning.",
+          "open_threads_after": [
+            "Why is the marker absent if inventory says it was not checked out?",
+            "What does the current-access warning change?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use the map legend and repeated symbols to uncover the outdated route and reject simple loss.",
+          "entry_state": "Deniz knows the marker was deliberately separated from the displayed set but not why.",
+          "beats": [
+            "Using the established labels, Deniz matches map symbols and sees the absent marker belongs to the path crossing the side entrance.",
+            "A closure symbol and a newer pencil line reveal that the displayed route is outdated, not merely incomplete."
+          ],
+          "must_include": [
+            "The map legend explains the closure symbol before Deniz relies on it.",
+            "The missing marker's location and the access warning reinforce each other.",
+            "Deniz revises the problem from finding an object to identifying a current route."
+          ],
+          "must_not_do": [
+            "Do not fully determine the replacement route yet.",
+            "Do not make the closure symbol appear without the previously established legend.",
+            "Do not imply sabotage, theft, or danger beyond an inaccessible entrance."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C7",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the schedule's instruction to check the current access map.",
+            "Scene 2 established the marker's patterned category and absence from checkout records.",
+            "Scene 2 established the map panels and labels as matching parts of one system."
+          ],
+          "handoff": "Deniz has evidence that the missing marker belongs to an obsolete route and must find a tested accessible alternative.",
+          "open_threads_after": [
+            "Which alternate path matches the station's labels and objects?",
+            "How can Deniz update the station clearly?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Test candidate alternate paths using the map, objects, labels, schedule, and ordinary tools.",
+          "entry_state": "Deniz must verify an accessible route rather than substitute a convenient-looking path.",
+          "beats": [
+            "Deniz traces two candidate paths with a ruler, comparing each turn against object symbols and labeled map panels.",
+            "Only one path matches the repeating symbol order and avoids the closed entrance; the schedule's room sequence confirms it."
+          ],
+          "must_include": [
+            "Deniz tests more than one candidate instead of accepting the first plausible route.",
+            "The successful path depends on multiple earlier clues, not a newly introduced fact.",
+            "Tape and pencil are available as ordinary tools for a later station update."
+          ],
+          "must_not_do": [
+            "Do not apply the final route to the public station yet.",
+            "Do not introduce a new map, person, or secret instruction.",
+            "Do not claim certainty before the route matches all tested patterns."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the closure symbol and the newer pencil line.",
+            "Scene 2 established matching labels and object categories.",
+            "Scene 1 established the schedule and the station's ordinary tool area."
+          ],
+          "handoff": "Deniz has tested and confirmed one accessible route, but the station still displays the obsolete path and missing marker.",
+          "open_threads_after": [
+            "Will Deniz restore the old marker or revise the station?",
+            "Can visitors understand the corrected route?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the tested solution and make Deniz's decisive choice about the misleading original display.",
+          "entry_state": "The accessible alternate route is confirmed, while the station still suggests the closed route.",
+          "beats": [
+            "Deniz leaves the obsolete marker out, tapes the confirmed route over the old line, and labels each turn using the matching objects.",
+            "Deniz adds a concise access note beside the schedule, choosing accuracy and clarity over restoring the original pattern."
+          ],
+          "must_include": [
+            "The decisive application uses the map, marker absence, labels, schedule, and tested alternate route.",
+            "Deniz's choice changes the station rather than merely locating the missing object.",
+            "The updated arrangement remains understandable to independent visitors."
+          ],
+          "must_not_do": [
+            "Do not introduce a new puzzle after the route is correctly applied.",
+            "Do not erase the evidence that explains why the original marker stays out.",
+            "Do not have another character perform Deniz's solution."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C6",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 3 established that the original route crosses a closed entrance.",
+            "Scene 4 established the alternate route by testing symbols, labels, and schedule order.",
+            "Scene 4 established tape and pencil as available ordinary tools."
+          ],
+          "handoff": "The station now presents the verified accessible route, with the obsolete marker excluded and the reason clearly recorded.",
+          "open_threads_after": [
+            "Will the updated station work for visitors?",
+            "Can Deniz explain the reasoning if questioned?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show practical consequences, communicate the reasoning, and close the puzzle without reopening it.",
+          "entry_state": "Deniz has revised the station and must confirm that the solution functions for its intended visitors.",
+          "beats": [
+            "Visitors follow the taped route and match the objects to the labels without reaching the closed entrance.",
+            "Deniz explains that testing connected patterns, not guessing about the missing marker, revealed the responsible choice."
+          ],
+          "must_include": [
+            "The station's successful use confirms the route and resolves the central problem.",
+            "Deniz communicates the evidence plainly without sounding instructional or adult-like.",
+            "The ending leaves the public learning space accurate and usable."
+          ],
+          "must_not_do": [
+            "Do not add a new mystery, threat, character, or future discovery.",
+            "Do not undo Deniz's route update or return the obsolete marker.",
+            "Do not leave the central problem unresolved."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the corrected route, labels, access note, and excluded obsolete marker.",
+            "Scene 4 established that the corrected route matched multiple tested patterns.",
+            "Scene 3 established why the original route could not be used."
+          ],
+          "handoff": "The station works, visitors avoid the closed entrance, and Deniz's evidence-based decision has resolved the missing-pattern problem.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.94,
+        "constraint_coverage": 0.62,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.92,
+        "no_early_resolution": 0.91,
+        "ending_coherence": 0.96
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.62
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.75,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3707,
+        "output_tokens": 185,
+        "cost": 0.000155694
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must establish the schedule's 'check current access map' instruction clearly enough that readers understand it as a clue, not mere setup. Risk: readers may miss why this matters until Scene 3."
+        },
+        {
+          "scene": 2,
+          "risk": "The inventory/checkout pattern must be concrete and visible (e.g., a labeled shelf, a return log, a checklist). Risk: if the pattern is vague, the rejection of the borrowing hypothesis will feel arbitrary rather than evidence-based."
+        },
+        {
+          "scene": 3,
+          "risk": "The map legend and closure symbol must appear in the station's existing materials, not be introduced as new information. Risk: if Deniz must consult an external reference, it violates C6 and breaks the self-contained puzzle."
+        },
+        {
+          "scene": 4,
+          "risk": "Both candidate paths must be plausible enough that testing is genuinely necessary. Risk: if one path is obviously wrong, the testing feels performative rather than thematic."
+        },
+        {
+          "scene": 5,
+          "risk": "Deniz's choice to exclude the obsolete marker and tape the new route must feel like a meaningful decision, not a foregone conclusion. Risk: if the solution is obvious by Scene 4, the payoff is diminished."
+        },
+        {
+          "scene": 6,
+          "risk": "Visitors must actually use the station and succeed, not merely appear. Risk: if Scene 6 is only Deniz reflecting, the practical consequence is lost and the theme feels abstract."
+        }
+      ],
+      "summary": "The plan is structurally sound and meets all critical requirements. Causal continuity is strong: each scene builds on prior evidence without reset or contradiction. Deniz's goal remains stable (make the station accurate and usable), and all actions are motivated by it. Information accumulates correctly—clues from Scenes 1–4 are all necessary for Scene 5's solution, and Scene 5 delivers the decisive payoff before Scene 6 resolves consequences. No unexplained dependencies exist; every object, label, map feature, and tool is introduced before it is used. The false hypothesis (borrowing) is reasonable and rejected by evidence (inventory records), satisfying C7. The ending is coherent: Scene 5 applies the tested route and makes the choice; Scene 6 confirms it works and closes the puzzle without reopening it.\n\nConstraint coverage scores 4 rather than 5 because C1 (age-appropriate vocabulary, pacing, and concept complexity) depends entirely on prose execution, which the plan does not yet demonstrate. The plan's language is age-appropriate in structure and reasoning, but the actual sentences, emotional beats, and exposition rhythm must be verified during writing. The JEV advisory flagged constraint_coverage at 0.62; this reflects the same execution risk. All other constraints are satisfied by the plan itself: C2 (explicit causality without didacticism) is embedded in the scene structure; C3 (no combat) is preserved; C4 (continuity) is maintained; C5 (no benchmark language) is observed; C6 (no unexplained clues) is enforced by the prior_evidence and handoff fields; C7 (false hypothesis) is included; C8 (multiple clues in final solution) is built into Scene 4 and 5; C9 (age 15, independent reader) is the target throughout.\n\nThe plan is ready for prose. Execution risks are manageable: ensure the inventory pattern is concrete, the map legend is visible in the station, both candidate paths are genuinely testable, and Scene 6 shows visitors actually using the corrected station. No structural repair is needed.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0049016,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000155694,
+      "haiku": {
+        "usd": 0.008841,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 3934,
+        "total_tokens": 4838
+      },
+      "jev": {
+        "input_tokens": 3707,
+        "output_tokens": 185,
+        "cost": 0.000155694
+      },
+      "haiku": {
+        "input_tokens": 3921,
+        "output_tokens": 984,
+        "total_tokens": 4905
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    494,
+    589,
+    646,
+    646,
+    779,
+    646
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 494,
+      "word_count": 422,
+      "contract": {
+        "index": 1,
+        "purpose": "Establish Deniz's task, the incomplete station, its deadline, and the first visible pattern.",
+        "entry_state": "Deniz arrives at the public learning space to prepare the map-learning station before the four-o'clock session.",
+        "beats": [
+          "Deniz finds six map panels, matching object tokens, labels, schedules, and one empty slot where a route marker should be.",
+          "The map's path ends at a side entrance, while the schedule says to check the current access map before opening."
+        ],
+        "must_include": [
+          "Deniz independently takes responsibility for making the station usable.",
+          "The missing marker is clearly connected to the route, labels, and scheduled session.",
+          "A reasonable first thought is that a previous visitor borrowed or misplaced the marker."
+        ],
+        "must_not_do": [
+          "Do not identify the marker's correct replacement or the route's problem yet.",
+          "Do not introduce an adult helper who solves the puzzle for Deniz.",
+          "Do not make the missing marker depend on unseen information."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has an incomplete station, a possible borrowing explanation, and a schedule warning requiring evidence before choosing a route.",
+        "open_threads_after": [
+          "Where is the missing route marker?",
+          "Is the displayed route still current?"
+        ]
+      },
+      "envelope": {
+        "prose": "At 3:12, Deniz unlocked the cabinet in the public learning room and switched on the map station. The four-o'clock session was less than an hour away. Usually, a staff member checked the display before visitors arrived, but today Deniz had offered to do it. If the station was confusing, people would spend the session sorting out the equipment instead of learning from it.\n\nThe station occupied a long table beneath six map panels. Each panel had a number, a short label, and a shallow space for an object token. The tokens were ordinary-looking pieces: a blue bridge, a red stairway, a green square, and several small arrow-shaped route markers. A printed card beside them explained that visitors should match each object to its map symbol, then follow the connected route from panel to panel.\n\nDeniz began with the labels. Panels 1 through 6 were in order, and the tokens sat in a neat row beneath them—except for panel 4. Its space was empty. The label beneath the gap read ROUTE MARKER, and on the map above it, a dotted line ran from panel 3 toward panel 4 before ending at a small side entrance.\n\n“Of course,” Deniz muttered. “The one piece people need to follow the route is missing.”\n\nA clear plastic schedule holder stood at the corner of the table. The session times were printed in thick black lines: 4:00, Map Connections; 4:30, Open Exploration. At the bottom, someone had added a handwritten reminder in blue pencil:\n\nCHECK THE CURRENT ACCESS MAP BEFORE OPENING.\n\nDeniz read it twice. The station did not merely ask visitors to identify symbols. It asked them to follow a route, and the schedule specifically warned against assuming that the displayed route was ready to use. Still, the immediate problem was the empty space.\n\nDeniz checked under the table, inside the cabinet, and behind the schedule holder. Nothing. The small tray beside the panels held the other tokens, each in a labeled compartment. The missing marker might have been left on another table—or borrowed by someone who had wanted to compare it with a different map.\n\nThat explanation seemed likely enough. Visitors handled the objects during the day, and a marker could easily be set down in the wrong place. Deniz picked up a pencil and the station checklist.\n\n“I’ll find it first,” Deniz said, taking responsibility for the display. “Then I’ll see whether this route is still the one we should show.”\n\nThe empty compartment waited beside the route line, while the clock moved toward four.",
+        "state_delta": {
+          "location": "Public learning room, at the six-panel map-learning station.",
+          "character_goal": "Deniz is independently preparing the station for the four-o'clock Map Connections session and must make it usable.",
+          "knowledge_gained": [
+            "The station connects six numbered map panels, matching object tokens, labels, and a route visitors are meant to follow.",
+            "Panel 4 is missing its route marker.",
+            "The displayed dotted route ends at a side entrance.",
+            "The schedule instructs Deniz to check the current access map before opening."
+          ],
+          "facts_established": [
+            "The four-o'clock session is approaching.",
+            "The missing marker is needed for visitors to follow the displayed route.",
+            "Deniz has access to the station checklist and pencil."
+          ],
+          "clues_added": [
+            "The empty route-marker compartment is beside the route line on panel 4.",
+            "The handwritten schedule warning says to check the current access map before opening."
+          ],
+          "objects_changed": [
+            "Deniz switched on the station and picked up the checklist and a pencil.",
+            "The route-marker compartment remains empty."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Where is the missing route marker?",
+            "Is the displayed route still current and usable?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz is at the incomplete six-panel station before the four-o'clock session. The route marker for panel 4 is absent, and Deniz's reasonable first hypothesis is that a previous visitor borrowed it or left it somewhere else. The displayed route ends at a side entrance, and the schedule warns Deniz to check the current access map before opening. No route replacement or access problem has been identified."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 14.203,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 422,
+          "usage": {
+            "input_tokens": 4236,
+            "output_tokens": 1158,
+            "total_tokens": 5394
+          },
+          "cost": {
+            "usd": 0.00244845,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.91,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.86,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2786,
+          "output_tokens": 188,
+          "cost": 0.000117012
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.91,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.86,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2786,
+            "output_tokens": 188,
+            "cost": 0.000117012
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.437
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 14.64
+    },
+    {
+      "scene": 2,
+      "target_words": 589,
+      "word_count": 532,
+      "contract": {
+        "index": 2,
+        "purpose": "Test the borrowing hypothesis against the station's repeated labeling and inventory patterns.",
+        "entry_state": "Deniz must locate the missing marker and determine whether someone simply moved it.",
+        "beats": [
+          "Deniz compares object labels with map-panel numbers and finds every token accounted for except the marker's position.",
+          "A shelf sequence and return notation show the marker was not checked out; the borrowing hypothesis no longer fits the evidence."
+        ],
+        "must_include": [
+          "Deniz checks labels and inventory rather than guessing from the empty slot.",
+          "The repeated sequence gives a concrete location or category to investigate next.",
+          "The rejected hypothesis remains reasonable until the records contradict it."
+        ],
+        "must_not_do": [
+          "Do not reveal the route's closure or final solution.",
+          "Do not treat an unexplained record as proof without showing its established pattern.",
+          "Do not reset Deniz's knowledge from Scene 1."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the empty route-marker slot and the connected map panels.",
+          "Scene 1 established the labels, object tokens, and schedule warning.",
+          "Scene 1 established borrowing as Deniz's initial explanation."
+        ],
+        "handoff": "The marker was not borrowed; its patterned category points Deniz toward the route map and the station's current-access warning.",
+        "open_threads_after": [
+          "Why is the marker absent if inventory says it was not checked out?",
+          "What does the current-access warning change?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz started with the checklist instead of searching randomly. The station’s labels were too orderly for that. Each panel number appeared twice: once beneath the map and once on the token tray. Deniz lifted the blue bridge token from panel 1’s compartment and checked its label. BRIDGE—1. The red stairway read STAIR—2. The green square read LANDMARK—3. The remaining arrow markers were labeled for panels 5 and 6.\n\nOnly panel 4 had no token in its matching space.\n\n“That still could mean someone took it,” Deniz said. “But I need to check the record.”\n\nBelow the tray, a narrow shelf held the station inventory. Its compartments followed the same order as the map panels: 1, 2, 3, 4, 5, 6. Beside each number was a category word and a small return column. Deniz found the printed key at the bottom: a filled circle meant the piece was in its station compartment, an arrow meant it belonged with the route materials, and the word OUT meant someone had checked it out.\n\nThe first three entries matched the objects Deniz had just examined. Panel 5 and panel 6 were marked with filled circles too. Panel 4 was different:\n\nROUTE MARKER—4 | RETURN: ROUTE MATERIALS | OUT: —\n\nDeniz ran a finger beneath the dash. No name. No date. No borrowing mark.\n\nThe line was not a loose note added after the fact. The same return notation appeared on an older inventory card clipped behind it. When a token was taken away for a session, the card showed a person’s initials and the time. When it was placed with the route materials, the arrow symbol appeared instead. The entries for panels 1 through 6 had been copied in the same sequence on both cards.\n\nDeniz looked again at the empty compartment. The borrowing idea had been reasonable. Visitors did handle the pieces, and a small marker could easily disappear into a pocket of papers. But the repeated records did not support it. The marker had no checkout initials, and its return category was not the general token shelf. It belonged with the route materials.\n\n“Not borrowed,” Deniz said. “Moved according to the system.”\n\nThe route-materials compartment was at the far end of the shelf, beneath a label that matched the schedule’s wording: CURRENT ACCESS MAPS. Inside lay folded sheets, a ruler, a roll of clear tape, and a thin envelope labeled ROUTE MARKER—4. Deniz paused before opening it.\n\nThe schedule’s blue-pencil warning came back to mind: CHECK THE CURRENT ACCESS MAP BEFORE OPENING. Until now, that had sounded like a general reminder. The inventory made it more specific. The missing piece and the access maps belonged to the same category.\n\nDeniz lifted the envelope. The marker was inside, flat against a sheet of paper, not lost at all. It was simply not in the display.\n\nThat answered one question, but it made the next one sharper. Why had the marker been separated from the panel if no one had checked it out? Deniz placed the envelope beside the map panels and opened the first folded sheet. Before choosing a route, Deniz would have to compare what the station showed with what the current-access materials recorded.",
+        "state_delta": {
+          "location": "Public learning room, at the six-panel map-learning station and its inventory shelf.",
+          "character_goal": "Deniz is checking the station's labels and inventory to determine why panel 4's route marker is absent and whether the displayed route can be used before the four-o'clock session.",
+          "knowledge_gained": [
+            "Each map panel number matches a token label and an inventory category.",
+            "The inventory uses a repeated sequence and return notation: a filled circle marks a station compartment, an arrow marks route materials, and OUT with initials and time marks a checkout.",
+            "The panel 4 route marker has no checkout initials or time and is recorded as belonging with the route materials.",
+            "The route-materials compartment is labeled CURRENT ACCESS MAPS.",
+            "The marker is inside an envelope labeled ROUTE MARKER—4 rather than in the display."
+          ],
+          "facts_established": [
+            "The marker was moved according to the station's inventory system, not borrowed by a visitor.",
+            "The inventory's repeated entries are supported by an older card using the same sequence and notation.",
+            "The route marker is physically stored with current-access map materials."
+          ],
+          "clues_added": [
+            "The panel 4 inventory line reads ROUTE MARKER—4 | RETURN: ROUTE MATERIALS | OUT: —.",
+            "The schedule warning about checking the current access map specifically connects to the marker's storage category."
+          ],
+          "objects_changed": [
+            "Deniz checked the labels and inventory cards.",
+            "Deniz opened the route-materials compartment and placed the marker envelope beside the map panels.",
+            "A folded current-access map is ready for examination."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Why was the marker separated from the display if it was not borrowed?",
+            "What does the current-access map show about the displayed route?"
+          ],
+          "threads_resolved": [
+            "The reasonable borrowing hypothesis is rejected by the repeated inventory and checkout records.",
+            "The marker's location is found: it is stored with the current-access map materials."
+          ],
+          "handoff_state": "Deniz remains at the station with the marker recovered in its labeled envelope, outside the display but beside a folded current-access map. Inventory records prove it was not checked out; its patterned category places it with route materials. Deniz is now about to compare the displayed route with the map, without yet knowing whether the route is closed or what replacement might be needed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 24.463,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 532,
+          "usage": {
+            "input_tokens": 5223,
+            "output_tokens": 1815,
+            "total_tokens": 7038
+          },
+          "cost": {
+            "usd": 0.0034836,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.92,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.93,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3571,
+          "output_tokens": 188,
+          "cost": 0.000149982
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.92,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.93,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3571,
+            "output_tokens": 188,
+            "cost": 0.000149982
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.385
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 24.849
+    },
+    {
+      "scene": 3,
+      "target_words": 646,
+      "word_count": 518,
+      "contract": {
+        "index": 3,
+        "purpose": "Use the map legend and repeated symbols to uncover the outdated route and reject simple loss.",
+        "entry_state": "Deniz knows the marker was deliberately separated from the displayed set but not why.",
+        "beats": [
+          "Using the established labels, Deniz matches map symbols and sees the absent marker belongs to the path crossing the side entrance.",
+          "A closure symbol and a newer pencil line reveal that the displayed route is outdated, not merely incomplete."
+        ],
+        "must_include": [
+          "The map legend explains the closure symbol before Deniz relies on it.",
+          "The missing marker's location and the access warning reinforce each other.",
+          "Deniz revises the problem from finding an object to identifying a current route."
+        ],
+        "must_not_do": [
+          "Do not fully determine the replacement route yet.",
+          "Do not make the closure symbol appear without the previously established legend.",
+          "Do not imply sabotage, theft, or danger beyond an inaccessible entrance."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C7",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the schedule's instruction to check the current access map.",
+          "Scene 2 established the marker's patterned category and absence from checkout records.",
+          "Scene 2 established the map panels and labels as matching parts of one system."
+        ],
+        "handoff": "Deniz has evidence that the missing marker belongs to an obsolete route and must find a tested accessible alternative.",
+        "open_threads_after": [
+          "Which alternate path matches the station's labels and objects?",
+          "How can Deniz update the station clearly?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz unfolded the current-access map across the edge of the station. It showed the same six numbered panels as the display, but the lines were thinner and the labels had been printed in a newer typeface. That made comparison possible without guessing. Panel 4 on the display showed a small triangle beside its route line. The envelope’s marker had the same triangle stamped on one side.\n\nDeniz checked the map legend before following the symbol. The legend was printed along the bottom, beside the familiar bridge, stair, and landmark icons. A triangle with a short bar through it meant CLOSED ENTRANCE. A plain triangle meant SIDE ENTRANCE. The symbols were not decoration; they told visitors what kind of place each mark represented.\n\nOn the displayed panel, the route ran from the numbered maps toward the side entrance. The route marker for panel 4 belonged exactly there. Its absence was not random. Without it, the line stopped before the entrance and left the connection incomplete.\n\nDeniz moved the current-access map next to the display. The same entrance appeared on both sheets, but the current map carried the triangle-with-a-bar symbol. Deniz looked back at the schedule. CHECK THE CURRENT ACCESS MAP BEFORE OPENING. The instruction had not been a general reminder. It pointed directly to the difference between these two versions.\n\n“Closed,” Deniz said quietly. “Not missing. Closed.”\n\nThe word felt less dramatic than the first explanation had been. No one had taken the marker. No one had damaged the station. The marker had been placed with the route materials because the route it described could no longer be used through that entrance.\n\nDeniz traced the current map with a fingertip. A newer pencil line began near the same group of panels and bent away before reaching the crossed-out triangle. It passed through several small symbols, but the line faded where the map’s fold covered the middle section. There was not enough visible information to choose that path yet. Another faint line seemed to branch toward the entrance from a different direction, making two possible alternatives.\n\nFor a moment, Deniz wondered whether the pencil marks were merely someone’s notes. The printed route was clearer and easier to follow. Maybe the schedule warning only meant that the map should be checked, not that the station needed changing. Deniz compared the symbols again. The newer line avoided the closure mark. The old line did not. That was evidence, but it did not yet show which turns visitors should take.\n\nDeniz placed the marker envelope beside panel 4 instead of putting the marker back. Restoring it would make the old pattern look complete while sending visitors toward an inaccessible entrance. Leaving it aside made the display visibly incomplete, but honestly so.\n\nThe choice needed evidence. The question had changed. Deniz no longer needed to find a lost object. Deniz needed to identify the current route and prove that it matched the station’s labels, objects, and schedule. The ruler and clear tape waited in the route-materials compartment. Before using either one, Deniz would test both pencil-marked possibilities against the repeated pattern on the panels.",
+        "state_delta": {
+          "location": "Public learning room, at the six-panel map-learning station with the current-access map unfolded beside the display.",
+          "character_goal": "Deniz must identify and verify a current accessible route before updating the station for the four-o'clock session.",
+          "knowledge_gained": [
+            "The panel 4 marker's triangle matches the route leading to the side entrance.",
+            "The map legend defines a triangle with a bar through it as a closed entrance.",
+            "The displayed route crosses an entrance that the current-access map marks as closed.",
+            "The newer pencil line avoids the closed entrance, but its complete route has not yet been verified.",
+            "The marker was separated from the display because the displayed route is outdated, not because it was lost."
+          ],
+          "facts_established": [
+            "The current-access map uses the same six numbered panels and matching symbols as the station display.",
+            "The current map contains a legend that explains the closure symbol before Deniz relies on it.",
+            "Two possible pencil-marked alternatives remain to be tested."
+          ],
+          "clues_added": [
+            "The panel 4 route marker bears the same triangle symbol as the side entrance.",
+            "The current-access map shows that entrance with a triangle crossed by a bar.",
+            "A newer pencil line bends away from the closed entrance, while another faint line suggests a second possible alternative."
+          ],
+          "objects_changed": [
+            "Deniz unfolded the current-access map beside the display.",
+            "The marker envelope remains beside panel 4 instead of being returned to the empty slot.",
+            "The ruler and clear tape remain available in the route-materials compartment."
+          ],
+          "relationships_changed": [
+            "The missing marker is now understood as connected to an obsolete route rather than to borrowing or simple loss.",
+            "The schedule warning is connected specifically to the difference between the displayed map and the current-access map."
+          ],
+          "threads_opened": [
+            "Which of the two possible alternate paths is accessible and matches the station's repeated pattern?",
+            "How can Deniz update the station so visitors understand the corrected route?"
+          ],
+          "threads_resolved": [
+            "The displayed route is outdated because it crosses a closed side entrance.",
+            "The marker's absence is explained by the route's access problem, not by theft or misplacement."
+          ],
+          "handoff_state": "Deniz has compared the display with the current-access map and used its existing legend to confirm that the old route crosses a closed side entrance. The panel 4 marker remains out of the display because restoring it would make the obsolete route appear usable. Two pencil-marked alternatives remain plausible, and Deniz is ready to test them with the ruler against the established symbols, labels, and schedule. The replacement route has not yet been selected."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 17.303,
+          "structured_parse_retries": [],
+          "errors": [
+            "below_scene_word_budget:514<517"
+          ],
+          "word_count": 514,
+          "usage": {
+            "input_tokens": 5942,
+            "output_tokens": 1326,
+            "total_tokens": 7268
+          },
+          "cost": {
+            "usd": 0.00307655,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 10.126,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 518,
+          "usage": {
+            "input_tokens": 5795,
+            "output_tokens": 1348,
+            "total_tokens": 7143
+          },
+          "cost": {
+            "usd": 0.0030662,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.86,
+          "no_contradiction": 0.89,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.95,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4158,
+          "output_tokens": 188,
+          "cost": 0.000174636
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.86,
+            "no_contradiction": 0.89,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.95,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4158,
+            "output_tokens": 188,
+            "cost": 0.000174636
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.556
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 27.986
+    },
+    {
+      "scene": 4,
+      "target_words": 646,
+      "word_count": 536,
+      "contract": {
+        "index": 4,
+        "purpose": "Test candidate alternate paths using the map, objects, labels, schedule, and ordinary tools.",
+        "entry_state": "Deniz must verify an accessible route rather than substitute a convenient-looking path.",
+        "beats": [
+          "Deniz traces two candidate paths with a ruler, comparing each turn against object symbols and labeled map panels.",
+          "Only one path matches the repeating symbol order and avoids the closed entrance; the schedule's room sequence confirms it."
+        ],
+        "must_include": [
+          "Deniz tests more than one candidate instead of accepting the first plausible route.",
+          "The successful path depends on multiple earlier clues, not a newly introduced fact.",
+          "Tape and pencil are available as ordinary tools for a later station update."
+        ],
+        "must_not_do": [
+          "Do not apply the final route to the public station yet.",
+          "Do not introduce a new map, person, or secret instruction.",
+          "Do not claim certainty before the route matches all tested patterns."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the closure symbol and the newer pencil line.",
+          "Scene 2 established matching labels and object categories.",
+          "Scene 1 established the schedule and the station's ordinary tool area."
+        ],
+        "handoff": "Deniz has tested and confirmed one accessible route, but the station still displays the obsolete path and missing marker.",
+        "open_threads_after": [
+          "Will Deniz restore the old marker or revise the station?",
+          "Can visitors understand the corrected route?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz took the ruler from the route-materials compartment and laid it along the first pencil line. Both alternatives began in the same place, near the numbered panels, so either could have been a hurried update. The difference appeared at the first turn.\n\nThe darker line bent toward the bridge symbol, then continued to a stair symbol before curving away from the closed side entrance. The fainter line went toward a landmark symbol and seemed to meet the same destination. It was plausible enough that Deniz could not reject it by appearance.\n\nDeniz checked the object tokens beneath the panels. Their labels repeated the map order: bridge, stairs, landmark, then side entrance. The objects were not arranged as decoration. They gave the route a sequence visitors could follow.\n\nWith the ruler still pressed to the current-access map, Deniz traced the darker line from turn to turn. It reached the bridge symbol first, then the stairs, then the landmark. Each turn matched the next labeled object. The line bent away before the triangle crossed by a bar.\n\nThe fainter line failed at the second turn. It reached the landmark before the stairs, reversing two objects in the station’s repeated order. It also drifted close to the closed entrance before joining the other line. Close was not the same as avoiding it.\n\nDeniz looked at the schedule again. Below the warning to check the current access map, the room sequence for the session followed the same order: Bridge Gallery, Stair Hall, Landmark Court, then the learning room. The darker pencil line matched that order. The fainter one did not.\n\n“First the bridge, then the stairs,” Deniz murmured. “The labels agree with the schedule.”\n\nTo make sure the match was not accidental, Deniz tested the route backward from the learning room. The darker line passed the landmark, then the stairs, then the bridge, ending at the panel group without crossing the barred triangle. Its turns aligned in reverse order exactly. The repeated pattern worked from both directions.\n\nThe fainter line did not. Traced backward, it reached the stairs after the landmark and then angled toward the closed entrance. A visitor following it might stop at the wrong turn, even if the line eventually joined the safer path.\n\nDeniz marked the successful turns lightly on a scrap section of the current-access map with the pencil. Bridge. Stairs. Landmark. No barred triangle. The result used the map’s legend, the matching objects, the panel labels, and the schedule—not just a line that happened to look newer.\n\nFor several seconds Deniz kept the ruler in place. The evidence had finally lined up. The darker route was not merely the most convenient alternative; it was the only one that preserved the station’s repeating order while avoiding the closed entrance.\n\nDeniz folded the map only along its existing crease and set it beside panel 4. The marker envelope remained outside the empty compartment. The clear tape and pencil stayed within reach for the next step, but the public display itself was still unchanged: its old line still pointed toward the inaccessible entrance.\n\nThat would have to change. First, Deniz needed to decide how to show the tested route without pretending the old marker still belonged there.",
+        "state_delta": {
+          "location": "Public learning room, at the six-panel map-learning station with the current-access map beside the display.",
+          "character_goal": "Deniz must verify an accessible alternate route and prepare to revise the station before the four-o'clock session.",
+          "knowledge_gained": [
+            "The darker pencil-marked path follows the repeating object and label order: bridge, stairs, landmark, then the learning room.",
+            "The darker path also matches the schedule's room sequence.",
+            "The fainter candidate reverses the stairs and landmark order and passes too close to the closed entrance.",
+            "The successful path avoids the closed entrance and works when traced in either direction."
+          ],
+          "facts_established": [
+            "Only one candidate path matches the map symbols, object labels, schedule order, and access restriction together.",
+            "The station's current display still shows the obsolete route."
+          ],
+          "clues_added": [
+            "The route sequence is bridge, stairs, landmark, then the learning room.",
+            "The darker pencil line preserves that sequence while the fainter line does not.",
+            "Tracing the confirmed route backward also matches the repeated pattern."
+          ],
+          "objects_changed": [
+            "Deniz used the ruler to test both candidate paths.",
+            "Deniz lightly marked the confirmed turn order on a scrap section of the current-access map.",
+            "The current-access map was folded along its existing crease and placed beside panel 4.",
+            "The marker envelope remains outside the display, while the pencil and clear tape remain available."
+          ],
+          "relationships_changed": [
+            "The darker pencil-marked path is confirmed as the accessible route because it matches multiple established patterns.",
+            "The fainter candidate is rejected by its incorrect symbol order and proximity to the closed entrance."
+          ],
+          "threads_opened": [
+            "How should Deniz revise the public station so visitors can understand the confirmed route?",
+            "How can Deniz preserve the evidence explaining why the obsolete marker stays out?"
+          ],
+          "threads_resolved": [
+            "The correct alternate route has been tested and confirmed.",
+            "The two plausible candidate paths have been distinguished through repeated patterns rather than appearance."
+          ],
+          "handoff_state": "Deniz has tested both pencil-marked alternatives with the ruler. The darker route is confirmed because it follows the bridge-stairs-landmark sequence, matches the schedule, aligns with the labeled objects, and avoids the closed entrance. The fainter route is rejected. The station itself still displays the obsolete route, the panel 4 marker remains in its envelope outside the empty slot, and pencil and clear tape are ready for Deniz to update the public display."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 18.687,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 536,
+          "usage": {
+            "input_tokens": 6501,
+            "output_tokens": 1412,
+            "total_tokens": 7913
+          },
+          "cost": {
+            "usd": 0.0033195,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.9,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4799,
+          "output_tokens": 188,
+          "cost": 0.000201558
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.9,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4799,
+            "output_tokens": 188,
+            "cost": 0.000201558
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.38
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 19.067
+    },
+    {
+      "scene": 5,
+      "target_words": 779,
+      "word_count": 676,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the tested solution and make Deniz's decisive choice about the misleading original display.",
+        "entry_state": "The accessible alternate route is confirmed, while the station still suggests the closed route.",
+        "beats": [
+          "Deniz leaves the obsolete marker out, tapes the confirmed route over the old line, and labels each turn using the matching objects.",
+          "Deniz adds a concise access note beside the schedule, choosing accuracy and clarity over restoring the original pattern."
+        ],
+        "must_include": [
+          "The decisive application uses the map, marker absence, labels, schedule, and tested alternate route.",
+          "Deniz's choice changes the station rather than merely locating the missing object.",
+          "The updated arrangement remains understandable to independent visitors."
+        ],
+        "must_not_do": [
+          "Do not introduce a new puzzle after the route is correctly applied.",
+          "Do not erase the evidence that explains why the original marker stays out.",
+          "Do not have another character perform Deniz's solution."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 3 established that the original route crosses a closed entrance.",
+          "Scene 4 established the alternate route by testing symbols, labels, and schedule order.",
+          "Scene 4 established tape and pencil as available ordinary tools."
+        ],
+        "handoff": "The station now presents the verified accessible route, with the obsolete marker excluded and the reason clearly recorded.",
+        "open_threads_after": [
+          "Will the updated station work for visitors?",
+          "Can Deniz explain the reasoning if questioned?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz stood between the old display and the folded current-access map, holding the marker envelope in one hand. The easiest choice would have been to put the triangle marker back into panel 4 and leave the station looking as it had before. The empty slot made the whole arrangement seem unfinished.\n\nBut the marker belonged to the route that crossed the barred entrance. Returning it would restore the pattern’s appearance while making its meaning wrong. The inventory record had placed the marker with the current-access materials, and the schedule had warned Deniz to check that map. The darker route had then matched the labels, the room sequence, and the symbols. The evidence pointed in one direction.\n\nDeniz set the envelope beside the current-access map.\n\n“Missing is better than misleading,” Deniz said quietly.\n\nThe old dotted line ran across the center of the display toward the triangle with a bar through it. Deniz did not erase that symbol. Instead, Deniz used the clear tape to lay a narrow strip over the old line, beginning where the two routes separated. The tape followed the confirmed path toward the bridge, turned to the stairs, then bent toward the landmark and the learning room. Each piece overlapped the last by a little, making one continuous route instead of a collection of uncertain marks.\n\nAt the first turn, Deniz placed a small label beside the tape: BRIDGE. At the next came STAIRS. Then LANDMARK. The labels matched the object tokens beneath the panels, so a visitor could check the route against something physical instead of trusting a line alone. Deniz left the closed entrance symbol visible at the edge of the covered route. It was important that the old path had not simply vanished without explanation.\n\nThe schedule still showed the room sequence, but its warning was easy to miss. Deniz wrote a concise note on a clean corner of the station card:\n\n“ACCESS ROUTE: Bridge → Stairs → Landmark → Learning Room. Do not use the side entrance; it is closed.”\n\nDeniz placed the note beside the schedule, not over it. Then, beneath the note, Deniz added: “Panel 4 marker kept with current-access materials because the original route is outdated.”\n\nFor a moment, Deniz considered whether that sentence was too much information. It was not. An independent visitor might notice the empty compartment and wonder whether something had been forgotten. The note answered that question without requiring anyone to guess or search through the inventory shelf.\n\nDeniz stepped back and read the station as a stranger might. The numbered panels led to the matching objects. The objects named the turns. The taped line connected those turns in the same order as the schedule. The note explained the closed entrance and the absent marker. Nothing depended on knowing what Deniz had been thinking earlier.\n\nStill, the taped route looked slightly brighter than the printed map around it, and the old dotted line could be seen at a few edges. Deniz pressed down one loose corner, then added a short arrow at the beginning so the direction was clear. The route could also be traced backward, but a first-time visitor should not have to decide where to start.\n\nDeniz checked the clock. The four-o’clock session was close enough that there was no time to make the display perfect in every detail. It did not need to look untouched. It needed to tell the truth clearly.\n\nThe marker remained in its envelope, beside the current-access map. The old route remained as evidence, crossed out by the taped replacement and explained by the access note. The confirmed path now connected the map, the objects, the labels, and the schedule in one readable arrangement.\n\nDeniz returned the pencil to the route-materials compartment, left the tape within reach, and switched the station light to its ready setting. Then Deniz looked once more at the barred triangle and the route turning away from it.\n\nThis time, the empty slot did not look like a mistake. It showed that the station had changed because the route had changed.",
+        "state_delta": {
+          "location": "Public learning room, at the revised six-panel map-learning station.",
+          "character_goal": "Deniz has revised the station to present the tested accessible route clearly before the four-o'clock session.",
+          "knowledge_gained": [
+            "The station is more accurate when it excludes the obsolete marker instead of restoring the old display pattern.",
+            "Independent visitors can follow the corrected route by matching the taped line, object labels, map symbols, and schedule order."
+          ],
+          "facts_established": [
+            "The confirmed route is Bridge, then Stairs, then Landmark, then Learning Room.",
+            "The side entrance is closed and must not be used.",
+            "The panel 4 marker remains with the current-access materials because the original route is outdated.",
+            "The station now explains both the corrected route and the marker's absence."
+          ],
+          "clues_added": [
+            "A taped route covers the old line from the point where the routes separate.",
+            "Turn labels identify Bridge, Stairs, and Landmark beside the corrected path.",
+            "An access note beside the schedule gives the route and warns against the closed side entrance.",
+            "A note explains why the panel 4 marker remains outside the display."
+          ],
+          "objects_changed": [
+            "Clear tape now marks the tested alternate route over the obsolete line.",
+            "Labels have been placed beside the route's turns.",
+            "The schedule has an access note beside it.",
+            "The marker envelope remains outside panel 4 with the current-access map.",
+            "The station light is set to its ready setting."
+          ],
+          "relationships_changed": [
+            "The station's labels, objects, map, schedule, and taped route now function as one consistent public guide.",
+            "The empty marker slot now communicates that the obsolete route has been deliberately excluded rather than forgotten."
+          ],
+          "threads_opened": [
+            "Will visitors follow the revised route successfully?",
+            "Can Deniz explain how the connected evidence led to the update if questioned?"
+          ],
+          "threads_resolved": [
+            "Deniz chose the tested alternate route instead of restoring the misleading original marker.",
+            "The station was revised for independent visitors without erasing the evidence about the closed entrance and obsolete marker."
+          ],
+          "handoff_state": "The public station now displays the verified accessible route with clear tape, matching turn labels, and an access note beside the schedule. The old route's barred entrance remains visible as evidence, while the obsolete panel 4 marker stays in its labeled envelope beside the current-access map. The station is ready for the four-o'clock session; the remaining task is to observe visitors using it and explain the evidence if needed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.267,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 676,
+          "usage": {
+            "input_tokens": 7088,
+            "output_tokens": 1578,
+            "total_tokens": 8666
+          },
+          "cost": {
+            "usd": 0.00366545,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.93,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5576,
+          "output_tokens": 188,
+          "cost": 0.000234192
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.93,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5576,
+            "output_tokens": 188,
+            "cost": 0.000234192
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.573
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.841
+    },
+    {
+      "scene": 6,
+      "target_words": 646,
+      "word_count": 599,
+      "contract": {
+        "index": 6,
+        "purpose": "Show practical consequences, communicate the reasoning, and close the puzzle without reopening it.",
+        "entry_state": "Deniz has revised the station and must confirm that the solution functions for its intended visitors.",
+        "beats": [
+          "Visitors follow the taped route and match the objects to the labels without reaching the closed entrance.",
+          "Deniz explains that testing connected patterns, not guessing about the missing marker, revealed the responsible choice."
+        ],
+        "must_include": [
+          "The station's successful use confirms the route and resolves the central problem.",
+          "Deniz communicates the evidence plainly without sounding instructional or adult-like.",
+          "The ending leaves the public learning space accurate and usable."
+        ],
+        "must_not_do": [
+          "Do not add a new mystery, threat, character, or future discovery.",
+          "Do not undo Deniz's route update or return the obsolete marker.",
+          "Do not leave the central problem unresolved."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the corrected route, labels, access note, and excluded obsolete marker.",
+          "Scene 4 established that the corrected route matched multiple tested patterns.",
+          "Scene 3 established why the original route could not be used."
+        ],
+        "handoff": "The station works, visitors avoid the closed entrance, and Deniz's evidence-based decision has resolved the missing-pattern problem.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "At four o’clock, the learning room filled with the quiet sounds of a public session: chairs moving, shoes crossing the floor, and voices comparing the objects beneath the map panels. Deniz stood near the station without hovering over it. The display had to work for people who did not already know what had happened.\n\nThe first visitor picked up the bridge token and searched the labels. “Bridge first,” she said, following the arrow to the beginning of the taped line.\n\nAnother visitor checked the schedule. “Then stairs, landmark, learning room.”\n\nThey moved the matching tokens along the route as they went. At the point where the old dotted line continued toward the side entrance, one visitor paused.\n\n“Is this the way?”\n\nDeniz pointed to the access note beside the schedule. “That entrance is closed. The taped line is the current route. It turns away before the entrance and goes to the bridge instead.”\n\nThe visitor followed the tape. The others checked the symbols on the current-access map against the labels on the display. No one needed to open the marker envelope or guess what the empty slot meant. The route connected the panels, objects, labels, and schedule in the same order Deniz had tested.\n\nA few minutes later, the group reached the learning-room symbol without passing the closed entrance. The visitor holding the bridge token looked back at the station.\n\n“Why is the panel 4 marker kept out?” she asked.\n\nDeniz picked up the envelope but did not remove the marker. “At first, I thought someone had borrowed it. The slot was empty, so that seemed likely. But the inventory showed no checkout. It placed the marker with the route materials and the current-access map.”\n\nDeniz opened the map to the marked section. “Then the legend showed that this triangle with a bar meant a closed entrance. The marker belonged to the old route, the one that ended there. Putting it back would have made the old path look correct.”\n\nThe visitor glanced from the barred triangle to the taped line. “So you tested the other paths?”\n\n“Two of them,” Deniz said. “One had the right-looking turn, but its stairs and landmark were in the wrong order. It also came too close to the closed entrance. This route matched the object labels and the schedule: bridge, stairs, landmark, then learning room. Tracing it with the ruler confirmed the turns.”\n\nThe visitor nodded and returned the bridge token to its place. “The empty slot is part of the explanation.”\n\n“Exactly,” Deniz said. “The missing marker was not the answer by itself. The pattern around it was.”\n\nThe visitors continued using the station. They compared each object with its label, followed the taped route, and checked the schedule without asking Deniz to direct every step. When someone reached toward the old dotted line, another visitor noticed the access note first and pointed to the turn.\n\nDeniz watched the station do what it was meant to do. The closed side entrance remained visible, but it no longer pulled anyone toward it. The corrected route was clear without pretending the old one had never existed. The marker stayed beside the current-access map, where the inventory said it belonged.\n\nBefore leaving, Deniz checked the ready light and the labels once more. The six panels, the objects, the schedule, the map, and the taped line now agreed. Visitors could test the route themselves and arrive at the learning room without relying on a guess.\n\nDeniz slid the marker envelope neatly beside the folded map. The station was accurate, usable, and ready for the next group.",
+        "state_delta": {
+          "location": "Public learning room, at the functioning six-panel map-learning station.",
+          "character_goal": "Deniz confirms that visitors can use the revised station independently and communicates why the obsolete marker remains excluded.",
+          "knowledge_gained": [
+            "Visitors can follow the taped Bridge–Stairs–Landmark–Learning Room route successfully.",
+            "Visitors can match the route's objects, labels, symbols, and schedule without Deniz directing every step.",
+            "The access note prevents visitors from following the obsolete path to the closed side entrance."
+          ],
+          "facts_established": [
+            "The corrected station works for its intended public users.",
+            "The obsolete marker remains with the current-access materials because it belongs to the outdated route.",
+            "The station is accurate and usable for the session."
+          ],
+          "clues_added": [
+            "Visitors independently confirm the bridge, stairs, landmark, and learning-room sequence.",
+            "The access note and taped route successfully redirect visitors from the closed entrance."
+          ],
+          "objects_changed": [
+            "Visitors temporarily move the matching object tokens while using the station and return them afterward.",
+            "The marker envelope remains beside the folded current-access map.",
+            "The revised display, access note, labels, and ready light remain in place."
+          ],
+          "relationships_changed": [
+            "The station's connected materials function as a clear guide for independent visitors.",
+            "Deniz's explanation connects the missing marker to the outdated route and the tested replacement."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "Visitors successfully use the accessible route.",
+            "Deniz explains the evidence-based reasoning behind excluding the obsolete marker.",
+            "The central problem is resolved: the public station is accurate and usable."
+          ],
+          "handoff_state": "The four-o'clock session confirms that visitors can follow the taped Bridge–Stairs–Landmark–Learning Room route, match the objects and labels, and avoid the closed side entrance. Deniz explains that inventory records, the map legend, the closure symbol, the schedule, and tests of both candidate paths—not a guess about the missing marker—led to the update. The obsolete marker remains beside the current-access map, and the station is accurate, clear, and ready for future visitors."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.258,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 599,
+          "usage": {
+            "input_tokens": 7459,
+            "output_tokens": 1325,
+            "total_tokens": 8784
+          },
+          "cost": {
+            "usd": 0.0034546,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.83,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.86,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5643,
+          "output_tokens": 188,
+          "cost": 0.000237006
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.83,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5643,
+            "output_tokens": 188,
+            "cost": 0.000237006
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.434
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.692
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish Deniz's task, the incomplete station, its deadline, and the first visible pattern.",
+      "word_count": 422,
+      "location": "Public learning room, at the six-panel map-learning station.",
+      "character_goal": "Deniz is independently preparing the station for the four-o'clock Map Connections session and must make it usable.",
+      "knowledge_gained": [
+        "The station connects six numbered map panels, matching object tokens, labels, and a route visitors are meant to follow.",
+        "Panel 4 is missing its route marker.",
+        "The displayed dotted route ends at a side entrance.",
+        "The schedule instructs Deniz to check the current access map before opening."
+      ],
+      "facts_established": [
+        "The four-o'clock session is approaching.",
+        "The missing marker is needed for visitors to follow the displayed route.",
+        "Deniz has access to the station checklist and pencil."
+      ],
+      "clues_added": [
+        "The empty route-marker compartment is beside the route line on panel 4.",
+        "The handwritten schedule warning says to check the current access map before opening."
+      ],
+      "objects_changed": [
+        "Deniz switched on the station and picked up the checklist and a pencil.",
+        "The route-marker compartment remains empty."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Where is the missing route marker?",
+        "Is the displayed route still current and usable?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz is at the incomplete six-panel station before the four-o'clock session. The route marker for panel 4 is absent, and Deniz's reasonable first hypothesis is that a previous visitor borrowed it or left it somewhere else. The displayed route ends at a side entrance, and the schedule warns Deniz to check the current access map before opening. No route replacement or access problem has been identified."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test the borrowing hypothesis against the station's repeated labeling and inventory patterns.",
+      "word_count": 532,
+      "location": "Public learning room, at the six-panel map-learning station and its inventory shelf.",
+      "character_goal": "Deniz is checking the station's labels and inventory to determine why panel 4's route marker is absent and whether the displayed route can be used before the four-o'clock session.",
+      "knowledge_gained": [
+        "Each map panel number matches a token label and an inventory category.",
+        "The inventory uses a repeated sequence and return notation: a filled circle marks a station compartment, an arrow marks route materials, and OUT with initials and time marks a checkout.",
+        "The panel 4 route marker has no checkout initials or time and is recorded as belonging with the route materials.",
+        "The route-materials compartment is labeled CURRENT ACCESS MAPS.",
+        "The marker is inside an envelope labeled ROUTE MARKER—4 rather than in the display."
+      ],
+      "facts_established": [
+        "The marker was moved according to the station's inventory system, not borrowed by a visitor.",
+        "The inventory's repeated entries are supported by an older card using the same sequence and notation.",
+        "The route marker is physically stored with current-access map materials."
+      ],
+      "clues_added": [
+        "The panel 4 inventory line reads ROUTE MARKER—4 | RETURN: ROUTE MATERIALS | OUT: —.",
+        "The schedule warning about checking the current access map specifically connects to the marker's storage category."
+      ],
+      "objects_changed": [
+        "Deniz checked the labels and inventory cards.",
+        "Deniz opened the route-materials compartment and placed the marker envelope beside the map panels.",
+        "A folded current-access map is ready for examination."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Why was the marker separated from the display if it was not borrowed?",
+        "What does the current-access map show about the displayed route?"
+      ],
+      "threads_resolved": [
+        "The reasonable borrowing hypothesis is rejected by the repeated inventory and checkout records.",
+        "The marker's location is found: it is stored with the current-access map materials."
+      ],
+      "handoff_state": "Deniz remains at the station with the marker recovered in its labeled envelope, outside the display but beside a folded current-access map. Inventory records prove it was not checked out; its patterned category places it with route materials. Deniz is now about to compare the displayed route with the map, without yet knowing whether the route is closed or what replacement might be needed."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use the map legend and repeated symbols to uncover the outdated route and reject simple loss.",
+      "word_count": 518,
+      "location": "Public learning room, at the six-panel map-learning station with the current-access map unfolded beside the display.",
+      "character_goal": "Deniz must identify and verify a current accessible route before updating the station for the four-o'clock session.",
+      "knowledge_gained": [
+        "The panel 4 marker's triangle matches the route leading to the side entrance.",
+        "The map legend defines a triangle with a bar through it as a closed entrance.",
+        "The displayed route crosses an entrance that the current-access map marks as closed.",
+        "The newer pencil line avoids the closed entrance, but its complete route has not yet been verified.",
+        "The marker was separated from the display because the displayed route is outdated, not because it was lost."
+      ],
+      "facts_established": [
+        "The current-access map uses the same six numbered panels and matching symbols as the station display.",
+        "The current map contains a legend that explains the closure symbol before Deniz relies on it.",
+        "Two possible pencil-marked alternatives remain to be tested."
+      ],
+      "clues_added": [
+        "The panel 4 route marker bears the same triangle symbol as the side entrance.",
+        "The current-access map shows that entrance with a triangle crossed by a bar.",
+        "A newer pencil line bends away from the closed entrance, while another faint line suggests a second possible alternative."
+      ],
+      "objects_changed": [
+        "Deniz unfolded the current-access map beside the display.",
+        "The marker envelope remains beside panel 4 instead of being returned to the empty slot.",
+        "The ruler and clear tape remain available in the route-materials compartment."
+      ],
+      "relationships_changed": [
+        "The missing marker is now understood as connected to an obsolete route rather than to borrowing or simple loss.",
+        "The schedule warning is connected specifically to the difference between the displayed map and the current-access map."
+      ],
+      "threads_opened": [
+        "Which of the two possible alternate paths is accessible and matches the station's repeated pattern?",
+        "How can Deniz update the station so visitors understand the corrected route?"
+      ],
+      "threads_resolved": [
+        "The displayed route is outdated because it crosses a closed side entrance.",
+        "The marker's absence is explained by the route's access problem, not by theft or misplacement."
+      ],
+      "handoff_state": "Deniz has compared the display with the current-access map and used its existing legend to confirm that the old route crosses a closed side entrance. The panel 4 marker remains out of the display because restoring it would make the obsolete route appear usable. Two pencil-marked alternatives remain plausible, and Deniz is ready to test them with the ruler against the established symbols, labels, and schedule. The replacement route has not yet been selected."
+    },
+    {
+      "scene": 4,
+      "purpose": "Test candidate alternate paths using the map, objects, labels, schedule, and ordinary tools.",
+      "word_count": 536,
+      "location": "Public learning room, at the six-panel map-learning station with the current-access map beside the display.",
+      "character_goal": "Deniz must verify an accessible alternate route and prepare to revise the station before the four-o'clock session.",
+      "knowledge_gained": [
+        "The darker pencil-marked path follows the repeating object and label order: bridge, stairs, landmark, then the learning room.",
+        "The darker path also matches the schedule's room sequence.",
+        "The fainter candidate reverses the stairs and landmark order and passes too close to the closed entrance.",
+        "The successful path avoids the closed entrance and works when traced in either direction."
+      ],
+      "facts_established": [
+        "Only one candidate path matches the map symbols, object labels, schedule order, and access restriction together.",
+        "The station's current display still shows the obsolete route."
+      ],
+      "clues_added": [
+        "The route sequence is bridge, stairs, landmark, then the learning room.",
+        "The darker pencil line preserves that sequence while the fainter line does not.",
+        "Tracing the confirmed route backward also matches the repeated pattern."
+      ],
+      "objects_changed": [
+        "Deniz used the ruler to test both candidate paths.",
+        "Deniz lightly marked the confirmed turn order on a scrap section of the current-access map.",
+        "The current-access map was folded along its existing crease and placed beside panel 4.",
+        "The marker envelope remains outside the display, while the pencil and clear tape remain available."
+      ],
+      "relationships_changed": [
+        "The darker pencil-marked path is confirmed as the accessible route because it matches multiple established patterns.",
+        "The fainter candidate is rejected by its incorrect symbol order and proximity to the closed entrance."
+      ],
+      "threads_opened": [
+        "How should Deniz revise the public station so visitors can understand the confirmed route?",
+        "How can Deniz preserve the evidence explaining why the obsolete marker stays out?"
+      ],
+      "threads_resolved": [
+        "The correct alternate route has been tested and confirmed.",
+        "The two plausible candidate paths have been distinguished through repeated patterns rather than appearance."
+      ],
+      "handoff_state": "Deniz has tested both pencil-marked alternatives with the ruler. The darker route is confirmed because it follows the bridge-stairs-landmark sequence, matches the schedule, aligns with the labeled objects, and avoids the closed entrance. The fainter route is rejected. The station itself still displays the obsolete route, the panel 4 marker remains in its envelope outside the empty slot, and pencil and clear tape are ready for Deniz to update the public display."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the tested solution and make Deniz's decisive choice about the misleading original display.",
+      "word_count": 676,
+      "location": "Public learning room, at the revised six-panel map-learning station.",
+      "character_goal": "Deniz has revised the station to present the tested accessible route clearly before the four-o'clock session.",
+      "knowledge_gained": [
+        "The station is more accurate when it excludes the obsolete marker instead of restoring the old display pattern.",
+        "Independent visitors can follow the corrected route by matching the taped line, object labels, map symbols, and schedule order."
+      ],
+      "facts_established": [
+        "The confirmed route is Bridge, then Stairs, then Landmark, then Learning Room.",
+        "The side entrance is closed and must not be used.",
+        "The panel 4 marker remains with the current-access materials because the original route is outdated.",
+        "The station now explains both the corrected route and the marker's absence."
+      ],
+      "clues_added": [
+        "A taped route covers the old line from the point where the routes separate.",
+        "Turn labels identify Bridge, Stairs, and Landmark beside the corrected path.",
+        "An access note beside the schedule gives the route and warns against the closed side entrance.",
+        "A note explains why the panel 4 marker remains outside the display."
+      ],
+      "objects_changed": [
+        "Clear tape now marks the tested alternate route over the obsolete line.",
+        "Labels have been placed beside the route's turns.",
+        "The schedule has an access note beside it.",
+        "The marker envelope remains outside panel 4 with the current-access map.",
+        "The station light is set to its ready setting."
+      ],
+      "relationships_changed": [
+        "The station's labels, objects, map, schedule, and taped route now function as one consistent public guide.",
+        "The empty marker slot now communicates that the obsolete route has been deliberately excluded rather than forgotten."
+      ],
+      "threads_opened": [
+        "Will visitors follow the revised route successfully?",
+        "Can Deniz explain how the connected evidence led to the update if questioned?"
+      ],
+      "threads_resolved": [
+        "Deniz chose the tested alternate route instead of restoring the misleading original marker.",
+        "The station was revised for independent visitors without erasing the evidence about the closed entrance and obsolete marker."
+      ],
+      "handoff_state": "The public station now displays the verified accessible route with clear tape, matching turn labels, and an access note beside the schedule. The old route's barred entrance remains visible as evidence, while the obsolete panel 4 marker stays in its labeled envelope beside the current-access map. The station is ready for the four-o'clock session; the remaining task is to observe visitors using it and explain the evidence if needed."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show practical consequences, communicate the reasoning, and close the puzzle without reopening it.",
+      "word_count": 599,
+      "location": "Public learning room, at the functioning six-panel map-learning station.",
+      "character_goal": "Deniz confirms that visitors can use the revised station independently and communicates why the obsolete marker remains excluded.",
+      "knowledge_gained": [
+        "Visitors can follow the taped Bridge–Stairs–Landmark–Learning Room route successfully.",
+        "Visitors can match the route's objects, labels, symbols, and schedule without Deniz directing every step.",
+        "The access note prevents visitors from following the obsolete path to the closed side entrance."
+      ],
+      "facts_established": [
+        "The corrected station works for its intended public users.",
+        "The obsolete marker remains with the current-access materials because it belongs to the outdated route.",
+        "The station is accurate and usable for the session."
+      ],
+      "clues_added": [
+        "Visitors independently confirm the bridge, stairs, landmark, and learning-room sequence.",
+        "The access note and taped route successfully redirect visitors from the closed entrance."
+      ],
+      "objects_changed": [
+        "Visitors temporarily move the matching object tokens while using the station and return them afterward.",
+        "The marker envelope remains beside the folded current-access map.",
+        "The revised display, access note, labels, and ready light remain in place."
+      ],
+      "relationships_changed": [
+        "The station's connected materials function as a clear guide for independent visitors.",
+        "Deniz's explanation connects the missing marker to the outdated route and the tested replacement."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "Visitors successfully use the accessible route.",
+        "Deniz explains the evidence-based reasoning behind excluding the obsolete marker.",
+        "The central problem is resolved: the public station is accurate and usable."
+      ],
+      "handoff_state": "The four-o'clock session confirms that visitors can follow the taped Bridge–Stairs–Landmark–Learning Room route, match the objects and labels, and avoid the closed side entrance. Deniz explains that inventory records, the map legend, the closure symbol, the schedule, and tests of both candidate paths—not a guess about the missing marker—led to the update. The obsolete marker remains beside the current-access map, and the station is accurate, clear, and ready for future visitors."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "At 3:12, Deniz unlocked the cabinet in the public learning room and switched on the map station. The four-o'clock session was less than an hour away. Usually, a staff member checked the display before visitors arrived, but today Deniz had offered to do it. If the station was confusing, people would spend the session sorting out the equipment instead of learning from it.\n\nThe station occupied a long table beneath six map panels. Each panel had a number, a short label, and a shallow space for an object token. The tokens were ordinary-looking pieces: a blue bridge, a red stairway, a green square, and several small arrow-shaped route markers. A printed card beside them explained that visitors should match each object to its map symbol, then follow the connected route from panel to panel.\n\nDeniz began with the labels. Panels 1 through 6 were in order, and the tokens sat in a neat row beneath them—except for panel 4. Its space was empty. The label beneath the gap read ROUTE MARKER, and on the map above it, a dotted line ran from panel 3 toward panel 4 before ending at a small side entrance.\n\n“Of course,” Deniz muttered. “The one piece people need to follow the route is missing.”\n\nA clear plastic schedule holder stood at the corner of the table. The session times were printed in thick black lines: 4:00, Map Connections; 4:30, Open Exploration. At the bottom, someone had added a handwritten reminder in blue pencil:\n\nCHECK THE CURRENT ACCESS MAP BEFORE OPENING.\n\nDeniz read it twice. The station did not merely ask visitors to identify symbols. It asked them to follow a route, and the schedule specifically warned against assuming that the displayed route was ready to use. Still, the immediate problem was the empty space.\n\nDeniz checked under the table, inside the cabinet, and behind the schedule holder. Nothing. The small tray beside the panels held the other tokens, each in a labeled compartment. The missing marker might have been left on another table—or borrowed by someone who had wanted to compare it with a different map.\n\nThat explanation seemed likely enough. Visitors handled the objects during the day, and a marker could easily be set down in the wrong place. Deniz picked up a pencil and the station checklist.\n\n“I’ll find it first,” Deniz said, taking responsibility for the display. “Then I’ll see whether this route is still the one we should show.”\n\nThe empty compartment waited beside the route line, while the clock moved toward four.\n\nDeniz started with the checklist instead of searching randomly. The station’s labels were too orderly for that. Each panel number appeared twice: once beneath the map and once on the token tray. Deniz lifted the blue bridge token from panel 1’s compartment and checked its label. BRIDGE—1. The red stairway read STAIR—2. The green square read LANDMARK—3. The remaining arrow markers were labeled for panels 5 and 6.\n\nOnly panel 4 had no token in its matching space.\n\n“That still could mean someone took it,” Deniz said. “But I need to check the record.”\n\nBelow the tray, a narrow shelf held the station inventory. Its compartments followed the same order as the map panels: 1, 2, 3, 4, 5, 6. Beside each number was a category word and a small return column. Deniz found the printed key at the bottom: a filled circle meant the piece was in its station compartment, an arrow meant it belonged with the route materials, and the word OUT meant someone had checked it out.\n\nThe first three entries matched the objects Deniz had just examined. Panel 5 and panel 6 were marked with filled circles too. Panel 4 was different:\n\nROUTE MARKER—4 | RETURN: ROUTE MATERIALS | OUT: —\n\nDeniz ran a finger beneath the dash. No name. No date. No borrowing mark.\n\nThe line was not a loose note added after the fact. The same return notation appeared on an older inventory card clipped behind it. When a token was taken away for a session, the card showed a person’s initials and the time. When it was placed with the route materials, the arrow symbol appeared instead. The entries for panels 1 through 6 had been copied in the same sequence on both cards.\n\nDeniz looked again at the empty compartment. The borrowing idea had been reasonable. Visitors did handle the pieces, and a small marker could easily disappear into a pocket of papers. But the repeated records did not support it. The marker had no checkout initials, and its return category was not the general token shelf. It belonged with the route materials.\n\n“Not borrowed,” Deniz said. “Moved according to the system.”\n\nThe route-materials compartment was at the far end of the shelf, beneath a label that matched the schedule’s wording: CURRENT ACCESS MAPS. Inside lay folded sheets, a ruler, a roll of clear tape, and a thin envelope labeled ROUTE MARKER—4. Deniz paused before opening it.\n\nThe schedule’s blue-pencil warning came back to mind: CHECK THE CURRENT ACCESS MAP BEFORE OPENING. Until now, that had sounded like a general reminder. The inventory made it more specific. The missing piece and the access maps belonged to the same category.\n\nDeniz lifted the envelope. The marker was inside, flat against a sheet of paper, not lost at all. It was simply not in the display.\n\nThat answered one question, but it made the next one sharper. Why had the marker been separated from the panel if no one had checked it out? Deniz placed the envelope beside the map panels and opened the first folded sheet. Before choosing a route, Deniz would have to compare what the station showed with what the current-access materials recorded.\n\nDeniz unfolded the current-access map across the edge of the station. It showed the same six numbered panels as the display, but the lines were thinner and the labels had been printed in a newer typeface. That made comparison possible without guessing. Panel 4 on the display showed a small triangle beside its route line. The envelope’s marker had the same triangle stamped on one side.\n\nDeniz checked the map legend before following the symbol. The legend was printed along the bottom, beside the familiar bridge, stair, and landmark icons. A triangle with a short bar through it meant CLOSED ENTRANCE. A plain triangle meant SIDE ENTRANCE. The symbols were not decoration; they told visitors what kind of place each mark represented.\n\nOn the displayed panel, the route ran from the numbered maps toward the side entrance. The route marker for panel 4 belonged exactly there. Its absence was not random. Without it, the line stopped before the entrance and left the connection incomplete.\n\nDeniz moved the current-access map next to the display. The same entrance appeared on both sheets, but the current map carried the triangle-with-a-bar symbol. Deniz looked back at the schedule. CHECK THE CURRENT ACCESS MAP BEFORE OPENING. The instruction had not been a general reminder. It pointed directly to the difference between these two versions.\n\n“Closed,” Deniz said quietly. “Not missing. Closed.”\n\nThe word felt less dramatic than the first explanation had been. No one had taken the marker. No one had damaged the station. The marker had been placed with the route materials because the route it described could no longer be used through that entrance.\n\nDeniz traced the current map with a fingertip. A newer pencil line began near the same group of panels and bent away before reaching the crossed-out triangle. It passed through several small symbols, but the line faded where the map’s fold covered the middle section. There was not enough visible information to choose that path yet. Another faint line seemed to branch toward the entrance from a different direction, making two possible alternatives.\n\nFor a moment, Deniz wondered whether the pencil marks were merely someone’s notes. The printed route was clearer and easier to follow. Maybe the schedule warning only meant that the map should be checked, not that the station needed changing. Deniz compared the symbols again. The newer line avoided the closure mark. The old line did not. That was evidence, but it did not yet show which turns visitors should take.\n\nDeniz placed the marker envelope beside panel 4 instead of putting the marker back. Restoring it would make the old pattern look complete while sending visitors toward an inaccessible entrance. Leaving it aside made the display visibly incomplete, but honestly so.\n\nThe choice needed evidence. The question had changed. Deniz no longer needed to find a lost object. Deniz needed to identify the current route and prove that it matched the station’s labels, objects, and schedule. The ruler and clear tape waited in the route-materials compartment. Before using either one, Deniz would test both pencil-marked possibilities against the repeated pattern on the panels.\n\nDeniz took the ruler from the route-materials compartment and laid it along the first pencil line. Both alternatives began in the same place, near the numbered panels, so either could have been a hurried update. The difference appeared at the first turn.\n\nThe darker line bent toward the bridge symbol, then continued to a stair symbol before curving away from the closed side entrance. The fainter line went toward a landmark symbol and seemed to meet the same destination. It was plausible enough that Deniz could not reject it by appearance.\n\nDeniz checked the object tokens beneath the panels. Their labels repeated the map order: bridge, stairs, landmark, then side entrance. The objects were not arranged as decoration. They gave the route a sequence visitors could follow.\n\nWith the ruler still pressed to the current-access map, Deniz traced the darker line from turn to turn. It reached the bridge symbol first, then the stairs, then the landmark. Each turn matched the next labeled object. The line bent away before the triangle crossed by a bar.\n\nThe fainter line failed at the second turn. It reached the landmark before the stairs, reversing two objects in the station’s repeated order. It also drifted close to the closed entrance before joining the other line. Close was not the same as avoiding it.\n\nDeniz looked at the schedule again. Below the warning to check the current access map, the room sequence for the session followed the same order: Bridge Gallery, Stair Hall, Landmark Court, then the learning room. The darker pencil line matched that order. The fainter one did not.\n\n“First the bridge, then the stairs,” Deniz murmured. “The labels agree with the schedule.”\n\nTo make sure the match was not accidental, Deniz tested the route backward from the learning room. The darker line passed the landmark, then the stairs, then the bridge, ending at the panel group without crossing the barred triangle. Its turns aligned in reverse order exactly. The repeated pattern worked from both directions.\n\nThe fainter line did not. Traced backward, it reached the stairs after the landmark and then angled toward the closed entrance. A visitor following it might stop at the wrong turn, even if the line eventually joined the safer path.\n\nDeniz marked the successful turns lightly on a scrap section of the current-access map with the pencil. Bridge. Stairs. Landmark. No barred triangle. The result used the map’s legend, the matching objects, the panel labels, and the schedule—not just a line that happened to look newer.\n\nFor several seconds Deniz kept the ruler in place. The evidence had finally lined up. The darker route was not merely the most convenient alternative; it was the only one that preserved the station’s repeating order while avoiding the closed entrance.\n\nDeniz folded the map only along its existing crease and set it beside panel 4. The marker envelope remained outside the empty compartment. The clear tape and pencil stayed within reach for the next step, but the public display itself was still unchanged: its old line still pointed toward the inaccessible entrance.\n\nThat would have to change. First, Deniz needed to decide how to show the tested route without pretending the old marker still belonged there.\n\nDeniz stood between the old display and the folded current-access map, holding the marker envelope in one hand. The easiest choice would have been to put the triangle marker back into panel 4 and leave the station looking as it had before. The empty slot made the whole arrangement seem unfinished.\n\nBut the marker belonged to the route that crossed the barred entrance. Returning it would restore the pattern’s appearance while making its meaning wrong. The inventory record had placed the marker with the current-access materials, and the schedule had warned Deniz to check that map. The darker route had then matched the labels, the room sequence, and the symbols. The evidence pointed in one direction.\n\nDeniz set the envelope beside the current-access map.\n\n“Missing is better than misleading,” Deniz said quietly.\n\nThe old dotted line ran across the center of the display toward the triangle with a bar through it. Deniz did not erase that symbol. Instead, Deniz used the clear tape to lay a narrow strip over the old line, beginning where the two routes separated. The tape followed the confirmed path toward the bridge, turned to the stairs, then bent toward the landmark and the learning room. Each piece overlapped the last by a little, making one continuous route instead of a collection of uncertain marks.\n\nAt the first turn, Deniz placed a small label beside the tape: BRIDGE. At the next came STAIRS. Then LANDMARK. The labels matched the object tokens beneath the panels, so a visitor could check the route against something physical instead of trusting a line alone. Deniz left the closed entrance symbol visible at the edge of the covered route. It was important that the old path had not simply vanished without explanation.\n\nThe schedule still showed the room sequence, but its warning was easy to miss. Deniz wrote a concise note on a clean corner of the station card:\n\n“ACCESS ROUTE: Bridge → Stairs → Landmark → Learning Room. Do not use the side entrance; it is closed.”\n\nDeniz placed the note beside the schedule, not over it. Then, beneath the note, Deniz added: “Panel 4 marker kept with current-access materials because the original route is outdated.”\n\nFor a moment, Deniz considered whether that sentence was too much information. It was not. An independent visitor might notice the empty compartment and wonder whether something had been forgotten. The note answered that question without requiring anyone to guess or search through the inventory shelf.\n\nDeniz stepped back and read the station as a stranger might. The numbered panels led to the matching objects. The objects named the turns. The taped line connected those turns in the same order as the schedule. The note explained the closed entrance and the absent marker. Nothing depended on knowing what Deniz had been thinking earlier.\n\nStill, the taped route looked slightly brighter than the printed map around it, and the old dotted line could be seen at a few edges. Deniz pressed down one loose corner, then added a short arrow at the beginning so the direction was clear. The route could also be traced backward, but a first-time visitor should not have to decide where to start.\n\nDeniz checked the clock. The four-o’clock session was close enough that there was no time to make the display perfect in every detail. It did not need to look untouched. It needed to tell the truth clearly.\n\nThe marker remained in its envelope, beside the current-access map. The old route remained as evidence, crossed out by the taped replacement and explained by the access note. The confirmed path now connected the map, the objects, the labels, and the schedule in one readable arrangement.\n\nDeniz returned the pencil to the route-materials compartment, left the tape within reach, and switched the station light to its ready setting. Then Deniz looked once more at the barred triangle and the route turning away from it.\n\nThis time, the empty slot did not look like a mistake. It showed that the station had changed because the route had changed.\n\nAt four o’clock, the learning room filled with the quiet sounds of a public session: chairs moving, shoes crossing the floor, and voices comparing the objects beneath the map panels. Deniz stood near the station without hovering over it. The display had to work for people who did not already know what had happened.\n\nThe first visitor picked up the bridge token and searched the labels. “Bridge first,” she said, following the arrow to the beginning of the taped line.\n\nAnother visitor checked the schedule. “Then stairs, landmark, learning room.”\n\nThey moved the matching tokens along the route as they went. At the point where the old dotted line continued toward the side entrance, one visitor paused.\n\n“Is this the way?”\n\nDeniz pointed to the access note beside the schedule. “That entrance is closed. The taped line is the current route. It turns away before the entrance and goes to the bridge instead.”\n\nThe visitor followed the tape. The others checked the symbols on the current-access map against the labels on the display. No one needed to open the marker envelope or guess what the empty slot meant. The route connected the panels, objects, labels, and schedule in the same order Deniz had tested.\n\nA few minutes later, the group reached the learning-room symbol without passing the closed entrance. The visitor holding the bridge token looked back at the station.\n\n“Why is the panel 4 marker kept out?” she asked.\n\nDeniz picked up the envelope but did not remove the marker. “At first, I thought someone had borrowed it. The slot was empty, so that seemed likely. But the inventory showed no checkout. It placed the marker with the route materials and the current-access map.”\n\nDeniz opened the map to the marked section. “Then the legend showed that this triangle with a bar meant a closed entrance. The marker belonged to the old route, the one that ended there. Putting it back would have made the old path look correct.”\n\nThe visitor glanced from the barred triangle to the taped line. “So you tested the other paths?”\n\n“Two of them,” Deniz said. “One had the right-looking turn, but its stairs and landmark were in the wrong order. It also came too close to the closed entrance. This route matched the object labels and the schedule: bridge, stairs, landmark, then learning room. Tracing it with the ruler confirmed the turns.”\n\nThe visitor nodded and returned the bridge token to its place. “The empty slot is part of the explanation.”\n\n“Exactly,” Deniz said. “The missing marker was not the answer by itself. The pattern around it was.”\n\nThe visitors continued using the station. They compared each object with its label, followed the taped route, and checked the schedule without asking Deniz to direct every step. When someone reached toward the old dotted line, another visitor noticed the access note first and pointed to the turn.\n\nDeniz watched the station do what it was meant to do. The closed side entrance remained visible, but it no longer pulled anyone toward it. The corrected route was clear without pretending the old one had never existed. The marker stayed beside the current-access map, where the inventory said it belonged.\n\nBefore leaving, Deniz checked the ready light and the labels once more. The six panels, the objects, the schedule, the map, and the taped line now agreed. Visitors could test the route themselves and arrive at the learning room without relying on a guess.\n\nDeniz slid the marker envelope neatly beside the folded map. The station was accurate, usable, and ready for the next group.",
+  "word_count": 3283,
+  "target_words": 3800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.83,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.94,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10878,
+      "output_tokens": 166,
+      "cost": 0.000456876
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.96,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.83,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.94
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.94,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 10878,
+      "output_tokens": 166,
+      "cost": 0.000456876
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully executes the StoryContract and six-scene plan. Deniz is a credible 15-year-old independent problem-solver who takes responsibility, tests hypotheses systematically, and communicates reasoning clearly. The narrative follows the required progression: initial discovery of the missing marker and schedule warning (Scene 1), rejection of the borrowing hypothesis through inventory records (Scene 2), identification of the closed entrance via map legend (Scene 3), testing of two candidate routes using ruler and repeated patterns (Scene 4), application of the tested solution with deliberate choice to exclude the obsolete marker (Scene 5), and practical confirmation with visitor success and explanation (Scene 6). All eight required clues are present and causally connected: the empty slot, the schedule warning, the inventory records, the map legend, the closure symbol, the two pencil-marked alternatives, the repeated object-label-schedule order, and the ruler-verified turn sequence. The false hypothesis (borrowing) is introduced naturally and rejected by evidence. Vocabulary, sentence structure, and pacing are appropriate for an independent 15-year-old reader. No combat, unexplained objects, or benchmark language appears. Continuity is maintained across all scenes with consistent location, character knowledge, and object state. The ending resolves the central problem—the station is now accurate and usable—and shows practical consequences through visitor success. The story demonstrates the theme (good solutions come from testing patterns instead of guessing) through Deniz's systematic approach and explicit reflection. Word count is approximately 3,283, within acceptable range for the target. Minor stylistic refinements could strengthen prose flow in places (e.g., some transitions between paragraphs could be smoother), but these are optional polish and do not impede comprehension or narrative quality. The story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3283,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.96,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.83,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.94
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 10878,
+          "output_tokens": 166,
+          "cost": 0.000456876
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully executes the StoryContract and six-scene plan. Deniz is a credible 15-year-old independent problem-solver who takes responsibility, tests hypotheses systematically, and communicates reasoning clearly. The narrative follows the required progression: initial discovery of the missing marker and schedule warning (Scene 1), rejection of the borrowing hypothesis through inventory records (Scene 2), identification of the closed entrance via map legend (Scene 3), testing of two candidate routes using ruler and repeated patterns (Scene 4), application of the tested solution with deliberate choice to exclude the obsolete marker (Scene 5), and practical confirmation with visitor success and explanation (Scene 6). All eight required clues are present and causally connected: the empty slot, the schedule warning, the inventory records, the map legend, the closure symbol, the two pencil-marked alternatives, the repeated object-label-schedule order, and the ruler-verified turn sequence. The false hypothesis (borrowing) is introduced naturally and rejected by evidence. Vocabulary, sentence structure, and pacing are appropriate for an independent 15-year-old reader. No combat, unexplained objects, or benchmark language appears. Continuity is maintained across all scenes with consistent location, character knowledge, and object state. The ending resolves the central problem—the station is now accurate and usable—and shows practical consequences through visitor success. The story demonstrates the theme (good solutions come from testing patterns instead of guessing) through Deniz's systematic approach and explicit reflection. Word count is approximately 3,283, within acceptable range for the target. Minor stylistic refinements could strengthen prose flow in places (e.g., some transitions between paragraphs could be smoother), but these are optional polish and do not impede comprehension or narrative quality. The story meets the acceptance gate: average score is 4.0, all criteria are at least 3, and no critical failures are present.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000456876,
+      "final_judge_cost": {
+        "usd": 0.01685,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 51.581,
+    "scene_stage_seconds": 124.075,
+    "final_stage_seconds": 8.148,
+    "total_pipeline_seconds": 183.805
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.013898294,
+    "scene_generation_usd": 0.02251435,
+    "scene_continuity_evaluator_usd": 0.001114386,
+    "whole_continuity_evaluator_usd": 0.000456876,
+    "whole_continuity_evaluator_usd_total": 0.000456876,
+    "semantic_judge_usd": {
+      "usd": 0.01685,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.01685,
+    "scene_jev_usd": 0.001114386,
+    "whole_jev_usd": 0.000456876,
+    "whole_jev_usd_total": 0.000456876,
+    "final_haiku": {
+      "usd": 0.01685,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.01685,
+    "total_pipeline_usd": 0.054833906
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 10878,
+      "output_tokens": 166,
+      "cost": 0.000456876
+    },
+    "semantic_judge": {
+      "input_tokens": 14165,
+      "output_tokens": 537,
+      "total_tokens": 14702
+    },
+    "whole_jev": {
+      "input_tokens": 10878,
+      "output_tokens": 166,
+      "cost": 0.000456876
+    },
+    "final_haiku": {
+      "input_tokens": 14165,
+      "output_tokens": 537,
+      "total_tokens": 14702
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
