@@ -1,0 +1,1883 @@
+{
+  "pipeline": "dynamic_scene_sonnet_architect_luna_writer_v4_experiment",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5",
+    "planner": "anthropic/claude-sonnet-5"
+  },
+  "generation_protocol_version": "english-story-production.v4-dynamic-scene-experiment",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "experiments/specs/dynamic-v4/middle-child--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_dynamic_scene_plan_v4_experiment",
+    "planner_model": "anthropic/claude-sonnet-5",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "experiments/specs/dynamic-v4/middle-child--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "scene_count_rationale": "Five scenes are the minimum needed: one to establish the goal and deadline, two to test and reject false hypotheses while surfacing the real numeric pattern, one payoff scene to apply that pattern decisively, and one resolution to close the event and thread. Merging any pair would blur distinct evidence steps or leak the solution early; adding more would pad pacing for a 2800-word independent-reader story.",
+      "story_contract": {
+        "protagonist_goal": "Find and restore four missing numbered map pieces before the Explorer Club treasure-hunt event begins.",
+        "central_problem": "Map pieces needed for a scheduled activity have vanished, and several explanations seem equally possible with only two hours to solve it.",
+        "solution_principle": "By testing each hypothesis against real evidence instead of guessing, Deniz discovers a numeric code linking piece numbers to shelf letters, revealing where a substitute helper mis-shelved them.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "All pieces are recovered, the map is assembled in time, the event runs smoothly, and Deniz proposes a clearer labeling system.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No physical fighting or combat of any kind.",
+          "No supernatural or magical explanation for the missing pieces.",
+          "No adult solving the puzzle for Deniz.",
+          "No mention that this is a benchmark, test, or exercise.",
+          "No resolution of the missing-pieces problem before the payoff scene."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "narrative_role": "SETUP",
+          "relative_weight": 15,
+          "purpose": "Establish setting, protagonist, deadline, and the discovery that map pieces are missing.",
+          "entry_state": "Ordinary Saturday morning at the community learning center, two hours before the Explorer Club event.",
+          "beats": [
+            "Deniz arrives early to prep the numbered treasure-map table and notices four pieces are missing.",
+            "Checks the schedule board confirming the event starts in two hours; the supervisor is busy elsewhere.",
+            "Deniz decides to investigate systematically instead of panicking, listing possible guesses."
+          ],
+          "must_include": [
+            "numbered map pieces missing",
+            "schedule board showing two-hour deadline",
+            "Deniz choosing to investigate calmly"
+          ],
+          "must_not_do": [
+            "Reveal the true cause of the missing pieces",
+            "Include any combat or benchmark mention"
+          ],
+          "constraint_ids": [
+            "C1",
+            "C9",
+            "C5",
+            "C4"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has confirmed four pieces missing, a two-hour deadline, and a plan to test guesses with evidence.",
+          "open_threads_after": [
+            "Which explanation actually accounts for the missing pieces?"
+          ]
+        },
+        {
+          "index": 2,
+          "narrative_role": "RISING_ACTION",
+          "relative_weight": 20,
+          "purpose": "Test two plausible false hypotheses and surface the numbering pattern clue.",
+          "entry_state": "Deniz has noted the missing pieces and deadline, ready to test guesses.",
+          "beats": [
+            "Deniz checks the recycling bin with cleaning staff; pieces are not there, ruling out accidental disposal.",
+            "Deniz reviews the sign-in log for earlier table users; no clear suspect, a cousin denies taking pieces.",
+            "While rereading the log, Deniz notices piece numbers resemble shelf label codes nearby."
+          ],
+          "must_include": [
+            "recycling bin check",
+            "sign-in log review",
+            "observation of numbering code pattern"
+          ],
+          "must_not_do": [
+            "Reveal the final solution",
+            "Add new characters beyond those mentioned"
+          ],
+          "constraint_ids": [
+            "C2",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Four numbered pieces missing (Scene1)",
+            "Schedule board shows two-hour deadline (Scene1)"
+          ],
+          "handoff": "Both false hypotheses are rejected; Deniz has noticed a numeric code pattern linking pieces to shelf labels.",
+          "open_threads_after": [
+            "Does the numbering pattern explain where the pieces really are?"
+          ]
+        },
+        {
+          "index": 3,
+          "narrative_role": "RISING_ACTION",
+          "relative_weight": 20,
+          "purpose": "Deniz tests the numbering-pattern hypothesis on one piece to confirm it predicts location.",
+          "entry_state": "Deniz suspects the numbering code links pieces to shelf sections, one hour left.",
+          "beats": [
+            "Deniz compares a piece's number to nearby shelf labels and forms a rule: last digit matches shelf letter.",
+            "Tests the rule on one shelf and finds a piece mis-shelved by a substitute helper.",
+            "Confirms the rule works, feeling hopeful but aware three pieces still remain missing."
+          ],
+          "must_include": [
+            "rule linking last digit to shelf letter",
+            "test on one shelf",
+            "mention of substitute helper",
+            "three pieces still missing"
+          ],
+          "must_not_do": [
+            "Locate all remaining pieces yet",
+            "Skip verifying the rule before trusting it"
+          ],
+          "constraint_ids": [
+            "C2",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Numbering code pattern noticed linking pieces to shelf labels (Scene2)",
+            "Sign-in log ruled out theft (Scene2)"
+          ],
+          "handoff": "The rule is confirmed on the first piece; Deniz must apply it quickly to find the remaining three before the event starts.",
+          "open_threads_after": [
+            "Can Deniz find the remaining three pieces in time using the pattern?"
+          ]
+        },
+        {
+          "index": 4,
+          "narrative_role": "PAYOFF",
+          "relative_weight": 25,
+          "purpose": "Deniz applies the confirmed pattern systematically to locate all remaining pieces before the deadline.",
+          "entry_state": "One piece recovered via the pattern, three remain missing, limited time left.",
+          "beats": [
+            "Deniz uses the last-digit rule to predict shelf letters for the remaining piece numbers.",
+            "Checks each predicted shelf, finding all three pieces mis-shelved by the same substitute helper's guesswork.",
+            "Assembles the complete map just as the first Explorer Club kids arrive, proud of the method."
+          ],
+          "must_include": [
+            "pattern rule applied to all three remaining pieces",
+            "timing tension resolved",
+            "full map assembled"
+          ],
+          "must_not_do": [
+            "Introduce a twist contradicting the established pattern",
+            "Fully resolve the event's outcome here"
+          ],
+          "constraint_ids": [
+            "C2",
+            "C6",
+            "C8",
+            "C3"
+          ],
+          "prior_evidence": [
+            "Rule linking last digit to shelf letter confirmed on one piece (Scene3)",
+            "Substitute helper mis-shelved items (Scene3)"
+          ],
+          "handoff": "All four pieces are recovered and the map is assembled; the event is about to start; Deniz plans to fix the labeling system.",
+          "open_threads_after": []
+        },
+        {
+          "index": 5,
+          "narrative_role": "RESOLUTION",
+          "relative_weight": 20,
+          "purpose": "Resolve the event outcome and Deniz's decision, closing the main thread with reflection on the theme.",
+          "entry_state": "The map is fully assembled just as the Explorer Club begins.",
+          "beats": [
+            "The Explorer Club event runs smoothly using the completed map, and the kids enjoy the treasure hunt.",
+            "Deniz explains the mix-up to the supervisor and suggests clearer number-letter labels to prevent future mistakes.",
+            "Deniz reflects that testing the pattern, not guessing, solved the puzzle."
+          ],
+          "must_include": [
+            "successful event",
+            "suggestion for clearer labeling",
+            "reflection line connecting to theme"
+          ],
+          "must_not_do": [
+            "Introduce a new problem",
+            "Leave the main goal unresolved"
+          ],
+          "constraint_ids": [
+            "C3",
+            "C4"
+          ],
+          "prior_evidence": [
+            "Full map assembled from recovered pieces (Scene4)",
+            "Pattern rule proven reliable across Scenes 3-4"
+          ],
+          "handoff": "Story concludes with the event resolved and Deniz's plan for better labeling established.",
+          "open_threads_after": [
+            "Supervisor and Deniz plan a new labeling system next week."
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.96,
+        "goal_continuity": 0.97,
+        "constraint_coverage": 0.65,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.79,
+        "no_early_resolution": 0.92,
+        "ending_coherence": 0.94,
+        "decomposition_fitness": 0.88
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.65,
+        "no_unexplained_dependencies": 0.79
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.54,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3279,
+        "output_tokens": 208,
+        "cost": 0.000137718
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 4,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.714,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 2,
+          "risk": "The cousin's denial is mentioned but not fully integrated into the false-hypothesis rejection. Clarify whether the sign-in log explicitly rules out the cousin or whether Deniz must verify the denial independently. This affects whether C6 (no unexplained dependencies) is fully satisfied."
+        },
+        {
+          "scene": 3,
+          "risk": "The substitute helper is introduced as the cause of mis-shelving, but Scene 2 does not explicitly establish that a substitute was present or that Deniz learned this fact. Ensure Scene 2 surfaces the substitute's involvement (e.g., via the sign-in log or a note) so Scene 3's reference is not an unexplained dependency."
+        },
+        {
+          "scene": 2,
+          "risk": "The numbering-pattern observation ('piece numbers resemble shelf label codes') must be visually or textually concrete enough for a 10-year-old independent reader to follow. Ensure the prose shows *how* Deniz notices the resemblance (e.g., 'Piece 7 had a label that looked like the letter codes on the shelves nearby') rather than stating it abstractly."
+        }
+      ],
+      "summary": "The five-scene decomposition is structurally sound and justified. Each scene performs a distinct causal function: SETUP establishes the deadline and missing pieces; RISING_ACTION (Scenes 2–3) tests and rejects false hypotheses while surfacing the numeric pattern; PAYOFF applies the pattern to recover all pieces; RESOLUTION closes the event and threads the theme. Causal continuity is strong—each scene materially enables the next. Protagonist goal remains coherent throughout. Information accumulates without reset. The ending is earned and coherent. Constraint coverage is high (all nine constraints are addressed), and no early resolution occurs. Two minor risks remain: (1) the substitute helper's presence must be established in Scene 2 to avoid an unexplained dependency in Scene 3, and (2) the numbering-pattern observation must be concrete and age-appropriate in prose. The JEV advisory flagged constraint_coverage (0.65) and no_unexplained_dependencies (0.79) as below threshold; both are mitigated by ensuring Scene 2 explicitly surfaces the substitute's involvement and that the pattern observation is shown, not told. With these prose-level clarifications during writing, the plan will achieve full constraint satisfaction. Recommend proceeding to prose composition with attention to Scene 2's exposition of the substitute helper and the concreteness of the pattern observation.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.080706,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000137718,
+      "haiku": {
+        "usd": 0.006911,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 1728,
+        "output_tokens": 7725,
+        "total_tokens": 9453
+      },
+      "jev": {
+        "input_tokens": 3279,
+        "output_tokens": 208,
+        "cost": 0.000137718
+      },
+      "haiku": {
+        "input_tokens": 3386,
+        "output_tokens": 705,
+        "total_tokens": 4091
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "high",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        },
+        "max_tokens": null
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    420,
+    560,
+    560,
+    700,
+    560
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 420,
+      "word_count": 386,
+      "contract": {
+        "index": 1,
+        "narrative_role": "SETUP",
+        "relative_weight": 15,
+        "purpose": "Establish setting, protagonist, deadline, and the discovery that map pieces are missing.",
+        "entry_state": "Ordinary Saturday morning at the community learning center, two hours before the Explorer Club event.",
+        "beats": [
+          "Deniz arrives early to prep the numbered treasure-map table and notices four pieces are missing.",
+          "Checks the schedule board confirming the event starts in two hours; the supervisor is busy elsewhere.",
+          "Deniz decides to investigate systematically instead of panicking, listing possible guesses."
+        ],
+        "must_include": [
+          "numbered map pieces missing",
+          "schedule board showing two-hour deadline",
+          "Deniz choosing to investigate calmly"
+        ],
+        "must_not_do": [
+          "Reveal the true cause of the missing pieces",
+          "Include any combat or benchmark mention"
+        ],
+        "constraint_ids": [
+          "C1",
+          "C9",
+          "C5",
+          "C4"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has confirmed four pieces missing, a two-hour deadline, and a plan to test guesses with evidence.",
+        "open_threads_after": [
+          "Which explanation actually accounts for the missing pieces?"
+        ]
+      },
+      "envelope": {
+        "prose": "On Saturday morning, Deniz pushed open the glass doors of the community learning center and breathed in the familiar smell of paper, dust, and lemon cleaner. Sunlight fell across the room’s maps and labeled shelves. Near the windows, a table waited for the Explorer Club’s treasure hunt.\n\nDeniz had helped prepare it before. The large map of the town lay beneath a sheet of clear plastic. Four numbered pieces were supposed to fit into the empty spaces: 7, 12, 19, and 24. A box of pencils, four clipboards, and a stack of clue cards stood neatly beside it.\n\nBut when Deniz lifted the plastic, four spaces showed the pale tabletop underneath.\n\n“That’s not right,” Deniz whispered.\n\nDeniz checked the box, even though the pieces were too large to fit inside. Then Deniz looked under the table, behind the chair, and beneath the folded tablecloth. Nothing. The map still had its other pieces, but the missing spaces made the coastline stop suddenly and left a blank patch in the middle of town.\n\nAt the front desk, the supervisor was busy carrying a stack of returned books to a cart. Deniz did not want to interrupt. Instead, Deniz walked to the schedule board.\n\nEXPLORER CLUB TREASURE HUNT — 11:00 A.M.\n\nThe clock above the desk said 9:02.\n\nDeniz counted on two fingers. One hour until ten. One more hour until the children arrived. Two hours to find the pieces and make the map ready.\n\nFor a moment, Deniz imagined a crowd of disappointed club members staring at the unfinished map. Then Deniz took a blue pencil from the supply box and turned over a scrap of paper.\n\nGuessing would not help. Deniz drew three lines:\n\n1. Someone might have thrown the pieces away by accident.\n2. Someone might have moved them while cleaning or arranging the room.\n3. Someone might have borrowed them or put them somewhere else.\n\nDeniz added a fourth line: “Check what the labels and records show.”\n\nThe list made the problem feel smaller. Each idea could be checked. If one did not match the evidence, Deniz could cross it out.\n\nDeniz placed the scrap beside the empty map spaces, picked up the pencil, and headed toward the recycling area. There were two hours left, and a careful search could begin with the simplest guess.",
+        "state_delta": {
+          "location": "Community learning center, moving from the Explorer Club map table toward the recycling area.",
+          "character_goal": "Find and restore the four missing numbered map pieces before the Explorer Club treasure hunt begins at 11:00 A.M.",
+          "knowledge_gained": [
+            "Map pieces numbered 7, 12, 19, and 24 are missing.",
+            "The treasure hunt starts in two hours.",
+            "The supervisor is busy elsewhere, so Deniz begins checking the problem independently."
+          ],
+          "facts_established": [
+            "The map table contains a large town map, clue cards, clipboards, pencils, and a clear plastic cover.",
+            "The four missing pieces leave visible blank spaces in the map.",
+            "The schedule board shows the Explorer Club treasure hunt at 11:00 A.M., while the clock reads 9:02."
+          ],
+          "clues_added": [
+            "The missing pieces may have been accidentally discarded, moved during cleaning or arranging, borrowed, or placed elsewhere.",
+            "Deniz will test each explanation against records and physical evidence."
+          ],
+          "objects_changed": [
+            "Deniz wrote a list of possible explanations on a scrap of paper."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which explanation accounts for the four missing map pieces?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has confirmed that pieces 7, 12, 19, and 24 are missing, knows the event begins at 11:00 A.M., and is calmly beginning a systematic investigation at the recycling area."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 22.339,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 386,
+          "usage": {
+            "input_tokens": 3439,
+            "output_tokens": 1058,
+            "total_tokens": 4497
+          },
+          "cost": {
+            "usd": 0.0021292,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.89,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.98,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.91
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2630,
+          "output_tokens": 188,
+          "cost": 0.00011046
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.89,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.98,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.91
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2630,
+            "output_tokens": 188,
+            "cost": 0.00011046
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.36
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 22.7
+    },
+    {
+      "scene": 2,
+      "target_words": 560,
+      "word_count": 538,
+      "contract": {
+        "index": 2,
+        "narrative_role": "RISING_ACTION",
+        "relative_weight": 20,
+        "purpose": "Test two plausible false hypotheses and surface the numbering pattern clue.",
+        "entry_state": "Deniz has noted the missing pieces and deadline, ready to test guesses.",
+        "beats": [
+          "Deniz checks the recycling bin with cleaning staff; pieces are not there, ruling out accidental disposal.",
+          "Deniz reviews the sign-in log for earlier table users; no clear suspect, a cousin denies taking pieces.",
+          "While rereading the log, Deniz notices piece numbers resemble shelf label codes nearby."
+        ],
+        "must_include": [
+          "recycling bin check",
+          "sign-in log review",
+          "observation of numbering code pattern"
+        ],
+        "must_not_do": [
+          "Reveal the final solution",
+          "Add new characters beyond those mentioned"
+        ],
+        "constraint_ids": [
+          "C2",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Four numbered pieces missing (Scene1)",
+          "Schedule board shows two-hour deadline (Scene1)"
+        ],
+        "handoff": "Both false hypotheses are rejected; Deniz has noticed a numeric code pattern linking pieces to shelf labels.",
+        "open_threads_after": [
+          "Does the numbering pattern explain where the pieces really are?"
+        ]
+      },
+      "envelope": {
+        "prose": "The recycling area was beside the back door, where two blue bins stood beneath a sign that said PAPER ONLY. A cleaning cart waited nearby, and one of the cleaning staff members was sorting newspapers into a cardboard box.\n\n“Could I check the paper bin?” Deniz asked. “Some map pieces are missing from the Explorer Club table.”\n\nThe staff member nodded. “Go ahead. I have not emptied it yet.”\n\nDeniz lifted the lid and searched carefully. Flyers, old worksheets, and a torn magazine filled the bin. Deniz checked the corners and moved the papers with a ruler. No stiff, map-colored pieces appeared.\n\nThe first idea on the scrap of paper got a neat line through it. If the pieces had been thrown away, at least one should probably have been there. The empty bin was not proof of everything, but it was good evidence against accidental disposal.\n\nNext, Deniz went to the front desk and asked to see the sign-in log for the learning room. The supervisor was still busy with the book cart, so Deniz explained, “I’m checking who used the map table before the club event.”\n\nThe log listed times and reasons for visits. At 8:15, someone had written “arranged activity tables.” At 8:32, a cousin’s name appeared beside “looked at town maps.” At 8:47, the entry read “substitute helper—shelving and tidying.”\n\nDeniz copied the times onto the scrap. The cousin was nearby, reading at a round table. Deniz asked, “Did you take any of the four numbered pieces?”\n\nThe cousin shook their head. “No. I only looked at the maps. I put everything back on the table.”\n\nDeniz checked the log again. The cousin had signed out at 8:38, nine minutes before the substitute helper arrived. The timing did not prove exactly what had happened, but it gave no support to the idea that the cousin had taken the pieces. Deniz crossed out “borrowed by a visitor.”\n\nTwo guesses had now failed to fit the evidence: the pieces were not in the recycling bin, and the log did not point to a visitor taking them. The substitute helper remained a possible source of a shelving mistake, not proof of one.\n\nThen Deniz noticed a note in the log’s margin. Beside “arranged activity tables,” the supervisor had written, “Return numbered pieces to shelf sections.”\n\nDeniz looked across the room. The shelves near the map table had large letter labels—A, B, C, D, and more. Smaller labels underneath showed numbers. A shelf held cards marked 1, 11, and 21. Another showed 2, 12, and 22. Farther along were 7, 17, and 27.\n\nDeniz looked down at the missing numbers: 7, 12, 19, and 24. Their endings matched groups on the shelves, but that did not yet show which lettered section held each piece. The numbers might be a code rather than exact shelf destinations.\n\nDeniz drew a question mark beside the idea. The shelf labels suggested a pattern, but the pattern still needed a real test. Deniz glanced at the clock. It was nearly 10:00, leaving about an hour before the 11:00 treasure hunt.\n\n“First evidence, then a conclusion,” Deniz murmured, moving toward the labeled shelves. “I need to see whether the numbers actually predict a place.”",
+        "state_delta": {
+          "location": "Community learning center, beside the labeled shelves near the map table.",
+          "character_goal": "Find and restore map pieces 7, 12, 19, and 24 before the 11:00 A.M. Explorer Club treasure hunt.",
+          "knowledge_gained": [
+            "The recycling bin contains no missing map pieces.",
+            "The sign-in log shows a cousin viewed the maps and left before a substitute helper arrived.",
+            "The substitute helper was assigned to shelving and tidying.",
+            "Nearby shelves use letter sections and number labels grouped by similar endings.",
+            "About one hour remains before the treasure hunt."
+          ],
+          "facts_established": [
+            "The accidental-disposal hypothesis does not fit the recycling-bin evidence.",
+            "The cousin denies taking the pieces, and the sign-in times provide no support for that explanation.",
+            "A supervisor note says numbered pieces should be returned to shelf sections.",
+            "The substitute helper is a possible source of a shelving mistake, but this has not been proven."
+          ],
+          "clues_added": [
+            "Missing piece numbers 7, 12, 19, and 24 resemble the endings of nearby shelf-label numbers.",
+            "The numbers may form a code for lettered shelf sections rather than naming exact shelf locations.",
+            "The pattern remains a hypothesis that must be tested."
+          ],
+          "objects_changed": [
+            "Deniz crossed out accidental disposal and visitor borrowing on the scrap of paper.",
+            "Deniz added the sign-in times and a question mark beside the shelf-pattern idea."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Does the shelf-number pattern predict where the missing pieces were placed?"
+          ],
+          "threads_resolved": [
+            "The recycling-bin explanation was rejected.",
+            "The cousin-as-taker explanation was rejected as unsupported by the sign-in record and the cousin's denial."
+          ],
+          "handoff_state": "Deniz has ruled out accidental disposal and visitor borrowing, learned that a substitute helper handled shelving and tidying, and noticed a concrete but unverified pattern between missing piece numbers and nearby shelf labels. With about one hour left, Deniz must test whether the pattern predicts a real location."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 25.046,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 548,
+          "usage": {
+            "input_tokens": 4361,
+            "output_tokens": 1420,
+            "total_tokens": 5781
+          },
+          "cost": {
+            "usd": 0.0027941,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 17.889,
+          "repair_reasons": [
+            "jev:no_contradiction:0.790<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 538,
+          "usage": {
+            "input_tokens": 4556,
+            "output_tokens": 1709,
+            "total_tokens": 6265
+          },
+          "cost": {
+            "usd": 0.00318965,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.84,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.92
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.87,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3447,
+          "output_tokens": 188,
+          "cost": 0.000144774
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.79,
+            "goal_preserved": 0.98,
+            "no_future_leakage": 0.94,
+            "handoff_valid": 0.92
+          },
+          "below_threshold": {
+            "no_contradiction": 0.79
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.72,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3409,
+            "output_tokens": 188,
+            "cost": 0.000143178
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.84,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.92
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3447,
+            "output_tokens": 188,
+            "cost": 0.000144774
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.355,
+        0.537
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.92,
+              "no_contradiction": 0.79,
+              "goal_preserved": 0.98,
+              "no_future_leakage": 0.94,
+              "handoff_valid": 0.92
+            },
+            "below_threshold": {
+              "no_contradiction": 0.79
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.72,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3409,
+              "output_tokens": 188,
+              "cost": 0.000143178
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 538,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.84,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.96,
+              "handoff_valid": 0.92
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.87,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3447,
+              "output_tokens": 188,
+              "cost": 0.000144774
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 43.832
+    },
+    {
+      "scene": 3,
+      "target_words": 560,
+      "word_count": 473,
+      "contract": {
+        "index": 3,
+        "narrative_role": "RISING_ACTION",
+        "relative_weight": 20,
+        "purpose": "Deniz tests the numbering-pattern hypothesis on one piece to confirm it predicts location.",
+        "entry_state": "Deniz suspects the numbering code links pieces to shelf sections, one hour left.",
+        "beats": [
+          "Deniz compares a piece's number to nearby shelf labels and forms a rule: last digit matches shelf letter.",
+          "Tests the rule on one shelf and finds a piece mis-shelved by a substitute helper.",
+          "Confirms the rule works, feeling hopeful but aware three pieces still remain missing."
+        ],
+        "must_include": [
+          "rule linking last digit to shelf letter",
+          "test on one shelf",
+          "mention of substitute helper",
+          "three pieces still missing"
+        ],
+        "must_not_do": [
+          "Locate all remaining pieces yet",
+          "Skip verifying the rule before trusting it"
+        ],
+        "constraint_ids": [
+          "C2",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Numbering code pattern noticed linking pieces to shelf labels (Scene2)",
+          "Sign-in log ruled out theft (Scene2)"
+        ],
+        "handoff": "The rule is confirmed on the first piece; Deniz must apply it quickly to find the remaining three before the event starts.",
+        "open_threads_after": [
+          "Can Deniz find the remaining three pieces in time using the pattern?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz stood in front of the shelves and studied the labels instead of grabbing the first card that looked familiar.\n\nThe shelves were arranged in order. A was beside labels ending in 1, B beside labels ending in 2, and C beside labels ending in 3. Farther along, G stood above cards marked 7, 17, and 27. The pattern was clearer now.\n\n“The last digit tells the shelf letter,” Deniz said softly. “One means A, two means B, and seven means G.”\n\nIt was a useful idea, but an idea was not proof. Deniz needed to test it.\n\nPiece 7 should be in section G. Deniz walked to the G shelf and checked each pocket. At first there were only activity cards and folded labels. Then a corner of stiff, blue paper showed behind a card marked 17.\n\nDeniz pulled it out carefully. A large black 7 was printed on the back.\n\n“Found one!”\n\nThe piece had been pushed into the wrong pocket, behind 17 instead of with the other 7-ending labels. It had not been left in its proper numbered place. The substitute helper must have seen the numbers, guessed that any card with a seven belonged together, and tucked it wherever there was room. But the piece was still in section G, exactly where the last-digit rule predicted.\n\nDeniz turned the piece over. Its picture showed the eastern footbridge, and its edges matched one of the blank spaces on the town map. Deniz carried it back to the table, fitted it into place, and pressed the clear cover flat.\n\nThe blue piece clicked into the outline. The bridge appeared again, with a tiny compass rose beside it.\n\nOne test could have been luck, so Deniz checked the evidence once more. The shelf labels did not merely look similar to the missing numbers. The order showed a repeat: 1, 11, and 21 belonged with A; 2, 12, and 22 with B; 7, 17, and 27 with G. The last digit stayed the same while the tens changed. That was why piece 7 belonged in G, even though it had been shoved into the wrong pocket there.\n\nDeniz wrote the rule on the scrap of paper in large letters:\n\nLAST DIGIT → SHELF LETTER\n\nThen Deniz listed the pieces still missing: 12, 19, and 24. Their destinations should be B, I, and D. Deniz looked toward those shelves, but did not rush ahead blindly. The rule had worked once because it had been tested against the labels and the recovered piece. Now it could be used again, carefully and in order.\n\nThe wall clock showed 10:06. Less than an hour remained.\n\nDeniz picked up the scrap and took a steady breath. The pattern was no longer just a guess. It was a tested tool. Three pieces were still missing, and the shelves waited.",
+        "state_delta": {
+          "location": "Community learning center, at the Explorer Club map table and labeled shelves.",
+          "character_goal": "Apply the tested shelf-number pattern to find pieces 12, 19, and 24 before the 11:00 A.M. treasure hunt.",
+          "knowledge_gained": [
+            "The last digit of a piece number matches the letter of its shelf section.",
+            "Piece 7 belongs in section G and was found there in the wrong numbered pocket.",
+            "The substitute helper likely guessed how to group the numbered pieces and mis-shelved piece 7."
+          ],
+          "facts_established": [
+            "Shelf A contains labels ending in 1, shelf B labels ending in 2, and shelf G labels ending in 7.",
+            "Piece 7 fits one of the map's blank spaces and has been restored.",
+            "Pieces 12, 19, and 24 are still missing."
+          ],
+          "clues_added": [
+            "The rule predicts that piece 12 is in section B, piece 19 in section I, and piece 24 in section D.",
+            "The repeating last-digit pattern remains reliable even when a piece is placed in the wrong pocket."
+          ],
+          "objects_changed": [
+            "Piece 7 was recovered and fitted into the town map.",
+            "Deniz wrote LAST DIGIT → SHELF LETTER on the scrap of paper."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Can Deniz find pieces 12, 19, and 24 in the predicted shelf sections before the event?"
+          ],
+          "threads_resolved": [
+            "The shelf-number pattern was verified using piece 7.",
+            "The location of piece 7 was identified."
+          ],
+          "handoff_state": "At 10:06, Deniz has restored piece 7 and confirmed that the last digit of each piece number predicts its shelf letter. Pieces 12, 19, and 24 remain missing, with predicted destinations B, I, and D. Deniz is ready to search those sections systematically before the 11:00 A.M. event."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 26.019,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 473,
+          "usage": {
+            "input_tokens": 5107,
+            "output_tokens": 1509,
+            "total_tokens": 6616
+          },
+          "cost": {
+            "usd": 0.0030874,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.93,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.85,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.83,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3861,
+          "output_tokens": 188,
+          "cost": 0.000162162
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.93,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.85,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.83,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3861,
+            "output_tokens": 188,
+            "cost": 0.000162162
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.35
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 26.37
+    },
+    {
+      "scene": 4,
+      "target_words": 700,
+      "word_count": 708,
+      "contract": {
+        "index": 4,
+        "narrative_role": "PAYOFF",
+        "relative_weight": 25,
+        "purpose": "Deniz applies the confirmed pattern systematically to locate all remaining pieces before the deadline.",
+        "entry_state": "One piece recovered via the pattern, three remain missing, limited time left.",
+        "beats": [
+          "Deniz uses the last-digit rule to predict shelf letters for the remaining piece numbers.",
+          "Checks each predicted shelf, finding all three pieces mis-shelved by the same substitute helper's guesswork.",
+          "Assembles the complete map just as the first Explorer Club kids arrive, proud of the method."
+        ],
+        "must_include": [
+          "pattern rule applied to all three remaining pieces",
+          "timing tension resolved",
+          "full map assembled"
+        ],
+        "must_not_do": [
+          "Introduce a twist contradicting the established pattern",
+          "Fully resolve the event's outcome here"
+        ],
+        "constraint_ids": [
+          "C2",
+          "C6",
+          "C8",
+          "C3"
+        ],
+        "prior_evidence": [
+          "Rule linking last digit to shelf letter confirmed on one piece (Scene3)",
+          "Substitute helper mis-shelved items (Scene3)"
+        ],
+        "handoff": "All four pieces are recovered and the map is assembled; the event is about to start; Deniz plans to fix the labeling system.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "Deniz started with section B because piece 12 was predicted to belong there. The scrap of paper said it clearly: LAST DIGIT → SHELF LETTER.\n\nTwelve ended in 2, so B was the first section to test. Deniz hurried to the B shelves, then stopped before touching anything. Guessing would only make the search messy. The labels showed 2, 12, and 22. Deniz checked each pocket in order, looking for blue map paper or a number on a corner.\n\nNothing was in the pocket marked 12. But a stiff edge poked out from behind a card marked 22.\n\nDeniz slid the card aside. A large black 12 stared back.\n\n“Yes!” Deniz whispered.\n\nPiece 12 showed the library fountain. It fit the next empty space on the map. Deniz carried it to the table, matched the edges, and pressed it beneath the clear cover. Two blank spaces remained.\n\nThe clock read 10:18.\n\nNext came piece 19. Its last digit was 9, and the shelf pattern said 9 belonged with I. Deniz crossed off B on the scrap and moved to section I.\n\nThe pocket marked 19 was empty too. Deniz searched slowly. Behind a card marked 29, something green was folded against the back wall. Deniz pulled it free and saw the number 19.\n\nThe picture showed the hilltop weather station. Its shape matched one of the map’s empty spaces.\n\nDeniz studied the nearby cards. Piece 19 had stayed in the correct lettered section, just as piece 7 had, but it was behind the wrong numbered pocket. The substitute helper had apparently used the lettered sections correctly but guessed at the exact pockets. That explained why the pieces were difficult to find without being truly lost.\n\nDeniz fitted piece 19 into the map. Only piece 24 was missing.\n\nThe final prediction was D. Piece 24 ended in 4, and the shelves showed 4, 14, and 24 under D. Deniz checked the clock while walking there.\n\n“10:31,” Deniz said. “Twenty-nine minutes. That is enough if the rule keeps working.”\n\nAt section D, the pocket marked 24 was empty. Deniz checked behind 14, then behind 4. No map piece appeared. For one quick moment, worry squeezed Deniz’s stomach. Maybe the pattern had failed. Maybe piece 24 had been moved somewhere else.\n\nThen Deniz remembered the other two discoveries: the pieces had remained in their lettered sections even when the numbered pockets were wrong.\n\nDeniz scanned the whole D shelf from left to right. Behind a thick folder labeled 34, a corner of yellow paper showed.\n\nThere it was.\n\nPiece 24 had been pushed behind 34, just as 12 had been pushed behind 22 and 19 behind 29. The same shelving mistake had happened three times. The last digit had pointed to the correct lettered section each time; the substitute helper had guessed the exact pocket incorrectly.\n\nDeniz ran back to the map table with piece 24 held flat in both hands. It showed the old train station. The final edges slid into place.\n\nThe map was whole.\n\nDeniz checked every join: fountain beside the market, weather station above the hill path, train station along the western road, and the footbridge in the east. All four pieces were secure beneath the clear cover.\n\nAt 10:47, voices sounded in the hallway. The first Explorer Club children arrived early, carrying water bottles and small notebooks. The treasure hunt had not begun yet, but the map was ready. Deniz placed the clue cards around it and straightened the pencils.\n\nOne child leaned over the table. “Is the treasure hunt ready?”\n\nDeniz smiled and looked at the four restored places on the map. “Ready.”\n\nThe search had not been solved by choosing the most exciting guess. Deniz had tested the bin, the sign-in record, and finally the number pattern. The pattern had identified the correct shelf sections for every missing piece, while the repeated pocket mistakes explained why the pieces had seemed lost.\n\nAs the children gathered for the start, Deniz kept the scrap of paper nearby. LAST DIGIT → SHELF LETTER was still written across it in thick pencil. The map was assembled before 11:00, and Deniz already knew one thing to suggest afterward: the shelves needed labels that made the rule impossible to miss.",
+        "state_delta": {
+          "location": "Community learning center, at the Explorer Club map table beside the labeled shelves.",
+          "character_goal": "Keep the completed map and activity materials ready for the Explorer Club treasure hunt to begin at 11:00 A.M.",
+          "knowledge_gained": [
+            "Piece 12 is in shelf section B, piece 19 is in section I, and piece 24 is in section D.",
+            "The last-digit rule correctly predicts the lettered shelf section for all four pieces.",
+            "The substitute helper repeatedly placed pieces behind pockets with the wrong tens digit while keeping them in the correct lettered section."
+          ],
+          "facts_established": [
+            "Pieces 12, 19, and 24 were recovered from sections B, I, and D.",
+            "The complete town map is assembled beneath its clear cover.",
+            "The first Explorer Club children arrive at 10:47, before the 11:00 A.M. event."
+          ],
+          "clues_added": [
+            "Piece 12 was behind 22, piece 19 was behind 29, and piece 24 was behind 34.",
+            "The repeated mis-shelving pattern confirms that the substitute helper guessed the exact pockets incorrectly."
+          ],
+          "objects_changed": [
+            "Pieces 12, 19, and 24 were recovered and fitted into the map.",
+            "The complete map, clue cards, and pencils were arranged for the event.",
+            "Deniz kept the scrap marked LAST DIGIT → SHELF LETTER nearby."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Deniz plans to suggest clearer number-letter shelf labels after the event."
+          ],
+          "threads_resolved": [
+            "All four missing map pieces were found.",
+            "The missing-pieces problem was solved through the tested shelf-number pattern."
+          ],
+          "handoff_state": "At 10:47 A.M., all four map pieces are recovered and the complete map is assembled. The first Explorer Club children have arrived early, the clue cards and pencils are ready, and the 11:00 A.M. treasure hunt is about to begin. Deniz plans to explain the mix-up and suggest clearer labeling after the successful event."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 26.59,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 713,
+          "usage": {
+            "input_tokens": 5436,
+            "output_tokens": 1512,
+            "total_tokens": 6948
+          },
+          "cost": {
+            "usd": 0.00317325,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 25.76,
+          "repair_reasons": [
+            "jev:no_contradiction:0.760<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 721,
+          "usage": {
+            "input_tokens": 5750,
+            "output_tokens": 2255,
+            "total_tokens": 8005
+          },
+          "cost": {
+            "usd": 0.00414335,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 19.764,
+          "repair_reasons": [
+            "jev:no_contradiction:0.720<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 708,
+          "usage": {
+            "input_tokens": 5763,
+            "output_tokens": 1950,
+            "total_tokens": 7713
+          },
+          "cost": {
+            "usd": 0.0037806,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.94,
+          "no_unexplained_dependency": 0.95,
+          "no_contradiction": 0.77,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.88,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {
+          "no_contradiction": 0.77
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.84,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4737,
+          "output_tokens": 188,
+          "cost": 0.000198954
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.94,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.76,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.83,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {
+            "no_contradiction": 0.76
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.87,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4728,
+            "output_tokens": 188,
+            "cost": 0.000198576
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.93,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.72,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.86,
+            "handoff_valid": 0.94
+          },
+          "below_threshold": {
+            "no_contradiction": 0.72
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.78,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4750,
+            "output_tokens": 188,
+            "cost": 0.0001995
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.94,
+            "no_unexplained_dependency": 0.95,
+            "no_contradiction": 0.77,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.88,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.77
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.84,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4737,
+            "output_tokens": 188,
+            "cost": 0.000198954
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.353,
+        0.365,
+        0.339
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.94,
+              "no_unexplained_dependency": 0.94,
+              "no_contradiction": 0.76,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.83,
+              "handoff_valid": 0.94
+            },
+            "below_threshold": {
+              "no_contradiction": 0.76
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.87,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4728,
+              "output_tokens": 188,
+              "cost": 0.000198576
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 721,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.93,
+              "no_unexplained_dependency": 0.94,
+              "no_contradiction": 0.72,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.86,
+              "handoff_valid": 0.94
+            },
+            "below_threshold": {
+              "no_contradiction": 0.72
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.78,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4750,
+              "output_tokens": 188,
+              "cost": 0.0001995
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.93,
+              "no_unexplained_dependency": 0.94,
+              "no_contradiction": 0.72,
+              "goal_preserved": 0.96,
+              "no_future_leakage": 0.86,
+              "handoff_valid": 0.94
+            },
+            "below_threshold": {
+              "no_contradiction": 0.72
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.78,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4750,
+              "output_tokens": 188,
+              "cost": 0.0001995
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 708,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.97,
+              "scene_purpose_obeyed": 0.94,
+              "no_unexplained_dependency": 0.95,
+              "no_contradiction": 0.77,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.88,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.77
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.84,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4737,
+              "output_tokens": 188,
+              "cost": 0.000198954
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": true,
+      "elapsed_seconds": 73.172
+    },
+    {
+      "scene": 5,
+      "target_words": 560,
+      "word_count": 502,
+      "contract": {
+        "index": 5,
+        "narrative_role": "RESOLUTION",
+        "relative_weight": 20,
+        "purpose": "Resolve the event outcome and Deniz's decision, closing the main thread with reflection on the theme.",
+        "entry_state": "The map is fully assembled just as the Explorer Club begins.",
+        "beats": [
+          "The Explorer Club event runs smoothly using the completed map, and the kids enjoy the treasure hunt.",
+          "Deniz explains the mix-up to the supervisor and suggests clearer number-letter labels to prevent future mistakes.",
+          "Deniz reflects that testing the pattern, not guessing, solved the puzzle."
+        ],
+        "must_include": [
+          "successful event",
+          "suggestion for clearer labeling",
+          "reflection line connecting to theme"
+        ],
+        "must_not_do": [
+          "Introduce a new problem",
+          "Leave the main goal unresolved"
+        ],
+        "constraint_ids": [
+          "C3",
+          "C4"
+        ],
+        "prior_evidence": [
+          "Full map assembled from recovered pieces (Scene4)",
+          "Pattern rule proven reliable across Scenes 3-4"
+        ],
+        "handoff": "Story concludes with the event resolved and Deniz's plan for better labeling established.",
+        "open_threads_after": [
+          "Supervisor and Deniz plan a new labeling system next week."
+        ]
+      },
+      "envelope": {
+        "prose": "At eleven o’clock, the supervisor clapped twice. “Explorer Club, gather around the map!”\n\nThe children leaned closer as Deniz explained the first clue. They traced the town road with their fingers, then hurried to the fountain, where a blue envelope waited beneath a bench. Each clue led to the next place: the market, the hill path, the old train station, and finally the footbridge in the east.\n\nBecause the map was complete, nobody had to stop and wonder what belonged in the blank spaces. The children compared symbols, argued politely about directions, and checked their notebooks. When they found the last envelope, they cheered so loudly that people at the nearby tables smiled.\n\nThe treasure hunt had worked.\n\nAfter the children began sorting their pencils and clue cards, Deniz carried the scrap of paper to the supervisor. The words LAST DIGIT → SHELF LETTER were still bold and clear.\n\n“I found out what happened to the pieces,” Deniz said. “They stayed in the right lettered sections, but they were put behind the wrong number pockets. Piece 12 was behind 22, piece 19 was behind 29, and piece 24 was behind 34. Piece 7 was also in section G, but in the wrong pocket.”\n\nThe supervisor looked toward the shelves. “So someone followed the letters but guessed the exact numbers?”\n\n“Probably,” Deniz said. “The pattern worked every time. The last digit showed the shelf letter, but the tens digit showed which pocket. The substitute helper may not have known that.”\n\nThe supervisor nodded slowly. “That would be easy to do when the labels are crowded.”\n\n“That’s why I have an idea,” Deniz said. “Could we make the labels clearer? We could put a big letter at the top of each shelf, then write the pocket numbers in a straight row. Maybe we could add a small note: ‘Last digit tells the shelf letter.’ Then people would not have to guess.”\n\n“That is a useful plan,” the supervisor said. “Let’s make the new labels next week, when the room is quieter. You can help me check that the numbers match.”\n\nDeniz looked at the assembled map. The fountain, weather station, train station, and footbridge all fit together now. Earlier, the recycling bin had seemed like a likely answer. Then the sign-in log had made borrowing seem possible. Neither guess explained the evidence. The tested pattern did.\n\n“Guessing gave me lots of possibilities,” Deniz said, “but testing the pattern showed which one was actually true.”\n\nThe supervisor smiled. “And it got the map ready on time.”\n\nAcross the room, one child waved. “Deniz! We found all the clues!”\n\n“Coming!” Deniz called.\n\nDeniz returned to the group, carrying the scrap of paper. The event was finished, the map was safe, and the new labels were planned. Next time, the shelves would make their pattern easier to see. For now, Deniz joined the children as they told the treasure hunt story all over again, each one sure that finding the last envelope had been the best part.",
+        "state_delta": {
+          "location": "Community learning center, after the Explorer Club treasure hunt at the completed map table and labeled shelves.",
+          "character_goal": "Close the successful Explorer Club event and help prevent future shelving mistakes by improving the shelf labels.",
+          "knowledge_gained": [
+            "The completed map allowed the treasure hunt to run smoothly.",
+            "The substitute helper kept the pieces in the correct lettered sections but guessed the exact numbered pockets incorrectly.",
+            "Clearer labels can show both the shelf letter and the pocket-number pattern."
+          ],
+          "facts_established": [
+            "The Explorer Club treasure hunt was completed successfully.",
+            "The children followed the clues using the complete map.",
+            "The supervisor agreed to make a clearer labeling system with Deniz the following week."
+          ],
+          "clues_added": [],
+          "objects_changed": [
+            "The complete map remained assembled and was used successfully during the event.",
+            "Deniz kept the scrap marked LAST DIGIT → SHELF LETTER.",
+            "A plan was made to replace the confusing shelf labels."
+          ],
+          "relationships_changed": [
+            "The supervisor accepted Deniz's explanation and invited Deniz to help create the new labels."
+          ],
+          "threads_opened": [
+            "Deniz and the supervisor will make a clearer number-letter shelf-labeling system next week."
+          ],
+          "threads_resolved": [
+            "The Explorer Club treasure hunt ran successfully.",
+            "The missing map pieces were recovered and used.",
+            "The main puzzle and its consequences were fully resolved."
+          ],
+          "handoff_state": "The story concludes with all four map pieces recovered, the Explorer Club treasure hunt completed successfully, and Deniz's tested-pattern explanation accepted. Deniz and the supervisor plan to create clearer shelf labels next week."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.05,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 502,
+          "usage": {
+            "input_tokens": 5951,
+            "output_tokens": 1122,
+            "total_tokens": 7073
+          },
+          "cost": {
+            "usd": 0.002834,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.94,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.88,
+          "goal_preserved": 0.94,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.82,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4527,
+          "output_tokens": 188,
+          "cost": 0.000190134
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.94,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.88,
+            "goal_preserved": 0.94,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.82,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4527,
+            "output_tokens": 188,
+            "cost": 0.000190134
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.407
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.457
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish setting, protagonist, deadline, and the discovery that map pieces are missing.",
+      "word_count": 386,
+      "location": "Community learning center, moving from the Explorer Club map table toward the recycling area.",
+      "character_goal": "Find and restore the four missing numbered map pieces before the Explorer Club treasure hunt begins at 11:00 A.M.",
+      "knowledge_gained": [
+        "Map pieces numbered 7, 12, 19, and 24 are missing.",
+        "The treasure hunt starts in two hours.",
+        "The supervisor is busy elsewhere, so Deniz begins checking the problem independently."
+      ],
+      "facts_established": [
+        "The map table contains a large town map, clue cards, clipboards, pencils, and a clear plastic cover.",
+        "The four missing pieces leave visible blank spaces in the map.",
+        "The schedule board shows the Explorer Club treasure hunt at 11:00 A.M., while the clock reads 9:02."
+      ],
+      "clues_added": [
+        "The missing pieces may have been accidentally discarded, moved during cleaning or arranging, borrowed, or placed elsewhere.",
+        "Deniz will test each explanation against records and physical evidence."
+      ],
+      "objects_changed": [
+        "Deniz wrote a list of possible explanations on a scrap of paper."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which explanation accounts for the four missing map pieces?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has confirmed that pieces 7, 12, 19, and 24 are missing, knows the event begins at 11:00 A.M., and is calmly beginning a systematic investigation at the recycling area."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test two plausible false hypotheses and surface the numbering pattern clue.",
+      "word_count": 538,
+      "location": "Community learning center, beside the labeled shelves near the map table.",
+      "character_goal": "Find and restore map pieces 7, 12, 19, and 24 before the 11:00 A.M. Explorer Club treasure hunt.",
+      "knowledge_gained": [
+        "The recycling bin contains no missing map pieces.",
+        "The sign-in log shows a cousin viewed the maps and left before a substitute helper arrived.",
+        "The substitute helper was assigned to shelving and tidying.",
+        "Nearby shelves use letter sections and number labels grouped by similar endings.",
+        "About one hour remains before the treasure hunt."
+      ],
+      "facts_established": [
+        "The accidental-disposal hypothesis does not fit the recycling-bin evidence.",
+        "The cousin denies taking the pieces, and the sign-in times provide no support for that explanation.",
+        "A supervisor note says numbered pieces should be returned to shelf sections.",
+        "The substitute helper is a possible source of a shelving mistake, but this has not been proven."
+      ],
+      "clues_added": [
+        "Missing piece numbers 7, 12, 19, and 24 resemble the endings of nearby shelf-label numbers.",
+        "The numbers may form a code for lettered shelf sections rather than naming exact shelf locations.",
+        "The pattern remains a hypothesis that must be tested."
+      ],
+      "objects_changed": [
+        "Deniz crossed out accidental disposal and visitor borrowing on the scrap of paper.",
+        "Deniz added the sign-in times and a question mark beside the shelf-pattern idea."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Does the shelf-number pattern predict where the missing pieces were placed?"
+      ],
+      "threads_resolved": [
+        "The recycling-bin explanation was rejected.",
+        "The cousin-as-taker explanation was rejected as unsupported by the sign-in record and the cousin's denial."
+      ],
+      "handoff_state": "Deniz has ruled out accidental disposal and visitor borrowing, learned that a substitute helper handled shelving and tidying, and noticed a concrete but unverified pattern between missing piece numbers and nearby shelf labels. With about one hour left, Deniz must test whether the pattern predicts a real location."
+    },
+    {
+      "scene": 3,
+      "purpose": "Deniz tests the numbering-pattern hypothesis on one piece to confirm it predicts location.",
+      "word_count": 473,
+      "location": "Community learning center, at the Explorer Club map table and labeled shelves.",
+      "character_goal": "Apply the tested shelf-number pattern to find pieces 12, 19, and 24 before the 11:00 A.M. treasure hunt.",
+      "knowledge_gained": [
+        "The last digit of a piece number matches the letter of its shelf section.",
+        "Piece 7 belongs in section G and was found there in the wrong numbered pocket.",
+        "The substitute helper likely guessed how to group the numbered pieces and mis-shelved piece 7."
+      ],
+      "facts_established": [
+        "Shelf A contains labels ending in 1, shelf B labels ending in 2, and shelf G labels ending in 7.",
+        "Piece 7 fits one of the map's blank spaces and has been restored.",
+        "Pieces 12, 19, and 24 are still missing."
+      ],
+      "clues_added": [
+        "The rule predicts that piece 12 is in section B, piece 19 in section I, and piece 24 in section D.",
+        "The repeating last-digit pattern remains reliable even when a piece is placed in the wrong pocket."
+      ],
+      "objects_changed": [
+        "Piece 7 was recovered and fitted into the town map.",
+        "Deniz wrote LAST DIGIT → SHELF LETTER on the scrap of paper."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Can Deniz find pieces 12, 19, and 24 in the predicted shelf sections before the event?"
+      ],
+      "threads_resolved": [
+        "The shelf-number pattern was verified using piece 7.",
+        "The location of piece 7 was identified."
+      ],
+      "handoff_state": "At 10:06, Deniz has restored piece 7 and confirmed that the last digit of each piece number predicts its shelf letter. Pieces 12, 19, and 24 remain missing, with predicted destinations B, I, and D. Deniz is ready to search those sections systematically before the 11:00 A.M. event."
+    },
+    {
+      "scene": 4,
+      "purpose": "Deniz applies the confirmed pattern systematically to locate all remaining pieces before the deadline.",
+      "word_count": 708,
+      "location": "Community learning center, at the Explorer Club map table beside the labeled shelves.",
+      "character_goal": "Keep the completed map and activity materials ready for the Explorer Club treasure hunt to begin at 11:00 A.M.",
+      "knowledge_gained": [
+        "Piece 12 is in shelf section B, piece 19 is in section I, and piece 24 is in section D.",
+        "The last-digit rule correctly predicts the lettered shelf section for all four pieces.",
+        "The substitute helper repeatedly placed pieces behind pockets with the wrong tens digit while keeping them in the correct lettered section."
+      ],
+      "facts_established": [
+        "Pieces 12, 19, and 24 were recovered from sections B, I, and D.",
+        "The complete town map is assembled beneath its clear cover.",
+        "The first Explorer Club children arrive at 10:47, before the 11:00 A.M. event."
+      ],
+      "clues_added": [
+        "Piece 12 was behind 22, piece 19 was behind 29, and piece 24 was behind 34.",
+        "The repeated mis-shelving pattern confirms that the substitute helper guessed the exact pockets incorrectly."
+      ],
+      "objects_changed": [
+        "Pieces 12, 19, and 24 were recovered and fitted into the map.",
+        "The complete map, clue cards, and pencils were arranged for the event.",
+        "Deniz kept the scrap marked LAST DIGIT → SHELF LETTER nearby."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Deniz plans to suggest clearer number-letter shelf labels after the event."
+      ],
+      "threads_resolved": [
+        "All four missing map pieces were found.",
+        "The missing-pieces problem was solved through the tested shelf-number pattern."
+      ],
+      "handoff_state": "At 10:47 A.M., all four map pieces are recovered and the complete map is assembled. The first Explorer Club children have arrived early, the clue cards and pencils are ready, and the 11:00 A.M. treasure hunt is about to begin. Deniz plans to explain the mix-up and suggest clearer labeling after the successful event."
+    },
+    {
+      "scene": 5,
+      "purpose": "Resolve the event outcome and Deniz's decision, closing the main thread with reflection on the theme.",
+      "word_count": 502,
+      "location": "Community learning center, after the Explorer Club treasure hunt at the completed map table and labeled shelves.",
+      "character_goal": "Close the successful Explorer Club event and help prevent future shelving mistakes by improving the shelf labels.",
+      "knowledge_gained": [
+        "The completed map allowed the treasure hunt to run smoothly.",
+        "The substitute helper kept the pieces in the correct lettered sections but guessed the exact numbered pockets incorrectly.",
+        "Clearer labels can show both the shelf letter and the pocket-number pattern."
+      ],
+      "facts_established": [
+        "The Explorer Club treasure hunt was completed successfully.",
+        "The children followed the clues using the complete map.",
+        "The supervisor agreed to make a clearer labeling system with Deniz the following week."
+      ],
+      "clues_added": [],
+      "objects_changed": [
+        "The complete map remained assembled and was used successfully during the event.",
+        "Deniz kept the scrap marked LAST DIGIT → SHELF LETTER.",
+        "A plan was made to replace the confusing shelf labels."
+      ],
+      "relationships_changed": [
+        "The supervisor accepted Deniz's explanation and invited Deniz to help create the new labels."
+      ],
+      "threads_opened": [
+        "Deniz and the supervisor will make a clearer number-letter shelf-labeling system next week."
+      ],
+      "threads_resolved": [
+        "The Explorer Club treasure hunt ran successfully.",
+        "The missing map pieces were recovered and used.",
+        "The main puzzle and its consequences were fully resolved."
+      ],
+      "handoff_state": "The story concludes with all four map pieces recovered, the Explorer Club treasure hunt completed successfully, and Deniz's tested-pattern explanation accepted. Deniz and the supervisor plan to create clearer shelf labels next week."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "On Saturday morning, Deniz pushed open the glass doors of the community learning center and breathed in the familiar smell of paper, dust, and lemon cleaner. Sunlight fell across the room’s maps and labeled shelves. Near the windows, a table waited for the Explorer Club’s treasure hunt.\n\nDeniz had helped prepare it before. The large map of the town lay beneath a sheet of clear plastic. Four numbered pieces were supposed to fit into the empty spaces: 7, 12, 19, and 24. A box of pencils, four clipboards, and a stack of clue cards stood neatly beside it.\n\nBut when Deniz lifted the plastic, four spaces showed the pale tabletop underneath.\n\n“That’s not right,” Deniz whispered.\n\nDeniz checked the box, even though the pieces were too large to fit inside. Then Deniz looked under the table, behind the chair, and beneath the folded tablecloth. Nothing. The map still had its other pieces, but the missing spaces made the coastline stop suddenly and left a blank patch in the middle of town.\n\nAt the front desk, the supervisor was busy carrying a stack of returned books to a cart. Deniz did not want to interrupt. Instead, Deniz walked to the schedule board.\n\nEXPLORER CLUB TREASURE HUNT — 11:00 A.M.\n\nThe clock above the desk said 9:02.\n\nDeniz counted on two fingers. One hour until ten. One more hour until the children arrived. Two hours to find the pieces and make the map ready.\n\nFor a moment, Deniz imagined a crowd of disappointed club members staring at the unfinished map. Then Deniz took a blue pencil from the supply box and turned over a scrap of paper.\n\nGuessing would not help. Deniz drew three lines:\n\n1. Someone might have thrown the pieces away by accident.\n2. Someone might have moved them while cleaning or arranging the room.\n3. Someone might have borrowed them or put them somewhere else.\n\nDeniz added a fourth line: “Check what the labels and records show.”\n\nThe list made the problem feel smaller. Each idea could be checked. If one did not match the evidence, Deniz could cross it out.\n\nDeniz placed the scrap beside the empty map spaces, picked up the pencil, and headed toward the recycling area. There were two hours left, and a careful search could begin with the simplest guess.\n\nThe recycling area was beside the back door, where two blue bins stood beneath a sign that said PAPER ONLY. A cleaning cart waited nearby, and one of the cleaning staff members was sorting newspapers into a cardboard box.\n\n“Could I check the paper bin?” Deniz asked. “Some map pieces are missing from the Explorer Club table.”\n\nThe staff member nodded. “Go ahead. I have not emptied it yet.”\n\nDeniz lifted the lid and searched carefully. Flyers, old worksheets, and a torn magazine filled the bin. Deniz checked the corners and moved the papers with a ruler. No stiff, map-colored pieces appeared.\n\nThe first idea on the scrap of paper got a neat line through it. If the pieces had been thrown away, at least one should probably have been there. The empty bin was not proof of everything, but it was good evidence against accidental disposal.\n\nNext, Deniz went to the front desk and asked to see the sign-in log for the learning room. The supervisor was still busy with the book cart, so Deniz explained, “I’m checking who used the map table before the club event.”\n\nThe log listed times and reasons for visits. At 8:15, someone had written “arranged activity tables.” At 8:32, a cousin’s name appeared beside “looked at town maps.” At 8:47, the entry read “substitute helper—shelving and tidying.”\n\nDeniz copied the times onto the scrap. The cousin was nearby, reading at a round table. Deniz asked, “Did you take any of the four numbered pieces?”\n\nThe cousin shook their head. “No. I only looked at the maps. I put everything back on the table.”\n\nDeniz checked the log again. The cousin had signed out at 8:38, nine minutes before the substitute helper arrived. The timing did not prove exactly what had happened, but it gave no support to the idea that the cousin had taken the pieces. Deniz crossed out “borrowed by a visitor.”\n\nTwo guesses had now failed to fit the evidence: the pieces were not in the recycling bin, and the log did not point to a visitor taking them. The substitute helper remained a possible source of a shelving mistake, not proof of one.\n\nThen Deniz noticed a note in the log’s margin. Beside “arranged activity tables,” the supervisor had written, “Return numbered pieces to shelf sections.”\n\nDeniz looked across the room. The shelves near the map table had large letter labels—A, B, C, D, and more. Smaller labels underneath showed numbers. A shelf held cards marked 1, 11, and 21. Another showed 2, 12, and 22. Farther along were 7, 17, and 27.\n\nDeniz looked down at the missing numbers: 7, 12, 19, and 24. Their endings matched groups on the shelves, but that did not yet show which lettered section held each piece. The numbers might be a code rather than exact shelf destinations.\n\nDeniz drew a question mark beside the idea. The shelf labels suggested a pattern, but the pattern still needed a real test. Deniz glanced at the clock. It was nearly 10:00, leaving about an hour before the 11:00 treasure hunt.\n\n“First evidence, then a conclusion,” Deniz murmured, moving toward the labeled shelves. “I need to see whether the numbers actually predict a place.”\n\nDeniz stood in front of the shelves and studied the labels instead of grabbing the first card that looked familiar.\n\nThe shelves were arranged in order. A was beside labels ending in 1, B beside labels ending in 2, and C beside labels ending in 3. Farther along, G stood above cards marked 7, 17, and 27. The pattern was clearer now.\n\n“The last digit tells the shelf letter,” Deniz said softly. “One means A, two means B, and seven means G.”\n\nIt was a useful idea, but an idea was not proof. Deniz needed to test it.\n\nPiece 7 should be in section G. Deniz walked to the G shelf and checked each pocket. At first there were only activity cards and folded labels. Then a corner of stiff, blue paper showed behind a card marked 17.\n\nDeniz pulled it out carefully. A large black 7 was printed on the back.\n\n“Found one!”\n\nThe piece had been pushed into the wrong pocket, behind 17 instead of with the other 7-ending labels. It had not been left in its proper numbered place. The substitute helper must have seen the numbers, guessed that any card with a seven belonged together, and tucked it wherever there was room. But the piece was still in section G, exactly where the last-digit rule predicted.\n\nDeniz turned the piece over. Its picture showed the eastern footbridge, and its edges matched one of the blank spaces on the town map. Deniz carried it back to the table, fitted it into place, and pressed the clear cover flat.\n\nThe blue piece clicked into the outline. The bridge appeared again, with a tiny compass rose beside it.\n\nOne test could have been luck, so Deniz checked the evidence once more. The shelf labels did not merely look similar to the missing numbers. The order showed a repeat: 1, 11, and 21 belonged with A; 2, 12, and 22 with B; 7, 17, and 27 with G. The last digit stayed the same while the tens changed. That was why piece 7 belonged in G, even though it had been shoved into the wrong pocket there.\n\nDeniz wrote the rule on the scrap of paper in large letters:\n\nLAST DIGIT → SHELF LETTER\n\nThen Deniz listed the pieces still missing: 12, 19, and 24. Their destinations should be B, I, and D. Deniz looked toward those shelves, but did not rush ahead blindly. The rule had worked once because it had been tested against the labels and the recovered piece. Now it could be used again, carefully and in order.\n\nThe wall clock showed 10:06. Less than an hour remained.\n\nDeniz picked up the scrap and took a steady breath. The pattern was no longer just a guess. It was a tested tool. Three pieces were still missing, and the shelves waited.\n\nDeniz started with section B because piece 12 was predicted to belong there. The scrap of paper said it clearly: LAST DIGIT → SHELF LETTER.\n\nTwelve ended in 2, so B was the first section to test. Deniz hurried to the B shelves, then stopped before touching anything. Guessing would only make the search messy. The labels showed 2, 12, and 22. Deniz checked each pocket in order, looking for blue map paper or a number on a corner.\n\nNothing was in the pocket marked 12. But a stiff edge poked out from behind a card marked 22.\n\nDeniz slid the card aside. A large black 12 stared back.\n\n“Yes!” Deniz whispered.\n\nPiece 12 showed the library fountain. It fit the next empty space on the map. Deniz carried it to the table, matched the edges, and pressed it beneath the clear cover. Two blank spaces remained.\n\nThe clock read 10:18.\n\nNext came piece 19. Its last digit was 9, and the shelf pattern said 9 belonged with I. Deniz crossed off B on the scrap and moved to section I.\n\nThe pocket marked 19 was empty too. Deniz searched slowly. Behind a card marked 29, something green was folded against the back wall. Deniz pulled it free and saw the number 19.\n\nThe picture showed the hilltop weather station. Its shape matched one of the map’s empty spaces.\n\nDeniz studied the nearby cards. Piece 19 had stayed in the correct lettered section, just as piece 7 had, but it was behind the wrong numbered pocket. The substitute helper had apparently used the lettered sections correctly but guessed at the exact pockets. That explained why the pieces were difficult to find without being truly lost.\n\nDeniz fitted piece 19 into the map. Only piece 24 was missing.\n\nThe final prediction was D. Piece 24 ended in 4, and the shelves showed 4, 14, and 24 under D. Deniz checked the clock while walking there.\n\n“10:31,” Deniz said. “Twenty-nine minutes. That is enough if the rule keeps working.”\n\nAt section D, the pocket marked 24 was empty. Deniz checked behind 14, then behind 4. No map piece appeared. For one quick moment, worry squeezed Deniz’s stomach. Maybe the pattern had failed. Maybe piece 24 had been moved somewhere else.\n\nThen Deniz remembered the other two discoveries: the pieces had remained in their lettered sections even when the numbered pockets were wrong.\n\nDeniz scanned the whole D shelf from left to right. Behind a thick folder labeled 34, a corner of yellow paper showed.\n\nThere it was.\n\nPiece 24 had been pushed behind 34, just as 12 had been pushed behind 22 and 19 behind 29. The same shelving mistake had happened three times. The last digit had pointed to the correct lettered section each time; the substitute helper had guessed the exact pocket incorrectly.\n\nDeniz ran back to the map table with piece 24 held flat in both hands. It showed the old train station. The final edges slid into place.\n\nThe map was whole.\n\nDeniz checked every join: fountain beside the market, weather station above the hill path, train station along the western road, and the footbridge in the east. All four pieces were secure beneath the clear cover.\n\nAt 10:47, voices sounded in the hallway. The first Explorer Club children arrived early, carrying water bottles and small notebooks. The treasure hunt had not begun yet, but the map was ready. Deniz placed the clue cards around it and straightened the pencils.\n\nOne child leaned over the table. “Is the treasure hunt ready?”\n\nDeniz smiled and looked at the four restored places on the map. “Ready.”\n\nThe search had not been solved by choosing the most exciting guess. Deniz had tested the bin, the sign-in record, and finally the number pattern. The pattern had identified the correct shelf sections for every missing piece, while the repeated pocket mistakes explained why the pieces had seemed lost.\n\nAs the children gathered for the start, Deniz kept the scrap of paper nearby. LAST DIGIT → SHELF LETTER was still written across it in thick pencil. The map was assembled before 11:00, and Deniz already knew one thing to suggest afterward: the shelves needed labels that made the rule impossible to miss.\n\nAt eleven o’clock, the supervisor clapped twice. “Explorer Club, gather around the map!”\n\nThe children leaned closer as Deniz explained the first clue. They traced the town road with their fingers, then hurried to the fountain, where a blue envelope waited beneath a bench. Each clue led to the next place: the market, the hill path, the old train station, and finally the footbridge in the east.\n\nBecause the map was complete, nobody had to stop and wonder what belonged in the blank spaces. The children compared symbols, argued politely about directions, and checked their notebooks. When they found the last envelope, they cheered so loudly that people at the nearby tables smiled.\n\nThe treasure hunt had worked.\n\nAfter the children began sorting their pencils and clue cards, Deniz carried the scrap of paper to the supervisor. The words LAST DIGIT → SHELF LETTER were still bold and clear.\n\n“I found out what happened to the pieces,” Deniz said. “They stayed in the right lettered sections, but they were put behind the wrong number pockets. Piece 12 was behind 22, piece 19 was behind 29, and piece 24 was behind 34. Piece 7 was also in section G, but in the wrong pocket.”\n\nThe supervisor looked toward the shelves. “So someone followed the letters but guessed the exact numbers?”\n\n“Probably,” Deniz said. “The pattern worked every time. The last digit showed the shelf letter, but the tens digit showed which pocket. The substitute helper may not have known that.”\n\nThe supervisor nodded slowly. “That would be easy to do when the labels are crowded.”\n\n“That’s why I have an idea,” Deniz said. “Could we make the labels clearer? We could put a big letter at the top of each shelf, then write the pocket numbers in a straight row. Maybe we could add a small note: ‘Last digit tells the shelf letter.’ Then people would not have to guess.”\n\n“That is a useful plan,” the supervisor said. “Let’s make the new labels next week, when the room is quieter. You can help me check that the numbers match.”\n\nDeniz looked at the assembled map. The fountain, weather station, train station, and footbridge all fit together now. Earlier, the recycling bin had seemed like a likely answer. Then the sign-in log had made borrowing seem possible. Neither guess explained the evidence. The tested pattern did.\n\n“Guessing gave me lots of possibilities,” Deniz said, “but testing the pattern showed which one was actually true.”\n\nThe supervisor smiled. “And it got the map ready on time.”\n\nAcross the room, one child waved. “Deniz! We found all the clues!”\n\n“Coming!” Deniz called.\n\nDeniz returned to the group, carrying the scrap of paper. The event was finished, the map was safe, and the new labels were planned. Next time, the shelves would make their pattern easier to see. For now, Deniz joined the children as they told the treasure hunt story all over again, each one sure that finding the last envelope had been the best part.",
+  "word_count": 2607,
+  "target_words": 2800,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.96,
+      "decomposition_fitness": 0.85
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.73,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8686,
+      "output_tokens": 189,
+      "cost": 0.000364812
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.95,
+      "no_contradictions": 0.85,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.96,
+      "decomposition_fitness": 0.85
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.73,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8686,
+      "output_tokens": 189,
+      "cost": 0.000364812
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a well-crafted independent-reader story that successfully executes the StoryContract and SceneGraph. Deniz is a plausible 10-year-old protagonist who solves a layered puzzle through systematic testing rather than guessing. The narrative follows the required five-scene structure: setup (pieces missing, deadline established), rising action (false hypotheses tested and rejected, pattern noticed), rising action (pattern tested on one piece), payoff (pattern applied to all remaining pieces), and resolution (event succeeds, labeling improvement proposed). The theme—good solutions come from testing patterns instead of guessing—is woven throughout without didacticism. Vocabulary, sentence structure, and pacing are appropriate for the target age and reading mode. Causality is explicit: Deniz checks the recycling bin (rules out accidental disposal), reviews the sign-in log (rules out visitor borrowing), notices the shelf-number pattern, tests it on piece 7 (confirms the rule), then applies it to pieces 12, 19, and 24. The false hypotheses (accidental disposal, visitor borrowing) are plausible and rejected by evidence, satisfying C7. The final solution uses multiple earlier clues: the shelf labels, the sign-in log timing, the substitute helper's presence, and the tested last-digit rule. No combat, supernatural elements, or adult solving occurs. The ending resolves the main goal (pieces recovered, map assembled, event runs smoothly) and introduces Deniz's proposal for clearer labeling, which reflects the theme. Word count is approximately 2,607 words, within reasonable range for the 2,800-word target. Continuity is maintained across all five scenes, with each handoff state properly established and carried forward. The story respects all prohibited events and required constraints. Minor stylistic polish opportunities exist (e.g., occasional repetition of 'Deniz' could be varied), but these do not constitute blocking defects. The narrative is coherent, age-appropriate, and production-ready.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 2607,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.95,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.95,
+          "no_contradictions": 0.85,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.96,
+          "decomposition_fitness": 0.85
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.73,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 8686,
+          "output_tokens": 189,
+          "cost": 0.000364812
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a well-crafted independent-reader story that successfully executes the StoryContract and SceneGraph. Deniz is a plausible 10-year-old protagonist who solves a layered puzzle through systematic testing rather than guessing. The narrative follows the required five-scene structure: setup (pieces missing, deadline established), rising action (false hypotheses tested and rejected, pattern noticed), rising action (pattern tested on one piece), payoff (pattern applied to all remaining pieces), and resolution (event succeeds, labeling improvement proposed). The theme—good solutions come from testing patterns instead of guessing—is woven throughout without didacticism. Vocabulary, sentence structure, and pacing are appropriate for the target age and reading mode. Causality is explicit: Deniz checks the recycling bin (rules out accidental disposal), reviews the sign-in log (rules out visitor borrowing), notices the shelf-number pattern, tests it on piece 7 (confirms the rule), then applies it to pieces 12, 19, and 24. The false hypotheses (accidental disposal, visitor borrowing) are plausible and rejected by evidence, satisfying C7. The final solution uses multiple earlier clues: the shelf labels, the sign-in log timing, the substitute helper's presence, and the tested last-digit rule. No combat, supernatural elements, or adult solving occurs. The ending resolves the main goal (pieces recovered, map assembled, event runs smoothly) and introduces Deniz's proposal for clearer labeling, which reflects the theme. Word count is approximately 2,607 words, within reasonable range for the 2,800-word target. Continuity is maintained across all five scenes, with each handoff state properly established and carried forward. The story respects all prohibited events and required constraints. Minor stylistic polish opportunities exist (e.g., occasional repetition of 'Deniz' could be varied), but these do not constitute blocking defects. The narrative is coherent, age-appropriate, and production-ready.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000364812,
+      "final_judge_cost": {
+        "usd": 0.016653,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 82.43,
+    "scene_stage_seconds": 186.531,
+    "final_stage_seconds": 8.199,
+    "total_pipeline_seconds": 277.16
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.087754718,
+    "scene_generation_usd": 0.02513155,
+    "scene_continuity_evaluator_usd": 0.001347738,
+    "whole_continuity_evaluator_usd": 0.000364812,
+    "whole_continuity_evaluator_usd_total": 0.000364812,
+    "semantic_judge_usd": {
+      "usd": 0.016653,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.016653,
+    "scene_jev_usd": 0.001347738,
+    "whole_jev_usd": 0.000364812,
+    "whole_jev_usd_total": 0.000364812,
+    "final_haiku": {
+      "usd": 0.016653,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.016653,
+    "total_pipeline_usd": 0.131251818
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 8686,
+      "output_tokens": 189,
+      "cost": 0.000364812
+    },
+    "semantic_judge": {
+      "input_tokens": 13858,
+      "output_tokens": 559,
+      "total_tokens": 14417
+    },
+    "whole_jev": {
+      "input_tokens": 8686,
+      "output_tokens": 189,
+      "cost": 0.000364812
+    },
+    "final_haiku": {
+      "input_tokens": 13858,
+      "output_tokens": 559,
+      "total_tokens": 14417
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": [],
+  "experiment": {
+    "hypothesis": "A stronger Narrative Architect choosing a variable scene count can reduce structural/continuity burden while Luna remains the prose writer.",
+    "scene_count": 5,
+    "scene_count_rationale": "Five scenes are the minimum needed: one to establish the goal and deadline, two to test and reject false hypotheses while surfacing the real numeric pattern, one payoff scene to apply that pattern decisively, and one resolution to close the event and thread. Merging any pair would blur distinct evidence steps or leak the solution early; adding more would pad pacing for a 2800-word independent-reader story.",
+    "roles": [
+      "SETUP",
+      "RISING_ACTION",
+      "RISING_ACTION",
+      "PAYOFF",
+      "RESOLUTION"
+    ],
+    "relative_weights": [
+      15,
+      20,
+      20,
+      25,
+      20
+    ],
+    "allocated_scene_budgets": [
+      420,
+      560,
+      560,
+      700,
+      560
+    ]
+  }
+}
