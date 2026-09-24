@@ -156,6 +156,45 @@ class TypedStateMutationContractTests(unittest.TestCase):
         errors = v5.validate_outcome(outcome, 4, self.authority)
         self.assertIn("mutation_0_base_fingerprint_mismatch", errors)
 
+    def test_epistemic_class_mismatch_fails_closed(self) -> None:
+        authority = {
+            "revision": "r1",
+            "entities": [
+                {
+                    "entity_ref": "WORLD:CURRENT",
+                    "entity_kind": "WORLD",
+                    "expected_revision": 8,
+                    "expected_fingerprint": "world-r8-fp",
+                }
+            ],
+            "allowed_mutations": [
+                {
+                    "mutation_type": "WORLD_HYPOTHESIS_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "commons.sound_hypotheses",
+                    "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS",
+                }
+            ],
+        }
+        outcome = {
+            "authority_revision": "r1",
+            "mutations": [
+                {
+                    "mutation_type": "WORLD_HYPOTHESIS_SET",
+                    "entity_ref": "WORLD:CURRENT",
+                    "field_key": "commons.sound_hypotheses",
+                    "epistemic_class": "FACT",
+                    "base_revision": 8,
+                    "base_fingerprint": "world-r8-fp",
+                    "value": "unseen contact point caused the sound",
+                    "evidence_scenes": [4],
+                    "reason": "A hypothesis must not be upgraded into a fact.",
+                }
+            ],
+        }
+        errors = v5.validate_outcome(outcome, 4, authority)
+        self.assertIn("mutation_0_epistemic_class_mismatch", errors)
+
     def test_invalid_evidence_scene_fails_closed(self) -> None:
         outcome = {
             "authority_revision": "r1",
