@@ -619,3 +619,27 @@ The next highest-value evidence should come from production-like LUMI context:
 `Character + World + Opportunity + Canon + Saga + relevant memories`
 
 rather than immediately expanding to an 80-cell synthetic qualification campaign.
+
+
+## Deterministic contract regression — 36024587848
+
+The typed-state and pairwise calibration invariants were locked with unit tests.
+
+Result:
+
+**11 / 11 PASS**
+
+Covered fail-closed cases include:
+
+- model-invented mutation field;
+- transient emotional-state persistence without authority;
+- stale authority revision;
+- stale entity base revision;
+- wrong entity fingerprint;
+- invalid evidence scene;
+- duplicate mutation;
+- valid authorized mutation;
+- A/B label reversal normalization;
+- presentation-order disagreement -> `INCONCLUSIVE`.
+
+An earlier test run failed because the positive fixture omitted entity version metadata while the validator already required it. The validator was not weakened. The test fixture was repaired to include the required revision/fingerprint preconditions, and the fresh run passed all contracts.
