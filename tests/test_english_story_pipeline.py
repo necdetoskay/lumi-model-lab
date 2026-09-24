@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from src.english_story_pipeline import (
     allocate_scene_budgets,
+    apply_final_haiku_repairs,
     build_scene_jev_questions,
     TOTAL_STORY_MAX_RATIO,
     TOTAL_STORY_MIN_RATIO,
@@ -272,6 +273,46 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 130)
+
+    def test_final_prose_repair_rejects_adjacent_duplicate_sequence(self):
+        original = good_envelope(100)
+        repaired = good_envelope(100)
+        repeated = (
+            "The sun warmed the stones. "
+            "The clock rang once. "
+            "The square stayed quiet."
+        )
+        repaired["prose"] = f"Deniz listened. {repeated} {repeated} He smiled."
+        errors, _ = validate_prose_only_repair(
+            original_envelope=original,
+            repaired_envelope=repaired,
+            target_words=100,
+        )
+        self.assertTrue(
+            any(
+                error.startswith("final_repair_adjacent_duplicate_sequence:")
+                for error in errors
+            )
+        )
+
+    def test_final_prose_repair_allows_single_sentence_repetition(self):
+        original = good_envelope(100)
+        repaired = good_envelope(100)
+        repaired["prose"] = (
+            "Listen. Listen. Deniz checked the gear. "
+            "He wrote down what changed. He waited for the next sound."
+        )
+        errors, _ = validate_prose_only_repair(
+            original_envelope=original,
+            repaired_envelope=repaired,
+            target_words=100,
+        )
+        self.assertFalse(
+            any(
+                error.startswith("final_repair_adjacent_duplicate_sequence:")
+                for error in errors
+            )
+        )
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_word_budget_repair_compresses_without_state_change(self, mock_call):
@@ -814,6 +855,7 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             seed=7601,
             observed_scene_indices=[1],
             repair_round=2,
+            prior_attempt_errors=["final_target_verification_failed:{}"],
         )
         self.assertEqual(errors, [])
         self.assertEqual(word_count, 100)
@@ -823,6 +865,10 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         sent = __import__("json").loads(mock_call.call_args.kwargs["user_prompt"])
         self.assertTrue(sent["strict_retry"])
         self.assertEqual(sent["repair_round"], 2)
+        self.assertEqual(
+            sent["prior_attempt_errors"],
+            ["final_target_verification_failed:{}"],
+        )
         self.assertEqual(attempt["repair_round"], 2)
         self.assertEqual(attempt["kind"], "final_haiku_targeted_repair")
 
@@ -871,6 +917,90 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         self.assertEqual(word_count, 100)
         self.assertEqual(repaired["state_delta"], original["state_delta"])
         self.assertTrue(attempt["ignored_model_state_delta_change"])
+
+    @patch("src.english_story_pipeline.evaluate_scene_jev")
+    @patch("src.english_story_pipeline.verify_final_repair_target")
+    @patch("src.english_story_pipeline.repair_scene_for_final_judge")
+    def test_final_polish_retries_first_validation_error_once(
+        self,
+        mock_repair,
+        mock_verify,
+        mock_scene_jev,
+    ):
+        envelope = good_envelope(100)
+        scenes = [
+            {
+                "scene": 1,
+                "target_words": 100,
+                "contract": {"purpose": "observe"},
+                "envelope": envelope,
+                "word_count": 100,
+                "attempts": [],
+                "jev_history": [],
+                "semantic_repairs": [],
+                "continuity_escalation_required": False,
+            }
+        ]
+        duplicate_error = (
+            "final_repair_adjacent_duplicate_sequence:"
+            "start_sentence=2:sentence_count=3"
+        )
+        mock_repair.side_effect = [
+            (
+                envelope,
+                [duplicate_error],
+                100,
+                {"kind": "final_haiku_targeted_repair"},
+            ),
+            (
+                envelope,
+                [],
+                100,
+                {"kind": "final_haiku_targeted_repair"},
+            ),
+        ]
+        mock_verify.return_value = {
+            "verified": True,
+            "probabilities": {
+                "target_resolved": 0.93,
+                "no_residual_ambiguity": 0.92,
+            },
+        }
+        mock_scene_jev.return_value = {
+            "threshold": 0.8,
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+        }
+
+        records = apply_final_haiku_repairs(
+            api_key="test",
+            model="qwen/qwen3.8-flash",
+            plan={
+                "story_contract": {},
+                "scenes": [{"purpose": "observe"}],
+            },
+            ledger=[{"scene": 1, "word_count": 100}],
+            scenes=scenes,
+            final_judge={
+                "critical_failures": [],
+                "repair_targets": [
+                    {
+                        "scene": 1,
+                        "repair_scene": 1,
+                        "issue": "Remove the duplicate passage.",
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(mock_repair.call_count, 2)
+        self.assertTrue(records[0]["accepted"])
+        self.assertTrue(records[0]["target_verified"])
+        self.assertTrue(records[0]["repair_attempts"][0]["will_retry"])
+        self.assertEqual(
+            mock_repair.call_args_list[1].kwargs["prior_attempt_errors"],
+            [duplicate_error],
+        )
 
     @patch("src.english_story_pipeline.call_openrouter")
     def test_antecedent_repair_receives_observed_scene_context(self, mock_call):

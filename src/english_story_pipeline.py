@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -999,6 +1000,27 @@ def final_repair_issue(final_judge: dict[str, Any], scene_index: int) -> str:
     return "\n".join(issues)
 
 
+def find_adjacent_duplicate_sentence_sequence(
+    prose: str,
+    *,
+    min_sentences: int = 3,
+) -> tuple[int, int] | None:
+    normalized = re.sub(r"\s+", " ", prose.strip())
+    sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", normalized)
+        if sentence.strip()
+    ]
+    maximum = len(sentences) // 2
+    for block_size in range(maximum, min_sentences - 1, -1):
+        for start in range(0, len(sentences) - (block_size * 2) + 1):
+            left = sentences[start : start + block_size]
+            right = sentences[start + block_size : start + (block_size * 2)]
+            if left == right:
+                return start + 1, block_size
+    return None
+
+
 def validate_prose_only_repair(
     *,
     original_envelope: dict[str, Any],
@@ -1012,6 +1034,15 @@ def validate_prose_only_repair(
     errors, _ = partition_scene_validation_errors(raw_errors)
     if repaired_envelope.get("state_delta") != original_envelope.get("state_delta"):
         errors.append("final_repair_state_delta_changed")
+    duplicate = find_adjacent_duplicate_sentence_sequence(
+        str(repaired_envelope.get("prose") or "")
+    )
+    if duplicate is not None:
+        start_sentence, sentence_count = duplicate
+        errors.append(
+            "final_repair_adjacent_duplicate_sequence:"
+            f"start_sentence={start_sentence}:sentence_count={sentence_count}"
+        )
     return errors, word_count
 
 
@@ -1027,6 +1058,7 @@ def repair_scene_for_final_judge(
     seed: int,
     observed_scene_indices: list[int] | None = None,
     repair_round: int = 1,
+    prior_attempt_errors: list[str] | None = None,
 ) -> tuple[dict[str, Any], list[str], int, dict[str, Any]]:
     position = scene_index - 1
     scene = scenes[position]
@@ -1061,6 +1093,7 @@ def repair_scene_for_final_judge(
             "repair_issue": issue,
             "repair_round": repair_round,
             "strict_retry": repair_round > 1,
+            "prior_attempt_errors": prior_attempt_errors or [],
             "target_words": scene["target_words"],
             "allowed_word_range": [
                 round(scene["target_words"] * 0.80),
@@ -1372,6 +1405,7 @@ def apply_final_haiku_repairs(
         verifications: list[dict[str, Any]] = []
         latest_word_count = scenes[position]["word_count"]
         technical_failure = False
+        prior_attempt_errors: list[str] = []
 
         for repair_round in range(1, 3):
             repaired, errors, word_count, attempt = repair_scene_for_final_judge(
@@ -1385,11 +1419,16 @@ def apply_final_haiku_repairs(
                 seed=7600 + scene_index * 10 + repair_round,
                 observed_scene_indices=observed_scene_indices,
                 repair_round=repair_round,
+                prior_attempt_errors=prior_attempt_errors,
             )
             attempt["repair_round"] = repair_round
             repair_attempts.append(attempt)
 
             if errors:
+                if repair_round < 2:
+                    attempt["will_retry"] = True
+                    prior_attempt_errors = list(errors)
+                    continue
                 records.append(
                     {
                         "scene": scene_index,
@@ -1423,6 +1462,13 @@ def apply_final_haiku_repairs(
             verifications.append(verification)
             if verification["verified"]:
                 break
+            prior_attempt_errors = [
+                "final_target_verification_failed:"
+                + json.dumps(
+                    verification.get("probabilities") or {},
+                    sort_keys=True,
+                )
+            ]
 
         if technical_failure:
             continue

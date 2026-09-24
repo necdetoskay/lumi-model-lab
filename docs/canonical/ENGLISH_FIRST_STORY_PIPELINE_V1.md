@@ -57,7 +57,7 @@ For a 2,000-word story, a default distribution is 260 / 310 / 340 / 340 / 410 / 
 - A final repair target may route from an observed later scene to one earlier repair scene when the smallest valid fix is antecedent setup/foreshadowing; only that repair scene's prose may change.
 - Scene-level word-count misses never override schema/state/continuity failures; only pure word-budget errors may degrade to advisory after bounded repair.
 - Total assembled-story word budget remains a deterministic hard gate with ±25% tolerance around the configured target.
-- Final Haiku targeted repair touches at most three judge-targeted scenes; each target allows at most two prose-only repair attempts with atomic JEV verification, followed by exactly one final whole-story Haiku rerun.
+- Final Haiku targeted repair touches at most three judge-targeted scenes; each target allows at most two prose-only repair attempts with atomic JEV verification, followed by exactly one final whole-story Haiku rerun. A first-attempt validation failure may consume the second bounded attempt with the prior error fed back explicitly; 3+ sentence exact adjacent duplicate sequences are deterministic repair failures and may not be committed.
 - Translation may not become the canonical story artifact.
 
 ## Model Lab rollout
