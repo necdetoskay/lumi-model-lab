@@ -20,6 +20,14 @@ VARIANT_B = Path(
     "data/specifications/diagnostics/"
     "adult-puzzle-problem-solving-variant-b-v1.yaml"
 )
+MIDDLE_BASE = Path(
+    "data/specifications/waves/age-relative-standard-v2/"
+    "middle-child--puzzle-problem-solving.yaml"
+)
+MIDDLE_VARIANT_B = Path(
+    "data/specifications/diagnostics/"
+    "middle-child-puzzle-problem-solving-variant-b-v1.yaml"
+)
 
 
 def load_spec(path: Path) -> StorySpec:
@@ -79,6 +87,51 @@ class DiagnosticFixtureTests(unittest.TestCase):
             self.assertEqual(mode, "INDEPENDENT_READER")
             self.assertEqual(relative_class, "STANDARD")
             self.assertEqual(spec.narrative_family, "puzzle_problem_solving")
+
+    def test_middle_child_puzzle_variant_b_preserves_controlled_axes(self) -> None:
+        base = load_spec(MIDDLE_BASE)
+        variant = load_spec(MIDDLE_VARIANT_B)
+
+        controlled = (
+            "age_min",
+            "age_max",
+            "language",
+            "target_words",
+            "narrative_family",
+            "reading_mode",
+            "relative_length_class",
+            "protagonist",
+            "theme",
+            "constraints",
+        )
+        for field in controlled:
+            with self.subTest(field=field):
+                self.assertEqual(getattr(variant, field), getattr(base, field))
+
+        self.assertNotEqual(variant.title_hint, base.title_hint)
+        self.assertNotEqual(variant.setting, base.setting)
+        self.assertNotEqual(variant.premise, base.premise)
+
+    def test_middle_child_puzzle_variant_b_has_distinct_spec_fingerprint(self) -> None:
+        base_sha = hashlib.sha256(MIDDLE_BASE.read_bytes()).hexdigest()
+        variant_sha = hashlib.sha256(MIDDLE_VARIANT_B.read_bytes()).hexdigest()
+        self.assertNotEqual(base_sha, variant_sha)
+
+    def test_middle_child_puzzle_variant_b_resolves_same_capability_cell(self) -> None:
+        variant = load_spec(MIDDLE_VARIANT_B)
+        self.assertEqual(
+            narrative_age_tier_for_range(variant.age_min, variant.age_max),
+            "MIDDLE_CHILD",
+        )
+        mode, relative_class = resolve_relative_length_class(
+            age_min=variant.age_min,
+            age_max=variant.age_max,
+            target_words=variant.target_words,
+            reading_mode=variant.reading_mode,
+        )
+        self.assertEqual(mode, "INDEPENDENT_READER")
+        self.assertEqual(relative_class, "STANDARD")
+        self.assertEqual(variant.narrative_family, "puzzle_problem_solving")
 
 
 if __name__ == "__main__":
