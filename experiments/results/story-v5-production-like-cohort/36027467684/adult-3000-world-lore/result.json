@@ -1,0 +1,602 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-whole-draft/adult-3000-production-context.yaml",
+  "context_pack_source": "experiments/context_packs/v5/ada-coastal-quay.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-ada-coastal-quay-001",
+    "profile": {
+      "profile_id": "profile-ada",
+      "age": 34,
+      "reading_mode": "ADULT"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-ada",
+      "revision": 44,
+      "fingerprint": "char-ada-r44-fp",
+      "name": "Ada",
+      "age": 34,
+      "traits": [
+        "methodical",
+        "skeptical of convenient narratives",
+        "comfortable preserving uncertainty"
+      ],
+      "current_goal": "Determine what the public-history panel can responsibly say about when the old quay was raised.",
+      "established_knowledge": [
+        "READING_ROOM, PUBLIC_QUAY, and MAP_INDEX are explored.",
+        "SEALED_STORE is only rumored/administratively unavailable and has not been entered.",
+        "Ada has access to public map editions, indexed maintenance summaries, and visible tide marks."
+      ],
+      "prohibited_knowledge": [
+        "Ada does not know the contents of SEALED_STORE.",
+        "Ada does not know whether unavailable archive boxes contain decisive evidence."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-coastal-archive",
+      "revision": 61,
+      "fingerprint": "world-coastal-archive-r61-fp",
+      "location": "Old Harbor Civic Archive",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "READING_ROOM",
+          "status": "EXPLORED",
+          "summary": "Public archive reading room with map reproductions and indexed records."
+        },
+        {
+          "id": "PUBLIC_QUAY",
+          "status": "EXPLORED",
+          "summary": "Accessible old quay with two visible tide/height marks from different periods."
+        },
+        {
+          "id": "MAP_INDEX",
+          "status": "EXPLORED",
+          "summary": "Public index of dated municipal map editions."
+        },
+        {
+          "id": "SEALED_STORE",
+          "status": "RUMORED",
+          "summary": "Unavailable storage area outside current research access; its contents remain unknown."
+        }
+      ],
+      "current_facts": [
+        "The draft exhibit panel currently names 1962 as the year the quay was raised.",
+        "A 1961 map edition still shows the earlier quay profile.",
+        "A 1964 maintenance index refers to repairs at the 'raised west quay'.",
+        "Two physical tide-height marks differ in style and elevation, but neither carries a clear year."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "SEALED_STORE contents are unknown.",
+        "No canonical record establishes one exact construction date."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-coastal-quay-001",
+      "revision": 15,
+      "fingerprint": "opp-coastal-quay-r15-fp",
+      "status": "AVAILABLE",
+      "title": "Correct the public account of the old quay",
+      "premise": "Ada can reconcile public maps, maintenance indexes, and physical tide marks to improve the exhibit without claiming an unsupported exact date.",
+      "success_condition": "Produce a better-supported public interpretation and explicitly preserve remaining date uncertainty.",
+      "constraints": [
+        "Do not enter SEALED_STORE.",
+        "Do not invent unavailable document contents.",
+        "Do not convert an interpretation into an exact fact without evidence.",
+        "Do not let a supervisor solve the research problem."
+      ]
+    },
+    "canon": {
+      "revision": 23,
+      "fingerprint": "canon-r23-fp",
+      "hard_rules": [
+        "No fabricated historical facts.",
+        "Character knowledge cannot exceed experienced or explicitly communicated records.",
+        "RUMORED or unavailable locations are not EXPLORED.",
+        "Interpretive claims must preserve their epistemic class."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-ada-public-record",
+      "revision": 17,
+      "fingerprint": "saga-ada-r17-fp",
+      "eligible_context": [
+        "Ada is improving public-history material by separating documented facts from responsible interpretation."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal a future archive acquisition or SEALED_STORE contents."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-ada-011",
+        "summary": "Ada previously corrected a caption after discovering that a later summary had compressed two separate events into one date.",
+        "relevance": "Supports caution around simplified public-history narratives."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/adult-3000-production-context.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "prodlike-ada-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 44,
+        "expected_fingerprint": "char-ada-r44-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 61,
+        "expected_fingerprint": "world-coastal-archive-r61-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 17,
+        "expected_fingerprint": "saga-ada-r17-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 15,
+        "expected_fingerprint": "opp-coastal-quay-r15-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "quay.raising_interpretations",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Second Tide Line",
+    "scene_count_rationale": "Five scenes provide the minimum sufficient structure for a 3,000-word adult story: establish Ada's evidentiary problem, examine the independent public sources, compare competing interpretations, deliver the corrected historical account, and resolve the public-record question while preserving bounded uncertainty. Each scene has one distinct narrative job, with PAYOFF before the final RESOLUTION.",
+    "story_contract": {
+      "protagonist_goal": "Determine what the public-history panel can responsibly say about when the old quay was raised.",
+      "central_problem": "The planned panel presents 1962 as a confident construction date, but the 1961 map, the 1964 maintenance index, and two undated physical tide-height marks do not establish one exact date.",
+      "solution_principle": "Compare multiple independent public evidence sources, keep documented facts separate from interpretation, and replace unsupported precision with the best-supported bounded account.",
+      "theme_thread": "Responsible history can improve the public record without pretending that uncertainty has disappeared.",
+      "ending_state": "The panel no longer states 1962 as an established exact date. It explains that the earlier quay profile appears on the 1961 map, the raised west quay is documented by 1964, and the physical marks suggest more than one period of change without fixing a single year. Ada's interpretation is publicly usable while the exact construction date remains unresolved.",
+      "must_preserve": [
+        "Ada is 34, a methodical civic archivist who distinguishes evidence from interpretation.",
+        "The setting remains limited to the Old Harbor Civic Archive, its public reading room, the public quay, and the public map index.",
+        "The draft exhibit panel currently names 1962 as the year the quay was raised.",
+        "The 1961 map edition shows the earlier quay profile.",
+        "The 1964 maintenance index refers to repairs at the 'raised west quay'.",
+        "Two visible tide-height marks differ in style and elevation, but neither carries a clear year.",
+        "Ada uses multiple independent evidence sources.",
+        "At least two plausible interpretations are presented, with one explained as better supported.",
+        "A bounded unresolved uncertainty about the exact historical date remains at the ending.",
+        "Ada solves the research problem herself without a supervisor or outside expert."
+      ],
+      "must_not_happen": [
+        "Ada must not enter SEALED_STORE or learn or invent the contents of unavailable archive boxes.",
+        "No unavailable document may provide a decisive exact date.",
+        "The 1962 date must not be upgraded from a draft-panel claim into an established fact.",
+        "The differing tide marks must not be assigned invented dates or treated as conclusive proof.",
+        "No corruption, conspiracy, dramatic danger, or fabricated historical event may be introduced.",
+        "The story must not resolve the uncertainty by claiming a single exact construction year.",
+        "The public record must not be reset to its original state after Ada's investigation."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Frame Ada's goal and establish why the confident 1962 wording is a problem rather than a harmless simplification.",
+        "beats": [
+          "Ada reviews the planned public-history panel and sees 1962 presented as the year the old quay was raised.",
+          "She recalls how a previous caption compressed two separate events into one date and decides to test this claim before it reaches the public.",
+          "She defines the research question narrowly: what can the available public record responsibly establish, and what must remain interpretation?"
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "Ada's distinction between evidence and interpretation.",
+          "The current panel wording naming 1962.",
+          "Her established access to public maps, indexed maintenance summaries, and visible tide marks.",
+          "The fact that SEALED_STORE is unavailable and outside the investigation."
+        ],
+        "must_not_do": [
+          "Do not imply that Ada suspects wrongdoing or a hidden conspiracy.",
+          "Do not suggest that the SEALED_STORE contains the answer.",
+          "Do not solve the date question in the setup."
+        ],
+        "handoff": "Ada begins a source-by-source comparison in the public map index and reading room rather than accepting the panel's single date."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 24,
+        "purpose": "Establish the documentary sequence and prevent any one record from carrying the entire conclusion.",
+        "beats": [
+          "Ada checks the dated municipal map editions and confirms that the 1961 edition still shows the earlier quay profile.",
+          "She consults the 1964 maintenance index and records its wording: repairs at the 'raised west quay'.",
+          "She tests the tempting inference that the change must therefore have happened in 1962, then marks that inference as unsupported because the records establish an interval, not an exact year.",
+          "She notes that the map and maintenance index are independent records with different purposes: one depicts a profile, while the other describes a later maintenance condition."
+        ],
+        "prior_evidence": [
+          "Scene 1 established that 1962 appears in the draft panel but has not yet been validated.",
+          "Scene 1 established Ada's rule that a convenient date must not be treated as evidence merely because it is already printed."
+        ],
+        "must_include": [
+          "The 1961 earlier quay profile.",
+          "The 1964 reference to the 'raised west quay'.",
+          "Ada's explicit distinction between a documented fact and the inferred interval between records."
+        ],
+        "must_not_do": [
+          "Do not invent map editions between 1961 and 1964.",
+          "Do not claim the 1964 index describes the exact construction event.",
+          "Do not use SEALED_STORE or unavailable boxes as a source."
+        ],
+        "handoff": "The documentary record narrows the change to a period no later than 1964 and later than the 1961 profile, but Ada needs the visible quay evidence to assess whether a single event is the best interpretation."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "relative_weight": 20,
+        "purpose": "Introduce the physical evidence and develop two plausible interpretations without overstating what the marks prove.",
+        "beats": [
+          "At the public quay, Ada examines the two visible tide-height marks and records that they differ in style and elevation.",
+          "She considers Interpretation One: a single raising occurred around 1962, with the differing marks reflecting related public or maintenance marking practices.",
+          "She considers Interpretation Two: the quay's alteration may have been phased or may represent more than one period of change, with the exact work date falling somewhere after the 1961 profile and by the 1964 maintenance reference.",
+          "She recognizes that neither mark carries a clear year, so the physical evidence can support caution about a single event but cannot independently date the work."
+        ],
+        "prior_evidence": [
+          "Scene 2 established the documentary interval between the 1961 earlier profile and the 1964 'raised west quay' reference.",
+          "Scene 2 established that the 1962 date is an inference from the sequence, not a date stated by the available records."
+        ],
+        "must_include": [
+          "Both visible tide-height marks.",
+          "Their differences in style and elevation.",
+          "Two clearly labeled plausible interpretations.",
+          "The limitation that neither mark has a clear year."
+        ],
+        "must_not_do": [
+          "Do not assign dates to either tide mark.",
+          "Do not claim the marks conclusively prove phased construction.",
+          "Do not introduce measurements, witnesses, experts, or records not supplied in the context."
+        ],
+        "handoff": "Ada returns to the reading room with enough evidence to choose a public interpretation: the phased-or-undated account is more defensible than a precise 1962 claim."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 24,
+        "purpose": "Resolve the evidentiary contest by formulating the best-supported account and applying it to the panel.",
+        "beats": [
+          "Ada compares the interpretations against all three independent source types: map, maintenance index, and physical marks.",
+          "She concludes that the single-1962 interpretation is possible but weakly supported because no available source states that exact year.",
+          "She determines that the better-supported interpretation is that the quay was altered or raised sometime after the earlier 1961 profile and was recognized as the 'raised west quay' by 1964; the differing marks leave open whether the change was phased or involved distinct periods.",
+          "Ada rewrites the panel so it distinguishes the documented sequence from the interpretation and explicitly says that the exact date remains uncertain."
+        ],
+        "prior_evidence": [
+          "Scene 2 established the 1961 map and 1964 maintenance index as independent documentary anchors.",
+          "Scene 3 established the two plausible interpretations and the undated, differing physical marks.",
+          "Scene 3 established that the physical evidence cannot fix a year but makes a simple exact-date narrative less secure."
+        ],
+        "must_include": [
+          "An explicit explanation of why the second interpretation is better supported.",
+          "A public-facing replacement for the unsupported 1962 wording.",
+          "Clear separation between what the sources document and what Ada infers."
+        ],
+        "must_not_do": [
+          "Do not claim that Ada has discovered the definitive construction date.",
+          "Do not erase the possibility that work occurred around 1962; present it as possible but not established.",
+          "Do not have a supervisor, expert, or outside authority validate Ada's conclusion."
+        ],
+        "handoff": "The revised wording is ready to become the public account, but its final significance must be shown in how the archive now presents the quay's history."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 14,
+        "purpose": "Show the improved public record and complete the thematic resolution through preserved uncertainty.",
+        "beats": [
+          "Ada finalizes the panel with the bounded sequence: the 1961 map shows the earlier profile, the 1964 index refers to the raised west quay, and the tide marks indicate differing periods or practices without a clear year.",
+          "The panel replaces the confident 1962 assertion with the better-supported interpretation while acknowledging that the exact date cannot be established from the available public records.",
+          "Ada records the unresolved question as part of the archive's responsible account rather than treating uncertainty as a defect.",
+          "She leaves the public record more accurate and more useful: visitors receive a supported history, a stated interval, and an honest limit."
+        ],
+        "prior_evidence": [
+          "Scene 4 established Ada's selected interpretation and the revised panel wording.",
+          "Scene 4 established that 1962 remains possible but is not supported as an exact fact.",
+          "All prior scenes established that no decisive record is available within the authorized public research locations."
+        ],
+        "must_include": [
+          "The final panel's improved wording or equivalent content.",
+          "The unresolved exact-date uncertainty.",
+          "Thematic closure showing that uncertainty has been preserved without abandoning historical responsibility."
+        ],
+        "must_not_do": [
+          "Do not reveal or speculate about SEALED_STORE contents.",
+          "Do not imply that a future acquisition or hidden record will resolve the date.",
+          "Do not restore the original confident 1962 statement."
+        ],
+        "handoff": "The story ends with Ada's corrected public account in place: not a single invented certainty, but a stronger record that tells readers exactly what is known and what remains open."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Second Tide Line",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "Ada found the problem in a sentence no longer than a breath.\n\nThe draft exhibit panel stood on the reading room table beneath a sheet of clear protective film. Its heading read OLD HARBOR QUAY. Below a paragraph about changing shorelines and municipal works, one line declared: “The old quay was raised in 1962.”\n\nThe sentence looked finished. That was part of the trouble.\n\nAda, thirty-four and methodical by habit rather than temperament, took a pencil from behind her ear. She did not cross out the date. Not yet. Instead, she copied the sentence into her notebook and drew two columns beneath it.\n\nDOCUMENTED.\n\nINTERPRETED.\n\nA date printed in a draft was not evidence simply because it had survived a round of editing. The panel needed a statement visitors could use, but usefulness did not require pretending that every gap had been filled. Ada had learned that lesson before, when a caption had compressed two separate events into one convenient date. The correction had been small, but the principle was not. A clear sentence could still be wrong in the way a straight line could fail to describe a crooked shore.\n\nShe read the panel again. The confident wording suggested one construction event, one year, and a clean division between the quay before and after. Perhaps that was what had happened. But “perhaps” belonged in the second column.\n\nHer question had to be narrower than the panel's claim. Not, What year did someone intend to print? Not even, What year did the quay probably change? She wrote:\n\nWhat can the available public record responsibly establish about when the old quay was raised, and what must remain interpretation?\n\nThe archive offered three kinds of evidence within her access: dated municipal map editions in the public map index, indexed maintenance summaries in the reading room, and the visible tide-height marks on the public quay. Each source had a different purpose. That difference mattered. A map showed a profile. A maintenance index described work or a condition. A mark on stone recorded something physical, though not necessarily in words.\n\nAt the edge of the archive's administrative plan was SEALED_STORE, an unavailable storage area. Ada knew it existed only as an administratively inaccessible part of the building. She had not entered it, did not know its contents, and would not use an unknown box to support a public claim. The boundary was not a challenge. It was a fact about the limits of this investigation.\n\nShe placed the draft panel in its folder and carried her notebook toward the public map index. The sentence about 1962 remained where it was, temporarily undisturbed. Ada's task was not to find a better-sounding date. It was to find out whether the date deserved to be there at all."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "The public map index occupied a bank of shallow drawers and a digital catalogue arranged beside them. Ada began with the dated municipal editions, recording each relevant entry without filling gaps that the index did not fill.\n\nThe 1961 edition was available as a reproduction in the reading room. She spread it beneath the lamp and followed the harbor edge with a ruler. The old quay appeared there with its earlier profile. The line was not a verbal explanation, and the map did not say what had caused the profile or when anyone had altered it. Still, it was a dated representation of the quay as it appeared in 1961.\n\nAda entered the fact in her notebook:\n\n1961 map: earlier quay profile shown.\n\nShe added a second line beneath it:\n\nThis establishes appearance in 1961, not the date of any later work.\n\nThe distinction felt almost excessively careful until she looked again at the draft panel. That sentence had treated a later condition as if it came with its own birth certificate. The map did not provide one.\n\nIn the indexed maintenance summaries, she located the 1964 entry. The wording was brief: repairs at the “raised west quay.” Ada copied the phrase exactly, including the quotation marks she used to show that it belonged to the record rather than to her own description.\n\n1964 maintenance index: refers to repairs at the “raised west quay.”\n\nShe paused before writing anything else. The entry did not describe the exact construction event. It referred to repairs and used “raised west quay” as a name or condition already meaningful to the record at that time. It established that, by 1964, the west quay was being identified in that way. It did not state when the raising had occurred.\n\nThe temptation was immediate and familiar. If the 1961 map showed the earlier profile, and the 1964 index referred to the raised west quay, then 1962 seemed like a reasonable bridge. It might even be the year someone had chosen because it fit the sequence neatly.\n\nAda wrote the tempting inference in the margin:\n\nPossible change around 1962.\n\nThen she drew a line through “exact” where she had first begun to write it.\n\nThe map and the maintenance index were independent records, but they did different work. One depicted a profile at a dated moment. The other described later maintenance at a quay already called raised. Together they narrowed the interval: the change belonged after the earlier profile shown in 1961 and no later than the condition referred to in 1964. They did not select a single year inside that interval.\n\nShe turned back to the draft panel and considered whether “raised by 1964” would be enough. It was more defensible than 1962, but it might imply a simple, completed event when the physical evidence could complicate that picture. The map and index had brought her to the edge of the question, not across it.\n\nAda closed the catalogue and returned her notes to the folder. The public quay was only a short walk from the reading room, and its visible marks were part of the authorized evidence. She would examine them without asking them to say more than they could.\n\nOn the final page of her notes she wrote the interim account:\n\nDocumented interval: after the 1961 earlier profile; by 1964, repairs referred to the “raised west quay.”\n\nInferred exact date: none established.\n\nThe second line was not an admission of failure. It was the result the records had earned."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "prose": "The public quay held the afternoon light in flat bands. Water moved below the edge, rising and withdrawing with a patient sound that made the stone seem older than any date attached to it.\n\nAda walked to the two visible tide-height marks she had come to examine. They were close enough to compare but not identical. One had a different style from the other, and they stood at different elevations. Neither carried a clear year.\n\nShe did not measure them. The difference itself was part of the available evidence, and the absence of dates was just as important. A mark could show that someone had recorded a height or boundary. It could not, by itself, announce when the quay had been raised or whether the mark belonged to construction, maintenance, or another public practice.\n\nAda opened her notebook.\n\nPhysical evidence: two visible tide-height marks; differing styles and elevations; no clear year on either.\n\nShe considered the first interpretation.\n\nInterpretation One: a single raising occurred around 1962, and the two differing marks reflect related public or maintenance marking practices.\n\nThis was possible. The 1961 map showed the earlier profile, and by 1964 the index referred to the raised west quay. The marks did not contradict a change around 1962. A single event could explain the sequence, with the marks representing connected practices afterward or nearby.\n\nBut possible was not the same as supported. No available source stated 1962. The physical marks had no year, and their differences did not identify one event.\n\nShe considered the second interpretation.\n\nInterpretation Two: the quay's alteration may have been phased, or it may represent more than one period of change, with the work occurring somewhere after the 1961 profile and by the 1964 maintenance reference.\n\nThis, too, was an interpretation. The marks did not conclusively prove phased construction. Their differing styles and elevations only made a single, precisely dated account less secure. They left open the possibility that the quay's visible history involved separate changes or practices rather than one clean transformation.\n\nAda looked from one mark to the other. History often acquired false confidence when different kinds of evidence were forced to agree too quickly. A map line, a maintenance phrase, and a mark on stone could belong in the same account without becoming the same kind of fact.\n\nShe wrote a final comparison beneath the two interpretations. The first preserved the possibility of work around 1962 but depended on an exactness none of the sources supplied. The second matched the documentary interval and respected the physical evidence's limits. It did not solve the date. It explained why the date remained unsettled.\n\nThe tide withdrew, exposing a darker band below the marks. Ada closed the notebook. The public record did not need her to choose the most dramatic explanation, and there was no drama in the uncertainty itself. Her responsibility was simpler and harder: select the account that the evidence could carry.\n\nShe returned to the reading room with the two interpretations clearly separated in her notes. One was possible. The other was better supported."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "Back at the reading room table, Ada arranged the evidence in three groups.\n\nThe 1961 map reproduction lay to the left. Its dated image showed the earlier quay profile. In the center was her transcription of the 1964 maintenance index, with the phrase “raised west quay” underlined once. To the right she placed the notes from the public quay: two visible tide-height marks, different in style and elevation, neither carrying a clear year.\n\nShe did not let the three sources blur into one impression. The map documented an appearance. The index documented a later maintenance reference. The marks documented visible physical differences, but not their dates or exact purpose. Their independence gave the account strength; their differences imposed limits.\n\nAda returned to the two interpretations.\n\nA single raising around 1962 remained possible. It fit between the dated records and could accommodate the marks if they reflected related public or maintenance practices. But no available source stated that year. The 1962 date belonged to the draft panel, not to the map, the maintenance index, or either physical mark. Treating it as established would turn a convenient inference into a fact.\n\nThe phased-or-undated interpretation was better supported. The 1961 map fixed one end of the documentary sequence: the earlier profile was still shown then. The 1964 index fixed the other useful point: by that time, repairs referred to the “raised west quay.” The tide marks, differing in style and elevation, left open whether the alteration had been phased or whether distinct periods of change and marking had become visible together. They could not fix a year, but they made a simple exact-date narrative less secure.\n\nAda wrote that distinction in full before touching the panel:\n\nThe sources document a sequence. The interpretation explains that sequence. Neither establishes 1962 as an exact construction date.\n\nThen she removed the sentence that claimed certainty and drafted its replacement.\n\n“The 1961 map shows the quay in its earlier profile. By 1964, the maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks, different in style and elevation, suggest that the quay’s changes or marking practices may belong to more than one period. The available public records therefore place the raising after the 1961 profile and by the 1964 reference, but do not establish a single construction year. Work around 1962 remains possible, not proven.”\n\nAda read it aloud, listening for the point at which a documented fact might quietly become an assertion. The first sentence stayed with the map. The second stayed with the index. The third named what the marks could suggest without declaring what they proved. The final sentence gave the public an interval and an honest limit.\n\nShe considered shortening it. A panel had to be readable. But removing the uncertainty would make the sentence smoother by making the history weaker. She revised only the rhythm, not the meaning.\n\n“The 1961 map shows the quay’s earlier profile, while the 1964 maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks differ in style and elevation, though neither carries a clear year. These sources suggest that the quay was altered or raised sometime after the 1961 profile and by the 1964 reference. The change may have been phased or may reflect more than one period of work or marking. An exact construction date cannot be established from the available public records; 1962 is possible, but not proven.”\n\nThat was the account she could defend. It did not erase 1962. It put the date back into its proper category: a possibility produced by interpretation, not a fact supplied by evidence.\n\nAda copied the revised wording into the panel file and marked the original sentence for removal. No supervisor appeared to approve her choice, and no outside authority was needed to make it valid. The records had been compared. The limits had been stated. The conclusion followed from the work.\n\nShe gathered the map, the index notes, and the quay observations into one folder. The public account was ready. What remained was to place uncertainty where visitors could see it."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "Ada finalized the panel in the reading room, where daylight crossed the table and caught the clear film above the new text.\n\nIt now read:\n\n“The 1961 map shows the quay’s earlier profile. By 1964, the maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks differ in style and elevation, but neither carries a clear year. The quay was therefore altered or raised sometime after the 1961 profile and by the 1964 reference. The change may have been phased or may reflect more than one period of work or marking. The exact construction date remains uncertain. 1962 is possible, but not established by the available public records.”\n\nAda checked the sequence once more. Earlier profile in 1961. Raised west quay in the 1964 maintenance reference. Differing physical marks without clear years. A bounded interval, two plausible readings, and the better-supported interpretation stated without disguise.\n\nShe entered the unresolved question in the archive's public record: the exact year of construction could not be established from the available evidence. It was not a defect to be hidden or an invitation to invent an answer. It was part of what the record responsibly said.\n\nWhen visitors read the panel, they would receive more than a date. They would receive a supported history and a reason for its limits. The old confident sentence was gone, but the account had not become empty. It was more accurate because it preserved what remained unknown.\n\nAda placed the corrected panel with the exhibit materials and closed her notebook. The tide marks still waited on the public quay, carrying their differences without dates. The archive could not make them speak more clearly than they did.\n\nIt could, however, make sure their silence was recorded honestly."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "Ada found the problem in a sentence no longer than a breath.\n\nThe draft exhibit panel stood on the reading room table beneath a sheet of clear protective film. Its heading read OLD HARBOR QUAY. Below a paragraph about changing shorelines and municipal works, one line declared: “The old quay was raised in 1962.”\n\nThe sentence looked finished. That was part of the trouble.\n\nAda, thirty-four and methodical by habit rather than temperament, took a pencil from behind her ear. She did not cross out the date. Not yet. Instead, she copied the sentence into her notebook and drew two columns beneath it.\n\nDOCUMENTED.\n\nINTERPRETED.\n\nA date printed in a draft was not evidence simply because it had survived a round of editing. The panel needed a statement visitors could use, but usefulness did not require pretending that every gap had been filled. Ada had learned that lesson before, when a caption had compressed two separate events into one convenient date. The correction had been small, but the principle was not. A clear sentence could still be wrong in the way a straight line could fail to describe a crooked shore.\n\nShe read the panel again. The confident wording suggested one construction event, one year, and a clean division between the quay before and after. Perhaps that was what had happened. But “perhaps” belonged in the second column.\n\nHer question had to be narrower than the panel's claim. Not, What year did someone intend to print? Not even, What year did the quay probably change? She wrote:\n\nWhat can the available public record responsibly establish about when the old quay was raised, and what must remain interpretation?\n\nThe archive offered three kinds of evidence within her access: dated municipal map editions in the public map index, indexed maintenance summaries in the reading room, and the visible tide-height marks on the public quay. Each source had a different purpose. That difference mattered. A map showed a profile. A maintenance index described work or a condition. A mark on stone recorded something physical, though not necessarily in words.\n\nAt the edge of the archive's administrative plan was SEALED_STORE, an unavailable storage area. Ada knew it existed only as an administratively inaccessible part of the building. She had not entered it, did not know its contents, and would not use an unknown box to support a public claim. The boundary was not a challenge. It was a fact about the limits of this investigation.\n\nShe placed the draft panel in its folder and carried her notebook toward the public map index. The sentence about 1962 remained where it was, temporarily undisturbed. Ada's task was not to find a better-sounding date. It was to find out whether the date deserved to be there at all.\n\nThe public map index occupied a bank of shallow drawers and a digital catalogue arranged beside them. Ada began with the dated municipal editions, recording each relevant entry without filling gaps that the index did not fill.\n\nThe 1961 edition was available as a reproduction in the reading room. She spread it beneath the lamp and followed the harbor edge with a ruler. The old quay appeared there with its earlier profile. The line was not a verbal explanation, and the map did not say what had caused the profile or when anyone had altered it. Still, it was a dated representation of the quay as it appeared in 1961.\n\nAda entered the fact in her notebook:\n\n1961 map: earlier quay profile shown.\n\nShe added a second line beneath it:\n\nThis establishes appearance in 1961, not the date of any later work.\n\nThe distinction felt almost excessively careful until she looked again at the draft panel. That sentence had treated a later condition as if it came with its own birth certificate. The map did not provide one.\n\nIn the indexed maintenance summaries, she located the 1964 entry. The wording was brief: repairs at the “raised west quay.” Ada copied the phrase exactly, including the quotation marks she used to show that it belonged to the record rather than to her own description.\n\n1964 maintenance index: refers to repairs at the “raised west quay.”\n\nShe paused before writing anything else. The entry did not describe the exact construction event. It referred to repairs and used “raised west quay” as a name or condition already meaningful to the record at that time. It established that, by 1964, the west quay was being identified in that way. It did not state when the raising had occurred.\n\nThe temptation was immediate and familiar. If the 1961 map showed the earlier profile, and the 1964 index referred to the raised west quay, then 1962 seemed like a reasonable bridge. It might even be the year someone had chosen because it fit the sequence neatly.\n\nAda wrote the tempting inference in the margin:\n\nPossible change around 1962.\n\nThen she drew a line through “exact” where she had first begun to write it.\n\nThe map and the maintenance index were independent records, but they did different work. One depicted a profile at a dated moment. The other described later maintenance at a quay already called raised. Together they narrowed the interval: the change belonged after the earlier profile shown in 1961 and no later than the condition referred to in 1964. They did not select a single year inside that interval.\n\nShe turned back to the draft panel and considered whether “raised by 1964” would be enough. It was more defensible than 1962, but it might imply a simple, completed event when the physical evidence could complicate that picture. The map and index had brought her to the edge of the question, not across it.\n\nAda closed the catalogue and returned her notes to the folder. The public quay was only a short walk from the reading room, and its visible marks were part of the authorized evidence. She would examine them without asking them to say more than they could.\n\nOn the final page of her notes she wrote the interim account:\n\nDocumented interval: after the 1961 earlier profile; by 1964, repairs referred to the “raised west quay.”\n\nInferred exact date: none established.\n\nThe second line was not an admission of failure. It was the result the records had earned.\n\nThe public quay held the afternoon light in flat bands. Water moved below the edge, rising and withdrawing with a patient sound that made the stone seem older than any date attached to it.\n\nAda walked to the two visible tide-height marks she had come to examine. They were close enough to compare but not identical. One had a different style from the other, and they stood at different elevations. Neither carried a clear year.\n\nShe did not measure them. The difference itself was part of the available evidence, and the absence of dates was just as important. A mark could show that someone had recorded a height or boundary. It could not, by itself, announce when the quay had been raised or whether the mark belonged to construction, maintenance, or another public practice.\n\nAda opened her notebook.\n\nPhysical evidence: two visible tide-height marks; differing styles and elevations; no clear year on either.\n\nShe considered the first interpretation.\n\nInterpretation One: a single raising occurred around 1962, and the two differing marks reflect related public or maintenance marking practices.\n\nThis was possible. The 1961 map showed the earlier profile, and by 1964 the index referred to the raised west quay. The marks did not contradict a change around 1962. A single event could explain the sequence, with the marks representing connected practices afterward or nearby.\n\nBut possible was not the same as supported. No available source stated 1962. The physical marks had no year, and their differences did not identify one event.\n\nShe considered the second interpretation.\n\nInterpretation Two: the quay's alteration may have been phased, or it may represent more than one period of change, with the work occurring somewhere after the 1961 profile and by the 1964 maintenance reference.\n\nThis, too, was an interpretation. The marks did not conclusively prove phased construction. Their differing styles and elevations only made a single, precisely dated account less secure. They left open the possibility that the quay's visible history involved separate changes or practices rather than one clean transformation.\n\nAda looked from one mark to the other. History often acquired false confidence when different kinds of evidence were forced to agree too quickly. A map line, a maintenance phrase, and a mark on stone could belong in the same account without becoming the same kind of fact.\n\nShe wrote a final comparison beneath the two interpretations. The first preserved the possibility of work around 1962 but depended on an exactness none of the sources supplied. The second matched the documentary interval and respected the physical evidence's limits. It did not solve the date. It explained why the date remained unsettled.\n\nThe tide withdrew, exposing a darker band below the marks. Ada closed the notebook. The public record did not need her to choose the most dramatic explanation, and there was no drama in the uncertainty itself. Her responsibility was simpler and harder: select the account that the evidence could carry.\n\nShe returned to the reading room with the two interpretations clearly separated in her notes. One was possible. The other was better supported.\n\nBack at the reading room table, Ada arranged the evidence in three groups.\n\nThe 1961 map reproduction lay to the left. Its dated image showed the earlier quay profile. In the center was her transcription of the 1964 maintenance index, with the phrase “raised west quay” underlined once. To the right she placed the notes from the public quay: two visible tide-height marks, different in style and elevation, neither carrying a clear year.\n\nShe did not let the three sources blur into one impression. The map documented an appearance. The index documented a later maintenance reference. The marks documented visible physical differences, but not their dates or exact purpose. Their independence gave the account strength; their differences imposed limits.\n\nAda returned to the two interpretations.\n\nA single raising around 1962 remained possible. It fit between the dated records and could accommodate the marks if they reflected related public or maintenance practices. But no available source stated that year. The 1962 date belonged to the draft panel, not to the map, the maintenance index, or either physical mark. Treating it as established would turn a convenient inference into a fact.\n\nThe phased-or-undated interpretation was better supported. The 1961 map fixed one end of the documentary sequence: the earlier profile was still shown then. The 1964 index fixed the other useful point: by that time, repairs referred to the “raised west quay.” The tide marks, differing in style and elevation, left open whether the alteration had been phased or whether distinct periods of change and marking had become visible together. They could not fix a year, but they made a simple exact-date narrative less secure.\n\nAda wrote that distinction in full before touching the panel:\n\nThe sources document a sequence. The interpretation explains that sequence. Neither establishes 1962 as an exact construction date.\n\nThen she removed the sentence that claimed certainty and drafted its replacement.\n\n“The 1961 map shows the quay in its earlier profile. By 1964, the maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks, different in style and elevation, suggest that the quay’s changes or marking practices may belong to more than one period. The available public records therefore place the raising after the 1961 profile and by the 1964 reference, but do not establish a single construction year. Work around 1962 remains possible, not proven.”\n\nAda read it aloud, listening for the point at which a documented fact might quietly become an assertion. The first sentence stayed with the map. The second stayed with the index. The third named what the marks could suggest without declaring what they proved. The final sentence gave the public an interval and an honest limit.\n\nShe considered shortening it. A panel had to be readable. But removing the uncertainty would make the sentence smoother by making the history weaker. She revised only the rhythm, not the meaning.\n\n“The 1961 map shows the quay’s earlier profile, while the 1964 maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks differ in style and elevation, though neither carries a clear year. These sources suggest that the quay was altered or raised sometime after the 1961 profile and by the 1964 reference. The change may have been phased or may reflect more than one period of work or marking. An exact construction date cannot be established from the available public records; 1962 is possible, but not proven.”\n\nThat was the account she could defend. It did not erase 1962. It put the date back into its proper category: a possibility produced by interpretation, not a fact supplied by evidence.\n\nAda copied the revised wording into the panel file and marked the original sentence for removal. No supervisor appeared to approve her choice, and no outside authority was needed to make it valid. The records had been compared. The limits had been stated. The conclusion followed from the work.\n\nShe gathered the map, the index notes, and the quay observations into one folder. The public account was ready. What remained was to place uncertainty where visitors could see it.\n\nAda finalized the panel in the reading room, where daylight crossed the table and caught the clear film above the new text.\n\nIt now read:\n\n“The 1961 map shows the quay’s earlier profile. By 1964, the maintenance index refers to repairs at the ‘raised west quay.’ Two visible tide-height marks differ in style and elevation, but neither carries a clear year. The quay was therefore altered or raised sometime after the 1961 profile and by the 1964 reference. The change may have been phased or may reflect more than one period of work or marking. The exact construction date remains uncertain. 1962 is possible, but not established by the available public records.”\n\nAda checked the sequence once more. Earlier profile in 1961. Raised west quay in the 1964 maintenance reference. Differing physical marks without clear years. A bounded interval, two plausible readings, and the better-supported interpretation stated without disguise.\n\nShe entered the unresolved question in the archive's public record: the exact year of construction could not be established from the available evidence. It was not a defect to be hidden or an invitation to invent an answer. It was part of what the record responsibly said.\n\nWhen visitors read the panel, they would receive more than a date. They would receive a supported history and a reason for its limits. The old confident sentence was gone, but the account had not become empty. It was more accurate because it preserved what remained unknown.\n\nAda placed the corrected panel with the exhibit materials and closed her notebook. The tide marks still waited on the public quay, carrying their differences without dates. The archive could not make them speak more clearly than they did.\n\nIt could, however, make sure their silence was recorded honestly.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 2531,
+    "target_words": 3000,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 540
+      },
+      {
+        "scene": 2,
+        "target_words": 720
+      },
+      {
+        "scene": 3,
+        "target_words": 600
+      },
+      {
+        "scene": 4,
+        "target_words": 720
+      },
+      {
+        "scene": 5,
+        "target_words": 420
+      }
+    ],
+    "repeat_8gram_ratio": 0.019414,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.94,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.94,
+      "no_redundant_events": 0.91,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.86,
+      "context_authority": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 8208,
+      "output_tokens": 208,
+      "cost": 0.000344736
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTANCE. This is exceptional production-quality work that fully satisfies the StoryContract, SceneGraph, and all constraints. Ada's investigation proceeds methodically through five distinct scenes (setup, investigation, complication, payoff, resolution) with perfect fidelity to the context pack. The story distinguishes evidence from interpretation throughout, presents two plausible interpretations with explicit reasoning for why the second is better supported, and preserves bounded uncertainty in the ending without resolving it. All three independent evidence sources (1961 map, 1964 maintenance index, physical tide marks) are used correctly and remain independent. Ada solves the research problem herself; no supervisor or expert intervenes. The prose is precise, adult-appropriate, and thematically coherent—uncertainty is presented not as failure but as responsible historical practice. The revised panel text is concrete, defensible, and ready for public use. No SEALED_STORE is entered, no unavailable contents are invented, no corruption or conspiracy is introduced, and the 1962 date is correctly downgraded from fact to possibility. The story reaches approximately 3,000 words and fulfills the theme: responsible history can preserve uncertainty while still improving the public record. The only minor note is that creativity scores 4 rather than 5 because the narrative structure, while perfectly executed, follows the SceneGraph closely without significant stylistic innovation—but this is appropriate for the genre and does not constitute a defect.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "prodlike-ada-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 44,
+        "base_fingerprint": "char-ada-r44-fp",
+        "value": "The available public records place the quay's alteration after the 1961 earlier profile and by the 1964 raised-west-quay reference, but do not establish an exact construction year; 1962 remains possible but unproven.",
+        "evidence_scenes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "reason": "Ada compares the public map, maintenance index, and undated tide marks and records the supported interval and remaining uncertainty."
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "quay.raising_interpretations",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS",
+        "base_revision": 61,
+        "base_fingerprint": "world-coastal-archive-r61-fp",
+        "value": "The quay was altered or raised sometime after the 1961 earlier profile and by the 1964 maintenance reference; the change may have been phased or may reflect more than one period of work or marking. An exact construction date remains unresolved.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "The story explicitly selects the phased-or-undated interpretation as better supported while preserving the possibility, but not proof, of work around 1962."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 17,
+        "base_fingerprint": "saga-ada-r17-fp",
+        "value": "Correct the public account of the old quay",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ada replaces the unsupported exact-date claim with a public account that distinguishes documented evidence from interpretation."
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 17,
+        "base_fingerprint": "saga-ada-r17-fp",
+        "value": "Exact construction date of the old quay",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The final panel explicitly preserves the unresolved question of the exact construction year."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 15,
+        "base_fingerprint": "opp-coastal-quay-r15-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          5
+        ],
+        "reason": "Ada completes the opportunity by producing and finalizing a better-supported public interpretation while preserving date uncertainty."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 7663,
+      "output_tokens": 1262,
+      "total_tokens": 8925
+    },
+    "cost": {
+      "usd": 0.00343,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.00395255,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.0051663,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.010416,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.00343,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.02296485
+  },
+  "elapsed_seconds": 86.564
+}

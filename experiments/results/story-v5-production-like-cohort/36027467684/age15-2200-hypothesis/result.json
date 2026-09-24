@@ -1,0 +1,595 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-whole-draft/age15-2200-production-context.yaml",
+  "context_pack_source": "experiments/context_packs/v5/arda-orbital-sensor.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-arda-orbital-sensor-001",
+    "profile": {
+      "profile_id": "profile-arda",
+      "age": 15,
+      "reading_mode": "INDEPENDENT_READER"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-arda",
+      "revision": 27,
+      "fingerprint": "char-arda-r27-fp",
+      "name": "Arda",
+      "age": 15,
+      "traits": [
+        "analytical",
+        "patient",
+        "keeps concise observation tables"
+      ],
+      "current_goal": "Understand why the public algae display briefly dims at similar times in the afternoon.",
+      "established_knowledge": [
+        "GALLERY_RING and OBSERVATION_DECK are explored.",
+        "SERVICE_TUNNEL is rumored/service-only and has never been entered.",
+        "Arda can observe ambient light, visitor shading, and the public sensor housing from the marked gallery boundary."
+      ],
+      "prohibited_knowledge": [
+        "Arda does not know the internal configuration of the service lighting controller.",
+        "Arda does not know anything inside SERVICE_TUNNEL."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-orbital-lale",
+      "revision": 52,
+      "fingerprint": "world-orbital-lale-r52-fp",
+      "location": "Orbital Habitat Lale",
+      "era": "near-future",
+      "local_areas": [
+        {
+          "id": "GALLERY_RING",
+          "status": "EXPLORED",
+          "summary": "Public circular gallery with algae-light exhibits."
+        },
+        {
+          "id": "OBSERVATION_DECK",
+          "status": "EXPLORED",
+          "summary": "Student-access viewing deck with a public sensor housing visible behind clear shielding."
+        },
+        {
+          "id": "MAINTENANCE_WINDOW",
+          "status": "DISCOVERED",
+          "summary": "A service window visible from the public deck but not enterable."
+        },
+        {
+          "id": "SERVICE_TUNNEL",
+          "status": "RUMORED",
+          "summary": "Service-only route outside Arda's knowledge and access boundary."
+        }
+      ],
+      "current_facts": [
+        "The algae display dims briefly on several afternoons around a similar time window.",
+        "A tall rotating exterior shade passes part of the gallery during the afternoon.",
+        "The public sensor housing can be seen from OBSERVATION_DECK.",
+        "No system warning or safety alert is active."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "Internal service-controller logic is unknown.",
+        "Any SERVICE_TUNNEL equipment state is unknown."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-orbital-sensor-001",
+      "revision": 12,
+      "fingerprint": "opp-orbital-sensor-r12-fp",
+      "status": "AVAILABLE",
+      "title": "Explain the recurring algae-display dimming from public evidence",
+      "premise": "Arda can compare light, shade position, visitor movement, and public sensor observations without entering service-only areas.",
+      "success_condition": "Produce the best-supported explanation while preserving uncertainty about hidden controller behavior.",
+      "constraints": [
+        "Do not enter SERVICE_TUNNEL.",
+        "Do not invent hidden controller settings.",
+        "Do not create sabotage or danger.",
+        "Do not let an adult solve the investigation."
+      ]
+    },
+    "canon": {
+      "revision": 19,
+      "fingerprint": "canon-r19-fp",
+      "hard_rules": [
+        "No combat.",
+        "No sabotage unless explicitly canonical.",
+        "Character knowledge cannot exceed experienced or explicitly communicated facts.",
+        "RUMORED locations are not EXPLORED.",
+        "Unobserved system internals remain unknown."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-arda-methods",
+      "revision": 13,
+      "fingerprint": "saga-arda-r13-fp",
+      "eligible_context": [
+        "Arda is learning to separate correlation, mechanism, and certainty."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal future access to SERVICE_TUNNEL or hidden station systems."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-arda-006",
+        "summary": "Arda previously learned that two events occurring together do not automatically prove causation.",
+        "relevance": "Supports cautious inference without duplicating a previous mystery."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/age15-2200-production-context.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "prodlike-arda-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 27,
+        "expected_fingerprint": "char-arda-r27-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 52,
+        "expected_fingerprint": "world-orbital-lale-r52-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 13,
+        "expected_fingerprint": "saga-arda-r13-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 12,
+        "expected_fingerprint": "opp-orbital-sensor-r12-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "gallery.dimming_hypotheses",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Quiet Sensor",
+    "scene_count_rationale": "Five scenes provide the minimum sufficient structure for a 2200-word investigation: establish the recurring observation, gather multiple controlled observations, test competing explanations, deliver a carefully limited payoff, and resolve with a provisional conclusion. Each scene has one distinct narrative job, while evidence accumulates without requiring access to service-only areas.",
+    "story_contract": {
+      "protagonist_goal": "Understand why the public algae display briefly dims at similar times in the afternoon.",
+      "central_problem": "The dimming recurs in a similar time window, but Arda can observe only public conditions and cannot inspect the hidden controller or enter the service-only route.",
+      "solution_principle": "Compare repeated timing with visible shade position, ambient light, visitor movement, and the public sensor housing, then identify the explanation best supported by public evidence while keeping hidden system behavior uncertain.",
+      "theme_thread": "A strong scientific explanation can guide action without becoming certainty.",
+      "ending_state": "Arda records that the rotating exterior shade and its associated change in visible light are the best-supported explanation for the dimming, while noting that the exact internal response of the display system remains unknown.",
+      "must_preserve": [
+        "Arda is fifteen, analytical, patient, and willing to leave a conclusion provisional.",
+        "The setting remains limited to the explored GALLERY_RING and OBSERVATION_DECK, with the MAINTENANCE_WINDOW visible but not enterable.",
+        "SERVICE_TUNNEL remains rumored, service-only, unexplored, and outside Arda's knowledge and access.",
+        "Arda makes at least three observations before the final explanation.",
+        "At least two plausible explanations are considered, and at least one is rejected or weakened through evidence.",
+        "The explanation involving the rotating exterior shade remains best-supported rather than certain.",
+        "No adult or system engineer solves the investigation for Arda.",
+        "There is no danger, sabotage, emergency escalation, combat, or safety crisis.",
+        "Facts, observations, clues, and consequences accumulate across scenes.",
+        "Unknown internal controller behavior and any service-tunnel equipment state remain unknown."
+      ],
+      "must_not_happen": [
+        "Arda must not enter, inspect, or learn hidden facts about SERVICE_TUNNEL.",
+        "No invented controller settings, service records, or equipment states may be presented as facts.",
+        "The story must not claim that the shade explanation is proven with certainty.",
+        "The dimming must not be caused by sabotage, danger, or an emergency.",
+        "An adult, engineer, or automated system must not provide the central answer.",
+        "The investigation must not reset between observations or introduce an unrelated central problem."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Introduce Arda's recurring question, the public gallery, and the boundary between observable evidence and inaccessible system internals.",
+        "beats": [
+          "Arda notices the algae display dim briefly again during a familiar afternoon time window and opens a concise observation table.",
+          "From the public gallery, Arda notes that the tall rotating exterior shade is passing part of the gallery and remembers that the display has dimmed on several similar afternoons.",
+          "Arda defines the investigation as a comparison of visible conditions rather than an attempt to discover what is inside the service-only route."
+        ],
+        "prior_evidence": [
+          "The algae display has dimmed briefly on several afternoons around a similar time window.",
+          "The GALLERY_RING and OBSERVATION_DECK are public and explored.",
+          "The SERVICE_TUNNEL is rumored and service-only.",
+          "The tall rotating exterior shade passes part of the gallery during the afternoon."
+        ],
+        "must_include": [
+          "Arda's analytical, patient method and concise observation table.",
+          "The public boundary and the visible, shielded sensor housing as legitimate observation points.",
+          "A clear initial question rather than a premature answer."
+        ],
+        "must_not_do": [
+          "Do not reveal service-tunnel contents or internal controller logic.",
+          "Do not frame the recurring dimming as dangerous or suspicious sabotage.",
+          "Do not make Arda certain that the shade is the cause."
+        ],
+        "handoff": "Arda plans repeated observations at the same afternoon window, tracking shade position, ambient light, visitor movement, and the visible sensor housing."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 24,
+        "purpose": "Collect the first set of controlled public observations and establish more than one plausible explanation.",
+        "beats": [
+          "Arda observes one dimming episode from the gallery and records the approximate time, the shade's position, the change in visible ambient light, and whether visitors are nearby.",
+          "On another afternoon, Arda watches the sensor housing from the OBSERVATION_DECK and records the surrounding light before, during, and after the dimming without touching or opening anything.",
+          "Arda lists two plausible explanations: a visitor briefly shading the public sensor, or the rotating exterior shade changing the light reaching the gallery and sensor."
+        ],
+        "prior_evidence": [
+          "Arda has already recorded several recurring dimming episodes.",
+          "The public sensor housing is visible behind clear shielding from OBSERVATION_DECK.",
+          "Visitor shading and ambient light are conditions Arda is authorized to observe.",
+          "The exterior shade passes part of the gallery during the same general afternoon period."
+        ],
+        "must_include": [
+          "At least two distinct observations before any final explanation.",
+          "A fair presentation of both the visitor-shadow explanation and the exterior-shade explanation.",
+          "The fact that observing the housing does not reveal its internal operation."
+        ],
+        "must_not_do": [
+          "Do not treat a visible change at the housing as proof of its wiring or controller response.",
+          "Do not have an adult interpret the measurements for Arda.",
+          "Do not enter the maintenance window or any service-only area."
+        ],
+        "handoff": "The first entries suggest that dimming may track the broader change in light rather than an individual visitor, but Arda needs a further comparison to weaken the competing explanation."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "relative_weight": 22,
+        "purpose": "Test the competing explanations through a third observation and expose the limits of correlation.",
+        "beats": [
+          "Arda returns during the predicted window, deliberately choosing a period when the public deck and nearby gallery space are empty enough to observe whether a visitor could be blocking the sensor.",
+          "The display dims while no person is positioned to cast a local shadow on the housing, and the ambient light changes as the rotating shade aligns with the gallery.",
+          "At another nearby time, visitors pass through without producing the same dimming, weakening the visitor-shadow explanation while leaving open the possibility of an unseen system factor."
+        ],
+        "prior_evidence": [
+          "Earlier observations recorded dimming near the recurring afternoon window.",
+          "The visitor-shadow explanation was proposed because the sensor housing is publicly visible and visitors can move near the gallery.",
+          "The exterior shade's position and ambient light were recorded during earlier dimming episodes.",
+          "Arda knows that simultaneous events do not automatically prove causation."
+        ],
+        "must_include": [
+          "A third observation before the final explanation.",
+          "Evidence that weakens at least one plausible explanation rather than merely asserting that it is wrong.",
+          "Arda's recognition that repeated correlation still does not expose hidden controller behavior."
+        ],
+        "must_not_do": [
+          "Do not claim that an empty deck proves no internal cause exists.",
+          "Do not invent a maintenance log, controller setting, or service-system explanation.",
+          "Do not escalate the unexplained dimming into a threat or emergency."
+        ],
+        "handoff": "Arda now has a stronger pattern linking the dimming with the exterior shade and changing ambient light, but records that the mechanism connecting those conditions to the display remains partly hidden."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 22,
+        "purpose": "State the best-supported explanation by synthesizing the accumulated public evidence without overstating certainty.",
+        "beats": [
+          "Arda aligns the observation-table entries by approximate time and compares shade position, ambient light, visitor presence, and visible sensor conditions across the episodes.",
+          "Arda concludes that the rotating exterior shade is the best-supported explanation: its passage changes the light reaching the gallery and likely affects what the public sensor detects, coinciding with the brief display dimming.",
+          "Arda explicitly marks the conclusion as provisional because the internal controller behavior and the exact causal pathway cannot be observed from public areas."
+        ],
+        "prior_evidence": [
+          "At least three observations show the display dimming near the shade's passage and a broader ambient-light change.",
+          "One dimming episode occurred without a nearby visitor positioned to shade the sensor.",
+          "Visitors were present at another time without producing the same dimming.",
+          "The public sensor housing is visible, but its internal configuration is unknown.",
+          "The canon and opportunity require hidden system internals to remain unknown."
+        ],
+        "must_include": [
+          "The exterior shade explanation as best-supported, not proven.",
+          "The visitor-shadow explanation as weakened by the empty-deck observation and the non-dimming visitor observation.",
+          "A clear distinction between observed correlation, a plausible mechanism, and certainty."
+        ],
+        "must_not_do": [
+          "Do not reveal or invent internal service-controller logic.",
+          "Do not call the explanation confirmed, certain, or complete.",
+          "Do not let another character deliver the synthesis."
+        ],
+        "handoff": "Arda has an answer strong enough to report as a working explanation and a clearly defined uncertainty that must remain in the record."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 14,
+        "purpose": "Resolve the investigation by showing how Arda records, communicates, and applies the provisional conclusion while preserving the knowledge boundary.",
+        "beats": [
+          "Arda finishes a concise public-observation report separating observations, rejected or weakened alternatives, the best-supported explanation, and unresolved questions.",
+          "Arda labels the shade explanation provisional and notes that only a future authorized inspection could clarify the hidden controller response, without seeking access to the service-only route.",
+          "The next afternoon, Arda watches the display and the shade with calmer attention: the mystery is not erased, but the evidence has turned a repeated event into a disciplined, useful explanation."
+        ],
+        "prior_evidence": [
+          "The observation table contains at least three episodes with timing, shade position, ambient light, visitor presence, and sensor-housing observations.",
+          "The visitor-shadow explanation was weakened by observations made without a nearby blocker.",
+          "The exterior-shade explanation best matches the accumulated public evidence.",
+          "The exact internal controller behavior remains unobserved and unknown."
+        ],
+        "must_include": [
+          "A satisfying but appropriately limited resolution.",
+          "Arda's willingness to preserve uncertainty rather than force certainty.",
+          "The continuing boundary around SERVICE_TUNNEL and hidden station systems."
+        ],
+        "must_not_do": [
+          "Do not add a new cause after the payoff.",
+          "Do not grant Arda access to service areas or hidden knowledge.",
+          "Do not imply that the unresolved mechanism makes the investigation a failure."
+        ],
+        "handoff": "The story ends with Arda's provisional explanation preserved as a strong scientific conclusion: useful, evidence-based, and still open to revision."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Quiet Sensor",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "At 15:17, the algae-light display dimmed.\n\nArda noticed because the change was small enough to be missed by anyone who was not watching. The green-blue glow inside the public gallery softened, held there for a few seconds, and then returned to its usual brightness. The algae did not go dark. Nothing beeped. No warning appeared on the gallery panels. Still, it was the fourth afternoon in a row that Arda had seen nearly the same thing.\n\nHe stood beneath the curved ceiling of the GALLERY_RING and opened the notes file on his tablet. He preferred short tables to long guesses.\n\n| Date | Approx. time | Dimmed? | Visible conditions |\n|---|---|---|---|\n| Monday | 15:16 | yes | shade crossing gallery |\n| Tuesday | 15:19 | yes | bright afternoon |\n| Wednesday | 15:15 | yes | visitors nearby |\n| Thursday | 15:17 | yes | shade near outer windows |\n\nThe times were not identical. That mattered. A pattern did not have to be exact to be worth examining, but it also did not become exact merely because he wanted it to.\n\nBeyond the gallery’s outer windows, the tall exterior shade rotated along the habitat’s curved shell. Its broad vanes moved slowly, passing over sections of the gallery and changing the light that reached the windows. As one vane aligned with the algae exhibit, the floor near the display lost a thin stripe of brightness.\n\nArda looked toward the marked boundary leading to the OBSERVATION_DECK. From there, the public sensor housing could be seen behind clear shielding. He was allowed to observe it, not touch it. Nearby, a MAINTENANCE_WINDOW showed a dark service opening. It was visible, but not enterable. The rumored SERVICE_TUNNEL lay beyond service-only routes, outside everything Arda could investigate and outside what he knew.\n\nThat boundary did not frustrate him. It clarified the question.\n\nHe added a line beneath the table: What visible condition changes when the display dims?\n\nPossible answers already waited in his mind. Perhaps a visitor briefly shaded the public sensor. Perhaps the rotating exterior shade changed the ambient light reaching the gallery and whatever the sensor detected. There could be another explanation hidden in the system, but he had no right to invent one as a fact.\n\nArda saved the file. Tomorrow, he would return at the same afternoon window and track four things: the shade’s position, the surrounding light, visitor movement, and the visible sensor housing. He was not going to discover what happened inside the station by pretending the walls were transparent. He was going to compare what could actually be observed."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "The next afternoon, Arda arrived at 15:08 and chose a place beside the gallery’s inner rail. He drew four columns in his table and checked the time against the wall clock, then against his tablet. The two differed by less than a minute, which was close enough for a public observation.\n\nAt 15:12, the gallery was bright. Three visitors moved between the algae cylinders, pausing to read the small descriptions. The exterior shade was still turning toward the gallery, one of its long vanes approaching the window line. Arda marked the light as steady and the sensor housing as visible through the deck’s clear shielding.\n\nAt 15:16, the vane reached the outer edge of the exhibit. A soft band of shadow crossed the floor and climbed the lower part of the glass. The algae display dimmed four seconds later. Arda wrote quickly without looking away.\n\n15:16:30—display dim. Shade aligned with west-facing gallery windows. Ambient light visibly lower. Two visitors near the exhibit, neither directly beside the sensor housing.\n\nAt 15:17, the display brightened again. The shade continued its rotation, and the narrow shadow moved on.\n\nArda did not write, Shade caused dimming. He wrote, Dimming coincided with shade position and visible light change. The distinction felt important. He had learned before that events occurring together did not automatically prove causation.\n\nOn the following afternoon, he began from the OBSERVATION_DECK. The public sensor housing sat behind clear shielding in a marked alcove. Its casing reflected the gallery lamps, making the inside difficult to see. Arda could observe its position and the light around it, but not its wiring, settings, or response mechanism. He did not press his fingers to the shield. Instead, he used the deck’s floor markings to keep his observations consistent.\n\nAt 15:10, the light around the housing was bright and even. At 15:14, the rotating shade began to cover the nearby window. At 15:16, the light softened across the shielding, not as a sharp patch made by a person but as a broad change over the whole alcove. The algae display, visible through the gallery opening, dimmed briefly. At 15:18, the shade moved past and the light returned. The display brightened soon after.\n\nA student hurried across the deck during the dimming, but she was several steps from the housing and never stood between it and the windows. Arda recorded her presence anyway.\n\nHe now had two plausible explanations. The first was visitor shading: someone might block the public sensor for a moment, causing the display to respond. The second was the exterior shade: its movement might alter the ambient light reaching the gallery and sensor, with the display responding to that change.\n\nThe second explanation fit more of what he had seen, but fit was not proof. The housing’s clear shield showed him light falling on a casing. It did not show him what happened inside. Arda underlined that sentence before closing his tablet: Visible change at the housing does not reveal internal operation."
+      },
+      {
+        "index": 3,
+        "role": "COMPLICATION",
+        "prose": "For the third observation, Arda chose the quietest afternoon he could find without asking anyone to leave. At 15:11, the OBSERVATION_DECK was empty. Only the gallery’s low circulation hum and the faint movement of air disturbed the silence. From his place behind the marked line, he could see both the sensor housing and the algae display.\n\nHe checked the windows. The exterior shade was approaching the same alignment it had reached on the earlier afternoons.\n\nAt 15:13, no one stood near the housing. At 15:15, still no one. Arda waited, patient enough to let the predicted time pass without forcing anything to happen. His pencil rested above the table, ready but still.\n\nAt 15:16, the shade’s vane slid across the gallery windows. The broad illumination around the clear shield weakened. The algae display dimmed.\n\nArda looked first at the deck, then at the housing, then at the display. No person was positioned to cast a local shadow. The change covered the surrounding light rather than appearing as a human-shaped interruption. He wrote:\n\nThird episode—15:16. Deck empty. No nearby blocker. Shade aligned with gallery. Ambient light decreased across housing and floor. Display dimmed briefly.\n\nHe waited another ten minutes. At 15:28, two visitors entered the deck. One leaned over the rail near the housing, and the other stood almost in line with it. Arda watched carefully. They moved, talked, and passed through the same general area, but the display stayed bright. The shade had already moved beyond the windows.\n\nThis did not make the visitor explanation impossible. A visitor could have caused a different kind of change at some other time, or the sensor might respond only under conditions Arda could not see. But the empty-deck dimming weakened the idea that a person nearby was necessary. The visitors who arrived later weakened it further: people had been present without producing the same event.\n\nArda added two sentences to his notes.\n\nA local visitor shadow does not match all episodes. The shade and broad ambient-light change match the timing more consistently.\n\nThen he paused. It was tempting to cross out the first explanation entirely, but science was not a contest in which every losing idea had to be destroyed. Visitor shading was less supported, not logically impossible. And the shade’s alignment still did not reveal the complete path from outside light to display behavior.\n\nThe sensor housing remained a sealed public object. Its clear protection allowed observation of surrounding light, not of its internal configuration. The service window remained visible from the deck and firmly beyond the marked public boundary. Arda did not approach it. He had gathered evidence without needing to cross a line.\n\nHe looked at the three entries together. Similar time. Shade passing. Ambient light changing. Sometimes visitors present, sometimes absent. The pattern was stronger now, but correlation still stopped at the edge of what he could observe."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "That evening, Arda aligned the entries by approximate time instead of by date. He drew a narrow vertical line at 15:16 and placed each observation around it.\n\nMonday: shade crossing, dimming.\nTuesday: bright afternoon, shade near the windows, dimming.\nWednesday: visitors nearby, but no recorded position between the light and housing.\nThursday: shade aligned, broad ambient light reduced, dimming.\nFriday: empty deck, shade aligned, dimming; later visitors present, no dimming.\n\nThe table did not behave like a solved equation. Some times were 15:15, some 15:19. The display’s dimming lasted only a few seconds, and Arda could not measure its exact brightness with the equipment available to him. Still, the repeated match between the shade’s passage and the wider change in visible light was difficult to ignore.\n\nHe wrote a new section beneath the observations.\n\nBest-supported explanation: The rotating exterior shade changes the light reaching the gallery. That change likely affects what the public sensor detects, coinciding with the display’s brief dimming.\n\nArda read the sentence twice. The word likely did useful work. It connected the observations to a plausible mechanism without pretending he had watched the connection happen inside the system.\n\nHe considered the visitor-shadow explanation next. It had seemed reasonable at the beginning because the housing was visible from a public area and people moved near it. But one dimming episode occurred with the deck empty, while visitors later passed near the housing without a matching dimming. Their presence did not explain the full pattern. He marked the explanation weakened by evidence.\n\nThen he added a final distinction:\n\nObserved correlation: shade passage, lower ambient light, and display dimming often occur together.\n\nPlausible mechanism: changed light reaches the public sensor, which may contribute to the display response.\n\nNot observed: the sensor’s internal configuration, the exact controller response, or any condition beyond the public boundary.\n\nArda leaned back. He could have written confirmed. The word would have made the report sound stronger, but it would have made the reasoning weaker. Confirmation required access or measurements he did not have. The maintenance window and rumored service-only route could not supply knowledge merely because he wondered about them. He had no service records, no controller settings, and no equipment state to report.\n\nThe shade explanation was not certainty. It was a working explanation supported by repeated public evidence.\n\nThat was enough to guide what he would watch next. It was also enough to revise if a later observation contradicted it. Arda closed the table only after labeling the conclusion provisional."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "Arda turned the table into a concise public-observation report. He separated it into four parts: observations, weakened alternative, best-supported explanation, and unresolved questions.\n\nUnder unresolved questions, he wrote: What exact internal response follows the change in detected light? The answer cannot be determined from the gallery or observation deck. An authorized future inspection might clarify it, but Arda did not request access to the service-only route or pretend that the rumored SERVICE_TUNNEL was part of his evidence.\n\nHe titled the final line: Provisional conclusion.\n\nThe rotating exterior shade is the best-supported explanation for the recurring brief dimming because its passage repeatedly coincides with a broader decrease in visible ambient light. Visitor shading is weakened by the empty-deck observation and by visitors being present without the display dimming. The internal pathway remains unknown.\n\nThe next afternoon, Arda returned to the GALLERY_RING. At nearly the familiar time, the shade moved across the windows. The gallery light softened, and the algae display dimmed briefly before brightening again.\n\nHe watched with calmer attention. The mystery had not vanished. He still could not see through the sensor housing, and he still did not know the behavior of any hidden controller. But the repeated event was no longer just a recurring annoyance or an invitation to guess. It had become a useful explanation built from public evidence, carefully limited by what that evidence could support.\n\nArda added the date, saved the report, and left the conclusion open to revision.\n\nA strong explanation did not need to pretend to be certain."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "At 15:17, the algae-light display dimmed.\n\nArda noticed because the change was small enough to be missed by anyone who was not watching. The green-blue glow inside the public gallery softened, held there for a few seconds, and then returned to its usual brightness. The algae did not go dark. Nothing beeped. No warning appeared on the gallery panels. Still, it was the fourth afternoon in a row that Arda had seen nearly the same thing.\n\nHe stood beneath the curved ceiling of the GALLERY_RING and opened the notes file on his tablet. He preferred short tables to long guesses.\n\n| Date | Approx. time | Dimmed? | Visible conditions |\n|---|---|---|---|\n| Monday | 15:16 | yes | shade crossing gallery |\n| Tuesday | 15:19 | yes | bright afternoon |\n| Wednesday | 15:15 | yes | visitors nearby |\n| Thursday | 15:17 | yes | shade near outer windows |\n\nThe times were not identical. That mattered. A pattern did not have to be exact to be worth examining, but it also did not become exact merely because he wanted it to.\n\nBeyond the gallery’s outer windows, the tall exterior shade rotated along the habitat’s curved shell. Its broad vanes moved slowly, passing over sections of the gallery and changing the light that reached the windows. As one vane aligned with the algae exhibit, the floor near the display lost a thin stripe of brightness.\n\nArda looked toward the marked boundary leading to the OBSERVATION_DECK. From there, the public sensor housing could be seen behind clear shielding. He was allowed to observe it, not touch it. Nearby, a MAINTENANCE_WINDOW showed a dark service opening. It was visible, but not enterable. The rumored SERVICE_TUNNEL lay beyond service-only routes, outside everything Arda could investigate and outside what he knew.\n\nThat boundary did not frustrate him. It clarified the question.\n\nHe added a line beneath the table: What visible condition changes when the display dims?\n\nPossible answers already waited in his mind. Perhaps a visitor briefly shaded the public sensor. Perhaps the rotating exterior shade changed the ambient light reaching the gallery and whatever the sensor detected. There could be another explanation hidden in the system, but he had no right to invent one as a fact.\n\nArda saved the file. Tomorrow, he would return at the same afternoon window and track four things: the shade’s position, the surrounding light, visitor movement, and the visible sensor housing. He was not going to discover what happened inside the station by pretending the walls were transparent. He was going to compare what could actually be observed.\n\nThe next afternoon, Arda arrived at 15:08 and chose a place beside the gallery’s inner rail. He drew four columns in his table and checked the time against the wall clock, then against his tablet. The two differed by less than a minute, which was close enough for a public observation.\n\nAt 15:12, the gallery was bright. Three visitors moved between the algae cylinders, pausing to read the small descriptions. The exterior shade was still turning toward the gallery, one of its long vanes approaching the window line. Arda marked the light as steady and the sensor housing as visible through the deck’s clear shielding.\n\nAt 15:16, the vane reached the outer edge of the exhibit. A soft band of shadow crossed the floor and climbed the lower part of the glass. The algae display dimmed four seconds later. Arda wrote quickly without looking away.\n\n15:16:30—display dim. Shade aligned with west-facing gallery windows. Ambient light visibly lower. Two visitors near the exhibit, neither directly beside the sensor housing.\n\nAt 15:17, the display brightened again. The shade continued its rotation, and the narrow shadow moved on.\n\nArda did not write, Shade caused dimming. He wrote, Dimming coincided with shade position and visible light change. The distinction felt important. He had learned before that events occurring together did not automatically prove causation.\n\nOn the following afternoon, he began from the OBSERVATION_DECK. The public sensor housing sat behind clear shielding in a marked alcove. Its casing reflected the gallery lamps, making the inside difficult to see. Arda could observe its position and the light around it, but not its wiring, settings, or response mechanism. He did not press his fingers to the shield. Instead, he used the deck’s floor markings to keep his observations consistent.\n\nAt 15:10, the light around the housing was bright and even. At 15:14, the rotating shade began to cover the nearby window. At 15:16, the light softened across the shielding, not as a sharp patch made by a person but as a broad change over the whole alcove. The algae display, visible through the gallery opening, dimmed briefly. At 15:18, the shade moved past and the light returned. The display brightened soon after.\n\nA student hurried across the deck during the dimming, but she was several steps from the housing and never stood between it and the windows. Arda recorded her presence anyway.\n\nHe now had two plausible explanations. The first was visitor shading: someone might block the public sensor for a moment, causing the display to respond. The second was the exterior shade: its movement might alter the ambient light reaching the gallery and sensor, with the display responding to that change.\n\nThe second explanation fit more of what he had seen, but fit was not proof. The housing’s clear shield showed him light falling on a casing. It did not show him what happened inside. Arda underlined that sentence before closing his tablet: Visible change at the housing does not reveal internal operation.\n\nFor the third observation, Arda chose the quietest afternoon he could find without asking anyone to leave. At 15:11, the OBSERVATION_DECK was empty. Only the gallery’s low circulation hum and the faint movement of air disturbed the silence. From his place behind the marked line, he could see both the sensor housing and the algae display.\n\nHe checked the windows. The exterior shade was approaching the same alignment it had reached on the earlier afternoons.\n\nAt 15:13, no one stood near the housing. At 15:15, still no one. Arda waited, patient enough to let the predicted time pass without forcing anything to happen. His pencil rested above the table, ready but still.\n\nAt 15:16, the shade’s vane slid across the gallery windows. The broad illumination around the clear shield weakened. The algae display dimmed.\n\nArda looked first at the deck, then at the housing, then at the display. No person was positioned to cast a local shadow. The change covered the surrounding light rather than appearing as a human-shaped interruption. He wrote:\n\nThird episode—15:16. Deck empty. No nearby blocker. Shade aligned with gallery. Ambient light decreased across housing and floor. Display dimmed briefly.\n\nHe waited another ten minutes. At 15:28, two visitors entered the deck. One leaned over the rail near the housing, and the other stood almost in line with it. Arda watched carefully. They moved, talked, and passed through the same general area, but the display stayed bright. The shade had already moved beyond the windows.\n\nThis did not make the visitor explanation impossible. A visitor could have caused a different kind of change at some other time, or the sensor might respond only under conditions Arda could not see. But the empty-deck dimming weakened the idea that a person nearby was necessary. The visitors who arrived later weakened it further: people had been present without producing the same event.\n\nArda added two sentences to his notes.\n\nA local visitor shadow does not match all episodes. The shade and broad ambient-light change match the timing more consistently.\n\nThen he paused. It was tempting to cross out the first explanation entirely, but science was not a contest in which every losing idea had to be destroyed. Visitor shading was less supported, not logically impossible. And the shade’s alignment still did not reveal the complete path from outside light to display behavior.\n\nThe sensor housing remained a sealed public object. Its clear protection allowed observation of surrounding light, not of its internal configuration. The service window remained visible from the deck and firmly beyond the marked public boundary. Arda did not approach it. He had gathered evidence without needing to cross a line.\n\nHe looked at the three entries together. Similar time. Shade passing. Ambient light changing. Sometimes visitors present, sometimes absent. The pattern was stronger now, but correlation still stopped at the edge of what he could observe.\n\nThat evening, Arda aligned the entries by approximate time instead of by date. He drew a narrow vertical line at 15:16 and placed each observation around it.\n\nMonday: shade crossing, dimming.\nTuesday: bright afternoon, shade near the windows, dimming.\nWednesday: visitors nearby, but no recorded position between the light and housing.\nThursday: shade aligned, broad ambient light reduced, dimming.\nFriday: empty deck, shade aligned, dimming; later visitors present, no dimming.\n\nThe table did not behave like a solved equation. Some times were 15:15, some 15:19. The display’s dimming lasted only a few seconds, and Arda could not measure its exact brightness with the equipment available to him. Still, the repeated match between the shade’s passage and the wider change in visible light was difficult to ignore.\n\nHe wrote a new section beneath the observations.\n\nBest-supported explanation: The rotating exterior shade changes the light reaching the gallery. That change likely affects what the public sensor detects, coinciding with the display’s brief dimming.\n\nArda read the sentence twice. The word likely did useful work. It connected the observations to a plausible mechanism without pretending he had watched the connection happen inside the system.\n\nHe considered the visitor-shadow explanation next. It had seemed reasonable at the beginning because the housing was visible from a public area and people moved near it. But one dimming episode occurred with the deck empty, while visitors later passed near the housing without a matching dimming. Their presence did not explain the full pattern. He marked the explanation weakened by evidence.\n\nThen he added a final distinction:\n\nObserved correlation: shade passage, lower ambient light, and display dimming often occur together.\n\nPlausible mechanism: changed light reaches the public sensor, which may contribute to the display response.\n\nNot observed: the sensor’s internal configuration, the exact controller response, or any condition beyond the public boundary.\n\nArda leaned back. He could have written confirmed. The word would have made the report sound stronger, but it would have made the reasoning weaker. Confirmation required access or measurements he did not have. The maintenance window and rumored service-only route could not supply knowledge merely because he wondered about them. He had no service records, no controller settings, and no equipment state to report.\n\nThe shade explanation was not certainty. It was a working explanation supported by repeated public evidence.\n\nThat was enough to guide what he would watch next. It was also enough to revise if a later observation contradicted it. Arda closed the table only after labeling the conclusion provisional.\n\nArda turned the table into a concise public-observation report. He separated it into four parts: observations, weakened alternative, best-supported explanation, and unresolved questions.\n\nUnder unresolved questions, he wrote: What exact internal response follows the change in detected light? The answer cannot be determined from the gallery or observation deck. An authorized future inspection might clarify it, but Arda did not request access to the service-only route or pretend that the rumored SERVICE_TUNNEL was part of his evidence.\n\nHe titled the final line: Provisional conclusion.\n\nThe rotating exterior shade is the best-supported explanation for the recurring brief dimming because its passage repeatedly coincides with a broader decrease in visible ambient light. Visitor shading is weakened by the empty-deck observation and by visitors being present without the display dimming. The internal pathway remains unknown.\n\nThe next afternoon, Arda returned to the GALLERY_RING. At nearly the familiar time, the shade moved across the windows. The gallery light softened, and the algae display dimmed briefly before brightening again.\n\nHe watched with calmer attention. The mystery had not vanished. He still could not see through the sensor housing, and he still did not know the behavior of any hidden controller. But the repeated event was no longer just a recurring annoyance or an invitation to guess. It had become a useful explanation built from public evidence, carefully limited by what that evidence could support.\n\nArda added the date, saved the report, and left the conclusion open to revision.\n\nA strong explanation did not need to pretend to be certain.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 2083,
+    "target_words": 2200,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 396
+      },
+      {
+        "scene": 2,
+        "target_words": 528
+      },
+      {
+        "scene": 3,
+        "target_words": 484
+      },
+      {
+        "scene": 4,
+        "target_words": 484
+      },
+      {
+        "scene": 5,
+        "target_words": 308
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.95,
+      "no_contradictions": 0.83,
+      "no_redundant_events": 0.92,
+      "payoff_resolution": 0.95,
+      "decomposition_fitness": 0.85,
+      "context_authority": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.83,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 7604,
+      "output_tokens": 208,
+      "cost": 0.000319368
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. This is exceptional production-quality work that fully satisfies the StoryContract, SceneGraph, and all constraints. The story demonstrates mastery of the brief's core theme: a strong scientific explanation can remain provisional. Arda's analytical method is authentic and age-appropriate, with genuine scientific reasoning (correlation vs. causation, weakening rather than eliminating alternatives, preserving uncertainty). All five scenes execute their roles precisely: setup establishes the boundary and question; investigation collects two plausible explanations; complication weakens the visitor-shadow explanation through the empty-deck observation; payoff synthesizes the evidence into a best-supported but explicitly provisional conclusion; resolution shows Arda applying the explanation while preserving the knowledge boundary. The story makes three distinct observations before the final explanation (Friday empty-deck, Friday later visitors, plus the earlier Monday-Thursday pattern), considers two plausible explanations fairly, and weakens one through evidence rather than assertion. The exterior-shade explanation is presented as best-supported, not certain. No adult solves the investigation. No danger, sabotage, or emergency occurs. SERVICE_TUNNEL remains rumored and unexplored. The prose is precise, the pacing is controlled, and Arda's voice is consistently patient and methodical. The observation table is used effectively as a character tool. The ending is satisfying precisely because it resists false certainty: Arda has a working explanation and a clearly defined boundary around what remains unknown. This is a model execution of a sophisticated brief for a 15-year-old independent reader.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "prodlike-arda-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 27,
+        "base_fingerprint": "char-arda-r27-fp",
+        "value": "The rotating exterior shade is the best-supported explanation for the recurring algae-display dimming because its passage repeatedly coincides with a broader decrease in visible ambient light; the exact internal sensor and controller response remains unknown.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "Arda completes repeated public observations, weakens the visitor-shadow explanation, and records a provisional conclusion without claiming hidden system knowledge."
+      },
+      {
+        "mutation_type": "WORLD_HYPOTHESIS_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "gallery.dimming_hypotheses",
+        "epistemic_class": "BEST_SUPPORTED_HYPOTHESIS",
+        "base_revision": 52,
+        "base_fingerprint": "world-orbital-lale-r52-fp",
+        "value": "The rotating exterior shade changes the light reaching the gallery and likely affects what the public sensor detects, coinciding with the display's brief dimming; the exact internal causal pathway is unobserved.",
+        "evidence_scenes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "reason": "The shade and broad ambient-light change track multiple dimming episodes, while an empty-deck episode and a later non-dimming visitor episode weaken visitor shading as the explanation."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 13,
+        "base_fingerprint": "saga-arda-r13-fp",
+        "value": "Recurring algae-display dimming investigation resolved with a provisional, evidence-based explanation.",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Arda produces and records a useful best-supported explanation, while explicitly preserving uncertainty about hidden controller behavior."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 12,
+        "base_fingerprint": "opp-orbital-sensor-r12-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "The opportunity's success condition is met: Arda explains the recurring dimming from public evidence while preserving uncertainty about hidden controller behavior."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 7202,
+      "output_tokens": 1161,
+      "total_tokens": 8363
+    },
+    "cost": {
+      "usd": 0.00319355,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.0038356,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.00454625,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.010051,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.00319355,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.0216264
+  },
+  "elapsed_seconds": 79.04
+}

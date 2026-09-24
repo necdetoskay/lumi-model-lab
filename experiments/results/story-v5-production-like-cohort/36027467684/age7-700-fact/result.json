@@ -1,0 +1,564 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-whole-draft/age7-700-production-context.yaml",
+  "context_pack_source": "experiments/context_packs/v5/ela-riverside-sprinkler.json",
+  "context_pack": {
+    "schema_version": "story-context-pack.v2-prototype",
+    "context_id": "ctx-ela-riverside-sprinkler-001",
+    "profile": {
+      "profile_id": "profile-ela",
+      "age": 7,
+      "reading_mode": "INDEPENDENT_READER"
+    },
+    "character": {
+      "entity_ref": "CHARACTER:PROTAGONIST",
+      "character_id": "char-ela",
+      "revision": 11,
+      "fingerprint": "char-ela-r11-fp",
+      "name": "Ela",
+      "age": 7,
+      "traits": [
+        "careful",
+        "curious",
+        "likes comparing things side by side"
+      ],
+      "current_goal": "Find out why one public herb bed becomes much wetter than the others after watering.",
+      "established_knowledge": [
+        "HOME_BED and HERB_WALK are explored.",
+        "LOCKED_TOOL_SHED is only rumored and is not part of Ela's known route.",
+        "The public sprinkler heads can be seen from HERB_WALK."
+      ],
+      "prohibited_knowledge": [
+        "Ela does not know what is stored inside LOCKED_TOOL_SHED.",
+        "Ela does not know any private maintenance schedule."
+      ]
+    },
+    "world": {
+      "entity_ref": "WORLD:CURRENT",
+      "world_id": "world-riverside-garden",
+      "revision": 18,
+      "fingerprint": "world-riverside-garden-r18-fp",
+      "location": "Riverside Garden Habitat",
+      "era": "contemporary",
+      "local_areas": [
+        {
+          "id": "HOME_BED",
+          "status": "EXPLORED",
+          "summary": "Small family garden bed near the entrance."
+        },
+        {
+          "id": "HERB_WALK",
+          "status": "EXPLORED",
+          "summary": "Public herb beds with visible sprinkler heads and marked walking path."
+        },
+        {
+          "id": "POND_EDGE",
+          "status": "DISCOVERED",
+          "summary": "Public pond edge visible from the main path."
+        },
+        {
+          "id": "LOCKED_TOOL_SHED",
+          "status": "RUMORED",
+          "summary": "A locked maintenance shed outside Ela's current knowledge boundary; do not explore it."
+        }
+      ],
+      "current_facts": [
+        "One mint bed is noticeably wetter than nearby herb beds after the automatic watering cycle.",
+        "The sprinkler heads are visible from the public path.",
+        "Visitors may look closely but must stay on the marked path.",
+        "There is no safety emergency."
+      ],
+      "hidden_facts_not_available_to_story": [
+        "Contents of LOCKED_TOOL_SHED are unknown.",
+        "Private maintenance records are not available to Ela."
+      ]
+    },
+    "opportunity": {
+      "entity_ref": "OPPORTUNITY:CURRENT",
+      "opportunity_id": "opp-riverside-sprinkler-001",
+      "revision": 3,
+      "fingerprint": "opp-riverside-sprinkler-r3-fp",
+      "status": "AVAILABLE",
+      "title": "Find why one herb bed gets extra water",
+      "premise": "Ela can compare visible sprinklers and water patterns from HERB_WALK without entering any unknown maintenance area.",
+      "success_condition": "Reach an evidence-supported explanation using visible observations from known public areas.",
+      "constraints": [
+        "Do not enter LOCKED_TOOL_SHED.",
+        "Do not invent private maintenance information.",
+        "Do not create danger or damage.",
+        "An adult may listen but must not solve the problem."
+      ]
+    },
+    "canon": {
+      "revision": 6,
+      "fingerprint": "canon-r6-fp",
+      "hard_rules": [
+        "No combat.",
+        "No supernatural explanation unless canon explicitly establishes it.",
+        "Character knowledge cannot exceed experienced or explicitly communicated facts.",
+        "RUMORED locations are not EXPLORED.",
+        "Story consequences must be supportable by accepted prose evidence."
+      ]
+    },
+    "saga": {
+      "entity_ref": "SAGA:CURRENT",
+      "saga_id": "saga-ela-observer",
+      "revision": 4,
+      "fingerprint": "saga-ela-r4-fp",
+      "eligible_context": [
+        "Ela is learning to compare observations before deciding what caused a problem."
+      ],
+      "forbidden_reveal": [
+        "Do not reveal any future reason the locked shed matters."
+      ]
+    },
+    "relevant_memories": [
+      {
+        "memory_id": "mem-ela-002",
+        "summary": "Ela once changed her guess about a drooping flower after comparing sun and shade.",
+        "relevance": "Supports revising a simple hypothesis; do not retell the old plot."
+      }
+    ]
+  },
+  "state_authority_source": "experiments/state_authority/age7-700-production-context.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "prodlike-ela-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 11,
+        "expected_fingerprint": "char-ela-r11-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 18,
+        "expected_fingerprint": "world-riverside-garden-r18-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 4,
+        "expected_fingerprint": "saga-ela-r4-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 3,
+        "expected_fingerprint": "opp-riverside-sprinkler-r3-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "CHARACTER_KNOWLEDGE"
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "herb_walk.sprinkler_alignment",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "FACT"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "THREAD_STATE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT",
+        "epistemic_class": "WORKFLOW_STATE"
+      }
+    ]
+  },
+  "state_authority_context_alignment": {
+    "validated": true,
+    "errors": []
+  },
+  "plan": {
+    "story_title": "The Crooked Sprinkler",
+    "scene_count_rationale": "Five scenes provide enough space for Ela to notice the problem, make and reject a harmless wrong guess, compare multiple visible clues, reach the answer herself, and resolve the issue without entering unknown areas or having an adult solve it.",
+    "story_contract": {
+      "protagonist_goal": "Ela wants to find out why one public mint bed becomes much wetter than the neighboring herb beds after watering.",
+      "central_problem": "A visible sprinkler is sending extra water toward the mint bed, but Ela must determine the cause using only observations from the marked public path.",
+      "solution_principle": "Compare the wet patterns and the visible sprinkler spray direction to connect the extra water with a crooked sprinkler head.",
+      "theme_thread": "Small observations, compared carefully, can lead to a clear answer.",
+      "ending_state": "Ela explains the evidence-supported cause to an adult, who listens and can pass the information to garden staff; Ela remains safely on the public path and does not enter the locked shed.",
+      "must_preserve": [
+        "Ela is seven, careful, curious, and comfortable asking simple questions.",
+        "The setting is limited to the known public beds and paths of Riverside Garden Habitat.",
+        "HOME_BED and HERB_WALK are explored; the sprinkler heads are visible from HERB_WALK.",
+        "Ela must use at least two simple observations before the final answer.",
+        "Ela makes and rejects one harmless wrong guess.",
+        "Ela solves the central problem through her own observations.",
+        "The story remains gentle and age-appropriate.",
+        "The explanation must be supported by visible evidence."
+      ],
+      "must_not_happen": [
+        "Ela must not enter, explore, or learn hidden facts about LOCKED_TOOL_SHED.",
+        "No hidden shed contents or private maintenance schedule may be invented.",
+        "No adult may solve the central problem for Ela.",
+        "No danger, damage, combat, supernatural explanation, or unsafe behavior may occur.",
+        "Ela must not leave the marked path or reset her accumulated evidence."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 18,
+        "purpose": "Introduce Ela's careful comparison and establish the unusual wetness as the question she wants to answer.",
+        "beats": [
+          "After the automatic watering cycle, Ela walks along the marked path beside HERB_WALK.",
+          "She notices that the mint bed is shiny with water while the neighboring herb beds are only lightly damp.",
+          "Ela asks herself why one bed gets so much more water and decides to compare what she can see."
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "Ela stays on the public path.",
+          "The mint bed is noticeably wetter than nearby herb beds.",
+          "Her goal is to find the reason, not to fix anything herself."
+        ],
+        "must_not_do": [
+          "Do not send Ela toward or into LOCKED_TOOL_SHED.",
+          "Do not provide an answer before she investigates."
+        ],
+        "handoff": "Ela begins a side-by-side check of the beds and the visible sprinkler heads."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 23,
+        "purpose": "Build the first clear evidence through simple side-by-side observations.",
+        "beats": [
+          "Ela compares the mint bed with the next herb bed and notices a small puddly patch near the mint but no matching patch beside the neighboring bed.",
+          "She watches the remaining drops and sees that the wettest part of the mint bed lies on the side facing one sprinkler.",
+          "Ela asks whether the sprinkler could be sending water farther in that direction."
+        ],
+        "prior_evidence": [
+          "Scene 1: The mint bed is much wetter than nearby herb beds after the same watering cycle.",
+          "Context: Visitors may look closely at public sprinkler heads from HERB_WALK while staying on the marked path."
+        ],
+        "must_include": [
+          "At least two simple observations: the puddly patch and the location of the wettest area.",
+          "Ela compares neighboring beds rather than relying on a quick guess."
+        ],
+        "must_not_do": [
+          "Do not let Ela touch, move, or damage a sprinkler.",
+          "Do not claim knowledge of private watering schedules."
+        ],
+        "handoff": "Ela forms a harmless alternative explanation so she can check whether the bed itself, rather than the sprinkler, is causing the difference."
+      },
+      {
+        "index": 3,
+        "role": "REVERSAL",
+        "relative_weight": 17,
+        "purpose": "Present and reject the required wrong guess while preserving the growing evidence.",
+        "beats": [
+          "Ela guesses that the mint bed might simply have a low spot that holds water.",
+          "From the path, she compares the bed's surface and notices that the extra wetness forms a spray-shaped area rather than collecting only in one low place.",
+          "She watches the next visible burst from the sprinkler and sees water cross toward the mint while the neighboring bed receives less."
+        ],
+        "prior_evidence": [
+          "Scene 2: A puddly patch is concentrated on the mint side facing one sprinkler.",
+          "Scene 2: The neighboring herb bed does not have a matching wet patch."
+        ],
+        "must_include": [
+          "The low-spot idea is harmless and clearly rejected after checking.",
+          "Ela uses a new observation instead of simply changing her mind."
+        ],
+        "must_not_do": [
+          "Do not have an adult correct Ela.",
+          "Do not imply that Ela inspected any private maintenance area."
+        ],
+        "handoff": "The repeated spray direction gives Ela enough evidence to examine the visible sprinkler head more carefully."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "relative_weight": 25,
+        "purpose": "Deliver Ela's evidence-supported discovery of the central cause.",
+        "beats": [
+          "Ela compares the sprinkler serving the mint side with the neighboring visible sprinkler heads from the marked path.",
+          "She notices that one sprinkler head is tilted crookedly, and its spray arcs sideways over the mint bed instead of staying centered.",
+          "Ela connects the crooked angle, the spray-shaped wet patch, and the extra water, then states that the crooked sprinkler is watering the mint bed too much."
+        ],
+        "prior_evidence": [
+          "Scene 2: The mint bed's wettest area is nearest the sprinkler side.",
+          "Scene 3: The extra wetness forms a spray-shaped area.",
+          "Scene 3: Water visibly crosses toward the mint during the cycle."
+        ],
+        "must_include": [
+          "Ela reaches the answer herself.",
+          "The answer is that a visible sprinkler head is crooked and aimed extra water toward the mint bed."
+        ],
+        "must_not_do": [
+          "Do not invent why the sprinkler became crooked.",
+          "Do not reveal hidden maintenance facts or shed contents.",
+          "Do not let an adult announce the discovery first."
+        ],
+        "handoff": "Ela decides to tell a nearby adult exactly what she observed so the problem can be reported safely."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "relative_weight": 17,
+        "purpose": "Resolve the practical consequence and reinforce the theme without taking the discovery away from Ela.",
+        "beats": [
+          "Ela explains the crooked angle and points out the spray path, the puddly patch, and the drier neighboring bed.",
+          "The adult listens, praises her careful comparing, and says the observation can be passed to garden staff; the adult does not provide the solution.",
+          "Ela feels satisfied that small clues answered her question and continues along the public path without entering any unknown area."
+        ],
+        "prior_evidence": [
+          "Scene 4: Ela identified the crooked sprinkler from its visible angle and spray.",
+          "Scenes 2-4: The wet patch, spray direction, and bed-to-bed comparison support the explanation."
+        ],
+        "must_include": [
+          "An adult listens but does not solve the central problem.",
+          "The resolution remains gentle and safe.",
+          "Ela's observation-and-comparison lesson is clear."
+        ],
+        "must_not_do": [
+          "Do not show the sprinkler being repaired unless only a future report is mentioned.",
+          "Do not send Ela to the locked shed or reveal what is inside it.",
+          "Do not introduce a new mystery that replaces the solved problem."
+        ],
+        "handoff": "The story ends with Ela's clear answer and the responsible next step of reporting the visible problem."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Crooked Sprinkler",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "After the automatic watering cycle ended, Ela walked along the marked public path in HERB_WALK. She kept her feet behind the line and looked carefully at the garden beds. The mint bed glittered with water. Its leaves trembled under heavy drops, and the soil looked almost shiny. The nearby herb beds were damp, but only lightly damp. Their leaves held a few bright beads instead of a wet sheen.\n\nEla tilted her head. “Why does the mint get so much more water?” she asked herself. She did not want to fix anything or touch the garden. She only wanted to find the reason. Carefully, she decided to compare the beds side by side and then look at the visible sprinkler heads from the path."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "Ela began with the mint bed and the next herb bed. Near the mint, she noticed a small puddly patch between the plants. Beside the neighboring bed, there was no matching patch. Ela crouched on the path, without reaching over the edge, and watched the last drops slide from the leaves.\n\nThe wettest part of the mint bed was not everywhere. It was on the side facing one sprinkler. The other bed was drier on the side facing its sprinkler. Ela looked from one bed to the other several times.\n\n“Maybe that sprinkler is sending water farther in this direction,” she said. It was only a question, so she kept watching. The sprinkler heads were visible from HERB_WALK, and the path gave her a safe place to compare them. She would not touch, move, or test them herself."
+      },
+      {
+        "index": 3,
+        "role": "REVERSAL",
+        "prose": "Ela thought of another possibility. “Maybe the mint bed just has a low spot,” she guessed. A low place could hold water like a tiny bowl.\n\nShe checked from the path. The soil did not show one little pool at the lowest point. Instead, the extra wetness spread in a curved, spray-shaped area across the mint side. Then the sprinkler made one more visible burst. Water crossed toward the mint in a bright arc, while much less water reached the neighboring bed.\n\nEla watched the drops land. “So it is not only a low spot,” she decided. “The water is being sprayed there.” Her new observation made her first guess less likely."
+      },
+      {
+        "index": 4,
+        "role": "PAYOFF",
+        "prose": "Now Ela studied the visible sprinkler serving the mint side. She compared it with the neighboring sprinkler heads, looking from the marked path. The others stood upright and sent their sprays toward the centers of their beds.\n\nBut this sprinkler head leaned to one side. It was tilted crookedly. When it burst again, its water arced sideways over the mint instead of staying centered. Ela watched the arc, then looked at the wet, shining patch below it. She looked once more at the drier neighboring bed.\n\n“The crooked sprinkler is watering the mint too much,” she said. “Its crooked angle sends extra water over here.”\n\nThe answer fit all the clues: the puddly patch, the spray-shaped wetness, the water crossing toward the mint, and the difference between the two beds. Ela felt pleased. She had not needed to touch anything or visit any place beyond the public path. Her careful comparisons had shown her what was happening."
+      },
+      {
+        "index": 5,
+        "role": "RESOLUTION",
+        "prose": "A nearby adult was walking along the path, so Ela explained what she had seen. She pointed to the crooked angle, the spray path, the puddly patch, and the drier neighboring bed.\n\nThe adult listened closely. “You compared the beds very carefully,” the adult said. “I can pass your observation to the garden staff.”\n\nThe adult did not guess the answer for her. Ela had found it herself, and the evidence supported it. She stayed on the marked path and continued walking through Riverside Garden Habitat, feeling satisfied.\n\nSmall clues, compared carefully, had answered her question."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "After the automatic watering cycle ended, Ela walked along the marked public path in HERB_WALK. She kept her feet behind the line and looked carefully at the garden beds. The mint bed glittered with water. Its leaves trembled under heavy drops, and the soil looked almost shiny. The nearby herb beds were damp, but only lightly damp. Their leaves held a few bright beads instead of a wet sheen.\n\nEla tilted her head. “Why does the mint get so much more water?” she asked herself. She did not want to fix anything or touch the garden. She only wanted to find the reason. Carefully, she decided to compare the beds side by side and then look at the visible sprinkler heads from the path.\n\nEla began with the mint bed and the next herb bed. Near the mint, she noticed a small puddly patch between the plants. Beside the neighboring bed, there was no matching patch. Ela crouched on the path, without reaching over the edge, and watched the last drops slide from the leaves.\n\nThe wettest part of the mint bed was not everywhere. It was on the side facing one sprinkler. The other bed was drier on the side facing its sprinkler. Ela looked from one bed to the other several times.\n\n“Maybe that sprinkler is sending water farther in this direction,” she said. It was only a question, so she kept watching. The sprinkler heads were visible from HERB_WALK, and the path gave her a safe place to compare them. She would not touch, move, or test them herself.\n\nEla thought of another possibility. “Maybe the mint bed just has a low spot,” she guessed. A low place could hold water like a tiny bowl.\n\nShe checked from the path. The soil did not show one little pool at the lowest point. Instead, the extra wetness spread in a curved, spray-shaped area across the mint side. Then the sprinkler made one more visible burst. Water crossed toward the mint in a bright arc, while much less water reached the neighboring bed.\n\nEla watched the drops land. “So it is not only a low spot,” she decided. “The water is being sprayed there.” Her new observation made her first guess less likely.\n\nNow Ela studied the visible sprinkler serving the mint side. She compared it with the neighboring sprinkler heads, looking from the marked path. The others stood upright and sent their sprays toward the centers of their beds.\n\nBut this sprinkler head leaned to one side. It was tilted crookedly. When it burst again, its water arced sideways over the mint instead of staying centered. Ela watched the arc, then looked at the wet, shining patch below it. She looked once more at the drier neighboring bed.\n\n“The crooked sprinkler is watering the mint too much,” she said. “Its crooked angle sends extra water over here.”\n\nThe answer fit all the clues: the puddly patch, the spray-shaped wetness, the water crossing toward the mint, and the difference between the two beds. Ela felt pleased. She had not needed to touch anything or visit any place beyond the public path. Her careful comparisons had shown her what was happening.\n\nA nearby adult was walking along the path, so Ela explained what she had seen. She pointed to the crooked angle, the spray path, the puddly patch, and the drier neighboring bed.\n\nThe adult listened closely. “You compared the beds very carefully,” the adult said. “I can pass your observation to the garden staff.”\n\nThe adult did not guess the answer for her. Ela had found it herself, and the evidence supported it. She stayed on the marked path and continued walking through Riverside Garden Habitat, feeling satisfied.\n\nSmall clues, compared carefully, had answered her question.",
+  "metrics": {
+    "scene_count": 5,
+    "word_count": 627,
+    "target_words": 700,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 126
+      },
+      {
+        "scene": 2,
+        "target_words": 161
+      },
+      {
+        "scene": 3,
+        "target_words": 119
+      },
+      {
+        "scene": 4,
+        "target_words": 175
+      },
+      {
+        "scene": 5,
+        "target_words": 119
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.94,
+      "no_redundant_events": 0.94,
+      "payoff_resolution": 0.96,
+      "decomposition_fitness": 0.88,
+      "context_authority": 0.97
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 5057,
+      "output_tokens": 208,
+      "cost": 0.000212394
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. This is production-ready work. The story executes the StoryContract and SceneGraph with precision. Ela remains a careful, curious seven-year-old throughout, stays on the marked public path, makes two clear observations (puddly patch location and spray-shaped wetness pattern) before forming her hypothesis, explicitly rejects the low-spot guess after checking, discovers the crooked sprinkler through her own comparison, and reports it to an adult who listens without solving the problem. All constraints are honored: LOCKED_TOOL_SHED is never mentioned or approached; no hidden maintenance facts are invented; no adult solves the central problem; the explanation is evidence-supported and visible; the tone is gentle and age-appropriate. The prose is clear, paced well for independent reading at age 7, and reinforces the theme that small observations compared carefully lead to answers. The ending is satisfying and safe. Word count is approximately 700. No canon violations, no knowledge leaks, no boundary crossings. Creativity scores 4 rather than 5 only because the core mystery (crooked sprinkler) is straightforward rather than surprising, but this is appropriate for the age and theme—the creativity lies in the careful observation method, not in plot twist. All other criteria are exceptional.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "prodlike-ela-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "epistemic_class": "CHARACTER_KNOWLEDGE",
+        "base_revision": 11,
+        "base_fingerprint": "char-ela-r11-fp",
+        "value": "A crooked sprinkler head is sending extra water toward the mint bed.",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ela identifies the crooked sprinkler through direct comparison of its angle, spray path, and the wetness of the neighboring beds, then explains the evidence to an adult."
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "herb_walk.sprinkler_alignment",
+        "epistemic_class": "FACT",
+        "base_revision": 18,
+        "base_fingerprint": "world-riverside-garden-r18-fp",
+        "value": "The sprinkler serving the mint side is tilted crookedly and sprays extra water toward the mint bed.",
+        "evidence_scenes": [
+          3,
+          4,
+          5
+        ],
+        "reason": "The spray-shaped wetness, visible water arc, crooked sprinkler head, and bed-to-bed comparison establish the alignment and its effect."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "epistemic_class": "THREAD_STATE",
+        "base_revision": 4,
+        "base_fingerprint": "saga-ela-r4-fp",
+        "value": true,
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ela reaches and communicates the evidence-supported answer to the central question."
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "epistemic_class": "WORKFLOW_STATE",
+        "base_revision": 3,
+        "base_fingerprint": "opp-riverside-sprinkler-r3-fp",
+        "value": "CONSUMED",
+        "evidence_scenes": [
+          4,
+          5
+        ],
+        "reason": "Ela solves the opportunity using visible observations from the public path and responsibly reports the discovered problem to an adult."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 4598,
+      "output_tokens": 821,
+      "total_tokens": 5419
+    },
+    "cost": {
+      "usd": 0.00213455,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.00328825,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.0021088,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.007132,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.00213455,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.0146636
+  },
+  "elapsed_seconds": 47.834
+}
