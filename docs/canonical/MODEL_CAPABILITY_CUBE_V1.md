@@ -343,3 +343,84 @@ Generated reports:
 
 The JSON report is the machine-readable source for detailed diagnostics. The
 Markdown report is a compact human view.
+
+
+## 17. Controlled qualification waves
+
+Capability coverage expands through versioned qualification-wave manifests,
+not ad-hoc manual runs.
+
+A wave manifest freezes:
+
+- generator model;
+- continuity evaluator implementation;
+- semantic judge implementation;
+- target length;
+- representative exact ages;
+- narrative families;
+- shared and family-specific story constraints;
+- maximum parallelism.
+
+The wave compiler materializes deterministic StorySpec files and produces the
+GitHub Actions matrix from the same source manifest. CI must not maintain a
+second hand-written case list.
+
+### First sparse age sweep
+
+Canonical manifest:
+
+`configs/qualification_waves/age-standard-v1.yaml`
+
+It holds target length at 2000 words (STANDARD) and samples all canonical age
+tiers at one representative exact age:
+
+| Tier | Representative age |
+|---|---:|
+| EARLY_CHILD | 4 |
+| CHILD | 7 |
+| MIDDLE_CHILD | 10 |
+| TEEN | 15 |
+| YOUNG_ADULT | 21 |
+| ADULT | 32 |
+| MATURE_ADULT | 50 |
+| SENIOR | 70 |
+
+The first wave crosses those 8 ages with 3 deliberately different narrative
+families:
+
+- `exploration_mystery` — plot causality, clue handling and delayed resolution;
+- `emotional_development` — age-appropriate language, dialogue, affect and social reasoning;
+- `puzzle_problem_solving` — logical progression, clue dependency and hypothesis rejection.
+
+This produces **24 qualification cases**.
+
+STANDARD length is intentionally held constant in this wave to expose age
+effects before adding a second varying length dimension.
+
+### Wave execution rules
+
+- `fail-fast: false`;
+- maximum 4 qualification jobs in parallel;
+- every case writes a unique immutable evidence id using
+  `<workflow_run_id>-<case_id>`;
+- every case pushes its evidence to a distinct append-only
+  `evidence/run-<evidence_id>` branch;
+- failed cases are archived exactly like successful cases;
+- artifact upload is secondary and may fail without losing canonical evidence.
+
+### Expansion policy
+
+The first age wave is diagnostic coverage, not final model ranking.
+
+After it completes:
+
+1. inspect pass rate, semantic-judge criteria, continuity probabilities,
+   repair burden and latency by age/family;
+2. repeat weak or surprising cells before tuning;
+3. only after the age signal is understood, open SHORT/LONG/EXTENDED probes;
+4. avoid changing the global model policy because of a single weak cell;
+5. any cell-specific production-policy overlay requires repeated evidence and
+   regression checks against already-good cells.
+
+This sparse-wave policy prevents the full 8 × 10 × 4 cube from being filled
+blindly when only a small subset of cells may need deeper qualification.
