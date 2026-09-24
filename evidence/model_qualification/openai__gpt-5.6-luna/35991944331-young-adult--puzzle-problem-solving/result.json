@@ -1,0 +1,2312 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v2/young-adult--puzzle-problem-solving.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v2/young-adult--puzzle-problem-solving.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Missing Pattern",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to make a public learning display usable before the evening session without inventing any missing information.",
+        "central_problem": "A route display contains shuffled labels, map cards, objects, and schedules, but one apparently necessary pattern is missing.",
+        "solution_principle": "Test each plausible pattern against concrete evidence, then preserve uncertainty when the evidence identifies an intentional blank.",
+        "theme_thread": "Good solutions come from testing patterns instead of guessing.",
+        "ending_state": "Deniz opens the display with an intentional blank observation card, and the first visitor adds a tested route observation.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prohibited_events": [
+          "No combat or physical danger.",
+          "No unexplained clue, object, character, location, or power.",
+          "No premature resolution before Scene 5.",
+          "No claim that the story is a benchmark or test."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Establish Deniz's practical goal, the disrupted display, and several plausible explanations for its missing pattern.",
+          "entry_state": "Deniz arrives at a public learning space to prepare a route-pattern display before its evening session.",
+          "beats": [
+            "Deniz finds five map cards, six schedule entries, six object trays, and shuffled labels around a display with one empty slot.",
+            "Deniz decides to reconstruct the display from evidence rather than guess, recording every visible arrow, time, label, and object."
+          ],
+          "must_include": [
+            "Deniz is twenty-one and independently responsible for preparing the display.",
+            "The space visibly contains maps, objects, schedules, labels, and ordinary tools.",
+            "The empty slot makes the display difficult to use but does not create danger."
+          ],
+          "must_not_do": [
+            "Do not solve the missing pattern or identify the empty slot's purpose.",
+            "Do not introduce a helper who takes over Deniz's reasoning.",
+            "Do not use vocabulary, pacing, or concepts mismatched to an independent twenty-one-year-old reader."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C5",
+            "C9"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has documented the disrupted materials and must determine their order before the evening session begins.",
+          "open_threads_after": [
+            "Which pattern orders the map cards?",
+            "Why are there six schedules and objects but only five map cards?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Test and reject a reasonable geographic hypothesis, then use schedules to reveal the next physical clue.",
+          "entry_state": "Deniz has documented five map cards, six schedules, six objects, shuffled labels, and one empty display slot.",
+          "beats": [
+            "Deniz first orders the maps from west to east, but printed departure times and room changes contradict that sequence.",
+            "Deniz orders the cards by schedule times; their edge marks form a broken chevron pointing beneath the display table."
+          ],
+          "must_include": [
+            "The west-to-east ordering is a reasonable false hypothesis.",
+            "Concrete schedule times and map arrows visibly reject that hypothesis.",
+            "The tested chronological order produces the chevron clue."
+          ],
+          "must_not_do": [
+            "Do not treat the false hypothesis as correct.",
+            "Do not reveal the final meaning of the empty slot.",
+            "Do not use a clue that depends on unseen information."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the five map cards with visible arrows and the six schedule entries with printed times.",
+            "Scene 1 established that the labels and objects were shuffled around one empty display slot."
+          ],
+          "handoff": "The chronological map order points beneath the table, where Deniz must inspect the indicated location without disturbing the display.",
+          "open_threads_after": [
+            "What does the chevron indicate?",
+            "How can five maps account for six scheduled activities?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Use the chevron to find a grid that links the ordered maps to the shuffled labels and objects.",
+          "entry_state": "Chronological ordering is supported, and the map edges point beneath the display table.",
+          "beats": [
+            "Deniz finds an acetate grid and a short instruction beneath the table, then aligns its marks with the ordered map edges.",
+            "The grid reveals that each label belongs to the object used at that map stop, while one label reads: 'leave observation open.'"
+          ],
+          "must_include": [
+            "The acetate grid is found exactly where the tested chevron points.",
+            "The grid converts the ordered maps into a matching rule for labels and objects.",
+            "The unusual open-observation label becomes evidence, not a complete solution."
+          ],
+          "must_not_do": [
+            "Do not make the hidden materials magical or inexplicably self-explanatory.",
+            "Do not discard the sixth object or schedule.",
+            "Do not fully resolve whether the open observation is an error or an invitation."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 2 established that the chronological map edges form a chevron pointing beneath the table.",
+            "Scene 1 established the shuffled labels, six objects, and one empty display slot."
+          ],
+          "handoff": "The grid supplies reliable pairings and an open-observation label, but Deniz still must determine how the sixth schedule fits.",
+          "open_threads_after": [
+            "Is the open-observation label a printing mistake or an intentional sixth activity?",
+            "What should occupy the empty display slot?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Compare every matched item with the schedule and discover evidence that the blank is intentional.",
+          "entry_state": "Deniz has matched five maps, labels, and objects, while the sixth schedule and open-observation label remain unresolved.",
+          "beats": [
+            "Deniz places the five verified pairs beside their schedule entries and notices the sixth schedule says, 'Add one observed connection.'",
+            "The remaining object is an ordinary pencil, and the blank slot aligns with a note inviting visitors to record a new route observation."
+          ],
+          "must_include": [
+            "The sixth schedule explicitly supplies an activity rather than a missing route name.",
+            "The pencil is matched through the remaining verified pattern, not arbitrary choice.",
+            "Deniz recognizes that filling the blank with a guessed map would contradict the evidence."
+          ],
+          "must_not_do": [
+            "Do not introduce a new route, location, or participant.",
+            "Do not have Deniz declare success before applying the complete arrangement.",
+            "Do not resolve the display through authority instead of observation and reasoning."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C6"
+          ],
+          "prior_evidence": [
+            "Scene 3 established the grid's verified pairings and the label 'leave observation open.'",
+            "Scene 1 established six schedules, six objects, five map cards, and one empty display slot."
+          ],
+          "handoff": "All evidence indicates an intentional participant-created sixth entry; Deniz must apply that interpretation to the finished display.",
+          "open_threads_after": [
+            "Will Deniz preserve the blank or replace it with a plausible guess?",
+            "Can the complete arrangement work for evening visitors?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Apply the accumulated clues, resolve the central problem, and make Deniz choose evidence over a convenient guess.",
+          "entry_state": "The tested order, grid pairings, sixth schedule, pencil, and open-observation label all identify the blank as intentional.",
+          "beats": [
+            "Deniz assembles the five verified map-object-label pairs in chronological order and places the pencil beside the open sixth schedule.",
+            "Instead of drawing a guessed sixth map, Deniz leaves the slot blank and adds a clear instruction for visitors to test and record one connection."
+          ],
+          "must_include": [
+            "The decisive application uses chronological order, edge marks, grid pairings, schedules, and the remaining pencil.",
+            "Deniz explicitly chooses not to invent information.",
+            "The display becomes usable while preserving the distinction between evidence and speculation."
+          ],
+          "must_not_do": [
+            "Do not add a new clue after the arrangement is applied.",
+            "Do not leave the central problem unresolved after Deniz's choice.",
+            "Do not make the choice arbitrary or socially pressured."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C8"
+          ],
+          "prior_evidence": [
+            "Scene 2 established chronological order and the chevron formed by map edges.",
+            "Scene 3 established grid-based pairings and the open-observation label.",
+            "Scene 4 established the sixth schedule's instruction and the pencil's remaining match."
+          ],
+          "handoff": "The display is ready with five tested entries and one intentional blank; the evening session will show whether visitors can use its evidence-based invitation.",
+          "open_threads_after": [
+            "Whether a visitor will add a valid observation to the open sixth entry."
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Show the practical consequence of Deniz's evidence-based choice and close the main thread.",
+          "entry_state": "The completed display is open, with five verified entries and a blank sixth space inviting one tested observation.",
+          "beats": [
+            "A visitor follows the schedules and map arrows, checks a connection against the labels, and writes a supported observation beside the pencil.",
+            "Deniz checks that the observation fits the display's rule, then leaves the new entry for future learners as evidence rather than presenting it as certainty."
+          ],
+          "must_include": [
+            "The visitor's observation depends on the display Deniz reconstructed.",
+            "Deniz verifies the observation through the same pattern-testing principle.",
+            "The blank has become a responsible place for new evidence, not a defect."
+          ],
+          "must_not_do": [
+            "Do not introduce a second puzzle or future-discovery subplot.",
+            "Do not undo Deniz's choice or reopen the central problem.",
+            "Do not end with unexplained consequences."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C3",
+            "C4",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "Scene 5 established the usable display with five tested entries, an intentional blank, and a visitor instruction.",
+            "Scene 4 established that the sixth activity is adding an observed connection.",
+            "Scene 5 established Deniz's decision to preserve uncertainty instead of guessing."
+          ],
+          "handoff": "The display now contains five verified routes and one visitor-tested observation, closing Deniz's preparation task and the missing-pattern problem.",
+          "open_threads_after": []
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.95,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.67,
+        "information_progression": 0.95,
+        "no_unexplained_dependencies": 0.91,
+        "no_early_resolution": 0.76,
+        "ending_coherence": 0.94
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.67,
+        "no_early_resolution": 0.76
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.86,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3705,
+        "output_tokens": 185,
+        "cost": 0.00015561
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 4,
+        "ending_coherence": 5
+      },
+      "average": 4.714,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Must establish all five map cards, six schedules, six objects, and shuffled labels with sufficient concrete detail that Scene 2's false hypothesis (west-to-east) is genuinely plausible. Risk: if the materials are vague, the rejection in Scene 2 will feel arbitrary rather than evidence-based."
+        },
+        {
+          "scene": 2,
+          "risk": "The west-to-east hypothesis must be tested against explicit printed times and map arrows that visibly contradict it. Risk: if the contradiction is subtle or requires inference, readers may not accept the rejection as fair testing rather than Deniz changing their mind."
+        },
+        {
+          "scene": 3,
+          "risk": "The acetate grid and instruction must be found exactly where the chevron points, and the grid's matching rule must be simple enough to verify but not so obvious that it trivializes Scene 2's work. Risk: if the grid feels like a deus ex machina or if its logic is unclear, the causal chain breaks."
+        },
+        {
+          "scene": 4,
+          "risk": "The sixth schedule's instruction ('Add one observed connection') must be visibly printed and distinct from the five route schedules. The pencil must be the only remaining object after five verified pairings. Risk: if either feels forced or if Deniz could have guessed the sixth map instead, the evidence-based reasoning collapses."
+        },
+        {
+          "scene": 5,
+          "risk": "Deniz's choice to leave the blank intentional must feel like a genuine decision point, not a foregone conclusion. The temptation to invent a sixth map must be real and acknowledged. Risk: if Deniz simply follows instructions without internal conflict, the theme ('test patterns instead of guessing') loses force."
+        },
+        {
+          "scene": 6,
+          "risk": "The visitor's observation must depend on the display Deniz reconstructed and must be verifiable through the same pattern-testing principle. Risk: if the observation is arbitrary or if Deniz accepts it without checking, the story ends by abandoning its own theme."
+        }
+      ],
+      "summary": "This plan is **strong and ready for prose development**. It satisfies all critical requirements: causal continuity is explicit and unbroken; Deniz's goal remains stable and motivates every action; information accumulates without resets; no unexplained dependencies exist; and the ending coherently resolves the central problem through Scene 5 and validates the solution in Scene 6. The constraint coverage score of 4 reflects minor exposure in C1 (age-appropriate vocabulary and pacing must be executed in prose, not guaranteed by plan alone) and C5 (the plan correctly avoids mentioning benchmarks, but prose execution must maintain that discipline). The no-early-resolution score of 4 reflects that Scene 4 comes close to full resolution—the evidence strongly indicates the blank is intentional—but Scene 5 preserves genuine decision tension by requiring Deniz to choose evidence over convenience. The JEV advisory's below-threshold flags (constraint_coverage 0.67, no_early_resolution 0.76) are addressed by the plan's explicit structure: every constraint is scheduled and testable; Scene 4 identifies the pattern but does not resolve Deniz's choice; Scene 5 delivers the decisive payoff; Scene 6 validates it. **Recommend proceeding to prose with attention to the six scene risks above, particularly ensuring that false hypothesis rejection (Scene 2) and Deniz's final choice (Scene 5) feel earned rather than predetermined.**",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0051896,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.00015561,
+      "haiku": {
+        "usd": 0.008659,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 904,
+        "output_tokens": 4174,
+        "total_tokens": 5078
+      },
+      "jev": {
+        "input_tokens": 3705,
+        "output_tokens": 185,
+        "cost": 0.00015561
+      },
+      "haiku": {
+        "input_tokens": 3929,
+        "output_tokens": 946,
+        "total_tokens": 4875
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    546,
+    651,
+    714,
+    714,
+    861,
+    714
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 546,
+      "word_count": 497,
+      "contract": {
+        "index": 1,
+        "purpose": "Establish Deniz's practical goal, the disrupted display, and several plausible explanations for its missing pattern.",
+        "entry_state": "Deniz arrives at a public learning space to prepare a route-pattern display before its evening session.",
+        "beats": [
+          "Deniz finds five map cards, six schedule entries, six object trays, and shuffled labels around a display with one empty slot.",
+          "Deniz decides to reconstruct the display from evidence rather than guess, recording every visible arrow, time, label, and object."
+        ],
+        "must_include": [
+          "Deniz is twenty-one and independently responsible for preparing the display.",
+          "The space visibly contains maps, objects, schedules, labels, and ordinary tools.",
+          "The empty slot makes the display difficult to use but does not create danger."
+        ],
+        "must_not_do": [
+          "Do not solve the missing pattern or identify the empty slot's purpose.",
+          "Do not introduce a helper who takes over Deniz's reasoning.",
+          "Do not use vocabulary, pacing, or concepts mismatched to an independent twenty-one-year-old reader."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C9"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has documented the disrupted materials and must determine their order before the evening session begins.",
+        "open_threads_after": [
+          "Which pattern orders the map cards?",
+          "Why are there six schedules and objects but only five map cards?"
+        ]
+      },
+      "envelope": {
+        "prose": "At twenty-one, Deniz was used to being trusted with practical things. That afternoon, the coordinator had left them the key to the public learning room and a short note: Prepare the route-pattern display before the evening session.\n\nThe room was quiet except for the hum of the lights. Along one wall, maps of the city shared space with labeled shelves, object trays, a clock, and a rack of printed schedules. Ordinary tools—a ruler, masking tape, clips, pencils, and a black marker—waited on a side table.\n\nThe display itself looked as if someone had started assembling it and then changed their mind. Five map cards lay across its magnetic surface. Each showed a different part of the city, with arrows printed along some edges. Six schedule cards had been placed in a loose pile below them. Six shallow object trays stood nearby: a compass, a folded measuring tape, a small magnifying glass, a rubber stamp, a set of colored clips, and one plain pencil.\n\nThe labels were no more helpful at first. Deniz found cards reading NORTH GATE, COURTYARD, ARCHIVE, RIVER WALK, and CLOCK ROOM, but they had been shuffled together with two smaller labels: CHECK THE TURN and LEAVE OBSERVATION OPEN. One label had slipped beneath a tray.\n\nAt the center of the display was an empty rectangular slot. It was exactly the size of one map card, yet no sixth map appeared anywhere on the tables or shelves. The blank did not make the room unsafe; it simply broke the display's instructions. A visitor could see pieces of a route without knowing which card belonged first, or what belonged in the empty space.\n\nDeniz set down their bag and looked at the materials without touching them further. Several explanations seemed possible. Perhaps the map cards were meant to run from west to east. Perhaps the printed times determined the order. Perhaps each stop matched an object, and the objects would reveal a sequence the maps did not show. The empty slot might be an accidental gap, or it might be part of the activity.\n\nGuessing would be quick, but a quick arrangement could send six evening participants in the wrong direction. Deniz opened a notebook and drew six columns: maps, arrows, times, labels, objects, and questions.\n\nThey recorded the map titles and copied every visible arrow exactly as printed. Then they listed the schedule times: 4:10, 4:25, 4:40, 4:55, 5:10, and 5:25. They noted which room each schedule mentioned, without yet deciding what the rooms meant. The object trays received numbers from one to six, and the loose labels went into a clear folder.\n\nWhen Deniz finished, the display was still disrupted, but the disorder had become visible evidence instead of a blur. They clipped the notebook to the board and wrote one final question beneath the list:\n\nWhat pattern survives when every piece is tested?\n\nThe evening session was getting closer. Deniz picked up the first map card, careful not to place it anywhere yet.",
+        "state_delta": {
+          "location": "Public learning room beside the disrupted route-pattern display",
+          "character_goal": "Deniz wants to reconstruct the display before the evening session without inventing missing information.",
+          "knowledge_gained": [
+            "The display contains five map cards, six schedule entries, six object trays, shuffled labels, and one empty map-sized slot.",
+            "The materials support several possible ordering explanations, including geography, time, and object matching."
+          ],
+          "facts_established": [
+            "Deniz is twenty-one and independently responsible for preparing the display.",
+            "The public learning room contains maps, schedules, labeled materials, ordinary tools, and a display board.",
+            "The map cards show visible arrows.",
+            "The printed schedule times are 4:10, 4:25, 4:40, 4:55, 5:10, and 5:25.",
+            "The empty slot makes the display difficult to use but creates no danger."
+          ],
+          "clues_added": [
+            "The five map labels include NORTH GATE, COURTYARD, ARCHIVE, RIVER WALK, and CLOCK ROOM.",
+            "Two additional labels read CHECK THE TURN and LEAVE OBSERVATION OPEN.",
+            "The six object trays contain a compass, folded measuring tape, small magnifying glass, rubber stamp, colored clips, and a plain pencil."
+          ],
+          "objects_changed": [
+            "Deniz recorded the visible evidence in a notebook.",
+            "The notebook was clipped to the display board.",
+            "Loose labels were placed in a clear folder.",
+            "Object trays were numbered one through six without being matched."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Which pattern orders the five map cards?",
+            "Why are there six schedules and objects but only five map cards?",
+            "Is the empty slot accidental or intentional?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has documented every visible map arrow, schedule time, label, and object but has not placed any card. The five map cards, six schedules, six objects, shuffled labels, and empty display slot remain to be ordered and interpreted."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.683,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 497,
+          "usage": {
+            "input_tokens": 4322,
+            "output_tokens": 1176,
+            "total_tokens": 5498
+          },
+          "cost": {
+            "usd": 0.00249155,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.91,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.9,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2969,
+          "output_tokens": 188,
+          "cost": 0.000124698
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.91,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.9,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2969,
+            "output_tokens": 188,
+            "cost": 0.000124698
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.56
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 14.244
+    },
+    {
+      "scene": 2,
+      "target_words": 651,
+      "word_count": 695,
+      "contract": {
+        "index": 2,
+        "purpose": "Test and reject a reasonable geographic hypothesis, then use schedules to reveal the next physical clue.",
+        "entry_state": "Deniz has documented five map cards, six schedules, six objects, shuffled labels, and one empty display slot.",
+        "beats": [
+          "Deniz first orders the maps from west to east, but printed departure times and room changes contradict that sequence.",
+          "Deniz orders the cards by schedule times; their edge marks form a broken chevron pointing beneath the display table."
+        ],
+        "must_include": [
+          "The west-to-east ordering is a reasonable false hypothesis.",
+          "Concrete schedule times and map arrows visibly reject that hypothesis.",
+          "The tested chronological order produces the chevron clue."
+        ],
+        "must_not_do": [
+          "Do not treat the false hypothesis as correct.",
+          "Do not reveal the final meaning of the empty slot.",
+          "Do not use a clue that depends on unseen information."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the five map cards with visible arrows and the six schedule entries with printed times.",
+          "Scene 1 established that the labels and objects were shuffled around one empty display slot."
+        ],
+        "handoff": "The chronological map order points beneath the table, where Deniz must inspect the indicated location without disturbing the display.",
+        "open_threads_after": [
+          "What does the chevron indicate?",
+          "How can five maps account for six scheduled activities?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz began with the most ordinary explanation: geography. The five map cards showed connected parts of the city, and each card included a small north arrow. Their printed landmarks also made the cards distinguishable: one showed a ferry line, another a square, another the archive block, another the riverside path, and the last the clock tower. If the display was meant to guide someone across town, perhaps the cards belonged from west to east.\n\nThey spread the cards on the table and checked the street grids instead of relying on the loose labels. The ferry-line card appeared farthest west. Next came the card whose streets curved around a square, followed by the cards showing the archive block, the riverside path, and the clock tower. From the western edge of the city map to the eastern edge, the arrangement seemed neat enough.\n\nFor a moment, Deniz considered placing the cards in that order. It was a reasonable hypothesis, supported by the maps' geography. Then they pulled the schedule entries closer and read the place names printed beside their times.\n\nThe first five route entries had clear times and room changes:\n\n4:10 — leave North Gate; change at Courtyard.\n4:25 — leave Courtyard; change at Archive.\n4:40 — leave Archive; change at River Walk.\n4:55 — leave River Walk; change at Clock Room.\n5:10 — leave Clock Room; continue to the next marked stop.\n\nThe sixth entry, printed at 5:25, was set apart from the others and did not name a map card. Deniz copied it into the notebook without interpreting it.\n\nThey compared the times with the west-to-east arrangement. The map landmarks could be identified from the drawings, while the route names came from the printed labels and schedule entries, so Deniz checked each proposed card against both sources. The ferry-line card, which the geographic arrangement had placed first, was tied to the 4:55 entry, after the square and archive stops. The clock-tower card was tied to the 4:40 entry, before the riverside card's 4:55 entry. Those times did not support the proposed geographic sequence.\n\nDeniz moved the cards back into a row and tested the arrows. The west-to-east pattern failed twice: the departure times ran backward in the middle, and the printed arrows sent the route across the row instead of steadily eastward. A tidy geographic sequence was still possible as a description of the city, but it could not be the display's working order.\n\n“Useful hypothesis,” Deniz murmured, writing in the notebook. “Wrong sequence.”\n\nThey turned to the times. Deniz matched each of the five cards to a route entry by checking the named place against the card's visible landmark and arrow, then arranged the matches at 4:10, 4:25, 4:40, 4:55, and 5:10. The 5:25 entry stayed below the row because it named no map card. This time, the room changes between the first five entries agreed with the map arrows: each marked exit led toward the room named on the next schedule. The final 5:10 entry pointed onward without requiring a sixth map card.\n\nThe arrangement did not make a straight line. Instead, the small black marks along the card edges met in a broken shape. One mark angled down from the first card. The next angled up, then another down, making three sides of a wide chevron. Its point stopped at the front edge of the display table.\n\nDeniz crouched to check whether the shape had appeared by accident. They shifted the second card half an inch. The chevron broke. They restored it, then tested the third and fourth cards. The marks met only in chronological order.\n\nThe point of the chevron aimed beneath the table, exactly where the room's dim light left a strip of shadow. Deniz did not reach under immediately. First, they photographed the arrangement and recorded the order in the notebook: 4:10, 4:25, 4:40, 4:55, 5:10. The sixth schedule remained separate, and the empty map-sized slot remained empty.\n\nThe time pattern had survived a direct test. The geographic pattern had not. Deniz set a hand on the table's edge and looked toward the indicated space beneath it. Whatever the chevron meant, the next clue was likely waiting there.",
+        "state_delta": {
+          "location": "Public learning room, at the route-pattern display table",
+          "character_goal": "Deniz wants to determine the display's evidence-supported order before the evening session without inventing missing information.",
+          "knowledge_gained": [
+            "A west-to-east ordering is a reasonable but incorrect sequence for the five map cards.",
+            "The west-to-east sequence conflicts with explicit schedule times, named room changes, and the cards' printed arrows.",
+            "Each of the first five map cards can be matched to a schedule by comparing visible landmarks, named places, and arrows.",
+            "The five route cards align consistently in chronological order at 4:10, 4:25, 4:40, 4:55, and 5:10.",
+            "The sixth schedule at 5:25 remains separate and does not yet match a map card."
+          ],
+          "facts_established": [
+            "The map cards visibly identify a ferry line, a square, an archive block, a riverside path, and a clock tower.",
+            "The ferry-line card is scheduled at 4:55, not first in the geographic arrangement.",
+            "The clock-tower card is scheduled at 4:40, before the riverside card at 4:55.",
+            "The room changes between the first five entries agree with map arrows only in the tested chronological order.",
+            "The chronological map edges form a broken chevron."
+          ],
+          "clues_added": [
+            "The chevron's point aims beneath the display table.",
+            "The edge marks meet only when the five route cards are arranged chronologically."
+          ],
+          "objects_changed": [
+            "Deniz photographed the chronological arrangement.",
+            "Deniz recorded the tested order in the notebook.",
+            "The five route cards are temporarily arranged chronologically beside their schedules.",
+            "The sixth schedule remains separate; the empty display slot remains empty."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "What does the chevron beneath the table indicate?",
+            "How can five map cards account for six scheduled activities?"
+          ],
+          "threads_resolved": [
+            "The west-to-east hypothesis has been rejected by concrete schedule, landmark, and arrow evidence."
+          ],
+          "handoff_state": "Deniz has tested and rejected west-to-east ordering. The five route cards are arranged in chronological order, and their edge marks form a broken chevron pointing beneath the display table. The sixth schedule and empty display slot remain unresolved."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 22.627,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 619,
+          "usage": {
+            "input_tokens": 5477,
+            "output_tokens": 2068,
+            "total_tokens": 7545
+          },
+          "cost": {
+            "usd": 0.0038507,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 13.795,
+          "repair_reasons": [
+            "jev:no_contradiction:0.770<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 609,
+          "usage": {
+            "input_tokens": 5520,
+            "output_tokens": 1729,
+            "total_tokens": 7249
+          },
+          "cost": {
+            "usd": 0.00345465,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 14.911,
+          "repair_reasons": [
+            "jev:no_unexplained_dependency:0.780<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 695,
+          "usage": {
+            "input_tokens": 5518,
+            "output_tokens": 1848,
+            "total_tokens": 7366
+          },
+          "cost": {
+            "usd": 0.00359695,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.89,
+          "no_contradiction": 0.83,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.91,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3901,
+          "output_tokens": 188,
+          "cost": 0.000163842
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.81,
+            "no_contradiction": 0.77,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_contradiction": 0.77
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.83,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3741,
+            "output_tokens": 188,
+            "cost": 0.000157122
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.78,
+            "no_contradiction": 0.82,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_unexplained_dependency": 0.78
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.86,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3735,
+            "output_tokens": 188,
+            "cost": 0.00015687
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.89,
+            "no_contradiction": 0.83,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.91,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3901,
+            "output_tokens": 188,
+            "cost": 0.000163842
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.563,
+        0.643,
+        0.545
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.81,
+              "no_contradiction": 0.77,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_contradiction": 0.77
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.83,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3741,
+              "output_tokens": 188,
+              "cost": 0.000157122
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 609,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.82,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.86,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3735,
+              "output_tokens": 188,
+              "cost": 0.00015687
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.78,
+              "no_contradiction": 0.82,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_unexplained_dependency": 0.78
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.86,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3735,
+              "output_tokens": 188,
+              "cost": 0.00015687
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 695,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.89,
+              "no_contradiction": 0.83,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.95,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.91,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 3901,
+              "output_tokens": 188,
+              "cost": 0.000163842
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 53.085
+    },
+    {
+      "scene": 3,
+      "target_words": 714,
+      "word_count": 608,
+      "contract": {
+        "index": 3,
+        "purpose": "Use the chevron to find a grid that links the ordered maps to the shuffled labels and objects.",
+        "entry_state": "Chronological ordering is supported, and the map edges point beneath the display table.",
+        "beats": [
+          "Deniz finds an acetate grid and a short instruction beneath the table, then aligns its marks with the ordered map edges.",
+          "The grid reveals that each label belongs to the object used at that map stop, while one label reads: 'leave observation open.'"
+        ],
+        "must_include": [
+          "The acetate grid is found exactly where the tested chevron points.",
+          "The grid converts the ordered maps into a matching rule for labels and objects.",
+          "The unusual open-observation label becomes evidence, not a complete solution."
+        ],
+        "must_not_do": [
+          "Do not make the hidden materials magical or inexplicably self-explanatory.",
+          "Do not discard the sixth object or schedule.",
+          "Do not fully resolve whether the open observation is an error or an invitation."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 2 established that the chronological map edges form a chevron pointing beneath the table.",
+          "Scene 1 established the shuffled labels, six objects, and one empty display slot."
+        ],
+        "handoff": "The grid supplies reliable pairings and an open-observation label, but Deniz still must determine how the sixth schedule fits.",
+        "open_threads_after": [
+          "Is the open-observation label a printing mistake or an intentional sixth activity?",
+          "What should occupy the empty display slot?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz slid down beside the display table and looked directly beneath the point of the chevron. The shadow hid a flat plastic sleeve, but its corner caught the light. They pulled it out carefully.\n\nInside was a transparent acetate sheet, stiff enough to hold its shape. A narrow strip of paper had been tucked beneath it. Deniz read the instruction aloud: “Align the edge marks. Read across, not down.”\n\nThe wording was brief, but it referred to evidence already on the table. Deniz carried the acetate to the five map cards and placed it over the chronological row. At first, the sheet seemed to show only a pale grid. Then Deniz shifted the first card until its downward edge mark met the grid’s first black notch.\n\nThe rest of the marks settled into place.\n\nLines on the acetate crossed details that had been easy to overlook: the direction arrow at North Gate, the measured gap near Courtyard, a tiny printed detail in the Archive block, a turn beside River Walk, and a repeated symbol near the Clock Room. Each detail matched a small symbol printed beside one of the object trays.\n\nDeniz checked the first match. The North Gate card’s direction mark fell into the compass symbol. They placed the compass beside that card.\n\nThe Courtyard card’s measured gap aligned with the folded measuring tape. The Archive card’s tiny detail landed under the magnifying glass. At River Walk, the grid crossed a narrow line that matched the rubber stamp’s square edge. The Clock Room card’s repeated symbol matched the colored clips.\n\nNone of the pairings depended on what seemed most useful. The grid made the same rule visible five times: follow the ordered map’s edge marks, read the symbol where the acetate crosses the card, and match that symbol to an object.\n\nDeniz tested the arrangement by lifting the acetate and setting it down again. The compass belonged at North Gate both times. The measuring tape still matched Courtyard. The pattern did not change when Deniz approached it from a different angle.\n\nA loose label lay under the acetate’s lower edge. It read CHECK THE TURN. When Deniz placed it across the transition between River Walk and Clock Room, its printed arrow pointed toward the same turn shown on the two cards. It was not a sixth route name. It was a check on the matching rule.\n\nAnother label remained in the clear folder: LEAVE OBSERVATION OPEN.\n\nDeniz held it above the final space on the grid. The label had no map edge to align with. No symbol directed it toward the compass, tape, magnifying glass, stamp, or clips. It rested beside the unused display slot instead.\n\nThe plain pencil was still in tray six, untouched. So was the separate 5:25 schedule. Deniz wrote in the notebook: “Five map-object matches verified. CHECK THE TURN confirms the transition. LEAVE OBSERVATION OPEN has no route-card match.”\n\nThey did not call the open label a mistake. The grid had shown what belonged to the five cards, and it had also shown what did not. That distinction mattered. An unexplained label could be a printing error, or it could point to an activity outside the five mapped stops. The acetate supplied evidence for neither conclusion yet.\n\nDeniz returned the five matched objects to their trays and kept the labels beside the chronological cards. The open-observation label remained next to the blank slot, while the pencil and sixth schedule stayed separate but visible.\n\nThe chevron had led to a reliable matching rule. It had not filled the empty space. Deniz would need to compare every remaining item before deciding what that space meant.",
+        "state_delta": {
+          "location": "Public learning room, at the route-pattern display table with the acetate grid beside the chronological map cards",
+          "character_goal": "Deniz wants to determine how every schedule, label, and object fits the display without inventing missing information.",
+          "knowledge_gained": [
+            "The acetate grid must be aligned with the chronological map edge marks and read across.",
+            "The grid provides a repeatable rule for matching each of the five map cards to an object.",
+            "CHECK THE TURN confirms the transition between the River Walk and Clock Room cards.",
+            "LEAVE OBSERVATION OPEN has no map-card alignment and cannot yet be classified as either an error or an invitation."
+          ],
+          "facts_established": [
+            "The acetate grid was located exactly beneath the chevron's point.",
+            "The five verified object matches are compass with North Gate, folded measuring tape with Courtyard, magnifying glass with Archive, rubber stamp with River Walk, and colored clips with Clock Room.",
+            "The plain pencil remains the sixth unused object.",
+            "The 5:25 schedule remains separate from the five map-card schedules.",
+            "The display's empty slot remains unfilled."
+          ],
+          "clues_added": [
+            "The instruction on the acetate reads: 'Align the edge marks. Read across, not down.'",
+            "The grid's symbols repeatedly match the five route cards to their objects.",
+            "The label 'CHECK THE TURN' verifies the transition between River Walk and Clock Room.",
+            "The label 'LEAVE OBSERVATION OPEN' rests beside the empty slot without matching a map card."
+          ],
+          "objects_changed": [
+            "Deniz retrieved the acetate grid and instruction from beneath the display table.",
+            "The five route cards now have verified object pairings.",
+            "The matched objects were returned to their trays and kept with the corresponding cards.",
+            "The open-observation label was placed beside the blank slot.",
+            "The pencil and sixth schedule remain separate but visible."
+          ],
+          "relationships_changed": [],
+          "threads_opened": [
+            "Is the open-observation label a printing mistake or an intentional sixth activity?",
+            "How does the 5:25 schedule relate to the remaining pencil and empty display slot?",
+            "What should occupy the empty display slot?"
+          ],
+          "threads_resolved": [
+            "The five map cards now have evidence-supported object matches.",
+            "The CHECK THE TURN label has been identified as a verification instruction rather than a sixth route name."
+          ],
+          "handoff_state": "Deniz has used the acetate grid to verify five map-object pairings and has identified CHECK THE TURN as a transition check. The LEAVE OBSERVATION OPEN label, plain pencil, sixth schedule at 5:25, and empty display slot remain unresolved; Deniz must compare all remaining evidence before deciding whether the blank is intentional."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 23.596,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 608,
+          "usage": {
+            "input_tokens": 6352,
+            "output_tokens": 2070,
+            "total_tokens": 8422
+          },
+          "cost": {
+            "usd": 0.00407185,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.96,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4432,
+          "output_tokens": 188,
+          "cost": 0.000186144
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.96,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4432,
+            "output_tokens": 188,
+            "cost": 0.000186144
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.818
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 24.414
+    },
+    {
+      "scene": 4,
+      "target_words": 714,
+      "word_count": 668,
+      "contract": {
+        "index": 4,
+        "purpose": "Compare every matched item with the schedule and discover evidence that the blank is intentional.",
+        "entry_state": "Deniz has matched five maps, labels, and objects, while the sixth schedule and open-observation label remain unresolved.",
+        "beats": [
+          "Deniz places the five verified pairs beside their schedule entries and notices the sixth schedule says, 'Add one observed connection.'",
+          "The remaining object is an ordinary pencil, and the blank slot aligns with a note inviting visitors to record a new route observation."
+        ],
+        "must_include": [
+          "The sixth schedule explicitly supplies an activity rather than a missing route name.",
+          "The pencil is matched through the remaining verified pattern, not arbitrary choice.",
+          "Deniz recognizes that filling the blank with a guessed map would contradict the evidence."
+        ],
+        "must_not_do": [
+          "Do not introduce a new route, location, or participant.",
+          "Do not have Deniz declare success before applying the complete arrangement.",
+          "Do not resolve the display through authority instead of observation and reasoning."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C6"
+        ],
+        "prior_evidence": [
+          "Scene 3 established the grid's verified pairings and the label 'leave observation open.'",
+          "Scene 1 established six schedules, six objects, five map cards, and one empty display slot."
+        ],
+        "handoff": "All evidence indicates an intentional participant-created sixth entry; Deniz must apply that interpretation to the finished display.",
+        "open_threads_after": [
+          "Will Deniz preserve the blank or replace it with a plausible guess?",
+          "Can the complete arrangement work for evening visitors?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz cleared a strip of space beneath the chronological row and laid out the five verified pairs in tested order. The North Gate card went beside the compass, Courtyard beside the folded measuring tape, Clock Room beside the colored clips, River Walk beside the rubber stamp, and Archive beside the magnifying glass. They placed the five route schedules beneath the cards whose landmarks, arrows, and printed times had already been checked.\n\nThe arrangement made the first five entries easy to read:\n\n4:10 — North Gate.\n4:25 — Courtyard.\n4:40 — Clock Room.\n4:55 — River Walk.\n5:10 — Archive.\n\nDeniz paused. The places did not appear in a simple walk from one side of the room to the other, but their times matched the tested order recorded in the notebook. The map edges still formed the broken chevron only in that order. The acetate grid still gave the same object matches when it was aligned with those edges.\n\nThen Deniz picked up the remaining schedule.\n\n5:25 — Add one observed connection.\n\nThey read it twice. It was printed in the same dark type as the other schedules, but unlike them, it named an activity instead of a place. There was no route name after the time, no landmark to locate, and no arrow that could point to a sixth map.\n\nDeniz set the card beside the empty display slot. Its lower edge lined up with a narrow printed note on the board, partly hidden by the loose labels. The note said: “LEAVE OBSERVATION OPEN. Record a connection only after checking it.”\n\nThe wording on the loose label was no longer floating without context. The sixth schedule explained what it was for. The note explained what a visitor would do there. Neither supplied a missing route.\n\nThe pencil remained in tray six. Deniz brought the object trays into a single row and compared them with the notebook. Five trays already had evidence-supported partners: compass, measuring tape, colored clips, rubber stamp, and magnifying glass. Each one had been identified by the acetate symbols, not by appearance or convenience. The pencil was the only object without a map-card symbol because it was reserved for the activity that had no map card.\n\nThat conclusion came from the completed pattern, not from a guess. If Deniz tried to assign the pencil to one of the five routes, one verified object would have to be displaced. If they invented a sixth map, the acetate grid would have no edge mark to align with it, and the sixth schedule would still describe an activity rather than a place.\n\nDeniz tested the tempting alternative in the notebook. In the margin, they sketched a plausible sixth route with a path, a turn, and a labeled destination, then held the notebook near the blank slot. The drawing looked organized. It even made the display seem complete.\n\nBut it failed every test available. No schedule named its destination. No map edge connected to it. No acetate symbol matched it. The drawing could be neat and still be unsupported.\n\nDeniz crossed it out and turned to a clean page.\n\nThey wrote: “5:25 is an observation activity. Pencil is the remaining object by the verified matching pattern. Blank is not missing route information.”\n\nFor a moment, Deniz rested a hand on the empty slot. Leaving it open made the display look unfinished in the ordinary sense. Yet the evidence was consistent: five maps, five tested pairings, one activity for a new observation, and one pencil for recording it. Filling the space with a guessed map would make the display look more finished while making it less truthful.\n\nDeniz kept the open-observation label beside the slot, placed the sixth schedule below it, and set the pencil on top of the schedule. The complete arrangement was not assembled yet, but its meaning was now clear enough to apply. The next step would be to build the display so visitors could follow the tested entries and use the blank for evidence they discovered themselves.",
+        "state_delta": {
+          "location": "Public learning room at the route-pattern display table",
+          "character_goal": "Deniz wants to apply all verified evidence so the display can be used before the evening session without inventing missing information.",
+          "knowledge_gained": [
+            "The five verified route entries are ordered at 4:10 North Gate, 4:25 Courtyard, 4:40 Clock Room, 4:55 River Walk, and 5:10 Archive.",
+            "The sixth schedule at 5:25 says 'Add one observed connection' and describes an activity rather than a missing route.",
+            "The note beside the blank instructs visitors to record a connection only after checking it.",
+            "The plain pencil is the only object left after the five map-object pairings have been verified, so it belongs with the observation activity.",
+            "A guessed sixth map has no schedule, edge mark, acetate symbol, or other supporting evidence."
+          ],
+          "facts_established": [
+            "The five verified map-object pairs remain consistent with the chronological order and acetate-grid rule.",
+            "The five route schedules and the sixth observation schedule serve different purposes.",
+            "The empty display slot is aligned with the open-observation note."
+          ],
+          "clues_added": [
+            "The sixth schedule explicitly reads '5:25 — Add one observed connection.'",
+            "A printed note beside the blank reads, 'LEAVE OBSERVATION OPEN. Record a connection only after checking it.'"
+          ],
+          "objects_changed": [
+            "Deniz placed the five verified map-object pairs in chronological order: North Gate with the compass, Courtyard with the measuring tape, Clock Room with the colored clips, River Walk with the rubber stamp, and Archive with the magnifying glass.",
+            "The sixth schedule was placed beside the empty slot.",
+            "The plain pencil was placed on top of the sixth schedule.",
+            "Deniz crossed out an unsupported trial sketch in the notebook.",
+            "The notebook now records that the blank is not missing route information."
+          ],
+          "relationships_changed": [
+            "The sixth schedule, pencil, open-observation label, and blank slot are now linked as one participant-observation activity."
+          ],
+          "threads_opened": [
+            "Deniz must apply the complete interpretation to the finished display.",
+            "The evening session will test whether visitors can use the blank to record a supported observation."
+          ],
+          "threads_resolved": [
+            "The five verified map-object pairs are aligned with the tested chronological schedule order.",
+            "The sixth schedule is not a missing sixth route name.",
+            "The pencil is assigned through the remaining verified pattern rather than arbitrary choice.",
+            "The blank is identified as intentional rather than an error."
+          ],
+          "handoff_state": "Deniz has compared every schedule, map, object, label, and slot. Five map-object-label pairs are verified in chronological order; the 5:25 schedule is an activity to add one checked observation; the remaining pencil belongs to that activity; and the blank is intentionally open. Deniz has not yet assembled the final usable display."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 19.465,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 673,
+          "usage": {
+            "input_tokens": 6836,
+            "output_tokens": 1767,
+            "total_tokens": 8603
+          },
+          "cost": {
+            "usd": 0.00382925,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 18.128,
+          "repair_reasons": [
+            "jev:no_contradiction:0.700<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 665,
+          "usage": {
+            "input_tokens": 6859,
+            "output_tokens": 2140,
+            "total_tokens": 8999
+          },
+          "cost": {
+            "usd": 0.0042826,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_2",
+          "elapsed_seconds": 14.177,
+          "repair_reasons": [
+            "jev:no_contradiction:0.760<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 668,
+          "usage": {
+            "input_tokens": 6847,
+            "output_tokens": 1931,
+            "total_tokens": 8778
+          },
+          "cost": {
+            "usd": 0.0040288,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.95,
+          "scene_purpose_obeyed": 0.95,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.83,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.82,
+          "handoff_valid": 0.95
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.88,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 5240,
+          "output_tokens": 188,
+          "cost": 0.00022008
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.87,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.82,
+            "no_contradiction": 0.7,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.84,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.7
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.62,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5144,
+            "output_tokens": 188,
+            "cost": 0.000216048
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.89,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.84,
+            "no_contradiction": 0.76,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.85,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {
+            "no_contradiction": 0.76
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.75,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5132,
+            "output_tokens": 188,
+            "cost": 0.000215544
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.95,
+            "scene_purpose_obeyed": 0.95,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.83,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.82,
+            "handoff_valid": 0.95
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.88,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 5240,
+            "output_tokens": 188,
+            "cost": 0.00022008
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.598,
+        0.597,
+        0.763
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.87,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.82,
+              "no_contradiction": 0.7,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.84,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.7
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.62,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5144,
+              "output_tokens": 188,
+              "cost": 0.000216048
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 665,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.89,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.84,
+              "no_contradiction": 0.76,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.85,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.76
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.75,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5132,
+              "output_tokens": 188,
+              "cost": 0.000215544
+            }
+          }
+        },
+        {
+          "repair": 2,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.89,
+              "scene_purpose_obeyed": 0.96,
+              "no_unexplained_dependency": 0.84,
+              "no_contradiction": 0.76,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.85,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {
+              "no_contradiction": 0.76
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.75,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5132,
+              "output_tokens": 188,
+              "cost": 0.000215544
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 668,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.95,
+              "scene_purpose_obeyed": 0.95,
+              "no_unexplained_dependency": 0.91,
+              "no_contradiction": 0.83,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.82,
+              "handoff_valid": 0.95
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.88,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 5240,
+              "output_tokens": 188,
+              "cost": 0.00022008
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 53.73
+    },
+    {
+      "scene": 5,
+      "target_words": 861,
+      "word_count": 739,
+      "contract": {
+        "index": 5,
+        "purpose": "Apply the accumulated clues, resolve the central problem, and make Deniz choose evidence over a convenient guess.",
+        "entry_state": "The tested order, grid pairings, sixth schedule, pencil, and open-observation label all identify the blank as intentional.",
+        "beats": [
+          "Deniz assembles the five verified map-object-label pairs in chronological order and places the pencil beside the open sixth schedule.",
+          "Instead of drawing a guessed sixth map, Deniz leaves the slot blank and adds a clear instruction for visitors to test and record one connection."
+        ],
+        "must_include": [
+          "The decisive application uses chronological order, edge marks, grid pairings, schedules, and the remaining pencil.",
+          "Deniz explicitly chooses not to invent information.",
+          "The display becomes usable while preserving the distinction between evidence and speculation."
+        ],
+        "must_not_do": [
+          "Do not add a new clue after the arrangement is applied.",
+          "Do not leave the central problem unresolved after Deniz's choice.",
+          "Do not make the choice arbitrary or socially pressured."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C8"
+        ],
+        "prior_evidence": [
+          "Scene 2 established chronological order and the chevron formed by map edges.",
+          "Scene 3 established grid-based pairings and the open-observation label.",
+          "Scene 4 established the sixth schedule's instruction and the pencil's remaining match."
+        ],
+        "handoff": "The display is ready with five tested entries and one intentional blank; the evening session will show whether visitors can use its evidence-based invitation.",
+        "open_threads_after": [
+          "Whether a visitor will add a valid observation to the open sixth entry."
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz began with the part that had survived every test: the order of time.\n\nThey lifted the five map cards from the temporary row and mounted them on the display board from left to right. The 4:10 card came first, followed by 4:25, 4:40, 4:55, and 5:10. The cards were not arranged from west to east. They were arranged according to the printed schedules, because that was the order in which the landmarks and room changes agreed with the arrows.\n\nDeniz checked the edges once more before pressing each card flat. The broken chevron appeared across the row. Its points met in the same places as before, just as they had when the cards were laid beside the acetate grid. The chevron did not tell Deniz to invent another card. It confirmed that the five cards belonged in this tested sequence.\n\nUnder the first card, Deniz placed the label NORTH GATE and the compass. Under the second went COURTYARD and the folded measuring tape. The third received CLOCK ROOM and the colored clips. The fourth received RIVER WALK and the rubber stamp. The fifth received ARCHIVE and the small magnifying glass.\n\nDeniz did not attach the labels merely because their names sounded as if they belonged. Each placement had a reason. The acetate grid had matched the objects to the map edges. The schedules had fixed the order. The arrows had checked the transitions. When Deniz read across the row, the same pairings held together without forcing any part of the pattern.\n\nThey stepped back and read the display as a visitor might.\n\n4:10 — NORTH GATE — compass.\n4:25 — COURTYARD — folded measuring tape.\n4:40 — CLOCK ROOM — colored clips.\n4:55 — RIVER WALK — rubber stamp.\n5:10 — ARCHIVE — magnifying glass.\n\nThe sixth schedule remained below the empty slot.\n\n5:25 — Add one observed connection.\n\nDeniz placed the label LEAVE OBSERVATION OPEN beside it and set the plain pencil on top of the schedule. The pencil looked almost too ordinary among the other objects, but its position followed the same evidence. Five objects had been matched through the grid. The pencil was the only object left, and the sixth schedule required something with which a visitor could record an observation.\n\nFor the final instruction, Deniz took a clean card from the supply stack. They considered drawing a sixth map first. A blank map-sized space still invited the eye toward completion. A simple route would be easy to sketch: a line, an arrow, perhaps a destination chosen from one of the loose labels.\n\nBut the possible drawing had no time, no edge mark, no grid symbol, and no supporting label. It would not be a discovery. It would be a decoration pretending to be evidence.\n\nDeniz left the card blank.\n\nInstead, they wrote in clear block letters beneath the open slot:\n\n“TEST ONE CONNECTION. CHECK THE TIME, ARROW, AND LABEL. RECORD IT ONLY IF THE EVIDENCE AGREES.”\n\nThey read the sentence twice. It told visitors what to do without telling them what they would find. It preserved the difference between a tested observation and a convenient guess.\n\nDeniz fastened the instruction card to the board. Then they checked the entire arrangement from the beginning. The schedule times gave the sequence. The map edges formed the chevron in that sequence. The acetate grid supplied the five object pairings. The labels named the verified stops, while CHECK THE TURN remained near the transition between River Walk and Clock Room as a reminder to inspect the change rather than glide past it. The sixth schedule, the remaining pencil, and the open label belonged together beside the blank.\n\nNothing required a made-up sixth route.\n\nMore importantly, making one would contradict the pattern already tested. Deniz wrote one final line in the notebook: “The blank is part of the display’s instruction.”\n\nThey placed the notebook beneath the table, returned the loose unused labels to the clear folder, and straightened the ordinary tools on the nearby learning shelf. From a few steps away, the display no longer looked damaged or incomplete. It showed five routes that could be checked, followed by a deliberate space for one connection that had not yet been observed.\n\nDeniz opened the room for the evening session. The maps, schedules, objects, labels, and pencil were ready. So was the blank—not as a failure to finish the pattern, but as the one place where new evidence could begin.",
+        "state_delta": {
+          "location": "Public learning room, at the completed route-pattern display",
+          "character_goal": "Deniz has made the display usable before the evening session without inventing missing information.",
+          "knowledge_gained": [
+            "The complete evidence-supported arrangement is five chronological map entries followed by a sixth observation activity.",
+            "The blank display slot is an intentional space for a visitor-tested connection, not a missing route.",
+            "A clear instruction can make the blank usable while preserving the distinction between evidence and speculation."
+          ],
+          "facts_established": [
+            "The five verified entries are mounted in chronological order: 4:10 North Gate, 4:25 Courtyard, 4:40 Clock Room, 4:55 River Walk, and 5:10 Archive.",
+            "The map edges form the broken chevron only in the mounted chronological order.",
+            "The five labels and objects remain paired according to the acetate-grid rule.",
+            "The 5:25 schedule, LEAVE OBSERVATION OPEN label, and plain pencil form the sixth activity.",
+            "The display is open and ready for the evening session."
+          ],
+          "clues_added": [
+            "The visitor instruction reads: TEST ONE CONNECTION. CHECK THE TIME, ARROW, AND LABEL. RECORD IT ONLY IF THE EVIDENCE AGREES."
+          ],
+          "objects_changed": [
+            "The five verified map cards were mounted in chronological order.",
+            "North Gate was paired with the compass, Courtyard with the folded measuring tape, Clock Room with the colored clips, River Walk with the rubber stamp, and Archive with the magnifying glass.",
+            "The sixth schedule was placed below the blank slot.",
+            "The plain pencil was placed beside the sixth schedule.",
+            "The open-observation label and instruction card were fastened beside the blank.",
+            "The notebook was returned beneath the display table and unused labels were returned to the clear folder."
+          ],
+          "relationships_changed": [
+            "The five maps, schedules, labels, objects, edge marks, and acetate-grid pairings are now assembled as one usable tested display.",
+            "The blank slot is linked to visitor observation rather than to an invented sixth route."
+          ],
+          "threads_opened": [
+            "Whether an evening visitor will record a connection that passes the display's evidence test."
+          ],
+          "threads_resolved": [
+            "The central missing-pattern problem is resolved without inventing a sixth map.",
+            "Deniz has chosen the intentional blank over a convenient unsupported guess.",
+            "The display is ready for visitors."
+          ],
+          "handoff_state": "The completed display contains five verified chronological route entries with their matched labels and objects. The 5:25 schedule, LEAVE OBSERVATION OPEN label, plain pencil, and a clear testing instruction occupy the sixth area, whose map-sized slot remains intentionally blank. The room is open for the evening session, and a visitor may now add one connection only after checking its time, arrow, and label."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 16.425,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 739,
+          "usage": {
+            "input_tokens": 7578,
+            "output_tokens": 1770,
+            "total_tokens": 9348
+          },
+          "cost": {
+            "usd": 0.00401835,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.9,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.87,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6069,
+          "output_tokens": 188,
+          "cost": 0.000254898
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.9,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.87,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.96,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 6069,
+            "output_tokens": 188,
+            "cost": 0.000254898
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.541
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 16.966
+    },
+    {
+      "scene": 6,
+      "target_words": 714,
+      "word_count": 641,
+      "contract": {
+        "index": 6,
+        "purpose": "Show the practical consequence of Deniz's evidence-based choice and close the main thread.",
+        "entry_state": "The completed display is open, with five verified entries and a blank sixth space inviting one tested observation.",
+        "beats": [
+          "A visitor follows the schedules and map arrows, checks a connection against the labels, and writes a supported observation beside the pencil.",
+          "Deniz checks that the observation fits the display's rule, then leaves the new entry for future learners as evidence rather than presenting it as certainty."
+        ],
+        "must_include": [
+          "The visitor's observation depends on the display Deniz reconstructed.",
+          "Deniz verifies the observation through the same pattern-testing principle.",
+          "The blank has become a responsible place for new evidence, not a defect."
+        ],
+        "must_not_do": [
+          "Do not introduce a second puzzle or future-discovery subplot.",
+          "Do not undo Deniz's choice or reopen the central problem.",
+          "Do not end with unexplained consequences."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "Scene 5 established the usable display with five tested entries, an intentional blank, and a visitor instruction.",
+          "Scene 4 established that the sixth activity is adding an observed connection.",
+          "Scene 5 established Deniz's decision to preserve uncertainty instead of guessing."
+        ],
+        "handoff": "The display now contains five verified routes and one visitor-tested observation, closing Deniz's preparation task and the missing-pattern problem.",
+        "open_threads_after": []
+      },
+      "envelope": {
+        "prose": "The first visitor arrived a few minutes after the room opened and paused in front of the display. Morning light fell across the five mounted cards, catching the printed arrows and the edges of the labels. The visitor read the instruction beneath the blank space, then looked along the cards in order.\n\n“Test one connection,” the visitor murmured. “Check the time, arrow, and label.”\n\nThey began with the middle of the sequence. The 4:40 card was labeled CLOCK ROOM. Beside it, the colored clips rested in their tray. The next card showed 4:55 and carried the label RIVER WALK. The visitor leaned closer to the edges of the two cards, where the printed marks met.\n\n“Is this the turn?” they asked.\n\nDeniz, who was arranging chairs nearby, came over but did not point to an answer. “What do you see?”\n\n“The arrow on the Clock Room card continues toward the River Walk card,” the visitor said. “And the times go forward from 4:40 to 4:55.”\n\nThey traced the line again with one finger, stopping before touching the cards. Then they checked the labels. CLOCK ROOM appeared under the earlier card, and RIVER WALK appeared under the later one. The transition did not depend on the names sounding as if they belonged together. The printed arrow, the schedule times, and the labels all supported the same connection.\n\nDeniz watched the visitor compare the cards instead of accepting the first explanation that seemed convenient. That was exactly how the display was meant to be used. Its empty space asked for an observation, but its instruction required evidence before a claim could be added.\n\nThe visitor looked at the blank space. “So I can record that?”\n\n“You can record exactly what you tested,” Deniz said. “Not more than that.”\n\nThe visitor took the plain pencil from beside the 5:25 schedule. On the observation card, they wrote:\n\n“4:40 CLOCK ROOM points to 4:55 RIVER WALK.”\n\nThey hesitated, then added, “The times and labels agree.”\n\nDeniz read the sentence without changing it. The claim was narrow enough to check. They compared the visitor’s note with the mounted display: 4:40 was before 4:55; the Clock Room label was attached to the earlier card; the River Walk label was attached to the later one; and the edge arrow continued across that exact turn. The colored clips remained with Clock Room, while the rubber stamp remained with River Walk, just as the acetate grid had established.\n\nDeniz also checked the neighboring cards. The 4:25 Courtyard entry led into the 4:40 Clock Room entry, and the 4:55 River Walk entry followed the tested turn. The new observation fit the sequence rather than standing apart from it. Nothing in the note required a guessed route or a new object. It described a connection already visible when the display was read in order.\n\n“It passes,” Deniz said. “The evidence agrees.”\n\nThe visitor placed the pencil back beside the schedule. Deniz fastened the observation card in the sixth area, leaving the map-sized space above it unfilled. The new writing did not pretend to be a missing map. It showed what one person had checked and found supported.\n\nAnother visitor glanced over and began reading from the 4:10 North Gate card. The display now had five verified routes and one tested observation. The blank space still remained blank, but it no longer looked like damage or an unfinished task. It had become a careful place for evidence to be added—only after someone followed the pattern, checked the details, and wrote down what the display could actually support.\n\nDeniz returned the pencil to its place and left the observation visible for the next learner. The completed display did not claim to contain every possible connection. It showed how to test one, record it honestly, and leave room for evidence that had not yet been found.",
+        "state_delta": {
+          "location": "Public learning room at the open route-pattern display",
+          "character_goal": "Deniz has completed the preparation task and now wants to ensure that the visitor's added observation is supported by the display's evidence.",
+          "knowledge_gained": [
+            "A visitor can use the schedules, arrows, and labels to test a connection independently.",
+            "The 4:40 Clock Room card points to the 4:55 River Walk card, and the times and labels support that connection."
+          ],
+          "facts_established": [
+            "The visitor wrote a supported observation: '4:40 CLOCK ROOM points to 4:55 RIVER WALK. The times and labels agree.'",
+            "Deniz checked the observation against the chronological schedules, card labels, and printed arrow.",
+            "The observation card was placed in the sixth area beside the intentionally blank map-sized slot."
+          ],
+          "clues_added": [
+            "The first visitor's tested connection provides concrete evidence for the open sixth entry."
+          ],
+          "objects_changed": [
+            "The plain pencil was used to write the observation and returned beside the 5:25 schedule.",
+            "The visitor observation card was fastened in the sixth area."
+          ],
+          "relationships_changed": [
+            "The blank slot is now linked to a visitor-tested observation rather than a missing route.",
+            "The visitor's observation has been verified through the same pattern-testing rule Deniz used."
+          ],
+          "threads_opened": [],
+          "threads_resolved": [
+            "A visitor successfully used the reconstructed display to add a valid observation.",
+            "Deniz verified the observation instead of accepting it as unsupported certainty.",
+            "The intentional blank became a responsible place for new evidence, closing the missing-pattern problem."
+          ],
+          "handoff_state": "The display now contains five verified chronological routes and one visitor-tested observation linking the 4:40 Clock Room card to the 4:55 River Walk card. The observation was checked against the schedules, arrows, and labels, then left visible beside the still-blank map-sized space. Deniz's preparation task and the central missing-pattern problem are complete."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 15.263,
+          "structured_parse_retries": [],
+          "errors": [
+            "below_scene_word_budget:535<571"
+          ],
+          "word_count": 535,
+          "usage": {
+            "input_tokens": 7976,
+            "output_tokens": 1563,
+            "total_tokens": 9539
+          },
+          "cost": {
+            "usd": 0.00386945,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "repair_1",
+          "elapsed_seconds": 10.399,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 641,
+          "usage": {
+            "input_tokens": 7416,
+            "output_tokens": 1450,
+            "total_tokens": 8866
+          },
+          "cost": {
+            "usd": 0.00359385,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.94,
+          "no_contradiction": 0.91,
+          "goal_preserved": 0.88,
+          "no_future_leakage": 0.95,
+          "handoff_valid": 0.97
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.94,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 6062,
+          "output_tokens": 188,
+          "cost": 0.000254604
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.94,
+            "no_contradiction": 0.91,
+            "goal_preserved": 0.88,
+            "no_future_leakage": 0.95,
+            "handoff_valid": 0.97
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 6062,
+            "output_tokens": 188,
+            "cost": 0.000254604
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.601
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 26.265
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Establish Deniz's practical goal, the disrupted display, and several plausible explanations for its missing pattern.",
+      "word_count": 497,
+      "location": "Public learning room beside the disrupted route-pattern display",
+      "character_goal": "Deniz wants to reconstruct the display before the evening session without inventing missing information.",
+      "knowledge_gained": [
+        "The display contains five map cards, six schedule entries, six object trays, shuffled labels, and one empty map-sized slot.",
+        "The materials support several possible ordering explanations, including geography, time, and object matching."
+      ],
+      "facts_established": [
+        "Deniz is twenty-one and independently responsible for preparing the display.",
+        "The public learning room contains maps, schedules, labeled materials, ordinary tools, and a display board.",
+        "The map cards show visible arrows.",
+        "The printed schedule times are 4:10, 4:25, 4:40, 4:55, 5:10, and 5:25.",
+        "The empty slot makes the display difficult to use but creates no danger."
+      ],
+      "clues_added": [
+        "The five map labels include NORTH GATE, COURTYARD, ARCHIVE, RIVER WALK, and CLOCK ROOM.",
+        "Two additional labels read CHECK THE TURN and LEAVE OBSERVATION OPEN.",
+        "The six object trays contain a compass, folded measuring tape, small magnifying glass, rubber stamp, colored clips, and a plain pencil."
+      ],
+      "objects_changed": [
+        "Deniz recorded the visible evidence in a notebook.",
+        "The notebook was clipped to the display board.",
+        "Loose labels were placed in a clear folder.",
+        "Object trays were numbered one through six without being matched."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Which pattern orders the five map cards?",
+        "Why are there six schedules and objects but only five map cards?",
+        "Is the empty slot accidental or intentional?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has documented every visible map arrow, schedule time, label, and object but has not placed any card. The five map cards, six schedules, six objects, shuffled labels, and empty display slot remain to be ordered and interpreted."
+    },
+    {
+      "scene": 2,
+      "purpose": "Test and reject a reasonable geographic hypothesis, then use schedules to reveal the next physical clue.",
+      "word_count": 695,
+      "location": "Public learning room, at the route-pattern display table",
+      "character_goal": "Deniz wants to determine the display's evidence-supported order before the evening session without inventing missing information.",
+      "knowledge_gained": [
+        "A west-to-east ordering is a reasonable but incorrect sequence for the five map cards.",
+        "The west-to-east sequence conflicts with explicit schedule times, named room changes, and the cards' printed arrows.",
+        "Each of the first five map cards can be matched to a schedule by comparing visible landmarks, named places, and arrows.",
+        "The five route cards align consistently in chronological order at 4:10, 4:25, 4:40, 4:55, and 5:10.",
+        "The sixth schedule at 5:25 remains separate and does not yet match a map card."
+      ],
+      "facts_established": [
+        "The map cards visibly identify a ferry line, a square, an archive block, a riverside path, and a clock tower.",
+        "The ferry-line card is scheduled at 4:55, not first in the geographic arrangement.",
+        "The clock-tower card is scheduled at 4:40, before the riverside card at 4:55.",
+        "The room changes between the first five entries agree with map arrows only in the tested chronological order.",
+        "The chronological map edges form a broken chevron."
+      ],
+      "clues_added": [
+        "The chevron's point aims beneath the display table.",
+        "The edge marks meet only when the five route cards are arranged chronologically."
+      ],
+      "objects_changed": [
+        "Deniz photographed the chronological arrangement.",
+        "Deniz recorded the tested order in the notebook.",
+        "The five route cards are temporarily arranged chronologically beside their schedules.",
+        "The sixth schedule remains separate; the empty display slot remains empty."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "What does the chevron beneath the table indicate?",
+        "How can five map cards account for six scheduled activities?"
+      ],
+      "threads_resolved": [
+        "The west-to-east hypothesis has been rejected by concrete schedule, landmark, and arrow evidence."
+      ],
+      "handoff_state": "Deniz has tested and rejected west-to-east ordering. The five route cards are arranged in chronological order, and their edge marks form a broken chevron pointing beneath the display table. The sixth schedule and empty display slot remain unresolved."
+    },
+    {
+      "scene": 3,
+      "purpose": "Use the chevron to find a grid that links the ordered maps to the shuffled labels and objects.",
+      "word_count": 608,
+      "location": "Public learning room, at the route-pattern display table with the acetate grid beside the chronological map cards",
+      "character_goal": "Deniz wants to determine how every schedule, label, and object fits the display without inventing missing information.",
+      "knowledge_gained": [
+        "The acetate grid must be aligned with the chronological map edge marks and read across.",
+        "The grid provides a repeatable rule for matching each of the five map cards to an object.",
+        "CHECK THE TURN confirms the transition between the River Walk and Clock Room cards.",
+        "LEAVE OBSERVATION OPEN has no map-card alignment and cannot yet be classified as either an error or an invitation."
+      ],
+      "facts_established": [
+        "The acetate grid was located exactly beneath the chevron's point.",
+        "The five verified object matches are compass with North Gate, folded measuring tape with Courtyard, magnifying glass with Archive, rubber stamp with River Walk, and colored clips with Clock Room.",
+        "The plain pencil remains the sixth unused object.",
+        "The 5:25 schedule remains separate from the five map-card schedules.",
+        "The display's empty slot remains unfilled."
+      ],
+      "clues_added": [
+        "The instruction on the acetate reads: 'Align the edge marks. Read across, not down.'",
+        "The grid's symbols repeatedly match the five route cards to their objects.",
+        "The label 'CHECK THE TURN' verifies the transition between River Walk and Clock Room.",
+        "The label 'LEAVE OBSERVATION OPEN' rests beside the empty slot without matching a map card."
+      ],
+      "objects_changed": [
+        "Deniz retrieved the acetate grid and instruction from beneath the display table.",
+        "The five route cards now have verified object pairings.",
+        "The matched objects were returned to their trays and kept with the corresponding cards.",
+        "The open-observation label was placed beside the blank slot.",
+        "The pencil and sixth schedule remain separate but visible."
+      ],
+      "relationships_changed": [],
+      "threads_opened": [
+        "Is the open-observation label a printing mistake or an intentional sixth activity?",
+        "How does the 5:25 schedule relate to the remaining pencil and empty display slot?",
+        "What should occupy the empty display slot?"
+      ],
+      "threads_resolved": [
+        "The five map cards now have evidence-supported object matches.",
+        "The CHECK THE TURN label has been identified as a verification instruction rather than a sixth route name."
+      ],
+      "handoff_state": "Deniz has used the acetate grid to verify five map-object pairings and has identified CHECK THE TURN as a transition check. The LEAVE OBSERVATION OPEN label, plain pencil, sixth schedule at 5:25, and empty display slot remain unresolved; Deniz must compare all remaining evidence before deciding whether the blank is intentional."
+    },
+    {
+      "scene": 4,
+      "purpose": "Compare every matched item with the schedule and discover evidence that the blank is intentional.",
+      "word_count": 668,
+      "location": "Public learning room at the route-pattern display table",
+      "character_goal": "Deniz wants to apply all verified evidence so the display can be used before the evening session without inventing missing information.",
+      "knowledge_gained": [
+        "The five verified route entries are ordered at 4:10 North Gate, 4:25 Courtyard, 4:40 Clock Room, 4:55 River Walk, and 5:10 Archive.",
+        "The sixth schedule at 5:25 says 'Add one observed connection' and describes an activity rather than a missing route.",
+        "The note beside the blank instructs visitors to record a connection only after checking it.",
+        "The plain pencil is the only object left after the five map-object pairings have been verified, so it belongs with the observation activity.",
+        "A guessed sixth map has no schedule, edge mark, acetate symbol, or other supporting evidence."
+      ],
+      "facts_established": [
+        "The five verified map-object pairs remain consistent with the chronological order and acetate-grid rule.",
+        "The five route schedules and the sixth observation schedule serve different purposes.",
+        "The empty display slot is aligned with the open-observation note."
+      ],
+      "clues_added": [
+        "The sixth schedule explicitly reads '5:25 — Add one observed connection.'",
+        "A printed note beside the blank reads, 'LEAVE OBSERVATION OPEN. Record a connection only after checking it.'"
+      ],
+      "objects_changed": [
+        "Deniz placed the five verified map-object pairs in chronological order: North Gate with the compass, Courtyard with the measuring tape, Clock Room with the colored clips, River Walk with the rubber stamp, and Archive with the magnifying glass.",
+        "The sixth schedule was placed beside the empty slot.",
+        "The plain pencil was placed on top of the sixth schedule.",
+        "Deniz crossed out an unsupported trial sketch in the notebook.",
+        "The notebook now records that the blank is not missing route information."
+      ],
+      "relationships_changed": [
+        "The sixth schedule, pencil, open-observation label, and blank slot are now linked as one participant-observation activity."
+      ],
+      "threads_opened": [
+        "Deniz must apply the complete interpretation to the finished display.",
+        "The evening session will test whether visitors can use the blank to record a supported observation."
+      ],
+      "threads_resolved": [
+        "The five verified map-object pairs are aligned with the tested chronological schedule order.",
+        "The sixth schedule is not a missing sixth route name.",
+        "The pencil is assigned through the remaining verified pattern rather than arbitrary choice.",
+        "The blank is identified as intentional rather than an error."
+      ],
+      "handoff_state": "Deniz has compared every schedule, map, object, label, and slot. Five map-object-label pairs are verified in chronological order; the 5:25 schedule is an activity to add one checked observation; the remaining pencil belongs to that activity; and the blank is intentionally open. Deniz has not yet assembled the final usable display."
+    },
+    {
+      "scene": 5,
+      "purpose": "Apply the accumulated clues, resolve the central problem, and make Deniz choose evidence over a convenient guess.",
+      "word_count": 739,
+      "location": "Public learning room, at the completed route-pattern display",
+      "character_goal": "Deniz has made the display usable before the evening session without inventing missing information.",
+      "knowledge_gained": [
+        "The complete evidence-supported arrangement is five chronological map entries followed by a sixth observation activity.",
+        "The blank display slot is an intentional space for a visitor-tested connection, not a missing route.",
+        "A clear instruction can make the blank usable while preserving the distinction between evidence and speculation."
+      ],
+      "facts_established": [
+        "The five verified entries are mounted in chronological order: 4:10 North Gate, 4:25 Courtyard, 4:40 Clock Room, 4:55 River Walk, and 5:10 Archive.",
+        "The map edges form the broken chevron only in the mounted chronological order.",
+        "The five labels and objects remain paired according to the acetate-grid rule.",
+        "The 5:25 schedule, LEAVE OBSERVATION OPEN label, and plain pencil form the sixth activity.",
+        "The display is open and ready for the evening session."
+      ],
+      "clues_added": [
+        "The visitor instruction reads: TEST ONE CONNECTION. CHECK THE TIME, ARROW, AND LABEL. RECORD IT ONLY IF THE EVIDENCE AGREES."
+      ],
+      "objects_changed": [
+        "The five verified map cards were mounted in chronological order.",
+        "North Gate was paired with the compass, Courtyard with the folded measuring tape, Clock Room with the colored clips, River Walk with the rubber stamp, and Archive with the magnifying glass.",
+        "The sixth schedule was placed below the blank slot.",
+        "The plain pencil was placed beside the sixth schedule.",
+        "The open-observation label and instruction card were fastened beside the blank.",
+        "The notebook was returned beneath the display table and unused labels were returned to the clear folder."
+      ],
+      "relationships_changed": [
+        "The five maps, schedules, labels, objects, edge marks, and acetate-grid pairings are now assembled as one usable tested display.",
+        "The blank slot is linked to visitor observation rather than to an invented sixth route."
+      ],
+      "threads_opened": [
+        "Whether an evening visitor will record a connection that passes the display's evidence test."
+      ],
+      "threads_resolved": [
+        "The central missing-pattern problem is resolved without inventing a sixth map.",
+        "Deniz has chosen the intentional blank over a convenient unsupported guess.",
+        "The display is ready for visitors."
+      ],
+      "handoff_state": "The completed display contains five verified chronological route entries with their matched labels and objects. The 5:25 schedule, LEAVE OBSERVATION OPEN label, plain pencil, and a clear testing instruction occupy the sixth area, whose map-sized slot remains intentionally blank. The room is open for the evening session, and a visitor may now add one connection only after checking its time, arrow, and label."
+    },
+    {
+      "scene": 6,
+      "purpose": "Show the practical consequence of Deniz's evidence-based choice and close the main thread.",
+      "word_count": 641,
+      "location": "Public learning room at the open route-pattern display",
+      "character_goal": "Deniz has completed the preparation task and now wants to ensure that the visitor's added observation is supported by the display's evidence.",
+      "knowledge_gained": [
+        "A visitor can use the schedules, arrows, and labels to test a connection independently.",
+        "The 4:40 Clock Room card points to the 4:55 River Walk card, and the times and labels support that connection."
+      ],
+      "facts_established": [
+        "The visitor wrote a supported observation: '4:40 CLOCK ROOM points to 4:55 RIVER WALK. The times and labels agree.'",
+        "Deniz checked the observation against the chronological schedules, card labels, and printed arrow.",
+        "The observation card was placed in the sixth area beside the intentionally blank map-sized slot."
+      ],
+      "clues_added": [
+        "The first visitor's tested connection provides concrete evidence for the open sixth entry."
+      ],
+      "objects_changed": [
+        "The plain pencil was used to write the observation and returned beside the 5:25 schedule.",
+        "The visitor observation card was fastened in the sixth area."
+      ],
+      "relationships_changed": [
+        "The blank slot is now linked to a visitor-tested observation rather than a missing route.",
+        "The visitor's observation has been verified through the same pattern-testing rule Deniz used."
+      ],
+      "threads_opened": [],
+      "threads_resolved": [
+        "A visitor successfully used the reconstructed display to add a valid observation.",
+        "Deniz verified the observation instead of accepting it as unsupported certainty.",
+        "The intentional blank became a responsible place for new evidence, closing the missing-pattern problem."
+      ],
+      "handoff_state": "The display now contains five verified chronological routes and one visitor-tested observation linking the 4:40 Clock Room card to the 4:55 River Walk card. The observation was checked against the schedules, arrows, and labels, then left visible beside the still-blank map-sized space. Deniz's preparation task and the central missing-pattern problem are complete."
+    }
+  ],
+  "story_title": "The Missing Pattern",
+  "story": "At twenty-one, Deniz was used to being trusted with practical things. That afternoon, the coordinator had left them the key to the public learning room and a short note: Prepare the route-pattern display before the evening session.\n\nThe room was quiet except for the hum of the lights. Along one wall, maps of the city shared space with labeled shelves, object trays, a clock, and a rack of printed schedules. Ordinary tools—a ruler, masking tape, clips, pencils, and a black marker—waited on a side table.\n\nThe display itself looked as if someone had started assembling it and then changed their mind. Five map cards lay across its magnetic surface. Each showed a different part of the city, with arrows printed along some edges. Six schedule cards had been placed in a loose pile below them. Six shallow object trays stood nearby: a compass, a folded measuring tape, a small magnifying glass, a rubber stamp, a set of colored clips, and one plain pencil.\n\nThe labels were no more helpful at first. Deniz found cards reading NORTH GATE, COURTYARD, ARCHIVE, RIVER WALK, and CLOCK ROOM, but they had been shuffled together with two smaller labels: CHECK THE TURN and LEAVE OBSERVATION OPEN. One label had slipped beneath a tray.\n\nAt the center of the display was an empty rectangular slot. It was exactly the size of one map card, yet no sixth map appeared anywhere on the tables or shelves. The blank did not make the room unsafe; it simply broke the display's instructions. A visitor could see pieces of a route without knowing which card belonged first, or what belonged in the empty space.\n\nDeniz set down their bag and looked at the materials without touching them further. Several explanations seemed possible. Perhaps the map cards were meant to run from west to east. Perhaps the printed times determined the order. Perhaps each stop matched an object, and the objects would reveal a sequence the maps did not show. The empty slot might be an accidental gap, or it might be part of the activity.\n\nGuessing would be quick, but a quick arrangement could send six evening participants in the wrong direction. Deniz opened a notebook and drew six columns: maps, arrows, times, labels, objects, and questions.\n\nThey recorded the map titles and copied every visible arrow exactly as printed. Then they listed the schedule times: 4:10, 4:25, 4:40, 4:55, 5:10, and 5:25. They noted which room each schedule mentioned, without yet deciding what the rooms meant. The object trays received numbers from one to six, and the loose labels went into a clear folder.\n\nWhen Deniz finished, the display was still disrupted, but the disorder had become visible evidence instead of a blur. They clipped the notebook to the board and wrote one final question beneath the list:\n\nWhat pattern survives when every piece is tested?\n\nThe evening session was getting closer. Deniz picked up the first map card, careful not to place it anywhere yet.\n\nDeniz began with the most ordinary explanation: geography. The five map cards showed connected parts of the city, and each card included a small north arrow. Their printed landmarks also made the cards distinguishable: one showed a ferry line, another a square, another the archive block, another the riverside path, and the last the clock tower. If the display was meant to guide someone across town, perhaps the cards belonged from west to east.\n\nThey spread the cards on the table and checked the street grids instead of relying on the loose labels. The ferry-line card appeared farthest west. Next came the card whose streets curved around a square, followed by the cards showing the archive block, the riverside path, and the clock tower. From the western edge of the city map to the eastern edge, the arrangement seemed neat enough.\n\nFor a moment, Deniz considered placing the cards in that order. It was a reasonable hypothesis, supported by the maps' geography. Then they pulled the schedule entries closer and read the place names printed beside their times.\n\nThe first five route entries had clear times and room changes:\n\n4:10 — leave North Gate; change at Courtyard.\n4:25 — leave Courtyard; change at Archive.\n4:40 — leave Archive; change at River Walk.\n4:55 — leave River Walk; change at Clock Room.\n5:10 — leave Clock Room; continue to the next marked stop.\n\nThe sixth entry, printed at 5:25, was set apart from the others and did not name a map card. Deniz copied it into the notebook without interpreting it.\n\nThey compared the times with the west-to-east arrangement. The map landmarks could be identified from the drawings, while the route names came from the printed labels and schedule entries, so Deniz checked each proposed card against both sources. The ferry-line card, which the geographic arrangement had placed first, was tied to the 4:55 entry, after the square and archive stops. The clock-tower card was tied to the 4:40 entry, before the riverside card's 4:55 entry. Those times did not support the proposed geographic sequence.\n\nDeniz moved the cards back into a row and tested the arrows. The west-to-east pattern failed twice: the departure times ran backward in the middle, and the printed arrows sent the route across the row instead of steadily eastward. A tidy geographic sequence was still possible as a description of the city, but it could not be the display's working order.\n\n“Useful hypothesis,” Deniz murmured, writing in the notebook. “Wrong sequence.”\n\nThey turned to the times. Deniz matched each of the five cards to a route entry by checking the named place against the card's visible landmark and arrow, then arranged the matches at 4:10, 4:25, 4:40, 4:55, and 5:10. The 5:25 entry stayed below the row because it named no map card. This time, the room changes between the first five entries agreed with the map arrows: each marked exit led toward the room named on the next schedule. The final 5:10 entry pointed onward without requiring a sixth map card.\n\nThe arrangement did not make a straight line. Instead, the small black marks along the card edges met in a broken shape. One mark angled down from the first card. The next angled up, then another down, making three sides of a wide chevron. Its point stopped at the front edge of the display table.\n\nDeniz crouched to check whether the shape had appeared by accident. They shifted the second card half an inch. The chevron broke. They restored it, then tested the third and fourth cards. The marks met only in chronological order.\n\nThe point of the chevron aimed beneath the table, exactly where the room's dim light left a strip of shadow. Deniz did not reach under immediately. First, they photographed the arrangement and recorded the order in the notebook: 4:10, 4:25, 4:40, 4:55, 5:10. The sixth schedule remained separate, and the empty map-sized slot remained empty.\n\nThe time pattern had survived a direct test. The geographic pattern had not. Deniz set a hand on the table's edge and looked toward the indicated space beneath it. Whatever the chevron meant, the next clue was likely waiting there.\n\nDeniz slid down beside the display table and looked directly beneath the point of the chevron. The shadow hid a flat plastic sleeve, but its corner caught the light. They pulled it out carefully.\n\nInside was a transparent acetate sheet, stiff enough to hold its shape. A narrow strip of paper had been tucked beneath it. Deniz read the instruction aloud: “Align the edge marks. Read across, not down.”\n\nThe wording was brief, but it referred to evidence already on the table. Deniz carried the acetate to the five map cards and placed it over the chronological row. At first, the sheet seemed to show only a pale grid. Then Deniz shifted the first card until its downward edge mark met the grid’s first black notch.\n\nThe rest of the marks settled into place.\n\nLines on the acetate crossed details that had been easy to overlook: the direction arrow at North Gate, the measured gap near Courtyard, a tiny printed detail in the Archive block, a turn beside River Walk, and a repeated symbol near the Clock Room. Each detail matched a small symbol printed beside one of the object trays.\n\nDeniz checked the first match. The North Gate card’s direction mark fell into the compass symbol. They placed the compass beside that card.\n\nThe Courtyard card’s measured gap aligned with the folded measuring tape. The Archive card’s tiny detail landed under the magnifying glass. At River Walk, the grid crossed a narrow line that matched the rubber stamp’s square edge. The Clock Room card’s repeated symbol matched the colored clips.\n\nNone of the pairings depended on what seemed most useful. The grid made the same rule visible five times: follow the ordered map’s edge marks, read the symbol where the acetate crosses the card, and match that symbol to an object.\n\nDeniz tested the arrangement by lifting the acetate and setting it down again. The compass belonged at North Gate both times. The measuring tape still matched Courtyard. The pattern did not change when Deniz approached it from a different angle.\n\nA loose label lay under the acetate’s lower edge. It read CHECK THE TURN. When Deniz placed it across the transition between River Walk and Clock Room, its printed arrow pointed toward the same turn shown on the two cards. It was not a sixth route name. It was a check on the matching rule.\n\nAnother label remained in the clear folder: LEAVE OBSERVATION OPEN.\n\nDeniz held it above the final space on the grid. The label had no map edge to align with. No symbol directed it toward the compass, tape, magnifying glass, stamp, or clips. It rested beside the unused display slot instead.\n\nThe plain pencil was still in tray six, untouched. So was the separate 5:25 schedule. Deniz wrote in the notebook: “Five map-object matches verified. CHECK THE TURN confirms the transition. LEAVE OBSERVATION OPEN has no route-card match.”\n\nThey did not call the open label a mistake. The grid had shown what belonged to the five cards, and it had also shown what did not. That distinction mattered. An unexplained label could be a printing error, or it could point to an activity outside the five mapped stops. The acetate supplied evidence for neither conclusion yet.\n\nDeniz returned the five matched objects to their trays and kept the labels beside the chronological cards. The open-observation label remained next to the blank slot, while the pencil and sixth schedule stayed separate but visible.\n\nThe chevron had led to a reliable matching rule. It had not filled the empty space. Deniz would need to compare every remaining item before deciding what that space meant.\n\nDeniz cleared a strip of space beneath the chronological row and laid out the five verified pairs in tested order. The North Gate card went beside the compass, Courtyard beside the folded measuring tape, Clock Room beside the colored clips, River Walk beside the rubber stamp, and Archive beside the magnifying glass. They placed the five route schedules beneath the cards whose landmarks, arrows, and printed times had already been checked.\n\nThe arrangement made the first five entries easy to read:\n\n4:10 — North Gate.\n4:25 — Courtyard.\n4:40 — Clock Room.\n4:55 — River Walk.\n5:10 — Archive.\n\nDeniz paused. The places did not appear in a simple walk from one side of the room to the other, but their times matched the tested order recorded in the notebook. The map edges still formed the broken chevron only in that order. The acetate grid still gave the same object matches when it was aligned with those edges.\n\nThen Deniz picked up the remaining schedule.\n\n5:25 — Add one observed connection.\n\nThey read it twice. It was printed in the same dark type as the other schedules, but unlike them, it named an activity instead of a place. There was no route name after the time, no landmark to locate, and no arrow that could point to a sixth map.\n\nDeniz set the card beside the empty display slot. Its lower edge lined up with a narrow printed note on the board, partly hidden by the loose labels. The note said: “LEAVE OBSERVATION OPEN. Record a connection only after checking it.”\n\nThe wording on the loose label was no longer floating without context. The sixth schedule explained what it was for. The note explained what a visitor would do there. Neither supplied a missing route.\n\nThe pencil remained in tray six. Deniz brought the object trays into a single row and compared them with the notebook. Five trays already had evidence-supported partners: compass, measuring tape, colored clips, rubber stamp, and magnifying glass. Each one had been identified by the acetate symbols, not by appearance or convenience. The pencil was the only object without a map-card symbol because it was reserved for the activity that had no map card.\n\nThat conclusion came from the completed pattern, not from a guess. If Deniz tried to assign the pencil to one of the five routes, one verified object would have to be displaced. If they invented a sixth map, the acetate grid would have no edge mark to align with it, and the sixth schedule would still describe an activity rather than a place.\n\nDeniz tested the tempting alternative in the notebook. In the margin, they sketched a plausible sixth route with a path, a turn, and a labeled destination, then held the notebook near the blank slot. The drawing looked organized. It even made the display seem complete.\n\nBut it failed every test available. No schedule named its destination. No map edge connected to it. No acetate symbol matched it. The drawing could be neat and still be unsupported.\n\nDeniz crossed it out and turned to a clean page.\n\nThey wrote: “5:25 is an observation activity. Pencil is the remaining object by the verified matching pattern. Blank is not missing route information.”\n\nFor a moment, Deniz rested a hand on the empty slot. Leaving it open made the display look unfinished in the ordinary sense. Yet the evidence was consistent: five maps, five tested pairings, one activity for a new observation, and one pencil for recording it. Filling the space with a guessed map would make the display look more finished while making it less truthful.\n\nDeniz kept the open-observation label beside the slot, placed the sixth schedule below it, and set the pencil on top of the schedule. The complete arrangement was not assembled yet, but its meaning was now clear enough to apply. The next step would be to build the display so visitors could follow the tested entries and use the blank for evidence they discovered themselves.\n\nDeniz began with the part that had survived every test: the order of time.\n\nThey lifted the five map cards from the temporary row and mounted them on the display board from left to right. The 4:10 card came first, followed by 4:25, 4:40, 4:55, and 5:10. The cards were not arranged from west to east. They were arranged according to the printed schedules, because that was the order in which the landmarks and room changes agreed with the arrows.\n\nDeniz checked the edges once more before pressing each card flat. The broken chevron appeared across the row. Its points met in the same places as before, just as they had when the cards were laid beside the acetate grid. The chevron did not tell Deniz to invent another card. It confirmed that the five cards belonged in this tested sequence.\n\nUnder the first card, Deniz placed the label NORTH GATE and the compass. Under the second went COURTYARD and the folded measuring tape. The third received CLOCK ROOM and the colored clips. The fourth received RIVER WALK and the rubber stamp. The fifth received ARCHIVE and the small magnifying glass.\n\nDeniz did not attach the labels merely because their names sounded as if they belonged. Each placement had a reason. The acetate grid had matched the objects to the map edges. The schedules had fixed the order. The arrows had checked the transitions. When Deniz read across the row, the same pairings held together without forcing any part of the pattern.\n\nThey stepped back and read the display as a visitor might.\n\n4:10 — NORTH GATE — compass.\n4:25 — COURTYARD — folded measuring tape.\n4:40 — CLOCK ROOM — colored clips.\n4:55 — RIVER WALK — rubber stamp.\n5:10 — ARCHIVE — magnifying glass.\n\nThe sixth schedule remained below the empty slot.\n\n5:25 — Add one observed connection.\n\nDeniz placed the label LEAVE OBSERVATION OPEN beside it and set the plain pencil on top of the schedule. The pencil looked almost too ordinary among the other objects, but its position followed the same evidence. Five objects had been matched through the grid. The pencil was the only object left, and the sixth schedule required something with which a visitor could record an observation.\n\nFor the final instruction, Deniz took a clean card from the supply stack. They considered drawing a sixth map first. A blank map-sized space still invited the eye toward completion. A simple route would be easy to sketch: a line, an arrow, perhaps a destination chosen from one of the loose labels.\n\nBut the possible drawing had no time, no edge mark, no grid symbol, and no supporting label. It would not be a discovery. It would be a decoration pretending to be evidence.\n\nDeniz left the card blank.\n\nInstead, they wrote in clear block letters beneath the open slot:\n\n“TEST ONE CONNECTION. CHECK THE TIME, ARROW, AND LABEL. RECORD IT ONLY IF THE EVIDENCE AGREES.”\n\nThey read the sentence twice. It told visitors what to do without telling them what they would find. It preserved the difference between a tested observation and a convenient guess.\n\nDeniz fastened the instruction card to the board. Then they checked the entire arrangement from the beginning. The schedule times gave the sequence. The map edges formed the chevron in that sequence. The acetate grid supplied the five object pairings. The labels named the verified stops, while CHECK THE TURN remained near the transition between River Walk and Clock Room as a reminder to inspect the change rather than glide past it. The sixth schedule, the remaining pencil, and the open label belonged together beside the blank.\n\nNothing required a made-up sixth route.\n\nMore importantly, making one would contradict the pattern already tested. Deniz wrote one final line in the notebook: “The blank is part of the display’s instruction.”\n\nThey placed the notebook beneath the table, returned the loose unused labels to the clear folder, and straightened the ordinary tools on the nearby learning shelf. From a few steps away, the display no longer looked damaged or incomplete. It showed five routes that could be checked, followed by a deliberate space for one connection that had not yet been observed.\n\nDeniz opened the room for the evening session. The maps, schedules, objects, labels, and pencil were ready. So was the blank—not as a failure to finish the pattern, but as the one place where new evidence could begin.\n\nThe first visitor arrived a few minutes after the room opened and paused in front of the display. Morning light fell across the five mounted cards, catching the printed arrows and the edges of the labels. The visitor read the instruction beneath the blank space, then looked along the cards in order.\n\n“Test one connection,” the visitor murmured. “Check the time, arrow, and label.”\n\nThey began with the middle of the sequence. The 4:40 card was labeled CLOCK ROOM. Beside it, the colored clips rested in their tray. The next card showed 4:55 and carried the label RIVER WALK. The visitor leaned closer to the edges of the two cards, where the printed marks met.\n\n“Is this the turn?” they asked.\n\nDeniz, who was arranging chairs nearby, came over but did not point to an answer. “What do you see?”\n\n“The arrow on the Clock Room card continues toward the River Walk card,” the visitor said. “And the times go forward from 4:40 to 4:55.”\n\nThey traced the line again with one finger, stopping before touching the cards. Then they checked the labels. CLOCK ROOM appeared under the earlier card, and RIVER WALK appeared under the later one. The transition did not depend on the names sounding as if they belonged together. The printed arrow, the schedule times, and the labels all supported the same connection.\n\nDeniz watched the visitor compare the cards instead of accepting the first explanation that seemed convenient. That was exactly how the display was meant to be used. Its empty space asked for an observation, but its instruction required evidence before a claim could be added.\n\nThe visitor looked at the blank space. “So I can record that?”\n\n“You can record exactly what you tested,” Deniz said. “Not more than that.”\n\nThe visitor took the plain pencil from beside the 5:25 schedule. On the observation card, they wrote:\n\n“4:40 CLOCK ROOM points to 4:55 RIVER WALK.”\n\nThey hesitated, then added, “The times and labels agree.”\n\nDeniz read the sentence without changing it. The claim was narrow enough to check. They compared the visitor’s note with the mounted display: 4:40 was before 4:55; the Clock Room label was attached to the earlier card; the River Walk label was attached to the later one; and the edge arrow continued across that exact turn. The colored clips remained with Clock Room, while the rubber stamp remained with River Walk, just as the acetate grid had established.\n\nDeniz also checked the neighboring cards. The 4:25 Courtyard entry led into the 4:40 Clock Room entry, and the 4:55 River Walk entry followed the tested turn. The new observation fit the sequence rather than standing apart from it. Nothing in the note required a guessed route or a new object. It described a connection already visible when the display was read in order.\n\n“It passes,” Deniz said. “The evidence agrees.”\n\nThe visitor placed the pencil back beside the schedule. Deniz fastened the observation card in the sixth area, leaving the map-sized space above it unfilled. The new writing did not pretend to be a missing map. It showed what one person had checked and found supported.\n\nAnother visitor glanced over and began reading from the 4:10 North Gate card. The display now had five verified routes and one tested observation. The blank space still remained blank, but it no longer looked like damage or an unfinished task. It had become a careful place for evidence to be added—only after someone followed the pattern, checked the details, and wrote down what the display could actually support.\n\nDeniz returned the pencil to its place and left the observation visible for the next learner. The completed display did not claim to contain every possible connection. It showed how to test one, record it honestly, and leave room for evidence that had not yet been found.",
+  "word_count": 3848,
+  "target_words": 4200,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.0,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.74,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {
+      "no_contradictions": 0.74
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.85,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 12050,
+      "output_tokens": 166,
+      "cost": 0.0005061
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.96,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.74,
+      "no_repeated_event": 0.93,
+      "ending_consistency": 0.95
+    },
+    "below_threshold": {
+      "no_contradictions": 0.74
+    },
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.85,
+    "shadow_signal": "REVIEW",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 12050,
+      "output_tokens": 166,
+      "cost": 0.0005061
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a production-quality story that successfully executes the StoryContract and meets all acceptance criteria. Deniz is authentically portrayed as a 21-year-old independent learner with appropriate vocabulary, reasoning complexity, and emotional maturity. The narrative demonstrates the theme 'Good solutions come from testing patterns instead of guessing' through concrete, well-scaffolded evidence: the west-to-east geographic hypothesis is tested and rejected (C7), the chronological ordering is verified through multiple independent clues (schedules, edge marks, acetate grid), and the final decision to preserve the intentional blank is grounded in accumulated evidence rather than authority or convenience (C8). Causality is explicit without becoming didactic (C2). The six-scene structure is preserved with strong continuity across all transitions. The ending shows practical consequence: a visitor uses the display to test and record a supported observation, validating Deniz's evidence-based approach. Word count is approximately 4,748, within acceptable range for the target. No combat, no unexplained elements, no benchmark references. The story respects the reader's independence and reasoning capacity throughout. All constraints are satisfied. Average score: 4.0.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 3848,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.96,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.74,
+          "no_repeated_event": 0.93,
+          "ending_consistency": 0.95
+        },
+        "below_threshold": {
+          "no_contradictions": 0.74
+        },
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.85,
+        "shadow_signal": "REVIEW",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 12050,
+          "output_tokens": 166,
+          "cost": 0.0005061
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a production-quality story that successfully executes the StoryContract and meets all acceptance criteria. Deniz is authentically portrayed as a 21-year-old independent learner with appropriate vocabulary, reasoning complexity, and emotional maturity. The narrative demonstrates the theme 'Good solutions come from testing patterns instead of guessing' through concrete, well-scaffolded evidence: the west-to-east geographic hypothesis is tested and rejected (C7), the chronological ordering is verified through multiple independent clues (schedules, edge marks, acetate grid), and the final decision to preserve the intentional blank is grounded in accumulated evidence rather than authority or convenience (C8). Causality is explicit without becoming didactic (C2). The six-scene structure is preserved with strong continuity across all transitions. The ending shows practical consequence: a visitor uses the display to test and record a supported observation, validating Deniz's evidence-based approach. Word count is approximately 4,748, within acceptable range for the target. No combat, no unexplained elements, no benchmark references. The story respects the reader's independence and reasoning capacity throughout. All constraints are satisfied. Average score: 4.0.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.0005061,
+      "final_judge_cost": {
+        "usd": 0.020524,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 56.733,
+    "scene_stage_seconds": 188.704,
+    "final_stage_seconds": 6.928,
+    "total_pipeline_seconds": 252.365
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.01400421,
+    "scene_generation_usd": 0.041088,
+    "scene_continuity_evaluator_usd": 0.00194985,
+    "whole_continuity_evaluator_usd": 0.0005061,
+    "whole_continuity_evaluator_usd_total": 0.0005061,
+    "semantic_judge_usd": {
+      "usd": 0.020524,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.020524,
+    "scene_jev_usd": 0.00194985,
+    "whole_jev_usd": 0.0005061,
+    "whole_jev_usd_total": 0.0005061,
+    "final_haiku": {
+      "usd": 0.020524,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.020524,
+    "total_pipeline_usd": 0.07807216
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 12050,
+      "output_tokens": 166,
+      "cost": 0.0005061
+    },
+    "semantic_judge": {
+      "input_tokens": 18654,
+      "output_tokens": 374,
+      "total_tokens": 19028
+    },
+    "whole_jev": {
+      "input_tokens": 12050,
+      "output_tokens": 166,
+      "cost": 0.0005061
+    },
+    "final_haiku": {
+      "input_tokens": 18654,
+      "output_tokens": 374,
+      "total_tokens": 19028
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
