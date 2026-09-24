@@ -84,6 +84,30 @@ Within an age tier, ties are resolved by:
 If the requested batch is larger than the number of represented age tiers,
 remaining slots are filled by the same deterministic priority order.
 
+## Sentinel repeat lane
+
+A pure `UNKNOWN > THIN` expansion rule can leave a suspicious successful cell
+unrepeated for too long. v1 therefore reserves **at most one** sentinel-repeat
+slot per batch.
+
+A THIN or PROVISIONAL current-protocol cell is sentinel-eligible when any of
+these is true:
+
+- at least one current run failed;
+- the observed minimum final semantic-judge criterion is `<= 3`;
+- semantic repairs average `>= 2.0` per current run.
+
+The sentinel occupies its age-tier slot in the age-balanced first pass. This
+keeps total age coverage balanced while allowing one bounded repeat to resolve
+uncertainty. All other slots remain normal coverage expansion.
+
+The sentinel lane is diagnostic only. It cannot change acceptance thresholds,
+trigger model-specific tuning, or promote a route by itself.
+
+The first real sentinel selected by this rule is
+`MIDDLE_CHILD × emotional_development` after its initial v3 run passed final
+quality gates but required 3 semantic repairs across 9 scene attempts.
+
 ## No invented production-frequency signal
 
 v1 deliberately has no production-frequency weighting.

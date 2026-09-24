@@ -151,6 +151,61 @@ class CapabilityCoverageTests(unittest.TestCase):
         self.assertEqual(candidate["current_status"], "THIN")
         self.assertEqual(candidate["historical_run_count"], 0)
 
+    def test_high_repair_thin_cell_gets_single_sentinel_repeat_slot(self) -> None:
+        spec = case_spec("MIDDLE_CHILD", "emotional_development")
+        current = build_evidence(
+            result=fake_result(
+                protocol="english-story-production.v3",
+                attempts=9,
+                semantic_repairs=3,
+            ),
+            spec_path=spec,
+            run_id="middle-child-emotional-heavy",
+            source="unit_test",
+        )
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=[current])
+        sentinel = [
+            item
+            for item in plan["selected"]
+            if item["selection_lane"] == "SENTINEL_REPEAT"
+        ]
+        self.assertEqual(len(sentinel), 1)
+        self.assertEqual(
+            sentinel[0]["case_id"],
+            "middle-child--emotional-development",
+        )
+        self.assertEqual(sentinel[0]["current_semantic_repairs_per_run"], 3.0)
+        self.assertEqual(
+            plan["summary"]["sentinel_repeat_case_id"],
+            "middle-child--emotional-development",
+        )
+        self.assertEqual(len({item["age_tier"] for item in plan["selected"]}), 8)
+        self.assertEqual(
+            sum(1 for item in plan["selected"] if item["age_tier"] == "MIDDLE_CHILD"),
+            1,
+        )
+
+    def test_single_repair_thin_cell_does_not_trigger_sentinel_repeat(self) -> None:
+        spec = case_spec("TEEN", "emotional_development")
+        current = build_evidence(
+            result=fake_result(
+                protocol="english-story-production.v3",
+                attempts=7,
+                semantic_repairs=1,
+            ),
+            spec_path=spec,
+            run_id="teen-emotional-one-repair",
+            source="unit_test",
+        )
+        plan = build_coverage_plan(WAVE, batch_size=8, evidence=[current])
+        self.assertIsNone(plan["summary"]["sentinel_repeat_case_id"])
+        self.assertFalse(
+            any(
+                item["selection_lane"] == "SENTINEL_REPEAT"
+                for item in plan["selected"]
+            )
+        )
+
     def test_different_evaluation_stack_is_ignored(self) -> None:
         spec = case_spec("CHILD", "emotional_development")
         foreign = build_evidence(
