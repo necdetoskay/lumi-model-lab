@@ -248,6 +248,14 @@ Evidence is append-only. Historical failures are not rewritten when later runs s
 
 Workflow jobs first archive case evidence to dedicated evidence branches. Promotion into main is a governed repository action. Checked-in reports are derived views; raw immutable evidence is authority.
 
+### Fresh-run identity rule
+
+A qualification repeat that may create capability evidence must use a fresh workflow dispatch and therefore a fresh GitHub run id.
+
+Do not use GitHub Actions `rerun` as a qualification-repeat mechanism after an evidence pack has already been created for that run/case identity. The evidence run id is derived from `GITHUB_RUN_ID + CASE_ID`; rerunning the same workflow reuses that identity and can collide with the existing append-only evidence branch.
+
+A rerun may be useful only as an operational probe when no capability evidence was created. Once a case has produced evidence, a new governed observation requires a new workflow run id.
+
 ## 12. Qualification-budget governance
 
 Qualification spend must be explicit and operator-authorized.
