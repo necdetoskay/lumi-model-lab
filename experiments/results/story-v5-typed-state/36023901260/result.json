@@ -1,0 +1,441 @@
+{
+  "protocol_version": "english-story-production.v5-whole-draft-prototype",
+  "accepted": true,
+  "models": {
+    "architect": "openai/gpt-5.6-luna",
+    "writer": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "outcome_extractor": "openai/gpt-5.6-luna"
+  },
+  "spec": "experiments/specs/v5-whole-draft/age5-500-nature.yaml",
+  "state_authority_source": "experiments/state_authority/age5-500-nature.json",
+  "state_authority": {
+    "schema_version": "state-mutation-authority.v1",
+    "revision": "prototype-age5-500-r1",
+    "entities": [
+      {
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "entity_kind": "CHARACTER",
+        "expected_revision": 12,
+        "expected_fingerprint": "prototype-char-r12-fp"
+      },
+      {
+        "entity_ref": "WORLD:CURRENT",
+        "entity_kind": "WORLD",
+        "expected_revision": 8,
+        "expected_fingerprint": "prototype-world-r8-fp"
+      },
+      {
+        "entity_ref": "SAGA:CURRENT",
+        "entity_kind": "SAGA",
+        "expected_revision": 5,
+        "expected_fingerprint": "prototype-saga-r5-fp"
+      },
+      {
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "entity_kind": "OPPORTUNITY",
+        "expected_revision": 3,
+        "expected_fingerprint": "prototype-opportunity-r3-fp"
+      }
+    ],
+    "allowed_mutations": [
+      {
+        "mutation_type": "CHARACTER_GOAL_COMPLETE",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "goal.status",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "garden.blue_tag.location",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "garden.marker_status",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "THREAD_OPEN",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.open",
+        "persistence": "PERSISTENT"
+      },
+      {
+        "mutation_type": "MEMORY_CANDIDATE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "memory.candidates",
+        "persistence": "REVIEWABLE"
+      },
+      {
+        "mutation_type": "OPPORTUNITY_CONSUME",
+        "entity_ref": "OPPORTUNITY:CURRENT",
+        "field_key": "status",
+        "persistence": "PERSISTENT"
+      }
+    ]
+  },
+  "plan": {
+    "story_title": "The Missing Blue Tag",
+    "scene_count_rationale": "Four scenes provide the minimum clear arc: noticing the problem, investigating with a harmless wrong guess, solving it through two earlier observations, and showing the gentle resolution. Each scene has one distinct job and preserves the clues without resetting the story.",
+    "story_contract": {
+      "protagonist_goal": "Eli wants to find the missing blue tag before watering the garden.",
+      "central_problem": "The blue tag that marks the mint bed is missing.",
+      "solution_principle": "Eli looks carefully at small clues and connects them to find where the tag went.",
+      "theme_thread": "Looking carefully can help solve a small problem.",
+      "ending_state": "Eli finds and replaces the blue tag, then waters the mint with the nearby adult.",
+      "must_preserve": [
+        "Eli is five, curious, and patient.",
+        "The setting includes a small community garden, colored plant tags, a watering can, a bench, and a short path.",
+        "The story uses very simple vocabulary, short sentences, and gentle pacing.",
+        "Eli makes one harmless wrong guess and corrects it after looking again.",
+        "The solution uses at least two observations established earlier.",
+        "An adult is nearby but does not solve the problem for Eli.",
+        "The story has one central goal and one central problem.",
+        "Facts and clues remain continuous across all scenes."
+      ],
+      "must_not_happen": [
+        "No frightening danger or threatening event.",
+        "No combat or supernatural powers.",
+        "The adult must not find the tag or tell Eli the answer.",
+        "Eli must not solve the problem without using earlier observations.",
+        "The blue tag must not be replaced by a new tag before the missing one is found."
+      ]
+    },
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "relative_weight": 22,
+        "purpose": "Introduce Eli, the garden, the watering plan, and the missing blue tag.",
+        "beats": [
+          "Eli walks into the small community garden with an adult nearby.",
+          "He sees the red, yellow, and green plant tags, but the mint bed has no blue tag.",
+          "Eli pauses with the watering can and decides to look before watering."
+        ],
+        "prior_evidence": [],
+        "must_include": [
+          "Eli is curious and patient.",
+          "The mint bed is identified by its plants, but its blue tag is missing.",
+          "The bench and short path are visible nearby."
+        ],
+        "must_not_do": [
+          "Do not make the missing tag feel scary.",
+          "Do not have the adult suggest where to look.",
+          "Do not water the garden yet."
+        ],
+        "handoff": "Eli begins a careful search for the blue tag."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "relative_weight": 30,
+        "purpose": "Establish the clues and include Eli's harmless wrong guess.",
+        "beats": [
+          "Eli first guesses that the tag may be hiding under the mint leaves.",
+          "He gently looks under the leaves and finds only soil and small stems.",
+          "He notices a little blue mark on the path near the bench.",
+          "He also notices that a light breeze is moving a loose leaf toward the bench."
+        ],
+        "prior_evidence": [
+          "Scene 1 established that the blue tag is missing from the mint bed.",
+          "Scene 1 established that the bench and short path are close to the mint bed."
+        ],
+        "must_include": [
+          "The wrong guess is harmless.",
+          "Eli corrects the guess by looking again.",
+          "The blue mark and the breeze are clear, simple observations."
+        ],
+        "must_not_do": [
+          "Do not make the breeze dangerous or strong.",
+          "Do not let the adult identify the clue.",
+          "Do not reveal the tag yet."
+        ],
+        "handoff": "Eli follows the blue mark toward the bench, wondering if the breeze moved the tag."
+      },
+      {
+        "index": 3,
+        "role": "PAYOFF",
+        "relative_weight": 28,
+        "purpose": "Use both earlier observations to solve the mystery and recover the tag.",
+        "beats": [
+          "Eli looks under the bench instead of only beside it.",
+          "He sees the blue edge of the tag and remembers the blue mark on the path.",
+          "He connects that clue with the breeze and gently pulls the tag from under the bench.",
+          "Eli smiles because careful looking helped him find it."
+        ],
+        "prior_evidence": [
+          "Scene 2 established a blue mark on the path near the bench.",
+          "Scene 2 established that the breeze was moving loose leaves toward the bench.",
+          "Scene 1 established that the missing object is the blue tag from the mint bed."
+        ],
+        "must_include": [
+          "The solution depends on both the blue mark and the breeze.",
+          "Eli finds the original blue tag under the bench.",
+          "The adult remains nearby but lets Eli make the discovery."
+        ],
+        "must_not_do": [
+          "Do not make the tag appear by magic.",
+          "Do not have the adult point under the bench.",
+          "Do not add a second mystery."
+        ],
+        "handoff": "Eli carries the tag back to the mint bed and gets ready to finish the garden task."
+      },
+      {
+        "index": 4,
+        "role": "RESOLUTION",
+        "relative_weight": 20,
+        "purpose": "Restore the garden's order and gently reinforce the theme.",
+        "beats": [
+          "Eli places the blue tag beside the mint bed.",
+          "The adult stays close while Eli waters the mint carefully.",
+          "Eli says that looking closely helped him find the tag.",
+          "The garden is ready, and Eli feels proud and calm."
+        ],
+        "prior_evidence": [
+          "Scene 3 established that Eli recovered the missing blue tag.",
+          "Scene 1 established that Eli wanted to water the garden.",
+          "Scene 3 established that the adult allowed Eli to solve the problem."
+        ],
+        "must_include": [
+          "The blue tag is back by the mint bed.",
+          "Eli waters the garden with the adult nearby.",
+          "The theme is shown through Eli's action, not a long lesson."
+        ],
+        "must_not_do": [
+          "Do not introduce a new problem.",
+          "Do not imply that the adult solved the mystery.",
+          "Do not make the ending loud or dramatic."
+        ],
+        "handoff": "The story ends with the garden cared for and Eli confident in careful looking."
+      }
+    ]
+  },
+  "plan_parse_failures": [],
+  "draft": {
+    "title": "The Missing Blue Tag",
+    "scenes": [
+      {
+        "index": 1,
+        "role": "SETUP",
+        "prose": "Eli walked into the small community garden with an adult close by. He carried a watering can with both hands. Eli was five. He was curious and patient. He liked to look at every little thing. Near the garden beds stood red, yellow, and green plant tags. But the mint bed had no blue tag. Eli knew the mint by its small, bright leaves and fresh smell. The bench stood nearby. A short path ran beside it. Eli set down the watering can and paused. “I should find the blue tag first,” he said. Then he began a careful search."
+      },
+      {
+        "index": 2,
+        "role": "INVESTIGATION",
+        "prose": "First, Eli guessed the tag might be hiding under the mint leaves. He knelt down. He gently lifted one leaf, then another. He found soil and small stems, but no tag. Eli looked again. His first guess was not right. He stood and walked slowly along the short path. Near the bench, he saw a little blue mark on the path. It was just a small streak. Eli bent close to see it. Then he noticed a loose leaf moving in a light breeze. The leaf slid a tiny bit toward the bench. Eli watched. The breeze was soft, not strong. “Maybe it moved something this way,” he said. He followed the blue mark toward the bench, wondering if the missing tag had traveled there."
+      },
+      {
+        "index": 3,
+        "role": "PAYOFF",
+        "prose": "Eli looked beside the bench. Nothing was there. Then he looked under it. A small blue edge peeked out from the shade. Eli smiled. He remembered the blue mark on the path. The tag must have slid over the path. He remembered the loose leaf moving toward the bench. The light breeze may have pushed the tag along with it. Eli reached under the bench and gently pulled. Out came the original blue tag from the mint bed. The adult stayed nearby and watched quietly. Eli held up the tag. “I found it by looking carefully!” he said. Then he carried it back to the mint bed."
+      },
+      {
+        "index": 4,
+        "role": "RESOLUTION",
+        "prose": "Eli placed the blue tag beside the mint bed. It stood with the red, yellow, and green tags. The adult stayed close while Eli lifted the watering can. He watered the mint carefully. Drops fell on the leaves and darkened the soil. Eli looked at the blue tag and smiled. “Looking closely helped me find it,” he said. The garden was ready. Eli felt proud and calm. Then he set the watering can down beside the neat row of plants."
+      }
+    ]
+  },
+  "draft_parse_failures": [],
+  "story": "Eli walked into the small community garden with an adult close by. He carried a watering can with both hands. Eli was five. He was curious and patient. He liked to look at every little thing. Near the garden beds stood red, yellow, and green plant tags. But the mint bed had no blue tag. Eli knew the mint by its small, bright leaves and fresh smell. The bench stood nearby. A short path ran beside it. Eli set down the watering can and paused. “I should find the blue tag first,” he said. Then he began a careful search.\n\nFirst, Eli guessed the tag might be hiding under the mint leaves. He knelt down. He gently lifted one leaf, then another. He found soil and small stems, but no tag. Eli looked again. His first guess was not right. He stood and walked slowly along the short path. Near the bench, he saw a little blue mark on the path. It was just a small streak. Eli bent close to see it. Then he noticed a loose leaf moving in a light breeze. The leaf slid a tiny bit toward the bench. Eli watched. The breeze was soft, not strong. “Maybe it moved something this way,” he said. He followed the blue mark toward the bench, wondering if the missing tag had traveled there.\n\nEli looked beside the bench. Nothing was there. Then he looked under it. A small blue edge peeked out from the shade. Eli smiled. He remembered the blue mark on the path. The tag must have slid over the path. He remembered the loose leaf moving toward the bench. The light breeze may have pushed the tag along with it. Eli reached under the bench and gently pulled. Out came the original blue tag from the mint bed. The adult stayed nearby and watched quietly. Eli held up the tag. “I found it by looking carefully!” he said. Then he carried it back to the mint bed.\n\nEli placed the blue tag beside the mint bed. It stood with the red, yellow, and green tags. The adult stayed close while Eli lifted the watering can. He watered the mint carefully. Drops fell on the leaves and darkened the soil. Eli looked at the blue tag and smiled. “Looking closely helped me find it,” he said. The garden was ready. Eli felt proud and calm. Then he set the watering can down beside the neat row of plants.",
+  "metrics": {
+    "scene_count": 4,
+    "word_count": 412,
+    "target_words": 500,
+    "scene_word_targets": [
+      {
+        "scene": 1,
+        "target_words": 110
+      },
+      {
+        "scene": 2,
+        "target_words": 150
+      },
+      {
+        "scene": 3,
+        "target_words": 140
+      },
+      {
+        "scene": 4,
+        "target_words": 100
+      }
+    ],
+    "repeat_8gram_ratio": 0.0,
+    "deterministic_errors": []
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.95,
+      "goal_continuity": 0.98,
+      "evidence_progression": 0.96,
+      "no_contradictions": 0.93,
+      "no_redundant_events": 0.96,
+      "payoff_resolution": 0.96,
+      "decomposition_fitness": 0.91
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.89,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 3024,
+      "output_tokens": 189,
+      "cost": 0.000127008
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 5,
+      "coherence": 5,
+      "character_consistency": 5,
+      "age_appropriateness": 5,
+      "creativity": 4,
+      "style_quality": 5,
+      "continuity": 5,
+      "ending_quality": 5
+    },
+    "average": 4.875,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "ACCEPTED. This story meets all production gates. The prose executes the StoryContract and SceneGraph with exceptional fidelity. Eli's voice is authentic to age 5—simple, direct, observant. The two-clue solution (blue mark + breeze) is clearly established in Scene 2 and seamlessly deployed in Scene 3. The harmless wrong guess (leaves) is corrected naturally through re-observation. The adult remains present but passive throughout. Vocabulary, pacing, and sentence structure are consistently age-appropriate. The theme emerges organically from Eli's actions rather than didactic summary. Continuity is flawless across all four scenes. The ending is calm and affirming, matching the gentle tone. Creativity is solid (the blue mark and breeze as dual clues is elegant) but not exceptional—the core mystery is straightforward by design, which is appropriate for the age range. No constraint violations. Average score: 4.875. Ready for publication.",
+    "accepted": true
+  },
+  "repair": null,
+  "length_normalization": null,
+  "story_outcome": {
+    "authority_revision": "prototype-age5-500-r1",
+    "mutations": [
+      {
+        "mutation_type": "CHARACTER_GOAL_COMPLETE",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "goal.status",
+        "base_revision": 12,
+        "base_fingerprint": "prototype-char-r12-fp",
+        "value": "complete",
+        "evidence_scenes": [
+          4
+        ],
+        "reason": "Eli finds and replaces the blue tag, then waters the mint as planned."
+      },
+      {
+        "mutation_type": "CHARACTER_KNOWLEDGE_ADD",
+        "entity_ref": "CHARACTER:PROTAGONIST",
+        "field_key": "knowledge.discoveries",
+        "base_revision": 12,
+        "base_fingerprint": "prototype-char-r12-fp",
+        "value": "Looking closely helped Eli find the missing blue tag.",
+        "evidence_scenes": [
+          2,
+          3,
+          4
+        ],
+        "reason": "Eli uses the blue mark and the breeze as clues and explicitly states what he learned."
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "garden.blue_tag.location",
+        "base_revision": 8,
+        "base_fingerprint": "prototype-world-r8-fp",
+        "value": "beside the mint bed",
+        "evidence_scenes": [
+          4
+        ],
+        "reason": "Eli places the original blue tag beside the mint bed."
+      },
+      {
+        "mutation_type": "WORLD_FACT_SET",
+        "entity_ref": "WORLD:CURRENT",
+        "field_key": "garden.marker_status",
+        "base_revision": 8,
+        "base_fingerprint": "prototype-world-r8-fp",
+        "value": "restored",
+        "evidence_scenes": [
+          4
+        ],
+        "reason": "The blue tag is back with the other plant tags and the garden is ready."
+      },
+      {
+        "mutation_type": "THREAD_RESOLVE",
+        "entity_ref": "SAGA:CURRENT",
+        "field_key": "threads.resolved",
+        "base_revision": 5,
+        "base_fingerprint": "prototype-saga-r5-fp",
+        "value": "missing blue tag",
+        "evidence_scenes": [
+          3,
+          4
+        ],
+        "reason": "Eli recovers the original missing tag and returns it to the mint bed."
+      }
+    ]
+  },
+  "story_outcome_validation_errors": [],
+  "story_outcome_meta": {
+    "parse_failures": [],
+    "usage": {
+      "input_tokens": 2901,
+      "output_tokens": 870,
+      "total_tokens": 3771
+    },
+    "cost": {
+      "usd": 0.0017691,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "commit_ready": true,
+    "database_written": false
+  },
+  "database_commit": {
+    "mode": "DRY_RUN_ONLY",
+    "attempted": false,
+    "reason": "Prototype emits validated StoryOutcome proposal; real LUMI application owns atomic/idempotent DB commit."
+  },
+  "costs": {
+    "plan": {
+      "usd": 0.0022282,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "whole_draft": {
+      "usd": 0.0015176,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_judge": {
+      "usd": 0.004642,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "outcome_extraction": {
+      "usd": 0.0017691,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "repair": null,
+    "length_normalization": null,
+    "known_usd_total_excluding_jev_if_unreported": 0.0101569
+  },
+  "elapsed_seconds": 41.519
+}
