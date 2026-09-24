@@ -445,3 +445,177 @@ Remaining blockers are now less about basic prose generation and more about gove
 5. larger reliability sample before any SaaS SLO claim.
 
 The evidence does **not** justify 80-cell qualification yet, but it does justify treating v5 whole-draft as the leading production-candidate architecture.
+
+
+## Typed state-mutation authority calibration — 36023172608
+
+Evidence branch:
+
+`evidence/story-v5-hardening-36023172608`
+
+The previously discovered free-form StoryOutcome surface was replaced experimentally by a closed application-owned authority contract.
+
+The authority provides:
+
+- an authority revision;
+- canonical entity references;
+- a finite list of allowed mutation types;
+- the exact field key for each mutation;
+- persistence classification.
+
+The model may emit only exact `(mutation_type, entity_ref, field_key)` tuples from that list.
+
+### Result
+
+The age-5 / 500-word story run passed:
+
+- accepted: true;
+- 457 / 500 words;
+- 4 dynamic scenes;
+- deterministic errors: none;
+- JEV: all dimensions above threshold;
+- Haiku: 4.875;
+- StoryOutcome validation errors: none;
+- `commit_ready=true`;
+- database write: false.
+
+The typed extractor emitted only five authorized mutations:
+
+1. protagonist goal completion;
+2. protagonist knowledge addition;
+3. blue-tag world location update;
+4. garden marker-status update;
+5. missing-tag thread resolution.
+
+The earlier over-persistence classes did **not** appear:
+
+- no transient `emotional_state`;
+- no `current_activity`;
+- no temporary inventory add/remove;
+- no generic supportive-relationship mutation;
+- no model-invented field path.
+
+Decision:
+
+> Closed application authority materially improves state safety and becomes a required v5 production boundary.
+
+The model still proposes values and evidence. The application remains authoritative for schema validation, revision/fingerprint checks, conflict resolution and database commit.
+
+## Pairwise judge calibration — Sonnet 5
+
+Haiku's scalar-score saturation motivated a separate relative-quality experiment.
+
+Two already-accepted versions of the same 1,500-word `The Lantern Map` fixture were compared blindly:
+
+- Candidate A: 1,410-word normalized v5 story from run `36017226649`;
+- Candidate B: 1,783-word first-draft v5 story from sweep `36018357054`.
+
+Generator identity was not shown to the judge.
+
+### Initial pairwise transport failure
+
+The first pairwise attempt inside run `36023172608` was not a quality result.
+
+Sonnet 5 consumed 2,199 of a 2,200-token completion budget as hidden reasoning and returned no visible JSON:
+
+`finish_reason=length`
+
+Decision:
+
+- classify this as request-policy failure, not judge/model-quality failure;
+- pairwise profile changed from high reasoning / 2,200 max tokens to medium reasoning / 5,000 max tokens so visible structured output has sufficient budget.
+
+### Successful order-swapped retry — 36023582660
+
+Evidence branch:
+
+`evidence/story-v5-pairwise-36023582660`
+
+Protocol:
+
+`story-pairwise-judge.v1`
+
+Judge:
+
+`anthropic/claude-sonnet-5`
+
+The exact same pair was judged twice:
+
+1. A vs B;
+2. B vs A.
+
+The second result was normalized back to the original candidate labels.
+
+Forward judgment:
+
+- overall: B;
+- preference strength: SMALL.
+
+Reverse-order judgment after normalization:
+
+- overall: TIE;
+- preference strength: SMALL.
+
+Only 3 of 7 criterion preferences remained identical after the order swap.
+
+Calibration result:
+
+- `status=POSITION_SENSITIVE`;
+- `calibrated_winner=INCONCLUSIVE`;
+- overall consistency: false.
+
+Pairwise calibration cost:
+
+- forward: USD 0.029858;
+- reverse: USD 0.026448;
+- total: USD 0.056306.
+
+### Pairwise judge decision
+
+This result does **not** mean Sonnet is a poor evaluator. It means one comparative LLM judgment is not a sufficiently stable authority for close story-quality decisions.
+
+Canonical rules:
+
+1. never choose a model from one A/B judgment;
+2. every counted pairwise observation must be blind to generator identity;
+3. every counted pair must be evaluated in both presentation orders;
+4. an order-sensitive pair is `INCONCLUSIVE`, never a forced winner;
+5. model-level comparison requires multiple stable pairs across distinct fixtures/ages/families/lengths;
+6. Haiku scalar scores and Sonnet pairwise preferences are evidence signals, not independent promotion authority;
+7. application/model-routing decisions must use an evidence aggregate rather than a single judge verdict.
+
+This is a deliberate guard against position bias and judge overconfidence.
+
+## Updated governance status after hardening calibration
+
+The two governance issues discovered by the four-length sweep now have concrete experimental answers:
+
+### State persistence
+
+Status: **promisingly closed at the prototype boundary**.
+
+Typed mutation authority successfully prevented the transient/free-form state classes observed in the untyped extractor.
+
+Still required before LUMI integration:
+
+- real canonical entity IDs;
+- real Character/World/Saga/Opportunity mutation schemas;
+- revision/fingerprint preconditions;
+- deterministic old-value/current-value conflict checks;
+- atomic and idempotent application commit.
+
+### Relative quality judgment
+
+Status: **not closed by one stronger judge**.
+
+Sonnet's order-swapped result was position-sensitive on a close pair. Therefore relative model quality must be inferred from a multi-fixture calibrated comparison set rather than a single story duel.
+
+### Production-candidate direction
+
+The leading generation architecture remains v5 whole-draft.
+
+The next highest-value evidence should come from production-like LUMI context:
+
+`Character + World + Opportunity + Canon + Saga + relevant memories`
+
+rather than immediately expanding to an 80-cell synthetic qualification campaign.
