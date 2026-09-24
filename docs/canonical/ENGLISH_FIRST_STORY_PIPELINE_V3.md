@@ -1,8 +1,8 @@
 # English-First Story Production Pipeline v3 — Asymmetric Word-Budget Gate
 
-Status: **Candidate pending live regression qualification**  
-Date: 2026-09-24  
-Supersedes candidate: `ENGLISH_FIRST_STORY_PIPELINE_V2.md`  
+Status: **ACTIVE MODEL-LAB SHARED GENERATION PROTOCOL**
+Date: 2026-09-24
+Supersedes candidate: `ENGLISH_FIRST_STORY_PIPELINE_V2.md`
 Generation protocol version: `english-story-production.v3`
 
 ## Purpose
@@ -62,6 +62,16 @@ Examples:
 v3 therefore keeps the v1 under-length protection while relaxing only the
 historically dominant overshoot side.
 
+A deterministic replay over the 16 historical v1 initial word-budget misses
+shows the intended selectivity:
+
+- 7 of 11 over-length misses would no longer trigger local repair;
+- all 5 under-length misses would still trigger repair;
+- 4 materially larger over-length misses would still trigger repair.
+
+So v3 removes less than half of all historical misses, and every removed miss
+comes from the overshoot side that motivated the retrofit.
+
 ## Whole-story authority
 
 The completed English master remains a hard deterministic gate at 75%–125% of
@@ -84,20 +94,27 @@ identity, so evidence from different evaluator stacks cannot silently merge.
 v3 uses `english-story-production.v3`. Capability Cube groups evidence by
 generation-protocol SHA, so v1, v2 and v3 results remain separate cohorts.
 
-## Qualification before promotion
+## Qualification and promotion evidence
 
-Use the unchanged Luna / current continuity evaluator / current semantic judge
-stack on a compact cross-age set:
+The unchanged Luna / current continuity evaluator / current semantic judge
+stack was run on the compact cross-age regression set:
 
-1. EARLY_CHILD × puzzle_problem_solving × 500 words
-2. CHILD × exploration_mystery × 1,500 words
-3. MIDDLE_CHILD × exploration_mystery × 2,800 words
-4. TEEN × puzzle_problem_solving × 3,800 words
-5. ADULT × exploration_mystery × 4,200 words
+1. EARLY_CHILD × puzzle_problem_solving × 500 words — accepted, 7 attempts / 1 semantic repair;
+2. CHILD × exploration_mystery × 1,500 words — accepted, 6 / 0;
+3. MIDDLE_CHILD × exploration_mystery × 2,800 words — accepted, 6 / 0;
+4. TEEN × puzzle_problem_solving × 3,800 words — accepted, 6 / 0;
+5. ADULT × exploration_mystery × 4,200 words — accepted, 8 / 0.
 
-Promotion requires all five accepted, minimum semantic-judge criterion >= 4,
-no new deterministic failure signature, and no persistent continuity-repair
-regression in the TEEN control cell.
+All five final semantic-judge minimum criteria were 4. No deterministic failure
+or new continuity-failure signature appeared.
 
-The v2 evidence remains immutable experimental evidence even if v2 is not
-promoted.
+The TEEN control received two additional v3 repeats. They completed at 6 / 0
+and 7 / 0 attempts / semantic repairs. Across the three v3 TEEN runs the
+semantic-repair count was therefore 0 / 0 / 0. This avoided the v2 regression
+pattern while preserving v1's under-length protection.
+
+The full comparison and exact run ids are recorded in
+`docs/experiments/story-word-budget-protocol-v3-qualification-20260924.md`.
+
+v3 is promoted as the active shared generation protocol. The v2 evidence
+remains immutable experimental evidence but v2 itself is not promoted.

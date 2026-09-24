@@ -12,7 +12,7 @@ The active generator baseline for the current English-first LUMI Model Lab story
 - provider path: OpenRouter with the upstream OpenAI provider pinned
 - continuity evaluator implementation at promotion: `typesafe/jev-1.13`
 - semantic judge implementation at promotion: `anthropic/claude-haiku-4.5`
-- story production protocol: current `english_story_pipeline_v1`
+- story production protocol: `english-story-production.v3` (shared protocol; pipeline implementation remains `english_story_pipeline_v1`)
 - runtime registry: `model-runtime-profile.v2`
 
 This is a Model Lab promotion decision. It qualifies Luna as the generator to carry forward into LUMI integration work; it does **not** claim that the LUMI application has already deployed Luna in production.
@@ -73,9 +73,17 @@ The following remain shared pipeline authority:
 
 No Luna-specific relaxation of these gates was introduced for promotion.
 
+## Shared protocol v3 carry-forward
+
+The original Luna generator promotion was established before the v3 local scene-budget retrofit. The generator runtime/profile identity did not change. The shared protocol was subsequently qualified separately under `english-story-production.v3` with a five-case cross-age regression and two additional TEEN control repeats.
+
+v3 passed all five cross-age cases with final semantic-judge minimum criterion 4. The three v3 TEEN × puzzle runs completed with 6/0, 6/0, and 7/0 scene attempts / semantic repairs, avoiding the retry regression observed under the rejected symmetric v2 experiment.
+
+The protocol decision is documented in `docs/canonical/ENGLISH_FIRST_STORY_PIPELINE_V3.md`; exact run evidence is summarized in `docs/experiments/story-word-budget-protocol-v3-qualification-20260924.md`.
+
 ## Qualification evidence
 
-The promotion evidence uses the frozen five-case English benchmark set:
+The original generator promotion evidence uses the frozen five-case English benchmark set:
 
 1. Exploration / Mystery
 2. Friendship / Social

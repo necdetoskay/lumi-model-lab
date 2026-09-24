@@ -10,6 +10,7 @@ from src.capability_cube import (
     default_reading_mode_for_age_tier,
     materialize_evidence,
     narrative_age_tier_for_range,
+    render_cube_markdown,
     resolve_relative_length_class,
     standard_target_words_for_age_tier,
     verify_evidence_integrity,
@@ -539,6 +540,29 @@ class CapabilityCubeTests(unittest.TestCase):
                 ),
                 2,
             )
+
+    def test_markdown_report_exposes_generation_protocol(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec_path = root / "spec.yaml"
+            write_spec(
+                spec_path,
+                age_min=13,
+                age_max=17,
+                family="puzzle_problem_solving",
+                words=3800,
+            )
+            evidence = build_evidence(
+                result=fake_result(
+                    generation_protocol_version="english-story-production.v3",
+                ),
+                spec_path=spec_path,
+                run_id="protocol-v3-report",
+                source="unit_test",
+            )
+            markdown = render_cube_markdown(build_capability_cube([evidence]))
+            self.assertIn("| Protocol |", markdown)
+            self.assertIn("english-story-production.v3", markdown)
 
     def test_committed_qualification_evidence_integrity(self) -> None:
         root = Path("evidence/model_qualification")
