@@ -136,7 +136,7 @@ def call_judge(
         system_prompt=PAIRWISE_PROMPT,
         user_prompt=user,
         temperature=0.0,
-        max_tokens=2200,
+        max_tokens=5000,
         seed=None,
         request_class="pairwise_judge",
     )
