@@ -380,7 +380,9 @@ def allocate_scene_word_targets(plan: dict[str, Any], target_words: int) -> list
     ]
 
 
-def whole_story_questions() -> dict[str, dict[str, Any]]:
+def whole_story_questions(
+    context_pack: dict[str, Any] | None = None,
+) -> dict[str, dict[str, Any]]:
     checks = {
         "causal_chain": (
             "Does the complete story form one causal chain in which each scene materially enables, constrains, advances, or resolves later work?",
@@ -418,6 +420,16 @@ def whole_story_questions() -> dict[str, dict[str, Any]]:
             "The prose reveals redundant fragmentation, an overloaded scene, or a missing causal step.",
         ),
     }
+    if context_pack is not None:
+        checks["context_authority"] = (
+            "Does the complete story obey the supplied application StoryContextPack, including "
+            "character knowledge limits, hidden/prohibited facts, location statuses, Opportunity "
+            "boundaries, Canon rules and Saga reveal limits?",
+            "The story stays inside all supplied context and knowledge authorities.",
+            "The story reveals hidden/prohibited knowledge, crosses an unauthorized boundary, "
+            "contradicts Canon, or upgrades knowledge/location status without authority.",
+        )
+
     questions = {
         key: noul_question(instructions, true_criteria=yes, false_criteria=no)
         for key, (instructions, yes, no) in checks.items()
@@ -438,8 +450,9 @@ def run_jev(
     spec: StorySpec,
     plan: dict[str, Any],
     draft: dict[str, Any],
+    context_pack: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    questions = whole_story_questions()
+    questions = whole_story_questions(context_pack)
     story = assemble_story(draft)
     body = call_openrouter_jev(
         api_key=api_key,
@@ -448,6 +461,7 @@ def run_jev(
             "story_brief": build_labeled_brief(spec),
             "story_contract": plan["story_contract"],
             "scene_graph": plan["scenes"],
+            "application_story_context_pack": context_pack,
             "story": story,
         },
         questions=questions,
@@ -925,7 +939,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             repeat_ratio = normalized_repeat
             deterministic_errors = []
 
-    jev = run_jev(api_key, spec, plan, draft)
+    jev = run_jev(api_key, spec, plan, draft, context_pack)
     judge, judge_meta = run_judge(
         api_key, args.judge, spec, plan, draft, jev, context_pack
     )
@@ -956,7 +970,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             )
             repair_errors = validate_draft(repaired, plan)
             if not repair_errors:
-                repaired_jev = run_jev(api_key, spec, plan, repaired)
+                repaired_jev = run_jev(api_key, spec, plan, repaired, context_pack)
                 repaired_judge, repaired_judge_meta = run_judge(
                     api_key, args.judge, spec, plan, repaired, repaired_jev, context_pack
                 )
