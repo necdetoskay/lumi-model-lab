@@ -1,0 +1,98 @@
+name: Story v5 State Commit Simulation
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-v5-state-commit-simulation.txt
+
+permissions:
+  contents: write
+
+jobs:
+  commit_simulation:
+    runs-on: self-hosted
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Compile simulator
+        run: python -m py_compile experiments/prototypes/state_commit_simulator_v1.py
+
+      - name: First atomic commit
+        run: |
+          mkdir -p runs/story_v5_commit
+          PYTHONPATH=. python experiments/prototypes/state_commit_simulator_v1.py             --state experiments/state_commit/v1/production-like-initial-state.json             --authority experiments/state_authority/age10-1500-production-context.json             --outcome experiments/state_commit/v1/production-like-outcome.json             --idempotency-key story:prodlike-deniz:revision:1             --output-state runs/story_v5_commit/committed-state.json             --output-result runs/story_v5_commit/first-result.json
+
+      - name: Identical replay
+        run: |
+          PYTHONPATH=. python experiments/prototypes/state_commit_simulator_v1.py             --state runs/story_v5_commit/committed-state.json             --authority experiments/state_authority/age10-1500-production-context.json             --outcome experiments/state_commit/v1/production-like-outcome.json             --idempotency-key story:prodlike-deniz:revision:1             --output-state runs/story_v5_commit/replayed-state.json             --output-result runs/story_v5_commit/replay-result.json
+
+      - name: Build stale state
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          source = Path("experiments/state_commit/v1/production-like-initial-state.json")
+          state = json.loads(source.read_text(encoding="utf-8"))
+          state["entities"]["WORLD:CURRENT"]["revision"] = 35
+          Path("runs/story_v5_commit/stale-state.json").write_text(
+              json.dumps(state, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Stale conflict attempt
+        run: |
+          PYTHONPATH=. python experiments/prototypes/state_commit_simulator_v1.py             --state runs/story_v5_commit/stale-state.json             --authority experiments/state_authority/age10-1500-production-context.json             --outcome experiments/state_commit/v1/production-like-outcome.json             --idempotency-key story:prodlike-deniz:stale-attempt             --output-state runs/story_v5_commit/stale-returned-state.json             --output-result runs/story_v5_commit/stale-result.json
+
+      - name: Assert commit semantics
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("runs/story_v5_commit")
+          first = json.loads((root / "first-result.json").read_text())
+          replay = json.loads((root / "replay-result.json").read_text())
+          stale = json.loads((root / "stale-result.json").read_text())
+          committed = json.loads((root / "committed-state.json").read_text())
+          replayed = json.loads((root / "replayed-state.json").read_text())
+          stale_input = json.loads((root / "stale-state.json").read_text())
+          stale_returned = json.loads((root / "stale-returned-state.json").read_text())
+
+          assert first["status"] == "COMMITTED", first
+          assert replay["status"] == "IDEMPOTENT_REPLAY", replay
+          assert stale["status"] == "CONFLICT", stale
+          assert committed == replayed, "replay mutated state"
+          assert stale_input == stale_returned, "conflict caused partial write"
+          assert committed["entities"]["OPPORTUNITY:CURRENT"]["values"]["status"] == "CONSUMED"
+          assert committed["entities"]["WORLD:CURRENT"]["values"]["local_area.OLD_PUMP_PATH.status"] == "RUMORED"
+          assert committed["entities"]["WORLD:CURRENT"]["revision"] == 35
+          assert committed["entities"]["CHARACTER:PROTAGONIST"]["revision"] == 22
+          print("STATE_COMMIT_SIMULATION_PASS")
+          PY
+
+      - name: Archive commit evidence
+        shell: bash
+        run: |
+          DEST="experiments/results/story-v5-state-commit/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp -R runs/story_v5_commit/. "$DEST/"
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "protocol": "state-commit-simulator.v1"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): v5 state commit simulation ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-state-commit-${GITHUB_RUN_ID}"
