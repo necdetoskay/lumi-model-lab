@@ -69,6 +69,9 @@ class CoverageCandidate:
     current_distinct_spec_count: int
     current_anomalous_run_count: int
     current_anomalous_spec_count: int
+    latest_current_run_id: str | None
+    latest_current_run_anomalous: bool
+    sentinel_resolved_by_clean_repeat: bool
     diagnostic_fixture_required: bool
     targeted_intervention_candidate: bool
     current_status: str
@@ -200,16 +203,7 @@ def _sentinel_repeat_candidate(
         if candidate.current_status in {"THIN", "PROVISIONAL"}
         and not candidate.diagnostic_fixture_required
         and not candidate.targeted_intervention_candidate
-        and (
-            candidate.current_failure_count > 0
-            or (
-                candidate.current_minimum_final_criterion is not None
-                and candidate.current_minimum_final_criterion
-                <= SENTINEL_MINIMUM_FINAL_CRITERION_LTE
-            )
-            or candidate.current_semantic_repairs_per_run
-            >= SENTINEL_SEMANTIC_REPAIRS_PER_RUN_GTE
-        )
+        and candidate.latest_current_run_anomalous
     ]
     if not eligible:
         return None
@@ -296,6 +290,16 @@ def build_coverage_candidates(
         current_distinct_specs = len({row.spec_sha256 for row in current})
         anomalous_rows = [row for row in current if _is_current_anomaly(row)]
         current_anomalous_run_count = len(anomalous_rows)
+        latest_current = (
+            max(current, key=lambda row: (row.created_at, row.run_id))
+            if current
+            else None
+        )
+        latest_current_run_anomalous = (
+            _is_current_anomaly(latest_current)
+            if latest_current is not None
+            else False
+        )
         current_anomalous_spec_count = len(
             {row.spec_sha256 for row in anomalous_rows}
         )
@@ -304,6 +308,13 @@ def build_coverage_candidates(
             and current_distinct_specs < 2
         )
         targeted_intervention_candidate = current_anomalous_spec_count >= 2
+        sentinel_resolved_by_clean_repeat = (
+            current_anomalous_run_count > 0
+            and latest_current is not None
+            and not latest_current_run_anomalous
+            and not diagnostic_fixture_required
+            and not targeted_intervention_candidate
+        )
         history_runs = len(historical)
         history_failures = sum(1 for row in historical if not row.accepted)
         history_repairs = sum(_semantic_repairs(row) for row in historical)
@@ -346,6 +357,14 @@ def build_coverage_candidates(
             reasons.append(
                 f"CURRENT_ANOMALOUS_SPEC_COUNT:{current_anomalous_spec_count}"
             )
+            if latest_current is not None:
+                reasons.append(f"LATEST_CURRENT_RUN_ID:{latest_current.run_id}")
+                reasons.append(
+                    "LATEST_CURRENT_RUN_ANOMALOUS:"
+                    + ("true" if latest_current_run_anomalous else "false")
+                )
+            if sentinel_resolved_by_clean_repeat:
+                reasons.append("SENTINEL_RESOLVED_BY_CLEAN_REPEAT")
             if current_minimum is not None:
                 reasons.append(
                     f"CURRENT_MINIMUM_FINAL_CRITERION:{current_minimum}"
@@ -386,6 +405,11 @@ def build_coverage_candidates(
                 current_distinct_spec_count=current_distinct_specs,
                 current_anomalous_run_count=current_anomalous_run_count,
                 current_anomalous_spec_count=current_anomalous_spec_count,
+                latest_current_run_id=(
+                    latest_current.run_id if latest_current is not None else None
+                ),
+                latest_current_run_anomalous=latest_current_run_anomalous,
+                sentinel_resolved_by_clean_repeat=sentinel_resolved_by_clean_repeat,
                 diagnostic_fixture_required=diagnostic_fixture_required,
                 targeted_intervention_candidate=targeted_intervention_candidate,
                 current_status=status,
