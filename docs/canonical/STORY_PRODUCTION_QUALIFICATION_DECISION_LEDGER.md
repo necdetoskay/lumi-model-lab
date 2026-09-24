@@ -512,3 +512,82 @@ Decision:
 Reference:
 
 `docs/canonical/STORY_PRODUCTION_V5_WHOLE_DRAFT_PROTOTYPE.md`
+
+
+## 2026-09-24 — Close v5 state proposal surface with application-owned authority
+
+Evidence:
+
+`36023172608`
+
+Decision:
+
+The untyped StoryOutcome shape is not acceptable for production persistence.
+
+The v5 candidate now requires a closed State Mutation Authority containing:
+
+- authority revision;
+- canonical entity reference;
+- expected entity revision;
+- expected entity fingerprint;
+- allowed mutation type;
+- allowed field key;
+- persistence classification.
+
+A model proposal must copy the matching `base_revision` and `base_fingerprint` and may not invent a tuple outside the authority.
+
+The first typed calibration produced five authorized, evidence-backed mutations and no transient emotional/activity/inventory/relationship persistence.
+
+Permanent rule:
+
+> Story evidence is necessary but never sufficient to create a database mutation. Persistence authority belongs to the application contract.
+
+Real LUMI commit still requires deterministic revision/fingerprint/conflict validation and atomic/idempotent commit.
+
+## 2026-09-24 — Strong pairwise judge is evidence, not single-verdict authority
+
+Calibration pair:
+
+Two accepted versions of the same 1,500-word fixture.
+
+Judge:
+
+`anthropic/claude-sonnet-5`
+
+Initial request failure in run `36023172608`:
+
+- high reasoning;
+- max completion 2,200;
+- reasoning consumed 2,199 tokens;
+- no visible JSON;
+- classify as request-policy failure, not judge-quality evidence.
+
+Fresh corrected run:
+
+`36023582660`
+
+Policy:
+
+- medium reasoning;
+- max completion 5,000;
+- blind A/B comparison;
+- second blind comparison with candidate order reversed;
+- normalize the reversed decision back to original labels.
+
+Observed:
+
+- forward overall: B / SMALL;
+- reverse normalized overall: TIE / SMALL;
+- stable criteria: 3/7;
+- calibration: `POSITION_SENSITIVE`;
+- calibrated winner: `INCONCLUSIVE`.
+
+Decision:
+
+- never choose a model from one pairwise judgment;
+- never count a pair unless presentation-order sensitivity is tested;
+- order-sensitive pairs are inconclusive;
+- model-level preference requires multiple stable comparisons across distinct fixtures;
+- Haiku scalar score and Sonnet pairwise preference remain measurement signals, not promotion authority.
+
+The purpose of the pairwise layer is to improve discrimination, not to replace one unquestioned judge with another.
