@@ -1,0 +1,138 @@
+name: Capability Qualification Wave
+
+on:
+  workflow_dispatch:
+    inputs:
+      wave:
+        description: 'Qualification wave manifest'
+        required: true
+        default: 'configs/qualification_waves/age-standard-v1.yaml'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: self-hosted
+    outputs:
+      matrix: ${{ steps.compile.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Validate and compile wave matrix
+        id: compile
+        shell: bash
+        env:
+          WAVE_PATH: ${{ inputs.wave }}
+        run: |
+          python -m src.qualification_wave validate --wave "$WAVE_PATH"
+          MATRIX="$(python -m src.qualification_wave matrix --wave "$WAVE_PATH")"
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+
+  qualify:
+    needs: prepare
+    runs-on: self-hosted
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify OpenRouter credential
+        shell: bash
+        run: |
+          if [ -z "$OPENROUTER_API_KEY" ]; then
+            echo '::error::Repository secret OPENROUTER_API_KEY is not configured.'
+            exit 1
+          fi
+      - name: Run qualification case
+        id: qualify
+        shell: bash
+        env:
+          MODEL_ID: ${{ matrix.generator_model }}
+          CONTINUITY_EVALUATOR_MODEL: ${{ matrix.continuity_evaluator_model }}
+          SEMANTIC_JUDGE_MODEL: ${{ matrix.semantic_judge_model }}
+          SPEC_PATH: ${{ matrix.spec_path }}
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          python -m src.english_story_pipeline \
+            --model "$MODEL_ID" \
+            --continuity-evaluator-model "$CONTINUITY_EVALUATOR_MODEL" \
+            --semantic-judge-model "$SEMANTIC_JUDGE_MODEL" \
+            --spec "$SPEC_PATH"
+      - name: Build immutable qualification evidence pack
+        if: always()
+        shell: bash
+        env:
+          SPEC_PATH: ${{ matrix.spec_path }}
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          EVIDENCE_SOURCE=""
+          if [ -f runs/english_story_pipeline/result.json ]; then
+            EVIDENCE_SOURCE="runs/english_story_pipeline/result.json"
+          elif [ -f runs/english_story_pipeline/failure.json ]; then
+            EVIDENCE_SOURCE="runs/english_story_pipeline/failure.json"
+          fi
+          if [ -z "$EVIDENCE_SOURCE" ]; then
+            echo '::error::No result.json or failure.json was produced.'
+            exit 1
+          fi
+          EVIDENCE_RUN_ID="$GITHUB_RUN_ID-$CASE_ID"
+          python -m src.capability_cube pack \
+            --result "$EVIDENCE_SOURCE" \
+            --spec "$SPEC_PATH" \
+            --run-id "$EVIDENCE_RUN_ID" \
+            --output-root evidence/model_qualification
+          python -m src.capability_cube verify \
+            --evidence-root evidence/model_qualification
+      - name: Archive qualification evidence branch
+        if: always()
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          EVIDENCE_RUN_ID="$GITHUB_RUN_ID-$CASE_ID"
+          DEST="evidence/model_qualification"
+          if [ ! -d "$DEST" ]; then
+            echo '::error::Evidence directory was not created.'
+            exit 1
+          fi
+          if git diff --quiet -- "$DEST" && \
+             [ -z "$(git ls-files --others --exclude-standard "$DEST")" ]; then
+            echo '::error::No new evidence was produced.'
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(models): archive qualification case $EVIDENCE_RUN_ID"
+          git push origin "HEAD:refs/heads/evidence/run-$EVIDENCE_RUN_ID"
+          {
+            echo "### Qualification evidence"
+            echo "- case: `$CASE_ID`"
+            echo "- evidence branch: `evidence/run-$EVIDENCE_RUN_ID`"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload secondary pipeline artifact
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: capability-wave-${{ github.run_id }}-${{ matrix.case_id }}
+          path: runs/english_story_pipeline/
+          if-no-files-found: warn
+          retention-days: 14
