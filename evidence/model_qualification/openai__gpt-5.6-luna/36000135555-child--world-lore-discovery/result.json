@@ -1,0 +1,1835 @@
+{
+  "pipeline": "english_story_pipeline_v1",
+  "models": {
+    "generator": "openai/gpt-5.6-luna",
+    "continuity_evaluator": "typesafe/jev-1.13",
+    "semantic_judge": "anthropic/claude-haiku-4.5",
+    "jev": "typesafe/jev-1.13",
+    "judge": "anthropic/claude-haiku-4.5"
+  },
+  "generation_protocol_version": "english-story-production.v3",
+  "evaluation_protocol_version": "english-story-evaluation.v1",
+  "spec": "data/specifications/waves/age-relative-standard-v3-all-families/child--world-lore-discovery.yaml",
+  "accepted": true,
+  "plan_result": {
+    "pipeline": "english_scene_plan_smoke_v1",
+    "planner_model": "openai/gpt-5.6-luna",
+    "jev_model": "typesafe/jev-1.13",
+    "judge_model": "anthropic/claude-haiku-4.5",
+    "spec": "data/specifications/waves/age-relative-standard-v3-all-families/child--world-lore-discovery.yaml",
+    "accepted": true,
+    "deterministic_errors": [],
+    "plan": {
+      "story_title": "The Story Behind the Marker",
+      "story_contract": {
+        "protagonist_goal": "Deniz wants to explain why the familiar landmark has different stories and create the fairest account.",
+        "central_problem": "An old map, an oral memory, and a present-day inscription describe the same landmark differently.",
+        "solution_principle": "Compare sources, separate observation from interpretation, and preserve uncertainty instead of forcing one perfect answer.",
+        "theme_thread": "Understanding grows when evidence, memory, and incomplete stories are considered together.",
+        "ending_state": "Deniz preserves a layered account: the marker likely served water-related and community purposes, while its exact first use remains uncertain.",
+        "required_constraint_ids": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C10",
+          "C11"
+        ],
+        "prohibited_events": [
+          "No combat or danger-based confrontation.",
+          "Do not reveal a perfect answer before Scene 5.",
+          "Do not treat memory, inference, or inscription as automatically complete truth.",
+          "Do not let an adult solve the investigation for Deniz.",
+          "Do not introduce benchmark or testing language."
+        ]
+      },
+      "scenes": [
+        {
+          "index": 1,
+          "purpose": "Deniz begins an archive investigation after noticing conflicting descriptions of the neighborhood marker.",
+          "entry_state": "Deniz knows the landmark from neighborhood walks and has seen its present-day inscription.",
+          "beats": [
+            "Deniz reads that the marker was the neighborhood's first well, then remembers neighbors calling it the meeting stone.",
+            "Deniz asks the archive worker for older evidence and chooses to compare the stories carefully."
+          ],
+          "must_include": [
+            "Deniz is seven and makes the investigation independently, with simple help from an archive worker.",
+            "The landmark, local archive, and central question are clearly introduced."
+          ],
+          "must_not_do": [
+            "Do not give Deniz a final explanation or introduce unrelated history.",
+            "Do not make the archive worker investigate instead of Deniz."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C5",
+            "C11"
+          ],
+          "prior_evidence": [],
+          "handoff": "Deniz has the inscription's claim and a remembered alternate name, but needs older evidence from the map room.",
+          "open_threads_after": [
+            "What does the old map call the landmark?"
+          ]
+        },
+        {
+          "index": 2,
+          "purpose": "Deniz examines the old map and discovers a meaningful difference without deciding which source is correct.",
+          "entry_state": "Deniz is in the map room, carrying the inscription's claim and the remembered name.",
+          "beats": [
+            "Deniz finds a map showing the marker beside a water symbol, labeled 'spring stone,' not 'first well.'",
+            "Deniz notices the map's date and worn edges, then copies the label without changing its meaning."
+          ],
+          "must_include": [
+            "The old map is a distinct historical source.",
+            "Deniz records the map's words as evidence, not as proof of the landmark's entire history."
+          ],
+          "must_not_do": [
+            "Do not declare the map older or more truthful simply because it is old.",
+            "Do not erase the inscription or remembered name."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C4",
+            "C6",
+            "C7"
+          ],
+          "prior_evidence": [
+            "Scene 1 established the present inscription calling the landmark the neighborhood's first well.",
+            "Scene 1 established that neighbors use the different name 'meeting stone.'"
+          ],
+          "handoff": "The map connects the marker with water, while the inscription and remembered name still suggest other meanings.",
+          "open_threads_after": [
+            "Why does the oral memory call it a meeting stone?",
+            "Does the map's water symbol describe the marker's original purpose?"
+          ]
+        },
+        {
+          "index": 3,
+          "purpose": "Deniz listens to an oral-history recording and learns how memory can preserve use without proving origin.",
+          "entry_state": "Deniz has the map's water-related label and the conflicting inscription and neighborhood name.",
+          "beats": [
+            "A recording says an elder met friends at the marker after market days and called it the meeting stone.",
+            "Deniz writes: remembered use is known from the recording; the marker's first purpose remains uncertain."
+          ],
+          "must_include": [
+            "The oral-history recording is a distinct source with a specific remembered detail.",
+            "Deniz separates what the speaker remembered from what the recording proves."
+          ],
+          "must_not_do": [
+            "Do not dismiss the speaker because memory is incomplete.",
+            "Do not turn the recording into proof that the marker was never water-related."
+          ],
+          "constraint_ids": [
+            "C4",
+            "C7",
+            "C8",
+            "C9"
+          ],
+          "prior_evidence": [
+            "The old map labeled the landmark 'spring stone' beside a water symbol.",
+            "The present inscription called it the neighborhood's first well.",
+            "Neighbors used the name 'meeting stone' before Deniz heard the recording."
+          ],
+          "handoff": "Deniz now has map evidence and remembered community use, but must inspect the present landmark for observable clues.",
+          "open_threads_after": [
+            "What can the stone itself show?",
+            "How might water use and meeting use fit together?"
+          ]
+        },
+        {
+          "index": 4,
+          "purpose": "Deniz visits the landmark and tests the sources against present-day observations.",
+          "entry_state": "Deniz has three names or descriptions but no careful observation of the stone's physical features.",
+          "beats": [
+            "At the landmark, Deniz observes a shallow worn basin, a channel toward the old street, and no proof of the exact date.",
+            "Deniz compares those observations with the map, recording, and inscription, marking facts, inferences, and uncertainties."
+          ],
+          "must_include": [
+            "The neighborhood is shown as a present-day place connected to the archive evidence.",
+            "Deniz communicates findings aloud and welcomes a neighbor's clarification without accepting it blindly."
+          ],
+          "must_not_do": [
+            "Do not invent a hidden inscription, magical clue, or certain answer.",
+            "Do not use conflict or danger to create tension."
+          ],
+          "constraint_ids": [
+            "C2",
+            "C3",
+            "C4",
+            "C8"
+          ],
+          "prior_evidence": [
+            "The map showed a water symbol and the label 'spring stone.'",
+            "The recording remembered people meeting there after market days.",
+            "The inscription identified the landmark as the first well."
+          ],
+          "handoff": "Physical clues support water-related use, while the recording supports later meeting use; Deniz must build the fairest account.",
+          "open_threads_after": [
+            "Can one account respect all three sources without pretending they agree completely?"
+          ]
+        },
+        {
+          "index": 5,
+          "purpose": "Deniz applies the evidence by creating a careful archive note that explains agreement, conflict, and uncertainty.",
+          "entry_state": "Deniz has source notes and direct observations but has not yet formed a public explanation.",
+          "beats": [
+            "Deniz drafts three sections: known, inferred, and uncertain, linking each statement to the map, recording, inscription, or observation.",
+            "The archive worker helps display Deniz's note: the marker likely served water needs and later became a meeting place."
+          ],
+          "must_include": [
+            "The decisive payoff is Deniz's evidence-based archive note, not an adult's conclusion.",
+            "The note preserves uncertainty about the first use and the inscription's exact date."
+          ],
+          "must_not_do": [
+            "Do not force every source into one identical story.",
+            "Do not claim the exact original purpose has been proven."
+          ],
+          "constraint_ids": [
+            "C1",
+            "C2",
+            "C4",
+            "C6",
+            "C7",
+            "C8",
+            "C9",
+            "C11"
+          ],
+          "prior_evidence": [
+            "The map supplied a water-related label and symbol.",
+            "The recording supplied remembered meeting use.",
+            "Deniz observed the basin and channel and read the present inscription."
+          ],
+          "handoff": "The archive now holds Deniz's layered explanation, while the neighborhood can see what is known, inferred, and uncertain.",
+          "open_threads_after": [
+            "Who first carved the marker's inscription, and why was its wording changed?"
+          ]
+        },
+        {
+          "index": 6,
+          "purpose": "Deniz shares the careful account in the neighborhood and closes the investigation while preserving one evidence-based question.",
+          "entry_state": "Deniz's archive note has been accepted, but the marker's earliest inscription history remains unknown.",
+          "beats": [
+            "Deniz explains to a neighbor that water use and meeting use can both belong to the marker's story.",
+            "Deniz leaves the question on the archive card, inviting future evidence rather than guessing an answer."
+          ],
+          "must_include": [
+            "The main investigation ends with a defensible account and no forced certainty.",
+            "One bounded future question remains: who first carved the inscription and why its wording changed."
+          ],
+          "must_not_do": [
+            "Do not introduce a new subplot or a second mystery.",
+            "Do not solve the inscription question without evidence."
+          ],
+          "constraint_ids": [
+            "C3",
+            "C4",
+            "C5",
+            "C8",
+            "C10"
+          ],
+          "prior_evidence": [
+            "Scene 5 established Deniz's displayed note separating known, inferred, and uncertain claims.",
+            "Scene 5 established the likely combination of water-related and meeting uses.",
+            "Scene 5 preserved uncertainty about the inscription's exact date and first wording."
+          ],
+          "handoff": "Deniz's account is preserved and shared; only the inscription's authorship and wording change remain for a future evidence search.",
+          "open_threads_after": [
+            "Who first carved the inscription, and why did its wording change?"
+          ]
+        }
+      ]
+    },
+    "jev": {
+      "mode": "advisory_repair",
+      "threshold": 0.8,
+      "positive_probabilities": {
+        "causal_continuity": 0.94,
+        "goal_continuity": 0.96,
+        "constraint_coverage": 0.6,
+        "information_progression": 0.94,
+        "no_unexplained_dependencies": 0.89,
+        "no_early_resolution": 0.93,
+        "ending_coherence": 0.95
+      },
+      "below_threshold": {
+        "constraint_coverage": 0.6
+      },
+      "next_action": "CONTINUE",
+      "next_action_confidence": 0.83,
+      "shadow_signal": "REVIEW",
+      "resolved_model": "typesafe/jev-1.13-20260917",
+      "provider": "TypeSafe",
+      "usage": {
+        "input_tokens": 3527,
+        "output_tokens": 185,
+        "cost": 0.000148134
+      }
+    },
+    "haiku": {
+      "scores": {
+        "causal_continuity": 5,
+        "protagonist_goal_continuity": 5,
+        "constraint_coverage": 4,
+        "information_progression": 5,
+        "no_unexplained_dependencies": 5,
+        "no_early_resolution": 5,
+        "ending_coherence": 5
+      },
+      "average": 4.857,
+      "minimum": 4,
+      "critical_failures": [],
+      "scene_risks": [
+        {
+          "scene": 1,
+          "risk": "Archive worker must remain a minimal helper; risk of adult solving the investigation if dialogue is not carefully controlled during prose writing."
+        },
+        {
+          "scene": 2,
+          "risk": "The map's label 'spring stone' must not be presented as definitive proof; Deniz must record it as evidence, not conclusion."
+        },
+        {
+          "scene": 3,
+          "risk": "The oral-history recording must preserve the speaker's memory as a valid source without dismissing it as incomplete or elevating it as proof of origin."
+        },
+        {
+          "scene": 4,
+          "risk": "Physical observations (basin, channel) must support inference without creating false certainty; Deniz must explicitly mark what is observed vs. inferred."
+        },
+        {
+          "scene": 5,
+          "risk": "The archive note is the decisive payoff; it must be Deniz's work, not an adult's summary. The note must preserve uncertainty about the inscription's date and first wording."
+        },
+        {
+          "scene": 6,
+          "risk": "The future question about inscription authorship and wording change must be bounded and evidence-based, not a new mystery or subplot."
+        }
+      ],
+      "summary": "This plan demonstrates strong causal continuity, protagonist agency, and information progression. Deniz's goal remains stable across all six scenes: to explain the landmark's conflicting descriptions and create a fair account. The three sources (old map, oral-history recording, present inscription) are distinct and meaningfully disagree (C6, C7). The plan explicitly separates observation from interpretation (C8) and avoids early resolution (C9). Scene 5 delivers the decisive payoff—Deniz's archive note—and Scene 6 resolves consequences by sharing the account and preserving one evidence-based question (C10). Constraint coverage scores 4 rather than 5 because C1 (age-appropriate vocabulary, sentence structure, and concept complexity) cannot be fully verified from the plan alone; it depends entirely on prose execution. The plan structure is sound and ready for writing. Critical attention during prose composition should focus on: (1) keeping the archive worker minimal and non-investigative; (2) ensuring Deniz records evidence without forcing conclusions; (3) preserving memory as valid without treating it as proof; (4) marking observations, inferences, and uncertainties explicitly; and (5) keeping the final question bounded and evidence-based. No contradictions, unexplained dependencies, or disconnected episodes are present.",
+      "accepted": true
+    },
+    "costs": {
+      "planner": {
+        "usd": 0.0042274,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "jev": 0.000148134,
+      "haiku": {
+        "usd": 0.007247,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    },
+    "usage": {
+      "planner": {
+        "input_tokens": 977,
+        "output_tokens": 3360,
+        "total_tokens": 4337
+      },
+      "jev": {
+        "input_tokens": 3527,
+        "output_tokens": 185,
+        "cost": 0.000148134
+      },
+      "haiku": {
+        "input_tokens": 3712,
+        "output_tokens": 707,
+        "total_tokens": 4419
+      }
+    },
+    "request_evidence": {
+      "planner_structured_parse_retries": [],
+      "planner": {
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "haiku_structured_parse_retries": [],
+      "haiku": {
+        "reasoning": {
+          "effort": "none",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "repair_attempts": []
+  },
+  "scene_budgets": [
+    195,
+    232,
+    255,
+    255,
+    308,
+    255
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "target_words": 195,
+      "word_count": 201,
+      "contract": {
+        "index": 1,
+        "purpose": "Deniz begins an archive investigation after noticing conflicting descriptions of the neighborhood marker.",
+        "entry_state": "Deniz knows the landmark from neighborhood walks and has seen its present-day inscription.",
+        "beats": [
+          "Deniz reads that the marker was the neighborhood's first well, then remembers neighbors calling it the meeting stone.",
+          "Deniz asks the archive worker for older evidence and chooses to compare the stories carefully."
+        ],
+        "must_include": [
+          "Deniz is seven and makes the investigation independently, with simple help from an archive worker.",
+          "The landmark, local archive, and central question are clearly introduced."
+        ],
+        "must_not_do": [
+          "Do not give Deniz a final explanation or introduce unrelated history.",
+          "Do not make the archive worker investigate instead of Deniz."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C5",
+          "C11"
+        ],
+        "prior_evidence": [],
+        "handoff": "Deniz has the inscription's claim and a remembered alternate name, but needs older evidence from the map room.",
+        "open_threads_after": [
+          "What does the old map call the landmark?"
+        ]
+      },
+      "envelope": {
+        "prose": "Deniz was seven, and they knew the old stone marker from walks through the neighborhood. It stood beside the little square, under a tree with low branches.\n\nToday, Deniz leaned close to its metal sign. The sign said, “This was our neighborhood’s first well.”\n\n“First well?” Deniz whispered.\n\nAt home, neighbors had called the same place the meeting stone. Mrs. Vale said people still met there after busy days. A well and a meeting stone were not the same thing. Which story was right?\n\nDeniz carried a small notebook to the local archive. Inside were tall shelves, quiet tables, and a room filled with old maps. At the desk, an archive worker smiled.\n\n“What are you looking for?” she asked.\n\n“The truth about the stone,” Deniz said. “The sign calls it the first well, but people call it the meeting stone. I want to compare the stories.”\n\nThe worker pointed to the map room. “You may look at the maps. I can help you handle them.”\n\nDeniz opened the notebook and made two lines:\n\nKnown from the sign: first well.\nRemembered name: meeting stone.\n\nThen Deniz added, “I need older evidence.” With a pencil ready, they walked into the map room.",
+        "state_delta": {
+          "location": "The local archive's map room",
+          "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+          "knowledge_gained": [
+            "The present-day sign calls the landmark the neighborhood's first well.",
+            "Neighbors use the name meeting stone."
+          ],
+          "facts_established": [
+            "Deniz is seven and knows the landmark from neighborhood walks.",
+            "The landmark stands beside the neighborhood square.",
+            "The landmark is connected to the local archive investigation."
+          ],
+          "clues_added": [
+            "The present inscription says the stone was the neighborhood's first well.",
+            "The remembered name meeting stone may describe a different use or story."
+          ],
+          "objects_changed": [
+            "Deniz began a notebook with separate notes for the sign and the remembered name."
+          ],
+          "relationships_changed": [
+            "The archive worker gave Deniz permission to examine old maps and offered simple handling help."
+          ],
+          "threads_opened": [
+            "What does the old map call the landmark?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz is in the archive map room with a notebook, the inscription's claim that the landmark was the neighborhood's first well, and the remembered alternate name meeting stone. Deniz is ready to examine older maps, while no explanation has yet been chosen."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 13.572,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 201,
+          "usage": {
+            "input_tokens": 3888,
+            "output_tokens": 820,
+            "total_tokens": 4708
+          },
+          "cost": {
+            "usd": 0.00195585,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.9,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.87,
+          "no_contradiction": 0.92,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2340,
+          "output_tokens": 188,
+          "cost": 9.828e-05
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.9,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.87,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2340,
+            "output_tokens": 188,
+            "cost": 9.828e-05
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.418
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 13.991
+    },
+    {
+      "scene": 2,
+      "target_words": 232,
+      "word_count": 268,
+      "contract": {
+        "index": 2,
+        "purpose": "Deniz examines the old map and discovers a meaningful difference without deciding which source is correct.",
+        "entry_state": "Deniz is in the map room, carrying the inscription's claim and the remembered name.",
+        "beats": [
+          "Deniz finds a map showing the marker beside a water symbol, labeled 'spring stone,' not 'first well.'",
+          "Deniz notices the map's date and worn edges, then copies the label without changing its meaning."
+        ],
+        "must_include": [
+          "The old map is a distinct historical source.",
+          "Deniz records the map's words as evidence, not as proof of the landmark's entire history."
+        ],
+        "must_not_do": [
+          "Do not declare the map older or more truthful simply because it is old.",
+          "Do not erase the inscription or remembered name."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C4",
+          "C6",
+          "C7"
+        ],
+        "prior_evidence": [
+          "Scene 1 established the present inscription calling the landmark the neighborhood's first well.",
+          "Scene 1 established that neighbors use the different name 'meeting stone.'"
+        ],
+        "handoff": "The map connects the marker with water, while the inscription and remembered name still suggest other meanings.",
+        "open_threads_after": [
+          "Why does the oral memory call it a meeting stone?",
+          "Does the map's water symbol describe the marker's original purpose?"
+        ]
+      },
+      "envelope": {
+        "prose": "In the map room, Deniz stood beside a wide table. The archive worker brought a flat box and showed them how to lift one map with both hands.\n\n“This map is from 1912,” she said. “The paper is worn, so turn the pages gently.”\n\nDeniz looked at the old map. The neighborhood square was drawn as a small open shape. Near it stood a tiny blue mark. Beside the mark were two words:\n\n“Spring stone.”\n\nDeniz checked the square, then checked the tree-lined place where the marker stood today. The map’s shape was not exactly the same, but the spot seemed to match.\n\n“Spring stone,” Deniz read again. “That is different from first well.”\n\nIt was also different from meeting stone.\n\nWith a pencil, Deniz copied the map’s words into the notebook.\n\nKnown from the old map: the marker was labeled “spring stone” in 1912. A water symbol was drawn beside it.\n\nThen Deniz paused. The map showed what someone had written on that map. It did not tell every part of the stone’s story. It did not prove that the stone had always been used for water.\n\nDeniz kept the other notes, too.\n\nKnown from the present sign: first well.\nRemembered name: meeting stone.\n\nThe archive worker pointed to the map’s frayed edge. “Old paper can tell us something,” she said. “But we still need to ask what it leaves out.”\n\nDeniz nodded and added one more line:\n\nQuestion: What does “spring stone” mean, and why did people call it the meeting stone?\n\nThe map connected the marker with water, but the whole story was still open.",
+        "state_delta": {
+          "location": "The local archive's map room",
+          "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+          "knowledge_gained": [
+            "A 1912 map shows the landmark beside a water symbol.",
+            "The map labels the landmark 'spring stone.'"
+          ],
+          "facts_established": [
+            "The old map is a distinct historical source.",
+            "The map's paper has worn edges.",
+            "The map's label differs from both 'first well' and 'meeting stone.'"
+          ],
+          "clues_added": [
+            "The water symbol suggests a connection between the marker and water.",
+            "The phrase 'spring stone' may describe a use or feature, but its full meaning is unknown."
+          ],
+          "objects_changed": [
+            "Deniz copied the map's exact label and water-related detail into the notebook.",
+            "Deniz kept the notes about the present sign and the remembered name."
+          ],
+          "relationships_changed": [
+            "The archive worker gave Deniz simple help handling the old map without interpreting the evidence for them."
+          ],
+          "threads_opened": [
+            "Why does the oral memory call the landmark a meeting stone?",
+            "Does the map's water symbol describe the marker's original purpose?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz remains in the map room with notes from three descriptions: the present sign says first well, neighbors call it meeting stone, and the 1912 map says spring stone beside a water symbol. Deniz knows the map is evidence, not proof of the whole history, and is ready to listen to an oral-history recording."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 11.232,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 268,
+          "usage": {
+            "input_tokens": 4549,
+            "output_tokens": 886,
+            "total_tokens": 5435
+          },
+          "cost": {
+            "usd": 0.0022003,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.97,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.88,
+          "no_contradiction": 0.94,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.99,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 2904,
+          "output_tokens": 188,
+          "cost": 0.000121968
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.97,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.88,
+            "no_contradiction": 0.94,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.99,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 2904,
+            "output_tokens": 188,
+            "cost": 0.000121968
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.66
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 11.892
+    },
+    {
+      "scene": 3,
+      "target_words": 255,
+      "word_count": 299,
+      "contract": {
+        "index": 3,
+        "purpose": "Deniz listens to an oral-history recording and learns how memory can preserve use without proving origin.",
+        "entry_state": "Deniz has the map's water-related label and the conflicting inscription and neighborhood name.",
+        "beats": [
+          "A recording says an elder met friends at the marker after market days and called it the meeting stone.",
+          "Deniz writes: remembered use is known from the recording; the marker's first purpose remains uncertain."
+        ],
+        "must_include": [
+          "The oral-history recording is a distinct source with a specific remembered detail.",
+          "Deniz separates what the speaker remembered from what the recording proves."
+        ],
+        "must_not_do": [
+          "Do not dismiss the speaker because memory is incomplete.",
+          "Do not turn the recording into proof that the marker was never water-related."
+        ],
+        "constraint_ids": [
+          "C4",
+          "C7",
+          "C8",
+          "C9"
+        ],
+        "prior_evidence": [
+          "The old map labeled the landmark 'spring stone' beside a water symbol.",
+          "The present inscription called it the neighborhood's first well.",
+          "Neighbors used the name 'meeting stone' before Deniz heard the recording."
+        ],
+        "handoff": "Deniz now has map evidence and remembered community use, but must inspect the present landmark for observable clues.",
+        "open_threads_after": [
+          "What can the stone itself show?",
+          "How might water use and meeting use fit together?"
+        ]
+      },
+      "envelope": {
+        "prose": "The archive worker led Deniz to a small listening table. A silver recorder sat beside a pair of headphones.\n\n“This is an oral-history recording,” she said. “It is one person’s memory.”\n\nDeniz pressed the button.\n\nAn older woman’s voice filled the headphones. “After market days, my friends and I met by the stone. We shared apples, talked, and waited for our families. We called it the meeting stone.”\n\nThe voice chuckled softly. “It was already there when I was little.”\n\nDeniz listened twice. The recording gave a clear detail: the woman had met her friends at the marker after market days. She remembered the name meeting stone.\n\nDeniz opened the notebook.\n\n“Known from the recording,” Deniz said while writing. “People used the marker as a meeting place after market days. The speaker called it the meeting stone.”\n\nThen Deniz looked at the map note.\n\n“Known from the map: in 1912, it was labeled spring stone, with a water symbol. Known from the sign: first well.”\n\nThe archive worker nodded, but said nothing more.\n\nDeniz tapped the pencil on the page. “The recording tells what the woman remembers. It does not prove that meeting was the stone’s first use. It also does not prove the stone was never used for water.”\n\nDeniz added another line:\n\n“Uncertain: what the stone was first made for.”\n\nThe three descriptions sat together now. They did not match exactly, but none had to be thrown away. A map could show one time. A memory could hold another. The sign could tell what people believed today.\n\nDeniz closed the notebook. “I need to see what the stone itself can show.”\n\nThe archive worker returned the recording to its shelf. Deniz carried the notebook toward the neighborhood square, ready to compare the stories with the present landmark.",
+        "state_delta": {
+          "location": "Leaving the local archive and walking toward the neighborhood square and landmark",
+          "character_goal": "Deniz wants to compare the map, oral memory, inscription, and physical landmark to make the fairest account.",
+          "knowledge_gained": [
+            "An oral-history recording says an elder met friends at the marker after market days.",
+            "The elder remembered calling the marker the meeting stone.",
+            "The recording provides remembered community use, not proof of the marker's first purpose."
+          ],
+          "facts_established": [
+            "The oral-history recording is a distinct historical source.",
+            "The recording does not show that the marker was never used for water.",
+            "The three descriptions do not match exactly."
+          ],
+          "clues_added": [
+            "The marker had a meeting-place use after market days.",
+            "The elder remembered the marker as already present during her childhood."
+          ],
+          "objects_changed": [
+            "Deniz added notes separating the recording's remembered use from the marker's uncertain first purpose.",
+            "Deniz kept the map, inscription, and meeting-stone notes together in the notebook."
+          ],
+          "relationships_changed": [
+            "The archive worker continues to provide simple access and handling help while Deniz makes the interpretations."
+          ],
+          "threads_opened": [
+            "What can the stone itself show?",
+            "How might water use and meeting use fit together?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz is leaving the local archive with a notebook containing three source notes: the 1912 map says spring stone beside a water symbol, the present inscription says first well, and the oral-history recording remembers people meeting there after market days and calling it the meeting stone. Deniz knows the recording supports remembered community use but does not prove the marker's first purpose. Deniz is ready to inspect the present landmark for observable clues."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 11.494,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 299,
+          "usage": {
+            "input_tokens": 5040,
+            "output_tokens": 975,
+            "total_tokens": 6015
+          },
+          "cost": {
+            "usd": 0.00242985,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3398,
+          "output_tokens": 188,
+          "cost": 0.000142716
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3398,
+            "output_tokens": 188,
+            "cost": 0.000142716
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.453
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 11.947
+    },
+    {
+      "scene": 4,
+      "target_words": 255,
+      "word_count": 285,
+      "contract": {
+        "index": 4,
+        "purpose": "Deniz visits the landmark and tests the sources against present-day observations.",
+        "entry_state": "Deniz has three names or descriptions but no careful observation of the stone's physical features.",
+        "beats": [
+          "At the landmark, Deniz observes a shallow worn basin, a channel toward the old street, and no proof of the exact date.",
+          "Deniz compares those observations with the map, recording, and inscription, marking facts, inferences, and uncertainties."
+        ],
+        "must_include": [
+          "The neighborhood is shown as a present-day place connected to the archive evidence.",
+          "Deniz communicates findings aloud and welcomes a neighbor's clarification without accepting it blindly."
+        ],
+        "must_not_do": [
+          "Do not invent a hidden inscription, magical clue, or certain answer.",
+          "Do not use conflict or danger to create tension."
+        ],
+        "constraint_ids": [
+          "C2",
+          "C3",
+          "C4",
+          "C8"
+        ],
+        "prior_evidence": [
+          "The map showed a water symbol and the label 'spring stone.'",
+          "The recording remembered people meeting there after market days.",
+          "The inscription identified the landmark as the first well."
+        ],
+        "handoff": "Physical clues support water-related use, while the recording supports later meeting use; Deniz must build the fairest account.",
+        "open_threads_after": [
+          "Can one account respect all three sources without pretending they agree completely?"
+        ]
+      },
+      "envelope": {
+        "prose": "The neighborhood square was busy with small sounds. A bus sighed at the corner. A baker carried warm bread past the flower pots. In the middle stood the old stone marker.\n\nDeniz walked around it slowly. On top was a shallow, worn basin. Its edge was smooth in some places and rough in others. Near the bottom, a narrow channel ran toward the old street.\n\nDeniz touched the channel with one finger, but did not put anything inside it.\n\n“Observed,” Deniz said, opening the notebook. “A basin and a channel.”\n\nA neighbor named Mr. Ilyas stopped beside the square bench. “My grandmother said people filled that basin from the spring,” he said. “That is why it was called the first well.”\n\nDeniz looked at him. “Did she see people do that, or did she hear the story?”\n\n“She heard it from her parents,” Mr. Ilyas answered. “I never saw the basin used for water.”\n\nDeniz wrote carefully. “Your story supports the water idea, but it is another remembered story. It does not show the exact first use.”\n\nMr. Ilyas nodded. “That sounds fair.”\n\nDeniz compared the page with the stone. The 1912 map had shown a water symbol and the words spring stone. The recording remembered people meeting here after market days. The present sign called it the neighborhood’s first well.\n\n“An inference,” Deniz said, “is that water mattered at some time. Another inference is that the stone later became a meeting place. But these marks cannot tell us the exact date, or who used it first.”\n\nDeniz drew three little headings: “Observed,” “Inferred,” and “Uncertain.” The stone gave clues, but not a complete answer. Deniz closed the notebook and headed back toward the archive.",
+        "state_delta": {
+          "location": "The neighborhood square beside the landmark, with Deniz returning toward the local archive",
+          "character_goal": "Deniz wants to compare the physical landmark with the map, recording, and inscription to make the fairest account.",
+          "knowledge_gained": [
+            "The landmark has a shallow worn basin.",
+            "A narrow channel runs from the basin toward the old street.",
+            "A neighbor heard from family that people filled the basin from the spring, but did not see this happen personally."
+          ],
+          "facts_established": [
+            "The neighborhood square is a present-day place connected to the archive sources.",
+            "The stone's basin and channel are directly observed.",
+            "The exact date and first use of the landmark remain unknown."
+          ],
+          "clues_added": [
+            "The basin and channel support an inference that water mattered at some time.",
+            "The recording supports a later meeting-place use.",
+            "A family story supports the water idea but is still remembered evidence, not direct proof."
+          ],
+          "objects_changed": [
+            "Deniz added three headings to the notebook: Observed, Inferred, and Uncertain.",
+            "Deniz kept the map, recording, and inscription notes together with the physical observations."
+          ],
+          "relationships_changed": [
+            "Deniz welcomed Mr. Ilyas's clarification and carefully tested it instead of accepting it as certain."
+          ],
+          "threads_opened": [
+            "Can one account respect the map, recording, inscription, and observations without pretending they agree completely?"
+          ],
+          "threads_resolved": [],
+          "handoff_state": "Deniz has returned from the landmark with direct observations of a shallow basin and a channel toward the old street. Deniz has compared these with the 1912 map's water symbol and spring stone label, the recording's remembered meeting use, and the present first-well inscription. Deniz has marked observations, inferences, and uncertainties but has not yet written the final layered archive account."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 10.109,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 285,
+          "usage": {
+            "input_tokens": 5531,
+            "output_tokens": 885,
+            "total_tokens": 6416
+          },
+          "cost": {
+            "usd": 0.0024446,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.96,
+          "no_unexplained_dependency": 0.91,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.96,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 3886,
+          "output_tokens": 188,
+          "cost": 0.000163212
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.96,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.96,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 3886,
+            "output_tokens": 188,
+            "cost": 0.000163212
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.581
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 10.69
+    },
+    {
+      "scene": 5,
+      "target_words": 308,
+      "word_count": 302,
+      "contract": {
+        "index": 5,
+        "purpose": "Deniz applies the evidence by creating a careful archive note that explains agreement, conflict, and uncertainty.",
+        "entry_state": "Deniz has source notes and direct observations but has not yet formed a public explanation.",
+        "beats": [
+          "Deniz drafts three sections: known, inferred, and uncertain, linking each statement to the map, recording, inscription, or observation.",
+          "The archive worker helps display Deniz's note: the marker likely served water needs and later became a meeting place."
+        ],
+        "must_include": [
+          "The decisive payoff is Deniz's evidence-based archive note, not an adult's conclusion.",
+          "The note preserves uncertainty about the first use and the inscription's exact date."
+        ],
+        "must_not_do": [
+          "Do not force every source into one identical story.",
+          "Do not claim the exact original purpose has been proven."
+        ],
+        "constraint_ids": [
+          "C1",
+          "C2",
+          "C4",
+          "C6",
+          "C7",
+          "C8",
+          "C9",
+          "C11"
+        ],
+        "prior_evidence": [
+          "The map supplied a water-related label and symbol.",
+          "The recording supplied remembered meeting use.",
+          "Deniz observed the basin and channel and read the present inscription."
+        ],
+        "handoff": "The archive now holds Deniz's layered explanation, while the neighborhood can see what is known, inferred, and uncertain.",
+        "open_threads_after": [
+          "Who first carved the marker's inscription, and why was its wording changed?"
+        ]
+      },
+      "envelope": {
+        "prose": "Back in the map room, Deniz opened the notebook beside a clean sheet of archive paper. The page had three large headings: “Known,” “Inferred,” and “Uncertain.”\n\nUnder “Known,” Deniz wrote:\n\n“The 1912 map labels the stone ‘spring stone’ and shows a water symbol. The stone has a shallow basin and a channel toward the old street. An oral-history recording remembers people meeting here after market days. The present inscription calls it the neighborhood’s first well.”\n\nDeniz paused. “These facts do not all say the same thing,” Deniz said.\n\nThe archive worker nodded. “Then let your note show that.”\n\nDeniz moved to “Inferred.”\n\n“The basin, channel, map label, and water symbol suggest that the marker likely helped with water at some time. The recording suggests that it later became a meeting place. Water use and meeting use can both be part of its story.”\n\nDeniz read the sentence twice. It felt fair because it used the clues without making them louder than they were.\n\nFor “Uncertain,” Deniz wrote:\n\n“We do not know the marker’s exact first use. We do not know the exact date of the present inscription or its earliest wording. The map, the recording, the sign, and the stone each show only part of the story.”\n\nThe archive worker brought a clear stand. “Where should your note go?”\n\n“Beside the old map,” Deniz answered. “People should be able to compare them.”\n\nTogether, they placed the note under the map’s glass and set a small copy beside the oral-history listening station. Deniz added one line at the bottom:\n\n“Evidence can fit together without becoming one perfect story.”\n\nThe worker did not add a conclusion. Deniz had made the account. The archive now held the map’s water clue, the remembered meetings, the present inscription, and the careful limits of what anyone could claim.",
+        "state_delta": {
+          "location": "The local archive's map room and display area",
+          "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+          "knowledge_gained": [
+            "The sources can support both likely water-related use and later meeting-place use.",
+            "The exact first use remains unknown.",
+            "The exact date and earliest wording of the present inscription remain unknown."
+          ],
+          "facts_established": [
+            "Deniz created an archive note with Known, Inferred, and Uncertain sections.",
+            "The note links claims to the map, oral-history recording, inscription, and direct observations.",
+            "The archive displayed Deniz's note beside the map and listening station."
+          ],
+          "clues_added": [
+            "The basin, channel, map label, and water symbol together support an inference about water use.",
+            "The oral-history recording supports a later meeting-place use.",
+            "The inscription's date and earliest wording remain unresolved."
+          ],
+          "objects_changed": [
+            "Deniz turned the notebook findings into a clean archive note.",
+            "The note was placed under the old map's glass with a copy beside the oral-history listening station."
+          ],
+          "relationships_changed": [
+            "The archive worker helped display Deniz's note without supplying the conclusion."
+          ],
+          "threads_opened": [
+            "The inscription's authorship and wording history remain unresolved."
+          ],
+          "threads_resolved": [
+            "Deniz formed a defensible layered account that respects the map, recording, inscription, and physical observations."
+          ],
+          "handoff_state": "The archive now displays Deniz's evidence-based note. It states what is known, infers that the marker likely served water needs and later became a meeting place, and preserves uncertainty about the exact first use and the inscription's date and earliest wording."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 12.441,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 304,
+          "usage": {
+            "input_tokens": 5976,
+            "output_tokens": 1023,
+            "total_tokens": 6999
+          },
+          "cost": {
+            "usd": 0.00272145,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        },
+        {
+          "kind": "jev_repair_1",
+          "elapsed_seconds": 14.683,
+          "repair_reasons": [
+            "jev:no_future_leakage:0.630<0.800"
+          ],
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 302,
+          "usage": {
+            "input_tokens": 5934,
+            "output_tokens": 1342,
+            "total_tokens": 7276
+          },
+          "cost": {
+            "usd": 0.00309375,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.93,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.97,
+          "no_future_leakage": 0.83,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.98,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4388,
+          "output_tokens": 188,
+          "cost": 0.000184296
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.91,
+            "no_contradiction": 0.92,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.63,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {
+            "no_future_leakage": 0.63
+          },
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.94,
+          "shadow_signal": "REVIEW",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4429,
+            "output_tokens": 188,
+            "cost": 0.000186018
+          }
+        },
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.93,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.97,
+            "no_future_leakage": 0.83,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.98,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4388,
+            "output_tokens": 188,
+            "cost": 0.000184296
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.407,
+        0.519
+      ],
+      "semantic_repairs": [
+        {
+          "repair": 1,
+          "before_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.91,
+              "no_contradiction": 0.92,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.63,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {
+              "no_future_leakage": 0.63
+            },
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.94,
+            "shadow_signal": "REVIEW",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4429,
+              "output_tokens": 188,
+              "cost": 0.000186018
+            }
+          },
+          "technical_errors": [],
+          "word_budget_warnings": [],
+          "word_count": 302,
+          "after_jev": {
+            "mode": "advisory_repair",
+            "threshold": 0.8,
+            "positive_probabilities": {
+              "continues_prior_state": 0.96,
+              "scene_purpose_obeyed": 0.97,
+              "no_unexplained_dependency": 0.93,
+              "no_contradiction": 0.93,
+              "goal_preserved": 0.97,
+              "no_future_leakage": 0.83,
+              "handoff_valid": 0.96
+            },
+            "below_threshold": {},
+            "next_action": "CONTINUE",
+            "next_action_confidence": 0.98,
+            "shadow_signal": "CONTINUE",
+            "resolved_model": "typesafe/jev-1.13-20260917",
+            "provider": "TypeSafe",
+            "usage": {
+              "input_tokens": 4388,
+              "output_tokens": 188,
+              "cost": 0.000184296
+            }
+          }
+        }
+      ],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 28.051
+    },
+    {
+      "scene": 6,
+      "target_words": 255,
+      "word_count": 265,
+      "contract": {
+        "index": 6,
+        "purpose": "Deniz shares the careful account in the neighborhood and closes the investigation while preserving one evidence-based question.",
+        "entry_state": "Deniz's archive note has been accepted, but the marker's earliest inscription history remains unknown.",
+        "beats": [
+          "Deniz explains to a neighbor that water use and meeting use can both belong to the marker's story.",
+          "Deniz leaves the question on the archive card, inviting future evidence rather than guessing an answer."
+        ],
+        "must_include": [
+          "The main investigation ends with a defensible account and no forced certainty.",
+          "One bounded future question remains: who first carved the inscription and why its wording changed."
+        ],
+        "must_not_do": [
+          "Do not introduce a new subplot or a second mystery.",
+          "Do not solve the inscription question without evidence."
+        ],
+        "constraint_ids": [
+          "C3",
+          "C4",
+          "C5",
+          "C8",
+          "C10"
+        ],
+        "prior_evidence": [
+          "Scene 5 established Deniz's displayed note separating known, inferred, and uncertain claims.",
+          "Scene 5 established the likely combination of water-related and meeting uses.",
+          "Scene 5 preserved uncertainty about the inscription's exact date and first wording."
+        ],
+        "handoff": "Deniz's account is preserved and shared; only the inscription's authorship and wording change remain for a future evidence search.",
+        "open_threads_after": [
+          "Who first carved the inscription, and why did its wording change?"
+        ]
+      },
+      "envelope": {
+        "prose": "The next afternoon, Deniz carried a copy of the archive note to the neighborhood square. Mr. Ilyas was sitting near the marker, watching children draw with chalk.\n\n“Look,” Deniz said. “The map, the stone, and the recording do not tell one exactly same story. But they can still fit together.”\n\nMr. Ilyas leaned closer. “How?”\n\n“The basin and channel, and the map’s water symbol, suggest that water mattered here. We do not know if that was the very first use. The recording tells us that people later met here after market days. So it could have helped with water and also become a meeting place.”\n\nMr. Ilyas looked at the worn stone. “That sounds possible.”\n\n“It is an inference,” Deniz said. “Not a fact we can prove yet.”\n\nMr. Ilyas smiled. “You made room for what we know and what we do not know.”\n\nDeniz touched the inscription on the marker. The words said “the neighborhood’s first well,” but the archive note gave no exact date. It could not say who first carved the words, either. The old map used “spring stone,” and the recording used “meeting stone.”\n\nBack at the archive, Deniz added a final line to the display card:\n\n“Future question: Who first carved the inscription, and why did its wording change?”\n\nDeniz did not add a guess. The question stayed beside the note, ready for another piece of evidence someday.\n\nThen Deniz looked once more at the map, the listening station, and the careful account. The landmark’s story was not one perfect sentence. It was a set of clues, held together honestly.",
+        "state_delta": {
+          "location": "The neighborhood square beside the landmark, then the local archive display area",
+          "character_goal": "Deniz has completed a fair account of the landmark and is ready to preserve the remaining question for future evidence.",
+          "knowledge_gained": [
+            "A neighbor understands that water-related use and meeting-place use can both belong to the landmark's story.",
+            "The inscription's first carver and the reason for its wording change remain unknown."
+          ],
+          "facts_established": [
+            "Deniz shared the layered account with a neighbor.",
+            "The archive note remains displayed with the map and oral-history materials.",
+            "The main investigation ends without proving the landmark's exact first use."
+          ],
+          "clues_added": [
+            "The inscription's wording differs from the map's 'spring stone' and the recording's 'meeting stone.'",
+            "The wording difference creates a bounded question about who first carved the inscription and why it changed."
+          ],
+          "objects_changed": [
+            "Deniz added a future-question line to the archive display card."
+          ],
+          "relationships_changed": [
+            "Mr. Ilyas accepted Deniz's careful distinction between facts and inferences."
+          ],
+          "threads_opened": [
+            "Who first carved the inscription, and why did its wording change?"
+          ],
+          "threads_resolved": [
+            "Deniz shared and preserved a defensible account combining likely water-related use with later meeting-place use."
+          ],
+          "handoff_state": "Deniz's layered account is displayed and understood by a neighbor. It states that the marker likely served water needs and later became a meeting place, while preserving uncertainty about its exact first use. The only remaining question is who first carved the inscription and why its wording changed."
+        }
+      },
+      "attempts": [
+        {
+          "kind": "generate",
+          "elapsed_seconds": 20.4,
+          "structured_parse_retries": [],
+          "errors": [],
+          "word_count": 265,
+          "usage": {
+            "input_tokens": 6083,
+            "output_tokens": 887,
+            "total_tokens": 6970
+          },
+          "cost": {
+            "usd": 0.002585,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "request": {
+            "temperature": null,
+            "max_tokens": null,
+            "reasoning": {
+              "effort": "medium",
+              "exclude": true
+            },
+            "response_format": {
+              "type": "json_object"
+            }
+          }
+        }
+      ],
+      "jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "continues_prior_state": 0.96,
+          "scene_purpose_obeyed": 0.97,
+          "no_unexplained_dependency": 0.92,
+          "no_contradiction": 0.93,
+          "goal_preserved": 0.95,
+          "no_future_leakage": 0.97,
+          "handoff_valid": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.97,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 4392,
+          "output_tokens": 188,
+          "cost": 0.000184464
+        }
+      },
+      "jev_history": [
+        {
+          "mode": "advisory_repair",
+          "threshold": 0.8,
+          "positive_probabilities": {
+            "continues_prior_state": 0.96,
+            "scene_purpose_obeyed": 0.97,
+            "no_unexplained_dependency": 0.92,
+            "no_contradiction": 0.93,
+            "goal_preserved": 0.95,
+            "no_future_leakage": 0.97,
+            "handoff_valid": 0.96
+          },
+          "below_threshold": {},
+          "next_action": "CONTINUE",
+          "next_action_confidence": 0.97,
+          "shadow_signal": "CONTINUE",
+          "resolved_model": "typesafe/jev-1.13-20260917",
+          "provider": "TypeSafe",
+          "usage": {
+            "input_tokens": 4392,
+            "output_tokens": 188,
+            "cost": 0.000184464
+          }
+        }
+      ],
+      "continuity_evaluator_elapsed_seconds": [
+        0.394
+      ],
+      "semantic_repairs": [],
+      "word_budget_warnings": [],
+      "continuity_escalation_required": false,
+      "elapsed_seconds": 20.795
+    }
+  ],
+  "continuity_ledger": [
+    {
+      "scene": 1,
+      "purpose": "Deniz begins an archive investigation after noticing conflicting descriptions of the neighborhood marker.",
+      "word_count": 201,
+      "location": "The local archive's map room",
+      "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+      "knowledge_gained": [
+        "The present-day sign calls the landmark the neighborhood's first well.",
+        "Neighbors use the name meeting stone."
+      ],
+      "facts_established": [
+        "Deniz is seven and knows the landmark from neighborhood walks.",
+        "The landmark stands beside the neighborhood square.",
+        "The landmark is connected to the local archive investigation."
+      ],
+      "clues_added": [
+        "The present inscription says the stone was the neighborhood's first well.",
+        "The remembered name meeting stone may describe a different use or story."
+      ],
+      "objects_changed": [
+        "Deniz began a notebook with separate notes for the sign and the remembered name."
+      ],
+      "relationships_changed": [
+        "The archive worker gave Deniz permission to examine old maps and offered simple handling help."
+      ],
+      "threads_opened": [
+        "What does the old map call the landmark?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz is in the archive map room with a notebook, the inscription's claim that the landmark was the neighborhood's first well, and the remembered alternate name meeting stone. Deniz is ready to examine older maps, while no explanation has yet been chosen."
+    },
+    {
+      "scene": 2,
+      "purpose": "Deniz examines the old map and discovers a meaningful difference without deciding which source is correct.",
+      "word_count": 268,
+      "location": "The local archive's map room",
+      "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+      "knowledge_gained": [
+        "A 1912 map shows the landmark beside a water symbol.",
+        "The map labels the landmark 'spring stone.'"
+      ],
+      "facts_established": [
+        "The old map is a distinct historical source.",
+        "The map's paper has worn edges.",
+        "The map's label differs from both 'first well' and 'meeting stone.'"
+      ],
+      "clues_added": [
+        "The water symbol suggests a connection between the marker and water.",
+        "The phrase 'spring stone' may describe a use or feature, but its full meaning is unknown."
+      ],
+      "objects_changed": [
+        "Deniz copied the map's exact label and water-related detail into the notebook.",
+        "Deniz kept the notes about the present sign and the remembered name."
+      ],
+      "relationships_changed": [
+        "The archive worker gave Deniz simple help handling the old map without interpreting the evidence for them."
+      ],
+      "threads_opened": [
+        "Why does the oral memory call the landmark a meeting stone?",
+        "Does the map's water symbol describe the marker's original purpose?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz remains in the map room with notes from three descriptions: the present sign says first well, neighbors call it meeting stone, and the 1912 map says spring stone beside a water symbol. Deniz knows the map is evidence, not proof of the whole history, and is ready to listen to an oral-history recording."
+    },
+    {
+      "scene": 3,
+      "purpose": "Deniz listens to an oral-history recording and learns how memory can preserve use without proving origin.",
+      "word_count": 299,
+      "location": "Leaving the local archive and walking toward the neighborhood square and landmark",
+      "character_goal": "Deniz wants to compare the map, oral memory, inscription, and physical landmark to make the fairest account.",
+      "knowledge_gained": [
+        "An oral-history recording says an elder met friends at the marker after market days.",
+        "The elder remembered calling the marker the meeting stone.",
+        "The recording provides remembered community use, not proof of the marker's first purpose."
+      ],
+      "facts_established": [
+        "The oral-history recording is a distinct historical source.",
+        "The recording does not show that the marker was never used for water.",
+        "The three descriptions do not match exactly."
+      ],
+      "clues_added": [
+        "The marker had a meeting-place use after market days.",
+        "The elder remembered the marker as already present during her childhood."
+      ],
+      "objects_changed": [
+        "Deniz added notes separating the recording's remembered use from the marker's uncertain first purpose.",
+        "Deniz kept the map, inscription, and meeting-stone notes together in the notebook."
+      ],
+      "relationships_changed": [
+        "The archive worker continues to provide simple access and handling help while Deniz makes the interpretations."
+      ],
+      "threads_opened": [
+        "What can the stone itself show?",
+        "How might water use and meeting use fit together?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz is leaving the local archive with a notebook containing three source notes: the 1912 map says spring stone beside a water symbol, the present inscription says first well, and the oral-history recording remembers people meeting there after market days and calling it the meeting stone. Deniz knows the recording supports remembered community use but does not prove the marker's first purpose. Deniz is ready to inspect the present landmark for observable clues."
+    },
+    {
+      "scene": 4,
+      "purpose": "Deniz visits the landmark and tests the sources against present-day observations.",
+      "word_count": 285,
+      "location": "The neighborhood square beside the landmark, with Deniz returning toward the local archive",
+      "character_goal": "Deniz wants to compare the physical landmark with the map, recording, and inscription to make the fairest account.",
+      "knowledge_gained": [
+        "The landmark has a shallow worn basin.",
+        "A narrow channel runs from the basin toward the old street.",
+        "A neighbor heard from family that people filled the basin from the spring, but did not see this happen personally."
+      ],
+      "facts_established": [
+        "The neighborhood square is a present-day place connected to the archive sources.",
+        "The stone's basin and channel are directly observed.",
+        "The exact date and first use of the landmark remain unknown."
+      ],
+      "clues_added": [
+        "The basin and channel support an inference that water mattered at some time.",
+        "The recording supports a later meeting-place use.",
+        "A family story supports the water idea but is still remembered evidence, not direct proof."
+      ],
+      "objects_changed": [
+        "Deniz added three headings to the notebook: Observed, Inferred, and Uncertain.",
+        "Deniz kept the map, recording, and inscription notes together with the physical observations."
+      ],
+      "relationships_changed": [
+        "Deniz welcomed Mr. Ilyas's clarification and carefully tested it instead of accepting it as certain."
+      ],
+      "threads_opened": [
+        "Can one account respect the map, recording, inscription, and observations without pretending they agree completely?"
+      ],
+      "threads_resolved": [],
+      "handoff_state": "Deniz has returned from the landmark with direct observations of a shallow basin and a channel toward the old street. Deniz has compared these with the 1912 map's water symbol and spring stone label, the recording's remembered meeting use, and the present first-well inscription. Deniz has marked observations, inferences, and uncertainties but has not yet written the final layered archive account."
+    },
+    {
+      "scene": 5,
+      "purpose": "Deniz applies the evidence by creating a careful archive note that explains agreement, conflict, and uncertainty.",
+      "word_count": 302,
+      "location": "The local archive's map room and display area",
+      "character_goal": "Deniz wants to compare the landmark's different descriptions and make the fairest account.",
+      "knowledge_gained": [
+        "The sources can support both likely water-related use and later meeting-place use.",
+        "The exact first use remains unknown.",
+        "The exact date and earliest wording of the present inscription remain unknown."
+      ],
+      "facts_established": [
+        "Deniz created an archive note with Known, Inferred, and Uncertain sections.",
+        "The note links claims to the map, oral-history recording, inscription, and direct observations.",
+        "The archive displayed Deniz's note beside the map and listening station."
+      ],
+      "clues_added": [
+        "The basin, channel, map label, and water symbol together support an inference about water use.",
+        "The oral-history recording supports a later meeting-place use.",
+        "The inscription's date and earliest wording remain unresolved."
+      ],
+      "objects_changed": [
+        "Deniz turned the notebook findings into a clean archive note.",
+        "The note was placed under the old map's glass with a copy beside the oral-history listening station."
+      ],
+      "relationships_changed": [
+        "The archive worker helped display Deniz's note without supplying the conclusion."
+      ],
+      "threads_opened": [
+        "The inscription's authorship and wording history remain unresolved."
+      ],
+      "threads_resolved": [
+        "Deniz formed a defensible layered account that respects the map, recording, inscription, and physical observations."
+      ],
+      "handoff_state": "The archive now displays Deniz's evidence-based note. It states what is known, infers that the marker likely served water needs and later became a meeting place, and preserves uncertainty about the exact first use and the inscription's date and earliest wording."
+    },
+    {
+      "scene": 6,
+      "purpose": "Deniz shares the careful account in the neighborhood and closes the investigation while preserving one evidence-based question.",
+      "word_count": 265,
+      "location": "The neighborhood square beside the landmark, then the local archive display area",
+      "character_goal": "Deniz has completed a fair account of the landmark and is ready to preserve the remaining question for future evidence.",
+      "knowledge_gained": [
+        "A neighbor understands that water-related use and meeting-place use can both belong to the landmark's story.",
+        "The inscription's first carver and the reason for its wording change remain unknown."
+      ],
+      "facts_established": [
+        "Deniz shared the layered account with a neighbor.",
+        "The archive note remains displayed with the map and oral-history materials.",
+        "The main investigation ends without proving the landmark's exact first use."
+      ],
+      "clues_added": [
+        "The inscription's wording differs from the map's 'spring stone' and the recording's 'meeting stone.'",
+        "The wording difference creates a bounded question about who first carved the inscription and why it changed."
+      ],
+      "objects_changed": [
+        "Deniz added a future-question line to the archive display card."
+      ],
+      "relationships_changed": [
+        "Mr. Ilyas accepted Deniz's careful distinction between facts and inferences."
+      ],
+      "threads_opened": [
+        "Who first carved the inscription, and why did its wording change?"
+      ],
+      "threads_resolved": [
+        "Deniz shared and preserved a defensible account combining likely water-related use with later meeting-place use."
+      ],
+      "handoff_state": "Deniz's layered account is displayed and understood by a neighbor. It states that the marker likely served water needs and later became a meeting place, while preserving uncertainty about its exact first use. The only remaining question is who first carved the inscription and why its wording changed."
+    }
+  ],
+  "story_title": "The Story Behind the Marker",
+  "story": "Deniz was seven, and they knew the old stone marker from walks through the neighborhood. It stood beside the little square, under a tree with low branches.\n\nToday, Deniz leaned close to its metal sign. The sign said, “This was our neighborhood’s first well.”\n\n“First well?” Deniz whispered.\n\nAt home, neighbors had called the same place the meeting stone. Mrs. Vale said people still met there after busy days. A well and a meeting stone were not the same thing. Which story was right?\n\nDeniz carried a small notebook to the local archive. Inside were tall shelves, quiet tables, and a room filled with old maps. At the desk, an archive worker smiled.\n\n“What are you looking for?” she asked.\n\n“The truth about the stone,” Deniz said. “The sign calls it the first well, but people call it the meeting stone. I want to compare the stories.”\n\nThe worker pointed to the map room. “You may look at the maps. I can help you handle them.”\n\nDeniz opened the notebook and made two lines:\n\nKnown from the sign: first well.\nRemembered name: meeting stone.\n\nThen Deniz added, “I need older evidence.” With a pencil ready, they walked into the map room.\n\nIn the map room, Deniz stood beside a wide table. The archive worker brought a flat box and showed them how to lift one map with both hands.\n\n“This map is from 1912,” she said. “The paper is worn, so turn the pages gently.”\n\nDeniz looked at the old map. The neighborhood square was drawn as a small open shape. Near it stood a tiny blue mark. Beside the mark were two words:\n\n“Spring stone.”\n\nDeniz checked the square, then checked the tree-lined place where the marker stood today. The map’s shape was not exactly the same, but the spot seemed to match.\n\n“Spring stone,” Deniz read again. “That is different from first well.”\n\nIt was also different from meeting stone.\n\nWith a pencil, Deniz copied the map’s words into the notebook.\n\nKnown from the old map: the marker was labeled “spring stone” in 1912. A water symbol was drawn beside it.\n\nThen Deniz paused. The map showed what someone had written on that map. It did not tell every part of the stone’s story. It did not prove that the stone had always been used for water.\n\nDeniz kept the other notes, too.\n\nKnown from the present sign: first well.\nRemembered name: meeting stone.\n\nThe archive worker pointed to the map’s frayed edge. “Old paper can tell us something,” she said. “But we still need to ask what it leaves out.”\n\nDeniz nodded and added one more line:\n\nQuestion: What does “spring stone” mean, and why did people call it the meeting stone?\n\nThe map connected the marker with water, but the whole story was still open.\n\nThe archive worker led Deniz to a small listening table. A silver recorder sat beside a pair of headphones.\n\n“This is an oral-history recording,” she said. “It is one person’s memory.”\n\nDeniz pressed the button.\n\nAn older woman’s voice filled the headphones. “After market days, my friends and I met by the stone. We shared apples, talked, and waited for our families. We called it the meeting stone.”\n\nThe voice chuckled softly. “It was already there when I was little.”\n\nDeniz listened twice. The recording gave a clear detail: the woman had met her friends at the marker after market days. She remembered the name meeting stone.\n\nDeniz opened the notebook.\n\n“Known from the recording,” Deniz said while writing. “People used the marker as a meeting place after market days. The speaker called it the meeting stone.”\n\nThen Deniz looked at the map note.\n\n“Known from the map: in 1912, it was labeled spring stone, with a water symbol. Known from the sign: first well.”\n\nThe archive worker nodded, but said nothing more.\n\nDeniz tapped the pencil on the page. “The recording tells what the woman remembers. It does not prove that meeting was the stone’s first use. It also does not prove the stone was never used for water.”\n\nDeniz added another line:\n\n“Uncertain: what the stone was first made for.”\n\nThe three descriptions sat together now. They did not match exactly, but none had to be thrown away. A map could show one time. A memory could hold another. The sign could tell what people believed today.\n\nDeniz closed the notebook. “I need to see what the stone itself can show.”\n\nThe archive worker returned the recording to its shelf. Deniz carried the notebook toward the neighborhood square, ready to compare the stories with the present landmark.\n\nThe neighborhood square was busy with small sounds. A bus sighed at the corner. A baker carried warm bread past the flower pots. In the middle stood the old stone marker.\n\nDeniz walked around it slowly. On top was a shallow, worn basin. Its edge was smooth in some places and rough in others. Near the bottom, a narrow channel ran toward the old street.\n\nDeniz touched the channel with one finger, but did not put anything inside it.\n\n“Observed,” Deniz said, opening the notebook. “A basin and a channel.”\n\nA neighbor named Mr. Ilyas stopped beside the square bench. “My grandmother said people filled that basin from the spring,” he said. “That is why it was called the first well.”\n\nDeniz looked at him. “Did she see people do that, or did she hear the story?”\n\n“She heard it from her parents,” Mr. Ilyas answered. “I never saw the basin used for water.”\n\nDeniz wrote carefully. “Your story supports the water idea, but it is another remembered story. It does not show the exact first use.”\n\nMr. Ilyas nodded. “That sounds fair.”\n\nDeniz compared the page with the stone. The 1912 map had shown a water symbol and the words spring stone. The recording remembered people meeting here after market days. The present sign called it the neighborhood’s first well.\n\n“An inference,” Deniz said, “is that water mattered at some time. Another inference is that the stone later became a meeting place. But these marks cannot tell us the exact date, or who used it first.”\n\nDeniz drew three little headings: “Observed,” “Inferred,” and “Uncertain.” The stone gave clues, but not a complete answer. Deniz closed the notebook and headed back toward the archive.\n\nBack in the map room, Deniz opened the notebook beside a clean sheet of archive paper. The page had three large headings: “Known,” “Inferred,” and “Uncertain.”\n\nUnder “Known,” Deniz wrote:\n\n“The 1912 map labels the stone ‘spring stone’ and shows a water symbol. The stone has a shallow basin and a channel toward the old street. An oral-history recording remembers people meeting here after market days. The present inscription calls it the neighborhood’s first well.”\n\nDeniz paused. “These facts do not all say the same thing,” Deniz said.\n\nThe archive worker nodded. “Then let your note show that.”\n\nDeniz moved to “Inferred.”\n\n“The basin, channel, map label, and water symbol suggest that the marker likely helped with water at some time. The recording suggests that it later became a meeting place. Water use and meeting use can both be part of its story.”\n\nDeniz read the sentence twice. It felt fair because it used the clues without making them louder than they were.\n\nFor “Uncertain,” Deniz wrote:\n\n“We do not know the marker’s exact first use. We do not know the exact date of the present inscription or its earliest wording. The map, the recording, the sign, and the stone each show only part of the story.”\n\nThe archive worker brought a clear stand. “Where should your note go?”\n\n“Beside the old map,” Deniz answered. “People should be able to compare them.”\n\nTogether, they placed the note under the map’s glass and set a small copy beside the oral-history listening station. Deniz added one line at the bottom:\n\n“Evidence can fit together without becoming one perfect story.”\n\nThe worker did not add a conclusion. Deniz had made the account. The archive now held the map’s water clue, the remembered meetings, the present inscription, and the careful limits of what anyone could claim.\n\nThe next afternoon, Deniz carried a copy of the archive note to the neighborhood square. Mr. Ilyas was sitting near the marker, watching children draw with chalk.\n\n“Look,” Deniz said. “The map, the stone, and the recording do not tell one exactly same story. But they can still fit together.”\n\nMr. Ilyas leaned closer. “How?”\n\n“The basin and channel, and the map’s water symbol, suggest that water mattered here. We do not know if that was the very first use. The recording tells us that people later met here after market days. So it could have helped with water and also become a meeting place.”\n\nMr. Ilyas looked at the worn stone. “That sounds possible.”\n\n“It is an inference,” Deniz said. “Not a fact we can prove yet.”\n\nMr. Ilyas smiled. “You made room for what we know and what we do not know.”\n\nDeniz touched the inscription on the marker. The words said “the neighborhood’s first well,” but the archive note gave no exact date. It could not say who first carved the words, either. The old map used “spring stone,” and the recording used “meeting stone.”\n\nBack at the archive, Deniz added a final line to the display card:\n\n“Future question: Who first carved the inscription, and why did its wording change?”\n\nDeniz did not add a guess. The question stayed beside the note, ready for another piece of evidence someday.\n\nThen Deniz looked once more at the map, the listening station, and the careful account. The landmark’s story was not one perfect sentence. It was a set of clues, held together honestly.",
+  "word_count": 1620,
+  "target_words": 1500,
+  "deterministic_errors": [],
+  "repeat_8gram_ratio": 0.00062,
+  "whole_story_continuity": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.89,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.96,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 7869,
+      "output_tokens": 166,
+      "cost": 0.000330498
+    }
+  },
+  "whole_story_jev": {
+    "mode": "advisory_repair",
+    "threshold": 0.8,
+    "positive_probabilities": {
+      "causal_chain": 0.93,
+      "goal_continuity": 0.97,
+      "clue_solution_progression": 0.96,
+      "no_contradictions": 0.89,
+      "no_repeated_event": 0.94,
+      "ending_consistency": 0.96
+    },
+    "below_threshold": {},
+    "next_action": "CONTINUE",
+    "next_action_confidence": 0.96,
+    "shadow_signal": "CONTINUE",
+    "resolved_model": "typesafe/jev-1.13-20260917",
+    "provider": "TypeSafe",
+    "usage": {
+      "input_tokens": 7869,
+      "output_tokens": 166,
+      "cost": 0.000330498
+    }
+  },
+  "final_judge": {
+    "scores": {
+      "instruction_following": 4,
+      "coherence": 4,
+      "character_consistency": 4,
+      "age_appropriateness": 4,
+      "creativity": 4,
+      "style_quality": 4,
+      "continuity": 4,
+      "ending_quality": 4
+    },
+    "average": 4.0,
+    "minimum": 4,
+    "critical_failures": [],
+    "repair_targets": [],
+    "summary": "This is a strong, production-ready story that successfully executes the StoryContract and all six scenes. Deniz is consistently portrayed as a thoughtful seven-year-old conducting an independent investigation with appropriate adult support. The story clearly introduces three distinct sources of evidence (the 1912 map, the oral-history recording, and the present-day inscription), establishes meaningful disagreement between them (spring stone vs. first well vs. meeting stone), and demonstrates Deniz's careful reasoning about what is known, inferred, and uncertain. The narrative maintains explicit causality suitable for an early reader, uses age-appropriate vocabulary and sentence structure, and avoids didacticism while still modeling evidence-based thinking. Continuity across all six scenes is solid: Deniz's goal remains consistent, the notebook serves as a natural tracking device, and the handoff states align with the ledger. The ending preserves a bounded future question (who carved the inscription and why its wording changed) without forcing certainty. The archive note in Scene 5 is the decisive payoff—Deniz's own work, not an adult's conclusion. The story respects the constraint that memory, inference, and inscription are not automatically complete truth, and it successfully distinguishes observation from interpretation throughout. No combat or danger-based tension is introduced; tension arises naturally from the investigative puzzle. The prose is clear and engaging for the target age, with good pacing and appropriate emotional intensity. All required constraints (C1–C11) are met. The story passes the acceptance gate with no blocking defects.",
+    "accepted": true
+  },
+  "final_polish_cycles": [],
+  "final_evaluation_history": [
+    {
+      "accepted": true,
+      "word_count": 1620,
+      "deterministic_errors": [],
+      "whole_story_jev": {
+        "mode": "advisory_repair",
+        "threshold": 0.8,
+        "positive_probabilities": {
+          "causal_chain": 0.93,
+          "goal_continuity": 0.97,
+          "clue_solution_progression": 0.96,
+          "no_contradictions": 0.89,
+          "no_repeated_event": 0.94,
+          "ending_consistency": 0.96
+        },
+        "below_threshold": {},
+        "next_action": "CONTINUE",
+        "next_action_confidence": 0.96,
+        "shadow_signal": "CONTINUE",
+        "resolved_model": "typesafe/jev-1.13-20260917",
+        "provider": "TypeSafe",
+        "usage": {
+          "input_tokens": 7869,
+          "output_tokens": 166,
+          "cost": 0.000330498
+        }
+      },
+      "final_judge": {
+        "scores": {
+          "instruction_following": 4,
+          "coherence": 4,
+          "character_consistency": 4,
+          "age_appropriateness": 4,
+          "creativity": 4,
+          "style_quality": 4,
+          "continuity": 4,
+          "ending_quality": 4
+        },
+        "average": 4.0,
+        "minimum": 4,
+        "critical_failures": [],
+        "repair_targets": [],
+        "summary": "This is a strong, production-ready story that successfully executes the StoryContract and all six scenes. Deniz is consistently portrayed as a thoughtful seven-year-old conducting an independent investigation with appropriate adult support. The story clearly introduces three distinct sources of evidence (the 1912 map, the oral-history recording, and the present-day inscription), establishes meaningful disagreement between them (spring stone vs. first well vs. meeting stone), and demonstrates Deniz's careful reasoning about what is known, inferred, and uncertain. The narrative maintains explicit causality suitable for an early reader, uses age-appropriate vocabulary and sentence structure, and avoids didacticism while still modeling evidence-based thinking. Continuity across all six scenes is solid: Deniz's goal remains consistent, the notebook serves as a natural tracking device, and the handoff states align with the ledger. The ending preserves a bounded future question (who carved the inscription and why its wording changed) without forcing certainty. The archive note in Scene 5 is the decisive payoff—Deniz's own work, not an adult's conclusion. The story respects the constraint that memory, inference, and inscription are not automatically complete truth, and it successfully distinguishes observation from interpretation throughout. No combat or danger-based tension is introduced; tension arises naturally from the investigative puzzle. The prose is clear and engaging for the target age, with good pacing and appropriate emotional intensity. All required constraints (C1–C11) are met. The story passes the acceptance gate with no blocking defects.",
+        "accepted": true
+      },
+      "whole_jev_cost": 0.000330498,
+      "final_judge_cost": {
+        "usd": 0.014033,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  ],
+  "timings": {
+    "plan_stage_seconds": 42.318,
+    "scene_stage_seconds": 97.366,
+    "final_stage_seconds": 9.439,
+    "total_pipeline_seconds": 149.124
+  },
+  "costs": {
+    "plan_stage_usd_total": 0.011622534,
+    "scene_generation_usd": 0.0174308,
+    "scene_continuity_evaluator_usd": 0.001080954,
+    "whole_continuity_evaluator_usd": 0.000330498,
+    "whole_continuity_evaluator_usd_total": 0.000330498,
+    "semantic_judge_usd": {
+      "usd": 0.014033,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "semantic_judge_usd_total": 0.014033,
+    "scene_jev_usd": 0.001080954,
+    "whole_jev_usd": 0.000330498,
+    "whole_jev_usd_total": 0.000330498,
+    "final_haiku": {
+      "usd": 0.014033,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "final_haiku_usd_total": 0.014033,
+    "total_pipeline_usd": 0.044497786
+  },
+  "usage": {
+    "whole_continuity_evaluator": {
+      "input_tokens": 7869,
+      "output_tokens": 166,
+      "cost": 0.000330498
+    },
+    "semantic_judge": {
+      "input_tokens": 11773,
+      "output_tokens": 452,
+      "total_tokens": 12225
+    },
+    "whole_jev": {
+      "input_tokens": 7869,
+      "output_tokens": 166,
+      "cost": 0.000330498
+    },
+    "final_haiku": {
+      "input_tokens": 11773,
+      "output_tokens": 452,
+      "total_tokens": 12225
+    }
+  },
+  "final_judge_request": {
+    "temperature": 0.0,
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "none",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "final_polish_repairs": []
+}
