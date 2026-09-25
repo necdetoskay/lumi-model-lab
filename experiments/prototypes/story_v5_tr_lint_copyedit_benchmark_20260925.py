@@ -23,7 +23,7 @@ BENCHMARK_EDITOR_MODEL = "anthropic/claude-sonnet-5"
 
 DRAFT_SYSTEM = r"""
 Sen profesyonel bir Türk çocuk kitabı yazarısın.
-4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak yaklaşık 450-550 kelimelik
+4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak yaklaşık 475-525 kelimelik
 özgün bir Türkçe hikâye yaz.
 
 Bu metin doğrudan Türkçe yazılmış gibi duyulmalı. Ders, deney, reasoning benchmark,
@@ -45,6 +45,7 @@ Ana ilkeler:
   kadar uzun veya yapay kurma.
 - Finalde mesaj, ders, slogan veya "yine geliriz ve öğreniriz" tipi jenerik özet verme.
 - Sıcaklık, mizah, küçük sürpriz ve Deniz'e özgü davranış olsun.
+- 375 kelime hard minimumdur; güvenli üretim hedefi 475-525 kelimedir. Hikâyeyi 375 sınırına yakın bitirme.
 
 Başlangıç dünyası:
 - Deniz 4 yaşında.
@@ -216,7 +217,7 @@ def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
         max_rules=12,
     )
     positive_voice = render_positive_voice_prompt(language="tr", exact_age=4, max_rules=8)
-    natural_author = render_natural_author_prompt(language="tr", max_rules=8)
+    natural_author = render_natural_author_prompt(language="tr", max_rules=10)
     writer_system = DRAFT_SYSTEM + "\n\n" + positive_voice + "\n\n" + natural_author + "\n\n" + failure_constraints
     story, body, _ = call_openrouter(
         api_key=api_key,
