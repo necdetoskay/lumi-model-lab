@@ -1,5 +1,5 @@
 from __future__ import annotations
-import json, os, re
+import json, os, re\nfrom difflib import SequenceMatcher
 from pathlib import Path
 from dotenv import load_dotenv
 from story_v5_tr_lint_copyedit_benchmark_20260925 import structured_call, BENCHMARK_EDITOR_MODEL
@@ -64,7 +64,17 @@ def norm(s:str)->str:
 
 def overlap(a:str,b:str)->bool:
     a,b=norm(a),norm(b)
-    return bool(a and b and (a in b or b in a))
+    if not a or not b:
+        return False
+    if a in b or b in a:
+        return True
+    aw=set(re.findall(r"[a-zçğıöşü0-9]+", a))
+    bw=set(re.findall(r"[a-zçğıöşü0-9]+", b))
+    if aw and bw:
+        j=len(aw & bw) / len(aw | bw)
+        if j >= 0.55:
+            return True
+    return SequenceMatcher(None, a, b).ratio() >= 0.72
 
 def main():
     load_dotenv(); key=os.environ["OPENROUTER_API_KEY"]
