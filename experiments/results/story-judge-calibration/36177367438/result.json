@@ -1,0 +1,1151 @@
+{
+  "judge": "anthropic/claude-sonnet-5",
+  "story_count": 5,
+  "single_seed_per_story": true,
+  "results": [
+    {
+      "mode": "legacy",
+      "gold_hits": 8,
+      "gold_total": 14,
+      "gold_recall": 0.5714285714285714,
+      "known_nondefect_hits": 2,
+      "known_nondefect_total": 4,
+      "known_nondefect_hit_rate": 0.5,
+      "cost_usd": 0.11671799999999999,
+      "cases": [
+        {
+          "run_id": "36165831429",
+          "case": "lost-toy-first-generalization",
+          "verdict": "KUCUK_EDIT",
+          "defect_count": 7,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu",
+              "hit": true
+            },
+            {
+              "kind": "defensive_negation",
+              "quote": "koklamadı ama yüzünü buruşturdu",
+              "hit": true
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "yarı şaka",
+              "hit": true
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": true
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "KUCUK_EDIT",
+            "counts": {
+              "critical": 0,
+              "serious": 1,
+              "moderate": 3,
+              "minor": 3
+            },
+            "defects": [
+              {
+                "quote": "\"Arabalar kendi kendine mutfağa gitmez ki,\" dedi annesi, yarı şaka.",
+                "type": "anlatıcı/yetişkin müdahalesi",
+                "severity": "moderate",
+                "why": "'yarı şaka' ifadesi anlatıcının yetişkin bakış açısıyla açıklama yapması, 4 yaş akışına yabancı bir meta-yorum.",
+                "repair": "'yarı şaka' ifadesini kaldır, sadece diyalog ve ton doğal aksiyonla anlaşılsın."
+              },
+              {
+                "quote": "Gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu.",
+                "type": "anlatıcı açıklaması/fazla ironik gözlem",
+                "severity": "moderate",
+                "why": "Bu tür ironik, yetişkin gözlemi çocuk kitabı sesinden uzaklaşıyor, sanki dışarıdan yorum yapan bir yazar sesi.",
+                "repair": "Basitçe 'Burnunu kaşıdı, sonra birden gözleri açıldı' şeklinde sadeleştirilebilir."
+              },
+              {
+                "quote": "\"Belki senindir, belki kardeşinin,\" dedi annesi.",
+                "type": "karakter tutarsızlığı",
+                "severity": "minor",
+                "why": "Hikâyede kardeş hiç geçmiyor, ani bir bilgi girişi kafa karıştırıcı olabilir.",
+                "repair": "Kardeş referansını kaldır veya önceden bir ipucu ver."
+              },
+              {
+                "quote": "\"Demek arabanın da uykusu geliyor.\"",
+                "type": "klişe kapanış tonu",
+                "severity": "minor",
+                "why": "Sevimli ama biraz basmakalıp bir 'oyuncak uyku' kapanışı, çocuk kitaplarında sık kullanılan bir kalıp.",
+                "repair": "Farklı bir tepki ya da detay eklenebilir, örn. arabanın neden yorulduğuna dair çocuksu bir açıklama."
+              },
+              {
+                "quote": "koklamadı ama yüzünü buruşturdu",
+                "type": "garip fiziksel detay",
+                "severity": "minor",
+                "why": "'Koklamadı ama' ifadesi biraz tuhaf, sesli okurken akışı bozabilir, neden koklamadığı vurgusu gereksiz.",
+                "repair": "'Yüzünü buruşturdu' yeterli, 'koklamadı ama' kısmı çıkarılabilir."
+              },
+              {
+                "quote": "gerçekten merak ederek",
+                "severity": "serious",
+                "type": "anlatıcı açıklaması/duygu belirtme",
+                "why": "Duygu durumunun doğrudan anlatıcı tarafından etiketlenmesi, göstermek yerine söylemek; çocuk kitabı sesine aykırı.",
+                "repair": "'dedi annesi' yeterli, merak duygusu diyalog tonundan zaten anlaşılıyor."
+              },
+              {
+                "quote": "Şimdi biraz taş gibi oldu.",
+                "type": "doğal ama minik register kayması",
+                "severity": "minor",
+                "why": "Bu ifade bir yetişkin espri tonu taşıyor, çocuğun anlayacağı sadelikten biraz uzak.",
+                "repair": "'Artık yenmez, çok sertleşmiş' gibi daha basit bir ifade kullanılabilir."
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 8,
+              "sentence_quality": 8,
+              "age4": 7,
+              "dialogue": 8,
+              "character": 8,
+              "flow": 8,
+              "read_aloud": 8,
+              "literary": 7,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 8,
+              "publication_readiness": 7
+            },
+            "parent_trust_risks": [
+              "Kardeş referansı aile yapısı hakkında kafa karışıklığı yaratabilir",
+              "Bazı anlatıcı yorumları (yarı şaka, gerçekten merak ederek) ebeveyne yapay/mesafeli hissettirebilir",
+              "Küçük çocuklar için 'taş gibi olmuş bisküvi' detayı gıda güvenliği çağrışımı yapabilir (yenmeyecek kadar bayat)"
+            ],
+            "professional_gap": "Metin genel olarak sıcak, gerçekçi ve akıcı; ancak birkaç yerde anlatıcı sesi çocuğun saf bakış açısından çıkıp yetişkin yorumcu tonuna kayıyor. Bu, deneyimli çocuk kitabı yazarlarının kaçındığı 'göstermek yerine söyleme' hatasıdır.",
+            "top_three_changes": [
+              "Anlatıcının duygu/durum açıklayan ifadelerini (yarı şaka, gerçekten merak ederek, düşünüyor gibiydi ama aslında...) kaldır, sadece eylem ve diyalogla göster.",
+              "Kardeş referansını kaldır veya hikâyenin başında küçük bir ipucu ile destekle.",
+              "Bisküvi ve çorap gibi küçük mizahi detayları biraz sadeleştirerek çocuksu dili koru."
+            ]
+          }
+        },
+        {
+          "run_id": "36166393877",
+          "case": "lost-toy-narrator-length",
+          "verdict": "KUCUK_EDIT",
+          "defect_count": 8,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "Deniz düşündü. Yani hiç düşünmedi aslında",
+              "hit": true
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Öyleyse yol nerede?",
+              "hit": false
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Garaj kapısı neden açık kalmış peki?",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten şaşırmış gibi",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "KUCUK_EDIT",
+            "counts": {
+              "critical": 0,
+              "serious": 1,
+              "moderate": 3,
+              "minor": 4
+            },
+            "defects": [
+              {
+                "quote": "bir ayı düştü, bir ayı düştü",
+                "type": "tekrar/yazım hatası",
+                "severity": "serious",
+                "why": "Aynı cümle iki kez yazılmış, sesli okumada tökezleme ve mantık hatası yaratır - iki ayı mı var yoksa yazım hatası mı belirsiz",
+                "repair": "'bir ayı düştü, kolu zaten kopuktu' şeklinde tekrarsız yaz"
+              },
+              {
+                "quote": "Deniz düşündü. Yani hiç düşünmedi aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.",
+                "type": "yetişkin anlatıcı dili",
+                "severity": "moderate",
+                "why": "Bu cümle yetişkin bir anlatıcının ironik/analitik yorumu gibi, 4 yaşındaki bir çocuğun doğal davranışını anlatan sade bir gözlem değil",
+                "repair": "'Deniz kaşlarını çattı, düşündü ama hatırlayamadı' gibi sade bir anlatıma çevir"
+              },
+              {
+                "quote": "tıpkı büyükbabası gibi düşünürken yaptığı gibi",
+                "type": "gereksiz açıklama",
+                "severity": "moderate",
+                "why": "Hikayede büyükbaba karakteri hiç geçmiyor, bu detay anlatıcının dışarıdan eklediği fazladan bir bilgi gibi durur, çocuğun kendi dünyasından gelmiyor",
+                "repair": "Bu benzetmeyi çıkar, sadece 'ellerini beline koydu, düşünür gibi durdu' yeterli"
+              },
+              {
+                "quote": "sesi biraz üzgün",
+                "type": "anlatıcı müdahalesi",
+                "severity": "minor",
+                "why": "Duyguyu doğrudan söylemek yerine gösterebilirdi ama kabul edilebilir seviyede",
+                "repair": "gerekirse aynen kalabilir"
+              },
+              {
+                "quote": "kimin olduğu bilinmiyor",
+                "type": "yetişkin/anlatıcı dili",
+                "severity": "moderate",
+                "why": "Bu ifade dedektif hikayesi anlatıcısı gibi soğuk ve resmi, çocuk kitabı sıcaklığından uzak",
+                "repair": "'kimin olduğu belli değildi' ya da tamamen çıkarılabilir"
+              },
+              {
+                "quote": "Ben hiç bakmamıştım oraya.",
+                "type": "doğallık",
+                "severity": "minor",
+                "why": "Anne diyaloğu biraz mekanik, ama akıcı okunuyor, ciddi sorun değil",
+                "repair": "opsiyonel"
+              },
+              {
+                "quote": "Bu da arabanın arkadaşı,",
+                "type": "klişe kapanış",
+                "severity": "minor",
+                "why": "Kapanış cümlesi hafif klişe ama çocuksu ve sevimli, büyük sorun değil",
+                "repair": "olduğu gibi kalabilir"
+              },
+              {
+                "quote": "arabalar gece gizlice çıkıp gezermiş",
+                "type": "küçük mantık/fantezi tutarlılığı",
+                "severity": "minor",
+                "why": "Çocuğun hayal gücü güzel ama biraz ani ortaya çıkıyor, önceden hiç ipucu yok",
+                "repair": "kabul edilebilir, çocuksu fantezi olarak doğal"
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 8,
+              "sentence_quality": 7,
+              "age4": 8,
+              "dialogue": 8,
+              "character": 8,
+              "flow": 7,
+              "read_aloud": 7,
+              "literary": 7,
+              "emotional": 7,
+              "originality": 7,
+              "no_llm_smell": 8,
+              "publication_readiness": 7
+            },
+            "parent_trust_risks": [
+              "Tekrarlanan 'bir ayı düştü' cümlesi editör gözden kaçırması gibi görünür, güven sarsar",
+              "Büyükbaba referansı hikaye içinde yersiz kalıyor, tutarsızlık hissi verir",
+              "Bazı anlatıcı cümleleri (kimin olduğu bilinmiyor gibi) sıcak çocuk kitabı tonundan sapıyor"
+            ],
+            "professional_gap": "Metin genel olarak sıcak, oyunbaz ve yaşa uygun ama küçük bir tekrar hatası ve iki-üç yerde anlatıcı sesi gereksiz yetişkin/analitik tona kayıyor, profesyonel bir editörden geçmemiş gibi hissettiriyor.",
+            "top_three_changes": [
+              "'bir ayı düştü, bir ayı düştü' tekrarını düzelt",
+              "'Yani hiç düşünmedi aslında...' cümlesini sadeleştir",
+              "'tıpkı büyükbabası gibi' benzetmesini çıkar"
+            ]
+          }
+        },
+        {
+          "run_id": "36166723303",
+          "case": "lost-toy-no-socratic",
+          "verdict": "KUCUK_EDIT",
+          "defect_count": 7,
+          "gold": [
+            {
+              "kind": "physical_action",
+              "quote": "Mutfakta dolabın altına yattı",
+              "hit": false
+            },
+            {
+              "kind": "translationese",
+              "quote": "tozdan bir tavşan",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": true
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "Annesi bunu sorgulamadı, sadece başını salladı.",
+              "hit": true
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "KUCUK_EDIT",
+            "counts": {
+              "critical": 0,
+              "serious": 1,
+              "moderate": 3,
+              "minor": 4
+            },
+            "defects": [
+              {
+                "quote": "\"Nasıl oraya girmiş?\" diye sordu annesi, gerçekten merak ederek.",
+                "type": "anlatıcı_müdahalesi",
+                "severity": "moderate",
+                "why": "'gerçekten merak ederek' gibi anlatıcı açıklaması 4 yaşlık akışa yetişkin analiz katmanı ekliyor, gösterme yerine söyleme.",
+                "repair": "Anlatıcı açıklamasını kaldır, sadece diyaloğu bırak."
+              },
+              {
+                "quote": "Annesi bunu sorgulamadı, sadece başını salladı.",
+                "type": "anlatıcı_yorumu",
+                "severity": "moderate",
+                "why": "Bu, çocuk kitabı için fazla soyut/yetişkin bir gözlem; 'sorgulamak' fiili çocuk metninde register kayması yaratıyor.",
+                "repair": "\"Annesi başını salladı.\" olarak sadeleştir."
+              },
+              {
+                "quote": "Deniz alnını buruşturdu. \"Salonda oynuyordum. Sonra odama gittim. Sonra... bilmiyorum.\"",
+                "type": "fazla_düzenli_muhakeme",
+                "severity": "moderate",
+                "why": "4 yaşındaki bir çocuğun olayları bu kadar sıralı/mantıklı hatırlaması yaşına göre biraz fazla organize.",
+                "repair": "Daha dağınık, çocuksu bir hatırlama: \"Salonda oynuyordum... sonra... bilmiyorum!\""
+              },
+              {
+                "quote": "Deniz salonun ortasında dizlerinin üstüne çöktü.",
+                "type": "açılış_klişesi",
+                "severity": "minor",
+                "why": "Aksiyonla başlaması iyi ama 'dizlerinin üstüne çöktü' biraz yetişkin/dramatik bir fiil seçimi, çocuk için daha basit bir fiil (diz çökmek, eğilmek) daha doğal olurdu.",
+                "repair": "\"Deniz salonun ortasında diz çöktü.\""
+              },
+              {
+                "quote": "burnunda bir toz izi vardı",
+                "type": "görsel_detay_zayıf",
+                "severity": "minor",
+                "why": "Küçük ama tatlı bir detay, işlevsiz değil ama biraz fazla süslü ifade edilmiş.",
+                "repair": "\"Burnu tozlanmıştı.\""
+              },
+              {
+                "quote": "Araba halının üzerinde kayıp gitti, kanepenin ayağına çarptı.",
+                "type": "tekrar_eden_sözdizimi",
+                "severity": "minor",
+                "why": "Benzer 'X'e çarptı' yapısı metinde birkaç kez tekrarlanıyor (kanepenin kenarına çarpıp durdu / kanepenin ayağına çarptı), okurken tekrar hissi yaratıyor.",
+                "repair": "Farklı bir fiil/yapı kullan: \"...kanepenin ayağının dibinde durdu.\""
+              },
+              {
+                "quote": "\"O zaman akıllı arabayı bulmamız gerek. Belki bize sinyal verir.\"",
+                "type": "yetişkin_kelime_seçimi",
+                "severity": "serious",
+                "why": "\"Sinyal verir\" 4 yaş kitabı için oldukça teknik/yetişkin bir ifade, çocuk oyununa uymuyor, register kayması yaratıyor.",
+                "repair": "\"Belki bize bir işaret verir.\" ya da \"Belki bize seslenir.\""
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 8,
+              "sentence_quality": 8,
+              "age4": 7,
+              "dialogue": 8,
+              "character": 8,
+              "flow": 8,
+              "read_aloud": 8,
+              "literary": 7,
+              "emotional": 7,
+              "originality": 7,
+              "no_llm_smell": 8,
+              "publication_readiness": 7
+            },
+            "parent_trust_risks": [
+              "\"Sinyal verir\" ifadesi ebeveynlere metnin yaşa uygun düzenlenmediği hissi verebilir",
+              "Bazı anlatıcı yorumları ('gerçekten merak ederek', 'sorgulamadı') metni ders kitabı gibi hissettirebilir",
+              "Küçük çocuğun olayları çok düzenli anlatması gerçekçilik hissini azaltabilir"
+            ],
+            "professional_gap": "Genel olarak sıcak, oyuncu ve iyi kurulmuş bir metin; ancak birkaç yerde anlatıcı sesi devreye girip yetişkin bir açıklama katmanı ekliyor ve bir-iki kelime seçimi (sinyal) yaş grubuna göre fazla teknik kalıyor. Bunlar düzeltildiğinde metin çok daha saf ve tutarlı bir çocuk sesine kavuşur.",
+            "top_three_changes": [
+              "\"Belki bize sinyal verir\" cümlesini çocuksu bir ifadeyle değiştir",
+              "Anlatıcı yorumlarını (gerçekten merak ederek, sorgulamadı) kaldırıp sade eyleme indir",
+              "Tekrarlayan 'çarptı' yapılarını çeşitlendir"
+            ]
+          }
+        },
+        {
+          "run_id": "36168417326",
+          "case": "profile-driven-locator-baseline",
+          "verdict": "KUCUK_EDIT",
+          "defect_count": 8,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Arabalar kendi kendine gitmez ki Deniz.",
+              "hit": true
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz parmağını çenesine koydu, tam annesinin yaptığı gibi.",
+              "hit": true
+            },
+            {
+              "quote": "Köpekbalığı arabası düşmüş, ama kimseyi yemedi!",
+              "hit": true
+            }
+          ],
+          "audit": {
+            "verdict": "KUCUK_EDIT",
+            "counts": {
+              "critical": 0,
+              "serious": 1,
+              "moderate": 3,
+              "minor": 4
+            },
+            "defects": [
+              {
+                "quote": "Deniz parmağını çenesine koydu, tam annesinin yaptığı gibi.",
+                "type": "anlatıcı gözlem/açıklama",
+                "severity": "minor",
+                "why": "4 yaşındaki çocuk için biraz analitik bir gözlem, ama görsel olduğu için tolere edilebilir.",
+                "repair": "Deniz elini çenesine koydu, düşündü."
+              },
+              {
+                "quote": "\"Arabalar kendi kendine gitmez ki Deniz.\"",
+                "type": "yetişkin öğretici dili",
+                "severity": "moderate",
+                "why": "Anne burada mantık dersi veriyor, doğal ebeveyn tepkisinden çok öğretmen tonu.",
+                "repair": "\"Hmm, arabalar yürüyemez ki!\" (daha oyunbaz, az öğretici)"
+              },
+              {
+                "quote": "Annesi ellerini dizlerine koydu. \"Peki, biz de gizlice bakalım o zaman.\"",
+                "type": "fazla düzenli/nazik yetişkin tepkisi",
+                "severity": "minor",
+                "why": "Sahne akışında doğal ama biraz kalıp bir 'iyi anne' pozu.",
+                "repair": "Basitleştirilebilir: \"Peki, hadi gizlice bakalım.\""
+              },
+              {
+                "quote": "Kanepenin arkasına baktı. Orada büyük bir boşluk vardı, toz, bir düğme, eski bir dergi.",
+                "type": "liste tarzı anlatım",
+                "severity": "moderate",
+                "why": "Üç öğenin art arda sıralanması biraz kataloglama hissi veriyor, 4 yaş akışına biraz hızlı geliyor.",
+                "repair": "Toz vardı, eski bir düğme vardı. Bir de dergi..."
+              },
+              {
+                "quote": "Annesi kanepenin arkasındaki eski dergiyi çekti çıkardı, tozunu üfledi. \"Bak, bu da benim eski dergimmiş.\"",
+                "type": "işlevsiz yan dal",
+                "severity": "moderate",
+                "why": "Bu an hikâyenin akışını kesiyor, çocuğun ilgisizliği doğru gösterilse de anlatı gereksiz uzuyor, kısaltılabilir.",
+                "repair": "Bu replik ve eylem tamamen çıkarılabilir veya tek cümleye indirilebilir."
+              },
+              {
+                "quote": "\"Bu bir kukla oldu şimdi!\"",
+                "type": "tekrar eden oyun kalıbı",
+                "severity": "minor",
+                "why": "Hikâyede çorap-kukla anı ana olay örgüsüyle bağlantısız kalıyor, biraz dolgu hissi veriyor.",
+                "repair": "Sahne kısaltılabilir veya arabayla bağlantılı hale getirilebilir."
+              },
+              {
+                "quote": "\"Köpekbalığı arabası düşmüş, ama kimseyi yemedi!\"",
+                "type": "minor tuhaflık",
+                "severity": "minor",
+                "why": "Çocuksu mantık olarak hoş ama biraz kopuk bir espri, akışta hafif garip duruyor.",
+                "repair": "Olduğu gibi bırakılabilir, çocuksu mantık için makul."
+              },
+              {
+                "quote": "ikisi birlikte arabayı yastığın üstünden aşağı bıraktılar.",
+                "type": "zayıf kapanış",
+                "severity": "serious",
+                "why": "Hikâye net bir duygusal/anlamlı kapanış yapmadan, oyunun ortasında biter gibi bitiyor; tatmin edici final hissi zayıf.",
+                "repair": "Son cümleye küçük bir sıcaklık/kapanış vurgusu eklenebilir: \"...aşağı bıraktılar, ikisi de kahkaha attı.\""
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 8,
+              "sentence_quality": 8,
+              "age4": 7,
+              "dialogue": 7,
+              "character": 7,
+              "flow": 7,
+              "read_aloud": 8,
+              "literary": 6,
+              "emotional": 6,
+              "originality": 7,
+              "no_llm_smell": 8,
+              "publication_readiness": 7
+            },
+            "parent_trust_risks": [
+              "Dergi sahnesi gereksiz uzatma hissi verebilir",
+              "Kapanış duygusal doyum eksikliği ebeveyni tatminsiz bırakabilir",
+              "Anne repliklerinden biri hafif öğretici tonlu"
+            ],
+            "professional_gap": "Metin genel olarak doğal ve akıcı ama bazı yan sahneler (dergi, çorap-kukla) ana olay örgüsünü zayıflatıyor ve kapanış duygusal bir vuruş yapmadan bitiyor.",
+            "top_three_changes": [
+              "Dergi sahnesini kısalt veya çıkar",
+              "Kapanışa küçük bir duygusal/komik nokta ekle",
+              "Anne repliğindeki öğretici tonu yumuşat"
+            ]
+          }
+        },
+        {
+          "run_id": "36169049278",
+          "case": "locator-recall-tuning",
+          "verdict": "KUCUK_EDIT",
+          "defect_count": 7,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Bulaşık makinesinde mi kaldı yoksa?",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz arabayı havaya kaldırdı, sanki bir kupa gibi.",
+              "hit": false
+            },
+            {
+              "quote": "Deniz çorabı eline geçirdi, elini havaya kaldırdı, kukla gibi oynattı.",
+              "hit": false
+            }
+          ],
+          "audit": {
+            "verdict": "KUCUK_EDIT",
+            "counts": {
+              "critical": 0,
+              "serious": 1,
+              "moderate": 3,
+              "minor": 4
+            },
+            "defects": [
+              {
+                "quote": "eline sardığı havluyla",
+                "type": "tuhaf sözdizimi",
+                "severity": "minor",
+                "why": "Doğal söz sırası 'eline havlu sarmış' ya da 'elinde havlu' olurdu; ters çevrilmiş yapı sesli okumada tökezletir.",
+                "repair": "'elinde bir havlu' yap"
+              },
+              {
+                "quote": "Saklanıyormuş demek,\" dedi annesi, gülerek.",
+                "type": "yetişkin dili/hafif tuhaf tepki",
+                "severity": "moderate",
+                "why": "Anne repliği doğal bir ebeveyn tepkisinden çok yazarın onaylayıcı yorumu gibi duruyor, biraz mesafeli.",
+                "repair": "'Vay, gerçekten saklanmış!' gibi daha sıcak bir tepki"
+              },
+              {
+                "quote": "Bu senin eski çorabın sanırım, minicik.",
+                "type": "belirsiz/garip ifade",
+                "severity": "moderate",
+                "why": "'minicik' kelimesinin cümledeki yeri belirsiz, çorabın mı yoksa Deniz'in mi küçüklüğüne atıf yaptığı anlaşılmıyor; sesli okurken tökezleme riski var.",
+                "repair": "'Bu senin çok küçükken giydiğin bir çorap sanırım' şeklinde açıkla"
+              },
+              {
+                "quote": "sanki oradan çıkacakmış gibi",
+                "type": "mantıksal tuhaflık",
+                "severity": "moderate",
+                "why": "Bir arabanın bulaşık makinesinden çıkacağı beklentisi biraz saçma bir mizah denemesi ama açıklayıcı anlatıcı sesi çocuğun algısından kopuk, biraz fazla 'yazarca' bir yorum.",
+                "repair": "Doğrudan aksiyonla bırak: 'Bulaşık makinesini açtı, içine baktı.'"
+              },
+              {
+                "quote": "Deniz elini havaya kaldırdı, sonra indirdi.",
+                "type": "gereksiz detay",
+                "severity": "minor",
+                "why": "Bu hareket net bir anlam taşımıyor, akışı hafif yavaşlatıyor.",
+                "repair": "Kaldırılabilir veya 'Deniz düşündü' ile değiştirilebilir"
+              },
+              {
+                "quote": "Deniz kahkaha attı, kendini yere bıraktı.",
+                "type": "tekrarlayan kalıp",
+                "severity": "minor",
+                "why": "Hikâyede birkaç kez benzer 'yere yatma/düşme' hareketleri tekrarlanıyor, biraz monoton kalıp hissi veriyor.",
+                "repair": "Farklı bir fiziksel tepki ekle, örn. 'Deniz kıkırdayarak yuvarlandı.'"
+              },
+              {
+                "quote": "Böyle! Arabalar buradan geçecek, kayboldukları yerden!",
+                "type": "zayıf kapanış",
+                "severity": "minor",
+                "why": "Hikâye aniden kesiliyor, bir kapanış hissi vermiyor; 4 yaş dinleyicisi için biraz asılı kalmış bir son.",
+                "repair": "Kısa bir kapanış cümlesi ekle, örn. 'Artık kaybolan arabalar kolayca bulunacaktı.'"
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 8,
+              "sentence_quality": 8,
+              "age4": 9,
+              "dialogue": 8,
+              "character": 8,
+              "flow": 8,
+              "read_aloud": 8,
+              "literary": 7,
+              "emotional": 7,
+              "originality": 7,
+              "no_llm_smell": 9,
+              "publication_readiness": 8
+            },
+            "parent_trust_risks": [
+              "Bazı cümlelerdeki (havlu, çorap) belirsiz ifadeler ebeveynin sesli okurken tökezlemesine yol açabilir",
+              "Ani biten final, çocuğun 'peki sonra?' sorusuna cevap bırakmıyor"
+            ],
+            "professional_gap": "Genel olarak doğal ve sıcak bir metin; küçük sözdizimi pürüzleri ve final tamamlanmışlık hissi eksikliği profesyonel cilaya ihtiyaç duyuyor.",
+            "top_three_changes": [
+              "Final cümlesine küçük bir kapanış/duygu notu ekle",
+              "'eline sardığı havluyla' ve 'minicik' gibi belirsiz ifadeleri düzelt",
+              "Bulaşık makinesi anındaki anlatıcı yorumunu (sanki oradan çıkacakmış gibi) sadeleştir"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "mode": "quota_neutral",
+      "gold_hits": 0,
+      "gold_total": 14,
+      "gold_recall": 0.0,
+      "known_nondefect_hits": 0,
+      "known_nondefect_total": 4,
+      "known_nondefect_hit_rate": 0.0,
+      "cost_usd": 0.038588000000000004,
+      "cases": [
+        {
+          "run_id": "36165831429",
+          "case": "lost-toy-first-generalization",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu",
+              "hit": false
+            },
+            {
+              "kind": "defensive_negation",
+              "quote": "koklamadı ama yüzünü buruşturdu",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "yarı şaka",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, akıcı ve yaş grubuna uygun; küçük stilistik tercihler dışında değişiklik gerektirmiyor.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36166393877",
+          "case": "lost-toy-narrator-length",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 1,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "Deniz düşündü. Yani hiç düşünmedi aslında",
+              "hit": false
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Öyleyse yol nerede?",
+              "hit": false
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Garaj kapısı neden açık kalmış peki?",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten şaşırmış gibi",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 1
+            },
+            "defects": [
+              {
+                "quote": "Legolar döküldü, bir ayı düştü, bir ayı düştü;",
+                "quote_note": "tekrar",
+                "type": "yazım/tekrar hatası",
+                "severity": "minor",
+                "why": "Aynı ifade art arda iki kez yazılmış, muhtemelen yazım hatası ('bir ayı düştü' iki kez)",
+                "repair": "'bir ayı düştü, bir kutu devrildi' gibi tekrarı düzeltecek bir ifadeye çevrilebilir"
+              }
+            ],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin akıcı, doğal ve yaş grubuna uygun; tek bir küçük tekrar hatası dışında yayına hazır durumda.",
+            "top_changes": [
+              "'bir ayı düştü, bir ayı düştü' tekrarını düzelt"
+            ]
+          }
+        },
+        {
+          "run_id": "36166723303",
+          "case": "lost-toy-no-socratic",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "physical_action",
+              "quote": "Mutfakta dolabın altına yattı",
+              "hit": false
+            },
+            {
+              "kind": "translationese",
+              "quote": "tozdan bir tavşan",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "Annesi bunu sorgulamadı, sadece başını salladı.",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 8,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, akıcı ve yaş grubuna uygun; küçük stil tercihleri dışında değiştirilmesi gereken kanıtlanabilir bir sorun yok.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36168417326",
+          "case": "profile-driven-locator-baseline",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Arabalar kendi kendine gitmez ki Deniz.",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz parmağını çenesine koydu, tam annesinin yaptığı gibi.",
+              "hit": false
+            },
+            {
+              "quote": "Köpekbalığı arabası düşmüş, ama kimseyi yemedi!",
+              "hit": false
+            }
+          ],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 8,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 7,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, akıcı ve yaş grubuna uygun; günlük hayattan küçük bir keşif hikâyesini sıcak ve inandırıcı biçimde anlatıyor. Editoryal açıdan ciddi bir sorun yok.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36169049278",
+          "case": "locator-recall-tuning",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Bulaşık makinesinde mi kaldı yoksa?",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz arabayı havaya kaldırdı, sanki bir kupa gibi.",
+              "hit": false
+            },
+            {
+              "quote": "Deniz çorabı eline geçirdi, elini havaya kaldırdı, kukla gibi oynattı.",
+              "hit": false
+            }
+          ],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 8,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin yaşa uygun, doğal ve akıcı; küçük bir editör göz taraması dışında ek değişikliğe gerek yok.",
+            "top_changes": []
+          }
+        }
+      ]
+    },
+    {
+      "mode": "calibrated",
+      "gold_hits": 0,
+      "gold_total": 14,
+      "gold_recall": 0.0,
+      "known_nondefect_hits": 0,
+      "known_nondefect_total": 4,
+      "known_nondefect_hit_rate": 0.0,
+      "cost_usd": 0.043067999999999995,
+      "cases": [
+        {
+          "run_id": "36165831429",
+          "case": "lost-toy-first-generalization",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu",
+              "hit": false
+            },
+            {
+              "kind": "defensive_negation",
+              "quote": "koklamadı ama yüzünü buruşturdu",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "yarı şaka",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, yaşa uygun, akıcı; editoryal düzeltme gerektiren somut bir kusur yok.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36166393877",
+          "case": "lost-toy-narrator-length",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "narrator_mindread",
+              "quote": "Deniz düşündü. Yani hiç düşünmedi aslında",
+              "hit": false
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Öyleyse yol nerede?",
+              "hit": false
+            },
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Garaj kapısı neden açık kalmış peki?",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten şaşırmış gibi",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, oyunbaz ve akıcı; anlatıcı yorumları görünür eylemlere dayanıyor, yetişkin karakteri çocuğun hayaline katılıyor, kapanış tatmin edici.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36166723303",
+          "case": "lost-toy-no-socratic",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "physical_action",
+              "quote": "Mutfakta dolabın altına yattı",
+              "hit": false
+            },
+            {
+              "kind": "translationese",
+              "quote": "tozdan bir tavşan",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "gerçekten merak ederek",
+              "hit": false
+            },
+            {
+              "kind": "narrator_mindread",
+              "quote": "Annesi bunu sorgulamadı, sadece başını salladı.",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 9,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, yaşa uygun, anlatıcı yorumları görünür eylemle sınırlı, ebeveyn oyuna katılıyor ve öğretmenlik yapmıyor. Kapanış oyunun içinde doğal biter.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36168417326",
+          "case": "profile-driven-locator-baseline",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Arabalar kendi kendine gitmez ki Deniz.",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz parmağını çenesine koydu, tam annesinin yaptığı gibi.",
+              "hit": false
+            },
+            {
+              "quote": "Köpekbalığı arabası düşmüş, ama kimseyi yemedi!",
+              "hit": false
+            }
+          ],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 8,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, oyunbaz ve yaşa uygun; anne karakteri açıklayıcı değil oyuna katılan biri olarak yazılmış. Küçük gözden geçirmeler dışında yayına hazır.",
+            "top_changes": []
+          }
+        },
+        {
+          "run_id": "36169049278",
+          "case": "locator-recall-tuning",
+          "verdict": "YAYINA_HAZIR",
+          "defect_count": 0,
+          "gold": [
+            {
+              "kind": "caregiver_teacher",
+              "quote": "Bulaşık makinesinde mi kaldı yoksa?",
+              "hit": false
+            }
+          ],
+          "known_non_defects": [
+            {
+              "quote": "Deniz arabayı havaya kaldırdı, sanki bir kupa gibi.",
+              "hit": false
+            },
+            {
+              "quote": "Deniz çorabı eline geçirdi, elini havaya kaldırdı, kukla gibi oynattı.",
+              "hit": false
+            }
+          ],
+          "audit": {
+            "verdict": "YAYINA_HAZIR",
+            "counts": {
+              "critical": 0,
+              "serious": 0,
+              "moderate": 0,
+              "minor": 0
+            },
+            "defects": [],
+            "scores": {
+              "turkish_naturalness": 9,
+              "sentence_quality": 9,
+              "age4": 9,
+              "dialogue": 9,
+              "character": 9,
+              "flow": 8,
+              "read_aloud": 9,
+              "literary": 8,
+              "emotional": 8,
+              "originality": 8,
+              "no_llm_smell": 9,
+              "publication_readiness": 9
+            },
+            "professional_gap": "Metin doğal, yaşa uygun, anne-çocuk etkileşimi öğretici değil oyunbaz; kapanış tünel oyunuyla organik şekilde genişliyor, ana olaydan kopuk değil.",
+            "top_changes": []
+          }
+        }
+      ]
+    }
+  ]
+}
