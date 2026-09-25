@@ -170,6 +170,10 @@ SUSPICIOUS_PATTERNS = [
     ("defensive_exposition", re.compile(r"\b(ama içine değil|sadece baktı|dokunmadı,? sadece|özellikle dokunmadı)\b", re.I)),
     ("teacher_praise", re.compile(r"\b(iyi düşündün|doğru düşündün|çok iyi gözlem|güzel gözlem|işte bu yüzden)\b", re.I)),
     ("generic_closure", re.compile(r"\b(yine geliriz,? (?:ve )?gör(?:eceğiz|ürüz)|bir dahaki sefere yine bakarız|bakmaya devam edeceğiz)\b", re.I)),
+    ("didactic_science", re.compile(r"\b(buharlaşıp gitti|buhar taneleri|güneş azalınca renkleri de değişiyor)\b", re.I)),
+    ("adult_narrator_comment", re.compile(r"\b(hiç dertleri yokmuş gibi|sanki hiçbir şey değişmemiş gibi)\b", re.I)),
+    ("age4_abstract_phrase", re.compile(r"\bsonbahar yaprağım oldu\b", re.I)),
+    ("cliche_happy_ending", re.compile(r"\byüzünde kocaman bir gülümseme vardı\b", re.I)),
 ]
 
 def meta(body: dict[str, Any]) -> dict[str, Any]:
