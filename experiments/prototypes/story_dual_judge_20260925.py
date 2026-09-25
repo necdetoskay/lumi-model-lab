@@ -68,7 +68,7 @@ def main():
     load_dotenv()
     key=os.environ["OPENROUTER_API_KEY"]
     trigger=Path("experiments/triggers/story-dual-judge.txt").read_text(encoding="utf-8")
-    m=re.search(r"^source:\\s*(\\d+)\\s*$", trigger, re.M)
+    m=re.search(r"^source:\s*(\d+)\s*$", trigger, re.M)
     source_run=m.group(1) if m else "36168417326"
     story=Path(f"experiments/fixtures/story_defect_locator_stories/{source_run}.txt").read_text(encoding="utf-8").strip()
 
