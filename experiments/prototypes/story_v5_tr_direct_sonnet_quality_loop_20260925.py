@@ -14,7 +14,7 @@ from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import call_openrouter, count_words, parse_cost, parse_usage
 
 WRITER_MODEL = "anthropic/claude-sonnet-5"
-AUDITOR_MODEL = "openai/gpt-5.6-sol"
+HOSTILE_EDITOR_MODEL = "anthropic/claude-sonnet-5"\nFINAL_AUDITOR_MODEL = "openai/gpt-5.6-sol"
 MIN_WORDS = 375
 MAX_WORDS = 625
 SOFT_BUDGET_USD = 0.102
@@ -52,36 +52,21 @@ Yalnızca bitmiş hikâyeyi yaz. İlk satır başlık, sonra boş satır.
 """.strip()
 
 AUDIT_SYSTEM = r"""
-Sen bağımsız Türk çocuk edebiyatı editörüsün.
-4 yaş için, yetişkin tarafından sesli okunacak Türkçe bir hikâyeyi yayın kalitesi açısından
-sert ama kompakt biçimde değerlendir.
+Sen sert bir Türk çocuk kitabı editörüsün.
+4 yaş için sesli okunacak bu hikâyede yayına engel kusurları bul.
+Prompt uyumu veya güvenlik puanı verme. Doğal Türkçe, çocuk sesi, yetişkin diyaloğu,
+LLM/checklist kokusu, didaktiklik, mantık, ritim ve fiziksel anlamı kontrol et.
 
-Prompt uyumu veya güvenlik için puan verme. Şunları ara:
-- anlamsız/fiziksel olarak tuhaf cümle
-- doğal olmayan Türkçe, çeviri kokusu, cümle düşüklüğü
-- 4 yaş çocuğunda yetişkin muhakemesi
-- öğretmen gibi yetişkin diyaloğu
-- checklist/benchmark/LLM kokusu
-- bilgi bloğu/didaktik açıklama
-- işlevsel kişiliksiz karakter
-- tekrar, hantal ritim, zayıf sesli okuma
-- yapay prop / sırf ipucu için eklenmiş ayrıntı
-- aşırı soyut veya yetişkin anlatıcı dili
-- mantık/neden-sonuç sorunu
-- çocuk güvenliği açısından taklit riski
-
-JSON dışında hiçbir şey yazma.
-En fazla 8 en önemli kusuru listele. Açıklamalar kısa olsun.
-
+SADECE kısa JSON yaz. En fazla 6 sorun:
 {
   "publication_ready": false,
-  "verdict": "YAYINA_HAZIR|EDITORYAL_DUZELTME|YENIDEN_YAZ",
   "counts": {"critical":0,"serious":0,"moderate":0,"minor":0},
   "defects": [
-    {"quote":"...","type":"...","severity":"critical|serious|moderate|minor","why":"...","repair":"..."}
+    {"quote":"kısa alıntı","severity":"critical|serious|moderate|minor","repair":"kısa düzeltme"}
   ],
-  "rewrite_instructions": ["..."]
+  "rewrite_instructions": ["en fazla 4 kısa talimat"]
 }
+Bir critical veya serious varsa publication_ready=false.
 """.strip()
 
 REPAIR_SYSTEM = r"""
@@ -104,33 +89,22 @@ Yalnızca tam düzeltilmiş hikâyeyi yaz; ilk satır başlık olsun.
 """.strip()
 
 FINAL_AUDIT_SYSTEM = r"""
-Sen kör son yayın denetçisisin. 4 yaş için Türkçe sesli okuma hikâyesini değerlendir.
-Önceki taslağı veya modeli bilmiyorsun.
+Sen bağımsız kör son yayın denetçisisin.
+4 yaş için Türkçe sesli okuma hikâyesinde yalnız yayına engel kusurları ara:
+anlamsız/doğal olmayan Türkçe, yetişkin muhakemesi, didaktik diyalog,
+LLM/checklist kokusu, ciddi mantık/fizik hatası.
 
-Aşağıdakilerden biri varsa publication_ready=false:
-- critical veya serious tek bir kusur
-- bariz anlamsız/doğal olmayan Türkçe
-- belirgin LLM/checklist/benchmark kokusu
-- 4 yaş çocuğunda belirgin yetişkin muhakemesi
-- öğretmenvari didaktik diyalog
-- ciddi fiziksel/mantıksal hata
-
-JSON dışında hiçbir şey yazma. En fazla 5 kusur yaz; kısa ol.
+SADECE kısa JSON yaz. En fazla 5 sorun:
 {
   "publication_ready": false,
-  "verdict": "YAYINA_HAZIR|EDITORYAL_DUZELTME|YENIDEN_YAZ",
   "counts": {"critical":0,"serious":0,"moderate":0,"minor":0},
   "defects": [
-    {"quote":"...","type":"...","severity":"critical|serious|moderate|minor","why":"...","repair":"..."}
+    {"quote":"kısa alıntı","severity":"critical|serious|moderate|minor","repair":"kısa düzeltme"}
   ],
-  "native_turkish_score": 1,
-  "age4_score": 1,
-  "read_aloud_score": 1,
-  "literary_score": 1,
-  "llm_smell_score": 1,
-  "summary": "..."
+  "scores": {"turkish":1,"age4":1,"read_aloud":1,"literary":1,"no_llm_smell":1},
+  "summary":"tek kısa cümle"
 }
-Skorlar 1-10; llm_smell_score 10 = yapay zekâ kokusu yok.
+Skorlar 1-10. Bir critical veya serious varsa publication_ready=false.
 """.strip()
 
 
@@ -150,6 +124,7 @@ def usd(m: dict[str, Any] | None) -> float:
 def compact_audit(
     *,
     api_key: str,
+    model: str,
     system: str,
     story: str,
     seed: int,
@@ -157,13 +132,14 @@ def compact_audit(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     parsed, body, _, failures = call_structured_json_with_retry(
         api_key=api_key,
-        model=AUDITOR_MODEL,
+        model=model,
         system_prompt=system,
         user_prompt=json.dumps({"exact_age": 4, "story": story}, ensure_ascii=False),
         temperature=0.0,
         max_tokens=max_tokens,
         seed=seed,
         request_class="judge",
+        max_parse_attempts=1,
     )
     m = meta(body)
     m["parse_failures"] = failures
@@ -239,10 +215,11 @@ def main() -> None:
 
     audit, costs["audit_1"] = compact_audit(
         api_key=api_key,
+        model=HOSTILE_EDITOR_MODEL,
         system=AUDIT_SYSTEM,
         story=story,
         seed=202609262,
-        max_tokens=1200,
+        max_tokens=1800,
     )
 
     if audit_fails(audit, story):
@@ -270,10 +247,11 @@ def main() -> None:
 
     final_audit, costs["final_audit_1"] = compact_audit(
         api_key=api_key,
+        model=FINAL_AUDITOR_MODEL,
         system=FINAL_AUDIT_SYSTEM,
         story=story,
         seed=202609264,
-        max_tokens=900,
+        max_tokens=2200,
     )
 
     running_usd = sum(usd(v) for v in costs.values())
@@ -306,7 +284,7 @@ def main() -> None:
             system=FINAL_AUDIT_SYSTEM,
             story=story,
             seed=202609266,
-            max_tokens=900,
+            max_tokens=2200,
         )
 
     total_usd = sum(usd(v) for v in costs.values())
@@ -320,10 +298,11 @@ def main() -> None:
     )
 
     result = {
-        "protocol": "story-v5-tr-direct-sonnet-quality-loop.v2",
+        "protocol": "story-v5-tr-direct-sonnet-quality-loop.v3",
         "models": {
             "writer": WRITER_MODEL,
-            "auditor": AUDITOR_MODEL,
+            "hostile_editor": HOSTILE_EDITOR_MODEL,
+            "blind_final_auditor": FINAL_AUDITOR_MODEL,
             "repair_writer": WRITER_MODEL,
         },
         "exact_age": 4,
@@ -377,13 +356,7 @@ def main() -> None:
         "final_word_count": result["final_word_count"],
         "final_surface_errors": final_surface_errors,
         "final_counts": final_audit.get("counts"),
-        "final_scores": {
-            "native_turkish": final_audit.get("native_turkish_score"),
-            "age4": final_audit.get("age4_score"),
-            "read_aloud": final_audit.get("read_aloud_score"),
-            "literary": final_audit.get("literary_score"),
-            "llm_smell": final_audit.get("llm_smell_score"),
-        },
+        "final_scores": final_audit.get("scores"),
         "total_cost_usd": result["total_cost_usd"],
         "within_soft_budget": result["within_soft_budget"],
         "elapsed_seconds": result["elapsed_seconds"],
