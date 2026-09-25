@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 
 from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import call_openrouter, count_words, parse_cost, parse_usage
+from src.story_failure_prompt_compiler import render_writer_negative_prompt
 
 WRITER_MODEL = "anthropic/claude-sonnet-5"
 COPY_EDITOR_MODEL = "openai/gpt-5.6-sol"
@@ -204,10 +205,18 @@ def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed
     return parsed, m
 
 def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
+    failure_constraints = render_writer_negative_prompt(
+        language="tr",
+        exact_age=4,
+        story_type="nature",
+        target_words=500,
+        max_rules=12,
+    )
+    writer_system = DRAFT_SYSTEM + "\n\n" + failure_constraints
     story, body, _ = call_openrouter(
         api_key=api_key,
         model=WRITER_MODEL,
-        system_prompt=DRAFT_SYSTEM,
+        system_prompt=writer_system,
         user_prompt="Hikâyeyi şimdi yaz.",
         temperature=0.72,
         max_tokens=None,
