@@ -327,7 +327,7 @@ def benchmark_audit(*, api_key: str, story: str) -> tuple[dict[str, Any], dict[s
         system=BENCHMARK_AUDIT_SYSTEM,
         payload={"exact_age":4,"story":story},
         seed=202609276,
-        max_tokens=3200,
+        max_tokens=7000,
     )
 
 def main() -> None:
@@ -402,7 +402,21 @@ def main() -> None:
 
     production_usd = sum(usd(v) for v in production_costs.values())
 
-    external_audit, external_meta = benchmark_audit(api_key=api_key, story=final_story)
+    external_audit_error = None
+    try:
+        external_audit, external_meta = benchmark_audit(api_key=api_key, story=final_story)
+    except Exception as exc:
+        external_audit = {
+            "verdict": "AUDIT_ERROR",
+            "counts": {},
+            "defects": [],
+            "scores": {},
+            "parent_trust_risks": [],
+            "professional_gap": "",
+            "top_three_changes": [],
+        }
+        external_meta = {"cost": {"usd": 0.0}, "usage": {}, "failed": True}
+        external_audit_error = f"{type(exc).__name__}: {exc}"
     evaluation_usd = usd(external_meta)
 
     result = {
@@ -433,6 +447,7 @@ def main() -> None:
         "production_cost_usd":round(production_usd,9),
         "external_benchmark_audit":external_audit,
         "external_benchmark_cost":external_meta,
+        "external_benchmark_error":external_audit_error,
         "evaluation_cost_usd":round(evaluation_usd,9),
         "experiment_total_cost_usd":round(production_usd+evaluation_usd,9),
         "elapsed_seconds":round(time.perf_counter()-started,3),
