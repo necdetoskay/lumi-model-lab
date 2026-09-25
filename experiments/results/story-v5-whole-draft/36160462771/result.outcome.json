@@ -1,0 +1,120 @@
+{
+  "protocol": "story-v5-tr-sonnet-lint-local-edit-v1-audit-only",
+  "story_source": "experiments/fixtures/story-v5-tr-lint-copyedit-candidate-36159785620.txt",
+  "final_story": "# Deniz ve Küçük Gölet\n\nDeniz kapıdan çıkar çıkmaz koştu. \"Anne, gölete gidiyoruz değil mi? Ördekleri göreceğim!\"\n\n\"Gidiyoruz canım, ama elimi bırakma, tamam mı?\"\n\nYol boyunca Deniz elindeki küçük kırmızı kovayı sallayıp durdu. İçinde hiçbir şey yoktu ama o \"belki bir şey bulurum\" diyordu hep.\n\nDoğa bahçesine girdiklerinde her zamanki gibi kuşlar cıvıl cıvıldı. Ama Deniz göletin yanına gelince durdu, kaşlarını çattı.\n\n\"Anne! Su nerede?\"\n\nGölet gerçekten küçülmüş gibiydi. Kenarlarda ıslak, kahverengi toprak vardı, önceden orası hep suyla kaplı olurdu.\n\n\"Bak,\" dedi annesi, yanına çöküp. \"Şu ıslak yerleri görüyor musun? Orası eskiden suyun olduğu yer. Son günler çok sıcak geçti, biliyorsun. Su da biraz buharlaşıp gitti.\"\n\n\"Su nereye gitti? Uçtu mu?\"\n\n\"Aynen öyle, gökyüzüne doğru uçtu, küçük küçük buhar taneleri olarak.\"\n\nDeniz gökyüzüne baktı, gözlerini kısarak sanki suyu havada görebilecekmiş gibi.\n\n\"Peki ördekler ne yapacak? Yüzecek yerleri yok mu?\"\n\n\"Bak,\" dedi annesi, göletin ortasını gösterdi. \"Hâlâ su var, sadece daha az. Ördekler orada gayet iyi yüzüyor.\"\n\nGerçekten de iki ördek göletin ortasında yan yana süzülüyordu, hiç dertleri yokmuş gibi.\n\nDeniz kovasını yere koydu, eğilip ıslak toprağa dokundu. \"Anne, çok yumuşak!\"\n\n\"Çamur oluyor orası, sıcak yüzünden.\"\n\n\"Ben de çamurdan bir göl yapabilirim!\" Deniz hemen ellerini kirletmeye başladı, küçük bir çukur kazıyordu.\n\n\"Ne yapıyorsun bakayım?\"\n\n\"Ördeklere yeni bir gölet yapıyorum, burda! Küçük bir gölet, kendi göletim.\"\n\nAnnesi güldü, yanına oturdu. \"Peki senin göletinde kim yüzecek?\"\n\n\"Hmm...\" Deniz düşündü, sonra gözleri parladı. \"Böcekler! Küçük böcek gölet, büyük ördek gölet orda.\" Elini uzağa doğru göletin ortasına salladı.\n\nBir süre öyle oynadılar, Deniz çamurdan minik bir set yaptı, sonra bir yaprak koydu üstüne \"tekne\" diye.\n\nSonra kafasını kaldırdı, ağaçlara bakıp bir şey fark etti. \"Anne, bak! O yaprak sarı oldu!\"\n\nGerçekten, kenarda duran ağaçlardan birinin yaprakları hafiften sarıya, kızıla dönmüştü.\n\n\"Doğru söylüyorsun. Mevsim değişiyor da ondan. Yaz gidiyor, sonbahar geliyor yavaş yavaş.\"\n\n\"Yapraklar niye renk değiştiriyor?\"\n\n\"Onlar da biraz uykuya hazırlanıyor sanki, güneş azalınca renkleri de değişiyor.\"\n\nDeniz eline bir sarı yaprak aldı, çevirdi, kokladı bile.\n\n\"Bunu eve götürebilir miyim?\"\n\n\"Tabii, kovana koy.\"\n\nYaprağı kovaya koydu, gururla baktı. \"İşte! Sonbahar yaprağım oldu.\"\n\nGeri dönerken elinde kovası, üstünde çamur, ama yüzünde kocaman bir gülümseme vardı. Göletteki ördekler hâlâ orada, sakin sakin yüzüyorlardı, sanki hiçbir şey değişmemiş gibi.",
+  "final_word_count": 361,
+  "external_benchmark_audit": {
+    "verdict": "KUCUK_EDIT",
+    "counts": {
+      "critical": 0,
+      "serious": 2,
+      "moderate": 4,
+      "minor": 3
+    },
+    "defects": [
+      {
+        "quote": "Son günler çok sıcak geçti, biliyorsun. Su da biraz buharlaşıp gitti.",
+        "type": "yetişkin dili/açıklayıcı",
+        "severity": "serious",
+        "why": "4 yaşındaki bir çocuğa buharlaşma kavramı bu kadar düz anlatılmaz, 'biliyorsun' ifadesi doğal konuşma değil, ders verir gibi",
+        "repair": "'Güneş suyu ısıttı, su da gökyüzüne doğru buhar oldu uçtu' gibi daha basit, tekil bir imge kullan"
+      },
+      {
+        "quote": "Onlar da biraz uykuya hazırlanıyor sanki, güneş azalınca renkleri de değişiyor.",
+        "type": "yetişkin dili/soyut anlatıcı",
+        "severity": "serious",
+        "why": "Fazla soyut ve nedensel açıklama; 4 yaş çocuğu için basit ve tek katmanlı olmalı",
+        "repair": "'Yapraklar da uyumaya hazırlanıyor, sarı pijamalarını giyiyorlar' gibi somut bir metafor"
+      },
+      {
+        "quote": "Gerçekten de iki ördek göletin ortasında yan yana süzülüyordu, hiç dertleri yokmuş gibi.",
+        "type": "anlatıcı sesi/register kayması",
+        "severity": "moderate",
+        "why": "'hiç dertleri yokmuş gibi' yetişkin anlatıcı yorumu, çocuk kitabı sıcaklığından uzak",
+        "repair": "'İki ördek yan yana yüzüyordu, mutlu mutlu' gibi basitleştir"
+      },
+      {
+        "quote": "Doğa bahçesine girdiklerinde her zamanki gibi kuşlar cıvıl cıvıldı.",
+        "type": "tekrar eden kalıp",
+        "severity": "minor",
+        "why": "'her zamanki gibi' klişe geçiş ifadesi",
+        "repair": "Doğrudan sahneye geç: 'Kuşlar cıvıl cıvıl ötüyordu.'"
+      },
+      {
+        "quote": "\"Ne yapıyorsun bakayım?\"",
+        "type": "diyalog",
+        "severity": "minor",
+        "why": "Anne sorusu doğal ama biraz mesafeli/öğretmen tonu taşıyor",
+        "repair": "'Ne yapıyorsun böyle?' gibi daha sıcak bir ton"
+      },
+      {
+        "quote": "Geri dönerken elinde kovası, üstünde çamur, ama yüzünde kocaman bir gülümseme vardı.",
+        "type": "klişe kapanış",
+        "severity": "moderate",
+        "why": "Çamur+gülümseme kapanışı çok tanıdık/klişe bir çocuk kitabı formülü",
+        "repair": "Daha özgün, karaktere özgü bir kapanış cümlesi; belki Deniz'in kendi kelimesiyle bitir"
+      },
+      {
+        "quote": "sanki hiçbir şey değişmemiş gibi.",
+        "type": "anlatıcı yorumu",
+        "severity": "moderate",
+        "why": "Anlatıcının felsefi/duygusal yorumu 4 yaş kitabı için fazla dolaylı",
+        "repair": "Doğrudan görsel: 'Ördekler hâlâ oradaydı, yüzüyorlardı.'"
+      },
+      {
+        "quote": "Elini uzağa doğru göletin ortasına salladı.",
+        "type": "fiziksel tuhaflık",
+        "severity": "minor",
+        "why": "Elini sallamakla gösterme eylemi net değil, sesli okurken tökezleme riski var",
+        "repair": "'Elini göletin ortasına doğru uzattı' gibi daha net fiziksel eylem"
+      },
+      {
+        "quote": "\"İşte! Sonbahar yaprağım oldu.\"",
+        "type": "yetişkin gibi konuşan çocuk",
+        "severity": "moderate",
+        "why": "'Sonbahar yaprağım oldu' ifadesi 4 yaşındaki bir çocuğun kelime dağarcığına göre biraz olgun/şiirsel",
+        "repair": "'Bu benim sarı yaprağım!' gibi daha basit bir ifade"
+      }
+    ],
+    "scores": {
+      "turkish_naturalness": 7,
+      "sentence_quality": 7,
+      "age4": 6,
+      "dialogue": 7,
+      "character": 6,
+      "flow": 7,
+      "read_aloud": 7,
+      "literary": 6,
+      "emotional": 6,
+      "originality": 6,
+      "no_llm_smell": 7,
+      "publication_readiness": 6
+    },
+    "parent_trust_risks": [
+      "Buharlaşma ve mevsim değişimi açıklamaları bazı ebeveynlere fazla didaktik gelebilir",
+      "Anlatıcı yorumları ('hiç dertleri yokmuş gibi') çocuğa okunurken doğal akmayabilir",
+      "Klişe kapanış cümlesi tekrar okunduğunda sıradan hissettirebilir"
+    ],
+    "professional_gap": "Metin akıcı ve sıcak ama bazı açıklamalar (buharlaşma, mevsim) ve kapanış cümlesi fazla yetişkin/klişe düşünce yapısı taşıyor; 4 yaş için biraz daha somutlaştırılmalı ve özgün kapanışla güçlendirilmeli.",
+    "top_three_changes": [
+      "Buharlaşma ve yaprak rengi açıklamalarını daha somut, tek katmanlı imgelerle basitleştir",
+      "Klişe kapanış cümlesini karaktere özgü, özgün bir sonla değiştir",
+      "Anlatıcının soyut/yorumlayıcı ifadelerini ('hiç dertleri yokmuş gibi', 'sanki hiçbir şey değişmemiş gibi') doğrudan görsel betimlemeyle değiştir"
+    ]
+  },
+  "external_benchmark_cost": {
+    "cost": {
+      "usd": 0.025606,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "usage": {
+      "input_tokens": 2358,
+      "output_tokens": 2089,
+      "total_tokens": 4447
+    },
+    "parse_failures": []
+  },
+  "evaluation_cost_usd": 0.025606,
+  "elapsed_seconds": 28.034
+}
