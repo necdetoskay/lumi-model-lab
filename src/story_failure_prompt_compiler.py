@@ -25,6 +25,9 @@ RULE_TEXT: dict[str, str] = {
     "FP-LENGTH-001": "Stay inside the supplied hard word interval; do not end early merely because the narrative can technically close.",
     "FP-STRUCT-001": "For long-form stories, do not resolve the central arc before the contracted progression has been earned.",
     "FP-STRUCT-002": "Do not pad length by restating observations, dialogue, or scene beats; each unit must change state, reveal, deepen character, or advance an active thread.",
+    "FP-METAPHOR-001": "For very young children, do not give places or objects abstract adult qualities such as perseverance, resignation, or moral resilience; keep personification concrete and playful.",
+    "FP-METAPHOR-002": "Do not reuse the same metaphor family repeatedly in one short story; one playful image is stronger than a chain of related explanatory metaphors.",
+    "FP-ADULT-001": "Do not make the caregiver merely functional or endlessly approving; let the adult sometimes wonder, mishear, joke, notice, or join the child's play without supplying the answer.",
 }
 
 PRIORITY = {
