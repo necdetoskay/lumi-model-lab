@@ -14,7 +14,8 @@ from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import call_openrouter, count_words, parse_cost, parse_usage
 
 WRITER_MODEL = "anthropic/claude-sonnet-5"
-HOSTILE_EDITOR_MODEL = "anthropic/claude-sonnet-5"\nFINAL_AUDITOR_MODEL = "openai/gpt-5.6-sol"
+HOSTILE_EDITOR_MODEL = "anthropic/claude-sonnet-5"
+FINAL_AUDITOR_MODEL = "openai/gpt-5.6-sol"
 MIN_WORDS = 375
 MAX_WORDS = 625
 SOFT_BUDGET_USD = 0.102
