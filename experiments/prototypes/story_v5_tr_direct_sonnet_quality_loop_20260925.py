@@ -281,6 +281,7 @@ def main() -> None:
         })
         final_audit, costs["final_audit_2"] = compact_audit(
             api_key=api_key,
+            model=FINAL_AUDITOR_MODEL,
             system=FINAL_AUDIT_SYSTEM,
             story=story,
             seed=202609266,
