@@ -293,6 +293,16 @@ def deterministic_lint(story: str) -> list[dict[str, Any]]:
         for m in re.finditer(pattern, story, re.I):
             add(kind, m.group(0), why)
 
+    # Exact accidental adjacent phrase duplication: catch copy/edit glitches without stylistic guessing.
+    duplicate_phrase = re.search(r"\\b((?:[A-Za-zÇĞİÖŞÜçğıöşü']+\\s+){1,5}[A-Za-zÇĞİÖŞÜçğıöşü']+)[,;:]?\\s+\\1\\b", story, flags=re.IGNORECASE)
+    if duplicate_phrase:
+        findings.append({
+            "kind": "adjacent_phrase_duplication",
+            "source_quote": duplicate_phrase.group(0),
+            "why": "Aynı kısa ifade art arda yinelenmiş; olası üretim/kopya hatası.",
+            "context": duplicate_phrase.group(0),
+        })
+
     return findings
 
 def apply_replacements(story: str, replacements: list[dict[str, Any]]) -> tuple[str, list[dict[str, str]]]:
