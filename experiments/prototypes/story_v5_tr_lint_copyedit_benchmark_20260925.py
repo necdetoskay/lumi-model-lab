@@ -73,8 +73,16 @@ Hedef: 4 yaş, yetişkin tarafından sesli okuma.
 Ara:
 - narrator_mindread: anlatıcının karakterin iç durumunu açıklaması/yorumlaması
   ("gerçekten merak ederek", "sorgulamadı", "düşünüyor gibiydi", "yarı şaka" vb.)
-- caregiver_teacher: yetişkinin öğretmen/sokratik soru zinciri veya değerlendirme dili
-- physical_action: fiziksel olarak tuhaf, eksik veya imkânsız eylem
+- caregiver_teacher: yetişkinin öğretmen/sokratik soru zinciri, çocuğu doğru cevaba yönelten
+  soru, bilgi düzeltmesi veya değerlendirme dili. Tek cümle de kusur olabilir; soru zinciri şart değildir.
+  YÜKSEK GÜVEN örnekleri: "Arabalar kendi kendine gitmez ki Deniz.", "Öyleyse yol nerede?",
+  "Garaj kapısı neden açık kalmış peki?", "İkiniz de usta kurtarma ekibisiniz."
+  KUSUR DEĞİL örnekleri: "Nereye bakalım?", "Ben de geleyim.", "Hımm, burada yokmuş."
+- narrator_mindread için YÜKSEK GÜVEN örnekleri: "gerçekten merak ederek",
+  "sanki bu kesin bir şeydi", "bir şey söyleyecek gibi oldu", "yarı şaka".
+  KUSUR DEĞİL: görünür eylemin kendisi ("Deniz kaşlarını çattı", "Deniz güldü").
+- physical_action: fiziksel olarak tuhaf, eksik veya imkânsız eylem. Sırf güvenlik riski var diye
+  mümkün ve anlaşılır bir çocuk hareketini kusur sayma; fiziksel/uzamsal tutarsızlık ara.
 - translationese: Türkçede doğal olmayan, kaynak dilden taşınmış ifade
 - defensive_negation: gerekli olmayan "yapmadı ama / sadece / aslında" açıklaması
 - local_repetition: yakın cümlelerde mekanik tekrar
