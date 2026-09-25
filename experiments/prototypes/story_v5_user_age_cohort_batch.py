@@ -54,6 +54,17 @@ def main() -> None:
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
 
+    marker_path = Path("experiments/triggers/story-v5-user-age-cohort-20260925.json")
+    selected_cases = CASES
+    if marker_path.exists():
+        marker = json.loads(marker_path.read_text(encoding="utf-8"))
+        only_cases = marker.get("only_cases")
+        if isinstance(only_cases, list) and only_cases:
+            wanted = {str(item) for item in only_cases}
+            selected_cases = tuple(row for row in CASES if row[0] in wanted)
+            if len(selected_cases) != len(wanted):
+                raise RuntimeError("UNKNOWN_SELECTED_CASE")
+
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
     cases_root = output.parent / "cases"
@@ -63,7 +74,7 @@ def main() -> None:
     tr_sections: list[str] = []
     outcome_rows: list[dict[str, Any]] = []
 
-    for name, age, spec in CASES:
+    for name, age, spec in selected_cases:
         print(f"===== V5 USER COHORT: {name} / exact age {age} =====", flush=True)
         case_dir = cases_root / name
         case_dir.mkdir(parents=True, exist_ok=True)
@@ -138,11 +149,11 @@ def main() -> None:
             }
         )
 
-    all_prod_ready = len(combined_cases) == 5 and all(row["prod_ready"] for row in combined_cases)
+    all_prod_ready = len(combined_cases) == len(selected_cases) and all(row["prod_ready"] for row in combined_cases)
     combined = {
         "protocol": "english-story-production.v5-whole-draft-prototype.user-age-cohort.v1",
         "finalization": "story-v5-final-tr-translation.v1",
-        "requested_ages": [4, 10, 25, 40, 40],
+        "requested_ages": [row[1] for row in selected_cases],
         "case_count": len(combined_cases),
         "all_prod_ready": all_prod_ready,
         "cases": combined_cases,
