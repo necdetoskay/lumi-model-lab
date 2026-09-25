@@ -1,0 +1,33 @@
+name: Story Editor Patch Experiment
+permissions:
+  contents: write
+on:
+  push:
+    paths:
+      - experiments/triggers/story-editor-patch-experiment.txt
+      - experiments/prototypes/story_editor_patch_experiment_20260925.py
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install -r requirements.txt
+      - name: Run editor patch experiment
+        run: PYTHONPATH=.:experiments/prototypes python experiments/prototypes/story_editor_patch_experiment_20260925.py
+      - name: Archive evidence
+        run: |
+          test -s runs/story-editor-patch/result.json
+          DEST="experiments/results/story-editor-patch/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story-editor-patch/result.json "$DEST/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): editor patch ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-editor-patch-${GITHUB_RUN_ID}"
