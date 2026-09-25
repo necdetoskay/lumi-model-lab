@@ -1,0 +1,224 @@
+{
+  "protocol": "story-v5-tr-direct-sonnet-quality-loop.v3",
+  "models": {
+    "writer": "anthropic/claude-sonnet-5",
+    "hostile_editor": "anthropic/claude-sonnet-5",
+    "blind_final_auditor": "openai/gpt-5.6-sol",
+    "repair_writer": "anthropic/claude-sonnet-5"
+  },
+  "exact_age": 4,
+  "target_words": 500,
+  "translation_stage": false,
+  "direct_turkish": true,
+  "original_story": "Deniz'in Küçük Gölü\n\nDeniz, elinde kırmızı çizmeleriyle bahçenin kapısından girer girmez annesinin elini bıraktı, sonra hemen geri tuttu çünkü yol biraz tümsekliydi.\n\n\"Anne, koşabilir miyim?\"\n\n\"Yavaş yavaş koş bakalım, taşlar kaygan olabilir.\"\n\nGölete doğru giden patikada yürürken Deniz burnunu havaya kaldırdı. Hava, her zamankinden biraz farklı kokuyordu. Toprak sıcak ve tozluydu, ayaklarının altında hafif hafif çatırdıyordu.\n\nGöletin kenarına geldiklerinde Deniz durdu. Gözlerini kısarak suya baktı, sonra annesine baktı.\n\n\"Anne! Su nerede gitti?\"\n\nGölet gerçekten de her zamankinden daha küçüktü. Kenarlarda ıslak, koyu renkli toprak vardı, sanki su oradan çekilmiş de izini bırakmıştı. Sazlıklar da her zaman ortasında yüzen o kısımdan biraz uzakta kalmıştı şimdi.\n\nAnnesi gülümsedi ve yanına çöktü. \"Son günler çok sıcak geçti, hatırlıyor musun? Yağmur da yağmadı. Su böyle sıcakta biraz buharlaşıp azalır.\"\n\n\"Buhar mı? Çaydanlıktaki gibi mi?\"\n\n\"Aynen öyle! Küçük küçük, göze görünmeyen şekilde havaya uçar.\"\n\nDeniz bu düşünceyi kafasında bir süre çevirdi, sonra omuz silkti. \"Peki balıklar nerede o zaman?\"\n\n\"Bak, şurada, hâlâ suyun olduğu yerde yüzüyorlar.\"\n\nGerçekten de göletin ortasında, güneşin altında parlayan suda birkaç küçük balık dönüp duruyordu. Deniz ellerini dizlerine koyup eğildi, burnunu suya doğru uzattı ama annesi hafifçe kolundan tuttu.\n\n\"Biraz geriden bakalım, çamur kaygan olur.\"\n\n\"Tamam...\" Deniz geri çekildi ama gözleri hâlâ balıklardaydı. \"Onlar üşümüyor mu bu kadar az suda?\"\n\n\"Hayır, güneş suyu ısıtıyor, onlar da memnun galiba.\"\n\nKenarda yürürlerken Deniz bir ağacın altında durdu. Yapraklardan biri sarıya, biri kızıla dönmüştü, bir tanesi de hâlâ yemyeşildi.\n\n\"Anne bu yaprak niye sarı? Hasta mı?\"\n\n\"Hasta değil canım. Mevsim değişiyor, hava biraz daha soğumaya başlayacak, ağaçlar da yaprakların rengini böyle değiştiriyor. Sonbahar geliyor demek.\"\n\n\"Ben sonbaharı seviyorum. Çünkü... çünkü çıtır yapraklara basmak güzel.\"\n\nAnnesi güldü. \"Haklısın, çok güzel bir ses çıkarıyor.\"\n\nBiraz ileride bir kurbağa aniden zıpladı, Deniz'in ayağının hemen dibinden sıçrayıp sazlıkların arasına kayboldu. Deniz bağırdı, sonra kahkaha attı.\n\n\"Anne gördün mü! Zıpladı!\"\n\n\"Gördüm, seni de korkuttu galiba.\"\n\n\"Korkmadım ki! Sadece... biraz şaşırdım.\"\n\nGöletin etrafında bir tur daha yaptılar. Deniz elindeki küçük bir taşı suya atmak istedi ama annesi elini tuttu.\n\n\"Balıkları ürkütmeyelim, olur mu? Bırakalım onlar da bugün güneşin tadını çıkarsın.\"\n\nDeniz taşı cebine koydu. \"Peki. Ben de eve götürürüm bunu.\"\n\nEve dönüş yolunda Deniz hâlâ elindeki taşı sıkıca tutuyor, arada bir cebinden çıkarıp güneşe karşı tutup bakıyordu. Rüzgâr son yaprakları hafifçe salladı, biri havada dönerek Deniz'in ayağının önüne kondu. Deniz eğilip aldı, çıtır sesini duymak için avucunda sıktı.",
+  "original_word_count": 388,
+  "repair_rounds": [
+    {
+      "round": 1,
+      "before_word_count": 388,
+      "after_word_count": 374,
+      "audit": {
+        "publication_ready": false,
+        "counts": {
+          "critical": 0,
+          "serious": 2,
+          "moderate": 2,
+          "minor": 1
+        },
+        "defects": [
+          {
+            "quote": "Su böyle sıcakta biraz buharlaşıp azalır... Küçük küçük, göze görünmeyen şekilde havaya uçar.",
+            "severity": "serious",
+            "repair": "Bilimsel/didaktik anlatımı kısalt, çocuğun anlayacağı basit bir benzetmeyle sınırla, ders verme havasını kaldır."
+          },
+          {
+            "quote": "Mevsim değişiyor, hava biraz daha soğumaya başlayacak, ağaçlar da yaprakların rengini böyle değiştiriyor.",
+            "severity": "serious",
+            "repair": "Bu açıklamayı kısalt veya kaldır, yetişkin ansiklopedik tonunu yumuşat."
+          },
+          {
+            "quote": "sonra hemen geri tuttu çünkü yol biraz tümsekliydi",
+            "severity": "moderate",
+            "repair": "'tümsekliydi' yerine 'tümsekti' veya 'engebeliydi' kullan, dil akıcılığını düzelt."
+          },
+          {
+            "quote": "Rüzgâr son yaprakları hafifçe salladı",
+            "severity": "moderate",
+            "repair": "Hikaye henüz sonbahar başlangıcında, 'son yapraklar' kış sonunu çağrıştırıyor; 'yapraklardan birini' gibi ifade kullan."
+          },
+          {
+            "quote": "Ben sonbaharı seviyorum. Çünkü... çünkü çıtır yapraklara basmak güzel.",
+            "severity": "minor",
+            "repair": "4 yaş ağzına daha uygun, kesik olmayan basit bir cümleye çevir."
+          }
+        ],
+        "rewrite_instructions": [
+          "Bilimsel açıklamaları (buharlaşma, mevsim) kısalt, ders tonunu kaldır.",
+          "Dil hatalarını (tümsekliydi) düzelt.",
+          "Zaman/mantık uyumsuzluklarını (son yapraklar) gözden geçir.",
+          "Çocuğun diyaloglarını daha doğal, kesintisiz akışa çevir."
+        ]
+      }
+    },
+    {
+      "round": 2,
+      "before_word_count": 374,
+      "after_word_count": 371,
+      "audit": {
+        "publication_ready": false,
+        "counts": {
+          "critical": 0,
+          "serious": 2,
+          "moderate": 2,
+          "minor": 0
+        },
+        "defects": [
+          {
+            "quote": "Güneş suyu yavaş yavaş içine çekti galiba.",
+            "severity": "serious",
+            "repair": "“Sıcakta suyun bir kısmı buharlaşıp havaya karıştı.”"
+          },
+          {
+            "quote": "güneş suyu ısıtıyor, onlar da memnun galiba",
+            "severity": "serious",
+            "repair": "“Suları azalmış; umarım yakında yağmur yağar.”"
+          },
+          {
+            "quote": "Sazlıklar da her zaman ortasında yüzen o kısımdan biraz uzakta kalmıştı şimdi.",
+            "severity": "moderate",
+            "repair": "“Sazlıklar şimdi suyun kenarından uzakta kalmıştı.”"
+          },
+          {
+            "quote": "hâlâ elindeki taşı sıkıca tutuyor, arada bir cebinden çıkarıp",
+            "severity": "moderate",
+            "repair": "“Taşı cebinde taşıyor, arada bir çıkarıp…”"
+          }
+        ],
+        "scores": {
+          "turkish": 7,
+          "age4": 8,
+          "read_aloud": 7,
+          "literary": 7,
+          "no_llm_smell": 9
+        },
+        "summary": "İki yanıltıcı doğa açıklaması ve iki anlatım kusuru düzeltilmeli."
+      }
+    }
+  ],
+  "final_story": "Deniz'in Küçük Gölü\n\nDeniz, elinde kırmızı çizmeleriyle bahçenin kapısından girer girmez annesinin elini bıraktı, sonra hemen geri tuttu çünkü yol biraz engebeliydi.\n\n\"Anne, koşabilir miyim?\"\n\n\"Yavaş yavaş koş bakalım, taşlar kaygan olabilir.\"\n\nGölete doğru giden patikada yürürken Deniz burnunu havaya kaldırdı. Hava, her zamankinden biraz farklı kokuyordu. Toprak sıcak ve tozluydu, ayaklarının altında hafif hafif çatırdıyordu.\n\nGöletin kenarına geldiklerinde Deniz durdu. Gözlerini kısarak suya baktı, sonra annesine baktı.\n\n\"Anne! Su nerede gitti?\"\n\nGölet gerçekten de her zamankinden daha küçüktü. Kenarlarda ıslak, koyu renkli toprak vardı, sanki su oradan çekilmiş de izini bırakmıştı. Sazlıklar şimdi suyun kenarından uzakta kalmıştı.\n\nAnnesi gülümsedi ve yanına çöktü. \"Çok sıcak günler geçirdik, değil mi? Sıcakta suyun bir kısmı buharlaşıp havaya karıştı.\"\n\n\"Çaydanlıktaki gibi mi? O da öyle azalıyor.\"\n\n\"Aynen öyle!\"\n\nDeniz bu düşünceyi kafasında bir süre çevirdi, sonra omuz silkti. \"Peki balıklar nerede o zaman?\"\n\n\"Bak, şurada, hâlâ suyun olduğu yerde yüzüyorlar.\"\n\nGerçekten de göletin ortasında, güneşin altında parlayan suda birkaç küçük balık dönüp duruyordu. Deniz ellerini dizlerine koyup eğildi, burnunu suya doğru uzattı ama annesi hafifçe kolundan tuttu.\n\n\"Biraz geriden bakalım, çamur kaygan olur.\"\n\n\"Tamam...\" Deniz geri çekildi ama gözleri hâlâ balıklardaydı. \"Onlar üşümüyor mu bu kadar az suda?\"\n\n\"Hayır ama suları azalmış. Umarım yakında yağmur yağar, gölet yine dolar.\"\n\nKenarda yürürlerken Deniz bir ağacın altında durdu. Yapraklardan biri sarıya, biri kızıla dönmüştü, bir tanesi de hâlâ yemyeşildi.\n\n\"Anne bu yaprak niye sarı? Hasta mı?\"\n\n\"Hasta değil canım, sadece renk değiştiriyor. Az sonra daha bir sürüsü sararacak.\"\n\n\"Ben sarı yaprakları seviyorum. Basınca çıtır çıtır ses çıkarıyorlar.\"\n\nAnnesi güldü. \"Haklısın, çok güzel bir ses çıkarıyor.\"\n\nBiraz ileride bir kurbağa aniden zıpladı, Deniz'in ayağının hemen dibinden sıçrayıp sazlıkların arasına kayboldu. Deniz bağırdı, sonra kahkaha attı.\n\n\"Anne gördün mü! Zıpladı!\"\n\n\"Gördüm, seni de korkuttu galiba.\"\n\n\"Korkmadım ki! Sadece... biraz şaşırdım.\"\n\nGöletin etrafında bir tur daha yaptılar. Deniz elindeki küçük bir taşı suya atmak istedi ama annesi elini tuttu.\n\n\"Balıkları ürkütmeyelim, olur mu? Bırakalım onlar da bugün güneşin tadını çıkarsın.\"\n\nDeniz taşı cebine koydu. \"Peki. Ben de eve götürürüm bunu.\"\n\nEve dönüş yolunda Deniz taşı arada bir cebinden çıkarıp güneşe karşı tutup bakıyor, sonra yine cebine koyuyordu. Rüzgâr yapraklardan birini hafifçe salladı, o da havada dönerek Deniz'in ayağının önüne kondu. Deniz eğilip aldı, çıtır sesini duymak için avucunda sıktı.",
+  "final_word_count": 371,
+  "final_surface_errors": [
+    "below_word_budget:371<375"
+  ],
+  "final_audit": {
+    "publication_ready": false,
+    "counts": {
+      "critical": 0,
+      "serious": 0,
+      "moderate": 2,
+      "minor": 0
+    },
+    "defects": [
+      {
+        "quote": "elinde kırmızı çizmeleriyle",
+        "severity": "moderate",
+        "repair": "“kırmızı çizmeleri ayağında” yapın."
+      },
+      {
+        "quote": "Su nerede gitti?",
+        "severity": "moderate",
+        "repair": "“Su nereye gitti?” yapın."
+      }
+    ],
+    "scores": {
+      "turkish": 8,
+      "age4": 9,
+      "read_aloud": 9,
+      "literary": 8,
+      "no_llm_smell": 9
+    },
+    "summary": "İki kısa anlatım sorunu düzeltilince yayına hazır."
+  },
+  "publication_ready": false,
+  "costs": {
+    "draft": {
+      "cost": {
+        "usd": 0.017792,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 881,
+        "output_tokens": 1603,
+        "total_tokens": 2484
+      }
+    },
+    "audit_1": {
+      "cost": {
+        "usd": 0.019564,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 2057,
+        "output_tokens": 1545,
+        "total_tokens": 3602
+      },
+      "parse_failures": []
+    },
+    "repair_1": {
+      "cost": {
+        "usd": 0.022556,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 2888,
+        "output_tokens": 1678,
+        "total_tokens": 4566
+      }
+    },
+    "final_audit_1": {
+      "cost": {
+        "usd": 0.008031,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 1169,
+        "output_tokens": 511,
+        "total_tokens": 1680
+      },
+      "parse_failures": []
+    },
+    "repair_2": {
+      "cost": {
+        "usd": 0.028426,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 2598,
+        "output_tokens": 2323,
+        "total_tokens": 4921
+      }
+    },
+    "final_audit_2": {
+      "cost": {
+        "usd": 0.0128085,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "usage": {
+        "input_tokens": 1164,
+        "output_tokens": 990,
+        "total_tokens": 2154
+      },
+      "parse_failures": []
+    }
+  },
+  "total_cost_usd": 0.1091775,
+  "soft_budget_usd": 0.102,
+  "within_soft_budget": false,
+  "elapsed_seconds": 132.845
+}
