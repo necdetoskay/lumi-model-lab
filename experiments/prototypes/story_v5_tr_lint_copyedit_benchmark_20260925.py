@@ -48,13 +48,14 @@ Ana ilkeler:
 
 Başlangıç dünyası:
 - Deniz 4 yaşında.
-- Annesiyle mahalledeki küçük bir oyun alanına gidiyor.
-- Deniz yanında iki küçük oyuncak kamyon getiriyor.
-- Aynı yaşlarda başka bir çocuk kamyonlardan biriyle oynamak istiyor; çocukların daha önce tanışmış olması gerekmiyor.
-- Deniz önce vermek istemeyebilir. Hikâye paylaşmayı öğreten bir derse dönüşmeden, iki çocuğun oyun içinde birlikte kullanabilecekleri bir yol bulmalarıyla ilerlesin.
-- Anne anlaşmazlığı çözmesin, kimin haklı olduğunu söylemesin, "paylaşmalısın" dersi vermesin; yalnız gerektiğinde sakin ve güvenli biçimde yanında olsun.
-- Çocuklar yetişkin gibi müzakere etmesin. Çözüm 4 yaş davranışlarından, oyundan, taklitten, küçük yanlış anlamalardan veya ortak meraktan doğsun.
-- Korkutucu tehlike, zorbalık, utandırma, ödül-ceza veya ahlak dersi olmasın.
+- Evde en sevdiği küçük mavi oyuncak arabasını bulamıyor.
+- Arabayı en son salon ile kendi oyun alanı arasında kullandığını hatırlıyor; kayıp nesnenin yeri önceden kesinleştirilmesin.
+- Deniz annesiyle evin içinde arıyor ama aramayı asıl Deniz'in somut gözlemleri, küçük denemeleri ve çocukça fikirleri ilerletsin.
+- Anne cevabı bilmesin, dedektif/öğretmen gibi soru listesi sormasın ve çözümü Deniz'e vermesin; oyuna ve aramaya doğal biçimde eşlik etsin.
+- Arama sırasında küçük bir yanlış iz, komik bir nesne veya beklenmedik bir keşif olabilir.
+- Çözüm basit fiziksel mantığa uysun; nesne açıklanamaz biçimde ortaya çıkmasın.
+- Final kayıp eşyanın bulunmasıyla duygusal ders özetine dönüşmesin; Deniz'e özgü somut bir davranış veya kısa replikle bitsin.
+- Korkutucu kaybolma, suçlama, ceza, tehlikeli tırmanma veya yetişkin gibi sistematik muhakeme olmasın.
 
 Bunlar arka plan gerçekleridir. Hepsini tek tek kullanmak zorunda değilsin.
 Yalnızca bitmiş hikâyeyi yaz. İlk satır başlık olsun.
@@ -210,7 +211,7 @@ def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
     failure_constraints = render_writer_negative_prompt(
         language="tr",
         exact_age=4,
-        story_type="social",
+        story_type="adventure",
         target_words=500,
         max_rules=12,
     )
