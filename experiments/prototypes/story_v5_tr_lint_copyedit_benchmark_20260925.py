@@ -183,7 +183,7 @@ def usd(m: dict[str, Any] | None) -> float:
         return 0.0
     return float(((m.get("cost") or {}).get("usd")) or 0.0)
 
-def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed: int, max_tokens: int) -> tuple[dict[str, Any], dict[str, Any]]:
+def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed: int, max_tokens: int, request_class: str = "judge") -> tuple[dict[str, Any], dict[str, Any]]:
     parsed, body, _, failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
@@ -192,7 +192,7 @@ def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed
         temperature=0.0,
         max_tokens=max_tokens,
         seed=seed,
-        request_class="judge",
+        request_class=request_class,
         max_parse_attempts=1,
     )
     m = meta(body)
@@ -327,7 +327,8 @@ def benchmark_audit(*, api_key: str, story: str) -> tuple[dict[str, Any], dict[s
         system=BENCHMARK_AUDIT_SYSTEM,
         payload={"exact_age":4,"story":story},
         seed=202609276,
-        max_tokens=7000,
+        max_tokens=3500,
+        request_class="editorial_audit",
     )
 
 def main() -> None:
@@ -338,6 +339,40 @@ def main() -> None:
     api_key = os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required")
+
+    marker_path = Path("experiments/triggers/story-v5-tr-lint-copyedit-benchmark-20260925.json")
+    marker = json.loads(marker_path.read_text(encoding="utf-8")) if marker_path.exists() else {}
+    if marker.get("mode") == "AUDIT_ONLY":
+        story_path = Path(str(marker["story_path"]))
+        story = story_path.read_text(encoding="utf-8").strip()
+        started = time.perf_counter()
+        audit, audit_meta = benchmark_audit(api_key=api_key, story=story)
+        result = {
+            "protocol": "story-v5-tr-sonnet-lint-local-edit-v1-audit-only",
+            "story_source": str(story_path),
+            "final_story": story,
+            "final_word_count": count_words(story),
+            "external_benchmark_audit": audit,
+            "external_benchmark_cost": audit_meta,
+            "evaluation_cost_usd": round(usd(audit_meta), 9),
+            "elapsed_seconds": round(time.perf_counter() - started, 3),
+        }
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        output.with_suffix(".story.txt").write_text(story + "\n", encoding="utf-8")
+        output.with_suffix(".outcome.json").write_text(
+            json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        print(json.dumps({
+            "external_verdict": audit.get("verdict"),
+            "external_counts": audit.get("counts"),
+            "external_scores": audit.get("scores"),
+            "evaluation_cost_usd": result["evaluation_cost_usd"],
+            "elapsed_seconds": result["elapsed_seconds"],
+        }, ensure_ascii=False, indent=2), flush=True)
+        return
 
     started = time.perf_counter()
     production_costs: dict[str, Any] = {}
