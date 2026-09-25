@@ -87,7 +87,19 @@ Ara:
 - defensive_negation: gerekli olmayan "yapmadı ama / sadece / aslında" açıklaması
 - local_repetition: yakın cümlelerde mekanik tekrar
 
-YALNIZ yüksek güvenli lokal kusurları döndür. Stil tercihini kusur sayma.
+Her cümleyi sırayla tara; kategorileri birbirine karıştırma. Bir alıntıyı yalnız
+metindeki bağlamı göstererek savunabildiğin, yerel edit gerektiren kusur için döndür.
+- narrator_mindread: gözlemlenmeyen niyet, duygu veya düşünceyi anlatıcının kesinleştirmesi.
+  Somut benzetme ve görünen hareket bu kategori değildir.
+- caregiver_teacher: çocuğun oyununu yetişkin mantığıyla düzeltme veya cevaba götüren
+  sorgulama. Gündelik güvenlik uyarısı ve oyuna katılan tek soru öğretmenlik değildir.
+- physical_action: betimlenen eşya ve beden konumlarıyla gerçekten bağdaşmayan hareket.
+  Sıradan ara hareketlerin yazılmamasını kusur sayma; metinde verilmeyen ölçüleri uydurma.
+- translationese: Türkçede işleyen bir imgeyi sırf alışılmadık diye reddetme;
+  doğal karşılığı açık olan bozuk tamlama veya aktarılmış sözdizimini ara.
+- defensive_negation: yalnız sahneye yeni bilgi katmayan karşıtlıkları işaretle.
+Bir kusur iki türe uyuyorsa en doğrudan nedeni seç. YALNIZ yüksek güvenli lokal
+kusurları döndür. Stil tercihini kusur sayma.
 source_quote hikâyeden birebir kısa alıntı olmalı.
 SADECE JSON:
 {
