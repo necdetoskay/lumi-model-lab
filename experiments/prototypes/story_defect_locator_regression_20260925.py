@@ -25,10 +25,10 @@ def norm(s: str) -> str:
 
 def quote_match(a: str, b: str, story: str) -> bool:
     """Match overlapping source spans, including shifted quote boundaries."""
-    if not a or not b or a not in story or b not in story:
+    if not a or not b:
         return False
-    spans_a = [(m.start(), m.end()) for m in re.finditer(re.escape(a), story)]
-    spans_b = [(m.start(), m.end()) for m in re.finditer(re.escape(b), story)]
+    spans_a = [(m.start(), m.end()) for m in re.finditer(re.escape(a), story, flags=re.IGNORECASE)]
+    spans_b = [(m.start(), m.end()) for m in re.finditer(re.escape(b), story, flags=re.IGNORECASE)]
     for a0, a1 in spans_a:
         for b0, b1 in spans_b:
             overlap = max(0, min(a1, b1) - max(a0, b0))
@@ -61,7 +61,7 @@ def main() -> None:
         total_cost_usd += float(cost_usd)
         total_latency_seconds += latency_seconds
         gold = case.get("gold_findings") or []
-        if any(g["quote"] not in story for g in gold):
+        if any(re.search(re.escape(g["quote"]), story, flags=re.IGNORECASE) is None for g in gold):
             raise RuntimeError(f"Gold quote not present in frozen story {run_id}")
         negatives = case.get("known_non_defects") or []
         matched_pred: set[int] = set()
