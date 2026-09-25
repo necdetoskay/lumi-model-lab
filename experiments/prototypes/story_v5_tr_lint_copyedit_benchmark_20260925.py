@@ -47,12 +47,13 @@ Ana ilkeler:
 
 Başlangıç dünyası:
 - Deniz 4 yaşında.
-- Annesiyle yağmurlu bir öğleden sonra evde.
-- Elektrikler kısa süreliğine kesiliyor; oda kararıyor ama durum korkutucu bir tehlikeye dönüşmüyor.
-- Deniz önce şaşırıyor, sonra el fenerinin ışığıyla duvarda şekiller ve gölgeler keşfediyor.
-- Küçük bir yanlış anlama veya komik gölge, Deniz ile annesi arasında oyuna dönüşsün.
-- Anne elektrik, şebeke veya teknik nedenler hakkında ders vermesin; Deniz'in duygusuna ve oyununa katılsın.
-- Büyülü gerçeklik iddiası, korku anlatısı, tehlikeli mum/ateş kullanımı veya çocuğun tek başına riskli davranışı olmasın.
+- Annesiyle mahalledeki küçük bir oyun alanına gidiyor.
+- Deniz yanında iki küçük oyuncak kamyon getiriyor.
+- Aynı yaşlarda başka bir çocuk kamyonlardan biriyle oynamak istiyor; çocukların daha önce tanışmış olması gerekmiyor.
+- Deniz önce vermek istemeyebilir. Hikâye paylaşmayı öğreten bir derse dönüşmeden, iki çocuğun oyun içinde birlikte kullanabilecekleri bir yol bulmalarıyla ilerlesin.
+- Anne anlaşmazlığı çözmesin, kimin haklı olduğunu söylemesin, "paylaşmalısın" dersi vermesin; yalnız gerektiğinde sakin ve güvenli biçimde yanında olsun.
+- Çocuklar yetişkin gibi müzakere etmesin. Çözüm 4 yaş davranışlarından, oyundan, taklitten, küçük yanlış anlamalardan veya ortak meraktan doğsun.
+- Korkutucu tehlike, zorbalık, utandırma, ödül-ceza veya ahlak dersi olmasın.
 
 Bunlar arka plan gerçekleridir. Hepsini tek tek kullanmak zorunda değilsin.
 Yalnızca bitmiş hikâyeyi yaz. İlk satır başlık olsun.
@@ -208,7 +209,7 @@ def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
     failure_constraints = render_writer_negative_prompt(
         language="tr",
         exact_age=4,
-        story_type="everyday",
+        story_type="social",
         target_words=500,
         max_rules=12,
     )
