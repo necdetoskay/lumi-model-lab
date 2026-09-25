@@ -16,6 +16,9 @@ CASES = (
     ("age-40-emotional", 40, "experiments/specs/story-v5-user-cohort-20260925/age-40-emotional.yaml"),
 )
 
+CONTEXT_ROOT = Path("experiments/context_packs/v5-user-cohort-20260925")
+AUTHORITY_ROOT = Path("experiments/state_authority/v5-user-cohort-20260925")
+
 
 def run_cmd(args: list[str]) -> int:
     env = os.environ.copy()
@@ -72,6 +75,10 @@ def main() -> None:
                 "experiments/prototypes/story_v5_whole_draft_prototype.py",
                 "--spec",
                 spec,
+                "--context-pack",
+                str(CONTEXT_ROOT / f"{name}.json"),
+                "--state-authority",
+                str(AUTHORITY_ROOT / f"{name}.json"),
                 "--output",
                 str(case_result_path),
             ]
