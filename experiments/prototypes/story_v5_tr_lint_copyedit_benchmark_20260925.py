@@ -433,10 +433,12 @@ def main() -> None:
 
     lint_final = deterministic_lint(final_story)
     final_counts = final_audit.get("counts") or {}
+    length_ok = 375 <= count_words(final_story) <= 625
     publication_ready = (
         bool(final_audit.get("publication_ready"))
         and int(final_counts.get("critical",0) or 0) == 0
         and int(final_counts.get("serious",0) or 0) == 0
+        and length_ok
     )
 
     production_usd = sum(usd(v) for v in production_costs.values())
@@ -479,6 +481,7 @@ def main() -> None:
         "copy_edit_2_applied":veto_repairs,
         "final_story":final_story,
         "final_word_count":count_words(final_story),
+        "length_gate":{"min_words":375,"max_words":625,"passed":length_ok},
         "lint_final":lint_final,
         "final_veto":final_audit,
         "publication_ready":publication_ready,
