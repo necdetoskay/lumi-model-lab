@@ -1203,6 +1203,20 @@ def main() -> None:
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
 
+    lint_copyedit_marker = Path("experiments/triggers/story-v5-tr-lint-copyedit-benchmark-20260925.json")
+    if args.spec is None and lint_copyedit_marker.exists():
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "experiments/prototypes/story_v5_tr_lint_copyedit_benchmark_20260925.py",
+                "--output",
+                args.output,
+            ],
+            env={**os.environ, "PYTHONPATH": "."},
+            check=False,
+        )
+        raise SystemExit(completed.returncode)
+
     direct_tr_marker = Path("experiments/triggers/story-v5-tr-direct-sonnet-quality-loop-20260925.json")
     if args.spec is None and direct_tr_marker.exists():
         completed = subprocess.run(
