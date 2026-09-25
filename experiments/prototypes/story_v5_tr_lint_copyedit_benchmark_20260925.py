@@ -127,35 +127,43 @@ old değeri source_quote ile birebir eşleşmeli.
 """.strip()
 
 FINAL_VETO_SYSTEM = r"""
-Sen bağımsız son yayın VETO denetçisisin.
-Bu bir "daha güzel nasıl yazılır" egzersizi değildir. Sadece gerçekten yayına engel olan
-kusurları ara.
+Sen bağımsız son YAYIN KABUL denetçisisin.
+Bu denetim yalnız canonical Story Publication Acceptance Contract — TR Exact Age 4 v1'i uygular.
+Bu bir edebiyat eleştirisi, kusur avı veya "daha güzel nasıl yazılır" egzersizi değildir.
 
-Hedef: 4 yaş, yetişkin tarafından Türkçe sesli okuma.
+Hedef: tam yaş 4, yetişkin tarafından Türkçe sesli okuma.
 
-FAIL nedenleri:
-- anlamsız veya fiziksel olarak ciddi biçimde tuhaf cümle
-- belirgin bozuk/doğal olmayan Türkçe
-- 4 yaş çocuğunun bariz yetişkin/analitik muhakemesi
-- yetişkinin belirgin öğretmen/sınav görevlisi diyaloğu
-- görünür checklist/benchmark/AI kalıbı
-- ciddi mantık veya süreklilik problemi
-- aynı yapının rahatsız edici tekrarı
+Yalnız şu hard-fail sınıflarını değerlendir:
+- canon_violation
+- logic_or_physical_break
+- broken_turkish
+- age_mismatch
+- caregiver_teacher
+- story_structure_break
+- visible_generation_artifact
 
-Yalnız stil tercihi ("ben başka kelime seçerdim") FAIL değildir.
+Bir kusur ancak critical veya serious ise publication_ready=false yapar.
+Moderate/minor stil veya cila gözlemleri publication_ready kararını BLOKE ETMEZ.
+Basit görünür jest, oyunbaz çocuk mantığı, daha kısa/güzel yazılabilirlik, küçük ritim tercihi
+ve alternatif kelime tercihi hard fail değildir.
+
+Kusur yoksa defects boş olabilir. Sabit sayıda kusur veya değişiklik üretme.
 
 SADECE JSON:
 {
-  "publication_ready": false,
+  "publication_ready": true,
   "counts": {"critical":0,"serious":0,"moderate":0,"minor":0},
   "defects": [
-    {"quote":"birebir kısa alıntı","severity":"critical|serious|moderate|minor","why":"kısa","repair":"lokal düzeltme"}
+    {
+      "quote":"birebir kısa alıntı",
+      "class":"canon_violation|logic_or_physical_break|broken_turkish|age_mismatch|caregiver_teacher|story_structure_break|visible_generation_artifact",
+      "severity":"critical|serious|moderate|minor",
+      "why":"kısa"
+    }
   ],
   "scores": {"turkish":1,"age4":1,"read_aloud":1,"literary":1,"no_llm_smell":1},
   "summary":"tek cümle"
 }
-Bir critical veya serious varsa publication_ready=false. Sadece moderate/minor varsa
-metin publication_ready=true olabilir.
 """.strip()
 
 BENCHMARK_AUDIT_SYSTEM = r"""
@@ -500,38 +508,11 @@ def main() -> None:
         seed=202609273,
     )
 
+    # Frozen acceptance contract: exactly one local edit pass, then exactly one final acceptance check.
+    # No recursive judge -> repair -> judge loop on the same artifact.
     final_story = edited
     veto_repairs: list[dict[str, str]] = []
-    counts = audit_1.get("counts") or {}
-    needs_veto_repair = (
-        int(counts.get("critical",0) or 0) > 0
-        or int(counts.get("serious",0) or 0) > 0
-        or not bool(audit_1.get("publication_ready"))
-    )
-
     final_audit = audit_1
-    if needs_veto_repair and audit_1.get("defects"):
-        defect_findings = [
-            {
-                "kind":"final_veto_defect",
-                "source_quote":str(d.get("quote") or ""),
-                "why":str(d.get("why") or d.get("repair") or ""),
-                "context":nearby_context(final_story, str(d.get("quote") or "")),
-            }
-            for d in audit_1.get("defects") or []
-            if d.get("quote")
-        ]
-        final_story, production_costs["copy_edit_2"], veto_repairs = local_copy_edit(
-            api_key=api_key,
-            story=final_story,
-            findings=defect_findings,
-            seed=202609274,
-        )
-        final_audit, production_costs["final_veto_2"] = final_veto(
-            api_key=api_key,
-            story=final_story,
-            seed=202609275,
-        )
 
     lint_final = deterministic_lint(final_story)
     final_counts = final_audit.get("counts") or {}
@@ -584,6 +565,8 @@ def main() -> None:
         "lint_after_copy":lint_after_copy,
         "final_veto_initial":audit_1,
         "copy_edit_2_applied":veto_repairs,
+        "acceptance_contract":"story-publication-acceptance.v1",
+        "repair_budget":{"local_edit_passes":1,"final_acceptance_checks":1,"recursive_repair_loop":False},
         "final_story":final_story,
         "final_word_count":count_words(final_story),
         "length_gate":{"min_words":375,"max_words":625,"passed":length_ok},
