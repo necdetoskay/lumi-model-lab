@@ -18,6 +18,7 @@ from src.story_voice_prompt_compiler import render_natural_author_prompt, render
 
 WRITER_MODEL = "anthropic/claude-sonnet-5"
 COPY_EDITOR_MODEL = "openai/gpt-5.6-sol"
+DEFECT_LOCATOR_MODEL = "openai/gpt-5.6-luna"
 FINAL_AUDITOR_MODEL = "openai/gpt-5.6-sol"
 BENCHMARK_EDITOR_MODEL = "anthropic/claude-sonnet-5"
 
@@ -60,6 +61,36 @@ Başlangıç dünyası:
 
 Bunlar arka plan gerçekleridir. Hepsini tek tek kullanmak zorunda değilsin.
 Yalnızca bitmiş hikâyeyi yaz. İlk satır başlık olsun.
+""".strip()
+
+DEFECT_LOCATOR_SYSTEM = r"""
+Sen ucuz, hassas bir Türkçe çocuk hikâyesi KUSUR YERELLEŞTİRİCİSİSİN.
+Hikâyeyi yeniden yazma ve genel edebiyat eleştirisi yapma. Yalnız lokal olarak
+onarılabilecek, açık kanıtı olan cümle/alinti kusurlarını işaretle.
+
+Hedef: 4 yaş, yetişkin tarafından sesli okuma.
+
+Ara:
+- narrator_mindread: anlatıcının karakterin iç durumunu açıklaması/yorumlaması
+  ("gerçekten merak ederek", "sorgulamadı", "düşünüyor gibiydi", "yarı şaka" vb.)
+- caregiver_teacher: yetişkinin öğretmen/sokratik soru zinciri veya değerlendirme dili
+- physical_action: fiziksel olarak tuhaf, eksik veya imkânsız eylem
+- translationese: Türkçede doğal olmayan, kaynak dilden taşınmış ifade
+- defensive_negation: gerekli olmayan "yapmadı ama / sadece / aslında" açıklaması
+- local_repetition: yakın cümlelerde mekanik tekrar
+
+YALNIZ yüksek güvenli lokal kusurları döndür. Stil tercihini kusur sayma.
+source_quote hikâyeden birebir kısa alıntı olmalı.
+SADECE JSON:
+{
+  "findings": [
+    {
+      "kind": "narrator_mindread|caregiver_teacher|physical_action|translationese|defensive_negation|local_repetition",
+      "source_quote": "hikâyeden birebir alıntı",
+      "why": "tek kısa gerekçe"
+    }
+  ]
+}
 """.strip()
 
 COPY_EDIT_SYSTEM = r"""
@@ -316,6 +347,34 @@ def apply_replacements(story: str, replacements: list[dict[str, Any]]) -> tuple[
             applied.append({"old": old, "new": new})
     return out, applied
 
+def semantic_defect_locator(*, api_key: str, story: str, seed: int) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    parsed, m = structured_call(
+        api_key=api_key,
+        model=DEFECT_LOCATOR_MODEL,
+        system=DEFECT_LOCATOR_SYSTEM,
+        payload={"exact_age": 4, "story": story},
+        seed=seed,
+        max_tokens=1400,
+    )
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for f in parsed.get("findings") or []:
+        quote = str(f.get("source_quote") or "").strip()
+        kind = str(f.get("kind") or "").strip()
+        if not quote or quote not in story or not kind:
+            continue
+        key = (kind, quote)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({
+            "kind": kind,
+            "source_quote": quote,
+            "why": str(f.get("why") or ""),
+            "context": nearby_context(story, quote),
+        })
+    return out[:10], m
+
 def local_copy_edit(*, api_key: str, story: str, findings: list[dict[str, Any]], seed: int) -> tuple[str, dict[str, Any], list[dict[str, str]]]:
     if not findings:
         return story, {"cost":{"usd":0.0},"usage":{},"skipped":True}, []
@@ -408,11 +467,20 @@ def main() -> None:
 
     draft, production_costs["draft"] = write_story(api_key=api_key)
     lint_before = deterministic_lint(draft)
+    semantic_findings, production_costs["defect_locator"] = semantic_defect_locator(
+        api_key=api_key,
+        story=draft,
+        seed=2026092711,
+    )
+    repair_findings = lint_before + [
+        f for f in semantic_findings
+        if (f["kind"], f["source_quote"]) not in {(x["kind"], x["source_quote"]) for x in lint_before}
+    ]
 
     edited, production_costs["copy_edit_1"], applied_1 = local_copy_edit(
         api_key=api_key,
         story=draft,
-        findings=lint_before,
+        findings=repair_findings,
         seed=202609272,
     )
     lint_after_copy = deterministic_lint(edited)
@@ -489,6 +557,7 @@ def main() -> None:
         "protocol":"story-v5-tr-sonnet-lint-local-edit-v1",
         "models":{
             "writer":WRITER_MODEL,
+            "defect_locator":DEFECT_LOCATOR_MODEL,
             "copy_editor":COPY_EDITOR_MODEL,
             "final_veto":FINAL_AUDITOR_MODEL,
             "external_benchmark_editor":BENCHMARK_EDITOR_MODEL,
@@ -500,6 +569,8 @@ def main() -> None:
         "draft_story":draft,
         "draft_word_count":count_words(draft),
         "lint_before":lint_before,
+        "semantic_findings":semantic_findings,
+        "repair_findings":repair_findings,
         "copy_edit_1_applied":applied_1,
         "lint_after_copy":lint_after_copy,
         "final_veto_initial":audit_1,
