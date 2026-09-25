@@ -1,0 +1,399 @@
+{
+  "commit_sha": "ff4cb0e04a1ff1cc9b856dcba2bea31561496244",
+  "locator_model": "openai/gpt-5.6-luna",
+  "locator_prompt_sha256": "98df4368c53b9c62b9392568c694f4feb1492783461ebfef8a2ce7ecad8784dc",
+  "model_runtime_profile": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "openai/gpt-5.6-luna",
+    "display_name": "GPT-5.6 Luna",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "openai/gpt-5.6-luna"
+    },
+    "profile_sha256": "aa000d4f65d8337439999d3d8bfbda62595189007d4290c844fd06e74ca7bf6e",
+    "runtime_contract_sha256": "ef8ad486f139c2885915203135c81e8eab3ed449ad507e20a133018461e1df0b",
+    "production_policy_sha256": "06196d7e7856f253c9972441e8fc809d298c0f88e32524818412cb93095f3ed2"
+  },
+  "schema_version": "story-defect-locator-regression-result.v0.1",
+  "corpus": "experiments/fixtures/story_defect_locator_regression.tr-age4.v0.1.json",
+  "summary": {
+    "tp": 9,
+    "fp": 6,
+    "fn": 5,
+    "precision": 0.6,
+    "recall": 0.6429,
+    "known_negative_hits": 0,
+    "f1": 0.6207,
+    "model_cost_usd": 0.0015055,
+    "model_latency_seconds": 20.894,
+    "serious_blocker_recall": null,
+    "per_kind_precision": {
+      "caregiver_teacher": 0.6667,
+      "defensive_negation": 0.0,
+      "local_repetition": 0.0,
+      "narrator_mindread": 0.7143,
+      "physical_action": 0.0,
+      "translationese": 0.0
+    },
+    "per_kind_recall": {
+      "caregiver_teacher": 1.0,
+      "defensive_negation": 0.0,
+      "local_repetition": 0.0,
+      "narrator_mindread": 0.7143,
+      "physical_action": 0.0,
+      "translationese": 0.0
+    }
+  },
+  "cases": [
+    {
+      "run_id": 36165831429,
+      "case": "lost-toy-first-generalization",
+      "gold": [
+        {
+          "kind": "narrator_mindread",
+          "quote": "gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu"
+        },
+        {
+          "kind": "defensive_negation",
+          "quote": "koklamadı ama yüzünü buruşturdu"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "yarı şaka"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "gerçekten merak ederek"
+        }
+      ],
+      "predicted": [
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "ama aslında burnunu kaşıyordu",
+          "why": "Anlatıcı, görünür eylemin arkasındaki zihinsel durumu açıklıyor.",
+          "context": "ın altına girdi, orada annesinin terliğini buldu, bir de eski bir düğme. Arabayı bulamadı.\n\nSonra durdu. Gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu.\n\n\"Anne, ben onu top gibi yuvarladım galiba.\"\n\n\"Nasıl yani?\"\n\n\"Yuvarladım. Böyle.\" Eliyle bir yuvarlama hareketi yaptı, sonra kanepenin yan"
+        },
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "Arabalar kendi kendine mutfağa gitmez ki",
+          "why": "Anne, çocuğun hayalî açıklamasını yetişkin mantığıyla düzeltiyor.",
+          "context": "arı devirdi, arabaları saydı: kırmızı olan, sarı olan, tekerleği kırık olan. Mavi olan yoktu.\n\n\"Belki mutfağa gitti,\" dedi Deniz, birden.\n\n\"Arabalar kendi kendine mutfağa gitmez ki,\" dedi annesi, yarı şaka.\n\n\"Gider! O çok hızlı!\"\n\nMutfağa koştular. Deniz masanın altına girdi, orada annesinin terliğini buldu, bir de esk"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "gerçekten merak ederek",
+          "why": "Anlatıcı, annenin duygusunu doğrudan yorumluyor.",
+          "context": "avaya dönük, mavi araba yatıyordu.\n\n\"BULDUM!\" Deniz arabayı havaya kaldırdı, sonra göğsüne bastırdı.\n\n\"Nasıl oraya gitmiş ki?\" dedi annesi, gerçekten merak ederek.\n\n\"Ona battaniye yaptım,\" dedi Deniz, çok doğal bir şekilde. \"Uyusun diye. Sonra unuttum.\"\n\nAnnesi güldü, saçını okşadı. \"Demek arabanın da"
+        },
+        {
+          "kind": "physical_action",
+          "source_quote": "Deniz koltuğun altına yattı, yanağı yere yapışmıştı.",
+          "why": "Koltuk altına girme ile yanağın yere yapışması fiziksel olarak belirsiz ve tuhaf.",
+          "context": "Buradan oraya.\" Salonu ve kendi oyun köşesini işaret etti. \"Sonra... sonra bilmiyorum.\"\n\n\"Hadi bakalım,\" dedi annesi, \"beraber arayalım.\"\n\nDeniz koltuğun altına yattı, yanağı yere yapışmıştı. Orada tozun içinde tek bir çorap vardı, kendi çorabı değildi bile, babasının siyah çorabıydı.\n\n\"Anne! Baba'nın çorabı burada saklanıyor!\""
+        }
+      ],
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "known_negative_hits": [],
+      "locator_meta": {
+        "cost": {
+          "usd": 0.00026628,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 1587,
+          "output_tokens": 195,
+          "total_tokens": 1782
+        },
+        "parse_failures": []
+      },
+      "latency_seconds": 3.089,
+      "unmatched_gold": [
+        {
+          "kind": "defensive_negation",
+          "quote": "koklamadı ama yüzünü buruşturdu"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "yarı şaka"
+        }
+      ],
+      "unmatched_predictions": [
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "Arabalar kendi kendine mutfağa gitmez ki",
+          "why": "Anne, çocuğun hayalî açıklamasını yetişkin mantığıyla düzeltiyor.",
+          "context": "arı devirdi, arabaları saydı: kırmızı olan, sarı olan, tekerleği kırık olan. Mavi olan yoktu.\n\n\"Belki mutfağa gitti,\" dedi Deniz, birden.\n\n\"Arabalar kendi kendine mutfağa gitmez ki,\" dedi annesi, yarı şaka.\n\n\"Gider! O çok hızlı!\"\n\nMutfağa koştular. Deniz masanın altına girdi, orada annesinin terliğini buldu, bir de esk"
+        },
+        {
+          "kind": "physical_action",
+          "source_quote": "Deniz koltuğun altına yattı, yanağı yere yapışmıştı.",
+          "why": "Koltuk altına girme ile yanağın yere yapışması fiziksel olarak belirsiz ve tuhaf.",
+          "context": "Buradan oraya.\" Salonu ve kendi oyun köşesini işaret etti. \"Sonra... sonra bilmiyorum.\"\n\n\"Hadi bakalım,\" dedi annesi, \"beraber arayalım.\"\n\nDeniz koltuğun altına yattı, yanağı yere yapışmıştı. Orada tozun içinde tek bir çorap vardı, kendi çorabı değildi bile, babasının siyah çorabıydı.\n\n\"Anne! Baba'nın çorabı burada saklanıyor!\""
+        }
+      ]
+    },
+    {
+      "run_id": 36166393877,
+      "case": "lost-toy-narrator-length",
+      "gold": [
+        {
+          "kind": "narrator_mindread",
+          "quote": "Deniz düşündü. Yani hiç düşünmedi aslında"
+        },
+        {
+          "kind": "caregiver_teacher",
+          "quote": "Öyleyse yol nerede?"
+        },
+        {
+          "kind": "caregiver_teacher",
+          "quote": "Garaj kapısı neden açık kalmış peki?"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "gerçekten şaşırmış gibi"
+        }
+      ],
+      "predicted": [
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "Yani hiç düşünmedi aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.",
+          "why": "Anlatıcı, görünür davranışın ötesinde Deniz'in düşünme durumunu açıklıyor.",
+          "context": "tü tozdan gri olmuş. Topu aldı, üfledi, tekrar yerine attı.\n\n\"Onu son ne zaman gördün?\" diye sordu annesi, kanepeye oturup.\n\nDeniz düşündü. Yani hiç düşünmedi aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.\n\n\"Bilmiyorum. Buradan oraya gitti.\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, k"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "sanki araba havada uçarak gitmişti",
+          "why": "Anlatıcı, Deniz'in hareketine dayanaksız bir yorum ekliyor.",
+          "context": "i aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.\n\n\"Bilmiyorum. Buradan oraya gitti.\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, kutuları devirdi. Legolar döküldü, bir ayı düştü, bir ayı düştü; bir kolu zaten kopuktu.\n\n\"Burada değil,\" dedi, sesi"
+        },
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "Öyleyse yol nerede?",
+          "why": "Anne, Deniz'i doğru cevaba yönelten öğretici bir soru soruyor.",
+          "context": "halının üzerine. \"Belki mutfağa gitmiştir. Arabalar bazen mutfağı sever.\"\n\nDeniz güldü. \"Arabalar mutfağı sevmez anne! Onlar yol sever!\"\n\n\"Öyleyse yol nerede?\"\n\nDeniz halıya baktı, sonra gözleri parladı. \"Halı yol! Bak!\" Halının kenarındaki çizgileri gösterdi. \"Bunlar yol çizgisi, arabalar buradan"
+        },
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "Garaj kapısı neden açık kalmış peki?",
+          "why": "Anne, oyunu açıklayıcı bir soru zinciriyle yönlendiriyor.",
+          "context": "a garajdan çıkıyor!\" Arabayı yavaşça sürdü, \"vrrrm\" dedi, halının yol çizgilerinden geçirdi.\n\nAnnesi de yere uzandı, çenesini eline koydu. \"Garaj kapısı neden açık kalmış peki?\"\n\n\"Çünkü,\" dedi Deniz, çok emin, \"arabalar gece gizlice çıkıp gezermiş.\"\n\n\"Gerçekten mi?\"\n\n\"Evet! Ben uyurken o dışarı çıkar, sonra geri ge"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "gerçekten şaşırmış gibi",
+          "why": "Anlatıcı, annenin iç tepkisini yorumluyor.",
+          "context": "tekerleği biraz kirli, mavi araba duruyordu.\n\n\"BULDUM!\" Sesi evi doldurdu. Arabayı kaptı, göğsüne bastırdı.\n\n\"Aa, oradaymış,\" dedi annesi, gerçekten şaşırmış gibi. \"Ben hiç bakmamıştım oraya.\"\n\n\"O dolaba girmiş anne, garaj gibi!\" Deniz arabayı dolaba geri koydu, kapağı kapadı, sonra tekrar açtı. \"Bak,"
+        },
+        {
+          "kind": "local_repetition",
+          "source_quote": "bir ayı düştü, bir ayı düştü",
+          "why": "Aynı kısa ifade yakın aralıkla mekanik biçimde tekrarlanıyor.",
+          "context": ".\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, kutuları devirdi. Legolar döküldü, bir ayı düştü, bir ayı düştü; bir kolu zaten kopuktu.\n\n\"Burada değil,\" dedi, sesi biraz üzgün.\n\nAnnesi de gelip yanına oturdu, halının üzerine. \"Belki mutfağa gitmiştir"
+        }
+      ],
+      "tp": 3,
+      "fp": 3,
+      "fn": 1,
+      "known_negative_hits": [],
+      "locator_meta": {
+        "cost": {
+          "usd": 0.00045352,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 1649,
+          "output_tokens": 350,
+          "total_tokens": 1999
+        },
+        "parse_failures": []
+      },
+      "latency_seconds": 4.9,
+      "unmatched_gold": [
+        {
+          "kind": "narrator_mindread",
+          "quote": "Deniz düşündü. Yani hiç düşünmedi aslında"
+        }
+      ],
+      "unmatched_predictions": [
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "Yani hiç düşünmedi aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.",
+          "why": "Anlatıcı, görünür davranışın ötesinde Deniz'in düşünme durumunu açıklıyor.",
+          "context": "tü tozdan gri olmuş. Topu aldı, üfledi, tekrar yerine attı.\n\n\"Onu son ne zaman gördün?\" diye sordu annesi, kanepeye oturup.\n\nDeniz düşündü. Yani hiç düşünmedi aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.\n\n\"Bilmiyorum. Buradan oraya gitti.\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, k"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "sanki araba havada uçarak gitmişti",
+          "why": "Anlatıcı, Deniz'in hareketine dayanaksız bir yorum ekliyor.",
+          "context": "i aslında, kaşlarını çattı ve sonra unuttu ne düşüneceğini.\n\n\"Bilmiyorum. Buradan oraya gitti.\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, kutuları devirdi. Legolar döküldü, bir ayı düştü, bir ayı düştü; bir kolu zaten kopuktu.\n\n\"Burada değil,\" dedi, sesi"
+        },
+        {
+          "kind": "local_repetition",
+          "source_quote": "bir ayı düştü, bir ayı düştü",
+          "why": "Aynı kısa ifade yakın aralıkla mekanik biçimde tekrarlanıyor.",
+          "context": ".\" Elini salondan oyun köşesine doğru salladı, sanki araba havada uçarak gitmişti.\n\nOyun köşesine gitti, kutuları devirdi. Legolar döküldü, bir ayı düştü, bir ayı düştü; bir kolu zaten kopuktu.\n\n\"Burada değil,\" dedi, sesi biraz üzgün.\n\nAnnesi de gelip yanına oturdu, halının üzerine. \"Belki mutfağa gitmiştir"
+        }
+      ]
+    },
+    {
+      "run_id": 36166723303,
+      "case": "lost-toy-no-socratic",
+      "gold": [
+        {
+          "kind": "physical_action",
+          "quote": "Mutfakta dolabın altına yattı"
+        },
+        {
+          "kind": "translationese",
+          "quote": "tozdan bir tavşan"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "gerçekten merak ederek"
+        },
+        {
+          "kind": "narrator_mindread",
+          "quote": "Annesi bunu sorgulamadı, sadece başını salladı."
+        }
+      ],
+      "predicted": [
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "\"Arabalar saklanır mı hiç?\"",
+          "why": "Çocuğun hayal fikrini yetişkinin değerlendiren sorusuyla düzeltmeye çalışıyor.",
+          "context": "tabii.\"\n\nDeniz dolabın altından çıktı, burnunda bir toz izi vardı. Sonra durdu, gözleri parladı.\n\n\"Anne! Belki araba köpek gibi saklandı!\"\n\n\"Arabalar saklanır mı hiç?\"\n\n\"Benim arabam saklanabilir! O çok akıllı bir araba.\"\n\nAnnesi buna güldü ve yere çöktü. \"O zaman akıllı arabayı bulmamız gerek. Belki bize"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "Annesi bunu sorgulamadı, sadece başını salladı.",
+          "why": "Anlatıcı annenin sorgulama durumunu açıklıyor.",
+          "context": "bulamadı ama sarı bir düğme buldu, cebine koydu.\n\n\"Bu düğme çok önemli,\" dedi ciddi bir sesle.\n\n\"Neden önemli?\"\n\n\"Bilmiyorum ama önemli.\"\n\nAnnesi bunu sorgulamadı, sadece başını salladı.\n\nDeniz sonra kanepenin minderlerini bir bir kaldırdı. Üçüncü minderin altında, tam köşede, mavi araba yan yatmış duruyordu, bir tekerleği h"
+        },
+        {
+          "kind": "narrator_mindread",
+          "source_quote": "\"Nasıl oraya girmiş?\" diye sordu annesi, gerçekten merak ederek.",
+          "why": "\"Gerçekten merak ederek\" annenin iç durumunu yorumluyor.",
+          "context": "bir tekerleği havada.\n\n\"BULDUM!\"\n\nArabayı kaptı, göğsüne bastırdı, sonra hemen yere koyup ittirdi. Araba kanepenin kenarına çarpıp durdu.\n\n\"Nasıl oraya girmiş?\" diye sordu annesi, gerçekten merak ederek.\n\nDeniz arabayı tekrar eline aldı, düşünceli bir yüz yaptı. \"Ben onu itmiştim belki. Çok hızlı gitmişti.\"\n\n\"Çok hızlı arabaymış demek.\"\n\n\"En"
+        }
+      ],
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "known_negative_hits": [],
+      "locator_meta": {
+        "cost": {
+          "usd": 0.00026128,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 1637,
+          "output_tokens": 190,
+          "total_tokens": 1827
+        },
+        "parse_failures": []
+      },
+      "latency_seconds": 3.571,
+      "unmatched_gold": [
+        {
+          "kind": "physical_action",
+          "quote": "Mutfakta dolabın altına yattı"
+        },
+        {
+          "kind": "translationese",
+          "quote": "tozdan bir tavşan"
+        }
+      ],
+      "unmatched_predictions": [
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "\"Arabalar saklanır mı hiç?\"",
+          "why": "Çocuğun hayal fikrini yetişkinin değerlendiren sorusuyla düzeltmeye çalışıyor.",
+          "context": "tabii.\"\n\nDeniz dolabın altından çıktı, burnunda bir toz izi vardı. Sonra durdu, gözleri parladı.\n\n\"Anne! Belki araba köpek gibi saklandı!\"\n\n\"Arabalar saklanır mı hiç?\"\n\n\"Benim arabam saklanabilir! O çok akıllı bir araba.\"\n\nAnnesi buna güldü ve yere çöktü. \"O zaman akıllı arabayı bulmamız gerek. Belki bize"
+        }
+      ]
+    },
+    {
+      "run_id": 36168417326,
+      "case": "profile-driven-locator-baseline",
+      "gold": [
+        {
+          "kind": "caregiver_teacher",
+          "quote": "Arabalar kendi kendine gitmez ki Deniz."
+        }
+      ],
+      "predicted": [
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "\"Arabalar kendi kendine gitmez ki Deniz.\"",
+          "why": "Yetişkin, çocuğun hayalci ifadesini bilgi düzeltmesiyle değerlendiriyor.",
+          "context": "ynattı. \"Bu bir kukla oldu şimdi!\"\n\nKuklayla biraz konuştu, sonra kuklayı unuttu, çorabı yere bıraktı.\n\n\"Anne, araba belki mutfağa gitti.\"\n\n\"Arabalar kendi kendine gitmez ki Deniz.\"\n\n\"Belki gizlice gitti!\"\n\nAnnesi ellerini dizlerine koydu. \"Peki, biz de gizlice bakalım o zaman.\"\n\nMutfağa gittiler. Buzdolabının altına ba"
+        }
+      ],
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "known_negative_hits": [],
+      "locator_meta": {
+        "cost": {
+          "usd": 0.00018352,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 1649,
+          "output_tokens": 125,
+          "total_tokens": 1774
+        },
+        "parse_failures": []
+      },
+      "latency_seconds": 3.06,
+      "unmatched_gold": [],
+      "unmatched_predictions": []
+    },
+    {
+      "run_id": 36169049278,
+      "case": "locator-recall-tuning",
+      "gold": [
+        {
+          "kind": "caregiver_teacher",
+          "quote": "Bulaşık makinesinde mi kaldı yoksa?"
+        }
+      ],
+      "predicted": [
+        {
+          "kind": "caregiver_teacher",
+          "source_quote": "\"Bulaşık makinesinde mi kaldı yoksa?\"",
+          "why": "Yetişkin, fiziksel olarak olası olmayan bir seçeneği çocuğa yöneltiyor.",
+          "context": "koydu, aramaya devam etti.\n\nMutfağa gitti, sandalyelerin altına baktı. Annesi bulaşık makinesini açıp kapadı, sanki oradan çıkacakmış gibi.\n\"Bulaşık makinesinde mi kaldı yoksa?\"\nDeniz güldü.\n\"Anne o çok küçük yer, araba oraya girmez ki!\"\n\"Haklısın, bir bakayım dedim.\"\n\nOdasına döndüler. Deniz kırmızı arabasını aldı,"
+        }
+      ],
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "known_negative_hits": [],
+      "locator_meta": {
+        "cost": {
+          "usd": 0.0003409,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 1598,
+          "output_tokens": 257,
+          "total_tokens": 1855
+        },
+        "parse_failures": []
+      },
+      "latency_seconds": 6.274,
+      "unmatched_gold": [],
+      "unmatched_predictions": []
+    }
+  ]
+}
