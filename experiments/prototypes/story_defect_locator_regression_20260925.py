@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -22,9 +23,20 @@ def norm(s: str) -> str:
     return " ".join(str(s).strip().lower().split())
 
 
-def quote_match(a: str, b: str) -> bool:
-    a, b = norm(a), norm(b)
-    return bool(a and b and (a in b or b in a))
+def quote_match(a: str, b: str, story: str) -> bool:
+    """Match overlapping source spans, including shifted quote boundaries."""
+    if not a or not b or a not in story or b not in story:
+        return False
+    spans_a = [(m.start(), m.end()) for m in re.finditer(re.escape(a), story)]
+    spans_b = [(m.start(), m.end()) for m in re.finditer(re.escape(b), story)]
+    for a0, a1 in spans_a:
+        for b0, b1 in spans_b:
+            overlap = max(0, min(a1, b1) - max(a0, b0))
+            if overlap == min(len(a), len(b)) or (
+                overlap >= 20 and overlap / min(len(a), len(b)) >= 0.5
+            ):
+                return True
+    return False
 
 
 def main() -> None:
@@ -49,6 +61,8 @@ def main() -> None:
         total_cost_usd += float(cost_usd)
         total_latency_seconds += latency_seconds
         gold = case.get("gold_findings") or []
+        if any(g["quote"] not in story for g in gold):
+            raise RuntimeError(f"Gold quote not present in frozen story {run_id}")
         negatives = case.get("known_non_defects") or []
         matched_pred: set[int] = set()
         matched_gold: set[int] = set()
@@ -60,7 +74,7 @@ def main() -> None:
             for pi, p in enumerate(predicted):
                 if pi in matched_pred:
                     continue
-                if p["kind"] == k and quote_match(p["source_quote"], g["quote"]):
+                if p["kind"] == k and quote_match(p["source_quote"], g["quote"], story):
                     matched_gold.add(gi); matched_pred.add(pi)
                     by_kind[k]["tp"] += 1
                     break
@@ -72,7 +86,7 @@ def main() -> None:
         case_tp = len(matched_gold)
         case_fn = len(gold) - case_tp
         case_fp = len(predicted) - len(matched_pred)
-        negative_hits = [n for n in negatives if any(quote_match(p["source_quote"], n) for p in predicted)]
+        negative_hits = [n for n in negatives if any(quote_match(p["source_quote"], n, story) for p in predicted)]
         tp += case_tp; fn += case_fn; fp += case_fp; known_negative_hits += len(negative_hits)
         cases_out.append({
             "run_id": run_id,
