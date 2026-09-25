@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import call_openrouter, count_words, parse_cost, parse_usage
 from src.story_failure_prompt_compiler import render_writer_negative_prompt
-from src.story_voice_prompt_compiler import render_positive_voice_prompt
+from src.story_voice_prompt_compiler import render_natural_author_prompt, render_positive_voice_prompt
 
 WRITER_MODEL = "anthropic/claude-sonnet-5"
 COPY_EDITOR_MODEL = "openai/gpt-5.6-sol"
@@ -215,7 +215,8 @@ def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
         max_rules=12,
     )
     positive_voice = render_positive_voice_prompt(language="tr", exact_age=4, max_rules=8)
-    writer_system = DRAFT_SYSTEM + "\n\n" + positive_voice + "\n\n" + failure_constraints
+    natural_author = render_natural_author_prompt(language="tr", max_rules=8)
+    writer_system = DRAFT_SYSTEM + "\n\n" + positive_voice + "\n\n" + natural_author + "\n\n" + failure_constraints
     story, body, _ = call_openrouter(
         api_key=api_key,
         model=WRITER_MODEL,
