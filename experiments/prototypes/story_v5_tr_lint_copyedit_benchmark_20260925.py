@@ -355,6 +355,7 @@ def semantic_defect_locator(*, api_key: str, story: str, seed: int) -> tuple[lis
         payload={"exact_age": 4, "story": story},
         seed=seed,
         max_tokens=None,
+        request_class="defect_locator",
     )
     out: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
