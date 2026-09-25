@@ -28,6 +28,8 @@ RULE_TEXT: dict[str, str] = {
     "FP-METAPHOR-001": "For very young children, do not give places or objects abstract adult qualities such as perseverance, resignation, or moral resilience; keep personification concrete and playful.",
     "FP-METAPHOR-002": "Do not reuse the same metaphor family repeatedly in one short story; one playful image is stronger than a chain of related explanatory metaphors.",
     "FP-ADULT-001": "Do not make the caregiver merely functional or endlessly approving; let the adult sometimes wonder, mishear, joke, notice, or join the child's play without supplying the answer.",
+    "FP-NARRATOR-002": "For very young children, do not explain subtle internal states from an adult observer's perspective; replace analysis such as trying not to laugh, evaluating an answer, or noticing vocal qualities with visible action or direct speech.",
+    "FP-ADULT-002": "Avoid caregiver jokes, metaphors, references, or gestures that depend mainly on an adult's world when the exact-age child is expected to understand the beat.",
 }
 
 PRIORITY = {
