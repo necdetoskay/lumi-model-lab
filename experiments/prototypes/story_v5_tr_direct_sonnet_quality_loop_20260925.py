@@ -16,6 +16,7 @@ from src.generate import call_openrouter, count_words, parse_cost, parse_usage
 WRITER_MODEL = "anthropic/claude-sonnet-5"
 HOSTILE_EDITOR_MODEL = "anthropic/claude-sonnet-5"
 FINAL_AUDITOR_MODEL = "openai/gpt-5.6-sol"
+SURGICAL_EDITOR_MODEL = "openai/gpt-5.6-sol"
 MIN_WORDS = 375
 MAX_WORDS = 625
 SOFT_BUDGET_USD = 0.102
@@ -109,6 +110,26 @@ Skorlar 1-10. Bir critical veya serious varsa publication_ready=false.
 """.strip()
 
 
+SURGICAL_REPAIR_SYSTEM = r"""
+Sen Türkçe çocuk kitabı son kopya editörüsün.
+Sana bir hikâye ve yalnız yerel/orta-küçük kusurlar verilecek.
+Hikâyeyi yeniden yazma. Yalnız kusurlu kısa parçalar için birebir replacement üret.
+
+SADECE JSON:
+{
+  "replacements": [
+    {"old":"hikâyede birebir geçen kısa metin","new":"doğal düzeltilmiş metin"}
+  ]
+}
+
+Kurallar:
+- old değeri hikâyede birebir bulunmalı.
+- Gereksiz sözcük veya paragraf değiştirme.
+- Anlamı, karakteri, olayı, tonu değiştirme.
+- Türkçeyi doğal ve 4 yaş sesli okumaya uygun yap.
+""".strip()
+
+
 def meta(body: dict[str, Any]) -> dict[str, Any]:
     return {
         "cost": parse_cost(body).model_dump(mode="json"),
@@ -167,6 +188,57 @@ def audit_fails(audit: dict[str, Any], story: str) -> bool:
         or int(c.get("serious", 0) or 0) > 0
         or bool(surface_errors(story))
     )
+
+
+def has_critical_or_serious(audit: dict[str, Any]) -> bool:
+    c = audit.get("counts") or {}
+    return int(c.get("critical", 0) or 0) > 0 or int(c.get("serious", 0) or 0) > 0
+
+
+def has_only_local_defects(audit: dict[str, Any]) -> bool:
+    c = audit.get("counts") or {}
+    return (
+        not has_critical_or_serious(audit)
+        and (
+            int(c.get("moderate", 0) or 0) > 0
+            or int(c.get("minor", 0) or 0) > 0
+            or not bool(audit.get("publication_ready"))
+        )
+    )
+
+
+def surgical_repair(
+    *,
+    api_key: str,
+    story: str,
+    audit: dict[str, Any],
+    seed: int,
+) -> tuple[str, dict[str, Any], dict[str, Any]]:
+    parsed, body, _, failures = call_structured_json_with_retry(
+        api_key=api_key,
+        model=SURGICAL_EDITOR_MODEL,
+        system_prompt=SURGICAL_REPAIR_SYSTEM,
+        user_prompt=json.dumps(
+            {"story": story, "defects": audit.get("defects") or []},
+            ensure_ascii=False,
+        ),
+        temperature=0.0,
+        max_tokens=700,
+        seed=seed,
+        request_class="judge",
+        max_parse_attempts=1,
+    )
+    repaired = story
+    applied: list[dict[str, str]] = []
+    for item in parsed.get("replacements") or []:
+        old = str(item.get("old") or "")
+        new = str(item.get("new") or "")
+        if old and new and old in repaired and old != new:
+            repaired = repaired.replace(old, new, 1)
+            applied.append({"old": old, "new": new})
+    m = meta(body)
+    m["parse_failures"] = failures
+    return repaired, m, {"requested": parsed.get("replacements") or [], "applied": applied}
 
 
 def write_story(
@@ -257,37 +329,56 @@ def main() -> None:
 
     running_usd = sum(usd(v) for v in costs.values())
 
-    if audit_fails(final_audit, story) and running_usd < 0.070:
+    if audit_fails(final_audit, story) and running_usd < 0.085:
         before = story
-        story, costs["repair_2"] = write_story(
-            api_key=api_key,
-            system=REPAIR_SYSTEM,
-            user_payload=json.dumps(
-                {
-                    "story": story,
-                    "audit": final_audit,
-                    "surface_errors": surface_errors(story),
-                    "instruction": "Yalnız kalan kusurları temizle; metni gereksiz yere yeniden karmaşıklaştırma.",
-                },
-                ensure_ascii=False,
-            ),
-            seed=202609265,
-            temperature=0.25,
-        )
-        repair_rounds.append({
-            "round": 2,
-            "before_word_count": count_words(before),
-            "after_word_count": count_words(story),
-            "audit": final_audit,
-        })
-        final_audit, costs["final_audit_2"] = compact_audit(
-            api_key=api_key,
-            model=FINAL_AUDITOR_MODEL,
-            system=FINAL_AUDIT_SYSTEM,
-            story=story,
-            seed=202609266,
-            max_tokens=2200,
-        )
+        if has_only_local_defects(final_audit):
+            story, costs["surgical_repair_2"], surgical_meta = surgical_repair(
+                api_key=api_key,
+                story=story,
+                audit=final_audit,
+                seed=202609265,
+            )
+            repair_rounds.append({
+                "round": 2,
+                "mode": "SURGICAL_LOCAL",
+                "before_word_count": count_words(before),
+                "after_word_count": count_words(story),
+                "audit": final_audit,
+                "surgical_meta": surgical_meta,
+            })
+        elif has_critical_or_serious(final_audit) and running_usd < 0.065:
+            story, costs["repair_2"] = write_story(
+                api_key=api_key,
+                system=REPAIR_SYSTEM,
+                user_payload=json.dumps(
+                    {
+                        "story": story,
+                        "audit": final_audit,
+                        "surface_errors": surface_errors(story),
+                        "instruction": "Yalnız kalan kritik/ciddi kusurları temizle; gereksiz yeniden yazımdan kaçın.",
+                    },
+                    ensure_ascii=False,
+                ),
+                seed=202609265,
+                temperature=0.25,
+            )
+            repair_rounds.append({
+                "round": 2,
+                "mode": "FULL_REWRITE",
+                "before_word_count": count_words(before),
+                "after_word_count": count_words(story),
+                "audit": final_audit,
+            })
+
+        if story != before:
+            final_audit, costs["final_audit_2"] = compact_audit(
+                api_key=api_key,
+                model=FINAL_AUDITOR_MODEL,
+                system=FINAL_AUDIT_SYSTEM,
+                story=story,
+                seed=202609266,
+                max_tokens=1400,
+            )
 
     total_usd = sum(usd(v) for v in costs.values())
     final_surface_errors = surface_errors(story)
@@ -300,7 +391,7 @@ def main() -> None:
     )
 
     result = {
-        "protocol": "story-v5-tr-direct-sonnet-quality-loop.v3",
+        "protocol": "story-v5-tr-direct-sonnet-quality-loop.v4",
         "models": {
             "writer": WRITER_MODEL,
             "hostile_editor": HOSTILE_EDITOR_MODEL,
