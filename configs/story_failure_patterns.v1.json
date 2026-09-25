@@ -1,0 +1,206 @@
+{
+  "schema_version": "story-failure-pattern-registry.v0.1",
+  "status": "experimental",
+  "compilation_order": [
+    "global",
+    "language",
+    "exact_age_or_age_band",
+    "story_type",
+    "model_specific"
+  ],
+  "severity": [
+    "BLOCKER",
+    "SERIOUS",
+    "MODERATE",
+    "MINOR"
+  ],
+  "runtime_policy": {
+    "whole_registry_in_prompt": false,
+    "full_rewrite_for_local_defects": false,
+    "final_veto_blocks": [
+      "BLOCKER",
+      "unresolved_SERIOUS",
+      "canon_or_knowledge_contradiction",
+      "nonsensical_physical_action",
+      "unusable_language",
+      "hard_length_violation"
+    ],
+    "minor_style_preference_is_veto": false
+  },
+  "initial_patterns": [
+    {
+      "id": "FP-TR-001",
+      "family": "adult_abstract_narrator_register",
+      "scope": {
+        "language": [
+          "tr"
+        ],
+        "age": [
+          "early-child",
+          "child"
+        ]
+      },
+      "default_severity": "SERIOUS"
+    },
+    {
+      "id": "FP-TR-002",
+      "family": "literary_register_mismatch",
+      "scope": {
+        "language": [
+          "tr"
+        ],
+        "age": [
+          "early-child"
+        ]
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-AGE-001",
+      "family": "child_reasoning_too_adult",
+      "scope": {
+        "age": [
+          "exact-age-sensitive"
+        ]
+      },
+      "default_severity": "SERIOUS"
+    },
+    {
+      "id": "FP-DIALOGUE-001",
+      "family": "adult_teacher_examiner_voice",
+      "scope": {
+        "age": [
+          "early-child",
+          "child"
+        ]
+      },
+      "default_severity": "SERIOUS"
+    },
+    {
+      "id": "FP-DIDACTIC-001",
+      "family": "story_becomes_lesson",
+      "scope": {
+        "age": [
+          "early-child",
+          "child"
+        ]
+      },
+      "default_severity": "SERIOUS"
+    },
+    {
+      "id": "FP-PROSE-001",
+      "family": "repeated_syntactic_template",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-PROSE-002",
+      "family": "defensive_over_explanation",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-PHYS-001",
+      "family": "awkward_or_impossible_physical_action",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "BLOCKER_IF_NONSENSE"
+    },
+    {
+      "id": "FP-NARRATOR-001",
+      "family": "unnecessary_adult_interpretation",
+      "scope": {
+        "age": [
+          "early-child",
+          "child"
+        ]
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-ENDING-001",
+      "family": "generic_llm_happy_ending",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-CHAR-001",
+      "family": "character_services_exposition",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "SERIOUS_IF_RECURRENT"
+    },
+    {
+      "id": "FP-CANON-001",
+      "family": "invented_canon_relevant_identity",
+      "scope": {
+        "g2": true
+      },
+      "default_severity": "BLOCKER"
+    },
+    {
+      "id": "FP-TR-003",
+      "family": "translationese_or_source_contamination",
+      "scope": {
+        "multilingual": true
+      },
+      "default_severity": "SERIOUS_OR_BLOCKER"
+    },
+    {
+      "id": "FP-AGE-002",
+      "family": "abstract_metaphor_beyond_age",
+      "scope": {
+        "age": [
+          "exact-age-sensitive"
+        ]
+      },
+      "default_severity": "MODERATE_OR_SERIOUS"
+    },
+    {
+      "id": "FP-SAFETY-001",
+      "family": "safety_boilerplate_in_prose",
+      "scope": {
+        "age": [
+          "child"
+        ]
+      },
+      "default_severity": "MODERATE"
+    },
+    {
+      "id": "FP-LENGTH-001",
+      "family": "hard_word_interval_miss",
+      "scope": {
+        "global": true
+      },
+      "default_severity": "BLOCKER"
+    },
+    {
+      "id": "FP-STRUCT-001",
+      "family": "premature_closure",
+      "scope": {
+        "length": [
+          "long-form"
+        ]
+      },
+      "default_severity": "BLOCKER"
+    },
+    {
+      "id": "FP-STRUCT-002",
+      "family": "repetition_loop_padding",
+      "scope": {
+        "length": [
+          "long-form"
+        ]
+      },
+      "default_severity": "SERIOUS_OR_BLOCKER"
+    }
+  ]
+}
