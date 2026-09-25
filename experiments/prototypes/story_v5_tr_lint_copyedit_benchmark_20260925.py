@@ -354,7 +354,8 @@ def semantic_defect_locator(*, api_key: str, story: str, seed: int) -> tuple[lis
         system=DEFECT_LOCATOR_SYSTEM,
         payload={"exact_age": 4, "story": story},
         seed=seed,
-        max_tokens=1400,
+        max_tokens=2200,
+        reasoning={"effort": "minimal"},
     )
     out: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
