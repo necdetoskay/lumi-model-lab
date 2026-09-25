@@ -16,9 +16,7 @@ TRANSLATOR = "experiments/prototypes/translate_story_to_tr.py"
 
 CANDIDATES = (
     ("aion-3.5", "aion-labs/aion-3.5"),
-    ("gpt-5.6-sol", "openai/gpt-5.6-sol"),
-    ("aion-3.5-mini", "aion-labs/aion-3.5-mini"),
-    ("skyfall-36b-v2", "thedrummer/skyfall-36b-v2"),
+    ("claude-sonnet-5", "anthropic/claude-sonnet-5"),
 )
 
 
