@@ -1203,6 +1203,20 @@ def main() -> None:
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
 
+    writer_benchmark_marker = Path("experiments/triggers/story-v5-writer-benchmark-20260925.json")
+    if args.spec is None and writer_benchmark_marker.exists():
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "experiments/prototypes/story_v5_writer_benchmark_20260925.py",
+                "--output",
+                args.output,
+            ],
+            env={**os.environ, "PYTHONPATH": "."},
+            check=False,
+        )
+        raise SystemExit(completed.returncode)
+
     cohort_marker = Path("experiments/triggers/story-v5-user-age-cohort-20260925.json")
     if args.spec is None and cohort_marker.exists():
         completed = subprocess.run(
