@@ -223,7 +223,7 @@ def usd(m: dict[str, Any] | None) -> float:
         return 0.0
     return float(((m.get("cost") or {}).get("usd")) or 0.0)
 
-def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed: int, max_tokens: int, request_class: str = "judge") -> tuple[dict[str, Any], dict[str, Any]]:
+def structured_call(*, api_key: str, model: str, system: str, payload: Any, seed: int, max_tokens: int | None, request_class: str = "judge") -> tuple[dict[str, Any], dict[str, Any]]:
     parsed, body, _, failures = call_structured_json_with_retry(
         api_key=api_key,
         model=model,
@@ -355,7 +355,6 @@ def semantic_defect_locator(*, api_key: str, story: str, seed: int) -> tuple[lis
         payload={"exact_age": 4, "story": story},
         seed=seed,
         max_tokens=None,
-        reasoning={"effort": "minimal"},
     )
     out: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
