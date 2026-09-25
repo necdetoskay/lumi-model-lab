@@ -1,0 +1,67 @@
+{
+  "schema_version": "story-defect-locator-regression-corpus.v0.1",
+  "status": "experimental",
+  "language": "tr",
+  "exact_age": 4,
+  "purpose": "Frozen real-story corpus for measuring semantic defect locator precision/recall without regenerating the writer output.",
+  "policy": {
+    "frozen_story_text": true,
+    "gold_source": "independent_sonnet_editorial_audit_plus_human_architecture_review",
+    "do_not_mutate_writer_prompt_from_single_case": true,
+    "metrics": ["precision", "recall", "false_positive_rate", "per_kind_recall"]
+  },
+  "cases": [
+    {
+      "run_id": 36165831429,
+      "case": "lost-toy-first-generalization",
+      "gold_findings": [
+        {"kind":"narrator_mindread","quote":"gözleri kısıldı, düşünüyor gibiydi ama aslında burnunu kaşıyordu"},
+        {"kind":"defensive_negation","quote":"koklamadı ama yüzünü buruşturdu"},
+        {"kind":"narrator_mindread","quote":"yarı şaka"},
+        {"kind":"narrator_mindread","quote":"gerçekten merak ederek"}
+      ]
+    },
+    {
+      "run_id": 36166393877,
+      "case": "lost-toy-narrator-length",
+      "gold_findings": [
+        {"kind":"narrator_mindread","quote":"Deniz düşündü. Yani hiç düşünmedi aslında"},
+        {"kind":"caregiver_teacher","quote":"Öyleyse yol nerede?"},
+        {"kind":"caregiver_teacher","quote":"Garaj kapısı neden açık kalmış peki?"},
+        {"kind":"narrator_mindread","quote":"gerçekten şaşırmış gibi"}
+      ]
+    },
+    {
+      "run_id": 36166723303,
+      "case": "lost-toy-no-socratic",
+      "gold_findings": [
+        {"kind":"physical_action","quote":"Mutfakta dolabın altına yattı"},
+        {"kind":"translationese","quote":"tozdan bir tavşan"},
+        {"kind":"narrator_mindread","quote":"gerçekten merak ederek"},
+        {"kind":"narrator_mindread","quote":"Annesi bunu sorgulamadı, sadece başını salladı."}
+      ]
+    },
+    {
+      "run_id": 36168417326,
+      "case": "profile-driven-locator-baseline",
+      "gold_findings": [
+        {"kind":"caregiver_teacher","quote":"Arabalar kendi kendine gitmez ki Deniz."}
+      ],
+      "known_non_defects": [
+        "Deniz parmağını çenesine koydu, tam annesinin yaptığı gibi.",
+        "Köpekbalığı arabası düşmüş, ama kimseyi yemedi!"
+      ]
+    },
+    {
+      "run_id": 36169049278,
+      "case": "locator-recall-tuning",
+      "gold_findings": [
+        {"kind":"caregiver_teacher","quote":"Bulaşık makinesinde mi kaldı yoksa?"}
+      ],
+      "known_non_defects": [
+        "Deniz arabayı havaya kaldırdı, sanki bir kupa gibi.",
+        "Deniz çorabı eline geçirdi, elini havaya kaldırdı, kukla gibi oynattı."
+      ]
+    }
+  ]
+}
