@@ -60,6 +60,11 @@ jobs:
           EOF
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ ! -s "$DEST/result.json" ] || [ ! -s "$DEST/result.story.txt" ] || [ ! -s "$DEST/result.outcome.json" ]; then
+            echo "::error::Prototype evidence incomplete: result.json, result.story.txt and result.outcome.json are required"
+            find "$DEST" -maxdepth 1 -type f -printf '%f %s bytes\\n' || true
+            exit 1
+          fi
           git add "$DEST"
           git commit -m "evidence(experiment): story v5 whole-draft prototype ${GITHUB_RUN_ID}"
           git push origin "HEAD:refs/heads/evidence/story-v5-whole-draft-${GITHUB_RUN_ID}"
@@ -68,4 +73,9 @@ jobs:
         if: always()
         env:
           RUN_OUTCOME: ${{ steps.run.outcome }}
-        run: echo "prototype outcome=$RUN_OUTCOME"
+        run: |
+          echo "prototype outcome=$RUN_OUTCOME"
+          if [ "$RUN_OUTCOME" != "success" ]; then
+            echo "::error::Prototype execution failed"
+            exit 1
+          fi
