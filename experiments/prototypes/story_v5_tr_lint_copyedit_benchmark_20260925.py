@@ -47,11 +47,11 @@ Ana ilkeler:
 
 Başlangıç dünyası:
 - Deniz 4 yaşında.
-- Annesiyle ara sıra küçük bir gölet ve sazlıkların bulunduğu halka açık doğa bahçesine geliyor.
-- Bugün gölette önceki ziyaretlerine göre daha az su olduğunu fark ediyor.
-- Son günler sıcak ve kurak geçti.
-- Mevsim değişiyor; bazı yaprakların rengi dönüyor.
-- Doğa kendi halinde sürüyor.
+- Annesiyle mahalledeki küçük halk kütüphanesinin çocuk bölümüne geliyor.
+- Deniz bugün kendi seçtiği kitabı eve götürmek istiyor.
+- Raflarda resimli kitaplar, minderli bir okuma köşesi ve sessizce çalışan başka insanlar var.
+- Deniz kitap seçerken kapaktaki ayrıntılar, komik bir resim ve annesinin beklemediği bir tercih üzerinden küçük bir keşif yaşasın.
+- Anne hangi kitabın "doğru" olduğunu öğretmesin; Deniz'in seçimine ve oyununa katılsın.
 - Korkutucu tehlike, büyülü gerçeklik iddiası veya çocuğun tek başına riskli işe girişmesi olmasın.
 
 Bunlar arka plan gerçekleridir. Hepsini tek tek kullanmak zorunda değilsin.
@@ -208,7 +208,7 @@ def write_story(*, api_key: str) -> tuple[str, dict[str, Any]]:
     failure_constraints = render_writer_negative_prompt(
         language="tr",
         exact_age=4,
-        story_type="nature",
+        story_type="everyday",
         target_words=500,
         max_rules=12,
     )
