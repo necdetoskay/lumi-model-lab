@@ -273,6 +273,72 @@ def main() -> None:
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required")
 
+    marker_path = Path("experiments/triggers/story-v5-tr-direct-sonnet-quality-loop-20260925.json")
+    marker = json.loads(marker_path.read_text(encoding="utf-8")) if marker_path.exists() else {}
+    if marker.get("mode") == "AUDIT_ONLY":
+        story_path = Path(str(marker["story_path"]))
+        story = story_path.read_text(encoding="utf-8").strip()
+        started = time.perf_counter()
+        final_audit, final_meta = compact_audit(
+            api_key=api_key,
+            model=FINAL_AUDITOR_MODEL,
+            system=FINAL_AUDIT_SYSTEM,
+            story=story,
+            seed=202609267,
+            max_tokens=1400,
+        )
+        counts = final_audit.get("counts") or {}
+        publication_ready = (
+            bool(final_audit.get("publication_ready"))
+            and int(counts.get("critical", 0) or 0) == 0
+            and int(counts.get("serious", 0) or 0) == 0
+            and not surface_errors(story)
+        )
+        result = {
+            "protocol": "story-v5-tr-direct-sonnet-quality-loop.v4-final-audit-only",
+            "models": {"blind_final_auditor": FINAL_AUDITOR_MODEL},
+            "exact_age": 4,
+            "translation_stage": False,
+            "direct_turkish": True,
+            "story_source": str(story_path),
+            "final_story": story,
+            "final_word_count": count_words(story),
+            "final_surface_errors": surface_errors(story),
+            "final_audit": final_audit,
+            "publication_ready": publication_ready,
+            "costs": {"final_audit_only": final_meta},
+            "total_cost_usd": round(usd(final_meta), 9),
+            "elapsed_seconds": round(time.perf_counter() - started, 3),
+        }
+        output = Path(args.output)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        output.with_suffix(".story.txt").write_text(story + "\n", encoding="utf-8")
+        output.with_suffix(".outcome.json").write_text(
+            json.dumps(
+                {
+                    "protocol": result["protocol"],
+                    "publication_ready": publication_ready,
+                    "final_audit": final_audit,
+                    "costs": result["costs"],
+                    "total_cost_usd": result["total_cost_usd"],
+                },
+                ensure_ascii=False,
+                indent=2,
+            ) + "\n",
+            encoding="utf-8",
+        )
+        print(json.dumps({
+            "publication_ready": publication_ready,
+            "final_word_count": result["final_word_count"],
+            "final_surface_errors": result["final_surface_errors"],
+            "final_counts": final_audit.get("counts"),
+            "final_scores": final_audit.get("scores"),
+            "total_cost_usd": result["total_cost_usd"],
+            "elapsed_seconds": result["elapsed_seconds"],
+        }, ensure_ascii=False, indent=2), flush=True)
+        return
+
     started = time.perf_counter()
     costs: dict[str, Any] = {}
     repair_rounds: list[dict[str, Any]] = []
