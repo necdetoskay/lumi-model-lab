@@ -47,12 +47,12 @@ Ana ilkeler:
 
 Başlangıç dünyası:
 - Deniz 4 yaşında.
-- Annesiyle mahalledeki küçük halk kütüphanesinin çocuk bölümüne geliyor.
-- Deniz bugün kendi seçtiği kitabı eve götürmek istiyor.
-- Raflarda resimli kitaplar, minderli bir okuma köşesi ve sessizce çalışan başka insanlar var.
-- Deniz kitap seçerken kapaktaki ayrıntılar, komik bir resim ve annesinin beklemediği bir tercih üzerinden küçük bir keşif yaşasın.
-- Anne hangi kitabın "doğru" olduğunu öğretmesin; Deniz'in seçimine ve oyununa katılsın.
-- Korkutucu tehlike, büyülü gerçeklik iddiası veya çocuğun tek başına riskli işe girişmesi olmasın.
+- Annesiyle yağmurlu bir öğleden sonra evde.
+- Elektrikler kısa süreliğine kesiliyor; oda kararıyor ama durum korkutucu bir tehlikeye dönüşmüyor.
+- Deniz önce şaşırıyor, sonra el fenerinin ışığıyla duvarda şekiller ve gölgeler keşfediyor.
+- Küçük bir yanlış anlama veya komik gölge, Deniz ile annesi arasında oyuna dönüşsün.
+- Anne elektrik, şebeke veya teknik nedenler hakkında ders vermesin; Deniz'in duygusuna ve oyununa katılsın.
+- Büyülü gerçeklik iddiası, korku anlatısı, tehlikeli mum/ateş kullanımı veya çocuğun tek başına riskli davranışı olmasın.
 
 Bunlar arka plan gerçekleridir. Hepsini tek tek kullanmak zorunda değilsin.
 Yalnızca bitmiş hikâyeyi yaz. İlk satır başlık olsun.
