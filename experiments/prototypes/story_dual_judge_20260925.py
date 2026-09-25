@@ -67,7 +67,10 @@ def blocking(a:dict)->list[dict]:
 def main():
     load_dotenv()
     key=os.environ["OPENROUTER_API_KEY"]
-    story=Path("experiments/fixtures/story_defect_locator_stories/36168417326.txt").read_text(encoding="utf-8").strip()
+    trigger=Path("experiments/triggers/story-dual-judge.txt").read_text(encoding="utf-8")
+    m=re.search(r"^source:\\s*(\\d+)\\s*$", trigger, re.M)
+    source_run=m.group(1) if m else "36168417326"
+    story=Path(f"experiments/fixtures/story_defect_locator_stories/{source_run}.txt").read_text(encoding="utf-8").strip()
 
     sonnet,sm=structured_call(
         api_key=key,model=SONNET,system=JUDGE_SYSTEM,
@@ -110,7 +113,7 @@ def main():
             sol_only.append(b)
 
     result={
-      "source_run":"36168417326",
+      "source_run":source_run,
       "story_unchanged":True,
       "acceptance_contract":"story-publication-acceptance.v1",
       "judges":[SONNET,SOL],
