@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -1200,6 +1202,20 @@ def main() -> None:
     parser.add_argument("--context-pack", default=None)
     parser.add_argument("--output", default="runs/story_v5_prototype/result.json")
     args = parser.parse_args()
+
+    cohort_marker = Path("experiments/triggers/story-v5-user-age-cohort-20260925.json")
+    if args.spec is None and cohort_marker.exists():
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "experiments/prototypes/story_v5_user_age_cohort_batch.py",
+                "--output",
+                args.output,
+            ],
+            env={**os.environ, "PYTHONPATH": "."},
+            check=False,
+        )
+        raise SystemExit(completed.returncode)
 
     result = run(args)
     output = Path(args.output)
