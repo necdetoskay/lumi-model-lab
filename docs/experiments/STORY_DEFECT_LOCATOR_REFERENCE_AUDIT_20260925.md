@@ -44,3 +44,14 @@ The original matcher required one normalized quote to contain the other. In run 
 ## Decision
 
 Keep locator experimental and outside the production quality gate. Curate a versioned, independently reviewed reference with severity and multiple story families, retain this v0.1 corpus for comparison, and rerun the unchanged prompt to estimate variance. Promote only when precision, recall, severe recall and known negatives all pass on a wider held-out corpus.
+
+## Controlled iterations and decision log
+
+| Hypothesis | Change | Test evidence | Decision |
+| --- | --- | --- | --- |
+| Preserve complete provenance and make score inspectable. | `ff4cb0e0` added unmatched spans, per-kind precision, F1, cost, latency, prompt/profile hash and SHA. Missing cost or parse failures now fail closed. | Run `36171426626` succeeded and archived complete result. | Retain instrumentation. |
+| Quote boundaries can shift while referring to one source defect. | `26e4a635` compared overlapping story spans. | Run `36171636192` failed because one gold quote starts with lowercase “gözleri” while source uses uppercase “Gözleri”. | Corrected in `b4a55c15`; keep fail-closed validation. |
+| A case-insensitive source-span matcher prevents one FP/FN pair without changing the model. | `b4a55c15` repaired gold validation and span matching. | Run `36171814440`: 6/13/8, P .3158, R .4286, F1 .3636; USD .0015811, 17.23 s. Prompt hash unchanged. Other outputs drifted sharply, so no before/after model claim follows. | Retain matcher; report variance. |
+| Clarifying category boundaries may remove speculative physical and caregiver FP. | `e97d9e12` changed only the locator prompt. | Run `36171905286`: 8/9/6, P .4706, R .5714, F1 .5161; USD .003771, 20.132 s. Physical/translationese/defensive-negation recall all remain zero; targets fail. | Rejected and reverted in `10250773`. |
+
+The baseline prompt yielded substantially different results on the same five stories: `36171164835` 9/10/5, `36171426626` 9/6/5 under the old matcher, and `36171814440` 6/13/8 under the corrected matcher. The stored `36171426626` predictions recalculate to 10/5/4 with the corrected matcher. This variance, incomplete reference, and single story family preclude a credible production qualification. The rollback run provides another unchanged-prompt observation; its result belongs in a later evidence update.
