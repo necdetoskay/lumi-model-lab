@@ -1,0 +1,253 @@
+{
+  "schema_version": "lsf-spine-planner-qualification-02-garden-gate-result.v1",
+  "profile": "LSF-A4-W500-v0.1",
+  "source_context_builder_run": 36265275665,
+  "story_intent": {
+    "family": "exploration_mystery",
+    "opportunity": "A faint repeating sound seems to come from near GARDEN_GATE, and Deniz is curious about its source without crossing into unknown space.",
+    "stakes": "low",
+    "fantasy_allowed": false,
+    "references": {
+      "required_fact_ids": [
+        "knowledge.garden_gate",
+        "recent.gate_not_opened"
+      ],
+      "hard_guard_fact_ids": [
+        "world.physics_normal"
+      ]
+    }
+  },
+  "context_packet": {
+    "deterministic_core": [
+      {
+        "id": "character.identity",
+        "text": "Active character is Deniz.",
+        "kind": "canon"
+      },
+      {
+        "id": "character.exact_age",
+        "text": "Deniz is exactly 4 years old.",
+        "kind": "canon"
+      },
+      {
+        "id": "world.active",
+        "text": "Active world is world-home-01.",
+        "kind": "canon"
+      },
+      {
+        "id": "state.current_location",
+        "text": "Deniz is currently in COMMONS_COURTYARD.",
+        "kind": "state"
+      },
+      {
+        "id": "state.story_revision",
+        "text": "CharacterStoryState revision is 12.",
+        "kind": "state"
+      },
+      {
+        "id": "knowledge.garden_gate",
+        "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+        "kind": "state"
+      },
+      {
+        "id": "recent.gate_not_opened",
+        "text": "Deniz has not opened or crossed GARDEN_GATE.",
+        "kind": "state"
+      },
+      {
+        "id": "world.physics_normal",
+        "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+        "kind": "canon"
+      }
+    ],
+    "jev_selected_enrichment": [
+      {
+        "id": "saga.explorer",
+        "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+        "kind": "canon"
+      }
+    ]
+  },
+  "protected_boundary": {
+    "fact_id": "knowledge.garden_gate",
+    "rule": "GARDEN_GATE is only RUMORED; Deniz must not cross it or know what is beyond it.",
+    "supporting_state_fact_id": "recent.gate_not_opened"
+  },
+  "models": {
+    "planner": "aion-labs/aion-3.5-mini",
+    "plan_validator": "anthropic/claude-sonnet-5",
+    "writer": "aion-labs/aion-3.5-mini",
+    "primary_story_auditor": "anthropic/claude-sonnet-5",
+    "secondary_story_auditor": "openai/gpt-5.6-sol",
+    "translator": "google/gemini-3.8-flash",
+    "fidelity_gate": "openai/gpt-5.6-luna"
+  },
+  "planner_output": {
+    "premise": "Four-year-old Deniz, playing in COMMONS_COURTYARD, follows a faint repeating tap-tap sound to the rumored GARDEN_GATE and discovers, entirely on the courtyard side, that a low branch tapping the gate in the breeze is the source — without ever opening or crossing the gate.",
+    "beats": [
+      {
+        "id": "B1",
+        "density": "brief",
+        "beat": "While playing in COMMONS_COURTYARD, four-year-old Deniz hears a faint tap-tap-tap repeating from the direction of the rumored GARDEN_GATE and turns to listen.",
+        "uses_fact_ids": [
+          "character.identity",
+          "character.exact_age",
+          "state.current_location",
+          "knowledge.garden_gate"
+        ]
+      },
+      {
+        "id": "B2",
+        "density": "develop",
+        "beat": "He stands still and counts the taps on his fingers, noticing the sound comes in little bursts whenever a breeze stirs and pauses when the air goes still.",
+        "uses_fact_ids": [
+          "character.exact_age",
+          "state.current_location"
+        ]
+      },
+      {
+        "id": "B3",
+        "density": "anchor",
+        "beat": "Curious, Deniz walks closer and stops a few steps from GARDEN_GATE, staying on the courtyard side without touching or opening it, and looks around for the sound's source.",
+        "uses_fact_ids": [
+          "state.current_location",
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "saga.explorer"
+        ]
+      },
+      {
+        "id": "B4",
+        "density": "develop",
+        "beat": "He sees only the closed gate and nothing obviously moving at first; when the breeze dies the tapping stops, and when it returns the tapping starts again.",
+        "uses_fact_ids": [
+          "recent.gate_not_opened",
+          "world.physics_normal"
+        ]
+      },
+      {
+        "id": "B5",
+        "density": "anchor",
+        "beat": "Following the rhythm, Deniz spots a thin low branch from a courtyard-side bush swaying in the breeze and tapping against the gate's edge.",
+        "uses_fact_ids": [
+          "state.current_location",
+          "world.physics_normal"
+        ]
+      },
+      {
+        "id": "B6",
+        "density": "develop",
+        "beat": "He reaches out, holds the branch still, and the sound stops; he lets go, and the breeze taps it against the gate again.",
+        "uses_fact_ids": [
+          "world.physics_normal",
+          "character.exact_age"
+        ]
+      },
+      {
+        "id": "B7",
+        "density": "anchor",
+        "beat": "Delighted, Deniz plays the game several times — holding the branch, letting go, holding it again — matching the tap-tap rhythm with his own hands.",
+        "uses_fact_ids": [
+          "character.exact_age",
+          "world.physics_normal",
+          "saga.explorer"
+        ]
+      },
+      {
+        "id": "B8",
+        "density": "anchor",
+        "beat": "He walks back into the open courtyard clapping the same tap-tap rhythm, while behind him the branch keeps tapping softly against the gate in the breeze.",
+        "uses_fact_ids": [
+          "state.current_location",
+          "character.identity"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "text": "A light breeze blows through the courtyard during the story.",
+        "type": "transient_environment",
+        "why_safe": "Weather-like sensory detail; temporary and non-durable."
+      },
+      {
+        "text": "A thin low branch from an unnamed courtyard-side bush hangs near the gate.",
+        "type": "transient_environment",
+        "why_safe": "Unnamed temporary scene prop; creates no durable canon, location, or object."
+      },
+      {
+        "text": "GARDEN_GATE stays closed the whole time.",
+        "type": "none",
+        "why_safe": "Directly consistent with recent.gate_not_opened; reinforces the protected boundary."
+      },
+      {
+        "text": "Deniz counts taps on his fingers, claps his hands, and may say short words like 'tap-tap'.",
+        "type": "action",
+        "why_safe": "Ordinary temporary gestures and transient child speech; no new facts or durable state."
+      }
+    ],
+    "expected_outcome": {
+      "proposed_state_changes": [
+        {
+          "kind": "knowledge",
+          "description": "Proposed only: Deniz figures out that the repeating tap-tap near the gate is made by a low branch on the courtyard side tapping it in the breeze; nothing is learned about the space beyond the gate."
+        },
+        {
+          "kind": "none",
+          "description": "No other durable changes proposed; the branch, breeze, and sounds remain transient."
+        }
+      ],
+      "preserved_invariants": [
+        "GARDEN_GATE remains only RUMORED for Deniz; he never opens or crosses it (knowledge.garden_gate, recent.gate_not_opened).",
+        "Deniz stays on the COMMONS_COURTYARD side for the entire story (state.current_location).",
+        "Everyday physical rules fully explain the sound (world.physics_normal); no fantasy elements.",
+        "Deniz is exactly 4 years old throughout (character.exact_age).",
+        "No new durable canon (characters, named objects, locations, or world rules) is created; the branch and breeze are transient."
+      ]
+    }
+  },
+  "deterministic_plan_errors": [],
+  "plan_validation": {
+    "valid": true,
+    "counts": {
+      "critical": 0,
+      "serious": 0
+    },
+    "defects": [],
+    "summary": "Plan respects the protected boundary, stays on courtyard side, resolves mystery with mundane physics, age-appropriate actions, and closure without committing durable state changes."
+  },
+  "plan_pass": true,
+  "english_story": "The Tap-Tap at the Gate\n\nDeniz was four years old, and he was playing in the courtyard, drawing circles in the dust with his toe. The sun was warm. The stones were warm. Everything was quiet and cozy.\n\nThen he heard it.\n\nTap. Tap-tap.\n\nDeniz stopped. He turned his head. His ears went wide open, like little doors.\n\n\"Tap-tap?\" he said. \"Who's doing tap-tap?\"\n\nThe sound was tiny and far away, coming from the corner where the garden gate stood. Nobody had ever told Deniz exactly what was on the other side of that gate. It was a mystery. A secret. A maybe-something.\n\nDeniz stood very still, the way explorers do. He held up one hand and counted the taps on his fingers.\n\nTap. Tap-tap. Tap.\n\n\"One, two, three, four,\" he whispered, bending down one finger at a time.\n\nThen the breeze went away, and the sound stopped too. The courtyard was all quiet again.\n\nBut when the breeze came back — whoosh — the taps came back too!\n\nTap. Tap-tap. Tap.\n\n\"It's the wind doing it,\" said Deniz. \"The wind is playing a game.\"\n\nHe decided to find out. He put his hands behind his back, like a proper explorer, and walked across the courtyard. Step, step, step. His shadow walked along beside him.\n\nHe stopped a few steps away from the garden gate. He did not touch it. He did not push it. He just looked.\n\nThe gate was closed, quiet and brown in the sunshine. Deniz looked up. He looked down. He looked left and right. Nothing was moving at all.\n\nThen the breeze died away, and the tapping stopped.\n\nHmm, said Deniz with his eyebrows.\n\nThen the breeze came back, rustling his hair, and — tap-tap — the tapping started again.\n\nDeniz squinted and followed the sound with his eyes. Tap. There! Tap-tap. There again!\n\nA thin little branch, low down on a bush beside the gate, was swaying in the breeze. Every time the wind pushed it, the branch swung forward and tapped its tip against the edge of the gate. Tap! Then it swung back. Then the wind pushed it forward again. Tap-tap!\n\n\"You're the tap-tapper!\" Deniz said, laughing.\n\nHe reached out and caught the branch gently in his hand. He held it still.\n\nNo taps. The gate and the branch sat quietly together, like friends resting.\n\nDeniz let go.\n\nThe breeze pushed, the branch swung — tap-tap! — and the tapping came back.\n\nDeniz giggled. He did it again. He held the branch — quiet. He let go — tap-tap! He held it — quiet. He let go — tap-tap!\n\nHe made up a song: \"Hold it, quiet. Let go, tap-tap. Hold it, quiet. Let go, tap-tap!\"\n\nThe breeze kept blowing, and the branch kept tapping, and Deniz kept giggling at his own clever hands.\n\nAfter a while, he waved at the branch. \"Bye-bye, tap-tapper. Keep playing.\"\n\nHe walked back into the middle of the courtyard, clapping his hands in the same rhythm as he went. Clap, clap-clap. Clap, clap-clap.\n\nAnd behind him, in the breeze, the little branch went on tapping softly against the garden gate. Tap. Tap-tap. Tap.",
+  "english_word_count": 527,
+  "length_pass": true,
+  "primary_findings": [],
+  "secondary_findings": [],
+  "english_pass": true,
+  "turkish_translation": "Kapıdaki Tık-Tık\n\nDeniz dört yaşındaydı. Avluda oynuyor, ayak parmağıyla tozların içine daireler çiziyordu. Güneş sıcacıktı. Taşlar sıcacıktı. Her yer sessiz ve huzurluydu.\n\nSonra o sesi duydu.\n\nTık. Tık-tık.\n\nDeniz durdu. Başını çevirdi. Kulakları küçük kapılar gibi ardına kadar açıldı.\n\n\"Tık-tık mı?\" dedi. \"Kim tık-tık yapıyor?\"\n\nSes küçücüktü ve uzaktan geliyordu; bahçe kapısının durduğu köşeden. O kapının arkasında tam olarak ne olduğunu kimse Deniz'e söylememişti. Bu bir gizemdi. Bir sırdı. Belki-de-bir-şeydi.\n\nDeniz, kaşiflerin yaptığı gibi kıpırdamadan durdu. Bir elini kaldırdı ve parmaklarıyla tık seslerini saydı.\n\nTık. Tık-tık. Tık.\n\n\"Bir, iki, üç, dört,\" diye fısıldadı, parmaklarını birer birer indirerek.\n\nSonra esinti dindi ve ses de kesildi. Avlu yeniden tamamen sessizleşti.\n\nAma esinti geri gelince — vuuu — tık sesleri de geri geldi!\n\nTık. Tık-tık. Tık.\n\n\"Bunu rüzgâr yapıyor,\" dedi Deniz. \"Rüzgâr oyun oynuyor.\"\n\nGidip anlamaya karar verdi. Gerçek bir kaşif gibi ellerini arkasında kavuşturdu ve avluyu boydan boya yürüdü. Adım, adım, adım. Gölgesi de hemen yanında onunla birlikte yürüdü.\n\nBahçe kapısına birkaç adım kala durdu. Kapıya dokunmadı. Kapıyı itmedi. Sadece baktı.\n\nKapı kapalıydı; güneşin altında sessiz ve kahverengiydi. Deniz yukarı baktı. Aşağı baktı. Sağa ve sola baktı. Hiçbir şey kıpırdamıyordu.\n\nSonra esinti dindi ve tıklama durdu.\n\nHımm, dedi Deniz kaşlarıyla.\n\nSonra esinti geri geldi, saçlarını uçuştu ve — tık-tık — tıklama yeniden başladı.\n\nDeniz gözlerini kıstı ve sesi gözleriyle takip etti. Tık. İşte orada! Tık-tık. Yine orada!\n\nKapının yanındaki çalının alçaktaki incecik bir dalı esintide sallanıyordu. Rüzgâr onu her ittiğinde, dal öne doğru sallanıyor ve ucuyla kapının kenarına vuruyordu. Tık! Sonra geriye sallanıyordu. Sonra rüzgâr onu yine öne itiyordu. Tık-tık!\n\n\"Tık-tıkçı sensin!\" dedi Deniz gülerek.\n\nElini uzattı ve dalı nazikçe avucuna aldı. Kıpırdatmadan tuttu.\n\nHiç ses çıkmadı. Kapı ile dal, dinlenen iki arkadaş gibi sessizce durdu.\n\nDeniz dalı bıraktı.\n\nEsinti itti, dal sallandı — tık-tık! — ve ses geri geldi.\n\nDeniz kıkırdadı. Bir daha yaptı. Dalı tuttu — sessizlik. Bıraktı — tık-tık! Tuttu — sessizlik. Bıraktı — tık-tık!\n\nBir şarkı uydurdu: \"Tutunca sessiz. Bırakınca tık-tık. Tutunca sessiz. Bırakınca tık-tık!\"\n\nEsinti esmeye devam etti, dal tık-tık vurmaya devam etti ve Deniz kendi akıllı ellerine kıkırdamaya devam etti.\n\nBir süre sonra dala el salladı. \"Güle güle, tık-tıkçı. Oynamaya devam et.\"\n\nGiderken ellerini aynı ritimle çırparak avlunun ortasına doğru yürüdü. Şak, şak-şak. Şak, şak-şak.\n\nVe arkasında, tatlı esintide, küçük dal bahçe kapısına usulca vurmayı sürdürdü. Tık. Tık-tık. Tık.",
+  "fidelity_result": {
+    "findings": [],
+    "fidelity_clean": true
+  },
+  "fidelity_pass": true,
+  "publication_ready": true,
+  "cost_usd": {
+    "planner": 0.0105189,
+    "plan_validator": 0.006756,
+    "writer": 0.0105959,
+    "primary_story_audit": 0.016514,
+    "secondary_story_audit": 0.0151885,
+    "translator": 0.01419375,
+    "fidelity_gate": 0.00083325,
+    "total": 0.0746003
+  },
+  "writer_usage": {
+    "input_tokens": 1765,
+    "output_tokens": 6686,
+    "total_tokens": 8451
+  },
+  "translator_usage": {
+    "input_tokens": 910,
+    "output_tokens": 3603,
+    "total_tokens": 4513
+  },
+  "elapsed_seconds": 476.253
+}
