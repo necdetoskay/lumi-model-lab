@@ -137,7 +137,11 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertEqual(policy["logical_stage"], "pre_prose_story_architecture")
         self.assertTrue(policy["prefer_fold_into_existing_narrative_architect"])
         self.assertFalse(policy["separate_model_call_required"])
-        self.assertTrue(policy["requires_architect_integration_probe_before_production"])
+        self.assertFalse(policy["requires_architect_integration_probe_before_production"])
+        self.assertTrue(policy["architect_integration_qualified"])
+        self.assertEqual(policy["max_semantic_replans_on_invalid_plan"], 1)
+        self.assertTrue(policy["semantic_replan_only_on_deterministic_validation_failure"])
+        self.assertEqual(policy["normal_path_extra_model_hops"], 0)
 
     def test_guarded_fantastical_qualification_is_recorded(self):
         evidence = self.profile["promotion_evidence"]
