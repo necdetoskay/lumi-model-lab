@@ -146,3 +146,57 @@ def corpus_summary(corpus: dict[str, Any]) -> dict[str, Any]:
             == "PENDING_INDEPENDENT_VALIDATION"
         ),
     }
+
+
+def development_cases(
+    corpus: dict[str, Any] | None = None,
+    *,
+    split: str | None = None,
+) -> list[dict[str, Any]]:
+    payload = corpus or load_synthetic_corpus()
+    cases = list(payload.get("cases") or [])
+    if split is not None:
+        if split not in {"calibration", "held_out"}:
+            raise ValueError("split must be calibration or held_out")
+        cases = [case for case in cases if case["dataset_split"] == split]
+    return cases
+
+
+def qualification_cases(
+    corpus: dict[str, Any] | None = None,
+    *,
+    split: str | None = None,
+) -> list[dict[str, Any]]:
+    payload = corpus or load_synthetic_corpus()
+    cases = development_cases(payload, split=split)
+    pending = [
+        case["case_id"]
+        for case in cases
+        if case["gold"].get("validation_status")
+        != "INDEPENDENTLY_VALIDATED"
+    ]
+    if pending:
+        raise RuntimeError(
+            "defect corpus is not qualification-ready; "
+            f"{len(pending)} cases still require independent validation"
+        )
+    return cases
+
+
+def corpus_qualification_state(
+    corpus: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    payload = corpus or load_synthetic_corpus()
+    cases = list(payload.get("cases") or [])
+    validated = sum(
+        1
+        for case in cases
+        if case["gold"].get("validation_status")
+        == "INDEPENDENTLY_VALIDATED"
+    )
+    return {
+        "case_count": len(cases),
+        "independently_validated": validated,
+        "pending_validation": len(cases) - validated,
+        "qualification_ready": bool(cases) and validated == len(cases),
+    }
