@@ -42,10 +42,10 @@ DEFECT_SENTENCES: dict[str, str] = {
         "Deniz aynı anda hem bulunduğu yerde kaldı hem de birkaç metre ötedeki noktadan oyuncağını tuttu."
     ),
     "temporal_order_contradiction": (
-        "Bunu daha yapmadan önce, yaptığı şeyin sonucunu çoktan görmüş olduğunu söyledi."
+        "Saat tam üçü gösteriyordu. On dakika geçti. Saat hiç geri alınmadığı hâlde şimdi iki elliyi gösteriyordu."
     ),
     "response_perception_conflation": (
-        "İki eli dolu olduğu için kendisine seslenildiğini duyamadı."
+        "Hemen yanından biri Deniz'e yüksek sesle seslendi. Deniz iki eli dolu olduğu için sesi duyamadı."
     ),
     "closure_post_terminal_action": (
         "Her şey bitmişti; sonra Deniz aynı sorunu en baştan çözmek için yeniden işe koyuldu."
