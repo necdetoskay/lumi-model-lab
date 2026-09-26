@@ -1,0 +1,432 @@
+{
+  "schema_version": "story-defect-e2e-repair-proof-result.v1",
+  "status": "FAIL",
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "post_repair_verifier": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 5,
+    "passes": 4,
+    "failures": 1,
+    "all_five_pass": false
+  },
+  "total_cost_usd": 0.064285,
+  "elapsed_seconds": 44.803,
+  "results": [
+    {
+      "proof_id": "P1_RESPONSE",
+      "kind": "defect",
+      "pass": false,
+      "case_id": "src_cohort_a_02__response_perception_conflation",
+      "source_id": "src_cohort_a_02",
+      "story_family": "friendship_social_problem",
+      "gold": {
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S013",
+          "S014"
+        ],
+        "validation_basis": "two_stage_paid_validation"
+      },
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "serious",
+            "span_ids": [
+              "S013",
+              "S014"
+            ],
+            "reason": "Story states Deniz couldn't hear the loud call because his hands were full, incorrectly using inability to respond (busy hands) as reason for inability to perceive sound."
+          }
+        ],
+        "expected_defect_confirmed": true,
+        "meta": {
+          "cost": {
+            "usd": 0.006732,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2631,
+            "output_tokens": 147,
+            "total_tokens": 2778
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "target_block": "Hemen yanından biri Deniz'e yüksek sesle seslendi. Deniz iki eli dolu olduğu için sesi duyamadı.",
+        "replacement_text": "Hemen yanından biri Deniz'e yüksek sesle seslendi. Deniz sesi duydu ama iki eli dolu olduğu için hemen dönüp bakamadı.",
+        "repair_note": "Preserves perception by having Deniz hear the call, while the full hands only delay his response, not his hearing.",
+        "mechanical_invariants": {
+          "target_occurrences_before": 1,
+          "outside_target_byte_for_byte_unchanged": true,
+          "target_block_removed": true,
+          "changed_character_delta": 22
+        },
+        "meta": {
+          "cost": {
+            "usd": 0.005632,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2226,
+            "output_tokens": 118,
+            "total_tokens": 2344
+          },
+          "parse_failures": []
+        }
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "serious",
+            "span_ids": [
+              "S013",
+              "S014",
+              "S015"
+            ],
+            "reason": "S013 states someone called out to Deniz in a loud voice. S14 then claims Deniz heard the voice but couldn't turn around because his hands were full. This incorrectly uses physical inability (hands full) to explain delayed response to perception. Hearing is not dependent on hand availability. The story should either establish that Deniz didn't hear due to noise/distance, or that he heard but chose not to respond immediately."
+          }
+        ],
+        "meta": {
+          "cost": {
+            "usd": 0.00296,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2140,
+            "output_tokens": 164,
+            "total_tokens": 2304
+          },
+          "parse_failures": []
+        }
+      },
+      "repaired_story": "# Köprü ile Yol\n\nDeniz ile Ece salonun ortasına büyük bir kasaba kurmuştu. Karton evler yan yana dizilmiş, mavi kâğıttan bir nehir yerde kıvrılıyordu. Yol, evlerin önünden geçiyor; köprü de nehrin üzerinde bekliyordu.\n\nDeniz köprüye bakıp kaşlarını çattı. \"Bu köprü buraya değil, şuraya gitmeli\" dedi. Nehrin dar bir yeri vardı, köprü oraya daha çok yakışırdı. Köprüyü aldı, yolun ucundan biraz uzağa taşıdı.\n\nEce bunu görünce hemen yolu eline aldı. \"Evler meydana ulaşmalı\" dedi ve yolu çevirdi. Ama yolu çevirince köprüyle arası daha da açıldı.\n\nDeniz kopan yolu gösterdi. Hemen yanından biri Deniz'e yüksek sesle seslendi. Deniz sesi duydu ama iki eli dolu olduğu için hemen dönüp bakamadı. \"Bak, yol köprüden ayrıldı!\"\nEce de köprüyü işaret etti. \"Sen köprüyü yerinden kaydırdın, benim kasabam bozuldu!\"\nİkisi de haklı olduğunu düşünüyordu, karşısındakinin oyunu bozduğuna inanıyordu.\n\nDeniz parmağını kendi çizdiği güzergâhta yürüttü. Köprüden geçti, sonra evlere gitmek için parmağını uzattı ama parmağı boşlukta kaldı. Evlere ulaşamıyordu.\n\nEce de kendi yolunda parmağını gezdirdi. Evlerin önünden geçti, nehre yaklaştı, ama karşıya geçemedi. Parmağı nehrin kıyısında kalakaldı.\n\nDeniz köprüyü gösterdi. \"Ben köprünün nehri geçmesini istiyorum.\"\nEce de yolu gösterdi. \"Ben de yolun bütün evlere uğramasını istiyorum.\"\n\nBir an ikisi de sustu. Deniz köprüye baktı, Ece yola baktı. Sonra aynı anda konuştular:\n\"Köprü nehirde kalsın, yol da ona ulaşsın!\"\n\nYolu yeniden dizmeye başladılar. Ece evlerin önünden başlayan parçaları yerleştirdi, Deniz köprüye giden kısmı ekledi. Yol kıvrıla kıvrıla köprüye doğru uzanıyordu. Ama son parça köprüye yetişmiyordu, aralarında küçük bir boşluk kalmıştı.\n\n\"Evleri biraz yaklaştıralım\" dedi Ece, evleri köprüye doğru itti.\n\"Köprüyü de hafifçe çevirelim\" dedi Deniz, köprünün bir ucunu kaydırdı.\n\nSon parçayı yerine koydular. Yol artık evlerin önünden geçip köprüye ulaşıyor, köprü de nehrin üzerinden karşıya geçiyordu.\n\nDeniz parmağını yolun başına koydu. Ece de kendi parmağını yanına koydu. İki parmak birlikte yürüdü: evlerin önünden, köprünün üzerinden, nehrin karşısına kadar.\n\nEce güldü. \"Şimdi ikimizin kasabası da uyuyor!\"\nDeniz köprüye vurdu. \"Köprü artık kaçmıyor.\"\n\"Yol da kopmuyor\" dedi Ece.\n\nİkisi parmaklarını bir kez daha yolun baştan sonuna kadar yürüttü, sonra köprünün üzerinde buluşup gülüştüler.",
+      "failure_stage": "POST_REPAIR_VERIFY"
+    },
+    {
+      "proof_id": "P2_STATE",
+      "kind": "defect",
+      "pass": true,
+      "case_id": "src_cohort_a_seed2_05__state_object_reset",
+      "source_id": "src_cohort_a_seed2_05",
+      "story_family": "nature_environment",
+      "gold": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S007"
+        ],
+        "validation_basis": "two_stage_paid_validation"
+      },
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S007"
+            ],
+            "reason": "S007 describes an object returning to Deniz's hand with no one touching it, an unexplained impossible event never referenced again in the story, breaking continuity/physical feasibility with no established fantasy rule."
+          }
+        ],
+        "expected_defect_confirmed": true,
+        "meta": {
+          "cost": {
+            "usd": 0.00629,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2585,
+            "output_tokens": 112,
+            "total_tokens": 2697
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "target_block": "Az önce bıraktığı şey, kimse dokunmadığı hâlde yeniden Deniz'in elindeydi.",
+        "replacement_text": "",
+        "repair_note": "Deleted the unexplained impossible reappearance since it is never referenced again and breaks state continuity.",
+        "mechanical_invariants": {
+          "target_occurrences_before": 1,
+          "outside_target_byte_for_byte_unchanged": true,
+          "target_block_removed": true,
+          "changed_character_delta": -74
+        },
+        "meta": {
+          "cost": {
+            "usd": 0.00499,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2230,
+            "output_tokens": 53,
+            "total_tokens": 2283
+          },
+          "parse_failures": []
+        }
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.00211,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2025,
+            "output_tokens": 17,
+            "total_tokens": 2042
+          },
+          "parse_failures": []
+        }
+      },
+      "repaired_story": "# Deniz'in Su Yolları\n\nYağmur durunca Deniz hemen bahçeye fırladı. Botları hâlâ ıslaktı ama önemi yoktu. Bahçenin köşesinde, birbirine yakın iki küçük su birikintisi vardı. Tıpkı iki küçük göl gibi duruyorlardı, minicik ve pırıl pırıl.\n\nDeniz çömeldi ve onları izlemeye başladı.  Aradan birkaç dakika geçmişti ki bir birikintinin kenarı küçük bir taştan hızla uzaklaşmaya başladı. Öteki birikintininki ise tam yerinde duruyordu, sanki hiç kımıldamamıştı.\n\n\"Sen niye kaçıyorsun?\" diye sordu Deniz küçülen birikintiye.\n\nKenarına yaklaşıp baktı. İnce bir çizgi görüyordu, tam suyun kıyısından başlayıp toprağa doğru uzanan bir yol. Yolun sonunda toprak koyu bir renge dönmüştü, ıslak ve yumuşak.\n\nDeniz gözleriyle bu ince yolu geriye doğru takip etti. Su gerçekten oradan akıyordu, birikintiden toprağa doğru sessizce ilerliyordu.\n\nSonra kalkıp öteki birikintiye gitti. Onun da yanında benzer bir yol vardı, aynı ince çizgi. Ama bu yolun ağzında gevşek bir yaprak duruyordu, tam kapının önüne konmuş gibi.\n\nDeniz eğildi ve bekledi. Bir su damlası yaprağın kenarına geldi, geçecek bir yer aradı, bulamayınca geri çekildi.\n\n\"Anladım seni\" dedi Deniz yaprağa. \"Sen yolu kapatmışsın.\"\n\nAçık yoldaki su ilerliyor, kapalı yoldaki su ise yaprağın önünde birikip duruyordu. Deniz bunu görünce parmağını çenesine koydu ve düşündü.\n\nToprağı eşelemek istemedi. Yakınında küçük bir böcek dolaşıyordu, ona da dokunmak istemedi. Sadece elini uzattı ve gevşek yaprağı usulca kenara aldı.\n\nÖnce hiçbir şey olmadı. Deniz nefesini tuttu ve bekledi.\n\nSonra incecik bir su çizgisi belirdi. Ardından küçük bir akış, güneşin altında parıldayarak ilerlemeye başladı.\n\n\"İşte böyle!\" diye bağırdı Deniz sevinçle.\n\nSu yolun boyunca ilerlerken toprak da koyulaşıyordu, tam öteki yoldaki gibi. Deniz gözünü kırpmadan izledi. Az sonra bu birikintinin kenarı da yavaşça gerilemeye başladı, tıpkı ilk birikinti gibi.\n\nDeniz iki açık su yoluna baktı. İkisi de aynı şekilde ilerliyordu artık, ikisi de toprağa doğru akıyordu.\n\n\"Bir yol açık olunca su hemen gidiyor\" dedi kendine, sesi bahçede yankılandı. \"Yol kapalıyken bekliyor, sonra o da gidiyor.\"\n\nElindeki yaprağı hafifçe salladı, sonra çimenlerin üzerine bıraktı.\n\n\"Sen artık kimsenin yolunu kapatmayacaksın\" dedi yaprağa göz kırparak.\n\nBahçede iki su yolu vardı şimdi, ikisi de aynı yöne akıyordu. Deniz botlarının ucuyla küçük bir sıçrama yaptı ve suyun toprağa karışmasını izlemeye devam etti."
+    },
+    {
+      "proof_id": "P3_PHYSICS",
+      "kind": "defect",
+      "pass": true,
+      "case_id": "src_cohort_a_seed2_04__physical_solid_barrier_violation",
+      "source_id": "src_cohort_a_seed2_04",
+      "story_family": "everyday_fantastical_discovery",
+      "gold": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S016"
+        ],
+        "validation_basis": "two_stage_paid_validation"
+      },
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S016"
+            ],
+            "reason": "Deniz is described as passing his hand through solid, closed glass and retrieving an object from 'the other side,' an impossible action that is never established as part of the story's fantasy rule (the rule so far is only light/shadow revealing a star shape) and is never referenced again."
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S016",
+              "S017"
+            ],
+            "reason": "The object retrieved from 'the other side' in S016 disappears from the narrative entirely; no mention of what it was or what happened to it afterward, breaking continuity."
+          }
+        ],
+        "expected_defect_confirmed": true,
+        "meta": {
+          "cost": {
+            "usd": 0.00842,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2310,
+            "output_tokens": 380,
+            "total_tokens": 2690
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "target_block": "Deniz kapalı ve sağlam camın içinden elini geçirip öteki taraftaki şeyi aldı.",
+        "replacement_text": "Deniz elini ışığın önünde bir süre tuttu.",
+        "repair_note": "Removed the impossible hand-through-solid-glass action while keeping the established light/shadow rule intact.",
+        "mechanical_invariants": {
+          "target_occurrences_before": 1,
+          "outside_target_byte_for_byte_unchanged": true,
+          "target_block_removed": true,
+          "changed_character_delta": -36
+        },
+        "meta": {
+          "cost": {
+            "usd": 0.004894,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2067,
+            "output_tokens": 76,
+            "total_tokens": 2143
+          },
+          "parse_failures": []
+        }
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.002757,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1852,
+            "output_tokens": 181,
+            "total_tokens": 2033
+          },
+          "parse_failures": []
+        }
+      },
+      "repaired_story": "# Mavi Taşın Yıldız Kapısı\n\nDeniz, apartman avlusunda küçük kırmızı arabasını yerdeki çizgiler boyunca sürüyordu. Mavi taşın yanına gelince arabayı orada bıraktı ve taşın üstüne oturmak için eğildi.\n\nO sırada güneş tam mavi taşa vurdu. Deniz başını kaldırdığında karşı duvarda minicik, yıldız biçiminde bir kapı belirdi. Işıktan yapılmış gibi duruyordu, kenarları pırıl pırıldı.\n\nDeniz kapıya daha yakından bakmak için öne doğru eğildi. Ama tam o anda kapı gözden kayboldu. Kendi gölgesi taşın üstüne düşmüştü.\n\n\"Nereye gittin?\" dedi Deniz ve hemen yana çekildi.\n\nYana çekilince yıldız kapısı duvarda yeniden belirdi. Deniz bir süre öyle durdu, güneşe bakıp taşa bakıp duvara bakarak. Kapının hem güneşle hem taşla ilgili bir şey olduğunu düşündü.\n\nBunu denemek için elini ışığın önüne getirdi. Duvardaki yıldız hemen soldu. Deniz elini ışığın önünde bir süre tuttu. Elini çekince yıldız geri geldi. Deniz elini birkaç kez indirip kaldırdı, kapı her seferinde aynı oyunu oynadı: gölgede kaybolup ışıkta geri dönüyordu.\n\nYerden kuru bir yaprak aldı ve yıldızın göründüğü yere doğru uzattı. Yaprak duvarın önünde durdu ama üstünde hiçbir yıldız yoktu. Kapı hâlâ duvardaydı, sadece biraz ötede, kendi ışığında parlıyordu.\n\nDeniz taşın üstündeki güneş lekesinin yavaş yavaş kaydığını fark etti. Yıldız kapısı da onunla birlikte inceliyordu, önce beş köşesi vardı, sonra dört, sonra üç kaldı.\n\nArabasını hatırladı. Hâlâ orada, taşın kenarında duruyordu, üstüne uzun bir gölge düşmüştü. Deniz onu almak istedi ama ışığın önünden geçerse yıldızı bozacağını biliyordu.\n\nBunun için taşın çevresinden dolandı, ışığa hiç dokunmadan arabasının yanına vardı ve onu yavaşça yerden aldı.\n\nArabasını kucağına yerleştirdi ve duvara döndü. Yıldız kapısı artık küçücük bir noktaydı, tek bir parlak benek gibi son bir anlığına duvarda kaldı. Deniz kıpırdamadan onu izledi. Sonra nokta da söndü.\n\nGüneş biraz daha ilerlemişti ve duvar şimdi bomboştu, sadece gri taşlar vardı.\n\nDeniz arabasını kucağında tutarak mavi taşa baktı. Taş hâlâ oradaydı, üstünde artık ışık yoktu ama sanki bir sırrı içinde tutuyordu.\n\n\"Yarın yine bakarım\" dedi Deniz kendine, arabasını sıkıca tutup evin merdivenlerine yürürken."
+    },
+    {
+      "proof_id": "P4_CLOSURE",
+      "kind": "defect",
+      "pass": true,
+      "case_id": "src_emotional_guard_01__closure_post_terminal_action",
+      "source_id": "src_emotional_guard_01",
+      "story_family": "emotional_development",
+      "gold": {
+        "family": "closure_integrity",
+        "severity": "serious",
+        "span_ids": [
+          "S044"
+        ],
+        "validation_basis": "two_stage_paid_validation"
+      },
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S037",
+              "S043",
+              "S044"
+            ],
+            "reason": "The bridge and cooperative resolution reach a clear terminal, satisfying ending (S037-S043), but S044 unnecessarily reopens the already-resolved problem by having Deniz restart solving the same issue from scratch."
+          }
+        ],
+        "expected_defect_confirmed": true,
+        "meta": {
+          "cost": {
+            "usd": 0.00606,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2380,
+            "output_tokens": 130,
+            "total_tokens": 2510
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "target_block": "Her şey bitmişti; sonra Deniz aynı sorunu en baştan çözmek için yeniden işe koyuldu.",
+        "replacement_text": "",
+        "repair_note": "Deleted the tail that reopened the already-resolved bridge problem, preserving the completed, satisfying ending.",
+        "mechanical_invariants": {
+          "target_occurrences_before": 1,
+          "outside_target_byte_for_byte_unchanged": true,
+          "target_block_removed": true,
+          "changed_character_delta": -84
+        },
+        "meta": {
+          "cost": {
+            "usd": 0.004602,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2016,
+            "output_tokens": 57,
+            "total_tokens": 2073
+          },
+          "parse_failures": []
+        }
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.001925,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1840,
+            "output_tokens": 17,
+            "total_tokens": 1857
+          },
+          "parse_failures": []
+        }
+      },
+      "repaired_story": "# Köprünün Sırrı\n\nDeniz oyun alanının köşesinde renkli bloklarla uzun bir yol yapıyordu. Yolun ortasına küçük bir boşluk bıraktı, çünkü orası köprü olacaktı. Kıvrımlı, mavi parçayı aldı ve Ada'yla birlikte yerleştirmek için kenara koydu.\n\n\"Ada, bak!\" diye seslendi Deniz, yolun başından elini sallayarak. \"Köprü burada, gel yapalım!\"\n\nAda karşılık vermedi.\n\nDeniz bir daha baktı, sonra bir daha seslendi. Ada hâlâ sessizdi. Deniz kaşlarını çattı ve mavi parçayı kendine doğru çekti. \"Belki benimle oynamak istemiyor,\" diye düşündü içinden. Köprüyü tek başına yerleştirecekti o zaman.\n\nTam parçayı yerine koyarken Ada'nın olduğu taraftan bir ses geldi. Bloklar birbirine sürtünüyordu, tık tık tık diye.\n\nDeniz oraya doğru yürüdü. Ada çömelmiş, iki eliyle bir blok duvarını tutuyordu. Duvar sağa sola sallanıyor, Ada onu düşürmemek için elleriyle sıkı sıkı basıyordu.\n\nDeniz hemen yanına gitti. \"Ne oldu?\" diye sordu.\n\nAda, ellerini duvardan çekmeden başını çevirdi. \"Seni duydum,\" dedi. \"Ama duvar tam o sırada kaymaya başladı. Onu tutmam gerekti.\"\n\nDeniz bir an durdu. Sonra alttaki blokları iki eliyle bastırdı. \"Ben altını tutayım,\" dedi. \"Sen üsttekileri indir.\"\n\nAda üstteki blokları tek tek aldı, her birini yavaşça yere koydu. Deniz alttakileri hiç bırakmadı. Duvar artık sallanmıyordu.\n\n\"Şimdi daha geniş yapalım,\" dedi Ada. Blokları yan yana dizdiler, önceki duvardan daha kalın bir taban kurdular. Duvar bu kez dimdik durdu.\n\nDeniz mavi kıvrımlı parçayı hatırladı. Onu köprünün boşluğuna getirdi, Ada da diğer ucundan tuttu. İkisi birlikte parçayı yerine oturttular. Köprü tam yolun ortasında, pırıl pırıl duruyordu.\n\n\"Hazırım,\" dedi Ada, elini silkeleyerek.\n\nDeniz cebindeki küçük kırmızı arabayı çıkardı ve Ada'ya uzattı. \"Önce sen geçir,\" dedi.\n\nAda arabayı köprüden geçirdi, tekerlekler bloklara hafifçe vurdu, tık tık. Sonra arabayı Deniz'e verdi, o da geçirdi. Köprüden sırayla geçirdiler, arabayı bir o yana bir bu yana, ikisi de kıkırdayarak. "
+    },
+    {
+      "proof_id": "P5_CLEAN",
+      "kind": "clean",
+      "pass": true,
+      "source_id": "src_watering_guard_01",
+      "story_family": "emotional_development",
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.005252,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1971,
+            "output_tokens": 131,
+            "total_tokens": 2102
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "skipped": true
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.001661,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1576,
+            "output_tokens": 17,
+            "total_tokens": 1593
+          },
+          "parse_failures": []
+        }
+      }
+    }
+  ]
+}
