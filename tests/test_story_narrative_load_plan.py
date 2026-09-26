@@ -205,8 +205,29 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         )
         self.assertEqual(
             integration["latest_family_resolution"]["emotional_development"],
-            "noninferior_position_sensitive_multiseed",
+            "noninferior_position_independent_absolute_judging",
         )
+
+    def test_emotional_absolute_tiebreak_is_required_and_recorded(self):
+        integration = self.profile["promotion_evidence"]["architect_integration"]
+        evidence = integration["emotional_absolute_tiebreak"]
+        self.assertEqual(evidence["run"], 36229571364)
+        self.assertTrue(evidence["position_independent"])
+        self.assertEqual(evidence["generation_calls"], 0)
+        self.assertTrue(evidence["strict_resolution_pass"])
+        self.assertTrue(evidence["candidate_seed_1"]["noninferiority_pass"])
+        self.assertTrue(evidence["candidate_seed_2"]["noninferiority_pass"])
+        self.assertEqual(evidence["candidate_seed_1"]["serious_defect_count"], 0)
+        self.assertEqual(evidence["candidate_seed_2"]["serious_defect_count"], 0)
+
+        broken = json.loads(json.dumps(self.profile))
+        broken["promotion_evidence"]["architect_integration"][
+            "emotional_absolute_tiebreak"
+        ]["strict_resolution_pass"] = False
+        result = evaluate_narrative_load_promotion_gate(broken)
+        self.assertFalse(result["evidence_pass"])
+        self.assertEqual(result["state"], "BLOCKED_EVIDENCE")
+        self.assertIn("emotional_absolute_tiebreak_not_passed", result["blockers"])
 
     def test_promotion_gate_requires_explicit_decision_after_all_families_resolve(self):
         profile = json.loads(json.dumps(self.profile))
