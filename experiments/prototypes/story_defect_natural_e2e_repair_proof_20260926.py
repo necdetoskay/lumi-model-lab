@@ -83,6 +83,49 @@ Return JSON only:
 """.strip()
 
 
+CHECKLIST_DETECTOR_SYSTEM = r"""
+You are the second independent publication-defect auditor for a finished Turkish read-aloud story for an exact-age-4 child.
+
+The first blind audit returned zero serious/critical findings. Do NOT assume that result was correct.
+Evaluate EVERY canonical defect family separately. You are not told which family, if any, is expected.
+
+Canonical families:
+- physical_feasibility: impossible/unsupported material action or affordance
+- causal_logic: important effect/solution/outcome does not follow from established causes/rules/evidence
+- state_continuity: committed object/action state resets, moves, reappears, disappears, or contradicts itself without transition
+- epistemic_order: character uses information before learning/observing/inferencing it
+- spatial_consistency: incompatible locations or unsupported traversal
+- temporal_consistency: contradictory/impossible event order or duration
+- response_causality: narrator/story treats occupied hands/task load as inability to hear or answer, or implicitly endorses busy hands as the reason for repeated silence even though speech remains possible
+- closure_integrity: terminal ending is reopened by new main action/payoff
+- canon_integrity: authoritative durable fact is invented/contradicted/changed
+
+Important distinction for response_causality:
+- A viewpoint character may temporarily and incorrectly think "beni duymadı" or "benimle oynamak istemiyor." That misunderstanding alone is NOT a defect.
+- Voluntarily postponing an answer while handling an urgent task is NOT a defect.
+- The defect exists only if the narrator/story causal framing itself makes occupied hands/task load function as inability to perceive/respond, including an internally inconsistent repeated-silence explanation.
+
+For each family return defect_present true/false. If true, cite the smallest exact sentence IDs that establish it and classify minimum repair scope.
+Do not report grammar/style/word count/polish.
+Do not invent hidden constraints.
+Do not rewrite.
+
+Return JSON only:
+{
+  "assessments": [
+    {
+      "family": "physical_feasibility",
+      "defect_present": false,
+      "severity": null,
+      "repair_scope": null,
+      "span_ids": [],
+      "reason": "brief reason"
+    }
+  ]
+}
+""".strip()
+
+
 LOCAL_REPAIR_SYSTEM = r"""
 You repair exactly ONE confirmed LOCAL_REPAIR semantic defect in an otherwise accepted Turkish read-aloud story for an exact-age-4 child.
 
@@ -262,6 +305,75 @@ def call_detector(
     return findings, meta
 
 
+def call_checklist_detector(
+    *,
+    api_key: str,
+    story_id: str,
+    story_family: str,
+    story_text: str,
+    seed: int,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    segments = segment_story(story_text)
+    payload, meta = structured_call(
+        api_key=api_key,
+        model=DETECTOR_MODEL,
+        system=CHECKLIST_DETECTOR_SYSTEM,
+        payload={
+            "story_id": story_id,
+            "story_family": story_family,
+            "exact_age": 4,
+            "reading_mode": "READ_ALOUD",
+            "story_segments": segments,
+        },
+        seed=seed,
+        max_tokens=3600,
+        request_class="editorial_audit",
+    )
+    assessments = payload.get("assessments")
+    if not isinstance(assessments, list):
+        raise RuntimeError("checklist_assessments_missing")
+
+    valid_ids = {row["id"] for row in segments}
+    seen: set[str] = set()
+    findings: list[dict[str, Any]] = []
+    for index, raw in enumerate(assessments):
+        if not isinstance(raw, dict):
+            raise RuntimeError(f"checklist_{index}_not_object")
+        family = str(raw.get("family") or "")
+        if family not in DEFECT_FAMILIES:
+            raise RuntimeError(f"checklist_{index}_family_invalid:{family}")
+        if family in seen:
+            raise RuntimeError(f"checklist_family_duplicate:{family}")
+        seen.add(family)
+        present = raw.get("defect_present")
+        if not isinstance(present, bool):
+            raise RuntimeError(f"checklist_{family}_presence_invalid")
+        if not present:
+            continue
+        severity = str(raw.get("severity") or "")
+        if severity not in {"serious", "critical"}:
+            raise RuntimeError(f"checklist_{family}_severity_invalid:{severity}")
+        scope = normalize_scope(raw.get("repair_scope"))
+        spans = raw.get("span_ids")
+        if not isinstance(spans, list) or not spans:
+            raise RuntimeError(f"checklist_{family}_span_missing")
+        spans = [str(value) for value in spans]
+        if not set(spans).issubset(valid_ids):
+            raise RuntimeError(f"checklist_{family}_span_invalid:{spans}")
+        findings.append({
+            "family": family,
+            "severity": severity,
+            "repair_scope": scope,
+            "span_ids": spans,
+            "reason": str(raw.get("reason") or "").strip() or "[reason omitted]",
+        })
+
+    if seen != set(DEFECT_FAMILIES):
+        missing = sorted(set(DEFECT_FAMILIES) - seen)
+        raise RuntimeError(f"checklist_missing_families:{missing}")
+    return findings, meta
+
+
 def blind_detect_with_zero_confirmation(
     *,
     api_key: str,
@@ -297,18 +409,15 @@ def blind_detect_with_zero_confirmation(
             "cost": {"usd": round(total_cost, 6)},
         }
 
-    second_findings, second_meta = call_detector(
+    second_findings, second_meta = call_checklist_detector(
         api_key=api_key,
-        model=DETECTOR_MODEL,
         story_id=f"{story_id}_blind_zero_confirmation",
         story_family=story_family,
         story_text=story_text,
         seed=seed + 7919,
-        request_class="editorial_audit",
-        audit_round="blind_independent_second_read_after_zero",
     )
     rounds.append({
-        "round": "blind_independent_second_read_after_zero",
+        "round": "blind_family_by_family_zero_confirmation",
         "findings": second_findings,
         "meta": second_meta,
     })
@@ -316,7 +425,7 @@ def blind_detect_with_zero_confirmation(
     return second_findings, {
         "strategy": "blind_primary_then_zero_confirmation",
         "selected_round": (
-            "blind_independent_second_read_after_zero"
+            "blind_family_by_family_zero_confirmation"
             if second_findings
             else "confirmed_zero"
         ),
