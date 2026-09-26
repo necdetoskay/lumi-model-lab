@@ -1,0 +1,58 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof.v1",
+  "status": "FROZEN_PROOF_SET",
+  "created_at": "2026-09-26",
+  "issue": 217,
+  "objective": "Prove blind detect -> detector-selected bounded repair -> independent full-story reverify on naturally occurring Story V5 defects.",
+  "cases": [
+    {
+      "proof_id": "N1_RESPONSE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_seed2_03",
+      "expected_family": "response_causality"
+    },
+    {
+      "proof_id": "N2_STATE",
+      "kind": "defect",
+      "source_id": "src_fantastical_guard_02",
+      "expected_family": "state_continuity"
+    },
+    {
+      "proof_id": "N3_CAUSAL",
+      "kind": "defect",
+      "source_id": "src_cohort_b_04",
+      "expected_family": "causal_logic"
+    },
+    {
+      "proof_id": "N4_CLOSURE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_04",
+      "expected_family": "closure_integrity"
+    },
+    {
+      "proof_id": "N5_CLEAN",
+      "kind": "clean",
+      "source_id": "src_watering_guard_01"
+    }
+  ],
+  "success_gate": {
+    "required_passes": 5,
+    "defect_requirements": [
+      "blind detector finds expected serious defect family",
+      "detector span overlaps frozen natural-positive evidence span",
+      "repair modifies only detector-selected sentence IDs",
+      "independent full-story verifier returns zero serious/critical findings"
+    ],
+    "clean_requirements": [
+      "blind detector returns zero serious/critical findings",
+      "repair is skipped",
+      "independent full-story verifier returns zero serious/critical findings"
+    ]
+  },
+  "freeze_policy": {
+    "do_not_change_cases_after_paid_run": true,
+    "do_not_send_gold_spans_to_repair": true,
+    "detector_selected_spans_are_repair_authority": true,
+    "unresolved_verifier_disagreement_is_not_pass": true
+  }
+}
