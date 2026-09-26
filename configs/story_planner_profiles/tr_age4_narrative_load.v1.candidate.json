@@ -6,6 +6,12 @@
   "nominal_target_words": 500,
   "quality_priority": "primary",
   "length_priority": "secondary",
+  "length_policy": {
+    "generation_target_mode": "soft",
+    "publication_length_is_primary": false,
+    "quality_over_word_count": true,
+    "do_not_pad_to_target": true
+  },
   "spine": {
     "min_beats": 8,
     "max_beats": 12,
@@ -22,8 +28,21 @@
       "payoff",
       "closure"
     ],
+    "required_functions": ["setup", "payoff", "closure"],
+    "required_progression_any": [
+      "signal",
+      "hypothesis",
+      "test",
+      "complication",
+      "observation",
+      "decision",
+      "social_shift"
+    ],
     "required_main_arc": true,
-    "same_function_split_for_length_only_forbidden": true
+    "same_function_split_for_length_only_forbidden": true,
+    "duplicate_beat_text_forbidden": true,
+    "closure_must_be_terminal": true,
+    "payoff_must_precede_closure": true
   },
   "supporting_thread": {
     "optional": true,
@@ -35,13 +54,17 @@
     "new_relationship_canon_forbidden": true,
     "new_durable_world_fact_forbidden": true,
     "new_independent_solution_forbidden": true,
-    "filler_if_removal_changes_nothing": true
+    "filler_if_removal_changes_nothing": true,
+    "must_not_exist_only_for_length": true
   },
   "writer_contract": {
     "target_words": 500,
     "target_mode": "soft",
     "must_realize_functional_beats": true,
     "may_not_invent_extra_event_for_length": true,
+    "may_not_invent_new_canon": true,
+    "must_preserve_committed_item_state": true,
+    "may_not_undo_completed_action_only_to_reuse_prop": true,
     "finish_when_naturally_complete": true
   },
   "promotion_evidence": {
@@ -54,7 +77,8 @@
       "inconclusive": 2
     },
     "mean_word_delta": 8.8,
-    "interpretation": "quality-improving planner candidate; not a deterministic length expander"
+    "interpretation": "quality-improving planner candidate; not a deterministic length expander",
+    "second_seed_repeat_required": true
   },
   "change_policy": {
     "single_fixture_can_promote": false,
