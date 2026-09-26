@@ -86,8 +86,10 @@ Hard rules:
 - Add no subplot, canon, object, character, explanation, moral, or extra payoff.
 - Do not improve style outside the defect.
 - For response_causality, NEVER write that occupied hands, holding an object, gripping something, or task load makes a character unable to hear, speak, answer, look, or turn the head.
-- If silence must remain because downstream misunderstanding is outside the authorized span, explain only momentary attention/focus or leave the silence unexplained; do not invent a physical inability.
-- Do not add an explicit acknowledgement if read-only downstream text says another character still believes they were not heard.
+- Do NOT use attention, concentration, focus, or occupied hands as if they make speech physically impossible.
+- If silence must remain because downstream misunderstanding is outside the authorized span, frame it as voluntary prioritization/choice: the character may hear the other person but choose to postpone answering while handling the urgent task.
+- The narrator may know that the character heard even if another character in read-only downstream text still mistakenly thinks they were not heard; preserve that point-of-view distinction.
+- Do not add a direct spoken acknowledgement if it would contradict read-only downstream misunderstanding.
 - A replacement may be an empty string only when deleting the target sentence is clearly the smallest safe repair.
 - Do not return replacements for unchanged target sentences.
 
@@ -113,7 +115,7 @@ You receive:
 
 Judge only that SAME defect family and causal problem. Do not search for unrelated defects here.
 A repair is NOT resolved if it merely restates the same bad causal rule in different words.
-For response_causality specifically, occupied hands, holding/gripping, or task load must not be used as the reason a character cannot hear, speak, answer, look, or turn the head.
+For response_causality specifically, occupied hands, holding/gripping, task load, attention, concentration, or focus must not be used as the reason a character cannot hear or speak. A character may voluntarily postpone answering while handling an urgent task; that is acceptable only when framed as a choice/prioritization rather than inability.
 
 Return JSON only:
 {
@@ -522,47 +524,84 @@ def main() -> None:
             by_id = {seg["id"]: seg for seg in original_segments}
             target_segments = [by_id[sid] for sid in matched["span_ids"]]
 
-            repair_payload, repair_meta = structured_call(
-                api_key=api_key,
-                model=REPAIR_MODEL,
-                system=LOCAL_REPAIR_SYSTEM,
-                payload={
-                    "story_id": proof_id,
-                    "story_family": source["family"],
-                    "confirmed_finding": matched,
-                    "target_segments": target_segments,
-                    "full_story_read_only": original_segments,
-                },
-                seed=2026155000 + index,
-                max_tokens=1800,
-                request_class="editorial_audit",
-            )
-            total_cost += meta_cost(repair_meta)
+            repair_attempts: list[dict[str, Any]] = []
+            previous_replacements: list[dict[str, str]] = []
+            verifier_feedback: dict[str, Any] | None = None
+            repaired_story = story
+            mechanical: dict[str, Any] = {}
+            replacements: list[dict[str, str]] = []
+            same_defect_result: dict[str, Any] = {
+                "resolved": False,
+                "remaining_span_ids": [],
+                "reason": "not yet checked",
+            }
+            same_defect_meta: dict[str, Any] = {}
 
-            repaired_story, mechanical, replacements = apply_local_repair(
-                story,
-                original_segments,
-                matched["span_ids"],
-                repair_payload,
-            )
+            for attempt in range(1, 3):
+                repair_payload, repair_meta = structured_call(
+                    api_key=api_key,
+                    model=REPAIR_MODEL,
+                    system=LOCAL_REPAIR_SYSTEM,
+                    payload={
+                        "story_id": proof_id,
+                        "story_family": source["family"],
+                        "attempt": attempt,
+                        "confirmed_finding": matched,
+                        "target_segments": target_segments,
+                        "full_story_read_only": original_segments,
+                        "previous_attempt_replacements": previous_replacements,
+                        "same_defect_feedback_from_previous_attempt": verifier_feedback,
+                    },
+                    seed=2026155000 + index * 10 + attempt,
+                    max_tokens=1800,
+                    request_class="editorial_audit",
+                )
+                total_cost += meta_cost(repair_meta)
+
+                repaired_story, mechanical, replacements = apply_local_repair(
+                    story,
+                    original_segments,
+                    matched["span_ids"],
+                    repair_payload,
+                )
+
+                same_defect_result, same_defect_meta = call_same_defect_recheck(
+                    api_key=api_key,
+                    story_id=f"{proof_id}_same_defect_recheck_attempt_{attempt}",
+                    story_family=source["family"],
+                    repaired_story=repaired_story,
+                    original_finding=matched,
+                    seed=2026160000 + index * 10 + attempt,
+                )
+                total_cost += meta_cost(same_defect_meta)
+
+                repair_attempts.append({
+                    "attempt": attempt,
+                    "repair_note": str(repair_payload.get("repair_note") or ""),
+                    "replacements": replacements,
+                    "mechanical": mechanical,
+                    "repair_meta": repair_meta,
+                    "same_defect_recheck": {
+                        **same_defect_result,
+                        "meta": same_defect_meta,
+                    },
+                })
+
+                if same_defect_result["resolved"]:
+                    break
+
+                previous_replacements = replacements
+                verifier_feedback = same_defect_result
+
             row["repair"] = {
                 "model": REPAIR_MODEL,
-                "repair_note": str(repair_payload.get("repair_note") or ""),
-                "replacements": replacements,
+                "max_attempts": 2,
+                "attempts": repair_attempts,
+                "attempts_used": len(repair_attempts),
+                "final_replacements": replacements,
                 "mechanical": mechanical,
-                "meta": repair_meta,
                 "repaired_story": repaired_story,
             }
-
-            same_defect_result, same_defect_meta = call_same_defect_recheck(
-                api_key=api_key,
-                story_id=f"{proof_id}_same_defect_recheck",
-                story_family=source["family"],
-                repaired_story=repaired_story,
-                original_finding=matched,
-                seed=2026160000 + index,
-            )
-            total_cost += meta_cost(same_defect_meta)
             row["same_defect_recheck"] = {
                 "model": VERIFY_MODEL,
                 "family": spec["expected_family"],
