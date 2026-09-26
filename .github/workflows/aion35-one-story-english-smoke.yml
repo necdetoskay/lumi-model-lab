@@ -1,0 +1,43 @@
+name: Aion 3.5 English One Story Smoke
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/aion35-one-story-english-smoke.txt
+
+jobs:
+  smoke:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json --min-remaining 0.25
+      - name: Run Aion English story smoke
+        run: PYTHONPATH=. python experiments/prototypes/aion35_one_story_english_smoke_20260926.py
+      - name: Archive evidence
+        if: always()
+        run: |
+          test -s runs/aion-3.5-one-story-english-smoke/result.json
+          DEST="experiments/results/aion-3.5-one-story-english-smoke/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/aion-3.5-one-story-english-smoke/result.json "$DEST/result.json"
+          cp runs/aion-3.5-one-story-english-smoke/draft.txt "$DEST/draft.txt"
+          cp runs/aion-3.5-one-story-english-smoke/final.txt "$DEST/final.txt"
+          cp runs/aion-3.5-one-story-english-smoke/spine.txt "$DEST/spine.txt"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): Aion 3.5 English one-story smoke ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/aion35-one-story-english-smoke-${GITHUB_RUN_ID}"
