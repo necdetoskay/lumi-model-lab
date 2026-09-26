@@ -1,0 +1,292 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+  "status": "FAIL",
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "post_repair_verifier": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 5,
+    "passes": 2,
+    "failures": 3,
+    "all_five_pass": false
+  },
+  "total_cost_usd": 0.037164,
+  "elapsed_seconds": 27.715,
+  "results": [
+    {
+      "proof_id": "N1_RESPONSE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_seed2_03",
+      "story_family": "emotional_development",
+      "pass": false,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.004608,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2259,
+            "output_tokens": 9,
+            "total_tokens": 2268
+          },
+          "parse_failures": []
+        },
+        "expected_defect_confirmed": false
+      },
+      "gold_score_only": {
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S007",
+          "S008",
+          "S009",
+          "S010",
+          "S017",
+          "S018",
+          "S023",
+          "S024",
+          "S025",
+          "S029",
+          "S030",
+          "S031"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "failure_stage": "DETECTION"
+    },
+    {
+      "proof_id": "N2_STATE",
+      "kind": "defect",
+      "source_id": "src_fantastical_guard_02",
+      "story_family": "everyday_fantastical_discovery",
+      "pass": true,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S029",
+              "S037"
+            ],
+            "reason": "S029 states Deniz already placed the book on the shelf, but S037 says he didn't put his book anywhere, contradicting the earlier established state."
+          }
+        ],
+        "meta": {
+          "cost": {
+            "usd": 0.005878,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2214,
+            "output_tokens": 145,
+            "total_tokens": 2359
+          },
+          "parse_failures": []
+        },
+        "expected_defect_confirmed": true
+      },
+      "gold_score_only": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S029",
+          "S037"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "detector_selected_targets": [
+          {
+            "span_id": "S029",
+            "text": "Kitabı kaldırdı, rafa doğru yürüdü ve yerine koydu."
+          },
+          {
+            "span_id": "S037",
+            "text": "Elini bir daha uzatmadı, kitabını da bir yere koymadı."
+          }
+        ],
+        "replacements": [
+          {
+            "span_id": "S037",
+            "text": "Elini bir daha uzatmadı, kitabını da rafından almadı."
+          }
+        ],
+        "repair_note": "S037 artık kitabın rafta bırakıldığı önceki durumla çelişmiyor.",
+        "mechanical_invariants": {
+          "authorized_span_ids": [
+            "S029",
+            "S037"
+          ],
+          "patched_span_ids": [
+            "S037"
+          ],
+          "outside_authorized_spans_byte_preserved_by_deterministic_patcher": true,
+          "patch_count": 1
+        },
+        "meta": {
+          "cost": {
+            "usd": 0.00451,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1800,
+            "output_tokens": 91,
+            "total_tokens": 1891
+          },
+          "parse_failures": []
+        }
+      },
+      "repaired_story": "# Deniz'in Duvarındaki Yıldızlar\n\nDeniz öğleden sonra yerde otururken kitabı önünde açık duruyordu. Başını kaldırdığında duvarında küçük yıldızlara benzeyen ışık parçaları gördü. Bir iki değil, tam beş altı tanesi vardı, hepsi pırıl pırıldı.\n\n\"Vay,\" dedi Deniz kendi kendine. Elini uzattı, bir ışık parçasına dokundu. Parmaklarının üstünde küçük bir ışık lekesi belirdi, sonra elini çekince yine duvara döndü.\n\nDeniz merakla etrafına bakındı. Işıklar nereden geliyordu ki? Duvardan pencereye çevirdi bakışını. Pencerenin önünde delikli oyuncak sepeti duruyordu, güneş de tam sepetin kenarından süzülüyordu.\n\n\"Hmmm,\" dedi Deniz. Sepeti taşımaya kalkışmadı. Onun yerine elini kaldırdı, güneş ile deliklerin arasına usulca soktu.\n\nDuvardaki yıldızlar birden yok oldu.\n\nDeniz gözlerini kocaman açtı. Elini çekti geri. Işık yeniden deliklerden süzüldü ve yıldızlar aynı yerde, aynı şekilde belirdi.\n\n\"Yine geldiniz!\" dedi Deniz gülerek. Elini bir daha uzattı, ışığı kesti. Yıldızlar kayboldu. Elini indirdi, yıldızlar geri geldi. Bunu üç dört kere tekrarladı, her seferinde küçük bir kahkaha attı.\n\nSonra yerdeki kitabını almak için eğildi. Tam o sırada omzu ışığın önüne geldi ve duvardaki yıldızlar bir kez daha söndü.\n\nDeniz kitabı elinde tutarak durdu, duvara baktı. Boş duruyordu duvar şimdi.\n\n\"Sen de mi kayboldun?\" dedi kitaba bakarak.\n\nKitabı kaldırdı, rafa doğru yürüdü ve yerine koydu. Sonra geri döndü, sepetin önünden çekildi, güneşin yolunu hiç engellemedi.\n\nGüneş yeniden deliklerden geçti. Duvarda küçük yıldız şekilleri bir bir belirdi, hepsi eski yerlerindeydi.\n\nDeniz oturdu, dizlerini kucakladı ve duvara baktı. Güneş pencereden içeri girmeye devam ettikçe, sepetin delikleri açık kaldıkça, yıldızlar orada duruyordu.\n\n\"Siz orada kalın,\" dedi Deniz yıldızlara, \"ben de burada kalacağım.\"\n\nVe öyle de yaptı.  Sadece oturdu, gülümsedi ve duvardaki küçük ışıklı yıldızları izledi.",
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.001819,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1734,
+            "output_tokens": 17,
+            "total_tokens": 1751
+          },
+          "parse_failures": []
+        }
+      }
+    },
+    {
+      "proof_id": "N3_CAUSAL",
+      "kind": "defect",
+      "source_id": "src_cohort_b_04",
+      "story_family": "everyday_fantastical_discovery",
+      "pass": false,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.005726,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2818,
+            "output_tokens": 9,
+            "total_tokens": 2827
+          },
+          "parse_failures": []
+        },
+        "expected_defect_confirmed": false
+      },
+      "gold_score_only": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S039",
+          "S040",
+          "S041",
+          "S042",
+          "S043",
+          "S044",
+          "S045",
+          "S046"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "failure_stage": "DETECTION"
+    },
+    {
+      "proof_id": "N4_CLOSURE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_04",
+      "story_family": "everyday_fantastical_discovery",
+      "pass": false,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.00824,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2835,
+            "output_tokens": 257,
+            "total_tokens": 3092
+          },
+          "parse_failures": []
+        },
+        "expected_defect_confirmed": false
+      },
+      "gold_score_only": {
+        "family": "closure_integrity",
+        "severity": "serious",
+        "span_ids": [
+          "S038",
+          "S049",
+          "S050",
+          "S051"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "failure_stage": "DETECTION"
+    },
+    {
+      "proof_id": "N5_CLEAN",
+      "kind": "clean",
+      "source_id": "src_watering_guard_01",
+      "story_family": "emotional_development",
+      "pass": true,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.004722,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1971,
+            "output_tokens": 78,
+            "total_tokens": 2049
+          },
+          "parse_failures": []
+        }
+      },
+      "repair": {
+        "skipped": true
+      },
+      "post_verify": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.001661,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1576,
+            "output_tokens": 17,
+            "total_tokens": 1593
+          },
+          "parse_failures": []
+        }
+      }
+    }
+  ]
+}
