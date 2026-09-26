@@ -159,6 +159,14 @@ The defect was not “too many words.” It was **causal-rule drift**.
 
 Therefore causal-rule preservation and committed-state preservation are explicit candidate requirements before promotion.
 
+Targeted guard run `36227255937` then tested three everyday-fantastical fixtures, including the previously losing glass-color fixture:
+- guarded-planner wins: **3/3**;
+- baseline wins: **0/3**;
+- inconclusive: **0/3**;
+- mean word delta: **-49 words**.
+
+The known causal-rule failure was therefore corrected without using extra length as the mechanism.
+
 ## 7. Length policy
 
 For this candidate:
@@ -196,7 +204,7 @@ This candidate must not become canonical production policy until:
 - deterministic planner-contract tests are green;
 - second-seed evidence is green;
 - fresh-fixture evidence is recorded;
-- causal-rule and committed-state guards are qualified on the known risky family;
+- causal-rule and committed-state guards are qualified on the known risky family — **complete**;
 - integration into the existing Narrative Architect is compared against the current architect without adding a mandatory extra LLM call;
 - no canon/safety regression appears;
 - cost/latency implications are recorded;
@@ -206,7 +214,8 @@ Current state:
 - deterministic contract suite: green;
 - second seed: complete;
 - fresh fixture Cohort B: complete;
-- architect-integration qualification: **next**.
+- targeted causal/state guard qualification: complete (run `36227255937`, 3/3 wins);
+- architect-integration qualification: **in progress**.
 
 ## 10. Current conclusion
 
