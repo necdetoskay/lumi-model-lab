@@ -15,6 +15,24 @@ from experiments.prototypes.story_v5_tr_lint_copyedit_benchmark_20260925 import 
 from src.story_defect_detection import DEFECT_FAMILIES, segment_story
 from src.story_defect_synthetic_corpus import load_synthetic_corpus
 
+FAMILY_ALIASES = {
+    "state_unexplained_reappearance": "state_continuity",
+    "state_object_reset": "state_continuity",
+    "state_action_undone": "state_continuity",
+    "causal_effect_without_cause": "causal_logic",
+    "causal_missing_prerequisite": "causal_logic",
+    "physical_impossible_affordance": "physical_feasibility",
+    "physical_unsupported_motion": "physical_feasibility",
+    "physical_solid_barrier_violation": "physical_feasibility",
+    "response_perception_conflation": "response_causality",
+    "temporal_order_contradiction": "temporal_consistency",
+    "spatial_two_places_at_once": "spatial_consistency",
+    "epistemic_unknown_information": "epistemic_order",
+    "closure_post_terminal_action": "closure_integrity",
+    "canon_durable_fact_contradiction": "canon_integrity",
+}
+
+
 TRIGGER = Path("experiments/triggers/story-defect-paid-validation-batch.txt")
 OUT = Path("runs/story-defect-paid-validation-batch/result.json")
 
@@ -79,6 +97,7 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
     out = []
     for idx, finding in enumerate(findings):
         family = finding.get("family")
+        family = FAMILY_ALIASES.get(str(family), family)
         severity = finding.get("severity")
         severity_missing = severity is None
         if severity_missing:
@@ -229,7 +248,11 @@ def main() -> None:
                 adjudicator_error = f"{type(exc).__name__}: {exc}"
 
         intended_confirmed = bool(p["intended"]) or bool(a["intended"])
-        taxonomy_unresolved = bool(p["overlap_other"]) and bool(a["overlap_other"])
+        primary_alt_families = {finding["family"] for finding in p["overlap_other"]}
+        secondary_alt_families = {finding["family"] for finding in a["overlap_other"]}
+        taxonomy_unresolved = bool(
+            primary_alt_families.intersection(secondary_alt_families)
+        )
         confirmed_extra = (
             extra_confirmed(p["second"], a["second"])
             if needs_adjudication and adjudicator_error is None
