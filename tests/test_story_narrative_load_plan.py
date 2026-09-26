@@ -163,6 +163,13 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(writer["may_not_add_new_action_after_closure"])
         self.assertTrue(writer["may_not_force_post_closure_prop_convergence"])
 
+    def test_physical_affordance_and_terminal_append_guards(self):
+        spine = self.profile["spine"]
+        writer = self.profile["writer_contract"]
+        self.assertTrue(spine["preserve_premise_physical_affordances"])
+        self.assertTrue(spine["may_not_invent_unstated_physical_inability"])
+        self.assertTrue(writer["may_not_append_post_closure_action"])
+
 
 if __name__ == "__main__":
     unittest.main()
