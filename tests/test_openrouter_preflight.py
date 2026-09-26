@@ -62,6 +62,21 @@ class OpenRouterPreflightTests(unittest.TestCase):
         ):
             enforce_key_access(status)
 
+    def test_minimum_remaining_budget_floor_is_enforced(self) -> None:
+        status = OpenRouterKeyStatus(
+            limit=20.0,
+            limit_remaining=0.047,
+            limit_reset="monthly",
+            usage_monthly=19.953,
+            is_free_tier=False,
+        )
+        with self.assertRaisesRegex(
+            ProviderAccessBlocked,
+            "below required preflight floor",
+        ):
+            enforce_key_access(status, min_remaining=0.10)
+        enforce_key_access(status, min_remaining=0.04)
+
     def test_negative_remaining_is_blocked(self) -> None:
         status = OpenRouterKeyStatus(
             limit=5.0,
