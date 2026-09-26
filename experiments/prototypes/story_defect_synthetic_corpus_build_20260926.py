@@ -113,6 +113,7 @@ def create_variant(
                 f"gold_span_not_unique:{source['source_id']}:{recipe['id']}:{part!r}:{matches}"
             )
         injected_span_ids.extend(matches)
+    injected_span_ids = sorted(set(injected_span_ids))
     if not injected_span_ids:
         raise RuntimeError(
             f"gold_span_not_found:{source['source_id']}:{recipe['id']}"
