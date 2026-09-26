@@ -162,6 +162,36 @@ Return JSON only:
 """.strip()
 
 
+STRUCTURAL_REPAIR_SYSTEM = r"""
+You repair exactly ONE confirmed STRUCTURAL_REPAIR semantic defect in an otherwise accepted Turkish read-aloud story for an exact-age-4 child.
+
+This is a coordinated bounded repair, not a whole-story rewrite.
+
+Hard rules:
+- You may change ONLY sentence IDs present in target_segments.
+- Every non-target sentence is read-only.
+- You may coordinate changes across several target sentences when the defect spans dependent beats.
+- Use the smallest set of target-sentence replacements that restores a coherent causal/state structure.
+- Preserve names, premise, already-correct events, established physical/fantasy rules, tone, age fit, and ending.
+- Add no subplot, canon, character, unrelated explanation, moral, or extra payoff.
+- For causal_logic, preserve the causal rule already demonstrated by the story. If a later beat contradicts that rule, repair that conflicting beat inside the authorized span instead of inventing a new exception unless the story already established one.
+- Do not improve style outside the confirmed defect.
+- A replacement may be empty only when deletion is the smallest structurally safe fix.
+- Do not return replacements for unchanged target sentences.
+
+Return JSON only:
+{
+  "replacements": [
+    {
+      "id": "S001",
+      "replacement_text": "replacement sentence or empty string"
+    }
+  ],
+  "repair_note": "one short sentence"
+}
+""".strip()
+
+
 SAME_DEFECT_RECHECK_SYSTEM = r"""
 You verify whether ONE previously confirmed serious semantic defect remains after a bounded repair.
 
@@ -692,11 +722,17 @@ def main() -> None:
                 write_progress(results, total_cost, "IN_PROGRESS")
                 continue
 
-            if matched["repair_scope"] != "LOCAL_REPAIR":
-                row["failure_stage"] = "REPAIR_SCOPE_NOT_YET_ENABLED"
+            if matched["repair_scope"] not in {"LOCAL_REPAIR", "STRUCTURAL_REPAIR"}:
+                row["failure_stage"] = "REPLAN_REQUIRED"
                 results.append(row)
                 write_progress(results, total_cost, "IN_PROGRESS")
                 continue
+
+            repair_system = (
+                LOCAL_REPAIR_SYSTEM
+                if matched["repair_scope"] == "LOCAL_REPAIR"
+                else STRUCTURAL_REPAIR_SYSTEM
+            )
 
             original_segments = segment_story(story)
             by_id = {seg["id"]: seg for seg in original_segments}
@@ -719,11 +755,12 @@ def main() -> None:
                 repair_payload, repair_meta = structured_call(
                     api_key=api_key,
                     model=REPAIR_MODEL,
-                    system=LOCAL_REPAIR_SYSTEM,
+                    system=repair_system,
                     payload={
                         "story_id": proof_id,
                         "story_family": source["family"],
                         "attempt": attempt,
+                        "repair_scope": matched["repair_scope"],
                         "confirmed_finding": matched,
                         "target_segments": target_segments,
                         "full_story_read_only": original_segments,
@@ -773,6 +810,7 @@ def main() -> None:
 
             row["repair"] = {
                 "model": REPAIR_MODEL,
+                "repair_scope": matched["repair_scope"],
                 "max_attempts": 2,
                 "attempts": repair_attempts,
                 "attempts_used": len(repair_attempts),
