@@ -30,7 +30,7 @@ You are a strict publication-defect auditor for one finished Turkish read-aloud 
 
 Audit the current story blindly. You are not told whether the story is a benchmark, clean control, or known defective story.
 
-Report ONLY serious or critical semantic defects in these canonical families:
+You MUST evaluate EVERY requested canonical defect family separately before deciding that the story is clean:
 - physical_feasibility
 - causal_logic
 - state_continuity
@@ -41,32 +41,41 @@ Report ONLY serious or critical semantic defects in these canonical families:
 - closure_integrity
 - canon_integrity
 
-For every finding, classify the MINIMUM safe repair scope:
-- LOCAL_REPAIR: a small number of exact supplied sentences can be changed while the rest stays untouched.
-- STRUCTURAL_REPAIR: coordinated changes across a wider story region or dependent beats are required, while the premise/plan can remain.
-- REPLAN: the underlying plan or causal architecture is broken enough that sentence-level editing is not reliable.
+For every requested family return exactly one evaluation with present=true or present=false.
+Do not skip a family. Do not collapse the audit into one overall impression.
 
-Rules:
-- Zero findings is allowed and preferred over inventing a defect.
-- Do not report grammar, style, word count, repetition, optional polish, or taste.
+If present=true:
+- severity must be serious or critical;
+- classify the MINIMUM safe repair scope:
+  - LOCAL_REPAIR: a small number of exact supplied sentences can be changed while the rest stays untouched.
+  - STRUCTURAL_REPAIR: coordinated changes across a wider story region or dependent beats are required, while the premise/plan can remain.
+  - REPLAN: the underlying plan or causal architecture is broken enough that sentence-level editing is not reliable.
+- cite the smallest exact supplied sentence-ID evidence span that proves the defect.
+
+If present=false:
+- severity must be null;
+- repair_scope must be null;
+- span_ids must be [];
+- give one brief reason why the family is not publication-blocking.
+
+Judgment rules:
+- Report only serious or critical semantic defects, never grammar, style, word count, repetition, optional polish, or taste.
 - Do not call ordinary fantasy a defect when the story establishes the fantasy rule.
 - Do not invent hidden height, strength, distance, knowledge, or world constraints.
 - response_causality: occupied hands or task load must not be treated by the narrator/story as inability to hear or answer. This also applies when the story implicitly endorses busy hands as the explanation for repeated silence while the same character can still speak under the same physical constraint. Mere voluntary prioritization is not a defect.
-- A character may temporarily make a mistaken inference from another character's silence (for example thinking they were not heard or are being rejected). That misunderstanding is legitimate story content and is NOT itself a response_causality defect when the narration does not endorse it as true and the story later provides a coherent explanation. Do not require the viewpoint character to recognize the true cause immediately.
+- A character may temporarily make a mistaken inference from another character's silence. That misunderstanding is legitimate story content and is NOT itself a response_causality defect when the narration does not endorse it as true and the story later provides a coherent explanation.
 - closure_integrity: a terminal ending must not be needlessly reopened afterward.
-- Cite the exact supplied sentence IDs that establish the defect.
-- Select the smallest evidence span that still proves the defect.
-- If audit_families is supplied, report only findings from those families.
 - Do not rewrite the story.
 
 Return JSON only:
 {
-  "findings": [
+  "evaluations": [
     {
-      "family": "physical_feasibility|causal_logic|state_continuity|epistemic_order|spatial_consistency|temporal_consistency|response_causality|closure_integrity|canon_integrity",
-      "severity": "serious|critical",
-      "repair_scope": "LOCAL_REPAIR|STRUCTURAL_REPAIR|REPLAN",
-      "span_ids": ["S001"],
+      "family": "physical_feasibility",
+      "present": false,
+      "severity": null,
+      "repair_scope": null,
+      "span_ids": [],
       "reason": "brief evidence-based reason"
     }
   ]
@@ -149,34 +158,68 @@ def normalize_scope(value: Any) -> str:
     return scope
 
 
-def normalize_findings(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[str, Any]]:
-    findings = payload.get("findings")
-    if not isinstance(findings, list):
-        raise RuntimeError("findings_missing")
+def normalize_findings(
+    payload: dict[str, Any],
+    valid_ids: set[str],
+    requested_families: list[str],
+) -> list[dict[str, Any]]:
+    evaluations = payload.get("evaluations")
+    if not isinstance(evaluations, list):
+        raise RuntimeError("evaluations_missing")
 
+    requested = list(requested_families)
+    seen: set[str] = set()
     normalized: list[dict[str, Any]] = []
-    for index, raw in enumerate(findings):
+
+    for index, raw in enumerate(evaluations):
         if not isinstance(raw, dict):
-            raise RuntimeError(f"finding_{index}_not_object")
+            raise RuntimeError(f"evaluation_{index}_not_object")
+
         family = str(raw.get("family") or "")
-        if family not in DEFECT_FAMILIES:
-            raise RuntimeError(f"finding_{index}_family_invalid:{family}")
+        if family not in requested:
+            raise RuntimeError(f"evaluation_{index}_family_unrequested:{family}")
+        if family in seen:
+            raise RuntimeError(f"evaluation_{index}_family_duplicate:{family}")
+        seen.add(family)
+
+        present = raw.get("present")
+        if not isinstance(present, bool):
+            raise RuntimeError(f"evaluation_{index}_present_invalid:{present}")
+
+        reason = str(raw.get("reason") or "").strip()
+        if not reason:
+            raise RuntimeError(f"evaluation_{index}_reason_missing")
+
+        spans = raw.get("span_ids")
+        if not isinstance(spans, list):
+            raise RuntimeError(f"evaluation_{index}_span_invalid")
+        spans = [str(value) for value in spans]
+
+        if not present:
+            if spans:
+                raise RuntimeError(f"evaluation_{index}_false_with_spans:{spans}")
+            continue
+
         severity = str(raw.get("severity") or "")
         if severity not in {"serious", "critical"}:
-            raise RuntimeError(f"finding_{index}_severity_invalid:{severity}")
-        spans = raw.get("span_ids")
-        if not isinstance(spans, list) or not spans:
-            raise RuntimeError(f"finding_{index}_span_missing")
-        spans = [str(value) for value in spans]
+            raise RuntimeError(f"evaluation_{index}_severity_invalid:{severity}")
+        if not spans:
+            raise RuntimeError(f"evaluation_{index}_span_missing")
         if not set(spans).issubset(valid_ids):
-            raise RuntimeError(f"finding_{index}_span_invalid:{spans}")
+            raise RuntimeError(f"evaluation_{index}_span_invalid:{spans}")
+
         normalized.append({
             "family": family,
             "severity": severity,
             "repair_scope": normalize_scope(raw.get("repair_scope")),
             "span_ids": spans,
-            "reason": str(raw.get("reason") or "").strip() or "[reason omitted]",
+            "reason": reason,
         })
+
+    missing = [family for family in requested if family not in seen]
+    if missing:
+        raise RuntimeError(f"evaluations_missing_families:{missing}")
+
     return normalized
 
 
@@ -210,11 +253,12 @@ def call_detector(
         max_tokens=2600,
         request_class=request_class,
     )
-    findings = normalize_findings(payload, {row["id"] for row in segments})
-    allowed = set(audit_families or DEFECT_FAMILIES)
-    unexpected = [row["family"] for row in findings if row["family"] not in allowed]
-    if unexpected:
-        raise RuntimeError(f"detector_returned_unrequested_family:{unexpected}")
+    requested_families = list(audit_families or DEFECT_FAMILIES)
+    findings = normalize_findings(
+        payload,
+        {row["id"] for row in segments},
+        requested_families,
+    )
     return findings, meta
 
 
