@@ -144,7 +144,11 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertEqual(evidence["family_cases_total"], 15)
         self.assertEqual(evidence["combined_consensus"]["planned_wins"], 9)
         self.assertEqual(evidence["combined_consensus"]["baseline_wins"], 1)
-        self.assertTrue(evidence["known_risk"]["targeted_guard_validation_required"])
+        self.assertEqual(evidence["guarded_fantastical_run"], 36227255937)
+        self.assertEqual(evidence["guarded_fantastical_consensus"]["guarded_planned_wins"], 3)
+        self.assertEqual(evidence["guarded_fantastical_consensus"]["baseline_wins"], 0)
+        self.assertFalse(evidence["known_risk"]["targeted_guard_validation_required"])
+        self.assertTrue(evidence["known_risk"]["targeted_guard_validation_completed"])
 
 
 if __name__ == "__main__":
