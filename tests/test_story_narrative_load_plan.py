@@ -183,11 +183,22 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
             ]
         )
 
-    def test_current_promotion_gate_awaits_explicit_decision_after_multiseed_noninferiority(self):
+    def test_canonical_profile_is_promoted_after_explicit_decision(self):
         result = evaluate_narrative_load_promotion_gate(self.profile)
+        self.assertEqual(self.profile["status"], "canonical_frozen")
         self.assertTrue(result["evidence_pass"])
-        self.assertEqual(result["state"], "AWAIT_EXPLICIT_PROMOTION_DECISION")
+        self.assertEqual(result["state"], "PROMOTED_CANONICAL")
         self.assertEqual(result["unresolved_families"], [])
+        self.assertFalse(result["requires_explicit_promotion_decision"])
+        self.assertTrue(result["production_gate_pass"])
+
+    def test_historical_candidate_still_records_pre_promotion_gate(self):
+        candidate = load_candidate_profile(
+            "configs/story_planner_profiles/tr_age4_narrative_load.v1.candidate.json"
+        )
+        result = evaluate_narrative_load_promotion_gate(candidate)
+        self.assertEqual(candidate["status"], "qualification_candidate")
+        self.assertEqual(result["state"], "AWAIT_EXPLICIT_PROMOTION_DECISION")
         self.assertTrue(result["requires_explicit_promotion_decision"])
         self.assertFalse(result["production_gate_pass"])
 
@@ -229,7 +240,7 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertEqual(result["state"], "BLOCKED_EVIDENCE")
         self.assertIn("emotional_absolute_tiebreak_not_passed", result["blockers"])
 
-    def test_promotion_gate_requires_explicit_decision_after_all_families_resolve(self):
+    def test_promoted_profile_remains_production_ready_when_all_families_resolve(self):
         profile = json.loads(json.dumps(self.profile))
         integration = profile["promotion_evidence"]["architect_integration"]
         integration["latest_family_resolution"]["emotional_development"] = (
@@ -239,9 +250,9 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         integration["latest_resolved_summary"]["narrative_load_architect_wins"] = 3
         result = evaluate_narrative_load_promotion_gate(profile)
         self.assertTrue(result["evidence_pass"])
-        self.assertEqual(result["state"], "AWAIT_EXPLICIT_PROMOTION_DECISION")
+        self.assertEqual(result["state"], "PROMOTED_CANONICAL")
         self.assertEqual(result["unresolved_families"], [])
-        self.assertFalse(result["production_gate_pass"])
+        self.assertTrue(result["production_gate_pass"])
 
     def test_promotion_gate_blocks_latest_baseline_loss(self):
         profile = json.loads(json.dumps(self.profile))
