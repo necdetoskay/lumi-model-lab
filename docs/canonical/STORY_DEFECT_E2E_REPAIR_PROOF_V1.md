@@ -18,7 +18,7 @@ The proof uses four independently validated serious defect cases from D1 plus on
 
 - P1 — response causality
 - P2 — state continuity
-- P3 — causal logic
+- P3 — physical feasibility
 - P4 — closure integrity
 - P5 — clean control
 
