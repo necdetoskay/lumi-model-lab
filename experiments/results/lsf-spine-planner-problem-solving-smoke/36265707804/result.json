@@ -1,0 +1,215 @@
+{
+  "schema_version": "lsf-spine-planner-problem-solving-smoke-result.v1",
+  "profile": "LSF-A4-W500-spine-planner-v0.1",
+  "planner_model": "aion-labs/aion-3.5-mini",
+  "planner_input": {
+    "schema_version": "lsf-spine-planner-smoke-input.v1",
+    "profile": "LSF-A4-W500-v0.1",
+    "context_builder_profile": "LSF-A4-W500-context-builder-v0.1",
+    "source_context_evidence_run": 36265297130,
+    "story_intent": {
+      "id": "intent.problem_solving_truck",
+      "family": "problem_solving_small_adventure",
+      "opportunity": "Deniz wants to get his toy truck onto a low platform in the courtyard.",
+      "stakes": "low",
+      "fantasy_allowed": false
+    },
+    "generation_profile": {
+      "exact_age": 4,
+      "target_words": 500,
+      "preferred_words": [
+        475,
+        525
+      ],
+      "hard_words": [
+        375,
+        625
+      ],
+      "generation_language": "en"
+    },
+    "context_packet": {
+      "always_required": [
+        {
+          "id": "character.identity",
+          "text": "Active character is Deniz."
+        },
+        {
+          "id": "character.exact_age",
+          "text": "Deniz is exactly 4 years old."
+        },
+        {
+          "id": "world.active",
+          "text": "Active world is world-home-01."
+        },
+        {
+          "id": "state.current_location",
+          "text": "Deniz is currently in COMMONS_COURTYARD."
+        },
+        {
+          "id": "state.story_revision",
+          "text": "CharacterStoryState revision is 12."
+        }
+      ],
+      "deterministic_required": [
+        {
+          "id": "inventory.toy_truck",
+          "text": "Deniz currently has a small yellow toy truck."
+        },
+        {
+          "id": "location.low_platform",
+          "text": "A low wooden platform with a vertical step is present in the courtyard."
+        },
+        {
+          "id": "recent.truck_intact",
+          "text": "The toy truck is intact and rolls normally."
+        }
+      ],
+      "deterministic_guards": [
+        {
+          "id": "world.physics_normal",
+          "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy."
+        }
+      ],
+      "soft_enrichment": [
+        {
+          "id": "location.cardboard",
+          "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall."
+        },
+        {
+          "id": "location.wood_block",
+          "text": "One small movable wooden block is present near the platform."
+        }
+      ]
+    },
+    "forbidden_planner_moves": [
+      "Do not introduce Ada, Emre, another child, an adult, or an animal.",
+      "Do not introduce tape, glue, string, books, bricks, tools, magic, or a new solution object.",
+      "Do not move the story outside COMMONS_COURTYARD.",
+      "Do not make the truck broken.",
+      "Do not change the platform into another object.",
+      "Do not add a moral or lesson."
+    ]
+  },
+  "plan": {
+    "logline": "Deniz uses a sturdy piece of cardboard and a small wooden block to build a ramp and get his yellow toy truck onto a low courtyard platform.",
+    "premise": "Four-year-old Deniz is playing with his small yellow toy truck in the courtyard. He wants to drive it onto the low wooden platform, but the platform's straight vertical step stops the truck's wheels. Using a flat piece of cardboard and a small wooden block, Deniz builds a steady ramp to solve the problem.",
+    "beats": [
+      {
+        "id": "B1",
+        "density": "brief",
+        "beat": "Deniz stands in the courtyard pushing his small yellow toy truck back and forth on the flat ground."
+      },
+      {
+        "id": "B2",
+        "density": "brief",
+        "beat": "He notices the low wooden platform and wants to drive his truck up onto its flat wooden top."
+      },
+      {
+        "id": "B3",
+        "density": "develop",
+        "beat": "He pushes the truck straight at the platform's vertical step. The truck bumps against the wood and stops, unable to climb."
+      },
+      {
+        "id": "B4",
+        "density": "brief",
+        "beat": "Deniz looks at the straight-up step, then spots the sturdy flat cardboard lying near the courtyard wall."
+      },
+      {
+        "id": "B5",
+        "density": "develop",
+        "beat": "He drags the cardboard over to the platform and leans it against the vertical step to make a ramp."
+      },
+      {
+        "id": "B6",
+        "density": "develop",
+        "beat": "He pushes the truck up the cardboard, but the bottom of the cardboard slides away and the truck rolls back down."
+      },
+      {
+        "id": "B7",
+        "density": "anchor",
+        "beat": "Deniz fetches the small wooden block, sets it firmly against the bottom of the cardboard to hold it in place, and pushes the truck up the steady ramp onto the platform."
+      },
+      {
+        "id": "B8",
+        "density": "brief",
+        "beat": "Deniz climbs the step, joins his truck on the platform, and drives it back and forth on the wooden top."
+      }
+    ],
+    "used_fact_ids": [
+      "character.identity",
+      "character.exact_age",
+      "world.active",
+      "state.current_location",
+      "inventory.toy_truck",
+      "location.low_platform",
+      "recent.truck_intact",
+      "location.cardboard",
+      "location.wood_block"
+    ],
+    "guard_fact_ids": [
+      "world.physics_normal"
+    ],
+    "assumptions": [
+      {
+        "assumption": "Deniz can physically drag the cardboard and push the wooden block.",
+        "why_safe": "These are age-appropriate gross motor actions for a 4-year-old using lightweight courtyard objects."
+      },
+      {
+        "assumption": "The cardboard is strong enough to hold the toy truck when its bottom is supported by the block.",
+        "why_safe": "The context specifies the cardboard is sturdy and flat, and the toy truck is small and light."
+      }
+    ],
+    "story_outcome": {
+      "summary": "Deniz's toy truck is on the low wooden platform, and Deniz is playing with it there.",
+      "proposed_state_deltas": [],
+      "canon_mutations": []
+    }
+  },
+  "deterministic_errors": [],
+  "primary_validator": {
+    "model": "anthropic/claude-sonnet-5",
+    "result": {
+      "blocking_findings": [],
+      "planner_ready": true,
+      "summary": "Plan uses only approved entities, plausible physics, stays in courtyard, appropriate for age 4/500 words, no moral or new objects, closure achieved."
+    }
+  },
+  "secondary_validator": {
+    "model": "openai/gpt-5.6-sol",
+    "result": {
+      "blocking_findings": [],
+      "planner_ready": true,
+      "summary": "The plan is canon-consistent, physically plausible, age-appropriate, bounded for the target length, and provides clear problem resolution using only available objects."
+    }
+  },
+  "planner_ready": true,
+  "cost_usd": {
+    "planner": 0.00578954,
+    "primary_validator": 0.005812,
+    "secondary_validator": 0.005081,
+    "total": 0.01668254
+  },
+  "usage": {
+    "planner": {
+      "input_tokens": 983,
+      "output_tokens": 4009,
+      "total_tokens": 4992
+    },
+    "primary_validator": {
+      "input_tokens": 2506,
+      "output_tokens": 80,
+      "total_tokens": 2586
+    },
+    "secondary_validator": {
+      "input_tokens": 1601,
+      "output_tokens": 108,
+      "total_tokens": 1709
+    }
+  },
+  "parse_failures": {
+    "planner": [],
+    "primary_validator": [],
+    "secondary_validator": []
+  },
+  "elapsed_seconds": 76.002
+}
