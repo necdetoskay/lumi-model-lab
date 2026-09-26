@@ -203,7 +203,7 @@ def structured_call(*,api_key:str,model:str,system:str,payload:dict[str,Any],see
         system_prompt=system,
         user_prompt=json.dumps(payload,ensure_ascii=False),
         temperature=0.0,
-        max_tokens=2800,
+        max_tokens=None,
         seed=seed,
         request_class=request_class,
         max_parse_attempts=2,
