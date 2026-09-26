@@ -15,10 +15,11 @@ Sen Türkçe yazan, deneyimli bir çocuk kitabı yazarısın.
 Tam 4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak doğal, sıcak ve eğlenceli bir hikâye yaz.
 
 HİKÂYE:
-Deniz adında 4 yaşındaki bir çocuk en sevdiği küçük mavi oyuncak arabasını evde bulamıyor.
-Deniz annesiyle arıyor. Aramayı asıl Deniz'in somut gözlemleri, küçük denemeleri ve çocukça fikirleri ilerletsin.
-Anne cevabı bilen dedektif veya öğretmen gibi davranmasın; Deniz'in oyununa doğal biçimde eşlik etsin.
-Araba sonunda fiziksel olarak mantıklı bir yerde bulunsun.
+Deniz adında 4 yaşındaki bir çocuk yağmurlu bir öğleden sonra salonda karton kutudan bir otobüs yapıyor.
+Oyuncak ayısını ve birkaç oyuncağını otobüse bindiriyor. Otobüsün kartondan yaptığı bir tekeri sürekli yerinden çıkıyor.
+Deniz bunu kendi çocukça fikirleriyle oyunun içinde çözmeye çalışsın; süreç bir yetişkinin problem çözme dersi gibi görünmesin.
+Annesi yanında olsun, oyuna katılsın ve gerektiğinde yardım etsin; ama cevabı bilen öğretmen gibi yönlendirmesin.
+Hikâye sonunda otobüs kısa bir "sefer" yapabilsin ve kapanış Deniz'e özgü somut, komik bir anla bitsin.
 
 SERT KISITLAR:
 1. Şu yetişkin/edebî kalıpları kullanma:
@@ -26,8 +27,13 @@ SERT KISITLAR:
    "sonuç olarak", "içinden geçirdi", "derin bir nefes aldı", "gözleri parladı".
    "aslında", "adeta" kullanma. "sanki" en fazla 1 kez.
 
-2. Aynı karşılaştırma kalıbını tekrarlama.
-   Özellikle "eskisi gibi/kadar ... değildi" ve "artık ... değildi" kalıpları toplamda en fazla 1 kez geçsin.
+2. ŞABLON TEKRARI KONTROLÜ:
+   Aynı anlatı işlevini gören cümle veya paragraf iskeletini mekanik biçimde tekrar etme.
+   Özellikle her yeni "durak" veya denemeyi sürekli aynı [eylem/listesi + sonuç/olumsuzlama] yapısıyla kurma.
+   Aynı iskelet iki kez kullanılabilir; sonraki benzer anlarda anlatımı doğal biçimde çeşitlendir:
+   doğrudan eylem, diyalog, ses, kısa gözlem veya küçük sürpriz kullan.
+   Ancak çocuğun oyunu, ritim, tekrar eden espri veya bilinçli motif amacı taşıyan tekrarları sırf tekrar diye bozma.
+   Ayrıca "eskisi gibi/kadar ... değildi" ve "artık ... değildi" türü karşılaştırma kalıplarını toplamda en fazla 1 kez kullan.
 
 3. Anne Deniz'in hayal gücünü gerçeklik dersi vererek düzeltmesin.
    "Hayır, öyle olmaz", "... ağzı olmaz ki", "arabalar kendi kendine gitmez" gibi mantık düzeltmeleri kurma.
@@ -67,7 +73,7 @@ Amaç tam yeniden yazım DEĞİL; yalnız gerçek kusurları en küçük anlaml�
 
 Kontrol et:
 1. yetişkin/resmî/edebî register,
-2. tekrarlanan cümle kalıpları,
+2. mekanik anlatı iskeleti tekrarı: aynı anlatı işlevini gören [eylem/listesi + sonuç/olumsuzlama] kalıbı veya benzer sözdizimi gereksiz biçimde yineleniyor mu? Bilinçli ritim, çocuk oyunu veya tekrar eden espri ise kusur sayma,
 3. ebeveynin çocuğun hayalini düzeltmesi veya öğretmen/sınav tonu,
 4. savunmacı iç-tutarlılık açıklamaları,
 5. bir cümlede aşırı eylem yığılması / sesli okuma sorunu,
@@ -194,7 +200,7 @@ def main():
     edit,edit_meta=structured_call(
         api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
         payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"deterministic_scan":scan_before,"story":draft},
-        seed=202609901,max_tokens=None,request_class="editorial_audit",
+        seed=202609961,max_tokens=None,request_class="editorial_audit",
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     scan_after=deterministic_scan(final_story)
@@ -202,7 +208,7 @@ def main():
     final_audit,final_meta=structured_call(
         api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
         payload={"exact_age":4,"hard_range":[375,625],"story":final_story},
-        seed=202609902,max_tokens=None,request_class="editorial_audit",
+        seed=202609962,max_tokens=None,request_class="editorial_audit",
     )
 
     counts=final_audit.get("counts") or {}
@@ -214,7 +220,7 @@ def main():
     )
 
     result={
-      "experiment":"refined-recipe-best-flow-v1",
+      "experiment":"refined-recipe-best-flow-v2-template-repetition",
       "models":{"writer":WRITER_MODEL,"editor":EDITOR_MODEL,"final_acceptance":FINAL_JUDGE_MODEL},
       "provider_token_cap":None,
       "draft":draft,
