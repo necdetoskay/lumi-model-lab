@@ -1,0 +1,216 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+  "status": "PASS",
+  "mode": "SELECTED_CASES",
+  "requested_proof_ids": [
+    "N2_STATE"
+  ],
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "same_defect_recheck": "anthropic/claude-haiku-4.5",
+    "full_regression": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 1,
+    "passes": 1,
+    "failures": 0,
+    "selected_cases_all_pass": true,
+    "full_five_story_gate_pass": false
+  },
+  "total_cost_usd": 0.030827,
+  "elapsed_seconds": 26.449,
+  "results": [
+    {
+      "proof_id": "N2_STATE",
+      "kind": "defect",
+      "source_id": "src_fantastical_guard_02",
+      "story_family": "everyday_fantastical_discovery",
+      "pass": true,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": [
+              "S029",
+              "S037"
+            ],
+            "reason": "S029 states Deniz already put the book back on the shelf, but S037 later says she did not put her book anywhere, directly contradicting the earlier established state."
+          }
+        ],
+        "meta": {
+          "strategy": "blind_primary_then_zero_confirmation",
+          "selected_round": "blind_primary",
+          "rounds": [
+            {
+              "round": "blind_primary",
+              "findings": [
+                {
+                  "family": "state_continuity",
+                  "severity": "serious",
+                  "repair_scope": "LOCAL_REPAIR",
+                  "span_ids": [
+                    "S029",
+                    "S037"
+                  ],
+                  "reason": "S029 states Deniz already put the book back on the shelf, but S037 later says she did not put her book anywhere, directly contradicting the earlier established state."
+                }
+              ],
+              "meta": {
+                "cost": {
+                  "usd": 0.015176,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2773,
+                  "output_tokens": 963,
+                  "total_tokens": 3736
+                },
+                "parse_failures": []
+              }
+            }
+          ],
+          "cost": {
+            "usd": 0.015176
+          }
+        }
+      },
+      "gold_scoring": {
+        "expected_family": "state_continuity",
+        "expected_repair_scope": "LOCAL_REPAIR",
+        "expected_span_ids": [
+          "S029",
+          "S037"
+        ],
+        "expected_family_and_span_overlap": true,
+        "repair_scope_match": true
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "max_attempts": 2,
+        "attempts": [
+          {
+            "attempt": 1,
+            "repair_note": "Removed the contradictory claim about the book's location since it was already placed on the shelf in S029.",
+            "replacements": [
+              {
+                "id": "S037",
+                "old": "Elini bir daha uzatmadı, kitabını da bir yere koymadı.",
+                "new": "Elini bir daha uzatmadı, öylece oturdu."
+              }
+            ],
+            "mechanical": {
+              "detector_target_ids": [
+                "S029",
+                "S037"
+              ],
+              "changed_ids": [
+                "S037"
+              ],
+              "changed_ids_subset_of_detector_span": true,
+              "non_target_sentences_present_exactly": true,
+              "changed_sentence_count": 1,
+              "outside_detector_span_changed": false
+            },
+            "repair_meta": {
+              "cost": {
+                "usd": 0.00588,
+                "try_amount": null,
+                "usd_try_rate": null
+              },
+              "usage": {
+                "input_tokens": 2505,
+                "output_tokens": 87,
+                "total_tokens": 2592
+              },
+              "parse_failures": []
+            },
+            "same_defect_recheck": {
+              "resolved": true,
+              "remaining_span_ids": [],
+              "reason": "The original defect has been eliminated. S029 now clearly establishes that Deniz put the book on the shelf ('Kitabı kaldırdı, rafa doğru yürüdü ve yerine koydu'). S037 no longer contradicts this—it now describes Deniz's passive observation behavior ('Elini bir daha uzatmadı, öylece oturdu') rather than making any claim about the book's location. The state continuity is preserved: book is on shelf (S029) and remains there through story end.",
+              "meta": {
+                "cost": {
+                  "usd": 0.002469,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 1669,
+                  "output_tokens": 160,
+                  "total_tokens": 1829
+                },
+                "parse_failures": []
+              }
+            }
+          }
+        ],
+        "attempts_used": 1,
+        "final_replacements": [
+          {
+            "id": "S037",
+            "old": "Elini bir daha uzatmadı, kitabını da bir yere koymadı.",
+            "new": "Elini bir daha uzatmadı, öylece oturdu."
+          }
+        ],
+        "mechanical": {
+          "detector_target_ids": [
+            "S029",
+            "S037"
+          ],
+          "changed_ids": [
+            "S037"
+          ],
+          "changed_ids_subset_of_detector_span": true,
+          "non_target_sentences_present_exactly": true,
+          "changed_sentence_count": 1,
+          "outside_detector_span_changed": false
+        },
+        "repaired_story": "# Deniz'in Duvarındaki Yıldızlar\n\nDeniz öğleden sonra yerde otururken kitabı önünde açık duruyordu. Başını kaldırdığında duvarında küçük yıldızlara benzeyen ışık parçaları gördü. Bir iki değil, tam beş altı tanesi vardı, hepsi pırıl pırıldı.\n\n\"Vay,\" dedi Deniz kendi kendine. Elini uzattı, bir ışık parçasına dokundu. Parmaklarının üstünde küçük bir ışık lekesi belirdi, sonra elini çekince yine duvara döndü.\n\nDeniz merakla etrafına bakındı. Işıklar nereden geliyordu ki? Duvardan pencereye çevirdi bakışını. Pencerenin önünde delikli oyuncak sepeti duruyordu, güneş de tam sepetin kenarından süzülüyordu.\n\n\"Hmmm,\" dedi Deniz. Sepeti taşımaya kalkışmadı. Onun yerine elini kaldırdı, güneş ile deliklerin arasına usulca soktu.\n\nDuvardaki yıldızlar birden yok oldu.\n\nDeniz gözlerini kocaman açtı. Elini çekti geri. Işık yeniden deliklerden süzüldü ve yıldızlar aynı yerde, aynı şekilde belirdi.\n\n\"Yine geldiniz!\" dedi Deniz gülerek. Elini bir daha uzattı, ışığı kesti. Yıldızlar kayboldu. Elini indirdi, yıldızlar geri geldi. Bunu üç dört kere tekrarladı, her seferinde küçük bir kahkaha attı.\n\nSonra yerdeki kitabını almak için eğildi. Tam o sırada omzu ışığın önüne geldi ve duvardaki yıldızlar bir kez daha söndü.\n\nDeniz kitabı elinde tutarak durdu, duvara baktı. Boş duruyordu duvar şimdi.\n\n\"Sen de mi kayboldun?\" dedi kitaba bakarak.\n\nKitabı kaldırdı, rafa doğru yürüdü ve yerine koydu. Sonra geri döndü, sepetin önünden çekildi, güneşin yolunu hiç engellemedi.\n\nGüneş yeniden deliklerden geçti. Duvarda küçük yıldız şekilleri bir bir belirdi, hepsi eski yerlerindeydi.\n\nDeniz oturdu, dizlerini kucakladı ve duvara baktı. Güneş pencereden içeri girmeye devam ettikçe, sepetin delikleri açık kaldıkça, yıldızlar orada duruyordu.\n\n\"Siz orada kalın,\" dedi Deniz yıldızlara, \"ben de burada kalacağım.\"\n\nVe öyle de yaptı. Elini bir daha uzatmadı, öylece oturdu. Sadece oturdu, gülümsedi ve duvardaki küçük ışıklı yıldızları izledi."
+      },
+      "same_defect_recheck": {
+        "model": "anthropic/claude-haiku-4.5",
+        "family": "state_continuity",
+        "resolved": true,
+        "remaining_span_ids": [],
+        "reason": "The original defect has been eliminated. S029 now clearly establishes that Deniz put the book on the shelf ('Kitabı kaldırdı, rafa doğru yürüdü ve yerine koydu'). S037 no longer contradicts this—it now describes Deniz's passive observation behavior ('Elini bir daha uzatmadı, öylece oturdu') rather than making any claim about the book's location. The state continuity is preserved: book is on shelf (S029) and remains there through story end.",
+        "meta": {
+          "cost": {
+            "usd": 0.002469,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1669,
+            "output_tokens": 160,
+            "total_tokens": 1829
+          },
+          "parse_failures": []
+        },
+        "pass": true
+      },
+      "full_regression": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.007302,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2152,
+            "output_tokens": 1030,
+            "total_tokens": 3182
+          },
+          "parse_failures": []
+        },
+        "pass": true
+      }
+    }
+  ]
+}
