@@ -1,0 +1,61 @@
+name: Story v5 Narrative Load Planner Probe
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - .github/workflows/story-v5-narrative-load-planner.yml
+      - experiments/prototypes/story_v5_narrative_load_planner_20260926.py
+      - experiments/triggers/story-v5-narrative-load-planner.txt
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: self-hosted
+    timeout-minutes: 35
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile probe
+        run: python -m py_compile experiments/prototypes/story_v5_narrative_load_planner_20260926.py
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json
+      - name: Run narrative-load planner probe
+        run: PYTHONPATH=. python experiments/prototypes/story_v5_narrative_load_planner_20260926.py
+      - name: Archive evidence
+        if: always()
+        shell: bash
+        run: |
+          test -s runs/story-v5-narrative-load-planner/result.json
+          DEST="experiments/results/story-v5-narrative-load-planner/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story-v5-narrative-load-planner/* "$DEST/"
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "protocol": "story-v5-narrative-load-planner-probe-v1",
+            "planner": "openai/gpt-5.6-sol",
+            "writer": "anthropic/claude-sonnet-5",
+            "judge": "openai/gpt-5.6-sol",
+            "target_words": 500
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "4189822+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): narrative load planner ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-narrative-load-planner-${GITHUB_RUN_ID}"
