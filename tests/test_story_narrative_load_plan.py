@@ -157,6 +157,12 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(writer["may_not_infer_sensory_failure_from_busy_hands"])
         self.assertTrue(support["must_preserve_response_causality"])
 
+    def test_writer_closure_is_terminal(self):
+        writer = self.profile["writer_contract"]
+        self.assertTrue(writer["closure_is_terminal"])
+        self.assertTrue(writer["may_not_add_new_action_after_closure"])
+        self.assertTrue(writer["may_not_force_post_closure_prop_convergence"])
+
 
 if __name__ == "__main__":
     unittest.main()
