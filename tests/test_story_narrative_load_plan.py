@@ -167,6 +167,20 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(writer["may_not_add_new_action_after_closure"])
         self.assertTrue(writer["may_not_force_post_closure_prop_convergence"])
 
+    def test_terminal_closure_guard_qualification_is_recorded(self):
+        evidence = self.profile["promotion_evidence"]["terminal_closure_guard"]
+        self.assertEqual(evidence["run"], 36228845559)
+        self.assertEqual(evidence["fixture"], "watering_can_busy")
+        self.assertEqual(evidence["consensus"]["guarded_candidate_wins"], 1)
+        self.assertEqual(evidence["consensus"]["baseline_wins"], 0)
+        self.assertTrue(evidence["consensus"]["order_swapped"])
+        self.assertEqual(evidence["serious_defects_guarded_candidate"], 0)
+        self.assertTrue(
+            self.profile["promotion_evidence"]["known_risk"][
+                "terminal_closure_tail_risk_validation_completed"
+            ]
+        )
+
     def test_physical_affordance_and_terminal_append_guards(self):
         spine = self.profile["spine"]
         writer = self.profile["writer_contract"]
