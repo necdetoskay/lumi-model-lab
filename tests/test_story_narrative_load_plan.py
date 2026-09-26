@@ -183,12 +183,30 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
             ]
         )
 
-    def test_current_promotion_gate_holds_for_emotional_multi_seed(self):
+    def test_current_promotion_gate_awaits_explicit_decision_after_multiseed_noninferiority(self):
         result = evaluate_narrative_load_promotion_gate(self.profile)
         self.assertTrue(result["evidence_pass"])
-        self.assertEqual(result["state"], "HOLD_MULTI_SEED_REGRESSION")
-        self.assertEqual(result["unresolved_families"], ["emotional_development"])
+        self.assertEqual(result["state"], "AWAIT_EXPLICIT_PROMOTION_DECISION")
+        self.assertEqual(result["unresolved_families"], [])
+        self.assertTrue(result["requires_explicit_promotion_decision"])
         self.assertFalse(result["production_gate_pass"])
+
+    def test_emotional_multiseed_noninferiority_is_recorded(self):
+        integration = self.profile["promotion_evidence"]["architect_integration"]
+        evidence = integration["emotional_multiseed"]
+        self.assertEqual(evidence["first_run"], 36228645350)
+        self.assertEqual(evidence["second_run"], 36229244503)
+        self.assertEqual(evidence["independent_candidate_seeds"], 2)
+        self.assertEqual(evidence["consensus"]["frozen_baseline_wins"], 0)
+        self.assertEqual(evidence["candidate_serious_defects_total"], 0)
+        self.assertEqual(
+            evidence["resolution"],
+            "noninferior_position_sensitive_multiseed",
+        )
+        self.assertEqual(
+            integration["latest_family_resolution"]["emotional_development"],
+            "noninferior_position_sensitive_multiseed",
+        )
 
     def test_promotion_gate_requires_explicit_decision_after_all_families_resolve(self):
         profile = json.loads(json.dumps(self.profile))
