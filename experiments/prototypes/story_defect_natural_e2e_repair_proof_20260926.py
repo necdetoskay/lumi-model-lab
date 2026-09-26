@@ -85,7 +85,9 @@ Hard rules:
 - Preserve names, events, object state, causal rules, tone, age fit, and ending except where the confirmed defect itself requires a local correction.
 - Add no subplot, canon, object, character, explanation, moral, or extra payoff.
 - Do not improve style outside the defect.
-- For response_causality, preserve perception: occupied hands or task load may delay a hand-dependent action, but must not cause failure to hear or answer.
+- For response_causality, NEVER write that occupied hands, holding an object, gripping something, or task load makes a character unable to hear, speak, answer, look, or turn the head.
+- If silence must remain because downstream misunderstanding is outside the authorized span, explain only momentary attention/focus or leave the silence unexplained; do not invent a physical inability.
+- Do not add an explicit acknowledgement if read-only downstream text says another character still believes they were not heard.
 - A replacement may be an empty string only when deleting the target sentence is clearly the smallest safe repair.
 - Do not return replacements for unchanged target sentences.
 
@@ -98,6 +100,26 @@ Return JSON only:
     }
   ],
   "repair_note": "one short sentence"
+}
+""".strip()
+
+
+SAME_DEFECT_RECHECK_SYSTEM = r"""
+You verify whether ONE previously confirmed serious semantic defect remains after a bounded repair.
+
+You receive:
+- the original confirmed finding (family, reason, original span IDs);
+- the full repaired story with fresh sentence IDs.
+
+Judge only that SAME defect family and causal problem. Do not search for unrelated defects here.
+A repair is NOT resolved if it merely restates the same bad causal rule in different words.
+For response_causality specifically, occupied hands, holding/gripping, or task load must not be used as the reason a character cannot hear, speak, answer, look, or turn the head.
+
+Return JSON only:
+{
+  "resolved": true,
+  "remaining_span_ids": [],
+  "reason": "brief evidence-based explanation"
 }
 """.strip()
 
@@ -189,6 +211,48 @@ def call_detector(
     if unexpected:
         raise RuntimeError(f"detector_returned_unrequested_family:{unexpected}")
     return findings, meta
+
+
+def call_same_defect_recheck(
+    *,
+    api_key: str,
+    story_id: str,
+    story_family: str,
+    repaired_story: str,
+    original_finding: dict[str, Any],
+    seed: int,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    segments = segment_story(repaired_story)
+    payload, meta = structured_call(
+        api_key=api_key,
+        model=VERIFY_MODEL,
+        system=SAME_DEFECT_RECHECK_SYSTEM,
+        payload={
+            "story_id": story_id,
+            "story_family": story_family,
+            "exact_age": 4,
+            "original_confirmed_finding": original_finding,
+            "repaired_story_segments": segments,
+        },
+        seed=seed,
+        max_tokens=1200,
+        request_class="judge",
+    )
+    resolved = payload.get("resolved")
+    if not isinstance(resolved, bool):
+        raise RuntimeError("same_defect_recheck_resolved_missing")
+    remaining = payload.get("remaining_span_ids") or []
+    if not isinstance(remaining, list):
+        raise RuntimeError("same_defect_recheck_spans_invalid")
+    valid_ids = {row["id"] for row in segments}
+    remaining = [str(value) for value in remaining]
+    if not set(remaining).issubset(valid_ids):
+        raise RuntimeError(f"same_defect_recheck_span_invalid:{remaining}")
+    return {
+        "resolved": resolved,
+        "remaining_span_ids": remaining,
+        "reason": str(payload.get("reason") or "").strip(),
+    }, meta
 
 
 def expected_match(findings: list[dict[str, Any]], spec: dict[str, Any]) -> dict[str, Any] | None:
@@ -427,25 +491,23 @@ def main() -> None:
                 "repaired_story": repaired_story,
             }
 
-            same_defect_findings, same_defect_meta = call_detector(
+            same_defect_result, same_defect_meta = call_same_defect_recheck(
                 api_key=api_key,
-                model=VERIFY_MODEL,
                 story_id=f"{proof_id}_same_defect_recheck",
                 story_family=source["family"],
-                story_text=repaired_story,
+                repaired_story=repaired_story,
+                original_finding=matched,
                 seed=2026160000 + index,
-                request_class="judge",
-                audit_families=[spec["expected_family"]],
             )
             total_cost += meta_cost(same_defect_meta)
             row["same_defect_recheck"] = {
                 "model": VERIFY_MODEL,
                 "family": spec["expected_family"],
-                "findings": same_defect_findings,
+                **same_defect_result,
                 "meta": same_defect_meta,
-                "pass": len(same_defect_findings) == 0,
+                "pass": bool(same_defect_result["resolved"]),
             }
-            if same_defect_findings:
+            if not same_defect_result["resolved"]:
                 row["failure_stage"] = "SAME_DEFECT_RECHECK"
                 results.append(row)
                 write_progress(results, total_cost, "IN_PROGRESS")
@@ -471,7 +533,7 @@ def main() -> None:
             row["pass"] = (
                 mechanical["changed_ids_subset_of_detector_span"]
                 and mechanical["non_target_sentences_present_exactly"]
-                and not same_defect_findings
+                and row["same_defect_recheck"]["pass"]
                 and not regression_findings
             )
             if not row["pass"]:
