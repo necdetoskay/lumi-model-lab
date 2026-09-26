@@ -1,0 +1,268 @@
+{
+  "schema_version": "story-context-selection-proof.v1",
+  "profile": "LSF-A4-W500-context-selector-v0.1",
+  "active_world_id": "world-home-01",
+  "always_required": [
+    {
+      "id": "character.identity",
+      "text": "Active character is Deniz.",
+      "kind": "canon"
+    },
+    {
+      "id": "character.exact_age",
+      "text": "Deniz is exactly 4 years old.",
+      "kind": "canon"
+    },
+    {
+      "id": "world.active",
+      "text": "Active world is world-home-01.",
+      "kind": "canon"
+    },
+    {
+      "id": "state.current_location",
+      "text": "Deniz is currently in COMMONS_COURTYARD.",
+      "kind": "state"
+    },
+    {
+      "id": "state.story_revision",
+      "text": "CharacterStoryState revision is 12.",
+      "kind": "state"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "inventory.toy_truck",
+      "text": "Deniz currently has a small yellow toy truck.",
+      "kind": "state"
+    },
+    {
+      "id": "inventory.blue_chalk",
+      "text": "Deniz currently has one blue sidewalk chalk piece.",
+      "kind": "state"
+    },
+    {
+      "id": "inventory.yellow_chalk",
+      "text": "Deniz currently has one yellow sidewalk chalk piece.",
+      "kind": "state"
+    },
+    {
+      "id": "inventory.umbrella",
+      "text": "Deniz currently has a small closed umbrella.",
+      "kind": "state"
+    },
+    {
+      "id": "inventory.blue_hat",
+      "text": "Deniz currently has a blue sun hat.",
+      "kind": "state"
+    },
+    {
+      "id": "relationship.ada",
+      "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+      "kind": "state"
+    },
+    {
+      "id": "relationship.ada_recent",
+      "text": "Deniz and Ada last played together without conflict.",
+      "kind": "state"
+    },
+    {
+      "id": "relationship.emre",
+      "text": "Emre is an acquaintance but is not currently in the courtyard.",
+      "kind": "state"
+    },
+    {
+      "id": "saga.explorer",
+      "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+      "kind": "canon"
+    },
+    {
+      "id": "saga.kindness_closed",
+      "text": "A previous kindness thread is closed and has no open objective.",
+      "kind": "state"
+    },
+    {
+      "id": "knowledge.garden_gate",
+      "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+      "kind": "state"
+    },
+    {
+      "id": "knowledge.home",
+      "text": "HOME is EXPLORED by Deniz.",
+      "kind": "state"
+    },
+    {
+      "id": "knowledge.courtyard",
+      "text": "COMMONS_COURTYARD is DISCOVERED by Deniz.",
+      "kind": "state"
+    },
+    {
+      "id": "world.physics_normal",
+      "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+      "kind": "canon"
+    },
+    {
+      "id": "world.weather_dry",
+      "text": "The courtyard is dry this afternoon.",
+      "kind": "state"
+    },
+    {
+      "id": "location.low_platform",
+      "text": "A low wooden platform with a vertical step is present in the courtyard.",
+      "kind": "state"
+    },
+    {
+      "id": "location.cardboard",
+      "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall.",
+      "kind": "state"
+    },
+    {
+      "id": "location.wood_block",
+      "text": "One small movable wooden block is present near the platform.",
+      "kind": "state"
+    },
+    {
+      "id": "location.chalk_box",
+      "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+      "kind": "state"
+    },
+    {
+      "id": "location.metal_bucket",
+      "text": "An empty metal bucket is present near the courtyard wall.",
+      "kind": "state"
+    },
+    {
+      "id": "recent.no_story_today",
+      "text": "No story has occurred yet today.",
+      "kind": "state"
+    },
+    {
+      "id": "recent.truck_intact",
+      "text": "The toy truck is intact and rolls normally.",
+      "kind": "state"
+    },
+    {
+      "id": "recent.gate_not_opened",
+      "text": "Deniz has not opened or crossed GARDEN_GATE.",
+      "kind": "state"
+    }
+  ],
+  "forbidden": [
+    {
+      "id": "foreign_world.moon_station",
+      "text": "In world-moon-02 there is a lunar station with low gravity.",
+      "reason": "different world"
+    },
+    {
+      "id": "private.ada_secret",
+      "text": "Ada has a private family secret not known to Deniz.",
+      "reason": "not character knowledge / privacy boundary"
+    },
+    {
+      "id": "internal.account_id",
+      "text": "Account internal id is acct-7841.",
+      "reason": "internal metadata"
+    },
+    {
+      "id": "internal.audit_log",
+      "text": "Last audit job id was 99182.",
+      "reason": "internal operational metadata"
+    }
+  ],
+  "intents": [
+    {
+      "id": "intent.problem_solving_truck",
+      "story_intent": {
+        "family": "problem_solving_small_adventure",
+        "opportunity": "Deniz wants to get his toy truck onto a low platform in the courtyard.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "inventory.toy_truck",
+          "location.low_platform",
+          "world.physics_normal",
+          "recent.truck_intact"
+        ],
+        "useful_select_any": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "saga.kindness_closed",
+          "knowledge.garden_gate",
+          "inventory.blue_hat",
+          "location.chalk_box"
+        ],
+        "guard_expected": [
+          "world.physics_normal"
+        ]
+      }
+    },
+    {
+      "id": "intent.friendship_chalk",
+      "story_intent": {
+        "family": "friendship_emotional_social",
+        "opportunity": "Deniz and Ada are drawing separate roads in the courtyard and both notice the last short red chalk piece.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "relationship.ada",
+          "location.chalk_box",
+          "world.physics_normal"
+        ],
+        "useful_select_any": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "knowledge.garden_gate",
+          "location.cardboard",
+          "location.wood_block",
+          "inventory.umbrella"
+        ],
+        "guard_expected": [
+          "world.physics_normal"
+        ]
+      }
+    },
+    {
+      "id": "intent.garden_gate_mystery",
+      "story_intent": {
+        "family": "exploration_mystery",
+        "opportunity": "A faint repeating sound seems to come from near GARDEN_GATE, and Deniz is curious about its source without crossing into unknown space.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "saga.explorer",
+          "world.physics_normal"
+        ],
+        "useful_select_any": [
+          "knowledge.courtyard"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "location.cardboard",
+          "location.wood_block",
+          "location.chalk_box",
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk"
+        ],
+        "guard_expected": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "world.physics_normal"
+        ]
+      }
+    }
+  ]
+}
