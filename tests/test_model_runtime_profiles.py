@@ -191,6 +191,21 @@ class ModelRuntimeProfileTests(unittest.TestCase):
             {"enabled": True, "effort": "low", "exclude": True},
         )
 
+    def test_sonnet_budget_safe_medium_story_preserves_explicit_ceiling(self) -> None:
+        payload = normalize_openrouter_request(
+            "anthropic/claude-sonnet-5",
+            {"temperature": 0.72, "max_tokens": 24000, "seed": 99},
+            request_class="teacher_story_medium_reasoning_budget_safe",
+        )
+        self.assertNotIn("temperature", payload)
+        self.assertEqual(payload["max_tokens"], 24000)
+        self.assertNotIn("seed", payload)
+        self.assertEqual(
+            payload["reasoning"],
+            {"effort": "medium", "exclude": True},
+        )
+        self.assertNotIn("stream", payload)
+
     def test_qwen38_flash_uses_verified_teacher_story_contract(self) -> None:
         profile = require_qualification_runtime_profile("qwen/qwen3.8-flash")
         payload = normalize_openrouter_request(
