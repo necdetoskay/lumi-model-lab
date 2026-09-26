@@ -16,9 +16,11 @@ STORY_SPINE=[
   "Yağmurdan sonra Deniz bahçedeki yeni su birikintisini fark eder.",
   "Küçük oyuncak teknenin yaprakların arasında sıkıştığını görür.",
   "Tekneyi hareket ettirmeyi dener; kısa süre ilerler ama yeniden takılır.",
-  "Deniz tekne için suyun devam edebileceği küçük bir yol açmayı düşünür ve çevresindeki basit malzemelerle dener.",
-  "İlk denemesi istediği gibi çalışmaz; Deniz başka bir yol arar.",
-  "Yeni denemesinde su küçük bir yol boyunca ilerler ve tekne yeniden yüzmeye başlar. Anne yalnızca yanında yardım eder; çözümü Deniz bulur.",
+  "Deniz suyun devam edebileceği yöne bakar ve biraz ileride kuru kalan küçük bir çukur fark eder.",
+  "Tekne için bu noktaya uzanan küçük bir su yolu açmayı düşünür ve çevresindeki basit malzemelerle ilk denemesini yapar.",
+  "İlk denemesi istediği gibi çalışmaz; su çok az ilerler ve yol yarıda kalır.",
+  "Başarısız denemenin bıraktığı küçük su izi Deniz'e yolun yönünü değiştirme fikri verir.",
+  "Yeni denemesinde su küçük bir yol boyunca ilerler ve tekne yeniden yüzmeye başlar. Anne yalnızca yanında fiziksel olarak yardım eder; çözümü Deniz bulur.",
   "Deniz yolun sonundaki belirli bir yaprağı veya taşı liman yapar; teknenin oraya varmasıyla oyun devam eder."
 ]
 
@@ -204,7 +206,7 @@ def main():
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610011,max_tokens=None,request_class="editorial_audit"
+      seed=202610021,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -212,7 +214,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610012,max_tokens=None,request_class="editorial_audit"
+      seed=202610022,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -223,7 +225,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v1",
+      "experiment":"story-spine-refined-recipe-v2-length-aware-9-beat",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
