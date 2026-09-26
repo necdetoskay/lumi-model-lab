@@ -18,15 +18,17 @@ from experiments.prototypes.story_defect_natural_e2e_repair_proof_20260926 impor
 from src.story_defect_detection import segment_story
 
 OUT = Path("runs/story-defect-natural-v11-replacement-hunt/result.json")
-TARGET_WORDS = 500
+TARGET_WORDS = 700
 MIN_WORDS = 375
 MAX_WORDS = 625
-MAX_STORIES = 6
+MAX_STORIES = 12
 REQUIRED_ADMITTED = 2
 FAMILIES = [
     "emotional_development",
     "everyday_fantastical_discovery",
     "friendship_social_problem",
+    "nature_environment",
+    "exploration_mystery",
 ]
 SEED_BASE = 2026190000
 
