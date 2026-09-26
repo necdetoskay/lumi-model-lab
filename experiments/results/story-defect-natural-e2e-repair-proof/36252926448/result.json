@@ -1,0 +1,117 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+  "status": "PASS",
+  "mode": "SELECTED_CASES",
+  "requested_proof_ids": [
+    "N5_CLEAN"
+  ],
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "same_defect_recheck": "anthropic/claude-haiku-4.5",
+    "full_regression": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 1,
+    "passes": 1,
+    "failures": 0,
+    "selected_cases_all_pass": true,
+    "full_five_story_gate_pass": false
+  },
+  "total_cost_usd": 0.035687,
+  "elapsed_seconds": 43.402,
+  "results": [
+    {
+      "proof_id": "N5_CLEAN",
+      "kind": "clean",
+      "source_id": "src_watering_guard_01",
+      "story_family": "emotional_development",
+      "pass": true,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "strategy": "blind_primary_then_zero_confirmation",
+          "selected_round": "confirmed_zero",
+          "rounds": [
+            {
+              "round": "blind_primary",
+              "findings": [],
+              "meta": {
+                "cost": {
+                  "usd": 0.0134,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2530,
+                  "output_tokens": 834,
+                  "total_tokens": 3364
+                },
+                "parse_failures": []
+              }
+            },
+            {
+              "round": "blind_family_by_family_zero_confirmation",
+              "findings": [],
+              "meta": {
+                "cost": {
+                  "usd": 0.012922,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2171,
+                  "output_tokens": 858,
+                  "total_tokens": 3029
+                },
+                "parse_failures": []
+              }
+            }
+          ],
+          "cost": {
+            "usd": 0.026322
+          }
+        }
+      },
+      "blind_adjudication": {
+        "model": "openai/gpt-5.6-luna",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.002356,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1399,
+            "output_tokens": 1672,
+            "total_tokens": 3071
+          },
+          "parse_failures": []
+        },
+        "qualification_effect": "DIAGNOSTIC_ONLY_DOES_NOT_CHANGE_PASS"
+      },
+      "repair": {
+        "skipped": true
+      },
+      "full_regression": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.007009,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1964,
+            "output_tokens": 1009,
+            "total_tokens": 2973
+          },
+          "parse_failures": []
+        }
+      }
+    }
+  ]
+}
