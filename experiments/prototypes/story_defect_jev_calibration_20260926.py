@@ -18,22 +18,12 @@ from src.story_defect_detection import (
 )
 from src.story_defect_synthetic_corpus import load_synthetic_corpus
 
-ADMISSION = Path(
-    "experiments/fixtures/story_defect_clean_source_admission.tr-age4.v1.json"
-)
-D1_MANIFEST = Path(
-    "experiments/fixtures/story_defect_d1_validation_manifest.tr-age4.v1.json"
-)
-RESPONSE_SUPPLEMENT = Path(
-    "experiments/fixtures/story_defect_response_supplement.tr-age4.v1.json"
-)
+ADMISSION = Path("experiments/fixtures/story_defect_clean_source_admission.tr-age4.v1.json")
+D1_MANIFEST = Path("experiments/fixtures/story_defect_d1_validation_manifest.tr-age4.v1.1.json")
 OUT = Path("runs/story-defect-jev-calibration/result.json")
 
-THRESHOLDS = [round(x / 100, 2) for x in range(1, 100)]
+THRESHOLDS = [round(value / 100, 2) for value in range(1, 100)]
 
-# Response-causality remains visible in raw JEV scores, but qualification treats it
-# as a diagnostic subtype of causal logic because independent validators repeatedly
-# recognized the semantic defect while disagreeing on the narrower family name.
 QUALIFICATION_GROUPS: dict[str, tuple[str, ...]] = {
     "physical_feasibility": ("physical_feasibility",),
     "causal_logic": ("causal_logic", "response_causality"),
@@ -45,17 +35,9 @@ QUALIFICATION_GROUPS: dict[str, tuple[str, ...]] = {
     "canon_integrity": ("canon_integrity",),
 }
 
-CRITICAL_FOCUS_GROUPS = {
-    "physical_feasibility",
-    "causal_logic",
-    "state_continuity",
-}
-
 
 def qualification_family(raw_family: str | None) -> str | None:
-    if raw_family == "response_causality":
-        return "causal_logic"
-    return raw_family
+    return "causal_logic" if raw_family == "response_causality" else raw_family
 
 
 def qualification_scores(raw_scores: dict[str, float]) -> dict[str, float]:
@@ -65,7 +47,16 @@ def qualification_scores(raw_scores: dict[str, float]) -> dict[str, float]:
     }
 
 
-def load_admitted_clean_ids() -> set[str]:
+def load_manifest() -> dict[str, Any]:
+    payload = json.loads(D1_MANIFEST.read_text(encoding="utf-8"))
+    if payload.get("status") != "FROZEN_FOR_D2":
+        raise RuntimeError("D1 v1.1 manifest must be FROZEN_FOR_D2")
+    if payload.get("schema_version") != "story-defect-d1-validation-manifest.v1.1":
+        raise RuntimeError("Unexpected D1 v1.1 manifest schema")
+    return payload
+
+
+def admitted_clean_ids() -> set[str]:
     payload = json.loads(ADMISSION.read_text(encoding="utf-8"))
     return {
         row["source_id"]
@@ -74,50 +65,29 @@ def load_admitted_clean_ids() -> set[str]:
     }
 
 
-def load_d1_manifest() -> dict[str, Any]:
-    payload = json.loads(D1_MANIFEST.read_text(encoding="utf-8"))
-    if payload.get("status") != "D1_COMPLETE_FROZEN":
-        raise RuntimeError(
-            f"d1_manifest_not_frozen:{payload.get('status')}"
-        )
-    if not payload.get("summary", {}).get("d1_gate_pass"):
-        raise RuntimeError("d1_manifest_gate_not_passed")
-    return payload
-
-
-def calibration_cases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    manifest = load_d1_manifest()
-    base = load_synthetic_corpus()
-    supplement = json.loads(RESPONSE_SUPPLEMENT.read_text(encoding="utf-8"))
-
-    base_by_id = {row["case_id"]: row for row in base["cases"]}
-    supplement_by_id = {row["case_id"]: row for row in supplement["cases"]}
+def calibration_cases() -> list[dict[str, Any]]:
+    manifest = load_manifest()
+    synthetic = load_synthetic_corpus()
+    synthetic_by_id = {case["case_id"]: case for case in synthetic["cases"]}
 
     rows: list[dict[str, Any]] = []
-    for gold in manifest["validated_cases"]:
-        if gold["dataset_split"] != "calibration":
+    source_split: dict[str, str] = {}
+
+    for gold in manifest["cases"]:
+        source_id = gold["source_id"]
+        split = gold["dataset_split"]
+        previous = source_split.get(source_id)
+        if previous is not None and previous != split:
+            raise RuntimeError(f"source_split_conflict:{source_id}:{previous}:{split}")
+        source_split[source_id] = split
+
+        if split != "calibration":
             continue
-
-        corpus = gold["corpus"]
-        if corpus == "story_defect_corpus.tr-age4.synthetic.v1":
-            case = base_by_id.get(gold["case_id"])
-        elif corpus == "story_defect_response_supplement.tr-age4.v1":
-            case = supplement_by_id.get(gold["case_id"])
-        else:
-            raise RuntimeError(
-                f"unknown_d1_corpus:{corpus}:{gold['case_id']}"
-            )
+        case = synthetic_by_id.get(gold["case_id"])
         if case is None:
-            raise RuntimeError(
-                f"validated_case_missing_from_fixture:{gold['case_id']}"
-            )
-
-        raw_family = str(gold["family"])
-        grouped_family = qualification_family(raw_family)
-        if grouped_family not in QUALIFICATION_GROUPS:
-            raise RuntimeError(
-                f"qualification_family_unknown:{gold['case_id']}:{grouped_family}"
-            )
+            raise RuntimeError(f"validated_case_missing_from_corpus:{gold['case_id']}")
+        if case["gold"]["family"] != gold["family"]:
+            raise RuntimeError(f"validated_family_drift:{gold['case_id']}")
 
         rows.append({
             "case_id": gold["case_id"],
@@ -125,16 +95,14 @@ def calibration_cases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "dataset_split": "calibration",
             "story_family": case["family"],
             "text": case["text"],
-            "gold_family": raw_family,
-            "gold_qualification_family": grouped_family,
+            "gold_family": gold["family"],
+            "gold_qualification_family": gold["qualification_family"],
             "gold_severity": gold["severity"],
-            "validation_basis": gold["validation_basis"],
-            "source_corpus": corpus,
         })
 
-    admitted = load_admitted_clean_ids()
+    clean_ids = admitted_clean_ids()
     for source in assign_source_splits(load_source_pool()):
-        if source["source_id"] not in admitted:
+        if source["source_id"] not in clean_ids:
             continue
         if source["dataset_split"] != "calibration":
             continue
@@ -147,29 +115,43 @@ def calibration_cases() -> tuple[list[dict[str, Any]], dict[str, Any]]:
             "gold_family": None,
             "gold_qualification_family": None,
             "gold_severity": None,
-            "validation_basis": "independently_admitted_clean_source",
-            "source_corpus": "story_defect_source_pool.tr-age4.v1",
         })
 
-    defect_count = sum(row["kind"] == "defect" for row in rows)
-    clean_count = sum(row["kind"] == "clean" for row in rows)
-    expected_defects = int(manifest["summary"]["calibration_validated"])
-    if defect_count != expected_defects:
-        raise RuntimeError(
-            f"calibration_defect_count_mismatch:{defect_count}:{expected_defects}"
-        )
-    if clean_count <= 0:
-        raise RuntimeError("calibration_clean_controls_missing")
+    return sorted(rows, key=lambda row: row["case_id"])
 
-    ids = [row["case_id"] for row in rows]
-    if len(ids) != len(set(ids)):
-        raise RuntimeError("calibration_case_id_duplicate")
 
-    return sorted(rows, key=lambda row: row["case_id"]), manifest
+def validate_calibration_partition(rows: list[dict[str, Any]]) -> dict[str, int]:
+    if len(rows) != 140:
+        raise RuntimeError(f"calibration_case_count_mismatch:{len(rows)}:140")
+
+    defect_rows = [row for row in rows if row["kind"] == "defect"]
+    clean_rows = [row for row in rows if row["kind"] == "clean"]
+    if len(defect_rows) != 130:
+        raise RuntimeError(f"calibration_defect_count_mismatch:{len(defect_rows)}:130")
+    if len(clean_rows) != 10:
+        raise RuntimeError(f"calibration_clean_count_mismatch:{len(clean_rows)}:10")
+
+    counts: dict[str, int] = defaultdict(int)
+    for row in defect_rows:
+        counts[str(row["gold_qualification_family"])] += 1
+
+    required_priority = {
+        "physical_feasibility": 20,
+        "causal_logic": 20,
+        "state_continuity": 20,
+    }
+    for family, minimum in required_priority.items():
+        if counts[family] < minimum:
+            raise RuntimeError(
+                f"priority_family_underpowered:{family}:{counts[family]}:{minimum}"
+            )
+
+    return dict(sorted(counts.items()))
 
 
 def threshold_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
     by_family: dict[str, Any] = {}
+
     for family in QUALIFICATION_GROUPS:
         positives = [
             row for row in rows
@@ -179,6 +161,7 @@ def threshold_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
             row for row in rows
             if row["gold_qualification_family"] != family
         ]
+
         curve = []
         for threshold in THRESHOLDS:
             tp = sum(
@@ -191,26 +174,25 @@ def threshold_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 for row in negatives
             )
             tn = len(negatives) - fp
-            recall = None if not positives else tp / len(positives)
-            precision = None if tp + fp == 0 else tp / (tp + fp)
-            fpr = None if not negatives else fp / len(negatives)
             curve.append({
                 "threshold": threshold,
                 "tp": tp,
                 "fn": fn,
                 "fp": fp,
                 "tn": tn,
-                "recall": recall,
-                "precision": precision,
-                "false_positive_rate": fpr,
+                "recall": None if not positives else tp / len(positives),
+                "precision": None if tp + fp == 0 else tp / (tp + fp),
+                "false_positive_rate": None if not negatives else fp / len(negatives),
             })
 
-        target_recall = 0.99 if family in {
-            "physical_feasibility",
-            "causal_logic",
-        } else 0.98
+        target_recall = (
+            0.99
+            if family in {"physical_feasibility", "causal_logic"}
+            else 0.98
+        )
         eligible = [
-            point for point in curve
+            point
+            for point in curve
             if point["recall"] is not None
             and point["recall"] >= target_recall
         ]
@@ -225,6 +207,7 @@ def threshold_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
             if eligible
             else None
         )
+
         by_family[family] = {
             "positive_cases": len(positives),
             "negative_cases": len(negatives),
@@ -240,41 +223,36 @@ def overall_metrics(
     rows: list[dict[str, Any]],
     family_thresholds: dict[str, float],
 ) -> dict[str, Any]:
-    defect_rows = [row for row in rows if row["kind"] == "defect"]
-    clean_rows = [row for row in rows if row["kind"] == "clean"]
+    defects = [row for row in rows if row["kind"] == "defect"]
+    clean = [row for row in rows if row["kind"] == "clean"]
+
     detected = 0
     by_family: dict[str, dict[str, int]] = defaultdict(
         lambda: {"total": 0, "detected": 0}
     )
 
-    for row in defect_rows:
+    for row in defects:
         family = row["gold_qualification_family"]
         by_family[family]["total"] += 1
         if row["qualification_scores"][family] >= family_thresholds[family]:
             detected += 1
             by_family[family]["detected"] += 1
 
-    clean_alarm = 0
-    for row in clean_rows:
-        if any(
+    clean_alarm = sum(
+        any(
             row["qualification_scores"][family] >= family_thresholds[family]
             for family in QUALIFICATION_GROUPS
-        ):
-            clean_alarm += 1
+        )
+        for row in clean
+    )
 
     return {
-        "defect_cases": len(defect_rows),
-        "clean_cases": len(clean_rows),
-        "defect_recall": (
-            None if not defect_rows else detected / len(defect_rows)
-        ),
-        "clean_story_alarm_rate": (
-            None if not clean_rows else clean_alarm / len(clean_rows)
-        ),
+        "defect_cases": len(defects),
+        "clean_cases": len(clean),
+        "defect_recall": None if not defects else detected / len(defects),
+        "clean_story_alarm_rate": None if not clean else clean_alarm / len(clean),
         "clean_story_no_alarm_rate": (
-            None
-            if not clean_rows
-            else (len(clean_rows) - clean_alarm) / len(clean_rows)
+            None if not clean else (len(clean) - clean_alarm) / len(clean)
         ),
         "by_family": {
             family: {
@@ -302,9 +280,10 @@ def usage_cost(body: dict[str, Any]) -> float:
 def main() -> None:
     load_dotenv()
     api_key = os.environ["OPENROUTER_API_KEY"]
-    cases, manifest = calibration_cases()
-
+    cases = calibration_cases()
+    family_counts = validate_calibration_partition(cases)
     questions = build_jev_defect_questions()
+
     rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
     total_cost = 0.0
@@ -320,6 +299,7 @@ def main() -> None:
                     authoritative_constraints={
                         "exact_age": 4,
                         "reading_mode": "READ_ALOUD",
+                        "taxonomy_version": "story-defect-detection.v1.1",
                     },
                 ),
                 questions=questions,
@@ -329,17 +309,14 @@ def main() -> None:
             grouped_scores = qualification_scores(raw_scores)
             cost = usage_cost(body)
             total_cost += cost
+
             rows.append({
                 "case_id": case["case_id"],
                 "kind": case["kind"],
                 "story_family": case["story_family"],
                 "gold_family": case["gold_family"],
-                "gold_qualification_family": case[
-                    "gold_qualification_family"
-                ],
+                "gold_qualification_family": case["gold_qualification_family"],
                 "gold_severity": case["gold_severity"],
-                "validation_basis": case["validation_basis"],
-                "source_corpus": case["source_corpus"],
                 "scores": raw_scores,
                 "qualification_scores": grouped_scores,
                 "usage": body.get("usage"),
@@ -357,10 +334,11 @@ def main() -> None:
             OUT.parent.mkdir(parents=True, exist_ok=True)
             OUT.write_text(
                 json.dumps({
-                    "schema_version": "story-defect-jev-calibration.v1",
+                    "schema_version": "story-defect-jev-calibration.v1.1",
                     "status": "IN_PROGRESS",
                     "completed_cases": len(rows),
                     "error_cases": len(errors),
+                    "family_counts": family_counts,
                     "rows": rows,
                     "errors": errors,
                     "total_cost_usd": round(total_cost, 9),
@@ -374,6 +352,7 @@ def main() -> None:
     family_metrics = threshold_metrics(rows)
     thresholds: dict[str, float] = {}
     unqualified: list[str] = []
+
     for family, metrics in family_metrics.items():
         point = metrics["recommended_calibration_point"]
         if point is None:
@@ -388,28 +367,29 @@ def main() -> None:
     )
 
     output = {
-        "schema_version": "story-defect-jev-calibration.v1",
+        "schema_version": "story-defect-jev-calibration.v1.1",
         "status": "CALIBRATION_COMPLETE",
         "model_id": "typesafe/jev-1.13",
         "dataset": {
+            "manifest": str(D1_MANIFEST),
             "split": "calibration",
             "total_cases": len(rows),
             "defect_cases": sum(row["kind"] == "defect" for row in rows),
             "clean_cases": sum(row["kind"] == "clean" for row in rows),
+            "qualification_family_counts": family_counts,
             "held_out_touched": False,
-            "d1_manifest": str(D1_MANIFEST),
-            "d1_validated_total": manifest["summary"]["validated_gold"],
-            "d1_calibration_defects": manifest["summary"][
-                "calibration_validated"
-            ],
+            "response_supplements_included": False,
         },
         "taxonomy": {
             "version": "story-defect-detection.v1.1",
-            "qualification_groups": QUALIFICATION_GROUPS,
+            "qualification_groups": {
+                group: list(members)
+                for group, members in QUALIFICATION_GROUPS.items()
+            },
             "raw_response_causality_preserved": True,
             "qualification_rule": (
                 "response_causality is a diagnostic subtype of causal_logic; "
-                "causal score is max(causal_logic, response_causality)"
+                "causal qualification score is max(causal_logic, response_causality)"
             ),
         },
         "threshold_selection_policy": {
@@ -430,14 +410,12 @@ def main() -> None:
         "elapsed_seconds": round(time.perf_counter() - started, 3),
         "rows": rows,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(output, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     print(json.dumps({
         "status": output["status"],
-        "dataset": output["dataset"],
         "recommended_thresholds": thresholds,
         "unqualified_families": unqualified,
         "calibration_summary": calibration_summary,
