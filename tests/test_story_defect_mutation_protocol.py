@@ -25,7 +25,7 @@ class StoryDefectMutationProtocolTests(unittest.TestCase):
         )
         self.assertIn("yeniden yerdeydi", out)
         with self.assertRaises(ValueError):
-            apply_single_patch(self.story, "Deniz", "Ada")
+            apply_single_patch(self.story, ".", "!")
 
     def test_corrupt_pack_rejects_full_story_rewrite(self):
         variant = {
