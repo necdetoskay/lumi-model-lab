@@ -16,7 +16,6 @@ jobs:
     timeout-minutes: 30
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      NATURAL_PROOF_IDS: N1_RESPONSE
       NATURAL_PROOF_DIAGNOSTIC_ADJUDICATION: '1'
     steps:
       - uses: actions/checkout@v4
@@ -30,8 +29,15 @@ jobs:
         run: python -m py_compile experiments/prototypes/story_defect_natural_e2e_repair_proof_20260926.py
       - name: Provider preflight
         run: python -m src.openrouter_preflight --json --min-remaining 0.50
-      - name: Run N1 detector repair recheck regression chain
-        run: PYTHONPATH=. python experiments/prototypes/story_defect_natural_e2e_repair_proof_20260926.py
+      - name: Run selected detector repair recheck regression chain
+        run: |
+          PROOF_ID="$(awk -F= '$1=="proof_id" {print $2}' experiments/triggers/story-defect-natural-e2e-repair-proof.txt | tail -1)"
+          if [ -n "$PROOF_ID" ] && [ "$PROOF_ID" != "ALL" ]; then
+            export NATURAL_PROOF_IDS="$PROOF_ID"
+          else
+            unset NATURAL_PROOF_IDS
+          fi
+          PYTHONPATH=. python experiments/prototypes/story_defect_natural_e2e_repair_proof_20260926.py
       - name: Archive evidence
         if: always()
         run: |
