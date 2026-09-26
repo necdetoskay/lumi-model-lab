@@ -1,0 +1,1643 @@
+{
+  "experiment": "story-v5-existing-architect-narrative-load-integration-v1",
+  "goal": "fold narrative-load contract into the existing Narrative Architect without a mandatory extra model hop",
+  "architect_model": "openai/gpt-5.6-sol",
+  "writer_model": "anthropic/claude-sonnet-5",
+  "judge_model": "openai/gpt-5.6-sol",
+  "exact_age": 4,
+  "target_words": 500,
+  "fixtures": 3,
+  "summary": [
+    {
+      "family": "exploration_mystery",
+      "baseline_scenes": 4,
+      "narrative_load_scenes": 4,
+      "baseline_beats": 19,
+      "narrative_load_beats": 13,
+      "supporting_thread_used": false,
+      "baseline_words": 407,
+      "narrative_load_words": 333,
+      "word_delta": -74,
+      "forward": "narrative_load_architect",
+      "reverse": "narrative_load_architect",
+      "consensus": "narrative_load_architect"
+    },
+    {
+      "family": "emotional_development",
+      "baseline_scenes": 5,
+      "narrative_load_scenes": 4,
+      "baseline_beats": 21,
+      "narrative_load_beats": 19,
+      "supporting_thread_used": false,
+      "baseline_words": 300,
+      "narrative_load_words": 340,
+      "word_delta": 40,
+      "forward": "baseline_architect",
+      "reverse": "baseline_architect",
+      "consensus": "baseline_architect"
+    },
+    {
+      "family": "everyday_fantastical_discovery",
+      "baseline_scenes": 5,
+      "narrative_load_scenes": 4,
+      "baseline_beats": 19,
+      "narrative_load_beats": 14,
+      "supporting_thread_used": false,
+      "baseline_words": 354,
+      "narrative_load_words": 398,
+      "word_delta": 44,
+      "forward": "narrative_load_architect",
+      "reverse": "narrative_load_architect",
+      "consensus": "narrative_load_architect"
+    }
+  ],
+  "consensus_wins": {
+    "baseline_architect": 1,
+    "narrative_load_architect": 2,
+    "TIE": 0,
+    "INCONCLUSIVE": 0
+  },
+  "mean_word_delta": 3.33,
+  "cases": [
+    {
+      "family": "exploration_mystery",
+      "premise": "Deniz salonda resim yaparken aralıklı bir 'fıs fıs' sesi duyar. Ses bazen pencere tarafında, bazen masanın yanında gibi gelir. Deniz sesin kaynağını ararken pencerenin önündeki ince kâğıt şeridin kaloriferden yükselen hava ile kıpırdadığını fark eder ve hareketini kendi nefesiyle taklit eder.",
+      "baseline": {
+        "plan": {
+          "story_title": "Fıs Fıs Nerede?",
+          "scene_count_rationale": "Dört sahne, yaklaşık 500 kelimelik hikâyede sesi kurmak, Deniz’in somut arayışını geliştirmek, kaynağı buldurmak ve keşfi kendi nefesiyle sınamasına yer vermek için yeterlidir. Her sahnenin ayrı bir işi vardır; arayış gereksiz duraklarla uzatılmaz.",
+          "story_contract": {
+            "protagonist_goal": "Deniz’in salondaki aralıklı “fıs fıs” sesinin nereden geldiğini kendi gözlemleriyle bulması.",
+            "central_problem": "Ses kısa aralıklarla duyulur ve bazen pencere tarafında, bazen masanın yanında gibi geldiği için kaynağı ilk bakışta belli olmaz.",
+            "solution_principle": "Deniz durup dinler, sesin tekrarını bekler, gözleriyle çevresindeki küçük hareketleri izler ve ince kâğıt şeridin kaloriferden yükselen havayla kıpırdadığını fark eder.",
+            "theme_thread": "Merakın, dikkatli bakmanın ve çocuğun kendi başına yaptığı küçük denemelerin doğal sevinci.",
+            "ending_state": "Deniz sesin kaynağını bulmuştur; ince kâğıt şeridin hava hareketiyle kıpırdadığını kendi nefesiyle yeniden görür ve sonra resmine döner.",
+            "must_preserve": [
+              "Anlatım doğal Türkçe ile, dört yaşındaki bir çocuğa sesli okunabilecek akıcı ve yinelemeli bir ritimde kurulmalı.",
+              "Deniz yalnızca somut gözlem, bekleme, yaklaşma, bakma ve üfleme gibi yaşına uygun eylemler kullanmalı.",
+              "Olayların tamamı salonda ve premise içinde bulunan pencere, masa, kalorifer, resim malzemeleri ve ince kâğıt şeritle ilerlemeli.",
+              "“Fıs fıs” sesi ince kâğıt şeridin kaloriferden yükselen havayla kıpırdamasından doğmalı.",
+              "Sesin aralıklı oluşu, şeridin bazen kıpırdayıp bazen durmasıyla tutarlı biçimde gösterilmeli.",
+              "Deniz çözümü kendisi bulmalı ve kendi nefesiyle yaptığı basit denemeyle hava-hareket bağlantısını doğrulamalı.",
+              "Yaklaşık 500 kelimelik toplam uzunluk korunurken olay gereksiz tekrarlarla uzatılmamalı."
+            ],
+            "must_not_happen": [
+              "Yeni adlandırılmış karakter, ilişki, kalıcı canon unsuru veya önemli eşya eklenmemeli.",
+              "Bir yetişkin gelip sesi açıklamamalı ya da ana problemi çözmemeli.",
+              "Sesin kaynağı sonradan başka bir nesneye veya canlıya dönüştürülmemeli.",
+              "Deniz yaşına uygun olmayan soyut çıkarımlar, teknik açıklamalar veya karmaşık deneyler yapmamalı.",
+              "Hikâye bir ders, slogan ya da doğrudan öğütle bitmemeli.",
+              "Kâğıt şeridin hareket ettiği ve kaynağın bulunduğu gerçeği sonraki sahnelerde unutulmamalı veya sıfırlanmamalı."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 22,
+              "purpose": "Deniz’in resim yaptığı sakin gündelik anı, aralıklı sesi ve sesin yönüne ilişkin ilk belirsizliği kurmak.",
+              "beats": [
+                "Deniz salonda resmine odaklanırken kısa bir “fıs fıs” sesi duyar ve elini durdurur.",
+                "Pencere tarafına bakar; ses kesildiği için hemen bir kaynak göremez.",
+                "Resmine yeniden yaklaşınca ses bu kez masanın yanından gelmiş gibi duyulur.",
+                "Deniz korkmak yerine merak eder ve sesi yeniden duymak için sessizce bekler."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Resim yapma eylemi",
+                "Aralıklı “fıs fıs” sesi",
+                "Pencere ve masa yönleri arasındaki ilk belirsizlik",
+                "Deniz’in doğal merakı"
+              ],
+              "must_not_do": [
+                "Sesin kaynağını bu sahnede açıklamak",
+                "Yeni bir karakteri veya yeni bir önemli nesneyi olaya katmak",
+                "Deniz’i uzun ve soyut iç konuşmalarla konuşturmak"
+              ],
+              "handoff": "Ses bir kez daha duyulur; Deniz bu kez yalnız yönüne değil, sesle birlikte hareket eden bir şey olup olmadığına bakmaya karar verir."
+            },
+            {
+              "index": 2,
+              "role": "INVESTIGATION",
+              "relative_weight": 30,
+              "purpose": "Deniz’in sesi kovalamak yerine durup dinlemeyi ve çevresindeki küçük hareketleri izlemeyi seçtiği yaşına uygun arayışı geliştirmek.",
+              "beats": [
+                "Deniz masanın yanında durur ve bekler; ses gelmeyince etrafa dikkatle bakar.",
+                "Pencereye doğru yaklaşırken yeniden “fıs fıs” duyar, fakat ses hemen kesilir.",
+                "Gözleri pencerenin önündeki ince kâğıt şeride takılır; şerit o anda durmaktadır.",
+                "Deniz acele etmeden biraz daha bekler ve sesle hareketin aynı anda olup olmadığını görmek ister.",
+                "Yeni bir “fıs” duyulduğunda şeridin hafifçe kalkıp indiğini fark eder."
+              ],
+              "prior_evidence": [
+                "Sahne 1’de sesin aralıklı duyulması",
+                "Sahne 1’de sesin pencere ve masa tarafları arasında belirsiz algılanması",
+                "Sahne 1’de Deniz’in sesi yeniden beklemeyi seçmesi"
+              ],
+              "must_include": [
+                "Durma, dinleme, yaklaşma ve bakma gibi basit eylemler",
+                "İnce kâğıt şeridin ilk küçük hareketi",
+                "Ses ile hareketin aynı anda gerçekleştiğine dair gözlem"
+              ],
+              "must_not_do": [
+                "Henüz kesin sonuç ilan etmek",
+                "Gereksiz yerlerde tekrar tekrar arama yaptırmak",
+                "Yeni ipucu nesneleri eklemek",
+                "Kaloriferi konuşturan ya da sesi sihirli gösteren bir açıklama kullanmak"
+              ],
+              "handoff": "Deniz, şeridin yeniden kıpırdamasını görmek için gözünü ondan ayırmadan bekler."
+            },
+            {
+              "index": 3,
+              "role": "PAYOFF",
+              "relative_weight": 30,
+              "purpose": "Sesin gerçek kaynağını Deniz’in kendi gözlemiyle açık ve tatmin edici biçimde ortaya çıkarmak.",
+              "beats": [
+                "Kaloriferden yükselen hava ince kâğıt şeride ulaşır; şerit kıpırdar ve yine “fıs fıs” eder.",
+                "Deniz ses ile şeridin hareketinin aynı anda başladığını görür.",
+                "Hava hafiflediğinde şerit durur ve ses de kesilir.",
+                "Hava yeniden yükselince aynı hareket ve aynı ses tekrarlanır.",
+                "Deniz, aradığı sesin ince kâğıt şeritten geldiğini kendi başına anlar."
+              ],
+              "prior_evidence": [
+                "Sahne 1 ve 2’de sesin başlayıp kesilmesi",
+                "Sahne 2’de “fıs” sesiyle ince kâğıt şeridin hareketinin aynı anda görülmesi",
+                "Şeridin pencerenin önünde ve kaloriferden yükselen havanın ulaşabileceği yerde bulunması"
+              ],
+              "must_include": [
+                "Kaloriferden yükselen havanın şeridi hareket ettirmesi",
+                "Şeridin kıpırdamasıyla “fıs fıs” sesinin eş zamanlı olması",
+                "Deniz’in çözümü yardımsız bulması",
+                "Hareket durunca sesin de durması"
+              ],
+              "must_not_do": [
+                "Çözümü bir yetişkinin açıklaması",
+                "Ayrıntılı veya yaşa uygun olmayan bilimsel terimler kullanmak",
+                "Önceden kurulan neden-sonuç ilişkisini değiştirmek",
+                "Keşfi tesadüfi bir tahmine indirgemek"
+              ],
+              "handoff": "Kaynağı bulan Deniz, havanın kâğıdı gerçekten hareket ettirdiğini kendi nefesiyle denemek için şeride doğru eğilir."
+            },
+            {
+              "index": 4,
+              "role": "RESOLUTION",
+              "relative_weight": 18,
+              "purpose": "Deniz’in keşfini küçük, güvenli ve somut bir taklitle doğrulamak; ardından gündelik resim anına huzurlu biçimde dönmek.",
+              "beats": [
+                "Deniz ince kâğıt şeride hafifçe üfler.",
+                "Şerit kalkıp kıpırdar ve tanıdık küçük sesi yeniden çıkarır.",
+                "Deniz üflemeyi bırakınca şerit de durur; böylece hava, hareket ve ses arasındaki bağlantı tamamlanır.",
+                "Deniz bir kez daha kısa bir nefesle hareketi taklit eder, sonra resminin başına döner.",
+                "Arada gelen “fıs fıs” artık gizemli değildir; Deniz sesi duyduğunda kıpırdayan şeride bakar."
+              ],
+              "prior_evidence": [
+                "Sahne 3’te kaloriferden yükselen havanın şeridi hareket ettirdiğinin görülmesi",
+                "Sahne 3’te şerit durduğunda sesin de kesilmesi",
+                "Sahne 3’te sesin kaynağının ince kâğıt şerit olarak kesinleşmesi"
+              ],
+              "must_include": [
+                "Deniz’in kendi nefesiyle şeridin hareketini taklit etmesi",
+                "Üfleme başlayınca hareketin başlaması ve bitince durması",
+                "Tamamlanmış keşfin korunması",
+                "Resim yapma eylemine doğal dönüş"
+              ],
+              "must_not_do": [
+                "Yeni bir problem başlatmak",
+                "Bulunan kaynağı yeniden belirsizleştirmek",
+                "Doğrudan ders veya slogan eklemek",
+                "Deniz’in denemesini karmaşıklaştırmak ya da yeni eşya gerektirmek"
+              ],
+              "handoff": "Hikâye, Deniz’in resmine döndüğü ve aralıklı sesi artık kaynağını bilerek karşıladığı sakin bir görüntüyle kapanır."
+            }
+          ]
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 768,
+            "output_tokens": 2736,
+            "total_tokens": 3504
+          },
+          "cost": {
+            "usd": 0.028896,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Fıs Fıs Diyen Kâğıt",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz salonda, küçük masasının başında oturuyordu. Önünde bir kâğıt, elinde mavi bir kalem vardı. Güneşi, evi, bir de köpeğini çiziyordu. Tam köpeğin kuyruğunu çizerken, incecik bir ses duydu: \"Fıs... fıs...\"\n\nEli havada durdu. Deniz başını kaldırdı, pencereye baktı. Ama orada hiçbir şey yoktu. Ses de susmuştu. Deniz omuz silkti, resmine döndü.\n\nKalemi yeniden kâğıda dokundurunca ses bu kez masanın yanından geldi sanki. \"Fıs fıs.\"\n\nDeniz korkmadı. Gözleri parladı. Bu neydi acaba? Bir böcek mi, bir kuş mu, yoksa başka bir şey mi? Deniz elini kalemin üstünden çekti ve sessizce oturdu. Sesi bir daha duymak istiyordu."
+              },
+              {
+                "index": 2,
+                "role": "INVESTIGATION",
+                "prose": "Deniz masanın yanında ayakta durdu. Nefesini tuttu, kulaklarını dört açtı. Ama ses hiç gelmiyordu. Odaya baktı; koltuk aynı yerdeydi, halı aynı yerdeydi, hiçbir şey kıpırdamıyordu.\n\nYavaşça pencereye yaklaştı. Tam o sırada yine \"fıs fıs\" duyuldu, ama ses hemen kesildi. Deniz durdu, gözlerini kısarak pencerenin önüne baktı.\n\nOrada, pencerenin önünde ince, uzun bir kâğıt şerit sarkıyordu. Şimdi kıpırdamıyordu, sessizce duruyordu.\n\nDeniz hiç acele etmedi. Yerinde durdu, gözlerini şeritten ayırmadı. Bekledi... bekledi...\n\nSonra yeni bir \"fıs\" sesi geldi. Ve tam o anda ince kâğıt şerit hafifçe kalktı, sonra indi.\n\nDeniz'in gözleri büyüdü. Ses ile hareket aynı anda olmuştu! Bir daha görmek istedi. Gözlerini kâğıt şeritten hiç ayırmadan, olduğu yerde bekledi."
+              },
+              {
+                "index": 3,
+                "role": "PAYOFF",
+                "prose": "Kaloriferin üstünden yükselen sıcak hava, yavaşça yukarı doğru gidiyordu. Hava ince kâğıt şeride ulaştığında, şerit hafifçe kalktı ve \"fıs fıs\" sesi çıktı.\n\nDeniz gözlerini kırpmadı. Ses başladığı anda şerit de hareket etmişti. İkisi tam aynı zamanda olmuştu!\n\nBir süre sonra hava biraz azaldı. Şerit yavaşça durdu. Ses de kesildi.\n\nDeniz bekledi. Az sonra hava yeniden yükseldi, şerit yeniden kalktı, yine o tanıdık ses geldi: \"Fıs fıs.\"\n\nDeniz artık anlamıştı. Ses, pencerenin önündeki bu ince kâğıt şeritten geliyordu! Kalorifer sıcak hava gönderiyor, hava şeride çarpıyor, şerit kıpırdıyor ve o sırada küçük bir ses çıkıyordu.\n\nDeniz kendi kendine buldu bunu, kimse söylemedi ona. İçi sevinçle doldu. Şeride doğru eğildi, yakından bakmak istedi."
+              },
+              {
+                "index": 4,
+                "role": "RESOLUTION",
+                "prose": "Deniz şeridin önüne geldi. Dudaklarını yuvarlattı ve nazikçe üfledi: \"Fuuu.\"\n\nİnce kâğıt şerit kalktı, kıpırdadı ve o tanıdık sesi çıkardı: \"Fıs fıs.\"\n\nDeniz gülümsedi. Üflemeyi bıraktı. Şerit de yavaşça durdu, ses de kesildi.\n\nBir kez daha üfledi, kısacık bir nefes. Şerit yine kalktı, yine \"fıs\" dedi. Deniz artık kesin biliyordu: hava kâğıdı kıpırdatıyor, kâğıt da o sesi çıkarıyordu.\n\nDeniz masasına döndü, kalemini eline aldı. Köpeğin kuyruğunu tamamladı.\n\nBiraz sonra yine \"fıs fıs\" sesi geldi. Deniz bu kez başını çevirip aramadı. Sadece gülümsedi, gözünü pencerenin önündeki kıpırdayan ince kâğıt şeride çevirdi ve resmine devam etti."
+              }
+            ]
+          },
+          "story": "Deniz salonda, küçük masasının başında oturuyordu. Önünde bir kâğıt, elinde mavi bir kalem vardı. Güneşi, evi, bir de köpeğini çiziyordu. Tam köpeğin kuyruğunu çizerken, incecik bir ses duydu: \"Fıs... fıs...\"\n\nEli havada durdu. Deniz başını kaldırdı, pencereye baktı. Ama orada hiçbir şey yoktu. Ses de susmuştu. Deniz omuz silkti, resmine döndü.\n\nKalemi yeniden kâğıda dokundurunca ses bu kez masanın yanından geldi sanki. \"Fıs fıs.\"\n\nDeniz korkmadı. Gözleri parladı. Bu neydi acaba? Bir böcek mi, bir kuş mu, yoksa başka bir şey mi? Deniz elini kalemin üstünden çekti ve sessizce oturdu. Sesi bir daha duymak istiyordu.\n\nDeniz masanın yanında ayakta durdu. Nefesini tuttu, kulaklarını dört açtı. Ama ses hiç gelmiyordu. Odaya baktı; koltuk aynı yerdeydi, halı aynı yerdeydi, hiçbir şey kıpırdamıyordu.\n\nYavaşça pencereye yaklaştı. Tam o sırada yine \"fıs fıs\" duyuldu, ama ses hemen kesildi. Deniz durdu, gözlerini kısarak pencerenin önüne baktı.\n\nOrada, pencerenin önünde ince, uzun bir kâğıt şerit sarkıyordu. Şimdi kıpırdamıyordu, sessizce duruyordu.\n\nDeniz hiç acele etmedi. Yerinde durdu, gözlerini şeritten ayırmadı. Bekledi... bekledi...\n\nSonra yeni bir \"fıs\" sesi geldi. Ve tam o anda ince kâğıt şerit hafifçe kalktı, sonra indi.\n\nDeniz'in gözleri büyüdü. Ses ile hareket aynı anda olmuştu! Bir daha görmek istedi. Gözlerini kâğıt şeritten hiç ayırmadan, olduğu yerde bekledi.\n\nKaloriferin üstünden yükselen sıcak hava, yavaşça yukarı doğru gidiyordu. Hava ince kâğıt şeride ulaştığında, şerit hafifçe kalktı ve \"fıs fıs\" sesi çıktı.\n\nDeniz gözlerini kırpmadı. Ses başladığı anda şerit de hareket etmişti. İkisi tam aynı zamanda olmuştu!\n\nBir süre sonra hava biraz azaldı. Şerit yavaşça durdu. Ses de kesildi.\n\nDeniz bekledi. Az sonra hava yeniden yükseldi, şerit yeniden kalktı, yine o tanıdık ses geldi: \"Fıs fıs.\"\n\nDeniz artık anlamıştı. Ses, pencerenin önündeki bu ince kâğıt şeritten geliyordu! Kalorifer sıcak hava gönderiyor, hava şeride çarpıyor, şerit kıpırdıyor ve o sırada küçük bir ses çıkıyordu.\n\nDeniz kendi kendine buldu bunu, kimse söylemedi ona. İçi sevinçle doldu. Şeride doğru eğildi, yakından bakmak istedi.\n\nDeniz şeridin önüne geldi. Dudaklarını yuvarlattı ve nazikçe üfledi: \"Fuuu.\"\n\nİnce kâğıt şerit kalktı, kıpırdadı ve o tanıdık sesi çıkardı: \"Fıs fıs.\"\n\nDeniz gülümsedi. Üflemeyi bıraktı. Şerit de yavaşça durdu, ses de kesildi.\n\nBir kez daha üfledi, kısacık bir nefes. Şerit yine kalktı, yine \"fıs\" dedi. Deniz artık kesin biliyordu: hava kâğıdı kıpırdatıyor, kâğıt da o sesi çıkarıyordu.\n\nDeniz masasına döndü, kalemini eline aldı. Köpeğin kuyruğunu tamamladı.\n\nBiraz sonra yine \"fıs fıs\" sesi geldi. Deniz bu kez başını çevirip aramadı. Sadece gülümsedi, gözünü pencerenin önündeki kıpırdayan ince kâğıt şeride çevirdi ve resmine devam etti.",
+          "word_count": 407
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 5125,
+            "output_tokens": 1902,
+            "total_tokens": 7027
+          },
+          "cost": {
+            "usd": 0.02927,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "narrative_load": {
+        "plan": {
+          "story_title": "Fıs Fıs Nerede?",
+          "scene_count_rationale": "Yaklaşık 500 kelimelik, 4 yaşa uygun bir sesli okuma için dört makro sahne yeterlidir: sesin kurulması, somut arama, nedenin keşfi ve kısa bir doğrulamanın ardından resme dönüş. Bu yapı merakı adım adım ilerletir; tek olayı mikro-sahnelere bölmeden doğal tekrar ve ritim için yeterli alan bırakır.",
+          "story_contract": {
+            "protagonist_goal": "Deniz, salonda duyduğu aralıklı 'fıs fıs' sesinin nereden geldiğini bulmak ister.",
+            "central_problem": "Ses kesilip yeniden başladığı ve bazen pencere, bazen masa tarafındaymış gibi geldiği için kaynağı ilk bakışta belli değildir.",
+            "solution_principle": "Deniz durup dinler, çevresindeki hareketleri dikkatle izler ve pencerenin önündeki ince kâğıt şeridin kaloriferden yükselen havayla kıpırdadığını fark eder; kendi nefesiyle yaptığı basit deneme gözlemini doğrular.",
+            "theme_thread": "Deniz'in merakı, dikkatli bakışı ve yaşına uygun küçük denemesiyle doğal biçimde ilerler; sonuç bir ders veya slogan olarak açıklanmaz.",
+            "ending_state": "Deniz sesin ince kâğıt şeritten geldiğini anlamış, hareketi nefesiyle yeniden oluşturmuş ve merakı dingin bir memnuniyete dönüşmüş olarak resmine dönmüştür.",
+            "must_preserve": [
+              "Deniz 4 yaşında olmalı ve yalnız somut gözlem, dinleme, yaklaşma, bekleme ve üfleme gibi basit eylemlerle ilerlemeli.",
+              "Olay salonda, Deniz resim yaparken başlamalı.",
+              "'Fıs fıs' sesi aralıklı duyulmalı ve önce farklı yönlerden geliyor gibi algılanmalı.",
+              "Sesin kaynağı pencerenin önündeki ince kâğıt şerit olmalı.",
+              "Şeridi kıpırdatan neden kaloriferden yükselen hava olmalı.",
+              "Deniz hareketi kendi nefesiyle taklit ederek keşfini sınamalı.",
+              "Metin doğal Türkçe, tekrar ve ses oyunlarına elverişli bir sesli okuma ritmi taşımalı.",
+              "Ana problem Deniz tarafından çözülmeli."
+            ],
+            "must_not_happen": [
+              "Yeni adlandırılmış karakter, ilişki, kalıcı dünya bilgisi veya önemli eşya eklenmemeli.",
+              "Bir yetişkin gelip sesi açıklamamalı veya problemi çözmemeli.",
+              "Deniz yaşına uygun olmayan soyut ya da yetişkin tarzı bir akıl yürütme yapmamalı.",
+              "Kaloriferden yükselen hava ile kâğıdın hareketi arasındaki neden-sonuç bağı sonradan değiştirilmemeli.",
+              "Gerilim, korku, tehlikeli davranış veya ortamdan bağımsız ikinci bir sorun eklenmemeli.",
+              "Hikâye kelime hedefi uğruna tekrarlanan aramalarla uzatılmamalı.",
+              "Nefes deneyi tamamlandıktan sonra keşif geçersiz kılınmamalı ya da kaynak yeniden belirsizleştirilmemeli."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 22,
+              "purpose": "Deniz'in sakin resim etkinliğini, ilk sesi ve sesin yönüne ilişkin belirsizliği kurmak.",
+              "beats": [
+                "Deniz salonda resim yaparken kısa bir 'fıs fıs' duyar; elini durdurup başını kaldırır.",
+                "Ses kesilince resmine yeniden yönelir, fakat 'fıs fıs' tekrar gelir.",
+                "Deniz önce pencere tarafına, sonra masanın yanına bakar; ses her seferinde başka bir yerdeymiş gibi gelir."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Resim yapma eylemi",
+                "Aralıklı biçimde yinelenen 'fıs fıs' sesi",
+                "Deniz'in korkmak yerine merak edip durması ve bakması"
+              ],
+              "must_not_do": [
+                "Sesin kaynağını bu sahnede göstermek",
+                "Yeni bir kişi veya nesneyle dikkat dağıtmak",
+                "Deniz'e karmaşık açıklamalar düşündürmek"
+              ],
+              "handoff": "Ses yeniden kesilir; Deniz bu kez hemen resme dönmek yerine sessizce bekleyip nerede bir hareket göreceğine bakmaya karar verir."
+            },
+            {
+              "index": 2,
+              "role": "PROGRESSION",
+              "relative_weight": 31,
+              "purpose": "Deniz'in yalnız kulaklarıyla yön bulamadığını fark edip dinlemeyi dikkatli bakışla birleştirmesini sağlamak.",
+              "beats": [
+                "Deniz masanın yanında bekler; ses yoktur ve burada kıpırdayan bir şey göremez.",
+                "Pencereye doğru yaklaşınca yine 'fıs fıs' duyulur, fakat ses hemen susar; Deniz acele etmeden olduğu yerde kalır.",
+                "Ses bir kez daha geldiğinde Deniz, pencerenin önündeki ince kâğıt şeridin aynı anda hafifçe kalkıp indiğini görür.",
+                "Şerit durunca ses de durur; yeniden kıpırdayınca kısa 'fıs fıs' geri gelir."
+              ],
+              "prior_evidence": [
+                "Sahne 1'de sesin aralıklı olduğu görüldü.",
+                "Sahne 1'de yalnız sesin yönüne bakmanın kaynağı bulmaya yetmediği kuruldu.",
+                "Deniz'in sesi duyduğunda yaptığı işi durdurup çevresini gözleyebildiği gösterildi."
+              ],
+              "must_include": [
+                "Deniz'in beklemesi ve gözlerini kullanması",
+                "İnce kâğıt şeridin ilk kez belirgin biçimde fark edilmesi",
+                "Şeridin hareketi ile sesin aynı anda başlayıp durduğuna ilişkin somut gözlem"
+              ],
+              "must_not_do": [
+                "Deniz'in tek gözlemle hemen ayrıntılı bir açıklama yapması",
+                "Kâğıt şeridi yerinden koparması veya durumunu kalıcı biçimde değiştirmesi",
+                "Başka bir olası ses kaynağı icat ederek ana aramayı dağıtması"
+              ],
+              "handoff": "Deniz artık ses ile şeridin birlikte hareket ettiğini bilir; sıradaki merakı şeridi neyin kıpırdattığıdır."
+            },
+            {
+              "index": 3,
+              "role": "PAYOFF",
+              "relative_weight": 31,
+              "purpose": "Kaloriferden yükselen havanın şeridi hareket ettirdiğini görünür kılmak ve Deniz'in nefesiyle yaptığı yaşına uygun denemeyle keşfi doğrulamak.",
+              "beats": [
+                "Deniz şeride dokunmadan yakından bakar ve kaloriferden yükselen hava geldikçe şeridin kalkıp titrediğini fark eder.",
+                "Hava şeridi oynatırken 'fıs fıs' duyulur; hareket yavaşlayınca ses de diner.",
+                "Deniz yüzünü şeride yaklaştırmadan uygun bir uzaklıktan yumuşakça 'füü' diye üfler; şerit yine kalkıp kıpırdar.",
+                "Şeridin kendi nefesiyle de benzer biçimde hareket ettiğini görünce Deniz gülümser ve aradığı sesi bulduğunu anlar."
+              ],
+              "prior_evidence": [
+                "Sahne 2'de sesin şeridin hareketiyle aynı anda başlayıp durduğu iki kez gözlendi.",
+                "Şeridin pencerenin önünde ve kaloriferden yükselen havanın ulaştığı yerde bulunduğu premise gereği sabittir.",
+                "Şerit yerinden alınmadı; doğal hava akımıyla hareket edebilecek durumda kaldı."
+              ],
+              "must_include": [
+                "Kaloriferden yükselen hava",
+                "Hava ile şerit hareketi arasındaki doğrudan görsel bağ",
+                "Deniz'in kendi nefesiyle güvenli, küçük bir taklit denemesi",
+                "Keşfin Deniz'in eylemi ve gözlemiyle tamamlanması"
+              ],
+              "must_not_do": [
+                "Bir yetişkinin açıklama yapması",
+                "Nefes denemesini bağımsız veya farklı bir çözüm gibi sunmak",
+                "Şeridin hareket nedenini değiştirmek",
+                "Deniz'i kalorifere dokundurmak ya da tehlikeli biçimde yaklaştırmak"
+              ],
+              "handoff": "Kaynak ve hareketin nedeni artık açıktır; geriye Deniz'in bu yeni tanıdık sesle gündelik etkinliğine dönmesi kalır."
+            },
+            {
+              "index": 4,
+              "role": "RESOLUTION",
+              "relative_weight": 16,
+              "purpose": "Keşfin kalıcı olduğunu kısa ve somut biçimde göstermek, ardından Deniz'i başladığı resim etkinliğine döndürmek.",
+              "beats": [
+                "Deniz masaya dönünce 'fıs fıs' yeniden duyulur; bu kez şaşırmak yerine pencerenin önünde kıpırdayan şeride bakar.",
+                "Şeridin kaloriferden yükselen havayla bir kez daha kalkıp indiğini görür, kendi küçük 'füü' sesini hatırlayarak gülümser ve resmine devam eder."
+              ],
+              "prior_evidence": [
+                "Sahne 3'te kaloriferden yükselen havanın şeridi hareket ettirdiği gözlendi.",
+                "Sahne 3'te Deniz'in nefesi aynı hareketi taklit ederek neden-sonuç bağını doğruladı.",
+                "Resim etkinliği Sahne 1'de yarım bırakıldı ve değiştirilmedi."
+              ],
+              "must_include": [
+                "Aynı sesin artık tanınması",
+                "Şeridin doğal hava akımıyla hareket etmeyi sürdürmesi",
+                "Deniz'in resmine dönmesi",
+                "Sessiz, somut ve hikâyeye özgü bir kapanış"
+              ],
+              "must_not_do": [
+                "Dersi veya temayı sloganla açıklamak",
+                "Yeni bir sorun başlatmak",
+                "Sesin kaynağını yeniden belirsizleştirmek",
+                "Tamamlanan keşfi geri almak"
+              ],
+              "handoff": "Deniz resmini sürdürürken tanıdığı 'fıs fıs' salonun doğal, küçük bir sesi olarak kalır."
+            }
+          ],
+          "narrative_load": {
+            "supporting_thread_used": false,
+            "supporting_thread_description": "",
+            "main_causal_rule": "Kaloriferden yükselen hava pencerenin önündeki ince kâğıt şeridi kıpırdatır; şeridin hareketi 'fıs fıs' sesini oluşturur. Deniz'in nefesi aynı hareketi küçük ölçekte taklit eder.",
+            "committed_state_constraints": [
+              "İnce kâğıt şerit pencerenin önünde kalır ve yerinden çıkarılmaz.",
+              "Kaloriferden yükselen hava ana neden olarak korunur.",
+              "Deniz'in resim yapması yalnızca arama sırasında kesintiye uğrar; çözümden sonra devam eder.",
+              "Nefes deneyi tamamlandıktan sonra sesin kaynağı ve hareket kuralı yeniden belirsiz hâle getirilmez."
+            ]
+          }
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 1190,
+            "output_tokens": 3117,
+            "total_tokens": 4307
+          },
+          "cost": {
+            "usd": 0.0341435,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Fıs Fıs Sesi",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz salonda, küçük masasında resim yapıyordu. Kırmızı kalemle güneş çiziyordu. Tam o sırada bir ses geldi:\n\n\"Fıs fıs...\"\n\nDeniz elini durdurdu. Başını kaldırdı. Ses kesildi. Salon yeniden sessizdi. Deniz omuz silkti, kaleme döndü. Ama tam güneşin ışınlarını çizerken ses yine geldi:\n\n\"Fıs fıs... fıs fıs...\"\n\nBu kez Deniz pencereye baktı. Kimse yoktu. Sonra masanın yanına baktı. Orada da kimse yoktu. Ses bir pencerenin oradan geliyor gibiydi, bir de masanın yanından. Deniz meraklandı. Kalemi bıraktı, ayağa kalktı."
+              },
+              {
+                "index": 2,
+                "role": "PROGRESSION",
+                "prose": "Deniz önce masanın yanında durdu. Bekledi. Hiçbir ses yoktu, hiçbir şey kıpırdamıyordu. Sonra yavaşça pencereye doğru yürüdü. Tam pencerenin önüne gelince ses yine geldi:\n\n\"Fıs fıs...\"\n\nAma Deniz koşmadı, sadece durdu. Gözlerini pencereye dikti. Ses susunca Deniz de sustu, olduğu yerde kaldı. Bir süre sonra ses tekrar geldi, ve bu kez Deniz pencerenin önündeki ince kâğıt şeridi gördü. Şerit hafifçe yukarı kalkıyor, sonra yavaşça iniyordu.\n\n\"Fıs fıs...\" derken şerit kalkıyordu. Şerit durunca ses de duruyordu. Deniz gözlerini kırpmadan izledi. Şerit yeniden kıpırdadı, ses yeniden geldi: \"Fıs fıs.\"\n\nDeniz'in gözleri parladı. Ses ile şerit birlikte hareket ediyordu."
+              },
+              {
+                "index": 3,
+                "role": "PAYOFF",
+                "prose": "Deniz şeride dokunmadı, sadece yaklaşıp dikkatle baktı. Kaloriferden yukarı doğru yumuşak bir hava yükseliyordu. Hava şeride her ulaştığında şerit titreyip kalkıyordu.\n\n\"Fıs fıs,\" diyordu şerit, hava geldikçe. Hava azalınca şerit yavaşça iniyor, ses de kısılıp susuyordu.\n\nDeniz biraz uzakta durdu, yüzünü şeride yaklaştırmadı. Sonra ağzını yuvarlak yaptı ve yumuşakça üfledi:\n\n\"Füüü...\"\n\nŞerit yine kalktı, hafifçe kıpırdadı, tıpkı az önceki gibi. Deniz bir daha üfledi:\n\n\"Füüü...\"\n\nŞerit yine oynadı. Deniz gülümsedi. Kendi nefesi de, kaloriferin havası da şeridi aynı şekilde oynatıyordu. Aradığı ses, işte buradaydı: ince kâğıt şeritti, hava onu kıpırdatıyordu."
+              },
+              {
+                "index": 4,
+                "role": "RESOLUTION",
+                "prose": "Deniz masasına döndü, kalemini eline aldı. Tam güneşe son bir ışın çizerken ses yine geldi:\n\n\"Fıs fıs...\"\n\nDeniz bu kez şaşırmadı. Başını hafifçe çevirdi, pencerenin önündeki şeridin kalkıp indiğini gördü. Kalorifer havayı yukarı gönderiyor, şerit de nazikçe kıpırdıyordu.\n\nDeniz kendi \"füüü\" sesini hatırladı, gülümsedi ve tekrar resmine döndü. Güneşin son ışınını çizdi. Salonda, arada bir, hâlâ küçük bir \"fıs fıs\" duyuluyordu; ama şimdi Deniz için bu, tanıdık ve sevimli bir sesti."
+              }
+            ]
+          },
+          "story": "Deniz salonda, küçük masasında resim yapıyordu. Kırmızı kalemle güneş çiziyordu. Tam o sırada bir ses geldi:\n\n\"Fıs fıs...\"\n\nDeniz elini durdurdu. Başını kaldırdı. Ses kesildi. Salon yeniden sessizdi. Deniz omuz silkti, kaleme döndü. Ama tam güneşin ışınlarını çizerken ses yine geldi:\n\n\"Fıs fıs... fıs fıs...\"\n\nBu kez Deniz pencereye baktı. Kimse yoktu. Sonra masanın yanına baktı. Orada da kimse yoktu. Ses bir pencerenin oradan geliyor gibiydi, bir de masanın yanından. Deniz meraklandı. Kalemi bıraktı, ayağa kalktı.\n\nDeniz önce masanın yanında durdu. Bekledi. Hiçbir ses yoktu, hiçbir şey kıpırdamıyordu. Sonra yavaşça pencereye doğru yürüdü. Tam pencerenin önüne gelince ses yine geldi:\n\n\"Fıs fıs...\"\n\nAma Deniz koşmadı, sadece durdu. Gözlerini pencereye dikti. Ses susunca Deniz de sustu, olduğu yerde kaldı. Bir süre sonra ses tekrar geldi, ve bu kez Deniz pencerenin önündeki ince kâğıt şeridi gördü. Şerit hafifçe yukarı kalkıyor, sonra yavaşça iniyordu.\n\n\"Fıs fıs...\" derken şerit kalkıyordu. Şerit durunca ses de duruyordu. Deniz gözlerini kırpmadan izledi. Şerit yeniden kıpırdadı, ses yeniden geldi: \"Fıs fıs.\"\n\nDeniz'in gözleri parladı. Ses ile şerit birlikte hareket ediyordu.\n\nDeniz şeride dokunmadı, sadece yaklaşıp dikkatle baktı. Kaloriferden yukarı doğru yumuşak bir hava yükseliyordu. Hava şeride her ulaştığında şerit titreyip kalkıyordu.\n\n\"Fıs fıs,\" diyordu şerit, hava geldikçe. Hava azalınca şerit yavaşça iniyor, ses de kısılıp susuyordu.\n\nDeniz biraz uzakta durdu, yüzünü şeride yaklaştırmadı. Sonra ağzını yuvarlak yaptı ve yumuşakça üfledi:\n\n\"Füüü...\"\n\nŞerit yine kalktı, hafifçe kıpırdadı, tıpkı az önceki gibi. Deniz bir daha üfledi:\n\n\"Füüü...\"\n\nŞerit yine oynadı. Deniz gülümsedi. Kendi nefesi de, kaloriferin havası da şeridi aynı şekilde oynatıyordu. Aradığı ses, işte buradaydı: ince kâğıt şeritti, hava onu kıpırdatıyordu.\n\nDeniz masasına döndü, kalemini eline aldı. Tam güneşe son bir ışın çizerken ses yine geldi:\n\n\"Fıs fıs...\"\n\nDeniz bu kez şaşırmadı. Başını hafifçe çevirdi, pencerenin önündeki şeridin kalkıp indiğini gördü. Kalorifer havayı yukarı gönderiyor, şerit de nazikçe kıpırdıyordu.\n\nDeniz kendi \"füüü\" sesini hatırladı, gülümsedi ve tekrar resmine döndü. Güneşin son ışınını çizdi. Salonda, arada bir, hâlâ küçük bir \"fıs fıs\" duyuluyordu; ama şimdi Deniz için bu, tanıdık ve sevimli bir sesti.",
+          "word_count": 333
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 5475,
+            "output_tokens": 1643,
+            "total_tokens": 7118
+          },
+          "cost": {
+            "usd": 0.02738,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "word_delta": -74,
+      "normalized_winners": {
+        "forward": "narrative_load_architect",
+        "reverse": "narrative_load_architect",
+        "consensus": "narrative_load_architect"
+      },
+      "pairwise_forward": {
+        "winner": "B",
+        "confidence": "high",
+        "scores": {
+          "A": {
+            "coherence": 9,
+            "age_fit": 8,
+            "read_aloud": 7,
+            "agency": 9,
+            "pacing": 6,
+            "naturalness": 7,
+            "closure": 9,
+            "economy": 5,
+            "overall": 7
+          },
+          "B": {
+            "coherence": 9,
+            "age_fit": 9,
+            "read_aloud": 9,
+            "agency": 9,
+            "pacing": 9,
+            "naturalness": 9,
+            "closure": 9,
+            "economy": 9,
+            "overall": 9
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "high",
+          "B": "low"
+        },
+        "serious_defects": {
+          "A": [
+            "Keşfin aynı açıklamalarla gereğinden fazla tekrarlanması tempoyu düşürüyor."
+          ],
+          "B": []
+        },
+        "why": "B, aynı keşif sürecini daha akıcı ve ekonomik anlatıyor. Deniz’in gözlem ve nefes deneyiyle sonuca ulaşması doğal ilerliyor. A’nın yinelemeleri sesli okumada ağırlık yaratıyor."
+      },
+      "pairwise_reverse": {
+        "winner": "A",
+        "confidence": "medium",
+        "scores": {
+          "A": {
+            "coherence": 9,
+            "age_fit": 8,
+            "read_aloud": 9,
+            "agency": 9,
+            "pacing": 8,
+            "naturalness": 8,
+            "closure": 9,
+            "economy": 7,
+            "overall": 8
+          },
+          "B": {
+            "coherence": 9,
+            "age_fit": 8,
+            "read_aloud": 8,
+            "agency": 9,
+            "pacing": 7,
+            "naturalness": 7,
+            "closure": 8,
+            "economy": 6,
+            "overall": 7
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "low",
+          "B": "medium"
+        },
+        "serious_defects": {
+          "A": [],
+          "B": []
+        },
+        "why": "A, keşfi daha akıcı kuruyor ve nefes deneyiyle sıcak bir kapanış sağlıyor. B aynı gözlem ve sonucu gereğinden fazla açıklayarak temposunu yavaşlatıyor."
+      },
+      "cost_usd": 0.13781649999999998
+    },
+    {
+      "family": "emotional_development",
+      "premise": "Deniz parkta Ece'ye yaptığı kum şeklini göstermek ister ama Ece dönmeden uzaklaşır. Deniz onun bakmak istemediğini düşünür. Biraz sonra Ece'nin uçup giden küçük kâğıt şapkasını yakalamaya çalıştığını görür; yanına gidip yardım eder ve geri döndüklerinde şekli birlikte tamamlarlar.",
+      "baseline": {
+        "plan": {
+          "story_title": "Kum Şekli ve Uçan Şapka",
+          "scene_count_rationale": "Beş sahne, yaklaşık 500 kelimelik anlatıda gerekli akışı gereksiz uzatmadan kurar: Deniz'in isteği belirlenir, yanlış yorumu oluşur, somut gözlem gerçeği açığa çıkarır, çocukların ortak eylemi çözümü sağlar ve sakin bir kapanışla tamamlanan şekil paylaşılır. Her sahne tek ve ayrı bir anlatı işi taşır.",
+          "story_contract": {
+            "protagonist_goal": "Deniz'in yaptığı kum şeklini Ece'ye göstermek ve onunla paylaşmak istemesi.",
+            "central_problem": "Ece, kum şekline bakmadan uzaklaşınca Deniz onun bakmak istemediğini sanır; oysa Ece uçan küçük kâğıt şapkasının peşindedir.",
+            "solution_principle": "Deniz, ilk düşüncesine takılı kalmak yerine gördüğü somut duruma dikkat eder ve Ece'ye basit, yaşına uygun bir eylemle yardım eder.",
+            "theme_thread": "Merak ve dikkat, Deniz'in çevresinde olup biteni fark etmesi ve kendi seçimiyle yardıma katılması üzerinden doğal biçimde ilerler; açık bir ders veya slogan verilmez.",
+            "ending_state": "Küçük kâğıt şapka geri alınmıştır. Deniz ile Ece kum şeklinin yanına dönmüş, şekli birlikte tamamlamış ve bitmiş hâline beraber bakmıştır.",
+            "must_preserve": [
+              "Anlatı doğal Türkçe, kısa ve sesli okumaya uygun ritimli cümlelerle kurulmalı.",
+              "Deniz dört yaşına uygun olarak yalnızca somut gözlemler, basit düşünceler ve yapılabilir küçük eylemlerle ilerlemeli.",
+              "Deniz önce Ece'nin kum şekline bakmak istemediğini düşünmeli.",
+              "Deniz daha sonra Ece'nin uçup giden küçük kâğıt şapkasını yakalamaya çalıştığını kendi gözleriyle görmeli.",
+              "Şapkanın geri alınmasında Deniz etkin biçimde yardım etmeli; ana sorunu bir yetişkin çözmemeli.",
+              "Deniz ile Ece şapkayı aldıktan sonra kum şekline dönmeli ve onu birlikte tamamlamalı.",
+              "Yaklaşık 500 kelimelik hedef, tekrarlar veya ilgisiz olaylarla değil; gözlem, hareket ve kısa etkileşimlerle karşılanmalı.",
+              "Neden-sonuç ve nesne durumları korunmalı: şapka önce uçar, ardından geri alınır; kum şekli en son birlikte tamamlanır."
+            ],
+            "must_not_happen": [
+              "Yeni adlandırılmış karakter, yetişkin müdahalesi, kalıcı ilişki, önemli eşya veya yeni bir yan olay eklenmemeli.",
+              "Ece'nin uzaklaşması gerçek bir reddediş gibi kesinleştirilmemeli.",
+              "Deniz yaşının ötesinde uzun açıklamalar, karmaşık çıkarımlar veya yetişkin dili kullanmamalı.",
+              "Tema bir öğüt, ders, slogan ya da anlatıcı açıklamasıyla söylenmemeli.",
+              "Şapka geri alındıktan sonra yeniden uçmamalı veya kaybolmamalı.",
+              "Kum şekli tamamlandıktan sonra bozulmamalı, yeniden yapılmaya başlanmamalı ya da tamamlanmamış gibi anlatılmamalı.",
+              "Kelime hedefini doldurmak amacıyla kovalamaca gereksiz yere uzatılmamalı."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 16,
+              "purpose": "Parktaki gündelik anı, Deniz'in kum şeklini ve Ece'yle paylaşma isteğini açıkça kurmak.",
+              "beats": [
+                "Deniz kumdaki şekline yakından bakar ve küçük bir bölümünü eliyle düzeltir.",
+                "Yaptığını Ece'ye göstermek için ona seslenir ya da bakmasını ister.",
+                "Deniz, Ece'nin dönüp şekle bakmasını bekler."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Park, kum şekli, Deniz ve Ece dışında anlatıyı taşıyan yeni bir unsur eklenmemeli.",
+                "Deniz'in amacı somut ve hemen anlaşılır olmalı.",
+                "Sesli okumaya uygun, yumuşak ve kısa cümle ritmi kurulmalı."
+              ],
+              "must_not_do": [
+                "Kum şeklinin neye benzediğine dair yeni canon oluşturacak ayrıntılı bir tanım vermemeli.",
+                "Sorunu henüz açıklamamalı veya şapkayı erkenden öne çıkarmamalı."
+              ],
+              "handoff": "Deniz Ece'nin bakmasını beklerken Ece dönmeden uzaklaşır."
+            },
+            {
+              "index": 2,
+              "role": "COMPLICATION",
+              "relative_weight": 18,
+              "purpose": "Deniz'in gördüğü tek şeye dayanarak Ece'nin bakmak istemediğini sanmasını ve kısa süreli hayal kırıklığını göstermek.",
+              "beats": [
+                "Ece, Deniz'e ve kum şekline dönmeden hızla uzaklaşır.",
+                "Deniz elini kum şeklinin yanında tutup onun arkasından bakar.",
+                "Deniz, basit ve çocuksu bir düşünceyle Ece'nin şekle bakmak istemediğini sanır.",
+                "Kısa bir duraksamadan sonra Ece'nin nereye gittiğini merak edip başını kaldırır."
+              ],
+              "prior_evidence": [
+                "Sahne 1'de Deniz, kum şeklini Ece'ye göstermek istemiş ve onun dönmesini beklemiştir.",
+                "Ece henüz kum şekline bakmamıştır."
+              ],
+              "must_include": [
+                "Deniz'in yanlış yorumu açık ama kısa olmalı.",
+                "Merak, Deniz'i yeniden çevresine bakmaya yöneltmeli."
+              ],
+              "must_not_do": [
+                "Ece'nin Deniz'i bilerek görmezden geldiğini doğrulamamalı.",
+                "Uzun üzüntü, tartışma veya yeni bir problem yaratmamalı.",
+                "Anlatıcı, Deniz'e doğrudan ders vermemeli."
+              ],
+              "handoff": "Deniz dikkatle bakınca Ece'nin uzaklaşma nedenini görebileceği yeni bir görüş açısı kazanır."
+            },
+            {
+              "index": 3,
+              "role": "DISCOVERY",
+              "relative_weight": 28,
+              "purpose": "Uçan küçük kâğıt şapkayı görünür kılmak ve Deniz'in kendi kararıyla Ece'ye yardım ettiği somut eylem dizisini yürütmek.",
+              "beats": [
+                "Deniz, Ece'nin önünde savrulan küçük kâğıt şapkayı ve Ece'nin onu yakalamaya çalıştığını görür.",
+                "Gördüğü bu somut ayrıntıyla Ece'nin neden uzaklaştığını anlar; uzun bir açıklama yapmaz.",
+                "Deniz kum şeklinin yanından kalkıp Ece'nin yanına koşar.",
+                "Şapkanın gittiği yönü izler ve Ece'yle birlikte önünü kesmeye çalışır.",
+                "Deniz'in basit yardımı sayesinde şapka erişebilecekleri yerde durur ve çocuklar onu geri alır."
+              ],
+              "prior_evidence": [
+                "Sahne 2'de Deniz, Ece'nin bakmak istemediğini yalnızca onun dönmeden uzaklaşmasına dayanarak sanmıştır.",
+                "Sahne 2'nin sonunda Deniz merak edip Ece'nin gittiği yöne yeniden bakmıştır.",
+                "Küçük kâğıt şapkanın uçması, Ece'nin önceki uzaklaşmasının gerçek nedenidir."
+              ],
+              "must_include": [
+                "Şapkanın küçük ve kâğıttan olduğu korunmalı.",
+                "Deniz yalnızca gördüklerinden hareket etmeli.",
+                "Deniz yardım etmeyi kendisi seçmeli ve yakalama çabasına etkin biçimde katılmalı.",
+                "Şapkanın geri alındığı açıkça anlaşılmalı."
+              ],
+              "must_not_do": [
+                "Bir yetişkin, hayvan, araç veya yeni eşya yardıma gelmemeli.",
+                "Şapkayı yakalama bölümü tehlikeli, karmaşık veya yaşa aykırı olmamalı.",
+                "Ece uzun bir açıklamayla bütün durumu anlatmamalı.",
+                "Kovalamaca yalnızca kelime sayısını artırmak için tekrarlanmamalı."
+              ],
+              "handoff": "Şapka artık güvendedir; Deniz ile Ece birlikte kum şeklinin yanına döner."
+            },
+            {
+              "index": 4,
+              "role": "PAYOFF",
+              "relative_weight": 25,
+              "purpose": "Deniz'in başlangıçtaki paylaşma isteğini, Ece'nin katılımıyla ve kum şeklinin birlikte tamamlanmasıyla karşılamak.",
+              "beats": [
+                "Deniz ile Ece, geri aldıkları şapkayla birlikte kum şeklinin yanına gelir.",
+                "Ece bu kez durup Deniz'in yaptığı şekle bakar.",
+                "Deniz şeklin tamamlanmamış bölümünü somut bir hareketle gösterir.",
+                "İkisi elleriyle kumu düzeltir, ekler veya bastırır; birbirlerinin küçük hareketlerine yer açarlar.",
+                "Kum şekli birlikte tamamlanır."
+              ],
+              "prior_evidence": [
+                "Sahne 1'de Deniz'in temel amacı kum şeklini Ece'ye göstermekti.",
+                "Sahne 3'te Deniz, Ece'nin uzaklaşmasının reddetme değil uçan şapkayı yakalama çabası olduğunu gördü.",
+                "Sahne 3'ün sonunda küçük kâğıt şapka geri alındı ve artık dönüşe engel kalmadı.",
+                "Kum şekli bu ana kadar tamamlanmış sayılmamıştır."
+              ],
+              "must_include": [
+                "Ece'nin kum şekline gerçekten baktığı açık olmalı.",
+                "Tamamlama eyleminde iki çocuk da yer almalı.",
+                "Kum şeklinin bu sahnenin sonunda tamamlandığı kesinleşmeli."
+              ],
+              "must_not_do": [
+                "Yeni malzeme veya araç eklememeli.",
+                "Şapkayı yeniden sorun hâline getirmemeli.",
+                "Payoff'u bir yetişkin övgüsüne veya anlatıcının dersine bağlamamalı.",
+                "Tamamlanan şekli sonraki sahne için yeniden eksik bırakmamalı."
+              ],
+              "handoff": "Ortak iş bitmiştir; geriye çocukların tamamlanan şekli birlikte görmesi ve anı sakin biçimde kapatması kalır."
+            },
+            {
+              "index": 5,
+              "role": "RESOLUTION",
+              "relative_weight": 13,
+              "purpose": "Çözülen yanlış anlamayı açıklamaya boğmadan, tamamlanmış kum şekli önündeki ortak ve sıcak anla hikâyeyi kapatmak.",
+              "beats": [
+                "Deniz ile Ece yan yana durup bitmiş kum şekline bakar.",
+                "Kısa bir söz, gülümseme veya küçük bir ortak hareket, Deniz'in istediği paylaşımın gerçekleştiğini gösterir.",
+                "Deniz'in dikkati bir an kum şekliyle geri alınmış şapka arasında dolaşabilir; iki işin de tamamlandığı hissedilir.",
+                "Hikâye, parkta birlikte baktıkları sakin görüntüyle sona erer."
+              ],
+              "prior_evidence": [
+                "Sahne 3'te küçük kâğıt şapka geri alınmıştır.",
+                "Sahne 4'te Ece kum şekline bakmış ve iki çocuk şekli birlikte tamamlamıştır.",
+                "Deniz'in Sahne 1'deki paylaşma amacı artık gerçekleşmiştir."
+              ],
+              "must_include": [
+                "Tamamlanmış kum şeklinin durumu korunmalı.",
+                "Şapkanın güvende olduğu durum korunmalı.",
+                "Kapanış kısa, sıcak ve gündelik olmalı."
+              ],
+              "must_not_do": [
+                "Yeni bir sorun, yeni hedef veya devam macerası başlatmamalı.",
+                "Yanlış anlamayı uzun konuşmalarla çözümlememeli.",
+                "Merak ve dikkat temasını sloganlaştırmamalı.",
+                "Tamamlanan eylemleri geri almamalı."
+              ],
+              "handoff": "Hikâye, Deniz'in paylaşma isteğinin karşılandığı ve iki çocuğun tamamlanan şekle birlikte baktığı dengeli durumda biter."
+            }
+          ]
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 763,
+            "output_tokens": 3694,
+            "total_tokens": 4457
+          },
+          "cost": {
+            "usd": 0.038466,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Deniz'in Kum Şekli",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz, kumun üstüne eğildi. Küçük eliyle bir kenarı düzeltti. Kum, avucunun altında yumuşacıktı.\n\n\"Ece, bak!\" dedi Deniz. Sesi parkın içinde yayıldı. \"Gel bak, ne yaptım!\"\n\nDeniz elini kumdan çekti. Gözlerini Ece'den ayırmadı. Ece'nin dönüp bakmasını bekledi. Bir, iki, üç saniye. Deniz gülümsedi ve tekrar bekledi."
+              },
+              {
+                "index": 2,
+                "role": "COMPLICATION",
+                "prose": "Ama Ece dönmedi. Aksine, hızlıca uzaklaştı. Ayakları kumda küçük izler bıraktı.\n\nDeniz elini kum şeklinin yanında tuttu. Ece'nin arkasından baktı.\n\n\"Bakmak istemedi,\" diye düşündü Deniz. İçi biraz burkuldu. Ama uzun sürmedi bu duygu.\n\nDeniz başını kaldırdı. Ece nereye gidiyordu böyle? Merak etti. Gözlerini kısıp uzağa doğru dikkatle bakmaya başladı."
+              },
+              {
+                "index": 3,
+                "role": "DISCOVERY",
+                "prose": "İşte o zaman gördü. Küçük, kırmızı bir kâğıt şapka havada dönüyordu. Rüzgâr onu Ece'nin elinden almıştı. Ece koşuyor, elini uzatıyor, ama şapka her seferinde biraz daha yükseğe kaçıyordu.\n\nDeniz hemen anladı. Ece bakmak istememişti değil. Şapkasının peşinden gitmişti!\n\nDeniz kalktı. Ayaklarını kuma bastırıp koştu. Ece'nin yanına vardı.\n\n\"Şuraya gidiyor!\" dedi Deniz, parmağıyla gösterdi.\n\nİkisi birlikte koştular. Şapka bir çimenlik yerde düştü, sonra yine kalktı. Deniz, şapkanın önüne geçti. Elini açtı, aşağı doğru bastırdı.\n\nŞapka, Deniz'in avucunun altında durdu. Yakaladı!\n\n\"Aldım!\" dedi Deniz, gülerek. Ece de gülümsedi. Şapkayı birlikte tuttular."
+              },
+              {
+                "index": 4,
+                "role": "PAYOFF",
+                "prose": "Ece şapkasını başına taktı. Sonra ikisi birlikte kum şeklinin yanına döndüler.\n\nBu kez Ece durdu. Eğildi, kuma yakından baktı.\n\n\"Bak, burası eksik,\" dedi Deniz. Elini şeklin bir kenarına koydu.\n\nEce de yanına oturdu. Elleriyle kumu topladı, Deniz'in gösterdiği yere yerleştirdi. Deniz kumu hafifçe bastırdı. Ece bir tarafını düzeltti.\n\nİkisi birlikte kumu şekillendirdi. Deniz bir yeri ekledi, Ece bir yeri sıkıştırdı.\n\nSonunda şekil tamamlandı. Pürüzsüz ve düzgün duruyordu artık."
+              },
+              {
+                "index": 5,
+                "role": "RESOLUTION",
+                "prose": "Deniz ile Ece yan yana durdu. Bitmiş kum şekline baktılar.\n\n\"Çok güzel oldu,\" dedi Ece.\n\nDeniz gülümsedi. Gözü bir an şekle, bir an Ece'nin başındaki kırmızı şapkaya kaydı. İkisi de yerli yerindeydi şimdi.\n\nGüneş parkın üstünde yavaşça ısıtıyordu. Deniz ile Ece, kum şeklinin önünde öylece durup baktılar. Sessizce, birlikte."
+              }
+            ]
+          },
+          "story": "Deniz, kumun üstüne eğildi. Küçük eliyle bir kenarı düzeltti. Kum, avucunun altında yumuşacıktı.\n\n\"Ece, bak!\" dedi Deniz. Sesi parkın içinde yayıldı. \"Gel bak, ne yaptım!\"\n\nDeniz elini kumdan çekti. Gözlerini Ece'den ayırmadı. Ece'nin dönüp bakmasını bekledi. Bir, iki, üç saniye. Deniz gülümsedi ve tekrar bekledi.\n\nAma Ece dönmedi. Aksine, hızlıca uzaklaştı. Ayakları kumda küçük izler bıraktı.\n\nDeniz elini kum şeklinin yanında tuttu. Ece'nin arkasından baktı.\n\n\"Bakmak istemedi,\" diye düşündü Deniz. İçi biraz burkuldu. Ama uzun sürmedi bu duygu.\n\nDeniz başını kaldırdı. Ece nereye gidiyordu böyle? Merak etti. Gözlerini kısıp uzağa doğru dikkatle bakmaya başladı.\n\nİşte o zaman gördü. Küçük, kırmızı bir kâğıt şapka havada dönüyordu. Rüzgâr onu Ece'nin elinden almıştı. Ece koşuyor, elini uzatıyor, ama şapka her seferinde biraz daha yükseğe kaçıyordu.\n\nDeniz hemen anladı. Ece bakmak istememişti değil. Şapkasının peşinden gitmişti!\n\nDeniz kalktı. Ayaklarını kuma bastırıp koştu. Ece'nin yanına vardı.\n\n\"Şuraya gidiyor!\" dedi Deniz, parmağıyla gösterdi.\n\nİkisi birlikte koştular. Şapka bir çimenlik yerde düştü, sonra yine kalktı. Deniz, şapkanın önüne geçti. Elini açtı, aşağı doğru bastırdı.\n\nŞapka, Deniz'in avucunun altında durdu. Yakaladı!\n\n\"Aldım!\" dedi Deniz, gülerek. Ece de gülümsedi. Şapkayı birlikte tuttular.\n\nEce şapkasını başına taktı. Sonra ikisi birlikte kum şeklinin yanına döndüler.\n\nBu kez Ece durdu. Eğildi, kuma yakından baktı.\n\n\"Bak, burası eksik,\" dedi Deniz. Elini şeklin bir kenarına koydu.\n\nEce de yanına oturdu. Elleriyle kumu topladı, Deniz'in gösterdiği yere yerleştirdi. Deniz kumu hafifçe bastırdı. Ece bir tarafını düzeltti.\n\nİkisi birlikte kumu şekillendirdi. Deniz bir yeri ekledi, Ece bir yeri sıkıştırdı.\n\nSonunda şekil tamamlandı. Pürüzsüz ve düzgün duruyordu artık.\n\nDeniz ile Ece yan yana durdu. Bitmiş kum şekline baktılar.\n\n\"Çok güzel oldu,\" dedi Ece.\n\nDeniz gülümsedi. Gözü bir an şekle, bir an Ece'nin başındaki kırmızı şapkaya kaydı. İkisi de yerli yerindeydi şimdi.\n\nGüneş parkın üstünde yavaşça ısıtıyordu. Deniz ile Ece, kum şeklinin önünde öylece durup baktılar. Sessizce, birlikte.",
+          "word_count": 300
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 5998,
+            "output_tokens": 1553,
+            "total_tokens": 7551
+          },
+          "cost": {
+            "usd": 0.027526,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "narrative_load": {
+        "plan": {
+          "story_title": "Kum Şekli ve Uçan Şapka",
+          "scene_count_rationale": "Dört sahne, yaklaşık 500 kelimelik ve dört yaşa uygun bir sesli okuma için yeterlidir: yanlış anlamayı kurar, Deniz’in yeni gözlemle düşüncesini değiştirmesini gösterir, ortak çabayı sonuçlandırır ve kum şeklinin birlikte tamamlanmasıyla somut bir kapanış sağlar. Olaylar ayrı mikro-sahnelere bölünmeden tek bir neden-sonuç zincirinde ilerler.",
+          "story_contract": {
+            "protagonist_goal": "Deniz, parkta yaptığı kum şeklini Ece’ye göstermek ve onunla birlikte tamamlamak ister.",
+            "central_problem": "Ece, Deniz şekli gösteremeden uzaklaşınca Deniz onun bakmak istemediğini sanır; oysa Ece uçup giden küçük kâğıt şapkasını yakalamaya çalışmaktadır.",
+            "solution_principle": "Deniz ilk düşüncesine takılı kalmak yerine dikkatle bakar, Ece’nin neyin peşinde olduğunu fark eder ve somut bir eylemle ona yardım eder.",
+            "theme_thread": "Merak ve dikkat, Deniz’in gördüklerini yeniden değerlendirmesine ve kendi küçük ama etkili yardımını seçmesine yol açar.",
+            "ending_state": "Küçük kâğıt şapka Ece’ye geri dönmüştür; Deniz ile Ece kum şeklinin yanına dönmüş, şekli birlikte tamamlamış ve ona beraber bakmaktadır.",
+            "must_preserve": [
+              "Anlatım doğal Türkçe ile, yetişkin tarafından sesli okumaya uygun kısa ve ritmik cümlelerle kurulmalı.",
+              "Deniz dört yaşına uygun biçimde somut gözlem, kısa çıkarım ve basit eylemlerle ilerlemeli.",
+              "Ece, Deniz kum şeklini gösteremeden uzaklaşmalı ve Deniz önce onun bakmak istemediğini düşünmeli.",
+              "Ece’nin uzaklaşmasının gerçek nedeni, uçup giden küçük kâğıt şapkasını yakalamaya çalışması olmalı.",
+              "Deniz durumu gördükten sonra Ece’nin yanına gidip yardım etmeli.",
+              "Şapka yakalandıktan sonra ikisi kum şekline geri dönmeli ve onu birlikte tamamlamalı.",
+              "Ana problem çocukların eylemleriyle çözülmeli; bir yetişkin çözümü üstlenmemeli.",
+              "Yalnız park, kum şekli, kum, doğal koşullar ve küçük kâğıt şapka kullanılmalı."
+            ],
+            "must_not_happen": [
+              "Yeni adlandırılmış karakter, yeni ilişki geçmişi, kalıcı dünya bilgisi veya önemli yeni eşya eklenmemeli.",
+              "Deniz’in ilk yanlış düşüncesi uzun bir küslüğe, ağır duygusal çatışmaya veya yetişkin tarzı sorgulamaya dönüştürülmemeli.",
+              "Ece’nin niyeti, Deniz onu gözlemlemeden önce anlatıcı tarafından açıklanmamalı.",
+              "Şapka yakalandıktan sonra sırf olay uzasın diye yeniden uçmamalı veya kaybolmamalı.",
+              "Kum şekli sebepsizce bozulmamalı, yok olmamalı ya da baştan yapılmak zorunda bırakılmamalı.",
+              "Rüzgâr veya başka bir koşul bağımsız, son anda ortaya çıkan ikinci bir çözüm yaratmamalı.",
+              "Tema bir ders, öğüt, slogan veya açıklayıcı sonuç cümlesiyle ifade edilmemeli.",
+              "Kelime hedefini doldurmak için tekrarlı kovalamaca, gereksiz konuşma veya ek olay eklenmemeli."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 22,
+              "purpose": "Deniz’in kum şeklini Ece’ye gösterme isteğini, şeklin mevcut durumunu ve Ece’nin beklenmedik biçimde uzaklaşmasıyla doğan basit yanlış anlamayı kurmak.",
+              "beats": [
+                "Deniz parkta, kumda yaptığı belirgin şeklin yanında durur; henüz eklemek istediği küçük bir bölüm vardır.",
+                "Ece yakındayken Deniz heyecanla ona seslenir ve yaptığı şekli göstermek için kuma yönelir.",
+                "Ece tam bakacakmış gibi görünürken birden dönüp uzaklaşır.",
+                "Deniz kum şeklinin yanında kalır ve Ece’nin bakmak istemediğini düşünür; hevesi kısa süreliğine azalır."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Deniz’in merkezî isteği ilk sahnede açık ve somut olmalı.",
+                "Kum şekli gösterilebilecek kadar mevcut, fakat finalde birlikte tamamlanabilecek durumda olmalı.",
+                "Ece’nin uzaklaşması görülmeli, ancak nedeni henüz Deniz tarafından anlaşılmamalı."
+              ],
+              "must_not_do": [
+                "Ece’nin gerçek nedenini anlatıcı açıklamasıyla erkenden açığa çıkarma.",
+                "Deniz’in duygusunu yaşına uymayan soyut veya uzun iç konuşmalarla anlatma.",
+                "Kum şeklini bu sahnede tamamen bitmiş ilan etme."
+              ],
+              "handoff": "Deniz’in gözü, uzaklaşan Ece’nin hareketlerine yeniden takılır; ilk düşüncesini sınayacak yeni ayrıntıları fark etmeye başlar."
+            },
+            {
+              "index": 2,
+              "role": "PROGRESSION",
+              "relative_weight": 28,
+              "purpose": "Deniz’in dikkatli gözlemle Ece’nin uzaklaşmasının gerçek nedenini anlamasını ve yardım etmeye karar vermesini sağlamak.",
+              "beats": [
+                "Deniz, Ece’nin yalnızca uzaklaşmadığını; ellerini uzatıp yön değiştirerek bir şeyi izlediğini fark eder.",
+                "Biraz ileride küçük kâğıt şapkanın havada dönerek Ece’den kaçtığını görür.",
+                "Deniz, Ece’nin kum şeklinden kaçmadığını, şapkayı yakalamaya çalıştığını somut görüntülerden anlar.",
+                "Şapkanın gittiği yöne ve Ece’nin bulunduğu yere bakar; ardından kum şeklinin yanından ayrılıp yardım etmek için Ece’ye doğru gider.",
+                "Deniz ile Ece, şapkanın hareketini birlikte izleyerek ona iki yandan yaklaşmaya çalışır."
+              ],
+              "prior_evidence": [
+                "Ece, Deniz şekli gösteremeden aniden dönüp uzaklaşmıştır.",
+                "Deniz başlangıçta bu davranışı Ece’nin şekle bakmak istememesi olarak yorumlamıştır.",
+                "Ece’nin ellerini uzatması ve yön değiştirmesi, başka bir şeye yetişmeye çalıştığını gösterir.",
+                "Küçük kâğıt şapka parkta havalanmış durumdadır."
+              ],
+              "must_include": [
+                "Yanlış anlamanın düzelmesi, açıklama yapan bir yetişkinle değil Deniz’in gördüğü hareketler ve şapkayla gerçekleşmeli.",
+                "Deniz’in yardım kararı kendiliğinden ve basit olmalı.",
+                "Şapkanın hareketi, çocukların izleyebileceği açık bir yön ve ritimle anlatılmalı."
+              ],
+              "must_not_do": [
+                "Deniz’e yaşına uymayan ayrıntılı plan veya karmaşık fizik açıklaması yaptırma.",
+                "Tehlikeli, gözetimsiz veya park ortamına uymayan bir kovalamaca yaratma.",
+                "Yeni araç, oyuncak ya da yakalama düzeneği ekleme.",
+                "Şapkayı bu sahnede yakalanmış sayıp sonraki sahnede yeniden kaçırma."
+              ],
+              "handoff": "Deniz’in katılmasıyla Ece artık şapkanın peşinde tek değildir; iki çocuğun basit ortak hareketi yakalama anını hazırlar."
+            },
+            {
+              "index": 3,
+              "role": "PAYOFF",
+              "relative_weight": 25,
+              "purpose": "Deniz’in gözlem ve yardım kararını somut bir başarıya dönüştürmek; şapkayı yakalayıp yanlış anlamayı kısa, doğal bir etkileşimle çözmek.",
+              "beats": [
+                "Küçük kâğıt şapka alçalıp çocukların erişebileceği bir yöne süzülür.",
+                "Ece şapkanın bir yanına yaklaşırken Deniz diğer tarafta durarak kaçabileceği yönü kapatır.",
+                "Şapka yakalanır ve yeniden Ece’nin eline geçer.",
+                "Ece, şapkanın uçtuğunu kısa bir söz ve rahatlayan hareketiyle belli eder; Deniz de neden uzaklaştığını artık açıkça anlar.",
+                "Deniz kum şeklini hatırlar ve Ece’yi yeniden ona bakmaya çağırır; Ece bu kez onunla birlikte dönmeye yönelir."
+              ],
+              "prior_evidence": [
+                "Deniz küçük kâğıt şapkanın Ece’den uzaklaştığını görmüştür.",
+                "Ece’nin şapkayı yakalamaya çalıştığını anlamış ve yardım etmek için yanına gitmiştir.",
+                "İki çocuk şapkanın hareketini birlikte izleyip ona iki yandan yaklaşmaktadır.",
+                "Kum şekli parkta, başladıkları yerde durmaktadır ve tamamlanmayı beklemektedir."
+              ],
+              "must_include": [
+                "Şapkanın yakalanması Deniz’in yardımının etkili olduğu açık bir ortak sonuç olmalı.",
+                "Ece’nin ilk uzaklaşmasının nedeni kısa ve yaşa uygun biçimde doğrulanmalı.",
+                "Şapka yakalandıktan sonra Ece’nin elinde kalmalı.",
+                "Kum şekline dönüş kararı bu başarıdan doğal biçimde doğmalı."
+              ],
+              "must_not_do": [
+                "Şapkayı bir yetişkine, tesadüfi yeni karaktere veya yeni eşyaya yakalatma.",
+                "Yanlış anlamayı uzun bir özürleşmeye ya da açıklama konuşmasına dönüştürme.",
+                "Şapkayı yeniden uçurarak pay-off’u geri alma.",
+                "Kum şeklini henüz burada tamamlatma; finaldeki ortak eyleme alan bırak."
+              ],
+              "handoff": "Şapka güvende ve yanlış anlama çözülmüşken Deniz ile Ece, yarım kalan ortak odağa, kum şekline birlikte döner."
+            },
+            {
+              "index": 4,
+              "role": "RESOLUTION",
+              "relative_weight": 25,
+              "purpose": "Başlangıçtaki gösterme isteğini ortak bir tamamlama ve birlikte bakma anıyla sonuçlandırmak.",
+              "beats": [
+                "Deniz ile Ece kum şeklinin yanına geri döner; şekil onları bıraktıkları yerde beklemektedir.",
+                "Deniz daha önce eklemek istediği bölümü gösterir ve Ece de kuma elleriyle küçük bir katkı yapar.",
+                "İkisi şekli birlikte tamamlar; Deniz’in başta tek başına göstermek istediği şey artık ortak yaptıkları bir şekle dönüşür.",
+                "Ece tamamlanan şekle bakar, Deniz de yanına çömelir; küçük kâğıt şapka Ece’dedir.",
+                "Hikâye, iki çocuğun tamamladıkları kum şekline yan yana bakmasıyla sakin ve somut biçimde kapanır."
+              ],
+              "prior_evidence": [
+                "Deniz’in başlangıçtaki amacı kum şeklini Ece’ye göstermektir.",
+                "Kum şekli mevcut fakat küçük bir bölümü tamamlanmamış durumdadır.",
+                "Ece’nin uzaklaşmasının nedeni şapkasıdır; Deniz bunu görmüş ve yardım etmiştir.",
+                "Küçük kâğıt şapka yakalanmış ve Ece’nin eline geri verilmiştir.",
+                "Deniz ile Ece kum şekline birlikte dönmeye karar vermiştir."
+              ],
+              "must_include": [
+                "Kum şekli iki çocuğun basit, somut eylemleriyle tamamlanmalı.",
+                "Deniz’in ilk hedefi karşılanmalı: Ece şekle bakmalı.",
+                "Final görüntüsü park, kum şekli ve yakalanmış küçük kâğıt şapkayla sınırlı kalmalı.",
+                "Kapanış sıcak olmalı fakat tema açıklanarak öğüde dönüştürülmemeli."
+              ],
+              "must_not_do": [
+                "Yeni bir sorun, yeni bir karakter veya devam niteliğinde ikinci olay başlatma.",
+                "Şapkayı yeniden kaybettirme ya da kum şeklini bozma.",
+                "Deniz’in deneyiminden genel bir ders çıkardığını doğrudan söyletme.",
+                "Yetişkin onayı, ödül veya açıklamayla kapanış yapma."
+              ],
+              "handoff": "Ana hedef gerçekleşmiş, yanlış anlama çözülmüş, şapka güvende ve kum şekli birlikte tamamlanmıştır."
+            }
+          ],
+          "narrative_load": {
+            "supporting_thread_used": false,
+            "supporting_thread_description": "",
+            "main_causal_rule": "Ece’nin uzaklaşması Deniz’i reddettiği anlamına gelmez; Deniz dikkatle baktığında uçan şapkayı ve Ece’nin onu yakalama çabasını görür, yardıma katılır ve bu ortak eylem ikisini kum şekline geri getirir.",
+            "committed_state_constraints": [
+              "Kum şekli ilk sahneden finale kadar aynı yerde ve mevcut durumda kalır; finalden önce tamamen bitmiş sayılmaz.",
+              "Ece uzaklaştıktan sonra şapka yakalanana dek onu takip etmektedir.",
+              "Deniz şapkayı gördükten sonra Ece’nin neden uzaklaştığını artık bilmektedir; sonraki sahnelerde aynı yanlış anlamaya geri dönmez.",
+              "Küçük kâğıt şapka PAYOFF sahnesinde yakalandıktan sonra Ece’nin elinde kalır ve yeniden uçmaz.",
+              "Deniz ile Ece kum şekline döndükten sonra onu birlikte tamamlar; bu eylem geri alınmaz veya tekrarlanmaz."
+            ]
+          }
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 1185,
+            "output_tokens": 3643,
+            "total_tokens": 4828
+          },
+          "cost": {
+            "usd": 0.039391,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Deniz'in Kum Şekli",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz, parkın kum köşesinde diz çökmüştü. Ellerinde kum vardı, parmaklarında kum vardı. Önünde büyük bir kum şekli duruyordu. Şeklin bir kenarı hâlâ eksikti ama Deniz onu beğeniyordu.\n\n'Ece! Ece, gel bak!' diye seslendi Deniz.\n\nEce yakında duruyordu. Başını çevirdi, Deniz'e doğru bir adım attı. Deniz sevinçle kuma döndü, eliyle şekli gösterdi.\n\n'Bak, burası ev gibi oldu!' dedi.\n\nAma Ece birden döndü. Hızla başka bir yöne baktı, sonra oradan uzaklaştı.\n\nDeniz elini havada bıraktı. Kum şeklinin yanında kaldı. Ece bakmak istemedi, diye düşündü. İçi biraz sıkıldı. Kuma baktı, sonra Ece'nin gittiği yöne baktı."
+              },
+              {
+                "index": 2,
+                "role": "PROGRESSION",
+                "prose": "Deniz gözlerini kısıp Ece'ye baktı. Ece koşmuyordu ama elleri sürekli havaya uzanıyordu. Sağa gitti, sonra sola döndü. Bir şeyi kovalıyor gibiydi.\n\nDeniz merakla ayağa kalktı. Ece'nin baktığı yere doğru gözlerini dikti. Orada, havada, küçük bir kâğıt şapka dönüyordu! Rüzgâr onu yukarı kaldırıyor, sonra yana savuruyordu.\n\nDeniz'in içi birden aydınlandı. Ece bana bakmak istemedi diye değil, şapkasını kaçırdığı için gitti, diye anladı.\n\nDeniz artık durmadı. Kum şeklinin yanından kalktı, Ece'ye doğru koşmaya başladı.\n\n'Ece, ben de yardım ederim!' dedi.\n\nŞapka bir aşağı indi, bir yukarı kalktı. Deniz bir yandan yaklaştı, Ece öbür yandan. İkisi birden şapkanın hareketini izlediler, ona iki taraftan sokulmaya başladılar."
+              },
+              {
+                "index": 3,
+                "role": "PAYOFF",
+                "prose": "Küçük şapka alçaldı. Şimdi yere daha yakındı. Ece bir yandan eğildi, Deniz öbür yandan durup yolunu kapadı.\n\nŞapka son bir kez döndü, sonra Ece'nin uzattığı ellerine düştü.\n\n'Yakaladım!' dedi Ece, gülümseyerek. 'Şapkam uçtu da, onun için gittim.'\n\nDeniz başını salladı. 'Anladım şimdi,' dedi. 'Sen kaçmadın, şapkanı kovaladın.'\n\nEce şapkasını sıkıca tuttu, elinde kalması için parmaklarını kapattı.\n\nDeniz kum şeklini hatırladı. 'Hadi, kum şekli bizi bekliyor,' dedi.\n\nEce başını salladı, Deniz'le birlikte döndü."
+              },
+              {
+                "index": 4,
+                "role": "RESOLUTION",
+                "prose": "İkisi kum köşesine döndüler. Şekil hâlâ oradaydı, eksik köşesiyle onları bekliyordu.\n\nDeniz eliyle eksik kenarı gösterdi. 'Burayı tamamlamak istiyorum,' dedi.\n\nEce şapkasını yanına koydu, sonra elleriyle kumu düzeltti. Küçük bir tümsek yaptı, kenara ekledi.\n\nDeniz de kendi parçasını tamamladı. Şimdi şekil bütündü; bir kenarı Deniz'in, bir kenarı Ece'nin elinden çıkmıştı.\n\nEce şekle baktı, gülümsedi. 'Çok güzel oldu,' dedi.\n\nDeniz onun yanına çömeldi. İkisi birlikte kum şekline baktılar. Ece'nin küçük kâğıt şapkası yanlarında, sakin duruyordu."
+              }
+            ]
+          },
+          "story": "Deniz, parkın kum köşesinde diz çökmüştü. Ellerinde kum vardı, parmaklarında kum vardı. Önünde büyük bir kum şekli duruyordu. Şeklin bir kenarı hâlâ eksikti ama Deniz onu beğeniyordu.\n\n'Ece! Ece, gel bak!' diye seslendi Deniz.\n\nEce yakında duruyordu. Başını çevirdi, Deniz'e doğru bir adım attı. Deniz sevinçle kuma döndü, eliyle şekli gösterdi.\n\n'Bak, burası ev gibi oldu!' dedi.\n\nAma Ece birden döndü. Hızla başka bir yöne baktı, sonra oradan uzaklaştı.\n\nDeniz elini havada bıraktı. Kum şeklinin yanında kaldı. Ece bakmak istemedi, diye düşündü. İçi biraz sıkıldı. Kuma baktı, sonra Ece'nin gittiği yöne baktı.\n\nDeniz gözlerini kısıp Ece'ye baktı. Ece koşmuyordu ama elleri sürekli havaya uzanıyordu. Sağa gitti, sonra sola döndü. Bir şeyi kovalıyor gibiydi.\n\nDeniz merakla ayağa kalktı. Ece'nin baktığı yere doğru gözlerini dikti. Orada, havada, küçük bir kâğıt şapka dönüyordu! Rüzgâr onu yukarı kaldırıyor, sonra yana savuruyordu.\n\nDeniz'in içi birden aydınlandı. Ece bana bakmak istemedi diye değil, şapkasını kaçırdığı için gitti, diye anladı.\n\nDeniz artık durmadı. Kum şeklinin yanından kalktı, Ece'ye doğru koşmaya başladı.\n\n'Ece, ben de yardım ederim!' dedi.\n\nŞapka bir aşağı indi, bir yukarı kalktı. Deniz bir yandan yaklaştı, Ece öbür yandan. İkisi birden şapkanın hareketini izlediler, ona iki taraftan sokulmaya başladılar.\n\nKüçük şapka alçaldı. Şimdi yere daha yakındı. Ece bir yandan eğildi, Deniz öbür yandan durup yolunu kapadı.\n\nŞapka son bir kez döndü, sonra Ece'nin uzattığı ellerine düştü.\n\n'Yakaladım!' dedi Ece, gülümseyerek. 'Şapkam uçtu da, onun için gittim.'\n\nDeniz başını salladı. 'Anladım şimdi,' dedi. 'Sen kaçmadın, şapkanı kovaladın.'\n\nEce şapkasını sıkıca tuttu, elinde kalması için parmaklarını kapattı.\n\nDeniz kum şeklini hatırladı. 'Hadi, kum şekli bizi bekliyor,' dedi.\n\nEce başını salladı, Deniz'le birlikte döndü.\n\nİkisi kum köşesine döndüler. Şekil hâlâ oradaydı, eksik köşesiyle onları bekliyordu.\n\nDeniz eliyle eksik kenarı gösterdi. 'Burayı tamamlamak istiyorum,' dedi.\n\nEce şapkasını yanına koydu, sonra elleriyle kumu düzeltti. Küçük bir tümsek yaptı, kenara ekledi.\n\nDeniz de kendi parçasını tamamladı. Şimdi şekil bütündü; bir kenarı Deniz'in, bir kenarı Ece'nin elinden çıkmıştı.\n\nEce şekle baktı, gülümsedi. 'Çok güzel oldu,' dedi.\n\nDeniz onun yanına çömeldi. İkisi birlikte kum şekline baktılar. Ece'nin küçük kâğıt şapkası yanlarında, sakin duruyordu.",
+          "word_count": 340
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 6662,
+            "output_tokens": 1639,
+            "total_tokens": 8301
+          },
+          "cost": {
+            "usd": 0.029714,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "word_delta": 40,
+      "normalized_winners": {
+        "forward": "baseline_architect",
+        "reverse": "baseline_architect",
+        "consensus": "baseline_architect"
+      },
+      "pairwise_forward": {
+        "winner": "A",
+        "confidence": "medium",
+        "scores": {
+          "A": {
+            "coherence": 9,
+            "age_fit": 9,
+            "read_aloud": 9,
+            "agency": 9,
+            "pacing": 8,
+            "naturalness": 9,
+            "closure": 9,
+            "economy": 8,
+            "overall": 9
+          },
+          "B": {
+            "coherence": 9,
+            "age_fit": 8,
+            "read_aloud": 8,
+            "agency": 9,
+            "pacing": 8,
+            "naturalness": 7,
+            "closure": 8,
+            "economy": 7,
+            "overall": 8
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "low",
+          "B": "medium"
+        },
+        "serious_defects": {
+          "A": [],
+          "B": []
+        },
+        "why": "A, yanlış anlamayı daha doğal biçimde çözüyor ve duyguyu açıklamalara boğmuyor. B bazı düşünce ve diyaloglarda aynı bilgiyi gereğinden fazla yineliyor. A’nın sesli okuma ritmi ve kapanış imgesi daha güçlü."
+      },
+      "pairwise_reverse": {
+        "winner": "B",
+        "confidence": "medium",
+        "scores": {
+          "A": {
+            "coherence": 8,
+            "age_fit": 8,
+            "read_aloud": 7,
+            "agency": 8,
+            "pacing": 7,
+            "naturalness": 7,
+            "closure": 9,
+            "economy": 6,
+            "overall": 8
+          },
+          "B": {
+            "coherence": 9,
+            "age_fit": 9,
+            "read_aloud": 8,
+            "agency": 9,
+            "pacing": 8,
+            "naturalness": 8,
+            "closure": 9,
+            "economy": 8,
+            "overall": 9
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "medium",
+          "B": "low"
+        },
+        "serious_defects": {
+          "A": [],
+          "B": []
+        },
+        "why": "B, yanlış anlamadan yardımlaşmaya daha hızlı ve akıcı ilerliyor. Deniz’in şapkayı yakalamadaki rolü ve son görüntü güçlü bir kapanış sağlıyor. A sıcak ve tutarlı olsa da bazı açıklamaları tekrarlı."
+      },
+      "cost_usd": 0.15528899999999998
+    },
+    {
+      "family": "everyday_fantastical_discovery",
+      "premise": "Deniz odasında duvarda küçük bir renk gölü görür. Renkler yalnız güneş cam bardaktan geçtiğinde belirir. Deniz bardağı oynatmadan farklı yerlerden bakarak ve önünü kısa süre gölgeleyerek bu görüntünün ne zaman ortaya çıktığını keşfeder; sonra oyuncağını toplar ve renklerin geri gelmesini bekler.",
+      "baseline": {
+        "plan": {
+          "story_title": "Duvardaki Renk Gölü",
+          "scene_count_rationale": "Beş sahne, yaklaşık 500 kelimelik anlatıda gerekli olan gözlem, basit deneme, bekleyiş, doğrulama ve sakin kapanış aşamalarını ayrı tutar. Böylece Deniz’in keşfi aceleye gelmez; ancak öykü yeni olaylar veya gereksiz tekrarlarla uzatılmaz.",
+          "story_contract": {
+            "protagonist_goal": "Deniz, duvardaki küçük renk gölünün ne zaman göründüğünü kendi gözlemleriyle anlamaya çalışır.",
+            "central_problem": "Renkler sürekli görünmez; Deniz, bardağa dokunmadan görüntünün güneş ışığıyla bağlantısını çözmelidir.",
+            "solution_principle": "Deniz farklı yerlerden bakar, ışığın önünü kısa süre kendi gölgesiyle kapatır ve yeniden açarak renklerin yalnız güneş ışığı cam bardaktan geçip duvara ulaştığında belirdiğini somut biçimde fark eder.",
+            "theme_thread": "Merak, dikkatli bakma ve küçük ama amaçlı eylemler yoluyla doğal çocuk ajansı.",
+            "ending_state": "Oyuncak toplanmıştır, cam bardak hiç oynatılmamıştır, güneş ışığı yeniden bardaktan geçmektedir ve renkler duvarda tekrar görünürken Deniz keşfinin sonucunu sessizce seyreder.",
+            "must_preserve": [
+              "Anlatım doğal Türkçe, dört yaşındaki bir çocuğa sesli okumaya uygun, sıcak ve ritmik olmalıdır.",
+              "Deniz yalnız yaşına uygun somut gözlemler ve basit hareketlerle ilerlemelidir.",
+              "Renkler yalnız güneş ışığı cam bardaktan geçip duvara ulaştığında görünmelidir.",
+              "Deniz cam bardağı hiçbir aşamada oynatmamalıdır.",
+              "Farklı yerlerden bakmak görüntünün nedenini değiştirmemeli; asıl belirleyici ışık yolunun açık veya gölgelenmiş olması olmalıdır.",
+              "Deniz ışığın önünü yalnız kısa süre gölgelemelidir.",
+              "Deniz keşiften sonra oyuncağını toplamalı ve renklerin geri gelmesini beklemelidir.",
+              "Oyuncağın toplanmış durumu ve bardağın değişmeyen konumu sonuna kadar korunmalıdır."
+            ],
+            "must_not_happen": [
+              "Yeni adlandırılmış karakter, yetişkin müdahalesi, ilişki, önemli eşya veya kalıcı dünya bilgisi eklenmemelidir.",
+              "Bir yetişkin problemi çözmemeli, açıklamamalı veya Deniz’i yönlendirmemelidir.",
+              "Cam bardak itilmemeli, kaldırılmamalı, döndürülmemeli veya başka yere taşınmamalıdır.",
+              "Renkler güneş ışığı bardaktan geçmezken görünmemelidir.",
+              "Deniz yaşına uymayan bilimsel terimler kullanmamalı veya soyut bir açıklama yapmamalıdır.",
+              "Öykü ders, slogan ya da açık bir ahlak mesajıyla bitmemelidir.",
+              "Toplanan oyuncak daha sonra yeniden dağınık gösterilmemelidir.",
+              "Kelime hedefini doldurmak için yeni olaylar veya yinelenen denemeler eklenmemelidir."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 18,
+              "purpose": "Deniz’in odasında duvardaki küçük renk gölünü fark etmesini ve temel merakını kurmak.",
+              "beats": [
+                "Deniz duvardaki küçük, renkli ışık parçasını fark eder ve onu bir renk gölüne benzetir.",
+                "Duvarda güneş ışığını, yakındaki cam bardağı ve renkleri aynı anda görür; henüz kesin bir sonuç çıkarmaz.",
+                "Renklerin neden orada olduğunu anlamak için yakından bakmaya karar verir."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Oda, duvar, güneş ışığı, cam bardak ve küçük renk gölü.",
+                "Deniz’in şaşırması yerine dikkatle bakmaya yönelen yaşına uygun merakı.",
+                "Bardağın başlangıçtaki konumunda kalması."
+              ],
+              "must_not_do": [
+                "Renklerin nedenini anlatıcı aracılığıyla hemen açıklamak.",
+                "Mevcut ortamın dışına çıkmak veya yeni bir nesne eklemek.",
+                "Deniz’in bardağa dokunmasını sağlamak."
+              ],
+              "handoff": "Deniz, renklerin kendi baktığı yere göre değişip değişmediğini anlamak için yerini değiştirmeye başlar."
+            },
+            {
+              "index": 2,
+              "role": "INVESTIGATION",
+              "relative_weight": 28,
+              "purpose": "Deniz’in farklı bakış yerlerini ve kısa gölgeleme denemesini kullanarak görüntünün koşulunu keşfetmesini sağlamak.",
+              "beats": [
+                "Deniz yaklaşır, biraz yana geçer ve çömelerek farklı yerlerden bakar; renk gölü duvarda kalır.",
+                "Baktığı yer değişse de güneş ışığının cam bardaktan duvara uzanan yolu açıkken renkleri görmeye devam eder.",
+                "Deniz bedenini kısa süre ışığın önüne getirir; gölgesi ışık yolunu kapatınca renkler kaybolur.",
+                "Tekrar kenara çekilince güneş bardaktan geçer ve renkler geri gelir.",
+                "Deniz, görüntünün kendi baktığı yerden değil, güneş ışığının bardağa ulaşmasından etkilendiğini somut olarak fark eder."
+              ],
+              "prior_evidence": [
+                "Sahne 1’de renk gölü, güneş ışığı ve cam bardak aynı anda görülmüştür.",
+                "Cam bardağın hiç oynatılmadığı kurulmuştur."
+              ],
+              "must_include": [
+                "En az iki farklı bakış konumu.",
+                "Kısa süreli gölgeleme ve ardından ışık yolunun yeniden açılması.",
+                "Kaybolma ve geri gelme arasındaki açık, basit neden-sonuç bağı."
+              ],
+              "must_not_do": [
+                "Farklı açıdan bakmanın renkleri oluşturduğunu ileri sürmek.",
+                "Gölgeyi uzun süre sürdürmek.",
+                "Kırılma, tayf veya benzeri yaşa uygun olmayan bilimsel açıklamalara girmek.",
+                "Bardağın konumunu değiştirmek."
+              ],
+              "handoff": "Deniz artık renklerin dönmesi için ışık yolunun açık olması gerektiğini bekleyebilir; sıradaki günlük işine yönelir."
+            },
+            {
+              "index": 3,
+              "role": "ANTICIPATION",
+              "relative_weight": 19,
+              "purpose": "Keşfi günlük bir eyleme bağlamak; Deniz’in oyuncağını toplarken öğrendiği koşula güvenip renklerin dönüşünü beklemesini göstermek.",
+              "beats": [
+                "Deniz duvarı izlemeyi bırakıp oyuncağını yerden alarak toplar.",
+                "Hareketi sırasında kendi gölgesi kısa bir an için güneş ışığının önüne düşer ve renk gölü yeniden görünmez olur.",
+                "Deniz bardağa dokunmaz; oyuncağı toplanmış halde bırakır ve ışığın önünden çekilir.",
+                "Hemen başka bir çözüm aramak yerine duvara bakıp kısa bir süre bekler."
+              ],
+              "prior_evidence": [
+                "Sahne 2’de Deniz’in gölgesi ışık yolunu kapattığında renklerin kaybolduğu görülmüştür.",
+                "Sahne 2’de ışık yolu yeniden açıldığında renklerin döndüğü görülmüştür.",
+                "Cam bardağın yerini değiştirmeye gerek olmadığı anlaşılmıştır."
+              ],
+              "must_include": [
+                "Oyuncağın gerçekten toplanması.",
+                "Deniz’in bardağı oynatmadan beklemesi.",
+                "Bekleyişin dört yaşındaki bir çocuk için kısa ve somut hissettirilmesi."
+              ],
+              "must_not_do": [
+                "Oyuncağı yeni bir oyunun veya yan olayın merkezine çevirmek.",
+                "Renkler görünmeyince önceki keşfi sıfırlamak.",
+                "Bir yetişkinden yardım istemek veya yardım almak."
+              ],
+              "handoff": "Işık yolu yeniden açık kalmıştır; Deniz, kurduğu basit beklentinin gerçekleşip gerçekleşmeyeceğini izler."
+            },
+            {
+              "index": 4,
+              "role": "PAYOFF",
+              "relative_weight": 22,
+              "purpose": "Deniz’in keşfettiği kuralı doğrulamak ve bekleyişini renklerin yeniden belirmesiyle ödüllendirmek.",
+              "beats": [
+                "Güneş ışığı cam bardaktan geçip yeniden duvara ulaşır.",
+                "Önce küçük bir renk izi, ardından tanıdık renk gölü belirir.",
+                "Deniz renklerin beklediği gibi geri geldiğini görür.",
+                "Başarı, açıklayıcı bir dersle değil, Deniz’in bakışı ve küçük sevinciyle hissedilir."
+              ],
+              "prior_evidence": [
+                "Sahne 1’de renklerin güneş ışığı ve cam bardakla birlikte göründüğü kurulmuştur.",
+                "Sahne 2’de ışık yolu açıkken renklerin göründüğü, gölgelenince kaybolduğu denenmiştir.",
+                "Sahne 3’te Deniz ışığın önünden çekilmiş ve dönüşü beklemeye başlamıştır.",
+                "Oyuncak toplanmış, bardak ise hiç oynatılmamıştır."
+              ],
+              "must_include": [
+                "Renklerin yalnız güneş ışığı bardaktan geçerken geri dönmesi.",
+                "Deniz’in tahmininin somut biçimde doğrulanması.",
+                "Sesli okumaya uygun kısa ve ritmik bir dönüş anı."
+              ],
+              "must_not_do": [
+                "Geri dönüşü sihir, konuşan renkler veya yeni bir dış etkenle açıklamak.",
+                "Deniz’e uzun bir sonuç konuşması yaptırmak.",
+                "Yeni bir problem başlatmak."
+              ],
+              "handoff": "Keşif doğrulanmıştır; geriye yalnızca odadaki tamamlanmış durumları ve Deniz’in sakin memnuniyetini yerleştirmek kalır."
+            },
+            {
+              "index": 5,
+              "role": "RESOLUTION",
+              "relative_weight": 13,
+              "purpose": "Öyküyü oyuncak toplanmış, bardak yerinde ve renkler görünür durumdayken sakin bir görüntüyle tamamlamak.",
+              "beats": [
+                "Deniz toplanmış oyuncağına, yerinden hiç oynamamış bardağa ve duvardaki renklere bakar.",
+                "Renk gölünün yanında sessizce durur; artık neyi bekleyeceğini bilmektedir.",
+                "Öykü, güneşli renklerin duvarda kalışı ve Deniz’in dikkatli seyriyle yumuşakça sona erer."
+              ],
+              "prior_evidence": [
+                "Sahne 3’te oyuncak toplanmıştır.",
+                "Tüm sahnelerde cam bardak aynı yerde bırakılmıştır.",
+                "Sahne 4’te güneş ışığı bardaktan geçince renkler geri dönmüştür.",
+                "Deniz neden-sonuç bağını kendi gözlemleriyle kurmuştur."
+              ],
+              "must_include": [
+                "Toplanmış oyuncağın durumunun korunması.",
+                "Bardağın oynatılmadığının görsel olarak tutarlı kalması.",
+                "Merak ve memnuniyeti taşıyan, slogan içermeyen sakin kapanış."
+              ],
+              "must_not_do": [
+                "Yeni bir deneme, sorun veya karakter eklemek.",
+                "Oyuncağı yeniden yere dağıtmak.",
+                "Açık bir ders, öğüt veya bilimsel özet vermek.",
+                "Renklerin kurulmuş koşula aykırı biçimde görünmesini sağlamak."
+              ],
+              "handoff": "Öykü tamamlanır."
+            }
+          ]
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 760,
+            "output_tokens": 4525,
+            "total_tokens": 5285
+          },
+          "cost": {
+            "usd": 0.04677,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Duvardaki Renk Gölü",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz odasında oyun oynuyordu. Birden duvarda küçük, parlak bir şey gördü. Sarı, mavi ve pembe renkler birbirine karışmış, küçük bir göl gibi duruyordu.\n\nDeniz durdu. Başını hafifçe eğdi. Pencereden gelen güneş ışığı, masanın üstündeki cam bardağa vuruyordu. Işık bardaktan geçiyor, sonra duvara ulaşıyordu. Renk gölü tam orada, ışığın bittiği yerde parlıyordu.\n\nDeniz merakla baktı. Bardağa dokunmadı. Sadece yaklaştı, gözlerini kısarak duvara doğru eğildi.\n\n\"Bu renkler nereden geliyor?\" diye düşündü içinden. Anlamak için daha yakından bakmaya karar verdi."
+              },
+              {
+                "index": 2,
+                "role": "INVESTIGATION",
+                "prose": "Deniz sağa doğru bir adım attı. Renk gölü hâlâ duvardaydı. Sonra çömeldi, aşağıdan yukarı baktı. Renkler orada duruyordu, hiç kaybolmamıştı.\n\n\"Nereden bakarsam bakayım hep orada,\" diye fark etti Deniz.\n\nSonra aklına başka bir şey geldi. Elini kaldırıp kendi gövdesini kısacık bir süre ışığın önüne getirdi. Gölgesi ışığın yolunu kapladı.\n\nRenk gölü birden yok oldu.\n\nDeniz hemen kenara çekildi. Işık yeniden bardaktan geçti, duvara uzandı. Renkler geri geldi, tıpkı önceki gibi parlak ve sıcak.\n\nDeniz gözlerini kırpıştırdı. Şimdi anlamıştı: Renkler onun nereden baktığına göre değişmiyordu. Işık bardaktan geçebildiğinde renkler oradaydı. Işığın önü kapanınca renkler gidiyordu."
+              },
+              {
+                "index": 3,
+                "role": "ANTICIPATION",
+                "prose": "Deniz artık duvara bakmayı bıraktı. Yerde duran küçük oyuncak arabasını gördü ve onu almak için eğildi.\n\nEğilirken gölgesi bir an ışığın önüne düştü. Renk gölü yine kayboldu.\n\nDeniz oyuncağı aldı, tuttu, sonra yavaşça ışığın önünden çekildi. Bardağa hiç dokunmadı, hiç oynatmadı. Oyuncağını topladıktan sonra elinde tutarak duvara döndü.\n\nŞimdi ışığın yolu yeniden açıktı. Deniz sessizce durdu. Duvara baktı ve bekledi. Kısa bir sessizlik oldu, ama Deniz sabırla izliyordu."
+              },
+              {
+                "index": 4,
+                "role": "PAYOFF",
+                "prose": "Güneş ışığı yavaşça bardaktan geçti. Önce duvarda küçük bir renk lekesi belirdi. Sonra o küçük leke büyüdü, sarı, mavi ve pembe birlikte yeniden parladı.\n\nRenk gölü geri gelmişti.\n\nDeniz'in yüzünde küçük bir gülümseme oluştu. Tam da beklediği gibi olmuştu. Işık bardaktan geçince renkler geliyordu, gölge önüne geçince renkler gidiyordu. Deniz bunu artık biliyordu.\n\nKonuşmadı, açıklamadı. Sadece duvara bakıp izledi."
+              },
+              {
+                "index": 5,
+                "role": "RESOLUTION",
+                "prose": "Deniz elindeki toplanmış oyuncağına baktı. Sonra bardağa baktı; hiç yeri değişmemişti, ışık yine ondan geçiyordu. Duvardaki renk gölü sessizce parlıyordu.\n\nDeniz oyuncağını kenara koydu ve renklerin yanına oturdu. Artık ne zaman geleceklerini, ne zaman gideceklerini biliyordu.\n\nOda sessizdi. Güneş ışığı bardaktan geçmeye devam etti, renkler duvarda kalmayı sürdürdü. Deniz sakin sakin oturdu ve renk gölünü izledi."
+              }
+            ]
+          },
+          "story": "Deniz odasında oyun oynuyordu. Birden duvarda küçük, parlak bir şey gördü. Sarı, mavi ve pembe renkler birbirine karışmış, küçük bir göl gibi duruyordu.\n\nDeniz durdu. Başını hafifçe eğdi. Pencereden gelen güneş ışığı, masanın üstündeki cam bardağa vuruyordu. Işık bardaktan geçiyor, sonra duvara ulaşıyordu. Renk gölü tam orada, ışığın bittiği yerde parlıyordu.\n\nDeniz merakla baktı. Bardağa dokunmadı. Sadece yaklaştı, gözlerini kısarak duvara doğru eğildi.\n\n\"Bu renkler nereden geliyor?\" diye düşündü içinden. Anlamak için daha yakından bakmaya karar verdi.\n\nDeniz sağa doğru bir adım attı. Renk gölü hâlâ duvardaydı. Sonra çömeldi, aşağıdan yukarı baktı. Renkler orada duruyordu, hiç kaybolmamıştı.\n\n\"Nereden bakarsam bakayım hep orada,\" diye fark etti Deniz.\n\nSonra aklına başka bir şey geldi. Elini kaldırıp kendi gövdesini kısacık bir süre ışığın önüne getirdi. Gölgesi ışığın yolunu kapladı.\n\nRenk gölü birden yok oldu.\n\nDeniz hemen kenara çekildi. Işık yeniden bardaktan geçti, duvara uzandı. Renkler geri geldi, tıpkı önceki gibi parlak ve sıcak.\n\nDeniz gözlerini kırpıştırdı. Şimdi anlamıştı: Renkler onun nereden baktığına göre değişmiyordu. Işık bardaktan geçebildiğinde renkler oradaydı. Işığın önü kapanınca renkler gidiyordu.\n\nDeniz artık duvara bakmayı bıraktı. Yerde duran küçük oyuncak arabasını gördü ve onu almak için eğildi.\n\nEğilirken gölgesi bir an ışığın önüne düştü. Renk gölü yine kayboldu.\n\nDeniz oyuncağı aldı, tuttu, sonra yavaşça ışığın önünden çekildi. Bardağa hiç dokunmadı, hiç oynatmadı. Oyuncağını topladıktan sonra elinde tutarak duvara döndü.\n\nŞimdi ışığın yolu yeniden açıktı. Deniz sessizce durdu. Duvara baktı ve bekledi. Kısa bir sessizlik oldu, ama Deniz sabırla izliyordu.\n\nGüneş ışığı yavaşça bardaktan geçti. Önce duvarda küçük bir renk lekesi belirdi. Sonra o küçük leke büyüdü, sarı, mavi ve pembe birlikte yeniden parladı.\n\nRenk gölü geri gelmişti.\n\nDeniz'in yüzünde küçük bir gülümseme oluştu. Tam da beklediği gibi olmuştu. Işık bardaktan geçince renkler geliyordu, gölge önüne geçince renkler gidiyordu. Deniz bunu artık biliyordu.\n\nKonuşmadı, açıklamadı. Sadece duvara bakıp izledi.\n\nDeniz elindeki toplanmış oyuncağına baktı. Sonra bardağa baktı; hiç yeri değişmemişti, ışık yine ondan geçiyordu. Duvardaki renk gölü sessizce parlıyordu.\n\nDeniz oyuncağını kenara koydu ve renklerin yanına oturdu. Artık ne zaman geleceklerini, ne zaman gideceklerini biliyordu.\n\nOda sessizdi. Güneş ışığı bardaktan geçmeye devam etti, renkler duvarda kalmayı sürdürdü. Deniz sakin sakin oturdu ve renk gölünü izledi.",
+          "word_count": 354
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 5767,
+            "output_tokens": 1691,
+            "total_tokens": 7458
+          },
+          "cost": {
+            "usd": 0.028444,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "narrative_load": {
+        "plan": {
+          "story_title": "Duvardaki Renk Gölü",
+          "scene_count_rationale": "Dört sahne, yaklaşık 500 kelimelik ve 4 yaşa uygun bir sesli okuma için yeterli, kompakt bir zincir kurar: renklerin fark edilmesi, basit gözlemlerle koşulun sınanması, keşfin oyuncak toplama sırasında işe yaraması ve somut bir kapanış. Oyuncak toplama ayrı bir yan olay değil, ana neden-sonuç kuralının uygulandığı doğal eylemdir.",
+          "story_contract": {
+            "protagonist_goal": "Deniz, duvardaki küçük renk gölünün ne zaman göründüğünü kendi gözlemleriyle anlamaya çalışır.",
+            "central_problem": "Renkler bazen görünür, Deniz önlerini gölgelediğinde ise kaybolur; Deniz bardağa dokunmadan bu değişimin neye bağlı olduğunu bulmalıdır.",
+            "solution_principle": "Güneş ışığı cam bardaktan geçip duvara ulaşabildiğinde renkler görünür; ışığın önü gölgelenince kaybolur ve yol yeniden açılınca geri gelir.",
+            "theme_thread": "Deniz’in merakı, dikkatli bakması ve küçük, güvenli denemeler yapmasıyla doğal biçimde ilerler; keşif bir ders ya da slogan olarak açıklanmaz.",
+            "ending_state": "Deniz’in oyuncağı toplanmıştır, bardak hiç oynatılmamıştır ve Deniz uygun yerde beklerken renk gölü duvarda yeniden belirir.",
+            "must_preserve": [
+              "Deniz 4 yaşındadır ve yalnız somut gözlem, yer değiştirme, kısa süre gölgeleme, oyuncak toplama ve bekleme gibi yaşına uygun eylemler yapar.",
+              "Olay Deniz’in odasında, premise içinde bulunan duvar, güneş ışığı, cam bardak ve oyuncakla sınırlı kalır.",
+              "Renkler yalnız güneş ışığı cam bardaktan geçip duvara ulaştığında görünür.",
+              "Deniz cam bardağı oynatmadan farklı yerlerden bakar.",
+              "Deniz ışığın önünü yalnız kısa süre gölgeleyerek renklerin kaybolup geri gelmesini gözlemler.",
+              "Deniz oyuncağını toplar ve renklerin geri gelmesini bekler.",
+              "Türkçe doğal, sıcak ve yetişkin tarafından sesli okumaya uygun ritimli olmalıdır."
+            ],
+            "must_not_happen": [
+              "Cam bardak taşınmamalı, döndürülmemeli veya başka biçimde oynatılmamalıdır.",
+              "Ana problem bir yetişkin, yeni karakter ya da dışarıdan gelen açıklamayla çözülmemelidir.",
+              "Yeni named character, ilişki canon’u, kalıcı dünya bilgisi veya önemli yeni eşya eklenmemelidir.",
+              "Renklerin görünme kuralı sahneler arasında değişmemeli veya geçersizleşmemelidir.",
+              "Oyuncak toplandıktan sonra yeniden dağınık hâle getirilmemelidir.",
+              "Bilimsel ders, slogan, yetişkin tarzı uzun akıl yürütme ya da yaşa aykırı bağımsız davranış eklenmemelidir.",
+              "Kelime sayısını artırmak için tekrarlanan denemeler veya işlevsiz olaylar kullanılmamalıdır."
+            ]
+          },
+          "scenes": [
+            {
+              "index": 1,
+              "role": "SETUP",
+              "relative_weight": 25,
+              "purpose": "Deniz’i, odadaki küçük renk gölünü ve onun aniden fark edilen gizemini kurmak.",
+              "beats": [
+                "Deniz odasında duvara düşmüş küçük, parlak bir renk gölü fark eder; renklerin yan yana titreşen görünüşünü somut ve oyunlu bir dille inceler.",
+                "Başını ve bulunduğu yeri değiştirerek renk gölüne farklı yönlerden bakar; görüntünün duvarda durduğunu, yalnız bakışını değiştirmekle kaybolmadığını görür.",
+                "Duvardaki renklerle güneş alan cam bardak arasında dikkatini çeken bir doğrultu fark eder, fakat henüz kesin bir sonuca varmaz."
+              ],
+              "prior_evidence": [],
+              "must_include": [
+                "Küçük renk gölünün duvarda ilk kez görülmesi",
+                "Deniz’in cam bardağa dokunmadan farklı yerlerden bakması",
+                "Merakın kısa, somut tepkilerle gösterilmesi"
+              ],
+              "must_not_do": [
+                "Renklerin nedenini anlatıcı aracılığıyla hemen açıklamak",
+                "Cam bardağı oynatmak",
+                "Yeni bir eşya veya karakter eklemek"
+              ],
+              "handoff": "Deniz, yalnız farklı yerlerden bakmanın renkleri değiştirmediğini görünce güneş ışığının geçtiği yolu küçük ve güvenli bir denemeyle sınamak ister."
+            },
+            {
+              "index": 2,
+              "role": "PROGRESSION",
+              "relative_weight": 30,
+              "purpose": "Deniz’in ışığın önünü kısa süre gölgeleyerek görünme koşulunu keşfetmesini sağlamak.",
+              "beats": [
+                "Deniz bardağa dokunmadan, güneş ile bardak arasındaki ışığın önünü kısa süre gölgeler.",
+                "Gölge ışık yolunu kapatınca duvardaki renk gölü kaybolur; Deniz şaşırır ve hemen geri çekilir.",
+                "Işığın önü açılınca renkler yeniden belirir. Deniz bir kez daha kısa bir gölge yapıp çekilerek aynı değişimi doğrular.",
+                "Deniz, renklerin kendi bakışından değil, güneş ışığının bardağa ve oradan duvara ulaşmasından etkilendiğini yaşına uygun, kısa bir gözlemle kavrar."
+              ],
+              "prior_evidence": [
+                "Sahne 1’de renk gölü güneş alan cam bardakla aynı doğrultuda görülmüştür.",
+                "Sahne 1’de Deniz’in yalnızca farklı yerlerden bakması renk gölünü ortadan kaldırmamıştır.",
+                "Cam bardak başlangıçtan beri yerinde ve hareketsizdir."
+              ],
+              "must_include": [
+                "Önün yalnız kısa süre gölgelenmesi",
+                "Gölge gelince renklerin kaybolması",
+                "Gölge çekilince renklerin geri dönmesi",
+                "Deniz’in keşfi kendi gözlemiyle yapması"
+              ],
+              "must_not_do": [
+                "Denemeyi gereksiz yere çok kez tekrarlamak",
+                "Yetişkin tarzı bilimsel açıklama vermek",
+                "Yeni veya çelişkili bir görünme koşulu eklemek"
+              ],
+              "handoff": "Deniz artık renklerin geri dönebilmesi için güneş ışığının önünün açık kalması gerektiğini bilir; sıradaki gündelik eylemini bu keşfe göre yapabilir."
+            },
+            {
+              "index": 3,
+              "role": "PAYOFF",
+              "relative_weight": 30,
+              "purpose": "Deniz’in keşfettiği kuralı oyuncağını toplarken doğal biçimde uygulamasını ve renklerin dönüşünü öngörmesini sağlamak.",
+              "beats": [
+                "Deniz oyuncağını toplamak için eğildiğinde bedeni kısa süre ışığın önüne gelir ve renk gölü yine kaybolur.",
+                "Bu kez Deniz şaşırıp yeni bir neden aramaz; önceki gözlemine dayanarak ışık yolunu gölgelediğini anlar.",
+                "Oyuncağını tamamen toplar ve onu yeniden dağıtmadan ışığın önünden çekilir.",
+                "Deniz bardağa dokunmadan uygun bir yerde bekler. Güneş ışığı yeniden cam bardaktan geçip duvara ulaşınca renk gölü geri gelir."
+              ],
+              "prior_evidence": [
+                "Sahne 2’de ışığın önü gölgelendiğinde renkler kaybolmuştur.",
+                "Sahne 2’de gölge çekildiğinde renkler yeniden görünmüştür.",
+                "Cam bardağın hareket etmesine gerek olmadığı daha önceki gözlemlerle sabittir."
+              ],
+              "must_include": [
+                "Deniz’in oyuncağını toplaması",
+                "Toplama eyleminin tamamlanmış olarak korunması",
+                "Deniz’in renklerin geri gelmesini beklemesi",
+                "Renklerin kurulan neden-sonuç kuralına uygun biçimde geri dönmesi"
+              ],
+              "must_not_do": [
+                "Oyuncağı bağımsız bir çözüm aracına dönüştürmek",
+                "Toplanan oyuncağı yeniden dağıtmak",
+                "Renklerin dönüşünü yeni veya rastlantısal bir koşula bağlamak",
+                "Bir yetişkinin yardım etmesini sağlamak"
+              ],
+              "handoff": "Deniz’in tahmini gerçekleşmiştir: oyuncak toplanmış, ışığın önü açılmış ve renk gölü geri dönmüştür."
+            },
+            {
+              "index": 4,
+              "role": "RESOLUTION",
+              "relative_weight": 15,
+              "purpose": "Keşfi açıklayıcı bir derse çevirmeden, odadaki somut ve huzurlu son durumu göstermek.",
+              "beats": [
+                "Deniz, toplanmış oyuncağının yanında ışığın yolunu kapatmayacak bir yerde durur ya da oturur.",
+                "Duvardaki küçük renk gölünü yeniden seyreder; artık kaybolduğunda neyi beklemesi gerektiğini bilir.",
+                "Hikâye, bardak yerinde ve renkler duvarda parıldarken Deniz’in sakin merakıyla kapanır."
+              ],
+              "prior_evidence": [
+                "Sahne 3’te oyuncak tamamen toplanmış ve yeniden dağıtılmamıştır.",
+                "Sahne 3’te Deniz ışığın önünden çekilip beklediğinde renkler geri gelmiştir.",
+                "Tüm sahnelerde cam bardak aynı yerde kalmıştır."
+              ],
+              "must_include": [
+                "Toplanmış oyuncağın durumunun korunması",
+                "Cam bardağın hâlâ yerinde olması",
+                "Renk gölünün somut, öyküye özgü son görüntüsü"
+              ],
+              "must_not_do": [
+                "Sonu bir ahlak dersi veya sloganla kapatmak",
+                "Yeni bir sorun, eşya ya da karakter açmak",
+                "Kurulan ışık-gölge kuralını bozmak"
+              ],
+              "handoff": "Öykü, Deniz’in kendi keşfinin sonucunu sessizce izlediği tamamlanmış ve güvenli bir anda sona erer."
+            }
+          ],
+          "narrative_load": {
+            "supporting_thread_used": false,
+            "supporting_thread_description": "",
+            "main_causal_rule": "Güneş ışığı cam bardaktan geçip duvara ulaştığında renk gölü görünür; ışığın önü gölgelenince kaybolur, yol açılınca geri gelir.",
+            "committed_state_constraints": [
+              "Cam bardak bütün hikâye boyunca aynı yerde kalır ve Deniz tarafından oynatılmaz.",
+              "Oyuncak PAYOFF sahnesinde toplandıktan sonra yeniden dağınık hâle gelmez.",
+              "Renkler yalnız kurulan güneş, cam bardak ve açık ışık yolu koşuluna göre görünür veya kaybolur.",
+              "Deniz’in önceki gözlemleri sonraki kararlarında korunur; bilgi sıfırlanmaz."
+            ]
+          }
+        },
+        "plan_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 1182,
+            "output_tokens": 3336,
+            "total_tokens": 4518
+          },
+          "cost": {
+            "usd": 0.0363135,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        },
+        "story": {
+          "draft": {
+            "title": "Duvardaki Renk Gölü",
+            "scenes": [
+              {
+                "index": 1,
+                "role": "SETUP",
+                "prose": "Deniz odasında oyuncaklarıyla otururken duvarda küçük, parlak bir şey gördü. Sarı, mavi, pembe renkler yan yana, hafiften titreşiyordu. Sanki duvara küçük bir gökkuşağı konmuştu.\n\n\"Bu ne?\" dedi Deniz, gözlerini kısarak.\n\nBaşını sağa çevirdi, renk gölü hâlâ oradaydı. Sonra kalktı, biraz sola gitti, yine baktı. Renkler duvardan gitmemişti. Yattığı yerden, sonra dizlerinin üstünde, sonra ayakta baktı. Nereden baksa renkler aynı yerde parlıyordu.\n\n\"Sen hiç kaçmıyorsun,\" diye mırıldandı Deniz, renk gölüne gülümseyerek.\n\nGözü pencereye kaydı. Orada, güneş alan pencerenin önünde annesinin koyduğu cam bir bardak duruyordu. Bardağın içinden geçen güneş ışığı pırıl pırıldı. Deniz bardağa, sonra duvara, sonra tekrar bardağa baktı. İkisi de aynı çizginin üstünde gibiydi. Ama Deniz henüz bir şey söylemedi, sadece merakla izledi."
+              },
+              {
+                "index": 2,
+                "role": "PROGRESSION",
+                "prose": "Deniz bardağa dokunmadı. Elini usulca kaldırdı, güneşle bardağın arasına koydu, sadece bir saniye için.\n\nDuvardaki renkler birden söndü.\n\n\"Off!\" dedi Deniz, hemen elini geri çekti.\n\nGözlerini kırpıştırdı ve bekledi. Işık yeniden bardağa vurdu, duvarda renkler parıl parıl geri geldi. Deniz sevinçle güldü.\n\n\"Bir daha,\" dedi kendine.\n\nElini yine kısacık bir süre ışığın önüne koydu. Renkler yine kayboldu. Elini çekti, renkler yine döndü. Deniz artık şaşırmıyordu. Elini koyunca ışık duvara ulaşamıyor, elini çekince ışık yoluna devam edip renkleri geri getiriyordu. Bardak yerinde duruyordu, hiç kımıldamamıştı. Deniz oturdu, ellerini kucağına koydu ve renk gölünü sakin sakin izledi."
+              },
+              {
+                "index": 3,
+                "role": "PAYOFF",
+                "prose": "Yerde duran küçük oyuncak arabaya baktı Deniz. Onu toplaması gerekiyordu. Eğildi, arabayı yerden aldı; tam o sırada bedeni ışığın önüne geldi ve duvardaki renkler yine kayboldu.\n\nDeniz bu kez telaşlanmadı. \"Ben önündeyim şimdi,\" dedi kendi kendine, gülümseyerek.\n\nArabayı kutusuna koydu, sonra küçük topu, sonra bir bloğu aldı, hepsini yerine yerleştirdi. Oda derli topluydu artık, hiçbir oyuncak ortada kalmamıştı.\n\nDeniz sonra ışığın önünden çekildi, bardağın da güneşin de arasına girmeyecek bir köşeye oturdu. Ellerini dizlerine koydu ve bekledi. Bardak hiç yerinden oynamamıştı.\n\nBirkaç saniye sonra duvarda küçük renkler yeniden belirdi, önce ince bir çizgi gibi, sonra tam ve parlak. Deniz gülümsedi. \"Geldiniz,\" dedi yavaşça."
+              },
+              {
+                "index": 4,
+                "role": "RESOLUTION",
+                "prose": "Deniz, toplanmış oyuncaklarının yanında, ışığın yolunu kesmeyen küçük köşesinde oturuyordu. Duvardaki renk gölü orada, sessizce parlıyordu; sarı, mavi, pembe, hepsi bir aradaydı.\n\nCam bardak pencerenin önünde, hiç dokunulmamış hâliyle duruyordu. Güneş ışığı ondan geçip duvara ulaşıyordu, hiçbir engel yoktu artık.\n\nDeniz bacaklarını kavuşturdu, çenesini eline koydu ve renk gölünü seyretmeye devam etti. Artık biliyordu: renkler bazen gidiyordu, ama ışığın yolu açıldığında hep geri geliyordu.\n\nOda sakindi. Oyuncaklar yerli yerinde, bardak yerinde, güneş de tam üstünde duruyordu. Deniz, hiçbir şey söylemeden, sadece duvardaki küçük ışıltıyı izlemeyi sürdürdü."
+              }
+            ]
+          },
+          "story": "Deniz odasında oyuncaklarıyla otururken duvarda küçük, parlak bir şey gördü. Sarı, mavi, pembe renkler yan yana, hafiften titreşiyordu. Sanki duvara küçük bir gökkuşağı konmuştu.\n\n\"Bu ne?\" dedi Deniz, gözlerini kısarak.\n\nBaşını sağa çevirdi, renk gölü hâlâ oradaydı. Sonra kalktı, biraz sola gitti, yine baktı. Renkler duvardan gitmemişti. Yattığı yerden, sonra dizlerinin üstünde, sonra ayakta baktı. Nereden baksa renkler aynı yerde parlıyordu.\n\n\"Sen hiç kaçmıyorsun,\" diye mırıldandı Deniz, renk gölüne gülümseyerek.\n\nGözü pencereye kaydı. Orada, güneş alan pencerenin önünde annesinin koyduğu cam bir bardak duruyordu. Bardağın içinden geçen güneş ışığı pırıl pırıldı. Deniz bardağa, sonra duvara, sonra tekrar bardağa baktı. İkisi de aynı çizginin üstünde gibiydi. Ama Deniz henüz bir şey söylemedi, sadece merakla izledi.\n\nDeniz bardağa dokunmadı. Elini usulca kaldırdı, güneşle bardağın arasına koydu, sadece bir saniye için.\n\nDuvardaki renkler birden söndü.\n\n\"Off!\" dedi Deniz, hemen elini geri çekti.\n\nGözlerini kırpıştırdı ve bekledi. Işık yeniden bardağa vurdu, duvarda renkler parıl parıl geri geldi. Deniz sevinçle güldü.\n\n\"Bir daha,\" dedi kendine.\n\nElini yine kısacık bir süre ışığın önüne koydu. Renkler yine kayboldu. Elini çekti, renkler yine döndü. Deniz artık şaşırmıyordu. Elini koyunca ışık duvara ulaşamıyor, elini çekince ışık yoluna devam edip renkleri geri getiriyordu. Bardak yerinde duruyordu, hiç kımıldamamıştı. Deniz oturdu, ellerini kucağına koydu ve renk gölünü sakin sakin izledi.\n\nYerde duran küçük oyuncak arabaya baktı Deniz. Onu toplaması gerekiyordu. Eğildi, arabayı yerden aldı; tam o sırada bedeni ışığın önüne geldi ve duvardaki renkler yine kayboldu.\n\nDeniz bu kez telaşlanmadı. \"Ben önündeyim şimdi,\" dedi kendi kendine, gülümseyerek.\n\nArabayı kutusuna koydu, sonra küçük topu, sonra bir bloğu aldı, hepsini yerine yerleştirdi. Oda derli topluydu artık, hiçbir oyuncak ortada kalmamıştı.\n\nDeniz sonra ışığın önünden çekildi, bardağın da güneşin de arasına girmeyecek bir köşeye oturdu. Ellerini dizlerine koydu ve bekledi. Bardak hiç yerinden oynamamıştı.\n\nBirkaç saniye sonra duvarda küçük renkler yeniden belirdi, önce ince bir çizgi gibi, sonra tam ve parlak. Deniz gülümsedi. \"Geldiniz,\" dedi yavaşça.\n\nDeniz, toplanmış oyuncaklarının yanında, ışığın yolunu kesmeyen küçük köşesinde oturuyordu. Duvardaki renk gölü orada, sessizce parlıyordu; sarı, mavi, pembe, hepsi bir aradaydı.\n\nCam bardak pencerenin önünde, hiç dokunulmamış hâliyle duruyordu. Güneş ışığı ondan geçip duvara ulaşıyordu, hiçbir engel yoktu artık.\n\nDeniz bacaklarını kavuşturdu, çenesini eline koydu ve renk gölünü seyretmeye devam etti. Artık biliyordu: renkler bazen gidiyordu, ama ışığın yolu açıldığında hep geri geliyordu.\n\nOda sakindi. Oyuncaklar yerli yerinde, bardak yerinde, güneş de tam üstünde duruyordu. Deniz, hiçbir şey söylemeden, sadece duvardaki küçük ışıltıyı izlemeyi sürdürdü.",
+          "word_count": 398
+        },
+        "writer_meta": {
+          "parse_failures": [],
+          "usage": {
+            "input_tokens": 5417,
+            "output_tokens": 1858,
+            "total_tokens": 7275
+          },
+          "cost": {
+            "usd": 0.029414,
+            "try_amount": null,
+            "usd_try_rate": null
+          }
+        }
+      },
+      "word_delta": 44,
+      "normalized_winners": {
+        "forward": "narrative_load_architect",
+        "reverse": "narrative_load_architect",
+        "consensus": "narrative_load_architect"
+      },
+      "pairwise_forward": {
+        "winner": "B",
+        "confidence": "high",
+        "scores": {
+          "A": {
+            "coherence": 6,
+            "age_fit": 7,
+            "read_aloud": 6,
+            "agency": 8,
+            "pacing": 5,
+            "naturalness": 6,
+            "closure": 8,
+            "economy": 4,
+            "overall": 6
+          },
+          "B": {
+            "coherence": 7,
+            "age_fit": 8,
+            "read_aloud": 8,
+            "agency": 9,
+            "pacing": 7,
+            "naturalness": 8,
+            "closure": 8,
+            "economy": 6,
+            "overall": 8
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "high",
+          "B": "medium"
+        },
+        "serious_defects": {
+          "A": [
+            "Son bölüm aynı keşfi gereğinden fazla tekrar ediyor.",
+            "Işık yolu açıldıktan sonra renklerin gecikerek ve yavaşça belirmesi nedensellikle uyuşmuyor."
+          ],
+          "B": [
+            "Işık yolu açıldıktan sonra renklerin birkaç saniye gecikmesi yapay.",
+            "Oyuncak toplama ve final bölümü bir miktar uzatılmış."
+          ]
+        },
+        "why": "B’de Deniz’in denemeleri, konuşmaları ve oyuncak toplaması daha canlı ve organik ilerliyor. Sesli okumaya daha uygun, doğal ve oyunlu bir Türkçesi var. A aynı sonucu fazla kez açıklayarak temposunu düşürüyor."
+      },
+      "pairwise_reverse": {
+        "winner": "A",
+        "confidence": "high",
+        "scores": {
+          "A": {
+            "coherence": 9,
+            "age_fit": 8,
+            "read_aloud": 8,
+            "agency": 9,
+            "pacing": 7,
+            "naturalness": 8,
+            "closure": 9,
+            "economy": 6,
+            "overall": 8
+          },
+          "B": {
+            "coherence": 7,
+            "age_fit": 8,
+            "read_aloud": 7,
+            "agency": 8,
+            "pacing": 7,
+            "naturalness": 6,
+            "closure": 8,
+            "economy": 7,
+            "overall": 7
+          }
+        },
+        "forced_or_filler_risk": {
+          "A": "medium",
+          "B": "medium"
+        },
+        "serious_defects": {
+          "A": [
+            "Son bölüm aynı sonucu gereğinden fazla yineliyor."
+          ],
+          "B": [
+            "Işık yolu açıldıktan sonra ışığın yavaşça geçmesi ve lekenin büyümesi nedensel olarak yapay.",
+            "Oyuncağı toplama eylemi tamamlanmıyor; oyuncak elde tutulup sonra kenara konuyor.",
+            "“Elindeki toplanmış oyuncağı” ve “renklerin yanına oturdu” doğal Türkçe değil."
+          ]
+        },
+        "why": "A’da Deniz’in denemeleri, keşfi ve oyuncak toplaması daha organik biçimde birbirine bağlanıyor. B daha kısa olsa da bazı ifadeleri ve ışığın geri dönüşü yapay duruyor. A’nın temel kusuru, kapanıştaki gereksiz yineleme."
+      },
+      "cost_usd": 0.1623335
+    }
+  ],
+  "total_cost_usd": 0.455439,
+  "elapsed_seconds": 480.422
+}
