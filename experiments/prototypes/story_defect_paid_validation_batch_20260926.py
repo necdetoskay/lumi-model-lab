@@ -82,15 +82,22 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
         severity = finding.get("severity")
         spans = finding.get("span_ids")
         reason = str(finding.get("reason") or "").strip()
+        reason_missing = not bool(reason)
+        if reason_missing:
+            reason = "[validator omitted reason]"
         if family not in DEFECT_FAMILIES:
             raise RuntimeError(f"finding_{idx}_family_invalid:{family}")
         if severity not in {"serious", "critical"}:
             raise RuntimeError(f"finding_{idx}_severity_invalid:{severity}")
         if not isinstance(spans, list) or not spans or not set(spans).issubset(valid_ids):
             raise RuntimeError(f"finding_{idx}_span_invalid:{spans}")
-        if not reason:
-            raise RuntimeError(f"finding_{idx}_reason_missing")
-        out.append({"family": family, "severity": severity, "span_ids": spans, "reason": reason})
+        out.append({
+            "family": family,
+            "severity": severity,
+            "span_ids": spans,
+            "reason": reason,
+            "reason_missing": reason_missing,
+        })
     return out
 
 
