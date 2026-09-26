@@ -20,7 +20,8 @@ from src.story_defect_detection import (
 from src.story_defect_synthetic_corpus import load_synthetic_corpus
 
 ADMISSION = Path("experiments/fixtures/story_defect_clean_source_admission.tr-age4.v1.json")
-D1_SUMMARY = Path("experiments/fixtures/story_defect_d1_validation_summary.v1.json")
+D1_MANIFEST = Path("experiments/fixtures/story_defect_d1_validation_manifest.tr-age4.v1.json")
+RESPONSE_SUPPLEMENT = Path("experiments/fixtures/story_defect_response_supplement.tr-age4.v1.json")
 OUT = Path("runs/story-defect-jev-calibration/result.json")
 
 THRESHOLDS = [round(x / 100, 2) for x in range(1, 100)]
@@ -35,29 +36,40 @@ def load_admitted_clean_ids() -> set[str]:
     }
 
 
-def load_quarantined_ids() -> set[str]:
-    payload = json.loads(D1_SUMMARY.read_text(encoding="utf-8"))
-    return set(payload["quarantined_case_ids"])
+def load_d1_manifest() -> dict[str, Any]:
+    return json.loads(D1_MANIFEST.read_text(encoding="utf-8"))
 
 
 def calibration_cases() -> list[dict[str, Any]]:
-    synthetic = load_synthetic_corpus()
-    quarantine = load_quarantined_ids()
-    rows: list[dict[str, Any]] = []
+    manifest = load_d1_manifest()
+    base = load_synthetic_corpus()
+    supplement = json.loads(RESPONSE_SUPPLEMENT.read_text(encoding="utf-8"))
 
-    for case in synthetic["cases"]:
-        if case["case_id"] in quarantine:
+    base_by_id = {row["case_id"]: row for row in base["cases"]}
+    supplement_by_id = {row["case_id"]: row for row in supplement["cases"]}
+
+    rows: list[dict[str, Any]] = []
+    for gold in manifest["validated_cases"]:
+        if gold["dataset_split"] != "calibration":
             continue
-        if case["dataset_split"] != "calibration":
-            continue
+
+        corpus = gold["corpus"]
+        if corpus == "story_defect_corpus.tr-age4.synthetic.v1":
+            case = base_by_id[gold["case_id"]]
+        elif corpus == "story_defect_response_supplement.tr-age4.v1":
+            case = supplement_by_id[gold["case_id"]]
+        else:
+            raise RuntimeError(f"unknown_d1_corpus:{corpus}:{gold['case_id']}")
+
         rows.append({
-            "case_id": case["case_id"],
+            "case_id": gold["case_id"],
             "kind": "defect",
             "dataset_split": "calibration",
             "story_family": case["family"],
             "text": case["text"],
-            "gold_family": case["gold"]["family"],
-            "gold_severity": case["gold"]["severity"],
+            "gold_family": gold["family"],
+            "gold_severity": gold["severity"],
+            "validation_basis": gold["validation_basis"],
         })
 
     admitted = load_admitted_clean_ids()
@@ -75,6 +87,7 @@ def calibration_cases() -> list[dict[str, Any]]:
             "text": source["story"],
             "gold_family": None,
             "gold_severity": None,
+            "validation_basis": "independently_admitted_clean_source",
         })
 
     return sorted(rows, key=lambda row: row["case_id"])
@@ -182,7 +195,7 @@ def main() -> None:
     load_dotenv()
     api_key = os.environ["OPENROUTER_API_KEY"]
     cases = calibration_cases()
-    if len(cases) != 140:
+    if len(cases) != 148:
         raise RuntimeError(f"calibration_case_count_mismatch:{len(cases)}")
 
     questions = build_jev_defect_questions()
@@ -271,6 +284,7 @@ def main() -> None:
             "defect_cases": sum(row["kind"] == "defect" for row in rows),
             "clean_cases": sum(row["kind"] == "clean" for row in rows),
             "held_out_touched": False,
+            "d1_manifest": str(D1_MANIFEST),
         },
         "threshold_selection_policy": {
             "per_family_thresholds": True,
