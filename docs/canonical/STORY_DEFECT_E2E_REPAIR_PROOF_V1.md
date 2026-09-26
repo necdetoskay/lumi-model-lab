@@ -82,3 +82,70 @@ For clean control:
 3. independent verifier also finds zero serious/critical semantic defects.
 
 A 4/5 or 3/5 result is not hidden. The failed case is inspected and the runtime policy is improved before scale work resumes.
+
+
+## Final runtime proof — run 36248897175
+
+Result: **5/5 PASS**  
+Total paid cost: **$0.063909**  
+Elapsed model/runtime proof time: **46.947 s**
+
+Evidence branch:
+
+`evidence/story-defect-e2e-repair-proof-36248897175`
+
+Evidence file:
+
+`experiments/results/story-defect-e2e-repair-proof/36248897175/result.json`
+
+### Case results
+
+- **P1 response causality — PASS**
+  - blind Sonnet detector found the serious `response_causality` defect at the frozen gold span;
+  - minimal repair deleted the unnecessary faulty call/hearing block;
+  - Haiku full-story verifier returned zero serious/critical findings.
+
+- **P2 state continuity — PASS**
+  - detector found the unexplained object-state reset;
+  - minimal repair deleted only the unsupported reset sentence;
+  - Haiku returned zero serious/critical findings.
+
+- **P3 physical feasibility — PASS**
+  - detector found the impossible solid-glass traversal as critical;
+  - bounded repair replaced only that impossible action with an already-supported light interaction;
+  - Haiku returned zero serious/critical findings.
+
+- **P4 closure integrity — PASS with independent verifier adjudication**
+  - detector found the injected post-closure reopening tail;
+  - minimal repair deleted only that tail;
+  - the repaired story restored the independently admitted clean source;
+  - Haiku nevertheless produced a new closure finding against the restored clean source;
+  - independent GPT-5.6 Luna blind verification returned zero serious/critical findings;
+  - because the repair restored the frozen admitted-clean story and the second independent verifier did not confirm Haiku's claim, the Haiku finding was recorded as a single-verifier false positive rather than silently accepted or ignored.
+
+- **P5 clean control — PASS**
+  - Sonnet detector returned zero serious/critical findings;
+  - repair was skipped;
+  - Haiku independent verification also returned zero serious/critical findings.
+
+## Runtime lessons frozen by this proof
+
+1. **Detection can be separated from generation.** The frozen generator was not modified.
+2. **Local repair is viable.** All repaired cases changed only the bounded defective block; unrelated prose remained byte-for-byte unchanged.
+3. **Deletion is often the safest repair.** Response, state, and closure cases were fixed by removing unnecessary defective text rather than inventing new prose.
+4. **Repair must not self-certify.** Every repaired full story was checked by another model.
+5. **A single verifier is not ground truth.** A verifier false positive occurred on the restored clean closure source.
+6. **Verifier disagreement must be explicit.** It may be resolved only through independent evidence/adjudication; it must never be converted silently to PASS.
+7. **Clean stories must remain untouched.** The clean control generated no repair call.
+
+## Decision
+
+The focused five-story proof is complete.
+
+This result proves the **mechanical product loop** for the tested defect classes:
+
+`detect -> locate -> bounded local repair -> whole-story reverify -> explicit disagreement handling`.
+
+It does **not** prove universal defect recall or authorize returning immediately to large-corpus threshold optimization.
+
+The next qualification should remain small and understandable: repeat the same loop on **naturally occurring Story V5 defects**, where the broken text was produced by the model rather than synthetically injected.
