@@ -21,6 +21,7 @@ OUT = Path("runs/story-defect-e2e-repair-proof/result.json")
 DETECTOR_MODEL = "anthropic/claude-sonnet-5"
 REPAIR_MODEL = "anthropic/claude-sonnet-5"
 POST_VERIFY_MODEL = "anthropic/claude-haiku-4.5"
+POST_ADJUDICATOR_MODEL = "openai/gpt-5.6-luna"
 
 FAMILY_ALIASES = {
     "physical_impossible_affordance": "physical_feasibility",
@@ -185,6 +186,13 @@ def expected_match(findings: list[dict[str, Any]], gold: dict[str, Any]) -> dict
         if finding["family"] == gold["family"] and gold_spans.intersection(finding["span_ids"]):
             return finding
     return None
+
+
+def findings_overlap(left: dict[str, Any], right: dict[str, Any]) -> bool:
+    return (
+        left["family"] == right["family"]
+        and bool(set(left["span_ids"]).intersection(right["span_ids"]))
+    )
 
 
 def build_repaired_story(story: str, target_block: str, replacement: str) -> tuple[str, dict[str, Any]]:
@@ -356,24 +364,73 @@ def main() -> None:
                     current_target_for_prompt = replacement
                     verifier_feedback = verifier_findings
 
+                adjudicator_findings: list[dict[str, Any]] = []
+                adjudicator_meta: dict[str, Any] | None = None
+                clean_source_story = source_by_id[case["source_id"]]["story"]
+                restores_admitted_clean_source = (
+                    case["source_id"] in admitted_clean
+                    and repaired_story.strip() == clean_source_story.strip()
+                )
+
+                if verifier_findings:
+                    adjudicator_findings, adjudicator_meta = call_detector(
+                        api_key=api_key,
+                        model=POST_ADJUDICATOR_MODEL,
+                        story_id=f"{proof_id}_post_verify_adjudication",
+                        story_family=case["family"],
+                        story_text=repaired_story,
+                        seed=2026145000 + index,
+                        request_class="defect_locator",
+                    )
+                    total_cost += meta_cost(adjudicator_meta)
+
+                consensus_findings = [
+                    finding
+                    for finding in verifier_findings
+                    if any(
+                        findings_overlap(finding, adjudicated)
+                        for adjudicated in adjudicator_findings
+                    )
+                ]
+
+                post_verify_clear = len(verifier_findings) == 0
+                post_verify_disagreement_resolved = (
+                    bool(verifier_findings)
+                    and not adjudicator_findings
+                    and restores_admitted_clean_source
+                )
+
                 row["repair"] = {
                     "model": REPAIR_MODEL,
                     "max_attempts": 2,
                     "attempts": repair_attempts,
                     "final_replacement_text": repair_attempts[-1]["replacement_text"],
                     "mechanical_invariants": mechanical,
+                    "restores_admitted_clean_source": restores_admitted_clean_source,
                 }
                 row["post_verify"] = {
                     "model": POST_VERIFY_MODEL,
                     "findings": verifier_findings,
                     "meta": verifier_meta,
                     "attempts_used": len(repair_attempts),
+                    "adjudication": None if not verifier_findings else {
+                        "model": POST_ADJUDICATOR_MODEL,
+                        "findings": adjudicator_findings,
+                        "meta": adjudicator_meta,
+                        "consensus_findings": consensus_findings,
+                        "resolved_as_single_verifier_false_positive": (
+                            post_verify_disagreement_resolved
+                        ),
+                    },
                 }
                 row["repaired_story"] = repaired_story
                 row["pass"] = (
                     mechanical["outside_target_byte_for_byte_unchanged"]
                     and mechanical["target_block_removed"]
-                    and len(verifier_findings) == 0
+                    and (
+                        post_verify_clear
+                        or post_verify_disagreement_resolved
+                    )
                 )
                 if not row["pass"]:
                     row["failure_stage"] = "POST_REPAIR_VERIFY"
@@ -452,6 +509,7 @@ def main() -> None:
             "detector": DETECTOR_MODEL,
             "repair": REPAIR_MODEL,
             "post_repair_verifier": POST_VERIFY_MODEL,
+            "post_repair_adjudicator": POST_ADJUDICATOR_MODEL,
         },
         "summary": {
             "cases": len(results),
