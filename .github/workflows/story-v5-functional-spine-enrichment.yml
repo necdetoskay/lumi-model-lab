@@ -1,0 +1,61 @@
+name: Story v5 Functional Spine Enrichment Probe
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - .github/workflows/story-v5-functional-spine-enrichment.yml
+      - experiments/prototypes/story_v5_functional_spine_enrichment_20260926.py
+      - experiments/triggers/story-v5-functional-spine-enrichment.txt
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile probe
+        run: python -m py_compile experiments/prototypes/story_v5_functional_spine_enrichment_20260926.py
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json
+      - name: Run functional spine enrichment probe
+        run: PYTHONPATH=. python experiments/prototypes/story_v5_functional_spine_enrichment_20260926.py
+      - name: Archive evidence
+        if: always()
+        shell: bash
+        run: |
+          test -s runs/story-v5-functional-spine-enrichment/result.json
+          DEST="experiments/results/story-v5-functional-spine-enrichment/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story-v5-functional-spine-enrichment/* "$DEST/"
+          cat > "$DEST/run-meta.json" <<EOF
+          {
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "head_sha": "${GITHUB_SHA}",
+            "protocol": "story-v5-functional-spine-enrichment-probe-v2",
+            "writer": "anthropic/claude-sonnet-5",
+            "judge": "openai/gpt-5.6-sol",
+            "target_words": 500,
+            "reasoning": "medium"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(experiment): functional spine enrichment ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-v5-functional-spine-enrichment-${GITHUB_RUN_ID}"
