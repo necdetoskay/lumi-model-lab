@@ -1,6 +1,6 @@
 # LUMI StoryForge Agent Contract v1
 
-Status: **RELEASE-CANDIDATE CONTRACT / MODEL LAB ONLY**  
+Status: **RELEASE-CANDIDATE CALLABLE PACKAGE PASS / MODEL LAB ONLY**  
 Profile: `LSF-A4-W500-v1.0-rc1`  
 Date: 2026-09-26
 
@@ -21,7 +21,7 @@ StoryForge has no authority to mutate LUMI Canon, World, CharacterStoryState, in
 
 ## 2. Agent boundary
 
-Input:
+Conceptual LUMI input:
 
 ```
 CanonSnapshot
@@ -29,6 +29,19 @@ CanonSnapshot
 + StoryIntent
 + GenerationProfile
 ```
+
+Current callable Model Lab RC1 input:
+
+```
+NormalizedFactProjection
+  - always_required
+  - candidate_facts
+  - forbidden_facts
++ StoryIntent
++ GenerationProfile
+```
+
+The callable RC1 does **not** yet own raw Project_LUMI Canon/State projection. That adapter remains a separate integration boundary so the agent does not silently gain unqualified database-selection authority.
 
 Output:
 
@@ -244,21 +257,63 @@ This means:
 
 It does **not** mean Project_LUMI production integration is authorized.
 
-Before production promotion:
-1. expose this profile through one callable StoryForge entrypoint;
-2. execute end-to-end RC smoke through that entrypoint;
-3. freeze request/response schemas and fingerprints;
-4. create a separate Project_LUMI AEGIS L3 integration change;
-5. keep final StoryOutcome commit authority outside StoryForge.
+Callable-package gates are now satisfied:
+
+- entrypoint: `src.storyforge.run_storyforge`
+- request schema: `storyforge-request.v1`
+- result schema: `storyforge-result.v1`
+- contracts blob: `9b3476825423dee3d4930852d205c58cd8a54188`
+- runtime blob: `4c0ecf10289bba0627901028c167d81990221ea4`
+- callable RC smoke: run `36267804926`
+- smoke result: `publication_ready=true`
+
+The callable smoke exercised, through one runtime entrypoint:
+
+```
+normalized facts
+→ deterministic/JEV context builder
+→ Aion Mini planner
+→ plan validation
+→ Aion Mini writer
+→ Sonnet + Sol story audit
+→ Gemini translation
+→ Luna fidelity
+```
+
+Smoke evidence:
+- JEV selected blue/yellow chalk as soft enrichment;
+- plan validation PASS;
+- final English story 489 words;
+- no repair required;
+- both story audits clean;
+- fidelity clean;
+- total measured run cost ~$0.05728;
+- elapsed ~110.4 s.
+
+Before Project_LUMI production promotion:
+1. implement the Project_LUMI → `storyforge-request.v1` adapter;
+2. prove that adapter preserves G2 Canon/State/knowledge/world isolation;
+3. create a separate Project_LUMI AEGIS L3 integration change;
+4. keep final StoryOutcome commit authority outside StoryForge.
 
 ## 11. Next implementation step
 
-Do not add another story benchmark now.
+Do not add another Model Lab story benchmark now.
 
-Build the callable Model Lab StoryForge package:
+The next engineering boundary is the **Project_LUMI StoryForge Adapter**:
 
 ```
-storyforge.run(request) -> result
+G2 Canon + CharacterStoryState + StoryIntent
+        ↓
+deterministic projection adapter
+        ↓
+storyforge-request.v1
+        ↓
+src.storyforge.run_storyforge(...)
+        ↓
+storyforge-result.v1
+        ↓
+external validation / StoryOutcome commit
 ```
 
-with one request schema and one result schema that orchestrate the already-qualified components without changing their authority boundaries.
+The adapter must not add legacy/G1 fallback, dual-read, or direct StoryForge state mutation.
