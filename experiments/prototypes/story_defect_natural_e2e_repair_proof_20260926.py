@@ -51,7 +51,8 @@ Rules:
 - Do not report grammar, style, word count, repetition, optional polish, or taste.
 - Do not call ordinary fantasy a defect when the story establishes the fantasy rule.
 - Do not invent hidden height, strength, distance, knowledge, or world constraints.
-- response_causality: occupied hands or task load must not be treated as inability to hear or answer. This also applies when the story implicitly uses busy hands to explain repeated silence while the same character can still speak under the same physical constraint. Mere voluntary prioritization is not a defect unless the story turns it into inability/perception failure.
+- response_causality: occupied hands or task load must not be treated by the narrator/story as inability to hear or answer. This also applies when the story implicitly endorses busy hands as the explanation for repeated silence while the same character can still speak under the same physical constraint. Mere voluntary prioritization is not a defect.
+- A character may temporarily make a mistaken inference from another character's silence (for example thinking they were not heard or are being rejected). That misunderstanding is legitimate story content and is NOT itself a response_causality defect when the narration does not endorse it as true and the story later provides a coherent explanation. Do not require the viewpoint character to recognize the true cause immediately.
 - closure_integrity: a terminal ending must not be needlessly reopened afterward.
 - Cite the exact supplied sentence IDs that establish the defect.
 - Select the smallest evidence span that still proves the defect.
