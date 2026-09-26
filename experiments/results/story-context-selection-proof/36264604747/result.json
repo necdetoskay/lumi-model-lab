@@ -1,0 +1,1239 @@
+{
+  "schema_version": "story-context-selection-proof-result.v1",
+  "profile": "LSF-A4-W500-context-selector-v0.1",
+  "jev_model": "typesafe/jev-1.13",
+  "deterministic_policy": {
+    "always_required_count": 5,
+    "candidate_count": 23,
+    "forbidden_count": 4,
+    "forbidden_sent_to_jev": false,
+    "selected_choice_prefixes": [
+      "REQUIRED_",
+      "RELEVANT_"
+    ]
+  },
+  "summary": {
+    "intent_count": 3,
+    "passes": 1,
+    "failures": 2,
+    "all_intents_pass": false,
+    "intent_packets_differentiated": true,
+    "qualification_pass": false
+  },
+  "results": [
+    {
+      "intent_id": "intent.problem_solving_truck",
+      "story_intent": {
+        "family": "problem_solving_small_adventure",
+        "opportunity": "Deniz wants to get his toy truck onto a low platform in the courtyard.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "inventory.toy_truck",
+          "location.low_platform",
+          "world.physics_normal",
+          "recent.truck_intact"
+        ],
+        "useful_select_any": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "saga.kindness_closed",
+          "knowledge.garden_gate",
+          "inventory.blue_hat",
+          "location.chalk_box"
+        ],
+        "guard_expected": [
+          "world.physics_normal"
+        ]
+      },
+      "run_1": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.8
+          },
+          "inventory.blue_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.43
+          },
+          "inventory.yellow_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.49
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "relationship.ada": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.31
+          },
+          "relationship.ada_recent": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.42
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.86
+          },
+          "saga.explorer": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.33
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.84
+          },
+          "knowledge.garden_gate": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.83
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "knowledge.courtyard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.41
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.56
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.64
+          },
+          "location.low_platform": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.9
+          },
+          "location.cardboard": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.77
+          },
+          "location.wood_block": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.76
+          },
+          "location.chalk_box": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "location.metal_bucket": {
+            "choice": "OPTIONAL",
+            "confidence": 0.31
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.79
+          },
+          "recent.truck_intact": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.23
+          },
+          "recent.gate_not_opened": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.85
+          }
+        },
+        "selected_candidate_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "location.wood_block",
+          "recent.truck_intact",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "location.wood_block",
+          "recent.truck_intact"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "inventory.toy_truck",
+              "text": "Deniz currently has a small yellow toy truck.",
+              "kind": "state"
+            },
+            {
+              "id": "location.cardboard",
+              "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall.",
+              "kind": "state"
+            },
+            {
+              "id": "location.low_platform",
+              "text": "A low wooden platform with a vertical step is present in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "location.wood_block",
+              "text": "One small movable wooden block is present near the platform.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.truck_intact",
+              "text": "The toy truck is intact and rolls normally.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "644a39328cb529584319563739094a575941e7df15aa96acc7c2b753fef0485e",
+        "raw_usage": {
+          "input_tokens": 11107,
+          "output_tokens": 2276,
+          "cost": 0.000466494
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.79
+          },
+          "inventory.blue_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.43
+          },
+          "inventory.yellow_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.45
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.83
+          },
+          "relationship.ada": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.29
+          },
+          "relationship.ada_recent": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.46
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.88
+          },
+          "saga.explorer": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.24
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "knowledge.garden_gate": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.85
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "knowledge.courtyard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.42
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.59
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "location.low_platform": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.9
+          },
+          "location.cardboard": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.77
+          },
+          "location.wood_block": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.78
+          },
+          "location.chalk_box": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.53
+          },
+          "location.metal_bucket": {
+            "choice": "OPTIONAL",
+            "confidence": 0.32
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.8
+          },
+          "recent.truck_intact": {
+            "choice": "RELEVANT_GUARD",
+            "confidence": 0.27
+          },
+          "recent.gate_not_opened": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.84
+          }
+        },
+        "selected_candidate_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "location.wood_block",
+          "recent.truck_intact",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "recent.truck_intact",
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "location.wood_block"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "inventory.toy_truck",
+              "text": "Deniz currently has a small yellow toy truck.",
+              "kind": "state"
+            },
+            {
+              "id": "location.cardboard",
+              "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall.",
+              "kind": "state"
+            },
+            {
+              "id": "location.low_platform",
+              "text": "A low wooden platform with a vertical step is present in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "location.wood_block",
+              "text": "One small movable wooden block is present near the platform.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.truck_intact",
+              "text": "The toy truck is intact and rolls normally.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "644a39328cb529584319563739094a575941e7df15aa96acc7c2b753fef0485e",
+        "raw_usage": {
+          "input_tokens": 11107,
+          "output_tokens": 2275,
+          "cost": 0.000466494
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_set": true,
+        "same_selected_roles": false,
+        "same_all_candidate_choices": false
+      },
+      "pass": false
+    },
+    {
+      "intent_id": "intent.friendship_chalk",
+      "story_intent": {
+        "family": "friendship_emotional_social",
+        "opportunity": "Deniz and Ada are drawing separate roads in the courtyard and both notice the last short red chalk piece.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "relationship.ada",
+          "location.chalk_box",
+          "world.physics_normal"
+        ],
+        "useful_select_any": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "knowledge.garden_gate",
+          "location.cardboard",
+          "location.wood_block",
+          "inventory.umbrella"
+        ],
+        "guard_expected": [
+          "world.physics_normal"
+        ]
+      },
+      "run_1": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.76
+          },
+          "inventory.blue_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.19
+          },
+          "inventory.yellow_chalk": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.19
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.89
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "relationship.ada": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.52
+          },
+          "relationship.ada_recent": {
+            "choice": "OPTIONAL",
+            "confidence": 0.25
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.89
+          },
+          "saga.explorer": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.43
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "knowledge.garden_gate": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.89
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.92
+          },
+          "knowledge.courtyard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.45
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.57
+          },
+          "location.low_platform": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.79
+          },
+          "location.cardboard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.7
+          },
+          "location.wood_block": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.77
+          },
+          "location.chalk_box": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.87
+          },
+          "location.metal_bucket": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.83
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.76
+          },
+          "recent.truck_intact": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.92
+          },
+          "recent.gate_not_opened": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          }
+        },
+        "selected_candidate_ids": [
+          "inventory.yellow_chalk",
+          "location.chalk_box",
+          "relationship.ada",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "inventory.yellow_chalk",
+          "location.chalk_box",
+          "relationship.ada"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "inventory.yellow_chalk",
+              "text": "Deniz currently has one yellow sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "location.chalk_box",
+              "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada",
+              "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "ac00987ac63c02ebd82b676402479d203295a39b5d1855435a50bc648fd797aa",
+        "raw_usage": {
+          "input_tokens": 11112,
+          "output_tokens": 2270,
+          "cost": 0.000466704
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.76
+          },
+          "inventory.blue_chalk": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.2
+          },
+          "inventory.yellow_chalk": {
+            "choice": "OPTIONAL",
+            "confidence": 0.19
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "relationship.ada": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.52
+          },
+          "relationship.ada_recent": {
+            "choice": "OPTIONAL",
+            "confidence": 0.25
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.9
+          },
+          "saga.explorer": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.39
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.8
+          },
+          "knowledge.garden_gate": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.88
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.93
+          },
+          "knowledge.courtyard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.44
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.45
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.55
+          },
+          "location.low_platform": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.8
+          },
+          "location.cardboard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.67
+          },
+          "location.wood_block": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.76
+          },
+          "location.chalk_box": {
+            "choice": "REQUIRED_GENERATIVE",
+            "confidence": 0.86
+          },
+          "location.metal_bucket": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.78
+          },
+          "recent.truck_intact": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.91
+          },
+          "recent.gate_not_opened": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.89
+          }
+        },
+        "selected_candidate_ids": [
+          "inventory.blue_chalk",
+          "location.chalk_box",
+          "relationship.ada",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "inventory.blue_chalk",
+          "location.chalk_box",
+          "relationship.ada"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "inventory.blue_chalk",
+              "text": "Deniz currently has one blue sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "location.chalk_box",
+              "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada",
+              "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "599da2189fe661ebdf28fe9676e0f5ca090a71b4a73dbe1a3f5fb4994efe123d",
+        "raw_usage": {
+          "input_tokens": 11112,
+          "output_tokens": 2269,
+          "cost": 0.000466704
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [
+          "inventory.yellow_chalk"
+        ],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [
+          "inventory.blue_chalk"
+        ],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_set": false,
+        "same_selected_roles": false,
+        "same_all_candidate_choices": false
+      },
+      "pass": false
+    },
+    {
+      "intent_id": "intent.garden_gate_mystery",
+      "story_intent": {
+        "family": "exploration_mystery",
+        "opportunity": "A faint repeating sound seems to come from near GARDEN_GATE, and Deniz is curious about its source without crossing into unknown space.",
+        "stakes": "low",
+        "fantasy_allowed": false
+      },
+      "gold": {
+        "must_select": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "saga.explorer",
+          "world.physics_normal"
+        ],
+        "useful_select_any": [
+          "knowledge.courtyard"
+        ],
+        "must_not_select": [
+          "relationship.emre",
+          "location.cardboard",
+          "location.wood_block",
+          "location.chalk_box",
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk"
+        ],
+        "guard_expected": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "world.physics_normal"
+        ]
+      },
+      "run_1": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.49
+          },
+          "inventory.blue_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.58
+          },
+          "inventory.yellow_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.68
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.76
+          },
+          "relationship.ada": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.24
+          },
+          "relationship.ada_recent": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.86
+          },
+          "saga.explorer": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.43
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.85
+          },
+          "knowledge.garden_gate": {
+            "choice": "RELEVANT_GUARD",
+            "confidence": 0.4
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "knowledge.courtyard": {
+            "choice": "OPTIONAL",
+            "confidence": 0.18
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.46
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.68
+          },
+          "location.low_platform": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.66
+          },
+          "location.cardboard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.57
+          },
+          "location.wood_block": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "location.chalk_box": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "location.metal_bucket": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.6
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.74
+          },
+          "recent.truck_intact": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "recent.gate_not_opened": {
+            "choice": "RELEVANT_GUARD",
+            "confidence": 0.45
+          }
+        },
+        "selected_candidate_ids": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "saga.explorer",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "saga.explorer"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "knowledge.garden_gate",
+              "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.gate_not_opened",
+              "text": "Deniz has not opened or crossed GARDEN_GATE.",
+              "kind": "state"
+            },
+            {
+              "id": "saga.explorer",
+              "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "50fa1e91aba365b8f217ba3eb75db6486ca7330b119d81b392ec52c5c49438d6",
+        "raw_usage": {
+          "input_tokens": 11117,
+          "output_tokens": 2268,
+          "cost": 0.000466914
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "decisions": {
+          "inventory.toy_truck": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.54
+          },
+          "inventory.blue_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.57
+          },
+          "inventory.yellow_chalk": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.6
+          },
+          "inventory.umbrella": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.69
+          },
+          "inventory.blue_hat": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.79
+          },
+          "relationship.ada": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.26
+          },
+          "relationship.ada_recent": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.51
+          },
+          "relationship.emre": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.86
+          },
+          "saga.explorer": {
+            "choice": "RELEVANT_GENERATIVE",
+            "confidence": 0.37
+          },
+          "saga.kindness_closed": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.85
+          },
+          "knowledge.garden_gate": {
+            "choice": "RELEVANT_GUARD",
+            "confidence": 0.38
+          },
+          "knowledge.home": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.68
+          },
+          "knowledge.courtyard": {
+            "choice": "OPTIONAL",
+            "confidence": 0.13
+          },
+          "world.physics_normal": {
+            "choice": "REQUIRED_GUARD",
+            "confidence": 0.54
+          },
+          "world.weather_dry": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.65
+          },
+          "location.low_platform": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.64
+          },
+          "location.cardboard": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.59
+          },
+          "location.wood_block": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.67
+          },
+          "location.chalk_box": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.61
+          },
+          "location.metal_bucket": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.58
+          },
+          "recent.no_story_today": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.72
+          },
+          "recent.truck_intact": {
+            "choice": "IRRELEVANT",
+            "confidence": 0.81
+          },
+          "recent.gate_not_opened": {
+            "choice": "RELEVANT_GUARD",
+            "confidence": 0.46
+          }
+        },
+        "selected_candidate_ids": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "saga.explorer",
+          "world.physics_normal"
+        ],
+        "guard_candidate_ids": [
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "world.physics_normal"
+        ],
+        "generative_candidate_ids": [
+          "saga.explorer"
+        ],
+        "escalated_candidate_ids": [],
+        "final_packet": {
+          "always_required": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            }
+          ],
+          "selected_candidates": [
+            {
+              "id": "knowledge.garden_gate",
+              "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.gate_not_opened",
+              "text": "Deniz has not opened or crossed GARDEN_GATE.",
+              "kind": "state"
+            },
+            {
+              "id": "saga.explorer",
+              "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "final_packet_hash": "50fa1e91aba365b8f217ba3eb75db6486ca7330b119d81b392ec52c5c49438d6",
+        "raw_usage": {
+          "input_tokens": 11117,
+          "output_tokens": 2268,
+          "cost": 0.000466914
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_must_select": [],
+        "selected_must_not_select": [],
+        "missing_expected_guards": [],
+        "useful_select_hits": [],
+        "forbidden_leak": [],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_set": true,
+        "same_selected_roles": true,
+        "same_all_candidate_choices": true
+      },
+      "pass": true
+    }
+  ],
+  "elapsed_seconds": 2.543
+}
