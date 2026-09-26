@@ -208,14 +208,14 @@ def main():
 
     draft,writer_body,writer_payload=call_openrouter(
       api_key=key,model=WRITER_MODEL,system_prompt=WRITER_SYSTEM,user_prompt=user_prompt,
-      temperature=0.72,max_tokens=None,seed=None,request_class="teacher_story_low_reasoning",structured_output=False
+      temperature=0.72,max_tokens=None,seed=None,request_class="teacher_story_medium_reasoning",structured_output=False
     )
     before=scan(draft)
 
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610091,max_tokens=None,request_class="editorial_audit"
+      seed=202610101,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -223,7 +223,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610092,max_tokens=None,request_class="editorial_audit"
+      seed=202610102,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -234,7 +234,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v7-curiosity-low-reasoning",
+      "experiment":"story-spine-refined-recipe-v8-curiosity-medium-reasoning",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
