@@ -1,0 +1,38 @@
+name: Story Defect JEV Calibration
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-defect-jev-calibration.txt
+
+jobs:
+  calibrate:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m py_compile experiments/prototypes/story_defect_jev_calibration_20260926.py
+      - run: python -m src.openrouter_preflight --json --min-remaining 0.25
+      - run: PYTHONPATH=. python experiments/prototypes/story_defect_jev_calibration_20260926.py
+      - name: Archive calibration evidence
+        run: |
+          test -s runs/story-defect-jev-calibration/result.json
+          DEST="experiments/results/story-defect-jev-calibration/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story-defect-jev-calibration/result.json "$DEST/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): JEV defect calibration ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-defect-jev-calibration-${GITHUB_RUN_ID}"
