@@ -113,3 +113,105 @@ def can_advance_to_writer(
     profile: dict[str, Any] | None = None,
 ) -> bool:
     return not validate_narrative_load_plan(plan, profile)
+
+
+def evaluate_narrative_load_promotion_gate(
+    profile: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Evaluate evidence readiness without making the human promotion decision."""
+    profile = profile or load_candidate_profile()
+    evidence = profile.get("promotion_evidence") or {}
+    integration = evidence.get("architect_integration") or {}
+    known_risk = evidence.get("known_risk") or {}
+    terminal = evidence.get("terminal_closure_guard") or {}
+    change_policy = profile.get("change_policy") or {}
+    gate = change_policy.get("promotion_gate") or {}
+    integration_policy = profile.get("integration_policy") or {}
+
+    blockers: list[str] = []
+
+    if gate.get("require_architect_integration_qualified"):
+        if not integration_policy.get("architect_integration_qualified"):
+            blockers.append("architect_integration_not_qualified")
+
+    if gate.get("require_no_mandatory_extra_planner_hop"):
+        if integration.get("extra_mandatory_planner_hop") is not False:
+            blockers.append("mandatory_extra_planner_hop_present")
+
+    latest_summary = integration.get("latest_resolved_summary") or {}
+    if gate.get("require_zero_latest_baseline_wins"):
+        if int(latest_summary.get("baseline_wins", 0)) != 0:
+            blockers.append("latest_baseline_consensus_loss")
+
+    guarded_fantastical = evidence.get("guarded_fantastical_consensus") or {}
+    required_guarded_baseline_wins = gate.get("require_guarded_fantastical_baseline_wins")
+    if required_guarded_baseline_wins is not None:
+        if int(guarded_fantastical.get("baseline_wins", -1)) != int(
+            required_guarded_baseline_wins
+        ):
+            blockers.append("guarded_fantastical_baseline_loss")
+
+    if gate.get("require_targeted_known_risk_validation_complete"):
+        if not known_risk.get("targeted_guard_validation_completed"):
+            blockers.append("targeted_known_risk_validation_incomplete")
+        if not known_risk.get("terminal_closure_tail_risk_validation_completed"):
+            blockers.append("terminal_closure_tail_risk_validation_incomplete")
+
+    terminal_consensus = terminal.get("consensus") or {}
+    if gate.get("require_terminal_closure_guard_order_swapped"):
+        if terminal_consensus.get("order_swapped") is not True:
+            blockers.append("terminal_closure_guard_not_order_swapped")
+
+    required_serious_defects = gate.get(
+        "require_terminal_closure_guard_serious_defects"
+    )
+    if required_serious_defects is not None:
+        if int(terminal.get("serious_defects_guarded_candidate", -1)) != int(
+            required_serious_defects
+        ):
+            blockers.append("terminal_closure_guard_serious_defect")
+
+    family_resolution = integration.get("latest_family_resolution") or {}
+    required_families = list(gate.get("required_family_resolutions") or [])
+    missing_families = [family for family in required_families if family not in family_resolution]
+    if missing_families:
+        blockers.extend(f"family_resolution_missing:{family}" for family in missing_families)
+
+    unresolved_families = [
+        family
+        for family in required_families
+        if str(family_resolution.get(family) or "").startswith("inconclusive")
+    ]
+    max_unresolved = int(gate.get("max_unresolved_families_for_production", 0))
+
+    evidence_pass = not blockers
+    if not evidence_pass:
+        state = "BLOCKED_EVIDENCE"
+    elif len(unresolved_families) > max_unresolved:
+        state = "HOLD_MULTI_SEED_REGRESSION"
+    elif change_policy.get("production_promotion_requires_explicit_decision"):
+        state = "AWAIT_EXPLICIT_PROMOTION_DECISION"
+    else:
+        state = "TECHNICALLY_READY"
+
+    return {
+        "state": state,
+        "evidence_pass": evidence_pass,
+        "production_gate_pass": (
+            evidence_pass
+            and len(unresolved_families) <= max_unresolved
+            and not change_policy.get("production_promotion_requires_explicit_decision")
+        ),
+        "requires_explicit_promotion_decision": bool(
+            change_policy.get("production_promotion_requires_explicit_decision")
+        ),
+        "blockers": blockers,
+        "unresolved_families": unresolved_families,
+        "max_unresolved_families_for_production": max_unresolved,
+        "required_families": required_families,
+        "qualified_scope": {
+            "exact_age": profile.get("exact_age"),
+            "reading_mode": profile.get("reading_mode"),
+            "nominal_target_words": profile.get("nominal_target_words"),
+        },
+    }
