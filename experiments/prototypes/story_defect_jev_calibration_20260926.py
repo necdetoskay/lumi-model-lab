@@ -10,7 +10,7 @@ from typing import Any
 from dotenv import load_dotenv
 
 from src.openrouter_jev import call_openrouter_jev
-from src.story_defect_corpus import assign_source_splits, load_source_pool
+from src.story_defect_corpus import load_source_pool
 from src.story_defect_detection import (
     build_jev_defect_questions,
     build_jev_state,
@@ -101,13 +101,17 @@ def calibration_cases() -> list[dict[str, Any]]:
         })
 
     clean_ids = admitted_clean_ids()
-    for source in assign_source_splits(load_source_pool()):
-        if source["source_id"] not in clean_ids:
+    for source in load_source_pool()["sources"]:
+        source_id = source["source_id"]
+        if source_id not in clean_ids:
             continue
-        if source["dataset_split"] != "calibration":
+        split = source_split.get(source_id)
+        if split is None:
+            raise RuntimeError(f"clean_source_missing_frozen_split:{source_id}")
+        if split != "calibration":
             continue
         rows.append({
-            "case_id": f"clean__{source['source_id']}",
+            "case_id": f"clean__{source_id}",
             "kind": "clean",
             "dataset_split": "calibration",
             "story_family": source["family"],
@@ -121,15 +125,15 @@ def calibration_cases() -> list[dict[str, Any]]:
 
 
 def validate_calibration_partition(rows: list[dict[str, Any]]) -> dict[str, int]:
-    if len(rows) != 140:
-        raise RuntimeError(f"calibration_case_count_mismatch:{len(rows)}:140")
+    if len(rows) != 139:
+        raise RuntimeError(f"calibration_case_count_mismatch:{len(rows)}:139")
 
     defect_rows = [row for row in rows if row["kind"] == "defect"]
     clean_rows = [row for row in rows if row["kind"] == "clean"]
     if len(defect_rows) != 130:
         raise RuntimeError(f"calibration_defect_count_mismatch:{len(defect_rows)}:130")
-    if len(clean_rows) != 10:
-        raise RuntimeError(f"calibration_clean_count_mismatch:{len(clean_rows)}:10")
+    if len(clean_rows) != 9:
+        raise RuntimeError(f"calibration_clean_count_mismatch:{len(clean_rows)}:9")
 
     counts: dict[str, int] = defaultdict(int)
     for row in defect_rows:
