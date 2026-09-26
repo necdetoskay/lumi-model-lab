@@ -25,7 +25,7 @@ jobs:
       - name: Compile
         run: python -m py_compile experiments/prototypes/story_defect_clean_source_audit_20260926.py
       - name: Provider preflight
-        run: python -m src.openrouter_preflight --json
+        run: python -m src.openrouter_preflight --json --min-remaining 0.10
       - name: Audit first calibration batch
         run: PYTHONPATH=. python experiments/prototypes/story_defect_clean_source_audit_20260926.py --split calibration --limit 4
       - name: Archive evidence
