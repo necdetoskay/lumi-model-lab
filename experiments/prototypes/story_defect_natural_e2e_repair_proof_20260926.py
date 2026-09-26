@@ -51,7 +51,7 @@ Rules:
 - Do not report grammar, style, word count, repetition, optional polish, or taste.
 - Do not call ordinary fantasy a defect when the story establishes the fantasy rule.
 - Do not invent hidden height, strength, distance, knowledge, or world constraints.
-- response_causality: occupied hands or task load must not be treated as inability to hear or answer.
+- response_causality: occupied hands or task load must not be treated as inability to hear or answer. This also applies when the story implicitly uses busy hands to explain repeated silence while the same character can still speak under the same physical constraint. Mere voluntary prioritization is not a defect unless the story turns it into inability/perception failure.
 - closure_integrity: a terminal ending must not be needlessly reopened afterward.
 - Cite the exact supplied sentence IDs that establish the defect.
 - Select the smallest evidence span that still proves the defect.
@@ -187,6 +187,7 @@ def call_detector(
     seed: int,
     request_class: str,
     audit_families: list[str] | None = None,
+    audit_round: str = "primary",
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     segments = segment_story(story_text)
     payload, meta = structured_call(
@@ -199,6 +200,7 @@ def call_detector(
             "exact_age": 4,
             "reading_mode": "READ_ALOUD",
             "audit_families": audit_families or list(DEFECT_FAMILIES),
+            "audit_round": audit_round,
             "story_segments": segments,
         },
         seed=seed,
@@ -211,6 +213,69 @@ def call_detector(
     if unexpected:
         raise RuntimeError(f"detector_returned_unrequested_family:{unexpected}")
     return findings, meta
+
+
+def blind_detect_with_zero_confirmation(
+    *,
+    api_key: str,
+    story_id: str,
+    story_family: str,
+    story_text: str,
+    seed: int,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    first_findings, first_meta = call_detector(
+        api_key=api_key,
+        model=DETECTOR_MODEL,
+        story_id=f"{story_id}_blind_primary",
+        story_family=story_family,
+        story_text=story_text,
+        seed=seed,
+        request_class="editorial_audit",
+        audit_round="blind_primary",
+    )
+    rounds = [
+        {
+            "round": "blind_primary",
+            "findings": first_findings,
+            "meta": first_meta,
+        }
+    ]
+    total_cost = meta_cost(first_meta)
+
+    if first_findings:
+        return first_findings, {
+            "strategy": "blind_primary_then_zero_confirmation",
+            "selected_round": "blind_primary",
+            "rounds": rounds,
+            "cost": {"usd": round(total_cost, 6)},
+        }
+
+    second_findings, second_meta = call_detector(
+        api_key=api_key,
+        model=DETECTOR_MODEL,
+        story_id=f"{story_id}_blind_zero_confirmation",
+        story_family=story_family,
+        story_text=story_text,
+        seed=seed + 7919,
+        request_class="editorial_audit",
+        audit_round="blind_independent_second_read_after_zero",
+    )
+    rounds.append({
+        "round": "blind_independent_second_read_after_zero",
+        "findings": second_findings,
+        "meta": second_meta,
+    })
+    total_cost += meta_cost(second_meta)
+    return second_findings, {
+        "strategy": "blind_primary_then_zero_confirmation",
+        "selected_round": (
+            "blind_independent_second_read_after_zero"
+            if second_findings
+            else "confirmed_zero"
+        ),
+        "rounds": rounds,
+        "cost": {"usd": round(total_cost, 6)},
+    }
 
 
 def call_same_defect_recheck(
@@ -386,14 +451,12 @@ def main() -> None:
         }
 
         try:
-            detector_findings, detector_meta = call_detector(
+            detector_findings, detector_meta = blind_detect_with_zero_confirmation(
                 api_key=api_key,
-                model=DETECTOR_MODEL,
                 story_id=proof_id,
                 story_family=source["family"],
                 story_text=story,
                 seed=2026150000 + index,
-                request_class="editorial_audit",
             )
             total_cost += meta_cost(detector_meta)
             row["detector"] = {
