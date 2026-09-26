@@ -150,6 +150,13 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertFalse(evidence["known_risk"]["targeted_guard_validation_required"])
         self.assertTrue(evidence["known_risk"]["targeted_guard_validation_completed"])
 
+    def test_writer_separates_perception_from_response(self):
+        writer = self.profile["writer_contract"]
+        support = self.profile["supporting_thread"]
+        self.assertTrue(writer["must_distinguish_perception_from_response"])
+        self.assertTrue(writer["may_not_infer_sensory_failure_from_busy_hands"])
+        self.assertTrue(support["must_preserve_response_causality"])
+
 
 if __name__ == "__main__":
     unittest.main()
