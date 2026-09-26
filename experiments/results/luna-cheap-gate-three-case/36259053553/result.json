@@ -1,0 +1,99 @@
+{
+  "schema_version": "luna-cheap-gate-three-case-result.v1",
+  "model": "openai/gpt-5.6-luna",
+  "status": "PASS",
+  "summary": {
+    "cases": 3,
+    "passes": 3,
+    "failures": 0,
+    "all_three_pass": true
+  },
+  "results": [
+    {
+      "case_id": "CLEAN_AION35_MINI",
+      "kind": "clean",
+      "findings": [],
+      "cost_usd": 0.000957,
+      "pass": true,
+      "scoring": {
+        "clean_zero_findings": true
+      }
+    },
+    {
+      "case_id": "N1_RESPONSE",
+      "kind": "defect",
+      "findings": [
+        {
+          "family": "response_causality",
+          "severity": "serious",
+          "repair_scope": "LOCAL_REPAIR",
+          "span_ids": [
+            "S005",
+            "S006",
+            "S007",
+            "S008",
+            "S009",
+            "S010",
+            "S014",
+            "S015",
+            "S016",
+            "S017"
+          ],
+          "reason": "Ada'nın elleri kuleyi tutmakla meşgul olsa da bunun Deniz'i duyamamasını veya yanıtlayamamasını açıklamadığı halde iki kez cevap vermemesi, Deniz'in incinmesine ve yanlış anlamasına neden olur; yanıtı bilinçli olarak ertelediği açıkça kurulmamıştır."
+        }
+      ],
+      "cost_usd": 0.001494,
+      "pass": true,
+      "scoring": {
+        "expected_family": "response_causality",
+        "expected_span_ids": [
+          "S007",
+          "S008",
+          "S009",
+          "S010",
+          "S017",
+          "S018",
+          "S023",
+          "S024",
+          "S025",
+          "S029",
+          "S030",
+          "S031"
+        ],
+        "family_and_span_overlap": true,
+        "detected_scope": "LOCAL_REPAIR",
+        "expected_scope": "LOCAL_REPAIR"
+      }
+    },
+    {
+      "case_id": "N2_STATE",
+      "kind": "defect",
+      "findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "repair_scope": "LOCAL_REPAIR",
+          "span_ids": [
+            "S029",
+            "S037"
+          ],
+          "reason": "S029'da Deniz kitabı rafa koyuyor; S037'de ise kitabını 'bir yere koymadığı' söylenerek bu nesne durumu doğrudan çeliştiriliyor."
+        }
+      ],
+      "cost_usd": 0.001759,
+      "pass": true,
+      "scoring": {
+        "expected_family": "state_continuity",
+        "expected_span_ids": [
+          "S029",
+          "S037"
+        ],
+        "family_and_span_overlap": true,
+        "detected_scope": "LOCAL_REPAIR",
+        "expected_scope": "LOCAL_REPAIR"
+      }
+    }
+  ],
+  "total_cost_usd": 0.004211,
+  "elapsed_seconds": 38.702
+}
