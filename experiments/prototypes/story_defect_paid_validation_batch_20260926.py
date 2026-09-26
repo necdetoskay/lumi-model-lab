@@ -174,48 +174,70 @@ def main() -> None:
     started = time.perf_counter()
 
     for i, case in enumerate(cases):
-        primary_findings, primary_meta, primary_cost = call_validator(
-            key=key,
-            model=PRIMARY_MODEL,
-            request_class="editorial_audit",
-            max_tokens=2200,
-            seed=2026100000 + index * 100 + i,
-            case=case,
-        )
-        primary_calls += 1
-        total_cost += primary_cost
-        p = inspect_findings(case, primary_findings)
+        primary_findings: list[dict[str, Any]] = []
+        primary_meta: dict[str, Any] | None = None
+        primary_cost = 0.0
+        primary_error: str | None = None
+
+        try:
+            primary_findings, primary_meta, primary_cost = call_validator(
+                key=key,
+                model=PRIMARY_MODEL,
+                request_class="editorial_audit",
+                max_tokens=2200,
+                seed=2026100000 + index * 100 + i,
+                case=case,
+            )
+            primary_calls += 1
+            total_cost += primary_cost
+            p = inspect_findings(case, primary_findings)
+        except Exception as exc:
+            primary_error = f"{type(exc).__name__}: {exc}"
+            p = {"intended": [], "overlap_other": [], "second": []}
 
         needs_adjudication = (
-            not p["intended"] or bool(p["overlap_other"]) or bool(p["second"])
+            primary_error is not None
+            or not p["intended"]
+            or bool(p["overlap_other"])
+            or bool(p["second"])
         )
 
         adjudicator_findings: list[dict[str, Any]] = []
         adjudicator_meta: dict[str, Any] | None = None
         adjudicator_cost = 0.0
+        adjudicator_error: str | None = None
         a = {"intended": [], "overlap_other": [], "second": []}
 
         if needs_adjudication:
-            adjudicator_findings, adjudicator_meta, adjudicator_cost = call_validator(
-                key=key,
-                model=ADJUDICATOR_MODEL,
-                request_class="judge",
-                max_tokens=1800,
-                seed=2026105000 + index * 100 + i,
-                case=case,
-            )
-            adjudicator_calls += 1
-            total_cost += adjudicator_cost
-            a = inspect_findings(case, adjudicator_findings)
+            try:
+                adjudicator_findings, adjudicator_meta, adjudicator_cost = call_validator(
+                    key=key,
+                    model=ADJUDICATOR_MODEL,
+                    request_class="judge",
+                    max_tokens=1800,
+                    seed=2026105000 + index * 100 + i,
+                    case=case,
+                )
+                adjudicator_calls += 1
+                total_cost += adjudicator_cost
+                a = inspect_findings(case, adjudicator_findings)
+            except Exception as exc:
+                adjudicator_error = f"{type(exc).__name__}: {exc}"
 
         intended_confirmed = bool(p["intended"]) or bool(a["intended"])
         taxonomy_unresolved = bool(p["overlap_other"]) and bool(a["overlap_other"])
-        confirmed_extra = extra_confirmed(p["second"], a["second"]) if needs_adjudication else []
-        final_status = (
-            "VALIDATED_GOLD"
-            if intended_confirmed and not taxonomy_unresolved and not confirmed_extra
-            else "NEEDS_MANUAL_ADJUDICATION"
+        confirmed_extra = (
+            extra_confirmed(p["second"], a["second"])
+            if needs_adjudication and adjudicator_error is None
+            else []
         )
+
+        if primary_error is not None and adjudicator_error is not None:
+            final_status = "RUNTIME_ERROR"
+        elif intended_confirmed and not taxonomy_unresolved and not confirmed_extra:
+            final_status = "VALIDATED_GOLD"
+        else:
+            final_status = "NEEDS_MANUAL_ADJUDICATION"
 
         rows.append({
             "case_id": case["case_id"],
@@ -236,6 +258,7 @@ def main() -> None:
                 "second_blocking_findings": p["second"],
                 "cost_usd": primary_cost,
                 "meta": primary_meta,
+                "error": primary_error,
             },
             "adjudication": None if not needs_adjudication else {
                 "model": ADJUDICATOR_MODEL,
@@ -245,6 +268,7 @@ def main() -> None:
                 "second_blocking_findings": a["second"],
                 "cost_usd": adjudicator_cost,
                 "meta": adjudicator_meta,
+                "error": adjudicator_error,
             },
             "final": {
                 "status": final_status,
