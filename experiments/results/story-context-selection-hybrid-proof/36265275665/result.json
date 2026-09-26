@@ -1,0 +1,1225 @@
+{
+  "schema_version": "story-context-selection-hybrid-proof-result.v1",
+  "profile": "LSF-A4-W500-context-builder-v0.1",
+  "jev_model": "typesafe/jev-1.13",
+  "architecture": {
+    "deterministic_core": [
+      "always_required",
+      "StoryIntent direct fact references",
+      "hard guards"
+    ],
+    "jev_scope": "soft enrichment only",
+    "select_threshold": 0.45,
+    "review_threshold": 0.3,
+    "review_sent_to_planner": false,
+    "forbidden_sent_to_jev": false,
+    "soft_relationship_entity_expansion": "demote to REVIEW unless entity directly referenced"
+  },
+  "summary": {
+    "intent_count": 3,
+    "passes": 3,
+    "failures": 0,
+    "packets_differentiated": true,
+    "qualification_pass": true
+  },
+  "results": [
+    {
+      "intent_id": "intent.problem_solving_truck",
+      "story_intent": {
+        "family": "problem_solving_small_adventure",
+        "opportunity": "Deniz wants to get his toy truck onto a low platform in the courtyard.",
+        "stakes": "low",
+        "fantasy_allowed": false,
+        "references": {
+          "required_fact_ids": [
+            "inventory.toy_truck",
+            "location.low_platform",
+            "recent.truck_intact"
+          ],
+          "hard_guard_fact_ids": [
+            "world.physics_normal"
+          ]
+        }
+      },
+      "run_1": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "inventory.toy_truck",
+          "location.low_platform",
+          "recent.truck_intact",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.blue_chalk": {
+            "probability": 0.27,
+            "bucket": "OMIT"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.25,
+            "bucket": "OMIT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.32,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "relationship.ada": {
+            "probability": 0.47,
+            "bucket": "SELECT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.27,
+            "bucket": "OMIT"
+          },
+          "relationship.emre": {
+            "probability": 0.1,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.44,
+            "bucket": "REVIEW"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.11,
+            "bucket": "OMIT"
+          },
+          "knowledge.garden_gate": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.11,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.19,
+            "bucket": "OMIT"
+          },
+          "world.weather_dry": {
+            "probability": 0.2,
+            "bucket": "OMIT"
+          },
+          "location.cardboard": {
+            "probability": 0.66,
+            "bucket": "SELECT"
+          },
+          "location.wood_block": {
+            "probability": 0.71,
+            "bucket": "SELECT"
+          },
+          "location.chalk_box": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "location.metal_bucket": {
+            "probability": 0.43,
+            "bucket": "REVIEW"
+          },
+          "recent.no_story_today": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "recent.gate_not_opened": {
+            "probability": 0.12,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "location.cardboard",
+          "location.wood_block",
+          "relationship.ada"
+        ],
+        "policy_demoted_ids": [
+          "relationship.ada"
+        ],
+        "selected_enrichment_ids": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "review_enrichment_ids": [
+          "inventory.umbrella",
+          "location.metal_bucket",
+          "relationship.ada",
+          "saga.explorer"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "inventory.toy_truck",
+              "text": "Deniz currently has a small yellow toy truck.",
+              "kind": "state"
+            },
+            {
+              "id": "location.low_platform",
+              "text": "A low wooden platform with a vertical step is present in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.truck_intact",
+              "text": "The toy truck is intact and rolls normally.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "location.cardboard",
+              "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall.",
+              "kind": "state"
+            },
+            {
+              "id": "location.wood_block",
+              "text": "One small movable wooden block is present near the platform.",
+              "kind": "state"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4222,
+          "output_tokens": 368,
+          "cost": 0.000177324
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "inventory.toy_truck",
+          "location.low_platform",
+          "recent.truck_intact",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.blue_chalk": {
+            "probability": 0.27,
+            "bucket": "OMIT"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "relationship.ada": {
+            "probability": 0.46,
+            "bucket": "SELECT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "relationship.emre": {
+            "probability": 0.1,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.43,
+            "bucket": "REVIEW"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.11,
+            "bucket": "OMIT"
+          },
+          "knowledge.garden_gate": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.11,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.19,
+            "bucket": "OMIT"
+          },
+          "world.weather_dry": {
+            "probability": 0.22,
+            "bucket": "OMIT"
+          },
+          "location.cardboard": {
+            "probability": 0.67,
+            "bucket": "SELECT"
+          },
+          "location.wood_block": {
+            "probability": 0.72,
+            "bucket": "SELECT"
+          },
+          "location.chalk_box": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "location.metal_bucket": {
+            "probability": 0.43,
+            "bucket": "REVIEW"
+          },
+          "recent.no_story_today": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "recent.gate_not_opened": {
+            "probability": 0.12,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "location.cardboard",
+          "location.wood_block",
+          "relationship.ada"
+        ],
+        "policy_demoted_ids": [
+          "relationship.ada"
+        ],
+        "selected_enrichment_ids": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "review_enrichment_ids": [
+          "inventory.umbrella",
+          "location.metal_bucket",
+          "relationship.ada",
+          "saga.explorer"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "inventory.toy_truck",
+              "text": "Deniz currently has a small yellow toy truck.",
+              "kind": "state"
+            },
+            {
+              "id": "location.low_platform",
+              "text": "A low wooden platform with a vertical step is present in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.truck_intact",
+              "text": "The toy truck is intact and rolls normally.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "location.cardboard",
+              "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall.",
+              "kind": "state"
+            },
+            {
+              "id": "location.wood_block",
+              "text": "One small movable wooden block is present near the platform.",
+              "kind": "state"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4222,
+          "output_tokens": 368,
+          "cost": 0.000177324
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [
+          "location.cardboard",
+          "location.wood_block"
+        ],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_enrichment": true,
+        "bucket_changes": [],
+        "max_probability_drift": 0.02
+      },
+      "pass": true
+    },
+    {
+      "intent_id": "intent.friendship_chalk",
+      "story_intent": {
+        "family": "friendship_emotional_social",
+        "opportunity": "Deniz and Ada are drawing separate roads in the courtyard and both notice the last short red chalk piece.",
+        "stakes": "low",
+        "fantasy_allowed": false,
+        "references": {
+          "required_fact_ids": [
+            "relationship.ada",
+            "location.chalk_box"
+          ],
+          "hard_guard_fact_ids": [
+            "world.physics_normal"
+          ]
+        }
+      },
+      "run_1": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "location.chalk_box",
+          "relationship.ada",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.toy_truck": {
+            "probability": 0.33,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_chalk": {
+            "probability": 0.57,
+            "bucket": "SELECT"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.53,
+            "bucket": "SELECT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.47,
+            "bucket": "SELECT"
+          },
+          "relationship.emre": {
+            "probability": 0.1,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.39,
+            "bucket": "REVIEW"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.garden_gate": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.12,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.21,
+            "bucket": "OMIT"
+          },
+          "world.weather_dry": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "location.low_platform": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "location.cardboard": {
+            "probability": 0.34,
+            "bucket": "REVIEW"
+          },
+          "location.wood_block": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "location.metal_bucket": {
+            "probability": 0.24,
+            "bucket": "OMIT"
+          },
+          "recent.no_story_today": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "recent.truck_intact": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "recent.gate_not_opened": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "policy_demoted_ids": [],
+        "selected_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "review_enrichment_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "saga.explorer"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "location.chalk_box",
+              "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada",
+              "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "inventory.blue_chalk",
+              "text": "Deniz currently has one blue sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "inventory.yellow_chalk",
+              "text": "Deniz currently has one yellow sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada_recent",
+              "text": "Deniz and Ada last played together without conflict.",
+              "kind": "state"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4360,
+          "output_tokens": 389,
+          "cost": 0.00018312
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "location.chalk_box",
+          "relationship.ada",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.toy_truck": {
+            "probability": 0.33,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_chalk": {
+            "probability": 0.57,
+            "bucket": "SELECT"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.54,
+            "bucket": "SELECT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.46,
+            "bucket": "SELECT"
+          },
+          "relationship.emre": {
+            "probability": 0.1,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.42,
+            "bucket": "REVIEW"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.garden_gate": {
+            "probability": 0.16,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.14,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.22,
+            "bucket": "OMIT"
+          },
+          "world.weather_dry": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "location.low_platform": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "location.cardboard": {
+            "probability": 0.32,
+            "bucket": "REVIEW"
+          },
+          "location.wood_block": {
+            "probability": 0.27,
+            "bucket": "OMIT"
+          },
+          "location.metal_bucket": {
+            "probability": 0.24,
+            "bucket": "OMIT"
+          },
+          "recent.no_story_today": {
+            "probability": 0.17,
+            "bucket": "OMIT"
+          },
+          "recent.truck_intact": {
+            "probability": 0.15,
+            "bucket": "OMIT"
+          },
+          "recent.gate_not_opened": {
+            "probability": 0.12,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "policy_demoted_ids": [],
+        "selected_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ],
+        "review_enrichment_ids": [
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "saga.explorer"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "location.chalk_box",
+              "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada",
+              "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "inventory.blue_chalk",
+              "text": "Deniz currently has one blue sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "inventory.yellow_chalk",
+              "text": "Deniz currently has one yellow sidewalk chalk piece.",
+              "kind": "state"
+            },
+            {
+              "id": "relationship.ada_recent",
+              "text": "Deniz and Ada last played together without conflict.",
+              "kind": "state"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4360,
+          "output_tokens": 389,
+          "cost": 0.00018312
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_enrichment": true,
+        "bucket_changes": [
+          "location.low_platform"
+        ],
+        "max_probability_drift": 0.03
+      },
+      "pass": true
+    },
+    {
+      "intent_id": "intent.garden_gate_mystery",
+      "story_intent": {
+        "family": "exploration_mystery",
+        "opportunity": "A faint repeating sound seems to come from near GARDEN_GATE, and Deniz is curious about its source without crossing into unknown space.",
+        "stakes": "low",
+        "fantasy_allowed": false,
+        "references": {
+          "required_fact_ids": [
+            "knowledge.garden_gate",
+            "recent.gate_not_opened"
+          ],
+          "hard_guard_fact_ids": [
+            "world.physics_normal"
+          ]
+        }
+      },
+      "run_1": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.toy_truck": {
+            "probability": 0.4,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_chalk": {
+            "probability": 0.32,
+            "bucket": "REVIEW"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.25,
+            "bucket": "OMIT"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.2,
+            "bucket": "OMIT"
+          },
+          "relationship.ada": {
+            "probability": 0.54,
+            "bucket": "SELECT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.27,
+            "bucket": "OMIT"
+          },
+          "relationship.emre": {
+            "probability": 0.12,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.54,
+            "bucket": "SELECT"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "world.weather_dry": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "location.low_platform": {
+            "probability": 0.36,
+            "bucket": "REVIEW"
+          },
+          "location.cardboard": {
+            "probability": 0.36,
+            "bucket": "REVIEW"
+          },
+          "location.wood_block": {
+            "probability": 0.31,
+            "bucket": "REVIEW"
+          },
+          "location.chalk_box": {
+            "probability": 0.31,
+            "bucket": "REVIEW"
+          },
+          "location.metal_bucket": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "recent.no_story_today": {
+            "probability": 0.2,
+            "bucket": "OMIT"
+          },
+          "recent.truck_intact": {
+            "probability": 0.19,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "relationship.ada",
+          "saga.explorer"
+        ],
+        "policy_demoted_ids": [
+          "relationship.ada"
+        ],
+        "selected_enrichment_ids": [
+          "saga.explorer"
+        ],
+        "review_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.toy_truck",
+          "knowledge.courtyard",
+          "location.cardboard",
+          "location.chalk_box",
+          "location.low_platform",
+          "location.metal_bucket",
+          "location.wood_block",
+          "relationship.ada"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "knowledge.garden_gate",
+              "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.gate_not_opened",
+              "text": "Deniz has not opened or crossed GARDEN_GATE.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "saga.explorer",
+              "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4360,
+          "output_tokens": 384,
+          "cost": 0.00018312
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_2": {
+        "deterministic_core_ids": [
+          "character.exact_age",
+          "character.identity",
+          "knowledge.garden_gate",
+          "recent.gate_not_opened",
+          "state.current_location",
+          "state.story_revision",
+          "world.active",
+          "world.physics_normal"
+        ],
+        "hard_guard_ids": [
+          "world.physics_normal"
+        ],
+        "decisions": {
+          "inventory.toy_truck": {
+            "probability": 0.39,
+            "bucket": "REVIEW"
+          },
+          "inventory.blue_chalk": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "inventory.yellow_chalk": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "inventory.umbrella": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "inventory.blue_hat": {
+            "probability": 0.18,
+            "bucket": "OMIT"
+          },
+          "relationship.ada": {
+            "probability": 0.51,
+            "bucket": "SELECT"
+          },
+          "relationship.ada_recent": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "relationship.emre": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "saga.explorer": {
+            "probability": 0.55,
+            "bucket": "SELECT"
+          },
+          "saga.kindness_closed": {
+            "probability": 0.13,
+            "bucket": "OMIT"
+          },
+          "knowledge.home": {
+            "probability": 0.25,
+            "bucket": "OMIT"
+          },
+          "knowledge.courtyard": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "world.weather_dry": {
+            "probability": 0.26,
+            "bucket": "OMIT"
+          },
+          "location.low_platform": {
+            "probability": 0.35,
+            "bucket": "REVIEW"
+          },
+          "location.cardboard": {
+            "probability": 0.34,
+            "bucket": "REVIEW"
+          },
+          "location.wood_block": {
+            "probability": 0.28,
+            "bucket": "OMIT"
+          },
+          "location.chalk_box": {
+            "probability": 0.29,
+            "bucket": "OMIT"
+          },
+          "location.metal_bucket": {
+            "probability": 0.3,
+            "bucket": "REVIEW"
+          },
+          "recent.no_story_today": {
+            "probability": 0.2,
+            "bucket": "OMIT"
+          },
+          "recent.truck_intact": {
+            "probability": 0.18,
+            "bucket": "OMIT"
+          }
+        },
+        "raw_selected_enrichment_ids": [
+          "relationship.ada",
+          "saga.explorer"
+        ],
+        "policy_demoted_ids": [
+          "relationship.ada"
+        ],
+        "selected_enrichment_ids": [
+          "saga.explorer"
+        ],
+        "review_enrichment_ids": [
+          "inventory.blue_chalk",
+          "inventory.toy_truck",
+          "location.cardboard",
+          "location.low_platform",
+          "location.metal_bucket",
+          "relationship.ada"
+        ],
+        "final_packet": {
+          "deterministic_core": [
+            {
+              "id": "character.identity",
+              "text": "Active character is Deniz.",
+              "kind": "canon"
+            },
+            {
+              "id": "character.exact_age",
+              "text": "Deniz is exactly 4 years old.",
+              "kind": "canon"
+            },
+            {
+              "id": "world.active",
+              "text": "Active world is world-home-01.",
+              "kind": "canon"
+            },
+            {
+              "id": "state.current_location",
+              "text": "Deniz is currently in COMMONS_COURTYARD.",
+              "kind": "state"
+            },
+            {
+              "id": "state.story_revision",
+              "text": "CharacterStoryState revision is 12.",
+              "kind": "state"
+            },
+            {
+              "id": "knowledge.garden_gate",
+              "text": "GARDEN_GATE is only RUMORED for Deniz; he has not personally explored what is beyond it.",
+              "kind": "state"
+            },
+            {
+              "id": "recent.gate_not_opened",
+              "text": "Deniz has not opened or crossed GARDEN_GATE.",
+              "kind": "state"
+            },
+            {
+              "id": "world.physics_normal",
+              "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+              "kind": "canon"
+            }
+          ],
+          "jev_selected_enrichment": [
+            {
+              "id": "saga.explorer",
+              "text": "Active saga thread: Deniz explores small everyday mysteries in his surroundings.",
+              "kind": "canon"
+            }
+          ]
+        },
+        "raw_usage": {
+          "input_tokens": 4360,
+          "output_tokens": 384,
+          "cost": 0.00018312
+        },
+        "raw_model": "typesafe/jev-1.13-20260917"
+      },
+      "run_1_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [
+          "saga.explorer"
+        ],
+        "pass": true
+      },
+      "run_2_score": {
+        "missing_deterministic_direct_refs": [],
+        "selected_forbidden_or_noise": [],
+        "forbidden_leak": [],
+        "required_soft_hits": [
+          "saga.explorer"
+        ],
+        "pass": true
+      },
+      "repeat_stability": {
+        "same_selected_enrichment": true,
+        "bucket_changes": [
+          "knowledge.courtyard",
+          "location.chalk_box",
+          "location.wood_block"
+        ],
+        "max_probability_drift": 0.03
+      },
+      "pass": true
+    }
+  ],
+  "elapsed_seconds": 2.32
+}
