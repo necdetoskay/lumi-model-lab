@@ -97,6 +97,9 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
         severity = finding.get("severity")
         span_ids = finding.get("span_ids")
         reason = str(finding.get("reason") or "").strip()
+        reason_missing = not bool(reason)
+        if reason_missing:
+            reason = "[validator omitted reason]"
         if family not in DEFECT_FAMILIES:
             raise RuntimeError(f"finding_{index}_family_invalid:{family}")
         if severity not in {"serious", "critical"}:
@@ -105,13 +108,12 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
             raise RuntimeError(f"finding_{index}_spans_missing")
         if not set(span_ids).issubset(valid_ids):
             raise RuntimeError(f"finding_{index}_spans_invalid:{span_ids}")
-        if not reason:
-            raise RuntimeError(f"finding_{index}_reason_missing")
         normalized.append({
             "family": family,
             "severity": severity,
             "span_ids": span_ids,
             "reason": reason,
+            "reason_missing": reason_missing,
         })
     return normalized
 
