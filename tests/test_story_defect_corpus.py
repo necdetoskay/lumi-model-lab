@@ -2,10 +2,13 @@ import unittest
 
 from src.story_defect_corpus import (
     HELD_OUT_GROUPS,
+    admitted_source_ids,
     assign_source_splits,
+    build_mutation_source_rows,
     build_audit_manifest,
     load_source_pool,
     source_pool_summary,
+    validate_clean_admission,
     validate_source_pool,
 )
 
@@ -76,6 +79,36 @@ class StoryDefectCorpusTests(unittest.TestCase):
                 == "REQUIRES_INDEPENDENT_CLEAN_AUDIT"
                 for source in manifest["sources"]
             )
+        )
+
+    def test_clean_source_admission_is_evidence_consistent(self):
+        self.assertEqual(validate_clean_admission(), [])
+        self.assertEqual(len(admitted_source_ids()), 14)
+
+    def test_mutation_source_rows_exclude_all_quarantined_sources(self):
+        rows = build_mutation_source_rows()
+        self.assertEqual(len(rows), 14)
+        allowed = admitted_source_ids()
+        self.assertTrue(all(row["source_id"] in allowed for row in rows))
+        self.assertNotIn("src_fantastical_guard_02", allowed)
+        self.assertNotIn("src_cohort_b_04", allowed)
+
+    def test_held_out_mutation_pool_keeps_all_story_families(self):
+        rows = build_mutation_source_rows()
+        families = {
+            row["family"]
+            for row in rows
+            if row["dataset_split"] == "held_out"
+        }
+        self.assertEqual(
+            families,
+            {
+                "exploration_mystery",
+                "friendship_social_problem",
+                "emotional_development",
+                "everyday_fantastical_discovery",
+                "nature_environment",
+            },
         )
 
 
