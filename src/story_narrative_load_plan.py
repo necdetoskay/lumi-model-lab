@@ -124,6 +124,7 @@ def evaluate_narrative_load_promotion_gate(
     integration = evidence.get("architect_integration") or {}
     known_risk = evidence.get("known_risk") or {}
     terminal = evidence.get("terminal_closure_guard") or {}
+    absolute_tiebreak = integration.get("emotional_absolute_tiebreak") or {}
     change_policy = profile.get("change_policy") or {}
     gate = change_policy.get("promotion_gate") or {}
     integration_policy = profile.get("integration_policy") or {}
@@ -170,6 +171,25 @@ def evaluate_narrative_load_promotion_gate(
             required_serious_defects
         ):
             blockers.append("terminal_closure_guard_serious_defect")
+
+    if gate.get("require_emotional_absolute_tiebreak_pass"):
+        if absolute_tiebreak.get("strict_resolution_pass") is not True:
+            blockers.append("emotional_absolute_tiebreak_not_passed")
+
+    if gate.get("require_emotional_absolute_tiebreak_position_independent"):
+        if absolute_tiebreak.get("position_independent") is not True:
+            blockers.append("emotional_absolute_tiebreak_not_position_independent")
+
+    required_absolute_serious_defects = gate.get(
+        "require_emotional_absolute_tiebreak_serious_defects"
+    )
+    if required_absolute_serious_defects is not None:
+        candidate_defects = (
+            int((absolute_tiebreak.get("candidate_seed_1") or {}).get("serious_defect_count", -1))
+            + int((absolute_tiebreak.get("candidate_seed_2") or {}).get("serious_defect_count", -1))
+        )
+        if candidate_defects != int(required_absolute_serious_defects):
+            blockers.append("emotional_absolute_tiebreak_serious_defect")
 
     family_resolution = integration.get("latest_family_resolution") or {}
     required_families = list(gate.get("required_family_resolutions") or [])
