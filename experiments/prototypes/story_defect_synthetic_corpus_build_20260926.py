@@ -62,17 +62,28 @@ DEFECT_SENTENCES: dict[str, str] = {
 }
 
 
-def choose_anchor(segments: list[dict[str, Any]], recipe_index: int) -> dict[str, Any]:
+def choose_anchor(
+    story: str,
+    segments: list[dict[str, Any]],
+    recipe_index: int,
+) -> dict[str, Any]:
     if not segments:
         raise RuntimeError("source_story_has_no_segments")
-    # Keep closure mutation on the final sentence; spread all other mutations across
-    # the interior so detector position cannot become a shortcut.
+    unique = [row for row in segments if story.count(row["text"]) == 1]
+    if not unique:
+        raise RuntimeError("source_story_has_no_unique_sentence_anchor")
+
+    # Keep closure mutation as late as possible, but never sacrifice exact provenance.
     if recipe_index == 11:
-        return segments[-1]
-    if len(segments) <= 2:
-        return segments[0]
-    interior = segments[1:-1]
-    return interior[recipe_index % len(interior)]
+        return unique[-1]
+
+    interior = [
+        row
+        for row in unique
+        if row["id"] not in {segments[0]["id"], segments[-1]["id"]}
+    ]
+    candidates = interior or unique
+    return candidates[recipe_index % len(candidates)]
 
 
 def create_variant(
@@ -82,7 +93,7 @@ def create_variant(
 ) -> dict[str, Any]:
     story = str(source["story"])
     segments = segment_story(story)
-    anchor = choose_anchor(segments, recipe_index)
+    anchor = choose_anchor(story, segments, recipe_index)
     injected = DEFECT_SENTENCES[recipe["id"]]
     before = anchor["text"]
     after = before + " " + injected
