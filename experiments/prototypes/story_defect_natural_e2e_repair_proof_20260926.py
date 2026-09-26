@@ -8,49 +8,94 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from experiments.prototypes.story_defect_e2e_repair_proof_20260926 import (
-    DETECTOR_MODEL,
-    POST_VERIFY_MODEL,
-    call_detector,
-    meta_cost,
-)
 from experiments.prototypes.story_v5_tr_lint_copyedit_benchmark_20260925 import structured_call
-from src.story_defect_detection import segment_story
+from src.story_defect_detection import DEFECT_FAMILIES, segment_story
+
 
 FIXTURE = Path("experiments/fixtures/story_defect_natural_e2e_repair_proof.v1.json")
-NATURAL = Path("experiments/fixtures/story_defect_natural_positive_pool.tr-age4.v0.1.json")
 SOURCE_POOL = Path("experiments/fixtures/story_defect_source_pool.tr-age4.v1.json")
 CLEAN_ADMISSION = Path("experiments/fixtures/story_defect_clean_source_admission.tr-age4.v1.json")
 OUT = Path("runs/story-defect-natural-e2e-repair-proof/result.json")
 
+DETECTOR_MODEL = "anthropic/claude-sonnet-5"
 REPAIR_MODEL = "anthropic/claude-sonnet-5"
+VERIFY_MODEL = "anthropic/claude-haiku-4.5"
 
-REPAIR_SYSTEM = r"""
-You repair exactly ONE confirmed serious semantic defect in a Turkish read-aloud story for an exact-age-4 child.
+REPAIR_SCOPES = {"LOCAL_REPAIR", "STRUCTURAL_REPAIR", "REPLAN"}
+SCOPE_ALIASES = {"LOCAL": "LOCAL_REPAIR", "STRUCTURAL": "STRUCTURAL_REPAIR"}
 
-The caller gives:
-- the full story as read-only context;
-- one confirmed defect found by a blind detector;
-- exact detector-selected sentence IDs and their current text.
 
-You may change ONLY those supplied target sentence IDs.
-You may leave some target sentences unchanged.
-You may delete a target sentence by returning an empty replacement.
-Do not change or rewrite any sentence outside the target list.
+DETECTOR_SYSTEM = r"""
+You are a strict publication-defect auditor for one finished Turkish read-aloud story for an exact-age-4 child.
+
+Audit the current story blindly. You are not told whether the story is a benchmark, clean control, or known defective story.
+
+Report ONLY serious or critical semantic defects in these canonical families:
+- physical_feasibility
+- causal_logic
+- state_continuity
+- epistemic_order
+- spatial_consistency
+- temporal_consistency
+- response_causality
+- closure_integrity
+- canon_integrity
+
+For every finding, classify the MINIMUM safe repair scope:
+- LOCAL_REPAIR: a small number of exact supplied sentences can be changed while the rest stays untouched.
+- STRUCTURAL_REPAIR: coordinated changes across a wider story region or dependent beats are required, while the premise/plan can remain.
+- REPLAN: the underlying plan or causal architecture is broken enough that sentence-level editing is not reliable.
 
 Rules:
-- make the smallest correction that removes the confirmed defect;
-- preserve characters, tone, events, physical rules and already-correct state;
-- add no subplot, moral, new object, new character or unrelated explanation;
-- for response_causality, hands/task load may delay a hand-dependent action but must not cause inability to hear or speak;
-- for state_continuity, make later state agree with the already-established earlier state;
-- for causal_logic, restore the causal rule already demonstrated by the story;
-- for closure_integrity, remove/rewrite only the text that reopens an already-completed ending.
+- Zero findings is allowed and preferred over inventing a defect.
+- Do not report grammar, style, word count, repetition, optional polish, or taste.
+- Do not call ordinary fantasy a defect when the story establishes the fantasy rule.
+- Do not invent hidden height, strength, distance, knowledge, or world constraints.
+- response_causality: occupied hands or task load must not be treated as inability to hear or answer.
+- closure_integrity: a terminal ending must not be needlessly reopened afterward.
+- Cite the exact supplied sentence IDs that establish the defect.
+- Select the smallest evidence span that still proves the defect.
+- If audit_families is supplied, report only findings from those families.
+- Do not rewrite the story.
+
+Return JSON only:
+{
+  "findings": [
+    {
+      "family": "physical_feasibility|causal_logic|state_continuity|epistemic_order|spatial_consistency|temporal_consistency|response_causality|closure_integrity|canon_integrity",
+      "severity": "serious|critical",
+      "repair_scope": "LOCAL_REPAIR|STRUCTURAL_REPAIR|REPLAN",
+      "span_ids": ["S001"],
+      "reason": "brief evidence-based reason"
+    }
+  ]
+}
+""".strip()
+
+
+LOCAL_REPAIR_SYSTEM = r"""
+You repair exactly ONE confirmed LOCAL_REPAIR semantic defect in an otherwise accepted Turkish read-aloud story for an exact-age-4 child.
+
+This is a bounded edit, not a rewrite.
+
+Hard rules:
+- You may change ONLY sentence IDs present in target_segments.
+- Every non-target sentence is read-only.
+- Use the fewest replacements necessary.
+- Preserve names, events, object state, causal rules, tone, age fit, and ending except where the confirmed defect itself requires a local correction.
+- Add no subplot, canon, object, character, explanation, moral, or extra payoff.
+- Do not improve style outside the defect.
+- For response_causality, preserve perception: occupied hands or task load may delay a hand-dependent action, but must not cause failure to hear or answer.
+- A replacement may be an empty string only when deleting the target sentence is clearly the smallest safe repair.
+- Do not return replacements for unchanged target sentences.
 
 Return JSON only:
 {
   "replacements": [
-    {"span_id": "S001", "replacement_text": "replacement for this sentence only"}
+    {
+      "id": "S001",
+      "replacement_text": "replacement sentence or empty string"
+    }
   ],
   "repair_note": "one short sentence"
 }
@@ -61,82 +106,175 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def find_gold(natural: dict[str, Any], source_id: str, family: str) -> dict[str, Any]:
-    source_rows = [row for row in natural["cases"] if row["source_id"] == source_id]
-    if len(source_rows) != 1:
-        raise RuntimeError(f"natural_source_not_unique:{source_id}:{len(source_rows)}")
-    findings = [
-        row for row in source_rows[0]["findings"]
-        if row["defect_family"] == family
-    ]
-    if len(findings) != 1:
-        raise RuntimeError(f"natural_gold_not_unique:{source_id}:{family}:{len(findings)}")
-    return findings[0]
+def meta_cost(meta: dict[str, Any] | None) -> float:
+    if not meta:
+        return 0.0
+    cost = meta.get("cost")
+    if isinstance(cost, dict) and isinstance(cost.get("usd"), (int, float)):
+        return float(cost["usd"])
+    if isinstance(cost, (int, float)):
+        return float(cost)
+    return 0.0
 
 
-def matched_finding(
-    findings: list[dict[str, Any]],
+def normalize_scope(value: Any) -> str:
+    scope = SCOPE_ALIASES.get(str(value), str(value))
+    if scope not in REPAIR_SCOPES:
+        raise RuntimeError(f"repair_scope_invalid:{scope}")
+    return scope
+
+
+def normalize_findings(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[str, Any]]:
+    findings = payload.get("findings")
+    if not isinstance(findings, list):
+        raise RuntimeError("findings_missing")
+
+    normalized: list[dict[str, Any]] = []
+    for index, raw in enumerate(findings):
+        if not isinstance(raw, dict):
+            raise RuntimeError(f"finding_{index}_not_object")
+        family = str(raw.get("family") or "")
+        if family not in DEFECT_FAMILIES:
+            raise RuntimeError(f"finding_{index}_family_invalid:{family}")
+        severity = str(raw.get("severity") or "")
+        if severity not in {"serious", "critical"}:
+            raise RuntimeError(f"finding_{index}_severity_invalid:{severity}")
+        spans = raw.get("span_ids")
+        if not isinstance(spans, list) or not spans:
+            raise RuntimeError(f"finding_{index}_span_missing")
+        spans = [str(value) for value in spans]
+        if not set(spans).issubset(valid_ids):
+            raise RuntimeError(f"finding_{index}_span_invalid:{spans}")
+        normalized.append({
+            "family": family,
+            "severity": severity,
+            "repair_scope": normalize_scope(raw.get("repair_scope")),
+            "span_ids": spans,
+            "reason": str(raw.get("reason") or "").strip() or "[reason omitted]",
+        })
+    return normalized
+
+
+def call_detector(
     *,
-    expected_family: str,
-    gold_span_ids: list[str],
-) -> dict[str, Any] | None:
-    gold = set(gold_span_ids)
+    api_key: str,
+    model: str,
+    story_id: str,
+    story_family: str,
+    story_text: str,
+    seed: int,
+    request_class: str,
+    audit_families: list[str] | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    segments = segment_story(story_text)
+    payload, meta = structured_call(
+        api_key=api_key,
+        model=model,
+        system=DETECTOR_SYSTEM,
+        payload={
+            "story_id": story_id,
+            "story_family": story_family,
+            "exact_age": 4,
+            "reading_mode": "READ_ALOUD",
+            "audit_families": audit_families or list(DEFECT_FAMILIES),
+            "story_segments": segments,
+        },
+        seed=seed,
+        max_tokens=2600,
+        request_class=request_class,
+    )
+    findings = normalize_findings(payload, {row["id"] for row in segments})
+    allowed = set(audit_families or DEFECT_FAMILIES)
+    unexpected = [row["family"] for row in findings if row["family"] not in allowed]
+    if unexpected:
+        raise RuntimeError(f"detector_returned_unrequested_family:{unexpected}")
+    return findings, meta
+
+
+def expected_match(findings: list[dict[str, Any]], spec: dict[str, Any]) -> dict[str, Any] | None:
+    expected_spans = set(spec["expected_span_ids"])
     for finding in findings:
         if (
-            finding["family"] == expected_family
-            and gold.intersection(finding["span_ids"])
+            finding["family"] == spec["expected_family"]
+            and expected_spans.intersection(finding["span_ids"])
         ):
             return finding
     return None
 
 
-def selected_spans(story: str, span_ids: list[str]) -> list[dict[str, str]]:
-    rows = segment_story(story)
-    by_id = {row["id"]: row["text"] for row in rows}
-    missing = [span for span in span_ids if span not in by_id]
-    if missing:
-        raise RuntimeError("detector_span_missing:" + ",".join(missing))
-    return [{"span_id": span, "text": by_id[span]} for span in span_ids]
-
-
-def apply_replacements(
+def apply_local_repair(
     story: str,
-    targets: list[dict[str, str]],
-    replacements: list[dict[str, Any]],
-) -> tuple[str, dict[str, Any]]:
-    allowed = {row["span_id"]: row["text"] for row in targets}
+    segments: list[dict[str, Any]],
+    target_ids: list[str],
+    repair_payload: dict[str, Any],
+) -> tuple[str, dict[str, Any], list[dict[str, str]]]:
+    raw = repair_payload.get("replacements")
+    if not isinstance(raw, list) or not raw:
+        raise RuntimeError("replacements_missing")
+
+    by_id = {row["id"]: row["text"] for row in segments}
+    allowed = set(target_ids)
     seen: set[str] = set()
-    patches: list[tuple[int, int, str, str]] = []
+    replacements: list[dict[str, str]] = []
 
-    if not isinstance(replacements, list) or not replacements:
-        raise RuntimeError("repair_replacements_missing")
-
-    for item in replacements:
+    for index, item in enumerate(raw):
         if not isinstance(item, dict):
-            raise RuntimeError("repair_replacement_not_object")
-        span_id = str(item.get("span_id") or "")
-        if span_id not in allowed:
-            raise RuntimeError(f"repair_span_outside_authority:{span_id}")
-        if span_id in seen:
-            raise RuntimeError(f"repair_span_duplicate:{span_id}")
-        seen.add(span_id)
-        old = allowed[span_id]
-        if story.count(old) != 1:
-            raise RuntimeError(f"repair_target_not_unique:{span_id}:{story.count(old)}")
-        start = story.index(old)
-        replacement = str(item.get("replacement_text") or "")
-        patches.append((start, start + len(old), replacement, span_id))
+            raise RuntimeError(f"replacement_{index}_not_object")
+        sid = str(item.get("id") or item.get("span_id") or "")
+        if sid not in allowed:
+            raise RuntimeError(f"replacement_outside_detector_span:{sid}")
+        if sid in seen:
+            raise RuntimeError(f"replacement_duplicate_id:{sid}")
+        seen.add(sid)
+        new = str(item.get("replacement_text") or "")
+        old = by_id[sid]
+        if new == old:
+            continue
+        replacements.append({"id": sid, "old": old, "new": new})
+
+    if not replacements:
+        raise RuntimeError("repair_changed_nothing")
 
     repaired = story
-    for start, end, replacement, _span_id in sorted(patches, reverse=True):
-        repaired = repaired[:start] + replacement + repaired[end:]
+    for item in replacements:
+        if repaired.count(item["old"]) != 1:
+            raise RuntimeError(f"target_sentence_not_unique:{item['id']}")
+        repaired = repaired.replace(item["old"], item["new"], 1)
 
-    return repaired, {
-        "authorized_span_ids": sorted(allowed),
-        "patched_span_ids": sorted(seen),
-        "outside_authorized_spans_byte_preserved_by_deterministic_patcher": True,
-        "patch_count": len(patches),
+    non_target_unchanged = all(
+        row["text"] in repaired
+        for row in segments
+        if row["id"] not in allowed
+    )
+    changed_ids = [item["id"] for item in replacements]
+    mechanical = {
+        "detector_target_ids": target_ids,
+        "changed_ids": changed_ids,
+        "changed_ids_subset_of_detector_span": set(changed_ids).issubset(allowed),
+        "non_target_sentences_present_exactly": non_target_unchanged,
+        "changed_sentence_count": len(changed_ids),
+        "outside_detector_span_changed": False,
     }
+    return repaired, mechanical, replacements
+
+
+def write_progress(results: list[dict[str, Any]], total_cost: float, status: str) -> None:
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(
+        json.dumps(
+            {
+                "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+                "status": status,
+                "completed": len(results),
+                "results": results,
+                "total_cost_usd": round(total_cost, 6),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> None:
@@ -144,7 +282,6 @@ def main() -> None:
     api_key = os.environ["OPENROUTER_API_KEY"]
 
     fixture = load_json(FIXTURE)
-    natural = load_json(NATURAL)
     source_pool = load_json(SOURCE_POOL)
     admission = load_json(CLEAN_ADMISSION)
 
@@ -155,11 +292,24 @@ def main() -> None:
         if row["admitted_as_clean_source"] is True
     }
 
+    requested = [
+        value.strip()
+        for value in os.environ.get("NATURAL_PROOF_IDS", "").split(",")
+        if value.strip()
+    ]
+    cases = fixture["cases"]
+    if requested:
+        by_id = {row["proof_id"]: row for row in cases}
+        unknown = [proof_id for proof_id in requested if proof_id not in by_id]
+        if unknown:
+            raise RuntimeError(f"unknown_proof_ids:{unknown}")
+        cases = [by_id[proof_id] for proof_id in requested]
+
     results: list[dict[str, Any]] = []
     total_cost = 0.0
     started = time.perf_counter()
 
-    for index, spec in enumerate(fixture["cases"]):
+    for index, spec in enumerate(cases):
         proof_id = spec["proof_id"]
         source = source_by_id[spec["source_id"]]
         story = source["story"]
@@ -193,8 +343,8 @@ def main() -> None:
                     raise RuntimeError(f"clean_source_not_admitted:{spec['source_id']}")
                 verifier_findings, verifier_meta = call_detector(
                     api_key=api_key,
-                    model=POST_VERIFY_MODEL,
-                    story_id=f"{proof_id}_verify",
+                    model=VERIFY_MODEL,
+                    story_id=f"{proof_id}_full_regression",
                     story_family=source["family"],
                     story_text=story,
                     seed=2026160000 + index,
@@ -202,8 +352,8 @@ def main() -> None:
                 )
                 total_cost += meta_cost(verifier_meta)
                 row["repair"] = {"skipped": True}
-                row["post_verify"] = {
-                    "model": POST_VERIFY_MODEL,
+                row["full_regression"] = {
+                    "model": VERIFY_MODEL,
                     "findings": verifier_findings,
                     "meta": verifier_meta,
                 }
@@ -211,38 +361,50 @@ def main() -> None:
                 if not row["pass"]:
                     row["failure_stage"] = "CLEAN_FALSE_POSITIVE"
                 results.append(row)
+                write_progress(results, total_cost, "IN_PROGRESS")
                 continue
 
-            gold = find_gold(natural, spec["source_id"], spec["expected_family"])
-            matched = matched_finding(
-                detector_findings,
-                expected_family=spec["expected_family"],
-                gold_span_ids=gold["span_ids"],
-            )
-            row["gold_score_only"] = {
-                "family": gold["defect_family"],
-                "severity": gold["severity"],
-                "span_ids": gold["span_ids"],
-                "repair_scope": gold["repair_scope"],
+            matched = expected_match(detector_findings, spec)
+            row["gold_scoring"] = {
+                "expected_family": spec["expected_family"],
+                "expected_repair_scope": spec["expected_repair_scope"],
+                "expected_span_ids": spec["expected_span_ids"],
+                "expected_family_and_span_overlap": matched is not None,
             }
-            row["detector"]["expected_defect_confirmed"] = matched is not None
-
             if matched is None:
                 row["failure_stage"] = "DETECTION"
                 results.append(row)
+                write_progress(results, total_cost, "IN_PROGRESS")
                 continue
 
-            targets = selected_spans(story, matched["span_ids"])
+            scope_match = matched["repair_scope"] == spec["expected_repair_scope"]
+            row["gold_scoring"]["repair_scope_match"] = scope_match
+            if not scope_match:
+                row["failure_stage"] = "REPAIR_SCOPE_CLASSIFICATION"
+                results.append(row)
+                write_progress(results, total_cost, "IN_PROGRESS")
+                continue
+
+            if matched["repair_scope"] != "LOCAL_REPAIR":
+                row["failure_stage"] = "REPAIR_SCOPE_NOT_YET_ENABLED"
+                results.append(row)
+                write_progress(results, total_cost, "IN_PROGRESS")
+                continue
+
+            original_segments = segment_story(story)
+            by_id = {seg["id"]: seg for seg in original_segments}
+            target_segments = [by_id[sid] for sid in matched["span_ids"]]
+
             repair_payload, repair_meta = structured_call(
                 api_key=api_key,
                 model=REPAIR_MODEL,
-                system=REPAIR_SYSTEM,
+                system=LOCAL_REPAIR_SYSTEM,
                 payload={
                     "story_id": proof_id,
                     "story_family": source["family"],
-                    "full_story_read_only": story,
-                    "confirmed_defect": matched,
-                    "target_spans": targets,
+                    "confirmed_finding": matched,
+                    "target_segments": target_segments,
+                    "full_story_read_only": original_segments,
                 },
                 seed=2026155000 + index,
                 max_tokens=1800,
@@ -250,92 +412,118 @@ def main() -> None:
             )
             total_cost += meta_cost(repair_meta)
 
-            replacements = repair_payload.get("replacements")
-            repaired_story, mechanical = apply_replacements(
+            repaired_story, mechanical, replacements = apply_local_repair(
                 story,
-                targets,
-                replacements,
+                original_segments,
+                matched["span_ids"],
+                repair_payload,
             )
+            row["repair"] = {
+                "model": REPAIR_MODEL,
+                "repair_note": str(repair_payload.get("repair_note") or ""),
+                "replacements": replacements,
+                "mechanical": mechanical,
+                "meta": repair_meta,
+                "repaired_story": repaired_story,
+            }
 
-            verifier_findings, verifier_meta = call_detector(
+            same_defect_findings, same_defect_meta = call_detector(
                 api_key=api_key,
-                model=POST_VERIFY_MODEL,
-                story_id=f"{proof_id}_repaired",
+                model=VERIFY_MODEL,
+                story_id=f"{proof_id}_same_defect_recheck",
                 story_family=source["family"],
                 story_text=repaired_story,
                 seed=2026160000 + index,
                 request_class="judge",
+                audit_families=[spec["expected_family"]],
             )
-            total_cost += meta_cost(verifier_meta)
+            total_cost += meta_cost(same_defect_meta)
+            row["same_defect_recheck"] = {
+                "model": VERIFY_MODEL,
+                "family": spec["expected_family"],
+                "findings": same_defect_findings,
+                "meta": same_defect_meta,
+                "pass": len(same_defect_findings) == 0,
+            }
+            if same_defect_findings:
+                row["failure_stage"] = "SAME_DEFECT_RECHECK"
+                results.append(row)
+                write_progress(results, total_cost, "IN_PROGRESS")
+                continue
 
-            row["repair"] = {
-                "model": REPAIR_MODEL,
-                "detector_selected_targets": targets,
-                "replacements": replacements,
-                "repair_note": repair_payload.get("repair_note"),
-                "mechanical_invariants": mechanical,
-                "meta": repair_meta,
+            regression_findings, regression_meta = call_detector(
+                api_key=api_key,
+                model=VERIFY_MODEL,
+                story_id=f"{proof_id}_full_regression",
+                story_family=source["family"],
+                story_text=repaired_story,
+                seed=2026165000 + index,
+                request_class="judge",
+            )
+            total_cost += meta_cost(regression_meta)
+            row["full_regression"] = {
+                "model": VERIFY_MODEL,
+                "findings": regression_findings,
+                "meta": regression_meta,
+                "pass": len(regression_findings) == 0,
             }
-            row["repaired_story"] = repaired_story
-            row["post_verify"] = {
-                "model": POST_VERIFY_MODEL,
-                "findings": verifier_findings,
-                "meta": verifier_meta,
-            }
+
             row["pass"] = (
-                mechanical["outside_authorized_spans_byte_preserved_by_deterministic_patcher"]
-                and len(verifier_findings) == 0
+                mechanical["changed_ids_subset_of_detector_span"]
+                and mechanical["non_target_sentences_present_exactly"]
+                and not same_defect_findings
+                and not regression_findings
             )
             if not row["pass"]:
-                row["failure_stage"] = "POST_REPAIR_VERIFY"
+                row["failure_stage"] = "FULL_REGRESSION"
 
         except Exception as exc:
             row["failure_stage"] = "RUNTIME"
             row["error"] = f"{type(exc).__name__}: {exc}"
 
         results.append(row)
-
-        OUT.parent.mkdir(parents=True, exist_ok=True)
-        OUT.write_text(json.dumps({
-            "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
-            "status": "IN_PROGRESS",
-            "completed": len(results),
-            "results": results,
-            "total_cost_usd": round(total_cost, 6),
-        }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        write_progress(results, total_cost, "IN_PROGRESS")
 
     passes = sum(bool(row.get("pass")) for row in results)
     output = {
         "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
-        "status": "PASS" if passes == len(results) == 5 else "FAIL",
+        "status": "PASS" if passes == len(results) else "FAIL",
+        "mode": "SELECTED_CASES" if requested else "FULL_FIVE_STORY_PROOF",
+        "requested_proof_ids": requested,
         "models": {
             "detector": DETECTOR_MODEL,
             "repair": REPAIR_MODEL,
-            "post_repair_verifier": POST_VERIFY_MODEL,
+            "same_defect_recheck": VERIFY_MODEL,
+            "full_regression": VERIFY_MODEL,
         },
         "summary": {
             "cases": len(results),
             "passes": passes,
             "failures": len(results) - passes,
-            "all_five_pass": passes == 5,
+            "selected_cases_all_pass": passes == len(results),
+            "full_five_story_gate_pass": (not requested and passes == len(results) == 5),
         },
         "total_cost_usd": round(total_cost, 6),
         "elapsed_seconds": round(time.perf_counter() - started, 3),
         "results": results,
     }
-    OUT.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    OUT.write_text(
+        json.dumps(output, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps({
         "status": output["status"],
+        "mode": output["mode"],
         "summary": output["summary"],
         "total_cost_usd": output["total_cost_usd"],
         "elapsed_seconds": output["elapsed_seconds"],
         "case_results": [
             {
-                "proof_id": row["proof_id"],
-                "pass": row.get("pass"),
-                "failure_stage": row.get("failure_stage"),
+                "proof_id": item["proof_id"],
+                "pass": item.get("pass"),
+                "failure_stage": item.get("failure_stage"),
             }
-            for row in results
+            for item in results
         ],
     }, ensure_ascii=False, indent=2))
 
