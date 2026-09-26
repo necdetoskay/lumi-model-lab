@@ -83,6 +83,10 @@ Hard rules:
 - Preserve character names, events, object state, causal rules, tone, age fit, and ending unless the confirmed defect itself requires the local block to stop reopening the ending.
 - Add no new subplot, canon, object, character, explanation, moral, or extra payoff.
 - Make the smallest natural correction.
+- For response_causality defects, preserve perception explicitly: if a character is called, the repaired text must not say or imply that busy/full hands/task focus prevented hearing. If needed, say the character heard/understood but could not answer or act immediately.
+- For physical_feasibility defects, remove only the impossible action; do not invent a new mechanism unless the surrounding story already establishes it.
+- For state_continuity defects, restore the previously established state or remove the unsupported reset/reappearance.
+- For closure_integrity defects, prefer deleting the reopening tail when the story already has a complete ending.
 - If deletion is the cleanest fix (for example an unnecessary post-closure tail), replacement_text may be an empty string.
 - Do not quote or rewrite any other story text.
 - Return replacement text only through the JSON field.
@@ -288,6 +292,11 @@ def main() -> None:
                         "story_family": case["family"],
                         "full_story_read_only": original_story,
                         "confirmed_defect": matched,
+                        "family_specific_repair_rule": (
+                            "Perception must remain intact. Replace any claim that busy/full hands or task load prevented hearing with a response/action delay: the character heard or understood, but could not answer or act immediately."
+                            if matched["family"] == "response_causality"
+                            else "Use the smallest local correction for the confirmed family."
+                        ),
                         "target_block": target_block,
                     },
                     seed=2026135000 + index,
