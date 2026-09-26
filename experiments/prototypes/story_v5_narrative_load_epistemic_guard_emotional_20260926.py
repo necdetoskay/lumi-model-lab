@@ -111,6 +111,8 @@ def plan_fixture(key: str, fixture: dict, seed: int) -> tuple[dict, float]:
                 "quality_over_word_count": True,
                 "preserve_epistemic_order": True,
                 "do_not_reveal_explanation_before_misunderstanding": True,
+                "distinguish_perception_from_response": True,
+                "do_not_infer_sensory_failure_from_busy_hands": True,
             },
         },
         seed=seed,
@@ -236,7 +238,8 @@ def main() -> None:
         "guard_delta": [
             "preserve epistemic order",
             "do not reveal explanatory evidence before misunderstanding is formed",
-            "new evidence must naturally revise the character's interpretation"
+            "new evidence must naturally revise the character's interpretation",
+            "perception and response capacity must remain causally distinct"
         ],
         "summary": summary,
         "consensus_wins": wins,
