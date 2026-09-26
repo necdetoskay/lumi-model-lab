@@ -13,15 +13,15 @@ FINAL_JUDGE_MODEL="anthropic/claude-sonnet-5"
 PREMISE="""Deniz, yağmurdan sonra bahçede suyla dolmuş küçük bir çukuru fark eder. Çukurun yanında mahsur kalmış oyuncak bir tekne bulur ve teknenin yeniden yüzebilmesi için çevredeki doğal malzemelerle küçük bir su yolu açmaya çalışır."""
 
 STORY_SPINE=[
-  "Yağmurdan sonra Deniz bahçedeki yeni su birikintisini fark eder.",
-  "Küçük oyuncak teknenin yaprakların arasında sıkıştığını görür.",
-  "Tekneyi hareket ettirmeyi dener; kısa süre ilerler ama yeniden takılır.",
-  "Deniz suyun devam edebileceği yöne bakar ve biraz ileride kuru kalan küçük bir çukur fark eder.",
-  "Tekne için bu noktaya uzanan küçük bir su yolu açmayı düşünür ve çevresindeki basit malzemelerle ilk denemesini yapar.",
-  "İlk denemesi istediği gibi çalışmaz; su çok az ilerler ve yol yarıda kalır.",
-  "Başarısız denemenin bıraktığı küçük su izi Deniz'e yolun yönünü değiştirme fikri verir.",
-  "Yeni denemesinde su küçük bir yol boyunca ilerler ve tekne yeniden yüzmeye başlar. Anne yalnızca yanında fiziksel olarak yardım eder; çözümü Deniz bulur.",
-  "Deniz yolun sonundaki belirli bir yaprağı veya taşı liman yapar; teknenin oraya varmasıyla oyun devam eder."
+  {"beat":"Yağmurdan sonra Deniz bahçedeki yeni su birikintisini fark eder.","density":"brief"},
+  {"beat":"Küçük oyuncak teknenin yaprakların arasında sıkıştığını görür.","density":"develop"},
+  {"beat":"Tekneyi hareket ettirmeyi dener; kısa süre ilerler ama yeniden takılır.","density":"develop"},
+  {"beat":"Deniz suyun devam edebileceği yöne bakar ve biraz ileride kuru kalan küçük bir çukur fark eder.","density":"brief"},
+  {"beat":"Tekne için bu noktaya uzanan küçük bir su yolu açmayı düşünür ve çevresindeki basit malzemelerle ilk denemesini yapar.","density":"anchor"},
+  {"beat":"İlk denemesi istediği gibi çalışmaz; su çok az ilerler ve yol yarıda kalır.","density":"develop"},
+  {"beat":"Başarısız denemenin bıraktığı küçük su izi Deniz'e yolun yönünü değiştirme fikri verir.","density":"develop"},
+  {"beat":"Yeni denemesinde su küçük bir yol boyunca ilerler ve tekne yeniden yüzmeye başlar. Anne yalnızca yanında fiziksel olarak yardım eder; çözümü Deniz bulur.","density":"anchor"},
+  {"beat":"Deniz yolun sonundaki belirli bir yaprağı veya taşı liman yapar; teknenin oraya varmasıyla oyun devam eder.","density":"anchor"}
 ]
 
 WRITER_SYSTEM=r"""
@@ -30,6 +30,11 @@ Tam 4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak doğal, 
 
 Sana bir HİKÂYE OMURGASI verilecek. Omurga düzyazı değildir ve sahne planı değildir.
 Omurganın olay sırasını ve neden-sonuç ilişkisini koru; fakat onu madde madde prose'a çevirme.
+Her beat'te bir yoğunluk etiketi vardır:
+- brief: hızlı ve doğal geç; gereksiz ayrıntı ekleme.
+- develop: olayı biraz yaşat; somut eylem veya kısa diyalogla geliştir.
+- anchor: hikâyenin önemli anıdır; acele etme, karakter eylemini ve sonucu daha görünür kıl.
+Bu etiketler kelime kotası değildir; doğal ritmi bozacak biçimde mekanik uygulama.
 Diyalogları, küçük ayrıntıları, ritmi ve doğal geçişleri sen yarat.
 Omurgada olmayan yeni aile/ilişki canon'u icat etme.
 Anne çözümü bulan öğretmen olmasın; gerekiyorsa fiziksel olarak yardım etsin ama ana fikir Deniz'den gelsin.
@@ -194,7 +199,7 @@ def main():
     key=os.environ["OPENROUTER_API_KEY"]
     started=time.perf_counter()
 
-    spine_text="\n".join(f"{i+1}. {b}" for i,b in enumerate(STORY_SPINE))
+    spine_text="\n".join(f"{i+1}. [{b['density']}] {b['beat']}" for i,b in enumerate(STORY_SPINE))
     user_prompt=f"""KONU:\n{PREMISE}\n\nHİKÂYE OMURGASI:\n{spine_text}\n\nBu omurgayı doğal bir çocuk hikâyesine dönüştür."""
 
     draft,writer_body,writer_payload=call_openrouter(
@@ -206,7 +211,7 @@ def main():
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610021,max_tokens=None,request_class="editorial_audit"
+      seed=202610031,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -214,7 +219,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610022,max_tokens=None,request_class="editorial_audit"
+      seed=202610032,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -225,7 +230,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v2-length-aware-9-beat",
+      "experiment":"story-spine-refined-recipe-v3-density-aware",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
