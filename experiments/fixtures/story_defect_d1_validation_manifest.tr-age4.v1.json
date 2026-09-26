@@ -1,6 +1,6 @@
 {
   "schema_version": "story-defect-d1-validation-manifest.v1",
-  "status": "D1_COMPLETE_FROZEN",
+  "status": "REJECTED_SUPERSEDED_NOT_D2_AUTHORITY",
   "created_at": "2026-09-26",
   "scope": {
     "language": "tr",
@@ -13,7 +13,8 @@
     "canonical_taxonomy_authority": "LUMI defect ontology, not evaluator majority vote",
     "taxonomy_adjudication_rule": "When two independent validators both confirm a blocking defect on the injected gold span but disagree on family naming, the canonical mutation definition may assign the family label; one-validator-only cases remain quarantined.",
     "held_out_cases_must_not_influence_d2_threshold_selection": true,
-    "quarantined_cases_excluded_from_d2_scoring": true
+    "quarantined_cases_excluded_from_d2_scoring": true,
+    "d2_authority": false
   },
   "evidence": {
     "paid_batch_runs": [
@@ -2937,5 +2938,8 @@
         "causal_logic"
       ]
     }
-  ]
+  ],
+  "qualification_evidence": false,
+  "superseded_by": "experiments/fixtures/story_defect_d1_validated_manifest.v1.json",
+  "rejection_reason": "Response supplement v1 introduced additional blocking/dangling-thread semantics on the injected span. Dual validators often confirmed a blocking problem but disagreed on family because the mutation was not a clean single-defect example. Canonical relabeling cannot replace the independent-validation requirement for a controlled single-defect benchmark."
 }
