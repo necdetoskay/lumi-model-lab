@@ -10,6 +10,9 @@ from typing import Any
 DEFAULT_SOURCE_POOL = Path(
     "experiments/fixtures/story_defect_source_pool.tr-age4.v1.json"
 )
+DEFAULT_CLEAN_ADMISSION = Path(
+    "experiments/fixtures/story_defect_clean_source_admission.tr-age4.v1.json"
+)
 
 # Frozen before any D2 threshold selection. Same scenario_group always shares a split.
 HELD_OUT_GROUPS = {
@@ -146,3 +149,81 @@ def build_audit_manifest(pool: dict[str, Any]) -> dict[str, Any]:
             for row in rows
         ],
     }
+
+
+def load_clean_admission(
+    path: str | Path = DEFAULT_CLEAN_ADMISSION,
+) -> dict[str, Any]:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def admitted_source_ids(
+    admission: dict[str, Any] | None = None,
+) -> set[str]:
+    payload = admission or load_clean_admission()
+    return {
+        str(row["source_id"])
+        for row in payload.get("entries") or []
+        if row.get("admitted_as_clean_source") is True
+    }
+
+
+def build_mutation_source_rows(
+    pool: dict[str, Any] | None = None,
+    admission: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    pool_payload = pool or load_source_pool()
+    admission_payload = admission or load_clean_admission()
+    allowed = admitted_source_ids(admission_payload)
+    rows = assign_source_splits(pool_payload)
+    return [row for row in rows if row["source_id"] in allowed]
+
+
+def validate_clean_admission(
+    pool: dict[str, Any] | None = None,
+    admission: dict[str, Any] | None = None,
+) -> list[str]:
+    pool_payload = pool or load_source_pool()
+    admission_payload = admission or load_clean_admission()
+    errors: list[str] = []
+
+    pool_ids = {str(row["source_id"]) for row in pool_payload.get("sources") or []}
+    entries = admission_payload.get("entries")
+    if not isinstance(entries, list):
+        return ["admission_entries_missing"]
+
+    entry_ids = [str(row.get("source_id") or "") for row in entries]
+    if len(entry_ids) != len(set(entry_ids)):
+        errors.append("admission_source_id_duplicate")
+    if set(entry_ids) != pool_ids:
+        errors.append("admission_source_set_mismatch")
+
+    for row in entries:
+        source_id = str(row.get("source_id") or "")
+        evidence = row.get("evidence") or {}
+        forward = evidence.get("forward_candidate_serious_defects")
+        reverse = evidence.get("reverse_candidate_serious_defects")
+        expected = isinstance(forward, list) and isinstance(reverse, list) and not forward and not reverse
+        if row.get("admitted_as_clean_source") is not expected:
+            errors.append(f"admission_evidence_mismatch:{source_id}")
+        if evidence.get("order_swapped") is not True:
+            errors.append(f"admission_not_order_swapped:{source_id}")
+
+    admitted = admitted_source_ids(admission_payload)
+    rows = assign_source_splits(pool_payload)
+    held_out_families = {
+        row["family"]
+        for row in rows
+        if row["dataset_split"] == "held_out" and row["source_id"] in admitted
+    }
+    required_families = {
+        "exploration_mystery",
+        "friendship_social_problem",
+        "emotional_development",
+        "everyday_fantastical_discovery",
+        "nature_environment",
+    }
+    for family in sorted(required_families - held_out_families):
+        errors.append(f"held_out_admitted_family_missing:{family}")
+
+    return errors
