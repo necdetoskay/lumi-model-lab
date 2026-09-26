@@ -1,0 +1,76 @@
+{
+  "schema_version": "translation-fidelity-cheap-gate-result.v1",
+  "model": "openai/gpt-5.6-luna",
+  "status": "PASS",
+  "summary": {
+    "cases": 3,
+    "passes": 3,
+    "failures": 0,
+    "all_three_pass": true
+  },
+  "results": [
+    {
+      "case_id": "A_GEMINI_CLEAN",
+      "kind": "clean",
+      "findings": [],
+      "model_declared_clean": true,
+      "cost_usd": 0.000681,
+      "pass": true
+    },
+    {
+      "case_id": "B_QWEN_MAX_DEFECTIVE",
+      "kind": "defect",
+      "findings": [
+        {
+          "severity": "serious",
+          "class": "state_shift",
+          "source_quote": "the rings hung still and quiet",
+          "translation_quote": "halkalar ... durgun ve sessizce sallanıyordu",
+          "why": "The source says the rings had stopped moving, but the translation says they were swinging, changing the physical state."
+        }
+      ],
+      "model_declared_clean": false,
+      "cost_usd": 0.001227,
+      "pass": true
+    },
+    {
+      "case_id": "C_QWEN_30B_DEFECTIVE",
+      "kind": "defect",
+      "findings": [
+        {
+          "severity": "serious",
+          "class": "character_shift",
+          "source_quote": "Then he heard it.",
+          "translation_quote": "Sonra duydum.",
+          "why": "The source says Deniz heard the sound, but the translation says “I heard it,” shifting the perceiver to the narrator."
+        },
+        {
+          "severity": "serious",
+          "class": "object_shift",
+          "source_quote": "He tiptoed to the flowerpot near the door.",
+          "translation_quote": "Kapıya yakın çiçekliklerin yanına yürüdü.",
+          "why": "A single flowerpot becomes plural planters/flower holders, changing the objects Deniz investigates."
+        },
+        {
+          "severity": "serious",
+          "class": "object_shift",
+          "source_quote": "There was a little ornament hanging from a hook",
+          "translation_quote": "Bir çividen asılı, küçük bir süs vardı",
+          "why": "The hanging object is attached to a hook in the source but to a nail in the translation, changing a concrete story detail."
+        },
+        {
+          "severity": "serious",
+          "class": "omission",
+          "source_quote": "# The Tick on the Balcony",
+          "translation_quote": "# Balkonda Titrek",
+          "why": "The title omits the central “tick” sound and instead introduces the meaning “trembling,” changing the story’s identifying premise."
+        }
+      ],
+      "model_declared_clean": false,
+      "cost_usd": 0.001507,
+      "pass": true
+    }
+  ],
+  "total_cost_usd": 0.003416,
+  "elapsed_seconds": 18.697
+}
