@@ -10,19 +10,18 @@ WRITER_MODEL="anthropic/claude-sonnet-5"
 EDITOR_MODEL="openai/gpt-5.6-sol"
 FINAL_JUDGE_MODEL="anthropic/claude-sonnet-5"
 
-PREMISE="""Deniz ve Ece parkın kum havuzunda aynı kırmızı kovayla oynamak ister. İkisi de kovayı kendi oyunu için kullanmaya çalışırken oyun kısa süreliğine tıkanır; sonra kovayı sırayla vermek üzerine yetişkin dersi almadan, kovayı iki oyunu birbirine bağlayan komik bir 'kum taşıma aracı'na dönüştürürler."""
+PREMISE="""Deniz akşamüstü evin balkonunda aralıklı gelen ince bir tıkırtı duyar. Sesin kaynağını hemen bulamaz; sırayla saksılara, korkuluğa ve asılı süse bakar. Sonunda rüzgârın küçük metal halkaları birbirine değdirdiğini fark eder ve sesi kendi oyununa dönüştürür."""
 
 STORY_SPINE=[
-  {"beat":"Deniz kum havuzunda küçük bir yol yaparken kırmızı kovayı görür ve almak için uzanır.","density":"brief"},
-  {"beat":"Aynı anda Ece de kovaya uzanır; ikisi kovayı kendi oyununda kullanmak ister.","density":"develop"},
-  {"beat":"Kovayı çekiştirmeden önce elleri aynı sapta kalır; oyunları durur ve ikisi de ne yapmak istediğini kısa, çocukça cümlelerle söyler.","density":"develop"},
-  {"beat":"Deniz kovayla yoluna kum taşımayı dener; ardından Ece kovayı kendi kulesine götürür. Kova iki oyun arasında gidip gelir.","density":"develop"},
-  {"beat":"Taşıma sırasında biraz kum iki yapının arasına dökülür ve beklenmedik küçük bir kum tepesi oluşur.","density":"anchor"},
-  {"beat":"Deniz ve Ece bu yeni tepeyi iki ayrı oyun arasındaki ortak bir durak gibi kullanmaya başlar; fikir yetişkinden gelmez.","density":"anchor"},
-  {"beat":"Kırmızı kova artık 'kum taşıma aracı' olur; biri doldurur, diğeri boşaltır ve roller oyun içinde kendiliğinden değişir.","density":"anchor"},
-  {"beat":"Kapanışta kova ters dönüp başlarına ya da kumun üstüne komik bir şekilde 'garaj/şapka' olur; oyun yeni bir şakaya dönüşerek devam eder.","density":"anchor"}
-]
-WRITER_SYSTEM=r"""
+  {"beat":"Deniz akşamüstü balkonda oynarken kısa bir 'tık' sesi duyar ve başını kaldırır.","density":"brief"},
+  {"beat":"Ses yeniden gelir ama hemen kaybolur; Deniz çevresine bakar ve kaynağını bulmaya çalışır.","density":"develop"},
+  {"beat":"Önce yakınındaki saksının kenarına ve yerdeki küçük taşlara bakar; sesi onlardan sanır ama yeni tık başka taraftan gelir.","density":"develop"},
+  {"beat":"Sonra balkon korkuluğuna yaklaşır; rüzgâr estiğinde sesin biraz daha belirginleştiğini fark eder.","density":"develop"},
+  {"beat":"Asılı küçük süsün metal halkalarından biri rüzgârla sallanıp diğerine dokunur ve aynı 'tık' sesi çıkar.","density":"anchor"},
+  {"beat":"Deniz sesi birkaç kez dinler, rüzgâr durunca tıkırtının da durduğunu gözlemler; anlatıcı bunu açıklamaz, Deniz davranışıyla bağlantıyı kurar.","density":"anchor"},
+  {"beat":"Deniz süsü çekip bırakmak yerine avucuyla hafifçe rüzgâr yapar; halkalar yeniden tıklar ve bu ses küçük bir oyuna dönüşür.","density":"anchor"},
+  {"beat":"Kapanışta Deniz kendi ritmini dener; iki kısa tık ve bir uzun bekleme yapar, sonra rüzgârın verdiği cevabı dinler.","density":"anchor"}
+]WRITER_SYSTEM=r"""
 Sen Türkçe yazan, deneyimli bir çocuk kitabı yazarısın.
 Tam 4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak doğal, sıcak ve eğlenceli bir hikâye yaz.
 
@@ -35,8 +34,8 @@ Her beat'te bir yoğunluk etiketi vardır:
 Bu etiketler kelime kotası değildir; doğal ritmi bozacak biçimde mekanik uygulama.
 Diyalogları, küçük ayrıntıları, ritmi ve doğal geçişleri sen yarat.
 Omurgada olmayan yeni aile/ilişki canon'u icat etme.
-Yetişkin karakter varsa çatışmayı çözen öğretmen veya hakem olmasın; çocukların oyununa alan bıraksın.
-Sosyal anlaşmayı bir ders, paylaşma mesajı veya yetişkin açıklaması olarak yazma; çözüm çocukların oyununun içinden doğsun.
+Yetişkin karakter varsa keşfi açıklayan öğretmen olmasın; Deniz'in merakına alan bıraksın.
+Merak hikâyesini bilgi dersi, bilimsel açıklama veya "bak işte sebebi bu" sonucuna dönüştürme; bağlantı Deniz'in gözlem ve oyunu içinden görünür olsun.
 
 SERT KISITLAR:
 1. Şu yetişkin/edebî kalıpları kullanma:
@@ -50,10 +49,10 @@ SERT KISITLAR:
    Aynı iskelet iki kez kullanılabilir; sonraki benzer anlarda doğal biçimde çeşitlendir.
    Ancak çocuk oyunu, ritim, tekrar eden espri veya bilinçli motif amacı taşıyan tekrarları sırf tekrar diye bozma.
 
-3. Yetişkin karakter çocuğun hayal gücünü gerçeklik dersi vererek düzeltmesin ve sosyal sorunu çocukların yerine çözmesin.
-   Sokratik soru zinciri kurmasın; "ne yapmalı dersin?", "sence ne yapabiliriz?",
-   "neden olabilir?", "değil mi?" gibi çözümü sınav sorusu gibi sorduran kalıpları kullanma.
-   Çocuklar aralarındaki küçük gerilimi doğal oyun davranışı içinde kendileri dönüştürsün.
+3. Yetişkin karakter Deniz'in merakını bilgi dersiyle çözmesin.
+   Sokratik soru zinciri kurmasın; "ne olabilir?", "sence neden?", "neden olabilir?",
+   "değil mi?" gibi keşfi sınav sorusu gibi sorduran kalıpları kullanma.
+   Deniz gözlemleyerek ve deneyerek bağlantıyı kendi davranışıyla kursun.
 
 4. Önceki bir kısıtla çelişmemek için savunmacı açıklamalar ekleme.
    Eylemi baştan tutarlı yaz.
@@ -210,7 +209,7 @@ def main():
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610061,max_tokens=None,request_class="editorial_audit"
+      seed=202610071,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -218,7 +217,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610062,max_tokens=None,request_class="editorial_audit"
+      seed=202610072,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -229,7 +228,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v5-social-generalization",
+      "experiment":"story-spine-refined-recipe-v6-curiosity-generalization",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
