@@ -95,6 +95,9 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
             raise RuntimeError(f"finding_{index}_not_object")
         family = finding.get("family")
         severity = finding.get("severity")
+        severity_missing = severity is None
+        if severity_missing:
+            severity = "serious"
         span_ids = finding.get("span_ids")
         reason = str(finding.get("reason") or "").strip()
         reason_missing = not bool(reason)
@@ -114,6 +117,7 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
             "span_ids": span_ids,
             "reason": reason,
             "reason_missing": reason_missing,
+            "severity_missing": severity_missing,
         })
     return normalized
 
