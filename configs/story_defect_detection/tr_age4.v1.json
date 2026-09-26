@@ -1,0 +1,140 @@
+{
+  "schema_version": "story-defect-detection.v1",
+  "status": "qualification_candidate",
+  "scope": {
+    "language": "tr",
+    "exact_age": 4,
+    "reading_mode": "READ_ALOUD",
+    "nominal_target_words": 500,
+    "frozen_generator_profile": "configs/story_planner_profiles/tr_age4_narrative_load.v1.json"
+  },
+  "objective": {
+    "primary": "system_level_publication_reliability",
+    "first_draft_perfection_required": false,
+    "serious_defect_recall_priority": "primary",
+    "false_positive_cost_priority": "secondary",
+    "principle": "missed serious defects are more costly than extra verification"
+  },
+  "defect_families": [
+    {
+      "id": "physical_feasibility",
+      "priority": "critical_focus",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "causal_logic",
+      "priority": "critical_focus",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "state_continuity",
+      "priority": "critical_focus",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "epistemic_order",
+      "priority": "high",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "spatial_consistency",
+      "priority": "high",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "temporal_consistency",
+      "priority": "high",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "response_causality",
+      "priority": "critical_focus",
+      "default_repair_scope": "LOCAL"
+    },
+    {
+      "id": "closure_integrity",
+      "priority": "high",
+      "default_repair_scope": "LOCAL_OR_STRUCTURAL"
+    },
+    {
+      "id": "canon_integrity",
+      "priority": "high",
+      "default_repair_scope": "STRUCTURAL_OR_REPLAN"
+    }
+  ],
+  "severities": [
+    "minor",
+    "moderate",
+    "serious",
+    "critical"
+  ],
+  "repair_scopes": [
+    "NO_REPAIR",
+    "LOCAL_REPAIR",
+    "STRUCTURAL_REPAIR",
+    "REPLAN"
+  ],
+  "jev_sentinel": {
+    "model_id": "typesafe/jev-1.13",
+    "transport": "openrouter_decisions_api",
+    "role": "advisory_high_recall_semantic_sentinel",
+    "atomic_questions": true,
+    "one_global_story_quality_question_forbidden": true,
+    "clean_bypass_allowed": false,
+    "threshold_status": "UNQUALIFIED",
+    "threshold_source": "must_be_learned_from_frozen_lumi_defect_corpus",
+    "qualification_behavior": "record_scores_and_escalate_without_granting_clean_authority"
+  },
+  "strong_verifier": {
+    "role": "defect_confirmation_and_location",
+    "required_until_jev_calibrated": true,
+    "must_return": [
+      "family",
+      "severity",
+      "span_ids",
+      "reason",
+      "repair_scope"
+    ],
+    "may_not_rewrite_story": true
+  },
+  "repair_policy": {
+    "minimal_change_required": true,
+    "local_repair_only_when_downstream_causal_state_unchanged": true,
+    "structural_repair_when_multiple_dependencies_change": true,
+    "replan_when_main_causal_chain_or_solution_principle_is_invalid": true,
+    "repair_may_not_create_new_canon": true,
+    "post_repair_same_defect_verification_required": true,
+    "post_repair_regression_verification_required": true
+  },
+  "benchmark": {
+    "corpus_status": "SEED_ONLY_NOT_QUALIFICATION_READY",
+    "target_min_total_cases": 200,
+    "target_min_positive_cases_per_priority_family": 20,
+    "primary_metric": "serious_critical_recall",
+    "secondary_metrics": [
+      "critical_recall",
+      "per_family_recall",
+      "precision",
+      "false_negative_count",
+      "span_locator_recall",
+      "harmful_repair_rate",
+      "repair_success_rate",
+      "verification_cost_per_accepted_story"
+    ],
+    "provisional_targets": {
+      "critical_recall_min": 1,
+      "serious_critical_recall_min": 0.98,
+      "physical_and_causal_logic_recall_min": 0.99,
+      "harmful_repair_rate_max": 0.01
+    },
+    "promotion_note": "targets are candidate qualification goals and may change only through evidence-backed versioning"
+  },
+  "governance": {
+    "detector_change_requires_versioning": true,
+    "evaluator_identity_prompt_threshold_and_aggregation_must_be_versioned_together": true,
+    "pairwise_order_swap_is_not_sufficient_calibration": true,
+    "position_format_length_and_identity_perturbation_tests_required": true,
+    "deterministic_checks_preferred_when_possible": true,
+    "generator_mutation_during_detector_qualification_forbidden": true
+  }
+}
