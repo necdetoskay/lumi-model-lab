@@ -80,6 +80,9 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
     for idx, finding in enumerate(findings):
         family = finding.get("family")
         severity = finding.get("severity")
+        severity_missing = severity is None
+        if severity_missing:
+            severity = "serious"
         spans = finding.get("span_ids")
         reason = str(finding.get("reason") or "").strip()
         reason_missing = not bool(reason)
@@ -97,6 +100,7 @@ def validate_payload(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[
             "span_ids": spans,
             "reason": reason,
             "reason_missing": reason_missing,
+            "severity_missing": severity_missing,
         })
     return out
 
