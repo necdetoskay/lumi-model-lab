@@ -10,20 +10,18 @@ WRITER_MODEL="anthropic/claude-sonnet-5"
 EDITOR_MODEL="openai/gpt-5.6-sol"
 FINAL_JUDGE_MODEL="anthropic/claude-sonnet-5"
 
-PREMISE="""Deniz, yağmurdan sonra bahçede suyla dolmuş küçük bir çukuru fark eder. Çukurun yanında mahsur kalmış oyuncak bir tekne bulur ve teknenin yeniden yüzebilmesi için çevredeki doğal malzemelerle küçük bir su yolu açmaya çalışır."""
+PREMISE="""Deniz ve Ece parkın kum havuzunda aynı kırmızı kovayla oynamak ister. İkisi de kovayı kendi oyunu için kullanmaya çalışırken oyun kısa süreliğine tıkanır; sonra kovayı sırayla vermek üzerine yetişkin dersi almadan, kovayı iki oyunu birbirine bağlayan komik bir 'kum taşıma aracı'na dönüştürürler."""
 
 STORY_SPINE=[
-  {"beat":"Yağmurdan sonra Deniz bahçedeki yeni su birikintisini fark eder.","density":"brief"},
-  {"beat":"Küçük oyuncak teknenin yaprakların arasında sıkıştığını görür.","density":"develop"},
-  {"beat":"Tekneyi hareket ettirmeyi dener; kısa süre ilerler ama yeniden takılır.","density":"develop"},
-  {"beat":"Deniz suyun devam edebileceği yöne bakar ve biraz ileride kuru kalan küçük bir çukur fark eder.","density":"brief"},
-  {"beat":"Tekne için bu noktaya uzanan küçük bir su yolu açmayı düşünür ve çevresindeki basit malzemelerle ilk denemesini yapar.","density":"anchor"},
-  {"beat":"İlk denemesi istediği gibi çalışmaz; su çok az ilerler ve yol yarıda kalır.","density":"develop"},
-  {"beat":"Başarısız denemenin bıraktığı küçük su izi Deniz'e yolun yönünü değiştirme fikri verir.","density":"develop"},
-  {"beat":"Yeni denemesinde su küçük bir yol boyunca ilerler ve tekne yeniden yüzmeye başlar. Anne yalnızca yanında fiziksel olarak yardım eder; çözümü Deniz bulur.","density":"anchor"},
-  {"beat":"Deniz yolun sonundaki belirli bir yaprağı veya taşı liman yapar; teknenin oraya varmasıyla oyun devam eder.","density":"anchor"}
+  {"beat":"Deniz kum havuzunda küçük bir yol yaparken kırmızı kovayı görür ve almak için uzanır.","density":"brief"},
+  {"beat":"Aynı anda Ece de kovaya uzanır; ikisi kovayı kendi oyununda kullanmak ister.","density":"develop"},
+  {"beat":"Kovayı çekiştirmeden önce elleri aynı sapta kalır; oyunları durur ve ikisi de ne yapmak istediğini kısa, çocukça cümlelerle söyler.","density":"develop"},
+  {"beat":"Deniz kovayla yoluna kum taşımayı dener; ardından Ece kovayı kendi kulesine götürür. Kova iki oyun arasında gidip gelir.","density":"develop"},
+  {"beat":"Taşıma sırasında biraz kum iki yapının arasına dökülür ve beklenmedik küçük bir kum tepesi oluşur.","density":"anchor"},
+  {"beat":"Deniz ve Ece bu yeni tepeyi iki ayrı oyun arasındaki ortak bir durak gibi kullanmaya başlar; fikir yetişkinden gelmez.","density":"anchor"},
+  {"beat":"Kırmızı kova artık 'kum taşıma aracı' olur; biri doldurur, diğeri boşaltır ve roller oyun içinde kendiliğinden değişir.","density":"anchor"},
+  {"beat":"Kapanışta kova ters dönüp başlarına ya da kumun üstüne komik bir şekilde 'garaj/şapka' olur; oyun yeni bir şakaya dönüşerek devam eder.","density":"anchor"}
 ]
-
 WRITER_SYSTEM=r"""
 Sen Türkçe yazan, deneyimli bir çocuk kitabı yazarısın.
 Tam 4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak doğal, sıcak ve eğlenceli bir hikâye yaz.
@@ -37,7 +35,8 @@ Her beat'te bir yoğunluk etiketi vardır:
 Bu etiketler kelime kotası değildir; doğal ritmi bozacak biçimde mekanik uygulama.
 Diyalogları, küçük ayrıntıları, ritmi ve doğal geçişleri sen yarat.
 Omurgada olmayan yeni aile/ilişki canon'u icat etme.
-Anne çözümü bulan öğretmen olmasın; gerekiyorsa fiziksel olarak yardım etsin ama ana fikir Deniz'den gelsin.
+Yetişkin karakter varsa çatışmayı çözen öğretmen veya hakem olmasın; çocukların oyununa alan bıraksın.
+Sosyal anlaşmayı bir ders, paylaşma mesajı veya yetişkin açıklaması olarak yazma; çözüm çocukların oyununun içinden doğsun.
 
 SERT KISITLAR:
 1. Şu yetişkin/edebî kalıpları kullanma:
@@ -51,10 +50,10 @@ SERT KISITLAR:
    Aynı iskelet iki kez kullanılabilir; sonraki benzer anlarda doğal biçimde çeşitlendir.
    Ancak çocuk oyunu, ritim, tekrar eden espri veya bilinçli motif amacı taşıyan tekrarları sırf tekrar diye bozma.
 
-3. Anne Deniz'in hayal gücünü gerçeklik dersi vererek düzeltmesin.
+3. Yetişkin karakter çocuğun hayal gücünü gerçeklik dersi vererek düzeltmesin ve sosyal sorunu çocukların yerine çözmesin.
    Sokratik soru zinciri kurmasın; "ne yapmalı dersin?", "sence ne yapabiliriz?",
-   "neden olabilir?", "değil mi?" gibi çözümü çocuğa sınav sorusu gibi sorduran kalıpları kullanma.
-   Oyuna katılsın, şaşırsın, gülsün veya kısa ve doğal biçimde yardım etsin.
+   "neden olabilir?", "değil mi?" gibi çözümü sınav sorusu gibi sorduran kalıpları kullanma.
+   Çocuklar aralarındaki küçük gerilimi doğal oyun davranışı içinde kendileri dönüştürsün.
 
 4. Önceki bir kısıtla çelişmemek için savunmacı açıklamalar ekleme.
    Eylemi baştan tutarlı yaz.
@@ -72,17 +71,6 @@ SERT KISITLAR:
 
 9. Türkçe ek/iyelik uyumuna özellikle dikkat et; doğal olmayan sözcük dizimi üretme.
 
-10. UNDER-LENGTH EXPANSION PASS:
-   Hikâyeyi bitirmeden hemen önce toplam uzunluğu yaklaşık olarak kontrol et.
-   Metin 450 kelimenin altındaysa YENİ OLAY veya YENİ BEAT ekleme.
-   Bunun yerine mevcut develop ve anchor beat'leri biraz daha yaşat:
-   - karakterin somut eylemini bir adım daha görünür kıl,
-   - doğal ve kısa bir diyalog ekle,
-   - yaşa uygun tek bir duyusal ayrıntı kullan,
-   - neden-sonuç geçişini bir cümleyle daha açık hale getir.
-   Aynı bilgiyi tekrar ederek, sıfat doldurarak veya açıklama yaparak uzatma.
-   Hedef banda yaklaşınca doğal biçimde bitir.
-
 UZUNLUK:
 - Hedef: 475-525 kelime.
 - Hard aralık: 375-625 kelime.
@@ -98,9 +86,9 @@ Tam yeniden yazım yapma; yalnız gerçek kusurları en küçük anlamlı kapsam
 Kontrol et:
 1. yetişkin/resmî/edebî register,
 2. mekanik anlatı iskeleti tekrarı; bilinçli ritim/oyun tekrarını kusur sayma,
-3. ebeveynin çocuğun hayalini düzeltmesi veya öğretmen/sınav tonu,
+3. yetişkinin çocukların hayalini düzeltmesi, sosyal sorunu onların yerine çözmesi veya öğretmen/sınav tonu,
    özellikle "ne yapmalı dersin?", "sence ne yapabiliriz?", "neden olabilir?",
-   "değil mi?" gibi çözümü çocuğa sınav sorusu gibi sorduran kalıplar,
+   "değil mi?" gibi çözümü sınav sorusu gibi sorduran kalıplar,
 4. savunmacı iç-tutarlılık açıklamaları,
 5. aşırı eylem yığılması / sesli okuma sorunu,
 6. klişe/genel kapanış,
@@ -222,7 +210,7 @@ def main():
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610041,max_tokens=None,request_class="editorial_audit"
+      seed=202610061,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -230,7 +218,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610042,max_tokens=None,request_class="editorial_audit"
+      seed=202610062,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -241,7 +229,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v4-underlength-expansion",
+      "experiment":"story-spine-refined-recipe-v5-social-generalization",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
