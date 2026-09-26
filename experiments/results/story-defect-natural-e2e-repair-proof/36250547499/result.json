@@ -1,0 +1,99 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+  "status": "FAIL",
+  "mode": "SELECTED_CASES",
+  "requested_proof_ids": [
+    "N1_RESPONSE"
+  ],
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "same_defect_recheck": "anthropic/claude-haiku-4.5",
+    "full_regression": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 1,
+    "passes": 0,
+    "failures": 1,
+    "selected_cases_all_pass": false,
+    "full_five_story_gate_pass": false
+  },
+  "total_cost_usd": 0.026056,
+  "elapsed_seconds": 16.569,
+  "results": [
+    {
+      "proof_id": "N1_RESPONSE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_seed2_03",
+      "story_family": "emotional_development",
+      "pass": false,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "meta": {
+          "strategy": "blind_primary_then_zero_confirmation",
+          "selected_round": "confirmed_zero",
+          "rounds": [
+            {
+              "round": "blind_primary",
+              "findings": [],
+              "meta": {
+                "cost": {
+                  "usd": 0.012104,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2712,
+                  "output_tokens": 668,
+                  "total_tokens": 3380
+                },
+                "parse_failures": []
+              }
+            },
+            {
+              "round": "blind_independent_second_read_after_zero",
+              "findings": [],
+              "meta": {
+                "cost": {
+                  "usd": 0.013952,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2726,
+                  "output_tokens": 850,
+                  "total_tokens": 3576
+                },
+                "parse_failures": []
+              }
+            }
+          ],
+          "cost": {
+            "usd": 0.026056
+          }
+        }
+      },
+      "gold_scoring": {
+        "expected_family": "response_causality",
+        "expected_repair_scope": "LOCAL_REPAIR",
+        "expected_span_ids": [
+          "S007",
+          "S008",
+          "S009",
+          "S010",
+          "S017",
+          "S018",
+          "S023",
+          "S024",
+          "S025",
+          "S029",
+          "S030",
+          "S031"
+        ],
+        "expected_family_and_span_overlap": false
+      },
+      "failure_stage": "DETECTION"
+    }
+  ]
+}
