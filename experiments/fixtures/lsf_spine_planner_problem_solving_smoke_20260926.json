@@ -1,0 +1,88 @@
+{
+  "schema_version": "lsf-spine-planner-smoke-input.v1",
+  "profile": "LSF-A4-W500-v0.1",
+  "context_builder_profile": "LSF-A4-W500-context-builder-v0.1",
+  "source_context_evidence_run": 36265297130,
+  "story_intent": {
+    "id": "intent.problem_solving_truck",
+    "family": "problem_solving_small_adventure",
+    "opportunity": "Deniz wants to get his toy truck onto a low platform in the courtyard.",
+    "stakes": "low",
+    "fantasy_allowed": false
+  },
+  "generation_profile": {
+    "exact_age": 4,
+    "target_words": 500,
+    "preferred_words": [
+      475,
+      525
+    ],
+    "hard_words": [
+      375,
+      625
+    ],
+    "generation_language": "en"
+  },
+  "context_packet": {
+    "always_required": [
+      {
+        "id": "character.identity",
+        "text": "Active character is Deniz."
+      },
+      {
+        "id": "character.exact_age",
+        "text": "Deniz is exactly 4 years old."
+      },
+      {
+        "id": "world.active",
+        "text": "Active world is world-home-01."
+      },
+      {
+        "id": "state.current_location",
+        "text": "Deniz is currently in COMMONS_COURTYARD."
+      },
+      {
+        "id": "state.story_revision",
+        "text": "CharacterStoryState revision is 12."
+      }
+    ],
+    "deterministic_required": [
+      {
+        "id": "inventory.toy_truck",
+        "text": "Deniz currently has a small yellow toy truck."
+      },
+      {
+        "id": "location.low_platform",
+        "text": "A low wooden platform with a vertical step is present in the courtyard."
+      },
+      {
+        "id": "recent.truck_intact",
+        "text": "The toy truck is intact and rolls normally."
+      }
+    ],
+    "deterministic_guards": [
+      {
+        "id": "world.physics_normal",
+        "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy."
+      }
+    ],
+    "soft_enrichment": [
+      {
+        "id": "location.cardboard",
+        "text": "A sturdy flat rectangle of cardboard is present near the courtyard wall."
+      },
+      {
+        "id": "location.wood_block",
+        "text": "One small movable wooden block is present near the platform."
+      }
+    ]
+  },
+  "forbidden_planner_moves": [
+    "Do not introduce Ada, Emre, another child, an adult, or an animal.",
+    "Do not introduce tape, glue, string, books, bricks, tools, magic, or a new solution object.",
+    "Do not move the story outside COMMONS_COURTYARD.",
+    "Do not make the truck broken.",
+    "Do not change the platform into another object.",
+    "Do not add a moral or lesson."
+  ]
+}
