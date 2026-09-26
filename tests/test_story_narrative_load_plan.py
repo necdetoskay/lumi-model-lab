@@ -3,6 +3,7 @@ import unittest
 from src.story_narrative_load_plan import (
     can_advance_to_writer,
     candidate_requires_supporting_thread,
+    evaluate_narrative_load_promotion_gate,
     load_candidate_profile,
     validate_narrative_load_plan,
 )
@@ -180,6 +181,37 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
                 "terminal_closure_tail_risk_validation_completed"
             ]
         )
+
+    def test_current_promotion_gate_holds_for_emotional_multi_seed(self):
+        result = evaluate_narrative_load_promotion_gate(self.profile)
+        self.assertTrue(result["evidence_pass"])
+        self.assertEqual(result["state"], "HOLD_MULTI_SEED_REGRESSION")
+        self.assertEqual(result["unresolved_families"], ["emotional_development"])
+        self.assertFalse(result["production_gate_pass"])
+
+    def test_promotion_gate_requires_explicit_decision_after_all_families_resolve(self):
+        profile = json.loads(json.dumps(self.profile))
+        integration = profile["promotion_evidence"]["architect_integration"]
+        integration["latest_family_resolution"]["emotional_development"] = (
+            "narrative_load_architect_win_from_multi_seed"
+        )
+        integration["latest_resolved_summary"]["inconclusive"] = 0
+        integration["latest_resolved_summary"]["narrative_load_architect_wins"] = 3
+        result = evaluate_narrative_load_promotion_gate(profile)
+        self.assertTrue(result["evidence_pass"])
+        self.assertEqual(result["state"], "AWAIT_EXPLICIT_PROMOTION_DECISION")
+        self.assertEqual(result["unresolved_families"], [])
+        self.assertFalse(result["production_gate_pass"])
+
+    def test_promotion_gate_blocks_latest_baseline_loss(self):
+        profile = json.loads(json.dumps(self.profile))
+        profile["promotion_evidence"]["architect_integration"][
+            "latest_resolved_summary"
+        ]["baseline_wins"] = 1
+        result = evaluate_narrative_load_promotion_gate(profile)
+        self.assertFalse(result["evidence_pass"])
+        self.assertEqual(result["state"], "BLOCKED_EVIDENCE")
+        self.assertIn("latest_baseline_consensus_loss", result["blockers"])
 
     def test_physical_affordance_and_terminal_append_guards(self):
         spine = self.profile["spine"]
