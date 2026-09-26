@@ -1,6 +1,6 @@
 schema_version: lumi-storyforge-profile.v1
 profile_id: LSF-A4-W500-v1.0-rc1
-status: release_candidate
+status: release_candidate_callable_smoke_passed
 risk_class: L2_MODEL_LAB_ONLY
 
 qualification_scope:
@@ -17,7 +17,7 @@ qualification_scope:
     - problem_solving_small_adventure
     - exploration_mystery
 
-input_contract:
+conceptual_input_contract:
   required:
     - canon_snapshot
     - character_story_state_snapshot
@@ -25,6 +25,21 @@ input_contract:
     - generation_profile
   mutable_inputs: false
   direct_state_mutation_allowed: false
+
+callable_rc1_input_contract:
+  schema: storyforge-request.v1
+  normalized_fact_projection_required: true
+  fields:
+    - active_world_id
+    - always_required
+    - candidate_facts
+    - forbidden_facts
+    - story_intent
+    - generation_profile
+  raw_g2_projection_inside_storyforge: false
+  note: >
+    Mapping raw Project_LUMI Canon/CharacterStoryState into the normalized fact
+    projection remains an external integration adapter until separately qualified.
 
 context_builder:
   profile_id: LSF-A4-W500-context-builder-v0.1
@@ -132,6 +147,15 @@ output_contract:
     status: proposal_only
     commit_authority: external_lumi_services
 
+callable_package:
+  entrypoint: src.storyforge.run_storyforge
+  request_schema: storyforge-request.v1
+  result_schema: storyforge-result.v1
+  contracts_blob_sha: 9b3476825423dee3d4930852d205c58cd8a54188
+  runtime_blob_sha: 4c0ecf10289bba0627901028c167d81990221ea4
+  rc1_smoke_run: 36267804926
+  rc1_smoke_verdict: PASS
+
 promotion_evidence:
   context_builder:
     - 36265275665
@@ -154,6 +178,7 @@ promotion_evidence:
 promotion_limits:
   production_ready: false
   reason:
-    - release_candidate packaging not yet exercised as one single callable agent entrypoint
+    - callable Model Lab package is qualified only on normalized fact projection input
+    - raw Project_LUMI Canon/CharacterStoryState adapter is not yet qualified
     - Project_LUMI runtime integration requires separate L3 change
     - state commit remains outside StoryForge
