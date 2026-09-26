@@ -1,0 +1,839 @@
+{
+  "schema_version": "story-defect-paid-validator-pilot.v1",
+  "status": "PAID_VALIDATOR_PILOT",
+  "validator": {
+    "model": "anthropic/claude-sonnet-5",
+    "request_class": "editorial_audit"
+  },
+  "blind_validation": true,
+  "pilot_policy": "one case per frozen corrupt recipe; validator does not receive intended family/span",
+  "summary": {
+    "case_count": 15,
+    "intended_defect_confirmed": 13,
+    "accepted_gold": 11,
+    "cases_with_second_blocking_defect": 2,
+    "cases_with_overlap_family_disagreement": 1,
+    "confirmation_rate": 0.8666666666666667,
+    "gold_acceptance_rate": 0.7333333333333333
+  },
+  "total_cost_usd": 0.105684,
+  "elapsed_seconds": 54.584,
+  "results": [
+    {
+      "case_id": "src_cohort_a_02__canon_durable_fact_contradiction",
+      "recipe_id": "canon_durable_fact_contradiction",
+      "source_id": "src_cohort_a_02",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "canon_integrity",
+        "severity": "critical",
+        "span_ids": [
+          "S015"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "canon_integrity",
+          "severity": "critical",
+          "span_ids": [
+            "S015"
+          ],
+          "reason": "Directly contradicts established durable fact that Deniz is four years old by asserting the narrator says he is actually seven."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "canon_integrity",
+          "severity": "critical",
+          "span_ids": [
+            "S015"
+          ],
+          "reason": "Directly contradicts established durable fact that Deniz is four years old by asserting the narrator says he is actually seven."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.006504,
+      "meta": {
+        "cost": {
+          "usd": 0.006504,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2842,
+          "output_tokens": 82,
+          "total_tokens": 2924
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__causal_effect_without_cause",
+      "recipe_id": "causal_effect_without_cause",
+      "source_id": "src_cohort_a_seed2_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S021"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "serious",
+          "span_ids": [
+            "S019",
+            "S020",
+            "S021"
+          ],
+          "reason": "Deniz sıkıca tutup yaprakları sabitledikten sonra sesin yön değiştirmesi hiçbir nedene bağlanmadan gerçekleşiyor; S021 açıkça 'yeni bir neden yoktu ama sonuç tersine döndü' diyerek nedensiz bir etki tanımlıyor."
+        },
+        {
+          "family": "closure_integrity",
+          "severity": "serious",
+          "span_ids": [
+            "S042",
+            "S066"
+          ],
+          "reason": "S042'de 'Buldum seni!' ile gizemin çözümü kapatılmasına rağmen hikaye S066'ya kadar tekrar beklemeye/açık sona dönüyor, payoff'un ardından ana eylem yeniden açılıyor."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "serious",
+          "span_ids": [
+            "S019",
+            "S020",
+            "S021"
+          ],
+          "reason": "Deniz sıkıca tutup yaprakları sabitledikten sonra sesin yön değiştirmesi hiçbir nedene bağlanmadan gerçekleşiyor; S021 açıkça 'yeni bir neden yoktu ama sonuç tersine döndü' diyerek nedensiz bir etki tanımlıyor."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [
+        {
+          "family": "closure_integrity",
+          "severity": "serious",
+          "span_ids": [
+            "S042",
+            "S066"
+          ],
+          "reason": "S042'de 'Buldum seni!' ile gizemin çözümü kapatılmasına rağmen hikaye S066'ya kadar tekrar beklemeye/açık sona dönüyor, payoff'un ardından ana eylem yeniden açılıyor."
+        }
+      ],
+      "accept_gold": false,
+      "cost_usd": 0.009832,
+      "meta": {
+        "cost": {
+          "usd": 0.009832,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 3391,
+          "output_tokens": 305,
+          "total_tokens": 3696
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_02__causal_missing_prerequisite",
+      "recipe_id": "causal_missing_prerequisite",
+      "source_id": "src_cohort_a_seed2_02",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S006"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "serious",
+          "span_ids": [
+            "S005",
+            "S006",
+            "S007"
+          ],
+          "reason": "S006 states the result already occurred before the necessary step happened, an incoherent causal statement disconnected from the concrete event described in S005 and S007."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "serious",
+          "span_ids": [
+            "S005",
+            "S006",
+            "S007"
+          ],
+          "reason": "S006 states the result already occurred before the necessary step happened, an incoherent causal statement disconnected from the concrete event described in S005 and S007."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.006652,
+      "meta": {
+        "cost": {
+          "usd": 0.006652,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2816,
+          "output_tokens": 102,
+          "total_tokens": 2918
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_04__causal_rule_inversion",
+      "recipe_id": "causal_rule_inversion",
+      "source_id": "src_cohort_a_seed2_04",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "critical",
+        "span_ids": [
+          "S005"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "critical",
+          "span_ids": [
+            "S005"
+          ],
+          "reason": "Explicitly states no physical condition changed, yet the effect occurred purely because Deniz wanted it to, breaking the established sun/stone causal rule the rest of the story relies on."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "causal_logic",
+          "severity": "critical",
+          "span_ids": [
+            "S005"
+          ],
+          "reason": "Explicitly states no physical condition changed, yet the effect occurred purely because Deniz wanted it to, breaking the established sun/stone causal rule the rest of the story relies on."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.007104,
+      "meta": {
+        "cost": {
+          "usd": 0.007104,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2552,
+          "output_tokens": 200,
+          "total_tokens": 2752
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_05__closure_post_terminal_action",
+      "recipe_id": "closure_post_terminal_action",
+      "source_id": "src_cohort_a_seed2_05",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "closure_integrity",
+        "severity": "serious",
+        "span_ids": [
+          "S043"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "closure_integrity",
+          "severity": "critical",
+          "span_ids": [
+            "S041",
+            "S042",
+            "S043"
+          ],
+          "reason": "Story reaches closure with both water paths flowing and resolved (S041-S042), then S043 explicitly reopens the solved problem, stating 'Her şey bitmişti' but then Deniz restarts solving the same problem from scratch, contradicting closure."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "closure_integrity",
+          "severity": "critical",
+          "span_ids": [
+            "S041",
+            "S042",
+            "S043"
+          ],
+          "reason": "Story reaches closure with both water paths flowing and resolved (S041-S042), then S043 explicitly reopens the solved problem, stating 'Her şey bitmişti' but then Deniz restarts solving the same problem from scratch, contradicting closure."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.007032,
+      "meta": {
+        "cost": {
+          "usd": 0.007032,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2816,
+          "output_tokens": 140,
+          "total_tokens": 2956
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_01__epistemic_knowledge_before_evidence",
+      "recipe_id": "epistemic_knowledge_before_evidence",
+      "source_id": "src_cohort_b_01",
+      "dataset_split": "held_out",
+      "expected": {
+        "family": "epistemic_order",
+        "severity": "serious",
+        "span_ids": [
+          "S010"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "epistemic_order",
+          "severity": "serious",
+          "span_ids": [
+            "S010"
+          ],
+          "reason": "Deniz claims to know exactly what the sound/cause was before looking or having any evidence, contradicting later discovery sequence (S029-S031) where he actually finds the cause."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "epistemic_order",
+          "severity": "serious",
+          "span_ids": [
+            "S010"
+          ],
+          "reason": "Deniz claims to know exactly what the sound/cause was before looking or having any evidence, contradicting later discovery sequence (S029-S031) where he actually finds the cause."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.006858,
+      "meta": {
+        "cost": {
+          "usd": 0.006858,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2904,
+          "output_tokens": 105,
+          "total_tokens": 3009
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_02__physical_impossible_affordance",
+      "recipe_id": "physical_impossible_affordance",
+      "source_id": "src_cohort_b_02",
+      "dataset_split": "held_out",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "critical",
+        "span_ids": [
+          "S003"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "serious",
+          "span_ids": [
+            "S003"
+          ],
+          "reason": "Deniz reaches and grabs an object several meters away without moving, which is physically impossible."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "serious",
+          "span_ids": [
+            "S003"
+          ],
+          "reason": "Deniz reaches and grabs an object several meters away without moving, which is physically impossible."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.00605,
+      "meta": {
+        "cost": {
+          "usd": 0.00605,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2635,
+          "output_tokens": 78,
+          "total_tokens": 2713
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_03__physical_solid_barrier_violation",
+      "recipe_id": "physical_solid_barrier_violation",
+      "source_id": "src_cohort_b_03",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S016"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "critical",
+          "span_ids": [
+            "S016"
+          ],
+          "reason": "Deniz reaches through a closed solid glass pane to grab something, an impossible physical action never established as fantasy; also inconsistent with the outdoor sand/park setting with no glass mentioned elsewhere."
+        },
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S018",
+            "S038"
+          ],
+          "reason": "S018 states Deniz did not want to continue filling the empty spot, but S038 shows the turtle still with an empty corner as if untouched, and S016-S017 describe an unrelated glass action inconsistent with S018's context, breaking continuity of the turtle-building state."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "critical",
+          "span_ids": [
+            "S016"
+          ],
+          "reason": "Deniz reaches through a closed solid glass pane to grab something, an impossible physical action never established as fantasy; also inconsistent with the outdoor sand/park setting with no glass mentioned elsewhere."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S018",
+            "S038"
+          ],
+          "reason": "S018 states Deniz did not want to continue filling the empty spot, but S038 shows the turtle still with an empty corner as if untouched, and S016-S017 describe an unrelated glass action inconsistent with S018's context, breaking continuity of the turtle-building state."
+        }
+      ],
+      "accept_gold": false,
+      "cost_usd": 0.008578,
+      "meta": {
+        "cost": {
+          "usd": 0.008578,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 3049,
+          "output_tokens": 248,
+          "total_tokens": 3297
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_05__physical_unsupported_motion",
+      "recipe_id": "physical_unsupported_motion",
+      "source_id": "src_cohort_b_05",
+      "dataset_split": "held_out",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "critical",
+          "span_ids": [
+            "S004"
+          ],
+          "reason": "Character teleports to the other side without moving feet, an impossible physical action with no fantasy rule established."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "critical",
+          "span_ids": [
+            "S004"
+          ],
+          "reason": "Character teleports to the other side without moving feet, an impossible physical action with no fantasy rule established."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.006444,
+      "meta": {
+        "cost": {
+          "usd": 0.006444,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2817,
+          "output_tokens": 81,
+          "total_tokens": 2898
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_emotional_guard_01__response_perception_conflation",
+      "recipe_id": "response_perception_conflation",
+      "source_id": "src_emotional_guard_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S013"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [],
+      "intended_defect_confirmed": false,
+      "matching_findings": [],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": false,
+      "cost_usd": 0.0088,
+      "meta": {
+        "cost": {
+          "usd": 0.0088,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2585,
+          "output_tokens": 363,
+          "total_tokens": 2948
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_emotional_guard_02__spatial_incompatible_location",
+      "recipe_id": "spatial_incompatible_location",
+      "source_id": "src_emotional_guard_02",
+      "dataset_split": "held_out",
+      "expected": {
+        "family": "spatial_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S011"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "spatial_consistency",
+          "severity": "critical",
+          "span_ids": [
+            "S011"
+          ],
+          "reason": "Deniz aynı anda hem yerinde kaldı hem birkaç metre ötedeki noktadan oyuncağını tuttu; fiziksel olarak imkânsız ve çelişkili konum."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "spatial_consistency",
+          "severity": "critical",
+          "span_ids": [
+            "S011"
+          ],
+          "reason": "Deniz aynı anda hem yerinde kaldı hem birkaç metre ötedeki noktadan oyuncağını tuttu; fiziksel olarak imkânsız ve çelişkili konum."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.005994,
+      "meta": {
+        "cost": {
+          "usd": 0.005994,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2402,
+          "output_tokens": 119,
+          "total_tokens": 2521
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_fantastical_guard_01__state_completed_action_undone",
+      "recipe_id": "state_completed_action_undone",
+      "source_id": "src_fantastical_guard_01",
+      "dataset_split": "held_out",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S002",
+            "S008"
+          ],
+          "reason": "S002 states Deniz was in the middle of tidying toys, then S008 asserts the just-completed task (toplama) was undone without any transition or explanation."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S002",
+            "S008"
+          ],
+          "reason": "S002 states Deniz was in the middle of tidying toys, then S008 asserts the just-completed task (toplama) was undone without any transition or explanation."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.006338,
+      "meta": {
+        "cost": {
+          "usd": 0.006338,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2664,
+          "output_tokens": 101,
+          "total_tokens": 2765
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_fantastical_guard_03__state_object_reset",
+      "recipe_id": "state_object_reset",
+      "source_id": "src_fantastical_guard_03",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S007"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "critical",
+          "span_ids": [
+            "S007"
+          ],
+          "reason": "References an object Deniz 'just put down' reappearing in his hand untouched, but no such object or action was ever established; this contradicts the established scene (he was just tying shoes and looking at ceiling) and introduces an unsupported state reset."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "critical",
+          "span_ids": [
+            "S007"
+          ],
+          "reason": "References an object Deniz 'just put down' reappearing in his hand untouched, but no such object or action was ever established; this contradicts the established scene (he was just tying shoes and looking at ceiling) and introduces an unsupported state reset."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.007178,
+      "meta": {
+        "cost": {
+          "usd": 0.007178,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2544,
+          "output_tokens": 209,
+          "total_tokens": 2753
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_watering_guard_01__state_unexplained_reappearance",
+      "recipe_id": "state_unexplained_reappearance",
+      "source_id": "src_watering_guard_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S009"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S008",
+            "S009"
+          ],
+          "reason": "S009 states the object (unclear referent, seemingly the stone) disappeared and reappeared without anyone moving it, contradicting S008 where Deniz is holding the stone continuously in her hand."
+        }
+      ],
+      "intended_defect_confirmed": true,
+      "matching_findings": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S008",
+            "S009"
+          ],
+          "reason": "S009 states the object (unclear referent, seemingly the stone) disappeared and reappeared without anyone moving it, contradicting S008 where Deniz is holding the stone continuously in her hand."
+        }
+      ],
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "accept_gold": true,
+      "cost_usd": 0.005664,
+      "meta": {
+        "cost": {
+          "usd": 0.005664,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2257,
+          "output_tokens": 115,
+          "total_tokens": 2372
+        },
+        "parse_failures": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__temporal_order_contradiction",
+      "recipe_id": "temporal_order_contradiction",
+      "source_id": "src_cohort_a_02",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "temporal_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S012"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "validator_findings": [
+        {
+          "family": "epistemic_order",
+          "severity": "serious",
+          "span_ids": [
+            "S012"
+          ],
+          "reason": "States Ece knew the outcome of her action before doing it, but S009-S011 show her acting first and discovering the result afterward—contradicts the sequence of events."
+        }
+      ],
+      "intended_defect_confirmed": false,
+      "matching_findings": [],
+      "overlap_family_disagreements": [
+        {
+          "family": "epistemic_order",
+          "severity": "serious",
+          "span_ids": [
+            "S012"
+          ],
+          "reason": "States Ece knew the outcome of her action before doing it, but S009-S011 show her acting first and discovering the result afterward—contradicts the sequence of events."
+        }
+      ],
+      "second_blocking_findings": [],
+      "accept_gold": false,
+      "cost_usd": 0.006656,
+      "meta": {
+        "cost": {
+          "usd": 0.006656,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "usage": {
+          "input_tokens": 2833,
+          "output_tokens": 99,
+          "total_tokens": 2932
+        },
+        "parse_failures": []
+      }
+    }
+  ]
+}
