@@ -1,0 +1,42 @@
+name: LSF Spine Planner Repair 01
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/lsf-spine-planner-repair-01.txt
+
+jobs:
+  repair:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json --min-remaining 0.25
+      - name: Run bounded repair continuation
+        run: PYTHONPATH=. python experiments/prototypes/lsf_spine_planner_repair_01_20260926.py
+      - name: Archive evidence
+        if: always()
+        run: |
+          test -s runs/lsf-spine-planner-repair-01/result.json
+          DEST="experiments/results/lsf-spine-planner-repair-01/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/lsf-spine-planner-repair-01/result.json "$DEST/result.json"
+          cp runs/lsf-spine-planner-repair-01/english.txt "$DEST/english.txt"
+          if test -s runs/lsf-spine-planner-repair-01/turkish.txt; then cp runs/lsf-spine-planner-repair-01/turkish.txt "$DEST/turkish.txt"; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): LSF spine planner repair 01 ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/lsf-spine-planner-repair-01-${GITHUB_RUN_ID}"
