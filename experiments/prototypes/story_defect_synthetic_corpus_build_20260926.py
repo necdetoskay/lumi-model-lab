@@ -100,14 +100,16 @@ def create_variant(
     mutated = apply_single_patch(story, before, after)
     mutated_segments = segment_story(mutated)
 
-    injected_span_ids = [
-        row["id"]
-        for row in mutated_segments
-        if injected in row["text"] or row["text"] == injected
-    ]
+    injected_parts = [row["text"] for row in segment_story(injected)]
+    injected_span_ids: list[str] = []
+    for part in injected_parts:
+        matches = [row["id"] for row in mutated_segments if row["text"] == part]
+        if len(matches) != 1:
+            raise RuntimeError(
+                f"gold_span_not_unique:{source['source_id']}:{recipe['id']}:{part!r}:{matches}"
+            )
+        injected_span_ids.extend(matches)
     if not injected_span_ids:
-        # Sentence segmentation may keep the original and injected sentence adjacent
-        # only if punctuation is malformed; fail closed instead of guessing gold.
         raise RuntimeError(
             f"gold_span_not_found:{source['source_id']}:{recipe['id']}"
         )
