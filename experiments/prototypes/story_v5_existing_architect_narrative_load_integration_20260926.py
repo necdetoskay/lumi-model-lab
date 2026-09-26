@@ -40,6 +40,10 @@ NARRATIVE LOAD CONTRACT — integrate this into the SAME architecture call:
 - For exact-age-4, avoid adult-style reasoning chains, didactic explanation, complex subplot logic, and unsafe independent behavior.
 - Prefer strengthening the main arc over adding a supporting thread.
 - The final resolution must remain concrete, story-specific, and non-didactic.
+- EPISTEMIC ORDER: if a misunderstanding drives the story, do not reveal the decisive explanatory evidence before the misunderstanding has formed. Once decisive evidence resolves it, do not return to or repeatedly explain the same misunderstanding.
+- RESPONSE CAUSALITY: do not confuse inability to respond with inability to hear/see. Busy hands or urgent action may delay a reply but do not by themselves cause sensory failure.
+- ECONOMY AFTER RESOLUTION: after the core misunderstanding or causal question is resolved, advance to cooperative action/payoff instead of restating the explanation in narration, dialogue, and thought.
+- CAUSAL STATE MUST BE EXECUTABLE: if metadata says condition X produces effect Y, later scenes must not delay or soften Y when X is satisfied unless an explicit pre-existing condition explains it.
 
 Also return optional top-level metadata:
 "narrative_load": {
@@ -124,6 +128,12 @@ def write(key: str, spec: StorySpec, plan_obj: dict, seed: int) -> tuple[dict, d
         "\n\nTARGET TOTAL WORDS: 500 (SOFT)."
         "\nQuality, causality, age fit and natural completion are more important than hitting the number."
         "\nDo not invent new events merely to reach length."
+        "\nTreat NARRATIVE LOAD METADATA as immutable execution constraints when present."
+        "\nDo not delay an established causal effect once its stated conditions are satisfied."
+        "\nDo not undo a committed item/action state."
+        "\nKeep epistemic order: do not reveal decisive evidence early, and do not repeat a resolved misunderstanding."
+        "\nDistinguish perceiving from responding: busy hands do not by themselves prevent hearing or seeing."
+        "\nAfter resolution, move to concrete action/payoff rather than re-explaining the same fact."
     )
 
     parsed, body, _, failures = call_structured_json_with_retry(
@@ -281,7 +291,7 @@ def main() -> None:
         })
 
     result = {
-        "experiment": "story-v5-existing-architect-narrative-load-integration-v1",
+        "experiment": "story-v5-existing-architect-narrative-load-integration-v2",
         "goal": "fold narrative-load contract into the existing Narrative Architect without a mandatory extra model hop",
         "architect_model": ARCHITECT_MODEL,
         "writer_model": WRITER_MODEL,
