@@ -106,8 +106,32 @@ def run_once(
         p = noul_probability(body["answers"][fid])
         decisions[fid] = {"probability": p, "bucket": bucket(p)}
 
-    selected_ids = sorted(fid for fid,row in decisions.items() if row["bucket"]=="SELECT")
+    raw_selected_ids = sorted(fid for fid,row in decisions.items() if row["bucket"]=="SELECT")
     review_ids = sorted(fid for fid,row in decisions.items() if row["bucket"]=="REVIEW")
+
+    # High-impact entity expansion policy:
+    # a soft relationship fact may enrich the packet only when that relationship's
+    # base entity is already directly referenced by the StoryIntent. Otherwise it
+    # is advisory REVIEW, never automatic planner context.
+    direct_relationship_entities = {
+        fid.split(".", 1)[1]
+        for fid in direct_ids
+        if fid.startswith("relationship.") and "." in fid
+    }
+    selected_ids = []
+    policy_demoted_ids = []
+    for fid in raw_selected_ids:
+        if fid.startswith("relationship."):
+            suffix = fid.split(".", 1)[1]
+            entity = suffix.split("_", 1)[0]
+            if entity not in direct_relationship_entities:
+                policy_demoted_ids.append(fid)
+                continue
+        selected_ids.append(fid)
+
+    review_ids = sorted(set(review_ids) | set(policy_demoted_ids))
+    selected_ids = sorted(selected_ids)
+
     final_packet = {
         "deterministic_core": core,
         "jev_selected_enrichment": [candidate_map[fid] for fid in selected_ids],
@@ -118,6 +142,8 @@ def run_once(
         ),
         "hard_guard_ids": sorted(guard_ids),
         "decisions": decisions,
+        "raw_selected_enrichment_ids": raw_selected_ids,
+        "policy_demoted_ids": sorted(policy_demoted_ids),
         "selected_enrichment_ids": selected_ids,
         "review_enrichment_ids": review_ids,
         "final_packet": final_packet,
@@ -269,6 +295,7 @@ def main():
             "review_threshold": REVIEW_THRESHOLD,
             "review_sent_to_planner": False,
             "forbidden_sent_to_jev": False,
+            "soft_relationship_entity_expansion": "demote to REVIEW unless entity directly referenced",
         },
         "summary": {
             "intent_count": len(results),
