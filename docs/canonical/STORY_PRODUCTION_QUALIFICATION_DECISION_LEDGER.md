@@ -522,3 +522,22 @@ Current gate state:
 
 This means technical qualification evidence is complete for the scoped candidate, but production promotion has **not** occurred. Promotion remains an explicit, versioned human decision.
 
+
+
+## 2026-09-26 — Narrative Load v1 explicitly promoted and frozen
+
+Decision:
+
+- explicit human promotion approved after the qualification gate reached `AWAIT_EXPLICIT_PROMOTION_DECISION`;
+- canonical profile: `configs/story_planner_profiles/tr_age4_narrative_load.v1.json`;
+- historical candidate/evidence snapshot remains preserved;
+- qualified scope: exact age 4, READ_ALOUD, nominal 500-word soft target;
+- Narrative Load remains folded into the existing Narrative Architect;
+- normal valid path adds zero mandatory planner model hops;
+- at most one semantic replan is allowed and only after deterministic plan-validation failure.
+
+Frozen-champion policy:
+
+The promoted story-architecture/generator baseline is now held stable while the next optimization program focuses on **Story Defect Detection & Bounded Repair v1**. This freeze is deliberate: first-draft perfection is not the production objective. The next objective is high-recall detection of serious physical, logical, causal, state, epistemic, spatial, temporal and closure defects, followed by the smallest valid repair and independent re-verification.
+
+Any future mutation to the frozen Narrative Load v1 contract requires a separate versioned qualification and promotion decision. Detector or repair improvements must not silently mutate the generator baseline they are being measured against.
