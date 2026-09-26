@@ -473,3 +473,52 @@ Do not promote v4 from one successful story. Before broad qualification, define 
 6. Compare Luna vs Sonnet as Narrative Architect under the same v4 protocol.
 7. Promote only with evidence that the higher-cost planner materially improves reliability/quality or reduces repair burden.
 8. Restart broad Capability Cube qualification only under the promoted protocol identity.
+
+## 2026-09-26 — Narrative Load v1 qualification reaches explicit-promotion gate
+
+Scope:
+
+- exact age: 4;
+- reading mode: READ_ALOUD;
+- nominal writer target: 500 words, soft;
+- quality remains primary and length secondary.
+
+Decision evidence:
+
+- global 700-word pressure was rejected as a production rule;
+- arbitrary side-event insertion was rejected;
+- Narrative Load was qualified as a story-architecture contract rather than a length expander;
+- guarded fantastical regression run `36227255937`: 3/3 guarded-planner wins, 0 baseline wins;
+- terminal-closure / physical-affordance regression run `36228845559`: guarded candidate won both order-swapped judgments, 0 serious defects;
+- existing Narrative Architect targeted integration run `36228645350`: 1 candidate consensus win, 0 baseline wins, 1 position-sensitive emotional result;
+- independent emotional second-seed run `36229244503`: again position-sensitive, 0 serious candidate defects;
+- position-independent absolute tie-break run `36229571364`: frozen baseline 8.5 overall, candidate seed 1 8.5, candidate seed 2 8.0; both candidates passed the predeclared non-inferiority rule with 0 serious defects;
+- absolute tie-break used 0 generation calls and two independent judges: GPT-5.6 Sol and Claude Haiku 4.5.
+
+Latest resolved family view:
+
+- exploration_mystery: Narrative Load architect consensus win;
+- everyday_fantastical_discovery: Narrative Load architect consensus win;
+- emotional_development: position-independent non-inferior;
+- baseline consensus losses: 0;
+- unresolved families: 0.
+
+Architecture decision:
+
+- fold Narrative Load into the existing Narrative Architect;
+- do not introduce a mandatory extra NarrativeLoadPlanner model hop;
+- normal valid path adds 0 model hops;
+- permit at most 1 semantic replan, only after deterministic plan-validation failure;
+- preserve causal rules, committed state, epistemic order, physical affordances, response causality, and terminal closure;
+- do not pad a strong short story merely to approach 500 words.
+
+Evaluation lesson:
+
+The emotional pairwise results exposed presentation-position sensitivity. A/B order swapping alone can still produce ambiguous evidence when the judge favors the story occupying a presentation position. For unresolved promotion decisions, position-independent single-story absolute judging is an allowed tie-break mechanism when its decision rule is frozen before the run and the texts are immutable.
+
+Current gate state:
+
+**AWAIT_EXPLICIT_PROMOTION_DECISION**
+
+This means technical qualification evidence is complete for the scoped candidate, but production promotion has **not** occurred. Promotion remains an explicit, versioned human decision.
+
