@@ -1,6 +1,6 @@
 # LUMI Story Narrative Load Planner v1 — Candidate
 
-Status: **QUALIFICATION CANDIDATE — NOT YET CANONICAL**  
+Status: **QUALIFICATION-COMPLETE CANDIDATE — NOT YET CANONICAL**  
 Date: 2026-09-26  
 Scope: Story V5 story-architecture / spine construction for exact-age-4 / READ_ALOUD qualification
 
@@ -167,6 +167,52 @@ Targeted guard run `36227255937` then tested three everyday-fantastical fixtures
 
 The known causal-rule failure was therefore corrected without using extra length as the mechanism.
 
+## 6.1. Additional continuity guards
+
+Qualification exposed three more failure classes that are now explicit contract rules:
+
+- **Epistemic order:** decisive explanatory evidence must not be shown before the misunderstanding/uncertainty it resolves.
+- **Perception vs response:** being busy, holding something, or being unable to answer immediately does not itself mean a character could not hear or see.
+- **Physical affordance preservation:** the planner may not invent an unstated inability such as being too short, too weak, or unable to reach merely to create friction.
+- **Terminal closure:** once the final closure action is realized, the writer may not append a second payoff, prop-placement action, joke, or symbolic epilogue.
+
+Emotional guard run `36228047493` demonstrated that the perception/response fix corrected the previously failing `blocks_no_reply` case. A separate `watering_can_busy` failure then revealed the physical-affordance and post-closure-action risks, which were promoted into the deterministic candidate contract.
+
+## 6.2. Existing Narrative Architect integration evidence
+
+The preferred production shape is to fold Narrative Load into the existing Narrative Architect rather than create a permanent extra planner model hop.
+
+Initial integration run `36227676063`:
+- narrative-load-aware architect wins: **2/3**;
+- baseline architect wins: **1/3**;
+- no additional planner hop;
+- mean word delta: **+3.33 words**.
+
+The losing emotional case exposed repetition/economy issues rather than a need for more words. The architect/writer contract was tightened around epistemic order, response causality, immutable causal state, terminal closure, and physical affordances.
+
+Because the OpenRouter key approached its monthly limit, later full reruns were replaced with frozen-baseline targeted qualification rather than paying again for already-recorded baseline generations.
+
+Targeted integration run `36228645350` reused the successful baseline evidence from `36227676063` and retested only the two unresolved families:
+- `everyday_fantastical_discovery`: narrative-load-aware architect won **both** order-swapped comparisons;
+- `emotional_development`: **inconclusive** (one judge each way), with no serious defect;
+- frozen baseline wins: **0/2**;
+- candidate wins: **1/2**;
+- inconclusive: **1/2**;
+- candidate outputs were shorter by 20 and 76 words respectively;
+- semantic architect replans used: **0**;
+- total targeted run cost: **$0.165884**.
+
+Combining the already-clean exploration result from the initial run with the targeted rerun gives the latest family resolution:
+- narrative-load-aware architect wins: **2/3**;
+- baseline wins: **0/3**;
+- inconclusive: **1/3**.
+
+This qualifies the **integration direction**: Narrative Load belongs inside the existing Narrative Architect contract. It does not justify a mandatory extra NarrativeLoadPlanner LLM call.
+
+The architect path may perform at most **one bounded semantic replan**, and only when deterministic plan validation fails. On the normal valid path, extra model hops remain zero.
+
+Provider token caps used in targeted qualification (architect 8192, writer 16384, judge 8192) are request/output reservation caps only; they are not story-length targets. They prevent oversized 65K token reservations from causing avoidable OpenRouter 402 failures.
+
 ## 7. Length policy
 
 For this candidate:
@@ -205,7 +251,7 @@ This candidate must not become canonical production policy until:
 - second-seed evidence is green;
 - fresh-fixture evidence is recorded;
 - causal-rule and committed-state guards are qualified on the known risky family — **complete**;
-- integration into the existing Narrative Architect is compared against the current architect without adding a mandatory extra LLM call;
+- integration into the existing Narrative Architect is compared against the current architect without adding a mandatory extra LLM call — **complete**;
 - no canon/safety regression appears;
 - cost/latency implications are recorded;
 - production promotion is explicit and versioned.
@@ -215,7 +261,7 @@ Current state:
 - second seed: complete;
 - fresh fixture Cohort B: complete;
 - targeted causal/state guard qualification: complete (run `36227255937`, 3/3 wins);
-- architect-integration qualification: **in progress**.
+- architect-integration qualification: **complete** (initial run `36227676063`; targeted V2 run `36228645350`; latest resolved family view 2 wins / 0 baseline losses / 1 inconclusive);\n- mandatory extra planner hop: **not required**;\n- bounded semantic replan: **max 1, invalid-plan only**;\n- production promotion: **still requires explicit versioned decision**.
 
 ## 10. Current conclusion
 
