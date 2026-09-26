@@ -72,6 +72,17 @@ SERT KISITLAR:
 
 9. Türkçe ek/iyelik uyumuna özellikle dikkat et; doğal olmayan sözcük dizimi üretme.
 
+10. UNDER-LENGTH EXPANSION PASS:
+   Hikâyeyi bitirmeden hemen önce toplam uzunluğu yaklaşık olarak kontrol et.
+   Metin 450 kelimenin altındaysa YENİ OLAY veya YENİ BEAT ekleme.
+   Bunun yerine mevcut develop ve anchor beat'leri biraz daha yaşat:
+   - karakterin somut eylemini bir adım daha görünür kıl,
+   - doğal ve kısa bir diyalog ekle,
+   - yaşa uygun tek bir duyusal ayrıntı kullan,
+   - neden-sonuç geçişini bir cümleyle daha açık hale getir.
+   Aynı bilgiyi tekrar ederek, sıfat doldurarak veya açıklama yaparak uzatma.
+   Hedef banda yaklaşınca doğal biçimde bitir.
+
 UZUNLUK:
 - Hedef: 475-525 kelime.
 - Hard aralık: 375-625 kelime.
@@ -211,7 +222,7 @@ def main():
     edit,edit_meta=structured_call(
       api_key=key,model=EDITOR_MODEL,system=EDITOR_SYSTEM,
       payload={"exact_age":4,"target_words":500,"hard_range":[375,625],"story_spine":STORY_SPINE,"deterministic_scan":before,"story":draft},
-      seed=202610031,max_tokens=None,request_class="editorial_audit"
+      seed=202610041,max_tokens=None,request_class="editorial_audit"
     )
     final_story,applied,skipped=apply_repairs(draft,edit.get("repairs") or [])
     after=scan(final_story)
@@ -219,7 +230,7 @@ def main():
     final_audit,final_meta=structured_call(
       api_key=key,model=FINAL_JUDGE_MODEL,system=FINAL_SYSTEM,
       payload={"exact_age":4,"hard_range":[375,625],"story_spine":STORY_SPINE,"story":final_story},
-      seed=202610032,max_tokens=None,request_class="editorial_audit"
+      seed=202610042,max_tokens=None,request_class="editorial_audit"
     )
     counts=final_audit.get("counts") or {}
     publication_ready=(
@@ -230,7 +241,7 @@ def main():
     )
 
     result={
-      "experiment":"story-spine-refined-recipe-v3-density-aware",
+      "experiment":"story-spine-refined-recipe-v4-underlength-expansion",
       "premise":PREMISE,
       "story_spine":STORY_SPINE,
       "spine_contract":{
