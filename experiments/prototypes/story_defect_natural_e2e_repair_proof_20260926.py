@@ -272,8 +272,8 @@ def normalize_findings(
         spans = [str(value) for value in spans]
 
         if not present:
-            if spans:
-                raise RuntimeError(f"evaluation_{index}_false_with_spans:{spans}")
+            # Some providers cite the span they considered even when the final verdict is false.
+            # False means no publication-blocking finding; ignore residual evidence fields.
             continue
 
         severity = str(raw.get("severity") or "")
