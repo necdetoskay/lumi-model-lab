@@ -83,7 +83,7 @@ Hard rules:
 - Preserve character names, events, object state, causal rules, tone, age fit, and ending unless the confirmed defect itself requires the local block to stop reopening the ending.
 - Add no new subplot, canon, object, character, explanation, moral, or extra payoff.
 - Make the smallest natural correction.
-- For response_causality defects, preserve perception explicitly: if a character is called, the repaired text must not say or imply that busy/full hands/task focus prevented hearing. If needed, say the character heard/understood but could not answer or act immediately.
+- For response_causality defects, preserve perception explicitly. Busy/full hands or task load must NEVER be used as the cause of failure to hear, speak, turn the head, or look. If the faulty call/hearing event has no downstream role, prefer deleting it. If it must remain, the character should hear and may verbally acknowledge; only a genuinely hand-dependent physical action (for example putting something down) may be delayed.
 - For physical_feasibility defects, remove only the impossible action; do not invent a new mechanism unless the surrounding story already establishes it.
 - For state_continuity defects, restore the previously established state or remove the unsupported reset/reappearance.
 - For closure_integrity defects, prefer deleting the reopening tail when the story already has a complete ending.
@@ -283,59 +283,91 @@ def main() -> None:
                     continue
 
                 target_block = case["mutation"]["injected_text"]
-                repair_payload, repair_meta = structured_call(
-                    api_key=api_key,
-                    model=REPAIR_MODEL,
-                    system=REPAIR_SYSTEM,
-                    payload={
-                        "story_id": proof_id,
-                        "story_family": case["family"],
-                        "full_story_read_only": original_story,
-                        "confirmed_defect": matched,
-                        "family_specific_repair_rule": (
-                            "Perception must remain intact. Replace any claim that busy/full hands or task load prevented hearing with a response/action delay: the character heard or understood, but could not answer or act immediately."
-                            if matched["family"] == "response_causality"
-                            else "Use the smallest local correction for the confirmed family."
-                        ),
-                        "target_block": target_block,
-                    },
-                    seed=2026135000 + index,
-                    max_tokens=1400,
-                    request_class="editorial_audit",
-                )
-                total_cost += meta_cost(repair_meta)
-                if "replacement_text" not in repair_payload:
-                    raise RuntimeError("replacement_text_missing")
-                replacement = str(repair_payload.get("replacement_text") or "")
-                repair_note = str(repair_payload.get("repair_note") or "").strip()
-
-                repaired_story, mechanical = build_repaired_story(
-                    original_story, target_block, replacement
+                family_rule = (
+                    "Perception must remain intact. Busy/full hands or task load may not explain failure to hear, speak, turn the head, or look. If this call/hearing event has no downstream role, delete it. Otherwise the character must hear and may verbally acknowledge; only a genuinely hand-dependent physical action may be delayed."
+                    if matched["family"] == "response_causality"
+                    else "Use the smallest local correction for the confirmed family."
                 )
 
-                verifier_findings, verifier_meta = call_detector(
-                    api_key=api_key,
-                    model=POST_VERIFY_MODEL,
-                    story_id=f"{proof_id}_repaired",
-                    story_family=case["family"],
-                    story_text=repaired_story,
-                    seed=2026140000 + index,
-                    request_class="judge",
-                )
-                total_cost += meta_cost(verifier_meta)
+                repair_attempts: list[dict[str, Any]] = []
+                repaired_story = original_story
+                verifier_findings: list[dict[str, Any]] = []
+                verifier_meta: dict[str, Any] | None = None
+                current_target_for_prompt = target_block
+                verifier_feedback: list[dict[str, Any]] = []
+                mechanical: dict[str, Any] = {}
+
+                for attempt in range(1, 3):
+                    repair_payload, repair_meta = structured_call(
+                        api_key=api_key,
+                        model=REPAIR_MODEL,
+                        system=REPAIR_SYSTEM,
+                        payload={
+                            "story_id": proof_id,
+                            "story_family": case["family"],
+                            "attempt": attempt,
+                            "full_story_read_only": repaired_story,
+                            "confirmed_defect": matched,
+                            "family_specific_repair_rule": family_rule,
+                            "verifier_feedback_from_previous_attempt": verifier_feedback,
+                            "target_block": current_target_for_prompt,
+                        },
+                        seed=2026135000 + index * 10 + attempt,
+                        max_tokens=1400,
+                        request_class="editorial_audit",
+                    )
+                    total_cost += meta_cost(repair_meta)
+                    if "replacement_text" not in repair_payload:
+                        raise RuntimeError("replacement_text_missing")
+                    replacement = str(repair_payload.get("replacement_text") or "")
+                    repair_note = str(repair_payload.get("repair_note") or "").strip()
+
+                    repaired_story, mechanical = build_repaired_story(
+                        original_story, target_block, replacement
+                    )
+
+                    verifier_findings, verifier_meta = call_detector(
+                        api_key=api_key,
+                        model=POST_VERIFY_MODEL,
+                        story_id=f"{proof_id}_repaired_attempt_{attempt}",
+                        story_family=case["family"],
+                        story_text=repaired_story,
+                        seed=2026140000 + index * 10 + attempt,
+                        request_class="judge",
+                    )
+                    total_cost += meta_cost(verifier_meta)
+
+                    repair_attempts.append({
+                        "attempt": attempt,
+                        "input_target_block": current_target_for_prompt,
+                        "replacement_text": replacement,
+                        "repair_note": repair_note,
+                        "mechanical_invariants": mechanical,
+                        "repair_meta": repair_meta,
+                        "post_verify_findings": verifier_findings,
+                        "post_verify_meta": verifier_meta,
+                    })
+
+                    if not verifier_findings:
+                        break
+                    if replacement == "":
+                        break
+
+                    current_target_for_prompt = replacement
+                    verifier_feedback = verifier_findings
 
                 row["repair"] = {
                     "model": REPAIR_MODEL,
-                    "target_block": target_block,
-                    "replacement_text": replacement,
-                    "repair_note": repair_note,
+                    "max_attempts": 2,
+                    "attempts": repair_attempts,
+                    "final_replacement_text": repair_attempts[-1]["replacement_text"],
                     "mechanical_invariants": mechanical,
-                    "meta": repair_meta,
                 }
                 row["post_verify"] = {
                     "model": POST_VERIFY_MODEL,
                     "findings": verifier_findings,
                     "meta": verifier_meta,
+                    "attempts_used": len(repair_attempts),
                 }
                 row["repaired_story"] = repaired_story
                 row["pass"] = (
