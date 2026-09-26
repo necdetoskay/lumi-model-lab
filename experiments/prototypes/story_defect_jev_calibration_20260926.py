@@ -228,8 +228,26 @@ def main() -> None:
     load_dotenv()
     api_key = os.environ["OPENROUTER_API_KEY"]
     cases = calibration_cases()
-    if len(cases) != 148:
-        raise RuntimeError(f"calibration_case_count_mismatch:{len(cases)}")
+    manifest = load_d1_manifest()
+    manifest_calibration = sum(
+        row["dataset_split"] == "calibration"
+        for row in manifest["validated_cases"]
+    )
+    admitted_clean_calibration = sum(
+        row["kind"] == "clean"
+        for row in cases
+    )
+    expected_case_count = manifest_calibration + admitted_clean_calibration
+    if manifest_calibration != manifest["summary"]["calibration_validated"]:
+        raise RuntimeError(
+            "d1_manifest_calibration_summary_mismatch:"
+            f"{manifest_calibration}:"
+            f"{manifest['summary']['calibration_validated']}"
+        )
+    if len(cases) != expected_case_count:
+        raise RuntimeError(
+            f"calibration_case_count_mismatch:{len(cases)}:{expected_case_count}"
+        )
 
     questions = build_jev_defect_questions()
     rows: list[dict[str, Any]] = []
@@ -319,6 +337,7 @@ def main() -> None:
             "total_cases": len(rows),
             "defect_cases": sum(row["kind"] == "defect" for row in rows),
             "clean_cases": sum(row["kind"] == "clean" for row in rows),
+            "expected_case_count": expected_case_count,
             "held_out_touched": False,
             "d1_manifest": str(D1_MANIFEST),
         },
