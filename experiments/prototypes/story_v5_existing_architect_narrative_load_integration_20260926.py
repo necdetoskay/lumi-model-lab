@@ -91,24 +91,42 @@ def make_spec(fixture: dict) -> StorySpec:
 
 def plan(key: str, spec: StorySpec, system: str, seed: int) -> tuple[dict, dict]:
     brief = build_labeled_brief(spec)
-    parsed, body, _, failures = call_structured_json_with_retry(
-        api_key=key,
-        model=ARCHITECT_MODEL,
-        system_prompt=system,
-        user_prompt="Create the story architecture.\n\nSTORY BRIEF\n" + brief,
-        temperature=0.2,
-        max_tokens=None,
-        seed=seed,
-        request_class="story_plan",
-    )
-    errors = whole.validate_plan(parsed, spec)
-    if errors:
-        raise RuntimeError("PLAN_INVALID:" + ",".join(errors))
-    return parsed, {
-        "parse_failures": failures,
-        "usage": parse_usage(body).model_dump(mode="json"),
-        "cost": parse_cost(body).model_dump(mode="json"),
-    }
+    total_cost_usd = 0.0
+    parse_failures_total: list[str] = []
+    last_errors: list[str] = []
+
+    for semantic_attempt in range(2):
+        correction = ""
+        if semantic_attempt:
+            correction = (
+                "\n\nBOUNDED REPLAN: The previous architecture failed deterministic validation: "
+                + ", ".join(last_errors)
+                + ". Correct those structural errors without adding filler or changing the premise."
+            )
+
+        parsed, body, _, failures = call_structured_json_with_retry(
+            api_key=key,
+            model=ARCHITECT_MODEL,
+            system_prompt=system,
+            user_prompt="Create the story architecture.\n\nSTORY BRIEF\n" + brief + correction,
+            temperature=0.2,
+            max_tokens=None,
+            seed=seed + semantic_attempt * 1009,
+            request_class="story_plan",
+        )
+        parse_failures_total.extend(failures)
+        total_cost_usd += float(parse_cost(body).usd or 0.0)
+        errors = whole.validate_plan(parsed, spec)
+        if not errors:
+            return parsed, {
+                "parse_failures": parse_failures_total,
+                "semantic_retries": semantic_attempt,
+                "usage": parse_usage(body).model_dump(mode="json"),
+                "cost": {"usd": total_cost_usd},
+            }
+        last_errors = errors
+
+    raise RuntimeError("PLAN_INVALID_AFTER_BOUNDED_REPLAN:" + ",".join(last_errors))
 
 
 def write(key: str, spec: StorySpec, plan_obj: dict, seed: int) -> tuple[dict, dict]:
@@ -292,7 +310,7 @@ def main() -> None:
 
     result = {
         "experiment": "story-v5-existing-architect-narrative-load-integration-v2",
-        "goal": "fold narrative-load contract into the existing Narrative Architect without a mandatory extra model hop",
+        "goal": "fold narrative-load contract into the existing Narrative Architect without a mandatory extra model hop; allow one semantic replan only on invalid architecture",
         "architect_model": ARCHITECT_MODEL,
         "writer_model": WRITER_MODEL,
         "judge_model": JUDGE_MODEL,
