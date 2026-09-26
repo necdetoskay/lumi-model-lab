@@ -119,15 +119,32 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(policy["must_rejoin_main_arc"])
         self.assertTrue(policy["must_change_observation_decision_constraint_or_payoff"])
         self.assertTrue(policy["must_not_exist_only_for_length"])
+        self.assertTrue(policy["must_preserve_main_causal_rule"])
+        self.assertTrue(policy["may_not_introduce_hidden_condition_only_to_delay_payoff"])
         self.assertTrue(policy["new_named_character_forbidden"])
         self.assertTrue(policy["new_relationship_canon_forbidden"])
         self.assertTrue(policy["new_durable_world_fact_forbidden"])
         self.assertTrue(policy["new_independent_solution_forbidden"])
 
-    def test_writer_must_preserve_committed_item_state(self):
+    def test_writer_must_preserve_committed_item_and_causal_state(self):
         writer = self.profile["writer_contract"]
         self.assertTrue(writer["must_preserve_committed_item_state"])
         self.assertTrue(writer["may_not_undo_completed_action_only_to_reuse_prop"])
+        self.assertTrue(writer["must_preserve_established_causal_rules"])
+
+    def test_architect_integration_is_preferred_over_extra_model_hop(self):
+        policy = self.profile["integration_policy"]
+        self.assertEqual(policy["logical_stage"], "pre_prose_story_architecture")
+        self.assertTrue(policy["prefer_fold_into_existing_narrative_architect"])
+        self.assertFalse(policy["separate_model_call_required"])
+        self.assertTrue(policy["requires_architect_integration_probe_before_production"])
+
+    def test_guarded_fantastical_qualification_is_recorded(self):
+        evidence = self.profile["promotion_evidence"]
+        self.assertEqual(evidence["family_cases_total"], 15)
+        self.assertEqual(evidence["combined_consensus"]["planned_wins"], 9)
+        self.assertEqual(evidence["combined_consensus"]["baseline_wins"], 1)
+        self.assertTrue(evidence["known_risk"]["targeted_guard_validation_required"])
 
 
 if __name__ == "__main__":
