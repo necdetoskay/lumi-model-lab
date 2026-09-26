@@ -92,15 +92,14 @@ def normalize(payload: dict[str, Any], valid_ids: set[str]) -> list[dict[str, An
         if not spans or not set(spans).issubset(valid_ids):
             raise RuntimeError(f"span_invalid:{family}:{spans}")
         raw_scope = str(row.get("repair_scope") or "").strip()
-        scope_key = raw_scope.upper()
-        scope = {
-            "LOCAL": "LOCAL_REPAIR",
-            "LOCAL_REPAIR": "LOCAL_REPAIR",
-            "STRUCTURAL": "STRUCTURAL_REPAIR",
-            "STRUCTURAL_REPAIR": "STRUCTURAL_REPAIR",
-            "REPLAN": "REPLAN",
-        }.get(scope_key)
-        if scope not in {"LOCAL_REPAIR","STRUCTURAL_REPAIR","REPLAN"}:
+        scope_key = raw_scope.upper().replace("-", "_").replace(" ", "_")
+        if scope_key.startswith("LOC"):
+            scope = "LOCAL_REPAIR"
+        elif scope_key.startswith("STRUCT"):
+            scope = "STRUCTURAL_REPAIR"
+        elif scope_key.startswith("REPLAN"):
+            scope = "REPLAN"
+        else:
             raise RuntimeError(f"scope_invalid:{family}:{raw_scope}")
         findings.append({
             "family": family,
