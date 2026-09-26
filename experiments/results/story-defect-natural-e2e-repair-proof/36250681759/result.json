@@ -1,0 +1,242 @@
+{
+  "schema_version": "story-defect-natural-e2e-repair-proof-result.v1",
+  "status": "PASS",
+  "mode": "SELECTED_CASES",
+  "requested_proof_ids": [
+    "N1_RESPONSE"
+  ],
+  "models": {
+    "detector": "anthropic/claude-sonnet-5",
+    "repair": "anthropic/claude-sonnet-5",
+    "same_defect_recheck": "anthropic/claude-haiku-4.5",
+    "full_regression": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "cases": 1,
+    "passes": 1,
+    "failures": 0,
+    "selected_cases_all_pass": true,
+    "full_five_story_gate_pass": false
+  },
+  "total_cost_usd": 0.031696,
+  "elapsed_seconds": 29.373,
+  "results": [
+    {
+      "proof_id": "N1_RESPONSE",
+      "kind": "defect",
+      "source_id": "src_cohort_a_seed2_03",
+      "story_family": "emotional_development",
+      "pass": true,
+      "detector": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "serious",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": [
+              "S009",
+              "S010",
+              "S017"
+            ],
+            "reason": "Ada's total silence to Deniz's repeated direct questions is explained only by her hands/eyes being occupied with the tower, but speech remained physically available; this unexplained silence drives Deniz's emotional misunderstanding (S011-S013) without any stated voluntary choice to stay silent."
+          }
+        ],
+        "meta": {
+          "strategy": "blind_primary_then_zero_confirmation",
+          "selected_round": "blind_primary",
+          "rounds": [
+            {
+              "round": "blind_primary",
+              "findings": [
+                {
+                  "family": "response_causality",
+                  "severity": "serious",
+                  "repair_scope": "LOCAL_REPAIR",
+                  "span_ids": [
+                    "S009",
+                    "S010",
+                    "S017"
+                  ],
+                  "reason": "Ada's total silence to Deniz's repeated direct questions is explained only by her hands/eyes being occupied with the tower, but speech remained physically available; this unexplained silence drives Deniz's emotional misunderstanding (S011-S013) without any stated voluntary choice to stay silent."
+                }
+              ],
+              "meta": {
+                "cost": {
+                  "usd": 0.014476,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 2818,
+                  "output_tokens": 884,
+                  "total_tokens": 3702
+                },
+                "parse_failures": []
+              }
+            }
+          ],
+          "cost": {
+            "usd": 0.014476
+          }
+        }
+      },
+      "gold_scoring": {
+        "expected_family": "response_causality",
+        "expected_repair_scope": "LOCAL_REPAIR",
+        "expected_span_ids": [
+          "S007",
+          "S008",
+          "S009",
+          "S010",
+          "S017",
+          "S018",
+          "S023",
+          "S024",
+          "S025",
+          "S029",
+          "S030",
+          "S031"
+        ],
+        "expected_family_and_span_overlap": true,
+        "repair_scope_match": true
+      },
+      "repair": {
+        "model": "anthropic/claude-sonnet-5",
+        "max_attempts": 2,
+        "attempts": [
+          {
+            "attempt": 1,
+            "repair_note": "Ada's silence is now framed as a voluntary choice to prioritize the tower, not an inability to speak.",
+            "replacements": [
+              {
+                "id": "S010",
+                "old": "Ada hiçbir şey söylemedi.",
+                "new": "Ada onu duydu ama kule elinden kayıp gitmesin diye önce ona cevap vermemeyi seçti."
+              },
+              {
+                "id": "S017",
+                "old": "Ada yine cevap vermedi.",
+                "new": "Ada onu yine duydu ama bloklar düşmesin diye cevap vermeyi biraz daha bekletti."
+              }
+            ],
+            "mechanical": {
+              "detector_target_ids": [
+                "S009",
+                "S010",
+                "S017"
+              ],
+              "changed_ids": [
+                "S010",
+                "S017"
+              ],
+              "changed_ids_subset_of_detector_span": true,
+              "non_target_sentences_present_exactly": true,
+              "changed_sentence_count": 2,
+              "outside_detector_span_changed": false
+            },
+            "repair_meta": {
+              "cost": {
+                "usd": 0.006904,
+                "try_amount": null,
+                "usd_try_rate": null
+              },
+              "usage": {
+                "input_tokens": 2592,
+                "output_tokens": 172,
+                "total_tokens": 2764
+              },
+              "parse_failures": []
+            },
+            "same_defect_recheck": {
+              "resolved": true,
+              "remaining_span_ids": [],
+              "reason": "S010 and S017 now explicitly frame Ada's silence as a voluntary choice ('önce ona cevap vermemeyi seçti' / 'cevap vermeyi biraz daha bekletti') rather than as a physical inability caused by occupied hands. The causal chain is corrected: Ada hears Deniz, understands the situation, and deliberately prioritizes the urgent task (preventing collapse) over responding—a legitimate choice, not an unexplained defect. Deniz's subsequent emotional misunderstanding (S011-S013) now has proper grounding in Ada's actual communicative choice rather than mysterious silence, resolving the response_causality defect.",
+              "meta": {
+                "cost": {
+                  "usd": 0.002668,
+                  "try_amount": null,
+                  "usd_try_rate": null
+                },
+                "usage": {
+                  "input_tokens": 1758,
+                  "output_tokens": 182,
+                  "total_tokens": 1940
+                },
+                "parse_failures": []
+              }
+            }
+          }
+        ],
+        "attempts_used": 1,
+        "final_replacements": [
+          {
+            "id": "S010",
+            "old": "Ada hiçbir şey söylemedi.",
+            "new": "Ada onu duydu ama kule elinden kayıp gitmesin diye önce ona cevap vermemeyi seçti."
+          },
+          {
+            "id": "S017",
+            "old": "Ada yine cevap vermedi.",
+            "new": "Ada onu yine duydu ama bloklar düşmesin diye cevap vermeyi biraz daha bekletti."
+          }
+        ],
+        "mechanical": {
+          "detector_target_ids": [
+            "S009",
+            "S010",
+            "S017"
+          ],
+          "changed_ids": [
+            "S010",
+            "S017"
+          ],
+          "changed_ids_subset_of_detector_span": true,
+          "non_target_sentences_present_exactly": true,
+          "changed_sentence_count": 2,
+          "outside_detector_span_changed": false
+        },
+        "repaired_story": "Deniz ile Kule\n\nDeniz oyun alanına girdiğinde Ada'yı gördü. Ada büyük mavi ve kırmızı bloklarla göğe kadar uzanan bir kule kuruyordu. Deniz koşarak yanına vardı.\n\n\"Ada, ben de oynayabilir miyim?\" diye seslendi.\n\nTam o sırada kulenin bir yanı yavaşça eğildi. Ada iki elini birden uzattı ve devrilmek üzere olan blokları tuttu. Gözlerini kuleden bir an bile ayırmadı.\n\nDeniz bekledi. Ada onu duydu ama kule elinden kayıp gitmesin diye önce ona cevap vermemeyi seçti.\n\n\"Beni duymadı mı?\" diye düşündü Deniz. İçi biraz burktu. Belki Ada onunla oynamak istemiyordu.\n\nDeniz elini kaldırıp bir daha salladı.\n\n\"Ada! Benim, Deniz!\"\n\nAda onu yine duydu ama bloklar düşmesin diye cevap vermeyi biraz daha bekletti. Gözleri hâlâ bloklardaydı.\n\nDeniz omuzlarını düşürdü ve geri dönmeye hazırlandı. O anda küçük sarı bir blok gevşedi ve yere düştü. Tak!\n\nDeniz sesin geldiği yere döndü. Ada'nın iki eli de doluydu. Tuttuğu bloklar hâlâ hafifçe sallanıyordu. Ada'nın elleri kulenin altında sıkı sıkı duruyordu.\n\nDeniz yavaşça yaklaştı. Yere düşen sarı bloğu gösterdi.\n\n\"Ada, ne oldu?\"\n\nAda dişlerini sıkarak konuştu. \"Kule devrilecek diye tutuyorum. Bırakırsam yıkılır.\"\n\nDeniz hemen yere çöktü. Kulenin en alt sırasındaki blokları iki eliyle kavradı.\n\n\"Ben burayı tutuyorum,\" dedi.\n\nAda bir elini serbest bıraktı. Eğri duran bloğu yavaşça aşağı indirdi. Kule artık daha sakin duruyordu.\n\n\"Şimdi düşmez,\" dedi Ada.\n\nİkisi birlikte kulenin bloklarını topladılar. Bu sefer daha geniş bir taban yaptılar. Deniz kırmızı blokları alta dizdi, Ada mavi blokları üstüne yerleştirdi. Sırayla, birer birer, yükseldiler.\n\nKule bu kez sallanmadı. Sapasağlam durdu.\n\nAda Deniz'e döndü ve gülümsedi.\n\n\"Evet, birlikte oynayalım,\" dedi.\n\nElinde tuttuğu son sarı bloğu Deniz'e uzattı. İkisi birlikte bloğu kulenin en tepesine koydular."
+      },
+      "same_defect_recheck": {
+        "model": "anthropic/claude-haiku-4.5",
+        "family": "response_causality",
+        "resolved": true,
+        "remaining_span_ids": [],
+        "reason": "S010 and S017 now explicitly frame Ada's silence as a voluntary choice ('önce ona cevap vermemeyi seçti' / 'cevap vermeyi biraz daha bekletti') rather than as a physical inability caused by occupied hands. The causal chain is corrected: Ada hears Deniz, understands the situation, and deliberately prioritizes the urgent task (preventing collapse) over responding—a legitimate choice, not an unexplained defect. Deniz's subsequent emotional misunderstanding (S011-S013) now has proper grounding in Ada's actual communicative choice rather than mysterious silence, resolving the response_causality defect.",
+        "meta": {
+          "cost": {
+            "usd": 0.002668,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1758,
+            "output_tokens": 182,
+            "total_tokens": 1940
+          },
+          "parse_failures": []
+        },
+        "pass": true
+      },
+      "full_regression": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "meta": {
+          "cost": {
+            "usd": 0.007648,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2213,
+            "output_tokens": 1087,
+            "total_tokens": 3300
+          },
+          "parse_failures": []
+        },
+        "pass": true
+      }
+    }
+  ]
+}
