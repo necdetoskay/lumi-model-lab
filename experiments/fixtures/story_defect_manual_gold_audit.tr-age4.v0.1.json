@@ -1,0 +1,151 @@
+{
+  "schema_version": "story-defect-manual-gold-audit.v0.1",
+  "status": "MANUAL_GOLD_CANDIDATE_NOT_YET_FINAL_REFERENCE",
+  "created_at": "2026-09-26",
+  "reviewer": {
+    "surface": "chatgpt_plus_interactive_session",
+    "role": "independent_manual_semantic_auditor",
+    "api_calls_used": 0,
+    "note": "This is a manual gold-label candidate created in an interactive ChatGPT session. It is not an API model benchmark and must not be scored as detector performance."
+  },
+  "scope": {
+    "language": "tr",
+    "exact_age": 4,
+    "reading_mode": "READ_ALOUD",
+    "source_pool": "experiments/fixtures/story_defect_source_pool.tr-age4.v1.json",
+    "blocking_severities": [
+      "serious",
+      "critical"
+    ],
+    "audited_families": [
+      "physical_feasibility",
+      "causal_logic",
+      "state_continuity",
+      "epistemic_order",
+      "spatial_consistency",
+      "temporal_consistency",
+      "response_causality",
+      "closure_integrity",
+      "canon_integrity"
+    ]
+  },
+  "policy": {
+    "style_and_language_only_issues_are_out_of_scope": true,
+    "ambiguous_claims_are_not_promoted_to_blocking_gold": true,
+    "clean_means_no_serious_or_critical_semantic_defect_found": true,
+    "current_clean_admission_manifest_is_not_overwritten_by_this_pilot": true,
+    "disagreements_with_historical_judges_require_adjudication_before_final_gold": true
+  },
+  "entries": [
+    {
+      "source_id": "src_cohort_a_01",
+      "verdict": "NO_BLOCKING_SEMANTIC_DEFECT_FOUND",
+      "admitted_as_manual_clean_candidate": true,
+      "findings": [],
+      "notes": [
+        "S022 contains a Turkish grammar problem, but it is outside the semantic defect taxonomy used by this audit.",
+        "No serious/critical physical, causal, state, epistemic, spatial, temporal, response-causality, closure, or canon defect found."
+      ]
+    },
+    {
+      "source_id": "src_cohort_a_02",
+      "verdict": "NO_BLOCKING_SEMANTIC_DEFECT_FOUND",
+      "admitted_as_manual_clean_candidate": true,
+      "findings": [],
+      "notes": [
+        "The bridge/road rearrangement remains physically and causally coherent.",
+        "No serious/critical semantic defect found."
+      ]
+    },
+    {
+      "source_id": "src_cohort_a_03",
+      "verdict": "BLOCKING_SEMANTIC_DEFECT_FOUND",
+      "admitted_as_manual_clean_candidate": false,
+      "findings": [
+        {
+          "family": "causal_logic",
+          "severity": "serious",
+          "span_ids": [
+            "S008",
+            "S009",
+            "S015",
+            "S016",
+            "S017"
+          ],
+          "reason": "Ada's hands being occupied stabilizing the gate does not explain why she could not turn her head or answer Deniz. The story uses the physical constraint as a causal explanation for a response limitation it does not entail.",
+          "repair_scope": "LOCAL_REPAIR"
+        },
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S010",
+            "S023",
+            "S024"
+          ],
+          "reason": "Deniz explicitly puts the wide block on the ground, but the story later says he takes the wide block from his hand without any pickup transition.",
+          "repair_scope": "LOCAL_REPAIR"
+        }
+      ],
+      "notes": [
+        "This source is useful as naturally occurring positive evidence rather than as a clean mutation source."
+      ]
+    },
+    {
+      "source_id": "src_cohort_a_04",
+      "verdict": "BLOCKING_SEMANTIC_DEFECT_FOUND",
+      "admitted_as_manual_clean_candidate": false,
+      "findings": [
+        {
+          "family": "closure_integrity",
+          "severity": "serious",
+          "span_ids": [
+            "S038",
+            "S049",
+            "S050",
+            "S051"
+          ],
+          "reason": "The story makes putting the toy away part of the closing choice, explicitly states that Deniz will still collect it, and then immediately takes it back out to resume play. This reopens the action and reverses the closure beat.",
+          "repair_scope": "LOCAL_REPAIR"
+        }
+      ],
+      "notes": [
+        "The light-rule sequence itself is coherent; the blocking problem is the terminal tail."
+      ]
+    },
+    {
+      "source_id": "src_cohort_a_05",
+      "verdict": "NO_BLOCKING_SEMANTIC_DEFECT_FOUND",
+      "admitted_as_manual_clean_candidate": true,
+      "findings": [
+        {
+          "family": "causal_logic",
+          "severity": "moderate",
+          "span_ids": [
+            "S026",
+            "S027",
+            "S029",
+            "S032",
+            "S039",
+            "S040"
+          ],
+          "reason": "The leaf is established as blocking the outlet, so thanking it for helping is causally awkward. It does not, however, invalidate the physical mechanism or the story's solution.",
+          "repair_scope": "LOCAL_REPAIR"
+        }
+      ],
+      "notes": [
+        "S002 has a tense/natural-Turkish problem, but language polish is outside this semantic audit.",
+        "The leaf line is recorded as moderate, not publication-blocking."
+      ]
+    }
+  ],
+  "summary": {
+    "audited_sources": 5,
+    "manual_clean_candidates": 3,
+    "blocking_sources": 2,
+    "serious_findings": 3,
+    "moderate_findings": 1,
+    "critical_findings": 0,
+    "newly_highlighted_priority_pattern": "occupied_hands_or_task_constraint_used_as_invalid_explanation_for_failure_to_look_or_respond"
+  }
+}
