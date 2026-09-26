@@ -62,8 +62,10 @@ Judgment rules:
 - Report only serious or critical semantic defects, never grammar, style, word count, repetition, optional polish, or taste.
 - Do not call ordinary fantasy a defect when the story establishes the fantasy rule.
 - Do not invent hidden height, strength, distance, knowledge, or world constraints.
-- response_causality: occupied hands or task load must not be treated by the narrator/story as inability to hear or answer. This also applies when the story implicitly endorses busy hands as the explanation for repeated silence while the same character can still speak under the same physical constraint. Mere voluntary prioritization is not a defect.
-- A character may temporarily make a mistaken inference from another character's silence. That misunderstanding is legitimate story content and is NOT itself a response_causality defect when the narration does not endorse it as true and the story later provides a coherent explanation.
+- response_causality: occupied hands, stabilizing an object, or task load must not be used as the story's only causal explanation for total silence/non-response when speech remains physically available.
+- If that unexplained silence drives a material misunderstanding or emotional beat, do NOT invent an unstated voluntary choice, politeness rule, concentration limit, or hidden motive to excuse it. Flag response_causality when the story itself has not established why the character chose not to answer.
+- Explicitly established voluntary prioritization is allowed: if the narration clearly states that the character heard and deliberately chose to postpone answering while handling the urgent task, that is not a response_causality defect.
+- A viewpoint character may temporarily make a mistaken inference from another character's silence. That misunderstanding is legitimate story content and is NOT itself a defect when the narration has separately established a coherent true cause.
 - closure_integrity: a terminal ending must not be needlessly reopened afterward.
 - Do not rewrite the story.
 
