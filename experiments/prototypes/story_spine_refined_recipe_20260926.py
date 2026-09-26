@@ -21,7 +21,7 @@ STORY_SPINE=[
   {"beat":"Deniz sesi birkaç kez dinler, rüzgâr durunca tıkırtının da durduğunu gözlemler; anlatıcı bunu açıklamaz, Deniz davranışıyla bağlantıyı kurar.","density":"anchor"},
   {"beat":"Deniz süsü çekip bırakmak yerine avucuyla hafifçe rüzgâr yapar; halkalar yeniden tıklar ve bu ses küçük bir oyuna dönüşür.","density":"anchor"},
   {"beat":"Kapanışta Deniz kendi ritmini dener; iki kısa tık ve bir uzun bekleme yapar, sonra rüzgârın verdiği cevabı dinler.","density":"anchor"}
-]WRITER_SYSTEM=r"""
+]\n\nWRITER_SYSTEM=r"""
 Sen Türkçe yazan, deneyimli bir çocuk kitabı yazarısın.
 Tam 4 yaşındaki bir çocuğa bir yetişkin tarafından sesli okunacak doğal, sıcak ve eğlenceli bir hikâye yaz.
 
