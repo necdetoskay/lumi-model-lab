@@ -1,0 +1,130 @@
+{
+  "schema_version": "story-defect-paid-validator-adjudication.v1",
+  "validator": "anthropic/claude-haiku-4.5",
+  "blind_validation": true,
+  "total_cost_usd": 0.012924,
+  "elapsed_seconds": 14.531,
+  "results": [
+    {
+      "case_id": "src_cohort_a_seed2_01__causal_effect_without_cause",
+      "expected": {
+        "family": "causal_logic",
+        "span_ids": [
+          "S021"
+        ]
+      },
+      "findings": [
+        {
+          "family": "causal_logic",
+          "severity": "critical",
+          "span_ids": [
+            "S020",
+            "S021"
+          ],
+          "reason": "S021 explicitly states 'Ortada yeni bir neden ya da değişiklik yoktu ama sonuç kendiliğinden tersine döndü' (There was no new cause or change but the result reversed itself). This violates causal_logic: a sound effect (the ticking) cannot change location and recur without a physical cause. The narrative then retroactively provides wind as the cause (S038), but S021 directly asserts causality violation as a narrative fact. This is a state_continuity and epistemic_order defect: the story acknowledges an effect without cause, then contradicts this acknowledgment."
+        }
+      ],
+      "intended_confirmed": true,
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "cost_usd": 0.003382
+    },
+    {
+      "case_id": "src_cohort_b_03__physical_solid_barrier_violation",
+      "expected": {
+        "family": "physical_feasibility",
+        "span_ids": [
+          "S016"
+        ]
+      },
+      "findings": [
+        {
+          "family": "physical_feasibility",
+          "severity": "critical",
+          "span_ids": [
+            "S016"
+          ],
+          "reason": "S016 states 'Deniz kapalı ve sağlam camın içinden elini geçirip öteki taraftaki şeyi aldı' (Deniz passed his hand through closed and solid glass and took something from the other side). This violates physical_solid_barrier_violation: a closed, solid glass barrier cannot be penetrated by a hand. No prior context establishes the glass as broken, open, or permeable. This is a direct contradiction of material properties."
+        }
+      ],
+      "intended_confirmed": true,
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "cost_usd": 0.002961
+    },
+    {
+      "case_id": "src_emotional_guard_01__response_perception_conflation",
+      "expected": {
+        "family": "response_causality",
+        "span_ids": [
+          "S013"
+        ]
+      },
+      "findings": [
+        {
+          "family": "response_causality",
+          "severity": "critical",
+          "span_ids": [
+            "S007",
+            "S008",
+            "S009",
+            "S010",
+            "S011",
+            "S013"
+          ],
+          "reason": "Deniz interprets Ada's silence (S007–S009) as unwillingness to play (S011) and withdraws the invitation, but S013 retroactively reveals Ada could not hear him because her hands were full. This creates a causal contradiction: Deniz's emotional inference and decision (S010–S012) are based on a false premise that is only revealed after the fact. The narrative presents Deniz's hurt feelings and rejection as a response to Ada's perceived refusal, when Ada was actually unable to respond. This violates response_causality because the emotional state and action are causally grounded in a misperception that the text itself later contradicts, making the earlier emotional sequence logically incoherent rather than a valid character arc of misunderstanding-then-learning."
+        }
+      ],
+      "intended_confirmed": true,
+      "overlap_family_disagreements": [],
+      "second_blocking_findings": [],
+      "cost_usd": 0.002961
+    },
+    {
+      "case_id": "src_cohort_a_02__temporal_order_contradiction",
+      "expected": {
+        "family": "temporal_consistency",
+        "span_ids": [
+          "S012"
+        ]
+      },
+      "findings": [
+        {
+          "family": "temporal_consistency",
+          "severity": "critical",
+          "span_ids": [
+            "S012"
+          ],
+          "reason": "S012 states Ece 'said that she had already seen the result of what she was doing before doing it' (yaptığı şeyin sonucunu çoktan görmüş olduğunu söyledi). This is temporally impossible: she cannot have seen the consequence of an action before performing it. The sentence creates an epistemic paradox that breaks causal order. Either the action was already performed (contradicting S009-S011's sequence) or the statement is nonsensical within the story's logic."
+        },
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S009",
+            "S010",
+            "S011",
+            "S012"
+          ],
+          "reason": "S009 describes Ece taking the road in hand. S010-S011 describe her turning it, which separates it from the bridge. S012 then claims she 'said' she had already seen this result before doing it—but the action (turning the road) was already completed in S010-S011. The temporal marker 'bunu daha yapmadan önce' (before doing this) contradicts the completed action sequence, creating ambiguity about whether the action occurred or not."
+        }
+      ],
+      "intended_confirmed": true,
+      "overlap_family_disagreements": [
+        {
+          "family": "state_continuity",
+          "severity": "serious",
+          "span_ids": [
+            "S009",
+            "S010",
+            "S011",
+            "S012"
+          ],
+          "reason": "S009 describes Ece taking the road in hand. S010-S011 describe her turning it, which separates it from the bridge. S012 then claims she 'said' she had already seen this result before doing it—but the action (turning the road) was already completed in S010-S011. The temporal marker 'bunu daha yapmadan önce' (before doing this) contradicts the completed action sequence, creating ambiguity about whether the action occurred or not."
+        }
+      ],
+      "second_blocking_findings": [],
+      "cost_usd": 0.00362
+    }
+  ]
+}
