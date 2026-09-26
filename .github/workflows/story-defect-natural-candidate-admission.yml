@@ -1,0 +1,42 @@
+name: Story Defect Natural Candidate Admission
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/story-defect-natural-candidate-admission.txt
+
+jobs:
+  admission:
+    runs-on: self-hosted
+    timeout-minutes: 30
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Compile
+        run: python -m py_compile experiments/prototypes/story_defect_natural_candidate_admission_20260926.py
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json --min-remaining 0.50
+      - name: Run focused candidate admission
+        run: PYTHONPATH=. python experiments/prototypes/story_defect_natural_candidate_admission_20260926.py
+      - name: Archive evidence
+        if: always()
+        run: |
+          test -s runs/story-defect-natural-candidate-admission/result.json
+          DEST="experiments/results/story-defect-natural-candidate-admission/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/story-defect-natural-candidate-admission/result.json "$DEST/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): natural candidate admission ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/story-defect-natural-candidate-admission-${GITHUB_RUN_ID}"
