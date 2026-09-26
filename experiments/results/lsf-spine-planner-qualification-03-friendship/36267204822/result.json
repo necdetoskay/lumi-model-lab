@@ -1,0 +1,264 @@
+{
+  "schema_version": "lsf-spine-planner-qualification-03-friendship-result.v1",
+  "profile": "LSF-A4-W500-v0.1",
+  "source_context_builder_run": 36265275665,
+  "story_intent": {
+    "family": "friendship_emotional_social",
+    "opportunity": "Deniz and Ada are drawing separate roads in the courtyard and both notice the last short red chalk piece.",
+    "stakes": "low",
+    "fantasy_allowed": false,
+    "references": {
+      "required_fact_ids": [
+        "relationship.ada",
+        "location.chalk_box"
+      ],
+      "hard_guard_fact_ids": [
+        "world.physics_normal"
+      ]
+    }
+  },
+  "context_packet": {
+    "deterministic_core": [
+      {
+        "id": "character.identity",
+        "text": "Active character is Deniz.",
+        "kind": "canon"
+      },
+      {
+        "id": "character.exact_age",
+        "text": "Deniz is exactly 4 years old.",
+        "kind": "canon"
+      },
+      {
+        "id": "world.active",
+        "text": "Active world is world-home-01.",
+        "kind": "canon"
+      },
+      {
+        "id": "state.current_location",
+        "text": "Deniz is currently in COMMONS_COURTYARD.",
+        "kind": "state"
+      },
+      {
+        "id": "state.story_revision",
+        "text": "CharacterStoryState revision is 12.",
+        "kind": "state"
+      },
+      {
+        "id": "location.chalk_box",
+        "text": "A chalk box with one short red chalk piece is present near Deniz and Ada.",
+        "kind": "state"
+      },
+      {
+        "id": "relationship.ada",
+        "text": "Ada is Deniz's friend and is currently nearby in the courtyard.",
+        "kind": "state"
+      },
+      {
+        "id": "world.physics_normal",
+        "text": "This world normally follows everyday physical rules unless a StoryContract explicitly allows fantasy.",
+        "kind": "canon"
+      }
+    ],
+    "jev_selected_enrichment": [
+      {
+        "id": "inventory.blue_chalk",
+        "text": "Deniz currently has one blue sidewalk chalk piece.",
+        "kind": "state"
+      },
+      {
+        "id": "inventory.yellow_chalk",
+        "text": "Deniz currently has one yellow sidewalk chalk piece.",
+        "kind": "state"
+      },
+      {
+        "id": "relationship.ada_recent",
+        "text": "Deniz and Ada last played together without conflict.",
+        "kind": "state"
+      }
+    ]
+  },
+  "protected_relationship": {
+    "fact_id": "relationship.ada",
+    "recent_fact_id": "relationship.ada_recent",
+    "rule": "Ada is Deniz's friend; their most recent play had no conflict. The story may contain a small new disagreement, but must not invent a prior feud, betrayal, family tie, rivalry, or lasting relationship damage."
+  },
+  "models": {
+    "planner": "aion-labs/aion-3.5-mini",
+    "plan_validator": "anthropic/claude-sonnet-5",
+    "writer": "aion-labs/aion-3.5-mini",
+    "primary_story_auditor": "anthropic/claude-sonnet-5",
+    "secondary_story_auditor": "openai/gpt-5.6-sol",
+    "translator": "google/gemini-3.8-flash",
+    "fidelity_gate": "openai/gpt-5.6-luna"
+  },
+  "planner_output": {
+    "premise": "Deniz and Ada both reach for the last short red chalk piece to finish their separate courtyard roads and find a way to use it together.",
+    "beats": [
+      {
+        "id": "B1",
+        "density": "anchor",
+        "beat": "Deniz draws a long blue road with yellow dashes in the courtyard while Ada draws her own road nearby, the two of them playing peacefully side by side.",
+        "uses_fact_ids": [
+          "character.identity",
+          "character.exact_age",
+          "state.current_location",
+          "relationship.ada",
+          "inventory.blue_chalk",
+          "inventory.yellow_chalk",
+          "relationship.ada_recent"
+        ]
+      },
+      {
+        "id": "B2",
+        "density": "brief",
+        "beat": "Deniz decides his road needs a red stop sign at the end and opens the chalk box to find a red piece.",
+        "uses_fact_ids": [
+          "character.identity",
+          "location.chalk_box"
+        ]
+      },
+      {
+        "id": "B3",
+        "density": "anchor",
+        "beat": "Just as Deniz reaches in, Ada's hand reaches for the box too, and both see there is only one short red chalk piece left inside.",
+        "uses_fact_ids": [
+          "location.chalk_box",
+          "relationship.ada"
+        ]
+      },
+      {
+        "id": "B4",
+        "density": "develop",
+        "beat": "Both grab it at the same time; Deniz says he needs red for his stop sign, Ada says she needs red for her fire truck, and they end up holding the same short piece at opposite ends, stuck.",
+        "uses_fact_ids": [
+          "character.identity",
+          "relationship.ada"
+        ]
+      },
+      {
+        "id": "B5",
+        "density": "brief",
+        "beat": "They pause; Deniz looks at his road, then at Ada's road, and notices the two chalk roads almost touch in the middle.",
+        "uses_fact_ids": [
+          "character.identity",
+          "relationship.ada",
+          "state.current_location"
+        ]
+      },
+      {
+        "id": "B6",
+        "density": "anchor",
+        "beat": "Deniz suggests they draw the red part together: each of them holds one end of the short chalk and they make one big red circle right where the two roads meet.",
+        "uses_fact_ids": [
+          "character.identity",
+          "relationship.ada",
+          "location.chalk_box"
+        ]
+      },
+      {
+        "id": "B7",
+        "density": "develop",
+        "beat": "Kneeling side by side, they push the chalk together and the wobbly red circle spreads over both roads; then they take turns with the same piece, Ada adding red wheels to her fire truck and Deniz adding a red stripe to his stop sign.",
+        "uses_fact_ids": [
+          "character.identity",
+          "relationship.ada",
+          "state.current_location"
+        ]
+      },
+      {
+        "id": "B8",
+        "density": "anchor",
+        "beat": "They sit back and look at the two roads joined by the big red circle, and Deniz places the short red chalk back into the chalk box between them.",
+        "uses_fact_ids": [
+          "character.identity",
+          "relationship.ada",
+          "location.chalk_box",
+          "state.current_location"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "text": "Ada is drawing her own road close enough to Deniz's road that the two chalk lines nearly touch.",
+        "type": "transient_environment",
+        "why_safe": "Temporary layout of washable chalk drawings; adds no durable canon."
+      },
+      {
+        "text": "Ada wants the red chalk for a fire truck on her road.",
+        "type": "dialogue",
+        "why_safe": "Transient drawing plan expressed in the moment; not durable canon."
+      },
+      {
+        "text": "Deniz wants the red chalk for a stop sign on his road.",
+        "type": "dialogue",
+        "why_safe": "Transient drawing plan expressed in the moment; not durable canon."
+      }
+    ],
+    "expected_outcome": {
+      "proposed_state_changes": [
+        {
+          "kind": "object_state",
+          "description": "The short red chalk piece is slightly shorter from shared use and is returned to the chalk box."
+        },
+        {
+          "kind": "relationship",
+          "description": "Deniz and Ada end the scene still friends, having just shared the red chalk peacefully."
+        }
+      ],
+      "preserved_invariants": [
+        "Deniz is exactly 4 years old.",
+        "Ada is Deniz's friend; their most recent play had no conflict and no lasting damage occurs in this story.",
+        "The story stays in COMMONS_COURTYARD in world-home-01.",
+        "Normal everyday physics applies (world.physics_normal).",
+        "No adult resolves the disagreement; Deniz and Ada resolve it themselves.",
+        "No new durable canon is created beyond the proposed state changes."
+      ]
+    }
+  },
+  "deterministic_plan_errors": [],
+  "plan_validation": {
+    "valid": true,
+    "counts": {
+      "critical": 0,
+      "serious": 0
+    },
+    "defects": [],
+    "summary": "Plan aligns with intent, respects protected relationship (small disagreement, no adult mediation, resolved via child action), maintains canon/state consistency, physical causality, and closure. No defects found."
+  },
+  "plan_pass": true,
+  "english_story": "The Big Red Circle\n\nDeniz was drawing on the courtyard stones. He had a blue chalk in one hand and a yellow chalk in the other. He drew a long blue road, wriggling like a snake, all along his side. Then he went tap-tap-tap with the yellow chalk, making little dashes down the middle.\n\nZzzoom! went his pretend car.\n\nNearby, his friend Ada was drawing a road too. Her road curved the other way, bending around a pebble like it was a hill.\n\n\"Vroom-vroom!\" said Ada, pushing her finger along her road.\n\nThe two of them hummed and drew, side by side in the warm sun.\n\nThen Deniz stopped. His road needed something at the very end. A stop sign! A red stop sign, so the pretend cars would know when to stop.\n\nHe opened the chalk box near his knees. Red, red, where was the red?\n\nJust as Deniz reached in, another hand reached in too. Ada's hand!\n\nThey both looked. At the bottom of the box sat one short piece of red chalk. Just one. It was only as long as Deniz's thumb.\n\n\"Red,\" said Deniz.\n\n\"Red,\" said Ada.\n\nBoth of them grabbed it at the same time.\n\n\"I need it for my stop sign,\" said Deniz.\n\n\"I need it for my fire truck,\" said Ada.\n\nDeniz held one end. Ada held the other. The little red chalk sat between them, and nobody let go. They were stuck, like two dogs with one biscuit.\n\nDeniz scrunched his nose. Then he looked at his blue road. Then he looked at Ada's road. And then he saw it — his road and Ada's road almost touched in the middle of the courtyard. Just a tiny gap left.\n\n\"Hey,\" said Deniz. \"Our roads almost bump into each other.\"\n\nAda leaned over to look. \"Ooooh.\"\n\n\"What if we draw the red part together?\" said Deniz. \"You hold one end. I hold this end. We make one big red circle right where the roads meet.\"\n\nAda nodded fast. \"A really big one!\"\n\nThey knelt down close, each holding one end of the short chalk. They pushed it round and round on the stones. Round and round and round. The chalk was so short that their fingers almost bumped, and they giggled. The red circle grew bigger and bigger — a little wobbly, like a pancake — until it sat right on top of both roads.\n\n\"There!\" said Deniz. \"One big red circle!\"\n\nThen they took turns with the same short piece. Ada drew four round red wheels on her fire truck. Nee-naw, nee-naw! Then Deniz drew a fat red stripe on his stop sign. Stop!\n\nThe red chalk was shorter now, small as a pebble.\n\nDeniz and Ada sat back on their heels and looked. Two roads, one blue and one curvy, joined by one big wobbly red circle in the middle.\n\nDeniz put the little red chalk back into the chalk box, right between them.\n\n\"Vroom,\" said Ada.\n\n\"Vroom-vroom,\" said Deniz, and the cars drove on.",
+  "english_word_count": 504,
+  "length_pass": true,
+  "primary_findings": [],
+  "secondary_findings": [],
+  "english_pass": true,
+  "turkish_translation": "Büyük Kırmızı Daire\n\nDeniz avlu taşlarının üzerine resim yapıyordu. Bir elinde mavi tebeşir, öbür elinde sarı tebeşir vardı. Kendi tarafı boyunca yılan gibi kıvrılan upuzun mavi bir yol çizdi. Sonra sarı tebeşirle tık-tık-tık diye yolun ortasına minik çizgiler yaptı.\n\n\"Vııın!\" diye gitti hayali arabası.\n\nYakınında, arkadaşı Ada da bir yol çiziyordu. Onun yolu öbür tarafa doğru kıvrılıyor, bir çakıl taşının etrafından tıpkı bir tepeymiş gibi dönüyordu.\n\n\"Vın-vın!\" dedi Ada, parmağını yolunun üzerinde sürerek.\n\nİkisi de ılık güneşin altında, yan yana mırıldanarak çizdiler.\n\nSonra Deniz durdu. Yolunun tam ucuna bir şey lazımdı. Bir dur işareti! Kırmızı bir dur işareti, böylece hayali arabalar ne zaman duracaklarını bilecekti.\n\nDizlerinin yanındaki tebeşir kutusunu açtı. Kırmızı, kırmızı, neredeydi kırmızı?\n\nTam Deniz elini uzatmışken, başka bir el daha uzandı. Ada'nın eli!\n\nİkisi de baktı. Kutunun dibinde tek bir kısa kırmızı tebeşir parçası duruyordu. Sadece bir tane. Deniz'in başparmağı kadarcıktı.\n\n\"Kırmızı,\" dedi Deniz.\n\n\"Kırmızı,\" dedi Ada.\n\nİkisi de aynı anda tebeşiri tuttu.\n\n\"Dur işaretim için bana lazım,\" dedi Deniz.\n\n\"İtfaiye arabam için bana lazım,\" dedi Ada.\n\nDeniz bir ucunu tuttu. Ada öbür ucunu tuttu. Küçük kırmızı tebeşir aralarında kaldı ve hiçbiri bırakmadı. Tek bir bisküviyi paylaşamayan iki köpek gibi öylece kalakaldılar.\n\nDeniz burnunu kırıştırdı. Sonra mavi yoluna baktı. Sonra Ada'nın yoluna baktı. Ve sonra fark etti; kendi yoluyla Ada'nın yolu avlunun ortasında neredeyse birbirine değiyordu. Arada küçücük bir boşluk kalmıştı.\n\n\"Baksana,\" dedi Deniz. \"Yollarımız neredeyse birbirine çarpacak.\"\n\nAda eğilip baktı. \"Ooooh.\"\n\n\"Kırmızı kısmı birlikte çizsek ya?\" dedi Deniz. \"Sen bir ucunu tut. Ben bu ucunu tutayım. Yolların birleştiği tam şu yere kocaman kırmızı bir daire yapalım.\"\n\nAda hızlı hızlı başını salladı. \"Çoook büyük bir tane!\"\n\nBirbirlerine yakınca diz çöktüler, her biri kısa tebeşirin bir ucundan tuttu. Tebeşiri taşların üzerinde döndüre döndüre gezdirdiler. Döne döne, döne döne. Tebeşir o kadar kısaydı ki parmakları neredeyse birbirine çarpıyordu ve kıkırdadılar. Kırmızı daire gittikçe büyüdü—pankek gibi biraz yamuk yumuk oldu—ta ki tam iki yolun da üstüne oturana kadar.\n\n\"İşte!\" dedi Deniz. \"Kocaman kırmızı bir daire!\"\n\nSonra aynı kısa parçayı sırayla kullandılar. Ada itfaiye arabasına dört yuvarlak kırmızı tekerlek çizdi. Ni-noo, ni-noo! Sonra Deniz dur işaretine kalın kırmızı bir çizgi çizdi. Dur!\n\nKırmızı tebeşir artık daha da kısalmıştı, bir çakıl taşı kadar kalmıştı.\n\nDeniz ile Ada topuklarının üstüne geriye doğru oturup baktılar. Biri mavi, biri kıvrımlı iki yol; ortada kocaman, yamuk yumuk kırmızı bir daireyle birleşmişti.\n\nDeniz küçük kırmızı tebeşiri tam aralarındaki tebeşir kutusuna geri koydu.\n\n\"Vın,\" dedi Ada.\n\n\"Vın-vın,\" dedi Deniz, ve arabalar yollarına devam etti.",
+  "fidelity_result": {
+    "findings": [],
+    "fidelity_clean": true
+  },
+  "fidelity_pass": true,
+  "publication_ready": true,
+  "cost_usd": {
+    "planner": 0.0085876,
+    "plan_validator": 0.00668,
+    "writer": 0.0080423,
+    "primary_story_audit": 0.013594,
+    "secondary_story_audit": 0.013371,
+    "translator": 0.01327425,
+    "fidelity_gate": 0.00079915,
+    "total": 0.0643483
+  },
+  "writer_usage": {
+    "input_tokens": 1743,
+    "output_tokens": 4873,
+    "total_tokens": 6616
+  },
+  "translator_usage": {
+    "input_tokens": 834,
+    "output_tokens": 3373,
+    "total_tokens": 4207
+  },
+  "elapsed_seconds": 236.38
+}
