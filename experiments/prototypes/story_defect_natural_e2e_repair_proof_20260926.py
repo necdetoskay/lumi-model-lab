@@ -385,6 +385,9 @@ def call_checklist_detector(
         if not present:
             continue
         severity = str(raw.get("severity") or "")
+        if severity in {"minor", "moderate"}:
+            # The proof is publication-blocking only: non-blocking findings are ignored.
+            continue
         if severity not in {"serious", "critical"}:
             raise RuntimeError(f"checklist_{family}_severity_invalid:{severity}")
         scope = normalize_scope(raw.get("repair_scope"))
