@@ -42,6 +42,8 @@ NARRATIVE LOAD KURALI:
 - DURUM SÜREKLİLİĞİ: Toplanan, bırakılan, kapanan, taşınan veya tamamlanan bir nesne/eylem sonraki beat'te açıklamasız geri alınamaz. Bir prop sırf payoff için yeniden kullanılamaz.
 - ALGILAMA/YANIT AYRIMI: Bir karakterin ellerinin dolu, meşgul veya hareket edemiyor olması tek başına duymamasını/görmemesini açıklamaz. “Algılamadı” ile “algıladı ama hemen yanıt veremedi” durumlarını karıştırma; fiziksel ve sosyal neden-sonuç gerçekçi olmalı.
 - Yanıt gecikmesi gerekiyorsa nedeni gözlenebilir eylem, dikkat gerektiren acil durum veya açık davranışsal kısıt üzerinden kur; duyusal yetersizlik icat etme.
+- PREMİSE FİZİKSEL SINIRI: Premise açıkça söylemiyorsa karaktere boyunun yetmemesi, gücünün yetmemesi, erişememesi, hareket edememesi gibi yeni fiziksel yetersizlik icat etme. Mevcut eylem ve nesne affordance'larını koru.
+- CLOSURE TERMINAL: Son closure beat hikâyenin son yeni eylemidir. Closure'dan sonra yeni sembolik hareket, eşya taşıma, ek karar veya ikinci payoff planlama.
 
 Spine 8-12 beat olabilir. Beat sayısını hedef sayı için değil, anlatı yükü için seç.
 Her beat:
@@ -76,6 +78,8 @@ WRITER_SYSTEM = (
 - Toplanmış, bırakılmış, taşınmış veya tamamlanmış bir prop/eylemi açıklamasız geri alma; sırf kapanış için state'i geri sarma.
 - Eller dolu/meşgul olma gibi bir durumun duymayı veya görmeyi engellediğini yazma; algılama ile yanıt verme kapasitesini nedensel olarak ayır.
 - Karakter duyduysa ama cevap veremediyse bunu doğal davranışla göster; spine'da olmayan duyusal açıklama icat etme.
+- Premise/spine söylemiyorsa çocuğun boyunun, gücünün veya erişiminin yetmediği gibi yeni fiziksel yetersizlik ekleme.
+- Spine'ın terminal closure beat'i gerçekleştiğinde hikâyeyi bitir; closure sonrasında yeni eylem, yeni eşya yerleştirme, yeni şaka, ikinci payoff veya sembolik kapanış ekleme.
 - Hedefe yaklaşmak için spine dışında yeni olay/canon/filler ekleme.
 - Hikâye doğal olarak tamamlandığında bitir.
 
