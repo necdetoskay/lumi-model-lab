@@ -178,6 +178,16 @@ Qualification exposed three more failure classes that are now explicit contract 
 
 Emotional guard run `36228047493` demonstrated that the perception/response fix corrected the previously failing `blocks_no_reply` case. A separate `watering_can_busy` failure then revealed the physical-affordance and post-closure-action risks, which were promoted into the deterministic candidate contract.
 
+Targeted terminal-closure regression `36228845559` froze the earlier valid `watering_can_busy` baseline and regenerated only the guarded candidate:
+- guarded candidate won **both** order-swapped comparisons;
+- serious defects on the guarded candidate: **0**;
+- baseline: **370 words**;
+- guarded candidate: **216 words**;
+- delta: **-154 words**;
+- total targeted cost: **$0.049501**.
+
+This confirms that the continuity guards improve causal/economic quality without relying on extra length. It also reinforces that Narrative Load is not a deterministic length expander.
+
 ## 6.2. Existing Narrative Architect integration evidence
 
 The preferred production shape is to fold Narrative Load into the existing Narrative Architect rather than create a permanent extra planner model hop.
@@ -261,7 +271,11 @@ Current state:
 - second seed: complete;
 - fresh fixture Cohort B: complete;
 - targeted causal/state guard qualification: complete (run `36227255937`, 3/3 wins);
-- architect-integration qualification: **complete** (initial run `36227676063`; targeted V2 run `36228645350`; latest resolved family view 2 wins / 0 baseline losses / 1 inconclusive);\n- mandatory extra planner hop: **not required**;\n- bounded semantic replan: **max 1, invalid-plan only**;\n- production promotion: **still requires explicit versioned decision**.
+- architect-integration qualification: **complete** (initial run `36227676063`; targeted V2 run `36228645350`; latest resolved family view 2 wins / 0 baseline losses / 1 inconclusive);
+- terminal-closure / physical-affordance tail-risk regression: **complete** (run `36228845559`, 2/2 guarded-candidate judgments, 0 serious defects);
+- mandatory extra planner hop: **not required**;
+- bounded semantic replan: **max 1, invalid-plan only**;
+- production promotion: **still requires explicit versioned decision**.
 
 ## 10. Current conclusion
 
