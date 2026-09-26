@@ -170,6 +170,27 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(spine["may_not_invent_unstated_physical_inability"])
         self.assertTrue(writer["may_not_append_post_closure_action"])
 
+    def test_architect_integration_qualification_is_closed(self):
+        policy = self.profile["integration_policy"]
+        evidence = self.profile["promotion_evidence"]
+        self.assertTrue(policy["architect_integration_qualified"])
+        self.assertFalse(policy["requires_architect_integration_probe_before_production"])
+        self.assertEqual(policy["max_semantic_replans_on_invalid_plan"], 1)
+        self.assertTrue(policy["semantic_replan_only_on_deterministic_validation_failure"])
+        self.assertEqual(policy["normal_path_extra_model_hops"], 0)
+        self.assertTrue(evidence["architect_integration_qualification_completed"])
+        self.assertEqual(
+            evidence["architect_integration"]["targeted_v2_run"],
+            36228645350,
+        )
+        self.assertEqual(
+            evidence["architect_integration"]["latest_resolved_summary"]["baseline_wins"],
+            0,
+        )
+        self.assertFalse(
+            evidence["architect_integration"]["extra_mandatory_planner_hop"]
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
