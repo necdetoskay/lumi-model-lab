@@ -27,7 +27,7 @@ SPINE=[
  {"density":"brief","beat":"Deniz and Ada sit on the courtyard floor drawing separate chalk roads for their toy cars; Deniz's road curves from one side and Ada's from the other."},
  {"density":"develop","beat":"They both notice the last short red chalk piece and reach for it at the same time. Their hands meet. Deniz says he needs red; Ada says she needs it too."},
  {"density":"develop","beat":"Each holds one end and gives a small pull. The chalk snaps into two pieces. Both stop. Ada looks at one broken end; Deniz sets his toy car down and looks at the other."},
- {"density":"develop","beat":"Deniz notices there are now two usable red pieces and slides one toward Ada without a speech about sharing. Ada accepts it. Each adds a small red mark to their own road."},
+ {"density":"develop","beat":"Deniz rubs the broken red half already in his hand on the pavement and sees that it still draws. Ada tries the broken half already in her own hand. Each adds a small red mark to their own road. Nobody gives a chalk piece to the other."},
  {"density":"anchor","beat":"Their two roads now come close but still stop with a gap between them. Ada rolls her car to her edge; Deniz rolls his car to his. The two cars face one another across the empty space."},
  {"density":"anchor","beat":"Ada draws a red line from her road toward the middle. Deniz continues it from his side. Together the two red halves make one shared red crossing that connects the roads."},
  {"density":"anchor","beat":"They test the crossing. The cars almost bump at the center, so Deniz pauses his car and says 'You go.' Ada crosses, then stops her car and lets Deniz pass on the next turn. Keep this playful, not moralizing."},
@@ -52,7 +52,8 @@ Hard rules:
 - Let behavior and dialogue carry the emotional change.
 - Avoid narrator mind-reading when observable behavior or dialogue can show the same thing.
 - Preserve the physical fact that the red chalk snaps into TWO usable pieces.
-- Preserve object continuity: one broken red half remains with each child through the connecting-road beat.
+- Preserve object continuity: after the snap, Deniz already holds one red half and Ada already holds the other. Nobody transfers a red half to the other child. One broken red half remains with each child through the connecting-road beat.
+- Colored chalk marks must match the chalk color being used; do not describe a blue chalk mark as gray or another color.
 - The roads begin separate and become connected only after the chalk breaks.
 - Do not add a different solution or new object.
 - Keep language concrete, simple, rhythmic, and read-aloud friendly.
