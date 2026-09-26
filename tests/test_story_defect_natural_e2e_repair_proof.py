@@ -22,9 +22,11 @@ class NaturalE2ERepairProofContractTests(unittest.TestCase):
         self.assertEqual(sum(row["kind"] == "defect" for row in cases), 4)
         self.assertEqual(sum(row["kind"] == "clean" for row in cases), 1)
 
-    def test_defect_cases_exist_in_natural_positive_pool(self):
+    def test_frozen_scoring_fields_match_natural_positive_pool(self):
         by_source = {row["source_id"]: row for row in self.natural["cases"]}
+        scopes = []
         families = set()
+
         for spec in self.fixture["cases"]:
             if spec["kind"] != "defect":
                 continue
@@ -35,12 +37,25 @@ class NaturalE2ERepairProofContractTests(unittest.TestCase):
                 if finding["defect_family"] == spec["expected_family"]
             ]
             self.assertEqual(len(findings), 1)
-            self.assertIn(findings[0]["severity"], {"serious", "critical"})
+            gold = findings[0]
+            self.assertEqual(spec["expected_span_ids"], gold["span_ids"])
+            self.assertEqual(spec["expected_repair_scope"], gold["repair_scope"])
+            self.assertIn(gold["severity"], {"serious", "critical"})
             families.add(spec["expected_family"])
+            scopes.append(spec["expected_repair_scope"])
+
         self.assertEqual(
             families,
             {"response_causality", "state_continuity", "causal_logic", "closure_integrity"},
         )
+        self.assertEqual(scopes.count("LOCAL_REPAIR"), 3)
+        self.assertEqual(scopes.count("STRUCTURAL_REPAIR"), 1)
+
+    def test_first_execution_gate_is_n1_local_repair(self):
+        self.assertEqual(self.fixture["execution_gate"]["first_proof_id"], "N1_RESPONSE")
+        n1 = next(row for row in self.fixture["cases"] if row["proof_id"] == "N1_RESPONSE")
+        self.assertEqual(n1["expected_family"], "response_causality")
+        self.assertEqual(n1["expected_repair_scope"], "LOCAL_REPAIR")
 
     def test_clean_control_is_admitted_clean(self):
         admitted = {
