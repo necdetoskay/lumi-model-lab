@@ -1,0 +1,40 @@
+name: Luna Cheap Gate Turkish Clean Guard
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/luna-cheap-gate-turkish-clean-guard.txt
+
+jobs:
+  proof:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json --min-remaining 0.25
+      - name: Run Luna Turkish clean guard
+        run: PYTHONPATH=. python experiments/prototypes/luna_cheap_gate_turkish_clean_guard_20260926.py
+      - name: Archive evidence
+        if: always()
+        run: |
+          test -s runs/luna-cheap-gate-turkish-clean-guard/result.json
+          DEST="experiments/results/luna-cheap-gate-turkish-clean-guard/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/luna-cheap-gate-turkish-clean-guard/result.json "$DEST/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): Luna Turkish clean guard ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/luna-cheap-gate-turkish-clean-guard-${GITHUB_RUN_ID}"
