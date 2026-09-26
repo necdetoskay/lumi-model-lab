@@ -212,12 +212,28 @@ Targeted integration run `36228645350` reused the successful baseline evidence f
 - semantic architect replans used: **0**;
 - total targeted run cost: **$0.165884**.
 
-Combining the already-clean exploration result from the initial run with the targeted rerun gives the latest family resolution:
+Combining the already-clean exploration result from the initial run with the targeted rerun initially gave:
 - narrative-load-aware architect wins: **2/3**;
 - baseline wins: **0/3**;
 - inconclusive: **1/3**.
 
-This qualifies the **integration direction**: Narrative Load belongs inside the existing Narrative Architect contract. It does not justify a mandatory extra NarrativeLoadPlanner LLM call.
+A second independent emotional seed, run `36229244503`, was also position-sensitive: the raw judge winner followed presentation position rather than candidate identity, with **0 serious candidate defects**. Rather than spend more generation budget chasing a noisy pairwise signal, the three already-generated emotional texts were frozen and judged independently, one story at a time.
+
+Position-independent absolute tie-break run `36229571364` used GPT-5.6 Sol and Claude Haiku 4.5 with a decision rule fixed before the run:
+- frozen baseline: **8.5** average overall, 0 serious defects;
+- candidate seed 1: **8.5** average overall, 0 serious defects, non-inferiority PASS;
+- candidate seed 2: **8.0** average overall, 0 serious defects, non-inferiority PASS;
+- generation calls: **0**;
+- both candidate seeds passed the predeclared criterion floors and baseline-relative margins;
+- total tie-break cost: **$0.039759**.
+
+The latest family resolution is therefore:
+- narrative-load-aware architect consensus wins: **2 families**;
+- position-independent non-inferior resolution: **1 family** (`emotional_development`);
+- baseline consensus losses: **0 families**;
+- unresolved families: **0**.
+
+This qualifies the **integration direction**: Narrative Load belongs inside the existing Narrative Architect contract. It does not justify a mandatory extra NarrativeLoadPlanner LLM call. The emotional family is recorded as **non-inferior**, not as a fabricated third win.
 
 The architect path may perform at most **one bounded semantic replan**, and only when deterministic plan validation fails. On the normal valid path, extra model hops remain zero.
 
@@ -271,11 +287,14 @@ Current state:
 - second seed: complete;
 - fresh fixture Cohort B: complete;
 - targeted causal/state guard qualification: complete (run `36227255937`, 3/3 wins);
-- architect-integration qualification: **complete** (initial run `36227676063`; targeted V2 run `36228645350`; latest resolved family view 2 wins / 0 baseline losses / 1 inconclusive);
+- architect-integration qualification: **complete** (initial run `36227676063`; targeted V2 run `36228645350`);
+- emotional second-seed pairwise check: **complete** (run `36229244503`; position-sensitive/inconclusive, 0 serious candidate defects);
+- position-independent emotional absolute tie-break: **complete** (run `36229571364`; both candidate seeds non-inferiority PASS, 0 serious defects, 0 generation calls);
+- latest resolved family view: **2 consensus wins / 1 position-independent non-inferior / 0 baseline losses / 0 unresolved**;
 - terminal-closure / physical-affordance tail-risk regression: **complete** (run `36228845559`, 2/2 guarded-candidate judgments, 0 serious defects);
 - mandatory extra planner hop: **not required**;
 - bounded semantic replan: **max 1, invalid-plan only**;
-- production promotion: **still requires explicit versioned decision**.
+- production promotion state: **AWAIT_EXPLICIT_PROMOTION_DECISION**.
 
 ## 10. Current conclusion
 
