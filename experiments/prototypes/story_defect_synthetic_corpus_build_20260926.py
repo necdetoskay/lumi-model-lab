@@ -103,7 +103,11 @@ def create_variant(
     injected_parts = [row["text"] for row in segment_story(injected)]
     injected_span_ids: list[str] = []
     for part in injected_parts:
-        matches = [row["id"] for row in mutated_segments if row["text"] == part]
+        matches = [
+            row["id"]
+            for row in mutated_segments
+            if row["text"] == part or part in row["text"] or row["text"] in part
+        ]
         if len(matches) != 1:
             raise RuntimeError(
                 f"gold_span_not_unique:{source['source_id']}:{recipe['id']}:{part!r}:{matches}"
