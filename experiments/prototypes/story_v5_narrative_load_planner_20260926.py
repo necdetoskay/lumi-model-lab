@@ -37,6 +37,9 @@ NARRATIVE LOAD KURALI:
 - Her beat hikâyede yeni bir gözlem, eylem, karar, sonuç veya ilişki değişimi taşımalı.
 - 4 yaş için karmaşık subplot, yetişkin muhakemesi veya açıklama dersi kurma.
 - Finalde supporting thread açıksa ana arc ile doğal biçimde birleşmeli; ayrı epilog olmasın.
+- EPİSTEMİK SIRA: Bir yanlış anlama, merak veya hipotez ana gerilimi taşıyorsa, karakter çözümü açıklayan kanıtı o yanlış anlamadan ÖNCE açıkça görmemeli veya bilmemeli. Bilgi karaktere doğal sırayla açılmalı.
+- NEDENSEL KURAL: Spine bir fiziksel veya duygusal neden-sonuç kuralı kurduğunda sonraki beat'ler onu sebepsiz bozup geciktiremez; kural ancak spine içinde açık yeni bir neden varsa değişebilir.
+- DURUM SÜREKLİLİĞİ: Toplanan, bırakılan, kapanan, taşınan veya tamamlanan bir nesne/eylem sonraki beat'te açıklamasız geri alınamaz. Bir prop sırf payoff için yeniden kullanılamaz.
 
 Spine 8-12 beat olabilir. Beat sayısını hedef sayı için değil, anlatı yükü için seç.
 Her beat:
@@ -66,6 +69,9 @@ WRITER_SYSTEM = (
 - Yaklaşık 500 kelimelik anlatı hacmi hedefle.
 - Bu sayı kalite hedefi değildir; doğal hikâye kalitesi sayıdan önce gelir.
 - Spine'daki her beat'in hikâyedeki işlevini yaşat; beat listesini mekanik olarak prose'a çevirme.
+- Spine'da kurulmuş neden-sonuç kuralını prose içinde değiştirme, geciktirme veya yeni açıklamayla yeniden yorumlama.
+- Karakterin bildiği/gördüğü bilgi sırasını koru; sonradan gelecek açıklayıcı kanıtı erkenden görünür kılma.
+- Toplanmış, bırakılmış, taşınmış veya tamamlanmış bir prop/eylemi açıklamasız geri alma; sırf kapanış için state'i geri sarma.
 - Hedefe yaklaşmak için spine dışında yeni olay/canon/filler ekleme.
 - Hikâye doğal olarak tamamlandığında bitir.
 
