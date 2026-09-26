@@ -108,7 +108,11 @@ Her gerçek sorun için EN KÜÇÜK alanı seç:
 Tüm hikâyeyi yeniden yazma.
 Minor stil tercihlerini düzeltmek zorunda değilsin.
 Draft hard aralık içindeyse yaptığın replacement'lar final metni 375 kelimenin altına DÜŞÜRMEMELİ.
-Mümkünse toplam uzunluğu drafta yakın tut; yalnız kusuru çözmek için gereken kadar değiştir.
+Draft 475-525 tercih bandındaysa finali de mümkünse 475-525 bandında tut.
+Kusurlu kısmı gereken minimum ölçüde değiştir; replacement kısalıyorsa aynı bloktaki mevcut olayın gözlemlenebilir eylem, kısa doğal diyalog, ses/duyu ayrıntısı veya geçişini koruyarak yaklaşık eşdeğer uzunlukta doğal replacement yaz.
+Yeni olay, karakter, canon veya çözüm ekleyerek kelime telafisi yapma.
+Tekrar, sıfat dolgusu veya açıklama ile uzatma.
+Critical/serious düzeltme uzunluktan önceliklidir.
 
 SADECE JSON:
 {
