@@ -1,0 +1,42 @@
+name: LSF A4 W500 Problem Solving Qualification 01
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - experiments/triggers/lsf-a4-w500-problem-solving-qualification-01.txt
+
+jobs:
+  qualification:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Provider preflight
+        run: python -m src.openrouter_preflight --json --min-remaining 0.25
+      - name: Run problem-solving qualification
+        run: PYTHONPATH=. python experiments/prototypes/lsf_a4_w500_problem_solving_qualification_01_20260926.py
+      - name: Archive evidence
+        if: always()
+        run: |
+          test -s runs/lsf-a4-w500-problem-solving-qualification-01/result.json
+          DEST="experiments/results/lsf-a4-w500-problem-solving-qualification-01/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp runs/lsf-a4-w500-problem-solving-qualification-01/result.json "$DEST/result.json"
+          cp runs/lsf-a4-w500-problem-solving-qualification-01/english.txt "$DEST/english.txt"
+          if test -s runs/lsf-a4-w500-problem-solving-qualification-01/turkish.txt; then cp runs/lsf-a4-w500-problem-solving-qualification-01/turkish.txt "$DEST/turkish.txt"; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$DEST"
+          git commit -m "evidence(story): LSF problem-solving qualification 01 ${GITHUB_RUN_ID}"
+          git push origin "HEAD:refs/heads/evidence/lsf-a4-w500-problem-solving-qualification-01-${GITHUB_RUN_ID}"
