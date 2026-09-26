@@ -9,13 +9,6 @@ on:
       - experiment/story-v5-whole-draft-prototype-20260924
     paths:
       - experiments/triggers/story-defect-clean-audit-pilot.txt
-      - experiments/prototypes/story_defect_clean_audit_pilot_20260926.py
-      - experiments/fixtures/story_defect_source_pool.tr-age4.v1.json
-      - src/story_defect_corpus.py
-      - src/story_defect_detection.py
-      - src/openrouter_preflight.py
-      - configs/model_runtime_profiles.yaml
-      - .github/workflows/story-defect-clean-audit-pilot.yml
   workflow_dispatch:
 
 jobs:
@@ -34,7 +27,7 @@ jobs:
       - name: Compile pilot
         run: python -m py_compile experiments/prototypes/story_defect_clean_audit_pilot_20260926.py
       - name: Provider preflight
-        run: python -m src.openrouter_preflight --json
+        run: python -m src.openrouter_preflight --json --min-remaining 0.10
       - name: Run dual-auditor pilot
         run: PYTHONPATH=. python experiments/prototypes/story_defect_clean_audit_pilot_20260926.py
       - name: Archive evidence
