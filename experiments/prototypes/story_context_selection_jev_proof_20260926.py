@@ -161,7 +161,6 @@ def score(intent: dict[str, Any], run: dict[str, Any], forbidden_ids: set[str]) 
             and not leaked_must_not
             and not missing_guards
             and not forbidden_leak
-            and len(useful_hits) >= 1
             and not run["escalated_candidate_ids"]
         ),
     }
