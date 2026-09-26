@@ -6,6 +6,9 @@ from typing import Any
 
 
 DEFAULT_PROFILE_PATH = Path(
+    "configs/story_planner_profiles/tr_age4_narrative_load.v1.json"
+)
+CANDIDATE_PROFILE_PATH = Path(
     "configs/story_planner_profiles/tr_age4_narrative_load.v1.candidate.json"
 )
 
@@ -209,6 +212,8 @@ def evaluate_narrative_load_promotion_gate(
         state = "BLOCKED_EVIDENCE"
     elif len(unresolved_families) > max_unresolved:
         state = "HOLD_MULTI_SEED_REGRESSION"
+    elif profile.get("status") == "canonical_frozen":
+        state = "PROMOTED_CANONICAL"
     elif change_policy.get("production_promotion_requires_explicit_decision"):
         state = "AWAIT_EXPLICIT_PROMOTION_DECISION"
     else:
