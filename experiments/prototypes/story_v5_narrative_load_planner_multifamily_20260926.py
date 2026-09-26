@@ -64,8 +64,6 @@ def main() -> None:
         plan, planner_cost = plan_for_fixture(key, fixture, seed)
         planned_spine = plan["spine"]
 
-        baseline = p.generate_story(key, fixture["spine"], seed + 1)
-
         # p.generate_story binds the original premise, so use a local equivalent
         # for non-exploration families.
         from src.generate import call_openrouter, count_words, parse_cost, parse_usage
