@@ -43,7 +43,7 @@ class StoryDefectCorpusTests(unittest.TestCase):
                 "cohort_b_exploration_mystery",
                 "cohort_b_friendship_social_problem",
                 "paper_hat_no_reply",
-                "basket_star_shadow",
+                "glass_color_patch",
                 "cohort_b_nature_environment",
             },
         )
