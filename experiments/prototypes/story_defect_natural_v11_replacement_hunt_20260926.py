@@ -21,14 +21,13 @@ OUT = Path("runs/story-defect-natural-v11-replacement-hunt/result.json")
 TARGET_WORDS = 700
 MIN_WORDS = 375
 MAX_WORDS = 625
-MAX_STORIES = 12
+MAX_STORIES = 4
 REQUIRED_ADMITTED = 2
 FAMILIES = [
     "emotional_development",
     "everyday_fantastical_discovery",
     "friendship_social_problem",
     "nature_environment",
-    "exploration_mystery",
 ]
 SEED_BASE = 2026190000
 
