@@ -1,0 +1,1787 @@
+{
+  "schema_version": "story-defect-paid-validation-batch.v1",
+  "status": "COMPLETE",
+  "batch_index": 0,
+  "batch_count": 7,
+  "case_count": 30,
+  "selection": "2 cases per each of 15 recipes; 7 batches cover all 210 cases exactly once",
+  "models": {
+    "primary": "anthropic/claude-sonnet-5",
+    "adjudicator": "anthropic/claude-haiku-4.5"
+  },
+  "summary": {
+    "validated_gold": 30,
+    "needs_manual_adjudication": 0,
+    "primary_calls": 25,
+    "adjudicator_calls": 6,
+    "validation_rate": 1.0
+  },
+  "total_cost_usd": 0.180021,
+  "elapsed_seconds": 111.308,
+  "results": [
+    {
+      "case_id": "src_cohort_a_02__canon_durable_fact_contradiction",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "canon_durable_fact_contradiction",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "canon_integrity",
+        "severity": "critical",
+        "span_ids": [
+          "S015"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "canon_integrity",
+            "severity": "critical",
+            "span_ids": [
+              "S015"
+            ],
+            "reason": "Deniz'in yaşı hakkında çelişkili bilgi verilmiş: dört yaşında olduğu belirtilirken anlatıcı yedi yaşında olduğunu söylüyor, bu kalıcı bir gerçek çelişkisi yaratıyor.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006128,
+        "meta": {
+          "cost": {
+            "usd": 0.006128,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2364,
+            "output_tokens": 140,
+            "total_tokens": 2504
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__canon_durable_fact_contradiction",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "canon_durable_fact_contradiction",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "canon_integrity",
+        "severity": "critical",
+        "span_ids": [
+          "S019"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "canon_integrity",
+            "severity": "critical",
+            "span_ids": [
+              "S019"
+            ],
+            "reason": "Anlatıcı Deniz'in dört yaşında bilindiğini ama aslında yedi yaşında olduğunu söyleyerek karakterin temel yaş bilgisiyle doğrudan çelişiyor.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.00706,
+        "meta": {
+          "cost": {
+            "usd": 0.00706,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2925,
+            "output_tokens": 121,
+            "total_tokens": 3046
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__causal_effect_without_cause",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "causal_effect_without_cause",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S017"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.0,
+        "meta": null,
+        "error": "RuntimeError: finding_0_severity_invalid:None"
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S017"
+            ],
+            "reason": "S017 explicitly states 'Ortada yeni bir neden ya da değişiklik yoktu ama sonuç kendiliğinden tersine döndü' (There was no new cause or change, but the result reversed on its own). This violates basic causal logic: S011 describes the gap widening as a direct result of S010 (Ece turning the road). S017 then contradicts this by claiming no cause exists for the reversal. For a 4-year-old listener, this breaks the fundamental understanding that actions have consequences.",
+            "reason_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S011",
+              "S017"
+            ],
+            "reason": "S011 establishes that the gap widened because Ece moved the road (causal chain from S010→S011). S017 then denies this causality existed, creating a discontinuity in how the physical state should be explained. The story cannot simultaneously claim the gap widened due to Ece's action and then claim no cause produced the result.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S011",
+              "S017"
+            ],
+            "reason": "S011 establishes that the gap widened because Ece moved the road (causal chain from S010→S011). S017 then denies this causality existed, creating a discontinuity in how the physical state should be explained. The story cannot simultaneously claim the gap widened due to Ece's action and then claim no cause produced the result.",
+            "reason_missing": false
+          }
+        ],
+        "second_blocking_findings": [],
+        "cost_usd": 0.003462,
+        "meta": {
+          "cost": {
+            "usd": 0.003462,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1912,
+            "output_tokens": 310,
+            "total_tokens": 2222
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__causal_effect_without_cause",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "causal_effect_without_cause",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S021"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.0,
+        "meta": null,
+        "error": "RuntimeError: finding_0_severity_invalid:None"
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S020",
+              "S021"
+            ],
+            "reason": "S021 explicitly states 'Ortada yeni bir neden ya da değişiklik yoktu ama sonuç kendiliğinden tersine döndü' (There was no new cause or change but the result reversed itself). This violates causal_logic: a sound effect cannot change direction and recur without a physical cause. The narrative then retroactively supplies wind as cause (S038), but S021 directly asserts causality violation as a narrative fact, not as Deniz's misunderstanding.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.003236,
+        "meta": {
+          "cost": {
+            "usd": 0.003236,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2341,
+            "output_tokens": 179,
+            "total_tokens": 2520
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__causal_missing_prerequisite",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "causal_missing_prerequisite",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S006"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S006"
+            ],
+            "reason": "Explicitly states the result occurred before the necessary action was taken, an incoherent causal claim.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005446,
+        "meta": {
+          "cost": {
+            "usd": 0.005446,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2348,
+            "output_tokens": 75,
+            "total_tokens": 2423
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__causal_missing_prerequisite",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "causal_missing_prerequisite",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "serious",
+        "span_ids": [
+          "S008"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.0,
+        "meta": null,
+        "error": "RuntimeError: finding_0_severity_invalid:None"
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S008"
+            ],
+            "reason": "S008 states 'Gerekli adımı henüz yapmamıştı ama sonuç çoktan gerçekleşmişti' (He had not yet taken the necessary step but the result had already occurred). This is a causal paradox: no action has been established as necessary, no result has been defined, and no mechanism explains how a result could precede its prerequisite cause. This violates basic causal order and creates epistemic confusion for a 4-year-old listener.",
+            "reason_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S031",
+              "S032",
+              "S033",
+              "S034"
+            ],
+            "reason": "S031–S034 describe Deniz looking at the ceiling ornament, noting it is motionless and silent, then turning away disappointed. However, S035 immediately reintroduces the ticking sound without any intervening event that would restart it. The ornament's state (still, silent) is contradicted by the resumption of sound with no causal bridge.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S031",
+              "S032",
+              "S033",
+              "S034"
+            ],
+            "reason": "S031–S034 describe Deniz looking at the ceiling ornament, noting it is motionless and silent, then turning away disappointed. However, S035 immediately reintroduces the ticking sound without any intervening event that would restart it. The ornament's state (still, silent) is contradicted by the resumption of sound with no causal bridge.",
+            "reason_missing": false
+          }
+        ],
+        "cost_usd": 0.003897,
+        "meta": {
+          "cost": {
+            "usd": 0.003897,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2342,
+            "output_tokens": 311,
+            "total_tokens": 2653
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__causal_rule_inversion",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "causal_rule_inversion",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "critical",
+        "span_ids": [
+          "S005"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S005"
+            ],
+            "reason": "Explicitly states an effect occurred solely because a character wished it, with no physical change—an inverted causal rule that breaks internal causal logic.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005632,
+        "meta": {
+          "cost": {
+            "usd": 0.005632,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2366,
+            "output_tokens": 90,
+            "total_tokens": 2456
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__causal_rule_inversion",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "causal_rule_inversion",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "causal_logic",
+        "severity": "critical",
+        "span_ids": [
+          "S007"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S007"
+            ],
+            "reason": "Explicitly states that the sound worked simply because Deniz wanted it to, with no changed condition—an inverted/magical causal rule inserted into an otherwise physically consistent wind-chime mystery.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006954,
+        "meta": {
+          "cost": {
+            "usd": 0.006954,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2927,
+            "output_tokens": 110,
+            "total_tokens": 3037
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__closure_post_terminal_action",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "closure_post_terminal_action",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "closure_integrity",
+        "severity": "serious",
+        "span_ids": [
+          "S048"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "critical",
+            "span_ids": [
+              "S048"
+            ],
+            "reason": "Problem çözülüp uyum sağlandıktan sonra Deniz'in aynı sorunu 'en baştan çözmek için' yeniden işe koyulması, kapanışı geçersiz kılar ve çözümün kalıcılığıyla çelişir.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006058,
+        "meta": {
+          "cost": {
+            "usd": 0.006058,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2354,
+            "output_tokens": 135,
+            "total_tokens": 2489
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__closure_post_terminal_action",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "closure_post_terminal_action",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "closure_integrity",
+        "severity": "serious",
+        "span_ids": [
+          "S066"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S065",
+              "S066"
+            ],
+            "reason": "Mystery is already solved (S041 'Buldum seni!') and story reaches a calm closing image at S065, but S066 states the problem is being solved again 'from scratch,' contradicting the achieved resolution and undermining closure.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.00706,
+        "meta": {
+          "cost": {
+            "usd": 0.00706,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2915,
+            "output_tokens": 123,
+            "total_tokens": 3038
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__epistemic_knowledge_before_evidence",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "epistemic_knowledge_before_evidence",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "epistemic_order",
+        "severity": "serious",
+        "span_ids": [
+          "S010"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "epistemic_order",
+            "severity": "critical",
+            "span_ids": [
+              "S010"
+            ],
+            "reason": "Deniz'in henüz bakmadığı ve kimsenin söylemediği bir durumu tam olarak bildiği açıkça belirtiliyor, bu kanıt öncesi bilgi tutarsızlığıdır.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005958,
+        "meta": {
+          "cost": {
+            "usd": 0.005958,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2364,
+            "output_tokens": 123,
+            "total_tokens": 2487
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__epistemic_knowledge_before_evidence",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "epistemic_knowledge_before_evidence",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "epistemic_order",
+        "severity": "serious",
+        "span_ids": [
+          "S012"
+        ],
+        "repair_scope": "STRUCTURAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "epistemic_order",
+            "severity": "critical",
+            "span_ids": [
+              "S012"
+            ],
+            "reason": "Deniz henüz kaynağı görmediği halde 'orada tam olarak ne olduğunu biliyordu' denilerek, sonradan keşfedilecek bilgi keşiften önce sahiplenilmiştir.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.00707,
+        "meta": {
+          "cost": {
+            "usd": 0.00707,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2925,
+            "output_tokens": 122,
+            "total_tokens": 3047
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__physical_impossible_affordance",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "physical_impossible_affordance",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "critical",
+        "span_ids": [
+          "S003"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S003"
+            ],
+            "reason": "Deniz'in yerinden kıpırdamadan birkaç metre ötedeki bir nesneyi eliyle alması fiziksel olarak imkansızdır.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005748,
+        "meta": {
+          "cost": {
+            "usd": 0.005748,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2359,
+            "output_tokens": 103,
+            "total_tokens": 2462
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__physical_impossible_affordance",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "physical_impossible_affordance",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "critical",
+        "span_ids": [
+          "S003"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S003"
+            ],
+            "reason": "Deniz reaches an object several meters away with her hand without moving at all, which is physically impossible.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.00661,
+        "meta": {
+          "cost": {
+            "usd": 0.00661,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2920,
+            "output_tokens": 77,
+            "total_tokens": 2997
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__physical_solid_barrier_violation",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "physical_solid_barrier_violation",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S015"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S015"
+            ],
+            "reason": "Deniz'in kapalı ve sağlam bir camın içinden elini geçirip nesne alması fiziksel olarak imkânsız; sahneyle bağlantısız ve tutarsız bir eylem.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005856,
+        "meta": {
+          "cost": {
+            "usd": 0.005856,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2338,
+            "output_tokens": 118,
+            "total_tokens": 2456
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__physical_solid_barrier_violation",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "physical_solid_barrier_violation",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S020"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S020"
+            ],
+            "reason": "Deniz sağlam bir camın içinden elini geçiriyor, katı madde fiziğini ihlal eden imkansız bir eylem tarif ediliyor.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006856,
+        "meta": {
+          "cost": {
+            "usd": 0.006856,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2913,
+            "output_tokens": 103,
+            "total_tokens": 3016
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__physical_unsupported_motion",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "physical_unsupported_motion",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.0,
+        "meta": null,
+        "error": "RuntimeError: finding_0_severity_invalid:None"
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S004"
+            ],
+            "reason": "S004 states 'Deniz ayaklarını hiç oynatmadan bir anda bulunduğu yerin öteki tarafına geçti' (Deniz moved to the other side without moving his feet at all, suddenly). This describes instantaneous teleportation without physical motion or mechanism. For a 4-year-old read-aloud in a realistic play scenario, this violates basic physical feasibility. The child cannot understand how a person moves across a room without moving their body. This is not fantasy play (which is established as toy/cardboard setup) but an unexplained violation of how bodies work.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.002918,
+        "meta": {
+          "cost": {
+            "usd": 0.002918,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1913,
+            "output_tokens": 201,
+            "total_tokens": 2114
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__physical_unsupported_motion",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "physical_unsupported_motion",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "physical_feasibility",
+        "severity": "serious",
+        "span_ids": [
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S004"
+            ],
+            "reason": "Character teleports to the other side of location without moving feet, violating physical motion feasibility.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006566,
+        "meta": {
+          "cost": {
+            "usd": 0.006566,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2913,
+            "output_tokens": 74,
+            "total_tokens": 2987
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__response_perception_conflation",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "response_perception_conflation",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S013",
+          "S014"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "serious",
+            "span_ids": [
+              "S013",
+              "S014",
+              "S015"
+            ],
+            "reason": "Bir karakter Deniz'e seslenir ama Deniz duyamaz; ardından S015'teki söz kime ait olduğu belirsizdir ve bu çağrı bir daha ele alınmaz, sebep-sonuç zinciri kopuk kalır.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006996,
+        "meta": {
+          "cost": {
+            "usd": 0.006996,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2373,
+            "output_tokens": 225,
+            "total_tokens": 2598
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__response_perception_conflation",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "response_perception_conflation",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S017",
+          "S018"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "serious",
+            "span_ids": [
+              "S017",
+              "S018"
+            ],
+            "reason": "Someone calls out to Deniz loudly, but the story asserts she couldn't hear because her hands were full—hands being full has no causal connection to inability to hear; this event and character are also never resolved or explained afterward.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.007018,
+        "meta": {
+          "cost": {
+            "usd": 0.007018,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2934,
+            "output_tokens": 115,
+            "total_tokens": 3049
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__spatial_incompatible_location",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "spatial_incompatible_location",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "spatial_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S011"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S011"
+            ],
+            "reason": "Deniz aynı anda hem yerinde kalıp hem uzaktaki bir noktadan tutması fiziksel olarak imkansız bir durumdur.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [
+          {
+            "family": "physical_feasibility",
+            "severity": "critical",
+            "span_ids": [
+              "S011"
+            ],
+            "reason": "Deniz aynı anda hem yerinde kalıp hem uzaktaki bir noktadan tutması fiziksel olarak imkansız bir durumdur.",
+            "reason_missing": false
+          }
+        ],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005734,
+        "meta": {
+          "cost": {
+            "usd": 0.005734,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2362,
+            "output_tokens": 101,
+            "total_tokens": 2463
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "spatial_consistency",
+            "severity": "critical",
+            "span_ids": [
+              "S011"
+            ],
+            "reason": "S011 states 'Deniz aynı anda hem bulunduğu yerde kaldı hem de birkaç metre ötedeki noktadan oyuncağını tuttu' (Deniz simultaneously stayed where he was AND held his toy from a point several meters away). This violates physical feasibility—a child cannot occupy two locations at once. This is not fantasy play but a logical impossibility in the narrative's own spatial model.",
+            "reason_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S008",
+              "S009",
+              "S010",
+              "S012"
+            ],
+            "reason": "S008 establishes Deniz moved the bridge away from the road. S009–S010 show Ece then rotates the road. S012 states the gap between road and bridge widened. However, the causal sequence is unclear: if Deniz moved the bridge away (S008), and then Ece rotated the road (S010), the gap should widen only if the road rotated away from the bridge's new position. The narrative does not establish whether Ece's rotation was toward or away from the bridge, creating ambiguity in state progression.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S008",
+              "S009",
+              "S010",
+              "S012"
+            ],
+            "reason": "S008 establishes Deniz moved the bridge away from the road. S009–S010 show Ece then rotates the road. S012 states the gap between road and bridge widened. However, the causal sequence is unclear: if Deniz moved the bridge away (S008), and then Ece rotated the road (S010), the gap should widen only if the road rotated away from the bridge's new position. The narrative does not establish whether Ece's rotation was toward or away from the bridge, creating ambiguity in state progression.",
+            "reason_missing": false
+          }
+        ],
+        "cost_usd": 0.003614,
+        "meta": {
+          "cost": {
+            "usd": 0.003614,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1919,
+            "output_tokens": 339,
+            "total_tokens": 2258
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__spatial_incompatible_location",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "spatial_incompatible_location",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "spatial_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S014"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "spatial_consistency",
+            "severity": "critical",
+            "span_ids": [
+              "S014"
+            ],
+            "reason": "Deniz aynı anda hem bulunduğu yerde kaldı hem de birkaç metre ötede oyuncağını tuttu - fiziksel olarak imkansız, tek bir bedenin aynı zamanda iki farklı konumda olması.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.007138,
+        "meta": {
+          "cost": {
+            "usd": 0.007138,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2909,
+            "output_tokens": 132,
+            "total_tokens": 3041
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__state_completed_action_undone",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "state_completed_action_undone",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S008"
+            ],
+            "reason": "Statement claims the completed setup reverted to an undone state without any causal action, contradicting continuity of the constructed town.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005528,
+        "meta": {
+          "cost": {
+            "usd": 0.005528,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2354,
+            "output_tokens": 82,
+            "total_tokens": 2436
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__state_completed_action_undone",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "state_completed_action_undone",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S010"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S010"
+            ],
+            "reason": "Explicitly states the completed arrangement of cars was undone with no cause, an impossible spontaneous state reversal.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.00665,
+        "meta": {
+          "cost": {
+            "usd": 0.00665,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2915,
+            "output_tokens": 82,
+            "total_tokens": 2997
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__state_object_reset",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "state_object_reset",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S007"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S007"
+            ],
+            "reason": "Nesne kimse dokunmadan yeniden Deniz'in elinde beliriyor; fiziksel süreklilik ihlali.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.005606,
+        "meta": {
+          "cost": {
+            "usd": 0.005606,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2348,
+            "output_tokens": 91,
+            "total_tokens": 2439
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__state_object_reset",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "state_object_reset",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S009"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S007",
+              "S009"
+            ],
+            "reason": "Deniz never lets go of the car, yet S009 states the car returned to his hand as if it had been dropped/moved by itself, contradicting S007's 'kıpırdamadı'.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006888,
+        "meta": {
+          "cost": {
+            "usd": 0.006888,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2909,
+            "output_tokens": 107,
+            "total_tokens": 3016
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__state_unexplained_reappearance",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "state_unexplained_reappearance",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S009"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S008",
+              "S009"
+            ],
+            "reason": "Köprü Deniz tarafından taşındıktan hemen sonra, kimse getirmediği halde eski yerinde açıklanmadan yeniden belirmiştir; bu fiziksel olarak imkansız ve nedensel olarak açıklanmamış bir durumdur.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006146,
+        "meta": {
+          "cost": {
+            "usd": 0.006146,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2358,
+            "output_tokens": 143,
+            "total_tokens": 2501
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__state_unexplained_reappearance",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "state_unexplained_reappearance",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "state_continuity",
+        "severity": "serious",
+        "span_ids": [
+          "S011"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "critical",
+            "span_ids": [
+              "S011"
+            ],
+            "reason": "An object previously removed reappears in the same place with no agent or explanation, an unexplained state reversal.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006598,
+        "meta": {
+          "cost": {
+            "usd": 0.006598,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2919,
+            "output_tokens": 76,
+            "total_tokens": 2995
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_02__temporal_order_contradiction",
+      "source_id": "src_cohort_a_02",
+      "recipe_id": "temporal_order_contradiction",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "temporal_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S012",
+          "S013",
+          "S014"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "temporal_consistency",
+            "severity": "critical",
+            "span_ids": [
+              "S012",
+              "S013",
+              "S014"
+            ],
+            "reason": "Saat üçü gösteriyor, on dakika geçtiği belirtiliyor ama saat ileri değil geri gitmiş (ikiye elli), saatin geri alınmadığı açıkça söylenmesine rağmen bu imkansız bir zaman akışı yaratıyor.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.006304,
+        "meta": {
+          "cost": {
+            "usd": 0.006304,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2397,
+            "output_tokens": 151,
+            "total_tokens": 2548
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "adjudication": null,
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__temporal_order_contradiction",
+      "source_id": "src_cohort_a_seed2_01",
+      "recipe_id": "temporal_order_contradiction",
+      "dataset_split": "calibration",
+      "expected": {
+        "family": "temporal_consistency",
+        "severity": "serious",
+        "span_ids": [
+          "S016",
+          "S017",
+          "S018"
+        ],
+        "repair_scope": "LOCAL_REPAIR"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "intended_confirmed": false,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.0,
+        "meta": null,
+        "error": "RuntimeError: finding_0_severity_invalid:None"
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "temporal_consistency",
+            "severity": "critical",
+            "span_ids": [
+              "S016",
+              "S017",
+              "S018"
+            ],
+            "reason": "S016 states the clock shows exactly 3:00. S017 states ten minutes pass. S018 then states the clock now shows 2:50, which is 10 minutes *earlier* than 3:00, not later. This is a direct temporal contradiction: time cannot move forward while a clock moves backward without explanation (no mention of clock malfunction, adjustment, or fantasy mechanism). This violates causal_logic and temporal_consistency for a 4-year-old reader who understands basic clock progression.",
+            "reason_missing": false
+          }
+        ],
+        "intended_confirmed": true,
+        "overlap_family_disagreements": [],
+        "second_blocking_findings": [],
+        "cost_usd": 0.003286,
+        "meta": {
+          "cost": {
+            "usd": 0.003286,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2381,
+            "output_tokens": 181,
+            "total_tokens": 2562
+          },
+          "parse_failures": []
+        },
+        "error": null
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    }
+  ]
+}
