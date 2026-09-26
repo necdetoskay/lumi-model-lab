@@ -3,21 +3,26 @@ import unittest
 from src.story_narrative_load_plan import (
     can_advance_to_writer,
     candidate_requires_supporting_thread,
+    load_candidate_profile,
     validate_narrative_load_plan,
 )
 
 
 class StoryNarrativeLoadPlanTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.profile = load_candidate_profile()
+
     def valid_plan(self):
-        functions = [
-            "setup",
-            "signal",
-            "hypothesis",
-            "test",
-            "complication",
-            "observation",
-            "decision",
-            "payoff",
+        rows = [
+            ("brief", "setup", "A başlar."),
+            ("develop", "signal", "Bir işaret belirir."),
+            ("develop", "hypothesis", "Karakter bir ihtimal düşünür."),
+            ("develop", "test", "İhtimali dener."),
+            ("anchor", "observation", "Yeni bir şey fark eder."),
+            ("develop", "decision", "Bir karar verir."),
+            ("anchor", "payoff", "Kararın sonucu görünür."),
+            ("anchor", "closure", "Hikâye somut biçimde kapanır."),
         ]
         return {
             "supporting_thread": {
@@ -26,12 +31,8 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
                 "why_it_belongs": "",
             },
             "spine": [
-                {
-                    "density": "develop",
-                    "function": function,
-                    "beat": f"Concrete event {i}",
-                }
-                for i, function in enumerate(functions)
+                {"density": density, "function": function, "beat": beat}
+                for density, function, beat in rows
             ],
         }
 
@@ -41,9 +42,7 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         self.assertTrue(can_advance_to_writer(plan))
 
     def test_supporting_thread_is_optional(self):
-        plan = self.valid_plan()
-        self.assertFalse(candidate_requires_supporting_thread(plan))
-        self.assertTrue(can_advance_to_writer(plan))
+        self.assertFalse(candidate_requires_supporting_thread(self.valid_plan()))
 
     def test_used_supporting_thread_requires_description_and_belonging_reason(self):
         plan = self.valid_plan()
@@ -58,12 +57,12 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
 
     def test_too_many_beats_fails(self):
         plan = self.valid_plan()
-        plan["spine"] = plan["spine"] + [
-            {"density": "develop", "function": "observation", "beat": "x"},
-            {"density": "develop", "function": "decision", "beat": "y"},
-            {"density": "develop", "function": "payoff", "beat": "z"},
-            {"density": "brief", "function": "closure", "beat": "end"},
-            {"density": "brief", "function": "closure", "beat": "extra"},
+        plan["spine"] += [
+            {"density": "develop", "function": "observation", "beat": "Ek 1"},
+            {"density": "develop", "function": "decision", "beat": "Ek 2"},
+            {"density": "develop", "function": "test", "beat": "Ek 3"},
+            {"density": "anchor", "function": "payoff", "beat": "Ek 4"},
+            {"density": "brief", "function": "closure", "beat": "Ek 5"},
         ]
         self.assertIn("spine_size_out_of_range", validate_narrative_load_plan(plan))
 
@@ -81,6 +80,54 @@ class StoryNarrativeLoadPlanTests(unittest.TestCase):
         plan = self.valid_plan()
         plan["spine"][0]["beat"] = " "
         self.assertIn("beat_0_text_missing", validate_narrative_load_plan(plan))
+
+    def test_required_setup_payoff_and_closure_are_locked(self):
+        plan = self.valid_plan()
+        plan["spine"][0]["function"] = "signal"
+        errors = validate_narrative_load_plan(plan)
+        self.assertIn("required_function_missing:setup", errors)
+
+    def test_closure_must_be_terminal(self):
+        plan = self.valid_plan()
+        plan["spine"][-1]["function"] = "observation"
+        errors = validate_narrative_load_plan(plan)
+        self.assertIn("required_function_missing:closure", errors)
+        self.assertIn("closure_not_terminal", errors)
+
+    def test_payoff_must_precede_closure(self):
+        plan = self.valid_plan()
+        plan["spine"][-2]["function"] = "closure"
+        plan["spine"][-1]["function"] = "payoff"
+        errors = validate_narrative_load_plan(plan)
+        self.assertIn("closure_not_terminal", errors)
+        self.assertIn("payoff_not_before_closure", errors)
+
+    def test_duplicate_beat_text_fails(self):
+        plan = self.valid_plan()
+        plan["spine"][3]["beat"] = plan["spine"][2]["beat"]
+        self.assertIn("duplicate_beat_text", validate_narrative_load_plan(plan))
+
+    def test_candidate_keeps_length_soft_and_quality_primary(self):
+        self.assertEqual(self.profile["writer_contract"]["target_mode"], "soft")
+        self.assertEqual(self.profile["quality_priority"], "primary")
+        self.assertEqual(self.profile["length_priority"], "secondary")
+        self.assertTrue(self.profile["length_policy"]["do_not_pad_to_target"])
+
+    def test_supporting_thread_has_fail_closed_boundaries(self):
+        policy = self.profile["supporting_thread"]
+        self.assertEqual(policy["max_count"], 1)
+        self.assertTrue(policy["must_rejoin_main_arc"])
+        self.assertTrue(policy["must_change_observation_decision_constraint_or_payoff"])
+        self.assertTrue(policy["must_not_exist_only_for_length"])
+        self.assertTrue(policy["new_named_character_forbidden"])
+        self.assertTrue(policy["new_relationship_canon_forbidden"])
+        self.assertTrue(policy["new_durable_world_fact_forbidden"])
+        self.assertTrue(policy["new_independent_solution_forbidden"])
+
+    def test_writer_must_preserve_committed_item_state(self):
+        writer = self.profile["writer_contract"]
+        self.assertTrue(writer["must_preserve_committed_item_state"])
+        self.assertTrue(writer["may_not_undo_completed_action_only_to_reuse_prop"])
 
 
 if __name__ == "__main__":
