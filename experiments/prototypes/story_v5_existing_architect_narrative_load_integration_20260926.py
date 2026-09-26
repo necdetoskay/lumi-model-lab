@@ -160,7 +160,7 @@ def write(key: str, spec: StorySpec, plan_obj: dict, seed: int) -> tuple[dict, d
         system_prompt=whole.WHOLE_DRAFT_PROMPT,
         user_prompt=user,
         temperature=0.6,
-        max_tokens=None,
+        max_tokens=16384,
         seed=seed,
         request_class="scene_story",
     )
