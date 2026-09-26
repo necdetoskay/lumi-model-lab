@@ -20,6 +20,7 @@ OUT = Path("runs/story-defect-natural-e2e-repair-proof/result.json")
 DETECTOR_MODEL = "anthropic/claude-sonnet-5"
 REPAIR_MODEL = "anthropic/claude-sonnet-5"
 VERIFY_MODEL = "anthropic/claude-haiku-4.5"
+ADJUDICATOR_MODEL = "openai/gpt-5.6-luna"
 
 REPAIR_SCOPES = {"LOCAL_REPAIR", "STRUCTURAL_REPAIR", "REPLAN"}
 SCOPE_ALIASES = {"LOCAL": "LOCAL_REPAIR", "STRUCTURAL": "STRUCTURAL_REPAIR"}
@@ -314,11 +315,12 @@ def call_checklist_detector(
     story_family: str,
     story_text: str,
     seed: int,
+    model: str = DETECTOR_MODEL,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     segments = segment_story(story_text)
     payload, meta = structured_call(
         api_key=api_key,
-        model=DETECTOR_MODEL,
+        model=model,
         system=CHECKLIST_DETECTOR_SYSTEM,
         payload={
             "story_id": story_id,
@@ -622,6 +624,26 @@ def main() -> None:
                 "findings": detector_findings,
                 "meta": detector_meta,
             }
+
+            if (
+                not detector_findings
+                and os.environ.get("NATURAL_PROOF_DIAGNOSTIC_ADJUDICATION") == "1"
+            ):
+                adjudicator_findings, adjudicator_meta = call_checklist_detector(
+                    api_key=api_key,
+                    model=ADJUDICATOR_MODEL,
+                    story_id=f"{proof_id}_blind_independent_adjudication",
+                    story_family=source["family"],
+                    story_text=story,
+                    seed=2026170000 + index,
+                )
+                total_cost += meta_cost(adjudicator_meta)
+                row["blind_adjudication"] = {
+                    "model": ADJUDICATOR_MODEL,
+                    "findings": adjudicator_findings,
+                    "meta": adjudicator_meta,
+                    "qualification_effect": "DIAGNOSTIC_ONLY_DOES_NOT_CHANGE_PASS",
+                }
 
             if spec["kind"] == "clean":
                 if spec["source_id"] not in admitted_clean:
