@@ -1,0 +1,1260 @@
+{
+  "schema_version": "story-defect-response-supplement-validation.v2",
+  "status": "COMPLETE",
+  "case_count": 14,
+  "summary": {
+    "validated_gold": 4,
+    "needs_manual_adjudication": 10,
+    "validation_rate": 0.2857142857142857
+  },
+  "total_cost_usd": 0.138063,
+  "elapsed_seconds": 130.368,
+  "results": [
+    {
+      "case_id": "src_cohort_a_02__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_a_02",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S002",
+          "S003",
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "canon_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "Opening bell/hearing incident with Deniz is introduced but never connects to or resolves within the bridge/road story; it's an orphaned setup with no narrative payoff.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.005966,
+        "meta": {
+          "cost": {
+            "usd": 0.005966,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2448,
+            "output_tokens": 107,
+            "total_tokens": 2555
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S003",
+              "S004"
+            ],
+            "reason": "S003 states Deniz cannot hear the bell because both hands are full. S004 states he puts down what he's holding and then hears the bell ring again. However, no explanation is given for why the bell rings a second time or who rings it. The causal chain is broken: the bell's agency or trigger is unexplained, making the state transition unmotivated.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "spatial_consistency",
+            "severity": "serious",
+            "span_ids": [
+              "S020",
+              "S021",
+              "S022"
+            ],
+            "reason": "S20-S22 describe Deniz tracing his finger along his own designed route: crossing the bridge, then extending his finger toward the houses but finding empty space. This contradicts S005-S007 which establish that Deniz and Ece built the town together with houses already in place. If houses exist (S005-S006), Deniz's finger should reach them, not find a gap. The spatial layout is internally contradictory.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003475,
+        "meta": {
+          "cost": {
+            "usd": 0.003475,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1995,
+            "output_tokens": 296,
+            "total_tokens": 2291
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_01__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_a_seed2_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S004",
+          "S005",
+          "S006"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.006096,
+        "meta": {
+          "cost": {
+            "usd": 0.006096,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2998,
+            "output_tokens": 10,
+            "total_tokens": 3008
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "reason": "Logical contradiction: S003 states Deniz heard 'ince bir ses' (a thin sound). S004 then describes the same bell making 'net ve yüksek bir ses' (clear and loud sound). S005 then claims Deniz could not hear this sound because his hands were full. This creates an impossible state: the sound was both heard (S003) and not heard (S005) simultaneously in the same moment.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S018",
+              "S019",
+              "S020",
+              "S021"
+            ],
+            "reason": "Deniz's reasoning breaks causal chain: S018 states his first thought was 'saksılardı' (the pots). S019-S021 show him checking the pots and finding nothing but soil and a small bug. However, there is no logical bridge explaining why he would then abandon this hypothesis and look elsewhere. The narrative jumps to checking the railing (S026) without explaining why the pot theory was rejected or what prompted the new direction.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.004016,
+        "meta": {
+          "cost": {
+            "usd": 0.004016,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2411,
+            "output_tokens": 321,
+            "total_tokens": 2732
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_02__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_a_seed2_02",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S007",
+          "S008",
+          "S009"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.004958,
+        "meta": {
+          "cost": {
+            "usd": 0.004958,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2429,
+            "output_tokens": 10,
+            "total_tokens": 2439
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "error": null,
+        "cost_usd": 0.003713,
+        "meta": {
+          "cost": {
+            "usd": 0.003713,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1958,
+            "output_tokens": 351,
+            "total_tokens": 2309
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_04__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_a_seed2_04",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S002",
+          "S003",
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "A bell rings twice and Deniz turns to notice it, but this event is never explained, connected to the star-door plot, or resolved—an unresolved dangling thread introduced at the story's opening.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.006132,
+        "meta": {
+          "cost": {
+            "usd": 0.006132,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2156,
+            "output_tokens": 182,
+            "total_tokens": 2338
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "epistemic_order",
+            "severity": "critical",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004",
+              "S005"
+            ],
+            "reason": "Temporal contradiction in narrative setup. S002-S004 establish a sequence where Deniz has full hands, hears a bell, puts things down, then hears it again. But S005 immediately reveals Deniz was playing with a toy car in the courtyard—this is presented as the ongoing activity, not what he was doing before the bell. The causal chain breaks: we don't know what Deniz was holding, why he was holding it, or how the bell-and-hands sequence connects to the car-playing scene. The story jumps between two incompatible states without bridging them.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "spatial_consistency",
+            "severity": "serious",
+            "span_ids": [
+              "S021",
+              "S022",
+              "S023"
+            ],
+            "reason": "Physical impossibility in object interaction. S021: Deniz holds a leaf toward the star door's location. S022: The leaf 'stood in front of the wall but there was no star on it.' S023: 'The door was still on the wall, just a bit further away, shining in its own light.' This implies the door moved away from where the leaf was held, yet no mechanism explains how a light projection can 'move away' from a physical object placed in its path. The door should either be blocked by the leaf or the leaf should pass through it—not both simultaneously.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003662,
+        "meta": {
+          "cost": {
+            "usd": 0.003662,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1757,
+            "output_tokens": 381,
+            "total_tokens": 2138
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_a_seed2_05__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_a_seed2_05",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S006",
+          "S007",
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.004942,
+        "meta": {
+          "cost": {
+            "usd": 0.004942,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2421,
+            "output_tokens": 10,
+            "total_tokens": 2431
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S006",
+              "S007",
+              "S008"
+            ],
+            "reason": "Causal chain is broken. S006 states a bell rang with a clear, loud sound. S007 claims Deniz couldn't hear it because his hands were full. S008 then states the bell rang again and Deniz immediately turned toward the sound. This creates a logical contradiction: if full hands prevented hearing in S007, the same condition should prevent hearing in S008, yet Deniz responds to the sound. The physical impediment (full hands) does not explain selective deafness to identical stimuli.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S009",
+              "S010",
+              "S011"
+            ],
+            "reason": "Unexplained state shift. S009 states Deniz crouched down to watch 'them' (the puddles). S010-S011 then describe observing that one puddle's edge is receding from a stone while the other remains stationary. However, no mechanism is established for how Deniz would observe this change in real-time from a crouched position without active intervention. The transition from passive watching to detecting directional movement lacks causal grounding.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "physical_feasibility",
+            "severity": "serious",
+            "span_ids": [
+              "S022"
+            ],
+            "reason": "Physical behavior of water is inconsistent with established scenario. S022 describes a water droplet reaching the leaf edge, searching for a passage, and retreating when finding none. This anthropomorphizes water with intentional agency and reversible motion that contradicts the earlier established physics where water flows unidirectionally through open paths (S017, S025, S035). Water does not 'retreat' from obstacles; it pools or finds alternate routes.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.004293,
+        "meta": {
+          "cost": {
+            "usd": 0.004293,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1948,
+            "output_tokens": 469,
+            "total_tokens": 2417
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_01__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_b_01",
+      "dataset_split": "held_out",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S008",
+          "S009",
+          "S010"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S008",
+              "S009",
+              "S010"
+            ],
+            "reason": "A bell ('zil') ringing near Deniz is introduced as a distinct sound event, but it is never explained or connected to the 'fıs' mystery that gets resolved; this thread is dropped without resolution.",
+            "reason_missing": false,
+            "severity_missing": true
+          }
+        ],
+        "cost_usd": 0.007522,
+        "meta": {
+          "cost": {
+            "usd": 0.007522,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2501,
+            "output_tokens": 252,
+            "total_tokens": 2753
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "critical",
+            "span_ids": [
+              "S009"
+            ],
+            "reason": "S009 states 'Deniz'in yanı başında küçük bir zil çaldı' (a small bell rang beside Deniz) but no bell has been introduced into the story. S003 describes a paper ribbon, S002 describes drawing. The bell appears without causal origin or prior establishment. This violates epistemic order—the reader cannot know where this bell came from or why it exists.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S008",
+              "S009",
+              "S010"
+            ],
+            "reason": "S008 introduces a bell sound ('küçük bir zil çaldı'). S009 explains Deniz couldn't hear it because both hands were full. S010 states he put things down and 'zil yeniden çaldı' (the bell rang again). However, the bell's physical location, mechanism, and why it would ring a second time after Deniz sets things down is never explained. The bell behaves as if responding to Deniz's actions without causal mechanism.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003526,
+        "meta": {
+          "cost": {
+            "usd": 0.003526,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1966,
+            "output_tokens": 312,
+            "total_tokens": 2278
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_02__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_b_02",
+      "dataset_split": "held_out",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S002",
+          "S003",
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "canon_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "Opening bell/hearing incident is introduced but never connected to the rest of the story (train/bridge problem); it appears disconnected from the main narrative thread and is not resolved or referenced again.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.005622,
+        "meta": {
+          "cost": {
+            "usd": 0.005622,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2246,
+            "output_tokens": 113,
+            "total_tokens": 2359
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "error": null,
+        "cost_usd": 0.003372,
+        "meta": {
+          "cost": {
+            "usd": 0.003372,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1812,
+            "output_tokens": 312,
+            "total_tokens": 2124
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_03__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_b_03",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S006",
+          "S007",
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.005412,
+        "meta": {
+          "cost": {
+            "usd": 0.005412,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2656,
+            "output_tokens": 10,
+            "total_tokens": 2666
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "epistemic_order",
+            "severity": "serious",
+            "span_ids": [
+              "S007",
+              "S008"
+            ],
+            "reason": "Causal contradiction: S007 states Deniz cannot hear the bell sound because his hands are full. S008 states he empties his hands and then the bell rings again. The bell's second ring is presented as a consequence of him emptying his hands, but bells do not ring themselves in response to hand-emptying. The causal chain is inverted or missing a causal agent.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S017",
+              "S018",
+              "S024",
+              "S025"
+            ],
+            "reason": "Deniz's internal reasoning (S017-S018: Ece didn't want to see the turtle, sand shapes bore her) is directly contradicted by subsequent events (S024-S025: Deniz realizes Ece was chasing her hat, not rejecting him). While realization is valid, the initial interpretation was presented as Deniz's genuine belief about Ece's preferences, creating false epistemic closure before the correction.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003659,
+        "meta": {
+          "cost": {
+            "usd": 0.003659,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2164,
+            "output_tokens": 299,
+            "total_tokens": 2463
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_cohort_b_05__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_cohort_b_05",
+      "dataset_split": "held_out",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S006",
+          "S007",
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S007",
+              "S008"
+            ],
+            "reason": "Deniz'in elinde bir şey tuttuğu hiçbir yerde kurulmamışken S007'de 'iki eli de dolu' denip S008'de bunları bıraktığı anlatılıyor; bu nesneler önceden tanıtılmamış.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S006",
+              "S008"
+            ],
+            "reason": "Zil sesi önemli bir dikkat çekici unsur olarak tanıtılıyor ama kaynağı ve anlamı hiç açıklanmıyor, hikaye boyunca çözülmeden bırakılıyor.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.009582,
+        "meta": {
+          "cost": {
+            "usd": 0.009582,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2426,
+            "output_tokens": 473,
+            "total_tokens": 2899
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "critical",
+            "span_ids": [
+              "S007",
+              "S008"
+            ],
+            "reason": "S007 states Deniz cannot hear the bell sound because both hands are full. S008 states that when he releases what he's holding, the bell rings again and he hears it. This reverses causality: the bell's ringing is presented as a consequence of his releasing his hands, not as an independent event he can now perceive. For a 4-year-old, this creates confusion about whether Deniz caused the bell to ring or merely became able to hear it. The narrative does not clarify what the bell is, who rang it, or why it would ring in response to his hand-release.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S006",
+              "S007",
+              "S008",
+              "S009"
+            ],
+            "reason": "S006 introduces a bell sound near Deniz. S007-S008 explain he couldn't hear it because his hands were full, then could hear it after releasing them. S009 immediately shifts focus to a leaf without resolving what the bell was, who rang it, or why it matters. The bell is abandoned mid-narrative with no closure or integration into the story logic, creating epistemic discontinuity.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "physical_feasibility",
+            "severity": "serious",
+            "span_ids": [
+              "S013",
+              "S015",
+              "S016"
+            ],
+            "reason": "S013 proposes that shaded stones don't dry because sun doesn't reach them. S015-S016 immediately contradict this: a high stone in shadow is bone-dry, while a low stone in direct sun is still wet. While this contradiction is intentionally used to prompt Deniz's reasoning (S017-S018), the physical mechanism remains unexplained for a 4-year-old reader. The story does not clarify that elevation/drainage, not shade alone, determines drying—leaving the initial hypothesis unresolved in a way that may confuse rather than educate.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.004557,
+        "meta": {
+          "cost": {
+            "usd": 0.004557,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1972,
+            "output_tokens": 517,
+            "total_tokens": 2489
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": true,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_emotional_guard_01__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_emotional_guard_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S002",
+          "S003",
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "closure_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "The bell-ringing/hearing episode is introduced as an opening incident but never connects to the bridge-building story that follows; it is resolved in isolation and then dropped, leaving it as an unintegrated fragment rather than a setup that pays off in the narrative.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.008188,
+        "meta": {
+          "cost": {
+            "usd": 0.008188,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2219,
+            "output_tokens": 375,
+            "total_tokens": 2594
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "epistemic_order",
+            "severity": "critical",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "Causal sequence violation: S002 states a bell rang next to Deniz. S003 claims he couldn't hear it because his hands were full. S004 states he put down what he was holding and the bell rang again. However, S005 reveals Deniz was building a block road at the play area. The bell's origin, purpose, and mechanism are never established. Who rang it? Why? How does it ring twice with no agent action between rings? This breaks response_causality and creates an unresolved epistemic gap that undermines the narrative logic for a 4-year-old listener.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S007",
+              "S037",
+              "S038"
+            ],
+            "reason": "Object tracking inconsistency: S007 states Deniz set aside the curved blue piece 'to place with Ada later.' S013-S015 show Deniz deciding to place the bridge alone and reaching for the piece. S037 then states 'Deniz remembered the blue curved piece' as if he had forgotten it, contradicting S013-S015 where he was actively about to place it. This creates confusion about whether the piece was forgotten or deliberately set aside.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003546,
+        "meta": {
+          "cost": {
+            "usd": 0.003546,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1771,
+            "output_tokens": 355,
+            "total_tokens": 2126
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_emotional_guard_02__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_emotional_guard_02",
+      "dataset_split": "held_out",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S005",
+          "S006",
+          "S007"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.004098,
+        "meta": {
+          "cost": {
+            "usd": 0.004098,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1999,
+            "output_tokens": 10,
+            "total_tokens": 2009
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "critical",
+            "span_ids": [
+              "S006",
+              "S007"
+            ],
+            "reason": "S006 states Deniz cannot hear the bell sound because his hands are full. S007 then states that when he empties his hands, the bell rings again. This creates a causal impossibility: the bell's second ring is presented as a consequence of Deniz freeing his hands, but a bell does not ring itself in response to someone's hands becoming empty. The narrative conflates Deniz's perceptual availability with external causation of the bell sound.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S011",
+              "S012",
+              "S013"
+            ],
+            "reason": "S011 states Deniz puts down a small stone. S012-S013 then describe Deniz's internal reasoning about why Ece ran away, concluding the turtle shape might not be beautiful. However, there is no causal link between the stone being placed and this emotional interpretation. The stone placement appears unmotivated and disconnected from the subsequent thought sequence, creating a gap in state continuity.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003134,
+        "meta": {
+          "cost": {
+            "usd": 0.003134,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1614,
+            "output_tokens": 304,
+            "total_tokens": 1918
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_fantastical_guard_01__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_fantastical_guard_01",
+      "dataset_split": "held_out",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S006",
+          "S007",
+          "S008"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "causal_logic",
+            "severity": "serious",
+            "span_ids": [
+              "S006",
+              "S007"
+            ],
+            "reason": "Zilin nereden geldiği ve neden çaldığı hiç açıklanmıyor; hikayenin ışık/renk mekanizmasıyla ilgisiz kalan çözülmemiş bir unsur olarak kalıyor.",
+            "reason_missing": false,
+            "severity_missing": true
+          }
+        ],
+        "cost_usd": 0.005762,
+        "meta": {
+          "cost": {
+            "usd": 0.005762,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2271,
+            "output_tokens": 122,
+            "total_tokens": 2393
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "critical",
+            "span_ids": [
+              "S007",
+              "S008"
+            ],
+            "reason": "Causal contradiction: S007 states Deniz cannot hear the bell sound because both hands are full. S008 states the bell rings again only after he releases what he's holding, and then he hears it. However, S005 already established he dropped his toy in response to noticing the color pool. The sequence implies the bell rang while his hands were full (S007), but the bell's ringing is presented as a consequence of his hands becoming free (S008), creating a logical loop where the bell's second ring is causally dependent on the action it supposedly triggered.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S025",
+              "S026",
+              "S027",
+              "S028"
+            ],
+            "reason": "State inconsistency in hand position: S025 describes Deniz laughing while standing. S026-S027 show him speaking to the glass. S028 states 'Elini iyice cebine soktu' (put his hand deep in his pocket) to avoid touching the glass. However, no prior sentence establishes he stood up or repositioned himself to access his pocket, and the physical feasibility of maintaining observation of the wall-mounted color pool while both hands are in pockets is unclear for a 4-year-old's typical posture.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003659,
+        "meta": {
+          "cost": {
+            "usd": 0.003659,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1834,
+            "output_tokens": 365,
+            "total_tokens": 2199
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_fantastical_guard_03__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_fantastical_guard_03",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S002",
+          "S003",
+          "S004"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [
+          {
+            "family": "canon_integrity",
+            "severity": "serious",
+            "span_ids": [
+              "S002",
+              "S003",
+              "S004"
+            ],
+            "reason": "A bell rings and is introduced with narrative weight, but is never explained, referenced again, or connected to the story's events—an unresolved dangling element with no payoff or explanation.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "cost_usd": 0.005402,
+        "meta": {
+          "cost": {
+            "usd": 0.005402,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 2166,
+            "output_tokens": 107,
+            "total_tokens": 2273
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [],
+        "error": null,
+        "cost_usd": 0.004372,
+        "meta": {
+          "cost": {
+            "usd": 0.004372,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1747,
+            "output_tokens": 525,
+            "total_tokens": 2272
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "NEEDS_MANUAL_ADJUDICATION",
+        "intended_confirmed": false,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    },
+    {
+      "case_id": "src_watering_guard_01__response_busy_hands_hearing_supplement_v2",
+      "source_id": "src_watering_guard_01",
+      "dataset_split": "calibration",
+      "expected": {
+        "defect_present": true,
+        "family": "response_causality",
+        "severity": "serious",
+        "span_ids": [
+          "S005",
+          "S006",
+          "S007"
+        ],
+        "repair_scope": "LOCAL_REPAIR",
+        "validation_status": "PENDING_INDEPENDENT_VALIDATION"
+      },
+      "primary": {
+        "model": "anthropic/claude-sonnet-5",
+        "findings": [],
+        "cost_usd": 0.006126,
+        "meta": {
+          "cost": {
+            "usd": 0.006126,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1858,
+            "output_tokens": 241,
+            "total_tokens": 2099
+          },
+          "parse_failures": []
+        }
+      },
+      "adjudication": {
+        "model": "anthropic/claude-haiku-4.5",
+        "findings": [
+          {
+            "family": "response_causality",
+            "severity": "critical",
+            "span_ids": [
+              "S006",
+              "S007"
+            ],
+            "reason": "S006 states Deniz cannot hear the bell sound because his hands are full. S007 then states he empties his hands and the bell rings again. However, there is no causal mechanism explaining why the bell would ring a second time after he empties his hands. The bell ringing appears unmotivated—no agent is shown ringing it, and the temporal sequence suggests the bell rings as a consequence of hand-emptying rather than from an independent action. This breaks response_causality for a 4-year-old's causal understanding.",
+            "reason_missing": false,
+            "severity_missing": false
+          },
+          {
+            "family": "state_continuity",
+            "severity": "serious",
+            "span_ids": [
+              "S021",
+              "S029"
+            ],
+            "reason": "S021 states 'Deniz elindeki taşı unuttu' (Deniz forgot the stone in his hand). S029 states 'Deniz avucunu yeniden açtı' (Deniz opened his palm again) and 'Taş orada duruyordu' (The stone was there). No explanation is provided for how the stone remained in his hand/palm after he 'forgot' it and ran to help Arda with both hands. State continuity is broken: the stone's location and retention are unexplained.",
+            "reason_missing": false,
+            "severity_missing": false
+          }
+        ],
+        "error": null,
+        "cost_usd": 0.003271,
+        "meta": {
+          "cost": {
+            "usd": 0.003271,
+            "try_amount": null,
+            "usd_try_rate": null
+          },
+          "usage": {
+            "input_tokens": 1496,
+            "output_tokens": 355,
+            "total_tokens": 1851
+          },
+          "parse_failures": []
+        }
+      },
+      "final": {
+        "status": "VALIDATED_GOLD",
+        "intended_confirmed": true,
+        "taxonomy_unresolved": false,
+        "confirmed_extra_blocking_findings": []
+      }
+    }
+  ]
+}
