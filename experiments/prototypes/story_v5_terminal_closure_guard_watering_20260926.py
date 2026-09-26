@@ -142,7 +142,7 @@ def main() -> None:
         temperature=0.72,
         max_tokens=MAX_TOKENS,
         seed=SEED + 1,
-        request_class="teacher_story_medium_reasoning",
+        request_class="teacher_story_medium_reasoning_budget_safe",
         structured_output=False,
     )
 
