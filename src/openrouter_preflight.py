@@ -122,13 +122,29 @@ def fetch_key_status(
     return parse_key_status(payload)
 
 
-def enforce_key_access(status: OpenRouterKeyStatus) -> None:
+def enforce_key_access(
+    status: OpenRouterKeyStatus,
+    *,
+    min_remaining: float | None = None,
+) -> None:
     if status.limit_remaining is not None and status.limit_remaining <= 0:
         reset = status.limit_reset or "unspecified"
         raise ProviderAccessBlocked(
             "OpenRouter key spending limit exhausted "
             f"(reset={reset}); qualification must not start"
         )
+    if min_remaining is not None:
+        if min_remaining < 0:
+            raise ProviderPreflightError("min_remaining must be >= 0")
+        if (
+            status.limit_remaining is not None
+            and status.limit_remaining < min_remaining
+        ):
+            raise ProviderAccessBlocked(
+                "OpenRouter key remaining budget below required preflight floor "
+                f"(remaining={status.limit_remaining:.6f}, required={min_remaining:.6f}); "
+                "qualification must not start"
+            )
 
 
 def main() -> None:
@@ -139,6 +155,12 @@ def main() -> None:
         "--json",
         action="store_true",
         help="Print a safe machine-readable status payload.",
+    )
+    parser.add_argument(
+        "--min-remaining",
+        type=float,
+        default=None,
+        help="Optional fail-closed minimum remaining provider budget in USD.",
     )
     args = parser.parse_args()
 
@@ -155,7 +177,7 @@ def main() -> None:
             f"limit_reset={status.limit_reset or 'none'}"
         )
 
-    enforce_key_access(status)
+    enforce_key_access(status, min_remaining=args.min_remaining)
 
 
 if __name__ == "__main__":
