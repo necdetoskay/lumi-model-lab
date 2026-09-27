@@ -137,22 +137,22 @@ profiles:
     display_name: Seedream 4.5
     provider: openrouter
     endpoint: https://openrouter.ai/api/v1/images
-    profile_version: 1.0.0
+    profile_version: 1.0.1
     status: ACTIVE
     capabilities:
-      reference_images: false
+      reference_images: true
       negative_prompt: false
       transparent_background: false
       inpainting: false
-      image_to_image: false
-      max_reference_images: 0
-      max_images_per_call: 1
-      aspect_ratios: []
-      resolutions: []
+      image_to_image: true
+      max_reference_images: 14
+      max_images_per_call: 10
+      aspect_ratios: [1:1, 1:2, 2:1, 2:3, 3:2, 3:4]
+      resolutions: [1K, 2K, 4K]
     supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART]
     supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
     strengths: [portrait refinement, editing consistency, visual aesthetics]
-    weaknesses: [reference-image support not yet enabled in LUMI profile, MAP_ART qualification pending]
+    weaknesses: [full aspect-ratio matrix and MAP_ART qualification pending]
     prompt_policy:
       preferred_order: [task, subject, context, style, lighting, composition, negative]
       detail_level: HIGH
