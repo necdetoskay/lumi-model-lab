@@ -1,0 +1,123 @@
+schema_version: visual-qualification.v1
+name: visual-fixture-matrix-v1
+provider_mode: fixture
+evaluator_mode: fixture
+models:
+  - fixture/lumi-visual-v1
+styles:
+  - lumi-storybook-soft
+  - lumi-cinematic-adventure
+  - lumi-painted-fantasy
+  - lumi-soft-3d
+  - lumi-watercolor
+categories:
+  - CHARACTER_PORTRAIT
+  - CHARACTER_SCENE
+  - ITEM
+  - INVENTORY_CARD
+  - ENVIRONMENT
+  - WORLD_KEY_ART
+  - COVER_ART
+  - MAP_ART
+runs_per_cell: 3
+quality_tier: STANDARD
+aspect_ratio: "3:4"
+thresholds:
+  min_runs: 3
+  min_success_rate: 1.0
+  min_validation_pass_rate: 1.0
+  min_identity_consistency: 1.0
+  min_style_consistency: 1.0
+fixture:
+  character:
+    schema: character-visual-profile.v1
+    character_id: elara
+    version: 1.0.0
+    apparent_age: 11
+    skin: light wheat
+    eyes: amber brown
+    hair:
+      color: dark chestnut
+      length: shoulder length
+      texture: slightly wavy
+    signature_features:
+      - left braid with turquoise bead
+      - light freckles
+    signature_clothing:
+      - moss green explorer jacket
+      - off-white linen shirt
+      - brown explorer boots
+    signature_accessories:
+      - brass compass necklace
+      - turquoise friendship bracelet
+      - canvas backpack with turquoise patch
+    must_keep:
+      - amber brown eyes
+      - dark chestnut slightly wavy hair
+      - left braid with turquoise bead
+      - moss green explorer jacket
+      - brass compass necklace
+    soft_flexible:
+      - pose
+      - minor hair movement
+      - lighting
+  world:
+    schema: world-visual-profile.v1
+    world_id: forest-habitat
+    version: 1.0.0
+    biome: temperate forest
+    architecture: weathered stone and timber
+    technology_level: low fantasy
+    dominant_materials: [stone, wood, brass, linen]
+    palette: [moss green, warm earth, aged brass, cream]
+    recurring_motifs: [narrow forest paths, moss-covered stones]
+    forbidden_visuals: [cars, neon signs, skyscrapers]
+  intents:
+    CHARACTER_PORTRAIT:
+      subject: Elara
+      pose: relaxed three-quarter standing pose
+      expression: warm, observant, gently curious
+      composition: full-body character portrait
+      lighting: soft morning light
+    CHARACTER_SCENE:
+      subject: Elara
+      scene_summary: Elara finds a small silver key beside a moss-covered stone
+      action: crouching to examine the key without picking it up yet
+      environment: quiet forest clearing
+      mood: curious and safe
+      lighting: soft late-afternoon light after rain
+      composition: clear character and clue focal relationship
+      required_objects: [small silver key]
+    ITEM:
+      subject: Elara's brass compass pendant
+      composition: isolated three-quarter object view
+      lighting: soft studio light
+    INVENTORY_CARD:
+      subject: brass compass pendant
+      composition: centered single-object inventory card
+      lighting: controlled soft light
+    ENVIRONMENT:
+      subject: forest commons
+      environment: temperate forest clearing with moss-covered stones and a narrow path
+      mood: inviting and quietly mysterious
+      lighting: warm filtered daylight
+      composition: environment establishing shot
+    WORLD_KEY_ART:
+      subject: forest habitat world
+      environment: broad temperate forest habitat around weathered stone and timber settlements
+      mood: expansive, lived-in, adventurous
+      lighting: golden atmospheric light
+      composition: panoramic world key art
+    COVER_ART:
+      subject: Elara and the silver-key mystery
+      scene_summary: Elara notices a silver key near a moss-covered stone
+      environment: forest clearing
+      mood: curious adventure
+      lighting: warm cinematic light
+      composition: strong story-cover focal composition
+      required_objects: [small silver key]
+    MAP_ART:
+      subject: local forest habitat map
+      environment: HOME, COMMONS and a rumored outer path
+      composition: readable illustrated local-area map with route hierarchy
+      mood: inviting exploration

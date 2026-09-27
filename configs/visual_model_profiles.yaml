@@ -1,0 +1,267 @@
+schema_version: visual-model-registry.v1
+profiles:
+  - schema: visual-model-profile.v1
+    model_id: fixture/lumi-visual-v1
+    display_name: LUMI Visual Fixture
+    provider: fixture
+    endpoint: fixture://visual
+    profile_version: 1.0.0
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: true
+      transparent_background: true
+      inpainting: false
+      image_to_image: true
+      max_reference_images: 16
+      max_images_per_call: 10
+      aspect_ratios: []
+      resolutions: []
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART, MAP_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [deterministic fixture testing]
+    weaknesses: [not a real image model]
+    prompt_policy:
+      preferred_order: [task, subject, identity, context, style, lighting, composition, negative]
+      detail_level: HIGH
+      preferred_prompt_length: MEDIUM
+      supports_separate_negative_prompt: true
+      negative_prompt_parameter: negative_prompt
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 30
+      max_retries: 0
+      transient_status_codes: []
+    pricing:
+      mode: PROVIDER_USAGE_COST
+      currency: USD
+      published_hint: 0.0
+      published_unit: image
+      actual_cost_field: usage.cost
+    qualification:
+      ready: true
+      evidence: deterministic_fixture_contract
+    sources: []
+
+  - schema: visual-model-profile.v1
+    model_id: google/gemini-3.1-flash-image
+    display_name: Gemini 3.1 Flash Image (Nano Banana 2)
+    provider: openrouter
+    endpoint: https://openrouter.ai/api/v1/images
+    profile_version: 1.0.0
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: false
+      transparent_background: false
+      inpainting: true
+      image_to_image: true
+      max_reference_images: 14
+      max_images_per_call: 1
+      aspect_ratios: []
+      resolutions: []
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART, MAP_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [character consistency, editing, multimodal composition]
+    weaknesses: [live LUMI category qualification pending]
+    prompt_policy:
+      preferred_order: [task, subject, identity, context, style, lighting, composition, negative]
+      detail_level: HIGH
+      preferred_prompt_length: MEDIUM
+      supports_separate_negative_prompt: false
+      negative_prompt_parameter: null
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 180
+      max_retries: 2
+      transient_status_codes: [408, 429, 500, 502, 503, 504, 520, 522, 524, 529]
+    pricing:
+      mode: PROVIDER_USAGE_COST
+      currency: USD
+      published_hint: null
+      published_unit: token
+      actual_cost_field: usage.cost
+    qualification:
+      ready: false
+      evidence: profile_verified_from_openrouter_model_and_image_api_docs
+    sources:
+      - https://openrouter.ai/google/gemini-3.1-flash-image
+      - https://openrouter.ai/blog/tutorials/image-generation/
+
+  - schema: visual-model-profile.v1
+    model_id: google/gemini-3.1-flash-lite-image
+    display_name: Gemini 3.1 Flash Lite Image (Nano Banana 2 Lite)
+    provider: openrouter
+    endpoint: https://openrouter.ai/api/v1/images
+    profile_version: 1.0.0
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: false
+      transparent_background: false
+      inpainting: true
+      image_to_image: true
+      max_reference_images: 14
+      max_images_per_call: 1
+      aspect_ratios: []
+      resolutions: [1K]
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART, MAP_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [fast generation, high-volume visual exploration, character consistency]
+    weaknesses: [live LUMI category qualification pending]
+    prompt_policy:
+      preferred_order: [task, subject, identity, context, style, composition, negative]
+      detail_level: MEDIUM
+      preferred_prompt_length: MEDIUM
+      supports_separate_negative_prompt: false
+      negative_prompt_parameter: null
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 120
+      max_retries: 2
+      transient_status_codes: [408, 429, 500, 502, 503, 504, 520, 522, 524, 529]
+    pricing:
+      mode: PROVIDER_USAGE_COST
+      currency: USD
+      published_hint: null
+      published_unit: token
+      actual_cost_field: usage.cost
+    qualification:
+      ready: false
+      evidence: profile_verified_from_openrouter_collection
+    sources:
+      - https://openrouter.ai/collections/image-models
+
+  - schema: visual-model-profile.v1
+    model_id: bytedance-seed/seedream-4.5
+    display_name: Seedream 4.5
+    provider: openrouter
+    endpoint: https://openrouter.ai/api/v1/images
+    profile_version: 1.0.1
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: false
+      transparent_background: false
+      inpainting: false
+      image_to_image: true
+      max_reference_images: 14
+      max_images_per_call: 10
+      aspect_ratios: ['1:1', '1:2', '2:1', '2:3', '3:2', '3:4']
+      resolutions: [1K, 2K, 4K]
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [portrait refinement, editing consistency, visual aesthetics]
+    weaknesses: [full aspect-ratio matrix and MAP_ART qualification pending]
+    prompt_policy:
+      preferred_order: [task, subject, context, style, lighting, composition, negative]
+      detail_level: HIGH
+      preferred_prompt_length: MEDIUM
+      supports_separate_negative_prompt: false
+      negative_prompt_parameter: null
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 180
+      max_retries: 2
+      transient_status_codes: [408, 429, 500, 502, 503, 504, 520, 522, 524, 529]
+    pricing:
+      mode: PER_IMAGE_HINT
+      currency: USD
+      published_hint: 0.04
+      published_unit: image
+      actual_cost_field: usage.cost
+    qualification:
+      ready: false
+      evidence: profile_verified_from_openrouter_model_and_image_api_docs
+    sources:
+      - https://openrouter.ai/bytedance-seed/seedream-4.5
+      - https://openrouter.ai/blog/tutorials/image-generation/
+
+  - schema: visual-model-profile.v1
+    model_id: openai/gpt-image-2.5-sunburst
+    display_name: GPT Image 2.5 Sunburst
+    provider: openrouter
+    endpoint: https://openrouter.ai/api/v1/images
+    profile_version: 1.0.0
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: false
+      transparent_background: true
+      inpainting: true
+      image_to_image: true
+      max_reference_images: 16
+      max_images_per_call: 10
+      aspect_ratios: []
+      resolutions: []
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, INVENTORY_CARD, ENVIRONMENT, WORLD_KEY_ART, COVER_ART, MAP_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [editing precision, detailed creative work, high-fidelity image input]
+    weaknesses: [live LUMI category qualification pending]
+    prompt_policy:
+      preferred_order: [task, subject, identity, context, composition, style, lighting, negative]
+      detail_level: HIGH
+      preferred_prompt_length: LONG
+      supports_separate_negative_prompt: false
+      negative_prompt_parameter: null
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 240
+      max_retries: 2
+      transient_status_codes: [408, 429, 500, 502, 503, 504, 520, 522, 524, 529]
+    pricing:
+      mode: PROVIDER_USAGE_COST
+      currency: USD
+      published_hint: null
+      published_unit: token
+      actual_cost_field: usage.cost
+    qualification:
+      ready: false
+      evidence: profile_verified_from_openai_and_openrouter_docs
+    sources:
+      - https://developers.openai.com/api/docs/guides/image-generation
+      - https://openrouter.ai/openai/gpt-image-2.5-sunburst
+
+  - schema: visual-model-profile.v1
+    model_id: meta/muse-image
+    display_name: Meta Muse Image
+    provider: openrouter
+    endpoint: https://openrouter.ai/api/v1/images
+    profile_version: 1.0.0
+    status: ACTIVE
+    capabilities:
+      reference_images: true
+      negative_prompt: false
+      transparent_background: false
+      inpainting: true
+      image_to_image: true
+      max_reference_images: 1
+      max_images_per_call: 1
+      aspect_ratios: []
+      resolutions: []
+    supported_categories: [CHARACTER_PORTRAIT, CHARACTER_SCENE, ITEM, ENVIRONMENT, WORLD_KEY_ART, COVER_ART]
+    supported_styles: [lumi-storybook-soft, lumi-cinematic-adventure, lumi-painted-fantasy, lumi-soft-3d, lumi-watercolor]
+    strengths: [reference conditioning, subject consistency, multi-part prompts, text rendering]
+    weaknesses: [availability lower than top candidates, INVENTORY_CARD and MAP_ART qualification pending]
+    prompt_policy:
+      preferred_order: [task, subject, identity, context, style, composition, negative]
+      detail_level: HIGH
+      preferred_prompt_length: MEDIUM
+      supports_separate_negative_prompt: false
+      negative_prompt_parameter: null
+      inline_negative_prefix: "Avoid:"
+    runtime_policy:
+      timeout_seconds: 180
+      max_retries: 2
+      transient_status_codes: [408, 429, 500, 502, 503, 504, 520, 522, 524, 529]
+    pricing:
+      mode: PER_IMAGE_HINT
+      currency: USD
+      published_hint: 0.01
+      published_unit: image
+      actual_cost_field: usage.cost
+    qualification:
+      ready: false
+      evidence: profile_verified_from_openrouter_model_page
+    sources:
+      - https://openrouter.ai/meta/muse-image
