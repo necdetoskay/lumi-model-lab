@@ -63,7 +63,7 @@ def visual_style_profile_identity(
     path: Path = VISUAL_STYLE_PROFILE_PATH,
 ) -> dict[str, str]:
     profile = resolve_visual_style_profile(style_id, version, path)
-    payload = profile.model_dump(mode="json")
+    payload = profile.model_dump(mode="json", by_alias=True)
     encoded = json.dumps(
         payload, sort_keys=True, ensure_ascii=True, separators=(",", ":")
     ).encode("utf-8")
