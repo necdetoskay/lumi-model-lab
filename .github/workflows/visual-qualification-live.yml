@@ -7,6 +7,7 @@ on:
         description: Type I_UNDERSTAND_THIS_RUN_IS_PAID to authorize the live screen
         required: true
         default: "NO"
+        type: string
 
 permissions:
   contents: read
@@ -17,24 +18,38 @@ concurrency:
 
 jobs:
   live-screen:
-    if: ${{ github.event.inputs.confirm_paid_run == 'I_UNDERSTAND_THIS_RUN_IS_PAID' }}
     runs-on: self-hosted
     timeout-minutes: 90
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
 
     steps:
+      - name: Resolve paid-run authorization
+        id: authorize
+        shell: bash
+        run: |
+          if [ "${{ inputs.confirm_paid_run }}" = "I_UNDERSTAND_THIS_RUN_IS_PAID" ]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+            echo "Paid visual qualification was not authorized; all paid steps will be skipped."
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.authorize.outputs.authorized == 'true'
 
       - uses: actions/setup-python@v5
+        if: steps.authorize.outputs.authorized == 'true'
         with:
           python-version: '3.11'
           cache: 'pip'
 
       - name: Install lightweight dependencies
+        if: steps.authorize.outputs.authorized == 'true'
         run: python -m pip install -r requirements.txt
 
       - name: Fail closed when provider key is unavailable
+        if: steps.authorize.outputs.authorized == 'true'
         shell: bash
         run: |
           if [ -z "${OPENROUTER_API_KEY:-}" ]; then
@@ -43,13 +58,14 @@ jobs:
           fi
 
       - name: Run guarded paid visual screening wave
+        if: steps.authorize.outputs.authorized == 'true'
         run: >-
           python -m src.visual_qualification_runner
           --config configs/visual_qualification_live_screen_v1.yaml
           --evidence-dir runs/visual_qualification/live-screen-v1
 
       - name: Upload qualification evidence
-        if: always()
+        if: steps.authorize.outputs.authorized == 'true' && always()
         uses: actions/upload-artifact@v4
         with:
           name: visual-live-screen-v1-${{ github.run_id }}
