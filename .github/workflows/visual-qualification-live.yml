@@ -1,0 +1,58 @@
+name: Visual Model Live Qualification
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_run:
+        description: Type I_UNDERSTAND_THIS_RUN_IS_PAID to authorize the live screen
+        required: true
+        default: "NO"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: visual-live-qualification
+  cancel-in-progress: false
+
+jobs:
+  live-screen:
+    if: ${{ github.event.inputs.confirm_paid_run == 'I_UNDERSTAND_THIS_RUN_IS_PAID' }}
+    runs-on: self-hosted
+    timeout-minutes: 90
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install lightweight dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Fail closed when provider key is unavailable
+        shell: bash
+        run: |
+          if [ -z "${OPENROUTER_API_KEY:-}" ]; then
+            echo "OPENROUTER_API_KEY repository secret is required." >&2
+            exit 2
+          fi
+
+      - name: Run guarded paid visual screening wave
+        run: >-
+          python -m src.visual_qualification_runner
+          --config configs/visual_qualification_live_screen_v1.yaml
+          --evidence-dir runs/visual_qualification/live-screen-v1
+
+      - name: Upload qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-live-screen-v1-${{ github.run_id }}
+          path: runs/visual_qualification/live-screen-v1/
+          if-no-files-found: warn
+          retention-days: 30
