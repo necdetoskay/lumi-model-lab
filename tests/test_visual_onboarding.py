@@ -5,6 +5,7 @@ import unittest
 from src.visual_contracts import CharacterVisualProfile, VisualCategory, VisualIntent, VisualRequest
 from src.visual_onboarding import (
     VisualOnboardingCandidate,
+    VisualOnboardingSpec,
     build_onboarding_requests,
     select_visual_preference,
 )
@@ -37,6 +38,28 @@ class VisualOnboardingTests(unittest.TestCase):
         self.assertEqual(len(requests), 3)
         self.assertEqual(len({item.intent.subject for item in requests}), 1)
         self.assertEqual(len({item.style_id for item in requests}), 3)
+
+    def test_candidates_may_use_different_models_with_same_subject(self) -> None:
+        requests = build_onboarding_requests(
+            base_request(),
+            candidate_specs=[
+                VisualOnboardingSpec(
+                    candidate_id="a",
+                    style_id="lumi-storybook-soft",
+                    model_id="fixture/lumi-visual-v1",
+                ),
+                VisualOnboardingSpec(
+                    candidate_id="b",
+                    style_id="lumi-soft-3d",
+                    model_id="google/gemini-3.1-flash-image",
+                ),
+            ],
+        )
+        self.assertEqual([item.model_id for item in requests], [
+            "fixture/lumi-visual-v1",
+            "google/gemini-3.1-flash-image",
+        ])
+        self.assertEqual(len({item.intent.subject for item in requests}), 1)
 
     def test_selection_persists_style_not_model_lock(self) -> None:
         preference = select_visual_preference(
