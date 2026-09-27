@@ -7,13 +7,27 @@ from dotenv import load_dotenv
 
 from src.storyforge import StoryForgeRequest, run_storyforge
 
-REQUEST = Path("experiments/fixtures/storyforge_rc1_smoke_friendship_20260926.json")
+DEFAULT_REQUEST = Path("experiments/fixtures/storyforge_rc1_smoke_friendship_20260926.json")
+TRIGGER = Path("experiments/triggers/storyforge-rc1-smoke.txt")
 OUT = Path("runs/storyforge-rc1-smoke/result.json")
+
+
+def resolve_request_path() -> Path:
+    if not TRIGGER.exists():
+        return DEFAULT_REQUEST
+    for raw in TRIGGER.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if line.startswith("request="):
+            value = line.split("=", 1)[1].strip()
+            if value:
+                return Path(value)
+    return DEFAULT_REQUEST
 
 
 def main() -> None:
     load_dotenv()
-    request = StoryForgeRequest.model_validate_json(REQUEST.read_text(encoding="utf-8"))
+    request_path = resolve_request_path()
+    request = StoryForgeRequest.model_validate_json(request_path.read_text(encoding="utf-8"))
     result = run_storyforge(request)
     payload = result.model_dump(mode="json")
 
