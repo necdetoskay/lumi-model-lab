@@ -156,6 +156,14 @@ jobs:
           --evidence-dir runs/visual_qualification/live-promotion-v1
           --authorize-paid
 
+      - name: Build immutable production routing evidence
+        if: steps.authorize.outputs.authorized == 'true'
+        run: >-
+          python -m src.visual_routing_evidence
+          --report runs/visual_qualification/live-promotion-v1/qualification_report.json
+          --output runs/visual_qualification/live-promotion-v1/routing_evidence.json
+          --require-production-authorized
+
       - name: Upload promotion evidence
         if: steps.authorize.outputs.authorized == 'true' && always()
         uses: actions/upload-artifact@v4
