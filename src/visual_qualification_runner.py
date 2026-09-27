@@ -18,6 +18,7 @@ from src.visual_contracts import (
     WorldVisualProfile,
 )
 from src.visual_generation import generate_visual
+from src.visual_model_registry import resolve_visual_model_profile
 from src.visual_provider import FixtureVisualProviderAdapter, OpenRouterImageAdapter
 from src.visual_qualification import (
     VisualQualificationObservation,
@@ -49,6 +50,142 @@ def _world(payload: dict[str, Any]) -> WorldVisualProfile:
     return WorldVisualProfile.model_validate(payload)
 
 
+def _matrix_axes(config: dict[str, Any]) -> tuple[list[str], list[str], list[VisualCategory], int]:
+    models = [str(item) for item in config.get("models") or []]
+    styles = [str(item) for item in config.get("styles") or []]
+    categories = [VisualCategory(str(item)) for item in config.get("categories") or []]
+    runs_per_cell = int(config.get("runs_per_cell") or 1)
+    if not models or not styles or not categories:
+        raise RuntimeError("Qualification config requires models, styles and categories")
+    if runs_per_cell < 1:
+        raise RuntimeError("Qualification config runs_per_cell must be >= 1")
+    return models, styles, categories, runs_per_cell
+
+
+def build_qualification_plan(config: dict[str, Any]) -> dict[str, Any]:
+    models, styles, categories, runs_per_cell = _matrix_axes(config)
+    evaluator_mode = str(config.get("evaluator_mode") or "fixture")
+    cells: list[dict[str, str]] = []
+    skipped_cells: list[dict[str, str]] = []
+    unknown_pricing_models: set[str] = set()
+    known_generation_cost_usd = 0.0
+
+    for model_id in models:
+        profile = resolve_visual_model_profile(model_id)
+        for style_id in styles:
+            for category in categories:
+                if category not in profile.supported_categories:
+                    skipped_cells.append(
+                        {
+                            "model_id": model_id,
+                            "style_id": style_id,
+                            "category": category.value,
+                            "reason": "CATEGORY_UNSUPPORTED",
+                        }
+                    )
+                    continue
+                if profile.supported_styles and style_id not in profile.supported_styles:
+                    skipped_cells.append(
+                        {
+                            "model_id": model_id,
+                            "style_id": style_id,
+                            "category": category.value,
+                            "reason": "STYLE_UNSUPPORTED",
+                        }
+                    )
+                    continue
+
+                cells.append(
+                    {
+                        "model_id": model_id,
+                        "style_id": style_id,
+                        "category": category.value,
+                    }
+                )
+                hint = profile.pricing.published_hint
+                unit = profile.pricing.published_unit
+                if hint is not None and unit == "image":
+                    known_generation_cost_usd += float(hint) * runs_per_cell
+                elif profile.provider != "fixture":
+                    unknown_pricing_models.add(model_id)
+
+    generation_calls = len(cells) * runs_per_cell
+    evaluator_calls = generation_calls
+    return {
+        "schema": "visual-qualification-plan.v1",
+        "name": config["name"],
+        "provider_mode": str(config.get("provider_mode") or "fixture"),
+        "evaluator_mode": evaluator_mode,
+        "models": models,
+        "styles": styles,
+        "categories": [item.value for item in categories],
+        "runs_per_cell": runs_per_cell,
+        "candidate_cells": len(models) * len(styles) * len(categories),
+        "executable_cells": len(cells),
+        "skipped_cells_count": len(skipped_cells),
+        "generation_calls": generation_calls,
+        "evaluator_calls": evaluator_calls,
+        "total_provider_calls": generation_calls
+        + (evaluator_calls if evaluator_mode == "openrouter" else 0),
+        "known_generation_cost_usd": round(known_generation_cost_usd, 6),
+        "unknown_pricing_models": sorted(unknown_pricing_models),
+        "evaluator_cost_known": evaluator_mode == "fixture",
+        "cells": cells,
+        "skipped_cells": skipped_cells,
+    }
+
+
+def plan_visual_qualification(config_path: Path) -> dict[str, Any]:
+    return build_qualification_plan(load_config(config_path))
+
+
+def _enforce_execution_guard(
+    config: dict[str, Any],
+    plan: dict[str, Any],
+    *,
+    authorize_paid: bool,
+) -> None:
+    guard = dict(config.get("execution_guard") or {})
+    is_live = plan["provider_mode"] != "fixture" or plan["evaluator_mode"] != "fixture"
+
+    if is_live and bool(guard.get("require_explicit_paid_authorization", True)):
+        if not authorize_paid:
+            raise RuntimeError(
+                "LIVE_VISUAL_QUALIFICATION_NOT_AUTHORIZED: "
+                "explicit paid authorization is required"
+            )
+
+    limits = {
+        "max_generation_calls": "generation_calls",
+        "max_evaluator_calls": "evaluator_calls",
+        "max_total_provider_calls": "total_provider_calls",
+    }
+    for config_key, plan_key in limits.items():
+        limit = guard.get(config_key)
+        if limit is not None and int(plan[plan_key]) > int(limit):
+            raise RuntimeError(
+                "VISUAL_QUALIFICATION_GUARD_EXCEEDED: "
+                f"{plan_key}={plan[plan_key]} > {config_key}={limit}"
+            )
+
+    known_cost_limit = guard.get("max_known_generation_cost_usd")
+    if (
+        known_cost_limit is not None
+        and float(plan["known_generation_cost_usd"]) > float(known_cost_limit)
+    ):
+        raise RuntimeError(
+            "VISUAL_QUALIFICATION_GUARD_EXCEEDED: "
+            f"known_generation_cost_usd={plan['known_generation_cost_usd']} "
+            f"> max_known_generation_cost_usd={known_cost_limit}"
+        )
+
+    if guard.get("fail_on_unknown_pricing") and plan["unknown_pricing_models"]:
+        raise RuntimeError(
+            "VISUAL_QUALIFICATION_UNKNOWN_PRICING: "
+            + ", ".join(plan["unknown_pricing_models"])
+        )
+
+
 def _request(
     config: dict[str, Any],
     *,
@@ -66,7 +203,11 @@ def _request(
     kwargs: dict[str, Any] = {}
     if category in {VisualCategory.CHARACTER_PORTRAIT, VisualCategory.CHARACTER_SCENE}:
         kwargs["character_profile"] = character
-    if category in {VisualCategory.ENVIRONMENT, VisualCategory.WORLD_KEY_ART, VisualCategory.MAP_ART}:
+    if category in {
+        VisualCategory.ENVIRONMENT,
+        VisualCategory.WORLD_KEY_ART,
+        VisualCategory.MAP_ART,
+    }:
         kwargs["world_profile"] = world
     if category == VisualCategory.COVER_ART:
         kwargs["character_profile"] = character
@@ -85,7 +226,9 @@ def _request(
             time_of_day="late afternoon",
         )
     return VisualRequest(
-        request_id=f"{config['name']}:{model_id}:{style_id}:{category.value}:{run_index}",
+        request_id=(
+            f"{config['name']}:{model_id}:{style_id}:{category.value}:{run_index}"
+        ),
         profile_id="visual-qualification-profile",
         category=category,
         intent=VisualIntent.model_validate(intent_payload),
@@ -101,19 +244,32 @@ def run_visual_qualification(
     config_path: Path,
     *,
     evidence_dir: Path | None = None,
+    authorize_paid: bool = False,
 ) -> dict[str, Any]:
     config = load_config(config_path)
-    evidence_dir = evidence_dir or Path(str(config.get("evidence_dir") or "runs/visual_qualification")) / config["name"]
+    plan = build_qualification_plan(config)
+    _enforce_execution_guard(config, plan, authorize_paid=authorize_paid)
+
+    evidence_dir = evidence_dir or Path(
+        str(config.get("evidence_dir") or "runs/visual_qualification")
+    ) / config["name"]
     evidence_dir.mkdir(parents=True, exist_ok=True)
-    mode = str(config.get("provider_mode") or "fixture")
-    evaluator_mode = str(config.get("evaluator_mode") or "fixture")
+    (evidence_dir / "qualification_plan.json").write_text(
+        json.dumps(plan, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+    mode = plan["provider_mode"]
+    evaluator_mode = plan["evaluator_mode"]
     api_key = os.getenv("OPENROUTER_API_KEY")
 
     if mode == "fixture":
         adapter = FixtureVisualProviderAdapter()
     elif mode == "openrouter":
         if not api_key:
-            raise RuntimeError("OPENROUTER_API_KEY is required for live visual qualification")
+            raise RuntimeError(
+                "OPENROUTER_API_KEY is required for live visual qualification"
+            )
         adapter = OpenRouterImageAdapter(api_key=api_key)
     else:
         raise RuntimeError(f"Unsupported provider_mode: {mode}")
@@ -130,57 +286,54 @@ def run_visual_qualification(
     else:
         raise RuntimeError(f"Unsupported evaluator_mode: {evaluator_mode}")
 
-    models = [str(item) for item in config.get("models") or []]
-    styles = [str(item) for item in config.get("styles") or []]
-    categories = [VisualCategory(str(item)) for item in config.get("categories") or []]
-    runs_per_cell = int(config.get("runs_per_cell") or 1)
-    if not models or not styles or not categories:
-        raise RuntimeError("Qualification config requires models, styles and categories")
-
     observations: list[VisualQualificationObservation] = []
-    for model_id in models:
-        for style_id in styles:
-            for category in categories:
-                for run_index in range(1, runs_per_cell + 1):
-                    request = _request(
-                        config,
-                        model_id=model_id,
-                        style_id=style_id,
-                        category=category,
-                        run_index=run_index,
-                    )
-                    result = generate_visual(
-                        request,
-                        adapter=adapter,
-                        evidence_dir=evidence_dir,
-                        require_qualified=False,
-                    )
-                    evaluation = evaluate_visual_artifact(
-                        request=request,
-                        artifact=result.artifacts[0],
-                        evaluator=evaluator,
-                        evidence_dir=evidence_dir,
-                    )
-                    observations.append(
-                        VisualQualificationObservation(
-                            model_id=model_id,
-                            style_id=style_id,
-                            category=category,
-                            success=result.invocation.status == "SUCCESS",
-                            validation_pass=evaluation.result.status.value == "PASS",
-                            identity_consistency=evaluation.result.identity_consistency,
-                            style_consistency=evaluation.result.style_consistency,
-                            latency_ms=result.invocation.latency_ms,
-                            cost_usd=result.invocation.cost_usd,
-                            retry_count=result.invocation.retry_attempt,
-                        )
-                    )
+    for cell in plan["cells"]:
+        model_id = cell["model_id"]
+        style_id = cell["style_id"]
+        category = VisualCategory(cell["category"])
+        for run_index in range(1, int(plan["runs_per_cell"]) + 1):
+            request = _request(
+                config,
+                model_id=model_id,
+                style_id=style_id,
+                category=category,
+                run_index=run_index,
+            )
+            result = generate_visual(
+                request,
+                adapter=adapter,
+                evidence_dir=evidence_dir,
+                require_qualified=False,
+            )
+            evaluation = evaluate_visual_artifact(
+                request=request,
+                artifact=result.artifacts[0],
+                evaluator=evaluator,
+                evidence_dir=evidence_dir,
+            )
+            observations.append(
+                VisualQualificationObservation(
+                    model_id=model_id,
+                    style_id=style_id,
+                    category=category,
+                    success=result.invocation.status == "SUCCESS",
+                    validation_pass=evaluation.result.status.value == "PASS",
+                    identity_consistency=evaluation.result.identity_consistency,
+                    style_consistency=evaluation.result.style_consistency,
+                    latency_ms=result.invocation.latency_ms,
+                    cost_usd=result.invocation.cost_usd,
+                    retry_count=result.invocation.retry_attempt,
+                )
+            )
 
-    thresholds = VisualQualificationThresholds.model_validate(config.get("thresholds") or {})
+    thresholds = VisualQualificationThresholds.model_validate(
+        config.get("thresholds") or {}
+    )
     rows = aggregate_visual_qualification(observations, thresholds=thresholds)
     routes: list[dict[str, Any]] = []
-    for style_id in styles:
-        for category in categories:
+    for style_id in plan["styles"]:
+        for category_value in plan["categories"]:
+            category = VisualCategory(category_value)
             try:
                 route = route_visual_model(
                     category=category,
@@ -196,10 +349,15 @@ def run_visual_qualification(
         "name": config["name"],
         "provider_mode": mode,
         "evaluator_mode": evaluator_mode,
-        "models": models,
-        "styles": styles,
-        "categories": [item.value for item in categories],
-        "runs_per_cell": runs_per_cell,
+        "models": plan["models"],
+        "styles": plan["styles"],
+        "categories": plan["categories"],
+        "runs_per_cell": plan["runs_per_cell"],
+        "plan": {
+            key: value
+            for key, value in plan.items()
+            if key not in {"cells", "skipped_cells"}
+        },
         "observations": [item.model_dump(mode="json") for item in observations],
         "rows": [item.model_dump(mode="json") for item in rows],
         "routes": routes,
@@ -217,17 +375,46 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run LUMI visual qualification matrix")
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--evidence-dir", type=Path)
+    parser.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="Print the resolved matrix/call/cost plan without provider access.",
+    )
+    parser.add_argument(
+        "--authorize-paid",
+        action="store_true",
+        help="Explicitly authorize a live provider/evaluator run.",
+    )
     args = parser.parse_args()
-    report = run_visual_qualification(args.config, evidence_dir=args.evidence_dir)
-    print(json.dumps(
-        {
-            "name": report["name"],
-            "qualified_rows": report["qualified_rows"],
-            "total_rows": report["total_rows"],
-            "routes": len(report["routes"]),
-        },
-        indent=2,
-    ))
+
+    if args.plan_only:
+        print(
+            json.dumps(
+                plan_visual_qualification(args.config),
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return
+
+    report = run_visual_qualification(
+        args.config,
+        evidence_dir=args.evidence_dir,
+        authorize_paid=args.authorize_paid,
+    )
+    print(
+        json.dumps(
+            {
+                "name": report["name"],
+                "qualified_rows": report["qualified_rows"],
+                "total_rows": report["total_rows"],
+                "routes": len(report["routes"]),
+                "generation_calls": report["plan"]["generation_calls"],
+                "evaluator_calls": report["plan"]["evaluator_calls"],
+            },
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

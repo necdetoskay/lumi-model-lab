@@ -48,6 +48,13 @@ jobs:
         if: steps.authorize.outputs.authorized == 'true'
         run: python -m pip install -r requirements.txt
 
+      - name: Print resolved no-cost qualification plan
+        if: steps.authorize.outputs.authorized == 'true'
+        run: >-
+          python -m src.visual_qualification_runner
+          --config configs/visual_qualification_live_screen_v1.yaml
+          --plan-only
+
       - name: Fail closed when provider key is unavailable
         if: steps.authorize.outputs.authorized == 'true'
         shell: bash
@@ -63,6 +70,7 @@ jobs:
           python -m src.visual_qualification_runner
           --config configs/visual_qualification_live_screen_v1.yaml
           --evidence-dir runs/visual_qualification/live-screen-v1
+          --authorize-paid
 
       - name: Upload qualification evidence
         if: steps.authorize.outputs.authorized == 'true' && always()
