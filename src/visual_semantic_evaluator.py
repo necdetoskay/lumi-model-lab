@@ -30,7 +30,7 @@ class VisualSemanticEvaluation(StrictModel):
     style_consistency: float = 1.0
     scene_correctness: float = 1.0
     required_object_correctness: float = 1.0
-    issues: list[VisualValidationIssue] = []
+    issues: list[VisualValidationIssue] = Field(default_factory=list)
     summary: str = ""
 
 
@@ -45,7 +45,7 @@ class VisualEvaluationRecord(StrictModel):
     latency_ms: int
     cost_usd: float | None = None
     cost_source: CostSource = CostSource.NONE
-    usage: dict[str, Any] = {}
+    usage: dict[str, Any] = Field(default_factory=dict)
     provider_response_id: str | None = None
     result: VisualSemanticEvaluation
 
@@ -178,7 +178,22 @@ class OpenRouterVisualSemanticEvaluator(VisualSemanticEvaluator):
         choices = body.get("choices") or []
         if not choices:
             raise RuntimeError("Visual evaluator returned no choices")
-        content = ((choices[0].get("message") or {}).get("content") or "").strip()
+        raw_content = (choices[0].get("message") or {}).get("content")
+        if isinstance(raw_content, str):
+            content = raw_content.strip()
+        elif isinstance(raw_content, list):
+            parts: list[str] = []
+            for item in raw_content:
+                if not isinstance(item, dict):
+                    continue
+                text = item.get("text")
+                if isinstance(text, str) and text.strip():
+                    parts.append(text.strip())
+            content = "\n".join(parts).strip()
+        else:
+            content = ""
+        if not content:
+            raise RuntimeError("Visual evaluator returned no JSON content")
         data = json.loads(content)
         evaluation = VisualSemanticEvaluation.model_validate(data)
         return evaluation, {
