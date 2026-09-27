@@ -72,6 +72,15 @@ jobs:
           --evidence-dir runs/visual_qualification/live-screen-v1
           --authorize-paid
 
+      - name: Build no-cost promotion shortlist
+        if: steps.authorize.outputs.authorized == 'true'
+        run: >-
+          python -m src.visual_screening
+          --report runs/visual_qualification/live-screen-v1/qualification_report.json
+          --base-config configs/visual_qualification_live_screen_v1.yaml
+          --shortlist-out runs/visual_qualification/live-screen-v1/promotion_shortlist.json
+          --promotion-config-out runs/visual_qualification/live-screen-v1/promotion_config.yaml
+
       - name: Upload qualification evidence
         if: steps.authorize.outputs.authorized == 'true' && always()
         uses: actions/upload-artifact@v4
