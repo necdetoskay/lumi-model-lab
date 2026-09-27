@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class StrictModel(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
 
 class VisualCategory(str, Enum):
@@ -48,7 +48,7 @@ class CostSource(str, Enum):
 
 
 class UserVisualPreference(StrictModel):
-    schema: Literal["user-visual-preference.v1"] = "user-visual-preference.v1"
+    schema_id: Literal["user-visual-preference.v1"] = Field(default="user-visual-preference.v1", alias="schema", serialization_alias="schema")
     profile_id: str
     preferred_style_id: str
     preferred_style_version: str
@@ -73,7 +73,7 @@ class VisualLightingPolicy(StrictModel):
 
 
 class VisualStyleProfile(StrictModel):
-    schema: Literal["visual-style-profile.v1"] = "visual-style-profile.v1"
+    schema_id: Literal["visual-style-profile.v1"] = Field(default="visual-style-profile.v1", alias="schema", serialization_alias="schema")
     id: str
     version: str
     display_name: str
@@ -131,7 +131,7 @@ class VisualQualification(StrictModel):
 
 
 class VisualModelProfile(StrictModel):
-    schema: Literal["visual-model-profile.v1"] = "visual-model-profile.v1"
+    schema_id: Literal["visual-model-profile.v1"] = Field(default="visual-model-profile.v1", alias="schema", serialization_alias="schema")
     model_id: str
     display_name: str
     provider: str = "openrouter"
@@ -151,7 +151,7 @@ class VisualModelProfile(StrictModel):
 
 
 class CharacterVisualProfile(StrictModel):
-    schema: Literal["character-visual-profile.v1"] = "character-visual-profile.v1"
+    schema_id: Literal["character-visual-profile.v1"] = Field(default="character-visual-profile.v1", alias="schema", serialization_alias="schema")
     character_id: str
     version: str
     apparent_age: int = Field(ge=0, le=130)
@@ -166,7 +166,7 @@ class CharacterVisualProfile(StrictModel):
 
 
 class WorldVisualProfile(StrictModel):
-    schema: Literal["world-visual-profile.v1"] = "world-visual-profile.v1"
+    schema_id: Literal["world-visual-profile.v1"] = Field(default="world-visual-profile.v1", alias="schema", serialization_alias="schema")
     world_id: str
     version: str
     biome: str
@@ -185,7 +185,7 @@ class CharacterSceneVisualState(StrictModel):
 
 
 class StoryVisualState(StrictModel):
-    schema: Literal["story-visual-state.v1"] = "story-visual-state.v1"
+    schema_id: Literal["story-visual-state.v1"] = Field(default="story-visual-state.v1", alias="schema", serialization_alias="schema")
     story_id: str
     scene_id: str | None = None
     character_states: dict[str, CharacterSceneVisualState] = Field(default_factory=dict)
@@ -209,7 +209,7 @@ class VisualIntent(StrictModel):
 
 
 class VisualRequest(StrictModel):
-    schema: Literal["visual-request.v1"] = "visual-request.v1"
+    schema_id: Literal["visual-request.v1"] = Field(default="visual-request.v1", alias="schema", serialization_alias="schema")
     request_id: str
     profile_id: str
     category: VisualCategory
@@ -239,7 +239,7 @@ class VisualRequest(StrictModel):
 
 
 class CompiledPromptPackage(StrictModel):
-    schema: Literal["compiled-visual-prompt.v1"] = "compiled-visual-prompt.v1"
+    schema_id: Literal["compiled-visual-prompt.v1"] = Field(default="compiled-visual-prompt.v1", alias="schema", serialization_alias="schema")
     positive_prompt: str
     negative_prompt: str | None = None
     provider_options: dict[str, Any] = Field(default_factory=dict)
@@ -266,7 +266,7 @@ class VisualProviderResult(StrictModel):
 
 
 class VisualInvocationRecord(StrictModel):
-    schema: Literal["visual-invocation.v1"] = "visual-invocation.v1"
+    schema_id: Literal["visual-invocation.v1"] = Field(default="visual-invocation.v1", alias="schema", serialization_alias="schema")
     invocation_id: str
     request_id: str
     profile_id: str
@@ -289,7 +289,7 @@ class VisualInvocationRecord(StrictModel):
 
 
 class VisualArtifact(StrictModel):
-    schema: Literal["visual-artifact.v1"] = "visual-artifact.v1"
+    schema_id: Literal["visual-artifact.v1"] = Field(default="visual-artifact.v1", alias="schema", serialization_alias="schema")
     artifact_id: str
     request_id: str
     profile_id: str
@@ -330,7 +330,7 @@ class VisualGenerationResult(StrictModel):
 
 def canonical_sha256(payload: BaseModel | dict[str, Any]) -> str:
     if isinstance(payload, BaseModel):
-        value = payload.model_dump(mode="json")
+        value = payload.model_dump(mode="json", by_alias=True)
     else:
         value = payload
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
