@@ -447,6 +447,63 @@ Wire CharacterVisualProfile, WorldVisualProfile, StoryVisualState, category vali
 ### P8 — Qualification & evidence-based routing
 Run model x style x category qualification and feed measured quality/continuity/cost/latency evidence into routing.
 
+Canonical paid-evidence progression:
+
+```text
+LIVE SCREEN
+  5 candidate models
+  x selected style families
+  x common qualification categories
+  x 1 run/cell
+        |
+        v
+QUALITY-FIRST SCREENING
+  reject failed/invalid cells
+  rank by quality > reliability > latency > cost
+  unknown cost receives no artificial advantage
+        |
+        v
+TOP-2 SHORTLIST PER STYLE x CATEGORY
+        |
+        v
+SEEDED PROMOTION
+  reuse the screening observation
+  add only the runs required to reach minRuns
+  default: 1 screen run + 2 promotion runs = 3 evidence runs
+        |
+        v
+QUALIFIED EVIDENCE
+        |
+        v
+VisualModelRouter
+```
+
+The screening phase must **not** mark a real provider model qualified. It is only a
+candidate-reduction stage. Promotion is a separate explicitly authorized paid
+operation.
+
+The current live-screen baseline uses five candidate models, five style families,
+and four common categories. Its maximum screen plan is 100 image-generation calls
+plus 100 evaluator calls. With `top_k_per_cell=2`, the maximum promotion plan is
+40 shortlisted cells x 2 additional runs = 80 image-generation calls plus 80
+evaluator calls.
+
+This staged design reduces the full three-run five-model matrix from 300 image
+generations + 300 evaluations to at most 180 image generations + 180 evaluations,
+while preserving three evidence runs for promoted cells.
+
+Before any live provider execution:
+- resolve and persist `qualification_plan.json`;
+- require explicit paid authorization;
+- enforce generation/evaluator/total-call caps;
+- enforce known-cost ceilings where pricing is deterministic;
+- record unknown-pricing models rather than treating them as free;
+- fail closed if provider credentials are unavailable.
+
+Screen evidence is immutable input to promotion. Promotion must use explicit
+model/style/category cells and may reuse matching observations only when provider
+mode and evaluator mode match the promotion run.
+
 ## 15. Canonical decisions
 
 1. Visual generation is owned by a dedicated Visual Generation Agent under the AI Orchestrator.
