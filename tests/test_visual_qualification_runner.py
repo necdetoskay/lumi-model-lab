@@ -94,5 +94,72 @@ class VisualQualificationRunnerTests(unittest.TestCase):
                     )
 
 
+    def test_explicit_cells_can_reuse_seed_observation_to_reach_three_runs(self) -> None:
+        base = yaml.safe_load(CONFIG.read_text())
+        base["name"] = "seeded-promotion"
+        base.pop("models", None)
+        base.pop("styles", None)
+        base.pop("categories", None)
+        base["cells"] = [
+            {
+                "model_id": "fixture/lumi-visual-v1",
+                "style_id": "lumi-storybook-soft",
+                "category": "CHARACTER_PORTRAIT",
+            }
+        ]
+        base["runs_per_cell"] = 2
+        base["execution_guard"] = {
+            "max_generation_calls": 2,
+            "max_evaluator_calls": 2,
+            "max_total_provider_calls": 2,
+            "max_known_generation_cost_usd": 0.0,
+            "fail_on_unknown_pricing": True,
+            "require_explicit_paid_authorization": False,
+        }
+
+        seed_report = {
+            "schema": "visual-qualification-report.v1",
+            "name": "screen",
+            "provider_mode": "fixture",
+            "evaluator_mode": "fixture",
+            "observations": [
+                {
+                    "model_id": "fixture/lumi-visual-v1",
+                    "style_id": "lumi-storybook-soft",
+                    "category": "CHARACTER_PORTRAIT",
+                    "success": True,
+                    "validation_pass": True,
+                    "identity_consistency": 1.0,
+                    "style_consistency": 1.0,
+                    "latency_ms": 1,
+                    "cost_usd": 0.0,
+                    "selected_by_user": None,
+                    "retry_count": 0,
+                }
+            ],
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            seed = root / "seed.json"
+            seed.write_text(__import__("json").dumps(seed_report))
+            base["seed_reports"] = [str(seed)]
+            config = root / "promotion.yaml"
+            config.write_text(yaml.safe_dump(base, sort_keys=False))
+            report = run_visual_qualification(
+                config,
+                evidence_dir=root / "evidence",
+            )
+            self.assertEqual(report["seed_observations_count"], 1)
+            self.assertEqual(len(report["new_observations"]), 2)
+            self.assertEqual(len(report["observations"]), 3)
+            self.assertEqual(report["total_rows"], 1)
+            self.assertEqual(report["qualified_rows"], 1)
+            self.assertEqual(report["rows"][0]["runs"], 3)
+            self.assertTrue(report["rows"][0]["qualified"])
+            self.assertEqual(report["plan"]["generation_calls"], 2)
+            self.assertEqual(report["plan"]["cells_reaching_min_runs"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

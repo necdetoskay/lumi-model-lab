@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -50,77 +51,189 @@ def _world(payload: dict[str, Any]) -> WorldVisualProfile:
     return WorldVisualProfile.model_validate(payload)
 
 
-def _matrix_axes(config: dict[str, Any]) -> tuple[list[str], list[str], list[VisualCategory], int]:
+def _ordered_unique(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values:
+        if value not in seen:
+            seen.add(value)
+            result.append(value)
+    return result
+
+
+def _matrix_definition(
+    config: dict[str, Any],
+) -> tuple[list[str], list[str], list[VisualCategory], int, list[dict[str, str]]]:
+    runs_per_cell = int(config.get("runs_per_cell") or 1)
+    if runs_per_cell < 1:
+        raise RuntimeError("Qualification config runs_per_cell must be >= 1")
+
+    explicit_cells = config.get("cells") or []
+    if explicit_cells:
+        if not isinstance(explicit_cells, list):
+            raise RuntimeError("Qualification config cells must be a list")
+        cells: list[dict[str, str]] = []
+        seen: set[tuple[str, str, str]] = set()
+        for raw in explicit_cells:
+            if not isinstance(raw, dict):
+                raise RuntimeError("Qualification config cell must be an object")
+            model_id = str(raw.get("model_id") or "").strip()
+            style_id = str(raw.get("style_id") or "").strip()
+            category = VisualCategory(str(raw.get("category") or ""))
+            if not model_id or not style_id:
+                raise RuntimeError(
+                    "Qualification config explicit cells require model_id and style_id"
+                )
+            key = (model_id, style_id, category.value)
+            if key in seen:
+                raise RuntimeError(
+                    "Qualification config contains duplicate explicit cell: "
+                    + "/".join(key)
+                )
+            seen.add(key)
+            cells.append(
+                {
+                    "model_id": model_id,
+                    "style_id": style_id,
+                    "category": category.value,
+                }
+            )
+        models = _ordered_unique([cell["model_id"] for cell in cells])
+        styles = _ordered_unique([cell["style_id"] for cell in cells])
+        categories = [
+            VisualCategory(value)
+            for value in _ordered_unique([cell["category"] for cell in cells])
+        ]
+        return models, styles, categories, runs_per_cell, cells
+
     models = [str(item) for item in config.get("models") or []]
     styles = [str(item) for item in config.get("styles") or []]
     categories = [VisualCategory(str(item)) for item in config.get("categories") or []]
-    runs_per_cell = int(config.get("runs_per_cell") or 1)
     if not models or not styles or not categories:
-        raise RuntimeError("Qualification config requires models, styles and categories")
-    if runs_per_cell < 1:
-        raise RuntimeError("Qualification config runs_per_cell must be >= 1")
-    return models, styles, categories, runs_per_cell
+        raise RuntimeError(
+            "Qualification config requires models/styles/categories or explicit cells"
+        )
+    cells = [
+        {
+            "model_id": model_id,
+            "style_id": style_id,
+            "category": category.value,
+        }
+        for model_id in models
+        for style_id in styles
+        for category in categories
+    ]
+    return models, styles, categories, runs_per_cell, cells
+
+
+def _load_seed_observations(
+    config: dict[str, Any],
+    *,
+    allowed_cells: set[tuple[str, str, str]],
+    provider_mode: str,
+    evaluator_mode: str,
+) -> list[VisualQualificationObservation]:
+    seed_reports = [str(item) for item in config.get("seed_reports") or []]
+    if len(seed_reports) != len(set(seed_reports)):
+        raise RuntimeError("Qualification config seed_reports contains duplicates")
+
+    observations: list[VisualQualificationObservation] = []
+    for raw_path in seed_reports:
+        path = Path(raw_path)
+        if not path.exists():
+            raise RuntimeError(f"Visual qualification seed report does not exist: {path}")
+        report = json.loads(path.read_text(encoding="utf-8"))
+        if report.get("schema") != "visual-qualification-report.v1":
+            raise RuntimeError(f"Unsupported visual seed report schema: {path}")
+        if str(report.get("provider_mode")) != provider_mode:
+            raise RuntimeError(f"Visual seed provider mode mismatch: {path}")
+        if str(report.get("evaluator_mode")) != evaluator_mode:
+            raise RuntimeError(f"Visual seed evaluator mode mismatch: {path}")
+
+        for raw in report.get("observations") or []:
+            observation = VisualQualificationObservation.model_validate(raw)
+            key = (
+                observation.model_id,
+                observation.style_id,
+                observation.category.value,
+            )
+            if key in allowed_cells:
+                observations.append(observation)
+    return observations
 
 
 def build_qualification_plan(config: dict[str, Any]) -> dict[str, Any]:
-    models, styles, categories, runs_per_cell = _matrix_axes(config)
+    models, styles, categories, runs_per_cell, candidate_cells = _matrix_definition(config)
+    provider_mode = str(config.get("provider_mode") or "fixture")
     evaluator_mode = str(config.get("evaluator_mode") or "fixture")
     cells: list[dict[str, str]] = []
     skipped_cells: list[dict[str, str]] = []
     unknown_pricing_models: set[str] = set()
     known_generation_cost_usd = 0.0
 
-    for model_id in models:
+    for cell in candidate_cells:
+        model_id = cell["model_id"]
+        style_id = cell["style_id"]
+        category = VisualCategory(cell["category"])
         profile = resolve_visual_model_profile(model_id)
-        for style_id in styles:
-            for category in categories:
-                if category not in profile.supported_categories:
-                    skipped_cells.append(
-                        {
-                            "model_id": model_id,
-                            "style_id": style_id,
-                            "category": category.value,
-                            "reason": "CATEGORY_UNSUPPORTED",
-                        }
-                    )
-                    continue
-                if profile.supported_styles and style_id not in profile.supported_styles:
-                    skipped_cells.append(
-                        {
-                            "model_id": model_id,
-                            "style_id": style_id,
-                            "category": category.value,
-                            "reason": "STYLE_UNSUPPORTED",
-                        }
-                    )
-                    continue
 
-                cells.append(
-                    {
-                        "model_id": model_id,
-                        "style_id": style_id,
-                        "category": category.value,
-                    }
-                )
-                hint = profile.pricing.published_hint
-                unit = profile.pricing.published_unit
-                if hint is not None and unit == "image":
-                    known_generation_cost_usd += float(hint) * runs_per_cell
-                elif profile.provider != "fixture":
-                    unknown_pricing_models.add(model_id)
+        if category not in profile.supported_categories:
+            skipped_cells.append({**cell, "reason": "CATEGORY_UNSUPPORTED"})
+            continue
+        if profile.supported_styles and style_id not in profile.supported_styles:
+            skipped_cells.append({**cell, "reason": "STYLE_UNSUPPORTED"})
+            continue
+
+        cells.append(cell)
+        hint = profile.pricing.published_hint
+        unit = profile.pricing.published_unit
+        if hint is not None and unit == "image":
+            known_generation_cost_usd += float(hint) * runs_per_cell
+        elif profile.provider != "fixture":
+            unknown_pricing_models.add(model_id)
+
+    allowed_cells = {
+        (cell["model_id"], cell["style_id"], cell["category"]) for cell in cells
+    }
+    seed_observations = _load_seed_observations(
+        config,
+        allowed_cells=allowed_cells,
+        provider_mode=provider_mode,
+        evaluator_mode=evaluator_mode,
+    )
+    seed_runs: dict[tuple[str, str, str], int] = defaultdict(int)
+    for observation in seed_observations:
+        seed_runs[
+            (
+                observation.model_id,
+                observation.style_id,
+                observation.category.value,
+            )
+        ] += 1
+
+    thresholds = VisualQualificationThresholds.model_validate(
+        config.get("thresholds") or {}
+    )
+    cells_reaching_min_runs = sum(
+        1
+        for cell in cells
+        if seed_runs[(cell["model_id"], cell["style_id"], cell["category"])]
+        + runs_per_cell
+        >= thresholds.min_runs
+    )
 
     generation_calls = len(cells) * runs_per_cell
     evaluator_calls = generation_calls
     return {
         "schema": "visual-qualification-plan.v1",
         "name": config["name"],
-        "provider_mode": str(config.get("provider_mode") or "fixture"),
+        "provider_mode": provider_mode,
         "evaluator_mode": evaluator_mode,
         "models": models,
         "styles": styles,
         "categories": [item.value for item in categories],
         "runs_per_cell": runs_per_cell,
-        "candidate_cells": len(models) * len(styles) * len(categories),
+        "candidate_cells": len(candidate_cells),
         "executable_cells": len(cells),
         "skipped_cells_count": len(skipped_cells),
         "generation_calls": generation_calls,
@@ -130,6 +243,10 @@ def build_qualification_plan(config: dict[str, Any]) -> dict[str, Any]:
         "known_generation_cost_usd": round(known_generation_cost_usd, 6),
         "unknown_pricing_models": sorted(unknown_pricing_models),
         "evaluator_cost_known": evaluator_mode == "fixture",
+        "seed_reports": [str(item) for item in config.get("seed_reports") or []],
+        "seed_observations_count": len(seed_observations),
+        "cells_reaching_min_runs": cells_reaching_min_runs,
+        "minimum_runs_required": thresholds.min_runs,
         "cells": cells,
         "skipped_cells": skipped_cells,
     }
@@ -286,7 +403,18 @@ def run_visual_qualification(
     else:
         raise RuntimeError(f"Unsupported evaluator_mode: {evaluator_mode}")
 
-    observations: list[VisualQualificationObservation] = []
+    allowed_cells = {
+        (cell["model_id"], cell["style_id"], cell["category"])
+        for cell in plan["cells"]
+    }
+    seed_observations = _load_seed_observations(
+        config,
+        allowed_cells=allowed_cells,
+        provider_mode=mode,
+        evaluator_mode=evaluator_mode,
+    )
+    new_observations: list[VisualQualificationObservation] = []
+
     for cell in plan["cells"]:
         model_id = cell["model_id"]
         style_id = cell["style_id"]
@@ -311,7 +439,7 @@ def run_visual_qualification(
                 evaluator=evaluator,
                 evidence_dir=evidence_dir,
             )
-            observations.append(
+            new_observations.append(
                 VisualQualificationObservation(
                     model_id=model_id,
                     style_id=style_id,
@@ -326,6 +454,7 @@ def run_visual_qualification(
                 )
             )
 
+    observations = seed_observations + new_observations
     thresholds = VisualQualificationThresholds.model_validate(
         config.get("thresholds") or {}
     )
@@ -358,6 +487,10 @@ def run_visual_qualification(
             for key, value in plan.items()
             if key not in {"cells", "skipped_cells"}
         },
+        "seed_observations_count": len(seed_observations),
+        "new_observations": [
+            item.model_dump(mode="json") for item in new_observations
+        ],
         "observations": [item.model_dump(mode="json") for item in observations],
         "rows": [item.model_dump(mode="json") for item in rows],
         "routes": routes,
@@ -411,6 +544,7 @@ def main() -> None:
                 "routes": len(report["routes"]),
                 "generation_calls": report["plan"]["generation_calls"],
                 "evaluator_calls": report["plan"]["evaluator_calls"],
+                "seed_observations_count": report["seed_observations_count"],
             },
             indent=2,
         )
