@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import requests
+from pydantic import Field
 
 from src.model_registry import normalize_openrouter_request
 from src.visual_contracts import (
