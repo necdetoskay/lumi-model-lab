@@ -72,15 +72,15 @@ def visual_model_profile_identity(
     path: Path = VISUAL_MODEL_PROFILE_PATH,
 ) -> dict[str, str]:
     profile = resolve_visual_model_profile(model_id, path)
-    payload = profile.model_dump(mode="json")
+    payload = profile.model_dump(mode="json", by_alias=True)
     runtime = {
         "provider": profile.provider,
         "endpoint": profile.endpoint,
-        "capabilities": profile.capabilities.model_dump(mode="json"),
-        "runtime_policy": profile.runtime_policy.model_dump(mode="json"),
-        "pricing": profile.pricing.model_dump(mode="json"),
+        "capabilities": profile.capabilities.model_dump(mode="json", by_alias=True),
+        "runtime_policy": profile.runtime_policy.model_dump(mode="json", by_alias=True),
+        "pricing": profile.pricing.model_dump(mode="json", by_alias=True),
     }
-    prompt_policy = profile.prompt_policy.model_dump(mode="json")
+    prompt_policy = profile.prompt_policy.model_dump(mode="json", by_alias=True)
     encode = lambda value: json.dumps(
         value, sort_keys=True, ensure_ascii=True, separators=(",", ":")
     ).encode("utf-8")
