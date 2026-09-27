@@ -13,11 +13,11 @@ def append_jsonl(path: Path, payload: dict) -> None:
 
 
 def append_invocation(path: Path, invocation: VisualInvocationRecord) -> None:
-    append_jsonl(path, invocation.model_dump(mode="json"))
+    append_jsonl(path, invocation.model_dump(mode="json", by_alias=True))
 
 
 def append_artifact(path: Path, artifact: VisualArtifact) -> None:
-    append_jsonl(path, artifact.model_dump(mode="json"))
+    append_jsonl(path, artifact.model_dump(mode="json", by_alias=True))
 
 
 def read_jsonl(path: Path) -> list[dict]:
