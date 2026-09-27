@@ -18,12 +18,30 @@ The current roadmap now separates three model-lab tracks:
 
 ## Visual generation architecture
 
-LUMI Model Lab now has a canonical architecture baseline for multi-model visual generation. It separates user-selected visual style from provider/model routing, defines versioned visual model/style profiles, category-specific prompt contracts, character/world continuity state, immutable visual artifacts, validation, and per-call cost/latency/retry lineage.
+LUMI Model Lab has a canonical multi-model visual-generation baseline. It separates user-selected visual style from provider/model routing, defines versioned model/style metadata, category-specific prompt contracts, character/world continuity, immutable artifacts, semantic validation, bounded retry, and per-call cost/latency lineage.
 
 - Canonical contract: `docs/canonical/VISUAL_GENERATION_ARCHITECTURE_V1.md`
 - Related runtime-profile governance: `docs/canonical/MODEL_RUNTIME_PROFILE_REGISTRY_V2.md`
-- Planned implementation: P0 audit/freeze through P8 qualification and evidence-based visual routing
+- Execution epic: #218; P0–P7 implementation complete, P8 live-model qualification tracked in #227
+- Fixture evidence: `runs/visual_qualification/visual-fixture-matrix-v1/summary.json`
 - Production principle: users choose the look; routing may choose different qualified models per visual category while preserving that look
+- Real image-model profiles remain unqualified until live evidence passes the P8 gate
+
+No-cost contract/qualification smoke:
+
+```bash
+python -m src.visual_qualification_runner \
+  --config configs/visual_qualification_fixture.yaml \
+  --evidence-dir runs/visual_qualification/local-fixture
+```
+
+Guarded live screening wave (requires `OPENROUTER_API_KEY`; one run per cell, so it cannot promote a model):
+
+```bash
+python -m src.visual_qualification_runner \
+  --config configs/visual_qualification_live_screen_v1.yaml \
+  --evidence-dir runs/visual_qualification/live-screen-v1
+```
 
 ## Long-horizon Saga architecture lab
 
