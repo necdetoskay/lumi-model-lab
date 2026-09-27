@@ -27,6 +27,11 @@ class VisualWorkflowContractTests(unittest.TestCase):
         self.assertIn("actions/download-artifact@v4", text)
         self.assertIn("--plan-only", text)
         self.assertIn("--authorize-paid", text)
+        self.assertIn("actions: read", text)
+        self.assertIn("screen_run_id must be a numeric GitHub Actions run id.", text)
+        self.assertIn("unexpected source qualification report schema", text)
+        self.assertIn("promotion cells do not exactly match the shortlist", text)
+        self.assertIn("promotion_source seed path mismatch", text)
 
     def test_promotion_reuses_screen_evidence_and_has_no_automatic_spend_path(self) -> None:
         text = PROMOTION.read_text(encoding="utf-8")
