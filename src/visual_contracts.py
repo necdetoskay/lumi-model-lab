@@ -265,6 +265,24 @@ class VisualProviderResult(StrictModel):
     response_meta: dict[str, Any] = Field(default_factory=dict)
 
 
+class VisualRouteLineage(StrictModel):
+    schema_id: Literal["visual-route-lineage.v1"] = Field(
+        default="visual-route-lineage.v1",
+        alias="schema",
+        serialization_alias="schema",
+    )
+    registry_sha256: str
+    source_report_sha256: str
+    model_id: str
+    style_id: str
+    style_version: str
+    category: VisualCategory
+    quality_tier: VisualQualityTier
+    aspect_ratio: str
+    score: float = Field(ge=0)
+    evidence_runs: int = Field(ge=1)
+
+
 class VisualInvocationRecord(StrictModel):
     schema_id: Literal["visual-invocation.v1"] = Field(default="visual-invocation.v1", alias="schema", serialization_alias="schema")
     invocation_id: str
@@ -286,6 +304,7 @@ class VisualInvocationRecord(StrictModel):
     status: Literal["SUCCESS", "ERROR"]
     provider_response_id: str | None = None
     error_code: str | None = None
+    route_lineage: VisualRouteLineage | None = None
 
 
 class VisualArtifact(StrictModel):
