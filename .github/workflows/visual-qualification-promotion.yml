@@ -33,6 +33,10 @@ jobs:
         id: authorize
         shell: bash
         run: |
+          if ! [[ "${{ inputs.screen_run_id }}" =~ ^[0-9]+$ ]]; then
+            echo "screen_run_id must be a numeric GitHub Actions run id." >&2
+            exit 2
+          fi
           if [ "${{ inputs.confirm_paid_run }}" = "I_UNDERSTAND_THIS_RUN_IS_PAID" ]; then
             echo "authorized=true" >> "$GITHUB_OUTPUT"
           else
@@ -70,6 +74,63 @@ jobs:
           test -s runs/visual_qualification/live-screen-v1/qualification_report.json
           test -s runs/visual_qualification/live-screen-v1/promotion_shortlist.json
           test -s runs/visual_qualification/live-screen-v1/promotion_config.yaml
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import yaml
+
+          root = Path("runs/visual_qualification/live-screen-v1")
+          report = json.loads((root / "qualification_report.json").read_text())
+          shortlist = json.loads((root / "promotion_shortlist.json").read_text())
+          config = yaml.safe_load((root / "promotion_config.yaml").read_text()) or {}
+
+          if report.get("schema") != "visual-qualification-report.v1":
+              raise SystemExit("unexpected source qualification report schema")
+          if report.get("name") != "visual-live-screen-v1":
+              raise SystemExit("promotion source must be the canonical live screen")
+          if report.get("provider_mode") != "openrouter":
+              raise SystemExit("screen provider_mode must be openrouter")
+          if report.get("evaluator_mode") != "openrouter":
+              raise SystemExit("screen evaluator_mode must be openrouter")
+
+          if shortlist.get("schema") != "visual-screening-shortlist.v1":
+              raise SystemExit("unexpected promotion shortlist schema")
+          if shortlist.get("source_report") != report.get("name"):
+              raise SystemExit("shortlist source does not match screen report")
+
+          if config.get("schema_version") != "visual-qualification.v1":
+              raise SystemExit("unexpected promotion config schema")
+          if config.get("provider_mode") != "openrouter":
+              raise SystemExit("promotion provider_mode must be openrouter")
+          if config.get("evaluator_mode") != "openrouter":
+              raise SystemExit("promotion evaluator_mode must be openrouter")
+
+          seed = "runs/visual_qualification/live-screen-v1/qualification_report.json"
+          if config.get("seed_reports") != [seed]:
+              raise SystemExit("promotion config must seed exactly the downloaded screen report")
+
+          config_cells = {
+              (item["model_id"], item["style_id"], item["category"])
+              for item in (config.get("cells") or [])
+          }
+          shortlist_cells = {
+              (item["model_id"], item["style_id"], item["category"])
+              for item in (shortlist.get("selected_cells") or [])
+          }
+          if not config_cells:
+              raise SystemExit("promotion config contains no cells")
+          if config_cells != shortlist_cells:
+              raise SystemExit("promotion cells do not exactly match the shortlist")
+
+          promotion_source = config.get("promotion_source") or {}
+          if promotion_source.get("source_report") != report.get("name"):
+              raise SystemExit("promotion_source does not match the screen report")
+          if promotion_source.get("seed_report_path") != seed:
+              raise SystemExit("promotion_source seed path mismatch")
+
+          if int(config.get("runs_per_cell") or 0) < 1:
+              raise SystemExit("promotion requires at least one additional run")
+          PY
 
       - name: Print promotion plan before provider access
         if: steps.authorize.outputs.authorized == 'true'
