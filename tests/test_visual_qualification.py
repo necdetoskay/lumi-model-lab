@@ -77,6 +77,30 @@ class VisualQualificationTests(unittest.TestCase):
         self.assertEqual(decision.model_id, "fixture/lumi-visual-v1")
         self.assertEqual(decision.style_id, "lumi-storybook-soft")
 
+    def test_router_does_not_treat_unknown_cost_as_free(self) -> None:
+        rows = aggregate_visual_qualification(
+            observations(
+                "fixture/lumi-visual-v1",
+                cost=0.02,
+                latency=1000,
+                identity=0.95,
+                style=0.95,
+            )
+            + observations(
+                "meta/muse-image",
+                cost=None,
+                latency=1000,
+                identity=0.95,
+                style=0.95,
+            )
+        )
+        decision = route_visual_model(
+            category=VisualCategory.CHARACTER_PORTRAIT,
+            style_id="lumi-storybook-soft",
+            rows=rows,
+        )
+        self.assertEqual(decision.model_id, "fixture/lumi-visual-v1")
+
     def test_router_fails_when_no_qualified_evidence_exists(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "VISUAL_ROUTE_NO_QUALIFIED_MODEL"):
             route_visual_model(

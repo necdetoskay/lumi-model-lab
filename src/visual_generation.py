@@ -14,6 +14,7 @@ from src.visual_contracts import (
     VisualInvocationRecord,
     VisualProviderResult,
     VisualRequest,
+    VisualRouteLineage,
 )
 from src.visual_ledger import append_artifact, append_invocation
 from src.visual_model_registry import require_visual_model_profile
@@ -52,6 +53,7 @@ def generate_visual(
     adapter: VisualProviderAdapter | None = None,
     evidence_dir: Path = DEFAULT_VISUAL_EVIDENCE_DIR,
     require_qualified: bool = False,
+    route_lineage: VisualRouteLineage | None = None,
 ) -> VisualGenerationResult:
     model_id = request.model_id or "fixture/lumi-visual-v1"
     model = require_visual_model_profile(
@@ -61,6 +63,28 @@ def generate_visual(
         require_qualified=require_qualified,
     )
     style = resolve_visual_style_profile(request.style_id, request.style_version)
+    if route_lineage is not None:
+        expected = {
+            "model_id": model.model_id,
+            "style_id": style.id,
+            "style_version": style.version,
+            "category": request.category,
+            "quality_tier": request.quality_tier,
+            "aspect_ratio": request.aspect_ratio,
+        }
+        actual = {
+            "model_id": route_lineage.model_id,
+            "style_id": route_lineage.style_id,
+            "style_version": route_lineage.style_version,
+            "category": route_lineage.category,
+            "quality_tier": route_lineage.quality_tier,
+            "aspect_ratio": route_lineage.aspect_ratio,
+        }
+        if actual != expected:
+            raise RuntimeError(
+                "VISUAL_ROUTE_LINEAGE_REQUEST_MISMATCH: "
+                f"expected={expected!r} actual={actual!r}"
+            )
     compiled = compile_visual_prompt(request, style=style, model=model)
     adapter = adapter or FixtureVisualProviderAdapter()
 
@@ -90,6 +114,7 @@ def generate_visual(
             retry_attempt=0,
             status="ERROR",
             error_code=type(exc).__name__,
+            route_lineage=route_lineage,
         )
         append_invocation(evidence_dir / "visual_invocations.jsonl", invocation)
         raise
@@ -117,6 +142,7 @@ def generate_visual(
         status=status,
         provider_response_id=provider_result.response_id,
         error_code=error_code,
+        route_lineage=route_lineage,
     )
 
     # Persist invocation before artifact bytes so a successful paid call is never retried

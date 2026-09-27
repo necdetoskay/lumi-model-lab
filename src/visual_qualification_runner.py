@@ -482,6 +482,9 @@ def run_visual_qualification(
         "styles": plan["styles"],
         "categories": plan["categories"],
         "runs_per_cell": plan["runs_per_cell"],
+        "quality_tier": str(config.get("quality_tier") or "STANDARD"),
+        "aspect_ratio": str(config.get("aspect_ratio") or "3:4"),
+        "thresholds": (config.get("thresholds") or {}),
         "plan": {
             key: value
             for key, value in plan.items()

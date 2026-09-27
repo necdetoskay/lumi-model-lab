@@ -103,6 +103,8 @@ Governance rule inherited from `MODEL_RUNTIME_PROFILE_REGISTRY_V2.md`:
 
 > If behavior changes because the visual model changes, that behavior belongs in the model profile. Shared correctness rules remain model-independent.
 
+`VisualModelProfile.qualification.ready` is **not** production routing authority. Qualification is cell-scoped (`model x style x category x quality tier x aspect ratio`). Production routing authority comes only from immutable `VisualRoutingEvidenceRegistry` entries built from qualified live evidence and bound to exact model/style profile fingerprints.
+
 ### 3.4 CharacterVisualProfile
 
 Canonical visual identity for a character:
@@ -503,6 +505,22 @@ Before any live provider execution:
 Screen evidence is immutable input to promotion. Promotion must use explicit
 model/style/category cells and may reuse matching observations only when provider
 mode and evaluator mode match the promotion run.
+
+After promotion, the final qualification report is converted into an immutable
+`VisualRoutingEvidenceRegistry`. The registry:
+
+- recomputes qualification from raw observations and thresholds rather than trusting
+  precomputed `qualified=true` rows;
+- records exact model/style/category/quality-tier/aspect-ratio cells;
+- binds every cell to the exact VisualModelProfile and VisualStyleProfile SHA-256;
+- stores the source qualification-report SHA-256;
+- carries its own canonical registry SHA-256;
+- is production-authorized only when both generation and evaluation evidence are
+  live/non-fixture and at least one cell is qualified.
+
+Production runtime requests must not pre-lock a provider model. The routed runtime
+selects an exact qualified cell from the registry, rejects stale profile fingerprints,
+and writes the registry/report hashes into VisualInvocationRecord route lineage.
 
 ## 15. Canonical decisions
 

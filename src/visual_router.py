@@ -67,10 +67,13 @@ def route_visual_model(
     max_latency = max(
         [float(row.p95_latency_ms or row.average_latency_ms or 0) for row in checked] or [0.0]
     )
-    max_cost = max(
-        [float(row.cost_per_accepted_image_usd or row.average_cost_usd or 0) for row in checked]
-        or [0.0]
-    )
+    known_costs = [
+        float(row.cost_per_accepted_image_usd or row.average_cost_usd)
+        for row in checked
+        if (row.cost_per_accepted_image_usd or row.average_cost_usd) is not None
+    ]
+    max_cost = max(known_costs or [0.0])
+    min_cost = min(known_costs or [0.0])
 
     scored: list[tuple[float, VisualQualificationRow]] = []
     for row in checked:
@@ -81,9 +84,20 @@ def route_visual_model(
         latency = _inverse_normalized(
             float(row.p95_latency_ms or row.average_latency_ms or 0), max_latency
         )
-        cost = _inverse_normalized(
-            float(row.cost_per_accepted_image_usd or row.average_cost_usd or 0), max_cost
-        )
+        row_cost = row.cost_per_accepted_image_usd or row.average_cost_usd
+        if row_cost is None:
+            cost = 0.0
+        elif max_cost <= 0 or max_cost == min_cost:
+            cost = 0.5
+        else:
+            cost = max(
+                0.0,
+                min(
+                    1.0,
+                    1.0
+                    - ((float(row_cost) - min_cost) / (max_cost - min_cost)),
+                ),
+            )
         score = (
             policy.quality_weight * quality
             + policy.reliability_weight * reliability

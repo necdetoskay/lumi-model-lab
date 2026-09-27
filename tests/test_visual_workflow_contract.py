@@ -32,6 +32,9 @@ class VisualWorkflowContractTests(unittest.TestCase):
         self.assertIn("unexpected source qualification report schema", text)
         self.assertIn("promotion cells do not exactly match the shortlist", text)
         self.assertIn("promotion_source seed path mismatch", text)
+        self.assertIn("python -m src.visual_routing_evidence", text)
+        self.assertIn("--require-production-authorized", text)
+        self.assertIn("routing_evidence.json", text)
 
     def test_promotion_reuses_screen_evidence_and_has_no_automatic_spend_path(self) -> None:
         text = PROMOTION.read_text(encoding="utf-8")
