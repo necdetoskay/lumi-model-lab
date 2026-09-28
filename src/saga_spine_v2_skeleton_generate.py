@@ -61,6 +61,7 @@ def generate(
     out_path: Path,
     model_override: str | None = None,
     api_key: str | None = None,
+    revision_directives_path: Path | None = None,
 ) -> dict[str, Any]:
     load_dotenv()
     key = api_key or os.getenv("OPENROUTER_API_KEY")
@@ -74,6 +75,11 @@ def generate(
     fixture = NarrativeFixture.model_validate(_read_json(fixture_path))
     schema = _read_json(schema_path)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
+    revision_directives = (
+        _read_json(revision_directives_path)
+        if revision_directives_path is not None
+        else None
+    )
 
     request_payload = {
         "task": "generate_character_saga_skeleton_v2",
@@ -126,6 +132,13 @@ def generate(
             "Do not generate individual milestone details yet.",
             "Keep each narrative field concise, normally one sentence.",
             "Do not repeat schema definitions or explain reasoning outside JSON."
+        ],
+        "human_revision_directives": revision_directives,
+        "revision_rules": [
+            "When human_revision_directives is present, satisfy every must_change requirement.",
+            "Preserve preserve_strengths unless they conflict with a must_change requirement.",
+            "Respect must_not_change constraints.",
+            "A revised artifact is still a fresh proposal and still requires human review."
         ],
         "qualification_rules": {
             "human_creative_review_required": True,
@@ -236,6 +249,7 @@ def main() -> None:
     parser.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--model")
+    parser.add_argument("--revision-directives", type=Path)
     args = parser.parse_args()
 
     payload = generate(
@@ -244,6 +258,7 @@ def main() -> None:
         schema_path=args.schema,
         out_path=args.out,
         model_override=args.model,
+        revision_directives_path=args.revision_directives,
     )
     print(
         json.dumps(
