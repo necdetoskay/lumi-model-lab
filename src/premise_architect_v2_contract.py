@@ -106,7 +106,7 @@ class PremiseDimensionEvaluation(StrictModel):
         "CAUSAL_POTENTIAL",
         "WORLD_INTEGRATION",
         "PERSISTENT_VALUE",
-        "REPETITION_RISK",
+        "REPETITION_SAFETY",
     ]
     score: int = Field(ge=1, le=5)
     blocking_failure: bool
@@ -131,13 +131,38 @@ class PremiseCandidateEvaluation(StrictModel):
             "CAUSAL_POTENTIAL",
             "WORLD_INTEGRATION",
             "PERSISTENT_VALUE",
-            "REPETITION_RISK",
+            "REPETITION_SAFETY",
         }
         names = [row.name for row in self.dimensions]
         if len(names) != len(set(names)) or set(names) != expected:
             raise ValueError("premise evaluation must cover every gate dimension exactly once")
         if any(row.blocking_failure for row in self.dimensions) and self.verdict != "REJECT":
             raise ValueError("blocking dimension failure requires REJECT")
+
+        if self.verdict == "ACCEPT":
+            scores = {row.name: row.score for row in self.dimensions}
+            minimums = {
+                "PREMISE_MATURITY": 4,
+                "ROLEPLAY_IMMERSION": 4,
+                "WONDER_DISCOVERY": 4,
+                "AGENCY": 4,
+                "STAKES": 3,
+                "MYSTERY_CURIOSITY": 3,
+                "CAUSAL_POTENTIAL": 3,
+                "WORLD_INTEGRATION": 4,
+                "PERSISTENT_VALUE": 3,
+                "REPETITION_SAFETY": 3,
+            }
+            failures = [
+                f"{name}:{scores[name]}<{minimum}"
+                for name, minimum in minimums.items()
+                if scores[name] < minimum
+            ]
+            if failures:
+                raise ValueError(
+                    "ACCEPT premise misses protected thresholds: "
+                    + ", ".join(failures)
+                )
         return self
 
 
