@@ -13,6 +13,7 @@ from src.premise_architect_v2_contract import (
     PremiseCandidateEvaluation,
     PremiseGateV2,
     PremiseLabStateV1,
+    build_premise_gate_protected_context,
     build_reveal_safe_premise_projection,
 )
 from src.premise_architect_v2_generate import generate
@@ -128,6 +129,8 @@ DIMENSIONS = [
     "WORLD_INTEGRATION",
     "PERSISTENT_VALUE",
     "REPETITION_SAFETY",
+    "REVEAL_SAFETY",
+    "PROGRESSION_INTEGRITY",
 ]
 
 
@@ -221,6 +224,16 @@ class PremiseContextProjectionTests(unittest.TestCase):
         self.assertNotIn("tide_mechanism", raw)
         self.assertNotIn("fathers_survey_findings", raw)
 
+        protected = build_premise_gate_protected_context(
+            spine=spine,
+            state=state,
+        )
+        protected_raw = json.dumps(protected, ensure_ascii=False)
+        self.assertIn("hidden_truths", protected)
+        self.assertIn("reveal_steps", protected)
+        self.assertIn("tide_mechanism", protected_raw)
+        self.assertTrue(protected["rules"]["judge_only"])
+
 
 class PremiseContractTests(unittest.TestCase):
     def test_valid_batch_requires_real_candidate_diversity(self):
@@ -242,6 +255,15 @@ class PremiseContractTests(unittest.TestCase):
                 row["score"] = 2
         with self.assertRaisesRegex(ValidationError, "protected thresholds"):
             PremiseCandidateEvaluation.model_validate(payload)
+
+    def test_accept_requires_perfect_reveal_and_progression_integrity(self):
+        for protected_name in ("REVEAL_SAFETY", "PROGRESSION_INTEGRITY"):
+            payload = _evaluation("premise_bad", "ACCEPT", 5)
+            for row in payload["dimensions"]:
+                if row["name"] == protected_name:
+                    row["score"] = 4
+            with self.assertRaisesRegex(ValidationError, "protected thresholds"):
+                PremiseCandidateEvaluation.model_validate(payload)
 
     def test_gate_reject_all_cannot_select_candidate(self):
         payload = _gate_payload()
@@ -323,6 +345,7 @@ class PremiseGeneratorTests(unittest.TestCase):
         architect_input = json.loads(
             mock_call.call_args_list[0].kwargs["user_prompt"]
         )
+        self.assertNotIn("protected_judge_context", architect_input)
         self.assertEqual(
             architect_input["available_target_refs"],
             [
@@ -340,6 +363,18 @@ class PremiseGeneratorTests(unittest.TestCase):
             architect_input["premise_context"]["rules"][
                 "hidden_truths_not_available_to_premise_architect"
             ]
+        )
+
+        gate_input = json.loads(
+            mock_call.call_args_list[1].kwargs["user_prompt"]
+        )
+        self.assertIn("protected_judge_context", gate_input)
+        self.assertTrue(
+            gate_input["protected_judge_context"]["rules"]["judge_only"]
+        )
+        self.assertIn(
+            "hidden_truths",
+            gate_input["protected_judge_context"],
         )
 
 
