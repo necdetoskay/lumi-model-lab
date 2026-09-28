@@ -6,7 +6,7 @@ from unittest.mock import patch
 from pydantic import ValidationError
 
 from src.storyforge.contracts import StoryForgeRequest
-from src.storyforge.runtime import StoryForgeAuditContractError, StoryForgeTraceError, _audit_story, _run_traced_stage, run_storyforge
+from src.storyforge.runtime import StoryForgeAuditContractError, StoryForgeTraceError, _audit_story, _normalize_audit, _run_traced_stage, run_storyforge
 from src.story_defect_detection import segment_story
 
 
@@ -335,6 +335,40 @@ class StoryForgeStageTraceTests(unittest.TestCase):
         self.assertEqual(trace["evidence"]["cost_usd"]["planner"], 0.01)
         self.assertEqual(trace["evidence"]["trace_events"][-1]["status"], "failed")
         self.assertEqual(trace["evidence"]["trace_events"][-1]["error"]["type"], "RuntimeError")
+
+
+class StoryForgeExactLocatorTests(unittest.TestCase):
+    def test_valid_finding_resolves_exact_quote_to_sentence_paragraph_and_offsets(self):
+        story = "Title. First sentence.\n\nProblem sentence here."
+        segments = segment_story(story)
+        raw = {
+            "evaluations": [
+                {
+                    "family": family,
+                    "present": family == "causal_logic",
+                    "severity": "serious" if family == "causal_logic" else None,
+                    "repair_scope": "local" if family == "causal_logic" else None,
+                    "span_ids": ["S003"] if family == "causal_logic" else [],
+                    "exact_quote": "Problem sentence" if family == "causal_logic" else None,
+                    "reason": "The sentence contains the causal defect." if family == "causal_logic" else "",
+                }
+                for family in (
+                    "physical_feasibility", "causal_logic", "state_continuity",
+                    "epistemic_order", "spatial_consistency", "temporal_consistency",
+                    "response_causality", "closure_integrity", "canon_integrity",
+                )
+            ]
+        }
+
+        findings = _normalize_audit(raw, segments)
+        self.assertEqual(len(findings), 1)
+        locator = findings[0]["source_locator"]
+        self.assertEqual(locator["sentence_id"], "S003")
+        self.assertEqual(locator["paragraph_id"], "P002")
+        self.assertEqual(
+            story[locator["char_start"]:locator["char_end"]],
+            "Problem sentence",
+        )
 
 
 class StoryForgeAuditTraceTests(unittest.TestCase):
