@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import parse_cost, parse_usage
+from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.saga_blueprint_contract import NarrativeFixture
 from src.saga_spine_v2_contract import CharacterSagaSpineV2
 
@@ -67,6 +68,8 @@ def generate(
         raise RuntimeError("Missing OPENROUTER_API_KEY.")
 
     model = _resolve_model(model_override)
+    require_qualification_runtime_profile(model)
+    model_runtime_identity = runtime_profile_identity(model)
     fixture = NarrativeFixture.model_validate(_read_json(fixture_path))
     schema = _read_json(schema_path)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
@@ -138,6 +141,7 @@ def generate(
         "human_creative_review_required": True,
         "fixture_id": fixture.case_id,
         "model": model,
+        "model_runtime_identity": model_runtime_identity,
         "started_at": started_at,
         "completed_at": _now_iso(),
         "latency_seconds": latency,
