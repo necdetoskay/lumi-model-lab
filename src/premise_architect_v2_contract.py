@@ -118,6 +118,8 @@ class PremiseDimensionEvaluation(StrictModel):
         "WORLD_INTEGRATION",
         "PERSISTENT_VALUE",
         "REPETITION_SAFETY",
+        "REVEAL_SAFETY",
+        "PROGRESSION_INTEGRITY",
     ]
     score: int = Field(ge=1, le=5)
     blocking_failure: bool
@@ -143,6 +145,8 @@ class PremiseCandidateEvaluation(StrictModel):
             "WORLD_INTEGRATION",
             "PERSISTENT_VALUE",
             "REPETITION_SAFETY",
+            "REVEAL_SAFETY",
+            "PROGRESSION_INTEGRITY",
         }
         names = [row.name for row in self.dimensions]
         if len(names) != len(set(names)) or set(names) != expected:
@@ -163,6 +167,8 @@ class PremiseCandidateEvaluation(StrictModel):
                 "WORLD_INTEGRATION": 4,
                 "PERSISTENT_VALUE": 3,
                 "REPETITION_SAFETY": 3,
+                "REVEAL_SAFETY": 5,
+                "PROGRESSION_INTEGRITY": 5,
             }
             failures = [
                 f"{name}:{scores[name]}<{minimum}"
@@ -348,3 +354,39 @@ def build_reveal_safe_premise_projection(
             )
 
     return projection
+
+
+def build_premise_gate_protected_context(
+    *,
+    spine: CharacterSagaSpineV2,
+    state: PremiseLabStateV1,
+) -> dict:
+    """Judge-only context for detecting hidden-reveal and progression violations.
+
+    This projection must never be passed to the Premise Architect.
+    """
+    return {
+        "schema": "premise-gate-protected-context.v1",
+        "completed_milestone_keys": list(state.completed_milestone_keys),
+        "world_access": [
+            row.model_dump(mode="json")
+            for row in state.world_access
+        ],
+        "hidden_truths": [
+            row.model_dump(mode="json")
+            for row in spine.main_saga.hidden_truths
+        ],
+        "reveal_steps": [
+            row.model_dump(mode="json")
+            for row in spine.main_saga.reveal_steps
+        ],
+        "rules": {
+            "judge_only": True,
+            "use_only_for_violation_detection": True,
+            "do_not_reward_candidate_for_matching_hidden_truth": True,
+            "hidden_truth_assertion_before_eligibility_is_blocking": True,
+            "premature_confirmed_reveal_is_blocking": True,
+            "locked_or_rumored_location_bypass_is_blocking": True,
+            "ineligible_saga_progression_is_blocking": True,
+        },
+    }
