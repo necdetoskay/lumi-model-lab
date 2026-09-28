@@ -310,10 +310,12 @@ class SagaSpineV2ContractTests(unittest.TestCase):
 
     def test_rejects_orphan_graph_node(self):
         payload = _valid_payload()
+        # m_1_1 can be orphaned while the explicit ALTERNATIVE_ROUTE
+        # anchor_1 -> m_1_2 still preserves the route to resolution.
         payload["main_saga"]["edges"] = [
             edge
             for edge in payload["main_saga"]["edges"]
-            if edge["to_node"] != "m_3_2" and edge["from_node"] != "m_3_2"
+            if edge["to_node"] != "m_1_1" and edge["from_node"] != "m_1_1"
         ]
         with self.assertRaisesRegex(ValidationError, "unreachable nodes"):
             CharacterSagaSpineV2.model_validate(payload)
