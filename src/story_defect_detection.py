@@ -59,20 +59,71 @@ REPAIR_SCOPES = {"NO_REPAIR", "LOCAL_REPAIR", "STRUCTURAL_REPAIR", "REPLAN"}
 
 
 def segment_story(text: str) -> list[dict[str, Any]]:
-    """Create deterministic sentence IDs for defect location and repair contracts."""
+    """Create deterministic sentence IDs plus paragraph/source offsets.
+
+    Offsets are measured against the CRLF-normalized, outer-trimmed story text.
+    Existing `id` and `text` fields remain stable for current consumers.
+    """
     normalized = re.sub(r"\r\n?", "\n", text or "").strip()
     if not normalized:
         return []
 
-    raw_sentences: list[str] = []
-    for paragraph in [p.strip() for p in re.split(r"\n+", normalized) if p.strip()]:
-        parts = re.split(r"(?<=[.!?…])\s+", paragraph)
-        raw_sentences.extend(part.strip() for part in parts if part.strip())
+    segments: list[dict[str, Any]] = []
+    sentence_index = 1
+    paragraph_index = 1
 
-    return [
-        {"id": f"S{index:03d}", "text": sentence}
-        for index, sentence in enumerate(raw_sentences, start=1)
-    ]
+    for paragraph_match in re.finditer(r"[^\n]+", normalized):
+        raw_paragraph = paragraph_match.group(0)
+        if not raw_paragraph.strip():
+            continue
+
+        leading = len(raw_paragraph) - len(raw_paragraph.lstrip())
+        trailing = len(raw_paragraph) - len(raw_paragraph.rstrip())
+        paragraph = raw_paragraph.strip()
+        paragraph_start = paragraph_match.start() + leading
+        paragraph_end = paragraph_match.end() - trailing
+        paragraph_id = f"P{paragraph_index:03d}"
+
+        sentence_start = 0
+        for boundary in re.finditer(r"(?<=[.!?…])\s+", paragraph):
+            raw_sentence = paragraph[sentence_start:boundary.start()]
+            if raw_sentence.strip():
+                left = len(raw_sentence) - len(raw_sentence.lstrip())
+                right = len(raw_sentence) - len(raw_sentence.rstrip())
+                text_value = raw_sentence.strip()
+                char_start = paragraph_start + sentence_start + left
+                char_end = paragraph_start + boundary.start() - right
+                segments.append({
+                    "id": f"S{sentence_index:03d}",
+                    "paragraph_id": paragraph_id,
+                    "paragraph_index": paragraph_index,
+                    "text": text_value,
+                    "char_start": char_start,
+                    "char_end": char_end,
+                })
+                sentence_index += 1
+            sentence_start = boundary.end()
+
+        raw_sentence = paragraph[sentence_start:]
+        if raw_sentence.strip():
+            left = len(raw_sentence) - len(raw_sentence.lstrip())
+            right = len(raw_sentence) - len(raw_sentence.rstrip())
+            text_value = raw_sentence.strip()
+            char_start = paragraph_start + sentence_start + left
+            char_end = paragraph_end - right
+            segments.append({
+                "id": f"S{sentence_index:03d}",
+                "paragraph_id": paragraph_id,
+                "paragraph_index": paragraph_index,
+                "text": text_value,
+                "char_start": char_start,
+                "char_end": char_end,
+            })
+            sentence_index += 1
+
+        paragraph_index += 1
+
+    return segments
 
 
 def build_jev_state(
