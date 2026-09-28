@@ -29,14 +29,27 @@ jobs:
       - name: Archive evidence
         if: always()
         run: |
+          set -euo pipefail
           test -s runs/storyforge-age12-probe/result.json
-          DEST="experiments/results/storyforge-age12-probe/${GITHUB_RUN_ID}"
-          mkdir -p "$DEST"
-          cp runs/storyforge-age12-probe/result.json "$DEST/result.json"
-          if test -s runs/storyforge-age12-probe/english.txt; then cp runs/storyforge-age12-probe/english.txt "$DEST/english.txt"; fi
-          if test -s runs/storyforge-age12-probe/turkish.txt; then cp runs/storyforge-age12-probe/turkish.txt "$DEST/turkish.txt"; fi
+
+          TMP="$(mktemp -d)"
+          cp runs/storyforge-age12-probe/result.json "$TMP/result.json"
+          if test -s runs/storyforge-age12-probe/english.txt; then cp runs/storyforge-age12-probe/english.txt "$TMP/english.txt"; fi
+          if test -s runs/storyforge-age12-probe/turkish.txt; then cp runs/storyforge-age12-probe/turkish.txt "$TMP/turkish.txt"; fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          EVIDENCE_BRANCH="evidence/storyforge-age12-probe-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+
+          DEST="experiments/results/storyforge-age12-probe/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+          if test -s "$TMP/english.txt"; then cp "$TMP/english.txt" "$DEST/english.txt"; fi
+          if test -s "$TMP/turkish.txt"; then cp "$TMP/turkish.txt" "$DEST/turkish.txt"; fi
+
           git add "$DEST"
           git commit -m "evidence(storyforge): age12 probe ${GITHUB_RUN_ID}"
-          git push origin "HEAD:refs/heads/evidence/storyforge-age12-probe-${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
