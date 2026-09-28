@@ -26,7 +26,7 @@ from src.saga_spine_v2_contract import CharacterSagaSpineV2
 
 
 DEFAULT_SPINE = Path(
-    "data/specifications/saga_lab/age12_shattered_meridian_gate_b_approved_v1.json"
+    "data/specifications/saga_lab/age12_shattered_meridian_full_spine_v1.json"
 )
 DEFAULT_READER = Path(
     "data/specifications/reader_profiles/age12_adventure_v2.json"
