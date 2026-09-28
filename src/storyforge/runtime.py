@@ -672,7 +672,13 @@ def _audit_story(
         trace["contract_error"] = str(exc)
         raise StoryForgeAuditContractError(str(exc), trace) from exc
     trace["normalized_findings"] = findings
-    meta["audit_trace"] = trace
+    # Do not attach `trace` itself to meta because trace already contains meta.
+    # Store a detached audit view to keep evidence JSON-serializable.
+    meta["audit_trace"] = {
+        "raw_audit_payload": payload,
+        "segments": segments,
+        "normalized_findings": findings,
+    }
     return findings, meta
 
 
