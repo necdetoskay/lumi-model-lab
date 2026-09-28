@@ -1,0 +1,4590 @@
+{
+  "schema_version": "saga-spine-v2-evidence.v1",
+  "status": "contract_rejected",
+  "publication_authority": false,
+  "human_creative_review_required": true,
+  "fixture_id": "age12_shattered_meridian_cartographer",
+  "model": "anthropic/claude-sonnet-5",
+  "model_runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5",
+    "display_name": "Claude Sonnet 5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5"
+    },
+    "profile_sha256": "af8e8e8a67406b923ed28b239bd64ea6261642477843723dbff49c919b64f3c5",
+    "runtime_contract_sha256": "ca426db404460da693c50a33033cd7dbd5a04f30524f0dde77b80420f8eafa4c",
+    "production_policy_sha256": "b11d53a2319eac3f6bce42307a122aca5b62c39c63407a43977286d1524ad1c3"
+  },
+  "started_at": "2026-09-28T08:45:27.893486+00:00",
+  "completed_at": "2026-09-28T08:46:25.225660+00:00",
+  "latency_seconds": 57.332,
+  "request_payload": {
+    "task": "generate_character_saga_spine_v2",
+    "reader_profile": {
+      "exact_age": 12,
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "age_rule": "Premise/narrative maturity must fit the exact age independently from vocabulary difficulty."
+    },
+    "frozen_character_world_input": {
+      "case_id": "age12_shattered_meridian_cartographer",
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "character": {
+        "name": "Deniz",
+        "age": 12,
+        "profile_type": "CHILD",
+        "archetype": "apprentice cartographer and field observer",
+        "traits": [
+          "observant",
+          "persistent",
+          "independent",
+          "sometimes overconfident",
+          "loyal"
+        ],
+        "interests": [
+          "ancient maps",
+          "sea creatures",
+          "mechanical instruments",
+          "coded symbols",
+          "unexplored places"
+        ],
+        "starting_goal": "earn the right to chart routes beyond the home strait and prove that careful observation can reveal things official maps miss",
+        "starting_relationships": [
+          "a close friend who prefers practical experiments to theories",
+          "a demanding mapmaker who respects evidence more than confidence",
+          "harbor crews who know Deniz as a serious apprentice rather than a passenger"
+        ]
+      },
+      "world": {
+        "world_type": "LOW_MAGIC",
+        "era": "age of sail with precision mechanical navigation",
+        "habitat": "a vast island chain divided by deep channels, storm belts and partially mapped outer seas",
+        "technology_level": "sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices",
+        "magic_level": "rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting",
+        "summary": "The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.",
+        "locations": [
+          "Meridian Harbor, Deniz's known home port",
+          "Beacon Ridge, a chain of signal towers above the inner strait",
+          "the Drowned Causeway, visible only during rare low tides",
+          "the Outer Mist Line, where official charts become incomplete",
+          "an abandoned tide observatory on a distant mapped island"
+        ],
+        "social_context": [
+          "cartographers and navigators hold respected public roles",
+          "island councils depend on reliable sea routes",
+          "young apprentices may take meaningful expedition roles within established safety rules",
+          "merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence",
+          "old folklore sometimes preserves real geographic information in distorted form"
+        ],
+        "known_pressures": [
+          "several navigation beacons no longer agree with official charts",
+          "outer-island routes are becoming economically important",
+          "storm season will eventually restrict long voyages",
+          "different groups have reasons to prefer different versions of the map"
+        ]
+      },
+      "test_intents": [
+        "age-12 premise maturity must come from story substance rather than difficult vocabulary",
+        "strong wonder and roleplay",
+        "long-horizon Main Saga with 5-7 anchors and 15-30 meaningful milestones",
+        "multiple routes and optional Saga dormancy",
+        "persistent discovery and callback potential",
+        "no trivial toy-play premise",
+        "no fixed Episode sequence",
+        "no predetermined future character choices"
+      ],
+      "tags": [
+        "age12",
+        "adventure",
+        "exploration",
+        "mystery",
+        "low_magic",
+        "living_universe"
+      ]
+    },
+    "requested_shape": {
+      "schema": "character-saga-spine.v2",
+      "origin": {
+        "summary": "string",
+        "origin_facts": "list",
+        "formative_events": "list",
+        "origin_relationships": "list",
+        "unresolved_origin_questions": "list"
+      },
+      "present_situation": "object",
+      "narrative_core": "object",
+      "main_saga": {
+        "key": "stable_key",
+        "title": "string",
+        "goal": "string",
+        "stakes": "string",
+        "central_mystery": "string",
+        "themes": "list[string]",
+        "entry_anchor_keys": "list[anchor_key]",
+        "resolution_anchor_key": "anchor_key",
+        "resolution_milestone_keys": "list[milestone_key]",
+        "anchors": "exactly 5 SagaAnchor objects",
+        "milestones": "exactly 15 SagaMilestone objects",
+        "edges": "DAG edges over anchor/milestone keys with >=1 ALTERNATIVE_ROUTE",
+        "hidden_truths": "small list using FIXED_HIDDEN and/or UNRESOLVED_BY_DESIGN",
+        "reveal_steps": "small list tied to hidden_truths and milestones"
+      },
+      "latent_side_sagas": "2-4 SideSagaSeed objects",
+      "creative_permission_envelope": "object",
+      "world_integration": "object",
+      "reweave_policy": "object",
+      "background_enrichment_policy": "object",
+      "safety_and_constraints": "object"
+    },
+    "compactness_rules": [
+      "Generate exactly 5 anchors and exactly 15 milestones for this first qualification candidate.",
+      "Keep each summary, purpose, state_condition, rationale, consequence option, and reveal ceiling concise: normally one sentence.",
+      "Do not repeat the schema, explain your reasoning, or add prose outside the JSON object.",
+      "Use the minimum number of graph edges needed for a meaningful reachable DAG plus real alternate routes.",
+      "Prefer 2-4 hidden truths, 3-6 reveal steps, and 2-4 latent side Sagas.",
+      "Do not inflate fields merely to consume token budget."
+    ],
+    "qualification_rules": {
+      "human_creative_review_required": true,
+      "no_episode_generation": true,
+      "no_future_choice_precommitment": true,
+      "main_saga_anchor_count": 5,
+      "main_saga_milestone_count": 15,
+      "must_include_alternative_route": true,
+      "must_support_saga_dormancy": true,
+      "must_support_generated_continuity": true
+    }
+  },
+  "raw_generated_payload": {
+    "schema": "character-saga-spine.v2",
+    "origin": {
+      "summary": "Deniz grew up watching harbor cartographers argue over which charts to trust, and became convinced that patient observation beats confident guessing.",
+      "origin_facts": [
+        "Deniz's family has worked Meridian Harbor docks for two generations",
+        "Deniz apprenticed informally under a demanding senior mapmaker before any formal role was granted",
+        "Deniz taught themselves to read tide tables and beacon logs before being taught officially"
+      ],
+      "formative_events": [
+        "Deniz once corrected a harbor chart error that an adult had dismissed, earning grudging respect",
+        "Deniz was nearly stranded observing a low-tide causeway alone, learning the cost of overconfidence"
+      ],
+      "origin_relationships": [
+        "a close friend who tests Deniz's theories with practical experiments and blunt skepticism",
+        "a demanding senior mapmaker who withholds praise but shares real fieldwork when evidence is solid",
+        "harbor crews who tolerate Deniz aboard because the work is taken seriously, not out of favor"
+      ],
+      "unresolved_origin_questions": [
+        "Why do certain beacon markers predate every known culture in the archipelago",
+        "Whether Deniz's family history connects to the old observatory network in any real way"
+      ]
+    },
+    "present_situation": {
+      "summary": "Deniz has just been allowed limited apprentice fieldwork within the inner strait, while several official beacons have started disagreeing with the charts that are supposed to match them.",
+      "current_access": "inner strait waters, Beacon Ridge under supervision, harbor archives with restricted sections",
+      "open_tensions": [
+        "beacon-chart discrepancies are being dismissed by senior navigators as instrument drift",
+        "outer-island trade routes are becoming valuable enough that inaccurate charts could cause real harm",
+        "Deniz's friend and mentor disagree about whether folklore is worth investigating as evidence"
+      ]
+    },
+    "narrative_core": {
+      "protagonist_drive": "prove that rigorous observation can reveal true routes and hidden truths that official authority overlooks or dismisses",
+      "world_tension": "the archipelago's maps are quietly becoming unreliable at the exact moment outer routes matter most economically and politically",
+      "tone": "grounded wonder: real instruments, real risk, real discovery, without arbitrary magic",
+      "reader_experience_goals": [
+        "wonder at ancient infrastructure hiding in plain geography",
+        "satisfaction from evidence-based problem solving",
+        "tension from competing human interests over the same truth",
+        "long-term mystery that rewards patient attention across many episodes"
+      ]
+    },
+    "main_saga": {
+      "key": "meridian_true_chart",
+      "title": "The True Chart of the Shattered Meridian",
+      "goal": "Deniz seeks to produce a verified chart of the outer seas accurate enough to resolve the beacon discrepancies and earn recognition as a real route-cartographer.",
+      "stakes": "If the discrepancies go unresolved, ships will eventually wreck on routes trusted by merchants and councils who prefer convenient charts over uncertain truths.",
+      "central_mystery": "Something older than any known culture built or aligned the beacon network, and it may still be partially active beneath the tides.",
+      "themes": [
+        "evidence versus convenient authority",
+        "earned trust through competence",
+        "the cost and value of independent observation",
+        "old truths resurfacing through new problems"
+      ],
+      "entry_anchor_keys": [
+        "anchor_apprentice_status",
+        "anchor_beacon_doubt"
+      ],
+      "resolution_anchor_key": "anchor_true_chart_recognized",
+      "resolution_milestone_keys": [
+        "ms_chart_verified",
+        "ms_authority_acknowledges"
+      ],
+      "anchors": [
+        {
+          "key": "anchor_apprentice_status",
+          "type": "STATUS",
+          "summary": "Deniz's formal standing as a fieldworker, from tolerated passenger to trusted observer.",
+          "purpose": "Tracks how much independent authority and access Deniz has earned."
+        },
+        {
+          "key": "anchor_beacon_doubt",
+          "type": "MYSTERY",
+          "summary": "Growing awareness that beacon readings and official charts no longer agree in the outer regions.",
+          "purpose": "Seeds the central mystery and motivates fieldwork beyond the strait."
+        },
+        {
+          "key": "anchor_outer_evidence",
+          "type": "DISCOVERY",
+          "summary": "Physical and documentary evidence gathered from the Outer Mist Line and remote observatories.",
+          "purpose": "Builds the material basis for a credible alternative chart."
+        },
+        {
+          "key": "anchor_contested_truth",
+          "type": "CONFLICT",
+          "summary": "Competing factions with different stakes in which version of the map becomes official.",
+          "purpose": "Creates human-driven obstacles independent of the physical mystery."
+        },
+        {
+          "key": "anchor_true_chart_recognized",
+          "type": "RESOLUTION",
+          "summary": "A verified chart exists and is acknowledged by at least part of the cartographic authority.",
+          "purpose": "Provides a genuine, non-magical resolution state for the Main Saga."
+        }
+      ],
+      "milestones": [
+        {
+          "key": "ms_apprentice_granted",
+          "anchor_key": "anchor_apprentice_status",
+          "state_condition": "Deniz gains a limited but official fieldwork role beyond passenger status.",
+          "value_type": "access"
+        },
+        {
+          "key": "ms_mentor_trust_earned",
+          "anchor_key": "anchor_apprentice_status",
+          "state_condition": "The senior mapmaker begins sharing restricted archive material with Deniz based on demonstrated rigor.",
+          "value_type": "relationship_state"
+        },
+        {
+          "key": "ms_friend_partnership_formed",
+          "anchor_key": "anchor_apprentice_status",
+          "state_condition": "Deniz's friend commits practical skills to jointly testing Deniz's theories rather than merely doubting them.",
+          "value_type": "relationship_state"
+        },
+        {
+          "key": "ms_first_discrepancy_confirmed",
+          "anchor_key": "anchor_beacon_doubt",
+          "state_condition": "Deniz obtains verifiable proof that at least one beacon reading contradicts its official chart position.",
+          "value_type": "verified_knowledge"
+        },
+        {
+          "key": "ms_pattern_recognized",
+          "anchor_key": "anchor_beacon_doubt",
+          "state_condition": "Deniz identifies that the discrepancies follow a consistent pattern rather than random instrument error.",
+          "value_type": "world_understanding"
+        },
+        {
+          "key": "ms_authority_dismissal",
+          "anchor_key": "anchor_beacon_doubt",
+          "state_condition": "Senior navigators or council officials formally reject Deniz's findings as insufficient or inconvenient.",
+          "value_type": "stakes"
+        },
+        {
+          "key": "ms_outer_mist_access",
+          "anchor_key": "anchor_outer_evidence",
+          "state_condition": "Deniz gains a credible means of reaching or observing the Outer Mist Line region.",
+          "value_type": "access"
+        },
+        {
+          "key": "ms_observatory_located",
+          "anchor_key": "anchor_outer_evidence",
+          "state_condition": "Deniz obtains credible evidence pinpointing the abandoned tide observatory's relevance to the beacon pattern.",
+          "value_type": "world_understanding"
+        },
+        {
+          "key": "ms_ancient_marker_found",
+          "anchor_key": "anchor_outer_evidence",
+          "state_condition": "Deniz recovers or documents a navigation marker predating known archipelago culture.",
+          "value_type": "world_understanding"
+        },
+        {
+          "key": "ms_folklore_corroborated",
+          "anchor_key": "anchor_outer_evidence",
+          "state_condition": "Deniz finds that a specific piece of dismissed folklore encodes real geographic information.",
+          "value_type": "verified_knowledge"
+        },
+        {
+          "key": "ms_rival_expedition_encountered",
+          "anchor_key": "anchor_contested_truth",
+          "state_condition": "A rival group with its own interest in the outer routes becomes aware of and reacts to Deniz's work.",
+          "value_type": "available_routes"
+        },
+        {
+          "key": "ms_faction_pressure_applied",
+          "anchor_key": "anchor_contested_truth",
+          "state_condition": "Deniz faces direct pressure from a faction wanting a particular version of the chart adopted regardless of accuracy.",
+          "value_type": "stakes"
+        },
+        {
+          "key": "ms_evidence_challenged",
+          "anchor_key": "anchor_contested_truth",
+          "state_condition": "Deniz's evidence is publicly or formally challenged, requiring stronger corroboration to proceed.",
+          "value_type": "consequences"
+        },
+        {
+          "key": "ms_chart_verified",
+          "anchor_key": "anchor_true_chart_recognized",
+          "state_condition": "Deniz assembles corroborated evidence sufficient to constitute a credible alternative chart of the outer routes.",
+          "value_type": "identity"
+        },
+        {
+          "key": "ms_authority_acknowledges",
+          "anchor_key": "anchor_true_chart_recognized",
+          "state_condition": "At least one legitimate cartographic or council authority formally acknowledges Deniz's chart as valid, even partially.",
+          "value_type": "identity"
+        }
+      ],
+      "edges": [
+        {
+          "from": "anchor_apprentice_status",
+          "to": "ms_apprentice_granted",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_apprentice_granted",
+          "to": "ms_mentor_trust_earned",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_apprentice_granted",
+          "to": "ms_friend_partnership_formed",
+          "type": "ALTERNATIVE_ROUTE"
+        },
+        {
+          "from": "ms_mentor_trust_earned",
+          "to": "ms_first_discrepancy_confirmed",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_friend_partnership_formed",
+          "to": "ms_first_discrepancy_confirmed",
+          "type": "ALTERNATIVE_ROUTE"
+        },
+        {
+          "from": "ms_first_discrepancy_confirmed",
+          "to": "ms_pattern_recognized",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_pattern_recognized",
+          "to": "ms_authority_dismissal",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_authority_dismissal",
+          "to": "ms_outer_mist_access",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_outer_mist_access",
+          "to": "ms_observatory_located",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_outer_mist_access",
+          "to": "ms_folklore_corroborated",
+          "type": "ALTERNATIVE_ROUTE"
+        },
+        {
+          "from": "ms_observatory_located",
+          "to": "ms_ancient_marker_found",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_folklore_corroborated",
+          "to": "ms_ancient_marker_found",
+          "type": "ALTERNATIVE_ROUTE"
+        },
+        {
+          "from": "ms_ancient_marker_found",
+          "to": "ms_rival_expedition_encountered",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_rival_expedition_encountered",
+          "to": "ms_faction_pressure_applied",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_faction_pressure_applied",
+          "to": "ms_evidence_challenged",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_evidence_challenged",
+          "to": "ms_chart_verified",
+          "type": "PROGRESSION"
+        },
+        {
+          "from": "ms_chart_verified",
+          "to": "ms_authority_acknowledges",
+          "type": "PROGRESSION"
+        }
+      ],
+      "hidden_truths": [
+        {
+          "key": "truth_ancient_network_active",
+          "mode": "FIXED_HIDDEN",
+          "truth": "The old navigation markers are remnants of a functioning geophysical alignment system tied to magnetic stone and extreme tides, not decorative ruins.",
+          "reveal_ceiling": "Deniz may learn the markers are functional and rule-bound, but the builders' identity remains unknown."
+        },
+        {
+          "key": "truth_family_connection",
+          "mode": "UNRESOLVED_BY_DESIGN",
+          "truth": "Whether Deniz's family history has any real link to the observatory network is deliberately left open.",
+          "reveal_ceiling": "No future step may assert a definitive family connection unless a later validated Episode establishes it."
+        },
+        {
+          "key": "truth_beacon_cause",
+          "mode": "FIXED_HIDDEN",
+          "truth": "The beacon discrepancies are caused by slow shifts in magnetic stone deposits interacting with the ancient markers, not human tampering.",
+          "reveal_ceiling": "Deniz may confirm the physical cause but not necessarily its full mechanism or scale."
+        }
+      ],
+      "reveal_steps": [
+        {
+          "key": "reveal_pattern_not_random",
+          "targets_truth": "truth_beacon_cause",
+          "tied_milestone": "ms_pattern_recognized",
+          "status": "PARTIAL",
+          "content": "Deniz confirms the discrepancies are systematic rather than random error."
+        },
+        {
+          "key": "reveal_marker_function",
+          "targets_truth": "truth_ancient_network_active",
+          "tied_milestone": "ms_ancient_marker_found",
+          "status": "PARTIAL",
+          "content": "Deniz finds the marker responds to tide and magnetic conditions in a repeatable way."
+        },
+        {
+          "key": "reveal_full_mechanism",
+          "targets_truth": "truth_beacon_cause",
+          "tied_milestone": "ms_chart_verified",
+          "status": "CONFIRMED",
+          "content": "Deniz's verified chart demonstrates the magnetic-stone/tide mechanism behind the discrepancies."
+        }
+      ]
+    },
+    "latent_side_sagas": [
+      {
+        "key": "side_friend_rivalry",
+        "type": "RELATIONSHIP",
+        "summary": "Deniz's friend may develop their own ambitions as a practical experimenter, creating friction or partnership over credit and method.",
+        "dormant": true
+      },
+      {
+        "key": "side_beacon_ridge_politics",
+        "type": "WORLD",
+        "summary": "Beacon Ridge's signal-tower crews have their own internal disputes over authority and funding that could intersect with the chart controversy.",
+        "dormant": true
+      },
+      {
+        "key": "side_drowned_causeway_secret",
+        "type": "SIDE",
+        "summary": "The Drowned Causeway may hide its own unrelated mystery, such as a wreck or hidden cache, discoverable independently of the Main Saga.",
+        "dormant": true
+      },
+      {
+        "key": "side_mentor_past",
+        "type": "PERSONAL",
+        "summary": "The senior mapmaker's own history with a failed outer expedition may resurface and affect their willingness to trust new evidence.",
+        "dormant": true
+      }
+    ],
+    "creative_permission_envelope": {
+      "future_architects_may_propose": [
+        "new minor NPCs among harbor crews, rival expeditions, or council officials",
+        "new documentary or physical evidence types consistent with LOW_MAGIC rules",
+        "additional remote islands or observatories within the outer seas",
+        "new folklore fragments that may or may not later prove accurate"
+      ],
+      "future_architects_may_not": [
+        "confirm the identity or culture of the ancient builders beyond FIXED_HIDDEN ceilings",
+        "resolve the unresolved family-connection truth without a validated Episode outcome",
+        "introduce arbitrary magic inconsistent with the world's rule-bound geophysical magic level"
+      ]
+    },
+    "world_integration": {
+      "reused_entities": [
+        "Meridian Harbor",
+        "Beacon Ridge",
+        "the Drowned Causeway",
+        "the Outer Mist Line",
+        "the abandoned tide observatory"
+      ],
+      "new_entity_policy": "New locations, NPCs, and artifacts introduced during Episodes remain PROPOSED until validated and committed to Canon by actual story outcomes."
+    },
+    "reweave_policy": {
+      "policy": "Uncommitted future anchors, milestones, and edges may be adapted or reordered if later Episode outcomes make them implausible, but no committed milestone, reveal, or hidden truth already realized in Canon may be rewritten."
+    },
+    "background_enrichment_policy": {
+      "policy": "Background systems may propose latent quest hooks, NPC arc possibilities, or cross-links between Main and Side Sagas, but all such proposals remain PROPOSED or LATENT until a user-present Episode activates and validates them."
+    },
+    "safety_and_constraints": {
+      "age_appropriateness": "All stakes, risks, and conflicts remain age-12 appropriate: physical danger is real but survivable and consequence-driven, without graphic harm; moral conflicts involve trust, credit, and competing interests rather than violence or exploitation.",
+      "agency_protection": "No future Episode's trust, alliance, forgiveness, or resolution choice is precommitted by this spine; all such outcomes remain open until enacted.",
+      "human_review_required": true
+    }
+  },
+  "raw_usage": {
+    "prompt_tokens": 4563,
+    "completion_tokens": 6014,
+    "total_tokens": 10577,
+    "cost": 0.069266,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.069266,
+      "upstream_inference_prompt_cost": 0.009126,
+      "upstream_inference_completions_cost": 0.06014
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 19,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "usage": {
+    "input_tokens": 4563,
+    "output_tokens": 6014,
+    "total_tokens": 10577
+  },
+  "cost": {
+    "usd": 0.069266,
+    "try_amount": null,
+    "usd_try_rate": null
+  },
+  "request": {
+    "temperature": null,
+    "max_tokens": 18000,
+    "reasoning": {
+      "effort": "low",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "parse_failures": [],
+  "contract_errors": [
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_facts",
+        0
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginFact"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_facts",
+        1
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginFact"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_facts",
+        2
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginFact"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "formative_events",
+        0
+      ],
+      "msg": "Input should be a valid dictionary or instance of FormativeEvent"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "formative_events",
+        1
+      ],
+      "msg": "Input should be a valid dictionary or instance of FormativeEvent"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_relationships",
+        0
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginRelationship"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_relationships",
+        1
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginRelationship"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "origin_relationships",
+        2
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginRelationship"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "unresolved_origin_questions",
+        0
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginQuestion"
+    },
+    {
+      "type": "model_type",
+      "loc": [
+        "origin",
+        "unresolved_origin_questions",
+        1
+      ],
+      "msg": "Input should be a valid dictionary or instance of OriginQuestion"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_role"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_location_context"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_relationship_context"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_resources"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_pressures"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "current_open_questions"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "immediate_desires"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "present_situation",
+        "immediate_avoidances"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "present_situation",
+        "current_access"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "present_situation",
+        "open_tensions"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "identity_anchors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "core_drives"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "core_fears"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "internal_tensions"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "long_term_questions"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "narrative_core",
+        "themes"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "narrative_core",
+        "protagonist_drive"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "narrative_core",
+        "world_tension"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "narrative_core",
+        "tone"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "narrative_core",
+        "reader_experience_goals"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "title"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "target_state"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "required_for_resolution"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        0,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "title"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "target_state"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "required_for_resolution"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        1,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "title"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "target_state"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "required_for_resolution"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        2,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "title"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "target_state"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "required_for_resolution"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        3,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "title"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "target_state"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "required_for_resolution"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "anchors",
+        4,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        0,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        1,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        2,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        3,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        4,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        5,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        6,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        7,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        8,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        9,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        10,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        11,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        12,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        13,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "required_for_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "possible_entry_vectors"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "reveal_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "consequence_options"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "skippable_if_alternate_route_satisfies_anchor"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "milestones",
+        14,
+        "value_type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        0,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        1,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        2,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        3,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        4,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        5,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        6,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        7,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        8,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        9,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        10,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        11,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        12,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        13,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        14,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        15,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "from_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "to_node"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "relationship"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "rationale"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "from"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "to"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "edges",
+        16,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        0,
+        "question"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        0,
+        "character_knows_question_exists"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        0,
+        "truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        0,
+        "reveal_ceiling"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        1,
+        "question"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        1,
+        "character_knows_question_exists"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        1,
+        "truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        1,
+        "reveal_ceiling"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        2,
+        "question"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        2,
+        "character_knows_question_exists"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        2,
+        "truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "hidden_truths",
+        2,
+        "reveal_ceiling"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "truth_key"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "level"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "eligibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "reveal_ceiling"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "targets_truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "tied_milestone"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "status"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        0,
+        "content"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "truth_key"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "level"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "eligibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "reveal_ceiling"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "targets_truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "tied_milestone"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "status"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        1,
+        "content"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "truth_key"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "level"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "summary"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "eligibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "milestone_keys"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "reveal_ceiling"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "targets_truth"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "tied_milestone"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "status"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "main_saga",
+        "reveal_steps",
+        2,
+        "content"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "arc_type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "premise"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "why_it_matters"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "activation"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "initial_visibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "must_not_force_followup"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "remains_proposed_until_activated"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        0,
+        "dormant"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "arc_type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "premise"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "why_it_matters"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "activation"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "initial_visibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "must_not_force_followup"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "remains_proposed_until_activated"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        1,
+        "dormant"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "arc_type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "premise"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "why_it_matters"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "activation"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "initial_visibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "must_not_force_followup"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "remains_proposed_until_activated"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        2,
+        "dormant"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "arc_type"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "premise"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "why_it_matters"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "activation"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "initial_visibility"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "must_not_force_followup"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "remains_proposed_until_activated"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "type"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "summary"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "latent_side_sagas",
+        3,
+        "dormant"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "creative_permission_envelope",
+        "allowed_entity_types"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "creative_permission_envelope",
+        "allowed_scopes"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "creative_permission_envelope",
+        "creation_constraints"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "creative_permission_envelope",
+        "forbidden_creations"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "creative_permission_envelope",
+        "durable_creation_requires_outcome_commit"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "creative_permission_envelope",
+        "future_architects_may_propose"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "creative_permission_envelope",
+        "future_architects_may_not"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "world_integration",
+        "proposed_bindings"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "world_integration",
+        "integration_rules"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "world_integration",
+        "reused_entities"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "world_integration",
+        "new_entity_policy"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "reweave_policy",
+        "reweave_allowed"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "reweave_policy",
+        "immutable_elements"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "reweave_policy",
+        "mutable_elements"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "reweave_policy",
+        "recommended_triggers"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "reweave_policy",
+        "policy"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "may_propose_latent_quests"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "may_propose_saga_links"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "may_propose_world_events"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "may_propose_npc_arcs"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "may_mutate_user_dependent_canon_while_absent"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "background_enrichment_policy",
+        "outputs_remain_proposed_or_latent"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "background_enrichment_policy",
+        "policy"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "never_prewrite_story_sequence"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "never_force_saga_progression"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "never_assume_future_character_choice"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "never_commit_future_event_as_fact"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "never_reveal_hidden_information_early"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "allow_saga_free_stories"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "allow_thread_abandonment"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "allow_thread_reactivation"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "safety_and_constraints",
+        "allow_multiple_concurrent_threads"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "safety_and_constraints",
+        "age_appropriateness"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "safety_and_constraints",
+        "agency_protection"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "safety_and_constraints",
+        "human_review_required"
+      ],
+      "msg": "Extra inputs are not permitted"
+    }
+  ]
+}
