@@ -839,14 +839,20 @@ def run_storyforge(
     word_count = count_words(story)
     length_pass = hard_min <= word_count <= hard_max
 
-    stage_started = time.perf_counter()
-    try:
-        primary, primary_meta = _audit_story(
-            api_key=key, model=models["primary_auditor"], request=req,
-            packet=packet, plan=plan, story=story, seed=seed + 3
-        )
-    except StoryForgeAuditContractError as exc:
-        evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
+    primary, primary_meta = _run_traced_stage(
+        stage="primary_audit",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _audit_story(
+            api_key=key,
+            model=models["primary_auditor"],
+            request=req,
+            packet=packet,
+            plan=plan,
+            story=story,
+            seed=seed + 3,
+        ),
+    )
         evidence["primary_audit_contract_failure"] = exc.trace
         evidence["elapsed_seconds"] = round(time.perf_counter() - started, 3)
         evidence["latency_seconds"]["total"] = evidence["elapsed_seconds"]
@@ -867,12 +873,20 @@ def run_storyforge(
             },
         ) from exc
     evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
-    stage_started = time.perf_counter()
-    secondary, secondary_meta = _audit_story(
-        api_key=key, model=models["secondary_auditor"], request=req,
-        packet=packet, plan=plan, story=story, seed=seed + 4
+    secondary, secondary_meta = _run_traced_stage(
+        stage="secondary_audit",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _audit_story(
+            api_key=key,
+            model=models["secondary_auditor"],
+            request=req,
+            packet=packet,
+            plan=plan,
+            story=story,
+            seed=seed + 4,
+        ),
     )
-    evidence["latency_seconds"]["secondary_audit"] = round(time.perf_counter() - stage_started, 3)
     evidence["story_audit_initial"] = {
         "word_count": word_count,
         "length_pass": length_pass,
