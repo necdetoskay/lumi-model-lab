@@ -91,6 +91,7 @@ def generate(
     architect_model_override: str | None = None,
     gate_model_override: str | None = None,
     api_key: str | None = None,
+    revision_feedback_path: Path | None = None,
 ) -> dict[str, Any]:
     load_dotenv()
     key = api_key or os.getenv("OPENROUTER_API_KEY")
@@ -142,9 +143,20 @@ def generate(
             + ", ".join(sorted(allowed_locations - accessible_locations))
         )
 
+    revision_feedback = (
+        _read_json(revision_feedback_path)
+        if revision_feedback_path is not None
+        else None
+    )
+
     architect_input = {
-        "task": "build_episode_spine_from_approved_premise",
+        "task": (
+            "revise_episode_spine_from_independent_feedback"
+            if revision_feedback is not None
+            else "build_episode_spine_from_approved_premise"
+        ),
         "approved_premise": premise,
+        "revision_feedback": revision_feedback,
         "premise_context": projection,
         "required_intended_milestone_keys": intended_milestones,
         "allowed_location_refs": sorted(allowed_locations),
@@ -378,6 +390,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--architect-model")
     parser.add_argument("--gate-model")
+    parser.add_argument("--revision-feedback", type=Path)
     args = parser.parse_args()
 
     payload = generate(
@@ -391,6 +404,7 @@ def main() -> None:
         out_path=args.out,
         architect_model_override=args.architect_model,
         gate_model_override=args.gate_model,
+        revision_feedback_path=args.revision_feedback,
     )
     print(
         json.dumps(
