@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from src.generate import count_words
 from src.storyforge import StoryForgeRequest
 from src.storyforge import runtime as storyforge_runtime
+from src.storyforge.runtime import StoryForgeAuditContractError
 
 PROFILE = Path("configs/storyforge/lsf_a12_w1000_v0_1_exp.yaml")
 REQUEST = Path("experiments/fixtures/storyforge_age12_dinosaur_engineering_probe_20260928.json")
@@ -31,7 +32,28 @@ def main() -> None:
     original_loader = storyforge_runtime._load_profile
     storyforge_runtime._load_profile = _load_experimental_profile
     try:
-        result = storyforge_runtime.run_storyforge(request, profile_path=PROFILE)
+        try:
+            result = storyforge_runtime.run_storyforge(request, profile_path=PROFILE)
+        except StoryForgeAuditContractError as exc:
+            failure = {
+                "profile_id": "LSF-A12-W1000-v0.1-exp",
+                "request_id": request.request_id,
+                "status": "trace_failure",
+                "publication_ready": False,
+                "failure": {
+                    "type": type(exc).__name__,
+                    "message": str(exc),
+                    "stage": exc.trace.get("stage"),
+                },
+                "trace": exc.trace,
+            }
+            OUT.parent.mkdir(parents=True, exist_ok=True)
+            OUT.write_text(json.dumps(failure, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            story = str(exc.trace.get("english_story") or "")
+            if story:
+                (OUT.parent / "english.txt").write_text(story + "\n", encoding="utf-8")
+            print(json.dumps(failure, ensure_ascii=False, indent=2))
+            raise
     finally:
         storyforge_runtime._load_profile = original_loader
 
