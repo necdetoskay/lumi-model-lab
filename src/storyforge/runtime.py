@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -568,7 +569,11 @@ def _run_traced_stage(
     fn: Any,
 ) -> Any:
     stage_started = time.perf_counter()
-    event: dict[str, Any] = {"stage": stage, "status": "started"}
+    event: dict[str, Any] = {
+        "stage": stage,
+        "status": "started",
+        "started_at": datetime.now(timezone.utc).isoformat(),
+    }
     evidence.setdefault("trace_events", []).append(event)
 
     try:
@@ -578,6 +583,7 @@ def _run_traced_stage(
         evidence.setdefault("latency_seconds", {})[stage] = latency
         event.update({
             "status": "failed",
+            "completed_at": datetime.now(timezone.utc).isoformat(),
             "latency_seconds": latency,
             "error": {"type": type(exc).__name__, "message": str(exc)},
         })
@@ -589,7 +595,11 @@ def _run_traced_stage(
 
     latency = round(time.perf_counter() - stage_started, 3)
     evidence.setdefault("latency_seconds", {})[stage] = latency
-    event.update({"status": "completed", "latency_seconds": latency})
+    event.update({
+        "status": "completed",
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "latency_seconds": latency,
+    })
     return result
 
 
