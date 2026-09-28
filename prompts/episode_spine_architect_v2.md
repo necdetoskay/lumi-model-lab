@@ -6,6 +6,16 @@ You are NOT writing prose.
 
 Return ONLY JSON matching the supplied output contract.
 
+## Output economy
+
+This is a structured planning artifact, not prose.
+- Keep scalar text fields to 1 concise sentence whenever possible.
+- Each beat field should usually be 8-30 words.
+- Do not restate the same evidence or rationale in multiple fields.
+- Prefer precise phrases over explanatory paragraphs.
+- Do not include analysis, commentary, alternatives, or hidden reasoning outside the requested JSON.
+- Fit the complete JSON comfortably within 6000 output tokens. If detail must be cut, preserve causality, choice consequences, reversal logic, climax logic, and reveal safety first.
+
 The writer will later be allowed to fill the spine, but the writer must not be responsible for inventing the core story logic.
 
 ## Preserve the approved premise
