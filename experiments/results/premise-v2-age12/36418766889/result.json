@@ -1,0 +1,1135 @@
+{
+  "schema_version": "premise-v2-evidence.v1",
+  "status": "awaiting_human_review",
+  "publication_authority": false,
+  "episode_spine_authorized": false,
+  "human_creative_review_required": true,
+  "started_at": "2026-09-28T11:58:02.928997+00:00",
+  "architect_model": "anthropic/claude-sonnet-5",
+  "gate_model": "openai/gpt-5.6-luna",
+  "architect_runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5",
+    "display_name": "Claude Sonnet 5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5"
+    },
+    "profile_sha256": "af8e8e8a67406b923ed28b239bd64ea6261642477843723dbff49c919b64f3c5",
+    "runtime_contract_sha256": "ca426db404460da693c50a33033cd7dbd5a04f30524f0dde77b80420f8eafa4c",
+    "production_policy_sha256": "b11d53a2319eac3f6bce42307a122aca5b62c39c63407a43977286d1524ad1c3"
+  },
+  "gate_runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "openai/gpt-5.6-luna",
+    "display_name": "GPT-5.6 Luna",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "openai/gpt-5.6-luna"
+    },
+    "profile_sha256": "aa000d4f65d8337439999d3d8bfbda62595189007d4290c844fd06e74ca7bf6e",
+    "runtime_contract_sha256": "ef8ad486f139c2885915203135c81e8eab3ed449ad507e20a133018461e1df0b",
+    "production_policy_sha256": "06196d7e7856f253c9972441e8fc809d298c0f88e32524818412cb93095f3ed2"
+  },
+  "projection": {
+    "schema": "premise-context-projection.v2",
+    "reader_profile": {
+      "schema": "reader-development-profile.v2",
+      "profile_id": "reader.age12.adventure.v2",
+      "exact_age": 12,
+      "audience_band": "OLDER_CHILD",
+      "developmental_stage": "early_adolescent_reader",
+      "capability_bridge": {
+        "narrative_age_tier": "MIDDLE_CHILD",
+        "reading_mode": "INDEPENDENT_READER",
+        "qualification_standard_target_words": 2800,
+        "product_session_length_is_separate_authority": true
+      },
+      "dimensions": [
+        {
+          "name": "PREMISE_MATURITY",
+          "target_level": 4,
+          "description": "Core story problem should feel substantively suitable for a 12-year-old, not like preschool play dressed in harder vocabulary."
+        },
+        {
+          "name": "NARRATIVE_COMPLEXITY",
+          "target_level": 4,
+          "description": "Support layered goals, changing information, reversals, and multi-step progression while remaining readable."
+        },
+        {
+          "name": "CONCEPTUAL_COMPLEXITY",
+          "target_level": 3,
+          "description": "Allow systems, evidence, competing explanations, responsibility, trust, and consequences without requiring adult-only abstraction."
+        },
+        {
+          "name": "CAUSAL_DEPTH",
+          "target_level": 4,
+          "description": "Important outcomes should follow from multiple linked causes rather than one-step problem-solution patterns."
+        },
+        {
+          "name": "INFERENCE_DEMAND",
+          "target_level": 3,
+          "description": "Reader should sometimes connect clues, motives, patterns, or consequences without every relationship being stated directly."
+        },
+        {
+          "name": "AGENCY_COMPLEXITY",
+          "target_level": 4,
+          "description": "Character should face meaningful options, trade-offs, strategy, or uncertainty; choices must not be predetermined."
+        },
+        {
+          "name": "STAKES_CONSEQUENCE_COMPLEXITY",
+          "target_level": 3,
+          "description": "Actions should matter to reputation, relationships, access, goals, safety, or world state without requiring graphic danger."
+        },
+        {
+          "name": "SOCIAL_RELATIONSHIP_COMPLEXITY",
+          "target_level": 3,
+          "description": "Support trust, disagreement, rivalry, mentorship, competing interests, and mixed motives without adult melodrama."
+        },
+        {
+          "name": "PREDICTABILITY_CHALLENGE",
+          "target_level": 4,
+          "description": "Avoid obvious one-beat resolutions; allow wrong hypotheses, reversals, incomplete information, and earned payoff."
+        },
+        {
+          "name": "WONDER_DISCOVERY",
+          "target_level": 4,
+          "description": "Adventure-oriented episodes should offer places, systems, discoveries, mysteries, or experiences larger than ordinary daily-life simulation."
+        },
+        {
+          "name": "LANGUAGE_READABILITY",
+          "target_level": 3,
+          "description": "Use clear, natural language suitable for an independent 12-year-old reader. Story maturity must not depend on jargon."
+        }
+      ],
+      "standard_session": {
+        "name": "STANDARD",
+        "target_minutes_min": 15,
+        "target_minutes_max": 20,
+        "target_words_min": 1600,
+        "target_words_max": 2500
+      },
+      "optional_sessions": [
+        {
+          "name": "QUICK",
+          "target_minutes_min": 8,
+          "target_minutes_max": 12,
+          "target_words_min": 1000,
+          "target_words_max": 1600
+        },
+        {
+          "name": "LONG",
+          "target_minutes_min": 20,
+          "target_minutes_max": 30,
+          "target_words_min": 2500,
+          "target_words_max": 3500
+        },
+        {
+          "name": "SPECIAL",
+          "target_minutes_min": 30,
+          "target_minutes_max": 45,
+          "target_words_min": 3500,
+          "target_words_max": 5000
+        }
+      ],
+      "required_story_capabilities": [
+        "Meaningful protagonist role in the world",
+        "At least one non-trivial objective or unresolved question",
+        "Multi-step causality",
+        "Meaningful discovery or change in understanding",
+        "A real choice, strategic constraint, or consequential action",
+        "Local episode payoff",
+        "Persistent consequence or reusable world-state value",
+        "Adventure-oriented modes should include wonder, exploration, mystery, or extraordinary experience"
+      ],
+      "reject_signals": [
+        "Core premise is primarily pretend-play with toys, chores, or ordinary-room simulation unless explicitly requested",
+        "Difficult vocabulary is doing the work of making an otherwise young-child premise appear older",
+        "Problem resolves through one obvious attempt with no meaningful complication",
+        "Character mostly observes while adults or the world solve the important problem",
+        "Episode can be summarized as collect clue A, clue B, clue C with no reasoning change",
+        "Stakes are cosmetic and no persistent consequence can result",
+        "Mystery is solved before the character earns the relevant evidence",
+        "World can be swapped for any generic setting without changing the premise materially"
+      ],
+      "language_rules": [
+        "Prefer clarity over ornamental complexity",
+        "Technical terms are allowed when they serve the world or reasoning and can be understood in context",
+        "Do not infantilize dialogue or narration",
+        "Do not use vocabulary difficulty as a substitute for premise maturity",
+        "Keep exposition bounded and reveal information through action, observation, dialogue, or consequence where practical"
+      ],
+      "safety_rules": [
+        "Adventure tension is allowed without requiring graphic violence",
+        "Fear, danger, loss, rivalry, and uncertainty may be present when developmentally appropriate",
+        "Do not assume maturity requires darker or more violent content",
+        "Do not force romance, grief, betrayal, or trauma merely to make a story feel older"
+      ],
+      "calibration_notes": [
+        "A strong age-12 premise may involve systems failing, competing hypotheses, expedition planning, social disagreement, hidden history, evidence testing, or strategic risk.",
+        "A simple premise may still pass when deliberately selected for a calm/intimate mode, but should not be used as the default adventure ceiling.",
+        "Evaluate premise, narrative, conceptual, interest, and language maturity independently."
+      ]
+    },
+    "session_target": {
+      "name": "STANDARD",
+      "target_minutes_min": 15,
+      "target_minutes_max": 20,
+      "target_words_min": 1600,
+      "target_words_max": 2500
+    },
+    "character": {
+      "name": "Deniz",
+      "age": 12,
+      "archetype": "apprentice cartographer and field observer",
+      "traits": [
+        "observant",
+        "persistent",
+        "independent",
+        "sometimes overconfident",
+        "loyal"
+      ],
+      "interests": [
+        "ancient maps",
+        "sea creatures",
+        "mechanical instruments",
+        "coded symbols",
+        "unexplored places"
+      ],
+      "origin_summary": "Deniz grew up in Meridian Harbor apprenticing under a demanding mapmaker, driven to prove that patient observation can reveal what official charts miss.",
+      "current_role": "apprentice cartographer under supervised but increasingly independent fieldwork",
+      "identity_anchors": [
+        {
+          "key": "evidence_over_confidence",
+          "statement": "Deniz believes careful observation matters more than authority or bravado."
+        },
+        {
+          "key": "unofficial_legitimacy",
+          "statement": "Deniz wants recognition earned through proof, not granted by rank."
+        }
+      ],
+      "core_drives": [
+        {
+          "key": "prove_method",
+          "drive": "Prove that rigorous observation reveals truths official maps miss.",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "expand_range",
+          "drive": "Earn the right to chart beyond the home strait.",
+          "strength": "SECONDARY"
+        }
+      ],
+      "internal_tensions": [
+        {
+          "key": "caution_vs_obsession",
+          "side_a": "methodical patience",
+          "side_b": "pull toward reckless pursuit of a personally meaningful mystery",
+          "description": "Deniz's discipline is tested whenever a discovery brushes close to personal stakes."
+        }
+      ],
+      "immediate_desires": [
+        "earn the right to chart beyond the home strait",
+        "find hard evidence others cannot dismiss"
+      ],
+      "immediate_avoidances": [
+        "being dismissed as a reckless or overconfident child surveyor"
+      ]
+    },
+    "world": {
+      "world_type": "LOW_MAGIC",
+      "era": "age of sail with precision mechanical navigation",
+      "habitat": "a vast island chain divided by deep channels, storm belts and partially mapped outer seas",
+      "technology_level": "sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices",
+      "magic_level": "rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting",
+      "summary": "The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.",
+      "locations": [
+        "Meridian Harbor, Deniz's known home port",
+        "Beacon Ridge, a chain of signal towers above the inner strait",
+        "the Drowned Causeway, visible only during rare low tides",
+        "the Outer Mist Line, where official charts become incomplete",
+        "an abandoned tide observatory on a distant mapped island"
+      ],
+      "social_context": [
+        "cartographers and navigators hold respected public roles",
+        "island councils depend on reliable sea routes",
+        "young apprentices may take meaningful expedition roles within established safety rules",
+        "merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence",
+        "old folklore sometimes preserves real geographic information in distorted form"
+      ],
+      "known_pressures": [
+        "several navigation beacons no longer agree with official charts",
+        "outer-island routes are becoming economically important",
+        "storm season will eventually restrict long voyages",
+        "different groups have reasons to prefer different versions of the map"
+      ],
+      "known_world_facts": [
+        "Meridian Harbor is Deniz's home port and training base.",
+        "Beacon Ridge is part of the known inner navigation network.",
+        "The Drowned Causeway is known to appear only during rare low tides.",
+        "The Outer Mist Line marks the edge of reliable official charts.",
+        "An abandoned tide observatory exists on a distant mapped island.",
+        "Several beacon readings have recently become difficult to reconcile with official charts, but no accepted explanation exists yet."
+      ]
+    },
+    "main_saga_public": {
+      "key": "the_uncharted_disagreement",
+      "title": "The Uncharted Disagreement",
+      "goal": "Discover why the Shattered Meridian's ancient navigation infrastructure and living tides no longer agree with official charts.",
+      "stakes": "Outer routes vital to island trade may become unsafe or unusable if the true cause of the discrepancies goes unaddressed.",
+      "central_mystery": "Something in the deep channels or the ancient beacon-markers is behaving in ways no known chart-making era can explain.",
+      "themes": [
+        "exploration",
+        "evidence versus assumption",
+        "the limits of official knowledge"
+      ]
+    },
+    "eligible_main_saga_milestones": [
+      {
+        "key": "first_discrepancy_logged",
+        "anchor_key": "noticing_the_drift",
+        "type": "DISCOVERY",
+        "summary": "Deniz notices a beacon reading that disagrees with the official chart by a margin too large for instrument error.",
+        "state_condition": "Deniz has one documented anomaly and a working hypothesis that it is not simple mistake.",
+        "possible_entry_vectors": [
+          "EXPLORATION",
+          "LOCATION",
+          "ITEM"
+        ],
+        "consequence_options": [
+          "The mentor questions Deniz's methodology.",
+          "The friend becomes curious and offers to help verify."
+        ]
+      }
+    ],
+    "active_side_sagas": [
+      {
+        "key": "friend_expedition_rivalry",
+        "arc_type": "RELATIONSHIP",
+        "premise": "Deniz's practical-minded friend may want to pursue independent proof through experiments rather than surveying, creating friendly rivalry.",
+        "why_it_matters": "Provides low-stakes roleplay and callback material outside the Main Saga."
+      }
+    ],
+    "recent_episode_summaries": [],
+    "requested_mode": "ADVENTURE",
+    "creative_permission_envelope": {
+      "allowed_entity_types": [
+        "NPC",
+        "LOCATION",
+        "ITEM",
+        "RUMOR",
+        "DOCUMENT",
+        "EVENT",
+        "FACTION",
+        "WORLD_PHENOMENON",
+        "TRANSIENT_SCENE_DETAIL"
+      ],
+      "allowed_scopes": [
+        "LOCAL",
+        "REGIONAL",
+        "WORLD"
+      ],
+      "creation_constraints": [
+        "New entities must fit low-magic, rule-bound tidal/magnetic world logic.",
+        "New NPCs should have plausible reasons to intersect Deniz's apprentice life.",
+        "Do not contradict established hidden truths."
+      ],
+      "forbidden_creations": [
+        "Arbitrary magic systems",
+        "Confirmation of marker_origin beyond eligibility",
+        "Predetermined resolution of father's fate"
+      ],
+      "durable_creation_requires_outcome_commit": true
+    },
+    "rules": {
+      "main_saga_progression_optional": true,
+      "future_character_choice_must_remain_open": true,
+      "durable_new_fact_requires_outcome_commit": true,
+      "hidden_truths_not_available_to_premise_architect": true
+    }
+  },
+  "available_target_refs": [
+    "SAGA_FREE",
+    "WORLD_EXPLORATION",
+    "first_discrepancy_logged",
+    "friend_expedition_rivalry"
+  ],
+  "architect_raw_payload": {
+    "schema": "premise-candidate-batch.v2",
+    "candidates": [
+      {
+        "key": "ridge_drift_deadline",
+        "title": "The Ridge That Disagrees",
+        "primary_focus": "MAIN_SAGA",
+        "target_refs": [
+          "first_discrepancy_logged"
+        ],
+        "differentiation_key": "instrument-based anomaly under institutional time pressure at Beacon Ridge",
+        "logline": "During a routine calibration check, Deniz finds a beacon reading that refuses to match the official chart — and has only until the next scheduled maintenance to prove it isn't just instrument error.",
+        "protagonist_role": "Apprentice surveyor assigned limited, supervised access to verify beacon instrument readings at Beacon Ridge.",
+        "immediate_objective": "Gather a second, defensible reading confirming the beacon's magnetic drift before the mentor's review deadline or scheduled beacon maintenance erases the chance to check again.",
+        "inciting_event": "While logging a routine calibration, Deniz notices the beacon's reading has drifted from the official chart by a margin too large to blame on instrument tolerance, and a hurried second check seems to confirm it.",
+        "central_problem": "The drift could be a broken instrument, an outdated chart, or something in the beacon stone itself — each explanation demands different next steps, and Deniz has too little time and too little authority to test all three properly.",
+        "wonder_or_discovery": "Close inspection reveals the beacon's old markings carry a faint, regular patterning that doesn't match any survey era Deniz has been taught, hinting the structure may be older than anyone assumes.",
+        "stakes": "Report too early with thin evidence and the mentor may dismiss the anomaly and restrict Deniz's fieldwork; wait too long and scheduled maintenance may reset the beacon before the drift can be confirmed at all.",
+        "constraints": [
+          "Limited and intermittently supervised access to the instruments",
+          "A hard deadline before scheduled beacon maintenance",
+          "Must not disturb or recalibrate official equipment without permission",
+          "Only one set of reliable field tools available"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to bring the mentor a single striking but unconfirmed reading now to secure continued access, or risk losing the beacon entirely by waiting for a second confirming measurement.",
+        "mystery_or_forward_question": "Whether the drift comes from instrument error, an outdated chart, or something active in the old stone remains unresolved, though one hypothesis becomes newly credible.",
+        "local_payoff": "The mentor agrees the anomaly is worth formally logging rather than dismissing, and Deniz earns a small but real expansion of independent fieldwork trust.",
+        "persistent_outcomes_possible": [
+          "A documented, dated anomaly log tied to the beacon",
+          "A shift in the mentor's assessment of Deniz's methodology",
+          "Possible continued or expanded access to Beacon Ridge instruments",
+          "A rumor among fellow apprentices about the disagreeing beacon"
+        ],
+        "world_specific_elements": [
+          "Beacon Ridge signal towers",
+          "mechanical calibration instruments",
+          "official chart discrepancy pressures",
+          "scheduled beacon maintenance cycle"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      },
+      {
+        "key": "causeway_tide_rivalry",
+        "title": "The Narrow Window",
+        "primary_focus": "SIDE_SAGA",
+        "target_refs": [
+          "friend_expedition_rivalry"
+        ],
+        "differentiation_key": "friend rivalry over competing methods against a hard tidal deadline at the Drowned Causeway",
+        "logline": "When the rare low tide finally exposes the Drowned Causeway, Deniz and a practical-minded friend disagree over how to prove anything about it before the sea reclaims their only chance.",
+        "protagonist_role": "Apprentice surveyor accompanying a friend to document a rare, short-lived exposure of the Drowned Causeway.",
+        "immediate_objective": "Record usable evidence of the causeway's carved markers before the tide returns and buries them again.",
+        "inciting_event": "Deniz and the friend reach the exposed causeway only to realize the tide window is shorter than expected, and they immediately clash over Deniz's careful survey approach versus the friend's faster hands-on testing.",
+        "central_problem": "Two different methods compete for the same limited time: slow, careful documentation risks running out of tide before finishing, while fast experimentation risks damaging fragile markings or missing subtle details — and the carved symbols themselves seem oddly directional, possibly shifted or altered.",
+        "wonder_or_discovery": "The causeway markers include carved directional symbols pointing outward toward the Outer Mist Line, faintly echoing a pattern Deniz has half-noticed before but never placed.",
+        "stakes": "If the tide window is wasted through disagreement or rushed methods, they lose the only clear evidence for possibly years; if they misrepresent the find later, it could damage both their credibility with the harbor council.",
+        "constraints": [
+          "An unpredictable, short low-tide window",
+          "Unstable, slippery causeway surface",
+          "No adult supervision present to arbitrate decisions",
+          "Only hand tools and sketch materials available on site"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to slow down and merge both methods for stronger but partial evidence, or split up with the friend to cover more ground quickly at the risk of weaker, harder-to-defend results.",
+        "mystery_or_forward_question": "Whether the causeway symbols connect to the beacon disagreements elsewhere in the strait remains an open question beyond this episode.",
+        "local_payoff": "The pair manage to secure one solid, well-documented rubbing or sketch of the symbol before the tide returns, and settle — for now — how they'll work together on future finds.",
+        "persistent_outcomes_possible": [
+          "A shift in the friend rivalry dynamic toward cooperation or competition",
+          "A documented rubbing or sketch of the causeway symbol",
+          "Changed location-state knowledge of the Drowned Causeway",
+          "A new rumor linking the causeway to wider navigation disagreements"
+        ],
+        "world_specific_elements": [
+          "the Drowned Causeway",
+          "rare extreme low tide",
+          "carved directional stone markers",
+          "Outer Mist Line as a directional reference"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      },
+      {
+        "key": "observatory_recent_visitor",
+        "title": "Someone Else's Notes",
+        "primary_focus": "WORLD_EXPLORATION",
+        "target_refs": [
+          "WORLD_EXPLORATION",
+          "SAGA_FREE"
+        ],
+        "differentiation_key": "self-contained exploration mystery of an abandoned observatory with a competing-interest wrinkle, independent of the beacon-drift thread",
+        "logline": "Sent to catalog a supposedly abandoned tide observatory before the council decides its fate, Deniz finds instruments that shouldn't still work and notes in a hand that isn't anyone's on record.",
+        "protagonist_role": "Apprentice given rare permission to help catalog a distant island's abandoned tide observatory ahead of a council decision on its future.",
+        "immediate_objective": "Assess and document which instruments and logbooks are worth preserving before the council's fixed decision deadline.",
+        "inciting_event": "On arrival, Deniz finds the observatory isn't as untouched as expected — some instruments are still calibrated, and a logbook contains recent-looking entries in an unfamiliar hand.",
+        "central_problem": "With only a short visit window before the ship departs, Deniz must figure out what's genuinely valuable to report while also piecing together who has been visiting the supposedly abandoned site and why, without enough time or authority to fully investigate either.",
+        "wonder_or_discovery": "An intact mechanical tide-instrument of an older design, paired with coded shorthand notes that partially resemble known conventions but seem to predate them.",
+        "stakes": "The report Deniz brings back could tip the council toward preserving the observatory or scrapping it, and misjudging the mystery visitor could either miss a valuable ally or trigger unnecessary alarm.",
+        "constraints": [
+          "A short visit window tied to the ship's departure",
+          "Fragile, easily damaged old equipment",
+          "Authority only to recommend, not decide",
+          "Uncertainty about who else currently has access to the site"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to report the evidence of a recent visitor immediately, risking a premature council reaction that could close off further investigation, or quietly gather more information first, risking being seen as withholding something important.",
+        "mystery_or_forward_question": "Who has been visiting the observatory, and why, remains unresolved and open for future exploration.",
+        "local_payoff": "Deniz returns with a persuasive, well-documented case for at least partial preservation of the observatory, anchored by a genuine and impressive discovery.",
+        "persistent_outcomes_possible": [
+          "Changed location-state for the observatory (flagged for preservation or further study)",
+          "A new item: the recovered instrument or a copy of the coded notes",
+          "A new rumor about a mystery visitor",
+          "Improved standing with the island council",
+          "A new eligible thread about who else uses the observatory"
+        ],
+        "world_specific_elements": [
+          "the abandoned tide observatory",
+          "older-design mechanical tide-instrument",
+          "coded shorthand notation",
+          "island council decision process"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      }
+    ]
+  },
+  "architect_parse_failures": [],
+  "architect_call": {
+    "raw_usage": {
+      "prompt_tokens": 6806,
+      "completion_tokens": 6715,
+      "total_tokens": 13521,
+      "cost": 0.080762,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.080762,
+        "upstream_inference_prompt_cost": 0.013612,
+        "upstream_inference_completions_cost": 0.06715
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 3309,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    },
+    "usage": {
+      "input_tokens": 6806,
+      "output_tokens": 6715,
+      "total_tokens": 13521
+    },
+    "cost": {
+      "usd": 0.080762,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "request": {
+      "temperature": null,
+      "max_tokens": 9000,
+      "reasoning": {
+        "effort": "high",
+        "exclude": true
+      },
+      "response_format": {
+        "type": "json_object"
+      }
+    }
+  },
+  "gate_raw_payload": {
+    "schema": "premise-gate.v2",
+    "evaluations": [
+      {
+        "candidate_key": "ridge_drift_deadline",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The problem involves evidence, institutional trust, competing explanations, and a time-bound professional decision appropriate for age 12."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz has a specific apprentice role with supervised access, professional tools, and a meaningful place in the harbor's navigation system."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The disagreeing beacon and unfamiliar markings provide tangible, world-specific discovery beyond routine calibration."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must choose between reporting early for credibility or waiting for stronger evidence under a real deadline and authority constraint."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The decision can affect Deniz's field access, mentor trust, and whether an important anomaly is formally recognized."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Instrument error, chart error, and active beacon-stone behavior remain plausible competing explanations."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The episode can link measurement technique, maintenance timing, institutional skepticism, and interpretation of physical evidence."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Beacon Ridge, mechanical instruments, official charts, and maintenance practices are central rather than interchangeable setting details."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "A dated anomaly record and changed mentor trust create reusable consequences and a credible saga entry point."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Its institutional deadline and instrument-testing focus distinguish it from broader exploration or relationship episodes."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      },
+      {
+        "candidate_key": "causeway_tide_rivalry",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The premise combines expedition planning, evidence standards, environmental limits, and disagreement over methods."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz acts as a field surveyor in a distinctive, physically demanding location using appropriate cartographic skills."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "A rare exposed causeway, submerged markers, and directional carvings offer strong exploration and visual discovery."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must select or combine competing methods while managing a shrinking tide window and a disagreement with the friend."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The evidence may be lost for years, and poor documentation or misrepresentation could damage both characters' credibility."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The altered-looking symbols and possible connection to other navigation problems create an unresolved forward question."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The tide, method choice, interpersonal conflict, evidence quality, and later credibility can affect one another across several steps."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The Drowned Causeway, extreme tides, carved markers, and Outer Mist Line are materially essential to the premise."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The documented rubbing, changed location knowledge, and evolving rivalry provide concrete reusable consequences."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Its tidal fieldwork and friend-method conflict give it a distinct identity from the beacon and observatory mysteries."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      },
+      {
+        "candidate_key": "observatory_recent_visitor",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The premise supports layered investigation, preservation politics, incomplete information, responsibility, and competing interpretations."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz receives rare permission for consequential fieldwork and must perform an authentic cataloging and reporting role."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "An abandoned tide observatory with functioning instruments and unfamiliar technical notes delivers substantial setting-specific wonder."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must balance immediate reporting against discreet evidence gathering while lacking authority to decide the observatory's fate."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The report may determine preservation or loss of a valuable site, while mishandling the visitor evidence could close future access."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The functioning instruments, unfamiliar recent notes, and unknown visitor create a strong unresolved mystery without leaking its answer."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Cataloging choices, evidence preservation, council politics, visitor behavior, and departure timing can produce linked consequences."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The observatory, tidal instruments, island council, navigation history, and coded conventions are inseparable from the story problem."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Preservation status, recovered records or instruments, improved standing, and a reusable visitor thread create several durable outcomes."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "It is a self-contained preservation and access mystery with a distinct abandoned-infrastructure setting, separate from the recent beacon and causeway premises."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      }
+    ],
+    "decision": "ACCEPT",
+    "selected_candidate_key": "observatory_recent_visitor",
+    "decision_reason": "All three premises clear the bar, but Someone Else's Notes is strongest: it combines the richest wonder, a mature evidence-and-preservation dilemma, a compelling unresolved mystery, and multiple durable world-state outcomes while remaining distinct from the current beacon-discrepancy thread."
+  },
+  "gate_parse_failures": [],
+  "gate_call": {
+    "raw_usage": {
+      "prompt_tokens": 5470,
+      "completion_tokens": 2171,
+      "total_tokens": 7641,
+      "cost": 0.00397255,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 5467,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.00397255,
+        "upstream_inference_prompt_cost": 0.00136735,
+        "upstream_inference_completions_cost": 0.0026052
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 313,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    },
+    "usage": {
+      "input_tokens": 5470,
+      "output_tokens": 2171,
+      "total_tokens": 7641
+    },
+    "cost": {
+      "usd": 0.00397255,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "request": {
+      "temperature": null,
+      "max_tokens": 6500,
+      "reasoning": {
+        "effort": "medium",
+        "exclude": true
+      },
+      "response_format": {
+        "type": "json_object"
+      }
+    }
+  },
+  "batch": {
+    "schema": "premise-candidate-batch.v2",
+    "candidates": [
+      {
+        "key": "ridge_drift_deadline",
+        "title": "The Ridge That Disagrees",
+        "primary_focus": "MAIN_SAGA",
+        "target_refs": [
+          "first_discrepancy_logged"
+        ],
+        "differentiation_key": "instrument-based anomaly under institutional time pressure at Beacon Ridge",
+        "logline": "During a routine calibration check, Deniz finds a beacon reading that refuses to match the official chart — and has only until the next scheduled maintenance to prove it isn't just instrument error.",
+        "protagonist_role": "Apprentice surveyor assigned limited, supervised access to verify beacon instrument readings at Beacon Ridge.",
+        "immediate_objective": "Gather a second, defensible reading confirming the beacon's magnetic drift before the mentor's review deadline or scheduled beacon maintenance erases the chance to check again.",
+        "inciting_event": "While logging a routine calibration, Deniz notices the beacon's reading has drifted from the official chart by a margin too large to blame on instrument tolerance, and a hurried second check seems to confirm it.",
+        "central_problem": "The drift could be a broken instrument, an outdated chart, or something in the beacon stone itself — each explanation demands different next steps, and Deniz has too little time and too little authority to test all three properly.",
+        "wonder_or_discovery": "Close inspection reveals the beacon's old markings carry a faint, regular patterning that doesn't match any survey era Deniz has been taught, hinting the structure may be older than anyone assumes.",
+        "stakes": "Report too early with thin evidence and the mentor may dismiss the anomaly and restrict Deniz's fieldwork; wait too long and scheduled maintenance may reset the beacon before the drift can be confirmed at all.",
+        "constraints": [
+          "Limited and intermittently supervised access to the instruments",
+          "A hard deadline before scheduled beacon maintenance",
+          "Must not disturb or recalibrate official equipment without permission",
+          "Only one set of reliable field tools available"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to bring the mentor a single striking but unconfirmed reading now to secure continued access, or risk losing the beacon entirely by waiting for a second confirming measurement.",
+        "mystery_or_forward_question": "Whether the drift comes from instrument error, an outdated chart, or something active in the old stone remains unresolved, though one hypothesis becomes newly credible.",
+        "local_payoff": "The mentor agrees the anomaly is worth formally logging rather than dismissing, and Deniz earns a small but real expansion of independent fieldwork trust.",
+        "persistent_outcomes_possible": [
+          "A documented, dated anomaly log tied to the beacon",
+          "A shift in the mentor's assessment of Deniz's methodology",
+          "Possible continued or expanded access to Beacon Ridge instruments",
+          "A rumor among fellow apprentices about the disagreeing beacon"
+        ],
+        "world_specific_elements": [
+          "Beacon Ridge signal towers",
+          "mechanical calibration instruments",
+          "official chart discrepancy pressures",
+          "scheduled beacon maintenance cycle"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      },
+      {
+        "key": "causeway_tide_rivalry",
+        "title": "The Narrow Window",
+        "primary_focus": "SIDE_SAGA",
+        "target_refs": [
+          "friend_expedition_rivalry"
+        ],
+        "differentiation_key": "friend rivalry over competing methods against a hard tidal deadline at the Drowned Causeway",
+        "logline": "When the rare low tide finally exposes the Drowned Causeway, Deniz and a practical-minded friend disagree over how to prove anything about it before the sea reclaims their only chance.",
+        "protagonist_role": "Apprentice surveyor accompanying a friend to document a rare, short-lived exposure of the Drowned Causeway.",
+        "immediate_objective": "Record usable evidence of the causeway's carved markers before the tide returns and buries them again.",
+        "inciting_event": "Deniz and the friend reach the exposed causeway only to realize the tide window is shorter than expected, and they immediately clash over Deniz's careful survey approach versus the friend's faster hands-on testing.",
+        "central_problem": "Two different methods compete for the same limited time: slow, careful documentation risks running out of tide before finishing, while fast experimentation risks damaging fragile markings or missing subtle details — and the carved symbols themselves seem oddly directional, possibly shifted or altered.",
+        "wonder_or_discovery": "The causeway markers include carved directional symbols pointing outward toward the Outer Mist Line, faintly echoing a pattern Deniz has half-noticed before but never placed.",
+        "stakes": "If the tide window is wasted through disagreement or rushed methods, they lose the only clear evidence for possibly years; if they misrepresent the find later, it could damage both their credibility with the harbor council.",
+        "constraints": [
+          "An unpredictable, short low-tide window",
+          "Unstable, slippery causeway surface",
+          "No adult supervision present to arbitrate decisions",
+          "Only hand tools and sketch materials available on site"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to slow down and merge both methods for stronger but partial evidence, or split up with the friend to cover more ground quickly at the risk of weaker, harder-to-defend results.",
+        "mystery_or_forward_question": "Whether the causeway symbols connect to the beacon disagreements elsewhere in the strait remains an open question beyond this episode.",
+        "local_payoff": "The pair manage to secure one solid, well-documented rubbing or sketch of the symbol before the tide returns, and settle — for now — how they'll work together on future finds.",
+        "persistent_outcomes_possible": [
+          "A shift in the friend rivalry dynamic toward cooperation or competition",
+          "A documented rubbing or sketch of the causeway symbol",
+          "Changed location-state knowledge of the Drowned Causeway",
+          "A new rumor linking the causeway to wider navigation disagreements"
+        ],
+        "world_specific_elements": [
+          "the Drowned Causeway",
+          "rare extreme low tide",
+          "carved directional stone markers",
+          "Outer Mist Line as a directional reference"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      },
+      {
+        "key": "observatory_recent_visitor",
+        "title": "Someone Else's Notes",
+        "primary_focus": "WORLD_EXPLORATION",
+        "target_refs": [
+          "WORLD_EXPLORATION",
+          "SAGA_FREE"
+        ],
+        "differentiation_key": "self-contained exploration mystery of an abandoned observatory with a competing-interest wrinkle, independent of the beacon-drift thread",
+        "logline": "Sent to catalog a supposedly abandoned tide observatory before the council decides its fate, Deniz finds instruments that shouldn't still work and notes in a hand that isn't anyone's on record.",
+        "protagonist_role": "Apprentice given rare permission to help catalog a distant island's abandoned tide observatory ahead of a council decision on its future.",
+        "immediate_objective": "Assess and document which instruments and logbooks are worth preserving before the council's fixed decision deadline.",
+        "inciting_event": "On arrival, Deniz finds the observatory isn't as untouched as expected — some instruments are still calibrated, and a logbook contains recent-looking entries in an unfamiliar hand.",
+        "central_problem": "With only a short visit window before the ship departs, Deniz must figure out what's genuinely valuable to report while also piecing together who has been visiting the supposedly abandoned site and why, without enough time or authority to fully investigate either.",
+        "wonder_or_discovery": "An intact mechanical tide-instrument of an older design, paired with coded shorthand notes that partially resemble known conventions but seem to predate them.",
+        "stakes": "The report Deniz brings back could tip the council toward preserving the observatory or scrapping it, and misjudging the mystery visitor could either miss a valuable ally or trigger unnecessary alarm.",
+        "constraints": [
+          "A short visit window tied to the ship's departure",
+          "Fragile, easily damaged old equipment",
+          "Authority only to recommend, not decide",
+          "Uncertainty about who else currently has access to the site"
+        ],
+        "meaningful_choice_pressure": "Deniz must decide whether to report the evidence of a recent visitor immediately, risking a premature council reaction that could close off further investigation, or quietly gather more information first, risking being seen as withholding something important.",
+        "mystery_or_forward_question": "Who has been visiting the observatory, and why, remains unresolved and open for future exploration.",
+        "local_payoff": "Deniz returns with a persuasive, well-documented case for at least partial preservation of the observatory, anchored by a genuine and impressive discovery.",
+        "persistent_outcomes_possible": [
+          "Changed location-state for the observatory (flagged for preservation or further study)",
+          "A new item: the recovered instrument or a copy of the coded notes",
+          "A new rumor about a mystery visitor",
+          "Improved standing with the island council",
+          "A new eligible thread about who else uses the observatory"
+        ],
+        "world_specific_elements": [
+          "the abandoned tide observatory",
+          "older-design mechanical tide-instrument",
+          "coded shorthand notation",
+          "island council decision process"
+        ],
+        "saga_progression_required": false,
+        "expected_session": "STANDARD"
+      }
+    ]
+  },
+  "gate": {
+    "schema": "premise-gate.v2",
+    "evaluations": [
+      {
+        "candidate_key": "ridge_drift_deadline",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The problem involves evidence, institutional trust, competing explanations, and a time-bound professional decision appropriate for age 12."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz has a specific apprentice role with supervised access, professional tools, and a meaningful place in the harbor's navigation system."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The disagreeing beacon and unfamiliar markings provide tangible, world-specific discovery beyond routine calibration."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must choose between reporting early for credibility or waiting for stronger evidence under a real deadline and authority constraint."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The decision can affect Deniz's field access, mentor trust, and whether an important anomaly is formally recognized."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Instrument error, chart error, and active beacon-stone behavior remain plausible competing explanations."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The episode can link measurement technique, maintenance timing, institutional skepticism, and interpretation of physical evidence."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Beacon Ridge, mechanical instruments, official charts, and maintenance practices are central rather than interchangeable setting details."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "A dated anomaly record and changed mentor trust create reusable consequences and a credible saga entry point."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Its institutional deadline and instrument-testing focus distinguish it from broader exploration or relationship episodes."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      },
+      {
+        "candidate_key": "causeway_tide_rivalry",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The premise combines expedition planning, evidence standards, environmental limits, and disagreement over methods."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz acts as a field surveyor in a distinctive, physically demanding location using appropriate cartographic skills."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "A rare exposed causeway, submerged markers, and directional carvings offer strong exploration and visual discovery."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must select or combine competing methods while managing a shrinking tide window and a disagreement with the friend."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The evidence may be lost for years, and poor documentation or misrepresentation could damage both characters' credibility."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The altered-looking symbols and possible connection to other navigation problems create an unresolved forward question."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The tide, method choice, interpersonal conflict, evidence quality, and later credibility can affect one another across several steps."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The Drowned Causeway, extreme tides, carved markers, and Outer Mist Line are materially essential to the premise."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The documented rubbing, changed location knowledge, and evolving rivalry provide concrete reusable consequences."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Its tidal fieldwork and friend-method conflict give it a distinct identity from the beacon and observatory mysteries."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      },
+      {
+        "candidate_key": "observatory_recent_visitor",
+        "dimensions": [
+          {
+            "name": "PREMISE_MATURITY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The premise supports layered investigation, preservation politics, incomplete information, responsibility, and competing interpretations."
+          },
+          {
+            "name": "ROLEPLAY_IMMERSION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Deniz receives rare permission for consequential fieldwork and must perform an authentic cataloging and reporting role."
+          },
+          {
+            "name": "WONDER_DISCOVERY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "An abandoned tide observatory with functioning instruments and unfamiliar technical notes delivers substantial setting-specific wonder."
+          },
+          {
+            "name": "AGENCY",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Deniz must balance immediate reporting against discreet evidence gathering while lacking authority to decide the observatory's fate."
+          },
+          {
+            "name": "STAKES",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "The report may determine preservation or loss of a valuable site, while mishandling the visitor evidence could close future access."
+          },
+          {
+            "name": "MYSTERY_CURIOSITY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The functioning instruments, unfamiliar recent notes, and unknown visitor create a strong unresolved mystery without leaking its answer."
+          },
+          {
+            "name": "CAUSAL_POTENTIAL",
+            "score": 4,
+            "blocking_failure": false,
+            "reason": "Cataloging choices, evidence preservation, council politics, visitor behavior, and departure timing can produce linked consequences."
+          },
+          {
+            "name": "WORLD_INTEGRATION",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "The observatory, tidal instruments, island council, navigation history, and coded conventions are inseparable from the story problem."
+          },
+          {
+            "name": "PERSISTENT_VALUE",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "Preservation status, recovered records or instruments, improved standing, and a reusable visitor thread create several durable outcomes."
+          },
+          {
+            "name": "REPETITION_SAFETY",
+            "score": 5,
+            "blocking_failure": false,
+            "reason": "It is a self-contained preservation and access mystery with a distinct abandoned-infrastructure setting, separate from the recent beacon and causeway premises."
+          }
+        ],
+        "verdict": "ACCEPT",
+        "blocking_reasons": []
+      }
+    ],
+    "decision": "ACCEPT",
+    "selected_candidate_key": "observatory_recent_visitor",
+    "decision_reason": "All three premises clear the bar, but Someone Else's Notes is strongest: it combines the richest wonder, a mature evidence-and-preservation dilemma, a compelling unresolved mystery, and multiple durable world-state outcomes while remaining distinct from the current beacon-discrepancy thread."
+  },
+  "total_cost_usd": 0.08473455,
+  "completed_at": "2026-09-28T11:59:36.535286+00:00",
+  "latency_seconds": 93.606,
+  "human_review": {
+    "verdict": null,
+    "allowed_values": [
+      "APPROVE",
+      "REVISE",
+      "REJECT"
+    ],
+    "selected_candidate_key": null,
+    "assistant_independent_assessment": null,
+    "episode_spine_authorized": false
+  }
+}
