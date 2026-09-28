@@ -51,6 +51,17 @@ Do not force every Episode to advance Main Saga.
 
 Only use target_refs supplied in AVAILABLE TARGET REFS.
 
+## World access ceilings
+
+Every candidate must return location_refs using only AVAILABLE PRIMARY LOCATION REFS.
+
+Location access policy is authoritative:
+- AVAILABLE + FULL: may be an active Episode location;
+- KNOWN_LOCKED + MENTION_ONLY: may be mentioned as known world context but must NOT be visited, entered, investigated, or used as the premise's active location;
+- RUMORED + FORESHADOW_ONLY: may only be referenced indirectly/foreshadowed, never treated as confirmed accessible geography.
+
+Do not use a future Saga-critical location early merely because the character knows it exists.
+
 ## Agency
 
 Never decide a future character choice.
