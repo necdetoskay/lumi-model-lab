@@ -120,16 +120,22 @@ def call_structured_json_with_retry(
             payload = parse_json_object(text)
         except RuntimeError as exc:
             choice = (body.get("choices") or [{}])[0]
+            finish_reason = choice.get("finish_reason")
             parse_failures.append(
                 {
                     "parse_attempt": parse_attempt,
                     "error": str(exc),
                     "response_chars": len(text),
-                    "finish_reason": choice.get("finish_reason"),
+                    "finish_reason": finish_reason,
                     "usage": parse_usage(body).model_dump(mode="json"),
                     "cost": parse_cost(body).model_dump(mode="json"),
                 }
             )
+            if finish_reason in {"length", "max_tokens"}:
+                raise RuntimeError(
+                    "STRUCTURED_JSON_RESPONSE_TRUNCATED: "
+                    + json.dumps(parse_failures, ensure_ascii=False)
+                ) from exc
             if parse_attempt >= max_parse_attempts:
                 raise RuntimeError(
                     "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED: "
