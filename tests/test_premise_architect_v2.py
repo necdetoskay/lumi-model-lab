@@ -140,7 +140,12 @@ def _evaluation(candidate_key: str, verdict: str, score: int = 4) -> dict:
         "dimensions": [
             {
                 "name": name,
-                "score": score,
+                "score": (
+                    5
+                    if verdict == "ACCEPT"
+                    and name in {"REVEAL_SAFETY", "PROGRESSION_INTEGRITY"}
+                    else score
+                ),
                 "blocking_failure": False,
                 "reason": f"{name} is adequately supported by the premise."
             }
