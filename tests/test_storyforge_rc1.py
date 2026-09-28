@@ -6,7 +6,7 @@ from unittest.mock import patch
 from pydantic import ValidationError
 
 from src.storyforge.contracts import StoryForgeRequest
-from src.storyforge.runtime import StoryForgeAuditContractError, _audit_story, run_storyforge
+from src.storyforge.runtime import StoryForgeAuditContractError, StoryForgeTraceError, _audit_story, _run_traced_stage, run_storyforge
 from src.story_defect_detection import segment_story
 
 
@@ -301,6 +301,42 @@ class StorySourceMapTests(unittest.TestCase):
         self.assertEqual(segments[2]["text"], "Second paragraph has a problem.")
 
 
+class StoryForgeStageTraceTests(unittest.TestCase):
+    def test_common_stage_trace_preserves_prior_artifacts_on_failure(self):
+        evidence = {
+            "cost_usd": {"planner": 0.01},
+            "latency_seconds": {"planner": 1.2},
+            "trace_events": [],
+        }
+        artifacts = {
+            "profile_id": "test-profile",
+            "request_id": "test-request",
+            "context_packet": {"facts": ["x"]},
+            "plan": {"premise": "kept"},
+            "english_story": "Story already generated.",
+            "turkish_story": None,
+        }
+
+        def explode():
+            raise RuntimeError("boom")
+
+        with self.assertRaises(StoryForgeTraceError) as caught:
+            _run_traced_stage(
+                stage="secondary_audit",
+                evidence=evidence,
+                artifacts=artifacts,
+                fn=explode,
+            )
+
+        trace = caught.exception.trace
+        self.assertEqual(trace["stage"], "secondary_audit")
+        self.assertEqual(trace["english_story"], "Story already generated.")
+        self.assertEqual(trace["plan"]["premise"], "kept")
+        self.assertEqual(trace["evidence"]["cost_usd"]["planner"], 0.01)
+        self.assertEqual(trace["evidence"]["trace_events"][-1]["status"], "failed")
+        self.assertEqual(trace["evidence"]["trace_events"][-1]["error"]["type"], "RuntimeError")
+
+
 class StoryForgeAuditTraceTests(unittest.TestCase):
     @patch("src.storyforge.runtime._structured_call")
     def test_invalid_audit_contract_preserves_raw_payload_and_exact_segments(self, mock_structured):
@@ -313,6 +349,7 @@ class StoryForgeAuditTraceTests(unittest.TestCase):
                     "severity": "major" if family == "spatial_consistency" else None,
                     "repair_scope": "local" if family == "spatial_consistency" else None,
                     "span_ids": ["S002"] if family == "spatial_consistency" else [],
+                    "exact_quote": "First sentence." if family == "spatial_consistency" else None,
                     "reason": "The object changes location without a transition." if family == "spatial_consistency" else "",
                 }
                 for family in (
@@ -340,6 +377,8 @@ class StoryForgeAuditTraceTests(unittest.TestCase):
         self.assertEqual(trace["contract_error"], "Invalid blocking severity: spatial_consistency:major")
         by_id = {row["id"]: row["text"] for row in trace["segments"]}
         self.assertEqual(by_id["S002"], "First sentence.")
+        self.assertEqual(trace["segments"][1]["paragraph_id"], "P001")
+        self.assertEqual(trace["segments"][1]["char_start"], 7)
         self.assertIn("model_meta", trace)
 
 
