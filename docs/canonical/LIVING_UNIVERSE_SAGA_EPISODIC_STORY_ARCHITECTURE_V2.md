@@ -662,6 +662,56 @@ Before broad age expansion:
 9. inspect every generated story manually;
 10. only then expand toward additional ages/reader profiles.
 
+## 24A. Human creative-judge authority during Model Lab qualification
+
+During the current Model Lab phase, the human operator is the final creative-quality authority for high-leverage narrative artifacts.
+
+Mandatory human review checkpoints include at minimum:
+
+- Origin;
+- Present Situation / Narrative Core;
+- Main Saga Goal;
+- Saga anchors;
+- milestone graph;
+- latent Side-Saga seeds;
+- hidden mysteries / reveal structure;
+- candidate Premises selected for paid drafting;
+- initial Episode Spines;
+- full generated qualification Episodes.
+
+Automated judges may:
+
+- detect defects;
+- score bounded dimensions;
+- compare candidates;
+- flag age mismatch;
+- flag weak roleplay, wonder, agency, stakes or Saga potential;
+- recommend ACCEPT / REVISE / REJECT.
+
+They do **not** replace the human product judgment during this qualification phase.
+
+The assistant/reviewer must provide an independent assessment rather than simply echoing the operator's opinion. When disagreeing, it should state the disagreement and evidence plainly.
+
+Human review outcomes are:
+
+`APPROVE | REVISE | REJECT`
+
+No artifact that requires a human checkpoint may advance to the next expensive qualification stage without `APPROVE`.
+
+Each review packet should surface the complete artifact, not only scores or summaries, together with:
+
+- what is strong;
+- what is weak;
+- age/reader fit;
+- roleplay/immersion quality;
+- wonder/discovery quality;
+- agency/stakes;
+- Saga coherence and long-horizon potential;
+- risks of repetition or premature reveal;
+- the assistant's independent recommendation and reasons.
+
+This human gate is a Model Lab qualification control. A future production product may automate more of these decisions only after sufficient evidence proves the automated judge is reliable.
+
 ## 25. Promotion boundary
 
 No result from this architecture authorizes Project_LUMI changes.
