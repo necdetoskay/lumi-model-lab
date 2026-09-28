@@ -498,7 +498,7 @@ class StoryForgeExactLocatorTests(unittest.TestCase):
 
 class StoryForgeAuditTraceTests(unittest.TestCase):
     @patch("src.storyforge.runtime._structured_call")
-    def test_invalid_audit_contract_preserves_raw_payload_and_exact_segments(self, mock_structured):
+    def test_major_audit_severity_is_explicitly_normalized_and_preserved(self, mock_structured):
         request = StoryForgeRequest.model_validate(_request_dict())
         raw = {
             "evaluations": [
@@ -520,25 +520,30 @@ class StoryForgeAuditTraceTests(unittest.TestCase):
         }
         mock_structured.return_value = (raw, _meta())
 
-        with self.assertRaises(StoryForgeAuditContractError) as caught:
-            _audit_story(
-                api_key="test",
-                model="auditor",
-                request=request,
-                packet=_packet(),
-                plan=_plan(),
-                story="Title. First sentence. Problem sentence here.",
-                seed=1,
-            )
+        findings, meta = _audit_story(
+            api_key="test",
+            model="auditor",
+            request=request,
+            packet=_packet(),
+            plan=_plan(),
+            story="Title. First sentence. Problem sentence here.",
+            seed=1,
+        )
 
-        trace = caught.exception.trace
+        self.assertEqual(len(findings), 1)
+        finding = findings[0]
+        self.assertEqual(finding["raw_severity"], "major")
+        self.assertEqual(finding["severity"], "serious")
+        self.assertEqual(
+            finding["severity_normalization"],
+            "major_to_serious_blocker_alias_v1",
+        )
+        trace = meta["audit_trace"]
         self.assertEqual(trace["raw_audit_payload"], raw)
-        self.assertEqual(trace["contract_error"], "Invalid blocking severity: spatial_consistency:major")
         by_id = {row["id"]: row["text"] for row in trace["segments"]}
         self.assertEqual(by_id["S002"], "First sentence.")
         self.assertEqual(trace["segments"][1]["paragraph_id"], "P001")
         self.assertEqual(trace["segments"][1]["char_start"], 7)
-        self.assertIn("model_meta", trace)
 
 
 if __name__ == "__main__":
