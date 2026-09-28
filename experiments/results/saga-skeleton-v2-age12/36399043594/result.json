@@ -1,0 +1,1514 @@
+{
+  "schema_version": "saga-skeleton-v2-evidence.v1",
+  "status": "provider_or_parse_failure",
+  "publication_authority": false,
+  "fixture_id": "age12_shattered_meridian_cartographer",
+  "model": "anthropic/claude-sonnet-5",
+  "model_runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5",
+    "display_name": "Claude Sonnet 5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5"
+    },
+    "profile_sha256": "af8e8e8a67406b923ed28b239bd64ea6261642477843723dbff49c919b64f3c5",
+    "runtime_contract_sha256": "ca426db404460da693c50a33033cd7dbd5a04f30524f0dde77b80420f8eafa4c",
+    "production_policy_sha256": "b11d53a2319eac3f6bce42307a122aca5b62c39c63407a43977286d1524ad1c3"
+  },
+  "started_at": "2026-09-28T08:44:36.667041+00:00",
+  "completed_at": "2026-09-28T08:46:53.627947+00:00",
+  "latency_seconds": 136.961,
+  "request_payload": {
+    "task": "generate_character_saga_skeleton_v2",
+    "reader_profile": {
+      "exact_age": 12,
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "age_rule": "Premise and narrative maturity must fit exact age independently from vocabulary difficulty."
+    },
+    "frozen_character_world_input": {
+      "case_id": "age12_shattered_meridian_cartographer",
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "character": {
+        "name": "Deniz",
+        "age": 12,
+        "profile_type": "CHILD",
+        "archetype": "apprentice cartographer and field observer",
+        "traits": [
+          "observant",
+          "persistent",
+          "independent",
+          "sometimes overconfident",
+          "loyal"
+        ],
+        "interests": [
+          "ancient maps",
+          "sea creatures",
+          "mechanical instruments",
+          "coded symbols",
+          "unexplored places"
+        ],
+        "starting_goal": "earn the right to chart routes beyond the home strait and prove that careful observation can reveal things official maps miss",
+        "starting_relationships": [
+          "a close friend who prefers practical experiments to theories",
+          "a demanding mapmaker who respects evidence more than confidence",
+          "harbor crews who know Deniz as a serious apprentice rather than a passenger"
+        ]
+      },
+      "world": {
+        "world_type": "LOW_MAGIC",
+        "era": "age of sail with precision mechanical navigation",
+        "habitat": "a vast island chain divided by deep channels, storm belts and partially mapped outer seas",
+        "technology_level": "sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices",
+        "magic_level": "rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting",
+        "summary": "The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.",
+        "locations": [
+          "Meridian Harbor, Deniz's known home port",
+          "Beacon Ridge, a chain of signal towers above the inner strait",
+          "the Drowned Causeway, visible only during rare low tides",
+          "the Outer Mist Line, where official charts become incomplete",
+          "an abandoned tide observatory on a distant mapped island"
+        ],
+        "social_context": [
+          "cartographers and navigators hold respected public roles",
+          "island councils depend on reliable sea routes",
+          "young apprentices may take meaningful expedition roles within established safety rules",
+          "merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence",
+          "old folklore sometimes preserves real geographic information in distorted form"
+        ],
+        "known_pressures": [
+          "several navigation beacons no longer agree with official charts",
+          "outer-island routes are becoming economically important",
+          "storm season will eventually restrict long voyages",
+          "different groups have reasons to prefer different versions of the map"
+        ]
+      },
+      "test_intents": [
+        "age-12 premise maturity must come from story substance rather than difficult vocabulary",
+        "strong wonder and roleplay",
+        "long-horizon Main Saga with 5-7 anchors and 15-30 meaningful milestones",
+        "multiple routes and optional Saga dormancy",
+        "persistent discovery and callback potential",
+        "no trivial toy-play premise",
+        "no fixed Episode sequence",
+        "no predetermined future character choices"
+      ],
+      "tags": [
+        "age12",
+        "adventure",
+        "exploration",
+        "mystery",
+        "low_magic",
+        "living_universe"
+      ]
+    },
+    "output_contract": {
+      "$defs": {
+        "BackgroundEnrichmentPolicy": {
+          "additionalProperties": false,
+          "properties": {
+            "may_propose_latent_quests": {
+              "const": true,
+              "title": "May Propose Latent Quests",
+              "type": "boolean"
+            },
+            "may_propose_saga_links": {
+              "const": true,
+              "title": "May Propose Saga Links",
+              "type": "boolean"
+            },
+            "may_propose_world_events": {
+              "const": true,
+              "title": "May Propose World Events",
+              "type": "boolean"
+            },
+            "may_propose_npc_arcs": {
+              "const": true,
+              "title": "May Propose Npc Arcs",
+              "type": "boolean"
+            },
+            "may_mutate_user_dependent_canon_while_absent": {
+              "const": false,
+              "title": "May Mutate User Dependent Canon While Absent",
+              "type": "boolean"
+            },
+            "outputs_remain_proposed_or_latent": {
+              "const": true,
+              "title": "Outputs Remain Proposed Or Latent",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "may_propose_latent_quests",
+            "may_propose_saga_links",
+            "may_propose_world_events",
+            "may_propose_npc_arcs",
+            "may_mutate_user_dependent_canon_while_absent",
+            "outputs_remain_proposed_or_latent"
+          ],
+          "title": "BackgroundEnrichmentPolicy",
+          "type": "object"
+        },
+        "Condition": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "WORLD_FACT",
+                "CHARACTER_FACT",
+                "RELATIONSHIP",
+                "LOCATION",
+                "ITEM",
+                "KNOWLEDGE",
+                "EVENT"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "reference": {
+              "title": "Reference",
+              "type": "string"
+            },
+            "condition": {
+              "title": "Condition",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "reference",
+            "condition"
+          ],
+          "title": "Condition",
+          "type": "object"
+        },
+        "Conditions": {
+          "additionalProperties": false,
+          "properties": {
+            "all_of": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "All Of",
+              "type": "array"
+            },
+            "any_of": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "Any Of",
+              "type": "array"
+            },
+            "must_not": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "Must Not",
+              "type": "array"
+            }
+          },
+          "required": [
+            "all_of",
+            "any_of",
+            "must_not"
+          ],
+          "title": "Conditions",
+          "type": "object"
+        },
+        "CoreDrive": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "drive": {
+              "title": "Drive",
+              "type": "string"
+            },
+            "strength": {
+              "enum": [
+                "PRIMARY",
+                "SECONDARY"
+              ],
+              "title": "Strength",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "drive",
+            "strength"
+          ],
+          "title": "CoreDrive",
+          "type": "object"
+        },
+        "CoreFear": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "fear": {
+              "title": "Fear",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "fear"
+          ],
+          "title": "CoreFear",
+          "type": "object"
+        },
+        "CreativePermissionEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "allowed_entity_types": {
+              "items": {
+                "enum": [
+                  "NPC",
+                  "LOCATION",
+                  "ITEM",
+                  "RUMOR",
+                  "DOCUMENT",
+                  "EVENT",
+                  "FACTION",
+                  "WORLD_PHENOMENON",
+                  "TRANSIENT_SCENE_DETAIL"
+                ],
+                "type": "string"
+              },
+              "title": "Allowed Entity Types",
+              "type": "array"
+            },
+            "allowed_scopes": {
+              "items": {
+                "enum": [
+                  "LOCAL",
+                  "REGIONAL",
+                  "WORLD",
+                  "CROSS_WORLD"
+                ],
+                "type": "string"
+              },
+              "title": "Allowed Scopes",
+              "type": "array"
+            },
+            "creation_constraints": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Creation Constraints",
+              "type": "array"
+            },
+            "forbidden_creations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Forbidden Creations",
+              "type": "array"
+            },
+            "durable_creation_requires_outcome_commit": {
+              "const": true,
+              "title": "Durable Creation Requires Outcome Commit",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "allowed_entity_types",
+            "allowed_scopes",
+            "creation_constraints",
+            "forbidden_creations",
+            "durable_creation_requires_outcome_commit"
+          ],
+          "title": "CreativePermissionEnvelope",
+          "type": "object"
+        },
+        "FormativeEvent": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "age_or_period": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Or Period"
+            },
+            "impact": {
+              "title": "Impact",
+              "type": "string"
+            },
+            "related_origin_facts": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Related Origin Facts",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "summary",
+            "age_or_period",
+            "impact"
+          ],
+          "title": "FormativeEvent",
+          "type": "object"
+        },
+        "HiddenTruth": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "mode": {
+              "enum": [
+                "FIXED_HIDDEN",
+                "UNRESOLVED_BY_DESIGN"
+              ],
+              "title": "Mode",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "hidden_statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Hidden Statement"
+            },
+            "character_knows_question_exists": {
+              "title": "Character Knows Question Exists",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "mode",
+            "question",
+            "character_knows_question_exists"
+          ],
+          "title": "HiddenTruth",
+          "type": "object"
+        },
+        "IdentityAnchor": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "statement": {
+              "title": "Statement",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "statement"
+          ],
+          "title": "IdentityAnchor",
+          "type": "object"
+        },
+        "InternalTension": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "side_a": {
+              "title": "Side A",
+              "type": "string"
+            },
+            "side_b": {
+              "title": "Side B",
+              "type": "string"
+            },
+            "description": {
+              "title": "Description",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "side_a",
+            "side_b",
+            "description"
+          ],
+          "title": "InternalTension",
+          "type": "object"
+        },
+        "LongTermQuestion": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "must_be_answered": {
+              "title": "Must Be Answered",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "question",
+            "must_be_answered"
+          ],
+          "title": "LongTermQuestion",
+          "type": "object"
+        },
+        "MainSagaSkeleton": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "goal": {
+              "title": "Goal",
+              "type": "string"
+            },
+            "stakes": {
+              "title": "Stakes",
+              "type": "string"
+            },
+            "central_mystery": {
+              "title": "Central Mystery",
+              "type": "string"
+            },
+            "themes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Themes",
+              "type": "array"
+            },
+            "entry_anchor_keys": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Entry Anchor Keys",
+              "type": "array"
+            },
+            "resolution_anchor_key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Resolution Anchor Key",
+              "type": "string"
+            },
+            "anchors": {
+              "items": {
+                "$ref": "#/$defs/SagaAnchorSkeleton"
+              },
+              "title": "Anchors",
+              "type": "array"
+            },
+            "anchor_edges": {
+              "items": {
+                "$ref": "#/$defs/SagaAnchorEdge"
+              },
+              "title": "Anchor Edges",
+              "type": "array"
+            },
+            "hidden_truths": {
+              "items": {
+                "$ref": "#/$defs/HiddenTruth"
+              },
+              "title": "Hidden Truths",
+              "type": "array"
+            },
+            "reveal_intents": {
+              "items": {
+                "$ref": "#/$defs/RevealIntent"
+              },
+              "title": "Reveal Intents",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "goal",
+            "stakes",
+            "central_mystery",
+            "themes",
+            "entry_anchor_keys",
+            "resolution_anchor_key",
+            "anchors",
+            "anchor_edges",
+            "hidden_truths",
+            "reveal_intents"
+          ],
+          "title": "MainSagaSkeleton",
+          "type": "object"
+        },
+        "NarrativeCore": {
+          "additionalProperties": false,
+          "properties": {
+            "identity_anchors": {
+              "items": {
+                "$ref": "#/$defs/IdentityAnchor"
+              },
+              "title": "Identity Anchors",
+              "type": "array"
+            },
+            "core_drives": {
+              "items": {
+                "$ref": "#/$defs/CoreDrive"
+              },
+              "title": "Core Drives",
+              "type": "array"
+            },
+            "core_fears": {
+              "items": {
+                "$ref": "#/$defs/CoreFear"
+              },
+              "title": "Core Fears",
+              "type": "array"
+            },
+            "internal_tensions": {
+              "items": {
+                "$ref": "#/$defs/InternalTension"
+              },
+              "title": "Internal Tensions",
+              "type": "array"
+            },
+            "long_term_questions": {
+              "items": {
+                "$ref": "#/$defs/LongTermQuestion"
+              },
+              "title": "Long Term Questions",
+              "type": "array"
+            },
+            "themes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Themes",
+              "type": "array"
+            }
+          },
+          "required": [
+            "identity_anchors",
+            "core_drives",
+            "core_fears",
+            "internal_tensions",
+            "long_term_questions",
+            "themes"
+          ],
+          "title": "NarrativeCore",
+          "type": "object"
+        },
+        "Origin": {
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "origin_facts": {
+              "items": {
+                "$ref": "#/$defs/OriginFact"
+              },
+              "title": "Origin Facts",
+              "type": "array"
+            },
+            "formative_events": {
+              "items": {
+                "$ref": "#/$defs/FormativeEvent"
+              },
+              "title": "Formative Events",
+              "type": "array"
+            },
+            "origin_relationships": {
+              "items": {
+                "$ref": "#/$defs/OriginRelationship"
+              },
+              "title": "Origin Relationships",
+              "type": "array"
+            },
+            "unresolved_origin_questions": {
+              "items": {
+                "$ref": "#/$defs/OriginQuestion"
+              },
+              "title": "Unresolved Origin Questions",
+              "type": "array"
+            }
+          },
+          "required": [
+            "summary",
+            "origin_facts",
+            "formative_events",
+            "origin_relationships",
+            "unresolved_origin_questions"
+          ],
+          "title": "Origin",
+          "type": "object"
+        },
+        "OriginFact": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "fact": {
+              "title": "Fact",
+              "type": "string"
+            },
+            "importance": {
+              "enum": [
+                "CORE",
+                "SUPPORTING"
+              ],
+              "title": "Importance",
+              "type": "string"
+            },
+            "mutability": {
+              "enum": [
+                "IMMUTABLE",
+                "REINTERPRETABLE"
+              ],
+              "title": "Mutability",
+              "type": "string"
+            },
+            "known_by_character": {
+              "title": "Known By Character",
+              "type": "boolean"
+            },
+            "known_by_world": {
+              "title": "Known By World",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "fact",
+            "importance",
+            "mutability",
+            "known_by_character",
+            "known_by_world"
+          ],
+          "title": "OriginFact",
+          "type": "object"
+        },
+        "OriginQuestion": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "importance": {
+              "enum": [
+                "MAJOR",
+                "MINOR"
+              ],
+              "title": "Importance",
+              "type": "string"
+            },
+            "character_knows_question_exists": {
+              "title": "Character Knows Question Exists",
+              "type": "boolean"
+            },
+            "answer_predefined": {
+              "title": "Answer Predefined",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "question",
+            "importance",
+            "character_knows_question_exists",
+            "answer_predefined"
+          ],
+          "title": "OriginQuestion",
+          "type": "object"
+        },
+        "OriginRelationship": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "subject": {
+              "title": "Subject",
+              "type": "string"
+            },
+            "relationship_type": {
+              "title": "Relationship Type",
+              "type": "string"
+            },
+            "historical_role": {
+              "title": "Historical Role",
+              "type": "string"
+            },
+            "current_status": {
+              "enum": [
+                "KNOWN",
+                "UNKNOWN",
+                "LOST",
+                "DISTANT",
+                "ACTIVE",
+                "UNCERTAIN"
+              ],
+              "title": "Current Status",
+              "type": "string"
+            },
+            "unresolved_tension": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Unresolved Tension"
+            }
+          },
+          "required": [
+            "key",
+            "subject",
+            "relationship_type",
+            "historical_role",
+            "current_status",
+            "unresolved_tension"
+          ],
+          "title": "OriginRelationship",
+          "type": "object"
+        },
+        "PresentSituation": {
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "current_role": {
+              "title": "Current Role",
+              "type": "string"
+            },
+            "current_location_context": {
+              "title": "Current Location Context",
+              "type": "string"
+            },
+            "current_relationship_context": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Relationship Context",
+              "type": "array"
+            },
+            "current_resources": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Resources",
+              "type": "array"
+            },
+            "current_pressures": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Pressures",
+              "type": "array"
+            },
+            "current_open_questions": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Open Questions",
+              "type": "array"
+            },
+            "immediate_desires": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immediate Desires",
+              "type": "array"
+            },
+            "immediate_avoidances": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immediate Avoidances",
+              "type": "array"
+            }
+          },
+          "required": [
+            "summary",
+            "current_role",
+            "current_location_context",
+            "current_relationship_context",
+            "current_resources",
+            "current_pressures",
+            "current_open_questions",
+            "immediate_desires",
+            "immediate_avoidances"
+          ],
+          "title": "PresentSituation",
+          "type": "object"
+        },
+        "ProposedBinding": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "saga_reference": {
+              "title": "Saga Reference",
+              "type": "string"
+            },
+            "binding_type": {
+              "enum": [
+                "NPC",
+                "LOCATION",
+                "ITEM",
+                "RUMOR",
+                "DOCUMENT",
+                "EVENT",
+                "FACTION",
+                "WORLD_PHENOMENON"
+              ],
+              "title": "Binding Type",
+              "type": "string"
+            },
+            "preferred_existing_entity": {
+              "const": true,
+              "title": "Preferred Existing Entity",
+              "type": "boolean"
+            },
+            "reuse_first": {
+              "const": true,
+              "title": "Reuse First",
+              "type": "boolean"
+            },
+            "creation_allowed_if_missing": {
+              "title": "Creation Allowed If Missing",
+              "type": "boolean"
+            },
+            "description": {
+              "title": "Description",
+              "type": "string"
+            },
+            "placement_constraints": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Placement Constraints",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "saga_reference",
+            "binding_type",
+            "preferred_existing_entity",
+            "reuse_first",
+            "creation_allowed_if_missing",
+            "description",
+            "placement_constraints"
+          ],
+          "title": "ProposedBinding",
+          "type": "object"
+        },
+        "RevealIntent": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "truth_key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Truth Key",
+              "type": "string"
+            },
+            "level": {
+              "enum": [
+                "FORESHADOW",
+                "PARTIAL",
+                "CONFIRMED"
+              ],
+              "title": "Level",
+              "type": "string"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "eligibility": {
+              "$ref": "#/$defs/Conditions"
+            },
+            "anchor_keys": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Anchor Keys",
+              "type": "array"
+            },
+            "reveal_ceiling": {
+              "title": "Reveal Ceiling",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "truth_key",
+            "level",
+            "summary",
+            "eligibility",
+            "anchor_keys",
+            "reveal_ceiling"
+          ],
+          "title": "RevealIntent",
+          "type": "object"
+        },
+        "ReweavePolicy": {
+          "additionalProperties": false,
+          "properties": {
+            "reweave_allowed": {
+              "const": true,
+              "title": "Reweave Allowed",
+              "type": "boolean"
+            },
+            "immutable_elements": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immutable Elements",
+              "type": "array"
+            },
+            "mutable_elements": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Mutable Elements",
+              "type": "array"
+            },
+            "recommended_triggers": {
+              "items": {
+                "enum": [
+                  "MAJOR_CHARACTER_CHANGE",
+                  "MAJOR_WORLD_CHANGE",
+                  "THREAD_INVALIDATED",
+                  "LONG_SAGA_DORMANCY",
+                  "MAJOR_RELATIONSHIP_CHANGE",
+                  "CROSS_WORLD_TRANSITION"
+                ],
+                "type": "string"
+              },
+              "title": "Recommended Triggers",
+              "type": "array"
+            }
+          },
+          "required": [
+            "reweave_allowed",
+            "immutable_elements",
+            "mutable_elements",
+            "recommended_triggers"
+          ],
+          "title": "ReweavePolicy",
+          "type": "object"
+        },
+        "SafetyAndConstraints": {
+          "additionalProperties": false,
+          "properties": {
+            "never_prewrite_story_sequence": {
+              "const": true,
+              "title": "Never Prewrite Story Sequence",
+              "type": "boolean"
+            },
+            "never_force_saga_progression": {
+              "const": true,
+              "title": "Never Force Saga Progression",
+              "type": "boolean"
+            },
+            "never_assume_future_character_choice": {
+              "const": true,
+              "title": "Never Assume Future Character Choice",
+              "type": "boolean"
+            },
+            "never_commit_future_event_as_fact": {
+              "const": true,
+              "title": "Never Commit Future Event As Fact",
+              "type": "boolean"
+            },
+            "never_reveal_hidden_information_early": {
+              "const": true,
+              "title": "Never Reveal Hidden Information Early",
+              "type": "boolean"
+            },
+            "allow_saga_free_stories": {
+              "const": true,
+              "title": "Allow Saga Free Stories",
+              "type": "boolean"
+            },
+            "allow_thread_abandonment": {
+              "const": true,
+              "title": "Allow Thread Abandonment",
+              "type": "boolean"
+            },
+            "allow_thread_reactivation": {
+              "const": true,
+              "title": "Allow Thread Reactivation",
+              "type": "boolean"
+            },
+            "allow_multiple_concurrent_threads": {
+              "const": true,
+              "title": "Allow Multiple Concurrent Threads",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "never_prewrite_story_sequence",
+            "never_force_saga_progression",
+            "never_assume_future_character_choice",
+            "never_commit_future_event_as_fact",
+            "never_reveal_hidden_information_early",
+            "allow_saga_free_stories",
+            "allow_thread_abandonment",
+            "allow_thread_reactivation",
+            "allow_multiple_concurrent_threads"
+          ],
+          "title": "SafetyAndConstraints",
+          "type": "object"
+        },
+        "SagaAnchorEdge": {
+          "additionalProperties": false,
+          "properties": {
+            "from_anchor": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "From Anchor",
+              "type": "string"
+            },
+            "to_anchor": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "To Anchor",
+              "type": "string"
+            },
+            "relationship": {
+              "enum": [
+                "REQUIRES",
+                "MAY_ENABLE",
+                "ALTERNATIVE_ROUTE",
+                "MAY_CONVERGE"
+              ],
+              "title": "Relationship",
+              "type": "string"
+            },
+            "rationale": {
+              "title": "Rationale",
+              "type": "string"
+            }
+          },
+          "required": [
+            "from_anchor",
+            "to_anchor",
+            "relationship",
+            "rationale"
+          ],
+          "title": "SagaAnchorEdge",
+          "type": "object"
+        },
+        "SagaAnchorSkeleton": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "purpose": {
+              "title": "Purpose",
+              "type": "string"
+            },
+            "target_state": {
+              "title": "Target State",
+              "type": "string"
+            },
+            "required_for_resolution": {
+              "title": "Required For Resolution",
+              "type": "boolean"
+            },
+            "milestone_target_count": {
+              "maximum": 6,
+              "minimum": 2,
+              "title": "Milestone Target Count",
+              "type": "integer"
+            },
+            "desired_progression_modes": {
+              "items": {
+                "enum": [
+                  "DISCOVERY",
+                  "REVELATION",
+                  "DECISION",
+                  "RELATIONSHIP_SHIFT",
+                  "CONSEQUENCE",
+                  "CONVERGENCE",
+                  "TRANSFORMATION",
+                  "ACCESS",
+                  "EVIDENCE"
+                ],
+                "type": "string"
+              },
+              "title": "Desired Progression Modes",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "purpose",
+            "target_state",
+            "required_for_resolution",
+            "milestone_target_count",
+            "desired_progression_modes"
+          ],
+          "title": "SagaAnchorSkeleton",
+          "type": "object"
+        },
+        "SideSagaSeed": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "arc_type": {
+              "enum": [
+                "SIDE",
+                "WORLD",
+                "RELATIONSHIP",
+                "PERSONAL",
+                "EMERGENT"
+              ],
+              "title": "Arc Type",
+              "type": "string"
+            },
+            "premise": {
+              "title": "Premise",
+              "type": "string"
+            },
+            "why_it_matters": {
+              "title": "Why It Matters",
+              "type": "string"
+            },
+            "activation": {
+              "$ref": "#/$defs/Conditions"
+            },
+            "initial_visibility": {
+              "enum": [
+                "HIDDEN",
+                "FORESHADOW_ONLY",
+                "DISCOVERABLE"
+              ],
+              "title": "Initial Visibility",
+              "type": "string"
+            },
+            "must_not_force_followup": {
+              "const": true,
+              "title": "Must Not Force Followup",
+              "type": "boolean"
+            },
+            "remains_proposed_until_activated": {
+              "const": true,
+              "title": "Remains Proposed Until Activated",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "arc_type",
+            "premise",
+            "why_it_matters",
+            "activation",
+            "initial_visibility",
+            "must_not_force_followup",
+            "remains_proposed_until_activated"
+          ],
+          "title": "SideSagaSeed",
+          "type": "object"
+        },
+        "WorldIntegration": {
+          "additionalProperties": false,
+          "properties": {
+            "proposed_bindings": {
+              "items": {
+                "$ref": "#/$defs/ProposedBinding"
+              },
+              "title": "Proposed Bindings",
+              "type": "array"
+            },
+            "integration_rules": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Integration Rules",
+              "type": "array"
+            }
+          },
+          "required": [
+            "proposed_bindings",
+            "integration_rules"
+          ],
+          "title": "WorldIntegration",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "character-saga-skeleton.v2",
+          "title": "Schema",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "present_situation": {
+          "$ref": "#/$defs/PresentSituation"
+        },
+        "narrative_core": {
+          "$ref": "#/$defs/NarrativeCore"
+        },
+        "main_saga": {
+          "$ref": "#/$defs/MainSagaSkeleton"
+        },
+        "latent_side_sagas": {
+          "items": {
+            "$ref": "#/$defs/SideSagaSeed"
+          },
+          "title": "Latent Side Sagas",
+          "type": "array"
+        },
+        "creative_permission_envelope": {
+          "$ref": "#/$defs/CreativePermissionEnvelope"
+        },
+        "world_integration": {
+          "$ref": "#/$defs/WorldIntegration"
+        },
+        "reweave_policy": {
+          "$ref": "#/$defs/ReweavePolicy"
+        },
+        "background_enrichment_policy": {
+          "$ref": "#/$defs/BackgroundEnrichmentPolicy"
+        },
+        "safety_and_constraints": {
+          "$ref": "#/$defs/SafetyAndConstraints"
+        }
+      },
+      "required": [
+        "schema",
+        "origin",
+        "present_situation",
+        "narrative_core",
+        "main_saga",
+        "latent_side_sagas",
+        "creative_permission_envelope",
+        "world_integration",
+        "reweave_policy",
+        "background_enrichment_policy",
+        "safety_and_constraints"
+      ],
+      "title": "CharacterSagaSkeletonV2",
+      "type": "object"
+    },
+    "qualification_rules": {
+      "human_creative_review_required": true,
+      "milestone_expansion_forbidden_before_human_approve": true,
+      "no_episode_generation": true,
+      "main_saga_anchor_range": [
+        5,
+        7
+      ],
+      "planned_milestone_total_range": [
+        15,
+        30
+      ],
+      "must_include_alternative_route": true,
+      "must_support_saga_dormancy": true,
+      "must_support_generated_continuity": true
+    }
+  },
+  "failure": {
+    "type": "OpenRouterCallError",
+    "message": "OpenRouter response did not contain story text. finish_reason='length', completion_tokens=12000, reasoning_tokens=12000, content_type=NoneType.",
+    "trace": {
+      "stage": "provider_response",
+      "model": "anthropic/claude-sonnet-5",
+      "request_class": "structured_large",
+      "request": {
+        "model": "anthropic/claude-sonnet-5",
+        "messages": [
+          {
+            "role": "system",
+            "content": "# LUMI Narrative Architect — Saga Skeleton v2\n\nYou are designing the long-horizon narrative skeleton for a persistent living-universe roleplay system.\n\nYou are NOT writing:\n- an Episode;\n- a chapter sequence;\n- milestone details;\n- prose scenes.\n\nYour task is to return one compact JSON object matching `character-saga-skeleton.v2`.\n\nThis is Gate A. A human will review this skeleton before milestone expansion is allowed.\n\n## Product target\n\nThe user should feel that their character exists in a world that can surprise them for a long time without forgetting meaningful past events.\n\nThe Saga must create:\n- wonder and discovery;\n- roleplay;\n- meaningful agency;\n- persistent consequences;\n- mysteries worth returning to;\n- enough structural room for many Episodes;\n- optional routes and side adventures.\n\nDo not use difficult vocabulary to disguise a childish premise.\n\nFor exact age 12, the premise itself should support:\n- multi-step causality;\n- uncertainty;\n- strategy or meaningful choice;\n- discovery/mystery;\n- age-respectful stakes;\n- non-trivial consequences.\n\n## Required skeleton\n\nReturn:\n- Origin;\n- Present Situation;\n- Narrative Core;\n- exactly one Main Saga;\n- 5–7 Saga anchors;\n- macro anchor graph;\n- hidden truths;\n- reveal intents;\n- latent Side Saga seeds;\n- creative permission envelope;\n- world integration;\n- reweave policy;\n- background enrichment policy;\n- safety/agency constraints.\n\nDo NOT generate detailed milestones yet.\n\nEach anchor must specify a milestone_target_count.\nAcross all anchors, the planned milestone total must be 15–30.\n\n## Anchor quality\n\nAn anchor is a durable narrative state/phase, not an Episode.\n\nGood anchors materially change one or more of:\n- access to the world;\n- verified knowledge;\n- stakes;\n- relationships;\n- available routes;\n- character identity or reputation;\n- understanding of the central mystery.\n\nAnchors must be meaningfully distinct.\n\nAvoid:\n- five versions of “find another clue”;\n- a disguised fixed Episode order;\n- mandatory future user choices;\n- an anchor that is only “travel to place X.”\n\n## Macro graph\n\nThe anchor graph must:\n- be acyclic;\n- have at least one materially different ALTERNATIVE_ROUTE;\n- keep every anchor reachable from an entry anchor;\n- keep the resolution anchor reachable;\n- not force every future Episode to advance the Main Saga.\n\nThe Main Saga may remain dormant for many Episodes.\n\n## Hidden truths\n\nUse both where helpful:\n\nFIXED_HIDDEN:\nA durable answer may be defined now, but must remain hidden until eligible.\n\nUNRESOLVED_BY_DESIGN:\nThe question exists, but its actual answer must remain genuinely open for future living-universe development.\n\nA CONFIRMED reveal may target only FIXED_HIDDEN truth.\n\nReveal intents in this skeleton refer to anchors, not specific milestones. Milestone expansion will later bind them to exact milestones.\n\n## Side Sagas\n\nCreate several useful latent possibilities where appropriate:\n- SIDE;\n- WORLD;\n- RELATIONSHIP;\n- PERSONAL;\n- EMERGENT.\n\nThey are optional and must not hijack the Main Saga.\n\n## Agency\n\nNever encode a future character/user choice as already decided.\n\nYou may create decision pressure, but not the answer.\n\nNever assume the character will:\n- trust a person;\n- reveal evidence;\n- join a faction;\n- forgive someone;\n- choose one route;\n- sacrifice a relationship;\n- abandon a goal.\n\n## Generated continuity\n\nDesign anchors so future Episodes can produce callbacks:\n- old NPCs returning;\n- early symbols gaining later meaning;\n- earlier choices changing access;\n- locations staying relevant;\n- Side Sagas intersecting Main Saga;\n- old failures creating later consequences.\n\n## Creative permission\n\nThe skeleton should explicitly state what future architects are allowed to propose without treating those proposals as Canon.\n\nDurable facts still require validated outcome commit.\n\n## Final self-check\n\nBefore returning, verify:\n\n1. Would a 12-year-old interested in adventure plausibly want to know what happens next?\n2. Is the premise stronger than ordinary toy/chores play?\n3. Does the world itself matter to the Saga?\n4. Is the character an active participant?\n5. Could this support many Episodes without exhausting the Main Saga?\n6. Are the anchors distinct?\n7. Is there real route flexibility?\n8. Are hidden truths protected?\n9. Are some truths left unresolved by design?\n10. Are future user choices still open?\n\nReturn JSON only. No Markdown fences."
+          },
+          {
+            "role": "user",
+            "content": "{\"task\": \"generate_character_saga_skeleton_v2\", \"reader_profile\": {\"exact_age\": 12, \"audience_band\": \"OLDER_CHILD\", \"story_mode\": \"ADVENTURE\", \"age_rule\": \"Premise and narrative maturity must fit exact age independently from vocabulary difficulty.\"}, \"frozen_character_world_input\": {\"case_id\": \"age12_shattered_meridian_cartographer\", \"audience_band\": \"OLDER_CHILD\", \"story_mode\": \"ADVENTURE\", \"character\": {\"name\": \"Deniz\", \"age\": 12, \"profile_type\": \"CHILD\", \"archetype\": \"apprentice cartographer and field observer\", \"traits\": [\"observant\", \"persistent\", \"independent\", \"sometimes overconfident\", \"loyal\"], \"interests\": [\"ancient maps\", \"sea creatures\", \"mechanical instruments\", \"coded symbols\", \"unexplored places\"], \"starting_goal\": \"earn the right to chart routes beyond the home strait and prove that careful observation can reveal things official maps miss\", \"starting_relationships\": [\"a close friend who prefers practical experiments to theories\", \"a demanding mapmaker who respects evidence more than confidence\", \"harbor crews who know Deniz as a serious apprentice rather than a passenger\"]}, \"world\": {\"world_type\": \"LOW_MAGIC\", \"era\": \"age of sail with precision mechanical navigation\", \"habitat\": \"a vast island chain divided by deep channels, storm belts and partially mapped outer seas\", \"technology_level\": \"sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices\", \"magic_level\": \"rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting\", \"summary\": \"The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.\", \"locations\": [\"Meridian Harbor, Deniz's known home port\", \"Beacon Ridge, a chain of signal towers above the inner strait\", \"the Drowned Causeway, visible only during rare low tides\", \"the Outer Mist Line, where official charts become incomplete\", \"an abandoned tide observatory on a distant mapped island\"], \"social_context\": [\"cartographers and navigators hold respected public roles\", \"island councils depend on reliable sea routes\", \"young apprentices may take meaningful expedition roles within established safety rules\", \"merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence\", \"old folklore sometimes preserves real geographic information in distorted form\"], \"known_pressures\": [\"several navigation beacons no longer agree with official charts\", \"outer-island routes are becoming economically important\", \"storm season will eventually restrict long voyages\", \"different groups have reasons to prefer different versions of the map\"]}, \"test_intents\": [\"age-12 premise maturity must come from story substance rather than difficult vocabulary\", \"strong wonder and roleplay\", \"long-horizon Main Saga with 5-7 anchors and 15-30 meaningful milestones\", \"multiple routes and optional Saga dormancy\", \"persistent discovery and callback potential\", \"no trivial toy-play premise\", \"no fixed Episode sequence\", \"no predetermined future character choices\"], \"tags\": [\"age12\", \"adventure\", \"exploration\", \"mystery\", \"low_magic\", \"living_universe\"]}, \"output_contract\": {\"$defs\": {\"BackgroundEnrichmentPolicy\": {\"additionalProperties\": false, \"properties\": {\"may_propose_latent_quests\": {\"const\": true, \"title\": \"May Propose Latent Quests\", \"type\": \"boolean\"}, \"may_propose_saga_links\": {\"const\": true, \"title\": \"May Propose Saga Links\", \"type\": \"boolean\"}, \"may_propose_world_events\": {\"const\": true, \"title\": \"May Propose World Events\", \"type\": \"boolean\"}, \"may_propose_npc_arcs\": {\"const\": true, \"title\": \"May Propose Npc Arcs\", \"type\": \"boolean\"}, \"may_mutate_user_dependent_canon_while_absent\": {\"const\": false, \"title\": \"May Mutate User Dependent Canon While Absent\", \"type\": \"boolean\"}, \"outputs_remain_proposed_or_latent\": {\"const\": true, \"title\": \"Outputs Remain Proposed Or Latent\", \"type\": \"boolean\"}}, \"required\": [\"may_propose_latent_quests\", \"may_propose_saga_links\", \"may_propose_world_events\", \"may_propose_npc_arcs\", \"may_mutate_user_dependent_canon_while_absent\", \"outputs_remain_proposed_or_latent\"], \"title\": \"BackgroundEnrichmentPolicy\", \"type\": \"object\"}, \"Condition\": {\"additionalProperties\": false, \"properties\": {\"type\": {\"enum\": [\"WORLD_FACT\", \"CHARACTER_FACT\", \"RELATIONSHIP\", \"LOCATION\", \"ITEM\", \"KNOWLEDGE\", \"EVENT\"], \"title\": \"Type\", \"type\": \"string\"}, \"reference\": {\"title\": \"Reference\", \"type\": \"string\"}, \"condition\": {\"title\": \"Condition\", \"type\": \"string\"}}, \"required\": [\"type\", \"reference\", \"condition\"], \"title\": \"Condition\", \"type\": \"object\"}, \"Conditions\": {\"additionalProperties\": false, \"properties\": {\"all_of\": {\"items\": {\"$ref\": \"#/$defs/Condition\"}, \"title\": \"All Of\", \"type\": \"array\"}, \"any_of\": {\"items\": {\"$ref\": \"#/$defs/Condition\"}, \"title\": \"Any Of\", \"type\": \"array\"}, \"must_not\": {\"items\": {\"$ref\": \"#/$defs/Condition\"}, \"title\": \"Must Not\", \"type\": \"array\"}}, \"required\": [\"all_of\", \"any_of\", \"must_not\"], \"title\": \"Conditions\", \"type\": \"object\"}, \"CoreDrive\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"drive\": {\"title\": \"Drive\", \"type\": \"string\"}, \"strength\": {\"enum\": [\"PRIMARY\", \"SECONDARY\"], \"title\": \"Strength\", \"type\": \"string\"}}, \"required\": [\"key\", \"drive\", \"strength\"], \"title\": \"CoreDrive\", \"type\": \"object\"}, \"CoreFear\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"fear\": {\"title\": \"Fear\", \"type\": \"string\"}}, \"required\": [\"key\", \"fear\"], \"title\": \"CoreFear\", \"type\": \"object\"}, \"CreativePermissionEnvelope\": {\"additionalProperties\": false, \"properties\": {\"allowed_entity_types\": {\"items\": {\"enum\": [\"NPC\", \"LOCATION\", \"ITEM\", \"RUMOR\", \"DOCUMENT\", \"EVENT\", \"FACTION\", \"WORLD_PHENOMENON\", \"TRANSIENT_SCENE_DETAIL\"], \"type\": \"string\"}, \"title\": \"Allowed Entity Types\", \"type\": \"array\"}, \"allowed_scopes\": {\"items\": {\"enum\": [\"LOCAL\", \"REGIONAL\", \"WORLD\", \"CROSS_WORLD\"], \"type\": \"string\"}, \"title\": \"Allowed Scopes\", \"type\": \"array\"}, \"creation_constraints\": {\"items\": {\"type\": \"string\"}, \"title\": \"Creation Constraints\", \"type\": \"array\"}, \"forbidden_creations\": {\"items\": {\"type\": \"string\"}, \"title\": \"Forbidden Creations\", \"type\": \"array\"}, \"durable_creation_requires_outcome_commit\": {\"const\": true, \"title\": \"Durable Creation Requires Outcome Commit\", \"type\": \"boolean\"}}, \"required\": [\"allowed_entity_types\", \"allowed_scopes\", \"creation_constraints\", \"forbidden_creations\", \"durable_creation_requires_outcome_commit\"], \"title\": \"CreativePermissionEnvelope\", \"type\": \"object\"}, \"FormativeEvent\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"summary\": {\"title\": \"Summary\", \"type\": \"string\"}, \"age_or_period\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"title\": \"Age Or Period\"}, \"impact\": {\"title\": \"Impact\", \"type\": \"string\"}, \"related_origin_facts\": {\"items\": {\"type\": \"string\"}, \"title\": \"Related Origin Facts\", \"type\": \"array\"}}, \"required\": [\"key\", \"summary\", \"age_or_period\", \"impact\"], \"title\": \"FormativeEvent\", \"type\": \"object\"}, \"HiddenTruth\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"mode\": {\"enum\": [\"FIXED_HIDDEN\", \"UNRESOLVED_BY_DESIGN\"], \"title\": \"Mode\", \"type\": \"string\"}, \"question\": {\"title\": \"Question\", \"type\": \"string\"}, \"hidden_statement\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"default\": null, \"title\": \"Hidden Statement\"}, \"character_knows_question_exists\": {\"title\": \"Character Knows Question Exists\", \"type\": \"boolean\"}}, \"required\": [\"key\", \"mode\", \"question\", \"character_knows_question_exists\"], \"title\": \"HiddenTruth\", \"type\": \"object\"}, \"IdentityAnchor\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"statement\": {\"title\": \"Statement\", \"type\": \"string\"}}, \"required\": [\"key\", \"statement\"], \"title\": \"IdentityAnchor\", \"type\": \"object\"}, \"InternalTension\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"side_a\": {\"title\": \"Side A\", \"type\": \"string\"}, \"side_b\": {\"title\": \"Side B\", \"type\": \"string\"}, \"description\": {\"title\": \"Description\", \"type\": \"string\"}}, \"required\": [\"key\", \"side_a\", \"side_b\", \"description\"], \"title\": \"InternalTension\", \"type\": \"object\"}, \"LongTermQuestion\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"question\": {\"title\": \"Question\", \"type\": \"string\"}, \"must_be_answered\": {\"title\": \"Must Be Answered\", \"type\": \"boolean\"}}, \"required\": [\"key\", \"question\", \"must_be_answered\"], \"title\": \"LongTermQuestion\", \"type\": \"object\"}, \"MainSagaSkeleton\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"title\": {\"title\": \"Title\", \"type\": \"string\"}, \"goal\": {\"title\": \"Goal\", \"type\": \"string\"}, \"stakes\": {\"title\": \"Stakes\", \"type\": \"string\"}, \"central_mystery\": {\"title\": \"Central Mystery\", \"type\": \"string\"}, \"themes\": {\"items\": {\"type\": \"string\"}, \"title\": \"Themes\", \"type\": \"array\"}, \"entry_anchor_keys\": {\"items\": {\"type\": \"string\"}, \"title\": \"Entry Anchor Keys\", \"type\": \"array\"}, \"resolution_anchor_key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Resolution Anchor Key\", \"type\": \"string\"}, \"anchors\": {\"items\": {\"$ref\": \"#/$defs/SagaAnchorSkeleton\"}, \"title\": \"Anchors\", \"type\": \"array\"}, \"anchor_edges\": {\"items\": {\"$ref\": \"#/$defs/SagaAnchorEdge\"}, \"title\": \"Anchor Edges\", \"type\": \"array\"}, \"hidden_truths\": {\"items\": {\"$ref\": \"#/$defs/HiddenTruth\"}, \"title\": \"Hidden Truths\", \"type\": \"array\"}, \"reveal_intents\": {\"items\": {\"$ref\": \"#/$defs/RevealIntent\"}, \"title\": \"Reveal Intents\", \"type\": \"array\"}}, \"required\": [\"key\", \"title\", \"goal\", \"stakes\", \"central_mystery\", \"themes\", \"entry_anchor_keys\", \"resolution_anchor_key\", \"anchors\", \"anchor_edges\", \"hidden_truths\", \"reveal_intents\"], \"title\": \"MainSagaSkeleton\", \"type\": \"object\"}, \"NarrativeCore\": {\"additionalProperties\": false, \"properties\": {\"identity_anchors\": {\"items\": {\"$ref\": \"#/$defs/IdentityAnchor\"}, \"title\": \"Identity Anchors\", \"type\": \"array\"}, \"core_drives\": {\"items\": {\"$ref\": \"#/$defs/CoreDrive\"}, \"title\": \"Core Drives\", \"type\": \"array\"}, \"core_fears\": {\"items\": {\"$ref\": \"#/$defs/CoreFear\"}, \"title\": \"Core Fears\", \"type\": \"array\"}, \"internal_tensions\": {\"items\": {\"$ref\": \"#/$defs/InternalTension\"}, \"title\": \"Internal Tensions\", \"type\": \"array\"}, \"long_term_questions\": {\"items\": {\"$ref\": \"#/$defs/LongTermQuestion\"}, \"title\": \"Long Term Questions\", \"type\": \"array\"}, \"themes\": {\"items\": {\"type\": \"string\"}, \"title\": \"Themes\", \"type\": \"array\"}}, \"required\": [\"identity_anchors\", \"core_drives\", \"core_fears\", \"internal_tensions\", \"long_term_questions\", \"themes\"], \"title\": \"NarrativeCore\", \"type\": \"object\"}, \"Origin\": {\"additionalProperties\": false, \"properties\": {\"summary\": {\"title\": \"Summary\", \"type\": \"string\"}, \"origin_facts\": {\"items\": {\"$ref\": \"#/$defs/OriginFact\"}, \"title\": \"Origin Facts\", \"type\": \"array\"}, \"formative_events\": {\"items\": {\"$ref\": \"#/$defs/FormativeEvent\"}, \"title\": \"Formative Events\", \"type\": \"array\"}, \"origin_relationships\": {\"items\": {\"$ref\": \"#/$defs/OriginRelationship\"}, \"title\": \"Origin Relationships\", \"type\": \"array\"}, \"unresolved_origin_questions\": {\"items\": {\"$ref\": \"#/$defs/OriginQuestion\"}, \"title\": \"Unresolved Origin Questions\", \"type\": \"array\"}}, \"required\": [\"summary\", \"origin_facts\", \"formative_events\", \"origin_relationships\", \"unresolved_origin_questions\"], \"title\": \"Origin\", \"type\": \"object\"}, \"OriginFact\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"fact\": {\"title\": \"Fact\", \"type\": \"string\"}, \"importance\": {\"enum\": [\"CORE\", \"SUPPORTING\"], \"title\": \"Importance\", \"type\": \"string\"}, \"mutability\": {\"enum\": [\"IMMUTABLE\", \"REINTERPRETABLE\"], \"title\": \"Mutability\", \"type\": \"string\"}, \"known_by_character\": {\"title\": \"Known By Character\", \"type\": \"boolean\"}, \"known_by_world\": {\"title\": \"Known By World\", \"type\": \"boolean\"}}, \"required\": [\"key\", \"fact\", \"importance\", \"mutability\", \"known_by_character\", \"known_by_world\"], \"title\": \"OriginFact\", \"type\": \"object\"}, \"OriginQuestion\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"question\": {\"title\": \"Question\", \"type\": \"string\"}, \"importance\": {\"enum\": [\"MAJOR\", \"MINOR\"], \"title\": \"Importance\", \"type\": \"string\"}, \"character_knows_question_exists\": {\"title\": \"Character Knows Question Exists\", \"type\": \"boolean\"}, \"answer_predefined\": {\"title\": \"Answer Predefined\", \"type\": \"boolean\"}}, \"required\": [\"key\", \"question\", \"importance\", \"character_knows_question_exists\", \"answer_predefined\"], \"title\": \"OriginQuestion\", \"type\": \"object\"}, \"OriginRelationship\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"subject\": {\"title\": \"Subject\", \"type\": \"string\"}, \"relationship_type\": {\"title\": \"Relationship Type\", \"type\": \"string\"}, \"historical_role\": {\"title\": \"Historical Role\", \"type\": \"string\"}, \"current_status\": {\"enum\": [\"KNOWN\", \"UNKNOWN\", \"LOST\", \"DISTANT\", \"ACTIVE\", \"UNCERTAIN\"], \"title\": \"Current Status\", \"type\": \"string\"}, \"unresolved_tension\": {\"anyOf\": [{\"type\": \"string\"}, {\"type\": \"null\"}], \"title\": \"Unresolved Tension\"}}, \"required\": [\"key\", \"subject\", \"relationship_type\", \"historical_role\", \"current_status\", \"unresolved_tension\"], \"title\": \"OriginRelationship\", \"type\": \"object\"}, \"PresentSituation\": {\"additionalProperties\": false, \"properties\": {\"summary\": {\"title\": \"Summary\", \"type\": \"string\"}, \"current_role\": {\"title\": \"Current Role\", \"type\": \"string\"}, \"current_location_context\": {\"title\": \"Current Location Context\", \"type\": \"string\"}, \"current_relationship_context\": {\"items\": {\"type\": \"string\"}, \"title\": \"Current Relationship Context\", \"type\": \"array\"}, \"current_resources\": {\"items\": {\"type\": \"string\"}, \"title\": \"Current Resources\", \"type\": \"array\"}, \"current_pressures\": {\"items\": {\"type\": \"string\"}, \"title\": \"Current Pressures\", \"type\": \"array\"}, \"current_open_questions\": {\"items\": {\"type\": \"string\"}, \"title\": \"Current Open Questions\", \"type\": \"array\"}, \"immediate_desires\": {\"items\": {\"type\": \"string\"}, \"title\": \"Immediate Desires\", \"type\": \"array\"}, \"immediate_avoidances\": {\"items\": {\"type\": \"string\"}, \"title\": \"Immediate Avoidances\", \"type\": \"array\"}}, \"required\": [\"summary\", \"current_role\", \"current_location_context\", \"current_relationship_context\", \"current_resources\", \"current_pressures\", \"current_open_questions\", \"immediate_desires\", \"immediate_avoidances\"], \"title\": \"PresentSituation\", \"type\": \"object\"}, \"ProposedBinding\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"saga_reference\": {\"title\": \"Saga Reference\", \"type\": \"string\"}, \"binding_type\": {\"enum\": [\"NPC\", \"LOCATION\", \"ITEM\", \"RUMOR\", \"DOCUMENT\", \"EVENT\", \"FACTION\", \"WORLD_PHENOMENON\"], \"title\": \"Binding Type\", \"type\": \"string\"}, \"preferred_existing_entity\": {\"const\": true, \"title\": \"Preferred Existing Entity\", \"type\": \"boolean\"}, \"reuse_first\": {\"const\": true, \"title\": \"Reuse First\", \"type\": \"boolean\"}, \"creation_allowed_if_missing\": {\"title\": \"Creation Allowed If Missing\", \"type\": \"boolean\"}, \"description\": {\"title\": \"Description\", \"type\": \"string\"}, \"placement_constraints\": {\"items\": {\"type\": \"string\"}, \"title\": \"Placement Constraints\", \"type\": \"array\"}}, \"required\": [\"key\", \"saga_reference\", \"binding_type\", \"preferred_existing_entity\", \"reuse_first\", \"creation_allowed_if_missing\", \"description\", \"placement_constraints\"], \"title\": \"ProposedBinding\", \"type\": \"object\"}, \"RevealIntent\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"truth_key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Truth Key\", \"type\": \"string\"}, \"level\": {\"enum\": [\"FORESHADOW\", \"PARTIAL\", \"CONFIRMED\"], \"title\": \"Level\", \"type\": \"string\"}, \"summary\": {\"title\": \"Summary\", \"type\": \"string\"}, \"eligibility\": {\"$ref\": \"#/$defs/Conditions\"}, \"anchor_keys\": {\"items\": {\"type\": \"string\"}, \"title\": \"Anchor Keys\", \"type\": \"array\"}, \"reveal_ceiling\": {\"title\": \"Reveal Ceiling\", \"type\": \"string\"}}, \"required\": [\"key\", \"truth_key\", \"level\", \"summary\", \"eligibility\", \"anchor_keys\", \"reveal_ceiling\"], \"title\": \"RevealIntent\", \"type\": \"object\"}, \"ReweavePolicy\": {\"additionalProperties\": false, \"properties\": {\"reweave_allowed\": {\"const\": true, \"title\": \"Reweave Allowed\", \"type\": \"boolean\"}, \"immutable_elements\": {\"items\": {\"type\": \"string\"}, \"title\": \"Immutable Elements\", \"type\": \"array\"}, \"mutable_elements\": {\"items\": {\"type\": \"string\"}, \"title\": \"Mutable Elements\", \"type\": \"array\"}, \"recommended_triggers\": {\"items\": {\"enum\": [\"MAJOR_CHARACTER_CHANGE\", \"MAJOR_WORLD_CHANGE\", \"THREAD_INVALIDATED\", \"LONG_SAGA_DORMANCY\", \"MAJOR_RELATIONSHIP_CHANGE\", \"CROSS_WORLD_TRANSITION\"], \"type\": \"string\"}, \"title\": \"Recommended Triggers\", \"type\": \"array\"}}, \"required\": [\"reweave_allowed\", \"immutable_elements\", \"mutable_elements\", \"recommended_triggers\"], \"title\": \"ReweavePolicy\", \"type\": \"object\"}, \"SafetyAndConstraints\": {\"additionalProperties\": false, \"properties\": {\"never_prewrite_story_sequence\": {\"const\": true, \"title\": \"Never Prewrite Story Sequence\", \"type\": \"boolean\"}, \"never_force_saga_progression\": {\"const\": true, \"title\": \"Never Force Saga Progression\", \"type\": \"boolean\"}, \"never_assume_future_character_choice\": {\"const\": true, \"title\": \"Never Assume Future Character Choice\", \"type\": \"boolean\"}, \"never_commit_future_event_as_fact\": {\"const\": true, \"title\": \"Never Commit Future Event As Fact\", \"type\": \"boolean\"}, \"never_reveal_hidden_information_early\": {\"const\": true, \"title\": \"Never Reveal Hidden Information Early\", \"type\": \"boolean\"}, \"allow_saga_free_stories\": {\"const\": true, \"title\": \"Allow Saga Free Stories\", \"type\": \"boolean\"}, \"allow_thread_abandonment\": {\"const\": true, \"title\": \"Allow Thread Abandonment\", \"type\": \"boolean\"}, \"allow_thread_reactivation\": {\"const\": true, \"title\": \"Allow Thread Reactivation\", \"type\": \"boolean\"}, \"allow_multiple_concurrent_threads\": {\"const\": true, \"title\": \"Allow Multiple Concurrent Threads\", \"type\": \"boolean\"}}, \"required\": [\"never_prewrite_story_sequence\", \"never_force_saga_progression\", \"never_assume_future_character_choice\", \"never_commit_future_event_as_fact\", \"never_reveal_hidden_information_early\", \"allow_saga_free_stories\", \"allow_thread_abandonment\", \"allow_thread_reactivation\", \"allow_multiple_concurrent_threads\"], \"title\": \"SafetyAndConstraints\", \"type\": \"object\"}, \"SagaAnchorEdge\": {\"additionalProperties\": false, \"properties\": {\"from_anchor\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"From Anchor\", \"type\": \"string\"}, \"to_anchor\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"To Anchor\", \"type\": \"string\"}, \"relationship\": {\"enum\": [\"REQUIRES\", \"MAY_ENABLE\", \"ALTERNATIVE_ROUTE\", \"MAY_CONVERGE\"], \"title\": \"Relationship\", \"type\": \"string\"}, \"rationale\": {\"title\": \"Rationale\", \"type\": \"string\"}}, \"required\": [\"from_anchor\", \"to_anchor\", \"relationship\", \"rationale\"], \"title\": \"SagaAnchorEdge\", \"type\": \"object\"}, \"SagaAnchorSkeleton\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"title\": {\"title\": \"Title\", \"type\": \"string\"}, \"purpose\": {\"title\": \"Purpose\", \"type\": \"string\"}, \"target_state\": {\"title\": \"Target State\", \"type\": \"string\"}, \"required_for_resolution\": {\"title\": \"Required For Resolution\", \"type\": \"boolean\"}, \"milestone_target_count\": {\"maximum\": 6, \"minimum\": 2, \"title\": \"Milestone Target Count\", \"type\": \"integer\"}, \"desired_progression_modes\": {\"items\": {\"enum\": [\"DISCOVERY\", \"REVELATION\", \"DECISION\", \"RELATIONSHIP_SHIFT\", \"CONSEQUENCE\", \"CONVERGENCE\", \"TRANSFORMATION\", \"ACCESS\", \"EVIDENCE\"], \"type\": \"string\"}, \"title\": \"Desired Progression Modes\", \"type\": \"array\"}}, \"required\": [\"key\", \"title\", \"purpose\", \"target_state\", \"required_for_resolution\", \"milestone_target_count\", \"desired_progression_modes\"], \"title\": \"SagaAnchorSkeleton\", \"type\": \"object\"}, \"SideSagaSeed\": {\"additionalProperties\": false, \"properties\": {\"key\": {\"pattern\": \"^[a-z][a-z0-9_]*$\", \"title\": \"Key\", \"type\": \"string\"}, \"arc_type\": {\"enum\": [\"SIDE\", \"WORLD\", \"RELATIONSHIP\", \"PERSONAL\", \"EMERGENT\"], \"title\": \"Arc Type\", \"type\": \"string\"}, \"premise\": {\"title\": \"Premise\", \"type\": \"string\"}, \"why_it_matters\": {\"title\": \"Why It Matters\", \"type\": \"string\"}, \"activation\": {\"$ref\": \"#/$defs/Conditions\"}, \"initial_visibility\": {\"enum\": [\"HIDDEN\", \"FORESHADOW_ONLY\", \"DISCOVERABLE\"], \"title\": \"Initial Visibility\", \"type\": \"string\"}, \"must_not_force_followup\": {\"const\": true, \"title\": \"Must Not Force Followup\", \"type\": \"boolean\"}, \"remains_proposed_until_activated\": {\"const\": true, \"title\": \"Remains Proposed Until Activated\", \"type\": \"boolean\"}}, \"required\": [\"key\", \"arc_type\", \"premise\", \"why_it_matters\", \"activation\", \"initial_visibility\", \"must_not_force_followup\", \"remains_proposed_until_activated\"], \"title\": \"SideSagaSeed\", \"type\": \"object\"}, \"WorldIntegration\": {\"additionalProperties\": false, \"properties\": {\"proposed_bindings\": {\"items\": {\"$ref\": \"#/$defs/ProposedBinding\"}, \"title\": \"Proposed Bindings\", \"type\": \"array\"}, \"integration_rules\": {\"items\": {\"type\": \"string\"}, \"title\": \"Integration Rules\", \"type\": \"array\"}}, \"required\": [\"proposed_bindings\", \"integration_rules\"], \"title\": \"WorldIntegration\", \"type\": \"object\"}}, \"additionalProperties\": false, \"properties\": {\"schema\": {\"const\": \"character-saga-skeleton.v2\", \"title\": \"Schema\", \"type\": \"string\"}, \"origin\": {\"$ref\": \"#/$defs/Origin\"}, \"present_situation\": {\"$ref\": \"#/$defs/PresentSituation\"}, \"narrative_core\": {\"$ref\": \"#/$defs/NarrativeCore\"}, \"main_saga\": {\"$ref\": \"#/$defs/MainSagaSkeleton\"}, \"latent_side_sagas\": {\"items\": {\"$ref\": \"#/$defs/SideSagaSeed\"}, \"title\": \"Latent Side Sagas\", \"type\": \"array\"}, \"creative_permission_envelope\": {\"$ref\": \"#/$defs/CreativePermissionEnvelope\"}, \"world_integration\": {\"$ref\": \"#/$defs/WorldIntegration\"}, \"reweave_policy\": {\"$ref\": \"#/$defs/ReweavePolicy\"}, \"background_enrichment_policy\": {\"$ref\": \"#/$defs/BackgroundEnrichmentPolicy\"}, \"safety_and_constraints\": {\"$ref\": \"#/$defs/SafetyAndConstraints\"}}, \"required\": [\"schema\", \"origin\", \"present_situation\", \"narrative_core\", \"main_saga\", \"latent_side_sagas\", \"creative_permission_envelope\", \"world_integration\", \"reweave_policy\", \"background_enrichment_policy\", \"safety_and_constraints\"], \"title\": \"CharacterSagaSkeletonV2\", \"type\": \"object\"}, \"qualification_rules\": {\"human_creative_review_required\": true, \"milestone_expansion_forbidden_before_human_approve\": true, \"no_episode_generation\": true, \"main_saga_anchor_range\": [5, 7], \"planned_milestone_total_range\": [15, 30], \"must_include_alternative_route\": true, \"must_support_saga_dormancy\": true, \"must_support_generated_continuity\": true}}"
+          }
+        ],
+        "max_tokens": 12000,
+        "reasoning": {
+          "effort": "high",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "finish_reason": "length",
+      "body": {
+        "id": "gen-1790585076-LEGe6Eo0NX1Og8ScsIh6",
+        "object": "chat.completion",
+        "created": 1790585076,
+        "model": "anthropic/claude-sonnet-5",
+        "provider": "Claude Platform on AWS",
+        "system_fingerprint": null,
+        "service_tier": "default",
+        "choices": [
+          {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "length",
+            "native_finish_reason": "max_tokens",
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "refusal": null,
+              "reasoning_details": [
+                {
+                  "type": "reasoning.text",
+                  "text": "I'm sketching out the core premise: Deniz, a young cartographer's apprentice in the Shattered Meridian archipelago, uncovering that navigation beacons contradict official charts and hint at ancient pre-cultural infrastructure. This mystery around who built the original markers and what lies beyond the Outer Mist Line gives me the foundation for the main saga arc.\n\nI'm settling on a title like \"The Uncharted Meridian\" and mapping out the hidden truth: the scattered ancient markers form a single coherent network, built by a lost seafaring or non-human culture using magnetic stone infrastructure to stabilize tides for navigation — a \"First Chart\" whose slow drift is now causing the beacon disagreements.\n\nI'm splitting this into two layers: who built the network stays a genuine unresolved mystery for future development, while the actual cause of the current beacon discrepancies is fixed and discoverable — a rare tidal cycle reactivating the ancient stones, compounded by a merchant council figure quietly falsifying charts for profit.\n\nI'll add a third hidden truth about the vanished observatory keeper, tying their disappearance to a real method they discovered for reconciling the old and new charts.\n\nNow I'm shifting to defining the story's narrative anchors—durable phases that shift access, knowledge, or identity. The first anchor establishes Deniz earning provisional trust as an apprentice cartographer, granting official access to chart beyond home waters. The second anchor has Deniz gathering credible evidence that beacons are diverging from official charts, raising the stakes.\n\nI'm mapping out branching anchors: gaining rare access to the Drowned Causeway reveals its link to the ancient marker network, while an alternative path involves joining an expedition beyond the Outer Mist Line—these two routes can converge later at a shared discovery point, the abandoned tide observatory, where the keeper's hidden notes reveal partial truths about the beacon anomalies. I'm now working out the anchor where Deniz confronts the factions involved.\n\nConfirming seven anchors total with milestone counts (3,4,4,4,4,4,3 = 26) sitting well within the 15-30 range, and now I'm sketching the dependency edges between anchors—starting from apprentice proving as the entry point, requiring trust before the beacon anomaly evidence can unlock.\n\nI'm working through how drowned causeway and outer mist expedition both branch from beacon anomaly evidence as alternative routes rather than sequential steps, marking them with an explicit ALTERNATIVE_ROUTE relationship to signal they're parallel options at the same story juncture without creating any cycles.\n\nThen both routes converge on observatory_secrets since achieving either one suffices, which flows into faction_reckoning and finally new_chart_legacy through straightforward REQUIRES relationships. I'm drafting the edge list now with justifications for each connection, starting with apprentice_proving requiring beacon_anomaly_evidence before Deniz can gather credible anomaly evidence.\n\nWith the graph confirmed acyclic and fully connected from entry to resolution, I set the entry and resolution anchor keys and begin drafting the reveal_intents section that ties hidden truths back to specific anchors.\n\nThe first few reveals establish the ancient marker network foreshadowing, the partial and confirmed causes of the beacon discord tying natural phenomena to human exploitation, and the keeper's fate progressing from partial notes to full confirmation at the saga's resolution.\n\nSince marker_builders is unresolved by design, I need to keep it capped at FORESHADOW or PARTIAL levels, never CONFIRMED — I'm adding a partial reveal that recognizes deeper patterns while leaving the ultimate builders' purpose intentionally open. Now I'm working out the eligibility conditions, structuring them with type, reference, and condition fields tied to specific events and knowledge anchors.\n\nMoving on to Deniz's origin, I'm sketching the backstory: raised in Meridian Harbor within a chart-mending family, self-taught through years of quietly logging tides and beacon flashes, then formally apprenticed under the demanding Master Ilona Vask after catching an error in a printed chart. I'm tagging each of these origin facts with their core/immutable status and marking whether they're known by the character versus the wider world.\n\nI'm also drafting formative events—Deniz publicly catching a chart error at age 10 (which built a reputation for accuracy but also a lasting grudge), and surviving a storm at age 11 using dead-reckoning navigation when instruments failed, which gave real confidence in observation but seeded a tendency toward overconfidence.\n\nNow I'm mapping out key relationships: Mira, a practical harbor friend who prefers building small devices to test theories, creating friction with Deniz's trust in pattern-reading; Master Vask, the demanding mentor who took Deniz on after the chart incident but still favors procedure over instinct; and the wider harbor crews and captains who've witnessed Deniz's work firsthand.\n\nI'm also noting open questions—whether Deniz's talent for spotting irregularities stems from trained skill or early childhood exposure near the old causeway, and whether the surveyor embarrassed in the chart-error incident will resurface as friend or foe. The current situation: Deniz has provisional permission to assist on inner-strait surveys under Vask, though the deeper ambition of charting beyond the strait remains unearned, and rumors are circulating that certain beacons don't match the official charts.\n\nDeniz is based at Meridian Harbor, growing familiar with the Beacon Ridge towers, and relies on a personal notebook of observations, a borrowed sighting instrument, basic apprentice tools, and a bit of trust from a few harbor captains. Pressure mounts to prove reliability before storm season closes the window for outer-route work, with lingering questions about the mismatched beacons, whether Vask will ever vouch for Deniz, and what actually lies past the Outer Mist Line—driving the immediate desire to earn real assignments and prove that careful observation catches what official maps miss.\n\nI'm laying out Deniz's core identity: someone who trusts patient observation over hurried authority, who wants to prove worth through demonstrated skill rather than claims, and who values collaborators like Mira who verify things together over being right alone. The primary drives are earning outer-route rights, exposing the truth behind the map-beacon discrepancies, and proving that careful field method matters.\n\nNow I'm mapping the fears underneath this - being dismissed as a kid, betraying Master Vask's trust through recklessness, or being publicly wrong in a way that undoes credibility. There are two central tensions pulling at Deniz: confidence in personal observation versus the discipline of waiting for verified evidence, and loyalty to Vask's methods versus the temptation to investigate independently when official channels stall.\n\nI'm sketching the long-term mysteries too - who built the ancient markers predating known cultures, and how Deniz's discoveries will reshape the way the Meridian charts its outer routes. For the main saga, I've settled on \"The Meridian That Moved\" - Deniz uncovers why the archipelago's beacons and charts have fallen out of agreement, aiming to earn a legitimate voice in how that truth gets recorded and used, with regional trust and voyage safety on the line.\n\nNow I'm drafting the entry anchor: \"Earning the Chart-Right,\" where Deniz secures provisional authority from Master Vask to run independent surveys, establishing real credibility with the harbor crews before the deeper mystery can unfold.\n\nNext comes \"The Beacons That Disagree,\" where scattered rumors become verifiable, guild-recognized evidence of conflicting readings—turning personal suspicion into something authorities can't fully dismiss. Then \"Walking the Drowned Causeway\" opens physical access to the old marker network, letting Deniz explore the rare-tide causeway and uncover its deeper connection to the archipelago's hidden systems.\n\nAlongside this, \"Past the Outer Mist Line\" offers an alternate route—a chance to join an expedition beyond the charted seas and gather independent evidence from another angle. Both paths converge in \"The Keeper's Ledger,\" set at the abandoned tide observatory, where Deniz finds the previous keeper's hidden research and a partial explanation for it all.\n\nI'm also outlining \"Whose Chart Is True,\" a required anchor forcing Deniz to confront the human stakes—the people who benefit from the confusion and want control over disclosure—with real consequences for trust, alliance, and reputation depending on which side Deniz favors.\n\nAfter that comes \"The Chart Deniz Made,\" the saga-resolving anchor establishing a new, more honest charting practice tied to Deniz's legacy while leaving the ultimate origin of the ancient markers open for future discovery. With totals confirmed at 26 milestones, I'm now sketching latent side sagas, starting with Mira's competing plan to build a mechanical device that could scientifically test the tide-magnetic anomalies alongside Deniz's own observational notebook.\n\nI'm also outlining a recurring seasonal pressure from the approaching storm season closing off outer-route travel for months, plus a relationship thread where the surveyor once embarrassed by young Deniz's chart correction resurfaces as a possible rival, obstacle, or ally within the guild.\n\nI'm also sketching a personal flaw hook around Deniz's overconfidence risking a real mistake with lasting consequences, and an emergent thread linking Deniz's private notebook of odd sea-creature sightings to the ancient marker network, rewarding the character's interest without forcing the connection.\n\nNow I'm laying out the creative permission envelope, defining the allowed entity types and scopes I can use going forward, leaning toward local, regional, and world-level scope since this is a low-magic single world setting.\n\nI'm establishing the constraints for anything new I create—new NPCs and lore must fit the age-of-sail, rule-bound navigation technology, new factions need believable economic or social motives, and content should stay appropriate for a young audience. I'm also listing what's forbidden, like arbitrary magic or permanently killing Deniz, and noting that any durable creation requires committing to its outcome.\n\nI'm building the world integration bindings now, mapping each anchor to specific existing locations and NPCs like Master Vask, Beacon Ridge, the Drowned Causeway, the Outer Mist Line, and the tide observatory, prioritizing reuse over invention and setting placement constraints for each. I'm also defining a faction binding tied to merchant-captain tensions, making sure motives stay grounded and non-cartoonish.\n\nI'm setting integration rules to prioritize reusing existing elements and keeping new phenomena consistent with established rules, then defining reweave policy—what's immutable like Deniz's identity and the marker network's existence, versus what's mutable like specific NPC fates or route choices, along with triggers for when reweaving should happen.\n\nNow I'm working out eligibility conditions for reveal intents using all_of/any_of/must_not arrays, starting with a foreshadowing intent tied to the beacon anomaly anchor, then refining a second intent to properly express an OR condition between the causeway and outer mist anchors using any_of instead of mixing it with all_of. I'm now building a third reveal intent for confirming the beacon's cause, requiring the observatory secrets anchor to be completed.\n\n",
+                  "format": "anthropic-claude-v1",
+                  "index": 0,
+                  "signature": "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"
+                }
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 11735,
+          "completion_tokens": 12000,
+          "total_tokens": 23735,
+          "cost": 0.14347,
+          "is_byok": false,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "cost_details": {
+            "upstream_inference_cost": 0.14347,
+            "upstream_inference_prompt_cost": 0.02347,
+            "upstream_inference_completions_cost": 0.12
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 12000,
+            "image_tokens": 0,
+            "audio_tokens": 0
+          }
+        }
+      },
+      "raw_usage": {
+        "prompt_tokens": 11735,
+        "completion_tokens": 12000,
+        "total_tokens": 23735,
+        "cost": 0.14347,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.14347,
+          "upstream_inference_prompt_cost": 0.02347,
+          "upstream_inference_completions_cost": 0.12
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 12000,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "usage": {
+        "input_tokens": 11735,
+        "output_tokens": 12000,
+        "total_tokens": 23735
+      },
+      "cost": {
+        "usd": 0.14347,
+        "try_amount": null,
+        "usd_try_rate": null
+      }
+    }
+  }
+}
