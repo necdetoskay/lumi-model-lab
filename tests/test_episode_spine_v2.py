@@ -421,7 +421,7 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
 
         architect_call = mock_call.call_args_list[0].kwargs
         self.assertEqual(architect_call["request_class"], "saga_architect")
-        self.assertEqual(architect_call["max_tokens"], 6000)
+        self.assertEqual(architect_call["max_tokens"], 12000)
 
     @patch(
         "src.episode_spine_v2_generate.runtime_profile_identity",
