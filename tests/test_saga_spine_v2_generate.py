@@ -34,8 +34,10 @@ def _body() -> dict:
 
 
 class SagaSpineV2GeneratorTests(unittest.TestCase):
+    @patch("src.saga_spine_v2_generate.runtime_profile_identity", return_value={"model_id": "test/model"})
+    @patch("src.saga_spine_v2_generate.require_qualification_runtime_profile", return_value={"qualification": {"ready": True}})
     @patch("src.saga_spine_v2_generate.call_structured_json_with_retry")
-    def test_valid_spine_stops_at_human_review_gate(self, mock_call):
+    def test_valid_spine_stops_at_human_review_gate(self, mock_call, _mock_require, _mock_identity):
         mock_call.return_value = (
             _valid_payload(),
             _body(),
@@ -74,8 +76,10 @@ class SagaSpineV2GeneratorTests(unittest.TestCase):
         self.assertEqual(result["cost"]["usd"], 0.123)
         self.assertEqual(persisted["status"], "awaiting_human_review")
 
+    @patch("src.saga_spine_v2_generate.runtime_profile_identity", return_value={"model_id": "test/model"})
+    @patch("src.saga_spine_v2_generate.require_qualification_runtime_profile", return_value={"qualification": {"ready": True}})
     @patch("src.saga_spine_v2_generate.call_structured_json_with_retry")
-    def test_invalid_spine_persists_contract_errors(self, mock_call):
+    def test_invalid_spine_persists_contract_errors(self, mock_call, _mock_require, _mock_identity):
         invalid = _valid_payload()
         invalid["main_saga"]["milestones"] = invalid["main_saga"]["milestones"][:5]
         mock_call.return_value = (
