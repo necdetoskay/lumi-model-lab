@@ -210,8 +210,8 @@ class SagaSkeletonV2GeneratorTests(unittest.TestCase):
             _body(),
             {
                 "temperature": 0.30,
-                "max_tokens": 12000,
-                "reasoning": {"effort": "high", "exclude": True},
+                "max_tokens": 10000,
+                "reasoning": {"effort": "low", "exclude": True},
                 "response_format": {"type": "json_object"},
             },
             [],
@@ -242,6 +242,21 @@ class SagaSkeletonV2GeneratorTests(unittest.TestCase):
         self.assertEqual(
             result["raw_usage"]["completion_tokens_details"]["reasoning_tokens"],
             800,
+        )
+
+        kwargs = mock_call.call_args.kwargs
+        self.assertEqual(kwargs["request_class"], "saga_architect")
+        self.assertEqual(kwargs["max_tokens"], 10000)
+        request_payload = json.loads(kwargs["user_prompt"])
+        self.assertNotIn("output_contract", request_payload)
+        self.assertIn("requested_shape", request_payload)
+        self.assertEqual(
+            request_payload["qualification_rules"]["main_saga_anchor_count"],
+            5,
+        )
+        self.assertEqual(
+            request_payload["qualification_rules"]["planned_milestone_total"],
+            15,
         )
 
 
