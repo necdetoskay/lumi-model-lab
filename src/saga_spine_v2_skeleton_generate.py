@@ -72,7 +72,9 @@ def generate(
     model_identity = runtime_profile_identity(model)
 
     fixture = NarrativeFixture.model_validate(_read_json(fixture_path))
-    schema = _read_json(schema_path)
+    # Validate against the full schema locally after generation; do not inject
+    # the generated schema into the model prompt.
+    _read_json(schema_path)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
 
     request_payload = {
@@ -87,13 +89,45 @@ def generate(
             ),
         },
         "frozen_character_world_input": fixture.model_dump(mode="json"),
-        "output_contract": schema,
+        "requested_shape": {
+            "schema": "character-saga-skeleton.v2",
+            "origin": "Origin object with summary, origin_facts, formative_events, origin_relationships, unresolved_origin_questions",
+            "present_situation": "PresentSituation object",
+            "narrative_core": "NarrativeCore object",
+            "main_saga": {
+                "key": "stable_key",
+                "title": "string",
+                "goal": "string",
+                "stakes": "string",
+                "central_mystery": "string",
+                "themes": "list[string]",
+                "entry_anchor_keys": "list[anchor_key]",
+                "resolution_anchor_key": "anchor_key",
+                "anchors": "exactly 5 objects with key,title,purpose,target_state,required_for_resolution,milestone_target_count,desired_progression_modes",
+                "anchor_edges": "acyclic edges with from_anchor,to_anchor,relationship,rationale and >=1 ALTERNATIVE_ROUTE",
+                "hidden_truths": "2-4 HiddenTruth objects using FIXED_HIDDEN or UNRESOLVED_BY_DESIGN",
+                "reveal_intents": "3-6 objects with key,truth_key,level,summary,eligibility,anchor_keys,reveal_ceiling"
+            },
+            "latent_side_sagas": "2-4 SideSagaSeed objects",
+            "creative_permission_envelope": "CreativePermissionEnvelope object",
+            "world_integration": "WorldIntegration object",
+            "reweave_policy": "ReweavePolicy object",
+            "background_enrichment_policy": "BackgroundEnrichmentPolicy object",
+            "safety_and_constraints": "SafetyAndConstraints object"
+        },
+        "compactness_rules": [
+            "Return exactly 5 anchors.",
+            "Set milestone_target_count values so their sum is exactly 15.",
+            "Do not generate individual milestone details yet.",
+            "Keep each narrative field concise, normally one sentence.",
+            "Do not repeat schema definitions or explain reasoning outside JSON."
+        ],
         "qualification_rules": {
             "human_creative_review_required": True,
             "milestone_expansion_forbidden_before_human_approve": True,
             "no_episode_generation": True,
-            "main_saga_anchor_range": [5, 7],
-            "planned_milestone_total_range": [15, 30],
+            "main_saga_anchor_count": 5,
+            "planned_milestone_total": 15,
             "must_include_alternative_route": True,
             "must_support_saga_dormancy": True,
             "must_support_generated_continuity": True,
@@ -110,7 +144,7 @@ def generate(
             system_prompt=system_prompt,
             user_prompt=json.dumps(request_payload, ensure_ascii=False),
             temperature=0.30,
-            max_tokens=18000,
+            max_tokens=10000,
             seed=2026092803,
             request_class="saga_architect",
             max_parse_attempts=2,
