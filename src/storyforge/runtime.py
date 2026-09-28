@@ -921,40 +921,65 @@ def run_storyforge(
                 evidence=evidence,
             )
 
-        stage_started = time.perf_counter()
-        repair_payload, repair_meta = _structured_call(
-            api_key=key,
-            model=models["repair"],
-            system=REPAIR_SYSTEM,
-            payload={
-                "story_intent": req.story_intent.model_dump(),
-                "context_packet": packet,
-                "hard_constraints": req.story_intent.hard_constraints,
-                "validated_spine": plan,
-                "story": story,
-                "confirmed_local_defects": findings,
-            },
-            seed=seed + 5,
-            request_class="editorial_audit",
-            max_tokens=1800,
+        repair_payload, repair_meta = _run_traced_stage(
+            stage="repair",
+            evidence=evidence,
+            artifacts=artifacts,
+            fn=lambda: _structured_call(
+                api_key=key,
+                model=models["repair"],
+                system=REPAIR_SYSTEM,
+                payload={
+                    "story_intent": req.story_intent.model_dump(),
+                    "context_packet": packet,
+                    "hard_constraints": req.story_intent.hard_constraints,
+                    "validated_spine": plan,
+                    "story": story,
+                    "confirmed_local_defects": findings,
+                },
+                seed=seed + 5,
+                request_class="editorial_audit",
+                max_tokens=1800,
+            ),
         )
-        evidence["latency_seconds"]["repair"] = round(time.perf_counter() - stage_started, 3)
         evidence["repair"] = repair_meta
         evidence["cost_usd"]["repair"] = _cost(repair_meta)
-        story, applied_repairs = _apply_local_repairs(story, repair_payload)
+        story, applied_repairs = _run_traced_stage(
+            stage="repair_apply",
+            evidence=evidence,
+            artifacts=artifacts,
+            fn=lambda: _apply_local_repairs(story, repair_payload),
+        )
+        artifacts["english_story"] = story
 
-        stage_started = time.perf_counter()
-        primary, primary_meta = _audit_story(
-            api_key=key, model=models["primary_auditor"], request=req,
-            packet=packet, plan=plan, story=story, seed=seed + 6
+        primary, primary_meta = _run_traced_stage(
+            stage="primary_reaudit",
+            evidence=evidence,
+            artifacts=artifacts,
+            fn=lambda: _audit_story(
+                api_key=key,
+                model=models["primary_auditor"],
+                request=req,
+                packet=packet,
+                plan=plan,
+                story=story,
+                seed=seed + 6,
+            ),
         )
-        evidence["latency_seconds"]["primary_reaudit"] = round(time.perf_counter() - stage_started, 3)
-        stage_started = time.perf_counter()
-        secondary, secondary_meta = _audit_story(
-            api_key=key, model=models["secondary_auditor"], request=req,
-            packet=packet, plan=plan, story=story, seed=seed + 7
+        secondary, secondary_meta = _run_traced_stage(
+            stage="secondary_reaudit",
+            evidence=evidence,
+            artifacts=artifacts,
+            fn=lambda: _audit_story(
+                api_key=key,
+                model=models["secondary_auditor"],
+                request=req,
+                packet=packet,
+                plan=plan,
+                story=story,
+                seed=seed + 7,
+            ),
         )
-        evidence["latency_seconds"]["secondary_reaudit"] = round(time.perf_counter() - stage_started, 3)
         evidence["cost_usd"]["primary_reaudit"] = _cost(primary_meta)
         evidence["cost_usd"]["secondary_reaudit"] = _cost(secondary_meta)
 
