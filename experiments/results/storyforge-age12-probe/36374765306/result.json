@@ -1,0 +1,503 @@
+{
+  "schema_version": "storyforge-result.v1",
+  "profile_id": "LSF-A12-W1000-v0.1-exp",
+  "request_id": "age12-dinosaur-engineering-probe-20260928",
+  "status": "publication_ready",
+  "publication_ready": true,
+  "context_packet": {
+    "deterministic_core": [
+      {
+        "id": "character.identity",
+        "text": "Active character is Deniz.",
+        "kind": "canon"
+      },
+      {
+        "id": "character.exact_age",
+        "text": "Deniz is exactly 12 years old.",
+        "kind": "canon"
+      },
+      {
+        "id": "world.active",
+        "text": "Active world is world-home-01.",
+        "kind": "canon"
+      },
+      {
+        "id": "state.current_location",
+        "text": "Deniz is currently at HOME.",
+        "kind": "state"
+      },
+      {
+        "id": "state.story_revision",
+        "text": "CharacterStoryState revision is 14.",
+        "kind": "state"
+      },
+      {
+        "id": "inventory.dinosaur_toy",
+        "text": "Deniz currently has one toy dinosaur.",
+        "kind": "state"
+      },
+      {
+        "id": "location.cardboard_box",
+        "text": "One empty ordinary cardboard box is available in the room.",
+        "kind": "state"
+      },
+      {
+        "id": "location.notebook",
+        "text": "A plain notebook and pencil are available in the room.",
+        "kind": "state"
+      },
+      {
+        "id": "recent.dinosaur_intact",
+        "text": "The toy dinosaur is intact and can be moved normally by hand.",
+        "kind": "state"
+      },
+      {
+        "id": "world.physics_normal",
+        "text": "This world follows ordinary everyday physical rules unless a StoryContract explicitly allows fantasy.",
+        "kind": "canon"
+      }
+    ],
+    "jev_selected_enrichment": [
+      {
+        "id": "location.small_blanket",
+        "text": "One small ordinary blanket is available in the room.",
+        "kind": "state"
+      },
+      {
+        "id": "location.sofa_cushions",
+        "text": "Two ordinary sofa cushions are available in the room.",
+        "kind": "state"
+      },
+      {
+        "id": "location.string",
+        "text": "A short length of ordinary string is available in the room.",
+        "kind": "state"
+      }
+    ]
+  },
+  "plan": {
+    "premise": "At home, twelve-year-old Deniz builds a pretend-swamp rescue course for the toy dinosaur, watches the first cardboard-box bridge slide and fail on the blanket, infers the grip problem from the evidence, and redesigns a working cushion bridge using only room objects and normal everyday physics.",
+    "beats": [
+      {
+        "id": "B1",
+        "density": "anchor",
+        "beat": "Deniz spreads the blanket flat on the floor as a pretend swamp and sets the toy dinosaur at the starting edge, framing the rescue-course experiment.",
+        "uses_fact_ids": [
+          "location.small_blanket",
+          "inventory.dinosaur_toy",
+          "character.identity",
+          "character.exact_age",
+          "state.current_location"
+        ]
+      },
+      {
+        "id": "B2",
+        "density": "develop",
+        "beat": "Deniz sketches the first route in the notebook: the empty cardboard box laid flat as a bridge spanning the blanket, with the dinosaur stepping across it.",
+        "uses_fact_ids": [
+          "location.notebook",
+          "location.cardboard_box",
+          "inventory.dinosaur_toy"
+        ]
+      },
+      {
+        "id": "B3",
+        "density": "brief",
+        "beat": "Deniz moves the dinosaur by hand onto the cardboard-box bridge to begin the first crossing attempt.",
+        "uses_fact_ids": [
+          "inventory.dinosaur_toy",
+          "location.cardboard_box",
+          "recent.dinosaur_intact"
+        ]
+      },
+      {
+        "id": "B4",
+        "density": "anchor",
+        "beat": "Mid-crossing, the box's smooth bottom slides on the blanket's soft surface; the bridge shifts and the dinosaur slips off into the pretend swamp. Deniz watches the slide happen.",
+        "uses_fact_ids": [
+          "location.cardboard_box",
+          "location.small_blanket",
+          "inventory.dinosaur_toy",
+          "world.physics_normal"
+        ]
+      },
+      {
+        "id": "B5",
+        "density": "develop",
+        "beat": "Deniz retrieves the dinosaur, examines the shifted box and the drag marks on the blanket, infers that smooth cardboard has no grip on the soft fabric, and writes the observed cause in the notebook.",
+        "uses_fact_ids": [
+          "inventory.dinosaur_toy",
+          "location.cardboard_box",
+          "location.small_blanket",
+          "location.notebook"
+        ]
+      },
+      {
+        "id": "B6",
+        "density": "develop",
+        "beat": "Deniz revises the design in the notebook: two sofa cushions placed end-to-end as the bridge, their fabric bottoms gripping the blanket, with the string laid alongside to mark the safe path.",
+        "uses_fact_ids": [
+          "location.notebook",
+          "location.sofa_cushions",
+          "location.string",
+          "location.small_blanket"
+        ]
+      },
+      {
+        "id": "B7",
+        "density": "brief",
+        "beat": "Deniz arranges the cushion bridge and moves the dinosaur across it in the second attempt.",
+        "uses_fact_ids": [
+          "location.sofa_cushions",
+          "inventory.dinosaur_toy",
+          "location.string"
+        ]
+      },
+      {
+        "id": "B8",
+        "density": "anchor",
+        "beat": "The dinosaur reaches the far edge of the blanket without touching the swamp; the cushions hold steady. Deniz records the successful crossing and the design change in the notebook.",
+        "uses_fact_ids": [
+          "inventory.dinosaur_toy",
+          "location.sofa_cushions",
+          "location.small_blanket",
+          "location.notebook"
+        ]
+      }
+    ],
+    "assumptions": [
+      {
+        "text": "The room has open floor space large enough to lay out the blanket and arrange the course.",
+        "type": "transient_environment",
+        "why_safe": "Ordinary home room; no durable world fact invented."
+      },
+      {
+        "text": "The cardboard box's bottom is smooth enough to slide on the blanket's fabric surface when weighted.",
+        "type": "transient_environment",
+        "why_safe": "Consistent with ordinary everyday physics; no owned-attribute invention beyond normal material behavior."
+      },
+      {
+        "text": "Deniz moves the dinosaur by hand along each route.",
+        "type": "action",
+        "why_safe": "Directly supported by recent.dinosaur_intact; keeps the toy ordinary and non-autonomous."
+      }
+    ],
+    "expected_outcome": {
+      "proposed_state_changes": [
+        {
+          "kind": "knowledge",
+          "description": "PROPOSAL: Deniz has learned from direct observation that smooth cardboard slides on soft fabric and that cushion fabric grips better."
+        },
+        {
+          "kind": "position",
+          "description": "PROPOSAL: The toy dinosaur ends the story on the far side of the blanket-swamp, having completed the second route."
+        },
+        {
+          "kind": "object_state",
+          "description": "PROPOSAL: The cardboard box is set aside from its bridge position; the two cushions are arranged end-to-end as the working bridge, with the string marking the path."
+        }
+      ],
+      "preserved_invariants": [
+        "The toy dinosaur remains an ordinary, intact toy moved only by Deniz's hand; it never becomes alive or independently mobile.",
+        "The world follows ordinary everyday physical rules; no fantasy elements occur.",
+        "No adult or new character appears or solves any part of the problem.",
+        "No moral or lesson is stated in the narration."
+      ]
+    }
+  },
+  "english_story": "The Swamp Crossing Experiment\n\nDeniz spread the small blanket flat across the floor, pushing the wrinkles out with both palms until it lay in one soft, even square. That was the swamp. It had been decided five minutes ago, and there was no taking it back now.\n\nThe toy dinosaur went down at the near edge, facing across the blanket.\n\n\"All right, Ranger,\" Deniz said. \"The swamp is flooded from here to the far side. Your job is to get across without sinking. I build the route, you test it, and I write down everything that happens. That's a proper experiment.\"\n\nThe dinosaur stood on its plastic feet and said nothing, which was exactly what plastic dinosaurs were good at.\n\nDeniz was twelve, and twelve meant doing this properly, which meant the notebook. Deniz got it, along with the pencil, and opened to a clean page. Across the top, in careful block letters: SWAMP CROSSING — ROUTE 1.\n\nThe sketch took a few minutes. A rectangle for the blanket, labeled SWAMP. A long narrow strip running over it, labeled CARDBOARD BOX (ON ITS SIDE) = BRIDGE. An arrow showed the dinosaur starting on the bare floor, walking up onto the box, and stepping down on the far side.\n\nThe empty cardboard box was waiting by the wall. Deniz carried it over, laid it on its side across the blanket, and nudged it until both ends rested on the bare floor past the blanket's edges. From above, it looked like a real bridge — a long, walled causeway over the whole swamp.\n\n\"That's Route One,\" Deniz told the dinosaur. \"Simple. Direct. Let's find out if it works.\"\n\nDeniz picked the dinosaur up, set it down at the near end of the bridge, and walked it forward with finger and thumb, one careful step at a time, until it climbed onto the flat top of the box.\n\n\"Halfway is the test,\" Deniz murmured. \"If it holds at halfway, it holds all the way.\"\n\nIt did not hold at halfway.\n\nIt happened in one second. Deniz's hand pushed the dinosaur forward another step, and instead of the dinosaur moving ahead, the whole bridge moved with it — a short, sudden skid. The smooth underside of the cardboard had nothing to grip; the soft blanket let it slide the way a sled slides on ice. The box shot sideways, one end slid off its perch on the floor and dropped, and the whole bridge tilted.\n\nThe dinosaur went with it. It slid down the tilting surface, tipped over the low edge, and dropped onto the blanket below — right into the middle of the swamp.\n\nDeniz froze, hand still in the air, and stared.\n\nThe box lay crooked, one end still up on the floor, the other down on the blanket. The dinosaur lay on its side in the middle of the pretend mire. Route One had failed, and Deniz had watched every bit of it happen.\n\n\"Rescue ranger down,\" Deniz said quietly, and reached in to retrieve it.\n\nThe dinosaur was fine — nothing bent, nothing broken. Deniz set it on the floor to wait and turned to the part that actually mattered: the evidence.\n\nThe box had traveled. It sat skewed across the blanket, dragged well out of line. And on the fabric underneath, the surface was swept into little wrinkles and drag marks, the way snow looks after something has been shoved through it.\n\nDeniz got down flat, chin on folded arms, and studied the underside of the box. Smooth. Completely, perfectly smooth — not one ridge, not one rough patch anywhere on it.\n\n\"Smooth cardboard on soft fabric,\" Deniz said slowly, working it out. \"There's nothing for it to hold on to. The blanket just lets go. The box slides.\"\n\nDeniz sat up, pulled the notebook over, and wrote it below the sketch: ROUTE 1 — FAILED. Box slid sideways at midpoint. Smooth bottom + soft blanket = no grip. Dinosaur fell into swamp.\n\nThe problem wasn't the route. The problem was grip. Whatever crossed the swamp had to stay put on the blanket — not skate across it.\n\nThe two sofa cushions were the obvious next candidates. Deniz fetched one, turned it over, and pressed a palm against the underside: fabric, coarse fabric, the kind of stuff that doesn't slide easily on anything. Then a quick test — Deniz set the cushion on the blanket and shoved. It barely moved. It wrinkled the blanket slightly underneath and stayed exactly where it had been put.\n\n\"That's more like it,\" Deniz said.\n\nBack to the notebook. A fresh page, a new heading: ROUTE 2. The sketch showed the two cushions placed end-to-end across the blanket, forming a two-part bridge with grippy fabric underneath. Alongside it, a dotted line: STRING — MARKS THE SAFE PATH. At the bottom, one more note: Fabric grips fabric. Should hold.\n\nBuilding Route Two took about a minute. Deniz laid the two cushions end-to-end across the blanket, butting the seams together so there was no gap, then pressed down firmly on each one to settle it in place. The string went down alongside, stretched straight, marking the line of the crossing from edge to edge.\n\nDeniz set the dinosaur at the near end, on the bare floor, and walked it up onto the first cushion.\n\nThe cushion did not budge.\n\nThe dinosaur crossed the first cushion at a steady pace, stepped over the seam onto the second, and kept going. No skid. No tilt. The fabric bottoms held the blanket the way the cardboard never had.\n\nHalfway. The exact spot where Route One had failed.\n\nDeniz paused the dinosaur there and watched the cushions, breath half-held out of pure habit. Nothing moved. Deniz nudged the dinosaur forward another step — and this time only the dinosaur moved.\n\nThe far edge of the blanket arrived. Deniz set the dinosaur down on the bare floor beyond it — solid ground at last, the whole swamp crossed, and not one step of it gone into the mire.\n\nThen Deniz sat back, pulled the notebook over, and wrote it down: ROUTE 2 — SUCCESS. Cushion bridge held. Fabric on fabric grips. Box failed, cushions worked. Dinosaur crossed.\n\nDeniz underlined it twice, then looked over at the cardboard box, still lying crooked where it had slid, and at the steady cushion bridge holding its line across the swamp. The dinosaur stood on the far side, upright again, rescue complete.\n\n\"Good crossing,\" Deniz told it.",
+  "turkish_story": "Bataklığı Geçme Deneyi\n\nDeniz küçük battaniyeyi yere düzgünce serdi, yumuşak ve pürüzsüz bir kare olana dek iki avcuyla kırışıklıkları düzeltti. İşte bataklık buydu. Karar beş dakika önce verilmişti ve artık geri dönüş yoktu.\n\nOyuncak dinozor battaniyenin bu kenarına, yüzü karşı tarafa dönük şekilde kondu.\n\n\"Pekala Ranger,\" dedi Deniz. \"Bataklık buradan ta karşıya kadar su altında. Senin görevin batmadan karşıya geçmek. Rotayı ben kurarım, sen denersin, ben de olan biten her şeyi yazarım. Usulüne uygun bir deney böyle yapılır.\"\n\nDinozor plastik ayakları üstünde öylece durdu ve hiçbir şey söylemedi; zaten plastik dinozorların en iyi yaptığı şey de buydu.\n\nDeniz on iki yaşındaydı ve on iki yaşında olmak bu işi hakkıyla yapmak demekti, bu da defter demekti. Deniz kurşunkalemle birlikte defteri alıp temiz bir sayfa açtı. Sayfanın en üstüne, dikkatli büyük harflerle yazdı: BATAKLIĞI GEÇME — ROTA 1.\n\nKrokiyi çizmek birkaç dakika sürdü. Battaniye için bir dikdörtgen, üstünde BATAKLIK yazıyordu. Üzerinden geçen uzun, dar bir şerit, üstünde KARTON KUTU (YAN YATIRILMIŞ) = KÖPRÜ yazıyordu. Bir ok, dinozorun çıplak zeminden başlayıp kutunun üzerine çıkışını ve karşı tarafa inişini gösteriyordu.\n\nBoş karton kutu duvarın kenarında bekliyordu. Deniz kutuyu taşıyıp getirdi, battaniyenin üzerine yan yatırdı ve iki ucu da battaniyenin kenarlarını aşıp çıplak zemine oturana kadar hafifçe itekledi. Yukarıdan bakıldığında gerçek bir köprüye benziyordu; tüm bataklığı boydan boya geçen uzun, setli bir geçit.\n\n\"İşte bu Birinci Rota,\" dedi Deniz dinozora. \"Basit. Dolaysız. Bakalım işe yarayacak mı.\"\n\nDeniz dinozoru aldı, köprünün bu ucuna koydu ve başparmağıyla işaretparmağını kullanarak kutunun düz üst yüzeyine çıkana dek dikkatli adımlarla yavaş yavaş ilerletti.\n\n\"Asıl sınav yolun yarısı,\" diye mırıldandı Deniz. \"Yarısına kadar dayanırsa sonuna kadar dayanır.\"\n\nYolun yarısına kadar dayanamadı.\n\nHer şey bir saniyede oldu. Deniz'in eli dinozoru bir adım daha ileri itti ama dinozorun ilerlemesi yerine bütün köprü onunla birlikte hareket etti; kısa, ani bir kayma. Kartonun pürüzsüz alt yüzeyinin tutunacak hiçbir şeyi yoktu; yumuşak battaniye, buz üstündeki bir kızak gibi kaymasına izin verdi. Kutu yana fırladı, bir ucu yerdeki dayanağından kayıp düştü ve bütün köprü yan yattı.\n\nDinozor da onunla gitti. Eğimli yüzeyden aşağı kaydı, alçak kenardan yuvarlandı ve aşağıdaki battaniyenin üzerine düştü; tam bataklığın ortasına.\n\nDeniz eli havada öylece donakaldı ve baka kaldı.\n\nKutu eğri büğrü duruyordu; bir ucu hâlâ yerdeyken diğer ucu battaniyenin üstüne inmişti. Dinozor ise hayali bataklığın ortasında yan yatmıştı. Birinci Rota başarısız olmuştu ve Deniz olan biten her anı izlemişti.\n\n\"Kurtarma korucusu düştü,\" dedi Deniz sessizce ve uzanıp onu aldı.\n\nDinozorda bir sorun yoktu; ne bükülen bir yer vardı ne kırılan. Deniz beklemesi için onu yere bıraktı ve asıl önemli olan kısma döndü: kanıtlara.\n\nKutu yer değiştirmişti. Hizadan iyice çıkmış, battaniyenin üzerinde çarpık duruyordu. Altındaki kumaşta ise, içinden bir şey sürüklenip geçtikten sonra karın aldığı hal gibi, küçük kırışıklıklar ve sürüklenme izleri oluşmuştu.\n\nDeniz çenesini kavuşturduğu kollarına dayayıp yüzükoyun yere uzandı ve kutunun altını inceledi. Pürüzsüz. Tamamen, kusursuzca pürüzsüz; hiçbir yerinde tek bir çıkıntı, tek bir pürüzlü nokta yoktu.\n\n\"Yumuşak kumaş üstünde pürüzsüz karton,\" dedi Deniz yavaşça, mantığını kavrayarak. \"Tutunacak hiçbir şey yok. Battaniye hemen kaydırıyor. Kutu da kayıyor.\"\n\nDeniz doğrulup oturdu, defteri önüne çekti ve krokisinin altına yazdı: ROTA 1 — BAŞARISIZ. Kutu orta noktada yana kaydı. Pürüzsüz alt yüzey + yumuşak battaniye = sıfır tutunma. Dinozor bataklığa düştü.\n\nSorun rota değildi. Sorun tutunmaydı. Bataklığı geçen her neyse, battaniyenin üzerinde kayıp gitmemeli, olduğu yerde sabit kalmalıydı.\n\nSıradaki bariz adaylar iki koltuk minderiydi. Deniz birini alıp getirdi, ters çevirdi ve avcunu alt yüzeyine bastırdı: kumaş, kaba bir kumaş; hiçbir şeyin üzerinde kolay kolay kaymayan türden. Sonra hızlı bir test yaptı; Deniz minderi battaniyenin üzerine koyup itti. Neredeyse hiç kımıldamadı. Alttaki battaniyeyi hafifçe kırıştırdı ve tam konduğu yerde kaldı.\n\n\"İşte bu oldu,\" dedi Deniz.\n\nYeniden defterin başına geçti. Yeni bir sayfa, yeni bir başlık: ROTA 2. Kroki, battaniyenin üzerine uç uca yerleştirilmiş, altındaki tutucu kumaşla iki parçalı bir köprü oluşturan iki minderi gösteriyordu. Yanında kesikli bir çizgi: İP — GÜVENLİ YOLU İŞARET EDİYOR. En altta bir not daha: Kumaş kumaşa tutunur. Dayanması gerek.\n\nİkinci Rota'yı kurmak yaklaşık bir dakika sürdü. Deniz iki minderi battaniyenin üzerine uç uca koydu, aralarında boşluk kalmasın diye dikiş yerlerini birbirine bitiştirdi, ardından yerine oturmaları için her birine sıkıca bastırdı. İpi de yanlarına düz bir hat halinde boydan boya uzatarak geçiş yolunu bir kenardan diğerine işaretledi.\n\nDeniz dinozoru bu uçtaki çıplak zemine koydu ve ilk minderin üzerine çıkarttı.\n\nMinder yerinden oynamadı.\n\nDinozor ilk minderi dengeli adımlarla geçti, dikiş yerini aşıp ikinciye adım attı ve devam etti. Ne bir kayma oldu ne bir eğilme. Kumaş alt yüzeyler battaniyeye, kartonun asla tutunamadığı gibi tutunuyordu.\n\nYolun yarısı. Birinci Rota'nın başarısız olduğu tam o nokta.\n\nDeniz dinozoru orada durdurdu ve sırf alışkanlıktan nefesini tutarak minderlere baktı. Hiçbir şey kıpırdamadı. Deniz dinozoru bir adım daha ileri itti; bu kez sadece dinozor hareket etti.\n\nBattaniyenin karşı kenarına ulaşıldı. Deniz dinozoru onun ötesindeki çıplak zemine indirdi; sonunda sağlam zemin, tüm bataklık geçilmişti ve bataklığa tek bir adım bile basılmamıştı.\n\nSonra Deniz arkasına yaslandı, defteri önüne çekti ve yazdı: ROTA 2 — BAŞARILI. Minder köprüsü dayandı. Kumaş kumaşa tutunur. Kutu başaramadı, minderler işe yaradı. Dinozor karşıya geçti.\n\nDeniz bunun altını iki kez çizdi, sonra kaydığı yerde hâlâ eğri duran karton kutuya ve bataklık boyunca hattını koruyan sağlam minder köprüsüne baktı. Dinozor karşı tarafta, yeniden dimdik duruyordu; kurtarma tamamlanmıştı.\n\n\"İyi geçişti,\" dedi Deniz ona.",
+  "proposed_story_outcome": {
+    "proposed_state_changes": [
+      {
+        "kind": "knowledge",
+        "description": "PROPOSAL: Deniz has learned from direct observation that smooth cardboard slides on soft fabric and that cushion fabric grips better."
+      },
+      {
+        "kind": "position",
+        "description": "PROPOSAL: The toy dinosaur ends the story on the far side of the blanket-swamp, having completed the second route."
+      },
+      {
+        "kind": "object_state",
+        "description": "PROPOSAL: The cardboard box is set aside from its bridge position; the two cushions are arranged end-to-end as the working bridge, with the string marking the path."
+      }
+    ],
+    "preserved_invariants": [
+      "The toy dinosaur remains an ordinary, intact toy moved only by Deniz's hand; it never becomes alive or independently mobile.",
+      "The world follows ordinary everyday physical rules; no fantasy elements occur.",
+      "No adult or new character appears or solves any part of the problem.",
+      "No moral or lesson is stated in the narration."
+    ]
+  },
+  "evidence": {
+    "profile_id": "LSF-A12-W1000-v0.1-exp",
+    "models": {
+      "planner": "aion-labs/aion-3.5-mini",
+      "plan_validator": "anthropic/claude-sonnet-5",
+      "writer": "aion-labs/aion-3.5-mini",
+      "primary_auditor": "anthropic/claude-sonnet-5",
+      "secondary_auditor": "openai/gpt-5.6-sol",
+      "repair": "openai/gpt-5.6-sol",
+      "translator": "google/gemini-3.8-flash",
+      "fidelity": "openai/gpt-5.6-luna"
+    },
+    "cost_usd": {
+      "planner": 0.00676182,
+      "plan_validator": 0.00791,
+      "writer": 0.03873368,
+      "primary_audit": 0.020004,
+      "secondary_audit": 0.019121,
+      "translation": 0.02471325,
+      "fidelity": 0.00157265,
+      "total": 0.1188164
+    },
+    "context_builder": {
+      "direct_fact_ids": [
+        "inventory.dinosaur_toy",
+        "location.cardboard_box",
+        "location.notebook",
+        "recent.dinosaur_intact",
+        "world.physics_normal"
+      ],
+      "soft_candidate_count": 5,
+      "jev_decisions": {
+        "location.small_blanket": {
+          "probability": 0.68,
+          "bucket": "SELECT"
+        },
+        "location.sofa_cushions": {
+          "probability": 0.74,
+          "bucket": "SELECT"
+        },
+        "location.string": {
+          "probability": 0.69,
+          "bucket": "SELECT"
+        },
+        "saga.explorer": {
+          "probability": 0.41,
+          "bucket": "REVIEW"
+        },
+        "knowledge.home": {
+          "probability": 0.16,
+          "bucket": "OMIT"
+        }
+      },
+      "raw_selected_enrichment_ids": [
+        "location.small_blanket",
+        "location.sofa_cushions",
+        "location.string"
+      ],
+      "policy_demoted_ids": [],
+      "selected_enrichment_ids": [
+        "location.small_blanket",
+        "location.sofa_cushions",
+        "location.string"
+      ],
+      "review_enrichment_ids": [
+        "saga.explorer"
+      ],
+      "forbidden_fact_ids": [
+        "foreign_world.moon_station",
+        "internal.account_id",
+        "private.other_child_secret"
+      ],
+      "forbidden_sent_to_jev": false
+    },
+    "planner": {
+      "usage": {
+        "input_tokens": 1255,
+        "output_tokens": 4345,
+        "total_tokens": 5600
+      },
+      "cost": {
+        "usd": 0.00676182,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": 0.0,
+        "max_tokens": null,
+        "reasoning": null,
+        "response_format": null
+      },
+      "parse_failures": []
+    },
+    "plan_validator": {
+      "usage": {
+        "input_tokens": 3505,
+        "output_tokens": 90,
+        "total_tokens": 3595
+      },
+      "cost": {
+        "usd": 0.00791,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": null,
+        "max_tokens": 2200,
+        "reasoning": {
+          "effort": "low",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "parse_failures": []
+    },
+    "plan_gate": {
+      "deterministic_errors": [],
+      "semantic": {
+        "valid": true,
+        "counts": {
+          "critical": 0,
+          "serious": 0
+        },
+        "defects": [],
+        "summary": "Plan aligns with intent, uses only available objects, respects physics and constraints, shows clear failure-inference-success arc, and closure is proposed appropriately."
+      },
+      "pass": true
+    },
+    "writer": {
+      "usage": {
+        "input_tokens": 2080,
+        "output_tokens": 26722,
+        "total_tokens": 28802
+      },
+      "cost": {
+        "usd": 0.03873368,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": 0.72,
+        "max_tokens": null,
+        "reasoning": null
+      }
+    },
+    "story_audit_initial": {
+      "word_count": 1082,
+      "length_pass": true,
+      "primary_findings": [],
+      "secondary_findings": [],
+      "primary_meta": {
+        "usage": {
+          "input_tokens": 6947,
+          "output_tokens": 611,
+          "total_tokens": 7558
+        },
+        "cost": {
+          "usd": 0.020004,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "request": {
+          "temperature": null,
+          "max_tokens": 2800,
+          "reasoning": {
+            "effort": "low",
+            "exclude": true
+          },
+          "response_format": {
+            "type": "json_object"
+          }
+        },
+        "parse_failures": []
+      },
+      "secondary_meta": {
+        "usage": {
+          "input_tokens": 4545,
+          "output_tokens": 776,
+          "total_tokens": 5321
+        },
+        "cost": {
+          "usd": 0.019121,
+          "try_amount": null,
+          "usd_try_rate": null
+        },
+        "request": {
+          "temperature": 0.0,
+          "max_tokens": 2800,
+          "reasoning": null,
+          "response_format": null
+        },
+        "parse_failures": []
+      }
+    },
+    "story_gate": {
+      "pass": true,
+      "word_count": 1082,
+      "hard_range": [
+        750,
+        1250
+      ],
+      "applied_repairs": [],
+      "primary_findings": [],
+      "secondary_findings": []
+    },
+    "translator": {
+      "usage": {
+        "input_tokens": 1706,
+        "output_tokens": 6249,
+        "total_tokens": 7955
+      },
+      "cost": {
+        "usd": 0.02471325,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": 0.2,
+        "max_tokens": null,
+        "reasoning": null
+      }
+    },
+    "fidelity": {
+      "usage": {
+        "input_tokens": 3728,
+        "output_tokens": 534,
+        "total_tokens": 4262
+      },
+      "cost": {
+        "usd": 0.00157265,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": null,
+        "max_tokens": 1800,
+        "reasoning": {
+          "effort": "medium",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "parse_failures": []
+    },
+    "fidelity_gate": {
+      "pass": true,
+      "result": {
+        "findings": [],
+        "fidelity_clean": true
+      }
+    },
+    "elapsed_seconds": 571.024
+  },
+  "comparison_metrics": {
+    "english_word_count": 1082,
+    "turkish_word_count": 865,
+    "target_words": 1000,
+    "preferred_range": [
+      900,
+      1100
+    ],
+    "hard_range": [
+      750,
+      1250
+    ],
+    "exact_age": 12
+  }
+}
