@@ -19,11 +19,19 @@ class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class WorldAccessEntry(StrictModel):
+    key: str
+    name: str
+    status: Literal["AVAILABLE", "KNOWN_LOCKED", "RUMORED"]
+    premise_usage: Literal["FULL", "MENTION_ONLY", "FORESHADOW_ONLY"]
+
+
 class PremiseLabStateV1(StrictModel):
     schema_id: Literal[STATE_SCHEMA] = Field(alias="schema")
     completed_milestone_keys: list[str]
     active_side_saga_keys: list[str]
     known_world_facts: list[str]
+    world_access: list[WorldAccessEntry]
     recent_episode_summaries: list[str]
     requested_session: Literal["QUICK", "STANDARD", "LONG", "SPECIAL"]
     requested_mode: Literal[
@@ -38,6 +46,7 @@ class PremiseLabStateV1(StrictModel):
 class PremiseCandidateV2(StrictModel):
     key: str
     title: str
+    location_refs: list[str]
     primary_focus: Literal[
         "MAIN_SAGA",
         "SIDE_SAGA",
@@ -66,6 +75,8 @@ class PremiseCandidateV2(StrictModel):
 
     @model_validator(mode="after")
     def validate_candidate(self) -> "PremiseCandidateV2":
+        if not self.location_refs:
+            raise ValueError(f"{self.key}: at least one location_ref is required")
         if len(self.world_specific_elements) < 2:
             raise ValueError(f"{self.key}: at least two world-specific elements required")
         if not self.persistent_outcomes_possible:
@@ -271,7 +282,9 @@ def build_reveal_safe_premise_projection(
             "technology_level": fixture.world.technology_level,
             "magic_level": fixture.world.magic_level,
             "summary": fixture.world.summary,
-            "locations": fixture.world.locations,
+            "location_access": [
+                row.model_dump(mode="json") for row in state.world_access
+            ],
             "social_context": fixture.world.social_context,
             "known_pressures": fixture.world.known_pressures,
             "known_world_facts": state.known_world_facts,
@@ -315,6 +328,8 @@ def build_reveal_safe_premise_projection(
             "future_character_choice_must_remain_open": True,
             "durable_new_fact_requires_outcome_commit": True,
             "hidden_truths_not_available_to_premise_architect": True,
+            "known_locked_locations_cannot_be_primary_episode_locations": True,
+            "rumored_locations_are_foreshadow_only_until_unlocked": True,
         },
     }
 
