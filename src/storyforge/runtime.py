@@ -872,26 +872,6 @@ def run_storyforge(
             seed=seed + 3,
         ),
     )
-        evidence["primary_audit_contract_failure"] = exc.trace
-        evidence["elapsed_seconds"] = round(time.perf_counter() - started, 3)
-        evidence["latency_seconds"]["total"] = evidence["elapsed_seconds"]
-        evidence["cost_usd"]["primary_audit"] = _cost(exc.trace.get("model_meta"))
-        evidence["cost_usd"]["total"] = sum(evidence["cost_usd"].values())
-        raise StoryForgeAuditContractError(
-            str(exc),
-            {
-                "stage": "primary_audit",
-                "profile_id": profile["profile_id"],
-                "request_id": req.request_id,
-                "models": models,
-                "english_story": story,
-                "context_packet": packet,
-                "plan": plan,
-                "evidence": evidence,
-                "audit": exc.trace,
-            },
-        ) from exc
-    evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
     secondary, secondary_meta = _run_traced_stage(
         stage="secondary_audit",
         evidence=evidence,
