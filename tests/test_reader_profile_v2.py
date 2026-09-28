@@ -22,6 +22,16 @@ class ReaderDevelopmentProfileV2Tests(unittest.TestCase):
         self.assertEqual(profile.standard_session.target_words_min, 1600)
         self.assertEqual(profile.standard_session.target_words_max, 2500)
 
+        self.assertEqual(profile.capability_bridge.narrative_age_tier, "MIDDLE_CHILD")
+        self.assertEqual(profile.capability_bridge.reading_mode, "INDEPENDENT_READER")
+        self.assertEqual(
+            profile.capability_bridge.qualification_standard_target_words,
+            2800,
+        )
+        self.assertTrue(
+            profile.capability_bridge.product_session_length_is_separate_authority
+        )
+
         targets = {row.name: row.target_level for row in profile.dimensions}
         self.assertGreaterEqual(targets["PREMISE_MATURITY"], 4)
         self.assertGreaterEqual(targets["AGENCY_COMPLEXITY"], 4)
@@ -39,6 +49,12 @@ class ReaderDevelopmentProfileV2Tests(unittest.TestCase):
         payload = json.loads(PROFILE.read_text(encoding="utf-8"))
         payload["dimensions"] = payload["dimensions"][:-1]
         with self.assertRaisesRegex(ValidationError, "dimensions must be complete"):
+            ReaderDevelopmentProfileV2.model_validate(payload)
+
+    def test_rejects_capability_bridge_drift(self):
+        payload = json.loads(PROFILE.read_text(encoding="utf-8"))
+        payload["capability_bridge"]["narrative_age_tier"] = "TEEN"
+        with self.assertRaisesRegex(ValidationError, "maps to MIDDLE_CHILD"):
             ReaderDevelopmentProfileV2.model_validate(payload)
 
     def test_rejects_standard_band_in_optional_sessions(self):
