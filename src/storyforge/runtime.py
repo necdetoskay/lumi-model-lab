@@ -378,6 +378,7 @@ def _build_context(
     review_threshold = float(context_cfg["decision_engine"]["review_threshold"])
 
     decisions: dict[str, dict[str, Any]] = {}
+    jev_response_meta: dict[str, Any] | None = None
     if questions:
         body = call_openrouter_jev(
             api_key=api_key,
@@ -395,6 +396,13 @@ def _build_context(
             },
             questions=questions,
         )
+        jev_response_meta = {
+            "model": body.get("model"),
+            "provider": body.get("provider"),
+            "usage": body.get("usage") or {},
+            "cost": body.get("cost") or {},
+            "raw_response": body,
+        }
         for fact in soft:
             fid = fact["id"]
             p = noul_probability(body["answers"][fid])
@@ -434,6 +442,7 @@ def _build_context(
         "review_enrichment_ids": review,
         "forbidden_fact_ids": sorted(x.id for x in request.forbidden_facts),
         "forbidden_sent_to_jev": False,
+        "jev_response": jev_response_meta,
     }
     return packet, evidence
 
