@@ -203,6 +203,54 @@ class EnglishStoryPipelineTests(unittest.TestCase):
         )
 
     @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_truncation_fails_fast_without_paid_retry(self, mock_call):
+        body = {
+            "choices": [{"finish_reason": "length"}],
+            "usage": {
+                "prompt_tokens": 100,
+                "completion_tokens": 6000,
+                "total_tokens": 6100,
+                "completion_tokens_details": {"reasoning_tokens": 1500},
+                "cost": 0.061,
+            },
+        }
+        request = {
+            "temperature": 0.2,
+            "reasoning": {"effort": "low", "exclude": True},
+            "response_format": {"type": "json_object"},
+            "max_tokens": 6000,
+        }
+        mock_call.return_value = ('{"schema":"unfinished"', body, request)
+
+        with self.assertRaises(StructuredJsonCallError) as caught:
+            call_structured_json_with_retry(
+                api_key="test",
+                model="anthropic/claude-sonnet-5",
+                system_prompt="system",
+                user_prompt="user",
+                temperature=0.2,
+                max_tokens=6000,
+                seed=None,
+                request_class="saga_architect",
+                max_parse_attempts=2,
+            )
+
+        self.assertEqual(mock_call.call_count, 1)
+        self.assertEqual(
+            str(caught.exception),
+            "STRUCTURED_JSON_RESPONSE_TRUNCATED",
+        )
+        trace = caught.exception.trace
+        self.assertTrue(trace["retry_suppressed"])
+        self.assertEqual(
+            trace["retry_suppressed_reason"],
+            "finish_reason_length",
+        )
+        self.assertEqual(len(trace["parse_failures"]), 1)
+        self.assertEqual(trace["parse_failures"][0]["finish_reason"], "length")
+        self.assertEqual(trace["cost"]["usd"], 0.061)
+
+    @patch("src.english_story_pipeline.call_openrouter")
     def test_structured_json_retry_exhaustion_preserves_raw_usage_and_cost(self, mock_call):
         body = {
             "choices": [{"finish_reason": "stop"}],
