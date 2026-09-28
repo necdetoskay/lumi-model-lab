@@ -60,6 +60,23 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
     )
 
 
+def _provider_block_reason(exc: Exception) -> str | None:
+    trace = getattr(exc, "trace", None)
+    if not isinstance(trace, dict):
+        return None
+
+    status_code = trace.get("status_code")
+    error_body = trace.get("error_body") or {}
+    message = str(error_body.get("error", {}).get("message", ""))
+    code = error_body.get("error", {}).get("code")
+
+    if status_code == 403 and (
+        code == 403 or "monthly limit" in message.lower() or "key limit exceeded" in message.lower()
+    ):
+        return "OPENROUTER_KEY_MONTHLY_LIMIT_EXCEEDED"
+    return None
+
+
 def _model_call_evidence(body: dict[str, Any], request: dict[str, Any]) -> dict[str, Any]:
     return {
         "raw_usage": body.get("usage") or {},
@@ -194,9 +211,10 @@ def generate(
             max_parse_attempts=2,
         )
     except Exception as exc:
+        provider_block_reason = _provider_block_reason(exc)
         evidence = {
             "schema_version": "episode-spine-v2-evidence.v1",
-            "status": "architect_failure",
+            "status": "provider_limit_blocked" if provider_block_reason else "architect_failure",
             "episode_writer_authorized": False,
             "started_at": started_at,
             "completed_at": _now_iso(),
@@ -210,6 +228,8 @@ def generate(
                 "trace": getattr(exc, "trace", None),
             },
         }
+        if provider_block_reason:
+            evidence["provider_block_reason"] = provider_block_reason
         _write_json(out_path, evidence)
         raise
 
