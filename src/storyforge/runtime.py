@@ -317,6 +317,7 @@ def _structured_call(
             "response_format": request.get("response_format"),
         },
         "parse_failures": failures,
+        "raw_parsed_response": parsed,
     }
 
 
@@ -504,6 +505,12 @@ def _normalize_audit(payload: dict[str, Any], valid_span_ids: set[str]) -> list[
     return findings
 
 
+class StoryForgeAuditContractError(RuntimeError):
+    def __init__(self, message: str, trace: dict[str, Any]):
+        super().__init__(message)
+        self.trace = trace
+
+
 def _audit_story(
     *,
     api_key: str,
@@ -530,7 +537,19 @@ def _audit_story(
         request_class="editorial_audit",
         max_tokens=2800,
     )
-    return _normalize_audit(payload, {x["id"] for x in segments}), meta
+    trace = {
+        "raw_audit_payload": payload,
+        "segments": segments,
+        "model_meta": meta,
+    }
+    try:
+        findings = _normalize_audit(payload, {x["id"] for x in segments})
+    except RuntimeError as exc:
+        trace["contract_error"] = str(exc)
+        raise StoryForgeAuditContractError(str(exc), trace) from exc
+    trace["normalized_findings"] = findings
+    meta["audit_trace"] = trace
+    return findings, meta
 
 
 def _dedupe_findings(*groups: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -709,10 +728,32 @@ def run_storyforge(
     length_pass = hard_min <= word_count <= hard_max
 
     stage_started = time.perf_counter()
-    primary, primary_meta = _audit_story(
-        api_key=key, model=models["primary_auditor"], request=req,
-        packet=packet, plan=plan, story=story, seed=seed + 3
-    )
+    try:
+        primary, primary_meta = _audit_story(
+            api_key=key, model=models["primary_auditor"], request=req,
+            packet=packet, plan=plan, story=story, seed=seed + 3
+        )
+    except StoryForgeAuditContractError as exc:
+        evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
+        evidence["primary_audit_contract_failure"] = exc.trace
+        evidence["elapsed_seconds"] = round(time.perf_counter() - started, 3)
+        evidence["latency_seconds"]["total"] = evidence["elapsed_seconds"]
+        evidence["cost_usd"]["primary_audit"] = _cost(exc.trace.get("model_meta"))
+        evidence["cost_usd"]["total"] = sum(evidence["cost_usd"].values())
+        raise StoryForgeAuditContractError(
+            str(exc),
+            {
+                "stage": "primary_audit",
+                "profile_id": profile["profile_id"],
+                "request_id": req.request_id,
+                "models": models,
+                "english_story": story,
+                "context_packet": packet,
+                "plan": plan,
+                "evidence": evidence,
+                "audit": exc.trace,
+            },
+        ) from exc
     evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
     stage_started = time.perf_counter()
     secondary, secondary_meta = _audit_story(
