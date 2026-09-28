@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import unittest
 from unittest.mock import patch
 
@@ -335,6 +336,66 @@ class StoryForgeStageTraceTests(unittest.TestCase):
         self.assertEqual(trace["evidence"]["cost_usd"]["planner"], 0.01)
         self.assertEqual(trace["evidence"]["trace_events"][-1]["status"], "failed")
         self.assertEqual(trace["evidence"]["trace_events"][-1]["error"]["type"], "RuntimeError")
+
+    @patch("src.storyforge.runtime.call_openrouter")
+    @patch("src.storyforge.runtime._structured_call")
+    @patch("src.storyforge.runtime._build_context")
+    def test_primary_audit_contract_failure_trace_is_json_serializable(
+        self,
+        mock_context,
+        mock_structured,
+        mock_openrouter,
+    ):
+        request = StoryForgeRequest.model_validate(_request_dict())
+        mock_context.return_value = (
+            _packet(),
+            {"selected_enrichment_ids": ["inventory.blue_chalk"]},
+        )
+        invalid_audit = {
+            "evaluations": [
+                {
+                    "family": family,
+                    "present": family == "canon_integrity",
+                    "severity": "minor" if family == "canon_integrity" else None,
+                    "repair_scope": "local" if family == "canon_integrity" else None,
+                    "span_ids": ["S001"] if family == "canon_integrity" else [],
+                    "exact_quote": "Title." if family == "canon_integrity" else None,
+                    "reason": "test contract mismatch" if family == "canon_integrity" else "",
+                }
+                for family in (
+                    "physical_feasibility", "causal_logic", "state_continuity",
+                    "epistemic_order", "spatial_consistency", "temporal_consistency",
+                    "response_causality", "closure_integrity", "canon_integrity",
+                )
+            ]
+        }
+        mock_structured.side_effect = [
+            (_plan(), _meta()),
+            (
+                {
+                    "valid": True,
+                    "counts": {"critical": 0, "serious": 0},
+                    "defects": [],
+                    "summary": "clean",
+                },
+                _meta(),
+            ),
+            (invalid_audit, _meta()),
+        ]
+        story = ("Title. " + "word " * 490).strip()
+        mock_openrouter.return_value = (
+            story,
+            _body(),
+            {"temperature": 0.72, "max_tokens": None, "reasoning": None},
+        )
+
+        with self.assertRaises(StoryForgeTraceError) as caught:
+            run_storyforge(request, api_key="test")
+
+        serialized = json.dumps(caught.exception.trace, ensure_ascii=False)
+        self.assertIn('"stage": "primary_audit"', serialized)
+        self.assertIn("Invalid blocking severity: canon_integrity:minor", serialized)
+        self.assertIn("Title.", serialized)
 
 
 class StoryForgeExactLocatorTests(unittest.TestCase):
