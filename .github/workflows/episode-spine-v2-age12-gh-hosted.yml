@@ -1,0 +1,60 @@
+name: Episode Spine V2 Age12 Qualification GH Hosted
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/episode-spine-v2-age12-gh-hosted.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      EPISODE_SPINE_ARCHITECT_MODEL: "anthropic/claude-sonnet-5"
+      EPISODE_SPINE_GATE_MODEL: "openai/gpt-5.6-luna"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Generate and gate age12 Episode Spine
+        run: >-
+          PYTHONPATH=. python -m src.episode_spine_v2_generate
+          --out runs/episode-spine-v2-age12/result.json
+
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s runs/episode-spine-v2-age12/result.json
+
+          TMP="$(mktemp -d)"
+          cp runs/episode-spine-v2-age12/result.json "$TMP/result.json"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          EVIDENCE_BRANCH="evidence/episode-spine-v2-age12-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+
+          DEST="experiments/results/episode-spine-v2-age12/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+
+          git add "$DEST/result.json"
+          git commit -m "evidence(spine): archive age12 Episode Spine run ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
