@@ -102,7 +102,7 @@ def generate(
     gate_model = _resolve_model(
         gate_model_override,
         "PREMISE_GATE_MODEL",
-        "openai/gpt-5.6-sol",
+        "openai/gpt-5.6-luna",
     )
     require_qualification_runtime_profile(architect_model)
     require_qualification_runtime_profile(gate_model)
