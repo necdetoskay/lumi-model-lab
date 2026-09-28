@@ -287,6 +287,127 @@ class StoryForgeRuntimeFailClosedTests(unittest.TestCase):
         self.assertEqual(mock_structured.call_count, 4)
 
 
+class StoryForgeMultiCycleRepairTests(unittest.TestCase):
+    @patch("src.storyforge.runtime._audit_story")
+    @patch("src.storyforge.runtime.call_openrouter")
+    @patch("src.storyforge.runtime._structured_call")
+    @patch("src.storyforge.runtime._build_context")
+    def test_new_local_defect_after_reaudit_gets_second_bounded_repair(
+        self,
+        mock_context,
+        mock_structured,
+        mock_openrouter,
+        mock_audit,
+    ):
+        request = StoryForgeRequest.model_validate(_request_dict())
+        mock_context.return_value = (
+            _packet(),
+            {"selected_enrichment_ids": ["inventory.blue_chalk"]},
+        )
+
+        mock_structured.side_effect = [
+            (_plan(), _meta()),
+            (
+                {
+                    "valid": True,
+                    "counts": {"critical": 0, "serious": 0},
+                    "defects": [],
+                    "summary": "clean",
+                },
+                _meta(),
+            ),
+            (
+                {
+                    "repairs": [
+                        {
+                            "old": "big black wheels",
+                            "new": "wheels",
+                            "why": "remove unsupported wheel attributes",
+                        }
+                    ]
+                },
+                _meta(),
+            ),
+            (
+                {
+                    "repairs": [
+                        {
+                            "old": "It was plastic.",
+                            "new": "It was intact.",
+                            "why": "remove unsupported durable material",
+                        }
+                    ]
+                },
+                _meta(),
+            ),
+            (
+                {"findings": [], "fidelity_clean": True},
+                _meta(),
+            ),
+        ]
+
+        story = (
+            "Title. The truck had big black wheels. It was plastic. "
+            + ("word " * 470)
+        ).strip()
+        tr_story = ("Başlık. " + "kelime " * 470).strip()
+        mock_openrouter.side_effect = [
+            (
+                story,
+                _body(),
+                {"temperature": 0.72, "max_tokens": None, "reasoning": None},
+            ),
+            (
+                tr_story,
+                _body(),
+                {"temperature": 0.2, "max_tokens": None, "reasoning": None},
+            ),
+        ]
+
+        defect_one = {
+            "family": "canon_integrity",
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": ["S001"],
+            "reason": "unsupported wheel attributes",
+        }
+        defect_two = {
+            "family": "canon_integrity",
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": ["S003"],
+            "reason": "unsupported durable material",
+        }
+        mock_audit.side_effect = [
+            ([defect_one], _meta()),
+            ([], _meta()),
+            ([defect_two], _meta()),
+            ([], _meta()),
+            ([], _meta()),
+            ([], _meta()),
+        ]
+
+        result = run_storyforge(request, api_key="test")
+
+        self.assertEqual(result.status, "publication_ready")
+        self.assertTrue(result.publication_ready)
+        self.assertNotIn("big black wheels", result.english_story or "")
+        self.assertNotIn("It was plastic.", result.english_story or "")
+        self.assertIn("It was intact.", result.english_story or "")
+        self.assertEqual(len(result.evidence["repair_cycles"]), 2)
+        self.assertEqual(
+            result.evidence["repair_cycles"][0]["status"],
+            "needs_next_cycle",
+        )
+        self.assertEqual(
+            result.evidence["repair_cycles"][1]["status"],
+            "clean",
+        )
+        self.assertIn("repair_2", result.evidence["cost_usd"])
+        self.assertIn("primary_reaudit_2", result.evidence["cost_usd"])
+        self.assertEqual(mock_openrouter.call_count, 2)
+
+
 class StorySourceMapTests(unittest.TestCase):
     def test_segment_story_preserves_sentence_ids_and_adds_paragraph_offsets(self):
         story = "Title. First sentence.\n\nSecond paragraph has a problem."
