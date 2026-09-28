@@ -19,6 +19,13 @@ SKELETON = Path(
 )
 PROMPT = Path("prompts/saga_milestone_architect_v2.md")
 
+REVIEWED_DRAFT = Path(
+    "data/specifications/saga_lab/age12_shattered_meridian_gate_b_reviewed_v1.json"
+)
+REVISION = Path(
+    "data/specifications/saga_lab/age12_shattered_meridian_gate_b_revision_v1.json"
+)
+
 
 def _load_skeleton() -> CharacterSagaSkeletonV2:
     return CharacterSagaSkeletonV2.model_validate_json(
@@ -227,6 +234,72 @@ class SagaMilestoneExpansionGeneratorTests(unittest.TestCase):
             request_payload["qualification_rules"]["approved_gate_a_must_remain_unchanged"]
         )
 
+        self.assertIsNone(request_payload["previous_reviewed_expansion"])
+        self.assertIsNone(request_payload["human_revision_directives"])
+
+
+
+    @patch(
+        "src.saga_spine_v2_milestone_generate.runtime_profile_identity",
+        return_value={"model_id": "anthropic/claude-sonnet-5"},
+    )
+    @patch(
+        "src.saga_spine_v2_milestone_generate.require_qualification_runtime_profile",
+        return_value={"qualification": {"ready": True}},
+    )
+    @patch(
+        "src.saga_spine_v2_milestone_generate.call_structured_json_with_retry"
+    )
+    def test_generator_injects_reviewed_draft_and_targeted_revision(
+        self,
+        mock_call,
+        _mock_require,
+        _mock_identity,
+    ):
+        revised = _expansion_payload()
+        mock_call.return_value = (
+            revised,
+            _body(),
+            {
+                "temperature": 0.30,
+                "max_tokens": 12000,
+                "reasoning": {"effort": "low", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+            [],
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "result.json"
+            result = generate(
+                skeleton_path=SKELETON,
+                prompt_path=PROMPT,
+                out_path=out,
+                model_override="anthropic/claude-sonnet-5",
+                api_key="test-key",
+                reviewed_draft_path=REVIEWED_DRAFT,
+                revision_directives_path=REVISION,
+            )
+
+        request_payload = json.loads(mock_call.call_args.kwargs["user_prompt"])
+        self.assertEqual(
+            request_payload["human_revision_directives"]["source_run_id"],
+            36414846876,
+        )
+        self.assertEqual(
+            request_payload["human_revision_directives"]["source_verdict"],
+            "REVISE",
+        )
+        self.assertEqual(
+            request_payload["previous_reviewed_expansion"]["source_saga_key"],
+            "the_uncharted_disagreement",
+        )
+        self.assertGreaterEqual(
+            len(request_payload["human_revision_directives"]["must_change"]),
+            5,
+        )
+        self.assertEqual(result["status"], "awaiting_human_review")
+        self.assertFalse(result["episode_generation_authorized"])
 
 if __name__ == "__main__":
     unittest.main()
