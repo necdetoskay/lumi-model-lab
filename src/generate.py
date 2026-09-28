@@ -246,10 +246,24 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         except (requests.Timeout, requests.ConnectionError) as exc:
             transport_error = exc
             if attempt >= len(OPENROUTER_RETRY_DELAYS_SECONDS):
-                raise RuntimeError(
+                message_text = (
                     "OpenRouter transport failed after "
                     f"{len(OPENROUTER_RETRY_DELAYS_SECONDS) + 1} attempts "
                     f"for model {model}: {exc}"
+                )
+                raise OpenRouterCallError(
+                    message_text,
+                    {
+                        "stage": "transport",
+                        "model": model,
+                        "request_class": request_class,
+                        "request": payload,
+                        "attempts": attempt + 1,
+                        "error": {
+                            "type": type(exc).__name__,
+                            "message": str(exc),
+                        },
+                    },
                 ) from exc
             time.sleep(OPENROUTER_RETRY_DELAYS_SECONDS[attempt])
             attempt += 1
@@ -291,17 +305,58 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             attempt += 1
             continue
 
-        raise RuntimeError(
-            f"OpenRouter HTTP {response.status_code} for model {model}: {error_body}"
+        raise OpenRouterCallError(
+            f"OpenRouter HTTP {response.status_code} for model {model}: {error_body}",
+            {
+                "stage": "http_response",
+                "model": model,
+                "request_class": request_class,
+                "request": payload,
+                "attempts": attempt + 1,
+                "status_code": response.status_code,
+                "error_body": error_body,
+            },
         )
 
     if response is None:
-        raise RuntimeError(
+        raise OpenRouterCallError(
             f"OpenRouter request failed before receiving a response for model {model}: "
-            f"{transport_error}"
+            f"{transport_error}",
+            {
+                "stage": "transport",
+                "model": model,
+                "request_class": request_class,
+                "request": payload,
+                "attempts": attempt + 1,
+                "error": {
+                    "type": type(transport_error).__name__ if transport_error else None,
+                    "message": str(transport_error) if transport_error else None,
+                },
+            },
         )
 
-    body = _aggregate_openrouter_stream(response, model) if stream_enabled else response.json()
+    try:
+        body = (
+            _aggregate_openrouter_stream(response, model)
+            if stream_enabled
+            else response.json()
+        )
+    except Exception as exc:
+        if isinstance(exc, OpenRouterCallError):
+            raise
+        raise OpenRouterCallError(
+            f"OpenRouter response parsing failed for model {model}: {exc}",
+            {
+                "stage": "response_parse",
+                "model": model,
+                "request_class": request_class,
+                "request": payload,
+                "error": {
+                    "type": type(exc).__name__,
+                    "message": str(exc),
+                },
+            },
+        ) from exc
     choices = body.get("choices") or []
     if not choices:
         raise OpenRouterCallError(
