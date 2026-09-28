@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from src.generate import count_words
 from src.storyforge import StoryForgeRequest
 from src.storyforge import runtime as storyforge_runtime
-from src.storyforge.runtime import StoryForgeAuditContractError
+from src.storyforge.runtime import StoryForgeTraceError
 
 PROFILE = Path("configs/storyforge/lsf_a12_w1000_v0_1_exp.yaml")
 REQUEST = Path("experiments/fixtures/storyforge_age12_dinosaur_engineering_probe_20260928.json")
@@ -34,7 +34,7 @@ def main() -> None:
     try:
         try:
             result = storyforge_runtime.run_storyforge(request, profile_path=PROFILE)
-        except StoryForgeAuditContractError as exc:
+        except StoryForgeTraceError as exc:
             failure = {
                 "profile_id": "LSF-A12-W1000-v0.1-exp",
                 "request_id": request.request_id,
