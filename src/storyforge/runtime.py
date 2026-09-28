@@ -608,9 +608,19 @@ def _run_traced_stage(
         cause_trace = getattr(exc, "trace", None)
         if isinstance(cause_trace, dict):
             trace["cause_trace"] = cause_trace
+            evidence.setdefault("stage_failure_evidence", {})[stage] = cause_trace
+
             cause_meta = cause_trace.get("model_meta")
             if isinstance(cause_meta, dict):
                 evidence.setdefault("cost_usd", {})[stage] = _cost(cause_meta)
+
+            cause_cost = cause_trace.get("cost")
+            if isinstance(cause_cost, dict):
+                evidence.setdefault("cost_usd", {})[stage] = float(cause_cost.get("usd") or 0.0)
+
+            cause_usage = cause_trace.get("usage")
+            if isinstance(cause_usage, dict):
+                evidence.setdefault("failure_usage", {})[stage] = cause_usage
         evidence["elapsed_seconds"] = round(
             sum(float(value or 0.0) for value in evidence.get("latency_seconds", {}).values()),
             3,
