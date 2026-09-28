@@ -1009,24 +1009,33 @@ def run_storyforge(
             evidence=evidence,
         )
 
-    stage_started = time.perf_counter()
-    tr_story, tr_body, tr_request = call_openrouter(
-        api_key=key,
-        model=models["translator"],
-        system_prompt=TRANSLATION_SYSTEM,
-        user_prompt=json.dumps({
-            "exact_age": gp.exact_age,
-            "hard_constraints": req.story_intent.hard_constraints,
-            "accepted_english_master": story,
-        }, ensure_ascii=False),
-        temperature=0.2,
-        max_tokens=None,
-        seed=seed + 8,
-        request_class="translation",
-        structured_output=False,
+    translation_input = {
+        "exact_age": gp.exact_age,
+        "hard_constraints": req.story_intent.hard_constraints,
+        "accepted_english_master": story,
+    }
+    tr_story, tr_body, tr_request = _run_traced_stage(
+        stage="translation",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: call_openrouter(
+            api_key=key,
+            model=models["translator"],
+            system_prompt=TRANSLATION_SYSTEM,
+            user_prompt=json.dumps(translation_input, ensure_ascii=False),
+            temperature=0.2,
+            max_tokens=None,
+            seed=seed + 8,
+            request_class="translation",
+            structured_output=False,
+        ),
     )
-    evidence["latency_seconds"]["translation"] = round(time.perf_counter() - stage_started, 3)
+    artifacts["turkish_story"] = tr_story
     evidence["translator"] = {
+        "model": models["translator"],
+        "request_class": "translation",
+        "input": {"system_prompt": TRANSLATION_SYSTEM, "payload": translation_input},
+        "raw_response": tr_story,
         "usage": parse_usage(tr_body).model_dump(mode="json"),
         "cost": parse_cost(tr_body).model_dump(mode="json"),
         "request": {
@@ -1037,24 +1046,27 @@ def run_storyforge(
     }
     evidence["cost_usd"]["translation"] = float(parse_cost(tr_body).usd or 0.0)
 
-    stage_started = time.perf_counter()
-    fidelity, fidelity_meta = _structured_call(
-        api_key=key,
-        model=models["fidelity"],
-        system=FIDELITY_SYSTEM,
-        payload={
-            "source_language": "en",
-            "target_language": "tr",
-            "exact_age": gp.exact_age,
-            "hard_constraints": req.story_intent.hard_constraints,
-            "source_story": story,
-            "translation": tr_story,
-        },
-        seed=seed + 9,
-        request_class="editorial_audit",
-        max_tokens=1800,
+    fidelity, fidelity_meta = _run_traced_stage(
+        stage="fidelity",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _structured_call(
+            api_key=key,
+            model=models["fidelity"],
+            system=FIDELITY_SYSTEM,
+            payload={
+                "source_language": "en",
+                "target_language": "tr",
+                "exact_age": gp.exact_age,
+                "hard_constraints": req.story_intent.hard_constraints,
+                "source_story": story,
+                "translation": tr_story,
+            },
+            seed=seed + 9,
+            request_class="editorial_audit",
+            max_tokens=1800,
+        ),
     )
-    evidence["latency_seconds"]["fidelity"] = round(time.perf_counter() - stage_started, 3)
     evidence["fidelity"] = fidelity_meta
     evidence["cost_usd"]["fidelity"] = _cost(fidelity_meta)
     blocking = [
