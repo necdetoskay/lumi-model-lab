@@ -206,6 +206,23 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         )
         self.assertNotIn("stream", payload)
 
+    def test_sonnet_saga_architect_uses_low_reasoning_and_18k_cap(self) -> None:
+        payload = normalize_openrouter_request(
+            "anthropic/claude-sonnet-5",
+            {"temperature": 0.35, "max_tokens": 30000, "seed": 17},
+            request_class="saga_architect",
+            structured_output=True,
+        )
+        self.assertNotIn("temperature", payload)
+        self.assertEqual(payload["max_tokens"], 18000)
+        self.assertNotIn("seed", payload)
+        self.assertEqual(
+            payload["reasoning"],
+            {"effort": "low", "exclude": True},
+        )
+        self.assertEqual(payload["response_format"], {"type": "json_object"})
+        self.assertNotIn("stream", payload)
+
     def test_qwen38_flash_uses_verified_teacher_story_contract(self) -> None:
         profile = require_qualification_runtime_profile("qwen/qwen3.8-flash")
         payload = normalize_openrouter_request(
