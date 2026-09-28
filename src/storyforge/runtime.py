@@ -601,12 +601,16 @@ def run_storyforge(
         "profile_id": profile["profile_id"],
         "models": models,
         "cost_usd": {},
+        "latency_seconds": {},
     }
 
+    stage_started = time.perf_counter()
     packet, context_evidence = _build_context(api_key=key, request=req, profile=profile)
+    evidence["latency_seconds"]["context_builder"] = round(time.perf_counter() - stage_started, 3)
     evidence["context_builder"] = context_evidence
 
     seed = 2026092801
+    stage_started = time.perf_counter()
     plan, planner_meta = _structured_call(
         api_key=key,
         model=models["planner"],
@@ -620,10 +624,12 @@ def run_storyforge(
         seed=seed,
         request_class="story_planning",
     )
+    evidence["latency_seconds"]["planner"] = round(time.perf_counter() - stage_started, 3)
     evidence["planner"] = planner_meta
     evidence["cost_usd"]["planner"] = _cost(planner_meta)
 
     plan_errors = _validate_plan_shape(plan, _context_fact_ids(packet))
+    stage_started = time.perf_counter()
     plan_validation, validator_meta = _structured_call(
         api_key=key,
         model=models["plan_validator"],
@@ -640,6 +646,7 @@ def run_storyforge(
         request_class="editorial_audit",
         max_tokens=2200,
     )
+    evidence["latency_seconds"]["plan_validator"] = round(time.perf_counter() - stage_started, 3)
     evidence["plan_validator"] = validator_meta
     evidence["cost_usd"]["plan_validator"] = _cost(validator_meta)
     counts = plan_validation.get("counts") or {}
@@ -668,6 +675,7 @@ def run_storyforge(
             evidence=evidence,
         )
 
+    stage_started = time.perf_counter()
     story, writer_body, writer_request = call_openrouter(
         api_key=key,
         model=models["writer"],
@@ -685,6 +693,7 @@ def run_storyforge(
         request_class="teacher_story_medium_reasoning",
         structured_output=False,
     )
+    evidence["latency_seconds"]["writer"] = round(time.perf_counter() - stage_started, 3)
     evidence["writer"] = {
         "usage": parse_usage(writer_body).model_dump(mode="json"),
         "cost": parse_cost(writer_body).model_dump(mode="json"),
@@ -699,14 +708,18 @@ def run_storyforge(
     word_count = count_words(story)
     length_pass = hard_min <= word_count <= hard_max
 
+    stage_started = time.perf_counter()
     primary, primary_meta = _audit_story(
         api_key=key, model=models["primary_auditor"], request=req,
         packet=packet, plan=plan, story=story, seed=seed + 3
     )
+    evidence["latency_seconds"]["primary_audit"] = round(time.perf_counter() - stage_started, 3)
+    stage_started = time.perf_counter()
     secondary, secondary_meta = _audit_story(
         api_key=key, model=models["secondary_auditor"], request=req,
         packet=packet, plan=plan, story=story, seed=seed + 4
     )
+    evidence["latency_seconds"]["secondary_audit"] = round(time.perf_counter() - stage_started, 3)
     evidence["story_audit_initial"] = {
         "word_count": word_count,
         "length_pass": length_pass,
@@ -741,6 +754,7 @@ def run_storyforge(
                 evidence=evidence,
             )
 
+        stage_started = time.perf_counter()
         repair_payload, repair_meta = _structured_call(
             api_key=key,
             model=models["repair"],
@@ -757,18 +771,23 @@ def run_storyforge(
             request_class="editorial_audit",
             max_tokens=1800,
         )
+        evidence["latency_seconds"]["repair"] = round(time.perf_counter() - stage_started, 3)
         evidence["repair"] = repair_meta
         evidence["cost_usd"]["repair"] = _cost(repair_meta)
         story, applied_repairs = _apply_local_repairs(story, repair_payload)
 
+        stage_started = time.perf_counter()
         primary, primary_meta = _audit_story(
             api_key=key, model=models["primary_auditor"], request=req,
             packet=packet, plan=plan, story=story, seed=seed + 6
         )
+        evidence["latency_seconds"]["primary_reaudit"] = round(time.perf_counter() - stage_started, 3)
+        stage_started = time.perf_counter()
         secondary, secondary_meta = _audit_story(
             api_key=key, model=models["secondary_auditor"], request=req,
             packet=packet, plan=plan, story=story, seed=seed + 7
         )
+        evidence["latency_seconds"]["secondary_reaudit"] = round(time.perf_counter() - stage_started, 3)
         evidence["cost_usd"]["primary_reaudit"] = _cost(primary_meta)
         evidence["cost_usd"]["secondary_reaudit"] = _cost(secondary_meta)
 
@@ -798,6 +817,7 @@ def run_storyforge(
             evidence=evidence,
         )
 
+    stage_started = time.perf_counter()
     tr_story, tr_body, tr_request = call_openrouter(
         api_key=key,
         model=models["translator"],
@@ -813,6 +833,7 @@ def run_storyforge(
         request_class="translation",
         structured_output=False,
     )
+    evidence["latency_seconds"]["translation"] = round(time.perf_counter() - stage_started, 3)
     evidence["translator"] = {
         "usage": parse_usage(tr_body).model_dump(mode="json"),
         "cost": parse_cost(tr_body).model_dump(mode="json"),
@@ -824,6 +845,7 @@ def run_storyforge(
     }
     evidence["cost_usd"]["translation"] = float(parse_cost(tr_body).usd or 0.0)
 
+    stage_started = time.perf_counter()
     fidelity, fidelity_meta = _structured_call(
         api_key=key,
         model=models["fidelity"],
@@ -840,6 +862,7 @@ def run_storyforge(
         request_class="editorial_audit",
         max_tokens=1800,
     )
+    evidence["latency_seconds"]["fidelity"] = round(time.perf_counter() - stage_started, 3)
     evidence["fidelity"] = fidelity_meta
     evidence["cost_usd"]["fidelity"] = _cost(fidelity_meta)
     blocking = [
@@ -852,6 +875,7 @@ def run_storyforge(
         "result": fidelity,
     }
     evidence["elapsed_seconds"] = round(time.perf_counter() - started, 3)
+    evidence["latency_seconds"]["total"] = evidence["elapsed_seconds"]
     evidence["cost_usd"]["total"] = sum(evidence["cost_usd"].values())
 
     if not fidelity_pass:
