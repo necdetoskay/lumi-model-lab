@@ -76,6 +76,14 @@ class SagaSpineV2GeneratorTests(unittest.TestCase):
         self.assertEqual(result["cost"]["usd"], 0.123)
         self.assertEqual(persisted["status"], "awaiting_human_review")
 
+        kwargs = mock_call.call_args.kwargs
+        self.assertEqual(kwargs["request_class"], "saga_architect")
+        self.assertEqual(kwargs["max_tokens"], 18000)
+        request_payload = json.loads(kwargs["user_prompt"])
+        self.assertNotIn("output_contract", request_payload)
+        self.assertEqual(request_payload["qualification_rules"]["main_saga_anchor_count"], 5)
+        self.assertEqual(request_payload["qualification_rules"]["main_saga_milestone_count"], 15)
+
     @patch("src.saga_spine_v2_generate.runtime_profile_identity", return_value={"model_id": "test/model"})
     @patch("src.saga_spine_v2_generate.require_qualification_runtime_profile", return_value={"qualification": {"ready": True}})
     @patch("src.saga_spine_v2_generate.call_structured_json_with_retry")
