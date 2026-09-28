@@ -188,9 +188,9 @@ def generate(
             system_prompt=architect_prompt,
             user_prompt=json.dumps(architect_input, ensure_ascii=False),
             temperature=0.35,
-            max_tokens=10000,
+            max_tokens=14000,
             seed=2026092807,
-            request_class="story_planning",
+            request_class="saga_architect",
             max_parse_attempts=2,
         )
     except Exception as exc:
