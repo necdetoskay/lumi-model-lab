@@ -184,6 +184,7 @@ Important:
 - if the exact defect can be fixed without changing the validated plan, repair_scope=local;
 - if the prose needs multi-event restructuring, repair_scope=structural;
 - if the validated plan itself is the source of the defect, repair_scope=replan;
+- severity MUST be exactly serious or critical; if your native rubric would call a blocking defect "major", output serious instead;
 - for every present=true finding, exact_quote is REQUIRED and must be one exact substring copied from one cited story sentence;
 - exact_quote must be the smallest useful phrase or sentence fragment that proves the defect;
 - for present=false, exact_quote must be null.
@@ -512,9 +513,18 @@ def _normalize_audit(payload: dict[str, Any], segments: list[dict[str, Any]]) ->
         if not present:
             continue
 
-        severity = str(row.get("severity") or "")
+        raw_severity = str(row.get("severity") or "")
+        severity_aliases = {"major": "serious"}
+        severity = severity_aliases.get(raw_severity, raw_severity)
         if severity not in {"serious", "critical"}:
-            raise RuntimeError(f"Invalid blocking severity: {family}:{severity}")
+            raise RuntimeError(
+                f"Invalid blocking severity: {family}:{raw_severity}"
+            )
+        severity_normalization = (
+            "major_to_serious_blocker_alias_v1"
+            if raw_severity == "major"
+            else None
+        )
 
         scope = str(row.get("repair_scope") or "")
         if scope not in {"local", "structural", "replan"}:
@@ -556,7 +566,9 @@ def _normalize_audit(payload: dict[str, Any], segments: list[dict[str, Any]]) ->
 
         findings.append({
             "family": family,
+            "raw_severity": raw_severity,
             "severity": severity,
+            "severity_normalization": severity_normalization,
             "repair_scope": scope,
             "span_ids": spans,
             "exact_quote": quote,
