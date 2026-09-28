@@ -550,10 +550,47 @@ def _normalize_audit(payload: dict[str, Any], segments: list[dict[str, Any]]) ->
     return findings
 
 
-class StoryForgeAuditContractError(RuntimeError):
+class StoryForgeTraceError(RuntimeError):
     def __init__(self, message: str, trace: dict[str, Any]):
         super().__init__(message)
         self.trace = trace
+
+
+class StoryForgeAuditContractError(StoryForgeTraceError):
+    pass
+
+
+def _run_traced_stage(
+    *,
+    stage: str,
+    evidence: dict[str, Any],
+    artifacts: dict[str, Any],
+    fn: Any,
+) -> Any:
+    stage_started = time.perf_counter()
+    event: dict[str, Any] = {"stage": stage, "status": "started"}
+    evidence.setdefault("trace_events", []).append(event)
+
+    try:
+        result = fn()
+    except Exception as exc:
+        latency = round(time.perf_counter() - stage_started, 3)
+        evidence.setdefault("latency_seconds", {})[stage] = latency
+        event.update({
+            "status": "failed",
+            "latency_seconds": latency,
+            "error": {"type": type(exc).__name__, "message": str(exc)},
+        })
+        trace = {**artifacts, "stage": stage, "evidence": evidence}
+        cause_trace = getattr(exc, "trace", None)
+        if isinstance(cause_trace, dict):
+            trace["cause_trace"] = cause_trace
+        raise StoryForgeTraceError(str(exc), trace) from exc
+
+    latency = round(time.perf_counter() - stage_started, 3)
+    evidence.setdefault("latency_seconds", {})[stage] = latency
+    event.update({"status": "completed", "latency_seconds": latency})
+    return result
 
 
 def _audit_story(
