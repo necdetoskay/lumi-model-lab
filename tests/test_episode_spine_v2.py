@@ -419,6 +419,10 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
             2500,
         )
 
+        architect_call = mock_call.call_args_list[0].kwargs
+        self.assertEqual(architect_call["request_class"], "saga_architect")
+        self.assertEqual(architect_call["max_tokens"], 14000)
+
     @patch(
         "src.episode_spine_v2_generate.runtime_profile_identity",
         side_effect=lambda model: {"model_id": model},
