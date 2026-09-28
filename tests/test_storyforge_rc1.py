@@ -6,7 +6,7 @@ from unittest.mock import patch
 from pydantic import ValidationError
 
 from src.storyforge.contracts import StoryForgeRequest
-from src.storyforge.runtime import run_storyforge
+from src.storyforge.runtime import StoryForgeAuditContractError, _audit_story, run_storyforge
 
 
 def _request_dict() -> dict:
@@ -282,6 +282,48 @@ class StoryForgeRuntimeFailClosedTests(unittest.TestCase):
         self.assertNotIn("big black wheels", result.english_story or "")
         self.assertEqual(mock_openrouter.call_count, 2)
         self.assertEqual(mock_structured.call_count, 4)
+
+
+class StoryForgeAuditTraceTests(unittest.TestCase):
+    @patch("src.storyforge.runtime._structured_call")
+    def test_invalid_audit_contract_preserves_raw_payload_and_exact_segments(self, mock_structured):
+        request = StoryForgeRequest.model_validate(_request_dict())
+        raw = {
+            "evaluations": [
+                {
+                    "family": family,
+                    "present": family == "spatial_consistency",
+                    "severity": "major" if family == "spatial_consistency" else None,
+                    "repair_scope": "local" if family == "spatial_consistency" else None,
+                    "span_ids": ["S002"] if family == "spatial_consistency" else [],
+                    "reason": "The object changes location without a transition." if family == "spatial_consistency" else "",
+                }
+                for family in (
+                    "physical_feasibility", "causal_logic", "state_continuity",
+                    "epistemic_order", "spatial_consistency", "temporal_consistency",
+                    "response_causality", "closure_integrity", "canon_integrity",
+                )
+            ]
+        }
+        mock_structured.return_value = (raw, _meta())
+
+        with self.assertRaises(StoryForgeAuditContractError) as caught:
+            _audit_story(
+                api_key="test",
+                model="auditor",
+                request=request,
+                packet=_packet(),
+                plan=_plan(),
+                story="Title. First sentence. Problem sentence here.",
+                seed=1,
+            )
+
+        trace = caught.exception.trace
+        self.assertEqual(trace["raw_audit_payload"], raw)
+        self.assertEqual(trace["contract_error"], "Invalid blocking severity: spatial_consistency:major")
+        by_id = {row["id"]: row["text"] for row in trace["segments"]}
+        self.assertEqual(by_id["S002"], "First sentence.")
+        self.assertIn("model_meta", trace)
 
 
 if __name__ == "__main__":
