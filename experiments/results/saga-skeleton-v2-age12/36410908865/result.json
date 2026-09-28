@@ -1,0 +1,2854 @@
+{
+  "schema_version": "saga-skeleton-v2-evidence.v1",
+  "status": "awaiting_human_review",
+  "publication_authority": false,
+  "human_creative_review_required": true,
+  "milestone_expansion_authorized": false,
+  "fixture_id": "age12_shattered_meridian_cartographer",
+  "model": "anthropic/claude-sonnet-5",
+  "model_runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5",
+    "display_name": "Claude Sonnet 5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5"
+    },
+    "profile_sha256": "af8e8e8a67406b923ed28b239bd64ea6261642477843723dbff49c919b64f3c5",
+    "runtime_contract_sha256": "ca426db404460da693c50a33033cd7dbd5a04f30524f0dde77b80420f8eafa4c",
+    "production_policy_sha256": "b11d53a2319eac3f6bce42307a122aca5b62c39c63407a43977286d1524ad1c3"
+  },
+  "started_at": "2026-09-28T10:40:43.173980+00:00",
+  "completed_at": "2026-09-28T10:42:00.361756+00:00",
+  "latency_seconds": 77.193,
+  "request_payload": {
+    "task": "generate_character_saga_skeleton_v2",
+    "reader_profile": {
+      "exact_age": 12,
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "age_rule": "Premise and narrative maturity must fit exact age independently from vocabulary difficulty."
+    },
+    "frozen_character_world_input": {
+      "case_id": "age12_shattered_meridian_cartographer",
+      "audience_band": "OLDER_CHILD",
+      "story_mode": "ADVENTURE",
+      "character": {
+        "name": "Deniz",
+        "age": 12,
+        "profile_type": "CHILD",
+        "archetype": "apprentice cartographer and field observer",
+        "traits": [
+          "observant",
+          "persistent",
+          "independent",
+          "sometimes overconfident",
+          "loyal"
+        ],
+        "interests": [
+          "ancient maps",
+          "sea creatures",
+          "mechanical instruments",
+          "coded symbols",
+          "unexplored places"
+        ],
+        "starting_goal": "earn the right to chart routes beyond the home strait and prove that careful observation can reveal things official maps miss",
+        "starting_relationships": [
+          "a close friend who prefers practical experiments to theories",
+          "a demanding mapmaker who respects evidence more than confidence",
+          "harbor crews who know Deniz as a serious apprentice rather than a passenger"
+        ]
+      },
+      "world": {
+        "world_type": "LOW_MAGIC",
+        "era": "age of sail with precision mechanical navigation",
+        "habitat": "a vast island chain divided by deep channels, storm belts and partially mapped outer seas",
+        "technology_level": "sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices",
+        "magic_level": "rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting",
+        "summary": "The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.",
+        "locations": [
+          "Meridian Harbor, Deniz's known home port",
+          "Beacon Ridge, a chain of signal towers above the inner strait",
+          "the Drowned Causeway, visible only during rare low tides",
+          "the Outer Mist Line, where official charts become incomplete",
+          "an abandoned tide observatory on a distant mapped island"
+        ],
+        "social_context": [
+          "cartographers and navigators hold respected public roles",
+          "island councils depend on reliable sea routes",
+          "young apprentices may take meaningful expedition roles within established safety rules",
+          "merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence",
+          "old folklore sometimes preserves real geographic information in distorted form"
+        ],
+        "known_pressures": [
+          "several navigation beacons no longer agree with official charts",
+          "outer-island routes are becoming economically important",
+          "storm season will eventually restrict long voyages",
+          "different groups have reasons to prefer different versions of the map"
+        ]
+      },
+      "test_intents": [
+        "age-12 premise maturity must come from story substance rather than difficult vocabulary",
+        "strong wonder and roleplay",
+        "long-horizon Main Saga with 5-7 anchors and 15-30 meaningful milestones",
+        "multiple routes and optional Saga dormancy",
+        "persistent discovery and callback potential",
+        "no trivial toy-play premise",
+        "no fixed Episode sequence",
+        "no predetermined future character choices"
+      ],
+      "tags": [
+        "age12",
+        "adventure",
+        "exploration",
+        "mystery",
+        "low_magic",
+        "living_universe"
+      ]
+    },
+    "output_contract": {
+      "$defs": {
+        "BackgroundEnrichmentPolicy": {
+          "additionalProperties": false,
+          "properties": {
+            "may_propose_latent_quests": {
+              "const": true,
+              "title": "May Propose Latent Quests",
+              "type": "boolean"
+            },
+            "may_propose_saga_links": {
+              "const": true,
+              "title": "May Propose Saga Links",
+              "type": "boolean"
+            },
+            "may_propose_world_events": {
+              "const": true,
+              "title": "May Propose World Events",
+              "type": "boolean"
+            },
+            "may_propose_npc_arcs": {
+              "const": true,
+              "title": "May Propose Npc Arcs",
+              "type": "boolean"
+            },
+            "may_mutate_user_dependent_canon_while_absent": {
+              "const": false,
+              "title": "May Mutate User Dependent Canon While Absent",
+              "type": "boolean"
+            },
+            "outputs_remain_proposed_or_latent": {
+              "const": true,
+              "title": "Outputs Remain Proposed Or Latent",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "may_propose_latent_quests",
+            "may_propose_saga_links",
+            "may_propose_world_events",
+            "may_propose_npc_arcs",
+            "may_mutate_user_dependent_canon_while_absent",
+            "outputs_remain_proposed_or_latent"
+          ],
+          "title": "BackgroundEnrichmentPolicy",
+          "type": "object"
+        },
+        "Condition": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "WORLD_FACT",
+                "CHARACTER_FACT",
+                "RELATIONSHIP",
+                "LOCATION",
+                "ITEM",
+                "KNOWLEDGE",
+                "EVENT"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "reference": {
+              "title": "Reference",
+              "type": "string"
+            },
+            "condition": {
+              "title": "Condition",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "reference",
+            "condition"
+          ],
+          "title": "Condition",
+          "type": "object"
+        },
+        "Conditions": {
+          "additionalProperties": false,
+          "properties": {
+            "all_of": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "All Of",
+              "type": "array"
+            },
+            "any_of": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "Any Of",
+              "type": "array"
+            },
+            "must_not": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "title": "Must Not",
+              "type": "array"
+            }
+          },
+          "required": [
+            "all_of",
+            "any_of",
+            "must_not"
+          ],
+          "title": "Conditions",
+          "type": "object"
+        },
+        "CoreDrive": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "drive": {
+              "title": "Drive",
+              "type": "string"
+            },
+            "strength": {
+              "enum": [
+                "PRIMARY",
+                "SECONDARY"
+              ],
+              "title": "Strength",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "drive",
+            "strength"
+          ],
+          "title": "CoreDrive",
+          "type": "object"
+        },
+        "CoreFear": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "fear": {
+              "title": "Fear",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "fear"
+          ],
+          "title": "CoreFear",
+          "type": "object"
+        },
+        "CreativePermissionEnvelope": {
+          "additionalProperties": false,
+          "properties": {
+            "allowed_entity_types": {
+              "items": {
+                "enum": [
+                  "NPC",
+                  "LOCATION",
+                  "ITEM",
+                  "RUMOR",
+                  "DOCUMENT",
+                  "EVENT",
+                  "FACTION",
+                  "WORLD_PHENOMENON",
+                  "TRANSIENT_SCENE_DETAIL"
+                ],
+                "type": "string"
+              },
+              "title": "Allowed Entity Types",
+              "type": "array"
+            },
+            "allowed_scopes": {
+              "items": {
+                "enum": [
+                  "LOCAL",
+                  "REGIONAL",
+                  "WORLD",
+                  "CROSS_WORLD"
+                ],
+                "type": "string"
+              },
+              "title": "Allowed Scopes",
+              "type": "array"
+            },
+            "creation_constraints": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Creation Constraints",
+              "type": "array"
+            },
+            "forbidden_creations": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Forbidden Creations",
+              "type": "array"
+            },
+            "durable_creation_requires_outcome_commit": {
+              "const": true,
+              "title": "Durable Creation Requires Outcome Commit",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "allowed_entity_types",
+            "allowed_scopes",
+            "creation_constraints",
+            "forbidden_creations",
+            "durable_creation_requires_outcome_commit"
+          ],
+          "title": "CreativePermissionEnvelope",
+          "type": "object"
+        },
+        "FormativeEvent": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "age_or_period": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Age Or Period"
+            },
+            "impact": {
+              "title": "Impact",
+              "type": "string"
+            },
+            "related_origin_facts": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Related Origin Facts",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "summary",
+            "age_or_period",
+            "impact"
+          ],
+          "title": "FormativeEvent",
+          "type": "object"
+        },
+        "HiddenTruth": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "mode": {
+              "enum": [
+                "FIXED_HIDDEN",
+                "UNRESOLVED_BY_DESIGN"
+              ],
+              "title": "Mode",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "hidden_statement": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Hidden Statement"
+            },
+            "character_knows_question_exists": {
+              "title": "Character Knows Question Exists",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "mode",
+            "question",
+            "character_knows_question_exists"
+          ],
+          "title": "HiddenTruth",
+          "type": "object"
+        },
+        "IdentityAnchor": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "statement": {
+              "title": "Statement",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "statement"
+          ],
+          "title": "IdentityAnchor",
+          "type": "object"
+        },
+        "InternalTension": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "side_a": {
+              "title": "Side A",
+              "type": "string"
+            },
+            "side_b": {
+              "title": "Side B",
+              "type": "string"
+            },
+            "description": {
+              "title": "Description",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "side_a",
+            "side_b",
+            "description"
+          ],
+          "title": "InternalTension",
+          "type": "object"
+        },
+        "LongTermQuestion": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "must_be_answered": {
+              "title": "Must Be Answered",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "question",
+            "must_be_answered"
+          ],
+          "title": "LongTermQuestion",
+          "type": "object"
+        },
+        "MainSagaSkeleton": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "goal": {
+              "title": "Goal",
+              "type": "string"
+            },
+            "stakes": {
+              "title": "Stakes",
+              "type": "string"
+            },
+            "central_mystery": {
+              "title": "Central Mystery",
+              "type": "string"
+            },
+            "themes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Themes",
+              "type": "array"
+            },
+            "entry_anchor_keys": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Entry Anchor Keys",
+              "type": "array"
+            },
+            "resolution_anchor_key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Resolution Anchor Key",
+              "type": "string"
+            },
+            "anchors": {
+              "items": {
+                "$ref": "#/$defs/SagaAnchorSkeleton"
+              },
+              "title": "Anchors",
+              "type": "array"
+            },
+            "anchor_edges": {
+              "items": {
+                "$ref": "#/$defs/SagaAnchorEdge"
+              },
+              "title": "Anchor Edges",
+              "type": "array"
+            },
+            "hidden_truths": {
+              "items": {
+                "$ref": "#/$defs/HiddenTruth"
+              },
+              "title": "Hidden Truths",
+              "type": "array"
+            },
+            "reveal_intents": {
+              "items": {
+                "$ref": "#/$defs/RevealIntent"
+              },
+              "title": "Reveal Intents",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "goal",
+            "stakes",
+            "central_mystery",
+            "themes",
+            "entry_anchor_keys",
+            "resolution_anchor_key",
+            "anchors",
+            "anchor_edges",
+            "hidden_truths",
+            "reveal_intents"
+          ],
+          "title": "MainSagaSkeleton",
+          "type": "object"
+        },
+        "NarrativeCore": {
+          "additionalProperties": false,
+          "properties": {
+            "identity_anchors": {
+              "items": {
+                "$ref": "#/$defs/IdentityAnchor"
+              },
+              "title": "Identity Anchors",
+              "type": "array"
+            },
+            "core_drives": {
+              "items": {
+                "$ref": "#/$defs/CoreDrive"
+              },
+              "title": "Core Drives",
+              "type": "array"
+            },
+            "core_fears": {
+              "items": {
+                "$ref": "#/$defs/CoreFear"
+              },
+              "title": "Core Fears",
+              "type": "array"
+            },
+            "internal_tensions": {
+              "items": {
+                "$ref": "#/$defs/InternalTension"
+              },
+              "title": "Internal Tensions",
+              "type": "array"
+            },
+            "long_term_questions": {
+              "items": {
+                "$ref": "#/$defs/LongTermQuestion"
+              },
+              "title": "Long Term Questions",
+              "type": "array"
+            },
+            "themes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Themes",
+              "type": "array"
+            }
+          },
+          "required": [
+            "identity_anchors",
+            "core_drives",
+            "core_fears",
+            "internal_tensions",
+            "long_term_questions",
+            "themes"
+          ],
+          "title": "NarrativeCore",
+          "type": "object"
+        },
+        "Origin": {
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "origin_facts": {
+              "items": {
+                "$ref": "#/$defs/OriginFact"
+              },
+              "title": "Origin Facts",
+              "type": "array"
+            },
+            "formative_events": {
+              "items": {
+                "$ref": "#/$defs/FormativeEvent"
+              },
+              "title": "Formative Events",
+              "type": "array"
+            },
+            "origin_relationships": {
+              "items": {
+                "$ref": "#/$defs/OriginRelationship"
+              },
+              "title": "Origin Relationships",
+              "type": "array"
+            },
+            "unresolved_origin_questions": {
+              "items": {
+                "$ref": "#/$defs/OriginQuestion"
+              },
+              "title": "Unresolved Origin Questions",
+              "type": "array"
+            }
+          },
+          "required": [
+            "summary",
+            "origin_facts",
+            "formative_events",
+            "origin_relationships",
+            "unresolved_origin_questions"
+          ],
+          "title": "Origin",
+          "type": "object"
+        },
+        "OriginFact": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "fact": {
+              "title": "Fact",
+              "type": "string"
+            },
+            "importance": {
+              "enum": [
+                "CORE",
+                "SUPPORTING"
+              ],
+              "title": "Importance",
+              "type": "string"
+            },
+            "mutability": {
+              "enum": [
+                "IMMUTABLE",
+                "REINTERPRETABLE"
+              ],
+              "title": "Mutability",
+              "type": "string"
+            },
+            "known_by_character": {
+              "title": "Known By Character",
+              "type": "boolean"
+            },
+            "known_by_world": {
+              "title": "Known By World",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "fact",
+            "importance",
+            "mutability",
+            "known_by_character",
+            "known_by_world"
+          ],
+          "title": "OriginFact",
+          "type": "object"
+        },
+        "OriginQuestion": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "question": {
+              "title": "Question",
+              "type": "string"
+            },
+            "importance": {
+              "enum": [
+                "MAJOR",
+                "MINOR"
+              ],
+              "title": "Importance",
+              "type": "string"
+            },
+            "character_knows_question_exists": {
+              "title": "Character Knows Question Exists",
+              "type": "boolean"
+            },
+            "answer_predefined": {
+              "title": "Answer Predefined",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "question",
+            "importance",
+            "character_knows_question_exists",
+            "answer_predefined"
+          ],
+          "title": "OriginQuestion",
+          "type": "object"
+        },
+        "OriginRelationship": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "subject": {
+              "title": "Subject",
+              "type": "string"
+            },
+            "relationship_type": {
+              "title": "Relationship Type",
+              "type": "string"
+            },
+            "historical_role": {
+              "title": "Historical Role",
+              "type": "string"
+            },
+            "current_status": {
+              "enum": [
+                "KNOWN",
+                "UNKNOWN",
+                "LOST",
+                "DISTANT",
+                "ACTIVE",
+                "UNCERTAIN"
+              ],
+              "title": "Current Status",
+              "type": "string"
+            },
+            "unresolved_tension": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Unresolved Tension"
+            }
+          },
+          "required": [
+            "key",
+            "subject",
+            "relationship_type",
+            "historical_role",
+            "current_status",
+            "unresolved_tension"
+          ],
+          "title": "OriginRelationship",
+          "type": "object"
+        },
+        "PresentSituation": {
+          "additionalProperties": false,
+          "properties": {
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "current_role": {
+              "title": "Current Role",
+              "type": "string"
+            },
+            "current_location_context": {
+              "title": "Current Location Context",
+              "type": "string"
+            },
+            "current_relationship_context": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Relationship Context",
+              "type": "array"
+            },
+            "current_resources": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Resources",
+              "type": "array"
+            },
+            "current_pressures": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Pressures",
+              "type": "array"
+            },
+            "current_open_questions": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Current Open Questions",
+              "type": "array"
+            },
+            "immediate_desires": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immediate Desires",
+              "type": "array"
+            },
+            "immediate_avoidances": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immediate Avoidances",
+              "type": "array"
+            }
+          },
+          "required": [
+            "summary",
+            "current_role",
+            "current_location_context",
+            "current_relationship_context",
+            "current_resources",
+            "current_pressures",
+            "current_open_questions",
+            "immediate_desires",
+            "immediate_avoidances"
+          ],
+          "title": "PresentSituation",
+          "type": "object"
+        },
+        "ProposedBinding": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "saga_reference": {
+              "title": "Saga Reference",
+              "type": "string"
+            },
+            "binding_type": {
+              "enum": [
+                "NPC",
+                "LOCATION",
+                "ITEM",
+                "RUMOR",
+                "DOCUMENT",
+                "EVENT",
+                "FACTION",
+                "WORLD_PHENOMENON"
+              ],
+              "title": "Binding Type",
+              "type": "string"
+            },
+            "preferred_existing_entity": {
+              "const": true,
+              "title": "Preferred Existing Entity",
+              "type": "boolean"
+            },
+            "reuse_first": {
+              "const": true,
+              "title": "Reuse First",
+              "type": "boolean"
+            },
+            "creation_allowed_if_missing": {
+              "title": "Creation Allowed If Missing",
+              "type": "boolean"
+            },
+            "description": {
+              "title": "Description",
+              "type": "string"
+            },
+            "placement_constraints": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Placement Constraints",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "saga_reference",
+            "binding_type",
+            "preferred_existing_entity",
+            "reuse_first",
+            "creation_allowed_if_missing",
+            "description",
+            "placement_constraints"
+          ],
+          "title": "ProposedBinding",
+          "type": "object"
+        },
+        "RevealIntent": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "truth_key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Truth Key",
+              "type": "string"
+            },
+            "level": {
+              "enum": [
+                "FORESHADOW",
+                "PARTIAL",
+                "CONFIRMED"
+              ],
+              "title": "Level",
+              "type": "string"
+            },
+            "summary": {
+              "title": "Summary",
+              "type": "string"
+            },
+            "eligibility": {
+              "$ref": "#/$defs/Conditions"
+            },
+            "anchor_keys": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Anchor Keys",
+              "type": "array"
+            },
+            "reveal_ceiling": {
+              "title": "Reveal Ceiling",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "truth_key",
+            "level",
+            "summary",
+            "eligibility",
+            "anchor_keys",
+            "reveal_ceiling"
+          ],
+          "title": "RevealIntent",
+          "type": "object"
+        },
+        "ReweavePolicy": {
+          "additionalProperties": false,
+          "properties": {
+            "reweave_allowed": {
+              "const": true,
+              "title": "Reweave Allowed",
+              "type": "boolean"
+            },
+            "immutable_elements": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Immutable Elements",
+              "type": "array"
+            },
+            "mutable_elements": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Mutable Elements",
+              "type": "array"
+            },
+            "recommended_triggers": {
+              "items": {
+                "enum": [
+                  "MAJOR_CHARACTER_CHANGE",
+                  "MAJOR_WORLD_CHANGE",
+                  "THREAD_INVALIDATED",
+                  "LONG_SAGA_DORMANCY",
+                  "MAJOR_RELATIONSHIP_CHANGE",
+                  "CROSS_WORLD_TRANSITION"
+                ],
+                "type": "string"
+              },
+              "title": "Recommended Triggers",
+              "type": "array"
+            }
+          },
+          "required": [
+            "reweave_allowed",
+            "immutable_elements",
+            "mutable_elements",
+            "recommended_triggers"
+          ],
+          "title": "ReweavePolicy",
+          "type": "object"
+        },
+        "SafetyAndConstraints": {
+          "additionalProperties": false,
+          "properties": {
+            "never_prewrite_story_sequence": {
+              "const": true,
+              "title": "Never Prewrite Story Sequence",
+              "type": "boolean"
+            },
+            "never_force_saga_progression": {
+              "const": true,
+              "title": "Never Force Saga Progression",
+              "type": "boolean"
+            },
+            "never_assume_future_character_choice": {
+              "const": true,
+              "title": "Never Assume Future Character Choice",
+              "type": "boolean"
+            },
+            "never_commit_future_event_as_fact": {
+              "const": true,
+              "title": "Never Commit Future Event As Fact",
+              "type": "boolean"
+            },
+            "never_reveal_hidden_information_early": {
+              "const": true,
+              "title": "Never Reveal Hidden Information Early",
+              "type": "boolean"
+            },
+            "allow_saga_free_stories": {
+              "const": true,
+              "title": "Allow Saga Free Stories",
+              "type": "boolean"
+            },
+            "allow_thread_abandonment": {
+              "const": true,
+              "title": "Allow Thread Abandonment",
+              "type": "boolean"
+            },
+            "allow_thread_reactivation": {
+              "const": true,
+              "title": "Allow Thread Reactivation",
+              "type": "boolean"
+            },
+            "allow_multiple_concurrent_threads": {
+              "const": true,
+              "title": "Allow Multiple Concurrent Threads",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "never_prewrite_story_sequence",
+            "never_force_saga_progression",
+            "never_assume_future_character_choice",
+            "never_commit_future_event_as_fact",
+            "never_reveal_hidden_information_early",
+            "allow_saga_free_stories",
+            "allow_thread_abandonment",
+            "allow_thread_reactivation",
+            "allow_multiple_concurrent_threads"
+          ],
+          "title": "SafetyAndConstraints",
+          "type": "object"
+        },
+        "SagaAnchorEdge": {
+          "additionalProperties": false,
+          "properties": {
+            "from_anchor": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "From Anchor",
+              "type": "string"
+            },
+            "to_anchor": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "To Anchor",
+              "type": "string"
+            },
+            "relationship": {
+              "enum": [
+                "REQUIRES",
+                "MAY_ENABLE",
+                "ALTERNATIVE_ROUTE",
+                "MAY_CONVERGE"
+              ],
+              "title": "Relationship",
+              "type": "string"
+            },
+            "rationale": {
+              "title": "Rationale",
+              "type": "string"
+            }
+          },
+          "required": [
+            "from_anchor",
+            "to_anchor",
+            "relationship",
+            "rationale"
+          ],
+          "title": "SagaAnchorEdge",
+          "type": "object"
+        },
+        "SagaAnchorSkeleton": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            },
+            "purpose": {
+              "title": "Purpose",
+              "type": "string"
+            },
+            "target_state": {
+              "title": "Target State",
+              "type": "string"
+            },
+            "required_for_resolution": {
+              "title": "Required For Resolution",
+              "type": "boolean"
+            },
+            "milestone_target_count": {
+              "maximum": 6,
+              "minimum": 2,
+              "title": "Milestone Target Count",
+              "type": "integer"
+            },
+            "desired_progression_modes": {
+              "items": {
+                "enum": [
+                  "DISCOVERY",
+                  "REVELATION",
+                  "DECISION",
+                  "RELATIONSHIP_SHIFT",
+                  "CONSEQUENCE",
+                  "CONVERGENCE",
+                  "TRANSFORMATION",
+                  "ACCESS",
+                  "EVIDENCE"
+                ],
+                "type": "string"
+              },
+              "title": "Desired Progression Modes",
+              "type": "array"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "purpose",
+            "target_state",
+            "required_for_resolution",
+            "milestone_target_count",
+            "desired_progression_modes"
+          ],
+          "title": "SagaAnchorSkeleton",
+          "type": "object"
+        },
+        "SideSagaSeed": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "title": "Key",
+              "type": "string"
+            },
+            "arc_type": {
+              "enum": [
+                "SIDE",
+                "WORLD",
+                "RELATIONSHIP",
+                "PERSONAL",
+                "EMERGENT"
+              ],
+              "title": "Arc Type",
+              "type": "string"
+            },
+            "premise": {
+              "title": "Premise",
+              "type": "string"
+            },
+            "why_it_matters": {
+              "title": "Why It Matters",
+              "type": "string"
+            },
+            "activation": {
+              "$ref": "#/$defs/Conditions"
+            },
+            "initial_visibility": {
+              "enum": [
+                "HIDDEN",
+                "FORESHADOW_ONLY",
+                "DISCOVERABLE"
+              ],
+              "title": "Initial Visibility",
+              "type": "string"
+            },
+            "must_not_force_followup": {
+              "const": true,
+              "title": "Must Not Force Followup",
+              "type": "boolean"
+            },
+            "remains_proposed_until_activated": {
+              "const": true,
+              "title": "Remains Proposed Until Activated",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "arc_type",
+            "premise",
+            "why_it_matters",
+            "activation",
+            "initial_visibility",
+            "must_not_force_followup",
+            "remains_proposed_until_activated"
+          ],
+          "title": "SideSagaSeed",
+          "type": "object"
+        },
+        "WorldIntegration": {
+          "additionalProperties": false,
+          "properties": {
+            "proposed_bindings": {
+              "items": {
+                "$ref": "#/$defs/ProposedBinding"
+              },
+              "title": "Proposed Bindings",
+              "type": "array"
+            },
+            "integration_rules": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Integration Rules",
+              "type": "array"
+            }
+          },
+          "required": [
+            "proposed_bindings",
+            "integration_rules"
+          ],
+          "title": "WorldIntegration",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "const": "character-saga-skeleton.v2",
+          "title": "Schema",
+          "type": "string"
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        },
+        "present_situation": {
+          "$ref": "#/$defs/PresentSituation"
+        },
+        "narrative_core": {
+          "$ref": "#/$defs/NarrativeCore"
+        },
+        "main_saga": {
+          "$ref": "#/$defs/MainSagaSkeleton"
+        },
+        "latent_side_sagas": {
+          "items": {
+            "$ref": "#/$defs/SideSagaSeed"
+          },
+          "title": "Latent Side Sagas",
+          "type": "array"
+        },
+        "creative_permission_envelope": {
+          "$ref": "#/$defs/CreativePermissionEnvelope"
+        },
+        "world_integration": {
+          "$ref": "#/$defs/WorldIntegration"
+        },
+        "reweave_policy": {
+          "$ref": "#/$defs/ReweavePolicy"
+        },
+        "background_enrichment_policy": {
+          "$ref": "#/$defs/BackgroundEnrichmentPolicy"
+        },
+        "safety_and_constraints": {
+          "$ref": "#/$defs/SafetyAndConstraints"
+        }
+      },
+      "required": [
+        "schema",
+        "origin",
+        "present_situation",
+        "narrative_core",
+        "main_saga",
+        "latent_side_sagas",
+        "creative_permission_envelope",
+        "world_integration",
+        "reweave_policy",
+        "background_enrichment_policy",
+        "safety_and_constraints"
+      ],
+      "title": "CharacterSagaSkeletonV2",
+      "type": "object"
+    },
+    "contract_rules": [
+      "Match the output_contract field names and literal enums exactly.",
+      "Do not invent substitute field names, enum values, or compact aliases.",
+      "If a field is required by output_contract, return it even when empty.",
+      "Do not return any field forbidden by output_contract."
+    ],
+    "requested_shape": {
+      "schema": "character-saga-skeleton.v2",
+      "origin": "Origin object with summary, origin_facts, formative_events, origin_relationships, unresolved_origin_questions",
+      "present_situation": "PresentSituation object",
+      "narrative_core": "NarrativeCore object",
+      "main_saga": {
+        "key": "stable_key",
+        "title": "string",
+        "goal": "string",
+        "stakes": "string",
+        "central_mystery": "string",
+        "themes": "list[string]",
+        "entry_anchor_keys": "list[anchor_key]",
+        "resolution_anchor_key": "anchor_key",
+        "anchors": "exactly 5 objects with key,title,purpose,target_state,required_for_resolution,milestone_target_count,desired_progression_modes",
+        "anchor_edges": "acyclic edges with from_anchor,to_anchor,relationship,rationale and >=1 ALTERNATIVE_ROUTE",
+        "hidden_truths": "2-4 HiddenTruth objects using FIXED_HIDDEN or UNRESOLVED_BY_DESIGN",
+        "reveal_intents": "3-6 objects with key,truth_key,level,summary,eligibility,anchor_keys,reveal_ceiling"
+      },
+      "latent_side_sagas": "2-4 SideSagaSeed objects",
+      "creative_permission_envelope": "CreativePermissionEnvelope object",
+      "world_integration": "WorldIntegration object",
+      "reweave_policy": "ReweavePolicy object",
+      "background_enrichment_policy": "BackgroundEnrichmentPolicy object",
+      "safety_and_constraints": "SafetyAndConstraints object"
+    },
+    "compactness_rules": [
+      "Return exactly 5 anchors.",
+      "Set milestone_target_count values so their sum is exactly 15.",
+      "Do not generate individual milestone details yet.",
+      "Keep each narrative field concise, normally one sentence.",
+      "Do not repeat schema definitions or explain reasoning outside JSON."
+    ],
+    "qualification_rules": {
+      "human_creative_review_required": true,
+      "milestone_expansion_forbidden_before_human_approve": true,
+      "no_episode_generation": true,
+      "main_saga_anchor_count": 5,
+      "planned_milestone_total": 15,
+      "must_include_alternative_route": true,
+      "must_support_saga_dormancy": true,
+      "must_support_generated_continuity": true
+    }
+  },
+  "raw_generated_payload": {
+    "schema": "character-saga-skeleton.v2",
+    "origin": {
+      "summary": "Deniz grew up in Meridian Harbor watching mapmakers argue over routes, learning early that a map is only as trustworthy as the person who measured it.",
+      "origin_facts": [
+        {
+          "key": "father_lost_at_outer_mist",
+          "fact": "Deniz's father disappeared on a survey voyage past the Outer Mist Line three years ago, and no wreck was ever found.",
+          "importance": "CORE",
+          "mutability": "REINTERPRETABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        },
+        {
+          "key": "apprenticed_to_mapmaker",
+          "fact": "Deniz is formally apprenticed to a demanding mapmaker who only advances students who prove claims with evidence.",
+          "importance": "CORE",
+          "mutability": "IMMUTABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        },
+        {
+          "key": "self_taught_instrument_repair",
+          "fact": "Deniz taught themself to repair and calibrate mechanical navigation instruments by studying a damaged one left behind by their father.",
+          "importance": "SUPPORTING",
+          "mutability": "REINTERPRETABLE",
+          "known_by_character": true,
+          "known_by_world": false
+        }
+      ],
+      "formative_events": [
+        {
+          "key": "the_disagreeing_beacons",
+          "summary": "Deniz once proved two official beacons contradicted each other by timing tides personally, embarrassing a senior navigator.",
+          "age_or_period": "age 11",
+          "impact": "Earned respect from harbor crews but suspicion from officials who prefer settled charts.",
+          "related_origin_facts": [
+            "apprenticed_to_mapmaker"
+          ]
+        },
+        {
+          "key": "fathers_last_letter",
+          "summary": "A letter arrived after the father's disappearance describing an island that matched no official chart.",
+          "age_or_period": "age 9",
+          "impact": "Planted a private, unresolved obsession with what lies beyond the Mist Line.",
+          "related_origin_facts": [
+            "father_lost_at_outer_mist"
+          ]
+        }
+      ],
+      "origin_relationships": [
+        {
+          "key": "practical_friend",
+          "subject": "a close friend who prefers practical experiments to theories",
+          "relationship_type": "best friend",
+          "historical_role": "co-conspirator in early instrument tinkering",
+          "current_status": "ACTIVE",
+          "unresolved_tension": "Friend wants safe, provable wins; Deniz wants to chase the unprovable mystery."
+        },
+        {
+          "key": "the_mapmaker",
+          "subject": "a demanding mapmaker who respects evidence more than confidence",
+          "relationship_type": "mentor",
+          "historical_role": "gatekeeper of Deniz's advancement",
+          "current_status": "ACTIVE",
+          "unresolved_tension": "The mapmaker may know more about the father's disappearance than admitted."
+        },
+        {
+          "key": "harbor_crews",
+          "subject": "harbor crews who know Deniz as a serious apprentice",
+          "relationship_type": "community standing",
+          "historical_role": "source of practical help and gossip",
+          "current_status": "ACTIVE",
+          "unresolved_tension": null
+        }
+      ],
+      "unresolved_origin_questions": [
+        {
+          "key": "what_happened_to_father",
+          "question": "What actually happened to Deniz's father past the Outer Mist Line?",
+          "importance": "MAJOR",
+          "character_knows_question_exists": true,
+          "answer_predefined": false
+        },
+        {
+          "key": "letter_authenticity",
+          "question": "Was the letter describing the unmapped island genuinely written by the father, or forged/altered?",
+          "importance": "MINOR",
+          "character_knows_question_exists": true,
+          "answer_predefined": false
+        }
+      ]
+    },
+    "present_situation": {
+      "summary": "Deniz is a promising but unproven apprentice cartographer whose personal hunger to chart the outer seas is entangled with the unresolved disappearance of their father.",
+      "current_role": "apprentice cartographer at Meridian Harbor",
+      "current_location_context": "Based at Meridian Harbor, with growing informal access to Beacon Ridge and occasional supervised trips toward the Drowned Causeway.",
+      "current_relationship_context": [
+        "trusted junior partner to the mapmaker",
+        "peer collaborator with a practical-minded friend",
+        "respected but unofficial figure among harbor crews"
+      ],
+      "current_resources": [
+        "a self-repaired mechanical sighting instrument",
+        "partial access to the mapmaker's chart archive",
+        "the father's ambiguous last letter"
+      ],
+      "current_pressures": [
+        "several beacons no longer agreeing with official charts",
+        "storm season narrowing the window for outer voyages",
+        "rival cartographic factions preferring different chart versions"
+      ],
+      "current_open_questions": [
+        "why do the beacons disagree",
+        "what is really beyond the Outer Mist Line",
+        "can old folklore be trusted as geographic data"
+      ],
+      "immediate_desires": [
+        "earn permission for an outer-route survey",
+        "understand the beacon discrepancies",
+        "learn more about the father's last voyage"
+      ],
+      "immediate_avoidances": [
+        "being dismissed as a reckless child",
+        "damaging trust with the mapmaker",
+        "risking the friend's safety on unproven theories"
+      ]
+    },
+    "narrative_core": {
+      "identity_anchors": [
+        {
+          "key": "evidence_over_confidence",
+          "statement": "Deniz believes careful observation beats bold claims, even when it is slower and less satisfying."
+        },
+        {
+          "key": "unofficial_heir_of_the_lost_voyage",
+          "statement": "Deniz feels personally responsible for finishing what their father may have started."
+        }
+      ],
+      "core_drives": [
+        {
+          "key": "prove_the_map_is_wrong",
+          "drive": "To show that official charts miss real things that patient observation can find.",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "find_the_truth_of_the_father",
+          "drive": "To learn what truly happened past the Outer Mist Line.",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "earn_real_authority",
+          "drive": "To be trusted with genuine expedition responsibility, not just apprentice tasks.",
+          "strength": "SECONDARY"
+        }
+      ],
+      "core_fears": [
+        {
+          "key": "fear_of_being_wrong_publicly",
+          "fear": "Being proven a reckless fantasist rather than a serious observer."
+        },
+        {
+          "key": "fear_of_the_same_fate",
+          "fear": "That chasing the mystery will lead Deniz to disappear the way their father did."
+        }
+      ],
+      "internal_tensions": [
+        {
+          "key": "caution_vs_obsession",
+          "side_a": "disciplined, evidence-based method",
+          "side_b": "personal obsession with the father's fate",
+          "description": "Deniz's scientific patience keeps clashing with the emotional urgency to chase the mystery immediately."
+        },
+        {
+          "key": "loyalty_vs_ambition",
+          "side_a": "protecting the friend from danger",
+          "side_b": "pursuing risky opportunities for advancement",
+          "description": "Deniz must weigh the friend's safety against chances that could prove their theories."
+        }
+      ],
+      "long_term_questions": [
+        {
+          "key": "beacon_discrepancy_cause",
+          "question": "What is actually causing the navigation beacons to disagree with official charts?",
+          "must_be_answered": false
+        },
+        {
+          "key": "meaning_of_ancient_markers",
+          "question": "What were the pre-cultural navigation markers originally built for?",
+          "must_be_answered": false
+        }
+      ],
+      "themes": [
+        "trust in evidence versus authority",
+        "grief and inheritance",
+        "the cost and reward of exploration",
+        "the limits and uses of folklore as knowledge"
+      ]
+    },
+    "main_saga": {
+      "key": "shattered_meridian_reckoning",
+      "title": "The Reckoning of the Shattered Meridian",
+      "goal": "Determine why the outer navigation system is failing and uncover the true fate of Deniz's father.",
+      "stakes": "If the beacon discrepancies go unresolved, outer-island trade routes could become deadly during the coming storm season; personally, Deniz risks chasing a ghost at real physical and reputational cost.",
+      "central_mystery": "A network of ancient, non-human-built navigation markers is interacting with the modern beacon system in ways no living chart-maker understands, and Deniz's father may have found evidence of this before vanishing.",
+      "themes": [
+        "discovery through patience",
+        "inherited mystery",
+        "trust earned not assumed",
+        "the sea as both danger and teacher"
+      ],
+      "entry_anchor_keys": [
+        "proving_ground"
+      ],
+      "resolution_anchor_key": "the_reckoning",
+      "anchors": [
+        {
+          "key": "proving_ground",
+          "title": "Proving Ground",
+          "purpose": "Establish Deniz's credibility and first real evidence that something is wrong with the beacon network.",
+          "target_state": "Deniz has documented at least one verifiable beacon discrepancy and gained cautious trust from the mapmaker.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "EVIDENCE",
+            "RELATIONSHIP_SHIFT"
+          ]
+        },
+        {
+          "key": "beacon_ridge_access",
+          "title": "Access to Beacon Ridge",
+          "purpose": "Deniz gains sanctioned or unsanctioned access to the signal tower network to investigate directly.",
+          "target_state": "Deniz can move through Beacon Ridge with recognized standing, opening direct investigation of the towers.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "ACCESS",
+            "DISCOVERY",
+            "CONSEQUENCE"
+          ]
+        },
+        {
+          "key": "the_causeway_route",
+          "title": "The Drowned Causeway Route",
+          "purpose": "An alternative, riskier path to outer knowledge via the tidal causeway rather than official channels.",
+          "target_state": "Deniz has explored the Drowned Causeway during a rare low tide and found physical evidence linking old markers to the beacon anomalies.",
+          "required_for_resolution": false,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "EVIDENCE",
+            "CONSEQUENCE"
+          ]
+        },
+        {
+          "key": "the_observatory_key",
+          "title": "The Observatory Key",
+          "purpose": "Deniz reaches the abandoned tide observatory and finds records connecting it to the father's last voyage.",
+          "target_state": "Deniz possesses observatory records that partially explain both the beacon anomaly and the father's disappearance.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "REVELATION",
+            "EVIDENCE"
+          ]
+        },
+        {
+          "key": "the_reckoning",
+          "title": "The Reckoning",
+          "purpose": "Deniz confronts the full scale of what the ancient markers mean and decides how to act on what they now know.",
+          "target_state": "Deniz has made a defining choice about how to use or share the discovery, permanently changing their standing in the world.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DECISION",
+            "CONVERGENCE",
+            "TRANSFORMATION"
+          ]
+        }
+      ],
+      "anchor_edges": [
+        {
+          "from_anchor": "proving_ground",
+          "to_anchor": "beacon_ridge_access",
+          "relationship": "REQUIRES",
+          "rationale": "Credibility earned in the proving ground is needed to gain any real access to Beacon Ridge."
+        },
+        {
+          "from_anchor": "proving_ground",
+          "to_anchor": "the_causeway_route",
+          "relationship": "ALTERNATIVE_ROUTE",
+          "rationale": "Instead of pursuing official access, Deniz may choose the riskier unofficial causeway path to outer knowledge."
+        },
+        {
+          "from_anchor": "beacon_ridge_access",
+          "to_anchor": "the_observatory_key",
+          "relationship": "MAY_ENABLE",
+          "rationale": "Tower records may reveal the observatory's relevance without being strictly required."
+        },
+        {
+          "from_anchor": "the_causeway_route",
+          "to_anchor": "the_observatory_key",
+          "relationship": "MAY_ENABLE",
+          "rationale": "Causeway findings can also point toward the observatory as an alternate discovery path."
+        },
+        {
+          "from_anchor": "beacon_ridge_access",
+          "to_anchor": "the_reckoning",
+          "relationship": "MAY_CONVERGE",
+          "rationale": "Either route's findings can converge toward the final confrontation."
+        },
+        {
+          "from_anchor": "the_observatory_key",
+          "to_anchor": "the_reckoning",
+          "relationship": "REQUIRES",
+          "rationale": "The final decision needs the observatory's records as its evidentiary core."
+        }
+      ],
+      "hidden_truths": [
+        {
+          "key": "father_survived_or_not",
+          "mode": "UNRESOLVED_BY_DESIGN",
+          "question": "Is Deniz's father alive somewhere beyond the Mist Line, or did he die there?",
+          "hidden_statement": null,
+          "character_knows_question_exists": true
+        },
+        {
+          "key": "marker_origin",
+          "mode": "FIXED_HIDDEN",
+          "question": "What built the ancient navigation markers and why do they interact with modern beacons?",
+          "hidden_statement": "The markers are remnants of a much older seafaring culture that used controlled tidal-magnetic resonance for navigation, long predating any current island civilization.",
+          "character_knows_question_exists": false
+        },
+        {
+          "key": "mapmaker_knowledge",
+          "mode": "FIXED_HIDDEN",
+          "question": "Does the mapmaker already know something about the father's disappearance?",
+          "hidden_statement": "The mapmaker received and suppressed a partial report from the father's final survey out of fear it would be dismissed as folklore and end their own career.",
+          "character_knows_question_exists": false
+        }
+      ],
+      "reveal_intents": [
+        {
+          "key": "foreshadow_marker_origin",
+          "truth_key": "marker_origin",
+          "level": "FORESHADOW",
+          "summary": "Strange resonance patterns near beacons hint at something older than any known chart.",
+          "eligibility": {
+            "all_of": [],
+            "any_of": [
+              {
+                "type": "EVENT",
+                "reference": "proving_ground",
+                "condition": "anchor_reached"
+              }
+            ],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "proving_ground",
+            "beacon_ridge_access"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "partial_marker_mechanism",
+          "truth_key": "marker_origin",
+          "level": "PARTIAL",
+          "summary": "Observatory records describe a resonance mechanism without confirming its origin or builders.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_observatory_key",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_observatory_key"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "confirm_marker_origin",
+          "truth_key": "marker_origin",
+          "level": "CONFIRMED",
+          "summary": "Full confirmation of the ancient culture's resonance navigation system.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_reckoning",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "CONFIRMED"
+        },
+        {
+          "key": "hint_mapmaker_secret",
+          "truth_key": "mapmaker_knowledge",
+          "level": "FORESHADOW",
+          "summary": "The mapmaker reacts oddly to any mention of the father's last report.",
+          "eligibility": {
+            "all_of": [],
+            "any_of": [
+              {
+                "type": "EVENT",
+                "reference": "proving_ground",
+                "condition": "anchor_reached"
+              }
+            ],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "proving_ground",
+            "beacon_ridge_access"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "confirm_mapmaker_secret",
+          "truth_key": "mapmaker_knowledge",
+          "level": "CONFIRMED",
+          "summary": "Direct confirmation that the mapmaker suppressed the father's report.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_observatory_key",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_observatory_key",
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "CONFIRMED"
+        },
+        {
+          "key": "leave_father_fate_open",
+          "truth_key": "father_survived_or_not",
+          "level": "PARTIAL",
+          "summary": "Evidence suggests possibilities but never settles whether the father is alive.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_reckoning",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        }
+      ]
+    },
+    "latent_side_sagas": [
+      {
+        "key": "the_friends_rival_theory",
+        "arc_type": "RELATIONSHIP",
+        "premise": "Deniz's practical-minded friend starts developing a competing, evidence-based theory that occasionally contradicts Deniz's instincts.",
+        "why_it_matters": "Creates ongoing relationship texture and a check on Deniz's overconfidence without resolving into forced conflict.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "RELATIONSHIP",
+              "reference": "practical_friend",
+              "condition": "friend_participates_in_investigation"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "DISCOVERABLE",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "folklore_as_data",
+        "arc_type": "WORLD",
+        "premise": "Old island folklore about 'singing stones' and 'the walking tide' may encode real navigational knowledge lost to official cartography.",
+        "why_it_matters": "Opens a recurring investigative thread independent of the Main Saga, useful for many optional Episodes.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "KNOWLEDGE",
+              "reference": "island_folklore",
+              "condition": "encountered"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "FORESHADOW_ONLY",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "rival_apprentice",
+        "arc_type": "SIDE",
+        "premise": "Another ambitious apprentice at a rival cartography house competes with Deniz for recognition and expedition slots.",
+        "why_it_matters": "Provides social stakes and reputation-based conflict independent of the central mystery.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "EVENT",
+              "reference": "public_chart_dispute",
+              "condition": "occurs"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "DISCOVERABLE",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "instrument_legacy",
+        "arc_type": "PERSONAL",
+        "premise": "The father's damaged instrument may contain a hidden calibration or message Deniz hasn't fully decoded.",
+        "why_it_matters": "Gives a slow-burn personal thread that can resurface unpredictably and reward long-term attention to a recurring object.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "ITEM",
+              "reference": "fathers_instrument",
+              "condition": "examined_closely"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "HIDDEN",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      }
+    ],
+    "creative_permission_envelope": {
+      "allowed_entity_types": [
+        "NPC",
+        "LOCATION",
+        "ITEM",
+        "RUMOR",
+        "DOCUMENT",
+        "EVENT",
+        "FACTION",
+        "WORLD_PHENOMENON",
+        "TRANSIENT_SCENE_DETAIL"
+      ],
+      "allowed_scopes": [
+        "LOCAL",
+        "REGIONAL",
+        "WORLD"
+      ],
+      "creation_constraints": [
+        "New elements must fit the low-magic, evidence-based tone of the Shattered Meridian.",
+        "Ancient marker phenomena must remain rule-bound and never arbitrary.",
+        "New NPCs should have plausible motives tied to cartography, trade, or the beacon crisis."
+      ],
+      "forbidden_creations": [
+        "Arbitrary magic or spellcasting",
+        "Instant-travel or teleportation devices",
+        "Retroactive changes to the father's core disappearance fact without outcome commit"
+      ],
+      "durable_creation_requires_outcome_commit": true
+    },
+    "world_integration": {
+      "proposed_bindings": [
+        {
+          "key": "bind_mapmaker",
+          "saga_reference": "the_mapmaker",
+          "binding_type": "NPC",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "The demanding mapmaker mentor already established in the frozen character input.",
+          "placement_constraints": [
+            "Meridian Harbor"
+          ]
+        },
+        {
+          "key": "bind_beacon_ridge",
+          "saga_reference": "beacon_ridge_access",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing signal tower chain above the inner strait.",
+          "placement_constraints": [
+            "above inner strait"
+          ]
+        },
+        {
+          "key": "bind_observatory",
+          "saga_reference": "the_observatory_key",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing abandoned tide observatory on a distant mapped island.",
+          "placement_constraints": [
+            "distant mapped island"
+          ]
+        },
+        {
+          "key": "bind_causeway",
+          "saga_reference": "the_causeway_route",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing Drowned Causeway visible only at rare low tides.",
+          "placement_constraints": [
+            "tidal, rare access window"
+          ]
+        }
+      ],
+      "integration_rules": [
+        "Prefer reusing established world locations and NPCs before creating new ones.",
+        "Any new outer-sea locations must respect the world's rule-bound, low-magic tidal/magnetic phenomena.",
+        "Beacon and marker mechanics must stay internally consistent across all Episodes referencing them."
+      ]
+    },
+    "reweave_policy": {
+      "reweave_allowed": true,
+      "immutable_elements": [
+        "father_lost_at_outer_mist",
+        "apprenticed_to_mapmaker",
+        "marker_origin_hidden_statement"
+      ],
+      "mutable_elements": [
+        "specific route taken through anchors",
+        "which side sagas activate",
+        "relationship tone with rival apprentice",
+        "pacing of dormancy"
+      ],
+      "recommended_triggers": [
+        "MAJOR_CHARACTER_CHANGE",
+        "MAJOR_WORLD_CHANGE",
+        "THREAD_INVALIDATED",
+        "LONG_SAGA_DORMANCY",
+        "MAJOR_RELATIONSHIP_CHANGE"
+      ]
+    },
+    "background_enrichment_policy": {
+      "may_propose_latent_quests": true,
+      "may_propose_saga_links": true,
+      "may_propose_world_events": true,
+      "may_propose_npc_arcs": true,
+      "may_mutate_user_dependent_canon_while_absent": false,
+      "outputs_remain_proposed_or_latent": true
+    },
+    "safety_and_constraints": {
+      "never_prewrite_story_sequence": true,
+      "never_force_saga_progression": true,
+      "never_assume_future_character_choice": true,
+      "never_commit_future_event_as_fact": true,
+      "never_reveal_hidden_information_early": true,
+      "allow_saga_free_stories": true,
+      "allow_thread_abandonment": true,
+      "allow_thread_reactivation": true,
+      "allow_multiple_concurrent_threads": true
+    }
+  },
+  "raw_usage": {
+    "prompt_tokens": 12474,
+    "completion_tokens": 8401,
+    "total_tokens": 20875,
+    "cost": 0.108958,
+    "is_byok": false,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "cost_details": {
+      "upstream_inference_cost": 0.108958,
+      "upstream_inference_prompt_cost": 0.024948,
+      "upstream_inference_completions_cost": 0.08401
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    }
+  },
+  "usage": {
+    "input_tokens": 12474,
+    "output_tokens": 8401,
+    "total_tokens": 20875
+  },
+  "cost": {
+    "usd": 0.108958,
+    "try_amount": null,
+    "usd_try_rate": null
+  },
+  "request": {
+    "temperature": null,
+    "max_tokens": 10000,
+    "reasoning": {
+      "effort": "low",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "parse_failures": [],
+  "skeleton": {
+    "schema": "character-saga-skeleton.v2",
+    "origin": {
+      "summary": "Deniz grew up in Meridian Harbor watching mapmakers argue over routes, learning early that a map is only as trustworthy as the person who measured it.",
+      "origin_facts": [
+        {
+          "key": "father_lost_at_outer_mist",
+          "fact": "Deniz's father disappeared on a survey voyage past the Outer Mist Line three years ago, and no wreck was ever found.",
+          "importance": "CORE",
+          "mutability": "REINTERPRETABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        },
+        {
+          "key": "apprenticed_to_mapmaker",
+          "fact": "Deniz is formally apprenticed to a demanding mapmaker who only advances students who prove claims with evidence.",
+          "importance": "CORE",
+          "mutability": "IMMUTABLE",
+          "known_by_character": true,
+          "known_by_world": true
+        },
+        {
+          "key": "self_taught_instrument_repair",
+          "fact": "Deniz taught themself to repair and calibrate mechanical navigation instruments by studying a damaged one left behind by their father.",
+          "importance": "SUPPORTING",
+          "mutability": "REINTERPRETABLE",
+          "known_by_character": true,
+          "known_by_world": false
+        }
+      ],
+      "formative_events": [
+        {
+          "key": "the_disagreeing_beacons",
+          "summary": "Deniz once proved two official beacons contradicted each other by timing tides personally, embarrassing a senior navigator.",
+          "age_or_period": "age 11",
+          "impact": "Earned respect from harbor crews but suspicion from officials who prefer settled charts.",
+          "related_origin_facts": [
+            "apprenticed_to_mapmaker"
+          ]
+        },
+        {
+          "key": "fathers_last_letter",
+          "summary": "A letter arrived after the father's disappearance describing an island that matched no official chart.",
+          "age_or_period": "age 9",
+          "impact": "Planted a private, unresolved obsession with what lies beyond the Mist Line.",
+          "related_origin_facts": [
+            "father_lost_at_outer_mist"
+          ]
+        }
+      ],
+      "origin_relationships": [
+        {
+          "key": "practical_friend",
+          "subject": "a close friend who prefers practical experiments to theories",
+          "relationship_type": "best friend",
+          "historical_role": "co-conspirator in early instrument tinkering",
+          "current_status": "ACTIVE",
+          "unresolved_tension": "Friend wants safe, provable wins; Deniz wants to chase the unprovable mystery."
+        },
+        {
+          "key": "the_mapmaker",
+          "subject": "a demanding mapmaker who respects evidence more than confidence",
+          "relationship_type": "mentor",
+          "historical_role": "gatekeeper of Deniz's advancement",
+          "current_status": "ACTIVE",
+          "unresolved_tension": "The mapmaker may know more about the father's disappearance than admitted."
+        },
+        {
+          "key": "harbor_crews",
+          "subject": "harbor crews who know Deniz as a serious apprentice",
+          "relationship_type": "community standing",
+          "historical_role": "source of practical help and gossip",
+          "current_status": "ACTIVE",
+          "unresolved_tension": null
+        }
+      ],
+      "unresolved_origin_questions": [
+        {
+          "key": "what_happened_to_father",
+          "question": "What actually happened to Deniz's father past the Outer Mist Line?",
+          "importance": "MAJOR",
+          "character_knows_question_exists": true,
+          "answer_predefined": false
+        },
+        {
+          "key": "letter_authenticity",
+          "question": "Was the letter describing the unmapped island genuinely written by the father, or forged/altered?",
+          "importance": "MINOR",
+          "character_knows_question_exists": true,
+          "answer_predefined": false
+        }
+      ]
+    },
+    "present_situation": {
+      "summary": "Deniz is a promising but unproven apprentice cartographer whose personal hunger to chart the outer seas is entangled with the unresolved disappearance of their father.",
+      "current_role": "apprentice cartographer at Meridian Harbor",
+      "current_location_context": "Based at Meridian Harbor, with growing informal access to Beacon Ridge and occasional supervised trips toward the Drowned Causeway.",
+      "current_relationship_context": [
+        "trusted junior partner to the mapmaker",
+        "peer collaborator with a practical-minded friend",
+        "respected but unofficial figure among harbor crews"
+      ],
+      "current_resources": [
+        "a self-repaired mechanical sighting instrument",
+        "partial access to the mapmaker's chart archive",
+        "the father's ambiguous last letter"
+      ],
+      "current_pressures": [
+        "several beacons no longer agreeing with official charts",
+        "storm season narrowing the window for outer voyages",
+        "rival cartographic factions preferring different chart versions"
+      ],
+      "current_open_questions": [
+        "why do the beacons disagree",
+        "what is really beyond the Outer Mist Line",
+        "can old folklore be trusted as geographic data"
+      ],
+      "immediate_desires": [
+        "earn permission for an outer-route survey",
+        "understand the beacon discrepancies",
+        "learn more about the father's last voyage"
+      ],
+      "immediate_avoidances": [
+        "being dismissed as a reckless child",
+        "damaging trust with the mapmaker",
+        "risking the friend's safety on unproven theories"
+      ]
+    },
+    "narrative_core": {
+      "identity_anchors": [
+        {
+          "key": "evidence_over_confidence",
+          "statement": "Deniz believes careful observation beats bold claims, even when it is slower and less satisfying."
+        },
+        {
+          "key": "unofficial_heir_of_the_lost_voyage",
+          "statement": "Deniz feels personally responsible for finishing what their father may have started."
+        }
+      ],
+      "core_drives": [
+        {
+          "key": "prove_the_map_is_wrong",
+          "drive": "To show that official charts miss real things that patient observation can find.",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "find_the_truth_of_the_father",
+          "drive": "To learn what truly happened past the Outer Mist Line.",
+          "strength": "PRIMARY"
+        },
+        {
+          "key": "earn_real_authority",
+          "drive": "To be trusted with genuine expedition responsibility, not just apprentice tasks.",
+          "strength": "SECONDARY"
+        }
+      ],
+      "core_fears": [
+        {
+          "key": "fear_of_being_wrong_publicly",
+          "fear": "Being proven a reckless fantasist rather than a serious observer."
+        },
+        {
+          "key": "fear_of_the_same_fate",
+          "fear": "That chasing the mystery will lead Deniz to disappear the way their father did."
+        }
+      ],
+      "internal_tensions": [
+        {
+          "key": "caution_vs_obsession",
+          "side_a": "disciplined, evidence-based method",
+          "side_b": "personal obsession with the father's fate",
+          "description": "Deniz's scientific patience keeps clashing with the emotional urgency to chase the mystery immediately."
+        },
+        {
+          "key": "loyalty_vs_ambition",
+          "side_a": "protecting the friend from danger",
+          "side_b": "pursuing risky opportunities for advancement",
+          "description": "Deniz must weigh the friend's safety against chances that could prove their theories."
+        }
+      ],
+      "long_term_questions": [
+        {
+          "key": "beacon_discrepancy_cause",
+          "question": "What is actually causing the navigation beacons to disagree with official charts?",
+          "must_be_answered": false
+        },
+        {
+          "key": "meaning_of_ancient_markers",
+          "question": "What were the pre-cultural navigation markers originally built for?",
+          "must_be_answered": false
+        }
+      ],
+      "themes": [
+        "trust in evidence versus authority",
+        "grief and inheritance",
+        "the cost and reward of exploration",
+        "the limits and uses of folklore as knowledge"
+      ]
+    },
+    "main_saga": {
+      "key": "shattered_meridian_reckoning",
+      "title": "The Reckoning of the Shattered Meridian",
+      "goal": "Determine why the outer navigation system is failing and uncover the true fate of Deniz's father.",
+      "stakes": "If the beacon discrepancies go unresolved, outer-island trade routes could become deadly during the coming storm season; personally, Deniz risks chasing a ghost at real physical and reputational cost.",
+      "central_mystery": "A network of ancient, non-human-built navigation markers is interacting with the modern beacon system in ways no living chart-maker understands, and Deniz's father may have found evidence of this before vanishing.",
+      "themes": [
+        "discovery through patience",
+        "inherited mystery",
+        "trust earned not assumed",
+        "the sea as both danger and teacher"
+      ],
+      "entry_anchor_keys": [
+        "proving_ground"
+      ],
+      "resolution_anchor_key": "the_reckoning",
+      "anchors": [
+        {
+          "key": "proving_ground",
+          "title": "Proving Ground",
+          "purpose": "Establish Deniz's credibility and first real evidence that something is wrong with the beacon network.",
+          "target_state": "Deniz has documented at least one verifiable beacon discrepancy and gained cautious trust from the mapmaker.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "EVIDENCE",
+            "RELATIONSHIP_SHIFT"
+          ]
+        },
+        {
+          "key": "beacon_ridge_access",
+          "title": "Access to Beacon Ridge",
+          "purpose": "Deniz gains sanctioned or unsanctioned access to the signal tower network to investigate directly.",
+          "target_state": "Deniz can move through Beacon Ridge with recognized standing, opening direct investigation of the towers.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "ACCESS",
+            "DISCOVERY",
+            "CONSEQUENCE"
+          ]
+        },
+        {
+          "key": "the_causeway_route",
+          "title": "The Drowned Causeway Route",
+          "purpose": "An alternative, riskier path to outer knowledge via the tidal causeway rather than official channels.",
+          "target_state": "Deniz has explored the Drowned Causeway during a rare low tide and found physical evidence linking old markers to the beacon anomalies.",
+          "required_for_resolution": false,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "EVIDENCE",
+            "CONSEQUENCE"
+          ]
+        },
+        {
+          "key": "the_observatory_key",
+          "title": "The Observatory Key",
+          "purpose": "Deniz reaches the abandoned tide observatory and finds records connecting it to the father's last voyage.",
+          "target_state": "Deniz possesses observatory records that partially explain both the beacon anomaly and the father's disappearance.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DISCOVERY",
+            "REVELATION",
+            "EVIDENCE"
+          ]
+        },
+        {
+          "key": "the_reckoning",
+          "title": "The Reckoning",
+          "purpose": "Deniz confronts the full scale of what the ancient markers mean and decides how to act on what they now know.",
+          "target_state": "Deniz has made a defining choice about how to use or share the discovery, permanently changing their standing in the world.",
+          "required_for_resolution": true,
+          "milestone_target_count": 3,
+          "desired_progression_modes": [
+            "DECISION",
+            "CONVERGENCE",
+            "TRANSFORMATION"
+          ]
+        }
+      ],
+      "anchor_edges": [
+        {
+          "from_anchor": "proving_ground",
+          "to_anchor": "beacon_ridge_access",
+          "relationship": "REQUIRES",
+          "rationale": "Credibility earned in the proving ground is needed to gain any real access to Beacon Ridge."
+        },
+        {
+          "from_anchor": "proving_ground",
+          "to_anchor": "the_causeway_route",
+          "relationship": "ALTERNATIVE_ROUTE",
+          "rationale": "Instead of pursuing official access, Deniz may choose the riskier unofficial causeway path to outer knowledge."
+        },
+        {
+          "from_anchor": "beacon_ridge_access",
+          "to_anchor": "the_observatory_key",
+          "relationship": "MAY_ENABLE",
+          "rationale": "Tower records may reveal the observatory's relevance without being strictly required."
+        },
+        {
+          "from_anchor": "the_causeway_route",
+          "to_anchor": "the_observatory_key",
+          "relationship": "MAY_ENABLE",
+          "rationale": "Causeway findings can also point toward the observatory as an alternate discovery path."
+        },
+        {
+          "from_anchor": "beacon_ridge_access",
+          "to_anchor": "the_reckoning",
+          "relationship": "MAY_CONVERGE",
+          "rationale": "Either route's findings can converge toward the final confrontation."
+        },
+        {
+          "from_anchor": "the_observatory_key",
+          "to_anchor": "the_reckoning",
+          "relationship": "REQUIRES",
+          "rationale": "The final decision needs the observatory's records as its evidentiary core."
+        }
+      ],
+      "hidden_truths": [
+        {
+          "key": "father_survived_or_not",
+          "mode": "UNRESOLVED_BY_DESIGN",
+          "question": "Is Deniz's father alive somewhere beyond the Mist Line, or did he die there?",
+          "hidden_statement": null,
+          "character_knows_question_exists": true
+        },
+        {
+          "key": "marker_origin",
+          "mode": "FIXED_HIDDEN",
+          "question": "What built the ancient navigation markers and why do they interact with modern beacons?",
+          "hidden_statement": "The markers are remnants of a much older seafaring culture that used controlled tidal-magnetic resonance for navigation, long predating any current island civilization.",
+          "character_knows_question_exists": false
+        },
+        {
+          "key": "mapmaker_knowledge",
+          "mode": "FIXED_HIDDEN",
+          "question": "Does the mapmaker already know something about the father's disappearance?",
+          "hidden_statement": "The mapmaker received and suppressed a partial report from the father's final survey out of fear it would be dismissed as folklore and end their own career.",
+          "character_knows_question_exists": false
+        }
+      ],
+      "reveal_intents": [
+        {
+          "key": "foreshadow_marker_origin",
+          "truth_key": "marker_origin",
+          "level": "FORESHADOW",
+          "summary": "Strange resonance patterns near beacons hint at something older than any known chart.",
+          "eligibility": {
+            "all_of": [],
+            "any_of": [
+              {
+                "type": "EVENT",
+                "reference": "proving_ground",
+                "condition": "anchor_reached"
+              }
+            ],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "proving_ground",
+            "beacon_ridge_access"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "partial_marker_mechanism",
+          "truth_key": "marker_origin",
+          "level": "PARTIAL",
+          "summary": "Observatory records describe a resonance mechanism without confirming its origin or builders.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_observatory_key",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_observatory_key"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "confirm_marker_origin",
+          "truth_key": "marker_origin",
+          "level": "CONFIRMED",
+          "summary": "Full confirmation of the ancient culture's resonance navigation system.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_reckoning",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "CONFIRMED"
+        },
+        {
+          "key": "hint_mapmaker_secret",
+          "truth_key": "mapmaker_knowledge",
+          "level": "FORESHADOW",
+          "summary": "The mapmaker reacts oddly to any mention of the father's last report.",
+          "eligibility": {
+            "all_of": [],
+            "any_of": [
+              {
+                "type": "EVENT",
+                "reference": "proving_ground",
+                "condition": "anchor_reached"
+              }
+            ],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "proving_ground",
+            "beacon_ridge_access"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        },
+        {
+          "key": "confirm_mapmaker_secret",
+          "truth_key": "mapmaker_knowledge",
+          "level": "CONFIRMED",
+          "summary": "Direct confirmation that the mapmaker suppressed the father's report.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_observatory_key",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_observatory_key",
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "CONFIRMED"
+        },
+        {
+          "key": "leave_father_fate_open",
+          "truth_key": "father_survived_or_not",
+          "level": "PARTIAL",
+          "summary": "Evidence suggests possibilities but never settles whether the father is alive.",
+          "eligibility": {
+            "all_of": [
+              {
+                "type": "EVENT",
+                "reference": "the_reckoning",
+                "condition": "anchor_reached"
+              }
+            ],
+            "any_of": [],
+            "must_not": []
+          },
+          "anchor_keys": [
+            "the_reckoning"
+          ],
+          "reveal_ceiling": "PARTIAL"
+        }
+      ]
+    },
+    "latent_side_sagas": [
+      {
+        "key": "the_friends_rival_theory",
+        "arc_type": "RELATIONSHIP",
+        "premise": "Deniz's practical-minded friend starts developing a competing, evidence-based theory that occasionally contradicts Deniz's instincts.",
+        "why_it_matters": "Creates ongoing relationship texture and a check on Deniz's overconfidence without resolving into forced conflict.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "RELATIONSHIP",
+              "reference": "practical_friend",
+              "condition": "friend_participates_in_investigation"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "DISCOVERABLE",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "folklore_as_data",
+        "arc_type": "WORLD",
+        "premise": "Old island folklore about 'singing stones' and 'the walking tide' may encode real navigational knowledge lost to official cartography.",
+        "why_it_matters": "Opens a recurring investigative thread independent of the Main Saga, useful for many optional Episodes.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "KNOWLEDGE",
+              "reference": "island_folklore",
+              "condition": "encountered"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "FORESHADOW_ONLY",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "rival_apprentice",
+        "arc_type": "SIDE",
+        "premise": "Another ambitious apprentice at a rival cartography house competes with Deniz for recognition and expedition slots.",
+        "why_it_matters": "Provides social stakes and reputation-based conflict independent of the central mystery.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "EVENT",
+              "reference": "public_chart_dispute",
+              "condition": "occurs"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "DISCOVERABLE",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      },
+      {
+        "key": "instrument_legacy",
+        "arc_type": "PERSONAL",
+        "premise": "The father's damaged instrument may contain a hidden calibration or message Deniz hasn't fully decoded.",
+        "why_it_matters": "Gives a slow-burn personal thread that can resurface unpredictably and reward long-term attention to a recurring object.",
+        "activation": {
+          "all_of": [],
+          "any_of": [
+            {
+              "type": "ITEM",
+              "reference": "fathers_instrument",
+              "condition": "examined_closely"
+            }
+          ],
+          "must_not": []
+        },
+        "initial_visibility": "HIDDEN",
+        "must_not_force_followup": true,
+        "remains_proposed_until_activated": true
+      }
+    ],
+    "creative_permission_envelope": {
+      "allowed_entity_types": [
+        "NPC",
+        "LOCATION",
+        "ITEM",
+        "RUMOR",
+        "DOCUMENT",
+        "EVENT",
+        "FACTION",
+        "WORLD_PHENOMENON",
+        "TRANSIENT_SCENE_DETAIL"
+      ],
+      "allowed_scopes": [
+        "LOCAL",
+        "REGIONAL",
+        "WORLD"
+      ],
+      "creation_constraints": [
+        "New elements must fit the low-magic, evidence-based tone of the Shattered Meridian.",
+        "Ancient marker phenomena must remain rule-bound and never arbitrary.",
+        "New NPCs should have plausible motives tied to cartography, trade, or the beacon crisis."
+      ],
+      "forbidden_creations": [
+        "Arbitrary magic or spellcasting",
+        "Instant-travel or teleportation devices",
+        "Retroactive changes to the father's core disappearance fact without outcome commit"
+      ],
+      "durable_creation_requires_outcome_commit": true
+    },
+    "world_integration": {
+      "proposed_bindings": [
+        {
+          "key": "bind_mapmaker",
+          "saga_reference": "the_mapmaker",
+          "binding_type": "NPC",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "The demanding mapmaker mentor already established in the frozen character input.",
+          "placement_constraints": [
+            "Meridian Harbor"
+          ]
+        },
+        {
+          "key": "bind_beacon_ridge",
+          "saga_reference": "beacon_ridge_access",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing signal tower chain above the inner strait.",
+          "placement_constraints": [
+            "above inner strait"
+          ]
+        },
+        {
+          "key": "bind_observatory",
+          "saga_reference": "the_observatory_key",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing abandoned tide observatory on a distant mapped island.",
+          "placement_constraints": [
+            "distant mapped island"
+          ]
+        },
+        {
+          "key": "bind_causeway",
+          "saga_reference": "the_causeway_route",
+          "binding_type": "LOCATION",
+          "preferred_existing_entity": true,
+          "reuse_first": true,
+          "creation_allowed_if_missing": false,
+          "description": "Existing Drowned Causeway visible only at rare low tides.",
+          "placement_constraints": [
+            "tidal, rare access window"
+          ]
+        }
+      ],
+      "integration_rules": [
+        "Prefer reusing established world locations and NPCs before creating new ones.",
+        "Any new outer-sea locations must respect the world's rule-bound, low-magic tidal/magnetic phenomena.",
+        "Beacon and marker mechanics must stay internally consistent across all Episodes referencing them."
+      ]
+    },
+    "reweave_policy": {
+      "reweave_allowed": true,
+      "immutable_elements": [
+        "father_lost_at_outer_mist",
+        "apprenticed_to_mapmaker",
+        "marker_origin_hidden_statement"
+      ],
+      "mutable_elements": [
+        "specific route taken through anchors",
+        "which side sagas activate",
+        "relationship tone with rival apprentice",
+        "pacing of dormancy"
+      ],
+      "recommended_triggers": [
+        "MAJOR_CHARACTER_CHANGE",
+        "MAJOR_WORLD_CHANGE",
+        "THREAD_INVALIDATED",
+        "LONG_SAGA_DORMANCY",
+        "MAJOR_RELATIONSHIP_CHANGE"
+      ]
+    },
+    "background_enrichment_policy": {
+      "may_propose_latent_quests": true,
+      "may_propose_saga_links": true,
+      "may_propose_world_events": true,
+      "may_propose_npc_arcs": true,
+      "may_mutate_user_dependent_canon_while_absent": false,
+      "outputs_remain_proposed_or_latent": true
+    },
+    "safety_and_constraints": {
+      "never_prewrite_story_sequence": true,
+      "never_force_saga_progression": true,
+      "never_assume_future_character_choice": true,
+      "never_commit_future_event_as_fact": true,
+      "never_reveal_hidden_information_early": true,
+      "allow_saga_free_stories": true,
+      "allow_thread_abandonment": true,
+      "allow_thread_reactivation": true,
+      "allow_multiple_concurrent_threads": true
+    }
+  },
+  "human_review": {
+    "verdict": null,
+    "allowed_values": [
+      "APPROVE",
+      "REVISE",
+      "REJECT"
+    ],
+    "assistant_independent_assessment": null,
+    "milestone_expansion_authorized": false
+  }
+}
