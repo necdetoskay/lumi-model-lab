@@ -135,6 +135,15 @@ def generate(
         | active_side
         | {"WORLD_EXPLORATION", "SAGA_FREE"}
     )
+    location_access = {
+        row["key"]: row
+        for row in projection["world"]["location_access"]
+    }
+    available_location_refs = sorted(
+        key
+        for key, row in location_access.items()
+        if row["status"] == "AVAILABLE" and row["premise_usage"] == "FULL"
+    )
 
     started = time.perf_counter()
     started_at = _now_iso()
@@ -145,6 +154,8 @@ def generate(
         "task": "generate_three_materially_different_episode_premises",
         "premise_context": projection,
         "available_target_refs": available_target_refs,
+        "available_primary_location_refs": available_location_refs,
+        "location_access_policy": projection["world"]["location_access"],
         "output_contract": PremiseCandidateBatchV2.model_json_schema(by_alias=True),
         "hard_rules": {
             "exactly_three_candidates": True,
@@ -221,6 +232,25 @@ def generate(
                 raise ValueError(
                     f"{candidate.key}: unknown/unavailable target refs: "
                     + ", ".join(unknown)
+                )
+            unknown_locations = sorted(
+                set(candidate.location_refs) - set(location_access)
+            )
+            if unknown_locations:
+                raise ValueError(
+                    f"{candidate.key}: unknown location refs: "
+                    + ", ".join(unknown_locations)
+                )
+            locked_locations = [
+                ref
+                for ref in candidate.location_refs
+                if location_access[ref]["status"] != "AVAILABLE"
+                or location_access[ref]["premise_usage"] != "FULL"
+            ]
+            if locked_locations:
+                raise ValueError(
+                    f"{candidate.key}: premise uses locked/non-FULL locations as active locations: "
+                    + ", ".join(sorted(locked_locations))
                 )
             if candidate.saga_progression_required:
                 if not (set(candidate.target_refs) & eligible_main):
