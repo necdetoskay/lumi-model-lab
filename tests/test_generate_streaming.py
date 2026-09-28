@@ -4,7 +4,7 @@ import json
 import unittest
 from unittest.mock import patch
 
-from src.generate import call_openrouter
+from src.generate import OpenRouterCallError, call_openrouter
 
 
 class FakeStreamingResponse:
@@ -436,15 +436,18 @@ class GenerateStreamingTests(unittest.TestCase):
                     "model": "qwen/qwen3.8-flash",
                     "choices": [{"delta": {"reasoning": "thinking"}, "finish_reason": "length"}],
                     "usage": {
+                        "prompt_tokens": 500,
                         "completion_tokens": 12000,
+                        "total_tokens": 12500,
                         "completion_tokens_details": {"reasoning_tokens": 12000},
+                        "cost": 0.123456,
                     },
                 },
                 "[DONE]",
             ]
         )
 
-        with self.assertRaisesRegex(RuntimeError, "reasoning_tokens=12000"):
+        with self.assertRaisesRegex(OpenRouterCallError, "reasoning_tokens=12000") as caught:
             call_openrouter(
                 api_key="test-key",
                 model="qwen/qwen3.8-flash",
@@ -454,6 +457,13 @@ class GenerateStreamingTests(unittest.TestCase):
                 max_tokens=7000,
                 seed=42,
             )
+
+        trace = caught.exception.trace
+        self.assertEqual(trace["raw_usage"]["completion_tokens_details"]["reasoning_tokens"], 12000)
+        self.assertEqual(trace["raw_usage"]["prompt_tokens"], 500)
+        self.assertEqual(trace["cost"]["usd"], 0.123456)
+        self.assertEqual(trace["finish_reason"], "length")
+        self.assertNotIn("Authorization", json.dumps(trace))
 
 
 if __name__ == "__main__":
