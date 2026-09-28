@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from src.storyforge.contracts import StoryForgeRequest
 from src.storyforge.runtime import StoryForgeAuditContractError, StoryForgeTraceError, _audit_story, _normalize_audit, _run_traced_stage, run_storyforge
+from src.generate import OpenRouterCallError
 from src.story_defect_detection import segment_story
 
 
@@ -336,6 +337,67 @@ class StoryForgeStageTraceTests(unittest.TestCase):
         self.assertEqual(trace["evidence"]["cost_usd"]["planner"], 0.01)
         self.assertEqual(trace["evidence"]["trace_events"][-1]["status"], "failed")
         self.assertEqual(trace["evidence"]["trace_events"][-1]["error"]["type"], "RuntimeError")
+
+    def test_common_stage_trace_captures_provider_cost_and_reasoning_usage(self):
+        evidence = {
+            "cost_usd": {},
+            "latency_seconds": {},
+            "trace_events": [],
+        }
+        artifacts = {
+            "profile_id": "test-profile",
+            "request_id": "test-request",
+            "context_packet": {"facts": ["x"]},
+            "plan": None,
+            "english_story": None,
+            "turkish_story": None,
+        }
+        provider_error = OpenRouterCallError(
+            "provider exhausted output",
+            {
+                "model": "writer-model",
+                "request_class": "story_planning",
+                "request": {"model": "writer-model"},
+                "body": {"usage": {"cost": 0.42}},
+                "raw_usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 200,
+                    "total_tokens": 300,
+                    "completion_tokens_details": {"reasoning_tokens": 150},
+                    "cost": 0.42,
+                },
+                "usage": {
+                    "input_tokens": 100,
+                    "output_tokens": 200,
+                    "total_tokens": 300,
+                },
+                "cost": {"usd": 0.42},
+            },
+        )
+
+        def explode():
+            raise provider_error
+
+        with self.assertRaises(StoryForgeTraceError) as caught:
+            _run_traced_stage(
+                stage="planner",
+                evidence=evidence,
+                artifacts=artifacts,
+                fn=explode,
+            )
+
+        trace = caught.exception.trace
+        self.assertEqual(trace["evidence"]["cost_usd"]["planner"], 0.42)
+        self.assertEqual(
+            trace["evidence"]["failure_usage"]["planner"]["completion_tokens_details"]["reasoning_tokens"],
+            150,
+        )
+        self.assertEqual(
+            trace["evidence"]["stage_failure_evidence"]["planner"]["model"],
+            "writer-model",
+        )
+        self.assertNotIn("Authorization", json.dumps(trace))
+
 
     @patch("src.storyforge.runtime.call_openrouter")
     @patch("src.storyforge.runtime._structured_call")
