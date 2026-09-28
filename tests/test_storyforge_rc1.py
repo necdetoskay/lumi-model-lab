@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from src.storyforge.contracts import StoryForgeRequest
 from src.storyforge.runtime import StoryForgeAuditContractError, _audit_story, run_storyforge
+from src.story_defect_detection import segment_story
 
 
 def _request_dict() -> dict:
@@ -282,6 +283,22 @@ class StoryForgeRuntimeFailClosedTests(unittest.TestCase):
         self.assertNotIn("big black wheels", result.english_story or "")
         self.assertEqual(mock_openrouter.call_count, 2)
         self.assertEqual(mock_structured.call_count, 4)
+
+
+class StorySourceMapTests(unittest.TestCase):
+    def test_segment_story_preserves_sentence_ids_and_adds_paragraph_offsets(self):
+        story = "Title. First sentence.\n\nSecond paragraph has a problem."
+        segments = segment_story(story)
+
+        self.assertEqual([row["id"] for row in segments], ["S001", "S002", "S003"])
+        self.assertEqual(segments[0]["paragraph_id"], "P001")
+        self.assertEqual(segments[1]["paragraph_id"], "P001")
+        self.assertEqual(segments[2]["paragraph_id"], "P002")
+
+        for row in segments:
+            self.assertEqual(story[row["char_start"]:row["char_end"]], row["text"])
+
+        self.assertEqual(segments[2]["text"], "Second paragraph has a problem.")
 
 
 class StoryForgeAuditTraceTests(unittest.TestCase):
