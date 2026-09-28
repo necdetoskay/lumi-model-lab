@@ -168,6 +168,7 @@ class MainSaga(StrictModel):
     themes: list[str]
     entry_anchor_keys: list[str]
     resolution_anchor_key: str = Field(pattern=KEY_PATTERN)
+    resolution_milestone_keys: list[str]
     anchors: list[SagaAnchor]
     milestones: list[SagaMilestone]
     edges: list[SagaEdge]
@@ -236,8 +237,27 @@ class CharacterSagaSpineV2(StrictModel):
             )
         if saga.resolution_anchor_key not in anchor_set:
             raise ValueError("resolution_anchor_key must reference an anchor")
+        if not saga.resolution_milestone_keys:
+            raise ValueError("main_saga requires resolution milestones")
+        unknown_resolution = sorted(
+            set(saga.resolution_milestone_keys) - milestone_set
+        )
+        if unknown_resolution:
+            raise ValueError(
+                "unknown resolution milestones: " + ", ".join(unknown_resolution)
+            )
 
         milestone_map = {item.key: item for item in saga.milestones}
+        invalid_resolution = [
+            key
+            for key in saga.resolution_milestone_keys
+            if milestone_map[key].anchor_key != saga.resolution_anchor_key
+        ]
+        if invalid_resolution:
+            raise ValueError(
+                "resolution milestones must belong to resolution anchor: "
+                + ", ".join(invalid_resolution)
+            )
         for anchor in saga.anchors:
             if len(anchor.milestone_keys) < 2:
                 raise ValueError(f"{anchor.key}: anchor requires at least two milestones")
@@ -318,6 +338,18 @@ class CharacterSagaSpineV2(StrictModel):
 
         if saga.resolution_anchor_key not in reachable:
             raise ValueError("resolution anchor must be reachable from an entry anchor")
+        unreachable_nodes = sorted(graph_nodes - reachable)
+        if unreachable_nodes:
+            raise ValueError(
+                "Saga graph contains unreachable nodes: " + ", ".join(unreachable_nodes)
+            )
+        unreachable_resolution = sorted(
+            set(saga.resolution_milestone_keys) - reachable
+        )
+        if unreachable_resolution:
+            raise ValueError(
+                "resolution milestones unreachable: " + ", ".join(unreachable_resolution)
+            )
 
         required_anchors = {
             item.key for item in saga.anchors if item.required_for_resolution
