@@ -365,6 +365,8 @@ class StoryForgeExactLocatorTests(unittest.TestCase):
         locator = findings[0]["source_locator"]
         self.assertEqual(locator["sentence_id"], "S003")
         self.assertEqual(locator["paragraph_id"], "P002")
+        self.assertEqual(locator["sentence_word_start"], 1)
+        self.assertEqual(locator["sentence_word_end"], 2)
         self.assertEqual(
             story[locator["char_start"]:locator["char_end"]],
             "Problem sentence",
