@@ -957,12 +957,20 @@ def run_storyforge(
 
     findings = _dedupe_findings(primary, secondary)
     applied_repairs: list[dict[str, Any]] = []
-    if findings:
+    repair_cycles: list[dict[str, Any]] = []
+    max_local_repair_cycles = 3
+
+    for repair_cycle in range(1, max_local_repair_cycles + 1):
+        if not findings:
+            break
+
         if any(x["repair_scope"] != "local" for x in findings):
             evidence["story_gate"] = {
                 "pass": False,
                 "reason": "non_local_blocker",
+                "repair_cycle": repair_cycle,
                 "findings": findings,
+                "repair_cycles": repair_cycles,
             }
             evidence["elapsed_seconds"] = round(time.perf_counter() - started, 3)
             evidence["cost_usd"]["total"] = sum(evidence["cost_usd"].values())
@@ -978,11 +986,29 @@ def run_storyforge(
                 evidence=evidence,
             )
 
+        repair_stage = "repair" if repair_cycle == 1 else f"repair_{repair_cycle}"
+        apply_stage = (
+            "repair_apply" if repair_cycle == 1 else f"repair_apply_{repair_cycle}"
+        )
+        primary_stage = (
+            "primary_reaudit"
+            if repair_cycle == 1
+            else f"primary_reaudit_{repair_cycle}"
+        )
+        secondary_stage = (
+            "secondary_reaudit"
+            if repair_cycle == 1
+            else f"secondary_reaudit_{repair_cycle}"
+        )
+
+        before_story = story
+        findings_before = findings
+
         repair_payload, repair_meta = _run_traced_stage(
-            stage="repair",
+            stage=repair_stage,
             evidence=evidence,
             artifacts=artifacts,
-            fn=lambda: _structured_call(
+            fn=lambda repair_cycle=repair_cycle, findings_before=findings_before: _structured_call(
                 api_key=key,
                 model=models["repair"],
                 system=REPAIR_SYSTEM,
@@ -992,53 +1018,85 @@ def run_storyforge(
                     "hard_constraints": req.story_intent.hard_constraints,
                     "validated_spine": plan,
                     "story": story,
-                    "confirmed_local_defects": findings,
+                    "confirmed_local_defects": findings_before,
+                    "repair_cycle": repair_cycle,
+                    "max_repair_cycles": max_local_repair_cycles,
                 },
-                seed=seed + 5,
+                seed=seed + 5 + ((repair_cycle - 1) * 3),
                 request_class="editorial_audit",
                 max_tokens=1800,
             ),
         )
-        evidence["repair"] = repair_meta
-        evidence["cost_usd"]["repair"] = _cost(repair_meta)
-        story, applied_repairs = _run_traced_stage(
-            stage="repair_apply",
+        if repair_cycle == 1:
+            evidence["repair"] = repair_meta
+        evidence.setdefault("repair_meta_by_cycle", {})[str(repair_cycle)] = repair_meta
+        evidence["cost_usd"][repair_stage] = _cost(repair_meta)
+
+        story, cycle_repairs = _run_traced_stage(
+            stage=apply_stage,
             evidence=evidence,
             artifacts=artifacts,
             fn=lambda: _apply_local_repairs(story, repair_payload),
         )
         artifacts["english_story"] = story
 
+        for row in cycle_repairs:
+            applied_repairs.append({**row, "repair_cycle": repair_cycle})
+
+        if story == before_story or not cycle_repairs:
+            repair_cycles.append({
+                "cycle": repair_cycle,
+                "findings_before": findings_before,
+                "applied_repairs": cycle_repairs,
+                "findings_after": findings_before,
+                "status": "stalled",
+            })
+            findings = findings_before
+            break
+
         primary, primary_meta = _run_traced_stage(
-            stage="primary_reaudit",
+            stage=primary_stage,
             evidence=evidence,
             artifacts=artifacts,
-            fn=lambda: _audit_story(
+            fn=lambda repair_cycle=repair_cycle: _audit_story(
                 api_key=key,
                 model=models["primary_auditor"],
                 request=req,
                 packet=packet,
                 plan=plan,
                 story=story,
-                seed=seed + 6,
+                seed=seed + 6 + ((repair_cycle - 1) * 3),
             ),
         )
         secondary, secondary_meta = _run_traced_stage(
-            stage="secondary_reaudit",
+            stage=secondary_stage,
             evidence=evidence,
             artifacts=artifacts,
-            fn=lambda: _audit_story(
+            fn=lambda repair_cycle=repair_cycle: _audit_story(
                 api_key=key,
                 model=models["secondary_auditor"],
                 request=req,
                 packet=packet,
                 plan=plan,
                 story=story,
-                seed=seed + 7,
+                seed=seed + 7 + ((repair_cycle - 1) * 3),
             ),
         )
-        evidence["cost_usd"]["primary_reaudit"] = _cost(primary_meta)
-        evidence["cost_usd"]["secondary_reaudit"] = _cost(secondary_meta)
+        evidence["cost_usd"][primary_stage] = _cost(primary_meta)
+        evidence["cost_usd"][secondary_stage] = _cost(secondary_meta)
+
+        findings = _dedupe_findings(primary, secondary)
+        repair_cycles.append({
+            "cycle": repair_cycle,
+            "findings_before": findings_before,
+            "applied_repairs": cycle_repairs,
+            "primary_findings_after": primary,
+            "secondary_findings_after": secondary,
+            "findings_after": findings,
+            "status": "clean" if not findings else "needs_next_cycle",
+        })
+
+    evidence["repair_cycles"] = repair_cycles
 
     final_word_count = count_words(story)
     final_length_pass = hard_min <= final_word_count <= hard_max
@@ -1048,6 +1106,7 @@ def run_storyforge(
         "word_count": final_word_count,
         "hard_range": list(gp.hard_range),
         "applied_repairs": applied_repairs,
+        "repair_cycles": repair_cycles,
         "primary_findings": primary,
         "secondary_findings": secondary,
     }
