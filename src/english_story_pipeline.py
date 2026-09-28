@@ -312,6 +312,12 @@ def evaluate_scene_jev(
     )
 
 
+class StructuredJsonCallError(RuntimeError):
+    def __init__(self, message: str, trace: dict[str, Any]):
+        super().__init__(message)
+        self.trace = trace
+
+
 def call_structured_json_with_retry(
     *,
     api_key: str,
@@ -325,6 +331,9 @@ def call_structured_json_with_retry(
     max_parse_attempts: int = 2,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     parse_failures: list[dict[str, Any]] = []
+    last_text: str | None = None
+    last_body: dict[str, Any] | None = None
+    last_request: dict[str, Any] | None = None
     for parse_attempt in range(1, max_parse_attempts + 1):
         effective_prompt = user_prompt
         effective_temperature = temperature
@@ -350,6 +359,9 @@ def call_structured_json_with_retry(
             request_class=request_class,
             structured_output=True,
         )
+        last_text = text
+        last_body = body
+        last_request = request
         try:
             payload = parse_json_object(text)
         except (RuntimeError, json.JSONDecodeError) as exc:
@@ -359,20 +371,48 @@ def call_structured_json_with_retry(
                     "parse_attempt": parse_attempt,
                     "error": str(exc),
                     "response_chars": len(text),
+                    "raw_response": text,
                     "finish_reason": choice.get("finish_reason"),
+                    "raw_usage": body.get("usage") or {},
                     "usage": parse_usage(body).model_dump(mode="json"),
                     "cost": parse_cost(body).model_dump(mode="json"),
                 }
             )
             if parse_attempt >= max_parse_attempts:
-                raise RuntimeError(
-                    "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED: "
-                    + json.dumps(parse_failures, ensure_ascii=False)
+                last_cost = parse_cost(last_body or {}).model_dump(mode="json")
+                raise StructuredJsonCallError(
+                    "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED",
+                    {
+                        "stage": "structured_json_parse",
+                        "model": model,
+                        "request_class": request_class,
+                        "request": last_request,
+                        "raw_response": last_text,
+                        "body": last_body,
+                        "raw_usage": (last_body or {}).get("usage") or {},
+                        "usage": parse_usage(last_body or {}).model_dump(mode="json"),
+                        "cost": last_cost,
+                        "parse_failures": parse_failures,
+                    },
                 ) from exc
             continue
         return payload, body, request, parse_failures
 
-    raise RuntimeError("STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED")
+    raise StructuredJsonCallError(
+        "STRUCTURED_JSON_RESPONSE_RETRY_EXHAUSTED",
+        {
+            "stage": "structured_json_parse",
+            "model": model,
+            "request_class": request_class,
+            "request": last_request,
+            "raw_response": last_text,
+            "body": last_body,
+            "raw_usage": (last_body or {}).get("usage") or {},
+            "usage": parse_usage(last_body or {}).model_dump(mode="json"),
+            "cost": parse_cost(last_body or {}).model_dump(mode="json"),
+            "parse_failures": parse_failures,
+        },
+    )
 
 
 def repair_scene_for_jev(
