@@ -46,13 +46,21 @@ jobs:
         run: |
           set -euo pipefail
           test -s runs/saga-spine-v2-age12/result.json
-          DEST="experiments/results/saga-spine-v2-age12/${GITHUB_RUN_ID}"
-          mkdir -p "$DEST"
-          cp runs/saga-spine-v2-age12/result.json "$DEST/result.json"
+
+          TMP="$(mktemp -d)"
+          cp runs/saga-spine-v2-age12/result.json "$TMP/result.json"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "evidence/saga-spine-v2-age12-${GITHUB_RUN_ID}"
+
+          EVIDENCE_BRANCH="evidence/saga-spine-v2-age12-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+
+          DEST="experiments/results/saga-spine-v2-age12/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+
           git add "$DEST/result.json"
           git commit -m "evidence(saga): archive age12 Saga Spine v2 run ${GITHUB_RUN_ID}"
-          git push --force origin "evidence/saga-spine-v2-age12-${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
