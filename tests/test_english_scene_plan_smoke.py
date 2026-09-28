@@ -90,6 +90,41 @@ class EnglishScenePlanSmokeTests(unittest.TestCase):
         )
 
     @patch("src.english_scene_plan_smoke.call_openrouter")
+    def test_plan_structured_json_truncation_fails_fast_without_retry(self, mock_call):
+        body = {
+            "choices": [{"finish_reason": "length"}],
+            "usage": {
+                "prompt_tokens": 100,
+                "completion_tokens": 2000,
+                "total_tokens": 2100,
+                "cost": 0.02,
+            },
+        }
+        mock_call.return_value = (
+            '{"story_title":"unfinished"',
+            body,
+            {"temperature": 0.2, "response_format": {"type": "json_object"}},
+        )
+
+        with self.assertRaisesRegex(
+            RuntimeError,
+            "STRUCTURED_JSON_RESPONSE_TRUNCATED",
+        ):
+            call_structured_json_with_retry(
+                api_key="test",
+                model="test/model",
+                system_prompt="system",
+                user_prompt="user",
+                temperature=0.2,
+                max_tokens=2000,
+                seed=42,
+                request_class="story_plan",
+                max_parse_attempts=2,
+            )
+
+        self.assertEqual(mock_call.call_count, 1)
+
+    @patch("src.english_scene_plan_smoke.call_openrouter")
     def test_plan_structured_json_retry_recovers_malformed_braced_object(
         self,
         mock_call,
