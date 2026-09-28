@@ -18,6 +18,7 @@ from src.premise_architect_v2_contract import (
     PremiseCandidateBatchV2,
     PremiseGateV2,
     PremiseLabStateV1,
+    build_premise_gate_protected_context,
     build_reveal_safe_premise_projection,
 )
 from src.reader_profile_v2 import ReaderDevelopmentProfileV2
@@ -124,6 +125,11 @@ def generate(
         state=state,
     )
 
+    protected_gate_context = build_premise_gate_protected_context(
+        spine=spine,
+        state=state,
+    )
+
     eligible_main = {
         row["key"] for row in projection["eligible_main_saga_milestones"]
     }
@@ -216,6 +222,7 @@ def generate(
         "gate_runtime_identity": runtime_profile_identity(gate_model),
         "projection": projection,
         "available_target_refs": available_target_refs,
+        "protected_gate_context_present": True,
         "architect_raw_payload": architect_raw,
         "architect_parse_failures": architect_parse_failures,
         "architect_call": _model_call_evidence(
@@ -280,9 +287,11 @@ def generate(
     gate_input = {
         "task": "evaluate_premise_candidates",
         "premise_context": projection,
+        "protected_judge_context": protected_gate_context,
         "candidates": batch.model_dump(mode="json", by_alias=True),
         "output_contract": PremiseGateV2.model_json_schema(by_alias=True),
         "selection_rule": "ACCEPT one genuinely strong candidate or REJECT_ALL; never select the least bad option.",
+        "protected_context_rule": "Use protected_judge_context only to detect violations. Never reward a candidate for matching hidden truth and never treat hidden truth as information available to the character.",
     }
 
     try:
