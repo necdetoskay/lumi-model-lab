@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -95,3 +97,11 @@ def validate_capability_bridge(profile: ReaderDevelopmentProfileV1) -> None:
             f"{profile.narrative_age_tier} reading_mode must be {expected_mode}, "
             f"got {profile.reading_mode}"
         )
+
+
+def load_reader_development_profile(path: Path) -> ReaderDevelopmentProfileV1:
+    profile = ReaderDevelopmentProfileV1.model_validate_json(
+        path.read_text(encoding="utf-8")
+    )
+    validate_capability_bridge(profile)
+    return profile
