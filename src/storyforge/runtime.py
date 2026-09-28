@@ -181,7 +181,10 @@ Important:
 - unsupported DURABLE canon/state attributes may be canon_integrity defects;
 - if the exact defect can be fixed without changing the validated plan, repair_scope=local;
 - if the prose needs multi-event restructuring, repair_scope=structural;
-- if the validated plan itself is the source of the defect, repair_scope=replan.
+- if the validated plan itself is the source of the defect, repair_scope=replan;
+- for every present=true finding, exact_quote is REQUIRED and must be one exact substring copied from one cited story sentence;
+- exact_quote must be the smallest useful phrase or sentence fragment that proves the defect;
+- for present=false, exact_quote must be null.
 
 Return JSON only:
 {
@@ -192,6 +195,7 @@ Return JSON only:
       "severity":null,
       "repair_scope":null,
       "span_ids":[],
+      "exact_quote":null,
       "reason":"brief"
     }
   ]
