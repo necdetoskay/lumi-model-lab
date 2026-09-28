@@ -1,0 +1,379 @@
+{
+  "schema_version": "saga-milestone-approved-artifact.v1",
+  "source_run_id": 36417358654,
+  "human_gate": "APPROVE",
+  "deterministic_cleanup": [
+    {
+      "id": "drift_reveal_binding_alignment",
+      "change": "reveal_drift_pattern -> pattern_becomes_undeniable",
+      "rationale": "Calibration proves the first anomaly is real; the later cross-referenced state proves a pattern exists."
+    }
+  ],
+  "expansion": {
+    "schema": "saga-milestone-expansion.v2",
+    "source_saga_key": "the_uncharted_disagreement",
+    "milestones": [
+      {
+        "key": "first_discrepancy_logged",
+        "anchor_key": "noticing_the_drift",
+        "type": "DISCOVERY",
+        "summary": "Deniz notices a beacon reading that disagrees with the official chart by a margin too large for instrument error.",
+        "state_condition": "Deniz has one documented anomaly and a working hypothesis that it is not simple mistake.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "EXPLORATION",
+          "LOCATION",
+          "ITEM"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The mentor questions Deniz's methodology.",
+          "The friend becomes curious and offers to help verify."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "calibration_challenge_resolved",
+        "anchor_key": "noticing_the_drift",
+        "type": "EVIDENCE",
+        "summary": "Deniz deliberately tries to disprove the anomaly by recalibrating instruments, rechecking chart provenance, and testing for known drift causes, only to find the discrepancy survives every attempt at debunking it.",
+        "state_condition": "Deniz has actively ruled out instrument miscalibration and known chart-copying error as explanations, strengthening confidence the anomaly is real without yet proving a pattern.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "ITEM",
+          "DOCUMENT",
+          "EXPLORATION"
+        ],
+        "reveal_keys": [
+          "reveal_drift_pattern"
+        ],
+        "consequence_options": [
+          "The mentor grudgingly acknowledges the rigor of the test.",
+          "A rival apprentice tries to claim the calibration method as their own idea."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "pattern_becomes_undeniable",
+        "anchor_key": "noticing_the_drift",
+        "type": "EVIDENCE",
+        "summary": "A second, independently sourced case, cross-checked against archive records, confirms the discrepancies share a rhythm rather than random error.",
+        "state_condition": "Deniz possesses two cross-referenced, falsification-tested anomalies that cannot be waved away as isolated mistakes, opening the choice of which route to pursue further.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "DOCUMENT",
+          "WORLD_EVENT",
+          "NPC"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The mentor grants provisional trust for independent fieldwork.",
+          "Word spreads and the merchant council begins to take notice."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "tower_keeper_contact",
+        "anchor_key": "beacon_ridge_route",
+        "type": "RELATIONSHIP_SHIFT",
+        "summary": "Deniz makes a genuine connection with a beacon-tower keeper willing to share informal knowledge.",
+        "state_condition": "A tower keeper now regards Deniz as trustworthy enough to speak candidly about irregularities.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "NPC",
+          "RELATIONSHIP"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The keeper becomes a recurring ally.",
+          "Other keepers grow suspicious of the keeper's openness."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "archive_access_granted",
+        "anchor_key": "beacon_ridge_route",
+        "type": "ACCESS",
+        "summary": "Deniz gains limited access to the tower network's historical log archive, much of which turns out to be uncatalogued or simply never cross-referenced before.",
+        "state_condition": "Deniz can review decades of beacon logs, though some records remain restricted, misplaced, or not yet organized for comparison.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "DOCUMENT",
+          "LOCATION"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The disorganized archive raises new questions about how records get lost over time.",
+          "The mentor learns of the access and reacts with mixed pride and concern."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "beacon_logs_corroborate",
+        "anchor_key": "beacon_ridge_route",
+        "type": "EVIDENCE",
+        "summary": "Cross-referencing the newly organized logs reveals a decades-long drift pattern matching Deniz's own observations, and a previously uncatalogued fragment referencing a past surveyor's report surfaces among the same records.",
+        "state_condition": "Deniz has strong documentary evidence of long-term drift, plus a lead pointing toward a previously unverified survey report filed in the same archive system.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "DOCUMENT",
+          "CONSEQUENCE"
+        ],
+        "reveal_keys": [
+          "reveal_fathers_notes_fragment"
+        ],
+        "consequence_options": [
+          "Deniz feels the pull of the search_for_father thread activating.",
+          "The mentor trust arc becomes discoverable through the archive's uneven organization."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "rare_tide_window_identified",
+        "anchor_key": "drowned_causeway_route",
+        "type": "DISCOVERY",
+        "summary": "Deniz learns to predict the rare tide window that exposes the Drowned Causeway.",
+        "state_condition": "Deniz has a reliable method for timing access to the causeway, a resource no casual visitor has.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "NPC",
+          "WORLD_EVENT",
+          "EXPLORATION"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "Local fishers start relying on Deniz's tide predictions.",
+          "A rival surveyor tries to beat Deniz to the causeway."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "causeway_access_secured",
+        "anchor_key": "drowned_causeway_route",
+        "type": "ACCESS",
+        "summary": "Deniz secures safe passage onto the exposed causeway during the tide window.",
+        "state_condition": "Deniz can physically reach and examine the ancient markers on the causeway.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "LOCATION",
+          "ITEM"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The friend insists on joining, creating shared risk and reward.",
+          "Harbor authorities question the safety of the unsupervised trip."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "marker_age_evidence_found",
+        "anchor_key": "drowned_causeway_route",
+        "type": "EVIDENCE",
+        "summary": "Physical inspection of the causeway markers reveals construction and wear patterns inconsistent with any known chart-making era.",
+        "state_condition": "Deniz holds physical evidence that the markers are far older than official history accounts for.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "ITEM",
+          "SYMBOL"
+        ],
+        "reveal_keys": [
+          "reveal_marker_age"
+        ],
+        "consequence_options": [
+          "Academic circles dismiss the finding without observatory-grade instruments to confirm it.",
+          "A merchant faction grows anxious about what unregulated old markers imply for trade routes."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": true
+      },
+      {
+        "key": "observatory_permission_won",
+        "anchor_key": "observatory_access",
+        "type": "ACCESS",
+        "summary": "Through sponsorship, negotiation, or demonstrated competence, Deniz obtains formal access to the abandoned tide observatory.",
+        "state_condition": "Deniz possesses a legitimate, if provisional, right to use the observatory's instruments.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "NPC",
+          "CONSEQUENCE",
+          "RELATIONSHIP"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "Access comes with oversight conditions Deniz must respect or risk losing it.",
+          "Rival interests attempt to piggyback on the access."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "observatory_instruments_reveal_anomaly",
+        "anchor_key": "observatory_access",
+        "type": "DISCOVERY",
+        "summary": "Using the observatory's precision instruments for the first time, Deniz detects a subtle, previously unmeasurable signal beneath the deep channels that no field-level tool could have shown.",
+        "state_condition": "Deniz has discovered a genuinely new instrument-only phenomenon linked to the drift, distinct from anything found via beacon or causeway evidence alone.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "ITEM",
+          "LOCATION",
+          "WORLD_EVENT"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The observatory's old logbooks hint someone else once noticed the same signal.",
+          "The finding raises the stakes enough that outside institutions start paying attention."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "routes_converge_at_instruments",
+        "anchor_key": "observatory_access",
+        "type": "CONVERGENCE",
+        "summary": "Whatever combination of beacon and causeway evidence Deniz carries is tested against the observatory's precise instruments, sharpening the picture of the phenomenon.",
+        "state_condition": "Deniz has instrument-grade readings that align with prior field evidence, setting up direct confrontation with the underlying cause.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "ITEM",
+          "LOCATION",
+          "WORLD_EVENT"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "The readings suggest the phenomenon is accelerating, raising urgency.",
+          "Instrument logs reveal someone accessed the observatory recently and left it disturbed."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "mechanism_confirmed",
+        "anchor_key": "true_cause_confronted",
+        "type": "REVELATION",
+        "summary": "Instrument analysis confirms the drift is caused by a slow migration of magnetic stone deposits beneath the deep channels.",
+        "state_condition": "The natural, rule-bound cause of the discrepancies is verified beyond reasonable doubt, though the markers' origin remains unresolved.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "DOCUMENT",
+          "WORLD_EVENT"
+        ],
+        "reveal_keys": [
+          "reveal_tide_mechanism_confirmed"
+        ],
+        "consequence_options": [
+          "The mentor's previously inaccessible records finally make sense in this new light.",
+          "The merchant_chart_dispute side saga intensifies as the finding becomes public knowledge."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "response_options_open",
+        "anchor_key": "true_cause_confronted",
+        "type": "DECISION",
+        "summary": "With verified evidence in hand, Deniz reaches a point where multiple credible paths exist for how to act on the discovery.",
+        "state_condition": "Institutions, the mentor, and harbor authorities are aware evidence exists and await Deniz's choice of how to present or use it; no path is predetermined.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "RELATIONSHIP",
+          "CONSEQUENCE"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "Publishing openly could reshape trust in official charts but expose Deniz to scrutiny.",
+          "Sharing quietly with the mentor first could preserve relationships but slow wider impact.",
+          "Alerting merchant councils directly could affect trade routes immediately."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      },
+      {
+        "key": "world_responds_to_evidence",
+        "anchor_key": "true_cause_confronted",
+        "type": "CONSEQUENCE",
+        "summary": "Once Deniz has actually committed to a specific way of handling the confirmed discovery, the wider world begins visibly reacting to that committed choice, changing Deniz's standing and future options.",
+        "state_condition": "Following Deniz's committed decision, reputation, relationships, and access to future outer-route work shift in ways consistent with that choice, while the marker origin mystery remains open for future sagas.",
+        "required_for_anchor": true,
+        "possible_entry_vectors": [
+          "WORLD_EVENT",
+          "CONSEQUENCE",
+          "NPC"
+        ],
+        "reveal_keys": [],
+        "consequence_options": [
+          "Deniz gains formal standing to chart beyond the home strait.",
+          "Some institutions resist the finding, creating ongoing friction.",
+          "The father's lost survey gains renewed interest, opening doors to the search_for_father saga."
+        ],
+        "skippable_if_alternate_route_satisfies_anchor": false
+      }
+    ],
+    "anchor_orders": [
+      {
+        "anchor_key": "noticing_the_drift",
+        "ordered_milestone_keys": [
+          "first_discrepancy_logged",
+          "calibration_challenge_resolved",
+          "pattern_becomes_undeniable"
+        ]
+      },
+      {
+        "anchor_key": "beacon_ridge_route",
+        "ordered_milestone_keys": [
+          "tower_keeper_contact",
+          "archive_access_granted",
+          "beacon_logs_corroborate"
+        ]
+      },
+      {
+        "anchor_key": "drowned_causeway_route",
+        "ordered_milestone_keys": [
+          "rare_tide_window_identified",
+          "causeway_access_secured",
+          "marker_age_evidence_found"
+        ]
+      },
+      {
+        "anchor_key": "observatory_access",
+        "ordered_milestone_keys": [
+          "observatory_permission_won",
+          "observatory_instruments_reveal_anomaly",
+          "routes_converge_at_instruments"
+        ]
+      },
+      {
+        "anchor_key": "true_cause_confronted",
+        "ordered_milestone_keys": [
+          "mechanism_confirmed",
+          "response_options_open",
+          "world_responds_to_evidence"
+        ]
+      }
+    ],
+    "reveal_bindings": [
+      {
+        "reveal_key": "reveal_drift_pattern",
+        "milestone_keys": [
+          "pattern_becomes_undeniable"
+        ]
+      },
+      {
+        "reveal_key": "reveal_marker_age",
+        "milestone_keys": [
+          "marker_age_evidence_found"
+        ]
+      },
+      {
+        "reveal_key": "reveal_tide_mechanism_confirmed",
+        "milestone_keys": [
+          "mechanism_confirmed"
+        ]
+      },
+      {
+        "reveal_key": "reveal_fathers_notes_fragment",
+        "milestone_keys": [
+          "beacon_logs_corroborate"
+        ]
+      }
+    ],
+    "resolution_milestone_keys": [
+      "mechanism_confirmed",
+      "response_options_open",
+      "world_responds_to_evidence"
+    ]
+  }
+}
