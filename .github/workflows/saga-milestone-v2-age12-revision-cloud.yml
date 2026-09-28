@@ -1,0 +1,61 @@
+name: Saga Milestone V2 Age12 Revision Cloud
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/saga-milestone-v2-age12-revision-cloud.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  revise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      SAGA_SPINE_V2_MODEL: anthropic/claude-sonnet-5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Generate revised age12 Gate B milestones
+        run: >-
+          PYTHONPATH=. python -m src.saga_spine_v2_milestone_generate
+          --reviewed-draft data/specifications/saga_lab/age12_shattered_meridian_gate_b_reviewed_v1.json
+          --revision-directives data/specifications/saga_lab/age12_shattered_meridian_gate_b_revision_v1.json
+          --out runs/saga-spine-v2-age12-milestones-revision/result.json
+
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s runs/saga-spine-v2-age12-milestones-revision/result.json
+
+          TMP="$(mktemp -d)"
+          cp runs/saga-spine-v2-age12-milestones-revision/result.json "$TMP/result.json"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          EVIDENCE_BRANCH="evidence/saga-milestone-v2-age12-revision-cloud-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+
+          DEST="experiments/results/saga-milestone-v2-age12-revision-cloud/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+
+          git add "$DEST/result.json"
+          git commit -m "evidence(saga): archive cloud revised age12 Gate B run ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
