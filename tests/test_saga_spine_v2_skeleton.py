@@ -248,7 +248,12 @@ class SagaSkeletonV2GeneratorTests(unittest.TestCase):
         self.assertEqual(kwargs["request_class"], "saga_architect")
         self.assertEqual(kwargs["max_tokens"], 10000)
         request_payload = json.loads(kwargs["user_prompt"])
-        self.assertNotIn("output_contract", request_payload)
+        self.assertIn("output_contract", request_payload)
+        self.assertEqual(
+            request_payload["output_contract"]["properties"]["schema"]["const"],
+            "character-saga-skeleton.v2",
+        )
+        self.assertIn("contract_rules", request_payload)
         self.assertIn("requested_shape", request_payload)
         self.assertEqual(
             request_payload["qualification_rules"]["main_saga_anchor_count"],
