@@ -312,6 +312,12 @@ def _structured_call(
         max_parse_attempts=2,
     )
     return parsed, {
+        "model": model,
+        "request_class": request_class,
+        "input": {
+            "system_prompt": system,
+            "payload": payload,
+        },
         "usage": parse_usage(body).model_dump(mode="json"),
         "cost": parse_cost(body).model_dump(mode="json"),
         "request": {
@@ -472,38 +478,73 @@ def _validate_plan_shape(plan: dict[str, Any], allowed_ids: set[str]) -> list[st
     return errors
 
 
-def _normalize_audit(payload: dict[str, Any], valid_span_ids: set[str]) -> list[dict[str, Any]]:
+def _normalize_audit(payload: dict[str, Any], segments: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows = payload.get("evaluations")
     if not isinstance(rows, list):
         raise RuntimeError("StoryForge audit missing evaluations.")
+
+    segments_by_id = {str(row["id"]): row for row in segments}
+    valid_span_ids = set(segments_by_id)
     seen: set[str] = set()
     findings: list[dict[str, Any]] = []
+
     for row in rows:
         family = str(row.get("family") or "")
         if family not in DEFECT_FAMILIES or family in seen:
             raise RuntimeError(f"Invalid/duplicate audit family: {family}")
         seen.add(family)
+
         present = row.get("present")
         if not isinstance(present, bool):
             raise RuntimeError(f"Invalid audit present flag: {family}")
         if not present:
             continue
+
         severity = str(row.get("severity") or "")
         if severity not in {"serious", "critical"}:
             raise RuntimeError(f"Invalid blocking severity: {family}:{severity}")
+
         scope = str(row.get("repair_scope") or "")
         if scope not in {"local", "structural", "replan"}:
             raise RuntimeError(f"Invalid repair scope: {family}:{scope}")
+
         spans = [str(x) for x in (row.get("span_ids") or [])]
         if not spans or not set(spans).issubset(valid_span_ids):
             raise RuntimeError(f"Invalid audit spans: {family}:{spans}")
+
+        quote = str(row.get("exact_quote") or "")
+        if not quote:
+            raise RuntimeError(f"Missing audit exact quote: {family}")
+
+        matches: list[dict[str, Any]] = []
+        for span_id in spans:
+            segment = segments_by_id[span_id]
+            offset = segment["text"].find(quote)
+            while offset >= 0:
+                matches.append({
+                    "sentence_id": span_id,
+                    "paragraph_id": segment.get("paragraph_id"),
+                    "exact_quote": quote,
+                    "char_start": int(segment.get("char_start", 0)) + offset,
+                    "char_end": int(segment.get("char_start", 0)) + offset + len(quote),
+                })
+                offset = segment["text"].find(quote, offset + 1)
+
+        if len(matches) != 1:
+            raise RuntimeError(
+                f"Audit exact quote must resolve uniquely inside cited spans: {family}:{len(matches)}"
+            )
+
         findings.append({
             "family": family,
             "severity": severity,
             "repair_scope": scope,
             "span_ids": spans,
+            "exact_quote": quote,
+            "source_locator": matches[0],
             "reason": str(row.get("reason") or "").strip(),
         })
+
     if seen != set(DEFECT_FAMILIES):
         raise RuntimeError("StoryForge audit did not cover every canonical defect family.")
     return findings
@@ -547,7 +588,7 @@ def _audit_story(
         "model_meta": meta,
     }
     try:
-        findings = _normalize_audit(payload, {x["id"] for x in segments})
+        findings = _normalize_audit(payload, segments)
     except RuntimeError as exc:
         trace["contract_error"] = str(exc)
         raise StoryForgeAuditContractError(str(exc), trace) from exc
