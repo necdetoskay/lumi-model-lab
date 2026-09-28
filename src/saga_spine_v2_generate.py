@@ -71,7 +71,10 @@ def generate(
     require_qualification_runtime_profile(model)
     model_runtime_identity = runtime_profile_identity(model)
     fixture = NarrativeFixture.model_validate(_read_json(fixture_path))
-    schema = _read_json(schema_path)
+    # The full JSON Schema is validated locally after generation. Sending the
+    # entire schema to the model made the prompt large and encouraged verbose
+    # schema echoing. Keep the model contract compact and deterministic here.
+    _read_json(schema_path)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
 
     request_payload = {
@@ -86,13 +89,54 @@ def generate(
             ),
         },
         "frozen_character_world_input": fixture.model_dump(mode="json"),
-        "output_contract": schema,
+        "requested_shape": {
+            "schema": "character-saga-spine.v2",
+            "origin": {
+                "summary": "string",
+                "origin_facts": "list",
+                "formative_events": "list",
+                "origin_relationships": "list",
+                "unresolved_origin_questions": "list"
+            },
+            "present_situation": "object",
+            "narrative_core": "object",
+            "main_saga": {
+                "key": "stable_key",
+                "title": "string",
+                "goal": "string",
+                "stakes": "string",
+                "central_mystery": "string",
+                "themes": "list[string]",
+                "entry_anchor_keys": "list[anchor_key]",
+                "resolution_anchor_key": "anchor_key",
+                "resolution_milestone_keys": "list[milestone_key]",
+                "anchors": "exactly 5 SagaAnchor objects",
+                "milestones": "exactly 15 SagaMilestone objects",
+                "edges": "DAG edges over anchor/milestone keys with >=1 ALTERNATIVE_ROUTE",
+                "hidden_truths": "small list using FIXED_HIDDEN and/or UNRESOLVED_BY_DESIGN",
+                "reveal_steps": "small list tied to hidden_truths and milestones"
+            },
+            "latent_side_sagas": "2-4 SideSagaSeed objects",
+            "creative_permission_envelope": "object",
+            "world_integration": "object",
+            "reweave_policy": "object",
+            "background_enrichment_policy": "object",
+            "safety_and_constraints": "object"
+        },
+        "compactness_rules": [
+            "Generate exactly 5 anchors and exactly 15 milestones for this first qualification candidate.",
+            "Keep each summary, purpose, state_condition, rationale, consequence option, and reveal ceiling concise: normally one sentence.",
+            "Do not repeat the schema, explain your reasoning, or add prose outside the JSON object.",
+            "Use the minimum number of graph edges needed for a meaningful reachable DAG plus real alternate routes.",
+            "Prefer 2-4 hidden truths, 3-6 reveal steps, and 2-4 latent side Sagas.",
+            "Do not inflate fields merely to consume token budget."
+        ],
         "qualification_rules": {
             "human_creative_review_required": True,
             "no_episode_generation": True,
             "no_future_choice_precommitment": True,
-            "main_saga_anchor_range": [5, 7],
-            "main_saga_milestone_range": [15, 30],
+            "main_saga_anchor_count": 5,
+            "main_saga_milestone_count": 15,
             "must_include_alternative_route": True,
             "must_support_saga_dormancy": True,
             "must_support_generated_continuity": True,
@@ -108,9 +152,9 @@ def generate(
             system_prompt=system_prompt,
             user_prompt=json.dumps(request_payload, ensure_ascii=False),
             temperature=0.35,
-            max_tokens=30000,
+            max_tokens=18000,
             seed=2026092802,
-            request_class="structured_large",
+            request_class="saga_architect",
             max_parse_attempts=2,
         )
     except Exception as exc:
