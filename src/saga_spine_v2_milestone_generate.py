@@ -60,6 +60,8 @@ def generate(
     out_path: Path,
     model_override: str | None = None,
     api_key: str | None = None,
+    reviewed_draft_path: Path | None = None,
+    revision_directives_path: Path | None = None,
 ) -> dict[str, Any]:
     load_dotenv()
     key = api_key or os.getenv("OPENROUTER_API_KEY")
@@ -74,9 +76,30 @@ def generate(
     output_contract = SagaMilestoneExpansionV2.model_json_schema(by_alias=True)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
 
+    reviewed_draft = _read_json(reviewed_draft_path) if reviewed_draft_path else None
+    previous_expansion = None
+    if reviewed_draft is not None:
+        previous_expansion = SagaMilestoneExpansionV2.model_validate(
+            reviewed_draft["expansion"]
+        ).model_dump(mode="json", by_alias=True)
+
+    revision_directives = (
+        _read_json(revision_directives_path)
+        if revision_directives_path is not None
+        else None
+    )
+
     request_payload = {
         "task": "expand_approved_saga_skeleton_into_milestones",
         "approved_skeleton": skeleton.model_dump(mode="json", by_alias=True),
+        "previous_reviewed_expansion": previous_expansion,
+        "human_revision_directives": revision_directives,
+        "revision_rules": [
+            "When previous_reviewed_expansion and human_revision_directives are present, perform targeted minimal repair rather than wholesale regeneration.",
+            "Satisfy every must_change directive.",
+            "Preserve preserve_strengths and stable milestone keys unless a milestone is materially replaced.",
+            "Do not alter the approved Gate A skeleton."
+        ],
         "output_contract": output_contract,
         "contract_rules": [
             "Match output_contract fields and literal enums exactly.",
@@ -144,6 +167,8 @@ def generate(
         "completed_at": _now_iso(),
         "latency_seconds": round(time.perf_counter() - started, 3),
         "approved_skeleton": skeleton.model_dump(mode="json", by_alias=True),
+        "previous_reviewed_expansion": previous_expansion,
+        "human_revision_directives": revision_directives,
         "raw_generated_payload": parsed,
         "raw_usage": body.get("usage") or {},
         "usage": parse_usage(body).model_dump(mode="json"),
@@ -201,6 +226,8 @@ def main() -> None:
     parser.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--model")
+    parser.add_argument("--reviewed-draft", type=Path)
+    parser.add_argument("--revision-directives", type=Path)
     args = parser.parse_args()
 
     payload = generate(
@@ -208,6 +235,8 @@ def main() -> None:
         prompt_path=args.prompt,
         out_path=args.out,
         model_override=args.model,
+        reviewed_draft_path=args.reviewed_draft,
+        revision_directives_path=args.revision_directives,
     )
     print(
         json.dumps(
