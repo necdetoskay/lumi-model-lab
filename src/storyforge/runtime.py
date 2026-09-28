@@ -320,6 +320,7 @@ def _structured_call(
             "system_prompt": system,
             "payload": payload,
         },
+        "raw_usage": body.get("usage") or {},
         "usage": parse_usage(body).model_dump(mode="json"),
         "cost": parse_cost(body).model_dump(mode="json"),
         "request": {
@@ -618,7 +619,9 @@ def _run_traced_stage(
             if isinstance(cause_cost, dict):
                 evidence.setdefault("cost_usd", {})[stage] = float(cause_cost.get("usd") or 0.0)
 
-            cause_usage = cause_trace.get("usage")
+            cause_usage = cause_trace.get("raw_usage")
+            if not isinstance(cause_usage, dict):
+                cause_usage = cause_trace.get("usage")
             if isinstance(cause_usage, dict):
                 evidence.setdefault("failure_usage", {})[stage] = cause_usage
         evidence["elapsed_seconds"] = round(
@@ -887,6 +890,7 @@ def run_storyforge(
         "request_class": "teacher_story_medium_reasoning",
         "input": {"system_prompt": WRITER_SYSTEM, "payload": writer_input},
         "raw_response": story,
+        "raw_usage": writer_body.get("usage") or {},
         "usage": parse_usage(writer_body).model_dump(mode="json"),
         "cost": parse_cost(writer_body).model_dump(mode="json"),
         "request": {
@@ -1077,6 +1081,7 @@ def run_storyforge(
         "request_class": "translation",
         "input": {"system_prompt": TRANSLATION_SYSTEM, "payload": translation_input},
         "raw_response": tr_story,
+        "raw_usage": tr_body.get("usage") or {},
         "usage": parse_usage(tr_body).model_dump(mode="json"),
         "cost": parse_cost(tr_body).model_dump(mode="json"),
         "request": {
