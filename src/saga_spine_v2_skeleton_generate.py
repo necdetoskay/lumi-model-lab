@@ -110,9 +110,9 @@ def generate(
             system_prompt=system_prompt,
             user_prompt=json.dumps(request_payload, ensure_ascii=False),
             temperature=0.30,
-            max_tokens=12000,
+            max_tokens=18000,
             seed=2026092803,
-            request_class="structured_large",
+            request_class="saga_architect",
             max_parse_attempts=2,
         )
     except Exception as exc:
