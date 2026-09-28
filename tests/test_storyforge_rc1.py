@@ -460,6 +460,40 @@ class StoryForgeStageTraceTests(unittest.TestCase):
         self.assertIn("Title.", serialized)
 
 
+class StoryForgeSeverityAliasTests(unittest.TestCase):
+    def test_major_is_preserved_raw_and_normalized_to_serious(self):
+        story = "Title. First sentence.\n\nProblem sentence here."
+        segments = segment_story(story)
+        raw = {
+            "evaluations": [
+                {
+                    "family": family,
+                    "present": family == "state_continuity",
+                    "severity": "major" if family == "state_continuity" else None,
+                    "repair_scope": "local" if family == "state_continuity" else None,
+                    "span_ids": ["S003"] if family == "state_continuity" else [],
+                    "exact_quote": "Problem sentence" if family == "state_continuity" else None,
+                    "reason": "State changes without transition." if family == "state_continuity" else "",
+                }
+                for family in (
+                    "physical_feasibility", "causal_logic", "state_continuity",
+                    "epistemic_order", "spatial_consistency", "temporal_consistency",
+                    "response_causality", "closure_integrity", "canon_integrity",
+                )
+            ]
+        }
+
+        findings = _normalize_audit(raw, segments)
+        self.assertEqual(len(findings), 1)
+        finding = findings[0]
+        self.assertEqual(finding["raw_severity"], "major")
+        self.assertEqual(finding["severity"], "serious")
+        self.assertEqual(
+            finding["severity_normalization"],
+            "major_to_serious_blocker_alias_v1",
+        )
+
+
 class StoryForgeExactLocatorTests(unittest.TestCase):
     def test_valid_finding_resolves_exact_quote_to_sentence_paragraph_and_offsets(self):
         story = "Title. First sentence.\n\nProblem sentence here."
