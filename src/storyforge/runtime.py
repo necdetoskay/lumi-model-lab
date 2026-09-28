@@ -703,51 +703,72 @@ def run_storyforge(
         "models": models,
         "cost_usd": {},
         "latency_seconds": {},
+        "trace_events": [],
+    }
+    artifacts: dict[str, Any] = {
+        "profile_id": profile["profile_id"],
+        "request_id": req.request_id,
+        "models": models,
+        "context_packet": None,
+        "plan": None,
+        "english_story": None,
+        "turkish_story": None,
     }
 
-    stage_started = time.perf_counter()
-    packet, context_evidence = _build_context(api_key=key, request=req, profile=profile)
-    evidence["latency_seconds"]["context_builder"] = round(time.perf_counter() - stage_started, 3)
+    packet, context_evidence = _run_traced_stage(
+        stage="context_builder",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _build_context(api_key=key, request=req, profile=profile),
+    )
+    artifacts["context_packet"] = packet
     evidence["context_builder"] = context_evidence
 
     seed = 2026092801
-    stage_started = time.perf_counter()
-    plan, planner_meta = _structured_call(
-        api_key=key,
-        model=models["planner"],
-        system=PLANNER_SYSTEM,
-        payload={
-            "story_intent": req.story_intent.model_dump(),
-            "context_packet": packet,
-            "hard_constraints": req.story_intent.hard_constraints,
-            "generation_profile": gp.model_dump(),
-        },
-        seed=seed,
-        request_class="story_planning",
+    plan, planner_meta = _run_traced_stage(
+        stage="planner",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _structured_call(
+            api_key=key,
+            model=models["planner"],
+            system=PLANNER_SYSTEM,
+            payload={
+                "story_intent": req.story_intent.model_dump(),
+                "context_packet": packet,
+                "hard_constraints": req.story_intent.hard_constraints,
+                "generation_profile": gp.model_dump(),
+            },
+            seed=seed,
+            request_class="story_planning",
+        ),
     )
-    evidence["latency_seconds"]["planner"] = round(time.perf_counter() - stage_started, 3)
+    artifacts["plan"] = plan
     evidence["planner"] = planner_meta
     evidence["cost_usd"]["planner"] = _cost(planner_meta)
 
     plan_errors = _validate_plan_shape(plan, _context_fact_ids(packet))
-    stage_started = time.perf_counter()
-    plan_validation, validator_meta = _structured_call(
-        api_key=key,
-        model=models["plan_validator"],
-        system=PLAN_VALIDATOR_SYSTEM,
-        payload={
-            "story_intent": req.story_intent.model_dump(),
-            "context_packet": packet,
-            "hard_constraints": req.story_intent.hard_constraints,
-            "generation_profile": gp.model_dump(),
-            "proposed_plan": plan,
-            "deterministic_plan_errors": plan_errors,
-        },
-        seed=seed + 1,
-        request_class="editorial_audit",
-        max_tokens=2200,
+    plan_validation, validator_meta = _run_traced_stage(
+        stage="plan_validator",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: _structured_call(
+            api_key=key,
+            model=models["plan_validator"],
+            system=PLAN_VALIDATOR_SYSTEM,
+            payload={
+                "story_intent": req.story_intent.model_dump(),
+                "context_packet": packet,
+                "hard_constraints": req.story_intent.hard_constraints,
+                "generation_profile": gp.model_dump(),
+                "proposed_plan": plan,
+                "deterministic_plan_errors": plan_errors,
+            },
+            seed=seed + 1,
+            request_class="editorial_audit",
+            max_tokens=2200,
+        ),
     )
-    evidence["latency_seconds"]["plan_validator"] = round(time.perf_counter() - stage_started, 3)
     evidence["plan_validator"] = validator_meta
     evidence["cost_usd"]["plan_validator"] = _cost(validator_meta)
     counts = plan_validation.get("counts") or {}
@@ -776,26 +797,35 @@ def run_storyforge(
             evidence=evidence,
         )
 
-    stage_started = time.perf_counter()
-    story, writer_body, writer_request = call_openrouter(
-        api_key=key,
-        model=models["writer"],
-        system_prompt=WRITER_SYSTEM,
-        user_prompt=json.dumps({
-            "story_intent": req.story_intent.model_dump(),
-            "context_packet": packet,
-            "hard_constraints": req.story_intent.hard_constraints,
-            "validated_plan": plan,
-            "generation_profile": gp.model_dump(),
-        }, ensure_ascii=False),
-        temperature=0.72,
-        max_tokens=None,
-        seed=seed + 2,
-        request_class="teacher_story_medium_reasoning",
-        structured_output=False,
+    writer_input = {
+        "story_intent": req.story_intent.model_dump(),
+        "context_packet": packet,
+        "hard_constraints": req.story_intent.hard_constraints,
+        "validated_plan": plan,
+        "generation_profile": gp.model_dump(),
+    }
+    story, writer_body, writer_request = _run_traced_stage(
+        stage="writer",
+        evidence=evidence,
+        artifacts=artifacts,
+        fn=lambda: call_openrouter(
+            api_key=key,
+            model=models["writer"],
+            system_prompt=WRITER_SYSTEM,
+            user_prompt=json.dumps(writer_input, ensure_ascii=False),
+            temperature=0.72,
+            max_tokens=None,
+            seed=seed + 2,
+            request_class="teacher_story_medium_reasoning",
+            structured_output=False,
+        ),
     )
-    evidence["latency_seconds"]["writer"] = round(time.perf_counter() - stage_started, 3)
+    artifacts["english_story"] = story
     evidence["writer"] = {
+        "model": models["writer"],
+        "request_class": "teacher_story_medium_reasoning",
+        "input": {"system_prompt": WRITER_SYSTEM, "payload": writer_input},
+        "raw_response": story,
         "usage": parse_usage(writer_body).model_dump(mode="json"),
         "cost": parse_cost(writer_body).model_dump(mode="json"),
         "request": {
