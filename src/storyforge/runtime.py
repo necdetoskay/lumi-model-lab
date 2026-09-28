@@ -739,9 +739,11 @@ def run_storyforge(
         "fidelity": profile["translation_fidelity"]["model"],
     }
 
+    request_snapshot = req.model_dump(mode="json")
     evidence: dict[str, Any] = {
         "profile_id": profile["profile_id"],
         "models": models,
+        "request_snapshot": request_snapshot,
         "cost_usd": {},
         "latency_seconds": {},
         "trace_events": [],
@@ -749,6 +751,7 @@ def run_storyforge(
     artifacts: dict[str, Any] = {
         "profile_id": profile["profile_id"],
         "request_id": req.request_id,
+        "request_snapshot": request_snapshot,
         "models": models,
         "context_packet": None,
         "plan": None,
