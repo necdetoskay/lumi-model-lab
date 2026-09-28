@@ -10,6 +10,7 @@ from src.english_story_pipeline import (
     TOTAL_STORY_MIN_RATIO,
     build_whole_story_jev_questions,
     call_structured_json_with_retry,
+    StructuredJsonCallError,
     evaluate_completed_story,
     evaluate_scene_jev,
     jev_needs_targeted_repair,
@@ -200,6 +201,50 @@ class EnglishStoryPipelineTests(unittest.TestCase):
             "FORMAT RECOVERY",
             mock_call.call_args_list[1].kwargs["user_prompt"],
         )
+
+    @patch("src.english_story_pipeline.call_openrouter")
+    def test_structured_json_retry_exhaustion_preserves_raw_usage_and_cost(self, mock_call):
+        body = {
+            "choices": [{"finish_reason": "stop"}],
+            "usage": {
+                "prompt_tokens": 123,
+                "completion_tokens": 456,
+                "total_tokens": 579,
+                "completion_tokens_details": {"reasoning_tokens": 321},
+                "cost": 0.0456,
+            },
+        }
+        request = {
+            "temperature": 0.2,
+            "reasoning": {"effort": "low", "exclude": True},
+            "response_format": {"type": "json_object"},
+        }
+        mock_call.side_effect = [
+            ('{"broken":', body, request),
+            ('{"still_broken":', body, request),
+        ]
+
+        with self.assertRaises(StructuredJsonCallError) as caught:
+            call_structured_json_with_retry(
+                api_key="test",
+                model="test/model",
+                system_prompt="system",
+                user_prompt="user",
+                temperature=0.7,
+                max_tokens=2000,
+                seed=42,
+                request_class="story_planning",
+                max_parse_attempts=2,
+            )
+
+        trace = caught.exception.trace
+        self.assertEqual(trace["stage"], "structured_json_parse")
+        self.assertEqual(trace["raw_usage"]["completion_tokens_details"]["reasoning_tokens"], 321)
+        self.assertEqual(trace["cost"]["usd"], 0.0456)
+        self.assertEqual(len(trace["parse_failures"]), 2)
+        self.assertEqual(trace["raw_response"], '{"still_broken":')
+        self.assertEqual(trace["parse_failures"][0]["raw_response"], '{"broken":')
+
 
     def test_default_2000_word_budget_distribution(self):
         self.assertEqual(
