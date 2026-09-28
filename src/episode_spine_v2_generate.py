@@ -71,7 +71,8 @@ def _provider_block_reason(exc: Exception) -> str | None:
     code = error_body.get("error", {}).get("code")
 
     if status_code == 403 and (
-        code == 403 or "monthly limit" in message.lower() or "key limit exceeded" in message.lower()
+        "monthly limit" in message.lower()
+        or "key limit exceeded" in message.lower()
     ):
         return "OPENROUTER_KEY_MONTHLY_LIMIT_EXCEEDED"
     return None
