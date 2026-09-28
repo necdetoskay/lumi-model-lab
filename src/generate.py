@@ -32,6 +32,14 @@ DRY_RUN_MODEL_PLACEHOLDER = "<TEACHER_MODEL not set; dry-run only>"
 console = Console()
 
 
+class OpenRouterCallError(RuntimeError):
+    """Provider/runtime failure with sanitized request/response evidence attached."""
+
+    def __init__(self, message: str, trace: dict[str, Any]):
+        super().__init__(message)
+        self.trace = trace
+
+
 def _is_shared_pool_rate_limit(status_code: int, error_body: Any) -> bool:
     if status_code != 429 or not isinstance(error_body, dict):
         return False
@@ -296,19 +304,43 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
     body = _aggregate_openrouter_stream(response, model) if stream_enabled else response.json()
     choices = body.get("choices") or []
     if not choices:
-        raise RuntimeError(f"OpenRouter response contains no choices: {body}")
+        raise OpenRouterCallError(
+            "OpenRouter response contains no choices.",
+            {
+                "stage": "provider_response",
+                "model": model,
+                "request_class": request_class,
+                "request": payload,
+                "body": body,
+                "usage": parse_usage(body).model_dump(mode="json"),
+                "cost": parse_cost(body).model_dump(mode="json"),
+            },
+        )
 
     choice = choices[0]
     message = choice.get("message") or {}
     content = _extract_text_content(message)
     if not content:
         usage = body.get("usage") or {}
-        raise RuntimeError(
+        message_text = (
             "OpenRouter response did not contain story text. "
             f"finish_reason={choice.get('finish_reason')!r}, "
             f"completion_tokens={usage.get('completion_tokens')!r}, "
             f"reasoning_tokens={(usage.get('completion_tokens_details') or {}).get('reasoning_tokens')!r}, "
             f"content_type={type(message.get('content')).__name__}."
+        )
+        raise OpenRouterCallError(
+            message_text,
+            {
+                "stage": "provider_response",
+                "model": model,
+                "request_class": request_class,
+                "request": payload,
+                "finish_reason": choice.get("finish_reason"),
+                "body": body,
+                "usage": parse_usage(body).model_dump(mode="json"),
+                "cost": parse_cost(body).model_dump(mode="json"),
+            },
         )
 
     return content, body, payload
