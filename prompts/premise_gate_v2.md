@@ -55,6 +55,7 @@ Mark blocking_failure=true when a candidate has a product-level defect such as:
 - hidden truth leak;
 - future user choice precommitted;
 - world is generic/swappable;
+- premise actively uses a KNOWN_LOCKED or RUMORED location beyond its allowed access/foreshadow ceiling;
 - premise is essentially filler;
 - premise substantially repeats recent Episodes;
 - local payoff is absent;
