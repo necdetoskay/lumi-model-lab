@@ -366,18 +366,37 @@ def call_structured_json_with_retry(
             payload = parse_json_object(text)
         except (RuntimeError, json.JSONDecodeError) as exc:
             choice = (body.get("choices") or [{}])[0]
+            finish_reason = choice.get("finish_reason")
             parse_failures.append(
                 {
                     "parse_attempt": parse_attempt,
                     "error": str(exc),
                     "response_chars": len(text),
                     "raw_response": text,
-                    "finish_reason": choice.get("finish_reason"),
+                    "finish_reason": finish_reason,
                     "raw_usage": body.get("usage") or {},
                     "usage": parse_usage(body).model_dump(mode="json"),
                     "cost": parse_cost(body).model_dump(mode="json"),
                 }
             )
+            if finish_reason in {"length", "max_tokens"}:
+                raise StructuredJsonCallError(
+                    "STRUCTURED_JSON_RESPONSE_TRUNCATED",
+                    {
+                        "stage": "structured_json_parse",
+                        "model": model,
+                        "request_class": request_class,
+                        "request": request,
+                        "raw_response": text,
+                        "body": body,
+                        "raw_usage": body.get("usage") or {},
+                        "usage": parse_usage(body).model_dump(mode="json"),
+                        "cost": parse_cost(body).model_dump(mode="json"),
+                        "parse_failures": parse_failures,
+                        "retry_suppressed": True,
+                        "retry_suppressed_reason": "finish_reason_length",
+                    },
+                ) from exc
             if parse_attempt >= max_parse_attempts:
                 last_cost = parse_cost(last_body or {}).model_dump(mode="json")
                 raise StructuredJsonCallError(
