@@ -28,6 +28,13 @@ class ReadingSessionBand(StrictModel):
         return self
 
 
+class CapabilityBridge(StrictModel):
+    narrative_age_tier: str
+    reading_mode: str
+    qualification_standard_target_words: int = Field(ge=100)
+    product_session_length_is_separate_authority: Literal[True]
+
+
 class DevelopmentDimension(StrictModel):
     name: Literal[
         "PREMISE_MATURITY",
@@ -59,6 +66,7 @@ class ReaderDevelopmentProfileV2(StrictModel):
         "MATURE_ADULT",
     ]
     developmental_stage: str
+    capability_bridge: CapabilityBridge
     dimensions: list[DevelopmentDimension]
     standard_session: ReadingSessionBand
     optional_sessions: list[ReadingSessionBand]
@@ -106,4 +114,32 @@ class ReaderDevelopmentProfileV2(StrictModel):
             raise ValueError("required_story_capabilities cannot be empty")
         if not self.reject_signals:
             raise ValueError("reject_signals cannot be empty")
+
+        from src.capability_cube import (
+            default_reading_mode_for_age_tier,
+            narrative_age_tier_for_range,
+            standard_target_words_for_age_tier,
+        )
+
+        expected_tier = narrative_age_tier_for_range(self.exact_age, self.exact_age)
+        if self.capability_bridge.narrative_age_tier != expected_tier:
+            raise ValueError(
+                f"exact_age {self.exact_age} maps to {expected_tier}, "
+                f"not {self.capability_bridge.narrative_age_tier}"
+            )
+
+        expected_mode = default_reading_mode_for_age_tier(expected_tier)
+        if self.capability_bridge.reading_mode != expected_mode:
+            raise ValueError(
+                f"{expected_tier} reading_mode must be {expected_mode}, "
+                f"got {self.capability_bridge.reading_mode}"
+            )
+
+        expected_target = standard_target_words_for_age_tier(expected_tier)
+        if self.capability_bridge.qualification_standard_target_words != expected_target:
+            raise ValueError(
+                "qualification_standard_target_words must match capability cube: "
+                f"{expected_target}"
+            )
+
         return self
