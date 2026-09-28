@@ -43,12 +43,14 @@ def _candidate(
     title: str,
     focus: str,
     refs: list[str],
+    location_refs: list[str],
     differentiation: str,
     saga_progression_required: bool,
 ) -> dict:
     return {
         "key": key,
         "title": title,
+        "location_refs": location_refs,
         "primary_focus": focus,
         "target_refs": refs,
         "differentiation_key": differentiation,
@@ -89,6 +91,7 @@ def _batch_payload() -> dict:
                 title="The Reading That Refuses to Fail",
                 focus="MAIN_SAGA",
                 refs=["first_discrepancy_logged"],
+                location_refs=["beacon_ridge"],
                 differentiation="scientific falsification under field pressure",
                 saga_progression_required=True,
             ),
@@ -97,6 +100,7 @@ def _batch_payload() -> dict:
                 title="Two Ways to Measure a Harbor",
                 focus="RELATIONSHIP",
                 refs=["friend_expedition_rivalry"],
+                location_refs=["meridian_harbor"],
                 differentiation="friendly methodological rivalry with shared consequence",
                 saga_progression_required=False,
             ),
@@ -105,7 +109,8 @@ def _batch_payload() -> dict:
                 title="The Harbor That Moves at Low Tide",
                 focus="WORLD_EXPLORATION",
                 refs=["WORLD_EXPLORATION"],
-                differentiation="world exploration driven by rare tide geometry",
+                location_refs=["meridian_harbor"],
+                differentiation="world exploration driven by harbor tide geometry",
                 saga_progression_required=False,
             ),
         ],
@@ -201,6 +206,13 @@ class PremiseContextProjectionTests(unittest.TestCase):
             [x["key"] for x in projection["active_side_sagas"]],
             ["friend_expedition_rivalry"],
         )
+        access = {
+            row["key"]: (row["status"], row["premise_usage"])
+            for row in projection["world"]["location_access"]
+        }
+        self.assertEqual(access["beacon_ridge"], ("AVAILABLE", "FULL"))
+        self.assertEqual(access["tide_observatory"], ("KNOWN_LOCKED", "MENTION_ONLY"))
+        self.assertEqual(access["outer_mist_line"], ("RUMORED", "FORESHADOW_ONLY"))
 
         raw = json.dumps(projection, ensure_ascii=False)
         self.assertNotIn("hidden_statement", raw)
@@ -320,12 +332,71 @@ class PremiseGeneratorTests(unittest.TestCase):
                 "friend_expedition_rivalry",
             ],
         )
+        self.assertEqual(
+            architect_input["available_primary_location_refs"],
+            ["beacon_ridge", "meridian_harbor"],
+        )
         self.assertTrue(
             architect_input["premise_context"]["rules"][
                 "hidden_truths_not_available_to_premise_architect"
             ]
         )
 
+
+
+    @patch(
+        "src.premise_architect_v2_generate.runtime_profile_identity",
+        side_effect=lambda model: {"model_id": model},
+    )
+    @patch(
+        "src.premise_architect_v2_generate.require_qualification_runtime_profile",
+        return_value={"qualification": {"ready": True}},
+    )
+    @patch(
+        "src.premise_architect_v2_generate.call_structured_json_with_retry"
+    )
+    def test_generator_rejects_candidate_that_uses_locked_location(
+        self,
+        mock_call,
+        _mock_require,
+        _mock_identity,
+    ):
+        batch = _batch_payload()
+        batch["candidates"][2]["location_refs"] = ["tide_observatory"]
+        mock_call.return_value = (
+            batch,
+            _body(0.05),
+            {
+                "temperature": 0.55,
+                "max_tokens": 9000,
+                "reasoning": {"effort": "low"},
+                "response_format": {"type": "json_object"},
+            },
+            [],
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "result.json"
+            with self.assertRaisesRegex(
+                RuntimeError,
+                "Premise Architect output failed contract validation",
+            ):
+                generate(
+                    spine_path=SPINE,
+                    reader_path=READER,
+                    fixture_path=FIXTURE,
+                    state_path=STATE,
+                    architect_prompt_path=ARCHITECT_PROMPT,
+                    gate_prompt_path=GATE_PROMPT,
+                    out_path=out,
+                    architect_model_override="architect/model",
+                    gate_model_override="gate/model",
+                    api_key="test-key",
+                )
+            persisted = json.loads(out.read_text(encoding="utf-8"))
+
+        self.assertEqual(persisted["status"], "architect_contract_rejected")
+        self.assertIn("locked/non-FULL locations", persisted["contract_error"]["message"])
 
 if __name__ == "__main__":
     unittest.main()
