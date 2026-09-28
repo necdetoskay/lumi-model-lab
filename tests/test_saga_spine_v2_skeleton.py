@@ -21,6 +21,10 @@ SCHEMA = Path(
     "data/specifications/saga_lab/character_saga_skeleton_v2.schema.json"
 )
 
+REVISION = Path(
+    "data/specifications/saga_lab/age12_shattered_meridian_gate_a_revision_v1.json"
+)
+
 
 def _skeleton_payload() -> dict:
     full = _valid_payload()
@@ -264,6 +268,60 @@ class SagaSkeletonV2GeneratorTests(unittest.TestCase):
             15,
         )
 
+        self.assertIsNone(request_payload["human_revision_directives"])
+
+
+
+    @patch(
+        "src.saga_spine_v2_skeleton_generate.runtime_profile_identity",
+        return_value={"model_id": "anthropic/claude-sonnet-5"},
+    )
+    @patch(
+        "src.saga_spine_v2_skeleton_generate.require_qualification_runtime_profile",
+        return_value={"qualification": {"ready": True}},
+    )
+    @patch(
+        "src.saga_spine_v2_skeleton_generate.call_structured_json_with_retry"
+    )
+    def test_human_revision_directives_are_injected_without_authorizing_expansion(
+        self,
+        mock_call,
+        _mock_require,
+        _mock_identity,
+    ):
+        mock_call.return_value = (
+            _skeleton_payload(),
+            _body(),
+            {
+                "temperature": 0.30,
+                "max_tokens": 10000,
+                "reasoning": {"effort": "low", "exclude": True},
+                "response_format": {"type": "json_object"},
+            },
+            [],
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "result.json"
+            result = generate(
+                fixture_path=FIXTURE,
+                prompt_path=PROMPT,
+                schema_path=SCHEMA,
+                out_path=out,
+                model_override="anthropic/claude-sonnet-5",
+                api_key="test-key",
+                revision_directives_path=REVISION,
+            )
+
+        request_payload = json.loads(mock_call.call_args.kwargs["user_prompt"])
+        directives = request_payload["human_revision_directives"]
+        self.assertEqual(directives["source_run_id"], 36410908865)
+        self.assertEqual(directives["source_verdict"], "REVISE")
+        self.assertGreaterEqual(len(directives["must_change"]), 5)
+        self.assertFalse(result["milestone_expansion_authorized"])
+        self.assertFalse(
+            result["human_review"]["milestone_expansion_authorized"]
+        )
 
 if __name__ == "__main__":
     unittest.main()
