@@ -9,7 +9,7 @@ from unittest.mock import patch
 from pydantic import ValidationError
 
 from src.episode_spine_v2_contract import EpisodeSpineGateV2, EpisodeSpineV2
-from src.episode_spine_v2_generate import generate
+from src.episode_spine_v2_generate import _provider_block_reason, generate
 
 
 SPINE = Path(
@@ -329,6 +329,37 @@ class EpisodeSpineContractTests(unittest.TestCase):
         payload["dimensions"][0]["blocking_failure"] = True
         with self.assertRaisesRegex(ValidationError, "requires REPLAN"):
             EpisodeSpineGateV2.model_validate(payload)
+
+
+class ProviderFailureClassificationTests(unittest.TestCase):
+    def test_monthly_openrouter_limit_is_classified(self):
+        exc = RuntimeError("provider rejected request")
+        exc.trace = {
+            "status_code": 403,
+            "error_body": {
+                "error": {
+                    "code": 403,
+                    "message": "Key limit exceeded (monthly limit).",
+                }
+            },
+        }
+        self.assertEqual(
+            _provider_block_reason(exc),
+            "OPENROUTER_KEY_MONTHLY_LIMIT_EXCEEDED",
+        )
+
+    def test_other_forbidden_error_is_not_classified_as_monthly_limit(self):
+        exc = RuntimeError("provider rejected request")
+        exc.trace = {
+            "status_code": 403,
+            "error_body": {
+                "error": {
+                    "code": 403,
+                    "message": "Forbidden for another reason.",
+                }
+            },
+        }
+        self.assertIsNone(_provider_block_reason(exc))
 
 
 class EpisodeSpineGeneratorTests(unittest.TestCase):
