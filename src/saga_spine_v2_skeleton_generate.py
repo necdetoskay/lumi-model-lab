@@ -72,9 +72,7 @@ def generate(
     model_identity = runtime_profile_identity(model)
 
     fixture = NarrativeFixture.model_validate(_read_json(fixture_path))
-    # Validate against the full schema locally after generation; do not inject
-    # the generated schema into the model prompt.
-    _read_json(schema_path)
+    schema = _read_json(schema_path)
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
 
     request_payload = {
@@ -89,6 +87,13 @@ def generate(
             ),
         },
         "frozen_character_world_input": fixture.model_dump(mode="json"),
+        "output_contract": schema,
+        "contract_rules": [
+            "Match the output_contract field names and literal enums exactly.",
+            "Do not invent substitute field names, enum values, or compact aliases.",
+            "If a field is required by output_contract, return it even when empty.",
+            "Do not return any field forbidden by output_contract."
+        ],
         "requested_shape": {
             "schema": "character-saga-skeleton.v2",
             "origin": "Origin object with summary, origin_facts, formative_events, origin_relationships, unresolved_origin_questions",
