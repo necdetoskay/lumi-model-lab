@@ -531,9 +531,16 @@ def _normalize_audit(payload: dict[str, Any], segments: list[dict[str, Any]]) ->
             segment = segments_by_id[span_id]
             offset = segment["text"].find(quote)
             while offset >= 0:
+                prefix_words = re.findall(r"\S+", segment["text"][:offset])
+                quote_words = re.findall(r"\S+", quote)
+                word_start = len(prefix_words) + 1
+                word_end = word_start + max(0, len(quote_words) - 1)
                 matches.append({
                     "sentence_id": span_id,
                     "paragraph_id": segment.get("paragraph_id"),
+                    "paragraph_index": segment.get("paragraph_index"),
+                    "sentence_word_start": word_start,
+                    "sentence_word_end": word_end,
                     "exact_quote": quote,
                     "char_start": int(segment.get("char_start", 0)) + offset,
                     "char_end": int(segment.get("char_start", 0)) + offset + len(quote),
@@ -600,6 +607,21 @@ def _run_traced_stage(
         cause_trace = getattr(exc, "trace", None)
         if isinstance(cause_trace, dict):
             trace["cause_trace"] = cause_trace
+            cause_meta = cause_trace.get("model_meta")
+            if isinstance(cause_meta, dict):
+                evidence.setdefault("cost_usd", {})[stage] = _cost(cause_meta)
+        evidence["elapsed_seconds"] = round(
+            sum(float(value or 0.0) for value in evidence.get("latency_seconds", {}).values()),
+            3,
+        )
+        evidence.setdefault("cost_usd", {})["total"] = round(
+            sum(
+                float(value or 0.0)
+                for key, value in evidence.get("cost_usd", {}).items()
+                if key != "total"
+            ),
+            9,
+        )
         raise StoryForgeTraceError(str(exc), trace) from exc
 
     latency = round(time.perf_counter() - stage_started, 3)
