@@ -1,0 +1,62 @@
+{
+  "schema_version": "sonnet55-p3a-primary-audit-adjudication.v1",
+  "run_id": 36555236118,
+  "status": "P3A_COMPLETE_HUMAN_ADJUDICATED",
+  "model": "anthropic/claude-sonnet-5.5",
+  "incremental_cost_usd": 0.065422,
+  "latency_seconds": 9.359,
+  "blind_human_gold_score": {
+    "blocking_recall": 0.25,
+    "matched_blocking": ["future_pilot_spread_overcommit"],
+    "missed_blocking": [
+      "unauthorized_beacon_history",
+      "unauthorized_old_builder_tide_knowledge",
+      "field_notes_vs_formal_log_ambiguity"
+    ]
+  },
+  "finding_adjudication": [
+    {
+      "finding_index": 0,
+      "family": "state_continuity",
+      "disposition": "FALSE_POSITIVE",
+      "reason": "The story has roughly forty minutes from the final 3:50 reading to the stated 4:30 turn. The report/dialogue can plausibly consume that interval; omission of an exact intermediate timestamp is not a serious continuity defect."
+    },
+    {
+      "finding_index": 1,
+      "family": "epistemic_order",
+      "disposition": "FALSE_POSITIVE",
+      "reason": "Deniz's premature tide-causation statement is an intentional character mistake immediately challenged by the mentor. The model's own reason calls it acceptable, so present=true is internally inconsistent."
+    },
+    {
+      "finding_index": 2,
+      "family": "temporal_consistency",
+      "disposition": "TRUE_MINOR_NOT_BLOCKER",
+      "reason": "High ebb is imprecise against the stated mid-ebb/near-turn sequence, but this is a local technical wording defect, not a serious publication blocker."
+    },
+    {
+      "finding_index": 3,
+      "family": "closure_integrity",
+      "disposition": "TRUE_SERIOUS",
+      "reason": "The final sentence guarantees future pilot discussion although Serel's plan is explicitly conditional."
+    },
+    {
+      "finding_index": 4,
+      "family": "canon_integrity",
+      "disposition": "TRUE_SERIOUS",
+      "reason": "The story invents other pilots observing outer-marker mismatches, contradicts the earlier no-pilot-complaint evidence, and leaks toward the explicitly unresolved other-beacon scope."
+    }
+  ],
+  "confirmed_serious_or_major_defects": [
+    "unauthorized_beacon_history",
+    "unauthorized_old_builder_tide_knowledge",
+    "field_notes_vs_formal_log_ambiguity",
+    "future_pilot_spread_overcommit",
+    "other_pilots_marker_mismatch"
+  ],
+  "decision": {
+    "sonnet55_as_sole_primary_authority": "FAIL",
+    "reason": "Single-pass Sonnet 5.5 found two real serious issues but missed three independently identified serious/major defects and produced two serious false positives.",
+    "next_phase": "P3B_TARGETED_CHEAP_CANON_GUARD",
+    "paid_next_stage_authorized": false
+  }
+}
