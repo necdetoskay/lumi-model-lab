@@ -39,6 +39,28 @@ class EpisodeBeatV2(StrictModel):
     payoff_contribution: str
 
 
+class ReversalEvidenceV2(StrictModel):
+    claim: str
+    supporting_beat_keys: list[str]
+    certainty: Literal["OBSERVED", "INFERRED", "HYPOTHESIS"]
+
+
+class ReversalV2(StrictModel):
+    prior_belief: str
+    evidence: list[ReversalEvidenceV2]
+    reinterpretation: str
+    inference_ceiling: str
+    unresolved_after_reversal: str
+
+    @model_validator(mode="after")
+    def validate_evidence(self) -> "ReversalV2":
+        if not self.evidence:
+            raise ValueError("reversal requires explicit supporting evidence")
+        if any(not row.supporting_beat_keys for row in self.evidence):
+            raise ValueError("every reversal evidence claim needs supporting beat keys")
+        return self
+
+
 class DecisionBranchV2(StrictModel):
     key: str = Field(pattern=KEY_PATTERN)
     option: str
@@ -130,7 +152,7 @@ class EpisodeSpineV2(StrictModel):
     logistics_plan: LogisticsPlanV2
     beats: list[EpisodeBeatV2]
     escalation_ladder: list[str]
-    reversal: str
+    reversal: ReversalV2
     decision_point: DecisionPointV2
     climax: str
     local_payoff: str
@@ -183,6 +205,21 @@ class EpisodeSpineV2(StrictModel):
                     + ", ".join(unknown_or_future)
                 )
             seen.add(beat.key)
+
+        reversal_index = next(
+            index for index, beat in enumerate(self.beats) if beat.phase == "REVERSAL"
+        )
+        pre_reversal_keys = {beat.key for beat in self.beats[:reversal_index]}
+        for evidence in self.reversal.evidence:
+            unsupported = [
+                ref for ref in evidence.supporting_beat_keys
+                if ref not in pre_reversal_keys
+            ]
+            if unsupported:
+                raise ValueError(
+                    "reversal evidence must reference beats established before reversal: "
+                    + ", ".join(unsupported)
+                )
 
         if len(self.escalation_ladder) < 3:
             raise ValueError("Episode Spine requires at least 3 escalation steps")
