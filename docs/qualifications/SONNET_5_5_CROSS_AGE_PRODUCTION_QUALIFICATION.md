@@ -189,3 +189,41 @@ Decision:
 - do not call Writer;
 - do not rerun Sonnet automatically;
 - C1.1 revision feedback preserves the age18 maturity, professional responsibility and branch asymmetry while removing the two cross-field contradictions.
+
+
+## Age18 C1.1 result — GATE ACCEPT / HUMAN REVIEW
+
+Architect run: 36610913523
+Luna recovery run: 36611398520
+
+Metrics:
+- Sonnet 5.5 Architect: $0.089900 / 42.012s
+- Luna Gate: $0.00400025 / 18.284s
+- combined: $0.09390025 / 60.296s
+- combined tokens: 30,012
+
+Recovery:
+- deterministic safe normalizer removed one reversal self-reference only;
+- valid pre-reversal support remained;
+- semantic fields were unchanged;
+- strict EpisodeSpineV2 validation passed.
+
+Luna:
+- ACCEPT
+- blocking reasons: none
+- AGE_MATURITY 5/5
+- AGENCY 5/5
+- WORLD_IMMERSION 5/5
+- all other dimensions 4/5
+
+Human pre-adjudication:
+- previous climax evidence contradiction fixed;
+- previous global-payoff branch contradiction fixed;
+- fresh-setup branch => stronger independent evidence, no reviewed formal log, no milestone;
+- provisional-record branch => reviewed bounded log, milestone eligibility;
+- no route advisory, cause, recurrence or wider-beacon anomaly is committed;
+- exact-age maturity comes from professional responsibility, evidence thresholds and institutional consequence rather than extra length.
+
+Decision:
+- C1.1 mechanically GREEN;
+- Writer remains blocked pending explicit user creative approval.

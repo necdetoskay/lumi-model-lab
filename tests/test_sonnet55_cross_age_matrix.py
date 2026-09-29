@@ -21,7 +21,7 @@ def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
     assert matrix["status"] == "C0_GREEN"
     assert matrix["paid_boundary"]["authorized"] is False
-    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C1_1_SPINE_REVISION_ONLY"
+    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C2_WRITER_ONLY_AFTER_HUMAN_APPROVAL"
 
     for case in matrix["cases"]:
         age = int(case["exact_age"])
@@ -56,9 +56,9 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
         assert row["product_standard_words_min"] == 1600
         assert row["product_standard_words_max"] == 2500
         if row["exact_age"] == 18:
-            assert row["status"] == "C1_REPLAN_C11_READY"
-            assert row["latest_gate_decision"] == "REPLAN"
-            assert row["latest_run_id"] == 36608978063
+            assert row["status"] == "C1_1_GATE_ACCEPT_AWAITING_HUMAN_APPROVAL"
+            assert row["latest_gate_decision"] == "ACCEPT"
+            assert row["latest_run_id"] == 36611398520
         else:
             assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
 
