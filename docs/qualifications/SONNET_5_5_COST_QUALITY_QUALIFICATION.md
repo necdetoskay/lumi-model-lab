@@ -64,3 +64,29 @@ The frozen baseline remains unchanged.
 - Canonical story cost <= 15 TRY average; target <= 10 TRY.
 - Lower latency than baseline.
 - All model calls captured in canonical usage/cost lineage.
+
+## Current qualification status — 2026-09-29
+
+### P0 — PASS
+- Exact Sonnet 5.5 runtime profile verified.
+- Deterministic qualification suite: 46/46 PASS before paid P1.
+- Frozen baseline remains unchanged.
+
+### P1 — COMPLETE
+Run: 36534387514.
+
+Human-adjudicated six-root result:
+- Sonnet 5 baseline initial primary audit: 1/6 roots.
+- Sonnet 5.5 candidate initial primary audit: 4/6 roots.
+- Candidate misses: unauthorized durable history; control-check certainty weakness.
+- Candidate false positive: temporal consistency around remaining light vs site-security window.
+- Cost: $0.068302 vs $0.065728 (+3.9%).
+- Latency: 9.2 s vs 8.855 s (+3.9%).
+- Candidate output throughput: ~26.5% higher.
+
+Decision: advance to P2. Do not promote and do not remove secondary QA based on P1.
+
+### P2 — PREPARED, NOT RUN
+Workflow is isolated at .github/workflows/sonnet55-spine-ab.yml.
+It uses Sonnet 5.5 Architect + unchanged GPT-5.6 Luna gate against Revision-05 feedback.
+No P2 paid call has been authorized or triggered yet.
