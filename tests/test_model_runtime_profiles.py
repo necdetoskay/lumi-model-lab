@@ -113,7 +113,7 @@ class ModelRuntimeProfileTests(unittest.TestCase):
             structured_output=False,
         )
         self.assertEqual(payload["temperature"], 0.72)
-        self.assertEqual(payload["max_tokens"], 7000)
+        self.assertNotIn("max_tokens", payload)
         self.assertNotIn("seed", payload)
         self.assertNotIn("reasoning", payload)
         self.assertNotIn("stream", payload)

@@ -10,7 +10,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from src.generate import call_openrouter, count_words, parse_cost, parse_usage
+from src.generate import OpenRouterCallError, call_openrouter, count_words, parse_cost, parse_usage
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 
@@ -138,17 +138,67 @@ def generate(
     started_at = _now_iso()
     call_started = time.perf_counter()
 
-    story, body, request = call_openrouter(
-        api_key=key,
-        model=writer_model,
-        system_prompt=system_prompt,
-        user_prompt=json.dumps(writer_input, ensure_ascii=False),
-        temperature=0.72,
-        max_tokens=7000,
-        seed=2026092901,
-        request_class="teacher_story_medium_reasoning",
-        structured_output=False,
-    )
+    try:
+        story, body, request = call_openrouter(
+            api_key=key,
+            model=writer_model,
+            system_prompt=system_prompt,
+            user_prompt=json.dumps(writer_input, ensure_ascii=False),
+            temperature=0.72,
+            max_tokens=None,
+            seed=2026092901,
+            request_class="teacher_story_medium_reasoning",
+            structured_output=False,
+        )
+    except OpenRouterCallError as exc:
+        writer_latency = round(time.perf_counter() - call_started, 3)
+        trace = getattr(exc, "trace", None) or {}
+        raw_usage = trace.get("raw_usage") or {}
+        cost = trace.get("cost") or {}
+        usage = trace.get("usage") or {}
+        failure_call = normalize_model_call(
+            stage="episode_writer",
+            model=writer_model,
+            provider=runtime_profile_identity(writer_model).get("provider"),
+            raw_usage=raw_usage,
+            cost=cost,
+            latency_seconds=writer_latency,
+            status="failed",
+        )
+        writer_rollup = rollup_model_calls([failure_call])
+        pipeline_rollup = _combined_rollup(approved, failure_call)
+        evidence = {
+            "schema_version": "episode-writer-v2-evidence.v1",
+            "status": "writer_provider_failure",
+            "source_spine_run_id": approved["source_run_id"],
+            "human_review": approved["human_review"],
+            "writer_model": writer_model,
+            "writer_runtime_identity": runtime_profile_identity(writer_model),
+            "started_at": started_at,
+            "completed_at": _now_iso(),
+            "latency_seconds": round(time.perf_counter() - started, 3),
+            "failure": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+                "stage": trace.get("stage"),
+                "finish_reason": trace.get("finish_reason"),
+                "generation_id": (trace.get("body") or {}).get("id"),
+            },
+            "writer_call": {
+                "raw_usage": raw_usage,
+                "usage": usage,
+                "cost": cost,
+                "latency_seconds": writer_latency,
+            },
+            "writer_usage_rollup": writer_rollup,
+            "pipeline_usage_rollup": pipeline_rollup,
+            "writer_cost_usd": writer_rollup["totals"]["cost_usd"],
+            "pipeline_cost_usd": pipeline_rollup["totals"]["cost_usd"],
+            "next_stage_authorized": False,
+            "next_stage_note": "Writer failed; no editor, judge, repair, or translation call was made.",
+        }
+        _write_json(out_path, evidence)
+        raise
 
     writer_latency = round(time.perf_counter() - call_started, 3)
     words = count_words(story)
