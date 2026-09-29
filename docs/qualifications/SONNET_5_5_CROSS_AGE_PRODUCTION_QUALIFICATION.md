@@ -264,3 +264,51 @@ C3 preparation:
 - confirmed three-root gold hidden from the model;
 - next paid scope: one GPT-5.6 Luna compact authority gate only;
 - no repair, Sol, translation, fidelity or writer regeneration is authorized.
+
+
+## Age18 C3 result — PACKET V1 INSUFFICIENT / C3.1 READY
+
+Run: 36614762650
+
+Paid call:
+- GPT-5.6 Luna compact authority gate only
+- incremental cost: $0.00434985
+- latency: 7.351s
+- no repair, Sol, translation or fidelity call
+
+Technical result:
+- inference completed;
+- strict post-inference normalizer rejected one model finding because the model joined multiple story spans into one exact_quote with an ellipsis;
+- raw payload and full usage were preserved, so no retry was performed.
+
+Human adjudication of the raw findings:
+- confirmed human roots: 3
+- matched: 1
+- root recall: 33.3%
+- matched: setup/instrument exclusion overclaim
+- missed: raw-notes blank-page contradiction
+- missed: formal-record committed before reviewer acceptance
+
+The v1 packet also produced systematic false positives because it carried strong negative-space rules but omitted positive authority for:
+- exact age and professional role;
+- certification stakes and institutional context;
+- explicitly authorized stakeholder-pressure beat;
+- explicitly authorized historical-mark beat;
+- explicitly authorized reviewer/filer payoff mechanics;
+- explicitly authorized forward-tag cross-check activity.
+
+Conclusion:
+The age12 story-authority-packet.v1 remains frozen and valid for its qualified cohort, but it is not sufficient as a general cross-age packet.
+
+C3.1 preparation:
+- story-authority-packet.v2 adds positive character, premise and spine-event authority;
+- transient scene instantiation is distinguished from durable canon;
+- exact non-decisive numeric values are not serious merely because the spine used qualitative values;
+- unresolved cause/recurrence/scope and branch record-state rules remain strict;
+- gate prompt v3 requires exact_quote from one span;
+- scorer can safely split a model-supplied combined multi-span quote without another inference;
+- regression 42/42 PASS.
+
+Next paid scope:
+one GPT-5.6 Luna C3.1 typed-authority-v2 gate only.
+No repair, Sol, translation or fidelity is authorized.
