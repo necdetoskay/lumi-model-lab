@@ -235,3 +235,27 @@ Free preparation complete:
 - regression: 47/47 PASS.
 
 Paid scope, if authorized: GPT-5.6 Luna gate only.
+
+
+### P2.7 — AUTHORITY-AWARE LUNA GATE ACCEPT
+Run: 36551283455.
+
+- Same P2.5 Sonnet 5.5 spine reused.
+- Qualification-only safe normalization applied once; semantic fields unchanged.
+- Frozen human-approved Revision-05 mechanics supplied as top authority where they explicitly refine the older premise.
+- No new Sonnet call.
+- GPT-5.6 Luna gate decision: ACCEPT.
+- Blocking reasons: none.
+- All 11 gate dimensions scored 5/5.
+- Incremental Luna cost: $0.00352105.
+- Incremental Luna latency: 8.153s.
+- Candidate Architect + authority-aware Luna cost: $0.09199505.
+- Candidate Architect + gate latency: 49.877s.
+- Candidate Architect + gate total tokens: 29,807.
+- Writer remains unauthorized pending human spine review.
+
+Interpretation:
+- P2.6 REPLAN was confirmed as an authority-input defect, not a candidate-spine defect.
+- The fresh_setup_retest branch may legitimately end with stronger evidence and no completed reviewed log, exactly as frozen Revision-05 allows.
+- first_discrepancy_logged remains commit-only-if-earned.
+- Sonnet 5.5 candidate is now mechanically qualified for human review; no writer inference is authorized by this result.
