@@ -20,8 +20,8 @@ AGE12 = Path("data/specifications/reader_profiles/age12_adventure_v2.json")
 def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
     assert matrix["status"] == "C0_GREEN"
-    assert matrix["paid_boundary"]["authorized"] is True
-    assert matrix["paid_boundary"]["authorized_scope"] == "AGE18_C1_SPINE_ONLY"
+    assert matrix["paid_boundary"]["authorized"] is False
+    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C1_1_SPINE_REVISION_ONLY"
 
     for case in matrix["cases"]:
         age = int(case["exact_age"])
@@ -55,7 +55,12 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
         assert row["reader_profile"] is not None
         assert row["product_standard_words_min"] == 1600
         assert row["product_standard_words_max"] == 2500
-        assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
+        if row["exact_age"] == 18:
+            assert row["status"] == "C1_REPLAN_C11_READY"
+            assert row["latest_gate_decision"] == "REPLAN"
+            assert row["latest_run_id"] == 36608978063
+        else:
+            assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
 
 
 def test_promoted_profiles_validate_and_candidate_files_remain_as_history() -> None:
