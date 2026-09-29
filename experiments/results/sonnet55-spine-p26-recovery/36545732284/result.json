@@ -1,0 +1,720 @@
+{
+  "schema_version": "sonnet55-p26-gate-recovery-evidence.v1",
+  "status": "awaiting_human_review",
+  "source_run_id": 36541988910,
+  "source_contract_error": {
+    "type": "ValidationError",
+    "message": "1 validation error for EpisodeSpineV2\n  Value error, reversal evidence must reference beats established before reversal: b7_reversal [type=value_error, input_value={'schema': 'episode-spine...2 independent reader.']}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "details": [
+      {
+        "type": "value_error",
+        "loc": [],
+        "msg": "Value error, reversal evidence must reference beats established before reversal: b7_reversal"
+      }
+    ]
+  },
+  "architect_model": "anthropic/claude-sonnet-5.5",
+  "gate_model": "openai/gpt-5.6-luna",
+  "safe_normalization": {
+    "applied": true,
+    "repairs": [
+      {
+        "evidence_index": 2,
+        "claim": "The ordered change is less consistent with a random slip than with a systematic influence within this setup.",
+        "removed_refs": [
+          "b7_reversal"
+        ],
+        "kept_refs": [
+          "b4_first_series"
+        ],
+        "reason": "Removed only self/future refs; at least one valid pre-reversal support remained."
+      }
+    ],
+    "semantic_fields_changed": false
+  },
+  "episode_spine": {
+    "schema": "episode-spine.v2",
+    "premise_key": "beacon_drift_first_log",
+    "title": "The Angle That Wouldn't Match",
+    "exact_age": 12,
+    "session": "STANDARD",
+    "target_words_min": 1600,
+    "target_words_max": 2500,
+    "episode_role": "MAIN_SAGA_ENTRY",
+    "story_promise": "Deniz turns one suspicious beacon reading into a disciplined, tide-paired evidence series and must choose how far bounded evidence can be pushed before the window closes.",
+    "protagonist_role": "Apprentice surveyor conducting supervised but semi-independent beacon calibration checks.",
+    "immediate_objective": "Determine before the tide window closes whether the Beacon Ridge drift is a genuine anomaly or an instrument error.",
+    "central_question": "Can patient, well-structured observation earn a mentor's trust when only one ridge and one setup are available?",
+    "stakes": "A real anomaly could go unrecorded for a season, or an overconfident report could cost Deniz supervised field privileges.",
+    "constraints": [
+      "Limited daylight and a shrinking tide window at Beacon Ridge",
+      "Only supervised access to the beacon instruments",
+      "Mentor evaluates methodology, not just conclusions",
+      "No harbor confirmation is available during the window"
+    ],
+    "opening_hook": "Deniz logs a routine reading and finds the beacon's angle has drifted past what the tide table allows, while the harbor shipping logs show no delays to back it up.",
+    "logistics_plan": {
+      "time_window": "About three hours of usable daylight and tide movement at Beacon Ridge, from mid-ebb toward the turn, after which the offset becomes unmeasurable.",
+      "location_sequence": [
+        "beacon_ridge"
+      ],
+      "movement_constraints": [
+        "No travel to Meridian Harbor during the window",
+        "Harbor shipping logs were consulted before the episode and are referenced only as already-known absence of confirming complaints",
+        "Deniz must stay within supervised reach of the instruments and mentor"
+      ],
+      "feasibility_rationale": "Every scene happens on the ridge, so the shrinking window is spent on readings, not travel, and the harbor evidence is only background."
+    },
+    "beats": [
+      {
+        "key": "b1_odd_reading",
+        "phase": "HOOK",
+        "purpose": "Establish the anomaly and the missing corroboration.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz takes a routine reading and compares it to the tide table.",
+        "external_event": "The angle exceeds the tabled range for the current tide state.",
+        "new_information": "The offset is larger than the table allows, and harbor logs show no delays or complaints.",
+        "causal_dependency_keys": [],
+        "escalation_delta": "A routine task becomes a question with a deadline.",
+        "state_change": "Deniz holds one unverified suspicious reading.",
+        "payoff_contribution": "Creates the uncertainty the episode resolves."
+      },
+      {
+        "key": "b2_mentor_doubt",
+        "phase": "ORIENT",
+        "purpose": "Set the mentor's methodological standard and the risk of dismissal.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz mentions the reading briefly and is told to check for setup error first.",
+        "external_event": "The mentor points to the falling tide and the limited window.",
+        "new_information": "A lone reading will not be accepted, and the mentor will judge how Deniz tests it.",
+        "causal_dependency_keys": [
+          "b1_odd_reading"
+        ],
+        "escalation_delta": "Social pressure is added to the time pressure.",
+        "state_change": "Deniz has permission to keep measuring, under supervision.",
+        "payoff_contribution": "Sets the standard the eventual log must meet."
+      },
+      {
+        "key": "b3_setup_audit",
+        "phase": "INVESTIGATION",
+        "purpose": "Rule out obvious instrument error and fix a repeatable protocol.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz levels the sighting frame, checks the clamp and stone housing, and records the setup so it stays unchanged.",
+        "external_event": "The mentor watches the audit and nods without comment.",
+        "new_information": "No obvious fault is found, and the setup is frozen for the series.",
+        "causal_dependency_keys": [
+          "b2_mentor_doubt"
+        ],
+        "escalation_delta": "The easy explanation of a loose fitting is closed off.",
+        "state_change": "The reading can now be repeated under the same conditions.",
+        "payoff_contribution": "Makes the later series auditable."
+      },
+      {
+        "key": "b4_first_series",
+        "phase": "INVESTIGATION",
+        "purpose": "Collect the five-reading tide-paired series.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz takes five timestamped readings across the ebb toward the turn, paired with tide-height marks, without touching the setup.",
+        "external_event": "The tide drops steadily, and light slants lower.",
+        "new_information": "Offset from the tabled angle at readings 1 through 5 (in order) shrinks steadily as the tide height falls, from clearly outside the table at readings 1 and 2 to near the table edge at reading 5.",
+        "causal_dependency_keys": [
+          "b3_setup_audit"
+        ],
+        "escalation_delta": "The problem shifts from whether a reading is odd to whether it changes with tide state.",
+        "state_change": "Deniz has five paired readings under one setup, with direction of change recorded.",
+        "payoff_contribution": "Provides the core evidence base."
+      },
+      {
+        "key": "b5_series_wobble",
+        "phase": "COMPLICATION",
+        "purpose": "Show that the series has a confound.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz compares the readings against the clock and notices that tide fall and time of day move together.",
+        "external_event": "The mentor points out that one setup cannot separate tide from time, temperature or a slowly settling clamp.",
+        "new_information": "The series cannot distinguish tide-linked change from drift in the setup itself.",
+        "causal_dependency_keys": [
+          "b4_first_series"
+        ],
+        "escalation_delta": "The leading explanation is now credibly challenged.",
+        "state_change": "Deniz's confidence is tempered, and the confound is named.",
+        "payoff_contribution": "Forces honest limits on the final claim."
+      },
+      {
+        "key": "b6_window_narrows",
+        "phase": "ESCALATION",
+        "purpose": "Tighten access and time so that the choice is costly.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz checks the tide table and the mentor's schedule and counts the remaining time.",
+        "external_event": "The mentor says the instruments must be stowed at the turn, leaving room for one more careful action, not several.",
+        "new_information": "There is time for either writing up the entry or one fresh-setup reading, but not both properly.",
+        "causal_dependency_keys": [
+          "b5_series_wobble"
+        ],
+        "escalation_delta": "Access and time now force a trade-off.",
+        "state_change": "Deniz can no longer keep collecting indefinitely.",
+        "payoff_contribution": "Creates the decision pressure."
+      },
+      {
+        "key": "b7_reversal",
+        "phase": "REVERSAL",
+        "purpose": "Reinterpret the drift from probable error to a pattern worth recording, within limits.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz plots the five readings against the tide marks and sets the earlier historical alignment mark beside them.",
+        "external_event": "The plotted points fall in a consistent order that a random slip would not produce.",
+        "new_information": "Within this one setup the offset moves in one direction with the tide across all five readings; the confound in b5 remains.",
+        "causal_dependency_keys": [
+          "b1_odd_reading",
+          "b3_setup_audit",
+          "b4_first_series",
+          "b5_series_wobble"
+        ],
+        "escalation_delta": "The problem changes from a lone oddity to a bounded pattern that still cannot be trusted.",
+        "state_change": "Deniz shifts from 'probably my mistake' to 'worth recording but unproven'.",
+        "payoff_contribution": "Gives the record something to hold."
+      },
+      {
+        "key": "b8_decision",
+        "phase": "DECISION",
+        "purpose": "Present the real choice with costs.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz weighs reporting the bounded series now against spending the last minutes on one fresh-setup reading.",
+        "external_event": "The mentor waits, and the tide nears the turn.",
+        "new_information": "Reporting risks an overconfident impression; retesting risks leaving the log unfinished.",
+        "causal_dependency_keys": [
+          "b6_window_narrows",
+          "b7_reversal"
+        ],
+        "escalation_delta": "The final trade-off is explicit.",
+        "state_change": "Deniz must commit to one course.",
+        "payoff_contribution": "Delivers agency."
+      },
+      {
+        "key": "b9_climax",
+        "phase": "CLIMAX",
+        "purpose": "Dramatize the chosen branch using earlier evidence and skill.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz carries out the chosen branch, using the frozen protocol, the plot, and the named confound.",
+        "external_event": "The branch's fixed result unfolds before the mentor.",
+        "new_information": "See the decision_point branch results.",
+        "causal_dependency_keys": [
+          "b8_decision"
+        ],
+        "escalation_delta": "The stakes are resolved in the open.",
+        "state_change": "The branch outcome is set.",
+        "payoff_contribution": "Delivers the local resolution."
+      },
+      {
+        "key": "b10_payoff",
+        "phase": "PAYOFF",
+        "purpose": "Close the local uncertainty and shift the mentor relationship.",
+        "location_ref": "beacon_ridge",
+        "character_action": "Deniz packs the instruments and reviews the outcome with the mentor.",
+        "external_event": "The mentor gives the branch-specific verdict.",
+        "new_information": "The mentor's view of Deniz's methodology changes in the branch-specific way.",
+        "causal_dependency_keys": [
+          "b9_climax"
+        ],
+        "escalation_delta": "Pressure releases.",
+        "state_change": "Relationship and record status are updated.",
+        "payoff_contribution": "Provides a complete episode with a forward question."
+      }
+    ],
+    "escalation_ladder": [
+      "The harbor logs do not confirm the drift, so Deniz starts with a lone reading and no support.",
+      "The mentor's methodology demand and the frozen-setup audit close off the easy setup-error explanation.",
+      "The series shows a tide-ordered change, but the b5 confound means it cannot be trusted as tide-linked.",
+      "Access and time narrow to one action, forcing a trade-off between recording and retesting."
+    ],
+    "reversal": {
+      "prior_belief": "The drift is probably a one-off reading mistake or a setup fault.",
+      "evidence": [
+        {
+          "claim": "The setup was audited and held unchanged across five timestamped readings paired with tide marks.",
+          "supporting_beat_keys": [
+            "b3_setup_audit",
+            "b4_first_series"
+          ],
+          "certainty": "OBSERVED"
+        },
+        {
+          "claim": "The offset shrank steadily from reading 1 to reading 5 as tide height fell.",
+          "supporting_beat_keys": [
+            "b4_first_series"
+          ],
+          "certainty": "OBSERVED"
+        },
+        {
+          "claim": "The ordered change is less consistent with a random slip than with a systematic influence within this setup.",
+          "supporting_beat_keys": [
+            "b4_first_series"
+          ],
+          "certainty": "INFERRED"
+        },
+        {
+          "claim": "Time of day, temperature or a settling clamp could produce the same trend, since they moved along with the tide.",
+          "supporting_beat_keys": [
+            "b5_series_wobble"
+          ],
+          "certainty": "OBSERVED"
+        }
+      ],
+      "reinterpretation": "The anomaly is a bounded, ordered pattern worth recording as provisional, not a random error and not a proven tide effect.",
+      "inference_ceiling": "Five readings under one setup show an ordered change alongside tide fall. They do not prove tide causation, recurrence, a physical cause, other beacons, or any wider Saga mechanism.",
+      "unresolved_after_reversal": "Whether the offset depends on tide or on the setup or time, whether it recurs on another day, and whether harbor evidence will ever corroborate it."
+    },
+    "decision_point": {
+      "pressure": "The tide is near the turn and the instruments must be stowed, leaving time for a write-up or one fresh-setup reading, not both properly.",
+      "branches": [
+        {
+          "key": "report_now",
+          "option": "Report the five-reading series now as a provisional entry with its limits stated.",
+          "immediate_action": "Deniz presents the plotted series, the frozen-setup record and the confound, and asks for a dated provisional entry.",
+          "evidence_state_after_choice": "Evidence stays at five readings under one setup, with the confound explicitly stated and no independent reset.",
+          "cost_or_risk": "The mentor may see the request as premature, and the window closes without any check for setup dependence.",
+          "relationship_or_access_effect": "Mentor moves to cautious respect for the honest limits, and Deniz keeps supervised access.",
+          "climax_requirement": "Dramatize Deniz defending the series while volunteering its weaknesses and naming the confound before the mentor does.",
+          "local_payoff_if_earned": "The mentor accepts a provisional dated entry recorded with explicit single-setup limits. This resolves whether the current bounded evidence is record-worthy, and the entry becomes a reusable reference."
+        },
+        {
+          "key": "fresh_setup_retest",
+          "option": "Spend the last minutes on one fresh-setup reading.",
+          "immediate_action": "Deniz re-levels and re-mounts the frame from scratch and takes one reading before the window closes.",
+          "evidence_state_after_choice": "The fresh-setup reading reproduces a similar offset. This shows the anomaly survived one independent reset and weakens the hypothesis that the original setup alone caused it. It does not eliminate setup or instrument error, prove a real beacon offset, or establish recurrence.",
+          "cost_or_risk": "No time remains to prepare a proper entry, so no durable log is completed.",
+          "relationship_or_access_effect": "The mentor is impressed by the method and says the result justifies another controlled session, but grants no entry and no milestone yet.",
+          "climax_requirement": "Dramatize a tense, careful fresh setup racing the turn, ending with one reading that lands close to the earlier offset.",
+          "local_payoff_if_earned": "This resolves only whether the anomaly survives one fresh reset. The mentor's ruling is that the anomaly is not logged now but merits another controlled session, and no reviewed formal entry is completed."
+        }
+      ],
+      "what_is_unknown": "Which trade-off Deniz will choose, and how Deniz feels about it.",
+      "outcome_uncommitted": true
+    },
+    "climax": "Deniz carries out the chosen branch under the mentor's eye, using the frozen protocol, the plotted series and the named confound. Under report_now, the mentor accepts a provisional dated entry with explicit single-setup limits. Under fresh_setup_retest, one fresh-setup reading reproduces a similar offset before the window closes, no formal entry is completed, and the mentor agrees another controlled session is justified.",
+    "local_payoff": "Deniz ends with a decided local uncertainty. Under report_now, it is whether the current bounded evidence is record-worthy. Under fresh_setup_retest, it is only whether the anomaly survives one fresh reset. Either way, the mentor treats Deniz's method as serious.",
+    "forward_hook": "If the offset is real, is it a fluke of this ridge, or the first sign of a wider disagreement between the old markers and the official charts?",
+    "persistent_outcome_candidates": [
+      {
+        "type": "KNOWLEDGE",
+        "description": "A dated provisional entry recording a tide-ordered offset at Beacon Ridge under a single setup, with limits.",
+        "commit_condition": "Only if report_now is chosen and the prose shows the mentor accepting the provisional entry."
+      },
+      {
+        "type": "REPUTATION",
+        "description": "The mentor shifts to cautious respect for Deniz's methodology.",
+        "commit_condition": "Only if the prose shows Deniz stating the limits honestly and the mentor responding."
+      },
+      {
+        "type": "OPPORTUNITY",
+        "description": "A second controlled session is justified after the fresh-setup result.",
+        "commit_condition": "Only if fresh_setup_retest is chosen and the mentor states this in prose."
+      },
+      {
+        "type": "ITEM",
+        "description": "The dated logbook entry becomes a reusable reference.",
+        "commit_condition": "Only if a provisional entry is actually accepted."
+      },
+      {
+        "type": "RUMOR",
+        "description": "Harbor navigators begin talking about a 'ridge beacon problem'.",
+        "commit_condition": "Only if the prose shows the story reaching the harbor through a plausible route."
+      }
+    ],
+    "saga_progression": {
+      "intended_milestone_keys": [
+        "first_discrepancy_logged"
+      ],
+      "commit_only_if_earned": true,
+      "completion_evidence": [
+        "Prose shows the five timestamped tide-paired readings under one unchanged setup, with the direction of change.",
+        "Prose shows the confound and single-setup limits stated explicitly.",
+        "Prose shows the mentor accepting a provisional dated entry, which happens only under report_now.",
+        "Under fresh_setup_retest no durable log is completed, so the milestone must not commit.",
+        "No claim of recurrence, physical cause, other beacons or a wider Saga mechanism."
+      ]
+    },
+    "anti_repetition_signature": {
+      "core_problem_shape": "Single suspicious reading needing an auditable evidence series under time pressure",
+      "primary_activity": "Instrument calibration and tide-paired observation",
+      "main_location_pattern": "Single-location, ridge-only, ticking tide window",
+      "climax_shape": "Evidence defense or one-shot fresh retest before the window closes, chosen by Deniz",
+      "distinct_from_recent_episodes_because": "No recent episodes exist; the episode is built on a methodology-under-scrutiny decision rather than discovery by travel."
+    },
+    "writer_rules": [
+      "Keep all scenes at Beacon Ridge.",
+      "Use exactly five timestamped tide-paired readings under one unchanged setup as the pre-reversal series.",
+      "Do not present the tide link as proven; the confound must remain visible.",
+      "Do not choose the branch in advance; dramatize Deniz's reasoning up to the choice.",
+      "Follow the fixed branch result exactly: report_now ends with a provisional dated entry accepted with limits; fresh_setup_retest ends with one similar fresh-setup reading, no completed entry and no milestone.",
+      "In fresh_setup_retest, never say setup dependence is resolved or that a real offset is proven.",
+      "Do not claim recurrence, physical cause, other beacons or a wider Saga mechanism.",
+      "Do not add locations or reveal hidden truths; mention locked locations at most in passing.",
+      "Keep language clear for an age-12 independent reader."
+    ]
+  },
+  "gate": {
+    "schema": "episode-spine-gate.v2",
+    "dimensions": [
+      {
+        "name": "AGE_MATURITY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The premise supports an age-12 adventure through evidence testing, mentorship, uncertainty, and consequential methodological choices."
+      },
+      {
+        "name": "CAUSAL_COHERENCE",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The beats form a clear causal chain from anomaly to audit, series, confound, deadline, choice, and branch outcome."
+      },
+      {
+        "name": "ESCALATION",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "Pressure escalates through social doubt, methodological complication, a confound, and a genuinely narrowing final action window."
+      },
+      {
+        "name": "AGENCY",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "Deniz makes a meaningful trade-off between preserving an honest provisional record and obtaining a fresh reset reading, with distinct costs."
+      },
+      {
+        "name": "REVERSAL_QUALITY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The five ordered readings support a bounded inference that is explicitly limited by the single-setup confound. The spine correctly avoids claiming tide causation or recurrence."
+      },
+      {
+        "name": "CLIMAX_PAYOFF",
+        "score": 3,
+        "blocking_failure": false,
+        "reason": "Both climax branches have defined mechanics and consequences, but the fresh-reset branch does not deliver the approved premise's stated provisional logged acknowledgment."
+      },
+      {
+        "name": "WORLD_IMMERSION",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "Beacon calibration, tide pairing, harbor logs, supervised access, and mentor methodology standards are materially integrated into the plot."
+      },
+      {
+        "name": "SAGA_ALIGNMENT",
+        "score": 3,
+        "blocking_failure": true,
+        "reason": "The episode is aligned with the first-discrepancy thread only on one branch. The fresh-reset branch explicitly produces no logged discrepancy, weakening the promised MAIN_SAGA_ENTRY function."
+      },
+      {
+        "name": "LOCAL_SATISFACTION",
+        "score": 2,
+        "blocking_failure": true,
+        "reason": "The approved premise promises that Deniz secures at least a provisional logged acknowledgment, but the allowed fresh-reset branch ends with no completed entry. That branch therefore fails the premise's stated local payoff rather than merely varying its form."
+      },
+      {
+        "name": "WRITER_EXECUTABILITY",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "The location, movement, deadline, evidence limits, exact reading count, branch mechanics, and prohibited claims are unusually well specified."
+      },
+      {
+        "name": "REPETITION_SAFETY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The methodology-under-scrutiny structure is distinctive and the anti-repetition signature is explicit, though future episodes should avoid overusing single-location instrument investigations."
+      }
+    ],
+    "decision": "REPLAN",
+    "blocking_reasons": [
+      "The fresh_setup_retest branch contradicts the approved premise's required local payoff that Deniz secures at least a provisional logged acknowledgment.",
+      "Because the episode is labeled MAIN_SAGA_ENTRY and targets first_discrepancy_logged, allowing a branch with no durable log makes the saga-entry outcome nonfunctional on that branch."
+    ],
+    "decision_reason": "The spine is causally strong, physically feasible, evidence-disciplined, and highly executable, but it cannot be accepted while one independently executable decision branch fails the approved premise's explicit local payoff and entry function. Revise the premise to permit either payoff, or redesign the fresh-reset branch so it still produces a qualified provisional acknowledgment."
+  },
+  "gate_raw_payload": {
+    "schema": "episode-spine-gate.v2",
+    "dimensions": [
+      {
+        "name": "AGE_MATURITY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The premise supports an age-12 adventure through evidence testing, mentorship, uncertainty, and consequential methodological choices."
+      },
+      {
+        "name": "CAUSAL_COHERENCE",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The beats form a clear causal chain from anomaly to audit, series, confound, deadline, choice, and branch outcome."
+      },
+      {
+        "name": "ESCALATION",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "Pressure escalates through social doubt, methodological complication, a confound, and a genuinely narrowing final action window."
+      },
+      {
+        "name": "AGENCY",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "Deniz makes a meaningful trade-off between preserving an honest provisional record and obtaining a fresh reset reading, with distinct costs."
+      },
+      {
+        "name": "REVERSAL_QUALITY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The five ordered readings support a bounded inference that is explicitly limited by the single-setup confound. The spine correctly avoids claiming tide causation or recurrence."
+      },
+      {
+        "name": "CLIMAX_PAYOFF",
+        "score": 3,
+        "blocking_failure": false,
+        "reason": "Both climax branches have defined mechanics and consequences, but the fresh-reset branch does not deliver the approved premise's stated provisional logged acknowledgment."
+      },
+      {
+        "name": "WORLD_IMMERSION",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "Beacon calibration, tide pairing, harbor logs, supervised access, and mentor methodology standards are materially integrated into the plot."
+      },
+      {
+        "name": "SAGA_ALIGNMENT",
+        "score": 3,
+        "blocking_failure": true,
+        "reason": "The episode is aligned with the first-discrepancy thread only on one branch. The fresh-reset branch explicitly produces no logged discrepancy, weakening the promised MAIN_SAGA_ENTRY function."
+      },
+      {
+        "name": "LOCAL_SATISFACTION",
+        "score": 2,
+        "blocking_failure": true,
+        "reason": "The approved premise promises that Deniz secures at least a provisional logged acknowledgment, but the allowed fresh-reset branch ends with no completed entry. That branch therefore fails the premise's stated local payoff rather than merely varying its form."
+      },
+      {
+        "name": "WRITER_EXECUTABILITY",
+        "score": 5,
+        "blocking_failure": false,
+        "reason": "The location, movement, deadline, evidence limits, exact reading count, branch mechanics, and prohibited claims are unusually well specified."
+      },
+      {
+        "name": "REPETITION_SAFETY",
+        "score": 4,
+        "blocking_failure": false,
+        "reason": "The methodology-under-scrutiny structure is distinctive and the anti-repetition signature is explicit, though future episodes should avoid overusing single-location instrument investigations."
+      }
+    ],
+    "decision": "REPLAN",
+    "blocking_reasons": [
+      "The fresh_setup_retest branch contradicts the approved premise's required local payoff that Deniz secures at least a provisional logged acknowledgment.",
+      "Because the episode is labeled MAIN_SAGA_ENTRY and targets first_discrepancy_logged, allowing a branch with no durable log makes the saga-entry outcome nonfunctional on that branch."
+    ],
+    "decision_reason": "The spine is causally strong, physically feasible, evidence-disciplined, and highly executable, but it cannot be accepted while one independently executable decision branch fails the approved premise's explicit local payoff and entry function. Revise the premise to permit either payoff, or redesign the fresh-reset branch so it still produces a qualified provisional acknowledgment."
+  },
+  "gate_parse_failures": [],
+  "gate_call": {
+    "raw_usage": {
+      "prompt_tokens": 8224,
+      "completion_tokens": 1598,
+      "total_tokens": 9822,
+      "cost": 0.00397345,
+      "is_byok": false,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "audio_tokens": 0,
+        "video_tokens": 0
+      },
+      "cost_details": {
+        "upstream_inference_cost": 0.00397345,
+        "upstream_inference_prompt_cost": 0.00205585,
+        "upstream_inference_completions_cost": 0.0019176
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 736,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    },
+    "usage": {
+      "input_tokens": 8224,
+      "output_tokens": 1598,
+      "total_tokens": 9822
+    },
+    "cost": {
+      "usd": 0.00397345,
+      "try_amount": null,
+      "usd_try_rate": null
+    },
+    "latency_seconds": 18.638,
+    "request": {
+      "temperature": null,
+      "max_tokens": 6000,
+      "reasoning": {
+        "effort": "medium",
+        "exclude": true
+      },
+      "response_format": {
+        "type": "json_object"
+      }
+    }
+  },
+  "recovery_usage_rollup": {
+    "calls": [
+      {
+        "stage": "episode_spine_gate_recovery",
+        "model": "openai/gpt-5.6-luna",
+        "provider": "openrouter",
+        "status": "completed",
+        "attempt": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    ],
+    "totals": {
+      "api_calls": 1,
+      "input_tokens": 8224,
+      "output_tokens": 1598,
+      "reasoning_tokens": 736,
+      "cached_tokens": 0,
+      "cache_write_tokens": 8221,
+      "total_tokens": 9822,
+      "cost_usd": 0.00397345,
+      "latency_seconds": 18.638
+    },
+    "by_stage": {
+      "episode_spine_gate_recovery": {
+        "api_calls": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    },
+    "by_model": {
+      "openai/gpt-5.6-luna": {
+        "api_calls": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    },
+    "reconciled": {
+      "cost_matches_call_sum": true,
+      "token_matches_call_sum": true
+    }
+  },
+  "candidate_pipeline_usage_rollup": {
+    "calls": [
+      {
+        "stage": "episode_spine_architect",
+        "model": "anthropic/claude-sonnet-5.5",
+        "provider": "openrouter",
+        "status": "completed",
+        "attempt": 1,
+        "input_tokens": 13562,
+        "output_tokens": 6135,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 19697,
+        "cost_usd": 0.088474,
+        "latency_seconds": 41.724
+      },
+      {
+        "stage": "episode_spine_gate_recovery",
+        "model": "openai/gpt-5.6-luna",
+        "provider": "openrouter",
+        "status": "completed",
+        "attempt": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    ],
+    "totals": {
+      "api_calls": 2,
+      "input_tokens": 21786,
+      "output_tokens": 7733,
+      "reasoning_tokens": 736,
+      "cached_tokens": 0,
+      "cache_write_tokens": 8221,
+      "total_tokens": 29519,
+      "cost_usd": 0.09244745,
+      "latency_seconds": 60.362
+    },
+    "by_stage": {
+      "episode_spine_architect": {
+        "api_calls": 1,
+        "input_tokens": 13562,
+        "output_tokens": 6135,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 19697,
+        "cost_usd": 0.088474,
+        "latency_seconds": 41.724
+      },
+      "episode_spine_gate_recovery": {
+        "api_calls": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    },
+    "by_model": {
+      "anthropic/claude-sonnet-5.5": {
+        "api_calls": 1,
+        "input_tokens": 13562,
+        "output_tokens": 6135,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 19697,
+        "cost_usd": 0.088474,
+        "latency_seconds": 41.724
+      },
+      "openai/gpt-5.6-luna": {
+        "api_calls": 1,
+        "input_tokens": 8224,
+        "output_tokens": 1598,
+        "reasoning_tokens": 736,
+        "cached_tokens": 0,
+        "cache_write_tokens": 8221,
+        "total_tokens": 9822,
+        "cost_usd": 0.00397345,
+        "latency_seconds": 18.638
+      }
+    },
+    "reconciled": {
+      "cost_matches_call_sum": true,
+      "token_matches_call_sum": true
+    }
+  },
+  "incremental_recovery_cost_usd": 0.00397345,
+  "candidate_pipeline_cost_usd": 0.09244745,
+  "human_review": {
+    "required": true,
+    "verdict": null,
+    "episode_writer_authorized": false
+  }
+}
