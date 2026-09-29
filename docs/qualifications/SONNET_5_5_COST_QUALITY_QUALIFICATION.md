@@ -193,3 +193,45 @@ P2.5 rule:
 - keep the fixed fresh-setup result;
 - weaken only its evidentiary interpretation;
 - report_now remains the only branch that can earn the provisional reviewed Main Saga discrepancy entry in this proof.
+
+
+### P2.5 — SEMANTICALLY CLEAN, CONTRACT SELF-REF REJECT
+Run: 36541988910.
+
+- Sonnet 5.5 Architect cost: $0.088474.
+- Luna was not called.
+- Role/location/payoff/branch-result/evidence-ceiling mechanics were human-adjudicated clean.
+- Contract rejection was limited to one reversal evidence item citing its own reversal beat in addition to a valid pre-reversal source.
+- Qualification-only safe normalization removes only that invalid self/future ref when a valid pre-reversal source remains.
+- Safe normalizer regression passed and does not edit claims, certainty, beats, or outcomes.
+
+### P2.6 — LUNA-ONLY RECOVERY REPLAN / AUTHORITY GAP
+Run: 36545732284.
+
+- No new Sonnet call.
+- Safe normalization applied exactly once; semantic fields unchanged.
+- Incremental Luna cost: $0.00397345.
+- Candidate inherited Architect + Luna cost: $0.09244745.
+- Luna decision: REPLAN.
+
+The REPLAN exposed an authority-order bug in the qualification gate:
+- the original approved premise says Deniz secures at least a provisional logged acknowledgment;
+- the later HUMAN-APPROVED Revision-05 explicitly refined this mechanic so the fresh-setup branch may legitimately end with stronger evidence but no completed reviewed log;
+- frozen Revision-05 was ACCEPTed with commit_only_if_earned=true and a writer rule forbidding either branch from guaranteeing a log;
+- P2.6 gate input did not include the later human-approved authority, so Luna reasserted the older premise payoff.
+
+Decision:
+- do not change the P2.5 candidate on this basis;
+- do not mutate the production/frozen generic gate;
+- P2.7 uses a qualification-only authority-aware Luna gate where explicit Revision-05 mechanics outrank conflicting older premise mechanics.
+
+### P2.7 — PREPARED, NOT RUN
+
+Free preparation complete:
+- frozen Revision-05 qualification authority pinned;
+- separate authority-aware gate prompt created;
+- same P2.5 normalized candidate reused; no Sonnet call;
+- production gate prompt remains untouched;
+- regression: 47/47 PASS.
+
+Paid scope, if authorized: GPT-5.6 Luna gate only.
