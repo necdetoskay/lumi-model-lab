@@ -83,3 +83,32 @@ def test_wrong_character_thought_is_not_caught_by_hard_guard() -> None:
     )
     findings=run_deterministic_authority_guards(story,authority())
     assert not [x for x in findings if x["guard_id"]=="unresolved_cause_overclaim"]
+
+
+def test_no_documented_series_after_logged_readings_is_blocked() -> None:
+    story=(
+        "She logged five readings with timestamps and tide heights. "
+        "If she left now, there would be no documented series for the next surveyor."
+    )
+    findings=run_deterministic_authority_guards(story,authority())
+    rows=[x for x in findings if x["guard_id"]=="raw_observation_erasure"]
+    assert len(rows)==1
+
+
+def test_unlikely_setup_error_language_is_blocked_when_setup_remains_unresolved() -> None:
+    story=(
+        "Offset is unlikely to be simple instrument or setup error given the ordered decline; "
+        "however, this is not yet proven."
+    )
+    findings=run_deterministic_authority_guards(story,authority())
+    rows=[x for x in findings if x["guard_id"]=="unresolved_setup_overclaim"]
+    assert len(rows)==1
+
+
+def test_fixed_offset_reinterpretation_without_setup_exclusion_is_allowed() -> None:
+    story=(
+        "The changing series is less consistent with a single fixed offset, "
+        "but setup drift and instrument error remain possible."
+    )
+    findings=run_deterministic_authority_guards(story,authority())
+    assert not [x for x in findings if x["guard_id"]=="unresolved_setup_overclaim"]

@@ -21,7 +21,7 @@ def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
     assert matrix["status"] == "C0_GREEN"
     assert matrix["paid_boundary"]["authorized"] is False
-    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C4_CONFIRMED_DEFECT_BOUNDED_REPAIR_ONLY"
+    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C5_TRANSLATION_ONLY"
 
     for case in matrix["cases"]:
         age = int(case["exact_age"])
@@ -56,7 +56,7 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
         assert row["product_standard_words_min"] == 1600
         assert row["product_standard_words_max"] == 2500
         if row["exact_age"] == 18:
-            assert row["status"] == "C3_2_DETERMINISTIC_GREEN_C4_READY"
+            assert row["status"] == "C4_GREEN_C5_TRANSLATION_READY"
             assert row["latest_gate_decision"] == "ACCEPT"
             assert row["latest_run_id"] == 36612862926
             assert row["writer_run_id"] == 36612862926
@@ -71,6 +71,11 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
             assert row["c32_deterministic_root_recall"] == 1.0
             assert row["c32_deterministic_unmapped_findings"] == 0
             assert row["c32_clean_control_age12_findings"] == 0
+            assert row["c4_run_id"] == 36618878723
+            assert row["c4_model_repairs"] == 3
+            assert row["c41_deterministic_repairs"] == 2
+            assert row["accepted_english_word_count"] == 2176
+            assert row["post_repair_guard_findings"] == 0
         else:
             assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
 

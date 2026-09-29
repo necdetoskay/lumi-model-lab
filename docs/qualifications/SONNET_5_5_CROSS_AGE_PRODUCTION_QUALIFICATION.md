@@ -353,3 +353,46 @@ C4 prepared:
 - translation remains blocked unless post-repair guard count is zero
 
 No C4 paid trigger has been created.
+
+
+## Age18 C4 / C4.1 result — ENGLISH AUTHORITY CLEAN / C5 READY
+
+C4 run: 36618878723
+
+C4 bounded Sol repair:
+- model: GPT-5.6 Sol
+- exactly three confirmed local defects supplied
+- model replacements: 3
+- incremental cost: $0.030771
+- latency: 5.710s
+- repair tokens: 11,130
+- initial post-repair guard result under the then-current guard set: clean
+- English words after model repair: 2,174
+
+Free human regression found two same-root residual variants that the initial deterministic patterns did not cover:
+1. no documented series for the next certifier, despite raw five-reading notes already existing;
+2. Offset is unlikely to be simple instrument or setup error, stronger than the approved unresolved setup/instrument ceiling.
+
+The guard was generalized, not patched only to the exact story:
+- raw-observation erasure now covers no documented series / measurements / readings variants;
+- unresolved setup guard covers unlikely-to-be setup/instrument-error claims;
+- uncertain wording that explicitly preserves setup/instrument as possible remains allowed.
+
+C4.1 deterministic recovery:
+- model calls: 0
+- cost: $0
+- exact local replacements: 2
+- accepted English words: 2,176
+- age18 post-recovery authority findings: 0
+- publication-ready age12 clean-control findings after guard expansion: 0
+- regression: GREEN
+
+Accepted English product-path cost through C4:
+- $0.15627555
+- C4.1 adds zero token/model cost.
+
+C5 prepared:
+- Gemini 3.8 Flash translation only
+- no fidelity call in the same workflow
+- C6 Luna fidelity remains a separate paid boundary
+- no C5 trigger has been created.

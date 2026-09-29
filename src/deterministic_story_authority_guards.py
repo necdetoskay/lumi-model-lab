@@ -46,6 +46,7 @@ _RAW_ERASURE_PATTERNS = [
     re.compile(r"\bblank\s+page\b", re.IGNORECASE),
     re.compile(r"\bnothing\s+(?:was\s+)?(?:recorded|logged|written)\b", re.IGNORECASE),
     re.compile(r"\bno\s+(?:raw\s+)?(?:notes?|readings?|measurements?|observations?)\b", re.IGNORECASE),
+    re.compile(r"\bno\s+documented\s+(?:series|observations?|measurements?|readings?)\b", re.IGNORECASE),
 ]
 
 _FORMAL_QUALIFIERS = re.compile(
@@ -69,6 +70,11 @@ _SETUP_HARD_OVERCLAIM_PATTERNS = [
     re.compile(
         r"\b(?:rules?\s+out|excludes?|eliminates?)\b.{0,80}"
         r"\b(?:setup|instrument(?:\s+error)?)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:offset|anomaly|pattern)\s+is\s+unlikely\s+to\s+be\s+"
+        r"(?:a\s+|an\s+)?(?:simple\s+)?(?:instrument(?:\s+or\s+setup)?\s+error|setup\s+error)\b",
         re.IGNORECASE,
     ),
 ]
@@ -159,24 +165,27 @@ def run_deterministic_authority_guards(
         if any(p.search(text) for p in _RAW_OBSERVATION_PATTERNS):
             raw_observations_exist = True
 
-        if raw_observations_exist and not _FORMAL_QUALIFIERS.search(text):
+        if raw_observations_exist:
             for pattern in _RAW_ERASURE_PATTERNS:
                 quote = _smallest_match(pattern, text)
-                if quote:
-                    findings.append({
-                        "guard_id": "raw_observation_erasure",
-                        "family": "record_state",
-                        "severity": "major",
-                        "repair_scope": "local",
-                        "span_ids": [str(seg["id"])],
-                        "exact_quote": quote,
-                        "reason": (
-                            "Raw observations already exist, so prose cannot "
-                            "erase them as a blank/no-notes state. Only absence "
-                            "of a reviewed formal record may remain true."
-                        ),
-                    })
-                    break
+                if not quote:
+                    continue
+                if _FORMAL_QUALIFIERS.search(quote):
+                    continue
+                findings.append({
+                    "guard_id": "raw_observation_erasure",
+                    "family": "record_state",
+                    "severity": "major",
+                    "repair_scope": "local",
+                    "span_ids": [str(seg["id"])],
+                    "exact_quote": quote,
+                    "reason": (
+                        "Raw observations already exist, so prose cannot "
+                        "erase them as a blank/no-notes state. Only absence "
+                        "of a reviewed formal record may remain true."
+                    ),
+                })
+                break
 
     # Guard 3: only high-confidence definitive claims cross explicit inference ceilings.
     ceiling = _ceiling_text(authority_packet)
