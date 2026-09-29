@@ -171,3 +171,25 @@ P2.4 rule:
 - branch choice remains uncommitted;
 - each branch receives one predefined core evidence result and mentor/local outcome;
 - durable commit remains commit-only-if-earned.
+
+
+### P2.4 — CONTRACT PASS, LUNA REPLAN
+Run: 36541205326.
+
+- Main Saga role: PASS.
+- Single-site Beacon Ridge: PASS.
+- Payoff conditionality: PASS.
+- Branch core results fixed: PASS.
+- Reversal observational structure: PASS.
+- Full spine+gate cost: $0.08596945.
+- Full spine+gate latency: 53.44 s.
+- Luna decision: REPLAN.
+
+Single remaining blocker:
+- The fresh-setup branch used one similar fresh reading to claim setup-dependence was resolved in favor of a real offset.
+- One fresh-setup repeat can weaken the original-setup-only explanation, but cannot prove setup-independence, eliminate all setup/instrument error, establish beacon causation, or establish recurrence.
+
+P2.5 rule:
+- keep the fixed fresh-setup result;
+- weaken only its evidentiary interpretation;
+- report_now remains the only branch that can earn the provisional reviewed Main Saga discrepancy entry in this proof.
