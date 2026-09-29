@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from src.episode_spine_v2_contract import EpisodeSpineGateV2, EpisodeSpineV2
 from src.episode_spine_v2_generate import _provider_block_reason, generate
+from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 
 
 SPINE = Path(
@@ -398,6 +399,55 @@ class EpisodeSpineContractTests(unittest.TestCase):
             EpisodeSpineGateV2.model_validate(payload)
 
 
+class ModelUsageRollupTests(unittest.TestCase):
+    def test_rollup_preserves_reasoning_cache_cost_and_stage_totals(self):
+        calls = [
+            normalize_model_call(
+                stage="episode_spine_architect",
+                model="architect/model",
+                provider="openrouter",
+                raw_usage={
+                    "prompt_tokens": 100,
+                    "completion_tokens": 40,
+                    "total_tokens": 140,
+                    "cost": 0.01,
+                    "prompt_tokens_details": {
+                        "cached_tokens": 25,
+                        "cache_write_tokens": 10,
+                    },
+                    "completion_tokens_details": {"reasoning_tokens": 7},
+                },
+                cost={"usd": 0.01},
+                latency_seconds=2.5,
+            ),
+            normalize_model_call(
+                stage="episode_spine_gate",
+                model="gate/model",
+                provider="openrouter",
+                raw_usage={
+                    "prompt_tokens": 80,
+                    "completion_tokens": 20,
+                    "total_tokens": 100,
+                    "cost": 0.002,
+                    "completion_tokens_details": {"reasoning_tokens": 5},
+                },
+                cost={"usd": 0.002},
+                latency_seconds=1.25,
+            ),
+        ]
+        rollup = rollup_model_calls(calls)
+        totals = rollup["totals"]
+        self.assertEqual(totals["api_calls"], 2)
+        self.assertEqual(totals["input_tokens"], 180)
+        self.assertEqual(totals["output_tokens"], 60)
+        self.assertEqual(totals["reasoning_tokens"], 12)
+        self.assertEqual(totals["cached_tokens"], 25)
+        self.assertEqual(totals["cache_write_tokens"], 10)
+        self.assertEqual(totals["total_tokens"], 240)
+        self.assertAlmostEqual(totals["cost_usd"], 0.012)
+        self.assertAlmostEqual(totals["latency_seconds"], 3.75)
+
+
 class ProviderFailureClassificationTests(unittest.TestCase):
     def test_monthly_openrouter_limit_is_classified(self):
         exc = RuntimeError("provider rejected request")
@@ -493,6 +543,9 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
         self.assertFalse(result["episode_writer_authorized"])
         self.assertEqual(result["gate"]["decision"], "ACCEPT")
         self.assertAlmostEqual(result["total_cost_usd"], 0.08)
+        self.assertEqual(result["usage_rollup"]["totals"]["api_calls"], 2)
+        self.assertEqual(result["usage_rollup"]["totals"]["total_tokens"], 4400)
+        self.assertAlmostEqual(result["usage_rollup"]["totals"]["cost_usd"], 0.08)
         self.assertIsNone(result["human_review"]["verdict"])
         self.assertFalse(result["human_review"]["episode_writer_authorized"])
         self.assertEqual(persisted["status"], "awaiting_human_review")
