@@ -163,6 +163,10 @@ A reader should get:
 
 ## Saga milestone
 
+The input may contain intended milestone keys and required_episode_role_options.
+When required_episode_role_options is present, episode_role MUST be exactly one of those values.
+Do not choose WORLD_EXPLORATION, SIDE_SAGA, RELATIONSHIP, or SAGA_FREE when a Main Saga milestone is targeted unless that value is explicitly allowed.
+
 The input may contain intended milestone keys.
 
 The Episode Spine can aim to earn them.

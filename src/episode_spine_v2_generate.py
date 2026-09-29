@@ -207,6 +207,19 @@ def generate(
         "revision_feedback": revision_feedback,
         "premise_context": projection,
         "required_intended_milestone_keys": intended_milestones,
+        "required_episode_role_options": (
+            ["MAIN_SAGA_ENTRY", "MAIN_SAGA_PROGRESS", "MIXED"]
+            if intended_milestones
+            else [
+                "MAIN_SAGA_ENTRY",
+                "MAIN_SAGA_PROGRESS",
+                "SIDE_SAGA",
+                "WORLD_EXPLORATION",
+                "RELATIONSHIP",
+                "SAGA_FREE",
+                "MIXED",
+            ]
+        ),
         "allowed_location_refs": sorted(allowed_locations),
         "required_session": {
             "name": session["name"],

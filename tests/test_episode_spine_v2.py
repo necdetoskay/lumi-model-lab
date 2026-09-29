@@ -558,6 +558,10 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
             ["first_discrepancy_logged"],
         )
         self.assertEqual(
+            architect_input["required_episode_role_options"],
+            ["MAIN_SAGA_ENTRY", "MAIN_SAGA_PROGRESS", "MIXED"],
+        )
+        self.assertEqual(
             architect_input["allowed_location_refs"],
             ["beacon_ridge", "meridian_harbor"],
         )
