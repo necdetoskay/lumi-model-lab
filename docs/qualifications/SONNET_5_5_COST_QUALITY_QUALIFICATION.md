@@ -412,3 +412,28 @@ P3-D paid scope, if authorized:
 - same already-generated story;
 - hidden five-root gold used only after inference;
 - no Writer regeneration, Sol, repair, translation, or fidelity.
+
+
+### P3-D — COMPACT TYPED AUTHORITY INCONCLUSIVE (POST-INFERENCE PARSER FAILURE)
+Run: 36562666045.
+
+- One GPT-5.6 Luna compact typed-authority inference DID occur.
+- No Writer regeneration, Sol, repair, translation, or fidelity call occurred.
+- The model returned a finding quote spanning two adjacent story sentence segments:
+  - S174: "When I file the week's calibrations at the harbor office, I'll raise it with the pilots.
+  - S175: Quietly.
+- The old exact-quote validator required the entire quote to exist inside one cited segment and raised after inference.
+- Because result.json was written only after finding normalization, the raw payload and exact usage/cost metadata were lost from the ephemeral runner.
+- Therefore P3-D recall/precision is INCONCLUSIVE and must not be compared with P3-A/B/C.
+
+Free hardening after the failure:
+- exact quotes spanning explicitly cited contiguous sentence segments are accepted without fuzzy matching;
+- raw model payload + usage/cost/latency are persisted before any post-inference normalization error is re-raised;
+- the compact gate now explicitly distinguishes a character's stated intention ("I'll raise it with the pilots") from narrator-guaranteed future state ("the pilots would be talking soon");
+- regression: 70/70 PASS.
+
+### P3-D.1 — PREPARED, NOT RUN
+
+Retry scope remains exactly one GPT-5.6 Luna compact typed-authority audit on the same existing story.
+No Writer regeneration, Sol, repair, translation, or fidelity.
+The previous P3-D paid call is treated as consumed but unscorable due to evidence-capture failure.
