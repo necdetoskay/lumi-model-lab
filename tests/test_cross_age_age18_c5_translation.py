@@ -23,3 +23,8 @@ def test_c5_translation_inputs_are_green_and_scoped() -> None:
     assert c41["incremental_cost_usd"]==0.0
     assert count_words(english)==2176
     assert c4["pipeline_usage_rollup"]["totals"]["cost_usd"]==0.15627555
+
+
+def test_c5_module_imports_without_runtime_error() -> None:
+    import src.cross_age_age18_c5_translation as module
+    assert module.TRANSLATOR_MODEL == "google/gemini-3.8-flash"
