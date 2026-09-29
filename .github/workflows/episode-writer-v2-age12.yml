@@ -40,10 +40,9 @@ jobs:
         run: |
           set -euo pipefail
           test -s runs/episode-writer-v2-age12/result.json
-          test -s runs/episode-writer-v2-age12/story.txt
           TMP="$(mktemp -d)"
           cp runs/episode-writer-v2-age12/result.json "$TMP/result.json"
-          cp runs/episode-writer-v2-age12/story.txt "$TMP/story.txt"
+          if test -s runs/episode-writer-v2-age12/story.txt; then cp runs/episode-writer-v2-age12/story.txt "$TMP/story.txt"; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           EVIDENCE_BRANCH="evidence/episode-writer-v2-age12-${GITHUB_RUN_ID}"
@@ -52,7 +51,7 @@ jobs:
           DEST="experiments/results/episode-writer-v2-age12/${GITHUB_RUN_ID}"
           mkdir -p "$DEST"
           cp "$TMP/result.json" "$DEST/result.json"
-          cp "$TMP/story.txt" "$DEST/story.txt"
+          if test -s "$TMP/story.txt"; then cp "$TMP/story.txt" "$DEST/story.txt"; fi
           git add "$DEST"
           git commit -m "evidence(story): archive approved Episode Writer v2 ${GITHUB_RUN_ID}"
           git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
