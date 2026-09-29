@@ -133,3 +133,20 @@ Human adjudication found the previous branch/payoff defect reintroduced:
 - fresh-setup branch mechanics can still consume reporting time and leave no completed reviewed log.
 
 Decision: HUMAN REVISE. Do not promote. P2.2 should change only payoff conditionality and preserve the clean location contract.
+
+
+### P2.2 — PAYOFF PASS, CONTRACT REJECT BEFORE GATE
+Run: 36537449744.
+
+- Sonnet 5.5 Architect ran once.
+- Cost: $0.080368.
+- Latency: 38.178 s.
+- Luna was NOT called; deterministic validation stopped the run.
+- Location contract: PASS.
+- Payoff conditionality: PASS. The prior guaranteed-log defect is fixed.
+- Branch failure/unlogged-result states are preserved.
+- New blocker: episode_role=world_exploration while targeting first_discrepancy_logged.
+
+This is exactly the intended value of deterministic contract validation: the classification regression was stopped before gate/downstream cost.
+
+Decision: P2.3 should change only episode-role authority while preserving the now-clean location/payoff logic.

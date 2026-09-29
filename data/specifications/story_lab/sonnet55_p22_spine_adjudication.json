@@ -1,0 +1,36 @@
+{
+  "schema_version": "sonnet55-p22-spine-adjudication.v1",
+  "run_id": 36537449744,
+  "status": "P2_2_CONTRACT_REJECTED",
+  "gate_called": false,
+  "architect_cost_usd": 0.080368,
+  "architect_latency_seconds": 38.178,
+  "architect_tokens": {
+    "input": 12859,
+    "output": 5465,
+    "reasoning": 0,
+    "total": 18324
+  },
+  "contract_error": "Episode Spine targeting Main Saga milestone needs Main Saga episode role",
+  "quality_adjudication": {
+    "location_contract": "PASS",
+    "payoff_conditionality": "PASS",
+    "inference_bounds": "PASS",
+    "branch_costs": "PASS",
+    "blocking_regression": {
+      "id": "episode_role_mismatch",
+      "severity": "contract_blocking",
+      "evidence": {
+        "episode_role": "WORLD_EXPLORATION",
+        "intended_milestone_keys": ["first_discrepancy_logged"]
+      },
+      "why": "A spine targeting a Main Saga milestone cannot be classified as WORLD_EXPLORATION under the existing canonical contract."
+    }
+  },
+  "decision": {
+    "promote_sonnet55_architect": false,
+    "advance_to_p3": false,
+    "next_phase": "P2.3",
+    "next_action": "Preserve the now-correct location and payoff logic and correct only the Main Saga episode-role authority."
+  }
+}
