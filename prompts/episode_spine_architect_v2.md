@@ -110,7 +110,10 @@ The reversal must be evidence-traceable, not an attractive inference invented by
 For every reversal evidence claim:
 - reference only beat keys established BEFORE the reversal;
 - distinguish OBSERVED fact, INFERRED conclusion, and HYPOTHESIS;
-- never claim more than those beats actually establish.
+- never claim more than those beats actually establish;
+- every item inside reversal.evidence MUST have at least one supporting beat key.
+
+If a hypothesis has no supporting pre-reversal beat, DO NOT put it in reversal.evidence. Put it in unresolved_after_reversal or inference_ceiling instead. An unsupported possibility is an open question, not evidence.
 
 State the prior belief, the reinterpretation, the inference ceiling, and what remains unresolved.
 
