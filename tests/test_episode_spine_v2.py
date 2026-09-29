@@ -170,10 +170,24 @@ def _spine_payload() -> dict:
             "The tide and access window creates a real cost to gathering more proof.",
             "Deniz must choose how much evidence is enough to justify a formal report.",
         ],
-        "reversal": (
-            "The comparison source does not confirm the expected instrument fault; "
-            "instead it makes the mismatch look reproducible under the same tide band."
-        ),
+        "reversal": {
+            "prior_belief": "The first strange angle may be ordinary instrument or operator error.",
+            "evidence": [
+                {
+                    "claim": "The instrument control remains within tolerance.",
+                    "supporting_beat_keys": ["b2_check_instrument"],
+                    "certainty": "OBSERVED",
+                },
+                {
+                    "claim": "The independent comparison makes simple instrument error less sufficient as an explanation.",
+                    "supporting_beat_keys": ["b4_compare_harbor_record"],
+                    "certainty": "INFERRED",
+                },
+            ],
+            "reinterpretation": "The mismatch deserves treatment as a plausible field anomaly rather than immediate dismissal.",
+            "inference_ceiling": "The evidence does not yet prove recurrence, a tidal mechanism, or the Saga-level cause.",
+            "unresolved_after_reversal": "Whether a controlled retest can reproduce the discrepancy before the window closes.",
+        },
         "decision_point": {
             "pressure": (
                 "The measurement window is closing and Deniz does not yet know "
@@ -341,6 +355,17 @@ class EpisodeSpineContractTests(unittest.TestCase):
         payload = _spine_payload()
         payload["decision_point"]["branches"][1]["key"] = "report_now"
         with self.assertRaisesRegex(ValidationError, "branch keys must be unique"):
+            EpisodeSpineV2.model_validate(payload)
+
+    def test_rejects_reversal_evidence_from_reversal_or_future_beat(self):
+        payload = _spine_payload()
+        payload["reversal"]["evidence"][0]["supporting_beat_keys"] = [
+            "b5_easy_explanation_breaks"
+        ]
+        with self.assertRaisesRegex(
+            ValidationError,
+            "reversal evidence must reference beats established before reversal",
+        ):
             EpisodeSpineV2.model_validate(payload)
 
     def test_rejects_too_few_beats(self):
