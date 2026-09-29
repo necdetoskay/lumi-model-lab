@@ -15,6 +15,7 @@ from src.english_story_pipeline import call_structured_json_with_retry
 from src.episode_spine_v2_contract import EpisodeSpineGateV2, EpisodeSpineV2
 from src.generate import parse_cost, parse_usage
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
+from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.premise_architect_v2_contract import (
     PremiseLabStateV1,
     build_reveal_safe_premise_projection,
@@ -78,11 +79,17 @@ def _provider_block_reason(exc: Exception) -> str | None:
     return None
 
 
-def _model_call_evidence(body: dict[str, Any], request: dict[str, Any]) -> dict[str, Any]:
+def _model_call_evidence(
+    body: dict[str, Any],
+    request: dict[str, Any],
+    *,
+    latency_seconds: float | None = None,
+) -> dict[str, Any]:
     return {
         "raw_usage": body.get("usage") or {},
         "usage": parse_usage(body).model_dump(mode="json"),
         "cost": parse_cost(body).model_dump(mode="json"),
+        "latency_seconds": latency_seconds,
         "request": {
             "temperature": request.get("temperature"),
             "max_tokens": request.get("max_tokens"),
@@ -90,6 +97,29 @@ def _model_call_evidence(body: dict[str, Any], request: dict[str, Any]) -> dict[
             "response_format": request.get("response_format"),
         },
     }
+
+
+def _usage_rollup(evidence: dict[str, Any]) -> dict[str, Any]:
+    calls: list[dict[str, Any]] = []
+    for stage, call_key, model_key, identity_key in (
+        ("episode_spine_architect", "architect_call", "architect_model", "architect_runtime_identity"),
+        ("episode_spine_gate", "gate_call", "gate_model", "gate_runtime_identity"),
+    ):
+        call = evidence.get(call_key)
+        if not isinstance(call, dict):
+            continue
+        identity = evidence.get(identity_key) or {}
+        calls.append(
+            normalize_model_call(
+                stage=stage,
+                model=evidence.get(model_key),
+                provider=identity.get("provider"),
+                raw_usage=call.get("raw_usage"),
+                cost=call.get("cost"),
+                latency_seconds=call.get("latency_seconds"),
+            )
+        )
+    return rollup_model_calls(calls)
 
 
 def _resolve_model(override: str | None, env_name: str, default: str) -> str:
@@ -199,6 +229,7 @@ def generate(
     architect_prompt = architect_prompt_path.read_text(encoding="utf-8").strip()
     gate_prompt = gate_prompt_path.read_text(encoding="utf-8").strip()
 
+    architect_call_started = time.perf_counter()
     try:
         raw, body, request, parse_failures = call_structured_json_with_retry(
             api_key=key,
@@ -234,6 +265,8 @@ def generate(
         _write_json(out_path, evidence)
         raise
 
+    architect_call_latency = round(time.perf_counter() - architect_call_started, 3)
+
     evidence: dict[str, Any] = {
         "schema_version": "episode-spine-v2-evidence.v1",
         "status": "architect_generated",
@@ -248,7 +281,11 @@ def generate(
         "projection": projection,
         "architect_raw_payload": raw,
         "architect_parse_failures": parse_failures,
-        "architect_call": _model_call_evidence(body, request),
+        "architect_call": _model_call_evidence(
+            body,
+            request,
+            latency_seconds=architect_call_latency,
+        ),
     }
 
     try:
@@ -304,6 +341,8 @@ def generate(
         }
         evidence["completed_at"] = _now_iso()
         evidence["latency_seconds"] = round(time.perf_counter() - started, 3)
+        evidence["usage_rollup"] = _usage_rollup(evidence)
+        evidence["total_cost_usd"] = evidence["usage_rollup"]["totals"]["cost_usd"]
         _write_json(out_path, evidence)
         raise RuntimeError("Episode Spine Architect failed contract validation.") from exc
 
@@ -316,6 +355,7 @@ def generate(
         "decision_rule": "ACCEPT only if writer execution is justified; otherwise REPLAN.",
     }
 
+    gate_call_started = time.perf_counter()
     try:
         gate_raw, gate_body, gate_request, gate_parse_failures = (
             call_structured_json_with_retry(
@@ -346,9 +386,14 @@ def generate(
         _write_json(out_path, evidence)
         raise
 
+    gate_call_latency = round(time.perf_counter() - gate_call_started, 3)
     evidence["gate_raw_payload"] = gate_raw
     evidence["gate_parse_failures"] = gate_parse_failures
-    evidence["gate_call"] = _model_call_evidence(gate_body, gate_request)
+    evidence["gate_call"] = _model_call_evidence(
+        gate_body,
+        gate_request,
+        latency_seconds=gate_call_latency,
+    )
 
     try:
         gate = EpisodeSpineGateV2.model_validate(gate_raw)
@@ -368,6 +413,8 @@ def generate(
         }
         evidence["completed_at"] = _now_iso()
         evidence["latency_seconds"] = round(time.perf_counter() - started, 3)
+        evidence["usage_rollup"] = _usage_rollup(evidence)
+        evidence["total_cost_usd"] = evidence["usage_rollup"]["totals"]["cost_usd"]
         _write_json(out_path, evidence)
         raise RuntimeError("Episode Spine Gate failed contract validation.") from exc
 
@@ -376,11 +423,8 @@ def generate(
         mode="json", by_alias=True
     )
     evidence["gate"] = gate.model_dump(mode="json", by_alias=True)
-    evidence["total_cost_usd"] = round(
-        float(evidence["architect_call"]["cost"]["usd"] or 0.0)
-        + float(evidence["gate_call"]["cost"]["usd"] or 0.0),
-        9,
-    )
+    evidence["usage_rollup"] = _usage_rollup(evidence)
+    evidence["total_cost_usd"] = evidence["usage_rollup"]["totals"]["cost_usd"]
     evidence["completed_at"] = _now_iso()
     evidence["latency_seconds"] = round(time.perf_counter() - started, 3)
     evidence["human_review"] = {
