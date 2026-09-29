@@ -437,3 +437,62 @@ Free hardening after the failure:
 Retry scope remains exactly one GPT-5.6 Luna compact typed-authority audit on the same existing story.
 No Writer regeneration, Sol, repair, translation, or fidelity.
 The previous P3-D paid call is treated as consumed but unscorable due to evidence-capture failure.
+
+
+### FINAL DELIVERY — PUBLICATION READY
+Run: 36580391689.
+
+Status:
+- publication_ready: true
+- accepted English master: 1,889 words
+- Turkish delivery: 1,562 words
+- final compact authority clean gate: PASS, zero findings
+- final fidelity: PASS via contextual adjudication
+- confirmed fidelity defects after adjudication: 0
+- translation repair cycles in canonical successful V2 run: 0
+
+Canonical successful pipeline lineage:
+- Sonnet 5.5 spine architect
+- GPT-5.6 Luna authority-aware spine gate
+- Aion 3.5 Mini writer
+- GPT-5.6 Sol bounded English repair
+- GPT-5.6 Luna final compact authority clean gate
+- Gemini 3.8 Flash EN->TR translation
+- GPT-5.6 Luna fidelity
+- GPT-5.6 Luna fidelity adjudication
+
+Canonical successful pipeline totals:
+- API calls: 8
+- input tokens: 67,891
+- output tokens: 19,340
+- reasoning tokens: 4,673
+- cache-write tokens: 43,584
+- total tokens: 87,231
+- total cost: $0.17093925
+- summed model latency: 217.82s
+
+Delivery-only:
+- 3 calls
+- 20,448 total tokens
+- $0.0191854
+- 33.491s
+
+Compared with frozen Revision-05 canonical pipeline:
+- old cost: $0.56977398
+- new cost: $0.17093925
+- cost reduction: ~70.0%
+- new pipeline is ~30.0% of old canonical cost.
+
+Important architecture conclusions:
+1. Sonnet 5.5 materially improves spine cost/latency but still requires deterministic contracts and explicit human authority.
+2. Sonnet 5.5, generic Luna and generic Sol audits all shared canon/state blind spots on the raw story.
+3. A compact typed authority packet changed Luna recall from 40% to 100% on the confirmed five-root canon/state corpus.
+4. Always-on generic Sol secondary is not justified in the current topology.
+5. Typed authority + targeted compact guard is the preferred QA direction.
+6. English repair should consume confirmed defects directly instead of asking another judge to rediscover them.
+7. Translation fidelity benefits from contextual adjudication before any repair because narrow fidelity judges can emit serious-severity rows whose own rationale says no material defect.
+
+Pinned artifacts:
+- data/specifications/story_lab/age12_episode1_sonnet55_final_en.txt
+- data/specifications/story_lab/age12_episode1_sonnet55_final_tr.txt
+- data/specifications/story_lab/sonnet55_final_delivery_run_36580391689.json
