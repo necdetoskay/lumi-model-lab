@@ -29,6 +29,9 @@ Mark blocking_failure=true for product-level problems such as:
 - repeated attempts masquerade as escalation;
 - character lacks meaningful agency;
 - decision outcome is precommitted;
+- decision branches collapse into the same evidence state, consequence, climax mechanics, or payoff;
+- branch-specific consequences are left for the writer to invent;
+- the time/location sequence contains an unaccounted travel or movement jump under an active deadline;
 - reversal is arbitrary or unsupported;
 - climax depends on unexplained new information;
 - local payoff is missing;
@@ -41,6 +44,8 @@ Mark blocking_failure=true for product-level problems such as:
 ## Decision
 
 ACCEPT only if the spine is strong enough to justify paying a writer model.
+
+In particular, verify that every decision branch is independently executable and that the logistics plan makes the beat sequence physically plausible. If the writer must invent branch outcomes, travel timing, or deadline mechanics, REPLAN.
 
 Otherwise REPLAN.
 
