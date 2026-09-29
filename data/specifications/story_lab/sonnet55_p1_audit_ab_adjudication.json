@@ -1,0 +1,59 @@
+{
+  "schema_version": "sonnet55-p1-audit-ab-adjudication.v1",
+  "run_id": 36534387514,
+  "status": "P1_COMPLETE_HUMAN_ADJUDICATED",
+  "baseline": {
+    "model": "anthropic/claude-sonnet-5",
+    "cost_usd": 0.065728,
+    "latency_seconds": 8.855,
+    "input_tokens": 28769,
+    "output_tokens": 819,
+    "root_recall": 0.166667,
+    "matched_roots": ["future_protocol_overcommit"]
+  },
+  "candidate": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "cost_usd": 0.068302,
+    "latency_seconds": 9.2,
+    "input_tokens": 28771,
+    "output_tokens": 1076,
+    "reasoning_tokens": 0,
+    "automated_anchor_root_recall": 0.333333,
+    "human_adjudicated_root_recall": 0.666667,
+    "human_adjudicated_matched_roots": [
+      "measurement_series_causal_inconsistency",
+      "reading_count_state_inconsistency",
+      "future_protocol_overcommit",
+      "flooding_ridge_escape_inconsistency"
+    ],
+    "human_adjudicated_missed_roots": [
+      "unauthorized_durable_history",
+      "control_check_certainty_weakness"
+    ],
+    "false_positive_findings": [
+      {
+        "family": "temporal_consistency",
+        "exact_quote": "Light: good for perhaps another hour.",
+        "reason": "Not a real blocker: one hour of usable light and a half-hour site-security deadline are compatible, and the first incoming ripple occurs before the later 'tide: turned, rising' assessment."
+      }
+    ]
+  },
+  "comparison": {
+    "root_recall_gain_absolute": 0.5,
+    "root_recall_multiplier": 4.0,
+    "cost_delta_usd": 0.002574,
+    "cost_delta_percent": 3.916139,
+    "latency_delta_seconds": 0.345,
+    "latency_delta_percent": 3.896104,
+    "output_token_delta_percent": 31.379731,
+    "observed_output_tokens_per_second_baseline": 92.490119,
+    "observed_output_tokens_per_second_candidate": 116.956522,
+    "observed_output_throughput_gain_percent": 26.452991
+  },
+  "decision": {
+    "promote_to_baseline": false,
+    "advance_to_p2": true,
+    "advance_reason": "Candidate materially improved single-pass root-defect recall, but did not reduce per-call cost and still missed two known roots. P2 should test Spine Architect quality/token efficiency before any topology promotion.",
+    "p3_constraint": "Do not remove secondary QA based on P1; Sonnet 5.5 single-pass audit is not yet sufficient as sole blocker authority."
+  }
+}
