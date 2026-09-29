@@ -62,8 +62,10 @@ class ReaderDevelopmentProfileV2(StrictModel):
         "MIDDLE_CHILD",
         "OLDER_CHILD",
         "TEEN",
+        "YOUNG_ADULT",
         "ADULT",
         "MATURE_ADULT",
+        "SENIOR",
     ]
     developmental_stage: str
     capability_bridge: CapabilityBridge

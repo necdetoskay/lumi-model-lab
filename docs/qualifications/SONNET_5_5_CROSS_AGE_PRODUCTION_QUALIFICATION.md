@@ -1,6 +1,6 @@
 # Sonnet 5.5 Cross-Age Production Qualification
 
-Status: C0 PREPARED — PAID RUNS BLOCKED
+Status: C0 CANDIDATE PROFILES READY — PRODUCT BUDGET APPROVAL BLOCKS PAID RUNS
 
 ## Baseline authority
 
@@ -66,6 +66,22 @@ The capability-cube target is a qualification target, not product session author
 The already-qualified age-12 product profile intentionally uses STANDARD 1,600–2,500 words even though its capability bridge records the MIDDLE_CHILD qualification target of 2,800 words. ReaderDevelopmentProfileV2 explicitly declares product_session_length_is_separate_authority=true.
 
 Therefore the old cube's 4,200-word adult STANDARD target MUST NOT be copied automatically into the Final V3 product pipeline. Product-session budgets for 18/25/40/60 must be decided separately with turnaround, reading-time, and quality evidence.
+
+
+
+## C0 candidate profiles
+
+Schema-valid but non-authoritative candidate profiles now exist for ages 18, 25, 40 and 60 under:
+
+data/specifications/reader_profiles/candidates/
+
+They intentionally keep reader_profile=null in the cross-age matrix, so no paid qualification can treat them as approved authority.
+
+Design rule:
+- maturity increases through premise, conceptual, causal, agency, stakes, social, and inference complexity;
+- maturity MUST NOT be simulated by simply making stories longer or vocabulary denser;
+- age 40/60 MUST NOT imply frailty, nostalgia, retirement, illness, parenthood, reduced agency, or simplified cognition unless explicitly requested;
+- the inherited 1,600–2,500 STANDARD range in candidate files is only a neutral schema placeholder and is NOT approved product budget.
 
 ## C0 exit criteria
 

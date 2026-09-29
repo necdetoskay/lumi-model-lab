@@ -19,7 +19,7 @@ AGE12 = Path("data/specifications/reader_profiles/age12_adventure_v2.json")
 
 def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
-    assert matrix["status"] == "C0_PAID_BLOCKED"
+    assert matrix["status"] == "C0_CANDIDATE_PROFILES_READY_PAID_BLOCKED"
     assert matrix["paid_boundary"]["authorized"] is False
 
     for case in matrix["cases"]:
@@ -54,4 +54,27 @@ def test_unqualified_ages_cannot_have_paid_authority_yet() -> None:
         assert row["reader_profile"] is None
         assert row["product_standard_words_min"] is None
         assert row["product_standard_words_max"] is None
-        assert row["status"] == "BLOCKED_READER_PROFILE_AND_PRODUCT_BUDGET"
+        assert row["status"] == "CANDIDATE_PROFILE_READY_BUDGET_UNAPPROVED"
+
+
+def test_candidate_profiles_validate_but_do_not_authorize_paid_runs() -> None:
+    matrix = json.loads(MATRIX.read_text())
+    assert matrix["status"] == "C0_CANDIDATE_PROFILES_READY_PAID_BLOCKED"
+    assert matrix["paid_boundary"]["authorized"] is False
+
+    for row in matrix["cases"]:
+        if row["exact_age"] == 12:
+            continue
+        candidate_path = Path(row["candidate_profile"])
+        profile = ReaderDevelopmentProfileV2.model_validate_json(candidate_path.read_text())
+        assert profile.exact_age == row["exact_age"]
+        assert profile.capability_bridge.narrative_age_tier == row["narrative_age_tier"]
+        assert profile.capability_bridge.reading_mode == row["reading_mode"]
+        assert (
+            profile.capability_bridge.qualification_standard_target_words
+            == row["qualification_standard_target_words"]
+        )
+        assert row["reader_profile"] is None
+        assert row["product_standard_words_min"] is None
+        assert row["product_standard_words_max"] is None
+        assert row["status"] == "CANDIDATE_PROFILE_READY_BUDGET_UNAPPROVED"
