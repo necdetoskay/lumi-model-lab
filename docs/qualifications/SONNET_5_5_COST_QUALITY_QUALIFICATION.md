@@ -90,3 +90,27 @@ Decision: advance to P2. Do not promote and do not remove secondary QA based on 
 Workflow is isolated at .github/workflows/sonnet55-spine-ab.yml.
 It uses Sonnet 5.5 Architect + unchanged GPT-5.6 Luna gate against Revision-05 feedback.
 No P2 paid call has been authorized or triggered yet.
+
+
+### P2 — COMPLETE, HUMAN REVISE
+Run: 36535132929.
+
+Measured candidate vs frozen baseline:
+- Luna gate: ACCEPT vs ACCEPT.
+- Architect output tokens: 8,986 -> 6,133 (-31.8%).
+- Architect cost: $0.115908 -> $0.087382 (-24.6%).
+- Architect latency: 93.684 s -> 42.639 s (-54.5%).
+- Full spine+gate cost: $0.11957935 -> $0.09093235 (-24.0%).
+- Full spine+gate latency: 106.902 s -> 56.403 s (-47.2%).
+
+Human adjudication found a contract-blocking self-contradiction:
+- logistics_plan introduces Meridian Harbor before/after Beacon Ridge;
+- b10_payoff is located at Meridian Harbor;
+- writer_rules simultaneously says the episode stays at Beacon Ridge throughout and forbids sequential Harbor/Ridge travel.
+
+Luna ACCEPT missed this contradiction.
+
+Decision:
+- Do not promote Sonnet 5.5 Architect yet.
+- Do not advance to P3 yet.
+- Next phase is P2.1: fix/validate location-contract consistency while retaining the measured cost/latency gain.

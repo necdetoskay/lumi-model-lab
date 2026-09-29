@@ -1,0 +1,84 @@
+{
+  "schema_version": "sonnet55-p2-spine-ab-adjudication.v1",
+  "run_id": 36535132929,
+  "status": "P2_COMPLETE_HUMAN_ADJUDICATED",
+  "baseline_run_id": 36520646579,
+  "baseline": {
+    "architect_model": "anthropic/claude-sonnet-5",
+    "gate_model": "openai/gpt-5.6-luna",
+    "gate_decision": "ACCEPT",
+    "architect": {
+      "input_tokens": 13024,
+      "output_tokens": 8986,
+      "reasoning_tokens": 1549,
+      "total_tokens": 22010,
+      "cost_usd": 0.115908,
+      "latency_seconds": 93.684
+    },
+    "pipeline": {
+      "total_tokens": 31775,
+      "cost_usd": 0.11957935,
+      "latency_seconds": 106.902
+    }
+  },
+  "candidate": {
+    "architect_model": "anthropic/claude-sonnet-5.5",
+    "gate_model": "openai/gpt-5.6-luna",
+    "gate_decision": "ACCEPT",
+    "architect": {
+      "input_tokens": 13026,
+      "output_tokens": 6133,
+      "reasoning_tokens": 0,
+      "total_tokens": 19159,
+      "cost_usd": 0.087382,
+      "latency_seconds": 42.639
+    },
+    "pipeline": {
+      "total_tokens": 28649,
+      "cost_usd": 0.09093235,
+      "latency_seconds": 56.403
+    }
+  },
+  "comparison": {
+    "architect_output_token_reduction_percent": 31.750501,
+    "architect_cost_reduction_percent": 24.611073,
+    "architect_latency_reduction_percent": 54.486145,
+    "pipeline_token_reduction_percent": 9.83871,
+    "pipeline_cost_reduction_percent": 23.955646,
+    "pipeline_latency_reduction_percent": 47.238592
+  },
+  "quality_adjudication": {
+    "gate_result": "ACCEPT",
+    "human_result": "REVISE",
+    "strengths": [
+      "Preserves the bounded within-session evidence logic.",
+      "Fresh-setup retest has a distinct evidentiary role.",
+      "Branch costs and outcomes remain conditional.",
+      "Inference ceiling and unresolved Saga questions are preserved.",
+      "Much more concise architect output while still producing a full executable spine."
+    ],
+    "blocking_regressions": [
+      {
+        "id": "location_contract_self_contradiction",
+        "severity": "contract_blocking",
+        "evidence": [
+          "logistics_plan.location_sequence contains meridian_harbor before and after the Beacon Ridge window",
+          "b10_payoff.location_ref is meridian_harbor",
+          "writer_rules says the episode stays at Beacon Ridge throughout and forbids sequential Meridian Harbor / Beacon Ridge travel"
+        ],
+        "why": "The writer receives mutually incompatible location authorities. This violates writer executability and can force invention/repair downstream."
+      }
+    ],
+    "gate_gap": "GPT-5.6 Luna accepted a spine containing a direct self-contradiction between logistics/beat locations and writer_rules.",
+    "non_blocking_observations": [
+      "Candidate uses a more explicit hypothesis matrix and mentor methodology challenge than the baseline.",
+      "The candidate adds a 90-minute window and harbor bookends that were not needed to solve Revision-05."
+    ]
+  },
+  "decision": {
+    "promote_sonnet55_architect": false,
+    "advance_to_p3": false,
+    "next_action": "Run a focused P2.1 Sonnet 5.5 revision or deterministic location-consistency validator before adaptive QA work.",
+    "reason": "Cost/latency gains are material, but an ACCEPTed contract-blocking self-contradiction means the architect+gate pair is not yet stable enough for promotion."
+  }
+}
