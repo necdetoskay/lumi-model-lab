@@ -105,9 +105,20 @@ Examples of real escalation:
 
 ## Reversal
 
-The reversal should reinterpret something previously believed, not be arbitrary surprise.
+The reversal must be evidence-traceable, not an attractive inference invented by the plan.
 
-It should emerge from prior evidence.
+For every reversal evidence claim:
+- reference only beat keys established BEFORE the reversal;
+- distinguish OBSERVED fact, INFERRED conclusion, and HYPOTHESIS;
+- never claim more than those beats actually establish.
+
+State the prior belief, the reinterpretation, the inference ceiling, and what remains unresolved.
+
+A static historical mark can establish a historical alignment difference. By itself it CANNOT establish when, how often, or under which tide state that difference occurs.
+
+If the reversal proposes a tide-linked pattern, the pre-reversal beats must contain direct time/tide-varying observations or documented observations that actually support that relationship. Do not turn coincidence into causation.
+
+The reversal should reinterpret something previously believed, not be arbitrary surprise.
 
 ## Agency
 
