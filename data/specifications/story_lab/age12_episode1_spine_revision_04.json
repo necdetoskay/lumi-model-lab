@@ -1,0 +1,40 @@
+{
+  "schema": "episode-spine-revision-feedback.v1",
+  "source_run_id": 36517726122,
+  "verdict": "REVISE",
+  "preserve": [
+    "approved premise beacon_drift_first_log",
+    "exact age 12 and STANDARD 1600-2500 word session",
+    "revision-03 continuous timestamped observations across changing tide height",
+    "stable instrument control checks",
+    "bounded inference: within this session the drift tracks tide state",
+    "explicit inference ceiling: no proof of recurrence, physical cause, or wider Saga mechanism",
+    "report_now versus independently reset/recalibrated retest choice",
+    "single-site Beacon Ridge investigation during the tide window",
+    "harbor logs remain neutral"
+  ],
+  "defects": [
+    {
+      "key": "unsupported_hypothesis_misclassified_as_evidence",
+      "severity": "contract_blocking",
+      "finding": "The Architect placed the unsupported claim that tide-linked behavior recurs on other cycles/systematically into reversal.evidence with no supporting beat keys.",
+      "required_change": "Remove unsupported future recurrence/systematic-cause claims from reversal.evidence. Keep them only in unresolved_after_reversal or inference_ceiling. Every reversal.evidence item must cite actual pre-reversal beats."
+    },
+    {
+      "key": "two_session_equivalent_wording",
+      "severity": "major",
+      "finding": "The retest payoff calls a separately reset reading within the same tide session a 'two-session-equivalent' result, which overstates independence.",
+      "required_change": "Describe it accurately as a separately recalibrated corroborating reading within the same field session. It may strengthen the case but cannot substitute for evidence from another tide cycle."
+    }
+  ],
+  "acceptance_conditions": [
+    "every reversal.evidence claim has one or more valid pre-reversal supporting beat keys",
+    "unsupported recurrence/cause/systematic claims remain unresolved rather than evidence",
+    "certainty labels match what the cited beats actually establish",
+    "the retest is not described as equivalent to a separate session or tide cycle",
+    "report_now and retest remain materially different",
+    "physical cause and recurrence remain unresolved",
+    "writer receives a complete causal chain without needing to invent evidence",
+    "first_discrepancy_logged remains commit-only-if-earned"
+  ]
+}
