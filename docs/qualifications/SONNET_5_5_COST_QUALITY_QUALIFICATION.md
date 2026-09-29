@@ -114,3 +114,22 @@ Decision:
 - Do not promote Sonnet 5.5 Architect yet.
 - Do not advance to P3 yet.
 - Next phase is P2.1: fix/validate location-contract consistency while retaining the measured cost/latency gain.
+
+
+### P2.1 — LOCATION CONTRACT PASS, PAYOFF HUMAN REVISE
+Run: 36536725908.
+
+Measured:
+- Deterministic location-contract validator: PASS.
+- Luna gate: ACCEPT.
+- All beats/logistics/writer rules are now single-site Beacon Ridge.
+- Architect cost: $0.081272.
+- Full spine+gate cost: $0.08559685 (~28.4% below frozen Sonnet 5 baseline).
+- Full spine+gate latency: 57.045 s (~46.6% below frozen baseline).
+
+Human adjudication found the previous branch/payoff defect reintroduced:
+- b9 state change guarantees a dated entry exists;
+- global local payoff guarantees a dated entry and mentor-relationship shift;
+- fresh-setup branch mechanics can still consume reporting time and leave no completed reviewed log.
+
+Decision: HUMAN REVISE. Do not promote. P2.2 should change only payoff conditionality and preserve the clean location contract.
