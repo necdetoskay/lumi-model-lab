@@ -1,6 +1,6 @@
 # Sonnet 5.5 Cross-Age Production Qualification
 
-Status: C0 CANDIDATE PROFILES READY — PRODUCT BUDGET APPROVAL BLOCKS PAID RUNS
+Status: C0 GREEN — AGE18 C1 SPINE ONLY AUTHORIZED
 
 ## Baseline authority
 
@@ -93,6 +93,26 @@ No paid model call is allowed until all are green:
 4. Add deterministic tests that reject tier/profile/budget mismatch.
 5. Keep age 12 Final V3 immutable as the control.
 6. Record one machine-readable cross-age matrix with all paid boundaries explicit.
+
+
+
+## C0 GREEN decision
+
+User approved a fixed product STANDARD range of 1,600–2,500 words for the first controlled 12/18/25/40/60 proof.
+
+This intentionally holds length constant while exact-age maturity changes, preventing story length from becoming a confound.
+
+Promoted reader-profile authorities now exist for exact ages 18, 25, 40 and 60.
+
+The first paid scope is narrow:
+- age18 only;
+- Sonnet 5.5 Episode Spine Architect;
+- deterministic EpisodeSpineV2 validators;
+- GPT-5.6 Luna Spine Gate only if deterministic validation passes;
+- stop for HUMAN review;
+- no Writer, audit, repair, translation or fidelity.
+
+Age18 uses a controlled Shattered Meridian A/B fixture so world identity is held stable while professional responsibility, institutional consequences, agency, inference and social complexity are raised.
 
 ## Qualification sequence after C0
 

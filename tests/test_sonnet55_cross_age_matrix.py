@@ -19,8 +19,9 @@ AGE12 = Path("data/specifications/reader_profiles/age12_adventure_v2.json")
 
 def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
-    assert matrix["status"] == "C0_CANDIDATE_PROFILES_READY_PAID_BLOCKED"
-    assert matrix["paid_boundary"]["authorized"] is False
+    assert matrix["status"] == "C0_GREEN"
+    assert matrix["paid_boundary"]["authorized"] is True
+    assert matrix["paid_boundary"]["authorized_scope"] == "AGE18_C1_SPINE_ONLY"
 
     for case in matrix["cases"]:
         age = int(case["exact_age"])
@@ -45,36 +46,30 @@ def test_age12_control_profile_is_valid_and_immutable_control() -> None:
     assert control["product_standard_words_max"] == profile.standard_session.target_words_max
 
 
-def test_unqualified_ages_cannot_have_paid_authority_yet() -> None:
+def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -> None:
     matrix = json.loads(MATRIX.read_text())
-    pending = [row for row in matrix["cases"] if row["exact_age"] != 12]
+    promoted = [row for row in matrix["cases"] if row["exact_age"] != 12]
 
-    assert {row["exact_age"] for row in pending} == {18, 25, 40, 60}
-    for row in pending:
-        assert row["reader_profile"] is None
-        assert row["product_standard_words_min"] is None
-        assert row["product_standard_words_max"] is None
-        assert row["status"] == "CANDIDATE_PROFILE_READY_BUDGET_UNAPPROVED"
+    assert {row["exact_age"] for row in promoted} == {18, 25, 40, 60}
+    for row in promoted:
+        assert row["reader_profile"] is not None
+        assert row["product_standard_words_min"] == 1600
+        assert row["product_standard_words_max"] == 2500
+        assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
 
 
-def test_candidate_profiles_validate_but_do_not_authorize_paid_runs() -> None:
+def test_promoted_profiles_validate_and_candidate_files_remain_as_history() -> None:
     matrix = json.loads(MATRIX.read_text())
-    assert matrix["status"] == "C0_CANDIDATE_PROFILES_READY_PAID_BLOCKED"
-    assert matrix["paid_boundary"]["authorized"] is False
+    assert matrix["status"] == "C0_GREEN"
 
     for row in matrix["cases"]:
         if row["exact_age"] == 12:
             continue
         candidate_path = Path(row["candidate_profile"])
-        profile = ReaderDevelopmentProfileV2.model_validate_json(candidate_path.read_text())
-        assert profile.exact_age == row["exact_age"]
-        assert profile.capability_bridge.narrative_age_tier == row["narrative_age_tier"]
-        assert profile.capability_bridge.reading_mode == row["reading_mode"]
-        assert (
-            profile.capability_bridge.qualification_standard_target_words
-            == row["qualification_standard_target_words"]
-        )
-        assert row["reader_profile"] is None
-        assert row["product_standard_words_min"] is None
-        assert row["product_standard_words_max"] is None
-        assert row["status"] == "CANDIDATE_PROFILE_READY_BUDGET_UNAPPROVED"
+        candidate = ReaderDevelopmentProfileV2.model_validate_json(candidate_path.read_text())
+        promoted = ReaderDevelopmentProfileV2.model_validate_json(Path(row["reader_profile"]).read_text())
+        assert candidate.exact_age == promoted.exact_age == row["exact_age"]
+        assert promoted.capability_bridge.narrative_age_tier == row["narrative_age_tier"]
+        assert promoted.capability_bridge.reading_mode == row["reading_mode"]
+        assert promoted.standard_session.target_words_min == 1600
+        assert promoted.standard_session.target_words_max == 2500
