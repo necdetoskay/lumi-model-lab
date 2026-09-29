@@ -21,7 +21,7 @@ def test_cross_age_matrix_matches_canonical_capability_cube() -> None:
     matrix = json.loads(MATRIX.read_text())
     assert matrix["status"] == "C0_GREEN"
     assert matrix["paid_boundary"]["authorized"] is False
-    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C5_TRANSLATION_ONLY"
+    assert matrix["paid_boundary"]["next_scope"] == "AGE18_C6_LUNA_FIDELITY_ONLY"
 
     for case in matrix["cases"]:
         age = int(case["exact_age"])
@@ -56,7 +56,7 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
         assert row["product_standard_words_min"] == 1600
         assert row["product_standard_words_max"] == 2500
         if row["exact_age"] == 18:
-            assert row["status"] == "C4_GREEN_C5_TRANSLATION_READY"
+            assert row["status"] == "C5_TRANSLATED_C6_READY"
             assert row["latest_gate_decision"] == "ACCEPT"
             assert row["latest_run_id"] == 36612862926
             assert row["writer_run_id"] == 36612862926
@@ -76,6 +76,10 @@ def test_cross_age_reader_authorities_are_promoted_with_fixed_product_budget() -
             assert row["c41_deterministic_repairs"] == 2
             assert row["accepted_english_word_count"] == 2176
             assert row["post_repair_guard_findings"] == 0
+            assert row["c5_run_id"] == 36620129124
+            assert row["translation_cost_usd"] == 0.01754025
+            assert row["translation_tokens"] == 7391
+            assert row["turkish_word_count"] == 1814
         else:
             assert row["status"] == "READY_FOR_SEQUENTIAL_QUALIFICATION"
 

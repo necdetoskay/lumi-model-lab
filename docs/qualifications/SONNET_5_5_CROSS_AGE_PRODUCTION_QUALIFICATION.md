@@ -396,3 +396,33 @@ C5 prepared:
 - no fidelity call in the same workflow
 - C6 Luna fidelity remains a separate paid boundary
 - no C5 trigger has been created.
+
+
+## Age18 C5 result — TRANSLATED / C6 READY
+
+C5 run: 36620129124
+
+A first workflow attempt (36619770385) failed before importing the translation runtime because of an incorrect parse_cost module path. It reached no model call and incurred zero model cost. The import was fixed and regression-tested before rerun.
+
+Successful translation:
+- model: Gemini 3.8 Flash
+- English master: 2,176 words
+- Turkish delivery: 1,814 words
+- translation tokens: 7,391
+- incremental cost: $0.01754025
+- latency: 28.517s
+- product-path pipeline through translation: $0.17381580 / 75,674 tokens / 411.597s
+
+Free human translation pre-audit:
+- serious candidate: title modality shift
+  - EN: The Route That Might Need Closing
+  - TR: Kapatılması Gereken Rota
+  - concern: Turkish removes the source uncertainty and implies closure is required.
+- review: recurrence unknown -> tekrarlanabilirlik bilinmiyor may collapse recurrence with independent repeatability.
+- several literal/technical Turkish phrasings are stylistically awkward but not automatically serious fidelity defects.
+
+C6 prepared:
+- one GPT-5.6 Luna narrow EN->TR semantic fidelity gate only
+- no repair or adjudication in the same workflow
+- publication_ready only if the direct fidelity gate is clean
+- trigger not created.
