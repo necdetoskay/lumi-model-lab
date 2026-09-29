@@ -85,6 +85,39 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertEqual(payload["max_tokens"], 1200)
         self.assertEqual(payload["response_format"], {"type": "json_object"})
 
+    def test_aion35_mini_is_qualification_ready_with_verified_metadata(self) -> None:
+        profile = require_qualification_runtime_profile("aion-labs/aion-3.5-mini")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["context_tokens"], 262144)
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 32768)
+        self.assertEqual(
+            profile["metadata"]["pricing_usd_per_million_tokens"],
+            {"input": 0.70, "output": 1.40, "cache_read": 0.18},
+        )
+        self.assertEqual(
+            profile["metadata"]["capabilities"]["structured_output"],
+            "json_object",
+        )
+
+    def test_aion35_mini_writer_contract_omits_seed_and_caps_output(self) -> None:
+        payload = normalize_openrouter_request(
+            "aion-labs/aion-3.5-mini",
+            {
+                "temperature": 0.72,
+                "max_tokens": 12000,
+                "seed": 2026092901,
+                "reasoning": {"enabled": True},
+            },
+            request_class="teacher_story_medium_reasoning",
+            structured_output=False,
+        )
+        self.assertEqual(payload["temperature"], 0.72)
+        self.assertEqual(payload["max_tokens"], 7000)
+        self.assertNotIn("seed", payload)
+        self.assertNotIn("reasoning", payload)
+        self.assertNotIn("stream", payload)
+
     def test_luna_is_qualification_ready_with_verified_metadata(self) -> None:
         profile = require_qualification_runtime_profile("openai/gpt-5.6-luna")
         self.assertEqual(profile["match"]["type"], "exact")
