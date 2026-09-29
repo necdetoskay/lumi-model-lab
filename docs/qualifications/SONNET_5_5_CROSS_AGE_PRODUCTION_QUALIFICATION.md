@@ -312,3 +312,44 @@ C3.1 preparation:
 Next paid scope:
 one GPT-5.6 Luna C3.1 typed-authority-v2 gate only.
 No repair, Sol, translation or fidelity is authorized.
+
+
+## Age18 C3.1 / C3.2 result — DETERMINISTIC HARD GUARDS GREEN
+
+C3.1 run: 36616784331
+
+C3.1 Luna v2:
+- incremental cost: $0.0042653
+- latency: 5.197s
+- confirmed-root recall: 2/3 = 66.7%
+- matched: premature formal-record commit; setup/instrument overclaim
+- missed: raw-notes blank-page contradiction
+
+Conclusion:
+Luna improved materially with authority packet v2 but remains insufficient as the sole hard authority gate.
+
+C3.2 deterministic guards:
+- formal record ordering
+- raw observation erasure
+- unresolved setup/instrument hard overclaim
+- expandable hard patterns for cause, recurrence and other-beacon scope
+
+Evidence:
+- age18 confirmed roots: 3/3 = 100% recall
+- unmapped/extra findings on age18 target story: 0
+- publication-ready age12 Final V3 clean-control findings: 0
+- synthetic positive/negative guard tests PASS
+
+Architecture decision:
+Hard record-state and high-confidence epistemic invariants move to deterministic guards.
+Luna remains only for semantic gray-area adjudication where deterministic rules cannot decide safely.
+
+C4 prepared:
+- one GPT-5.6 Sol bounded repair only
+- input defects are exactly the three deterministic confirmed local findings
+- unaffected prose may not be rewritten
+- branch choice, five-reading series and no-advisory outcome are frozen
+- post-repair deterministic guards rerun locally
+- translation remains blocked unless post-repair guard count is zero
+
+No C4 paid trigger has been created.
