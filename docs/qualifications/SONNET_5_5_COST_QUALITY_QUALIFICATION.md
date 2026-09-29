@@ -150,3 +150,24 @@ Run: 36537449744.
 This is exactly the intended value of deterministic contract validation: the classification regression was stopped before gate/downstream cost.
 
 Decision: P2.3 should change only episode-role authority while preserving the now-clean location/payoff logic.
+
+
+### P2.3 — CONTRACT PASS, LUNA REPLAN
+Run: 36540005836.
+
+- Main Saga role authority: PASS.
+- Single-site Beacon Ridge contract: PASS.
+- Payoff conditionality: PASS.
+- Full spine+gate cost: $0.08590645.
+- Full spine+gate latency: 60.787 s.
+- Luna decision: REPLAN.
+
+Luna correctly identified the next structural gap:
+1. Tide-correlation evidence was not operationally specific enough to audit against setup movement.
+2. Branch choice was open as intended, but branch RESULT was also open. The writer still had to invent the decisive evidence result and mentor response.
+3. Because branch core results were open, the local payoff was not outcome-complete.
+
+P2.4 rule:
+- branch choice remains uncommitted;
+- each branch receives one predefined core evidence result and mentor/local outcome;
+- durable commit remains commit-only-if-earned.
