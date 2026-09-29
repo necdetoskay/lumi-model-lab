@@ -496,3 +496,60 @@ Pinned artifacts:
 - data/specifications/story_lab/age12_episode1_sonnet55_final_en.txt
 - data/specifications/story_lab/age12_episode1_sonnet55_final_tr.txt
 - data/specifications/story_lab/sonnet55_final_delivery_run_36580391689.json
+
+
+### FINAL DELIVERY V3 — CANONICAL PUBLICATION READY
+Run: 36581420415.
+
+V3 supersedes V2 as the canonical delivered Turkish artifact while preserving V2 as historical qualification evidence.
+
+Final status:
+- publication_ready: true
+- accepted English master: 1,889 words
+- Turkish delivery: 1,562 words
+- final fidelity gate: PASS via contextual adjudication
+- confirmed fidelity findings: 0
+- deterministic notation alignment: PASS
+- canonical Turkish notation: `P — tek düzenek`
+
+Canonical V3 successful pipeline:
+- API calls: 10
+- input tokens: 81,150
+- output tokens: 19,865
+- reasoning tokens: 4,673
+- cache-write tokens: 56,837
+- total tokens: 101,015
+- total cost: $0.17488370
+- summed model latency: 226.663s
+
+V3-only recovery:
+- 2 Luna calls
+- 13,784 tokens
+- $0.00394445
+- 8.843s
+
+Model totals in the canonical V3 pipeline:
+- Sonnet 5.5: $0.088474 / 19,697 tokens / 41.724s
+- Aion 3.5 Mini: $0.01406580 / 13,909 tokens / 105.118s
+- GPT-5.6 Sol: $0.042676 / 11,044 tokens / 27.280s
+- Gemini 3.8 Flash: $0.01521825 / 6,463 tokens / 26.784s
+- GPT-5.6 Luna (6 calls): $0.01444965 / 49,902 tokens / 25.757s
+
+Compared with frozen Revision-05 canonical baseline:
+- old: $0.56977398
+- final V3: $0.17488370
+- reduction: 69.3%
+- final V3 costs 30.7% of the old canonical pipeline.
+
+Canonical artifacts:
+- data/specifications/story_lab/age12_episode1_sonnet55_final_en.txt
+- data/specifications/story_lab/age12_episode1_sonnet55_final_tr.txt
+- data/specifications/story_lab/sonnet55_final_delivery_v3_run_36581420415.json
+
+Qualification outcome:
+- Sonnet 5.5 spine architect: qualified with deterministic contracts + human authority.
+- Aion 3.5 Mini remains the Writer.
+- Typed authority packet + compact Luna authority gate is the preferred canon/state QA path.
+- Generic always-on Sol secondary is not justified.
+- Confirmed defects should flow directly into bounded repair instead of being rediscovered by another judge.
+- Translation fidelity should use contextual adjudication before bounded repair.
