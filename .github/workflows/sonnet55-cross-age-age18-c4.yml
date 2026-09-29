@@ -1,0 +1,55 @@
+name: Sonnet 5.5 Cross-Age Age18 C4 Bounded Repair
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/sonnet55-cross-age-age18-c4.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run confirmed-defect bounded repair only
+        run: >-
+          PYTHONPATH=. python -m src.cross_age_age18_c4_bounded_repair
+          --source data/specifications/story_lab/age18_cross_age_c2_postprocess_source_36612862926.json
+          --approved data/specifications/story_lab/age18_cross_age_c11_approved.json
+          --guard data/specifications/story_lab/age18_cross_age_c32_deterministic_guard_evidence.json
+          --out runs/sonnet55-cross-age-age18-c4/result.json
+          --story-out runs/sonnet55-cross-age-age18-c4/repaired_story.txt
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s runs/sonnet55-cross-age-age18-c4/result.json
+          TMP="$(mktemp -d)"
+          cp runs/sonnet55-cross-age-age18-c4/result.json "$TMP/result.json"
+          if test -s runs/sonnet55-cross-age-age18-c4/repaired_story.txt; then cp runs/sonnet55-cross-age-age18-c4/repaired_story.txt "$TMP/repaired_story.txt"; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          EVIDENCE_BRANCH="evidence/sonnet55-cross-age-age18-c4-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          DEST="experiments/results/sonnet55-cross-age-age18-c4/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+          if test -s "$TMP/repaired_story.txt"; then cp "$TMP/repaired_story.txt" "$DEST/repaired_story.txt"; fi
+          git add "$DEST"
+          git commit -m "evidence(qual): archive age18 C4 bounded repair ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
