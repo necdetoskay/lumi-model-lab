@@ -1,0 +1,2812 @@
+{
+  "schema_version": "sonnet55-audit-ab-evidence.v1",
+  "status": "completed",
+  "experiment": "S55-P1-AUDIT-AB",
+  "source_writer_run_id": 36526379349,
+  "source_postprocess_run_id": 36528435261,
+  "model": "anthropic/claude-sonnet-5.5",
+  "runtime_identity": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5.5",
+    "display_name": "Claude Sonnet 5.5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5.5"
+    },
+    "profile_sha256": "e8031034d9a9660804dde58cf8f0ceb85e5f4c70653573339b6f9e64bcc75b1d",
+    "runtime_contract_sha256": "15b41b691d8ca00c1a3ec539eb479e8e1151efc1656e4f6bdf437f2744ca314d",
+    "production_policy_sha256": "07dd61e85e2b09769c43927c0f174c3afd57a2c4c20bed50cbc4db17aace1530"
+  },
+  "gold_root_spans": {
+    "unauthorized_durable_history": [
+      "S010"
+    ],
+    "measurement_series_causal_inconsistency": [
+      "S054",
+      "S066"
+    ],
+    "reading_count_state_inconsistency": [
+      "S080",
+      "S099",
+      "S121"
+    ],
+    "future_protocol_overcommit": [
+      "S188",
+      "S189",
+      "S190"
+    ],
+    "flooding_ridge_escape_inconsistency": [
+      "S201",
+      "S202"
+    ],
+    "control_check_certainty_weakness": [
+      "S163",
+      "S164"
+    ]
+  },
+  "findings": [
+    {
+      "family": "physical_feasibility",
+      "raw_severity": "serious",
+      "severity": "serious",
+      "severity_normalization": null,
+      "repair_scope": "local",
+      "span_ids": [
+        "S200",
+        "S199"
+      ],
+      "exact_quote": "watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves",
+      "source_locator": {
+        "sentence_id": "S199",
+        "paragraph_id": "P069",
+        "paragraph_index": 69,
+        "sentence_word_start": 10,
+        "sentence_word_end": 25,
+        "exact_quote": "watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves",
+        "char_start": 11877,
+        "char_end": 11979
+      },
+      "reason": "The beacon is a pillar at the end of a ridge that surfaces only at extreme low tide, yet its midsection and sighting marks are submerged within minutes while Deniz packs and stays nearby. The tip then vanishes as well, which is implausible for a structure that stands well above the ridge. Deniz would be stranded or in danger in that water."
+    },
+    {
+      "family": "state_continuity",
+      "raw_severity": "serious",
+      "severity": "serious",
+      "severity_normalization": null,
+      "repair_scope": "local",
+      "span_ids": [
+        "S004",
+        "S054",
+        "S063"
+      ],
+      "exact_quote": "Fourteen degrees off true.",
+      "source_locator": {
+        "sentence_id": "S004",
+        "paragraph_id": "P003",
+        "paragraph_index": 3,
+        "sentence_word_start": 1,
+        "sentence_word_end": 4,
+        "exact_quote": "Fourteen degrees off true.",
+        "char_start": 180,
+        "char_end": 206
+      },
+      "reason": "The first reading is 14 degrees, but the series then starts at 11.2 and climbs to 14.1. If the original reading is the 14 peak, the series ordering does not fit the story's account of the tide state. The opening drift also does not match the 'four readings' count (S080), because the series actually contains five logged values: 11.2, 12.8, 14.1, 14.3, 13.6."
+    },
+    {
+      "family": "temporal_consistency",
+      "raw_severity": "serious",
+      "severity": "serious",
+      "severity_normalization": null,
+      "repair_scope": "local",
+      "span_ids": [
+        "S085",
+        "S111",
+        "S087"
+      ],
+      "exact_quote": "Light: good for perhaps another hour.",
+      "source_locator": {
+        "sentence_id": "S085",
+        "paragraph_id": "P031",
+        "paragraph_index": 31,
+        "sentence_word_start": 1,
+        "sentence_word_end": 6,
+        "exact_quote": "Light: good for perhaps another hour.",
+        "char_start": 5666,
+        "char_end": 5703
+      },
+      "reason": "Deniz estimates about an hour of usable light, but the site must be secured within half an hour. The tide is also described as 'turned' even though the later 'first ripple' shows it only just turning, so the time cues clash."
+    },
+    {
+      "family": "closure_integrity",
+      "raw_severity": "serious",
+      "severity": "serious",
+      "severity_normalization": null,
+      "repair_scope": "local",
+      "span_ids": [
+        "S187",
+        "S188"
+      ],
+      "exact_quote": "Anomaly logged, pending confirmation on next extreme tide.",
+      "source_locator": {
+        "sentence_id": "S188",
+        "paragraph_id": "P066",
+        "paragraph_index": 66,
+        "sentence_word_start": 2,
+        "sentence_word_end": 9,
+        "exact_quote": "Anomaly logged, pending confirmation on next extreme tide.",
+        "char_start": 11352,
+        "char_end": 11410
+      },
+      "reason": "This partly overreaches the constraint that the payoff must not be guaranteed, but the deeper problem is that the framing of recurrence next tide ('If recurrence, escalate') treats a next-tide test as settled procedure. It is a minor risk, though the closing already earns the note through in-scene execution."
+    }
+  ],
+  "score": {
+    "root_count": 6,
+    "matched_root_count": 2,
+    "root_recall": 0.333333,
+    "matched_roots": [
+      "measurement_series_causal_inconsistency",
+      "future_protocol_overcommit"
+    ],
+    "missed_roots": [
+      "unauthorized_durable_history",
+      "reading_count_state_inconsistency",
+      "flooding_ridge_escape_inconsistency",
+      "control_check_certainty_weakness"
+    ],
+    "root_to_finding_indexes": {
+      "unauthorized_durable_history": [],
+      "measurement_series_causal_inconsistency": [
+        1
+      ],
+      "reading_count_state_inconsistency": [],
+      "future_protocol_overcommit": [
+        3
+      ],
+      "flooding_ridge_escape_inconsistency": [],
+      "control_check_certainty_weakness": []
+    },
+    "unmapped_findings": [
+      {
+        "finding_index": 0,
+        "finding": {
+          "family": "physical_feasibility",
+          "raw_severity": "serious",
+          "severity": "serious",
+          "severity_normalization": null,
+          "repair_scope": "local",
+          "span_ids": [
+            "S200",
+            "S199"
+          ],
+          "exact_quote": "watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves",
+          "source_locator": {
+            "sentence_id": "S199",
+            "paragraph_id": "P069",
+            "paragraph_index": 69,
+            "sentence_word_start": 10,
+            "sentence_word_end": 25,
+            "exact_quote": "watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves",
+            "char_start": 11877,
+            "char_end": 11979
+          },
+          "reason": "The beacon is a pillar at the end of a ridge that surfaces only at extreme low tide, yet its midsection and sighting marks are submerged within minutes while Deniz packs and stays nearby. The tip then vanishes as well, which is implausible for a structure that stands well above the ridge. Deniz would be stranded or in danger in that water."
+        }
+      },
+      {
+        "finding_index": 2,
+        "finding": {
+          "family": "temporal_consistency",
+          "raw_severity": "serious",
+          "severity": "serious",
+          "severity_normalization": null,
+          "repair_scope": "local",
+          "span_ids": [
+            "S085",
+            "S111",
+            "S087"
+          ],
+          "exact_quote": "Light: good for perhaps another hour.",
+          "source_locator": {
+            "sentence_id": "S085",
+            "paragraph_id": "P031",
+            "paragraph_index": 31,
+            "sentence_word_start": 1,
+            "sentence_word_end": 6,
+            "exact_quote": "Light: good for perhaps another hour.",
+            "char_start": 5666,
+            "char_end": 5703
+          },
+          "reason": "Deniz estimates about an hour of usable light, but the site must be secured within half an hour. The tide is also described as 'turned' even though the later 'first ripple' shows it only just turning, so the time cues clash."
+        }
+      }
+    ],
+    "unmapped_finding_count": 2
+  },
+  "baseline_sonnet5": {
+    "model": "anthropic/claude-sonnet-5",
+    "cost_usd": 0.065728,
+    "latency_seconds": 8.855,
+    "input_tokens": 28769,
+    "output_tokens": 819,
+    "reasoning_tokens": 0,
+    "finding_count": 1
+  },
+  "candidate_sonnet55": {
+    "finding_count": 4,
+    "cost_usd": 0.068302,
+    "latency_seconds": 9.2,
+    "usage": {
+      "api_calls": 1,
+      "input_tokens": 28771,
+      "output_tokens": 1076,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "total_tokens": 29847,
+      "cost_usd": 0.068302,
+      "latency_seconds": 9.2
+    },
+    "meta": {
+      "model": "anthropic/claude-sonnet-5.5",
+      "request_class": "editorial_audit",
+      "input": {
+        "system_prompt": "You are a strict StoryForge publication-blocker auditor.\n\nEvaluate the finished English story against:\n- StoryIntent;\n- authoritative Context Packet;\n- hard constraints;\n- validated Spine.\n\nEvaluate every canonical family:\n- physical_feasibility\n- causal_logic\n- state_continuity\n- epistemic_order\n- spatial_consistency\n- temporal_consistency\n- response_causality\n- closure_integrity\n- canon_integrity\n\nReport ONLY serious/critical semantic defects.\nDo not report optional polish.\n\nImportant:\n- transient childlike sounds/dialogue/gestures are allowed;\n- unsupported DURABLE canon/state attributes may be canon_integrity defects;\n- if the exact defect can be fixed without changing the validated plan, repair_scope=local;\n- if the prose needs multi-event restructuring, repair_scope=structural;\n- if the validated plan itself is the source of the defect, repair_scope=replan;\n- severity MUST be exactly serious or critical; if your native rubric would call a blocking defect \"major\", output serious instead;\n- for every present=true finding, exact_quote is REQUIRED and must be one exact substring copied from one cited story sentence;\n- exact_quote must be the smallest useful phrase or sentence fragment that proves the defect;\n- for present=false, exact_quote must be null.\n\nReturn JSON only:\n{\n  \"evaluations\":[\n    {\n      \"family\":\"physical_feasibility\",\n      \"present\":false,\n      \"severity\":null,\n      \"repair_scope\":null,\n      \"span_ids\":[],\n      \"exact_quote\":null,\n      \"reason\":\"brief\"\n    }\n  ]\n}",
+        "payload": {
+          "story_intent": {
+            "key": "beacon_drift_first_log",
+            "title": "The Angle That Wouldn't Match",
+            "location_refs": [
+              "beacon_ridge",
+              "meridian_harbor"
+            ],
+            "primary_focus": "MAIN_SAGA",
+            "target_refs": [
+              "first_discrepancy_logged",
+              "WORLD_EXPLORATION"
+            ],
+            "differentiation_key": "core_problem+target_thread",
+            "logline": "A routine beacon calibration turns into Deniz's first real test of whether patient observation can outweigh a mentor's doubt.",
+            "protagonist_role": "Apprentice surveyor conducting supervised but semi-independent beacon calibration checks.",
+            "immediate_objective": "Confirm whether a magnetic-stone beacon reading at Beacon Ridge is a genuine anomaly or an instrument error before the calibration window closes.",
+            "inciting_event": "While logging a routine reading, Deniz notices the beacon's angle has drifted further than tide tables allow, but the harbor's shipping logs show no confirming delays or complaints that would prove the drift is real.",
+            "central_problem": "Deniz has only a single suspicious reading and a narrow window before the tide changes and the anomaly becomes unmeasurable again, with no corroborating evidence yet and a mentor likely to dismiss a lone data point.",
+            "wonder_or_discovery": "A pattern emerges suggesting the drift is tied to tidal extremes rather than random error, hinting at something systematic in the old navigation network.",
+            "stakes": "If dismissed as a measurement mistake, a real anomaly worth investigating could go unrecorded for another season; if reported too early on thin evidence, Deniz risks being seen as overconfident and losing supervised field privileges.",
+            "constraints": [
+              "Limited daylight and tide window at Beacon Ridge",
+              "Only supervised access to the beacon instruments",
+              "Mentor evaluates methodology, not just conclusions"
+            ],
+            "meaningful_choice_pressure": "Deniz must decide whether to report the single unusual reading now, risking dismissal for insufficient evidence, or spend the remaining tide window trying to capture a second corroborating reading, risking losing the anomaly's window entirely if it doesn't recur.",
+            "mystery_or_forward_question": "Is this drift an isolated fluke, or the first visible sign of a larger disagreement between the old markers and the official charts?",
+            "local_payoff": "Deniz secures at least a provisional, logged acknowledgment of the anomaly, changing how the mentor treats future field reports.",
+            "persistent_outcomes_possible": [
+              "first_discrepancy_logged milestone becomes eligible",
+              "Mentor's assessment of Deniz's methodology shifts (skeptical, cautious-respect, or dismissive)",
+              "A dated logbook entry becomes a reusable reference item",
+              "A rumor begins circulating among harbor navigators about 'the ridge beacon problem'"
+            ],
+            "world_specific_elements": [
+              "magnetic-stone beacon calibration",
+              "tide-table cross-referencing",
+              "harbor shipping logs as corroborating evidence",
+              "mentor evaluation of field methodology"
+            ],
+            "saga_progression_required": false,
+            "expected_session": "STANDARD"
+          },
+          "hard_constraints": [
+            "Do not have any beat imply the harbor was physically visited; harbor log neutrality is prior knowledge only.",
+            "Do not let the control check prove the original reading was error-free; it only narrows the instrument-error hypothesis.",
+            "Do not let either decision branch guarantee a logged acknowledgment; the payoff must be earned through in-scene execution.",
+            "Keep the fresh-setup retest framed as testing setup-dependent error, not as evidence of recurrence across tide cycles.",
+            "Do not resolve whether the pattern repeats next tide, whether other beacons show it, or its physical cause.",
+            "Do not have Deniz travel to Meridian Harbor or Beacon Ridge sequentially; the episode stays at Beacon Ridge throughout.",
+            "The mentor's judgment must respond to what Deniz actually produces in the chosen branch, not to a predetermined verdict.",
+            "INFERENCE CEILING: Nothing here proves the instrument was error-free at the exact moment of the original anomalous reading, nor that the pattern will recur on other tides or exists at other beacons.",
+            "MUST REMAIN UNRESOLVED: Whether the tide-linked pattern repeats on future tide cycles, whether other beacons show it, and what physically causes it remain unknown."
+          ],
+          "context_packet": {
+            "schema": "premise-context-projection.v2",
+            "reader_profile": {
+              "schema": "reader-development-profile.v2",
+              "profile_id": "reader.age12.adventure.v2",
+              "exact_age": 12,
+              "audience_band": "OLDER_CHILD",
+              "developmental_stage": "early_adolescent_reader",
+              "capability_bridge": {
+                "narrative_age_tier": "MIDDLE_CHILD",
+                "reading_mode": "INDEPENDENT_READER",
+                "qualification_standard_target_words": 2800,
+                "product_session_length_is_separate_authority": true
+              },
+              "dimensions": [
+                {
+                  "name": "PREMISE_MATURITY",
+                  "target_level": 4,
+                  "description": "Core story problem should feel substantively suitable for a 12-year-old, not like preschool play dressed in harder vocabulary."
+                },
+                {
+                  "name": "NARRATIVE_COMPLEXITY",
+                  "target_level": 4,
+                  "description": "Support layered goals, changing information, reversals, and multi-step progression while remaining readable."
+                },
+                {
+                  "name": "CONCEPTUAL_COMPLEXITY",
+                  "target_level": 3,
+                  "description": "Allow systems, evidence, competing explanations, responsibility, trust, and consequences without requiring adult-only abstraction."
+                },
+                {
+                  "name": "CAUSAL_DEPTH",
+                  "target_level": 4,
+                  "description": "Important outcomes should follow from multiple linked causes rather than one-step problem-solution patterns."
+                },
+                {
+                  "name": "INFERENCE_DEMAND",
+                  "target_level": 3,
+                  "description": "Reader should sometimes connect clues, motives, patterns, or consequences without every relationship being stated directly."
+                },
+                {
+                  "name": "AGENCY_COMPLEXITY",
+                  "target_level": 4,
+                  "description": "Character should face meaningful options, trade-offs, strategy, or uncertainty; choices must not be predetermined."
+                },
+                {
+                  "name": "STAKES_CONSEQUENCE_COMPLEXITY",
+                  "target_level": 3,
+                  "description": "Actions should matter to reputation, relationships, access, goals, safety, or world state without requiring graphic danger."
+                },
+                {
+                  "name": "SOCIAL_RELATIONSHIP_COMPLEXITY",
+                  "target_level": 3,
+                  "description": "Support trust, disagreement, rivalry, mentorship, competing interests, and mixed motives without adult melodrama."
+                },
+                {
+                  "name": "PREDICTABILITY_CHALLENGE",
+                  "target_level": 4,
+                  "description": "Avoid obvious one-beat resolutions; allow wrong hypotheses, reversals, incomplete information, and earned payoff."
+                },
+                {
+                  "name": "WONDER_DISCOVERY",
+                  "target_level": 4,
+                  "description": "Adventure-oriented episodes should offer places, systems, discoveries, mysteries, or experiences larger than ordinary daily-life simulation."
+                },
+                {
+                  "name": "LANGUAGE_READABILITY",
+                  "target_level": 3,
+                  "description": "Use clear, natural language suitable for an independent 12-year-old reader. Story maturity must not depend on jargon."
+                }
+              ],
+              "standard_session": {
+                "name": "STANDARD",
+                "target_minutes_min": 15,
+                "target_minutes_max": 20,
+                "target_words_min": 1600,
+                "target_words_max": 2500
+              },
+              "optional_sessions": [
+                {
+                  "name": "QUICK",
+                  "target_minutes_min": 8,
+                  "target_minutes_max": 12,
+                  "target_words_min": 1000,
+                  "target_words_max": 1600
+                },
+                {
+                  "name": "LONG",
+                  "target_minutes_min": 20,
+                  "target_minutes_max": 30,
+                  "target_words_min": 2500,
+                  "target_words_max": 3500
+                },
+                {
+                  "name": "SPECIAL",
+                  "target_minutes_min": 30,
+                  "target_minutes_max": 45,
+                  "target_words_min": 3500,
+                  "target_words_max": 5000
+                }
+              ],
+              "required_story_capabilities": [
+                "Meaningful protagonist role in the world",
+                "At least one non-trivial objective or unresolved question",
+                "Multi-step causality",
+                "Meaningful discovery or change in understanding",
+                "A real choice, strategic constraint, or consequential action",
+                "Local episode payoff",
+                "Persistent consequence or reusable world-state value",
+                "Adventure-oriented modes should include wonder, exploration, mystery, or extraordinary experience"
+              ],
+              "reject_signals": [
+                "Core premise is primarily pretend-play with toys, chores, or ordinary-room simulation unless explicitly requested",
+                "Difficult vocabulary is doing the work of making an otherwise young-child premise appear older",
+                "Problem resolves through one obvious attempt with no meaningful complication",
+                "Character mostly observes while adults or the world solve the important problem",
+                "Episode can be summarized as collect clue A, clue B, clue C with no reasoning change",
+                "Stakes are cosmetic and no persistent consequence can result",
+                "Mystery is solved before the character earns the relevant evidence",
+                "World can be swapped for any generic setting without changing the premise materially"
+              ],
+              "language_rules": [
+                "Prefer clarity over ornamental complexity",
+                "Technical terms are allowed when they serve the world or reasoning and can be understood in context",
+                "Do not infantilize dialogue or narration",
+                "Do not use vocabulary difficulty as a substitute for premise maturity",
+                "Keep exposition bounded and reveal information through action, observation, dialogue, or consequence where practical"
+              ],
+              "safety_rules": [
+                "Adventure tension is allowed without requiring graphic violence",
+                "Fear, danger, loss, rivalry, and uncertainty may be present when developmentally appropriate",
+                "Do not assume maturity requires darker or more violent content",
+                "Do not force romance, grief, betrayal, or trauma merely to make a story feel older"
+              ],
+              "calibration_notes": [
+                "A strong age-12 premise may involve systems failing, competing hypotheses, expedition planning, social disagreement, hidden history, evidence testing, or strategic risk.",
+                "A simple premise may still pass when deliberately selected for a calm/intimate mode, but should not be used as the default adventure ceiling.",
+                "Evaluate premise, narrative, conceptual, interest, and language maturity independently."
+              ]
+            },
+            "session_target": {
+              "name": "STANDARD",
+              "target_minutes_min": 15,
+              "target_minutes_max": 20,
+              "target_words_min": 1600,
+              "target_words_max": 2500
+            },
+            "character": {
+              "name": "Deniz",
+              "age": 12,
+              "archetype": "apprentice cartographer and field observer",
+              "traits": [
+                "observant",
+                "persistent",
+                "independent",
+                "sometimes overconfident",
+                "loyal"
+              ],
+              "interests": [
+                "ancient maps",
+                "sea creatures",
+                "mechanical instruments",
+                "coded symbols",
+                "unexplored places"
+              ],
+              "origin_summary": "Deniz grew up in Meridian Harbor apprenticing under a demanding mapmaker, driven to prove that patient observation can reveal what official charts miss.",
+              "current_role": "apprentice cartographer under supervised but increasingly independent fieldwork",
+              "identity_anchors": [
+                {
+                  "key": "evidence_over_confidence",
+                  "statement": "Deniz believes careful observation matters more than authority or bravado."
+                },
+                {
+                  "key": "unofficial_legitimacy",
+                  "statement": "Deniz wants recognition earned through proof, not granted by rank."
+                }
+              ],
+              "core_drives": [
+                {
+                  "key": "prove_method",
+                  "drive": "Prove that rigorous observation reveals truths official maps miss.",
+                  "strength": "PRIMARY"
+                },
+                {
+                  "key": "expand_range",
+                  "drive": "Earn the right to chart beyond the home strait.",
+                  "strength": "SECONDARY"
+                }
+              ],
+              "internal_tensions": [
+                {
+                  "key": "caution_vs_obsession",
+                  "side_a": "methodical patience",
+                  "side_b": "pull toward reckless pursuit of a personally meaningful mystery",
+                  "description": "Deniz's discipline is tested whenever a discovery brushes close to personal stakes."
+                }
+              ],
+              "immediate_desires": [
+                "earn the right to chart beyond the home strait",
+                "find hard evidence others cannot dismiss"
+              ],
+              "immediate_avoidances": [
+                "being dismissed as a reckless or overconfident child surveyor"
+              ]
+            },
+            "world": {
+              "world_type": "LOW_MAGIC",
+              "era": "age of sail with precision mechanical navigation",
+              "habitat": "a vast island chain divided by deep channels, storm belts and partially mapped outer seas",
+              "technology_level": "sailing ships, mechanical clocks, optical instruments, printing presses and hand-built navigation devices",
+              "magic_level": "rare, rule-bound geophysical phenomena associated with tides, magnetic stone and ancient infrastructure; no arbitrary spellcasting",
+              "summary": "The Shattered Meridian is an archipelago civilization whose survival depends on maps. Most inner routes are well known, but outer charts disagree, old observatories stand on remote islands, drowned roads appear at extreme tides, and some navigation markers predate every living culture. The world rewards exploration, evidence and careful inference rather than effortless magic.",
+              "location_access": [
+                {
+                  "key": "meridian_harbor",
+                  "name": "Meridian Harbor",
+                  "status": "AVAILABLE",
+                  "premise_usage": "FULL"
+                },
+                {
+                  "key": "beacon_ridge",
+                  "name": "Beacon Ridge",
+                  "status": "AVAILABLE",
+                  "premise_usage": "FULL"
+                },
+                {
+                  "key": "drowned_causeway",
+                  "name": "The Drowned Causeway",
+                  "status": "KNOWN_LOCKED",
+                  "premise_usage": "MENTION_ONLY"
+                },
+                {
+                  "key": "outer_mist_line",
+                  "name": "The Outer Mist Line",
+                  "status": "RUMORED",
+                  "premise_usage": "FORESHADOW_ONLY"
+                },
+                {
+                  "key": "tide_observatory",
+                  "name": "The abandoned tide observatory",
+                  "status": "KNOWN_LOCKED",
+                  "premise_usage": "MENTION_ONLY"
+                }
+              ],
+              "social_context": [
+                "cartographers and navigators hold respected public roles",
+                "island councils depend on reliable sea routes",
+                "young apprentices may take meaningful expedition roles within established safety rules",
+                "merchant captains, fishers and scholars often disagree about what counts as trustworthy evidence",
+                "old folklore sometimes preserves real geographic information in distorted form"
+              ],
+              "known_pressures": [
+                "several navigation beacons no longer agree with official charts",
+                "outer-island routes are becoming economically important",
+                "storm season will eventually restrict long voyages",
+                "different groups have reasons to prefer different versions of the map"
+              ],
+              "known_world_facts": [
+                "Meridian Harbor is Deniz's home port and training base.",
+                "Beacon Ridge is part of the known inner navigation network.",
+                "The Drowned Causeway is known to appear only during rare low tides.",
+                "The Outer Mist Line marks the edge of reliable official charts.",
+                "An abandoned tide observatory exists on a distant mapped island.",
+                "Several beacon readings have recently become difficult to reconcile with official charts, but no accepted explanation exists yet."
+              ]
+            },
+            "main_saga_public": {
+              "key": "the_uncharted_disagreement",
+              "title": "The Uncharted Disagreement",
+              "goal": "Discover why the Shattered Meridian's ancient navigation infrastructure and living tides no longer agree with official charts.",
+              "stakes": "Outer routes vital to island trade may become unsafe or unusable if the true cause of the discrepancies goes unaddressed.",
+              "central_mystery": "Something in the deep channels or the ancient beacon-markers is behaving in ways no known chart-making era can explain.",
+              "themes": [
+                "exploration",
+                "evidence versus assumption",
+                "the limits of official knowledge"
+              ]
+            },
+            "eligible_main_saga_milestones": [
+              {
+                "key": "first_discrepancy_logged",
+                "anchor_key": "noticing_the_drift",
+                "type": "DISCOVERY",
+                "summary": "Deniz notices a beacon reading that disagrees with the official chart by a margin too large for instrument error.",
+                "state_condition": "Deniz has one documented anomaly and a working hypothesis that it is not simple mistake.",
+                "possible_entry_vectors": [
+                  "EXPLORATION",
+                  "LOCATION",
+                  "ITEM"
+                ],
+                "consequence_options": [
+                  "The mentor questions Deniz's methodology.",
+                  "The friend becomes curious and offers to help verify."
+                ]
+              }
+            ],
+            "active_side_sagas": [
+              {
+                "key": "friend_expedition_rivalry",
+                "arc_type": "RELATIONSHIP",
+                "premise": "Deniz's practical-minded friend may want to pursue independent proof through experiments rather than surveying, creating friendly rivalry.",
+                "why_it_matters": "Provides low-stakes roleplay and callback material outside the Main Saga."
+              }
+            ],
+            "recent_episode_summaries": [],
+            "requested_mode": "ADVENTURE",
+            "creative_permission_envelope": {
+              "allowed_entity_types": [
+                "NPC",
+                "LOCATION",
+                "ITEM",
+                "RUMOR",
+                "DOCUMENT",
+                "EVENT",
+                "FACTION",
+                "WORLD_PHENOMENON",
+                "TRANSIENT_SCENE_DETAIL"
+              ],
+              "allowed_scopes": [
+                "LOCAL",
+                "REGIONAL",
+                "WORLD"
+              ],
+              "creation_constraints": [
+                "New entities must fit low-magic, rule-bound tidal/magnetic world logic.",
+                "New NPCs should have plausible reasons to intersect Deniz's apprentice life.",
+                "Do not contradict established hidden truths."
+              ],
+              "forbidden_creations": [
+                "Arbitrary magic systems",
+                "Confirmation of marker_origin beyond eligibility",
+                "Predetermined resolution of father's fate"
+              ],
+              "durable_creation_requires_outcome_commit": true
+            },
+            "rules": {
+              "main_saga_progression_optional": true,
+              "future_character_choice_must_remain_open": true,
+              "durable_new_fact_requires_outcome_commit": true,
+              "hidden_truths_not_available_to_premise_architect": true,
+              "known_locked_locations_cannot_be_primary_episode_locations": true,
+              "rumored_locations_are_foreshadow_only_until_unlocked": true
+            }
+          },
+          "validated_spine": {
+            "schema": "episode-spine.v2",
+            "premise_key": "beacon_drift_first_log",
+            "title": "The Angle That Wouldn't Match",
+            "exact_age": 12,
+            "session": "STANDARD",
+            "target_words_min": 1600,
+            "target_words_max": 2500,
+            "episode_role": "MAIN_SAGA_ENTRY",
+            "story_promise": "Deniz must turn one suspicious beacon reading into evidence solid enough to survive a skeptical mentor before the tide erases the chance to check it.",
+            "protagonist_role": "Apprentice surveyor conducting supervised but semi-independent beacon calibration checks.",
+            "immediate_objective": "Determine, within the closing tide window, whether the beacon's drifted angle is real and worth logging or an instrument error.",
+            "central_question": "Is the drift a genuine, tide-linked pattern or a fluke Deniz cannot yet prove?",
+            "stakes": "A real anomaly could go unrecorded for a season, or Deniz could be seen as overconfident and lose field privileges if the evidence is thin.",
+            "constraints": [
+              "Limited daylight and tide window at Beacon Ridge",
+              "Only supervised access to the beacon instruments",
+              "Mentor evaluates methodology, not just conclusions"
+            ],
+            "opening_hook": "During a routine reading, Deniz sees the beacon's needle sitting at an angle the tide tables say should be impossible right now.",
+            "logistics_plan": {
+              "time_window": "One shrinking low-tide window at Beacon Ridge, ending when the tide turns and the beacon markers submerge or become unreadable.",
+              "location_sequence": [
+                "beacon_ridge"
+              ],
+              "movement_constraints": [
+                "No travel to Meridian Harbor is required or feasible within the tide window; harbor shipping logs are referenced only as records Deniz already has or receives via a runner, not visited in person",
+                "All investigation stays at Beacon Ridge until the mentor arrives there"
+              ],
+              "feasibility_rationale": "Keeping the entire episode at Beacon Ridge avoids any travel-time conflict with the shrinking tide; the harbor logs' neutral lack of corroboration is established as prior knowledge Deniz already carries, not a new on-site visit."
+            },
+            "beats": [
+              {
+                "key": "bh_hook",
+                "phase": "HOOK",
+                "purpose": "Establish the anomalous reading and time pressure",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz logs a routine calibration reading and notices the angle exceeds the tide-table tolerance.",
+                "external_event": "The tide is already near its lowest safe measuring point.",
+                "new_information": "The beacon reading disagrees with the official chart by a margin larger than known instrument tolerance.",
+                "causal_dependency_keys": [],
+                "escalation_delta": "Introduces the core uncertainty under a ticking clock.",
+                "state_change": "Deniz now holds one unverified anomalous reading.",
+                "payoff_contribution": "Sets up the evidence that must eventually be corroborated or explained."
+              },
+              {
+                "key": "bh_orient",
+                "phase": "ORIENT",
+                "purpose": "Confirm the reading is not a simple table-reading mistake",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz rechecks the tide tables and beacon manual to rule out a transcription error.",
+                "external_event": "Nothing in the manual explains a drift this large at this tide state.",
+                "new_information": "The discrepancy is confirmed against the reference tables, not a copying mistake.",
+                "causal_dependency_keys": [
+                  "bh_hook"
+                ],
+                "escalation_delta": "Removes the easiest dismissal, raising the stakes of the mystery.",
+                "state_change": "Reading now classified as unexplained, not a paperwork slip.",
+                "payoff_contribution": "Establishes the anomaly as worth further investigation."
+              },
+              {
+                "key": "bh_complication",
+                "phase": "COMPLICATION",
+                "purpose": "Show the corroboration Deniz would want is unavailable",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz recalls the harbor shipping logs, delivered earlier by runner, show no delays or complaints from this period.",
+                "external_event": "A runner's earlier note confirms the harbor logs are clean and unhelpful either way.",
+                "new_information": "No outside record confirms or denies the drift; the harbor evidence is neutral, not corroborating.",
+                "causal_dependency_keys": [
+                  "bh_orient"
+                ],
+                "escalation_delta": "Removes an easy external proof, forcing Deniz to build the case on-site.",
+                "state_change": "Deniz understands this must be solved with on-site evidence alone.",
+                "payoff_contribution": "Frames the tide-window investigation as the only path to evidence."
+              },
+              {
+                "key": "bh_series",
+                "phase": "INVESTIGATION",
+                "purpose": "Gather a short corroborating series within the same session",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz takes continuous timestamped readings as the tide keeps dropping toward its extreme.",
+                "external_event": "The drift angle grows larger as the tide nears its lowest point, then narrows as it starts to turn.",
+                "new_information": "Within this single session, the drift's size tracks the tide state rather than jumping randomly.",
+                "causal_dependency_keys": [
+                  "bh_complication"
+                ],
+                "escalation_delta": "Turns one odd number into a directly observed pattern, but only for this session.",
+                "state_change": "Deniz now has a short observed series, not just one reading.",
+                "payoff_contribution": "Core evidence for the reversal; establishes tide-correlation within-session only."
+              },
+              {
+                "key": "bh_escalation_time",
+                "phase": "ESCALATION",
+                "purpose": "Tighten the window further",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz checks remaining light and tide clock while recording the series.",
+                "external_event": "The tide has already begun its turn; only a narrow slice of window remains.",
+                "new_information": "Fewer additional readings are physically possible before the markers submerge.",
+                "causal_dependency_keys": [
+                  "bh_series"
+                ],
+                "escalation_delta": "Access to more raw data is closing, raising pressure to act on what exists.",
+                "state_change": "Remaining measurement opportunities are now scarce.",
+                "payoff_contribution": "Sets the ticking clock for the decision point."
+              },
+              {
+                "key": "bh_control_check",
+                "phase": "ESCALATION",
+                "purpose": "Test the instrument-error hypothesis without overclaiming",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz performs a stability check on the instrument in its current setup, holding it steady and re-sighting.",
+                "external_event": "The instrument holds a stable, repeatable angle while stationary in its current mount.",
+                "new_information": "The current setup shows no drift while at rest, which weakens but does not disprove instrument error at the moment of the original reading.",
+                "causal_dependency_keys": [
+                  "bh_series",
+                  "bh_escalation_time"
+                ],
+                "escalation_delta": "New evidence narrows explanations without settling them, raising the burden of interpretation.",
+                "state_change": "Instrument-error hypothesis is weakened, not eliminated.",
+                "payoff_contribution": "Feeds the reversal's evidence with an accurately bounded certainty claim."
+              },
+              {
+                "key": "bh_mentor_arrival",
+                "phase": "ESCALATION",
+                "purpose": "Introduce social pressure and evaluation stakes",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz sees mentor Kural arriving earlier than expected to close the calibration window.",
+                "external_event": "Kural announces the site must be secured once the tide turns fully, cutting the usable time further.",
+                "new_information": "Kural's presence means any report will be judged on methodology immediately, not later.",
+                "causal_dependency_keys": [
+                  "bh_control_check"
+                ],
+                "escalation_delta": "Adds an evaluative stakeholder who changes what 'success' requires.",
+                "state_change": "Deniz must now choose a course of action under direct scrutiny.",
+                "payoff_contribution": "Forces the decision point to occur under real social and time pressure."
+              },
+              {
+                "key": "bh_reversal",
+                "phase": "REVERSAL",
+                "purpose": "Reframe the drift as a within-session pattern, not proven recurrence",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz reviews the series and control check together before deciding what to tell Kural.",
+                "external_event": "The data lines up: growing drift near tide extreme, stable instrument at rest.",
+                "new_information": "The drift behaves like something tied to tide state this session, but nothing proves it happens on other tides, other beacons, or why.",
+                "causal_dependency_keys": [
+                  "bh_series",
+                  "bh_control_check"
+                ],
+                "escalation_delta": "Shifts the problem from 'is it an error' to 'how much can I honestly claim.'",
+                "state_change": "Deniz's working belief moves from 'maybe a glitch' to 'probably a real pattern, unproven beyond today.'",
+                "payoff_contribution": "Defines the exact evidentiary ceiling for the decision and climax."
+              },
+              {
+                "key": "bh_decision",
+                "phase": "DECISION",
+                "purpose": "Force the branch choice under closing time",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz must choose to report now with the existing series, or spend remaining time on a fresh-setup retest.",
+                "external_event": "Kural gives a final short span before the site must be secured.",
+                "new_information": "None yet; the choice determines what evidence exists at climax.",
+                "causal_dependency_keys": [
+                  "bh_reversal",
+                  "bh_mentor_arrival"
+                ],
+                "escalation_delta": "Collapses all prior gathered evidence into one irreversible choice.",
+                "state_change": "Deniz commits to one evidentiary path, foreclosing the other.",
+                "payoff_contribution": "Sets up branch-specific climax and payoff."
+              },
+              {
+                "key": "bh_climax",
+                "phase": "CLIMAX",
+                "purpose": "Dramatize the chosen branch's test",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz either presents the series and control-check findings to Kural, or races to rebuild the instrument fresh and capture one more reading.",
+                "external_event": "The tide finishes turning; the window closes for good as Deniz acts.",
+                "new_information": "Depends on branch: either Kural's methodological verdict, or whether a fresh-setup reading still shows drift.",
+                "causal_dependency_keys": [
+                  "bh_decision"
+                ],
+                "escalation_delta": "Final and irreversible use of the remaining window.",
+                "state_change": "Deniz's evidence case is finalized for this episode, for better or worse.",
+                "payoff_contribution": "Delivers the material the local payoff depends on."
+              },
+              {
+                "key": "bh_payoff",
+                "phase": "PAYOFF",
+                "purpose": "Resolve the immediate uncertainty at the earned level",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz records the outcome in the field log, whatever it turned out to be.",
+                "external_event": "Kural responds to what was actually presented, not to a guaranteed result.",
+                "new_information": "A concrete, branch-dependent state: either a provisional logged note with cautious mentor respect, or an inconclusive/rushed entry with lingering doubt.",
+                "causal_dependency_keys": [
+                  "bh_climax"
+                ],
+                "escalation_delta": "None; this closes the immediate arc.",
+                "state_change": "Deniz's standing with Kural shifts according to what was actually earned.",
+                "payoff_contribution": "Delivers the local payoff conditional on branch success."
+              },
+              {
+                "key": "bh_tag",
+                "phase": "TAG",
+                "purpose": "Open the forward question without resolving it",
+                "location_ref": "beacon_ridge",
+                "character_action": "Deniz looks out at the beacon as the water rises over the markers, already wondering about the next tide cycle.",
+                "external_event": "The site is secured for the season's next low tide.",
+                "new_information": "None; explicitly reserved as unresolved.",
+                "causal_dependency_keys": [
+                  "bh_payoff"
+                ],
+                "escalation_delta": "None; sets up future episodes.",
+                "state_change": "The mystery persists beyond this episode.",
+                "payoff_contribution": "Leaves the forward hook toward recurrence, other beacons, and cause."
+              }
+            ],
+            "escalation_ladder": [
+              "The easy dismissal (transcription error) is ruled out early, forcing real investigation.",
+              "The expected external corroboration (harbor logs) turns out neutral, removing an easy proof path.",
+              "The tide window itself shrinks mid-investigation, cutting available data-gathering time.",
+              "A control check narrows but does not eliminate the instrument-error explanation, raising the burden of interpretation.",
+              "The mentor's early arrival adds an evaluative stakeholder who changes what counts as an acceptable report."
+            ],
+            "reversal": {
+              "prior_belief": "Deniz initially assumes the odd reading is likely a one-off instrument glitch or reading mistake.",
+              "evidence": [
+                {
+                  "claim": "Continuous same-session readings show the drift angle growing as the tide nears its lowest point and shrinking as it turns, rather than varying randomly.",
+                  "supporting_beat_keys": [
+                    "bh_series"
+                  ],
+                  "certainty": "OBSERVED"
+                },
+                {
+                  "claim": "A stability check shows the instrument holds steady while at rest in its current mount, which reduces but does not eliminate the chance the original reading was simple instrument error.",
+                  "supporting_beat_keys": [
+                    "bh_control_check"
+                  ],
+                  "certainty": "INFERRED"
+                }
+              ],
+              "reinterpretation": "The drift looks tied to the tide's extremity within this single session, rather than being pure instrument noise.",
+              "inference_ceiling": "Nothing here proves the instrument was error-free at the exact moment of the original anomalous reading, nor that the pattern will recur on other tides or exists at other beacons.",
+              "unresolved_after_reversal": "Whether the tide-linked pattern repeats on future tide cycles, whether other beacons show it, and what physically causes it remain unknown."
+            },
+            "decision_point": {
+              "pressure": "The tide window is closing and Kural is present, so Deniz must choose how to spend the last usable minutes and what evidence to stand behind.",
+              "branches": [
+                {
+                  "key": "report_now",
+                  "option": "Report now using the existing series and control-check data.",
+                  "immediate_action": "Deniz writes up the observed series and stability check into a careful log entry for Kural to review on the spot.",
+                  "evidence_state_after_choice": "One bounded, honestly-labeled within-session series plus a partial instrument check; no fresh-setup confirmation obtained.",
+                  "cost_or_risk": "Kural may still judge the evidence too thin for a full anomaly report, since it lacks independent replication.",
+                  "relationship_or_access_effect": "A well-argued, appropriately hedged report can earn cautious respect for Deniz's methodology even if the anomaly itself stays provisional.",
+                  "climax_requirement": "Dramatize Deniz defending the honest limits of the evidence rather than overselling certainty.",
+                  "local_payoff_if_earned": "A provisional logged entry with Kural's qualified acknowledgment, if the presentation is rigorous and appropriately bounded."
+                },
+                {
+                  "key": "fresh_setup_retest",
+                  "option": "Spend remaining time dismantling and rebuilding the instrument for one independent fresh-setup reading.",
+                  "immediate_action": "Deniz resets the mount from scratch and re-sights the beacon, testing whether the drift persists after a completely new setup rather than just across time.",
+                  "evidence_state_after_choice": "A fresh-setup reading that specifically tests setup-dependent error, distinct from the continuous series which only tested persistence over time.",
+                  "cost_or_risk": "This consumes nearly all remaining time, risking too little time left to write a convincing log entry before the site closes.",
+                  "relationship_or_access_effect": "If the fresh reading confirms the drift, it strengthens the case further, but a rushed or missing write-up can leave Kural with no report to evaluate at all.",
+                  "climax_requirement": "Dramatize the race to complete the rebuild and reading before the window fully closes, then whatever time is left to record it.",
+                  "local_payoff_if_earned": "Stronger evidence quality, but the logged acknowledgment only happens if Deniz manages to record and present it before Kural must leave; otherwise the effort goes unrecorded this session."
+                }
+              ],
+              "what_is_unknown": "Whether Kural will accept a bounded, honest report, or whether a fresh-setup reading can be obtained and recorded in time at all.",
+              "outcome_uncommitted": true
+            },
+            "climax": "Whichever branch Deniz chooses, the closing tide and Kural's presence force a final, irreversible use of the remaining evidence-gathering or reporting time; the outcome depends on how well Deniz executes that specific branch's task, not on any new fact.",
+            "local_payoff": "Deniz secures a concrete, branch-earned outcome at Beacon Ridge: either a provisional logged entry with Kural's qualified acknowledgment (report_now, if the argument holds) or a stronger but only conditionally recorded piece of evidence (fresh_setup_retest, if time allows completion); neither branch guarantees the milestone.",
+            "forward_hook": "The tide has hidden the beacon again, and Deniz is left wondering whether this pattern will return next cycle, and whether other beacons show it too.",
+            "persistent_outcome_candidates": [
+              {
+                "type": "KNOWLEDGE",
+                "description": "A dated log entry describing a within-session, tide-correlated beacon drift with explicit inference limits.",
+                "commit_condition": "Only if the chosen branch results in an actual recorded entry reviewed by Kural before the window closes."
+              },
+              {
+                "type": "RELATIONSHIP",
+                "description": "Kural's assessment of Deniz's methodology shifts toward cautious respect, continued skepticism, or dismissal.",
+                "commit_condition": "Determined by how well Deniz executes the chosen branch and whether a reviewable report exists."
+              },
+              {
+                "type": "RUMOR",
+                "description": "Word begins to spread among harbor navigators about 'the ridge beacon problem.'",
+                "commit_condition": "Only if a logged entry is produced and shared, however provisional."
+              },
+              {
+                "type": "SAGA_STATE",
+                "description": "Eligibility toward the first_discrepancy_logged milestone.",
+                "commit_condition": "Only if a documented anomaly with a working non-error hypothesis is actually produced and acknowledged in-session."
+              }
+            ],
+            "saga_progression": {
+              "intended_milestone_keys": [
+                "first_discrepancy_logged"
+              ],
+              "commit_only_if_earned": true,
+              "completion_evidence": [
+                "A dated log entry exists describing the anomaly with an explicit, bounded working hypothesis.",
+                "The entry was produced and reviewed within the episode's tide window, not merely intended.",
+                "Kural's response to the entry is shown, whether skeptical, cautiously respectful, or dismissive."
+              ]
+            },
+            "anti_repetition_signature": {
+              "core_problem_shape": "Single-site evidence-quality dilemma under a closing natural time window, judged by a skeptical mentor.",
+              "primary_activity": "Field measurement, instrument testing, and evidentiary reasoning at a fixed beacon site.",
+              "main_location_pattern": "Single-location (Beacon Ridge) investigation with no travel between sites.",
+              "climax_shape": "A branch-dependent race against a closing tide window to either defend or strengthen a bounded evidentiary claim.",
+              "distinct_from_recent_episodes_because": "First episode in the Saga; establishes the evidence-vs-authority tension and the tide-window mechanic as a reusable pattern."
+            },
+            "writer_rules": [
+              "Do not have any beat imply the harbor was physically visited; harbor log neutrality is prior knowledge only.",
+              "Do not let the control check prove the original reading was error-free; it only narrows the instrument-error hypothesis.",
+              "Do not let either decision branch guarantee a logged acknowledgment; the payoff must be earned through in-scene execution.",
+              "Keep the fresh-setup retest framed as testing setup-dependent error, not as evidence of recurrence across tide cycles.",
+              "Do not resolve whether the pattern repeats next tide, whether other beacons show it, or its physical cause.",
+              "Do not have Deniz travel to Meridian Harbor or Beacon Ridge sequentially; the episode stays at Beacon Ridge throughout.",
+              "The mentor's judgment must respond to what Deniz actually produces in the chosen branch, not to a predetermined verdict."
+            ]
+          },
+          "story_segments": [
+            {
+              "id": "S001",
+              "paragraph_id": "P001",
+              "paragraph_index": 1,
+              "text": "# The Angle That Wouldn't Match",
+              "char_start": 0,
+              "char_end": 31
+            },
+            {
+              "id": "S002",
+              "paragraph_id": "P002",
+              "paragraph_index": 2,
+              "text": "The needle was wrong.",
+              "char_start": 33,
+              "char_end": 54
+            },
+            {
+              "id": "S003",
+              "paragraph_id": "P003",
+              "paragraph_index": 3,
+              "text": "Deniz crouched at the base of the ridge beacon, eye level with the brass sighting compass, and read the angle a third time.",
+              "char_start": 56,
+              "char_end": 179
+            },
+            {
+              "id": "S004",
+              "paragraph_id": "P003",
+              "paragraph_index": 3,
+              "text": "Fourteen degrees off true.",
+              "char_start": 180,
+              "char_end": 206
+            },
+            {
+              "id": "S005",
+              "paragraph_id": "P003",
+              "paragraph_index": 3,
+              "text": "The tide tables—checked twice that morning, checked again now—allowed four at most at this stage of the ebb.",
+              "char_start": 207,
+              "char_end": 315
+            },
+            {
+              "id": "S006",
+              "paragraph_id": "P003",
+              "paragraph_index": 3,
+              "text": "Four degrees was the seasonal margin, the tolerance every surveyor memorized before being trusted with an instrument alone.",
+              "char_start": 316,
+              "char_end": 439
+            },
+            {
+              "id": "S007",
+              "paragraph_id": "P004",
+              "paragraph_index": 4,
+              "text": "Fourteen was not four.",
+              "char_start": 441,
+              "char_end": 463
+            },
+            {
+              "id": "S008",
+              "paragraph_id": "P004",
+              "paragraph_index": 4,
+              "text": "Fourteen was not close.",
+              "char_start": 464,
+              "char_end": 487
+            },
+            {
+              "id": "S009",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "Beacon Ridge was a spine of dark rock that surfaced only at extreme low tides, running half a cable's length out into the channel.",
+              "char_start": 489,
+              "char_end": 619
+            },
+            {
+              "id": "S010",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "At its end stood the beacon itself—older than the harbor, older than any chart Deniz had been allowed to touch.",
+              "char_start": 620,
+              "char_end": 731
+            },
+            {
+              "id": "S011",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "A squat pillar of dense stone with a lodestone core, its face carved with sighting marks that had been calibrated decades before Deniz was born.",
+              "char_start": 732,
+              "char_end": 876
+            },
+            {
+              "id": "S012",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "Ships used its magnetic influence to confirm their bearings through the strait.",
+              "char_start": 877,
+              "char_end": 956
+            },
+            {
+              "id": "S013",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "The official charts recorded exactly how much it should deflect a compass at any given tide and season.",
+              "char_start": 957,
+              "char_end": 1060
+            },
+            {
+              "id": "S014",
+              "paragraph_id": "P005",
+              "paragraph_index": 5,
+              "text": "The charts were never wrong—or so the harbor claimed, in the same tone it used for everything it had decided was settled.",
+              "char_start": 1061,
+              "char_end": 1182
+            },
+            {
+              "id": "S015",
+              "paragraph_id": "P006",
+              "paragraph_index": 6,
+              "text": "The exposed rock smelled of wet mineral and kelp, and the sound of the place was strange: water pulled thin on both sides, dripping from the ridge's edges, the channel too shallow for waves.",
+              "char_start": 1184,
+              "char_end": 1374
+            },
+            {
+              "id": "S016",
+              "paragraph_id": "P006",
+              "paragraph_index": 6,
+              "text": "Just dripping, and the tick of Deniz's watch, and the small sound of the needle settling after each reading.",
+              "char_start": 1375,
+              "char_end": 1483
+            },
+            {
+              "id": "S017",
+              "paragraph_id": "P007",
+              "paragraph_index": 7,
+              "text": "Deniz sat back and pulled the reference satchel closer.",
+              "char_start": 1485,
+              "char_end": 1540
+            },
+            {
+              "id": "S018",
+              "paragraph_id": "P007",
+              "paragraph_index": 7,
+              "text": "The tide tables were dog-eared, the margins dense with Kural's handwriting—corrections, seasonal adjustments, decade-old notes in faded ink.",
+              "char_start": 1541,
+              "char_end": 1681
+            },
+            {
+              "id": "S019",
+              "paragraph_id": "P007",
+              "paragraph_index": 7,
+              "text": "Deniz found today's date, found the tide stage, worked through the correction column step by step, the way the manual insisted.",
+              "char_start": 1682,
+              "char_end": 1809
+            },
+            {
+              "id": "S020",
+              "paragraph_id": "P008",
+              "paragraph_index": 8,
+              "text": "The number held.",
+              "char_start": 1811,
+              "char_end": 1827
+            },
+            {
+              "id": "S021",
+              "paragraph_id": "P008",
+              "paragraph_index": 8,
+              "text": "Four degrees, maximum expected deviation at this tide state.",
+              "char_start": 1828,
+              "char_end": 1888
+            },
+            {
+              "id": "S022",
+              "paragraph_id": "P009",
+              "paragraph_index": 9,
+              "text": "Then the beacon manual, flipped to the section on lodestone pillars.",
+              "char_start": 1890,
+              "char_end": 1958
+            },
+            {
+              "id": "S023",
+              "paragraph_id": "P009",
+              "paragraph_index": 9,
+              "text": "Known causes of angular drift: stone degradation over decades (slow, uniform, not sudden).",
+              "char_start": 1959,
+              "char_end": 2049
+            },
+            {
+              "id": "S024",
+              "paragraph_id": "P009",
+              "paragraph_index": 9,
+              "text": "Mounting shift (constant offset, not varying with conditions).",
+              "char_start": 2050,
+              "char_end": 2112
+            },
+            {
+              "id": "S025",
+              "paragraph_id": "P009",
+              "paragraph_index": 9,
+              "text": "Instrument wear (present across all readings, not one).",
+              "char_start": 2113,
+              "char_end": 2168
+            },
+            {
+              "id": "S026",
+              "paragraph_id": "P009",
+              "paragraph_index": 9,
+              "text": "Nothing explained a deviation this large appearing at a specific tide stage and nowhere else in the record.",
+              "char_start": 2169,
+              "char_end": 2276
+            },
+            {
+              "id": "S027",
+              "paragraph_id": "P010",
+              "paragraph_index": 10,
+              "text": "This wasn't a transcription error.",
+              "char_start": 2278,
+              "char_end": 2312
+            },
+            {
+              "id": "S028",
+              "paragraph_id": "P010",
+              "paragraph_index": 10,
+              "text": "The numbers were right.",
+              "char_start": 2313,
+              "char_end": 2336
+            },
+            {
+              "id": "S029",
+              "paragraph_id": "P010",
+              "paragraph_index": 10,
+              "text": "The numbers didn't match the world.",
+              "char_start": 2337,
+              "char_end": 2372
+            },
+            {
+              "id": "S030",
+              "paragraph_id": "P011",
+              "paragraph_index": 11,
+              "text": "The easy thing—the thing Deniz wanted to do—was to log the reading as an anomaly, note it as *possible instrument error*, and move on.",
+              "char_start": 2374,
+              "char_end": 2508
+            },
+            {
+              "id": "S031",
+              "paragraph_id": "P011",
+              "paragraph_index": 11,
+              "text": "That was what the form had a checkbox for.",
+              "char_start": 2509,
+              "char_end": 2551
+            },
+            {
+              "id": "S032",
+              "paragraph_id": "P011",
+              "paragraph_index": 11,
+              "text": "Nobody would question it.",
+              "char_start": 2552,
+              "char_end": 2577
+            },
+            {
+              "id": "S033",
+              "paragraph_id": "P011",
+              "paragraph_index": 11,
+              "text": "Single odd readings got dismissed all the time; that was what tolerance margins were for.",
+              "char_start": 2578,
+              "char_end": 2667
+            },
+            {
+              "id": "S034",
+              "paragraph_id": "P012",
+              "paragraph_index": 12,
+              "text": "But if it wasn't an error—if the beacon's magnetic influence was actually shifting with the tide—then dismissing it meant it went unrecorded until next season's calibration, if anyone thought to check again.",
+              "char_start": 2669,
+              "char_end": 2876
+            },
+            {
+              "id": "S035",
+              "paragraph_id": "P012",
+              "paragraph_index": 12,
+              "text": "And by then the trail would be cold.",
+              "char_start": 2877,
+              "char_end": 2913
+            },
+            {
+              "id": "S036",
+              "paragraph_id": "P013",
+              "paragraph_index": 13,
+              "text": "Deniz thought about the shipping summaries.",
+              "char_start": 2915,
+              "char_end": 2958
+            },
+            {
+              "id": "S037",
+              "paragraph_id": "P013",
+              "paragraph_index": 13,
+              "text": "A runner had brought them to the survey boat before dawn—Kural's routine on every calibration run, the harbor's way of saying *here is what ships experienced this week; see if your instruments agree.* Deniz had read them during the row out.",
+              "char_start": 2959,
+              "char_end": 3199
+            },
+            {
+              "id": "S038",
+              "paragraph_id": "P013",
+              "paragraph_index": 13,
+              "text": "Nothing from the ridge.",
+              "char_start": 3200,
+              "char_end": 3223
+            },
+            {
+              "id": "S039",
+              "paragraph_id": "P013",
+              "paragraph_index": 13,
+              "text": "No delayed passages, no complaints about bearing errors, no captain's note mentioning anything unusual near the beacon.",
+              "char_start": 3224,
+              "char_end": 3343
+            },
+            {
+              "id": "S040",
+              "paragraph_id": "P014",
+              "paragraph_index": 14,
+              "text": "If a real drift were affecting navigation, someone would have logged it.",
+              "char_start": 3345,
+              "char_end": 3417
+            },
+            {
+              "id": "S041",
+              "paragraph_id": "P014",
+              "paragraph_index": 14,
+              "text": "Nobody had.",
+              "char_start": 3418,
+              "char_end": 3429
+            },
+            {
+              "id": "S042",
+              "paragraph_id": "P015",
+              "paragraph_index": 15,
+              "text": "Which meant either it was too new to have shown up in a ship's experience, or it wasn't big enough to matter yet, or it wasn't real.",
+              "char_start": 3431,
+              "char_end": 3563
+            },
+            {
+              "id": "S043",
+              "paragraph_id": "P015",
+              "paragraph_index": 15,
+              "text": "Deniz couldn't tell which from a summary page.",
+              "char_start": 3564,
+              "char_end": 3610
+            },
+            {
+              "id": "S044",
+              "paragraph_id": "P015",
+              "paragraph_index": 15,
+              "text": "The only evidence that could settle it was here, at this tide, before the water erased the conditions that made it measurable.",
+              "char_start": 3611,
+              "char_end": 3737
+            },
+            {
+              "id": "S045",
+              "paragraph_id": "P016",
+              "paragraph_index": 16,
+              "text": "Deniz made a decision: stop taking single readings.",
+              "char_start": 3739,
+              "char_end": 3790
+            },
+            {
+              "id": "S046",
+              "paragraph_id": "P016",
+              "paragraph_index": 16,
+              "text": "Start taking a series.",
+              "char_start": 3791,
+              "char_end": 3813
+            },
+            {
+              "id": "S047",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "The field log came out.",
+              "char_start": 3815,
+              "char_end": 3838
+            },
+            {
+              "id": "S048",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "The watch from the instrument case was wound and checked against the sun.",
+              "char_start": 3839,
+              "char_end": 3912
+            },
+            {
+              "id": "S049",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "From this point, every reading would be timestamped, and nothing would be adjusted between measurements—not the tripod legs, not the sighting arm, not the compass housing.",
+              "char_start": 3913,
+              "char_end": 4084
+            },
+            {
+              "id": "S050",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "If the drift was moving, the movement itself would be the evidence.",
+              "char_start": 4085,
+              "char_end": 4152
+            },
+            {
+              "id": "S051",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "One suspicious reading was an anecdote.",
+              "char_start": 4153,
+              "char_end": 4192
+            },
+            {
+              "id": "S052",
+              "paragraph_id": "P017",
+              "paragraph_index": 17,
+              "text": "A series was a pattern, or the absence of one.",
+              "char_start": 4193,
+              "char_end": 4239
+            },
+            {
+              "id": "S053",
+              "paragraph_id": "P018",
+              "paragraph_index": 18,
+              "text": "*Tide: falling, near-low.",
+              "char_start": 4241,
+              "char_end": 4266
+            },
+            {
+              "id": "S054",
+              "paragraph_id": "P018",
+              "paragraph_index": 18,
+              "text": "Drift: 11.2°.*",
+              "char_start": 4267,
+              "char_end": 4281
+            },
+            {
+              "id": "S055",
+              "paragraph_id": "P019",
+              "paragraph_index": 19,
+              "text": "Ten minutes.",
+              "char_start": 4283,
+              "char_end": 4295
+            },
+            {
+              "id": "S056",
+              "paragraph_id": "P019",
+              "paragraph_index": 19,
+              "text": "The water had dropped another handspan, pulling back from rocks it hadn't shown an hour ago, exposing a band of dark, barnacled stone that would be underwater again within the hour.",
+              "char_start": 4296,
+              "char_end": 4477
+            },
+            {
+              "id": "S057",
+              "paragraph_id": "P019",
+              "paragraph_index": 19,
+              "text": "Deniz sighted, read, recorded.",
+              "char_start": 4478,
+              "char_end": 4508
+            },
+            {
+              "id": "S058",
+              "paragraph_id": "P019",
+              "paragraph_index": 19,
+              "text": "The needle had moved—not much, but enough.",
+              "char_start": 4509,
+              "char_end": 4551
+            },
+            {
+              "id": "S059",
+              "paragraph_id": "P020",
+              "paragraph_index": 20,
+              "text": "*Drift: 12.8°.*",
+              "char_start": 4553,
+              "char_end": 4568
+            },
+            {
+              "id": "S060",
+              "paragraph_id": "P021",
+              "paragraph_index": 21,
+              "text": "Another ten minutes.",
+              "char_start": 4570,
+              "char_end": 4590
+            },
+            {
+              "id": "S061",
+              "paragraph_id": "P021",
+              "paragraph_index": 21,
+              "text": "The ridge was at its lowest safe exposure now, the channel on either side drawn back to thin ribbons of brown water.",
+              "char_start": 4591,
+              "char_end": 4707
+            },
+            {
+              "id": "S062",
+              "paragraph_id": "P021",
+              "paragraph_index": 21,
+              "text": "A gull landed on the beacon's cap, looked at Deniz, and left.",
+              "char_start": 4708,
+              "char_end": 4769
+            },
+            {
+              "id": "S063",
+              "paragraph_id": "P022",
+              "paragraph_index": 22,
+              "text": "*Drift: 14.1°.*",
+              "char_start": 4771,
+              "char_end": 4786
+            },
+            {
+              "id": "S064",
+              "paragraph_id": "P023",
+              "paragraph_index": 23,
+              "text": "Deniz's pulse kicked.",
+              "char_start": 4788,
+              "char_end": 4809
+            },
+            {
+              "id": "S065",
+              "paragraph_id": "P023",
+              "paragraph_index": 23,
+              "text": "This wasn't scatter.",
+              "char_start": 4810,
+              "char_end": 4830
+            },
+            {
+              "id": "S066",
+              "paragraph_id": "P023",
+              "paragraph_index": 23,
+              "text": "The drift was growing with the falling tide, smoothly, reading after reading, like something responding to the water's state.",
+              "char_start": 4831,
+              "char_end": 4956
+            },
+            {
+              "id": "S067",
+              "paragraph_id": "P024",
+              "paragraph_index": 24,
+              "text": "The tide reached its floor.",
+              "char_start": 4958,
+              "char_end": 4985
+            },
+            {
+              "id": "S068",
+              "paragraph_id": "P024",
+              "paragraph_index": 24,
+              "text": "Held.",
+              "char_start": 4986,
+              "char_end": 4991
+            },
+            {
+              "id": "S069",
+              "paragraph_id": "P024",
+              "paragraph_index": 24,
+              "text": "The thin water stopped moving.",
+              "char_start": 4992,
+              "char_end": 5022
+            },
+            {
+              "id": "S070",
+              "paragraph_id": "P024",
+              "paragraph_index": 24,
+              "text": "Deniz waited, watching the surface go still, and took a reading at the slack.",
+              "char_start": 5023,
+              "char_end": 5100
+            },
+            {
+              "id": "S071",
+              "paragraph_id": "P025",
+              "paragraph_index": 25,
+              "text": "*Drift: 14.3°.*",
+              "char_start": 5102,
+              "char_end": 5117
+            },
+            {
+              "id": "S072",
+              "paragraph_id": "P026",
+              "paragraph_index": 26,
+              "text": "Nearly unchanged.",
+              "char_start": 5119,
+              "char_end": 5136
+            },
+            {
+              "id": "S073",
+              "paragraph_id": "P026",
+              "paragraph_index": 26,
+              "text": "Holding with the tide.",
+              "char_start": 5137,
+              "char_end": 5159
+            },
+            {
+              "id": "S074",
+              "paragraph_id": "P027",
+              "paragraph_index": 27,
+              "text": "Then the first ripple crept back over the lowest rocks.",
+              "char_start": 5161,
+              "char_end": 5216
+            },
+            {
+              "id": "S075",
+              "paragraph_id": "P027",
+              "paragraph_index": 27,
+              "text": "Coming in.",
+              "char_start": 5217,
+              "char_end": 5227
+            },
+            {
+              "id": "S076",
+              "paragraph_id": "P027",
+              "paragraph_index": 27,
+              "text": "Deniz waited for the water to climb a handspan, then sighted again.",
+              "char_start": 5228,
+              "char_end": 5295
+            },
+            {
+              "id": "S077",
+              "paragraph_id": "P028",
+              "paragraph_index": 28,
+              "text": "*Drift: 13.6°.*",
+              "char_start": 5297,
+              "char_end": 5312
+            },
+            {
+              "id": "S078",
+              "paragraph_id": "P029",
+              "paragraph_index": 29,
+              "text": "Smaller.",
+              "char_start": 5314,
+              "char_end": 5322
+            },
+            {
+              "id": "S079",
+              "paragraph_id": "P030",
+              "paragraph_index": 30,
+              "text": "Deniz stared at the log.",
+              "char_start": 5324,
+              "char_end": 5348
+            },
+            {
+              "id": "S080",
+              "paragraph_id": "P030",
+              "paragraph_index": 30,
+              "text": "Four readings, ten minutes apart, tracking the tide's fall and turn the way a shadow follows a body.",
+              "char_start": 5349,
+              "char_end": 5449
+            },
+            {
+              "id": "S081",
+              "paragraph_id": "P030",
+              "paragraph_index": 30,
+              "text": "Not random.",
+              "char_start": 5450,
+              "char_end": 5461
+            },
+            {
+              "id": "S082",
+              "paragraph_id": "P030",
+              "paragraph_index": 30,
+              "text": "Not noise.",
+              "char_start": 5462,
+              "char_end": 5472
+            },
+            {
+              "id": "S083",
+              "paragraph_id": "P030",
+              "paragraph_index": 30,
+              "text": "A pattern—within this session, visible only because the tide was extreme enough to expose whatever was causing it.",
+              "char_start": 5473,
+              "char_end": 5587
+            },
+            {
+              "id": "S084",
+              "paragraph_id": "P031",
+              "paragraph_index": 31,
+              "text": "Deniz checked the tide clock and the sky together, the way Kural had taught.",
+              "char_start": 5589,
+              "char_end": 5665
+            },
+            {
+              "id": "S085",
+              "paragraph_id": "P031",
+              "paragraph_index": 31,
+              "text": "Light: good for perhaps another hour.",
+              "char_start": 5666,
+              "char_end": 5703
+            },
+            {
+              "id": "S086",
+              "paragraph_id": "P031",
+              "paragraph_index": 31,
+              "text": "Tide: turned, rising.",
+              "char_start": 5704,
+              "char_end": 5725
+            },
+            {
+              "id": "S087",
+              "paragraph_id": "P031",
+              "paragraph_index": 31,
+              "text": "The window that had allowed a full series was now allowing fewer readings by the minute.",
+              "char_start": 5726,
+              "char_end": 5814
+            },
+            {
+              "id": "S088",
+              "paragraph_id": "P031",
+              "paragraph_index": 31,
+              "text": "The barnacled band was already slick again.",
+              "char_start": 5815,
+              "char_end": 5858
+            },
+            {
+              "id": "S089",
+              "paragraph_id": "P032",
+              "paragraph_index": 32,
+              "text": "One more thing before anything else.",
+              "char_start": 5860,
+              "char_end": 5896
+            },
+            {
+              "id": "S090",
+              "paragraph_id": "P032",
+              "paragraph_index": 32,
+              "text": "Deniz needed to know if the instrument itself was lying.",
+              "char_start": 5897,
+              "char_end": 5953
+            },
+            {
+              "id": "S091",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "Without touching the tripod, without adjusting anything, Deniz re-sighted the same reference mark five times in quick succession.",
+              "char_start": 5955,
+              "char_end": 6084
+            },
+            {
+              "id": "S092",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "The needle barely trembled.",
+              "char_start": 6085,
+              "char_end": 6112
+            },
+            {
+              "id": "S093",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "Each reading came back within a tenth of a degree of the last.",
+              "char_start": 6113,
+              "char_end": 6175
+            },
+            {
+              "id": "S094",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "The instrument was stable in its current mount.",
+              "char_start": 6176,
+              "char_end": 6223
+            },
+            {
+              "id": "S095",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "It was not drifting on its own.",
+              "char_start": 6224,
+              "char_end": 6255
+            },
+            {
+              "id": "S096",
+              "paragraph_id": "P033",
+              "paragraph_index": 33,
+              "text": "Not now.",
+              "char_start": 6256,
+              "char_end": 6264
+            },
+            {
+              "id": "S097",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "That didn't clear the original reading.",
+              "char_start": 6266,
+              "char_end": 6305
+            },
+            {
+              "id": "S098",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "Something could have shifted the tripod during the first observation—a gust, a misstep, a sleeve brushing the housing.",
+              "char_start": 6306,
+              "char_end": 6424
+            },
+            {
+              "id": "S099",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "But if the instrument was steady enough to track the tide's turn smoothly across four consecutive readings, a one-time glitch became harder to argue.",
+              "char_start": 6425,
+              "char_end": 6574
+            },
+            {
+              "id": "S100",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "Not impossible.",
+              "char_start": 6575,
+              "char_end": 6590
+            },
+            {
+              "id": "S101",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "Harder.",
+              "char_start": 6591,
+              "char_end": 6598
+            },
+            {
+              "id": "S102",
+              "paragraph_id": "P034",
+              "paragraph_index": 34,
+              "text": "And harder was worth something, if you were honest about what it was worth.",
+              "char_start": 6599,
+              "char_end": 6674
+            },
+            {
+              "id": "S103",
+              "paragraph_id": "P035",
+              "paragraph_index": 35,
+              "text": "Footsteps on the ridge.",
+              "char_start": 6676,
+              "char_end": 6699
+            },
+            {
+              "id": "S104",
+              "paragraph_id": "P035",
+              "paragraph_index": 35,
+              "text": "Deniz turned.",
+              "char_start": 6700,
+              "char_end": 6713
+            },
+            {
+              "id": "S105",
+              "paragraph_id": "P036",
+              "paragraph_index": 36,
+              "text": "Kural was crossing the exposed rocks, survey bag over one shoulder, moving faster than usual.",
+              "char_start": 6715,
+              "char_end": 6808
+            },
+            {
+              "id": "S106",
+              "paragraph_id": "P036",
+              "paragraph_index": 36,
+              "text": "Not running—Kural didn't run—but covering ground with the efficiency of someone who had calculated exactly how much time remained and intended to use every minute of it.",
+              "char_start": 6809,
+              "char_end": 6978
+            },
+            {
+              "id": "S107",
+              "paragraph_id": "P036",
+              "paragraph_index": 36,
+              "text": "Kural's eyes went to the instrument first, then to Deniz, then to the open field log.",
+              "char_start": 6979,
+              "char_end": 7064
+            },
+            {
+              "id": "S108",
+              "paragraph_id": "P037",
+              "paragraph_index": 37,
+              "text": "\"You're still here.\" Flat.",
+              "char_start": 7066,
+              "char_end": 7092
+            },
+            {
+              "id": "S109",
+              "paragraph_id": "P037",
+              "paragraph_index": 37,
+              "text": "Not surprised.",
+              "char_start": 7093,
+              "char_end": 7107
+            },
+            {
+              "id": "S110",
+              "paragraph_id": "P037",
+              "paragraph_index": 37,
+              "text": "\"Site gets secured once the tide's fully turned.",
+              "char_start": 7108,
+              "char_end": 7156
+            },
+            {
+              "id": "S111",
+              "paragraph_id": "P037",
+              "paragraph_index": 37,
+              "text": "Half an hour.",
+              "char_start": 7157,
+              "char_end": 7170
+            },
+            {
+              "id": "S112",
+              "paragraph_id": "P037",
+              "paragraph_index": 37,
+              "text": "Maybe less.\"",
+              "char_start": 7171,
+              "char_end": 7183
+            },
+            {
+              "id": "S113",
+              "paragraph_id": "P038",
+              "paragraph_index": 38,
+              "text": "\"I know.\" Deniz stood, log in hand.",
+              "char_start": 7185,
+              "char_end": 7220
+            },
+            {
+              "id": "S114",
+              "paragraph_id": "P038",
+              "paragraph_index": 38,
+              "text": "\"I have something.\"",
+              "char_start": 7221,
+              "char_end": 7240
+            },
+            {
+              "id": "S115",
+              "paragraph_id": "P039",
+              "paragraph_index": 39,
+              "text": "Kural stopped.",
+              "char_start": 7242,
+              "char_end": 7256
+            },
+            {
+              "id": "S116",
+              "paragraph_id": "P039",
+              "paragraph_index": 39,
+              "text": "Waited.",
+              "char_start": 7257,
+              "char_end": 7264
+            },
+            {
+              "id": "S117",
+              "paragraph_id": "P039",
+              "paragraph_index": 39,
+              "text": "The particular silence that meant *go on, and make it worth my time.*",
+              "char_start": 7265,
+              "char_end": 7334
+            },
+            {
+              "id": "S118",
+              "paragraph_id": "P040",
+              "paragraph_index": 40,
+              "text": "\"Show me.\"",
+              "char_start": 7336,
+              "char_end": 7346
+            },
+            {
+              "id": "S119",
+              "paragraph_id": "P041",
+              "paragraph_index": 41,
+              "text": "Deniz had a moment to think, and used it.",
+              "char_start": 7348,
+              "char_end": 7389
+            },
+            {
+              "id": "S120",
+              "paragraph_id": "P042",
+              "paragraph_index": 42,
+              "text": "What was actually known: the drift had grown as the tide fell, held at slack, and begun shrinking as the tide rose.",
+              "char_start": 7391,
+              "char_end": 7506
+            },
+            {
+              "id": "S121",
+              "paragraph_id": "P042",
+              "paragraph_index": 42,
+              "text": "That was a within-session pattern—observed, timestamped, consistent across four readings.",
+              "char_start": 7507,
+              "char_end": 7596
+            },
+            {
+              "id": "S122",
+              "paragraph_id": "P043",
+              "paragraph_index": 43,
+              "text": "What was probably true: the instrument hadn't simply broken and corrected itself.",
+              "char_start": 7598,
+              "char_end": 7679
+            },
+            {
+              "id": "S123",
+              "paragraph_id": "P043",
+              "paragraph_index": 43,
+              "text": "The control check showed stability at rest.",
+              "char_start": 7680,
+              "char_end": 7723
+            },
+            {
+              "id": "S124",
+              "paragraph_id": "P043",
+              "paragraph_index": 43,
+              "text": "The smooth tracking made random error unlikely.",
+              "char_start": 7724,
+              "char_end": 7771
+            },
+            {
+              "id": "S125",
+              "paragraph_id": "P044",
+              "paragraph_index": 44,
+              "text": "What wasn't known: whether this happened on every extreme tide, or only this one.",
+              "char_start": 7773,
+              "char_end": 7854
+            },
+            {
+              "id": "S126",
+              "paragraph_id": "P044",
+              "paragraph_index": 44,
+              "text": "Whether other beacons in the chain showed the same behavior.",
+              "char_start": 7855,
+              "char_end": 7915
+            },
+            {
+              "id": "S127",
+              "paragraph_id": "P044",
+              "paragraph_index": 44,
+              "text": "What could physically make a lodestone's influence shift with water depth.",
+              "char_start": 7916,
+              "char_end": 7990
+            },
+            {
+              "id": "S128",
+              "paragraph_id": "P044",
+              "paragraph_index": 44,
+              "text": "Whether any of it mattered for real navigation yet, or would next season, or ever.",
+              "char_start": 7991,
+              "char_end": 8073
+            },
+            {
+              "id": "S129",
+              "paragraph_id": "P045",
+              "paragraph_index": 45,
+              "text": "The honest claim was narrow.",
+              "char_start": 8075,
+              "char_end": 8103
+            },
+            {
+              "id": "S130",
+              "paragraph_id": "P045",
+              "paragraph_index": 45,
+              "text": "Deniz could defend it now, or could try to strengthen it first.",
+              "char_start": 8104,
+              "char_end": 8167
+            },
+            {
+              "id": "S131",
+              "paragraph_id": "P045",
+              "paragraph_index": 45,
+              "text": "Not both.",
+              "char_start": 8168,
+              "char_end": 8177
+            },
+            {
+              "id": "S132",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "There was one other option.",
+              "char_start": 8179,
+              "char_end": 8206
+            },
+            {
+              "id": "S133",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "Dismantle the instrument entirely.",
+              "char_start": 8207,
+              "char_end": 8241
+            },
+            {
+              "id": "S134",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "Rebuild it from scratch at a new position on the ridge.",
+              "char_start": 8242,
+              "char_end": 8297
+            },
+            {
+              "id": "S135",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "Take one more reading—a fresh-setup reading that would test whether the drift persisted after a completely new mounting.",
+              "char_start": 8298,
+              "char_end": 8418
+            },
+            {
+              "id": "S136",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "That would address setup-dependent error directly, and it would make the evidence harder to dismiss.",
+              "char_start": 8419,
+              "char_end": 8519
+            },
+            {
+              "id": "S137",
+              "paragraph_id": "P046",
+              "paragraph_index": 46,
+              "text": "If the drift showed up again from an entirely new setup, nobody could say it was a quirk of one particular mounting.",
+              "char_start": 8520,
+              "char_end": 8636
+            },
+            {
+              "id": "S138",
+              "paragraph_id": "P047",
+              "paragraph_index": 47,
+              "text": "But it would eat nearly all the remaining time.",
+              "char_start": 8638,
+              "char_end": 8685
+            },
+            {
+              "id": "S139",
+              "paragraph_id": "P047",
+              "paragraph_index": 47,
+              "text": "And if the fresh reading showed nothing—because the tide had already turned too far past the extreme, because the conditions that produced the pattern were gone—then the session's whole observation would look like noise.",
+              "char_start": 8686,
+              "char_end": 8906
+            },
+            {
+              "id": "S140",
+              "paragraph_id": "P047",
+              "paragraph_index": 47,
+              "text": "And there'd be almost no time left to write up what had already been seen, which meant Kural would have nothing to evaluate.",
+              "char_start": 8907,
+              "char_end": 9031
+            },
+            {
+              "id": "S141",
+              "paragraph_id": "P047",
+              "paragraph_index": 47,
+              "text": "The whole morning would go unrecorded.",
+              "char_start": 9032,
+              "char_end": 9070
+            },
+            {
+              "id": "S142",
+              "paragraph_id": "P048",
+              "paragraph_index": 48,
+              "text": "Kural was waiting.",
+              "char_start": 9072,
+              "char_end": 9090
+            },
+            {
+              "id": "S143",
+              "paragraph_id": "P048",
+              "paragraph_index": 48,
+              "text": "The water was climbing.",
+              "char_start": 9091,
+              "char_end": 9114
+            },
+            {
+              "id": "S144",
+              "paragraph_id": "P048",
+              "paragraph_index": 48,
+              "text": "The site had to be secured.",
+              "char_start": 9115,
+              "char_end": 9142
+            },
+            {
+              "id": "S145",
+              "paragraph_id": "P049",
+              "paragraph_index": 49,
+              "text": "More data that couldn't be recorded was worth nothing.",
+              "char_start": 9144,
+              "char_end": 9198
+            },
+            {
+              "id": "S146",
+              "paragraph_id": "P049",
+              "paragraph_index": 49,
+              "text": "A bounded, honest report of what had already been observed was worth something.",
+              "char_start": 9199,
+              "char_end": 9278
+            },
+            {
+              "id": "S147",
+              "paragraph_id": "P050",
+              "paragraph_index": 50,
+              "text": "\"I'm reporting what I have,\" Deniz said.",
+              "char_start": 9280,
+              "char_end": 9320
+            },
+            {
+              "id": "S148",
+              "paragraph_id": "P050",
+              "paragraph_index": 50,
+              "text": "\"Now, while I can write it properly.\"",
+              "char_start": 9321,
+              "char_end": 9358
+            },
+            {
+              "id": "S149",
+              "paragraph_id": "P051",
+              "paragraph_index": 51,
+              "text": "Kural said nothing.",
+              "char_start": 9360,
+              "char_end": 9379
+            },
+            {
+              "id": "S150",
+              "paragraph_id": "P051",
+              "paragraph_index": 51,
+              "text": "Waited.",
+              "char_start": 9380,
+              "char_end": 9387
+            },
+            {
+              "id": "S151",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "Deniz sat on the highest rock still dry, opened the field log to a fresh page, and wrote.",
+              "char_start": 9389,
+              "char_end": 9478
+            },
+            {
+              "id": "S152",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "Each observation labeled.",
+              "char_start": 9479,
+              "char_end": 9504
+            },
+            {
+              "id": "S153",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "Each limit stated.",
+              "char_start": 9505,
+              "char_end": 9523
+            },
+            {
+              "id": "S154",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "The working hypothesis: that the drift was tied to tide extremity, not instrument error—provisional, within-session only, unconfirmed for other tides or other beacons, cause unknown.",
+              "char_start": 9524,
+              "char_end": 9706
+            },
+            {
+              "id": "S155",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "The control check noted, with its own limitation written plainly: performed after the drift peaked, not before.",
+              "char_start": 9707,
+              "char_end": 9818
+            },
+            {
+              "id": "S156",
+              "paragraph_id": "P052",
+              "paragraph_index": 52,
+              "text": "Deniz wrote the sentence *I cannot yet distinguish between a real tide-linked effect and an unidentified instrument fault that mimics one* and left it there, because it was true.",
+              "char_start": 9819,
+              "char_end": 9997
+            },
+            {
+              "id": "S157",
+              "paragraph_id": "P053",
+              "paragraph_index": 53,
+              "text": "When it was done, Deniz handed the log across without ceremony.",
+              "char_start": 9999,
+              "char_end": 10062
+            },
+            {
+              "id": "S158",
+              "paragraph_id": "P054",
+              "paragraph_index": 54,
+              "text": "Kural read.",
+              "char_start": 10064,
+              "char_end": 10075
+            },
+            {
+              "id": "S159",
+              "paragraph_id": "P054",
+              "paragraph_index": 54,
+              "text": "The silence stretched long enough that Deniz could hear the water moving over the lower rocks, filling the channel back in.",
+              "char_start": 10076,
+              "char_end": 10199
+            },
+            {
+              "id": "S160",
+              "paragraph_id": "P055",
+              "paragraph_index": 55,
+              "text": "\"You're telling me your instrument drifted fourteen degrees off chart and then drifted back.\"",
+              "char_start": 10201,
+              "char_end": 10294
+            },
+            {
+              "id": "S161",
+              "paragraph_id": "P056",
+              "paragraph_index": 56,
+              "text": "\"I'm telling you what I measured.",
+              "char_start": 10296,
+              "char_end": 10329
+            },
+            {
+              "id": "S162",
+              "paragraph_id": "P056",
+              "paragraph_index": 56,
+              "text": "I can't tell you why.\"",
+              "char_start": 10330,
+              "char_end": 10352
+            },
+            {
+              "id": "S163",
+              "paragraph_id": "P057",
+              "paragraph_index": 57,
+              "text": "\"Your control check.",
+              "char_start": 10354,
+              "char_end": 10374
+            },
+            {
+              "id": "S164",
+              "paragraph_id": "P057",
+              "paragraph_index": 57,
+              "text": "You ran it after the drift peaked.\"",
+              "char_start": 10375,
+              "char_end": 10410
+            },
+            {
+              "id": "S165",
+              "paragraph_id": "P058",
+              "paragraph_index": 58,
+              "text": "\"Yes.",
+              "char_start": 10412,
+              "char_end": 10417
+            },
+            {
+              "id": "S166",
+              "paragraph_id": "P058",
+              "paragraph_index": 58,
+              "text": "I couldn't run it before without breaking the series.",
+              "char_start": 10418,
+              "char_end": 10471
+            },
+            {
+              "id": "S167",
+              "paragraph_id": "P058",
+              "paragraph_index": 58,
+              "text": "That's a limitation.",
+              "char_start": 10472,
+              "char_end": 10492
+            },
+            {
+              "id": "S168",
+              "paragraph_id": "P058",
+              "paragraph_index": 58,
+              "text": "I wrote it down.\"",
+              "char_start": 10493,
+              "char_end": 10510
+            },
+            {
+              "id": "S169",
+              "paragraph_id": "P059",
+              "paragraph_index": 59,
+              "text": "Kural looked up.",
+              "char_start": 10512,
+              "char_end": 10528
+            },
+            {
+              "id": "S170",
+              "paragraph_id": "P059",
+              "paragraph_index": 59,
+              "text": "\"You wrote down your own limitations.\"",
+              "char_start": 10529,
+              "char_end": 10567
+            },
+            {
+              "id": "S171",
+              "paragraph_id": "P060",
+              "paragraph_index": 60,
+              "text": "\"The manual says to.",
+              "char_start": 10569,
+              "char_end": 10589
+            },
+            {
+              "id": "S172",
+              "paragraph_id": "P060",
+              "paragraph_index": 60,
+              "text": "'Report what bounds your certainty.'\"",
+              "char_start": 10590,
+              "char_end": 10627
+            },
+            {
+              "id": "S173",
+              "paragraph_id": "P061",
+              "paragraph_index": 61,
+              "text": "\"Most apprentices write what they want found.\" Kural looked at the log again.",
+              "char_start": 10629,
+              "char_end": 10706
+            },
+            {
+              "id": "S174",
+              "paragraph_id": "P061",
+              "paragraph_index": 61,
+              "text": "Then at the beacon, water already climbing its base.",
+              "char_start": 10707,
+              "char_end": 10759
+            },
+            {
+              "id": "S175",
+              "paragraph_id": "P061",
+              "paragraph_index": 61,
+              "text": "\"You wrote what you actually know.\"",
+              "char_start": 10760,
+              "char_end": 10795
+            },
+            {
+              "id": "S176",
+              "paragraph_id": "P062",
+              "paragraph_index": 62,
+              "text": "\"I wrote what I could defend.\"",
+              "char_start": 10797,
+              "char_end": 10827
+            },
+            {
+              "id": "S177",
+              "paragraph_id": "P063",
+              "paragraph_index": 63,
+              "text": "Kural looked at Deniz—longer this time, with something Deniz couldn't quite name.",
+              "char_start": 10829,
+              "char_end": 10910
+            },
+            {
+              "id": "S178",
+              "paragraph_id": "P063",
+              "paragraph_index": 63,
+              "text": "Not warmth.",
+              "char_start": 10911,
+              "char_end": 10922
+            },
+            {
+              "id": "S179",
+              "paragraph_id": "P063",
+              "paragraph_index": 63,
+              "text": "Not approval, exactly.",
+              "char_start": 10923,
+              "char_end": 10945
+            },
+            {
+              "id": "S180",
+              "paragraph_id": "P063",
+              "paragraph_index": 63,
+              "text": "Something closer to recalibration.",
+              "char_start": 10946,
+              "char_end": 10980
+            },
+            {
+              "id": "S181",
+              "paragraph_id": "P064",
+              "paragraph_index": 64,
+              "text": "\"This is bounded,\" Kural said finally.",
+              "char_start": 10982,
+              "char_end": 11020
+            },
+            {
+              "id": "S182",
+              "paragraph_id": "P064",
+              "paragraph_index": 64,
+              "text": "\"This is honest.",
+              "char_start": 11021,
+              "char_end": 11037
+            },
+            {
+              "id": "S183",
+              "paragraph_id": "P064",
+              "paragraph_index": 64,
+              "text": "This is—\" A pause.",
+              "char_start": 11038,
+              "char_end": 11056
+            },
+            {
+              "id": "S184",
+              "paragraph_id": "P064",
+              "paragraph_index": 64,
+              "text": "Choosing the word with the same care Deniz had used choosing the claims.",
+              "char_start": 11057,
+              "char_end": 11129
+            },
+            {
+              "id": "S185",
+              "paragraph_id": "P064",
+              "paragraph_index": 64,
+              "text": "\"—adequate methodology.\"",
+              "char_start": 11130,
+              "char_end": 11154
+            },
+            {
+              "id": "S186",
+              "paragraph_id": "P065",
+              "paragraph_index": 65,
+              "text": "From Kural, that was close to praise.",
+              "char_start": 11156,
+              "char_end": 11193
+            },
+            {
+              "id": "S187",
+              "paragraph_id": "P066",
+              "paragraph_index": 66,
+              "text": "\"I'm adding a provisional note.\" Kural took out a pencil and wrote in the margin of the log, in the same precise hand that filled the tide tables' margins.",
+              "char_start": 11195,
+              "char_end": 11350
+            },
+            {
+              "id": "S188",
+              "paragraph_id": "P066",
+              "paragraph_index": 66,
+              "text": "*Anomaly logged, pending confirmation on next extreme tide.",
+              "char_start": 11351,
+              "char_end": 11410
+            },
+            {
+              "id": "S189",
+              "paragraph_id": "P066",
+              "paragraph_index": 66,
+              "text": "If no recurrence, close.",
+              "char_start": 11411,
+              "char_end": 11435
+            },
+            {
+              "id": "S190",
+              "paragraph_id": "P066",
+              "paragraph_index": 66,
+              "text": "If recurrence, escalate.*",
+              "char_start": 11436,
+              "char_end": 11461
+            },
+            {
+              "id": "S191",
+              "paragraph_id": "P067",
+              "paragraph_index": 67,
+              "text": "Kural handed the log back.",
+              "char_start": 11463,
+              "char_end": 11489
+            },
+            {
+              "id": "S192",
+              "paragraph_id": "P067",
+              "paragraph_index": 67,
+              "text": "\"If it doesn't come back, we close it and you've learned to label your limits.",
+              "char_start": 11490,
+              "char_end": 11568
+            },
+            {
+              "id": "S193",
+              "paragraph_id": "P067",
+              "paragraph_index": 67,
+              "text": "If it does—\" Kural looked at Deniz.",
+              "char_start": 11569,
+              "char_end": 11604
+            },
+            {
+              "id": "S194",
+              "paragraph_id": "P067",
+              "paragraph_index": 67,
+              "text": "\"Then you've found something real, and the harbor will want to know why.\"",
+              "char_start": 11605,
+              "char_end": 11678
+            },
+            {
+              "id": "S195",
+              "paragraph_id": "P068",
+              "paragraph_index": 68,
+              "text": "The tide was climbing steadily now, water swirling around the lower markers.",
+              "char_start": 11680,
+              "char_end": 11756
+            },
+            {
+              "id": "S196",
+              "paragraph_id": "P068",
+              "paragraph_index": 68,
+              "text": "Kural shouldered the bag.",
+              "char_start": 11757,
+              "char_end": 11782
+            },
+            {
+              "id": "S197",
+              "paragraph_id": "P068",
+              "paragraph_index": 68,
+              "text": "\"Secure the site.",
+              "char_start": 11783,
+              "char_end": 11800
+            },
+            {
+              "id": "S198",
+              "paragraph_id": "P068",
+              "paragraph_index": 68,
+              "text": "We're leaving.\"",
+              "char_start": 11801,
+              "char_end": 11816
+            },
+            {
+              "id": "S199",
+              "paragraph_id": "P069",
+              "paragraph_index": 69,
+              "text": "Deniz packed the instrument, coiled the tripod straps, and watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves.",
+              "char_start": 11818,
+              "char_end": 11980
+            },
+            {
+              "id": "S200",
+              "paragraph_id": "P069",
+              "paragraph_index": 69,
+              "text": "The ridge that had been a workable surface an hour ago was disappearing back into the channel.",
+              "char_start": 11981,
+              "char_end": 12075
+            },
+            {
+              "id": "S201",
+              "paragraph_id": "P069",
+              "paragraph_index": 69,
+              "text": "By the time they reached the boat, there would be nothing left to show that anything unusual had happened here at all—except the log, and the note in its margin, and whatever the next extreme tide decided to reveal.",
+              "char_start": 12076,
+              "char_end": 12291
+            },
+            {
+              "id": "S202",
+              "paragraph_id": "P070",
+              "paragraph_index": 70,
+              "text": "Deniz stood, watching the beacon's tip vanish beneath the surface, and wondered what the next cycle would show.",
+              "char_start": 12293,
+              "char_end": 12404
+            }
+          ]
+        }
+      },
+      "raw_usage": {
+        "prompt_tokens": 28771,
+        "completion_tokens": 1076,
+        "total_tokens": 29847,
+        "cost": 0.068302,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.068302,
+          "upstream_inference_prompt_cost": 0.057542,
+          "upstream_inference_completions_cost": 0.01076
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "usage": {
+        "input_tokens": 28771,
+        "output_tokens": 1076,
+        "total_tokens": 29847
+      },
+      "cost": {
+        "usd": 0.068302,
+        "try_amount": null,
+        "usd_try_rate": null
+      },
+      "request": {
+        "temperature": null,
+        "max_tokens": 2800,
+        "reasoning": {
+          "effort": "low",
+          "exclude": true
+        },
+        "response_format": {
+          "type": "json_object"
+        }
+      },
+      "parse_failures": [],
+      "raw_parsed_response": {
+        "evaluations": [
+          {
+            "family": "physical_feasibility",
+            "present": true,
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": [
+              "S200",
+              "S199"
+            ],
+            "exact_quote": "watched the water rise over the beacon's base, then its midsection, then the sighting marks themselves",
+            "reason": "The beacon is a pillar at the end of a ridge that surfaces only at extreme low tide, yet its midsection and sighting marks are submerged within minutes while Deniz packs and stays nearby. The tip then vanishes as well, which is implausible for a structure that stands well above the ridge. Deniz would be stranded or in danger in that water."
+          },
+          {
+            "family": "causal_logic",
+            "present": false,
+            "severity": null,
+            "repair_scope": null,
+            "span_ids": [],
+            "exact_quote": null,
+            "reason": "The causal chain holds together."
+          },
+          {
+            "family": "state_continuity",
+            "present": true,
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": [
+              "S004",
+              "S054",
+              "S063"
+            ],
+            "exact_quote": "Fourteen degrees off true.",
+            "reason": "The first reading is 14 degrees, but the series then starts at 11.2 and climbs to 14.1. If the original reading is the 14 peak, the series ordering does not fit the story's account of the tide state. The opening drift also does not match the 'four readings' count (S080), because the series actually contains five logged values: 11.2, 12.8, 14.1, 14.3, 13.6."
+          },
+          {
+            "family": "epistemic_order",
+            "present": false,
+            "severity": null,
+            "repair_scope": null,
+            "span_ids": [],
+            "exact_quote": null,
+            "reason": "Knowledge is acquired in a consistent order."
+          },
+          {
+            "family": "spatial_consistency",
+            "present": false,
+            "severity": null,
+            "repair_scope": null,
+            "span_ids": [],
+            "exact_quote": null,
+            "reason": "Everything stays at Beacon Ridge."
+          },
+          {
+            "family": "temporal_consistency",
+            "present": true,
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": [
+              "S085",
+              "S111",
+              "S087"
+            ],
+            "exact_quote": "Light: good for perhaps another hour.",
+            "reason": "Deniz estimates about an hour of usable light, but the site must be secured within half an hour. The tide is also described as 'turned' even though the later 'first ripple' shows it only just turning, so the time cues clash."
+          },
+          {
+            "family": "response_causality",
+            "present": false,
+            "severity": null,
+            "repair_scope": null,
+            "span_ids": [],
+            "exact_quote": null,
+            "reason": "Kural's response follows from what Deniz actually presented."
+          },
+          {
+            "family": "closure_integrity",
+            "present": true,
+            "severity": "serious",
+            "repair_scope": "local",
+            "span_ids": [
+              "S187",
+              "S188"
+            ],
+            "exact_quote": "Anomaly logged, pending confirmation on next extreme tide.",
+            "reason": "This partly overreaches the constraint that the payoff must not be guaranteed, but the deeper problem is that the framing of recurrence next tide ('If recurrence, escalate') treats a next-tide test as settled procedure. It is a minor risk, though the closing already earns the note through in-scene execution."
+          },
+          {
+            "family": "canon_integrity",
+            "present": false,
+            "severity": null,
+            "repair_scope": null,
+            "span_ids": [],
+            "exact_quote": null,
+            "reason": "No unsupported durable canon is introduced."
+          }
+        ]
+      }
+    }
+  },
+  "comparison": {
+    "cost_delta_usd": 0.002574,
+    "cost_ratio_vs_sonnet5": 1.039161,
+    "latency_delta_seconds": 0.345,
+    "latency_ratio_vs_sonnet5": 1.038961
+  },
+  "usage_rollup": {
+    "calls": [
+      {
+        "stage": "sonnet55_primary_audit",
+        "model": "anthropic/claude-sonnet-5.5",
+        "provider": "openrouter",
+        "status": "completed",
+        "attempt": 1,
+        "input_tokens": 28771,
+        "output_tokens": 1076,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 29847,
+        "cost_usd": 0.068302,
+        "latency_seconds": 9.2
+      }
+    ],
+    "totals": {
+      "api_calls": 1,
+      "input_tokens": 28771,
+      "output_tokens": 1076,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "total_tokens": 29847,
+      "cost_usd": 0.068302,
+      "latency_seconds": 9.2
+    },
+    "by_stage": {
+      "sonnet55_primary_audit": {
+        "api_calls": 1,
+        "input_tokens": 28771,
+        "output_tokens": 1076,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 29847,
+        "cost_usd": 0.068302,
+        "latency_seconds": 9.2
+      }
+    },
+    "by_model": {
+      "anthropic/claude-sonnet-5.5": {
+        "api_calls": 1,
+        "input_tokens": 28771,
+        "output_tokens": 1076,
+        "reasoning_tokens": 0,
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "total_tokens": 29847,
+        "cost_usd": 0.068302,
+        "latency_seconds": 9.2
+      }
+    },
+    "reconciled": {
+      "cost_matches_call_sum": true,
+      "token_matches_call_sum": true
+    }
+  },
+  "promotion_decision": "HUMAN_REVIEW_REQUIRED"
+}
