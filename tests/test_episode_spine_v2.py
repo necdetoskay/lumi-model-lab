@@ -90,7 +90,7 @@ def _spine_payload() -> dict:
         "opening_hook": "A routine calibration gives Deniz an impossible angle.",
         "logistics_plan": {
             "time_window": "One usable calibration window remains before the tide turns.",
-            "location_sequence": ["beacon_ridge", "meridian_harbor"],
+            "location_sequence": ["beacon_ridge", "meridian_harbor", "beacon_ridge", "meridian_harbor"],
             "movement_constraints": [
                 "Field evidence must be completed before leaving Beacon Ridge.",
                 "Harbor reporting happens only after the measurement window closes.",
@@ -574,6 +574,30 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
         self.assertEqual(architect_call["request_class"], "saga_architect")
         self.assertEqual(architect_call["max_tokens"], 12000)
 
+    def test_contract_rejects_logistics_sequence_that_disagrees_with_beats(self):
+        payload = _spine_payload()
+        payload["logistics_plan"]["location_sequence"] = [
+            "meridian_harbor",
+            "beacon_ridge",
+            "meridian_harbor",
+        ]
+        with self.assertRaisesRegex(
+            ValidationError,
+            "location_sequence must match the ordered beat-location sequence",
+        ):
+            EpisodeSpineV2.model_validate(payload)
+
+    def test_contract_rejects_single_site_signature_with_multiple_beat_locations(self):
+        payload = _spine_payload()
+        payload["anti_repetition_signature"]["main_location_pattern"] = (
+            "Single-site investigation at Beacon Ridge with brief harbor bookends."
+        )
+        with self.assertRaisesRegex(
+            ValidationError,
+            "declares a single-site/location pattern",
+        ):
+            EpisodeSpineV2.model_validate(payload)
+
     @patch(
         "src.episode_spine_v2_generate.runtime_profile_identity",
         side_effect=lambda model: {"model_id": model},
@@ -593,6 +617,13 @@ class EpisodeSpineGeneratorTests(unittest.TestCase):
     ):
         payload = _spine_payload()
         payload["beats"][3]["location_ref"] = "tide_observatory"
+        payload["logistics_plan"]["location_sequence"] = [
+            "beacon_ridge",
+            "tide_observatory",
+            "meridian_harbor",
+            "beacon_ridge",
+            "meridian_harbor",
+        ]
         mock_call.return_value = (
             payload,
             _body(0.06),

@@ -190,6 +190,39 @@ class EpisodeSpineV2(StrictModel):
                 "Episode Spine missing required phases: " + ", ".join(missing)
             )
 
+        beat_location_sequence: list[str] = []
+        for beat in self.beats:
+            if not beat_location_sequence or beat_location_sequence[-1] != beat.location_ref:
+                beat_location_sequence.append(beat.location_ref)
+
+        logistics_location_sequence: list[str] = []
+        for location in self.logistics_plan.location_sequence:
+            if not logistics_location_sequence or logistics_location_sequence[-1] != location:
+                logistics_location_sequence.append(location)
+
+        if beat_location_sequence != logistics_location_sequence:
+            raise ValueError(
+                "logistics_plan.location_sequence must match the ordered beat-location "
+                f"sequence; logistics={logistics_location_sequence}, "
+                f"beats={beat_location_sequence}"
+            )
+
+        location_pattern = self.anti_repetition_signature.main_location_pattern.lower()
+        single_site_markers = (
+            "single-location",
+            "single location",
+            "single-site",
+            "single site",
+        )
+        if any(marker in location_pattern for marker in single_site_markers):
+            unique_locations = {beat.location_ref for beat in self.beats}
+            if len(unique_locations) != 1:
+                raise ValueError(
+                    "anti_repetition_signature declares a single-site/location pattern "
+                    "but beats use multiple locations: "
+                    + ", ".join(sorted(unique_locations))
+                )
+
         seen: set[str] = set()
         for index, beat in enumerate(self.beats):
             if index > 0 and not beat.causal_dependency_keys:
