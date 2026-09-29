@@ -55,8 +55,18 @@ def build_story_authority_packet(approved: dict[str, Any]) -> dict[str, Any]:
             "local_payoff_if_earned": branch.get("local_payoff_if_earned"),
         }
 
+    premise = (approved.get("approved_premise") or {}).get("premise") or {}
+    premise_authorized_facts = [
+        str(premise.get("inciting_event") or "").strip(),
+        str(premise.get("central_problem") or "").strip(),
+        *[str(x).strip() for x in (premise.get("world_specific_elements") or [])],
+        *[str(x).strip() for x in (premise.get("constraints") or [])],
+    ]
+    premise_authorized_facts = [x for x in premise_authorized_facts if x]
+
     return {
         "schema_version": "story-authority-packet.v1",
+        "premise_authorized_facts": premise_authorized_facts,
         "authority_rules": [
             "Ambient world summary is setting-level context, not entity-specific authority.",
             "A class-level or world-level fact MUST NOT be transferred to a named location, object, person, group, or historical event unless an entity-specific fact or the approved spine explicitly authorizes that transfer.",

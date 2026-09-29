@@ -28,6 +28,12 @@ class StoryAuthorityPacketTests(unittest.TestCase):
         self.assertNotIn("predate every living culture", joined)
         self.assertTrue(packet["ambient_summary_is_not_entity_binding"])
 
+    def test_premise_shipping_log_evidence_is_explicit_authority(self):
+        packet = build_story_authority_packet(self.approved())
+        joined = " ".join(packet["premise_authorized_facts"]).lower()
+        self.assertIn("shipping logs", joined)
+        self.assertIn("no confirming delays or complaints", joined)
+
     def test_unknown_mentor_name_is_not_authorized(self):
         packet = build_story_authority_packet(self.approved())
         names = set(packet["known_durable_proper_names"])

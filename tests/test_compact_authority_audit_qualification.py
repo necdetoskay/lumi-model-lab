@@ -57,6 +57,7 @@ class CompactAuthorityAuditQualificationTests(unittest.TestCase):
         self.assertIn("Raw readings, sketches, notes, and measurements", text)
         self.assertIn("NEW DURABLE PROPER NAMES", text)
         self.assertIn("A character's stated intention", text)
+        self.assertIn("premise_authorized_facts are explicit story authority", text)
         self.assertIn("the pilots would be talking soon", text)
 
 

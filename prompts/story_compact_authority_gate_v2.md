@@ -6,6 +6,8 @@ You receive:
 
 You do NOT receive the large world projection. The authority_packet is the complete authority for this audit.
 
+premise_authorized_facts are explicit story authority. Do not report a historical/evidence statement merely because it is absent from entity_specific_world_facts when it is directly authorized by premise_authorized_facts. Example: if the approved premise explicitly authorizes harbor shipping logs showing no confirming delays or complaints, those already-known negative log facts are allowed.
+
 Your job is to find only serious/critical authority violations.
 
 Audit every narrator-asserted durable or historical statement with these rules:
