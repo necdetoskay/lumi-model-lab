@@ -606,6 +606,110 @@ profiles:
           stream:
             mode: omit
 
+  - model_id: anthropic/claude-sonnet-5.5
+    display_name: Claude Sonnet 5.5
+    source: verified_runtime
+    expose_in_settings: false
+    judge:
+      ready: true
+      evidence: anthropic_official_release_plus_openrouter_model_and_endpoint_metadata
+    qualification:
+      ready: true
+      evidence: anthropic_official_release_plus_openrouter_model_and_endpoint_metadata
+    metadata:
+      verified_at: '2026-09-29'
+      provider_model_slug: anthropic/claude-sonnet-5.5
+      canonical_slug: anthropic/claude-sonnet-5.5-20260928
+      upstream_provider: Anthropic
+      release_date: '2026-09-28'
+      context_tokens: 1000000
+      max_output_tokens: 128000
+      modalities:
+        input: [text, image, file]
+        output: [text]
+      pricing_usd_per_million_tokens:
+        input: 2.00
+        output: 10.00
+        cache_read: 0.20
+        cache_write: 2.50
+        cache_write_1h: 4.00
+      capabilities:
+        structured_output: true
+        tool_calling: true
+        reasoning: true
+      reasoning:
+        mandatory: true
+        default_effort: high
+        supported_effort: [low, medium, high, xhigh, max]
+      supported_parameters:
+        - reasoning
+        - include_reasoning
+        - reasoning_effort
+        - max_tokens
+        - max_completion_tokens
+        - response_format
+        - structured_outputs
+        - tools
+        - tool_choice
+        - verbosity
+      sources:
+        - https://www.anthropic.com/claude-sonnet-5-5
+        - https://openrouter.ai/anthropic/claude-sonnet-5.5
+        - https://openrouter.ai/api/v1/models/anthropic/claude-sonnet-5.5/endpoints
+    notes:
+      - Isolated Sonnet 5.5 Model Lab qualification profile; frozen Sonnet 5 baseline remains authoritative until promotion.
+      - Anthropic reports same per-token pricing as Sonnet 5 with up to 30% lower task cost and 30%+ faster generation in its tests.
+      - P1 audit uses low effort to match the frozen Sonnet 5 editorial-audit policy.
+    transport:
+      structured_output: json_object
+      reasoning:
+        mode: client_configurable
+        request:
+          effort: medium
+          exclude: true
+      temperature:
+        mode: omit
+      max_tokens:
+        mode: send
+      seed:
+        mode: omit
+      stream:
+        mode: omit
+    production_policy:
+      request_classes:
+        editorial_audit:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 3500
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        saga_architect:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 18000
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+
   - model_id: anthropic/claude-sonnet-5
     display_name: Claude Sonnet 5
     source: verified_runtime
