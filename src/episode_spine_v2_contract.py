@@ -39,17 +39,38 @@ class EpisodeBeatV2(StrictModel):
     payoff_contribution: str
 
 
+class DecisionBranchV2(StrictModel):
+    key: str = Field(pattern=KEY_PATTERN)
+    option: str
+    immediate_action: str
+    evidence_state_after_choice: str
+    cost_or_risk: str
+    relationship_or_access_effect: str
+    climax_requirement: str
+    local_payoff_if_earned: str
+
+
 class DecisionPointV2(StrictModel):
     pressure: str
-    options: list[str]
+    branches: list[DecisionBranchV2]
     what_is_unknown: str
     outcome_uncommitted: Literal[True]
 
     @model_validator(mode="after")
-    def validate_options(self) -> "DecisionPointV2":
-        if len(self.options) < 2:
-            raise ValueError("decision point requires at least two credible options")
+    def validate_branches(self) -> "DecisionPointV2":
+        if len(self.branches) < 2:
+            raise ValueError("decision point requires at least two credible branches")
+        branch_keys = [branch.key for branch in self.branches]
+        if len(branch_keys) != len(set(branch_keys)):
+            raise ValueError("decision point branch keys must be unique")
         return self
+
+
+class LogisticsPlanV2(StrictModel):
+    time_window: str
+    location_sequence: list[str]
+    movement_constraints: list[str]
+    feasibility_rationale: str
 
 
 class PersistentOutcomeCandidateV2(StrictModel):
@@ -106,6 +127,7 @@ class EpisodeSpineV2(StrictModel):
     stakes: str
     constraints: list[str]
     opening_hook: str
+    logistics_plan: LogisticsPlanV2
     beats: list[EpisodeBeatV2]
     escalation_ladder: list[str]
     reversal: str
