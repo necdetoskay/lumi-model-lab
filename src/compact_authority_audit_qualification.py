@@ -86,9 +86,6 @@ def run(
     )
     latency = round(time.perf_counter() - started, 3)
 
-    findings = _normalize_findings(payload, story)
-    score = _score(findings, targets, gold_spans)
-
     audit_call = normalize_model_call(
         stage="compact_authority_audit",
         model=MODEL,
@@ -102,6 +99,40 @@ def run(
         (source.get("source_pipeline_usage_rollup") or {}).get("calls") or []
     )
     pipeline_rollup = rollup_model_calls(source_calls + [audit_call])
+
+    try:
+        findings = _normalize_findings(payload, story)
+        score = _score(findings, targets, gold_spans)
+    except Exception as exc:
+        failure_result = {
+            "schema_version": "compact-authority-audit-qualification.v1",
+            "status": "post_inference_normalization_failure",
+            "experiment": "P3D_COMPACT_TYPED_AUTHORITY",
+            "source_writer_run_id": source["source_writer_run_id"],
+            "source_spine_run_id": source["source_spine_run_id"],
+            "model": MODEL,
+            "blind_to_gold": True,
+            "gold_used_only_after_inference": True,
+            "authority_packet": authority_packet,
+            "raw_model_payload": payload,
+            "normalization_error": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+            },
+            "audit_meta": meta,
+            "audit_usage_rollup": audit_rollup,
+            "pipeline_usage_rollup": pipeline_rollup,
+            "incremental_cost_usd": audit_rollup["totals"]["cost_usd"],
+            "incremental_latency_seconds": audit_rollup["totals"]["latency_seconds"],
+            "pipeline_cost_usd": pipeline_rollup["totals"]["cost_usd"],
+            "next_stage_authorized": False,
+            "next_stage_note": (
+                "Post-inference normalization failed; raw model payload and usage were "
+                "persisted. No further model call is authorized."
+            ),
+        }
+        _write(out_path, failure_result)
+        raise
 
     result = {
         "schema_version": "compact-authority-audit-qualification.v1",

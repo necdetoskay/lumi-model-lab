@@ -45,11 +45,19 @@ class CompactAuthorityAuditQualificationTests(unittest.TestCase):
         self.assertNotIn("older than any chart in the harbor archive", packet_text)
         self.assertNotIn("The pilots would be talking soon.", packet_text)
 
+    def test_workflow_source_persists_raw_payload_before_normalization_reraise(self):
+        text = Path("src/compact_authority_audit_qualification.py").read_text()
+        self.assertIn('"raw_model_payload": payload', text)
+        self.assertIn('"status": "post_inference_normalization_failure"', text)
+        self.assertIn('"incremental_cost_usd": audit_rollup["totals"]["cost_usd"]', text)
+
     def test_prompt_enforces_entity_binding_and_record_semantics(self):
         text = PROMPT.read_text()
         self.assertIn("world-level or class-level fact does NOT authorize", text)
         self.assertIn("Raw readings, sketches, notes, and measurements", text)
         self.assertIn("NEW DURABLE PROPER NAMES", text)
+        self.assertIn("A character's stated intention", text)
+        self.assertIn("the pilots would be talking soon", text)
 
 
 if __name__ == "__main__":

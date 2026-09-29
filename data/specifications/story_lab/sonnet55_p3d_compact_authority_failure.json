@@ -1,0 +1,33 @@
+{
+  "schema_version": "sonnet55-p3d-compact-authority-failure.v1",
+  "run_id": 36562666045,
+  "status": "POST_INFERENCE_NORMALIZATION_FAILURE",
+  "model": "openai/gpt-5.6-luna",
+  "paid_inference_occurred": true,
+  "recall_result": "INCONCLUSIVE",
+  "failure": {
+    "stage": "finding_normalization",
+    "type": "RuntimeError",
+    "message": "Finding exact_quote not found in cited spans: When I file the week's calibrations at the harbor office, I'll raise it with the pilots. Quietly.",
+    "segment_truth": {
+      "S174": "\"When I file the week's calibrations at the harbor office, I'll raise it with the pilots.",
+      "S175": "Quietly."
+    },
+    "cause": "The model returned one exact quote spanning adjacent sentence segments; the old validator required the full quote to occur inside a single cited segment."
+  },
+  "telemetry": {
+    "exact_cost_usd": null,
+    "exact_latency_seconds": null,
+    "reason": "The model call returned, but result.json was written only after finding normalization. The parser exception therefore discarded the in-memory raw payload and usage metadata."
+  },
+  "free_fixes": [
+    "Exact quotes spanning multiple explicitly cited contiguous sentence segments are now accepted without fuzzy matching.",
+    "Future compact-authority runs persist raw model payload, usage, cost and latency before re-raising any post-inference normalization error.",
+    "Prompt now explicitly distinguishes a character's stated future intention from a narrator-guaranteed future state."
+  ],
+  "decision": {
+    "p3d_verdict": "INCONCLUSIVE",
+    "next_phase": "P3D_1_COMPACT_TYPED_AUTHORITY_RETRY",
+    "paid_next_stage_authorized": false
+  }
+}

@@ -56,14 +56,38 @@ def _gold_segment_map(story: str, targets: list[dict[str, Any]]) -> dict[str, li
 def _normalize_findings(payload: dict[str, Any], story: str) -> list[dict[str, Any]]:
     segments = segment_story(story)
     by_id = {str(seg["id"]): str(seg["text"]) for seg in segments}
+    order = {str(seg["id"]): idx for idx, seg in enumerate(segments)}
+
     findings: list[dict[str, Any]] = []
     for row in payload.get("findings") or []:
         span_ids = [str(x) for x in (row.get("span_ids") or [])]
         quote = str(row.get("exact_quote") or "").strip()
         if not span_ids or not quote:
             continue
-        if not any(quote in by_id.get(span_id, "") for span_id in span_ids):
-            raise RuntimeError(f"Finding exact_quote not found in cited spans: {quote}")
+
+        cited_texts = [by_id.get(span_id, "") for span_id in span_ids]
+        quote_supported = any(quote in text for text in cited_texts)
+
+        # Accept an exact quote that spans multiple explicitly cited contiguous
+        # sentence segments. This preserves exactness without fuzzy matching.
+        if not quote_supported and len(span_ids) > 1:
+            positions = [order.get(span_id) for span_id in span_ids]
+            if all(pos is not None for pos in positions):
+                sorted_pairs = sorted(zip(positions, span_ids))
+                sorted_positions = [pos for pos, _ in sorted_pairs]
+                if sorted_positions == list(
+                    range(sorted_positions[0], sorted_positions[0] + len(sorted_positions))
+                ):
+                    combined = " ".join(
+                        by_id[span_id] for _, span_id in sorted_pairs
+                    )
+                    quote_supported = quote in combined
+
+        if not quote_supported:
+            raise RuntimeError(
+                f"Finding exact_quote not found in cited spans: {quote}"
+            )
+
         severity = str(row.get("severity") or "").lower()
         if severity not in {"serious", "critical"}:
             continue

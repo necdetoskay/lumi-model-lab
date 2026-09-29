@@ -50,6 +50,26 @@ class StoryCanonAuthorityQualificationTests(unittest.TestCase):
                 story,
             )
 
+    def test_normalizer_accepts_exact_quote_across_contiguous_cited_segments(self):
+        story = 'First sentence. Quietly.'
+        findings = _normalize_findings(
+            {
+                "findings": [
+                    {
+                        "family": "canon_integrity",
+                        "severity": "serious",
+                        "repair_scope": "local",
+                        "span_ids": ["S001", "S002"],
+                        "exact_quote": "First sentence. Quietly.",
+                        "reason": "x",
+                    }
+                ]
+            },
+            story,
+        )
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["span_ids"], ["S001", "S002"])
+
     def test_score_tracks_unmapped(self):
         targets = [{"id": "a"}, {"id": "b"}]
         findings = [

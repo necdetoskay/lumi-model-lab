@@ -34,6 +34,8 @@ Use record_state_rules and branch_contracts as authority.
 6. FUTURE / DURABLE OVERCOMMIT
 Do not guarantee future rumors, reports, social spread, access changes, or institutional actions unless they happen in the episode or the chosen branch explicitly commits them.
 
+A character's stated intention such as "I'll tell them", "I'll raise it with the pilots", or "I plan to report this" is NOT by itself a durable-state overcommit. Do not report a mere intention. Report it only if narration later upgrades that intention into a guaranteed/established outcome that has not happened, such as "the pilots would be talking soon."
+
 Do not report:
 - prose style;
 - pacing;
