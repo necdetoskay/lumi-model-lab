@@ -121,6 +121,15 @@ A static historical mark can establish a historical alignment difference. By its
 
 If the reversal proposes a tide-linked pattern, the pre-reversal beats must contain direct time/tide-varying observations or documented observations that actually support that relationship. Do not turn coincidence into causation.
 
+When a tide-correlation claim is important to the reversal, specify enough observational structure to execute and audit it:
+- how many readings;
+- whether the setup stays unchanged during that series;
+- the time or tide progression across the readings;
+- what direction of change is observed;
+- what confound remains after the series.
+
+Do not use vague phrases like “several readings changed with the tide” when the reversal depends on the exact pattern.
+
 The reversal should reinterpret something previously believed, not be arbitrary surprise.
 
 ## Agency
@@ -139,7 +148,26 @@ Branches must not be cosmetic rewrites of the same result. They must differ in i
 
 Do not precommit which branch Deniz chooses. Do not collapse all branches back into the same climax mechanics or identical payoff state.
 
-The writer may dramatize how Deniz reaches the decision, but must not invent branch consequences. The Episode outcome must be earned in prose/runtime and later committed through StoryOutcome.
+CRITICAL distinction:
+- The branch CHOICE must remain uncommitted.
+- The branch CORE RESULT must NOT remain open-ended.
+
+For every branch, the spine must define one concrete observable result if that branch is chosen:
+- what the final test/presentation actually produces;
+- what the mentor concretely does in response;
+- what local uncertainty is resolved;
+- what durable record is or is not completed.
+
+Do NOT write branch consequences as menus such as “may confirm, weaken, or contradict”, “mentor may accept or reject”, or “possibly logged”. That forces the writer to invent core story logic.
+
+A branch may deterministically end with:
+- a provisional reviewed log;
+- stronger evidence but no reviewed log;
+- a contradicting/null result;
+- a rejected report;
+provided that outcome follows from the branch mechanics and does not violate commit-only-if-earned rules.
+
+The writer may dramatize how Deniz reaches the decision and how the fixed branch result unfolds, but must not invent the branch's decisive evidence result or mentor verdict. Durable canonical commit still happens only through StoryOutcome after the delivered prose earns the defined conditions.
 
 ## Climax
 
