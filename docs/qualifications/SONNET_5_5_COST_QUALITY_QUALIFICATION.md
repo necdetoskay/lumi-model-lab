@@ -297,3 +297,36 @@ Blind Sonnet 5.5 primary-audit qualification is ready:
 - One Sonnet 5.5 editorial-audit call only.
 - No Sol, repair, re-audit, translation, or fidelity call.
 - Regression: 52/52 PASS before paid P3-A.
+
+
+### P3-A — BLIND SONNET 5.5 PRIMARY AUDIT COMPLETE
+Run: 36555236118.
+
+- One Sonnet 5.5 editorial-audit call only.
+- Incremental cost: $0.065422.
+- Latency: 9.359s.
+- Five findings returned.
+- Blind human-gold blocking recall: 1/4 = 25%.
+- Correctly caught future-pilot spread overcommit.
+- Also found a real additional canon defect: other pilots already discussing outer-marker mismatches, which both contradicts the earlier no-complaint evidence and leaks toward unresolved other-beacon scope.
+- Missed three independently identified serious/major defects:
+  - unauthorized beacon history/origin;
+  - unauthorized old-builder tide knowledge;
+  - raw field notes vs completed formal-log semantics.
+- Two findings were human-adjudicated false positives:
+  - timeline compression around the tide turn;
+  - Deniz's deliberately premature tide-causation statement, which the story immediately corrects.
+- 'high ebb' was adjudicated as a local technical wording issue, not a serious blocker.
+
+Decision:
+- Sonnet 5.5 single-pass primary audit is NOT sufficient as sole publication authority.
+- Do not immediately restore full Sol secondary on every story; first test a cheaper targeted canon/state guard.
+
+### P3-B — PREPARED, NOT RUN
+
+Targeted GPT-5.6 Luna canon/state authority guard:
+- audits only unsupported durable history/entity, contradictions, unresolved-scope leaks, future/durable overcommit, and record-state semantics;
+- human-confirmed defect corpus is hidden from the model and used only after inference for scoring;
+- confirmed blind target corpus contains five serious/major canon/state defects;
+- no Sol, repair, translation, or fidelity call;
+- regression: 56/56 PASS before paid P3-B.
