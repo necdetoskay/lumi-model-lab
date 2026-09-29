@@ -1,0 +1,52 @@
+name: Final Compact Authority Clean Gate
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/final-compact-authority-clean-gate.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  gate:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run final compact authority clean gate
+        run: >-
+          PYTHONPATH=. python -m src.compact_authority_clean_gate
+          --source data/specifications/story_lab/age12_episode1_sonnet55_final_english_source_v4.json
+          --approved data/specifications/story_lab/age12_episode1_sonnet55_p27_approved.json
+          --prompt prompts/story_compact_authority_gate_v2.md
+          --out runs/final-compact-authority-clean-gate/result.json
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s runs/final-compact-authority-clean-gate/result.json
+          TMP="$(mktemp -d)"
+          cp runs/final-compact-authority-clean-gate/result.json "$TMP/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          EVIDENCE_BRANCH="evidence/final-compact-authority-clean-gate-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          DEST="experiments/results/final-compact-authority-clean-gate/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+          git add "$DEST/result.json"
+          git commit -m "evidence(qual): archive final compact authority gate ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
