@@ -330,3 +330,38 @@ Targeted GPT-5.6 Luna canon/state authority guard:
 - confirmed blind target corpus contains five serious/major canon/state defects;
 - no Sol, repair, translation, or fidelity call;
 - regression: 56/56 PASS before paid P3-B.
+
+
+### P3-B — TARGETED LUNA CANON/STATE GUARD COMPLETE
+Run: 36556623540.
+
+- One GPT-5.6 Luna targeted canon/state call only.
+- Incremental cost: $0.0049409.
+- Latency: 2.515s.
+- Findings: 3.
+- Blind confirmed-root recall: 2/5 = 40%.
+- Matched:
+  - future_pilot_spread_overcommit;
+  - other_pilots_marker_mismatch.
+- Missed:
+  - unauthorized_beacon_history;
+  - unauthorized_old_builder_tide_knowledge;
+  - field_notes_vs_formal_log_ambiguity.
+- Human adjudication: 3/3 findings are valid serious canon/state findings; one is a second subfinding of the same other-pilots root, so no serious false-positive was observed.
+
+Decision:
+- Keep Luna targeted canon/state guard as a very cheap, high-precision specialist.
+- Do not use it as sole canon authority; 40% root recall is insufficient.
+- Current adaptive QA experiment cost through Sonnet primary + Luna canon guard is $0.17642375 including the qualified spine+writer source.
+- P3-C will test GPT-5.6 Sol as a conditional secondary audit, not as an always-on stage.
+
+### P3-C — PREPARED, NOT RUN
+
+Blind GPT-5.6 Sol secondary-audit proof:
+- same story and same hidden five-root canon/state gold;
+- generic serious/critical StoryForge audit, blind to human gold;
+- no repair, re-audit, translation, or fidelity;
+- regression: 58/58 PASS before paid P3-C.
+
+Promotion question:
+Can conditional Sol recover the serious defects missed by Sonnet 5.5 + targeted Luna at a cost low enough to justify calling it only when upstream QA is not sufficient?
