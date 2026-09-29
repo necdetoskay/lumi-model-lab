@@ -174,6 +174,12 @@ provided that outcome follows from the branch mechanics and does not violate com
 
 The writer may dramatize how Deniz reaches the decision and how the fixed branch result unfolds, but must not invent the branch's decisive evidence result or mentor verdict. Durable canonical commit still happens only through StoryOutcome after the delivered prose earns the defined conditions.
 
+Global rules must not contradict branch-specific rules:
+- if a branch explicitly requires a predefined test/result during the climax, a global writer rule must not forbid that same evidence;
+- prefer "no UNPLANNED new evidence in the climax" over "no new evidence" when a branch has a fixed climax test;
+- shared local_payoff must describe what all branches truly share, then preserve branch-specific durable states;
+- never claim that a reviewed record exists globally when one allowed branch explicitly ends without a reviewed record.
+
 ## Climax
 
 The climax must use:

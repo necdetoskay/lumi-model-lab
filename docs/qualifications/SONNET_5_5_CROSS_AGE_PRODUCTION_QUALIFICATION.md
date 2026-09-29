@@ -156,3 +156,36 @@ Compare each age against the age-12 Final V3 control for:
 Cross-age architecture promotion requires every target age to reach publication-ready without weakening authority controls.
 
 A pass at age 12 does not authorize assumptions about adult/senior maturity, session budget, or language register. Evidence cohorts stay separate by exact age and reader-profile SHA.
+
+
+## Age18 C1 result — REPLAN
+
+Architect run: 36608347735
+Luna recovery run: 36608978063
+
+Metrics:
+- Sonnet 5.5 Architect: $0.085046 / 42.817s
+- Luna Gate: $0.00417195 / 17.008s
+- combined: $0.08921795 / 59.825s
+- combined tokens: 28,598
+
+What passed:
+- exact-age 18;
+- STANDARD 1,600–2,500;
+- MAIN_SAGA_ENTRY;
+- first_discrepancy_logged only, commit-only-if-earned;
+- AGE_MATURITY 5/5;
+- AGENCY 5/5;
+- SAGA_ALIGNMENT 5/5;
+- REPETITION_SAFETY 5/5;
+- professional/institutional stakes are materially more mature than the age12 control.
+
+Blocking conflicts:
+1. fresh_setup_repeat requires a fixed repeat-pair evidence result during the climax, while a global writer rule says no new evidence in the climax;
+2. global local_payoff says the anomaly is professionally on record, while fresh_setup_repeat explicitly ends without a reviewed formal record.
+
+Decision:
+- C1 = REPLAN;
+- do not call Writer;
+- do not rerun Sonnet automatically;
+- C1.1 revision feedback preserves the age18 maturity, professional responsibility and branch asymmetry while removing the two cross-field contradictions.
