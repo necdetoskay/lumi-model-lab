@@ -130,6 +130,11 @@ When a tide-correlation claim is important to the reversal, specify enough obser
 
 Do not use vague phrases like “several readings changed with the tide” when the reversal depends on the exact pattern.
 
+Evidence strength must match sample strength:
+- one fresh-setup repeat may show that an observation survives one independent reset;
+- one fresh-setup repeat may weaken an original-setup-only explanation;
+- one fresh-setup repeat does NOT by itself prove setup-independence, eliminate all instrument/setup error, prove the beacon is the cause, or establish recurrence.
+
 The reversal should reinterpret something previously believed, not be arbitrary surprise.
 
 ## Agency
