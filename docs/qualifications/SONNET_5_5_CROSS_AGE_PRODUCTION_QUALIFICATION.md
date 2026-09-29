@@ -227,3 +227,40 @@ Human pre-adjudication:
 Decision:
 - C1.1 mechanically GREEN;
 - Writer remains blocked pending explicit user creative approval.
+
+
+## Age18 C2 result — WRITER GENERATED / C3 READY
+
+Writer run: 36612862926
+
+Metrics:
+- Aion 3.5 Mini Writer: $0.0316043 / 317.074s
+- Writer tokens: 27,141 total / 17,746 reasoning
+- English words: 2,172
+- deterministic length: PASS (1,600–2,500)
+- spine+gate+writer: $0.12550455 / 377.37s / 57,153 tokens
+- chosen branch: provisional_record
+
+Compared with the age12 Sonnet-5.5 Writer control:
+- Writer cost increased about 124.7%
+- Writer latency increased about 201.6%
+- Writer reasoning tokens increased about 352.0%
+- full pipeline through Writer increased 18.3% in cost, 143.5% in latency and 30.7% in tokens
+
+Interpretation:
+Holding word length constant successfully isolates maturity from length, but exact-age-18 professional reasoning substantially increases Aion reasoning/latency.
+
+Free human pre-audit confirmed three authority/state roots:
+1. premature formal-record commit at Beacon Ridge before reviewer acceptance;
+2. unsupported exclusion of setup/instrument explanations despite the approved inference ceiling;
+3. raw field notes described as a future blank page in the unchosen branch.
+
+Review-only observations:
+- an unsupported prior rumor about Beacon Ridge;
+- exact numeric evidence values not explicitly fixed by the architect.
+
+C3 preparation:
+- typed story-authority-packet.v1 pinned;
+- confirmed three-root gold hidden from the model;
+- next paid scope: one GPT-5.6 Luna compact authority gate only;
+- no repair, Sol, translation, fidelity or writer regeneration is authorized.
