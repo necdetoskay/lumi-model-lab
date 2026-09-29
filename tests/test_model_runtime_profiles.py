@@ -118,6 +118,40 @@ class ModelRuntimeProfileTests(unittest.TestCase):
         self.assertNotIn("reasoning", payload)
         self.assertNotIn("stream", payload)
 
+    def test_sol_is_qualification_ready_for_editorial_audit(self) -> None:
+        profile = require_qualification_runtime_profile("openai/gpt-5.6-sol")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["context_tokens"], 1050000)
+        payload = normalize_openrouter_request(
+            "openai/gpt-5.6-sol",
+            {"temperature": 0.0, "max_tokens": 9000, "seed": 42},
+            request_class="editorial_audit",
+            structured_output=True,
+        )
+        self.assertNotIn("temperature", payload)
+        self.assertNotIn("seed", payload)
+        self.assertEqual(payload["max_tokens"], 3500)
+        self.assertEqual(payload["reasoning"], {"effort": "low", "exclude": True})
+        self.assertEqual(payload["response_format"], {"type": "json_object"})
+
+    def test_gemini38_translation_profile_is_exact_and_unbounded(self) -> None:
+        profile = require_qualification_runtime_profile("google/gemini-3.8-flash")
+        self.assertEqual(profile["match"]["type"], "exact")
+        self.assertTrue(profile["qualification"]["ready"])
+        self.assertEqual(profile["metadata"]["context_tokens"], 1048576)
+        self.assertEqual(profile["metadata"]["max_output_tokens"], 65536)
+        payload = normalize_openrouter_request(
+            "google/gemini-3.8-flash",
+            {"temperature": 0.2, "max_tokens": 7000, "seed": 42},
+            request_class="translation",
+            structured_output=False,
+        )
+        self.assertEqual(payload["temperature"], 0.2)
+        self.assertNotIn("max_tokens", payload)
+        self.assertEqual(payload["seed"], 42)
+        self.assertEqual(payload["reasoning"], {"effort": "low", "exclude": True})
+
     def test_luna_is_qualification_ready_with_verified_metadata(self) -> None:
         profile = require_qualification_runtime_profile("openai/gpt-5.6-luna")
         self.assertEqual(profile["match"]["type"], "exact")
