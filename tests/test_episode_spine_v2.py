@@ -87,6 +87,18 @@ def _spine_payload() -> dict:
             "mentor demands reproducible evidence",
         ],
         "opening_hook": "A routine calibration gives Deniz an impossible angle.",
+        "logistics_plan": {
+            "time_window": "One usable calibration window remains before the tide turns.",
+            "location_sequence": ["beacon_ridge", "meridian_harbor"],
+            "movement_constraints": [
+                "Field evidence must be completed before leaving Beacon Ridge.",
+                "Harbor reporting happens only after the measurement window closes.",
+            ],
+            "feasibility_rationale": (
+                "The time-critical field sequence stays at Beacon Ridge; "
+                "Meridian Harbor is used only after the deadline has passed."
+            ),
+        },
         "beats": [
             _beat(
                 "b1_impossible_angle",
@@ -167,9 +179,27 @@ def _spine_payload() -> dict:
                 "The measurement window is closing and Deniz does not yet know "
                 "whether one more test will strengthen the case or erase the chance to report it."
             ),
-            "options": [
-                "Log the anomaly now with explicit uncertainty and preserve the evidence.",
-                "Use the remaining window for one more controlled retest before reporting.",
+            "branches": [
+                {
+                    "key": "report_now",
+                    "option": "Log the anomaly now with explicit uncertainty.",
+                    "immediate_action": "Stop measuring and preserve the current reading.",
+                    "evidence_state_after_choice": "One direct reading plus clearly labeled uncertainty survives.",
+                    "cost_or_risk": "Deniz gives up the last chance for same-window corroboration.",
+                    "relationship_or_access_effect": "The mentor judges Deniz on restraint and evidence labeling.",
+                    "climax_requirement": "Deniz must defend why preserving a weak but honest record was methodologically sound.",
+                    "local_payoff_if_earned": "A cautious anomaly note is accepted and future reports receive closer review.",
+                },
+                {
+                    "key": "retest",
+                    "option": "Use the remaining window for one controlled retest.",
+                    "immediate_action": "Delay reporting and spend the last minutes repeating the calibration.",
+                    "evidence_state_after_choice": "The case may gain a second direct reading or lose the window with no corroboration.",
+                    "cost_or_risk": "The original anomaly may remain the only usable reading if the retest misses the tide band.",
+                    "relationship_or_access_effect": "The mentor judges Deniz on experimental discipline and risk management.",
+                    "climax_requirement": "The retest result must materially change what Deniz can responsibly claim.",
+                    "local_payoff_if_earned": "The log records either a stronger repeated anomaly or a disciplined inconclusive result with a future test plan.",
+                },
             ],
             "what_is_unknown": (
                 "Whether a final retest will corroborate the drift before the tide changes."
@@ -300,6 +330,18 @@ class EpisodeSpineContractTests(unittest.TestCase):
             spine.saga_progression.intended_milestone_keys,
             ["first_discrepancy_logged"],
         )
+
+    def test_rejects_decision_with_fewer_than_two_branches(self):
+        payload = _spine_payload()
+        payload["decision_point"]["branches"] = payload["decision_point"]["branches"][:1]
+        with self.assertRaisesRegex(ValidationError, "at least two credible branches"):
+            EpisodeSpineV2.model_validate(payload)
+
+    def test_rejects_duplicate_decision_branch_keys(self):
+        payload = _spine_payload()
+        payload["decision_point"]["branches"][1]["key"] = "report_now"
+        with self.assertRaisesRegex(ValidationError, "branch keys must be unique"):
+            EpisodeSpineV2.model_validate(payload)
 
     def test_rejects_too_few_beats(self):
         payload = _spine_payload()
