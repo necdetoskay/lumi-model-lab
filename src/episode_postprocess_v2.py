@@ -147,6 +147,27 @@ def _validate_source(source: dict[str, Any], approved: dict[str, Any]) -> None:
         raise RuntimeError("Spine semantic gate is not ACCEPT.")
 
 
+def _checkpoint(
+    *,
+    evidence: dict[str, Any],
+    calls: list[dict[str, Any]],
+    out_path: Path,
+    status: str,
+    english_story: str | None = None,
+    turkish_story: str | None = None,
+) -> None:
+    rollup = rollup_model_calls(calls)
+    evidence["status"] = status
+    evidence["pipeline_usage_rollup"] = rollup
+    evidence["total_cost_usd"] = rollup["totals"]["cost_usd"]
+    if english_story is not None:
+        evidence["accepted_english_master"] = english_story
+    if turkish_story is not None:
+        evidence["turkish_delivery_story"] = turkish_story
+        evidence["turkish_word_count"] = count_words(turkish_story)
+    _write_json(out_path, evidence)
+
+
 def run(
     *,
     source_path: Path,
@@ -227,6 +248,13 @@ def run(
         "primary_meta": primary_meta,
         "secondary_meta": secondary_meta,
     }
+    _checkpoint(
+        evidence=evidence,
+        calls=calls,
+        out_path=out_path,
+        status="initial_audit_complete",
+        english_story=story,
+    )
 
     for cycle in range(1, 4):
         if not findings:
@@ -311,6 +339,13 @@ def run(
                 "secondary_meta": smeta,
             }
         )
+        _checkpoint(
+            evidence=evidence,
+            calls=calls,
+            out_path=out_path,
+            status=f"repair_cycle_{cycle}_complete",
+            english_story=story,
+        )
 
     final_en_words = count_words(story)
     if findings or not (min_words <= final_en_words <= max_words):
@@ -330,6 +365,15 @@ def run(
         "primary_findings": primary,
         "secondary_findings": secondary,
     }
+    en_out_path.parent.mkdir(parents=True, exist_ok=True)
+    en_out_path.write_text(story.rstrip() + "\n", encoding="utf-8")
+    _checkpoint(
+        evidence=evidence,
+        calls=calls,
+        out_path=out_path,
+        status="english_accepted",
+        english_story=story,
+    )
 
     translation_input = {
         "exact_age": int(spine["exact_age"]),
@@ -360,24 +404,70 @@ def run(
             latency_seconds=tr_latency,
         )
     )
+    tr_out_path.parent.mkdir(parents=True, exist_ok=True)
+    tr_out_path.write_text(tr_story.rstrip() + "\n", encoding="utf-8")
+    _checkpoint(
+        evidence=evidence,
+        calls=calls,
+        out_path=out_path,
+        status="translation_complete",
+        english_story=story,
+        turkish_story=tr_story,
+    )
 
     started = time.perf_counter()
-    fidelity, fidelity_meta = _structured_call(
-        api_key=key,
-        model=FIDELITY_MODEL,
-        system=FIDELITY_SYSTEM,
-        payload={
-            "source_language": "en",
-            "target_language": "tr",
-            "exact_age": int(spine["exact_age"]),
-            "hard_constraints": _hard_constraints(spine),
-            "source_story": story,
-            "translation": tr_story,
-        },
-        seed=seed + 21,
-        request_class="editorial_audit",
-        max_tokens=1800,
-    )
+    try:
+        fidelity, fidelity_meta = _structured_call(
+            api_key=key,
+            model=FIDELITY_MODEL,
+            system=FIDELITY_SYSTEM,
+            payload={
+                "source_language": "en",
+                "target_language": "tr",
+                "exact_age": int(spine["exact_age"]),
+                "hard_constraints": _hard_constraints(spine),
+                "source_story": story,
+                "translation": tr_story,
+            },
+            seed=seed + 21,
+            # Reuse Luna's qualification-ready zero-reasoning structured contract.
+            request_class="defect_locator",
+            max_tokens=None,
+        )
+    except Exception as exc:
+        fidelity_latency = round(time.perf_counter() - started, 3)
+        trace = getattr(exc, "trace", None) or {}
+        raw_usage = trace.get("raw_usage") or {}
+        cost = trace.get("cost") or {}
+        if raw_usage or cost:
+            calls.append(
+                normalize_model_call(
+                    stage="fidelity",
+                    model=FIDELITY_MODEL,
+                    provider=runtime_profile_identity(FIDELITY_MODEL).get("provider"),
+                    raw_usage=raw_usage,
+                    cost=cost,
+                    latency_seconds=fidelity_latency,
+                    status="failed",
+                )
+            )
+        evidence["stage_latency_seconds"]["fidelity"] = fidelity_latency
+        evidence["fidelity_failure"] = {
+            "type": type(exc).__name__,
+            "message": str(exc),
+            "stage": trace.get("stage"),
+            "finish_reason": trace.get("finish_reason"),
+        }
+        _checkpoint(
+            evidence=evidence,
+            calls=calls,
+            out_path=out_path,
+            status="fidelity_runtime_failure",
+            english_story=story,
+            turkish_story=tr_story,
+        )
+        raise
+
     fidelity_latency = round(time.perf_counter() - started, 3)
     evidence["stage_latency_seconds"]["fidelity"] = fidelity_latency
     calls.extend(
