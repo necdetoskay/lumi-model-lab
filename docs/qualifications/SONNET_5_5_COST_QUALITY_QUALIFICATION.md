@@ -259,3 +259,41 @@ Interpretation:
 - The fresh_setup_retest branch may legitimately end with stronger evidence and no completed reviewed log, exactly as frozen Revision-05 allows.
 - first_discrepancy_logged remains commit-only-if-earned.
 - Sonnet 5.5 candidate is now mechanically qualified for human review; no writer inference is authorized by this result.
+
+
+### Writer qualification — Aion 3.5 Mini on P2.7 approved spine
+Run: 36552606045.
+
+- Deterministic status: PASS.
+- English words: 1,988 (target 1,600-2,500).
+- Chosen branch: report_now.
+- Writer cost: $0.0140658.
+- Writer latency: 105.118 s.
+- Writer tokens: 13,909 total; 3,926 reasoning.
+- Source spine+gate+writer pipeline cost: $0.10606085.
+- Source pipeline tokens: 43,716.
+- No audit/repair/translation call was made.
+
+Compared with frozen baseline Writer run 36526379349:
+- Writer cost: $0.02961708 -> $0.0140658 (-52.5%).
+- Writer latency: 342.112s -> 105.118s (-69.3%).
+- Reasoning tokens: 19,638 -> 3,926 (-80.0%).
+- Frozen baseline spine+writer: $0.14919643.
+- Sonnet 5.5 spine+writer: $0.10606085 (-28.9%).
+
+Human pre-audit found likely quality targets before any paid judge:
+- unauthorized beacon age/origin history;
+- unauthorized old-builder tide knowledge;
+- field-notes vs formal-log ambiguity;
+- future pilot-spread overcommit;
+- mentor identity authority check;
+- new mentor backstory.
+
+### P3-A — PREPARED, NOT RUN
+
+Blind Sonnet 5.5 primary-audit qualification is ready:
+- Human pre-audit findings are NOT supplied to the model.
+- They are used only after inference to score recall.
+- One Sonnet 5.5 editorial-audit call only.
+- No Sol, repair, re-audit, translation, or fidelity call.
+- Regression: 52/52 PASS before paid P3-A.
