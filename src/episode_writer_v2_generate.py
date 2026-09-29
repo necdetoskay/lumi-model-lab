@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from src.generate import OpenRouterCallError, call_openrouter, count_words, parse_cost, parse_usage
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
+from src.story_authority_packet import build_story_authority_packet
 
 
 DEFAULT_APPROVED = Path(
@@ -65,6 +66,28 @@ def _compact_context(approved: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def build_writer_input(approved: dict[str, Any]) -> dict[str, Any]:
+    spine = approved["episode_spine"]
+    return {
+        "task": "write_episode_from_human_approved_spine",
+        "source_spine_run_id": approved["source_run_id"],
+        "human_review": approved["human_review"],
+        "approved_premise": approved["approved_premise"]["premise"],
+        "context": _compact_context(approved),
+        "authority_packet": build_story_authority_packet(approved),
+        "episode_spine": spine,
+        "hard_rules": {
+            "one_writer_call_only": True,
+            "editor_call_forbidden": True,
+            "judge_call_forbidden": True,
+            "repair_call_forbidden": True,
+            "translation_call_forbidden": True,
+            "writer_must_choose_exactly_one_decision_branch": True,
+            "saga_unknowns_must_remain_unresolved": True,
+        },
+    }
+
+
 def _validate_source(approved: dict[str, Any]) -> None:
     if approved.get("schema_version") != "episode-spine-v2-human-approved.v1":
         raise RuntimeError("Approved spine artifact schema mismatch.")
@@ -112,26 +135,7 @@ def generate(
     require_qualification_runtime_profile(writer_model)
 
     spine = approved["episode_spine"]
-    context = _compact_context(approved)
-    approved_premise = approved["approved_premise"]["premise"]
-
-    writer_input = {
-        "task": "write_episode_from_human_approved_spine",
-        "source_spine_run_id": approved["source_run_id"],
-        "human_review": approved["human_review"],
-        "approved_premise": approved_premise,
-        "context": context,
-        "episode_spine": spine,
-        "hard_rules": {
-            "one_writer_call_only": True,
-            "editor_call_forbidden": True,
-            "judge_call_forbidden": True,
-            "repair_call_forbidden": True,
-            "translation_call_forbidden": True,
-            "writer_must_choose_exactly_one_decision_branch": True,
-            "saga_unknowns_must_remain_unresolved": True,
-        },
-    }
+    writer_input = build_writer_input(approved)
 
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
     started = time.perf_counter()

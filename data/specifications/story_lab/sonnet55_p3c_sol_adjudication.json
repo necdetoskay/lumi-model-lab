@@ -1,0 +1,41 @@
+{
+  "schema_version": "sonnet55-p3c-sol-adjudication.v1",
+  "run_id": 36557388495,
+  "status": "P3C_COMPLETE_HUMAN_ADJUDICATED",
+  "model": "openai/gpt-5.6-sol",
+  "incremental_cost_usd": 0.057816,
+  "latency_seconds": 17.35,
+  "blind_recall": {
+    "target_count": 5,
+    "matched_count": 1,
+    "recall": 0.2,
+    "matched_targets": ["other_pilots_marker_mismatch"],
+    "missed_targets": [
+      "unauthorized_beacon_history",
+      "unauthorized_old_builder_tide_knowledge",
+      "field_notes_vs_formal_log_ambiguity",
+      "future_pilot_spread_overcommit"
+    ]
+  },
+  "finding_adjudication": [
+    {
+      "finding_index": 0,
+      "disposition": "TRUE_SERIOUS",
+      "root": "other_pilots_marker_mismatch"
+    }
+  ],
+  "coverage_union": {
+    "sonnet55_primary_plus_luna_canon_plus_sol": [
+      "future_pilot_spread_overcommit",
+      "other_pilots_marker_mismatch"
+    ],
+    "union_recall": 0.4,
+    "note": "Sol added no new confirmed root beyond upstream Sonnet/Luna coverage."
+  },
+  "decision": {
+    "always_on_sol_secondary": "REJECT_FOR_CURRENT_TOPOLOGY",
+    "reason": "The extra $0.057816 and 17.35s added no new root coverage on this story.",
+    "root_cause_hypothesis": "Three models share the same blind spots, indicating authority/context packaging and writer-state semantics are the dominant problem rather than model strength.",
+    "next_phase": "P3D_COMPACT_TYPED_AUTHORITY"
+  }
+}
