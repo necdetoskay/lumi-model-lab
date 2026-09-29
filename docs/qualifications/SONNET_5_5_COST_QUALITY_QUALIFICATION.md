@@ -365,3 +365,50 @@ Blind GPT-5.6 Sol secondary-audit proof:
 
 Promotion question:
 Can conditional Sol recover the serious defects missed by Sonnet 5.5 + targeted Luna at a cost low enough to justify calling it only when upstream QA is not sufficient?
+
+
+### P3-C — GPT-5.6 SOL SECONDARY AUDIT COMPLETE
+Run: 36557388495.
+
+- One GPT-5.6 Sol secondary-audit call only.
+- Incremental cost: $0.057816.
+- Latency: 17.35s.
+- Blind confirmed-root recall: 1/5 = 20%.
+- Matched only other_pilots_marker_mismatch.
+- Missed:
+  - unauthorized_beacon_history;
+  - unauthorized_old_builder_tide_knowledge;
+  - field_notes_vs_formal_log_ambiguity;
+  - future_pilot_spread_overcommit.
+- Sol added zero new confirmed root coverage beyond Sonnet 5.5 + targeted Luna.
+
+Three-model union on this five-root canon/state corpus:
+- Sonnet 5.5 primary + Luna targeted canon + Sol secondary = 2/5 roots = 40%.
+- The shared blind spots are the same three authority/state-semantic classes.
+
+Decision:
+- Reject always-on Sol secondary for the current topology.
+- The dominant problem is authority/context packaging and writer-state semantics, not lack of a stronger judge.
+- Experimental source + Sonnet + Luna + Sol cost reached $0.23423975 before any repair/translation, without fixing the recall gap.
+
+### P3-D — TYPED COMPACT AUTHORITY PREPARED, NOT RUN
+
+Free architectural hardening completed:
+- Writer receives story-authority-packet.v1.
+- World/class-level facts cannot be silently rebound to a named entity.
+- Named entity age/origin/builders/prior incidents/history require explicit entity-specific authority.
+- New durable NPC proper names are forbidden when no approved name exists.
+- Character speculation cannot silently become narrator/world fact.
+- Raw readings/field notes are typed separately from a reviewed formal entry.
+- Future rumor/report/social spread remains conditional unless earned in-episode or committed by the chosen branch.
+- Beacon Ridge currently receives exactly one entity-specific known world fact: it is part of the known inner navigation network. The ambient 'some markers predate every living culture' statement is explicitly non-binding for Beacon Ridge.
+- Writer input now carries the typed packet directly.
+- A compact Luna authority proof uses the same packet instead of the large projection/context.
+- Regression: 68/68 PASS.
+- Production/frozen baseline remains untouched.
+
+P3-D paid scope, if authorized:
+- one GPT-5.6 Luna compact typed-authority audit only;
+- same already-generated story;
+- hidden five-root gold used only after inference;
+- no Writer regeneration, Sol, repair, translation, or fidelity.
