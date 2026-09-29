@@ -79,6 +79,18 @@ Each beat must say:
 - why pressure/escalation changes;
 - how it contributes to payoff.
 
+## Logistics and time pressure
+
+Provide an explicit logistics_plan.
+
+Account for:
+- the usable time window;
+- the ordered location sequence;
+- travel or movement constraints;
+- why the sequence is physically feasible before the deadline.
+
+Do not jump between Beacon Ridge and Meridian Harbor during a shrinking tide window unless the plan explicitly makes that movement feasible. Prefer restructuring the sequence over hand-waving travel time.
+
 ## Escalation
 
 Escalation must change the problem, not merely repeat failed attempts.
@@ -99,11 +111,21 @@ It should emerge from prior evidence.
 
 ## Agency
 
-Include a meaningful decision point with at least two credible options.
+Include a meaningful decision point with at least two credible branches.
 
-Do not precommit the choice or outcome.
+For EACH branch, specify:
+- the option and immediate action;
+- the evidence state after choosing it;
+- its real cost or risk;
+- the relationship/access effect it can cause;
+- what the climax must dramatize for that branch;
+- the local payoff available if that branch is earned.
 
-The writer may dramatize how Deniz reaches the decision, but the Episode outcome must be earned in prose/runtime and later committed through StoryOutcome.
+Branches must not be cosmetic rewrites of the same result. They must differ in immediate evidence, cost, relationship/access consequence, or opportunity cost.
+
+Do not precommit which branch Deniz chooses. Do not collapse all branches back into the same climax mechanics or identical payoff state.
+
+The writer may dramatize how Deniz reaches the decision, but must not invent branch consequences. The Episode outcome must be earned in prose/runtime and later committed through StoryOutcome.
 
 ## Climax
 
@@ -158,8 +180,10 @@ The final spine should be detailed enough that a capable writer model can execut
 - the central problem;
 - the reversal;
 - the meaningful decision pressure;
-- the climax solution logic;
-- the local payoff.
+- branch-specific consequences;
+- movement/timing feasibility;
+- the climax solution logic for every allowed branch;
+- the local payoff available under every allowed branch.
 
 But do not turn the spine into prose.
 
