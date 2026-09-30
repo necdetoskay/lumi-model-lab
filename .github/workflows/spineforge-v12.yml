@@ -1,0 +1,76 @@
+name: SpineForge v12 Roleplay Prompt-Hardened Sonnet Frozen Attempt
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v12-single-owner-sonnet
+    paths:
+      - experiments/triggers/spineforge-v12.json
+
+permissions:
+  contents: write
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify frozen v12 runtime and run one authorized attempt
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          rm -rf runs/spineforge-v12
+          PYTHONPATH=. python -m src.spineforge_v12_stage \
+            --trigger experiments/triggers/spineforge-v12.json \
+            --out-dir runs/spineforge-v12
+      - name: Emit compact immutable evidence summary
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          PYTHONPATH=. python -m src.spineforge_v12_evidence_summary \
+            --result runs/spineforge-v12/result.json \
+            --out runs/spineforge-v12/evidence_summary.json
+          exit 0
+      - name: Persist full evidence to qualification branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -d runs/spineforge-v12 ]; then
+            echo "No v12 run directory exists; refusing to claim durable evidence."
+            exit 1
+          fi
+          target="experiments/results/spineforge-v12/${GITHUB_RUN_ID}"
+          mkdir -p "${target}"
+          cp -a runs/spineforge-v12/. "${target}/"
+          cp experiments/triggers/spineforge-v12.json "${target}/trigger.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${target}"
+          if git diff --cached --quiet; then
+            echo "Evidence path produced no changes."
+            exit 1
+          fi
+          git commit -m "evidence(spineforge-v12): persist run ${GITHUB_RUN_ID}"
+          git fetch origin "${GITHUB_REF_NAME}"
+          git rebase "origin/${GITHUB_REF_NAME}"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+      - name: Upload artifact best-effort
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: spineforge-v12-${{ github.run_id }}
+          path: |
+            runs/spineforge-v12
+            experiments/triggers/spineforge-v12.json
+          if-no-files-found: warn
+          retention-days: 30
