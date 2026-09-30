@@ -1,0 +1,59 @@
+name: SpineForge v10 Partition Contract Parity Zero-Cost
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v10-partition-contract-parity
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v10 parity and runtime proof
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_v10_contract_parity.py
+          tests/test_spineforge_v10_strict_transport.py
+          tests/test_spineforge_v10_runtime.py
+          tests/test_spineforge_v10_stage.py
+      - name: v9 durable evidence and transport regression
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_v9_strict_transport.py
+          tests/test_spineforge_v9_runtime.py
+          tests/test_spineforge_v9_stage.py
+          -k "not case_zero_spend_without_paid_trigger_before_authorization"
+      - name: v1-v9 historical regression
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_contract.py
+          tests/test_spineforge_freeze_runtime.py
+          tests/test_spineforge_frozen_v1.py
+          tests/test_spineforge_revision.py
+          tests/test_spineforge_runtime.py
+          tests/test_spine_context_pack_v1.py
+          tests/test_spineforge_v2_context_runtime.py
+          tests/test_spineforge_v2_stage.py
+          tests/test_spineforge_v2_frozen.py
+          tests/test_spineforge_v3_context_runtime.py
+          tests/test_spineforge_v3_stage.py
+          tests/test_spineforge_v3_frozen.py
+          tests/test_spineforge_v4_context_runtime.py
+          tests/test_spineforge_v4_stage.py
+          tests/test_spineforge_v4_frozen.py
+          tests/test_spineforge_v5_frozen.py
+          tests/test_spineforge_v6_frozen.py
+          tests/test_spineforge_v7_frozen.py
+          tests/test_spineforge_v8_frozen.py
+          tests/test_spineforge_v9_frozen.py
+          -k "not starts_zero_spend_and_without_paid_trigger and not case_ready_zero_spend_and_no_paid_trigger and not case_ready_zero_spend_and_without_paid_trigger and not case_zero_spend_without_paid_trigger_before_authorization"
