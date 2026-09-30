@@ -28,3 +28,37 @@ No paid v9 call is allowed until:
 2. inherited v8 evidence behavior remains GREEN;
 3. historical frozen regressions remain GREEN;
 4. v9 runtime is SHA-256 frozen and freeze verification is GREEN.
+
+## Frozen zero-cost qualification
+
+Runtime ID: `spineforge.contextpack.v9`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v9`  
+Runtime source commit: `a15feb24ce310b753690fdc068e874c0bb49625b`  
+Frozen dependencies: **29 SHA-256 locked files**
+
+Final frozen verification run: `36736910932`
+
+Result:
+- v9 sanitizer/runtime/stage/frozen tests: **19 PASS**
+- v8 durable-evidence regression: **4 PASS**
+- historical v1→v8 regression: **91 PASS**
+- historical snapshots deselected by design: **3**
+- frozen files modified after runtime source commit: **0/29**
+- paid v9 calls: **0**
+- v9 spend: **$0**
+
+The exact v8 defect is covered by frozen tests:
+- `StructuralFrameV1.title` exists in both provider `required` and `properties`.
+- path-aware sanitization preserves legitimate property names that collide with JSON Schema annotation keywords.
+- malformed `required`/ `properties` relationships stop before provider inference.
+
+Current state: `READY_FOR_ATTEMPT_1`.
+
+No `experiments/triggers/spineforge-v9.json` exists.
+
+Next paid scope:
+
+`SPINEFORGE_V9_ATTEMPT_1_AION_THEN_PARTITIONED_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before trigger creation.
+
