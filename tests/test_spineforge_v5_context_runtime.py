@@ -224,16 +224,20 @@ def _paid_raw(key:str)->dict:
     return copy.deepcopy(payload[key]["creative_raw_payload"])
 
 
-def test_v5_real_attempt1_scalar_list_shape_is_safe_normalized()->None:
+def test_v5_real_attempt1_shape_is_repaired_but_structural_failure_remains()->None:
     raw=_paid_raw("v4_attempt_1")
     assert isinstance(raw["episode_spine"]["logistics_plan"]["movement_constraints"],str)
     normalized,repairs=sf._normalize_creative_raw(raw)
-    draft=SpineCreativeDraftV1.model_validate(normalized)
-    assert draft.episode_spine.logistics_plan.movement_constraints==[
+    assert normalized["episode_spine"]["logistics_plan"]["movement_constraints"]==[
         "Must stay on the exterior survey path."
     ]
     kinds={x["kind"] for x in repairs}
     assert "coerce_scalar_string_to_list" in kinds
+    assert "COMPLICATION" not in {
+        x["phase"] for x in normalized["episode_spine"]["beats"]
+    }
+    with pytest.raises(ValidationError,match="missing required phases: COMPLICATION"):
+        SpineCreativeDraftV1.model_validate(normalized)
 
 
 def test_v5_real_attempt2_missing_complication_remains_structural_failure()->None:
