@@ -1,0 +1,205 @@
+{
+  "schema_version": "spineforge-runtime-profile.v1",
+  "runtime_id": "spineforge.contextpack.v5.creative-structural-split",
+  "status": "FROZEN_QUALIFICATION_CANDIDATE",
+  "purpose": "Separate Aion creative intent from Sonnet strict structural compilation so creative quality is preserved without making Aion the author of the deep EpisodeSpine contract.",
+  "context_contract": {
+    "schema": "spine-context-pack.v1",
+    "qualification_source": "mock-lumi-canonical-state.v1",
+    "production_source_target": "LUMI_CANONICAL_STATE",
+    "same_pack_for_aion_sonnet_luna": true,
+    "hidden_saga_truth_excluded": true,
+    "stale_revision_rejected": true,
+    "stale_human_approval_rejected": true
+  },
+  "runtime": {
+    "creative_architect_model": "aion-labs/aion-3.5-mini",
+    "creative_prompt": "prompts/spineforge_creative_architect_v5_intent.md",
+    "creative_contract": "spineforge-creative-intent.v1",
+    "creative_nested_spine_mode": "UNTRUSTED_CREATIVE_PROPOSAL",
+    "compiler_model": "anthropic/claude-sonnet-5.5",
+    "compiler_prompt": "prompts/spineforge_structural_compiler_v5.md",
+    "compiler_contract": "spineforge-structural-compilation.v1",
+    "compiler_transport": "STRICT_JSON_SCHEMA_REQUIRE_PARAMETERS",
+    "product_gate_model": "openai/gpt-5.6-luna",
+    "product_gate_prompt": "prompts/spineforge_product_gate_v5.md",
+    "product_gate_contract": "spineforge-product-gate.v5",
+    "product_gate_transport": "STRICT_JSON_SCHEMA_REQUIRE_PARAMETERS",
+    "revision_feedback_schema": "spineforge-revision-feedback.v5",
+    "product_schema": "spineforge-product.v5",
+    "max_attempts": 3,
+    "max_calls_per_attempt": 3,
+    "human_review_required_before_story_writer": true
+  },
+  "stage_recovery": {
+    "creative_intent_rejected": "next explicitly authorized attempt targets AION_CREATIVE",
+    "structural_compile_rejected": "next explicitly authorized attempt targets SONNET_STRUCTURAL and reuses fingerprint-bound creative intent",
+    "structural_replan_required": "next explicitly authorized attempt targets AION_CREATIVE",
+    "product_replan_required": "Luna selects AION_CREATIVE or SONNET_STRUCTURAL; next attempt resumes only the named stage",
+    "context_changed": "STOP before inference; prior feedback/product/approval stale",
+    "attempt_limit": "3; attempt 4 rejected before inference"
+  },
+  "v5_boundary_change": {
+    "aion_no_longer_owns_deep_episode_contract": true,
+    "exact_archived_v4_aion_payloads_cross_creative_boundary_without_nested_semantic_mutation": true,
+    "sonnet_owns_strict_episode_spine_compilation": true,
+    "provider_strict_schema_plus_application_validation": true,
+    "strict_transport_isolated_from_historical_generate_runtime": true,
+    "v1_v4_frozen_hashes_preserved": true,
+    "no_case_specific_recovery": true
+  },
+  "paid_boundary_policy": {
+    "explicit_authorization_required_for_each_attempt": true,
+    "one_attempt_scope": "Aion if creative stage required; Sonnet if eligible; Luna if eligible; then STOP",
+    "stage_local_resume_allowed": true,
+    "no_automatic_paid_retry": true,
+    "no_writer_call_inside_spineforge": true
+  },
+  "no_code_change_qualification_rule": {
+    "enabled": true,
+    "first_paid_case_starts_only_after_runtime_freeze": true,
+    "case_variation_is_data_only": true,
+    "revision_feedback_is_data_only": true,
+    "runtime_hash_mismatch_invalidates_active_case": true,
+    "runtime_or_prompt_change_requires_new_spineforge_revision": true,
+    "scenario_specific_runtime_patch_counts_as_case_failure": true,
+    "active_case_may_not_be_reclassified_as_success_after_runtime_patch": true
+  },
+  "zero_cost_evidence": {
+    "full_qualification_run_id": 36701807242,
+    "v5_tests": "22/22 PASS",
+    "historical_v1_v4_tests": "75/75 PASS; 1 obsolete initial-state snapshot deselected",
+    "paid_calls": 0
+  },
+  "runtime_freeze": {
+    "enabled": true,
+    "runtime_revision": "SPINEFORGE-CONTEXTPACK-FROZEN-v5",
+    "runtime_source_commit": "b754d17632a36f9a6f86c77c00db382e4fee0bd3",
+    "files": [
+      {
+        "path": ".github/workflows/spineforge-v5.yml",
+        "sha256": "932c4d8a6781173eaa17cecdcef21aa63b3d1e26674af93a955e46d393a739fc"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "ce5e252122e139330e13f38b25b748a0bb86d36efe50e646353dd2ab7c77675d"
+      },
+      {
+        "path": "configs/model_runtime_profiles.yaml",
+        "sha256": "b4710c3ee3069604b8b0b84ca69a864ced86b3d38543b139f78c5dd6a5a72911"
+      },
+      {
+        "path": "src/generate.py",
+        "sha256": "c3076ba9271f5dd9b19ee6059a7dda241e2c7d0ea866c06176f9d31848317496"
+      },
+      {
+        "path": "src/model_registry.py",
+        "sha256": "1ffd711f3ff3c565facfe83dfb622eadbcdd9109784479b0f315fc8d66a1bb28"
+      },
+      {
+        "path": "src/model_usage_rollup.py",
+        "sha256": "4f9fe2318e0e23ecb3c43f2c0481648b1db76f01edea7c538b5c6d1aa007cf57"
+      },
+      {
+        "path": "src/schemas.py",
+        "sha256": "e2bfb001b25316e73780090f296b9134e712446907570e1c7a752da8da1a8822"
+      },
+      {
+        "path": "src/judge.py",
+        "sha256": "11849cfc5a46183549d7f9bfb1b2970fd08fc73086d40d5754c4a942e672a3f1"
+      },
+      {
+        "path": "src/english_scene_plan_smoke.py",
+        "sha256": "f43ac92efe7e90dea46e10189981beef20c7f3818244ebdf66011f38970fd350"
+      },
+      {
+        "path": "src/generator_benchmark_v2.py",
+        "sha256": "ff76f6a020f5bbbee07a101cc3fb2de88adc75530a8b383f045e64ac297b4a0c"
+      },
+      {
+        "path": "src/openrouter_jev.py",
+        "sha256": "bb96de4d64c23f73020c15167230a592757a0f16d114a628bc32933f4fcd2f41"
+      },
+      {
+        "path": "src/english_story_pipeline.py",
+        "sha256": "4fd9a1c63dda161ef614b7aa5403a26e80be84335f2721b6b4518ce4203c4c4c"
+      },
+      {
+        "path": "src/premise_architect_v2_contract.py",
+        "sha256": "5b9bf657b39ad81525b58ad7c932f5cce4a05353a0fb99165e3392b4dd079cdf"
+      },
+      {
+        "path": "src/reader_profile_v2.py",
+        "sha256": "dd6fec703b113e72f16a333f985ff042f96b6bc6926b0e02bc8f212ca0a7e90b"
+      },
+      {
+        "path": "src/saga_blueprint_contract.py",
+        "sha256": "cf435a1edf924bf0001cf6007e5b1558bbdfd5e1dc89b5bd7a1c4fec99c984b0"
+      },
+      {
+        "path": "src/saga_spine_v2_contract.py",
+        "sha256": "3f13e6c14faaf451e1f746893071ac3b25331e999158322c83b68e6e373b9364"
+      },
+      {
+        "path": "src/episode_spine_v3_contract.py",
+        "sha256": "d78b47b71eb5c08061f5abb800952012511b522fef197d5640f8f0ec885e96d6"
+      },
+      {
+        "path": "src/spine_context_pack_v1.py",
+        "sha256": "e4c82cd2a67c9821f89aab2f2ba7d5aa3a745ebd747807f0dc857334dc06ef1c"
+      },
+      {
+        "path": "src/spineforge_freeze_verify.py",
+        "sha256": "644248e3f2200d6ce7727317358069589a2fc1da5a5d21b360256066d045e767"
+      },
+      {
+        "path": "src/spineforge_v3_contract.py",
+        "sha256": "16bcb22fe66dbd3d15dc67005768c95702b7776239a1e98c993db751eed6c1e7"
+      },
+      {
+        "path": "src/openrouter_json_schema.py",
+        "sha256": "1061c6e9859a0faef0955f17c67b28e9ba612a2472cf253975e6a608e62b6203"
+      },
+      {
+        "path": "src/spineforge_v5_strict_call.py",
+        "sha256": "4ab884858aecae12edaf7fe6de0c0a8b7a49b032d1dc338f21807e51131a03cc"
+      },
+      {
+        "path": "src/spineforge_v5_contract.py",
+        "sha256": "89b5a3573d1d33aef03a3c4cf20cc1276aafe08402a3a65ebb4ec86524ca1933"
+      },
+      {
+        "path": "src/spineforge_v5_authority.py",
+        "sha256": "235cf3d890a53eeeb0695771cfb9d05299e0f80527f2f170c58a5081d22ea6ae"
+      },
+      {
+        "path": "src/spineforge_v5.py",
+        "sha256": "7bcc9db05b5b9f4853fd0f5164b1a687211e763b094ebd014614883114d586d3"
+      },
+      {
+        "path": "src/spineforge_v5_case_manifest.py",
+        "sha256": "bd9a96d07bfa4612ac5c96c76058f1d775455a05d924dbfad5c53feccae647f1"
+      },
+      {
+        "path": "src/spineforge_v5_stage.py",
+        "sha256": "38d362fdf3d8cc0a5a65eae58ed723526a33f8effdf4662dc000f9c69d8abbfb"
+      },
+      {
+        "path": "src/spineforge_v5_human_approval.py",
+        "sha256": "56cb0240552edcdb7eee6095757d6f383eb821f7879242ed3798e0a19e06beb6"
+      },
+      {
+        "path": "prompts/spineforge_creative_architect_v5_intent.md",
+        "sha256": "3e636dab9c4b8aeac36600f765406062727173b324f91533532ff1c944d77a4c"
+      },
+      {
+        "path": "prompts/spineforge_structural_compiler_v5.md",
+        "sha256": "4dfe2eb497634f1de814fa346b15b02f63bce971cf50d3fcb1b2a4ad82108506"
+      },
+      {
+        "path": "prompts/spineforge_product_gate_v5.md",
+        "sha256": "105eb77663dfed3a3323a83c19aaeccdd51f9aa927b131f4db5f669f902fee91"
+      }
+    ]
+  }
+}
