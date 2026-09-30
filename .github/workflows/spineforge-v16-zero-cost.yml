@@ -1,0 +1,38 @@
+name: SpineForge v16 Evidence Logic Repair Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v16-evidence-logic-repair
+    paths:
+      - 'src/spineforge_v16.py'
+      - 'src/spineforge_v16_partial_audit.py'
+      - 'prompts/spineforge_evidence_logic_repair_v16.md'
+      - 'prompts/spineforge_complete_reauditor_v16.md'
+      - 'tests/test_spineforge_v16_*.py'
+      - '.github/workflows/spineforge-v16-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v16 partial repair recovery and runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v16_partial_audit.py \
+            tests/test_spineforge_v16_prompts.py \
+            tests/test_spineforge_v16_runtime_mock.py
+      - name: v15 source regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v15_prompt.py \
+            tests/test_spineforge_v15_runtime_mock.py
