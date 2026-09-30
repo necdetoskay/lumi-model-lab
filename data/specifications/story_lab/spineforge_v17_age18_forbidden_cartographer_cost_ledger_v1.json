@@ -5,8 +5,48 @@
   "source_run_id": 36760550050,
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "ATTEMPT_1_CONSUMED_INCOMPLETE_AUDIT_SHAPE",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36764631131,
+      "trigger_commit": "56da8bf5617eedadc5094c97022a63db42902af7",
+      "status": "audit_contract_rejected",
+      "model_calls": 1,
+      "call_stages": [
+        "spineforge_v17_audit"
+      ],
+      "input_tokens": 22460,
+      "output_tokens": 880,
+      "total_tokens": 23340,
+      "cost_usd": 0.05372,
+      "latency_seconds": 7.816,
+      "wall_latency_seconds": 7.864,
+      "raw_decision": "REPAIR",
+      "dimensions_present": 10,
+      "dimensions_required": 18,
+      "missing_dimensions": [
+        "AGENCY",
+        "BRANCH_EXECUTABILITY",
+        "CLIMAX_PAYOFF",
+        "LOCAL_SATISFACTION",
+        "SAGA_ALIGNMENT",
+        "AUTHORITY_SAFETY",
+        "WRITER_EXECUTABILITY",
+        "FRESHNESS"
+      ],
+      "malformed_top_level_dimensions": [
+        "ESCALATION",
+        "REVERSAL_QUALITY"
+      ],
+      "decision_reason_present": false,
+      "typed_audit_valid": false,
+      "repair_called": false,
+      "architect_recalled": false,
+      "writer_called": false,
+      "durable_repo_evidence": "experiments/results/spineforge-v17/36764631131"
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -22,14 +62,15 @@
     }
   ],
   "v17_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "api_calls": 1,
+    "total_tokens": 23340,
+    "cost_usd": 0.05372,
+    "latency_seconds": 7.864
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V17_ATTEMPT_1_AUDIT_ONLY_COMPLETE_18_DIMENSIONS"
+    "next_scope": "NONE_V17_ATTEMPT_1_CONSUMED",
+    "no_automatic_retry": true
   },
   "qualification_evidence": {
     "initial_zero_cost_run_id": 36761588959,
@@ -44,5 +85,10 @@
     "v16_regressions_passed": 5,
     "paid_model_calls": 0,
     "cost_usd": 0
+  },
+  "guard_evidence": {
+    "run_id": 36764798220,
+    "status": "RESULT_MISSING",
+    "inference_executed": false
   }
 }
