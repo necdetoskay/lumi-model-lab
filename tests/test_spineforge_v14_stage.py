@@ -8,8 +8,8 @@ import pytest
 from src.spineforge_v14_stage import run as run_stage
 
 
-CASE = Path("data/specifications/story_lab/spineforge_v14_targeted_repair_case_v1.json")
-LEDGER = Path("data/specifications/story_lab/spineforge_v14_targeted_repair_cost_ledger_v1.json")
+CASE = Path("data/specifications/story_lab/spineforge_v14_age18_forbidden_cartographer_case_v1.json")
+LEDGER = Path("data/specifications/story_lab/spineforge_v14_age18_forbidden_cartographer_cost_ledger_v1.json")
 TRIGGER = Path("experiments/triggers/spineforge-v14.json")
 WORKFLOW = Path(".github/workflows/spineforge-v14.yml")
 
