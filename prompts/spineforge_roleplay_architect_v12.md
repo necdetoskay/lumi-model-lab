@@ -174,7 +174,7 @@ Bad:
 > inspect clue → inspect clue → inspect clue → final clue
 
 Better:
-> inspect anomaly → test it with a character-specific tool → negotiate access or cooperation → act under changed conditions → make a consequential interpretation/choice
+> test an unstable mechanism → negotiate for access to a needed resource → adapt when the test creates a new constraint → make a consequential choice under changed conditions
 
 ### 5.3 Sceneability
 
@@ -187,7 +187,7 @@ A strong beat contains:
 - an external event or response;
 - a state change that matters later.
 
-A beat that only says "Leyra learns X" is weak unless the learning is earned through action and changes the next available action.
+A beat that only says "The protagonist learns X" is weak unless the learning is earned through action and changes the next available action.
 
 ### 5.4 Character specificity
 
@@ -260,7 +260,7 @@ Why it fails:
 - no meaningful tradeoff.
 
 BETTER:
-> Two authorized records disagree, each institution has a defensible reason to trust its own source, and the protagonist must decide how strongly to report an anomaly when incomplete evidence could either protect people or create unnecessary disruption.
+> Two witnesses give conflicting but internally consistent accounts, and acting on either version could protect one group while unfairly harming another. The protagonist must decide what can responsibly be concluded before making an irreversible recommendation.
 
 Why it works:
 - uncertainty;
@@ -302,7 +302,7 @@ BAD:
 These are adjacent events, not a dramatic chain.
 
 BETTER:
-> The protagonist's test disturbs a dormant boundary response; that response forces them to move to a safer survey point; the changed vantage exposes a contradiction in the legal map; reporting that contradiction creates pressure from a relationship who needs an actionable answer before conditions worsen.
+> The protagonist reroutes power to verify a suspicious signal; the reroute disables a system another character depends on; restoring that system requires cooperation from someone who distrusts the protagonist; that negotiation reveals the signal behaves differently under load, forcing a new interpretation before the deadline.
 
 Each step exists because the previous step changed the state.
 
@@ -356,7 +356,7 @@ It must make the protagonist and reader reinterpret something they already had.
 ### Bad reversal example
 
 BAD:
-> A stranger suddenly reveals that the map is fake.
+> A late-arriving witness suddenly announces the true explanation.
 
 Why it fails:
 - external answer delivery;
@@ -365,7 +365,7 @@ Why it fails:
 - collapses mystery into exposition.
 
 BETTER:
-> Repeated controlled measurements established in earlier beats show that the anomaly responds consistently to a boundary marker the legal map says should be inert. The protagonist must reinterpret the discrepancy from "likely copying error" to "documented field anomaly" while still refusing to claim its cause.
+> Earlier tests established that a machine fails only when a supposedly irrelevant subsystem is active. Repeating the test under controlled conditions forces the protagonist to reinterpret the problem from "random malfunction" to "reproducible interaction" while still refusing to claim why the interaction exists.
 
 Why it works:
 - earlier beats matter;
@@ -398,14 +398,14 @@ Why it fails:
 - little downstream structure.
 
 BAD:
-> Tell the mentor now vs tell the mentor five minutes later.
+> Warn the group now vs warn the group five minutes later.
 
 Why it fails:
 - cosmetic difference;
 - same dramatic path.
 
 BETTER:
-> File only bounded observations and request a second survey, preserving methodological certainty but risking insufficient warning — OR escalate the anomaly as urgent while explicitly labeling its cause unknown, gaining immediate attention but risking professional pushback for acting on incomplete evidence.
+> Shut down a compromised communication channel immediately, protecting the team but losing the chance to trace its source — OR keep the channel open under controlled observation, gaining evidence but accepting a real risk that the compromise spreads.
 
 Both branches are defensible.
 Both cost something.
@@ -438,7 +438,7 @@ Why it fails if the episode was about evidence, access, trust, or investigation:
 - climax could be pasted into another plot.
 
 BETTER:
-> Under time and relationship pressure, the protagonist must defend or enact the evidence-bounded choice created by the decision point, using observations and constraints established throughout the episode.
+> Under time and relationship pressure, the protagonist must execute the chosen strategy using capabilities, constraints, and consequences established throughout the episode; success depends on earlier decisions rather than a new last-minute solution.
 
 The climax should make earlier beats pay rent.
 
@@ -464,7 +464,7 @@ If nothing else was resolved, this is not a payoff.
 
 ### Better payoff
 
-> The cause remains unknown, but the protagonist earns a defensible conclusion about what was actually observed, changes a relationship or professional state, and creates a legitimate next investigation.
+> The larger cause remains unresolved, but the protagonist earns a concrete local result, changes the immediate situation or relationship state, and leaves one legitimate question worth pursuing later.
 
 ---
 
