@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 import src.spineforge_v5 as sf
 from src.spine_context_pack_v1 import SpineContextPackV1
@@ -217,3 +218,65 @@ def test_v5_human_approval_still_stops_writer_until_explicit_approval(monkeypatc
     )
     assert approved["human_review"]["story_writer_authorized"] is True
     assert approved["context_fingerprint"]==pack.context_fingerprint
+
+def _paid_raw(key:str)->dict:
+    payload=json.loads(RAW_FIXTURE.read_text())
+    return copy.deepcopy(payload[key]["creative_raw_payload"])
+
+
+def test_v5_real_attempt1_scalar_list_shape_is_safe_normalized()->None:
+    raw=_paid_raw("v4_attempt_1")
+    assert isinstance(raw["episode_spine"]["logistics_plan"]["movement_constraints"],str)
+    normalized,repairs=sf._normalize_creative_raw(raw)
+    draft=SpineCreativeDraftV1.model_validate(normalized)
+    assert draft.episode_spine.logistics_plan.movement_constraints==[
+        "Must stay on the exterior survey path."
+    ]
+    kinds={x["kind"] for x in repairs}
+    assert "coerce_scalar_string_to_list" in kinds
+
+
+def test_v5_real_attempt2_missing_complication_remains_structural_failure()->None:
+    raw=_paid_raw("v4_attempt_2")
+    assert "COMPLICATION" not in {x["phase"] for x in raw["episode_spine"]["beats"]}
+    normalized,repairs=sf._normalize_creative_raw(raw)
+    assert "COMPLICATION" not in {x["phase"] for x in normalized["episode_spine"]["beats"]}
+    assert all(x["kind"]!="create_missing_phase" for x in repairs)
+    with pytest.raises(ValidationError,match="missing required phases: COMPLICATION"):
+        SpineCreativeDraftV1.model_validate(normalized)
+
+
+def test_v5_real_attempt3_decision_noop_is_safe_normalized_and_contract_valid()->None:
+    raw=_paid_raw("v4_attempt_3")
+    decision=next(x for x in raw["episode_spine"]["beats"] if x["phase"]=="DECISION")
+    assert "new_information" not in decision
+    normalized,repairs=sf._normalize_creative_raw(raw)
+    normalized_decision=next(
+        x for x in normalized["episode_spine"]["beats"] if x["phase"]=="DECISION"
+    )
+    assert normalized_decision["new_information"]==""
+    draft=SpineCreativeDraftV1.model_validate(normalized)
+    pack=SpineContextPackV1.model_validate_json(PACK.read_text())
+    sf._validate_spine_authority(draft=draft,pack=pack)
+    kinds={x["kind"] for x in repairs}
+    assert "fill_decision_noop_new_information" in kinds
+
+
+def test_v5_never_fills_missing_new_information_on_non_decision()->None:
+    raw=_paid_raw("v4_attempt_3")
+    hook=next(x for x in raw["episode_spine"]["beats"] if x["phase"]=="HOOK")
+    hook.pop("new_information",None)
+    normalized,repairs=sf._normalize_creative_raw(raw)
+    normalized_hook=next(
+        x for x in normalized["episode_spine"]["beats"] if x["phase"]=="HOOK"
+    )
+    assert "new_information" not in normalized_hook
+    assert not any(
+        x["kind"]=="fill_decision_noop_new_information"
+        and ".new_information" in x["field"]
+        and "beats[0]" in x["field"]
+        for x in repairs
+    )
+    with pytest.raises(ValidationError):
+        SpineCreativeDraftV1.model_validate(normalized)
+
