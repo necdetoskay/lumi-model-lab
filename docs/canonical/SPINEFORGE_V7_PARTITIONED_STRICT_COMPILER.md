@@ -79,3 +79,49 @@ Next paid boundary:
 `SPINEFORGE_V7_ATTEMPT_1_AION_THEN_PARTITIONED_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
 
 A separate explicit authorization is required before creating `experiments/triggers/spineforge-v7.json`.
+
+## Paid Attempt 1 — terminal v7 qualification evidence
+
+Run: `36730385620`  
+Trigger commit: `30729dec0b3247392723edd613645453063c3d2b`
+
+Runtime result:
+
+`structural_frame_contract_rejected`
+
+Observed execution:
+- frozen runtime verification: PASS (28 files)
+- Aion Creative Blueprint inference: completed
+- Sonnet strict Structural Frame request: provider accepted the partitioned strict schema and returned a response
+- local `StructuralFrameV1` validation: rejected
+- Structural Beats: not called
+- Structural Resolution: not called
+- Luna Product Gate: not called
+- Writer: not called
+
+This proves the v6 provider-grammar-size failure was removed: the 1,431-byte strict Structural Frame schema reached and completed Sonnet inference.
+
+The exact local validation error, revision-feedback payload, raw model payload, and exact usage/cost were checkpointed to `runs/spineforge-v7/result.json` on the ephemeral runner. The subsequent evidence upload failed because the repository's GitHub Actions artifact-storage quota was exhausted. The ephemeral result is therefore not recoverable from GitHub Actions artifacts.
+
+Artifact error:
+
+`Artifact storage quota has been hit. Unable to upload any new artifacts.`
+
+Known accounting:
+- completed paid inference calls: **2** (Aion + Sonnet Structural Frame)
+- exact tokens: **unknown — not guessed**
+- exact cost: **unknown — not guessed**
+- observed stage wall time before result envelope: approximately **80.148 s**
+
+A fingerprint-bound Structural Frame retry candidate was generated locally, but its preserved Creative Blueprint and exact validation message were not durably recovered. Attempt 2 must therefore **not** be synthesized manually or run automatically.
+
+The consumed trigger was disarmed in commit:
+
+`c298d404bc5eccb59055d3cd6106fd1c58fad3e6`
+
+Terminal v7 qualification status:
+
+`QUALIFICATION_FAILED_EVIDENCE_ARCHIVE_LOSS_AFTER_ATTEMPT_1`
+
+A successor revision may keep the v7 generation topology unchanged, but it must provide a quota-independent evidence channel (compact job-log evidence at minimum, with a second durable sink) before another paid qualification.
+
