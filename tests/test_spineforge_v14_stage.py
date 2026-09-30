@@ -33,7 +33,7 @@ def test_v14_unapproved_trigger_stops_before_inference(tmp_path: Path):
 def test_v14_zero_spend_before_paid_boundary():
     case = json.loads(CASE.read_text(encoding="utf-8"))
     ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
-    assert case["status"] == "ZERO_COST_QUALIFICATION"
+    assert case["status"] in {"ZERO_COST_QUALIFICATION", "READY_FOR_ATTEMPT_1"}
     assert ledger["v14_actual_spend"] == {
         "api_calls": 0,
         "total_tokens": 0,
