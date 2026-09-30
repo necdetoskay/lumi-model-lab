@@ -50,3 +50,32 @@ Paid workflow evidence is uploaded as a GitHub Actions artifact. v7 does not cre
 ## Paid boundary
 
 No paid v7 trigger exists. Paid Attempt 1 is forbidden until zero-cost qualification, historical regressions, runtime freeze and freeze verification are all GREEN.
+
+
+## Frozen zero-cost qualification evidence
+
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v7`  
+Runtime source commit: `870b83224fd732e66a01266c73bf5f492ed4bd1c`  
+Frozen dependencies: **28 SHA-256 locked files**
+
+Final freeze verification run: `36706662527`
+
+Result:
+- v7 partitioned-strict + frozen-profile tests: **22/22 PASS**
+- v1→v6 historical freeze/regression: **84 PASS**
+- historical snapshot exclusion: **1 deselected by design**
+- paid v7 calls: **0**
+- v7 spend: **$0**
+- paid trigger: **absent**
+- writer: **blocked**
+
+Qualification case:
+`spineforge.v7.age18.forbidden-cartographer.fantasy.01`
+
+State:
+`READY_FOR_ATTEMPT_1`
+
+Next paid boundary:
+`SPINEFORGE_V7_ATTEMPT_1_AION_THEN_PARTITIONED_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before creating `experiments/triggers/spineforge-v7.json`.
