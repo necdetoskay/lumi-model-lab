@@ -4,8 +4,32 @@
   "runtime_id": "spineforge.contextpack.v11",
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "ATTEMPT_1_CONSUMED_MECHANICAL_NORMALIZATION_REQUIRED",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36746646152,
+      "trigger_commit": "f2463e13b0dbdef8efb7c025c5f7e7adf0cad47c",
+      "evidence_commit": "8516965d1a8fd940fa0e83114d67e2a94939320f",
+      "status": "architect_contract_or_authority_rejected",
+      "model_calls": 1,
+      "call_stages": [
+        "spineforge_v11_architect"
+      ],
+      "input_tokens": 16230,
+      "output_tokens": 6529,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "total_tokens": 22759,
+      "cost_usd": 0.09775,
+      "latency_seconds": 51.934,
+      "audit_called": false,
+      "writer_called": false,
+      "automatic_repair_executed": false,
+      "failure": "logistics_plan.location_sequence omitted the final return to greyfen; beats resolve to vellum_hall -> greyfen -> ashen_gate -> greyfen.",
+      "durable_repo_evidence": "experiments/results/spineforge-v11/36746646152"
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -26,14 +50,15 @@
     }
   ],
   "v11_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "api_calls": 1,
+    "total_tokens": 22759,
+    "cost_usd": 0.09775,
+    "latency_seconds": 51.934
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V11_ATTEMPT_1_SONNET_ARCHITECT_THEN_SONNET_AUDIT_IF_VALID"
+    "next_scope": "NONE_V11_ATTEMPT_1_CONSUMED",
+    "no_automatic_retry": true
   },
   "qualification_evidence": {
     "freeze_run_id": 36745836787,
@@ -47,5 +72,21 @@
     "episode_spine_regressions_passed": 15,
     "paid_model_calls": 0,
     "cost_usd": 0
+  },
+  "offline_replay": {
+    "branch": "experiment/spineforge-v12-deterministic-mechanical-normalization",
+    "run_id": 36747258876,
+    "conclusion": "success",
+    "paid_model_calls": 0,
+    "repair": "derive logistics_plan.location_sequence deterministically from ordered beat location changes",
+    "repaired_sequence": [
+      "vellum_hall",
+      "greyfen",
+      "ashen_gate",
+      "greyfen"
+    ],
+    "episode_spine_contract_valid_after_repair": true,
+    "context_pack_authority_valid_after_repair": true,
+    "hidden_additional_contract_defects_found": false
   }
 }

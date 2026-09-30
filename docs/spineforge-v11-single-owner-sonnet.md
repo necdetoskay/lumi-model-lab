@@ -57,3 +57,48 @@ v11 is frozen and ready for the first explicitly authorized paid qualification a
 - Paid trigger `experiments/triggers/spineforge-v11.json` must remain absent until explicit authorization.
 
 The first paid attempt is intentionally capped at two model calls: Sonnet Story Spine Architect, then Sonnet Aggressive Red-Team Auditor only if local contract and authority validation succeeds.
+
+
+## Paid Attempt 1 result
+
+Paid run: `36746646152`
+
+Result: `architect_contract_or_authority_rejected`
+
+The Sonnet Story Spine Architect completed one inference. Deterministic EpisodeSpine validation then stopped the pipeline before the Auditor.
+
+Exact accounting:
+- model calls: 1 — Sonnet Story Spine Architect
+- input tokens: 16,230
+- output tokens: 6,529
+- total tokens: 22,759
+- cost: **$0.09775**
+- latency: **51.934 s**
+- Auditor calls: 0
+- Writer calls: 0
+- automatic repair: 0
+
+The rejection was narrow and mechanical:
+
+`logistics_plan.location_sequence` was `vellum_hall -> greyfen -> ashen_gate`, while the actual ordered beat route was `vellum_hall -> greyfen -> ashen_gate -> greyfen`.
+
+Full durable evidence:
+`experiments/results/spineforge-v11/36746646152`
+
+### Zero-cost evidence replay
+
+A separate zero-cost branch replayed the exact frozen raw Architect product:
+
+`experiment/spineforge-v12-deterministic-mechanical-normalization`
+
+Run: `36747258876` — **SUCCESS**
+
+The replay made exactly one non-semantic deterministic normalization: derive `logistics_plan.location_sequence` from the ordered beat location transitions. After that change:
+- the complete `EpisodeSpineV3` contract validated;
+- ContextPack authority validation passed;
+- no second hidden contract/canon defect appeared;
+- no model call was made.
+
+This establishes that v11 Attempt 1 did not fail because Sonnet could not construct the overall Spine contract. It failed because a duplicated route projection was generated inconsistently even though the authoritative beat route already contained the correct return leg.
+
+v11 Attempt 1 is consumed. No automatic paid retry is permitted.
