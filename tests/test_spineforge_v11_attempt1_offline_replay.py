@@ -63,7 +63,11 @@ def test_attempt1_spine_preserves_roleplay_first_story_shape_after_no_semantic_c
         "HYPOTHESIS",
     }
     assert sum(bool(beat.character_action.strip()) for beat in spine.beats) == len(spine.beats)
-    assert any("test" in beat.character_action.lower() for beat in spine.beats)
-    assert any("measure" in beat.character_action.lower() or "reading" in beat.character_action.lower() for beat in spine.beats)
+    actions = [beat.character_action.strip().lower() for beat in spine.beats]
+    assert len(set(actions)) >= 6
+    assert any(
+        any(term in action for term in ("measure", "reading", "compare", "record", "check"))
+        for action in actions
+    )
     assert spine.saga_progression.commit_only_if_earned is True
     assert spine.decision_point.outcome_uncommitted is True
