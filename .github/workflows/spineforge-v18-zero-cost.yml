@@ -1,0 +1,37 @@
+name: SpineForge v18 Strict Audit Transport Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v18-strict-audit-transport
+    paths:
+      - 'src/spineforge_v18.py'
+      - 'src/spineforge_v18_transport.py'
+      - 'src/spineforge_v18_strict_call.py'
+      - 'prompts/spineforge_strict_complete_auditor_v18.md'
+      - 'tests/test_spineforge_v18_*.py'
+      - '.github/workflows/spineforge-v18-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v18 strict audit transport
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v18_prompt.py \
+            tests/test_spineforge_v18_runtime_mock.py
+      - name: v17 audit-only regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v17_prompt.py \
+            tests/test_spineforge_v17_runtime_mock.py
