@@ -62,3 +62,35 @@ Next paid scope:
 
 A separate explicit authorization is required before trigger creation.
 
+## Paid Attempt 1 — terminal v9 result
+
+Run: `36738179384`
+
+Runtime result: `structural_assembly_contract_rejected`.
+
+Execution reached farther than prior revisions:
+- Aion Creative Blueprint: completed
+- Sonnet Structural Frame: completed
+- Sonnet Structural Beats: completed
+- Sonnet Structural Resolution: completed
+- deterministic final assembly: rejected
+- Luna Product Gate: not called
+- Writer: not called
+
+Exact accounting:
+- API calls: **4**
+- total tokens: **90,770**
+- cost: **$0.2296431**
+- summed model latency: **244.623 s**
+
+Root cause is a generic contract-parity defect:
+`ReversalEvidenceDraftV1.certainty` in `StructuralResolutionV1` is typed as arbitrary `str`, while final `ReversalEvidenceV2.certainty` only accepts `OBSERVED | INFERRED | HYPOTHESIS`.
+
+The section contract therefore accepted a value the final assembly contract deterministically rejects.
+
+v9 Attempt 2 is forbidden. A successor must make section contracts at least as strict as the corresponding final assembly fields and add zero-cost parity regression.
+
+Terminal status:
+
+`QUALIFICATION_FAILED_SECTION_TO_FINAL_CONTRACT_PARITY_GAP`
+
