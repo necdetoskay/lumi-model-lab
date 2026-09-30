@@ -1,0 +1,40 @@
+name: SpineForge v5 Contract Separation Zero-Cost
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v5-creative-seed-compiler
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Run v5 contract-separation proof
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_v5_contract_separation.py
+      - name: Run v1-v4 historical integrity regression
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_contract.py
+          tests/test_spine_context_pack_v1.py
+          tests/test_spineforge_v2_context_runtime.py
+          tests/test_spineforge_v2_stage.py
+          tests/test_spineforge_v2_frozen.py
+          tests/test_spineforge_v3_context_runtime.py
+          tests/test_spineforge_v3_stage.py
+          tests/test_spineforge_v3_frozen.py
+          tests/test_spineforge_v4_context_runtime.py
+          tests/test_spineforge_v4_stage.py
+          tests/test_spineforge_v4_frozen.py
+          -k "not starts_zero_spend_and_without_paid_trigger"
