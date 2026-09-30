@@ -1,0 +1,165 @@
+name: SpineForge v6 Freeze Builder
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v6-blueprint-strict-transport
+    paths:
+      - experiments/freeze/spineforge-v6.request
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build v6 freeze profile from exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+
+          paths = [
+              ".github/workflows/spineforge-v6.yml",
+              "requirements.txt",
+              "configs/model_runtime_profiles.yaml",
+              "src/spine_context_pack_v1.py",
+              "src/spineforge_freeze_verify.py",
+              "src/spineforge_v5_contract.py",
+              "src/spineforge_v6.py",
+              "src/spineforge_v6_case_manifest.py",
+              "src/spineforge_v6_human_approval.py",
+              "src/spineforge_v6_stage.py",
+              "src/spineforge_v6_structured_call.py",
+              "src/spineforge_v6_strict_call.py",
+              "src/spineforge_v6_json_schema.py",
+              "prompts/spineforge_creative_architect_v5_blueprint.md",
+              "prompts/spineforge_structural_compiler_v5.md",
+              "prompts/spineforge_product_gate_v2_context.md",
+              "src/spineforge_v3_contract.py",
+              "src/episode_spine_v3_contract.py",
+              "src/episode_spine_safe_normalize_v4.py",
+              "src/premise_architect_v2_contract.py",
+              "src/reader_profile_v2.py",
+              "src/saga_blueprint_contract.py",
+              "src/saga_spine_v2_contract.py",
+              "src/english_story_pipeline.py",
+              "src/generate.py",
+              "src/schemas.py",
+              "src/model_registry.py",
+              "src/model_usage_rollup.py",
+          ]
+
+          def sha256(path: str) -> str:
+              return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+          profile = {
+              "schema_version": "spineforge-runtime-profile.v1",
+              "runtime_id": "spineforge.contextpack.v6",
+              "status": "FROZEN_QUALIFICATION_CANDIDATE",
+              "purpose": "Preserve the v5 Creative Blueprint ownership split while enforcing provider strict JSON Schema for Sonnet structural compilation and Luna product gating.",
+              "context_contract": {
+                  "schema": "spine-context-pack.v1",
+                  "qualification_source": "mock-lumi-canonical-state.v1",
+                  "production_source_target": "LUMI_CANONICAL_STATE",
+                  "same_pack_for_aion_sonnet_luna": True,
+                  "model_parity_required": True,
+                  "stale_revision_rejected": True,
+                  "stale_human_approval_rejected": True,
+              },
+              "runtime": {
+                  "creative_architect_model": "aion-labs/aion-3.5-mini",
+                  "creative_prompt": "prompts/spineforge_creative_architect_v5_blueprint.md",
+                  "creative_product_schema": "spineforge-creative-blueprint.v2",
+                  "creative_transport": "json_object_plus_local_validation",
+                  "structural_compiler_model": "anthropic/claude-sonnet-5.5",
+                  "structural_prompt": "prompts/spineforge_structural_compiler_v5.md",
+                  "structural_product_schema": "spineforge-structural-assembly.v1",
+                  "strict_episode_spine_schema": "episode-spine.v2",
+                  "structural_transport": "provider_strict_json_schema_plus_local_validation",
+                  "product_gate_model": "openai/gpt-5.6-luna",
+                  "product_gate_prompt": "prompts/spineforge_product_gate_v2_context.md",
+                  "product_gate_schema": "spineforge-product-gate.v1",
+                  "product_gate_transport": "provider_strict_json_schema_plus_local_validation",
+                  "revision_feedback_schema": "spineforge-revision-feedback.v5",
+                  "product_schema": "spineforge-product.v5",
+                  "max_attempts": 3,
+                  "max_calls_per_attempt": 3,
+                  "parse_retry_per_model_call": 0,
+                  "human_review_required_before_story_writer": True,
+                  "context_materialized_before_each_attempt": True,
+              },
+              "ownership_boundary": {
+                  "aion_owns": "creative identity, dramatic engine, roleplay, scene promises, creative beat intentions, decision/climax/payoff ideas",
+                  "sonnet_owns": "strict EpisodeSpine compilation, phase completeness, complete beat fields, logistics, evidence, branches, persistence structure",
+                  "luna_owns": "independent Spine Product quality gate",
+                  "application_owns": "model identity, ContextPack lineage, strict-provider request contract, deterministic validation, stale-state protection",
+              },
+              "strict_transport_policy": {
+                  "aion_provider_strict_schema": False,
+                  "aion_reason": "Aion 3.5 Mini endpoint does not advertise strict JSON-schema enforcement.",
+                  "sonnet_provider_strict_schema": True,
+                  "luna_provider_strict_schema": True,
+                  "strict_flag": True,
+                  "provider_require_parameters": True,
+                  "local_pydantic_validation_after_provider_enforcement": True,
+                  "strict_parse_retry": 0,
+              },
+              "recovery_policy": {
+                  "creative_blueprint_invalid": "STOP; context-bound feedback -> next explicitly authorized Aion attempt",
+                  "structural_assembly_invalid": "STOP; preserve fingerprint-bound Creative Blueprint -> next explicitly authorized Sonnet retry",
+                  "product_replan_creative": "context-bound feedback -> next explicitly authorized Aion attempt",
+                  "product_replan_structural": "preserve fingerprint-bound Creative Blueprint -> next explicitly authorized Sonnet retry",
+                  "context_changed": "STOP before inference; existing feedback/product/approval stale",
+                  "attempt_limit": "3; attempt 4 rejected before inference",
+              },
+              "paid_boundary_policy": {
+                  "explicit_authorization_required_for_each_attempt": True,
+                  "one_attempt_scope": "Aion if creative stage required; strict Sonnet if blueprint valid/preserved; strict Luna if compiled spine valid; then STOP",
+                  "no_automatic_paid_retry": True,
+                  "no_writer_call_inside_spineforge": True,
+              },
+              "no_code_change_qualification_rule": {
+                  "enabled": True,
+                  "first_paid_case_starts_only_after_runtime_freeze": True,
+                  "case_variation_is_data_only": True,
+                  "revision_feedback_is_data_only": True,
+                  "runtime_hash_mismatch_invalidates_active_case": True,
+                  "runtime_or_prompt_change_requires_new_spineforge_revision": True,
+                  "scenario_specific_runtime_patch_counts_as_case_failure": True,
+                  "active_case_may_not_be_reclassified_as_success_after_runtime_patch": True,
+              },
+              "runtime_freeze": {
+                  "enabled": True,
+                  "runtime_revision": "SPINEFORGE-CONTEXTPACK-FROZEN-v6",
+                  "runtime_source_commit": os.environ["GITHUB_SHA"],
+                  "files": [{"path": p, "sha256": sha256(p)} for p in paths],
+              },
+          }
+
+          out = Path("data/specifications/story_lab/spineforge_runtime_profile_v6_blueprint_strict_frozen.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(profile, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({
+              "runtime_revision": profile["runtime_freeze"]["runtime_revision"],
+              "runtime_source_commit": profile["runtime_freeze"]["runtime_source_commit"],
+              "frozen_files": len(paths),
+          }, indent=2))
+          PY
+      - name: Commit freeze profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/specifications/story_lab/spineforge_runtime_profile_v6_blueprint_strict_frozen.json
+          git commit -m "canon(spineforge-v6): freeze blueprint strict transport runtime"
+          git push origin HEAD:experiment/spineforge-v6-blueprint-strict-transport
