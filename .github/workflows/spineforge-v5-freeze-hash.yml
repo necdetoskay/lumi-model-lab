@@ -1,0 +1,73 @@
+name: SpineForge v5 Freeze Hash Builder
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v5-creative-structural-split
+    paths:
+      - '.github/workflows/spineforge-v5-freeze-hash.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  hashes:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compute freeze dependency hashes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+
+          paths = [
+    ".github/workflows/spineforge-v5.yml",
+    "requirements.txt",
+    "configs/model_runtime_profiles.yaml",
+    "src/generate.py",
+    "src/model_registry.py",
+    "src/model_usage_rollup.py",
+    "src/schemas.py",
+    "src/judge.py",
+    "src/english_scene_plan_smoke.py",
+    "src/generator_benchmark_v2.py",
+    "src/openrouter_jev.py",
+    "src/english_story_pipeline.py",
+    "src/premise_architect_v2_contract.py",
+    "src/reader_profile_v2.py",
+    "src/saga_blueprint_contract.py",
+    "src/saga_spine_v2_contract.py",
+    "src/episode_spine_v3_contract.py",
+    "src/spine_context_pack_v1.py",
+    "src/spineforge_freeze_verify.py",
+    "src/spineforge_v3_contract.py",
+    "src/openrouter_json_schema.py",
+    "src/spineforge_v5_strict_call.py",
+    "src/spineforge_v5_contract.py",
+    "src/spineforge_v5_authority.py",
+    "src/spineforge_v5.py",
+    "src/spineforge_v5_case_manifest.py",
+    "src/spineforge_v5_stage.py",
+    "src/spineforge_v5_human_approval.py",
+    "prompts/spineforge_creative_architect_v5_intent.md",
+    "prompts/spineforge_structural_compiler_v5.md",
+    "prompts/spineforge_product_gate_v5.md",
+          ]
+          rows=[]
+          for raw in paths:
+              path=Path(raw)
+              if not path.exists():
+                  raise SystemExit(f"MISSING: {raw}")
+              rows.append({
+                  "path": raw,
+                  "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+              })
+          print("SPINEFORGE_V5_FREEZE_HASHES="+json.dumps(rows,separators=(",",":")))
+          print("SPINEFORGE_V5_FREEZE_COUNT="+str(len(rows)))
+          PY
