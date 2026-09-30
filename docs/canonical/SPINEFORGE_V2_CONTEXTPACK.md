@@ -148,3 +148,30 @@ Initial spend:
 0 calls / 0 tokens / $0
 
 No paid trigger exists until explicit authorization.
+
+## Qualification result — Attempt 1
+
+Run: 36663676934
+
+Result: FAIL for runtime revision SPINEFORGE-CONTEXTPACK-FROZEN-v2.
+
+The ContextPack boundary passed, but Aion's creative output was rejected by deterministic contract validation before Sonnet or Luna could run.
+
+Observed generic failure classes:
+- logistics_plan.location_sequence disagreed with the ordered beat-location sequence;
+- anti_repetition_signature text declared a single-site pattern while beats used multiple locations;
+- reversal evidence contained a self-reference with no pre-reversal support available for safe normalization;
+- model-authored creative_model identity differed from the application-owned runtime model id.
+
+The frozen revision-feedback path cannot consume creative_contract_rejected because it requires a valid creative_draft and accepts only downstream REPLAN/human-revise states.
+
+Therefore Attempt 2 is not authorized for v2. No runtime/prompt patch is applied inside this revision. A new runtime revision is required with generic creative-contract recovery before paid qualification resumes.
+
+Spend:
+- Aion calls: 1
+- Sonnet calls: 0
+- Luna calls: 0
+- Writer calls: 0
+- total tokens: 22,146
+- total cost: $0.0240562
+- pipeline latency: 211.876 s
