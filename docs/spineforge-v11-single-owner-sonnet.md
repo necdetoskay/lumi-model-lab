@@ -40,3 +40,20 @@ v11 does not send the full EpisodeSpine as a large provider strict JSON grammar.
 ## Repair policy
 
 v11 qualification intentionally stops on REPAIR. The first real product should reveal which repair classes actually occur. A repair stage will only be frozen after that evidence exists; mechanical repair may use a cheaper model or deterministic code, while semantic story-architecture repair should remain with a model strong enough to preserve causality and dramatic quality.
+
+## Zero-cost qualification result
+
+v11 is frozen and ready for the first explicitly authorized paid qualification attempt.
+
+- Freeze run: `36745836787` — SUCCESS
+- Runtime revision: `SPINEFORGE-SINGLE-OWNER-FROZEN-v11`
+- Runtime source commit: `88ed91d6ed301958280106c441f497157244a295`
+- Frozen runtime files: 22
+- Final zero-cost run: `36746068515` — SUCCESS
+- v11 architecture/contract/runtime/freeze tests: 12 PASS
+- Episode Spine regression tests: 15 PASS
+- Paid model calls during qualification: 0
+- v11 spend before paid boundary: $0
+- Paid trigger `experiments/triggers/spineforge-v11.json` must remain absent until explicit authorization.
+
+The first paid attempt is intentionally capped at two model calls: Sonnet Story Spine Architect, then Sonnet Aggressive Red-Team Auditor only if local contract and authority validation succeeds.
