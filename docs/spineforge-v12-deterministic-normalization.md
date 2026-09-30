@@ -91,3 +91,32 @@ Next paid scope:
 `SPINEFORGE_V12_ATTEMPT_1_SONNET_ARCHITECT_NORMALIZE_VALIDATE_THEN_SONNET_AUDIT_IF_ELIGIBLE`
 
 No `experiments/triggers/spineforge-v12.json` exists. A separate explicit authorization is required before paid trigger creation.
+
+
+## Paid Attempt 1 result
+
+Run `36752663853` — workflow **SUCCESS**, product status `audit_contract_rejected`.
+
+The complete intended path was reached:
+Sonnet Architect -> deterministic route normalization -> EpisodeSpine validation -> ContextPack authority validation -> Sonnet Auditor.
+
+Exact accounting:
+- Architect: 16,282 input / 7,303 output / 23,585 total / **$0.105594** / 61.024 s
+- Auditor: 20,233 input / 3,469 output / 23,702 total / **$0.075156** / 28.156 s
+- Total: **47,287 tokens / $0.18075 / 89.18 s**
+- Writer: 0
+- automatic semantic repair: 0
+
+The Architect again omitted route returns in the duplicated logistics projection. v12 corrected only that derived field:
+`vellum_hall -> greyfen -> ashen_gate`
+became
+`vellum_hall -> greyfen -> ashen_gate -> greyfen -> vellum_hall`.
+
+The resulting EpisodeSpine passed full application contract and ContextPack authority validation.
+
+The Auditor then returned semantic decision **REPAIR** with six blocking defects and five targeted repair groups. The audit contract rejected only because one protected dimension was misspelled:
+`CHARACTER_DRIVENESS` instead of `CHARACTER_DRIVENNESS`.
+
+The raw audit is therefore preserved as evidence but is not yet accepted as a typed Audit product.
+
+v12 Attempt 1 is consumed. No automatic retry is permitted.
