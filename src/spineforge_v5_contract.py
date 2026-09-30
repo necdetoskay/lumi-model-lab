@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from src.episode_spine_v3_contract import EpisodeSpineV3
-from src.spineforge_v3_contract import CreativeSignatureV1
+from src.spineforge_v3_contract import CreativeSignatureV1, SpineProductGateV1
 
 KEY_PATTERN = r"^[a-z][a-z0-9_]*$"
 
@@ -77,3 +77,46 @@ class SpineStructuralAssemblyV1(StrictModel):
     episode_spine: EpisodeSpineV3
     compilation_notes: list[str] = Field(default_factory=list, max_length=12)
     creative_deviations: list[str] = Field(default_factory=list, max_length=8)
+
+
+class SpineForgeRevisionFeedbackV5(StrictModel):
+    schema_id: Literal["spineforge-revision-feedback.v5"] = Field(alias="schema")
+    context_pack_id: str
+    context_fingerprint: str
+    source_attempt: int = Field(ge=1)
+    next_attempt: int = Field(ge=2)
+    source_status: Literal[
+        "creative_blueprint_contract_rejected",
+        "structural_assembly_contract_rejected",
+        "product_replan_required",
+        "human_revise",
+    ]
+    retry_stage: Literal["CREATIVE_ARCHITECT", "STRUCTURAL_COMPILER"]
+    must_preserve: list[str] = Field(min_length=1, max_length=12)
+    must_change: list[str] = Field(min_length=1, max_length=12)
+    creative_feedback: list[str] = Field(default_factory=list, max_length=12)
+    structural_feedback: list[str] = Field(default_factory=list, max_length=12)
+    preserved_blueprint: dict[str, Any] | None = None
+    validation_errors: list[str] = Field(default_factory=list, max_length=12)
+    authority_freezes: list[str] = Field(min_length=1, max_length=20)
+
+    @model_validator(mode="after")
+    def validate_feedback(self) -> "SpineForgeRevisionFeedbackV5":
+        if self.next_attempt != self.source_attempt + 1:
+            raise ValueError("next_attempt must equal source_attempt + 1")
+        if self.retry_stage == "STRUCTURAL_COMPILER" and self.preserved_blueprint is None:
+            raise ValueError("STRUCTURAL_COMPILER retry requires preserved_blueprint")
+        return self
+
+
+class SpineForgeProductV5(StrictModel):
+    schema_id: Literal["spineforge-product.v5"] = Field(alias="schema")
+    status: Literal["AWAITING_HUMAN_REVIEW", "HUMAN_APPROVED", "REPLAN_REQUIRED"]
+    context_pack_id: str
+    context_fingerprint: str
+    creative_blueprint: SpineCreativeBlueprintV2
+    structural_assembly: SpineStructuralAssemblyV1
+    product_gate: SpineProductGateV1
+    deterministic_checks: dict[str, Any]
+    lineage: dict[str, Any]
+    human_review: dict[str, Any]
