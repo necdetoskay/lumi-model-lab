@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import src.generate as gen
+import src.spineforge_v5_strict_call as gen
 
 
 class FakeResponse:
