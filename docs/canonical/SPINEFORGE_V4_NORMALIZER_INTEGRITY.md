@@ -209,3 +209,36 @@ It is bound to the unchanged ContextPack id/fingerprint and targets Attempt 3.
 
 **Attempt 3 is not authorized automatically.**
 
+## Attempt 3 zero-cost preflight
+
+Verification branch:
+
+`verification/spineforge-v4-attempt3-preflight-20260930`
+
+Workflow commit:
+
+`f81cfee5c18ff2297523311ff8f1424ce2018b32`
+
+Run:
+
+`36694111835`
+
+Result: **GREEN**
+
+Verified without paid inference:
+- 26/26 frozen runtime dependencies;
+- unchanged ContextPack id/fingerprint;
+- Attempt 2 feedback schema and context binding;
+- `source_attempt=2`;
+- `next_attempt=3`;
+- `max_attempts=3`;
+- focused active-runtime regression PASS.
+
+Paid calls in this preflight: **0**.
+
+Next boundary remains separately authorized:
+
+`SPINEFORGE_V4_ATTEMPT_3_AION_THEN_SONNET_THEN_LUNA_IF_ELIGIBLE`
+
+Attempt 3 is the final allowed attempt in v4. Writer remains blocked.
+
