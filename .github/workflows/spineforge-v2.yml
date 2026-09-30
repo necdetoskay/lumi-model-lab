@@ -1,0 +1,53 @@
+name: SpineForge v2 ContextPack Frozen Attempt
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/spineforge-v2.json'
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 25
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify ContextPack runtime and run one authorized attempt
+        run: >-
+          PYTHONPATH=. python -m src.spineforge_v2_stage
+          --trigger experiments/triggers/spineforge-v2.json
+          --out-dir runs/spineforge-v2
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          mkdir -p "$TMP/evidence"
+          cp experiments/triggers/spineforge-v2.json "$TMP/evidence/trigger.json"
+          if test -d runs/spineforge-v2; then
+            cp -a runs/spineforge-v2/. "$TMP/evidence/"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          EVIDENCE_BRANCH="evidence/spineforge-v2-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          DEST="experiments/results/spineforge-v2/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp -a "$TMP/evidence/." "$DEST/"
+          git add "$DEST"
+          git commit -m "evidence(spineforge-v2): archive attempt ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
