@@ -100,3 +100,43 @@ Next paid boundary:
 A separate explicit authorization is required before the trigger can be created.
 
 Writer remains blocked.
+
+
+## Paid Attempt 1 result — qualification failed
+
+Run: `36702946557`  
+Trigger commit: `6b73cce653a7c47a88765748686fff50e3bd7df9`
+
+Result: `QUALIFICATION_FAILED_STRICT_PROVIDER_GRAMMAR_TOO_LARGE`.
+
+Observed sequence:
+
+1. Frozen v6 runtime verification passed and Attempt 1 entered the model pipeline.
+2. Aion Creative Architect completed its inference.
+3. The first Sonnet strict structural-compiler request was rejected with HTTP 400 before structural inference.
+4. Azure, Anthropic, and Google Sonnet routes all returned the same provider error: the compiled strict grammar was too large.
+5. Luna Product Gate was never called.
+6. No automatic retry or Attempt 2 was started.
+7. Writer remained blocked.
+
+The failure is a generic provider-transport/schema-complexity defect, not a case-specific story defect. Therefore v6 remains frozen and is not patched.
+
+### Accounting defect exposed by Attempt 1
+
+Aion completed before the Sonnet provider rejection, but v6 only persisted final evidence after downstream stage completion. The unhandled Sonnet transport exception therefore prevented Aion usage/cost from being durably written. Exact Aion tokens/cost for this attempt are recorded as unknown rather than guessed.
+
+Any successor revision must checkpoint usage/cost/latency immediately after every completed model call and preserve partial evidence when a later provider call fails.
+
+### Evidence archive defect exposed by Attempt 1
+
+The Actions job created local evidence files, but the evidence-branch push was rejected by GitHub workflow-scope handling. A successor revision must archive evidence without requiring a new branch push that carries workflow files.
+
+### v6 closure
+
+The consumed v6 trigger is disarmed with `paid_authorized=false`. No further v6 paid attempt is authorized.
+
+A successor revision must solve all three generic defects before any new paid call:
+
+- provider-safe strict structural transport;
+- durable per-stage accounting/checkpointing;
+- reliable evidence archival independent of workflow-branch push permissions.
