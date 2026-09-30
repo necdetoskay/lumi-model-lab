@@ -79,3 +79,45 @@ Next paid boundary:
 F1 — one Sonnet 5.5 Episode Spine Architect call followed, only if contract-valid, by one GPT-5.6 Luna Spine Gate.
 
 Writer remains blocked until the resulting spine is shown to and explicitly approved by the human.
+
+
+## F1 result — REPLAN
+
+Architect run: 36656865491
+Recovery gate run: 36657233678
+
+F1 actual spend:
+- API calls: 2
+- tokens: 30,093
+- cost: $0.09225655
+- summed model latency: 57.531s
+
+Architect:
+- Sonnet 5.5: 19,721 tokens / $0.088138 / 42.693s
+- initial strict contract rejection was only a missing final Greyfen return in logistics_plan.location_sequence
+- the raw beat sequence already contained the Greyfen payoff
+- deterministic normalization added only the omitted final return location
+- Sonnet was not called again
+
+Luna Spine Gate:
+- 10,372 tokens / $0.00411855 / 14.838s
+- decision: REPLAN
+
+Blocking findings:
+1. reversal overclaims evidence by excluding residue while light/temperature confounds remain unresolved;
+2. bounded-report branch requires unexplained on-site Ilyan review;
+3. extend-testing branch leaves Greyfen without a clear answer while the global payoff still makes Greyfen act on a clear result;
+4. branch communication/report/mentor/community consequences are not independently executable.
+
+Positive findings:
+- AGE_MATURITY 5/5
+- WORLD_IMMERSION 5/5
+- strong Saga alignment
+- fantasy identity is materially world-specific
+
+Accounting:
+This F1 candidate is rejected and therefore its entire $0.09225655 is recorded as qualification/debug waste, not accepted product-path cost.
+
+Next paid boundary:
+F1.1 — one Sonnet 5.5 spine revision using the pinned Luna feedback, followed only if strict-valid by one Luna Spine Gate.
+Writer remains blocked.
