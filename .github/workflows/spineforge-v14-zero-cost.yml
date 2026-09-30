@@ -1,0 +1,35 @@
+name: SpineForge v14 Targeted Repair Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v14-targeted-semantic-repair
+    paths:
+      - 'src/spineforge_v14.py'
+      - 'prompts/spineforge_targeted_semantic_repair_v14.md'
+      - 'tests/test_spineforge_v14_*.py'
+      - '.github/workflows/spineforge-v14-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v14 targeted semantic repair runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v14_prompt.py \
+            tests/test_spineforge_v14_runtime_mock.py
+      - name: v13 audit normalization regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v13_audit_normalizer.py \
+            tests/test_spineforge_v13_runtime_mock.py
