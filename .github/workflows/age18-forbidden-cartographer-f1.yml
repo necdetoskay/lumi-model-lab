@@ -1,0 +1,58 @@
+name: Age18 Forbidden Cartographer F1 Spine
+
+on:
+  push:
+    branches:
+      - experiment/story-v5-whole-draft-prototype-20260924
+    paths:
+      - 'experiments/triggers/age18-forbidden-cartographer-f1.txt'
+
+permissions:
+  contents: write
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      EPISODE_SPINE_ARCHITECT_MODEL: "anthropic/claude-sonnet-5.5"
+      EPISODE_SPINE_GATE_MODEL: "openai/gpt-5.6-luna"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run Leyra F1 spine + gate only
+        run: >-
+          PYTHONPATH=. python -m src.episode_spine_v2_generate
+          --spine data/specifications/saga_lab/age18_forbidden_cartographer_saga_v1.json
+          --reader data/specifications/reader_profiles/age18_adventure_v2.json
+          --fixture data/specifications/saga_lab/age18_forbidden_cartographer_fixture_v1.json
+          --state data/specifications/story_lab/age18_forbidden_cartographer_initial_state_v1.json
+          --premise data/specifications/story_lab/age18_forbidden_cartographer_controlled_premise_v1.json
+          --out runs/age18-forbidden-cartographer-f1/result.json
+          --architect-model anthropic/claude-sonnet-5.5
+          --gate-model openai/gpt-5.6-luna
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s runs/age18-forbidden-cartographer-f1/result.json
+          TMP="$(mktemp -d)"
+          cp runs/age18-forbidden-cartographer-f1/result.json "$TMP/result.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          EVIDENCE_BRANCH="evidence/age18-forbidden-cartographer-f1-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          DEST="experiments/results/age18-forbidden-cartographer-f1/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp "$TMP/result.json" "$DEST/result.json"
+          git add "$DEST/result.json"
+          git commit -m "evidence(qual): archive Leyra F1 spine ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"
