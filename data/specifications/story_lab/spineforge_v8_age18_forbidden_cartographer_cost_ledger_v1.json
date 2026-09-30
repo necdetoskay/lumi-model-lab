@@ -4,8 +4,79 @@
   "runtime_id": "spineforge.contextpack.v8",
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "QUALIFICATION_FAILED_PROVIDER_SCHEMA_SANITIZER_PROPERTY_COLLISION",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36734797000,
+      "trigger_commit": "24c48aa884fc18e7332bdf33226c1e2c6edd7e22",
+      "status": "STRUCTURAL_FRAME_CONTRACT_REJECTED",
+      "failure_class": "PROVIDER_SCHEMA_SANITIZER_REMOVED_REAL_TITLE_PROPERTY",
+      "failure": "StructuralFrameV1.title missing because the provider transport sanitizer recursively removed the legitimate properties.title key while leaving title in required[].",
+      "stages": [
+        {
+          "stage": "spineforge_creative_architect",
+          "model": "aion-labs/aion-3.5-mini",
+          "status": "completed",
+          "input_tokens": 7845,
+          "output_tokens": 10296,
+          "reasoning_tokens": 8116,
+          "cached_tokens": 7845,
+          "total_tokens": 18141,
+          "cost_usd": 0.0158265,
+          "latency_seconds": 164.921
+        },
+        {
+          "stage": "spineforge_structural_frame",
+          "model": "anthropic/claude-sonnet-5.5",
+          "status": "completed",
+          "input_tokens": 17756,
+          "output_tokens": 2173,
+          "reasoning_tokens": 0,
+          "cached_tokens": 0,
+          "total_tokens": 19929,
+          "cost_usd": 0.057242,
+          "latency_seconds": 17.432
+        },
+        {
+          "stage": "spineforge_structural_beats",
+          "status": "not_called"
+        },
+        {
+          "stage": "spineforge_structural_resolution",
+          "status": "not_called"
+        },
+        {
+          "stage": "spineforge_product_gate",
+          "status": "not_called"
+        },
+        {
+          "stage": "writer",
+          "status": "not_called"
+        }
+      ],
+      "totals": {
+        "api_calls": 2,
+        "input_tokens": 25601,
+        "output_tokens": 12469,
+        "reasoning_tokens": 8116,
+        "cached_tokens": 7845,
+        "total_tokens": 38070,
+        "cost_usd": 0.0730685,
+        "model_latency_seconds": 182.353
+      },
+      "evidence": {
+        "repo_path": "experiments/results/spineforge-v8/36734797000",
+        "repo_persisted": true,
+        "compact_log_persisted": true,
+        "artifact_upload": false,
+        "artifact_failure": "Artifact storage quota has been hit",
+        "evidence_survived_artifact_failure": true
+      },
+      "retry_feedback_recovered": true,
+      "preserved_blueprint_sha256": "5c4ad810eb58e96d2442edb4fc4aaeb5741ba14bc1cd7787c20d15379d210208"
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -17,13 +88,18 @@
     }
   ],
   "v8_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "api_calls": 2,
+    "input_tokens": 25601,
+    "output_tokens": 12469,
+    "reasoning_tokens": 8116,
+    "cached_tokens": 7845,
+    "total_tokens": 38070,
+    "cost_usd": 0.0730685,
+    "latency_seconds": 182.353
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V8_ATTEMPT_1_AION_THEN_PARTITIONED_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE"
+    "next_scope": null,
+    "reason": "v8 Attempt 1 consumed. Frozen v8 has a generic provider-schema sanitizer defect; Attempt 2 is forbidden."
   }
 }
