@@ -1,0 +1,91 @@
+name: SpineForge v4 Attempt 2 Zero-Cost Preflight
+
+on:
+  push:
+    branches:
+      - verification/spineforge-v4-attempt2-preflight-20260930
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify frozen v4 and Attempt 2 bindings
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python - <<'PY'
+          import json, tempfile
+          from pathlib import Path
+          from src.spineforge_freeze_verify import verify_spineforge_runtime
+          from src.spineforge_v4_case_manifest import load_spineforge_v4_case
+          from src.spine_context_pack_v1 import write_spine_context_pack
+
+          profile_path=Path("data/specifications/story_lab/spineforge_runtime_profile_v4_normalizer_integrity_frozen.json")
+          case_path=Path("data/specifications/story_lab/spineforge_v4_age18_forbidden_cartographer_case_v1.json")
+          feedback_path=Path("data/specifications/story_lab/spineforge_v4_attempt1_revision_feedback.json")
+
+          freeze=verify_spineforge_runtime(profile_path)
+          assert freeze["runtime_revision"]=="SPINEFORGE-CONTEXTPACK-FROZEN-v4"
+          assert freeze["verified_files"]==26
+
+          case=load_spineforge_v4_case(case_path)
+          feedback=json.loads(feedback_path.read_text(encoding="utf-8"))
+          assert feedback["schema"]=="spineforge-revision-feedback.v3"
+          assert feedback["source_attempt"]==1
+          assert feedback["next_attempt"]==2
+          assert feedback["source_status"]=="creative_contract_rejected"
+          assert feedback["context_pack_id"]==case.expected_context_pack_id
+          assert feedback["context_fingerprint"]==case.expected_context_fingerprint
+
+          with tempfile.TemporaryDirectory() as td:
+              pack=write_spine_context_pack(
+                  source_path=Path(case.canonical_state_source),
+                  out_path=Path(td)/"pack.json",
+              )
+              assert pack.context_pack_id==case.expected_context_pack_id
+              assert pack.context_fingerprint==case.expected_context_fingerprint
+              assert feedback["context_pack_id"]==pack.context_pack_id
+              assert feedback["context_fingerprint"]==pack.context_fingerprint
+
+          candidate={
+              "schema_version":"spineforge-v4-trigger.v1",
+              "scope":"SPINEFORGE_V4_ATTEMPT",
+              "paid_authorized":True,
+              "case_manifest":str(case_path),
+              "attempt_index":2,
+              "revision_feedback":str(feedback_path),
+          }
+          assert candidate["attempt_index"]<=case.max_attempts
+          print(json.dumps({
+              "status":"GREEN",
+              "runtime_revision":freeze["runtime_revision"],
+              "verified_files":freeze["verified_files"],
+              "context_pack_id":case.expected_context_pack_id,
+              "context_fingerprint":case.expected_context_fingerprint,
+              "next_attempt":feedback["next_attempt"],
+              "paid_calls":0
+          }, indent=2))
+          PY
+      - name: Focused frozen regression
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spine_context_pack_v1.py
+          tests/test_spineforge_v2_context_runtime.py
+          tests/test_spineforge_v2_stage.py
+          tests/test_spineforge_v2_frozen.py
+          tests/test_spineforge_v3_context_runtime.py
+          tests/test_spineforge_v3_stage.py
+          tests/test_spineforge_v3_frozen.py
+          tests/test_spineforge_v4_context_runtime.py
+          tests/test_spineforge_v4_stage.py
+          tests/test_spineforge_v4_frozen.py
