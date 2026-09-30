@@ -13,6 +13,7 @@ on:
       - 'data/specifications/story_lab/spineforge_v17_age18_forbidden_cartographer_cost_ledger_v1.json'
       - '.github/workflows/spineforge-v17.yml'
       - '.github/workflows/spineforge-v17-freeze-hash.yml'
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v17_audit_only_frozen.json'
       - 'prompts/spineforge_compact_complete_auditor_v17.md'
       - 'tests/test_spineforge_v17_*.py'
       - '.github/workflows/spineforge-v17-zero-cost.yml'
@@ -34,7 +35,8 @@ jobs:
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v17_prompt.py \
             tests/test_spineforge_v17_runtime_mock.py \
-            tests/test_spineforge_v17_stage.py
+            tests/test_spineforge_v17_stage.py \
+            tests/test_spineforge_v17_frozen.py
       - name: v16 source regression
         run: |
           set -euo pipefail
