@@ -811,9 +811,9 @@ def run(
         context_pack_id=pack.context_pack_id,
         context_fingerprint=pack.context_fingerprint,
         creative_blueprint=blueprint,
-        structural_frame=frame,
-        structural_beats=beats,
-        structural_resolution=resolution,
+        structural_frame=frame.model_dump(mode="json", by_alias=True),
+        structural_beats=beats.model_dump(mode="json", by_alias=True),
+        structural_resolution=resolution.model_dump(mode="json", by_alias=True),
         structural_assembly=assembly,
         product_gate=gate,
         deterministic_checks={
