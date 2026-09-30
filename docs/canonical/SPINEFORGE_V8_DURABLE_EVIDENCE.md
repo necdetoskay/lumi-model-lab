@@ -32,3 +32,28 @@ The implementation is inherited directly from `src/spineforge_v7.py`.
 4. Actions artifact upload is best-effort only and cannot turn a completed qualification into an evidence-loss failure.
 
 No paid v8 inference is authorized before zero-cost tests and a new freeze are GREEN.
+
+## Frozen zero-cost qualification
+
+Runtime ID: `spineforge.contextpack.v8`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v8`  
+Runtime source commit: `98987cac80e963f22cbf590f092a7cbc6e2a01ca`  
+Frozen dependencies: **29 SHA-256 locked files**
+
+Zero-cost evidence:
+- evidence-hardening tests: **4/4 PASS**
+- inherited v7 generation topology: **16/16 PASS**
+- historical v1→v7 regression: **89 PASS, 2 historical snapshots deselected**
+- paid v8 calls: **0**
+- v8 spend: **$0**
+
+Current state: `READY_FOR_ATTEMPT_1`.
+
+There is no v8 paid trigger.
+
+Next paid scope:
+
+`SPINEFORGE_V8_ATTEMPT_1_AION_THEN_PARTITIONED_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before trigger creation.
+
