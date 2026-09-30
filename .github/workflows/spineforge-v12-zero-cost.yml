@@ -1,0 +1,39 @@
+name: SpineForge v12 Deterministic Normalization Zero-Cost
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v12-deterministic-mechanical-normalization
+    paths:
+      - 'src/spineforge_v12.py'
+      - 'src/spineforge_v12_normalizer.py'
+      - 'tests/test_spineforge_v12_*.py'
+      - '.github/workflows/spineforge-v12-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v12 deterministic normalization and runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v12_normalizer.py \
+            tests/test_spineforge_v12_runtime_mock.py
+      - name: v11 roleplay/audit contract regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v11_contract.py \
+            tests/test_spineforge_v11_architecture.py
+      - name: Episode Spine regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q tests/test_episode_spine_v2.py
