@@ -39,3 +39,36 @@ Run `36758868808` — **SUCCESS**
 - v15 source regressions: **3 PASS**
 - paid calls: **0**
 - v16 spend: **$0**
+
+
+## Final frozen qualification
+
+- runtime revision: `SPINEFORGE-EVIDENCE-LOGIC-REPAIR-FROZEN-v16`
+- runtime source commit: `f12e29dea7681923df951d7a31cbbd1b2ad30339`
+- frozen files: **28**
+- source evidence: `experiments/results/spineforge-v15/36757835721/result.json`
+- freeze run: `36759608505` — **SUCCESS**
+- final frozen qualification run: `36759774816` — **SUCCESS**
+- v16 partial-repair/runtime/stage/freeze tests: **13 PASS**
+- inherited v15 regressions: **3 PASS**
+- paid v16 calls before boundary: **0**
+- v16 spend before boundary: **$0**
+
+The source v15 raw re-audit is explicitly treated as partial REPAIR evidence only:
+- 17/18 protected dimensions present;
+- `FRESHNESS` missing;
+- partial audit cannot authorize ACCEPT;
+- blocker/repair targets may be carried forward.
+
+The final v16 re-audit contract requires all **18/18 dimensions exactly once** before human review can be reached.
+
+Current case/ledger status: `READY_FOR_ATTEMPT_1`.
+
+Next paid scope, if explicitly authorized:
+`SPINEFORGE_V16_ATTEMPT_1_EVIDENCE_LOGIC_REPAIR_THEN_COMPLETE_REAUDIT`
+
+At most two Sonnet calls are allowed:
+1. evidence-logic targeted repair of the validated v15 repaired Spine;
+2. complete aggressive 18-dimension re-audit only after deterministic contract and ContextPack authority validation.
+
+Architect recall is forbidden. Automatic repair loops are forbidden. Writer remains blocked. No paid trigger exists.
