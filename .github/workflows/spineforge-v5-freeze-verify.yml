@@ -1,0 +1,44 @@
+name: SpineForge v5 Frozen Candidate Verification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v5-creative-structural-split
+    paths:
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v5_creative_structural_split_frozen.json'
+      - 'data/specifications/story_lab/spineforge_v5_age18_forbidden_cartographer_case_v1.json'
+      - 'data/specifications/story_lab/spineforge_v5_age18_forbidden_cartographer_cost_ledger_v1.json'
+      - 'tests/test_spineforge_v5_frozen.py'
+      - '.github/workflows/spineforge-v5-freeze-verify.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Verify v5 frozen candidate
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_v5_frozen.py
+          tests/test_openrouter_json_schema.py
+          tests/test_generate_explicit_response_format.py
+          tests/test_spineforge_v5_contract_boundary.py
+          tests/test_spineforge_v5_runtime.py
+          tests/test_spineforge_v5_stage.py
+      - name: Verify historical v1-v4 frozen lineage
+        run: >-
+          PYTHONPATH=. python -m pytest -q
+          tests/test_spineforge_frozen_v1.py
+          tests/test_spineforge_v2_frozen.py
+          tests/test_spineforge_v3_frozen.py
+          tests/test_spineforge_v4_frozen.py
+          -k "not starts_zero_spend_and_without_paid_trigger"
