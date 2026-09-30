@@ -1,0 +1,35 @@
+name: SpineForge v5 Freeze Hash Builder
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v5-contract-tolerance
+    paths:
+      - '.github/workflows/spineforge-v5-freeze-hash.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  hash:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Emit frozen dependency hashes
+        shell: bash
+        run: |
+          PYTHONPATH=. python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          paths=[".github/workflows/spineforge-v5.yml","requirements.txt","configs/model_runtime_profiles.yaml","src/spine_context_pack_v1.py","src/spineforge_freeze_verify.py","src/spineforge_v3_context_contract.py","src/spineforge_v3_context_revision.py","src/spineforge_v5.py","src/spineforge_v5_case_manifest.py","src/spineforge_v3_human_approval.py","src/spineforge_v5_stage.py","prompts/spineforge_creative_architect_v4_context.md","prompts/spineforge_structural_hardener_v2_context.md","prompts/spineforge_product_gate_v2_context.md","src/spineforge_v3_contract.py","src/spineforge_v3_patch.py","src/episode_spine_v3_contract.py","src/episode_spine_safe_normalize_v5.py","src/premise_architect_v2_contract.py","src/reader_profile_v2.py","src/saga_blueprint_contract.py","src/saga_spine_v2_contract.py","src/english_story_pipeline.py","src/generate.py","src/model_registry.py","src/model_usage_rollup.py"]
+          rows=[]
+          for raw in paths:
+              path=Path(raw)
+              rows.append({"path":raw,"sha256":hashlib.sha256(path.read_bytes()).hexdigest()})
+          print("SPINEFORGE_V5_FREEZE_HASHES="+json.dumps(rows,separators=(",",":")))
+          print("COUNT="+str(len(rows)))
+          PY
