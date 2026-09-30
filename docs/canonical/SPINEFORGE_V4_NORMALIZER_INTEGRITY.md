@@ -295,3 +295,51 @@ There is no Attempt 4 boundary.
 
 v4 remains immutable historical evidence. Any generic recovery requires a new SpineForge runtime revision.
 
+## Qualification result — v4 Attempt 3 / FINAL
+
+Trigger commit: `eb259ea24435160407db33639db02f0e3e7a4b82`  
+Run: `36696423052`
+
+Result: **creative_contract_rejected**
+
+Attempt 2 feedback produced a real correction:
+- the required `COMPLICATION` phase is now present.
+
+New deterministic rejection:
+- beat `decision_window` omitted required field `new_information`.
+
+Calls:
+- Aion 3.5 Mini: 1
+- Sonnet 5.5: 0
+- GPT-5.6 Luna: 0
+- Writer: 0
+
+Attempt 3 usage:
+- input tokens: 13,433
+- output tokens: 19,473
+- reasoning tokens: 16,519
+- cached tokens: 7,571
+- total tokens: 32,906
+- cost: $0.03272838
+- model latency: 282.414 s
+- pipeline latency: 282.467 s
+
+v4 cumulative:
+- API calls: 3
+- total tokens: 77,940
+- confirmed cost: $0.07946528
+- cumulative pipeline latency: 623.359 s
+
+### v4 qualification verdict
+
+**FAIL — MAX ATTEMPTS EXHAUSTED**
+
+Across the three attempts, context-bound feedback corrected the immediately preceding defect, but raw Aion output remained unreliable against the full strict Episode Spine contract:
+1. Attempt 1: scalar/list shape defect.
+2. Attempt 2: required `COMPLICATION` phase omitted.
+3. Attempt 3: required beat field `new_information` omitted.
+
+No Attempt 4 is permitted. No Sonnet/Luna/Writer call occurred in v4 qualification.
+
+v4 remains frozen and is not patched or reclassified. Next work must use a new SpineForge runtime revision.
+
