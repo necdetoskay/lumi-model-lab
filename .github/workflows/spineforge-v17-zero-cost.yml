@@ -6,6 +6,13 @@ on:
       - experiment/spineforge-v17-audit-only-recovery
     paths:
       - 'src/spineforge_v17.py'
+      - 'src/spineforge_v17_stage.py'
+      - 'src/spineforge_v17_case_manifest.py'
+      - 'src/spineforge_v17_evidence_summary.py'
+      - 'data/specifications/story_lab/spineforge_v17_age18_forbidden_cartographer_case_v1.json'
+      - 'data/specifications/story_lab/spineforge_v17_age18_forbidden_cartographer_cost_ledger_v1.json'
+      - '.github/workflows/spineforge-v17.yml'
+      - '.github/workflows/spineforge-v17-freeze-hash.yml'
       - 'prompts/spineforge_compact_complete_auditor_v17.md'
       - 'tests/test_spineforge_v17_*.py'
       - '.github/workflows/spineforge-v17-zero-cost.yml'
@@ -26,7 +33,8 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v17_prompt.py \
-            tests/test_spineforge_v17_runtime_mock.py
+            tests/test_spineforge_v17_runtime_mock.py \
+            tests/test_spineforge_v17_stage.py
       - name: v16 source regression
         run: |
           set -euo pipefail
