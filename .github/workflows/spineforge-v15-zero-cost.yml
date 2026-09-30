@@ -6,7 +6,14 @@ on:
       - experiment/spineforge-v15-convergence-repair
     paths:
       - 'src/spineforge_v15.py'
+      - 'src/spineforge_v15_stage.py'
+      - 'src/spineforge_v15_case_manifest.py'
+      - 'src/spineforge_v15_evidence_summary.py'
+      - 'data/specifications/story_lab/spineforge_v15_age18_forbidden_cartographer_case_v1.json'
+      - 'data/specifications/story_lab/spineforge_v15_age18_forbidden_cartographer_cost_ledger_v1.json'
       - 'prompts/spineforge_convergence_repair_v15.md'
+      - '.github/workflows/spineforge-v15.yml'
+      - '.github/workflows/spineforge-v15-freeze-hash.yml'
       - 'tests/test_spineforge_v15_*.py'
       - '.github/workflows/spineforge-v15-zero-cost.yml'
 
@@ -26,7 +33,8 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v15_prompt.py \
-            tests/test_spineforge_v15_runtime_mock.py
+            tests/test_spineforge_v15_runtime_mock.py \
+            tests/test_spineforge_v15_stage.py
       - name: v14 source/runtime regression
         run: |
           set -euo pipefail
