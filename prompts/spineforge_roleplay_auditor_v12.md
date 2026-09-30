@@ -75,7 +75,7 @@ Clear structural/story defect that will likely damage the finished story.
 ### 1 — broken
 Missing, contradictory, passive, incoherent, authority-unsafe, or unusable.
 
-REversal quality may pass at 3 if it is structurally legitimate but not exceptional.
+Reversal quality may pass at 3 if it is structurally legitimate but not exceptional.
 Protected dimensions otherwise require at least 4 for ACCEPT.
 
 ---
@@ -293,10 +293,10 @@ Actively search for:
 
 ### Passive roleplay
 BAD:
-> Mentor explains three clues and instructs the protagonist which one matters.
+> A guide explains three clues and instructs the protagonist which one matters.
 
 Acceptable direction:
-> protagonist performs an authorized test, receives conflicting results, challenges or negotiates with mentor, and must decide how to proceed under incomplete evidence.
+> protagonist performs an authorized test, receives conflicting results, negotiates for a needed resource or concession, and must decide how to proceed under incomplete evidence.
 
 ### Fake reversal
 BAD:
@@ -353,7 +353,7 @@ Good repair target:
 > Path: `beats[4:7] + reversal`  
 > Problem: middle repeats observation without changing available action; reversal introduces a new fact instead of reinterpreting prior evidence.  
 > Required change: make protagonist's tool use in beat 5 produce a consequence that constrains beat 6, then ground reversal only in evidence from beats 3–6.  
-> Preserve: approved location, protagonist profession, uncertainty about hidden cause.
+> Preserve: authorized setting, protagonist-specific capability, and the uncertainty the ContextPack requires to remain unresolved.
 
 Do not request a wholesale rewrite unless the **dramatic engine itself is broken**.
 
