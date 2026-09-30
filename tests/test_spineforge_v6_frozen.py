@@ -20,17 +20,22 @@ def test_v6_frozen_runtime_hashes_verify() -> None:
     assert result["verified_files"] == 28
 
 
-def test_v6_case_ready_zero_spend_and_no_paid_trigger() -> None:
+def test_v6_failed_case_is_closed_and_has_no_paid_trigger() -> None:
     case = load_spineforge_v6_case(CASE)
     ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
-    assert case.status == "READY_FOR_ATTEMPT_1"
-    assert ledger["status"] == "READY_FOR_ATTEMPT_1"
-    assert ledger["v6_actual_spend"] == {
-        "api_calls": 0,
-        "total_tokens": 0,
-        "cost_usd": 0,
-        "latency_seconds": 0,
-    }
+    assert case.status == "QUALIFICATION_FAILED_STRICT_PROVIDER_GRAMMAR_TOO_LARGE"
+    assert ledger["status"] == "QUALIFICATION_FAILED_STRICT_PROVIDER_GRAMMAR_TOO_LARGE"
+    assert len(ledger["attempts"]) == 1
+    attempt = ledger["attempts"][0]
+    assert attempt["run_id"] == 36702946557
+    assert attempt["creative_architect"]["inference_completed"] is True
+    assert attempt["creative_architect"]["usage_checkpoint_persisted"] is False
+    assert attempt["structural_compiler"]["inference_started"] is False
+    assert attempt["structural_compiler"]["http_status"] == 400
+    assert attempt["product_gate"]["called"] is False
+    assert ledger["v6_actual_spend"]["successful_inference_calls"] == 1
+    assert ledger["v6_actual_spend"]["total_tokens"] is None
+    assert ledger["v6_actual_spend"]["cost_usd"] is None
     assert ledger["paid_boundary"]["authorized"] is False
     assert not TRIGGER.exists()
 
