@@ -12,7 +12,8 @@ from dotenv import load_dotenv
 from pydantic import ValidationError
 
 from src.english_story_pipeline import call_structured_json_with_retry
-from src.generate import call_openrouter, parse_cost
+from src.generate import parse_cost
+from src.spineforge_v5_strict_call import call_openrouter
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.openrouter_json_schema import build_json_schema_response_format
