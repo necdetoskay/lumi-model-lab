@@ -1,0 +1,35 @@
+name: SpineForge v15 Convergence Repair Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v15-convergence-repair
+    paths:
+      - 'src/spineforge_v15.py'
+      - 'prompts/spineforge_convergence_repair_v15.md'
+      - 'tests/test_spineforge_v15_*.py'
+      - '.github/workflows/spineforge-v15-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v15 convergence repair runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v15_prompt.py \
+            tests/test_spineforge_v15_runtime_mock.py
+      - name: v14 source/runtime regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v14_prompt.py \
+            tests/test_spineforge_v14_runtime_mock.py
