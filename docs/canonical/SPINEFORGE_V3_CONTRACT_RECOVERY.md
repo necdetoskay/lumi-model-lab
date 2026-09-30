@@ -66,3 +66,28 @@ One authorized attempt is at most:
 
 No automatic paid retry.
 No Writer call.
+
+## Freeze evidence
+
+Runtime ID: `spineforge.contextpack.v3`
+
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v3`
+
+Runtime source commit: `19e34642e45bccd81fce7633805af83586425797`
+
+Frozen dependency hashes: 26/26 verified.
+
+Historical v2 freeze: 26/26 verified.
+
+Focused combined regression: 33/33 PASS.
+
+Qualification case:
+`spineforge.v3.age18.forbidden-cartographer.fantasy.01`
+
+Context fingerprint:
+`05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2`
+
+Current v3 spend:
+0 API calls / 0 tokens / $0.
+
+No `experiments/triggers/spineforge-v3.json` exists at freeze time.
