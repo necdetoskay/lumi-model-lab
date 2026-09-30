@@ -27,19 +27,27 @@ def test_v3_case_materializes_exact_expected_pack()->None:
     assert pack.context_fingerprint==case.expected_context_fingerprint
 
 
-def test_v3_starts_with_zero_new_spend_and_no_trigger()->None:
+def test_v3_records_cancelled_attempt_without_claiming_provider_billing()->None:
     ledger=json.loads(LEDGER.read_text())
-    assert ledger["status"]=="READY_FOR_ATTEMPT_1"
-    assert ledger["attempts"]==[]
-    assert ledger["v3_actual_spend"]=={
-        "api_calls":0,
-        "total_tokens":0,
-        "cost_usd":0.0,
-        "latency_seconds":0.0,
-    }
+    assert ledger["status"]=="QUALIFICATION_ABORTED_ATTEMPT_1"
+    assert len(ledger["attempts"])==1
+    attempt=ledger["attempts"][0]
+    assert attempt["run_id"]==36666428511
+    assert attempt["workflow_conclusion"]=="cancelled"
+    assert attempt["result_artifact_written"] is False
+    assert attempt["stage_envelope_written"] is False
+    assert attempt["context_pack_materialized"] is True
+    assert attempt["recorded_model_calls"]==0
+    assert attempt["provider_billing_verified"] is False
+    assert ledger["v3_actual_spend"]["recorded_api_calls"]==0
+    assert ledger["v3_actual_spend"]["provider_billing_verified"] is False
     assert ledger["prior_revision_waste"]["cost_usd"]==0.0240562
     assert ledger["paid_boundary"]["authorized"] is False
-    assert not Path("experiments/triggers/spineforge-v3.json").exists()
+    assert ledger["paid_boundary"]["next_scope"]=="NEW_SPINEFORGE_RUNTIME_REVISION_REQUIRED"
+
+    trigger=json.loads(Path("experiments/triggers/spineforge-v3.json").read_text())
+    assert trigger["paid_authorized"] is True
+    assert trigger["attempt_index"]==1
 
 
 def test_v3_runtime_contains_no_case_specific_names()->None:

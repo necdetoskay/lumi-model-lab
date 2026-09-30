@@ -1,0 +1,53 @@
+name: SpineForge v4 Normalizer Integrity Frozen Attempt
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v4-normalizer-integrity
+    paths:
+      - 'experiments/triggers/spineforge-v4.json'
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 25
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify frozen v4 runtime and run one authorized attempt
+        run: >-
+          PYTHONPATH=. python -m src.spineforge_v4_stage
+          --trigger experiments/triggers/spineforge-v4.json
+          --out-dir runs/spineforge-v4
+      - name: Archive evidence branch
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          mkdir -p "$TMP/evidence"
+          cp experiments/triggers/spineforge-v4.json "$TMP/evidence/trigger.json"
+          if test -d runs/spineforge-v4; then
+            cp -a runs/spineforge-v4/. "$TMP/evidence/"
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          EVIDENCE_BRANCH="evidence/spineforge-v4-${GITHUB_RUN_ID}"
+          git checkout --orphan "$EVIDENCE_BRANCH"
+          git rm -rf . >/dev/null 2>&1 || true
+          DEST="experiments/results/spineforge-v4/${GITHUB_RUN_ID}"
+          mkdir -p "$DEST"
+          cp -a "$TMP/evidence/." "$DEST/"
+          git add "$DEST"
+          git commit -m "evidence(spineforge-v4): archive attempt ${GITHUB_RUN_ID}"
+          git push --force origin "HEAD:refs/heads/$EVIDENCE_BRANCH"

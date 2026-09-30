@@ -91,3 +91,35 @@ Current v3 spend:
 0 API calls / 0 tokens / $0.
 
 No `experiments/triggers/spineforge-v3.json` exists at freeze time.
+
+
+## Qualification Attempt 1 — cancelled and closed
+
+A paid trigger was pushed at commit `155a5ab5d2786b0d80299a3825881c17dee3e16c` and started run `36666428511`.
+
+The run was cancelled during the runtime step. Archived evidence contains:
+- the authorized trigger;
+- the materialized SpineContextPack with the expected fingerprint.
+
+It does not contain:
+- `result.json`;
+- a stage envelope;
+- recorded model usage or cost.
+
+Therefore repository evidence records zero completed model calls/tokens/cost, but it does **not** prove provider-side billing was zero for an in-flight request interrupted by cancellation. Provider billing for that cancelled request remains unknown.
+
+Offline inspection of the frozen v3 runtime then exposed a normalization-integrity defect: v3 correctly allows reversal evidence established on the REVERSAL beat, but its frozen dependency still used the v2 safe normalizer, which may remove that now-valid reversal-beat reference when another earlier reference is present. In the archived Leyra raw payload this changes the second reversal evidence support from:
+
+`[reversal_private_mark, escalation_map_discrepancy]`
+
+to:
+
+`[escalation_map_discrepancy]`
+
+even though the earlier beat does not establish the private mark's weathering/placement claim.
+
+Because the paid v3 qualification boundary had already been crossed, v3 is not patched or reclassified. Its qualification is closed and a new runtime revision is required.
+
+Next revision boundary:
+
+`SPINEFORGE-CONTEXTPACK-FROZEN-v4`
