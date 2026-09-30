@@ -14,6 +14,7 @@ from src.generate import OpenRouterCallError, call_openrouter, count_words, pars
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.story_authority_packet import build_story_authority_packet
+from src.story_authority_packet_v2 import build_story_authority_packet_v2
 
 
 DEFAULT_APPROVED = Path(
@@ -66,15 +67,26 @@ def _compact_context(approved: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build_writer_input(approved: dict[str, Any]) -> dict[str, Any]:
+def build_writer_input(
+    approved: dict[str, Any],
+    *,
+    authority_packet_version: str = "v1",
+) -> dict[str, Any]:
     spine = approved["episode_spine"]
+    if authority_packet_version == "v1":
+        authority_packet = build_story_authority_packet(approved)
+    elif authority_packet_version == "v2":
+        authority_packet = build_story_authority_packet_v2(approved)
+    else:
+        raise RuntimeError("Unsupported authority packet version.")
     return {
         "task": "write_episode_from_human_approved_spine",
         "source_spine_run_id": approved["source_run_id"],
         "human_review": approved["human_review"],
         "approved_premise": approved["approved_premise"]["premise"],
         "context": _compact_context(approved),
-        "authority_packet": build_story_authority_packet(approved),
+        "authority_packet": authority_packet,
+        "authority_packet_version": authority_packet_version,
         "episode_spine": spine,
         "hard_rules": {
             "one_writer_call_only": True,
@@ -121,6 +133,7 @@ def generate(
     out_path: Path,
     story_out_path: Path,
     api_key: str | None = None,
+    authority_packet_version: str = "v1",
 ) -> dict[str, Any]:
     load_dotenv()
     key = api_key or os.getenv("OPENROUTER_API_KEY")
@@ -135,7 +148,9 @@ def generate(
     require_qualification_runtime_profile(writer_model)
 
     spine = approved["episode_spine"]
-    writer_input = build_writer_input(approved)
+    writer_input = build_writer_input(
+        approved, authority_packet_version=authority_packet_version
+    )
 
     system_prompt = prompt_path.read_text(encoding="utf-8").strip()
     started = time.perf_counter()
@@ -286,6 +301,7 @@ def main() -> None:
     parser.add_argument("--prompt", type=Path, default=DEFAULT_PROMPT)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--story-out", type=Path, default=DEFAULT_STORY_OUT)
+    parser.add_argument("--authority-packet-version", choices=["v1", "v2"], default="v1")
     args = parser.parse_args()
 
     result = generate(
@@ -293,6 +309,7 @@ def main() -> None:
         prompt_path=args.prompt,
         out_path=args.out,
         story_out_path=args.story_out,
+        authority_packet_version=args.authority_packet_version,
     )
     print(
         json.dumps(

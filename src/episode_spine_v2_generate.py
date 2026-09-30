@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from src.english_story_pipeline import call_structured_json_with_retry
 from src.episode_spine_v2_contract import EpisodeSpineGateV2, EpisodeSpineV2
+from src.episode_spine_safe_normalize_v2 import normalize_episode_spine_syntax
 from src.generate import parse_cost, parse_usage
 from src.model_registry import require_qualification_runtime_profile, runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
@@ -140,6 +141,7 @@ def generate(
     gate_model_override: str | None = None,
     api_key: str | None = None,
     revision_feedback_path: Path | None = None,
+    safe_normalize: bool = False,
 ) -> dict[str, Any]:
     load_dotenv()
     key = api_key or os.getenv("OPENROUTER_API_KEY")
@@ -280,6 +282,10 @@ def generate(
 
     architect_call_latency = round(time.perf_counter() - architect_call_started, 3)
 
+    normalization_repairs: list[dict[str, Any]] = []
+    if safe_normalize:
+        raw, normalization_repairs = normalize_episode_spine_syntax(raw)
+
     evidence: dict[str, Any] = {
         "schema_version": "episode-spine-v2-evidence.v1",
         "status": "architect_generated",
@@ -299,6 +305,12 @@ def generate(
             request,
             latency_seconds=architect_call_latency,
         ),
+        "safe_normalization": {
+            "enabled": safe_normalize,
+            "applied": bool(normalization_repairs),
+            "repairs": normalization_repairs,
+            "semantic_fields_changed": False,
+        },
     }
 
     try:
@@ -469,6 +481,7 @@ def main() -> None:
     parser.add_argument("--architect-model")
     parser.add_argument("--gate-model")
     parser.add_argument("--revision-feedback", type=Path)
+    parser.add_argument("--safe-normalize", action="store_true")
     args = parser.parse_args()
 
     payload = generate(
@@ -483,6 +496,7 @@ def main() -> None:
         architect_model_override=args.architect_model,
         gate_model_override=args.gate_model,
         revision_feedback_path=args.revision_feedback,
+        safe_normalize=args.safe_normalize,
     )
     print(
         json.dumps(
