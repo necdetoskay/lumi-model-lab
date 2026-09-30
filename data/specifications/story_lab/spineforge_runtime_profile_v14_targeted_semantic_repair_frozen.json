@@ -1,0 +1,156 @@
+{
+  "schema_version": "spineforge-runtime-profile.v1",
+  "runtime_id": "spineforge.contextpack.v14.repair",
+  "status": "FROZEN_QUALIFICATION_CANDIDATE",
+  "purpose": "Targeted Sonnet semantic repair of the validated v12 Spine using the typed v13 REPAIR audit, followed by deterministic validation and aggressive Sonnet re-audit.",
+  "runtime": {
+    "generation_runtime": "src/spineforge_v14.py",
+    "repair_model": "anthropic/claude-sonnet-5.5",
+    "repair_prompt": "prompts/spineforge_targeted_semantic_repair_v14.md",
+    "reaudit_model": "anthropic/claude-sonnet-5.5",
+    "audit_prompt": "prompts/spineforge_single_owner_auditor_v11.md",
+    "source_evidence": "experiments/results/spineforge-v12/36752663853/result.json",
+    "repair_max_tokens": 10000,
+    "reaudit_max_tokens": 4500,
+    "max_calls_per_attempt": 2,
+    "architect_recall": false,
+    "automatic_repair_loop_enabled": false,
+    "writer_authorized": false
+  },
+  "repair_policy": {
+    "typed_repair_audit_required": true,
+    "exact_blockers_targets_preserve_forwarded": true,
+    "targeted_not_regenerative": true,
+    "hidden_saga_truth_forbidden": true,
+    "mechanical_route_normalization_allowed": true,
+    "semantic_repair_by_application_forbidden": true,
+    "reaudit_required": true
+  },
+  "evidence_policy": {
+    "full_repo_evidence_required": true,
+    "repo_evidence_path": "experiments/results/spineforge-v14/<run_id>",
+    "artifact_upload": "best_effort_only",
+    "exact_token_cost_latency_required": true
+  },
+  "paid_boundary_policy": {
+    "explicit_authorization_required_for_attempt_1": true,
+    "no_automatic_paid_retry": true,
+    "no_automatic_repair_loop": true,
+    "no_writer_call_inside_spineforge": true
+  },
+  "runtime_freeze": {
+    "enabled": true,
+    "runtime_revision": "SPINEFORGE-TARGETED-REPAIR-FROZEN-v14",
+    "runtime_source_commit": "6fdb7313f9b006ad44a556294189e719f40cbead",
+    "files": [
+      {
+        "path": ".github/workflows/spineforge-v14.yml",
+        "sha256": "998b90718745e7c76f1caa1b234eb96a6dc55e90e0233e09b593ddd4558b8f9b"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "ce5e252122e139330e13f38b25b748a0bb86d36efe50e646353dd2ab7c77675d"
+      },
+      {
+        "path": "configs/model_runtime_profiles.yaml",
+        "sha256": "b4710c3ee3069604b8b0b84ca69a864ced86b3d38543b139f78c5dd6a5a72911"
+      },
+      {
+        "path": "src/spineforge_freeze_verify.py",
+        "sha256": "644248e3f2200d6ce7727317358069589a2fc1da5a5d21b360256066d045e767"
+      },
+      {
+        "path": "src/spineforge_v14.py",
+        "sha256": "bcc013dd7557d383696e4ecdad85f7aa331ca25e63fe75dc7745b7a206aa3308"
+      },
+      {
+        "path": "src/spineforge_v14_case_manifest.py",
+        "sha256": "313994891d564f6899a4766d3011d59a1f13f6fb2a7f14ead8a3fcd324f19638"
+      },
+      {
+        "path": "src/spineforge_v14_stage.py",
+        "sha256": "5c72fc24fb1c3035ebd824d4e911c77d1b32969aaec67e1460bbb0e62ec2c840"
+      },
+      {
+        "path": "src/spineforge_v14_evidence_summary.py",
+        "sha256": "5b829c7bc6357be3f5babe66ce5ccc589203ecb353a7afbbc827e58683532a87"
+      },
+      {
+        "path": "data/specifications/story_lab/spineforge_v14_age18_forbidden_cartographer_case_v1.json",
+        "sha256": "2abec1f22bb64fddef40bf46512943dfaa8311ee58c7f2e75d1fa2133be8f084"
+      },
+      {
+        "path": "prompts/spineforge_targeted_semantic_repair_v14.md",
+        "sha256": "13764bbf3b72a233fdfe998d05f064a7c6991d21ec43dc397e22dfc19ecc38ef"
+      },
+      {
+        "path": "prompts/spineforge_single_owner_auditor_v11.md",
+        "sha256": "cd16d927d5c5783f770adb766a467ee3abca1437e3f46bc5c705752555c1fef9"
+      },
+      {
+        "path": "experiments/results/spineforge-v12/36752663853/result.json",
+        "sha256": "5a40d5c4766a5e060050415591ed90fbd36c3e22bd0538cc3da77de755d97e1c"
+      },
+      {
+        "path": "src/spineforge_v13_audit_normalizer.py",
+        "sha256": "fb6bb7f260e41a148734a4400510b10fb94bc8f9932a47b3036118c175f310ae"
+      },
+      {
+        "path": "src/spineforge_v12_normalizer.py",
+        "sha256": "27039662bdf804f550e20bc0d4fa6b4fe6c37a2f4a26bdee3a59a68b97d9a11a"
+      },
+      {
+        "path": "src/spineforge_v11.py",
+        "sha256": "324035223dc46cc73a096021926468b5db0d4377b0701db86645db1434575114"
+      },
+      {
+        "path": "src/spineforge_v11_contract.py",
+        "sha256": "5fe1e82cdbe994fd18412b910ce307a56785af79e5fdbb97f82889f876051a66"
+      },
+      {
+        "path": "src/spine_context_pack_v1.py",
+        "sha256": "e4c82cd2a67c9821f89aab2f2ba7d5aa3a745ebd747807f0dc857334dc06ef1c"
+      },
+      {
+        "path": "src/episode_spine_v3_contract.py",
+        "sha256": "d78b47b71eb5c08061f5abb800952012511b522fef197d5640f8f0ec885e96d6"
+      },
+      {
+        "path": "src/premise_architect_v2_contract.py",
+        "sha256": "5b9bf657b39ad81525b58ad7c932f5cce4a05353a0fb99165e3392b4dd079cdf"
+      },
+      {
+        "path": "src/reader_profile_v2.py",
+        "sha256": "dd6fec703b113e72f16a333f985ff042f96b6bc6926b0e02bc8f212ca0a7e90b"
+      },
+      {
+        "path": "src/saga_blueprint_contract.py",
+        "sha256": "cf435a1edf924bf0001cf6007e5b1558bbdfd5e1dc89b5bd7a1c4fec99c984b0"
+      },
+      {
+        "path": "src/saga_spine_v2_contract.py",
+        "sha256": "3f13e6c14faaf451e1f746893071ac3b25331e999158322c83b68e6e373b9364"
+      },
+      {
+        "path": "src/english_story_pipeline.py",
+        "sha256": "4fd9a1c63dda161ef614b7aa5403a26e80be84335f2721b6b4518ce4203c4c4c"
+      },
+      {
+        "path": "src/generate.py",
+        "sha256": "c3076ba9271f5dd9b19ee6059a7dda241e2c7d0ea866c06176f9d31848317496"
+      },
+      {
+        "path": "src/schemas.py",
+        "sha256": "e2bfb001b25316e73780090f296b9134e712446907570e1c7a752da8da1a8822"
+      },
+      {
+        "path": "src/model_registry.py",
+        "sha256": "1ffd711f3ff3c565facfe83dfb622eadbcdd9109784479b0f315fc8d66a1bb28"
+      },
+      {
+        "path": "src/model_usage_rollup.py",
+        "sha256": "4f9fe2318e0e23ecb3c43f2c0481648b1db76f01edea7c538b5c6d1aa007cf57"
+      }
+    ]
+  }
+}
