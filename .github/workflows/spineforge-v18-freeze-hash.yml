@@ -1,0 +1,123 @@
+name: SpineForge v18 Strict Audit Freeze Builder
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v18-strict-audit-transport
+    paths:
+      - experiments/freeze/spineforge-v18.request
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build v18 strict-audit freeze profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          from src.spineforge_v18_transport import schema_size_bytes
+
+          paths = [
+              ".github/workflows/spineforge-v18.yml",
+              "requirements.txt",
+              "configs/model_runtime_profiles.yaml",
+              "src/spineforge_freeze_verify.py",
+              "src/spineforge_v18.py",
+              "src/spineforge_v18_transport.py",
+              "src/spineforge_v18_strict_call.py",
+              "src/spineforge_v18_case_manifest.py",
+              "src/spineforge_v18_stage.py",
+              "src/spineforge_v18_evidence_summary.py",
+              "data/specifications/story_lab/spineforge_v18_age18_forbidden_cartographer_case_v1.json",
+              "prompts/spineforge_strict_complete_auditor_v18.md",
+              "experiments/results/spineforge-v16/36760550050/result.json",
+              "src/spineforge_v6_json_schema.py",
+              "src/spineforge_v6_strict_call.py",
+              "src/spineforge_v11.py",
+              "src/spineforge_v11_contract.py",
+              "src/spine_context_pack_v1.py",
+              "src/episode_spine_v3_contract.py",
+              "src/english_story_pipeline.py",
+              "src/generate.py",
+              "src/model_registry.py",
+              "src/model_usage_rollup.py",
+              "src/schemas.py",
+          ]
+
+          def sha256(path):
+              return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+          size = schema_size_bytes()
+          if size > 4096:
+              raise RuntimeError(f"v18 strict audit schema exceeds frozen budget: {size}")
+
+          profile = {
+              "schema_version": "spineforge-runtime-profile.v1",
+              "runtime_id": "spineforge.contextpack.v18.strict-audit",
+              "status": "FROZEN_QUALIFICATION_CANDIDATE",
+              "purpose": "Single-call provider-strict Sonnet audit of the validated v16 repaired Spine.",
+              "runtime": {
+                  "generation_runtime": "src/spineforge_v18.py",
+                  "audit_model": "anthropic/claude-sonnet-5.5",
+                  "audit_prompt": "prompts/spineforge_strict_complete_auditor_v18.md",
+                  "source_evidence": "experiments/results/spineforge-v16/36760550050/result.json",
+                  "audit_max_tokens": 6000,
+                  "max_calls_per_attempt": 1,
+                  "architect_recall": False,
+                  "repair_recall": False,
+                  "writer_authorized": False
+              },
+              "transport_policy": {
+                  "provider_strict_json_schema": True,
+                  "schema_name": "spineforge_audit_transport_v18",
+                  "strict_schema_size_bytes": size,
+                  "strict_schema_max_bytes": 4096,
+                  "all_18_dimension_keys_required": True,
+                  "provider_require_parameters": True,
+                  "local_typed_audit_validation_after_transport": True
+              },
+              "paid_boundary_policy": {
+                  "explicit_authorization_required_for_attempt_1": True,
+                  "no_automatic_paid_retry": True,
+                  "no_repair_call": True,
+                  "no_writer_call_inside_spineforge": True
+              },
+              "runtime_freeze": {
+                  "enabled": True,
+                  "runtime_revision": "SPINEFORGE-STRICT-AUDIT-TRANSPORT-FROZEN-v18",
+                  "runtime_source_commit": os.environ["GITHUB_SHA"],
+                  "files": [{"path": p, "sha256": sha256(p)} for p in paths]
+              }
+          }
+          out = Path("data/specifications/story_lab/spineforge_runtime_profile_v18_strict_audit_frozen.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(profile, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps({
+              "runtime_revision": profile["runtime_freeze"]["runtime_revision"],
+              "runtime_source_commit": profile["runtime_freeze"]["runtime_source_commit"],
+              "frozen_files": len(paths),
+              "strict_schema_size_bytes": size
+          }, indent=2))
+          PY
+      - name: Commit freeze profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/specifications/story_lab/spineforge_runtime_profile_v18_strict_audit_frozen.json
+          git commit -m "canon(spineforge-v18): freeze strict audit runtime"
+          git fetch origin experiment/spineforge-v18-strict-audit-transport
+          git rebase origin/experiment/spineforge-v18-strict-audit-transport
+          git push origin HEAD:experiment/spineforge-v18-strict-audit-transport

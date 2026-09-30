@@ -8,8 +8,15 @@ on:
       - 'src/spineforge_v18.py'
       - 'src/spineforge_v18_transport.py'
       - 'src/spineforge_v18_strict_call.py'
+      - 'src/spineforge_v18_stage.py'
+      - 'src/spineforge_v18_case_manifest.py'
+      - 'src/spineforge_v18_evidence_summary.py'
       - 'prompts/spineforge_strict_complete_auditor_v18.md'
       - 'tests/test_spineforge_v18_*.py'
+      - 'data/specifications/story_lab/spineforge_v18_age18_forbidden_cartographer_case_v1.json'
+      - 'data/specifications/story_lab/spineforge_v18_age18_forbidden_cartographer_cost_ledger_v1.json'
+      - '.github/workflows/spineforge-v18.yml'
+      - '.github/workflows/spineforge-v18-freeze-hash.yml'
       - '.github/workflows/spineforge-v18-zero-cost.yml'
 
 jobs:
@@ -28,7 +35,8 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v18_prompt.py \
-            tests/test_spineforge_v18_runtime_mock.py
+            tests/test_spineforge_v18_runtime_mock.py \
+            tests/test_spineforge_v18_stage.py
       - name: v17 audit-only regression
         run: |
           set -euo pipefail
