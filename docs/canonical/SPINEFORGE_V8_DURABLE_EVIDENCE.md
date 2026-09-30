@@ -57,3 +57,46 @@ Next paid scope:
 
 A separate explicit authorization is required before trigger creation.
 
+## Paid Attempt 1 — terminal v8 result
+
+Run: `36734797000`  
+Trigger commit: `24c48aa884fc18e7332bdf33226c1e2c6edd7e22`
+
+Runtime status: `structural_frame_contract_rejected`.
+
+Exact failure: `StructuralFrameV1.title: Field required`.
+
+Root cause is generic and deterministic. The provider transport schema kept `title` in the root `required` list but omitted `properties.title`. The sanitizer recursively dropped every key named `title`, so it removed both JSON Schema annotation keys and the legitimate application property named `title`.
+
+Execution:
+- Aion Creative Blueprint: completed
+- Sonnet strict Structural Frame: completed provider inference
+- local StructuralFrameV1 validation: rejected
+- Structural Beats / Resolution / Luna / Writer: not called
+
+Exact accounting:
+- API calls: **2**
+- input tokens: **25,601**
+- output tokens: **12,469**
+- reasoning tokens: **8,116**
+- cached tokens: **7,845**
+- total tokens: **38,070**
+- cost: **$0.0730685**
+- summed model latency: **182.353 s**
+- Aion: **$0.0158265**, 18,141 tokens, 164.921 s
+- Sonnet Frame: **$0.057242**, 19,929 tokens, 17.432 s
+
+Evidence hardening succeeded despite artifact quota failure:
+- compact Actions-log evidence persisted
+- full evidence persisted under `experiments/results/spineforge-v8/36734797000`
+- fingerprint-bound Creative Blueprint and revision feedback were recovered
+- artifact upload failed, but primary evidence was not lost
+
+The consumed trigger is disarmed. **v8 Attempt 2 is forbidden** because the frozen provider transport is generically defective.
+
+A successor revision must use path-aware schema sanitization and prove, before any provider call, that every item in each object schema's `required` list exists in that object's `properties` mapping.
+
+Terminal status:
+
+`QUALIFICATION_FAILED_PROVIDER_SCHEMA_SANITIZER_PROPERTY_COLLISION`
+
