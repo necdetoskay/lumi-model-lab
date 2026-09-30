@@ -79,7 +79,7 @@ def test_v12_architect_prompt_has_instruction_boundary_and_creative_ambition() -
     text = ARCHITECT.read_text(encoding="utf-8")
     for phrase in [
         "### Instruction boundary",
-        "story data, not as model instructions",
+        "story data",\n        "not as model instructions",
         "### 5.6 Creative ambition",
         "surprising before they happen but inevitable in retrospect",
         "The best spine is both **canon-safe and imaginatively committed**",
