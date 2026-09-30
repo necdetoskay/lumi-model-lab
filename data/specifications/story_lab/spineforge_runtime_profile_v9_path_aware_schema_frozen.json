@@ -1,0 +1,179 @@
+{
+  "schema_version": "spineforge-runtime-profile.v1",
+  "runtime_id": "spineforge.contextpack.v9",
+  "status": "FROZEN_QUALIFICATION_CANDIDATE",
+  "purpose": "Preserve the v8 generation/evidence architecture while fixing the generic path-insensitive provider JSON Schema sanitizer defect.",
+  "runtime": {
+    "generation_runtime": "src/spineforge_v9.py",
+    "generation_topology_same_as_v8": true,
+    "creative_architect_model": "aion-labs/aion-3.5-mini",
+    "creative_prompt": "prompts/spineforge_creative_architect_v5_blueprint.md",
+    "structural_compiler_model": "anthropic/claude-sonnet-5.5",
+    "structural_prompt": "prompts/spineforge_structural_compiler_v7_partitioned.md",
+    "product_gate_model": "openai/gpt-5.6-luna",
+    "product_gate_prompt": "prompts/spineforge_product_gate_v2_context.md",
+    "max_attempts": 3,
+    "max_calls_per_attempt": 5,
+    "parse_retry_per_model_call": 0,
+    "human_review_required_before_story_writer": true
+  },
+  "strict_transport_policy": {
+    "path_aware_schema_sanitizer": true,
+    "schema_name_maps_preserve_member_names": [
+      "properties",
+      "$defs",
+      "definitions",
+      "patternProperties",
+      "dependentSchemas"
+    ],
+    "required_subset_properties_preflight": true,
+    "sonnet_schema_budget_bytes": 4096,
+    "provider_strict_schema": true,
+    "provider_require_parameters": true,
+    "strict_parse_retry": 0
+  },
+  "evidence_policy": {
+    "compact_actions_log_summary_required": true,
+    "full_repo_evidence_required": true,
+    "repo_evidence_path": "experiments/results/spineforge-v9/<run_id>",
+    "artifact_upload": "best_effort_only",
+    "artifact_quota_may_not_destroy_primary_evidence": true
+  },
+  "paid_boundary_policy": {
+    "explicit_authorization_required_for_each_attempt": true,
+    "no_automatic_paid_retry": true,
+    "no_writer_call_inside_spineforge": true
+  },
+  "no_code_change_qualification_rule": {
+    "enabled": true,
+    "first_paid_case_starts_only_after_runtime_freeze": true,
+    "case_variation_is_data_only": true,
+    "revision_feedback_is_data_only": true,
+    "runtime_hash_mismatch_invalidates_active_case": true,
+    "runtime_or_prompt_change_requires_new_spineforge_revision": true,
+    "scenario_specific_runtime_patch_counts_as_case_failure": true
+  },
+  "runtime_freeze": {
+    "enabled": true,
+    "runtime_revision": "SPINEFORGE-CONTEXTPACK-FROZEN-v9",
+    "runtime_source_commit": "a15feb24ce310b753690fdc068e874c0bb49625b",
+    "files": [
+      {
+        "path": ".github/workflows/spineforge-v9.yml",
+        "sha256": "80614da0f27e034c0b49286ece370aacf51c796d37e47b0cd90f628bc64dcb09"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "ce5e252122e139330e13f38b25b748a0bb86d36efe50e646353dd2ab7c77675d"
+      },
+      {
+        "path": "configs/model_runtime_profiles.yaml",
+        "sha256": "b4710c3ee3069604b8b0b84ca69a864ced86b3d38543b139f78c5dd6a5a72911"
+      },
+      {
+        "path": "src/spine_context_pack_v1.py",
+        "sha256": "e4c82cd2a67c9821f89aab2f2ba7d5aa3a745ebd747807f0dc857334dc06ef1c"
+      },
+      {
+        "path": "src/spineforge_freeze_verify.py",
+        "sha256": "644248e3f2200d6ce7727317358069589a2fc1da5a5d21b360256066d045e767"
+      },
+      {
+        "path": "src/spineforge_v5_contract.py",
+        "sha256": "2c763b43b524aa8dda263c10996832c0ddc20e43b190311912c58ea5709785a3"
+      },
+      {
+        "path": "src/spineforge_v9.py",
+        "sha256": "1ea9196cfa7a517aa28c9d709307877fa653cdc4a22131681d7d5d2983da0cf2"
+      },
+      {
+        "path": "src/spineforge_v7_contract.py",
+        "sha256": "be3c6424b0f5259f543f4b6af0d077b29fe3c384358d840eed779482409dca2e"
+      },
+      {
+        "path": "src/spineforge_v9_structured_call.py",
+        "sha256": "4d88abd66490badd88bee6c01fb04eba62c8daa4d7d1f710404222b7074cc4e2"
+      },
+      {
+        "path": "src/spineforge_v9_human_approval.py",
+        "sha256": "8b4f2d77de6c65f5bf9954ecc3d781527221b6f52d2caf396a7215ee74363989"
+      },
+      {
+        "path": "src/spineforge_v9_case_manifest.py",
+        "sha256": "797210f1177d90655986d7f5fb8049897822f65299fbe8200d2389b197103fb7"
+      },
+      {
+        "path": "src/spineforge_v9_stage.py",
+        "sha256": "e60082ac94b5289732b5a3c2583eb5223b53f542d11a76dc01bf09c67dee364e"
+      },
+      {
+        "path": "src/spineforge_v9_evidence_summary.py",
+        "sha256": "861e08e39b44db85f5ae8ddc2f89f7de89526c0e4c85e9f4b986b6f87dc1e38b"
+      },
+      {
+        "path": "src/spineforge_v6_strict_call.py",
+        "sha256": "4ab884858aecae12edaf7fe6de0c0a8b7a49b032d1dc338f21807e51131a03cc"
+      },
+      {
+        "path": "src/spineforge_v6_json_schema.py",
+        "sha256": "1061c6e9859a0faef0955f17c67b28e9ba612a2472cf253975e6a608e62b6203"
+      },
+      {
+        "path": "prompts/spineforge_creative_architect_v5_blueprint.md",
+        "sha256": "b13d261154042fc467155e937305a5a36e807da9cbb523e52929a57657d9b4e3"
+      },
+      {
+        "path": "prompts/spineforge_structural_compiler_v7_partitioned.md",
+        "sha256": "775992429279542046ec58edbed41adb398d9ec6bdfcf0dc4052ecfde303634c"
+      },
+      {
+        "path": "prompts/spineforge_product_gate_v2_context.md",
+        "sha256": "78484bc6d1b8e5b3f6455940e65a1b05f754b61bab16e8d8299bd292ce9285be"
+      },
+      {
+        "path": "src/spineforge_v3_contract.py",
+        "sha256": "16bcb22fe66dbd3d15dc67005768c95702b7776239a1e98c993db751eed6c1e7"
+      },
+      {
+        "path": "src/episode_spine_v3_contract.py",
+        "sha256": "d78b47b71eb5c08061f5abb800952012511b522fef197d5640f8f0ec885e96d6"
+      },
+      {
+        "path": "src/premise_architect_v2_contract.py",
+        "sha256": "5b9bf657b39ad81525b58ad7c932f5cce4a05353a0fb99165e3392b4dd079cdf"
+      },
+      {
+        "path": "src/reader_profile_v2.py",
+        "sha256": "dd6fec703b113e72f16a333f985ff042f96b6bc6926b0e02bc8f212ca0a7e90b"
+      },
+      {
+        "path": "src/saga_blueprint_contract.py",
+        "sha256": "cf435a1edf924bf0001cf6007e5b1558bbdfd5e1dc89b5bd7a1c4fec99c984b0"
+      },
+      {
+        "path": "src/saga_spine_v2_contract.py",
+        "sha256": "3f13e6c14faaf451e1f746893071ac3b25331e999158322c83b68e6e373b9364"
+      },
+      {
+        "path": "src/english_story_pipeline.py",
+        "sha256": "4fd9a1c63dda161ef614b7aa5403a26e80be84335f2721b6b4518ce4203c4c4c"
+      },
+      {
+        "path": "src/generate.py",
+        "sha256": "c3076ba9271f5dd9b19ee6059a7dda241e2c7d0ea866c06176f9d31848317496"
+      },
+      {
+        "path": "src/schemas.py",
+        "sha256": "e2bfb001b25316e73780090f296b9134e712446907570e1c7a752da8da1a8822"
+      },
+      {
+        "path": "src/model_registry.py",
+        "sha256": "1ffd711f3ff3c565facfe83dfb622eadbcdd9109784479b0f315fc8d66a1bb28"
+      },
+      {
+        "path": "src/model_usage_rollup.py",
+        "sha256": "4f9fe2318e0e23ecb3c43f2c0481648b1db76f01edea7c538b5c6d1aa007cf57"
+      }
+    ]
+  }
+}
