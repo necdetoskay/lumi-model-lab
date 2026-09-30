@@ -70,3 +70,24 @@ Before any paid v12 attempt:
 - no automatic retry;
 - no automatic semantic repair;
 - no Writer.
+
+
+## Frozen qualification result
+
+- runtime revision: `SPINEFORGE-DETERMINISTIC-NORMALIZATION-FROZEN-v12`
+- runtime source commit: `55ced1fd4d4a28738e1e88fe49e1bd236174c91f`
+- frozen runtime files: **23**
+- freeze run: `36749951972` — **SUCCESS**
+- final frozen zero-cost run: `36750136420` — **SUCCESS**
+- v12 normalizer/runtime/stage/freeze: **14 PASS**
+- inherited roleplay/audit regression: **7 PASS**
+- Episode Spine regression: **15 PASS**
+- paid model calls: **0**
+- v12 spend before paid boundary: **$0**
+
+Case status: `READY_FOR_ATTEMPT_1`.
+
+Next paid scope:
+`SPINEFORGE_V12_ATTEMPT_1_SONNET_ARCHITECT_NORMALIZE_VALIDATE_THEN_SONNET_AUDIT_IF_ELIGIBLE`
+
+No `experiments/triggers/spineforge-v12.json` exists. A separate explicit authorization is required before paid trigger creation.
