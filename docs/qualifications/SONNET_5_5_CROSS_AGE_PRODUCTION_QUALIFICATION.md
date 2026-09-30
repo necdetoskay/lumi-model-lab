@@ -426,3 +426,45 @@ C6 prepared:
 - no repair or adjudication in the same workflow
 - publication_ready only if the direct fidelity gate is clean
 - trigger not created.
+
+
+## Age18 C6 / C6.1 result — PUBLICATION READY
+
+C6 run: 36654772221
+
+C6 Luna fidelity:
+- finding count: 1 serious
+- finding: title modality shift
+  - EN: The Route That Might Need Closing
+  - TR: Kapatılması Gereken Rota
+- incremental cost: $0.00384605
+- latency: 15.205s
+- fidelity tokens: 9,073
+
+Human adjudication confirmed the title defect and also confirmed one additional fidelity defect that Luna missed:
+- EN recurrence remained semantically distinct from independent repeatability
+- TR collapsed recurrence into tekrarlanabilirlik in two places
+
+C6.1 deterministic fidelity recovery:
+- model calls: 0
+- cost: $0
+- exact Turkish replacements: 3
+- title uncertainty restored
+- recurrence/repeatability distinction restored
+- no English master change
+- final Turkish words: 1,817
+
+Final age18 product path:
+- publication_ready: true
+- API calls: 6
+- total tokens: 84,747
+- total cost: $0.17766185
+- summed model latency: 426.802s
+- accepted English master: 2,176 words
+- final Turkish delivery: 1,817 words
+
+Architecture lesson:
+A stable production lane does not need to be universal across ages. Age18 is now a separately qualified lane candidate. Age12 remains its own qualified cohort. No automatic promotion to ages 25/40/60 is implied.
+
+Final artifact:
+data/specifications/story_lab/age18_cross_age_final_delivery_v1.json

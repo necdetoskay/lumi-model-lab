@@ -1,0 +1,60 @@
+{
+  "schema_version": "cross-age-age18-c6-1-fidelity-recovery.v1",
+  "source_c5_run_id": 36620129124,
+  "source_c6_run_id": 36654772221,
+  "status": "GREEN",
+  "model_calls": 0,
+  "incremental_cost_usd": 0.0,
+  "luna_finding": [
+    {
+      "severity": "serious",
+      "class": "state_shift",
+      "source_quote": "The Route That Might Need Closing",
+      "translation_quote": "Kapatılması Gereken Rota",
+      "why": "The translation removes the source's uncertainty ('might') and presents route closure as necessary, conflicting with the story's eventual decision to keep the route open."
+    }
+  ],
+  "human_additional_finding": {
+    "severity": "serious",
+    "class": "state_shift",
+    "source_quotes": [
+      "recurrence unknown",
+      "Data insufficient to establish cause, recurrence, or risk to navigation."
+    ],
+    "translation_quotes": [
+      "tekrarlanabilirlik bilinmiyor",
+      "Veriler neden, tekrarlanabilirlik veya seyir riski tespit etmek için yetersizdir."
+    ],
+    "why": "The story distinguishes independent repeatability from recurrence. The Turkish translation collapsed both into tekrarlanabilirlik."
+  },
+  "replacements": [
+    {
+      "id": "title_modality_shift",
+      "old": "# Kapatılması Gereken Rota",
+      "new": "# Kapatılması Gerekebilecek Rota",
+      "reason": "Restore source uncertainty in “might need closing”; do not imply closure is required."
+    },
+    {
+      "id": "recurrence_unknown_term",
+      "old": "neden bilinmiyor; tekrarlanabilirlik bilinmiyor; liman jurnallerinde kabul edilmiş vaka yok.",
+      "new": "neden bilinmiyor; sapmanın tekrarlanıp tekrarlanmayacağı bilinmiyor; liman jurnallerinde kabul edilmiş vaka yok.",
+      "reason": "Preserve recurrence as whether the anomaly occurs again; keep it distinct from independent repeatability."
+    },
+    {
+      "id": "recurrence_risk_sentence",
+      "old": "Veriler neden, tekrarlanabilirlik veya seyir riski tespit etmek için yetersizdir.",
+      "new": "Veriler nedeni, sapmanın tekrarlanıp tekrarlanmayacağını veya seyir riskini belirlemek için yetersizdir.",
+      "reason": "Preserve cause / recurrence / navigation-risk triad from the English source."
+    }
+  ],
+  "post_recovery_checks": {
+    "title_uncertainty_restored": true,
+    "recurrence_distinct_from_repeatability": true,
+    "english_master_unchanged": true,
+    "turkish_word_count": 1817
+  },
+  "decision": {
+    "fidelity_blockers_remaining": 0,
+    "publication_ready": true
+  }
+}
