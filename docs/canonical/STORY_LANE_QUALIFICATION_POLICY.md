@@ -111,3 +111,30 @@ A lane may move from SINGLE_CASE_QUALIFIED to PRODUCTION_STABLE only after addit
 7. no manual hidden rewrite dependency in the normal path.
 
 The qualified cohort and the exact lane manifest SHA must be recorded with every promotion decision.
+
+
+## Frozen runtime / no-code-change qualification
+
+A lane intended for production-stability qualification MUST support fresh cases without story-specific runtime code changes.
+
+For a frozen qualification revision:
+
+- character/world/origin/Saga/state/premise remain data;
+- model feedback after REPLAN may be recorded as data;
+- human approval may be recorded as data;
+- paid stage triggers and evidence records may change as data;
+- runtime Python, runtime prompts, model profile configuration and generic workflow logic are frozen.
+
+The frozen lane profile MUST record SHA-256 hashes for its runtime files. Every paid stage MUST verify those hashes before inference.
+
+If any frozen runtime hash changes during an active case:
+- that active case is invalidated for the old runtime revision;
+- the change creates a new lane revision;
+- qualification must restart from the controlled premise;
+- the old case must not be reported as a successful no-code-change production proof.
+
+A scenario-specific Python module, prompt or workflow written after a case starts counts as a failure of that case's frozen-runtime qualification.
+
+A model REPLAN is not itself a runtime failure when the frozen system can consume revision feedback through its existing generic data contract without code modification.
+
+Bounded model repair is permitted only when it was already part of the frozen lane policy before the case began.

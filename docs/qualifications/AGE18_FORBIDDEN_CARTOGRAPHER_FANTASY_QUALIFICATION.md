@@ -121,3 +121,23 @@ This F1 candidate is rejected and therefore its entire $0.09225655 is recorded a
 Next paid boundary:
 F1.1 — one Sonnet 5.5 spine revision using the pinned Luna feedback, followed only if strict-valid by one Luna Spine Gate.
 Writer remains blocked.
+
+
+## Runtime-freeze reset
+
+The original F1/F1.1 path is superseded by AGE18-FROZEN-v1.
+
+Reason:
+The qualification objective is now explicitly to prove that a production lane can handle a new story without story-specific runtime code changes.
+
+The pre-freeze F1 spend remains historical discovery waste:
+- 30,093 tokens
+- $0.09225655
+- 57.531s
+
+The fresh frozen case is:
+age18.forbidden-cartographer.fantasy.frozen-01
+
+It starts again from the controlled premise with the frozen generic runtime and does not feed the old F1 REPLAN feedback into its first spine attempt.
+
+Any runtime hash change during the fresh case invalidates the case.
