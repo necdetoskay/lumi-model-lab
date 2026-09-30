@@ -1,6 +1,6 @@
 # SpineForge v5 — Creative Blueprint Boundary
 
-Status: DESIGN / ZERO-COST QUALIFICATION
+Status: FROZEN QUALIFICATION CANDIDATE
 
 Parent epic: #253
 Implementation issue: #255
@@ -79,3 +79,24 @@ Sonnet must preserve Aion's creative signature. Material deviations must be expl
 - no case-specific recovery
 - no paid qualification before zero-cost tests + freeze
 - human approval required before Writer
+
+
+## Frozen qualification candidate
+
+Runtime ID: `spineforge.contextpack.v5`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v5`  
+Freeze profile commit: `fec5e3b90088634b327ee0dd5a7fa35ca1ed89ad`
+
+Frozen runtime dependencies: **24 SHA-256 locked files**.
+
+Pre-freeze zero-cost proof:
+- v5 contract/runtime tests: 9/9 PASS
+- v1–v4 active regression: 51 PASS, 1 historical snapshot deselected
+
+Paid qualification has not started.
+
+Next paid boundary:
+
+`SPINEFORGE_V5_ATTEMPT_1_AION_BLUEPRINT_THEN_SONNET_STRUCTURAL_THEN_LUNA_IF_ELIGIBLE`
+
+Writer remains blocked until explicit human approval.
