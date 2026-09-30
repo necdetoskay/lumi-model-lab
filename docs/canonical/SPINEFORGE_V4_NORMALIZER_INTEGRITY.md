@@ -168,3 +168,44 @@ It is bound to the unchanged ContextPack id/fingerprint and targets Attempt 2.
 
 **Attempt 2 is not authorized automatically.** A separate explicit paid authorization is required.
 
+## Qualification result — v4 Attempt 2
+
+Trigger commit: `44319dccad182f8d9dd5196fb2d3f87841291df9`  
+Run: `36693522927`
+
+Result: **creative_contract_rejected**
+
+The Attempt 1 revision feedback produced a real correction:
+- `episode_spine.logistics_plan.movement_constraints` is now a list;
+- no parse failure occurred;
+- the generic safe normalizer changed no semantic field.
+
+The next deterministic rejection is:
+
+`Episode Spine missing required phases: COMPLICATION`
+
+Calls:
+- Aion 3.5 Mini: 1
+- Sonnet 5.5: 0
+- GPT-5.6 Luna: 0
+- Writer: 0
+
+Usage:
+- input tokens: 13,237
+- output tokens: 7,958
+- reasoning tokens: 4,841
+- total tokens: 21,195
+- cost: $0.0204071
+- model latency: 142.789 s
+- pipeline latency: 142.843 s
+
+No runtime, contract, prompt, workflow, model profile or ContextPack builder patch is applied.
+
+The runtime-generated `spineforge-revision-feedback.v3` candidate is recorded as:
+
+`data/specifications/story_lab/spineforge_v4_attempt2_revision_feedback.json`
+
+It is bound to the unchanged ContextPack id/fingerprint and targets Attempt 3.
+
+**Attempt 3 is not authorized automatically.**
+
