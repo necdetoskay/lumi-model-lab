@@ -101,6 +101,7 @@ def run(
         "adjudication_meta":meta,
         "pipeline_usage_rollup":rollup,
         "total_cost_usd":rollup["totals"]["cost_usd"],
+        "english_repair_attempts":int(source.get("english_repair_attempts") or 0),
         "next_stage":"BOUNDED_REPAIR" if confirmed else "TRANSLATION",
         "next_stage_authorized":False,
     }

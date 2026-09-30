@@ -24,3 +24,9 @@ def test_bounded_repair_is_single_local_scope_runtime() -> None:
     assert "refuses non-local findings" in text
     assert "minimal_exact_replacements_only" in text
     assert "do_not_rewrite_unaffected_prose" in text
+
+
+def test_english_bounded_repair_is_limited_to_one_attempt() -> None:
+    text=Path("src/episode_bounded_repair_v1.py").read_text()
+    assert "MAX_REPAIR_ATTEMPTS=1" in text
+    assert "English bounded repair attempt limit reached." in text

@@ -53,6 +53,7 @@ def run(
             "model_called": False,
             "pipeline_usage_rollup": rollup,
             "total_cost_usd": rollup["totals"]["cost_usd"],
+            "english_repair_attempts": int(source.get("english_repair_attempts") or 0),
             "next_stage": "BOUNDED_REPAIR",
             "next_stage_authorized": False,
         }
@@ -105,6 +106,7 @@ def run(
         "semantic_gate_meta": meta,
         "pipeline_usage_rollup": rollup,
         "total_cost_usd": rollup["totals"]["cost_usd"],
+        "english_repair_attempts": int(source.get("english_repair_attempts") or 0),
         "next_stage": "TRANSLATION" if clean else "SEMANTIC_ADJUDICATION",
         "next_stage_authorized": False,
     }

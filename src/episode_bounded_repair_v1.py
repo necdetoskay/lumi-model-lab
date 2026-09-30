@@ -19,6 +19,7 @@ from src.story_stage_common import read_json, source_calls, write_json
 from src.storyforge.runtime import REPAIR_SYSTEM, _apply_local_repairs, _structured_call
 
 DEFAULT_MODEL="openai/gpt-5.6-sol"
+MAX_REPAIR_ATTEMPTS=1
 
 
 def run(
@@ -33,6 +34,9 @@ def run(
     load_dotenv()
     source=read_json(source_path)
     approved=read_json(approved_path)
+    attempts=int(source.get("english_repair_attempts") or 0)
+    if attempts>=MAX_REPAIR_ATTEMPTS:
+        raise RuntimeError("English bounded repair attempt limit reached.")
     findings=list(source.get("confirmed_findings") or [])
     if not findings:
         raise RuntimeError("Bounded repair requires confirmed findings.")
@@ -113,6 +117,7 @@ def run(
         "length_pass":min_words<=words<=max_words,
         "repair_model":model,
         "repair_meta":meta,
+        "english_repair_attempts":attempts+1,
         "pipeline_usage_rollup":rollup,
         "total_cost_usd":rollup["totals"]["cost_usd"],
         "next_stage":"AUTHORITY_GATE_RECHECK" if status=="repaired_recheck_required" else "STOP",
