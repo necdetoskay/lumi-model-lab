@@ -18,6 +18,7 @@ on:
       - '.github/workflows/spineforge-v18.yml'
       - '.github/workflows/spineforge-v18-freeze-hash.yml'
       - '.github/workflows/spineforge-v18-zero-cost.yml'
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v18_strict_audit_frozen.json'
 
 jobs:
   qualify:
@@ -36,7 +37,8 @@ jobs:
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v18_prompt.py \
             tests/test_spineforge_v18_runtime_mock.py \
-            tests/test_spineforge_v18_stage.py
+            tests/test_spineforge_v18_stage.py \
+            tests/test_spineforge_v18_frozen.py
       - name: v17 audit-only regression
         run: |
           set -euo pipefail
