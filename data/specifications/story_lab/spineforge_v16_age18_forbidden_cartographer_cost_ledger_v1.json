@@ -5,8 +5,50 @@
   "source_run_id": 36757835721,
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "ATTEMPT_1_CONSUMED_REAUDIT_TRUNCATED_ACCOUNTING_GAP",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36760550050,
+      "trigger_commit": "9d5735e063c68fed1c133d709bec9eed34985d5b",
+      "evidence_commit": "3ca222af2325bf3731e6c40a7d1276e1ffbe800c",
+      "status": "reaudit_contract_rejected",
+      "inference_requests_observed": 2,
+      "ledgered_model_calls": 1,
+      "call_stages_ledgered": [
+        "spineforge_v16_repair"
+      ],
+      "repair": {
+        "input_tokens": 26936,
+        "output_tokens": 9477,
+        "total_tokens": 36413,
+        "cost_usd": 0.148642,
+        "latency_seconds": 51.442,
+        "contract_valid": true,
+        "authority_valid": true,
+        "mechanical_normalization_changed": false
+      },
+      "reaudit": {
+        "request_reached_provider": true,
+        "result": "STRUCTURED_JSON_RESPONSE_TRUNCATED",
+        "configured_max_output_tokens": 4500,
+        "exact_input_tokens": null,
+        "exact_output_tokens": null,
+        "exact_total_tokens": null,
+        "exact_cost_usd": null,
+        "accounting_gap_reason": "StructuredJsonCallError.trace contained provider usage/cost but v16 runtime caught the exception generically and did not checkpoint the trace."
+      },
+      "known_recorded_tokens": 36413,
+      "known_recorded_cost_usd": 0.148642,
+      "actual_total_tokens": null,
+      "actual_total_cost_usd": null,
+      "wall_latency_seconds": 78.448,
+      "architect_recalled": false,
+      "writer_called": false,
+      "automatic_repair_loop_executed": false,
+      "durable_repo_evidence": "experiments/results/spineforge-v16/36760550050"
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -27,14 +69,18 @@
     }
   ],
   "v16_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "inference_requests_observed": 2,
+    "ledgered_api_calls": 1,
+    "known_recorded_tokens": 36413,
+    "known_recorded_cost_usd": 0.148642,
+    "actual_total_tokens": null,
+    "actual_total_cost_usd": null,
+    "latency_seconds": 78.448
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V16_ATTEMPT_1_EVIDENCE_LOGIC_REPAIR_THEN_COMPLETE_REAUDIT"
+    "next_scope": "NONE_V16_ATTEMPT_1_CONSUMED",
+    "no_automatic_retry": true
   },
   "qualification_evidence": {
     "initial_zero_cost_run_id": 36758868808,
@@ -53,5 +99,10 @@
     "v15_regressions_passed": 3,
     "paid_model_calls": 0,
     "cost_usd": 0
+  },
+  "guard_evidence": {
+    "run_id": 36761032727,
+    "status": "RESULT_MISSING",
+    "inference_executed": false
   }
 }
