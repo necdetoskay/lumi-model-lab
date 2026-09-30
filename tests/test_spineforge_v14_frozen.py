@@ -55,3 +55,5 @@ def test_v14_freeze_locks_source_evidence_and_case():
     assert "data/specifications/story_lab/spineforge_v14_age18_forbidden_cartographer_case_v1.json" in paths
     assert "prompts/spineforge_targeted_semantic_repair_v14.md" in paths
     assert "prompts/spineforge_single_owner_auditor_v11.md" in paths
+
+# generation-3 final verification trigger
