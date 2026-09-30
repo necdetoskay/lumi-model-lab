@@ -242,3 +242,56 @@ Next boundary remains separately authorized:
 
 Attempt 3 is the final allowed attempt in v4. Writer remains blocked.
 
+## Qualification result — v4 Attempt 3 / terminal
+
+Trigger commit: `eb259ea24435160407db33639db02f0e3e7a4b82`  
+Run: `36696423052`
+
+Result: **creative_contract_rejected**
+
+Attempt 2 feedback successfully corrected the previous missing-phase defect:
+- required `COMPLICATION` phase is present;
+- no JSON parse failure occurred;
+- safe normalization changed no semantic field.
+
+The terminal deterministic rejection is:
+
+`episode_spine.beats.6.new_information` — required field missing on `decision_window`.
+
+Calls:
+- Aion 3.5 Mini: 1
+- Sonnet 5.5: 0
+- GPT-5.6 Luna: 0
+- Writer: 0
+
+Attempt 3 usage:
+- input tokens: 13,433
+- output tokens: 19,473
+- reasoning tokens: 16,519
+- cached tokens: 7,571
+- total tokens: 32,906
+- cost: $0.03272838
+- model latency: 282.414 s
+- pipeline latency: 282.467 s
+
+v4 cumulative paid qualification:
+- API calls: 3
+- input tokens: 36,734
+- output tokens: 41,206
+- reasoning tokens: 32,702
+- total tokens: 77,940
+- cost: $0.07946528
+- cumulative pipeline latency: 623.359 s
+
+### Terminal verdict
+
+**SPINEFORGE-CONTEXTPACK-FROZEN-v4 qualification FAILED after 3/3 authorized attempts.**
+
+No Sonnet, Luna or Writer call was reached in v4 qualification.
+
+The runtime produced a feedback candidate with `next_attempt=4`, but the frozen case has `max_attempts=3`. That candidate is evidence only and is **not eligible for execution**.
+
+There is no Attempt 4 boundary.
+
+v4 remains immutable historical evidence. Any generic recovery requires a new SpineForge runtime revision.
+
