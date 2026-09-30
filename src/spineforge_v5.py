@@ -18,8 +18,7 @@ from src.model_registry import require_qualification_runtime_profile, runtime_pr
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.openrouter_json_schema import build_json_schema_response_format
 from src.spine_context_pack_v1 import SpineContextPackV1
-from src.spineforge_v3_contract import SpineCreativeDraftV1
-from src.spineforge_v4 import _validate_spine_authority
+from src.spineforge_v5_authority import validate_compiled_spine_authority
 from src.spineforge_v5_contract import (
     SpineCreativeIntentV1,
     SpineForgeProductV5,
@@ -357,15 +356,8 @@ def run(
 
     assert compilation.compiled_spine is not None
     compiled = compilation.compiled_spine
-    compiled_draft = SpineCreativeDraftV1(
-        schema="spineforge-creative-draft.v1",
-        creative_model=AION_MODEL,
-        creative_signature=intent.creative_signature,
-        episode_spine=compiled,
-        self_check_notes=intent.self_check_notes,
-    )
     try:
-        _validate_spine_authority(draft=compiled_draft, pack=pack)
+        validate_compiled_spine_authority(spine=compiled, pack=pack)
     except (ValidationError, RuntimeError) as exc:
         rollup = rollup_model_calls(calls)
         message = str(exc)
