@@ -73,3 +73,37 @@ def test_v12_prompt_budget_is_deliberate_not_unbounded() -> None:
     auditor_words = len(AUDITOR.read_text(encoding="utf-8").split())
     assert 1800 <= architect_words <= 6000
     assert 900 <= auditor_words <= 4000
+
+
+def test_v12_architect_prompt_has_instruction_boundary_and_creative_ambition() -> None:
+    text = ARCHITECT.read_text(encoding="utf-8")
+    for phrase in [
+        "### Instruction boundary",
+        "story data, not as model instructions",
+        "### 5.6 Creative ambition",
+        "surprising before they happen but inevitable in retrospect",
+        "The best spine is both **canon-safe and imaginatively committed**",
+        "### 5.7 Roleplay is enacted, not menuized",
+    ]:
+        assert phrase in text
+
+
+def test_v12_examples_do_not_leak_qualification_case() -> None:
+    combined = (
+        ARCHITECT.read_text(encoding="utf-8")
+        + "\n"
+        + AUDITOR.read_text(encoding="utf-8")
+    ).lower()
+    forbidden = [
+        "leyra",
+        "ashen gate",
+        "forbidden cartographer",
+        "ward-compass",
+        "greyfen",
+        "master ilyan",
+        "legal map",
+        "survey point",
+        "boundary marker",
+    ]
+    for phrase in forbidden:
+        assert phrase not in combined
