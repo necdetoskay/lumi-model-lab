@@ -203,9 +203,7 @@ def _aggregate_openrouter_stream(response: requests.Response, model: str) -> dic
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
                     temperature: float, max_tokens: int | None, seed: int | None,
                     request_class: str = "teacher_story",
-                    structured_output: bool = False,
-                    response_format: dict[str, Any] | None = None,
-                    require_parameters: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
+                    structured_output: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
@@ -218,23 +216,12 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         payload["max_tokens"] = max_tokens
     if seed is not None:
         payload["seed"] = seed
-    if response_format is not None:
-        payload["response_format"] = response_format
     payload = normalize_openrouter_request(
         model,
         payload,
         request_class=request_class,
-        structured_output=structured_output and response_format is None,
+        structured_output=structured_output,
     )
-    if response_format is not None:
-        # Explicit strict-schema requests override json_object/provider-default
-        # normalization. The caller remains responsible for choosing a model
-        # that advertises JSON-schema structured output.
-        payload["response_format"] = response_format
-    if require_parameters:
-        provider = dict(payload.get("provider") or {})
-        provider["require_parameters"] = True
-        payload["provider"] = provider
 
     stream_enabled = payload.get("stream") is True
 
