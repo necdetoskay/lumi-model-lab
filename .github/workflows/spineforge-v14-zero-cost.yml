@@ -14,6 +14,7 @@ on:
       - 'prompts/spineforge_targeted_semantic_repair_v14.md'
       - '.github/workflows/spineforge-v14.yml'
       - '.github/workflows/spineforge-v14-freeze-hash.yml'
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v14_targeted_semantic_repair_frozen.json'
       - 'tests/test_spineforge_v14_*.py'
       - '.github/workflows/spineforge-v14-zero-cost.yml'
 
@@ -34,7 +35,8 @@ jobs:
           PYTHONPATH=. pytest -q \
             tests/test_spineforge_v14_prompt.py \
             tests/test_spineforge_v14_runtime_mock.py \
-            tests/test_spineforge_v14_stage.py
+            tests/test_spineforge_v14_stage.py \
+            tests/test_spineforge_v14_frozen.py
       - name: v13 audit normalization regression
         run: |
           set -euo pipefail
