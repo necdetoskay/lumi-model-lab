@@ -123,3 +123,48 @@ Writer is not callable from SpineForge.
 Next paid boundary:
 
 SPINEFORGE_V4_ATTEMPT_1_AION_THEN_SONNET_THEN_LUNA_IF_ELIGIBLE
+
+## Qualification result — v4 Attempt 1
+
+Trigger commit: `870ec0e2fd62cdd870a08add64cfed8687c16036`  
+Run: `36679347817`
+
+Result: **creative_contract_rejected**
+
+The frozen ContextPack authority remained unchanged and the runtime stopped before Sonnet/Luna/Writer.
+
+Calls:
+- Aion 3.5 Mini: 1
+- Sonnet 5.5: 0
+- GPT-5.6 Luna: 0
+- Writer: 0
+
+Usage:
+- input tokens: 10,064
+- output tokens: 13,775
+- reasoning tokens: 11,342
+- total tokens: 23,839
+- cost: $0.0263298
+- model latency: 197.997 s
+- pipeline latency: 198.049 s
+
+The v4 generic safe normalizer correctly applied only:
+- application-owned model identity stamping;
+- deterministic logistics location projection.
+
+The remaining rejection is a schema-shape defect in Aion output:
+
+`episode_spine.logistics_plan.movement_constraints`
+
+The frozen contract requires a list; Aion emitted a single string.
+
+No runtime, contract, prompt, workflow, model profile or ContextPack builder patch is applied.
+
+The runtime-generated `spineforge-revision-feedback.v3` candidate is recorded as:
+
+`data/specifications/story_lab/spineforge_v4_attempt1_revision_feedback.json`
+
+It is bound to the unchanged ContextPack id/fingerprint and targets Attempt 2.
+
+**Attempt 2 is not authorized automatically.** A separate explicit paid authorization is required.
+
