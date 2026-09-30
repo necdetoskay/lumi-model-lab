@@ -52,3 +52,45 @@ The paid attempt is capped at two Sonnet calls:
 Architect recall is forbidden. Automatic repair loops are forbidden. Writer remains blocked.
 
 No `experiments/triggers/spineforge-v14.json` exists. Explicit authorization is required before paid trigger creation.
+
+
+## Final frozen qualification
+
+Final runtime revision:
+`SPINEFORGE-TARGETED-REPAIR-FROZEN-v14`
+
+Final freeze:
+- run: `36754795778` — SUCCESS
+- runtime source commit: `658a080c824601c25159a879a5a4e49f4ce1ee0f`
+- frozen files: **27**
+- source evidence: `experiments/results/spineforge-v12/36752663853/result.json`
+
+A stale-freeze verification correctly failed in run `36754641797` after the case status changed from zero-cost qualification to ready. The READY case was then re-frozen in generation 3.
+
+Final frozen verification:
+- run `36754972919` — SUCCESS
+- v14 repair/runtime/stage/freeze tests: **10 PASS**
+- v13 audit-normalization regressions: **6 PASS**
+
+Post-ledger smoke verification:
+- run `36755184916` — SUCCESS
+- **10 PASS + 6 PASS**
+
+Current case/ledger status:
+`READY_FOR_ATTEMPT_1`
+
+Current v14 spend:
+- model calls: **0**
+- tokens: **0**
+- cost: **$0**
+
+No paid trigger exists and `paid_authorized=false`.
+
+Next authorized scope, if explicitly approved:
+`SPINEFORGE_V14_ATTEMPT_1_TARGETED_REPAIR_THEN_REAUDIT`
+
+A v14 paid attempt may make at most two calls:
+1. Sonnet targeted semantic repair using the frozen v12 validated Spine and typed v13 REPAIR audit.
+2. Sonnet aggressive re-audit only if the repaired Spine passes deterministic contract and authority validation.
+
+Architect is not recalled. Writer remains blocked. No automatic repair loop or paid retry is permitted.
