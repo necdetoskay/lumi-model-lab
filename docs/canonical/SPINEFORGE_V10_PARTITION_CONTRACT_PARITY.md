@@ -60,3 +60,32 @@ Result:
 - v10 spend: **$0**
 
 Freeze and a separate explicit paid authorization are still required before v10 Attempt 1.
+
+## Frozen zero-cost qualification
+
+Runtime ID: `spineforge.contextpack.v10`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v10`  
+Runtime source: `dfc1e71990b640647a596524a4459db14eb280ed`  
+Frozen dependencies: **30**
+
+Final post-freeze run: `36766535995`
+
+Result:
+- v10 parity/runtime/stage/frozen: **24/24 PASS**
+- v9 regression: **15/15 PASS**
+- v1→v9 historical regression: **94 PASS**
+- 4 historical trigger snapshots deselected by design
+- frozen runtime files changed after source commit: **0/30**
+- paid v10 calls: **0**
+- v10 spend: **$0**
+
+Current state: `READY_FOR_ATTEMPT_1`.
+
+No v10 paid trigger exists.
+
+Next paid scope:
+
+`SPINEFORGE_V10_ATTEMPT_1_AION_THEN_PARITY_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before trigger creation.
+
