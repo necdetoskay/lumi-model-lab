@@ -1,6 +1,6 @@
 # SpineForge v7 — Partitioned Strict Structural Compiler
 
-Status: ZERO-COST QUALIFICATION IN PROGRESS
+Status: FROZEN QUALIFICATION CANDIDATE — READY FOR EXPLICIT ATTEMPT 1 AUTHORIZATION
 
 ## Why v7 exists
 
