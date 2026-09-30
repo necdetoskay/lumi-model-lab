@@ -40,3 +40,28 @@ Initial run:
 - v14 source/runtime regressions: 3 PASS
 - paid model calls: 0
 - v15 spend: $0
+
+
+## Final frozen qualification
+
+- runtime revision: `SPINEFORGE-CONVERGENCE-REPAIR-FROZEN-v15`
+- runtime source commit: `9583bdd0d5eb4feff09b26d7a6ade118b394355e`
+- frozen files: **27**
+- source evidence: `experiments/results/spineforge-v14/36755567557/result.json`
+- freeze run: `36757109275` — **SUCCESS**
+- final frozen qualification run: `36757324305` — **SUCCESS**
+- v15 convergence/runtime/stage/freeze tests: **9 PASS**
+- inherited v14 repair regressions: **3 PASS**
+- paid model calls before boundary: **0**
+- v15 spend before boundary: **$0**
+
+Current case/ledger status: `READY_FOR_ATTEMPT_1`.
+
+Paid scope, if explicitly authorized:
+`SPINEFORGE_V15_ATTEMPT_1_CONVERGENCE_REPAIR_THEN_REAUDIT`
+
+The paid attempt is capped at two Sonnet calls:
+1. convergence repair of the validated v14 repaired Spine using the typed v14 REPAIR re-audit;
+2. aggressive re-audit only if the repaired Spine passes deterministic contract and ContextPack authority validation.
+
+Architect recall is forbidden. Automatic repair loops are forbidden. Writer remains blocked. No paid trigger exists.
