@@ -94,3 +94,38 @@ A v14 paid attempt may make at most two calls:
 2. Sonnet aggressive re-audit only if the repaired Spine passes deterministic contract and authority validation.
 
 Architect is not recalled. Writer remains blocked. No automatic repair loop or paid retry is permitted.
+
+
+## Paid Attempt 1 result
+
+Run `36755567557`
+
+Status: `repair_still_required`
+
+The frozen v14 repair-only topology executed as designed:
+`validated v12 Spine + typed v13 REPAIR`
+→ Sonnet Targeted Repair
+→ deterministic normalization
+→ EpisodeSpine + authority validation
+→ Sonnet Re-audit
+→ REPAIR / STOP.
+
+Exact accounting:
+- Targeted Repair: 24,950 input / 8,336 output / 33,286 total / **$0.13326** / 48.579 s
+- Re-audit: 24,876 input / 3,030 output / 27,906 total / **$0.080052** / 23.384 s
+- Total: **61,192 tokens / $0.213312 / 72.066 s**
+- Architect recalls: **0**
+- Writer calls: **0**
+- automatic repair loop: **0**
+
+The repaired Spine passed contract and ContextPack authority validation without any route normalization change. The re-audit required no audit-alias normalization and returned a valid typed `REPAIR`.
+
+The Auditor judged the product materially improved: ten protected dimensions scored 4, including story desire, roleplay potential, character-drivenness, world specificity, age maturity, escalation, agency, local satisfaction, Saga alignment and freshness.
+
+Remaining blocking work is now narrow:
+1. remove the unauthorized/contradictory erased-road map-match claim and base the reversal only on permitted measured discrepancy evidence;
+2. stage Maren's arrival before her pressure at the pegs;
+3. make replicate success/partial/failure depend on Leyra's in-scene choices rather than pre-deciding the result;
+4. give the branches distinct climax/tag images and distinct Ilyan evidence states.
+
+v14 Attempt 1 is consumed. No automatic retry is permitted.

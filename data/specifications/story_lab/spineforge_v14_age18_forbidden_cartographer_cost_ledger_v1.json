@@ -5,8 +5,51 @@
   "source_run_id": 36752663853,
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "ATTEMPT_1_CONSUMED_REPAIR_STILL_REQUIRED",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36755567557,
+      "trigger_commit": "8dd712d12a55547ef05695c102cccc1b670cb912",
+      "evidence_commit": "2777e7794bcbaabde1d9a3d3db36773897280022",
+      "status": "repair_still_required",
+      "model_calls": 2,
+      "call_stages": [
+        "spineforge_v14_repair",
+        "spineforge_v14_reaudit"
+      ],
+      "input_tokens": 49826,
+      "output_tokens": 11366,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "total_tokens": 61192,
+      "cost_usd": 0.213312,
+      "latency_seconds": 72.066,
+      "repair": {
+        "input_tokens": 24950,
+        "output_tokens": 8336,
+        "total_tokens": 33286,
+        "cost_usd": 0.13326,
+        "latency_seconds": 48.579
+      },
+      "reaudit": {
+        "input_tokens": 24876,
+        "output_tokens": 3030,
+        "total_tokens": 27906,
+        "cost_usd": 0.080052,
+        "latency_seconds": 23.384,
+        "decision": "REPAIR",
+        "blocking_defects": 5,
+        "repair_targets": 4
+      },
+      "architect_recalled": false,
+      "writer_called": false,
+      "automatic_repair_loop_executed": false,
+      "mechanical_normalization_changed": false,
+      "audit_alias_normalization_changed": false,
+      "durable_repo_evidence": "experiments/results/spineforge-v14/36755567557"
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -27,14 +70,15 @@
     }
   ],
   "v14_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "api_calls": 2,
+    "total_tokens": 61192,
+    "cost_usd": 0.213312,
+    "latency_seconds": 72.066
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V14_ATTEMPT_1_TARGETED_REPAIR_THEN_REAUDIT"
+    "next_scope": "NONE_V14_ATTEMPT_1_CONSUMED",
+    "no_automatic_retry": true
   },
   "qualification_evidence": {
     "initial_zero_cost_run_id": 36753556631,
@@ -50,5 +94,28 @@
     "v13_regressions_passed": 6,
     "paid_model_calls": 0,
     "cost_usd": 0
+  },
+  "reaudit_findings_summary": {
+    "decision": "REPAIR",
+    "blocking_defects": 5,
+    "repair_targets": 4,
+    "principal_defects": [
+      "Map-match evidence contradicts the premise and asserts unauthorized erased-road geometry.",
+      "Maren's arrival at the pegs is not staged before she exerts pressure.",
+      "Replicate branch outcome is pre-decided instead of being driven by in-scene choices.",
+      "Branch climax/tag partly reconverge on the same slack-needle image and Ilyan reaction."
+    ],
+    "improved_dimensions": [
+      "STORY_DESIRE=4",
+      "ROLEPLAY_POTENTIAL=4",
+      "CHARACTER_DRIVENNESS=4",
+      "WORLD_SPECIFICITY=4",
+      "AGE_MATURITY=4",
+      "ESCALATION=4",
+      "AGENCY=4",
+      "LOCAL_SATISFACTION=4",
+      "SAGA_ALIGNMENT=4",
+      "FRESHNESS=4"
+    ]
   }
 }
