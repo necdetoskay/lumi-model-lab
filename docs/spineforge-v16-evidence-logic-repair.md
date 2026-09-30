@@ -72,3 +72,21 @@ At most two Sonnet calls are allowed:
 2. complete aggressive 18-dimension re-audit only after deterministic contract and ContextPack authority validation.
 
 Architect recall is forbidden. Automatic repair loops are forbidden. Writer remains blocked. No paid trigger exists.
+
+
+## Post-ledger smoke verification
+
+Run `36759976602` — **SUCCESS**
+
+- v16 evidence-logic/runtime/stage/freeze tests: **13 PASS**
+- v15 source regressions: **3 PASS**
+- paid calls: **0**
+
+This smoke run verifies that the final canonical ledger/document updates did not alter or invalidate the frozen runtime.
+
+Current paid boundary remains:
+- case: `READY_FOR_ATTEMPT_1`
+- ledger: `READY_FOR_ATTEMPT_1`
+- `paid_authorized=false`
+- no `experiments/triggers/spineforge-v16.json`
+- v16 spend: **$0**
