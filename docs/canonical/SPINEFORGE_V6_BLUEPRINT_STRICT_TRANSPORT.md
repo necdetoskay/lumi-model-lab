@@ -1,6 +1,6 @@
 # SpineForge v6 — Creative Blueprint + Strict Structural Transport
 
-Status: PRE-FREEZE ZERO-COST GREEN
+Status: FROZEN QUALIFICATION CANDIDATE — READY FOR EXPLICIT ATTEMPT 1 AUTHORIZATION
 
 ## Why v6 exists
 
@@ -62,3 +62,41 @@ Run `36701961819`:
 - cost: **$0**
 
 No paid v6 trigger is authorized by this document.
+
+
+## Frozen qualification authority
+
+Runtime ID: `spineforge.contextpack.v6`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v6`  
+Freeze commit: `f2e20689834663207dc106ac030c9a48d64f71f7`  
+Runtime source commit: `e4686d0af774c95f5bf0756152eafe53988ac963`  
+Frozen dependencies: **28 SHA-256 locked files**
+
+Final freeze verification run:
+
+`36702505341`
+
+Result:
+- v6 strict-transport/frozen tests: **23/23 PASS**
+- v1→v5 historical freeze/regression: **79 PASS**
+- historical zero-spend snapshot: **1 deselected by design**
+- paid calls: **0**
+- v6 spend: **$0**
+
+Current qualification case:
+
+`spineforge.v6.age18.forbidden-cartographer.fantasy.01`
+
+Current state:
+
+`READY_FOR_ATTEMPT_1`
+
+There is no `experiments/triggers/spineforge-v6.json`.
+
+Next paid boundary:
+
+`SPINEFORGE_V6_ATTEMPT_1_AION_BLUEPRINT_THEN_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before the trigger can be created.
+
+Writer remains blocked.
