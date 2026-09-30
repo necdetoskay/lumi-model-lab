@@ -1,0 +1,36 @@
+name: SpineForge v12 Roleplay Prompt Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v12-roleplay-prompt-hardening
+    paths:
+      - 'src/spineforge_v12.py'
+      - 'src/spineforge_v12_contract.py'
+      - 'prompts/spineforge_roleplay_architect_v12.md'
+      - 'prompts/spineforge_roleplay_auditor_v12.md'
+      - 'tests/test_spineforge_v12_*.py'
+      - '.github/workflows/spineforge-v12-zero-cost.yml'
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v12 prompt hardening and runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v12_prompt_quality.py \
+            tests/test_spineforge_v12_architecture.py \
+            tests/test_spineforge_v12_runtime_mock.py
+      - name: Episode Spine contract regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q tests/test_episode_spine_v2.py
