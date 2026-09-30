@@ -44,15 +44,29 @@ def test_case_materializes_exact_expected_pack() -> None:
     assert pack.context_fingerprint==case.expected_context_fingerprint
 
 
-def test_first_v2_case_has_zero_spend_and_no_paid_trigger() -> None:
+def test_v2_attempt1_failure_and_spend_are_preserved_as_history() -> None:
     ledger=json.loads(LEDGER.read_text())
-    assert ledger["status"]=="READY_FOR_ATTEMPT_1"
-    assert ledger["attempts"]==[]
-    assert ledger["actual_spend"]["api_calls"]==0
-    assert ledger["actual_spend"]["total_tokens"]==0
-    assert ledger["actual_spend"]["cost_usd"]==0.0
+    assert ledger["status"]=="QUALIFICATION_FAILED_ATTEMPT_1"
+    assert len(ledger["attempts"])==1
+    attempt=ledger["attempts"][0]
+    assert attempt["run_id"]==36663676934
+    assert attempt["status"]=="creative_contract_rejected"
+    assert attempt["api_calls"]==1
+    assert attempt["models_called"]==["aion-labs/aion-3.5-mini"]
+    assert attempt["models_not_called"]==[
+        "anthropic/claude-sonnet-5.5",
+        "openai/gpt-5.6-luna",
+    ]
+    assert ledger["actual_spend"]["api_calls"]==1
+    assert ledger["actual_spend"]["total_tokens"]==22146
+    assert ledger["actual_spend"]["cost_usd"]==pytest.approx(0.0240562)
     assert ledger["paid_boundary"]["authorized"] is False
-    assert not Path("experiments/triggers/spineforge-v2.json").exists()
+
+    trigger=json.loads(
+        Path("experiments/triggers/spineforge-v2.json").read_text()
+    )
+    assert trigger["attempt_index"]==1
+    assert trigger["paid_authorized"] is True
 
 
 def test_context_case_data_is_not_part_of_frozen_runtime_hashes() -> None:
