@@ -243,3 +243,34 @@ def test_v5_stale_feedback_stops_before_inference(monkeypatch, tmp_path: Path) -
             api_key="x",
         )
     assert calls == []
+
+
+def test_v5_human_approval_is_explicit_and_fingerprint_bound(monkeypatch, tmp_path: Path) -> None:
+    from src.spineforge_v5_human_approval import build_spineforge_v5_approval
+
+    seq = [_blueprint(), _assembly(), _gate_accept()]
+    calls = []
+
+    def fake(**kwargs):
+        calls.append(kwargs)
+        return seq[len(calls) - 1], _body(), {}, []
+
+    monkeypatch.setattr(sf, "call_structured_json_with_retry", fake)
+    monkeypatch.setattr(sf, "require_qualification_runtime_profile", lambda model: None)
+
+    evidence = sf.run(
+        context_pack_path=PACK,
+        out_path=tmp_path / "result.json",
+        api_key="x",
+    )
+    assert evidence["human_review"]["writer_authorized"] is False
+
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text())
+    approved = build_spineforge_v5_approval(
+        evidence=evidence,
+        current_context_pack=pack,
+        source_run_id=123,
+        reviewer_note="approved",
+    )
+    assert approved["human_review"]["story_writer_authorized"] is True
+    assert approved["context_fingerprint"] == pack.context_fingerprint
