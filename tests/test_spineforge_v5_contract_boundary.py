@@ -11,6 +11,7 @@ from src.spineforge_v5_contract import (
     SpineStructuralCompilationV1,
     migrate_v4_raw_to_v5_intent,
 )
+from src.spineforge_v4 import _normalize_creative_raw
 
 FIXTURES = [
     Path("data/specifications/story_lab/spineforge_v5_replay_v4_attempt1_raw.json"),
@@ -40,7 +41,8 @@ def test_v5_creative_boundary_does_not_reject_v4_deep_contract_defects() -> None
 
 def test_structural_compile_accepts_known_valid_episode_spine() -> None:
     raw = json.loads(VALID_SPINE_FIXTURE.read_text(encoding="utf-8"))
-    compiled = raw["creative_raw_payload"]["episode_spine"]
+    normalized, _ = _normalize_creative_raw(raw["creative_raw_payload"])
+    compiled = normalized["episode_spine"]
     value = SpineStructuralCompilationV1.model_validate({
         "schema": "spineforge-structural-compilation.v1",
         "decision": "COMPILE",
@@ -54,7 +56,8 @@ def test_structural_compile_accepts_known_valid_episode_spine() -> None:
 
 def test_structural_compile_still_rejects_missing_required_beat_field() -> None:
     raw = json.loads(VALID_SPINE_FIXTURE.read_text(encoding="utf-8"))
-    compiled = json.loads(json.dumps(raw["creative_raw_payload"]["episode_spine"]))
+    normalized, _ = _normalize_creative_raw(raw["creative_raw_payload"])
+    compiled = json.loads(json.dumps(normalized["episode_spine"]))
     compiled["beats"][0].pop("new_information")
     with pytest.raises(ValidationError, match="new_information"):
         SpineStructuralCompilationV1.model_validate({
