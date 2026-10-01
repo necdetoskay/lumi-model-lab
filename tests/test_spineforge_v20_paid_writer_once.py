@@ -1,0 +1,54 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from src.spineforge_v20_paid_writer_once import execute_paid_writer_once
+
+
+def test_paid_writer_wrapper_persists_story_and_result(tmp_path: Path):
+    def fake_run(**kwargs):
+        return {
+            "schema": "spineforge-v20-writer-evidence.v1",
+            "status": "writer_generated",
+            "story": "Title\nA finished story.",
+            "writer_usage_rollup": {"totals": {"api_calls": 1}},
+            "automatic_retry_executed": False,
+            "editor_authorized": False,
+            "judge_authorized": False,
+            "repair_authorized": False,
+            "translation_authorized": False,
+            "state_commit_authorized": False,
+        }
+
+    result, envelope = execute_paid_writer_once(
+        api_key="fake",
+        run_id="1001",
+        output_root=tmp_path,
+        run_fn=fake_run,
+    )
+    assert result["status"] == "writer_generated"
+    assert envelope["result_status"] == "writer_generated"
+    assert envelope["editor_executed"] is False
+    assert envelope["translation_executed"] is False
+    out = tmp_path / "1001"
+    assert (out / "age12-island-v20-writer1-result.json").exists()
+    assert (out / "age12-island-v20-writer1-story.txt").read_text().startswith("Title")
+
+
+def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: Path):
+    def boom(**kwargs):
+        raise RuntimeError("synthetic writer failure")
+
+    result, envelope = execute_paid_writer_once(
+        api_key="fake",
+        run_id="1002",
+        output_root=tmp_path,
+        run_fn=boom,
+    )
+    assert result["status"] == "unhandled_writer_runtime_failure"
+    assert envelope["result_status"] == "unhandled_writer_runtime_failure"
+    out = tmp_path / "1002"
+    persisted = json.loads((out / "age12-island-v20-writer1-result.json").read_text())
+    assert persisted["failure"]["type"] == "RuntimeError"
+    assert not (out / "age12-island-v20-writer1-story.txt").exists()
