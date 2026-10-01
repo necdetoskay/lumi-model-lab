@@ -307,6 +307,58 @@ def _validate_episode_authority(
         raise RuntimeError("Main Saga milestone requires Main Saga episode role.")
 
 
+
+FRAME_OWNED_FIELDS = {
+    "title", "episode_role", "story_promise", "protagonist_role",
+    "immediate_objective", "central_question", "stakes", "constraints",
+    "opening_hook", "logistics_plan", "escalation_ladder", "climax",
+    "local_payoff", "forward_hook", "writer_rules",
+}
+RESOLUTION_OWNED_FIELDS = {
+    "reversal", "decision_point", "persistent_outcome_candidates",
+    "saga_progression", "anti_repetition_signature",
+}
+
+
+def _assembly_failure_owner(exc: Exception) -> str | None:
+    messages: list[str] = [str(exc).lower()]
+    locations: list[str] = []
+    if isinstance(exc, ValidationError):
+        for row in exc.errors():
+            locations.append(".".join(str(x) for x in row.get("loc", ())).lower())
+            messages.append(str(row.get("msg") or "").lower())
+
+    text = " | ".join(messages + locations)
+
+    beat_signals = (
+        "missing required phases",
+        "structural beats",
+        "beat key",
+        "beats.",
+        "dependencies must reference earlier beats",
+        "uses location outside approved premise",
+    )
+    if any(signal in text for signal in beat_signals):
+        return "STRUCTURAL_BEATS"
+
+    resolution_signals = (
+        "reversal",
+        "decision_point",
+        "decision point",
+        "persistent_outcome",
+        "persistent outcome",
+        "saga_progression",
+        "anti_repetition",
+    )
+    if any(signal in text for signal in resolution_signals):
+        return "STRUCTURAL_RESOLUTION"
+
+    if any(field in text for field in FRAME_OWNED_FIELDS):
+        return "STRUCTURAL_FRAME"
+
+    return None
+
+
 def _revision(
     *,
     pack: SpineContextPackV1,
@@ -734,16 +786,27 @@ def run(
         )
         _validate_episode_authority(assembly=assembly, pack=pack)
     except (ValidationError, RuntimeError) as exc:
-        evidence["status"] = "structural_assembly_contract_rejected"
-        evidence["failure"] = {"type": type(exc).__name__, "message": str(exc)}
-        if attempt_index < max_attempts:
+        owner = _assembly_failure_owner(exc)
+        evidence["status"] = (
+            "structural_assembly_contract_rejected"
+            if owner is not None
+            else "structural_assembly_owner_unclassified"
+        )
+        evidence["failure"] = {
+            "type": type(exc).__name__,
+            "message": str(exc),
+            "owning_partition": owner,
+        }
+        if attempt_index < max_attempts and owner is not None:
             evidence["revision_feedback_candidate"] = _revision(
                 pack=pack,
                 attempt=attempt_index,
                 source_status=evidence["status"],
-                retry_stage="STRUCTURAL_FRAME",
+                retry_stage=owner,
                 must_change=[str(exc)],
                 blueprint=blueprint,
+                frame=frame if owner in {"STRUCTURAL_BEATS", "STRUCTURAL_RESOLUTION"} else None,
+                beats=beats if owner == "STRUCTURAL_RESOLUTION" else None,
             ).model_dump(mode="json", by_alias=True)
         evidence["completed_at"] = _now()
         _checkpoint(out_path=out_path, evidence=evidence, calls=calls, started=started)
