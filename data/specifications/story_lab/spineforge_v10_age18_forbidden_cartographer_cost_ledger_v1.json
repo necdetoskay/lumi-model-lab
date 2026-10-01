@@ -4,8 +4,71 @@
   "runtime_id": "spineforge.contextpack.v10",
   "context_pack_id": "mock.character.leyra:mock.world.veiled-marches.primary:forbidden_passage_reappears:5",
   "context_fingerprint": "05a84e09aed48fb7e5f2d177647d7bf1aa50d293e561cfc9c54726ff3e8564b2",
-  "status": "READY_FOR_ATTEMPT_1",
-  "attempts": [],
+  "status": "QUALIFICATION_FAILED_BEAT_SET_FINAL_INVARIANT_PARITY_GAP",
+  "attempts": [
+    {
+      "attempt_index": 1,
+      "run_id": 36810208041,
+      "status": "STRUCTURAL_ASSEMBLY_CONTRACT_REJECTED",
+      "failure_class": "BEAT_SET_FINAL_INVARIANT_PARITY_GAP_MISSING_REVERSAL",
+      "failure": "StructuralBeatsV10 accepted a valid set of EpisodeBeatV2 items that omitted the final EpisodeSpine-required REVERSAL phase. Final assembly rejected the set.",
+      "totals": {
+        "api_calls": 4,
+        "input_tokens": 74824,
+        "output_tokens": 16888,
+        "reasoning_tokens": 4895,
+        "cached_tokens": 0,
+        "total_tokens": 91712,
+        "cost_usd": 0.2388673,
+        "model_latency_seconds": 225.18
+      },
+      "stages": [
+        {
+          "stage": "spineforge_creative_architect",
+          "tokens": 15922,
+          "cost_usd": 0.0167993,
+          "latency_seconds": 151.312
+        },
+        {
+          "stage": "spineforge_structural_frame",
+          "tokens": 21605,
+          "cost_usd": 0.063546,
+          "latency_seconds": 23.776
+        },
+        {
+          "stage": "spineforge_structural_beats",
+          "tokens": 24320,
+          "cost_usd": 0.075784,
+          "latency_seconds": 23.392
+        },
+        {
+          "stage": "spineforge_structural_resolution",
+          "tokens": 29865,
+          "cost_usd": 0.082738,
+          "latency_seconds": 26.7
+        },
+        {
+          "stage": "spineforge_product_gate",
+          "status": "not_called"
+        },
+        {
+          "stage": "writer",
+          "status": "not_called"
+        }
+      ],
+      "evidence": {
+        "repo_path": "experiments/results/spineforge-v10/36810208041",
+        "repo_persisted": true,
+        "artifact_upload": true
+      },
+      "revision_feedback": {
+        "generated": true,
+        "reported_retry_stage": "STRUCTURAL_FRAME",
+        "correct_failure_owner": "STRUCTURAL_BEATS",
+        "classification_defect": true
+      }
+    }
+  ],
   "accepted_attempt": null,
   "prior_revision_history": [
     {
@@ -19,13 +82,18 @@
     }
   ],
   "v10_actual_spend": {
-    "api_calls": 0,
-    "total_tokens": 0,
-    "cost_usd": 0,
-    "latency_seconds": 0
+    "api_calls": 4,
+    "input_tokens": 74824,
+    "output_tokens": 16888,
+    "reasoning_tokens": 4895,
+    "cached_tokens": 0,
+    "total_tokens": 91712,
+    "cost_usd": 0.2388673,
+    "latency_seconds": 225.18
   },
   "paid_boundary": {
     "authorized": false,
-    "next_scope": "SPINEFORGE_V10_ATTEMPT_1_AION_THEN_PARITY_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE"
+    "next_scope": null,
+    "reason": "Attempt 1 consumed. Frozen v10 misses beat-set required-phase parity and misclassifies the assembly failure owner; Attempt 2 forbidden."
   }
 }
