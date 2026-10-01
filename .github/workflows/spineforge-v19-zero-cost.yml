@@ -1,4 +1,4 @@
-name: SpineForge v19 Narrative Spine Zero-Cost
+name: SpineForge v19 Qualification
 
 on:
   push:
@@ -45,3 +45,98 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. pytest -q tests/test_spine_context_pack_v1.py
+
+  paid-age12-attempt1:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[PAID-V19-AGE12-ATTEMPT1]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify frozen runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python src/spineforge_freeze_verify.py \
+            --profile data/specifications/story_lab/spineforge_runtime_profile_v19_narrative_spine_frozen.json
+      - name: Run one paid age12 Adventure Exploration qualification
+        run: |
+          set -euo pipefail
+          test -n "$OPENROUTER_API_KEY"
+          PYTHONPATH=. python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from src.spine_context_pack_v1 import SpineContextPackV1
+          from src.spineforge_freeze_verify import verify_spineforge_runtime
+          from src.spineforge_v19 import run
+          from src.spineforge_v19_obligations import load_qualification_cases
+
+          case_id = "spineforge.v19.age12.adventure-exploration.01"
+          profile_path = Path("data/specifications/story_lab/spineforge_runtime_profile_v19_narrative_spine_frozen.json")
+          freeze = verify_spineforge_runtime(profile_path)
+          case_set = load_qualification_cases()
+          case = next(row for row in case_set.cases if row.case_id == case_id)
+          if case.context_fixture_status != "FROZEN" or not case.context_fixture_ref:
+              raise RuntimeError("Age12 qualification fixture is not frozen.")
+
+          pack_path = Path(case.context_fixture_ref)
+          pack = SpineContextPackV1.model_validate_json(pack_path.read_text(encoding="utf-8"))
+          if int(pack.reader_profile["exact_age"]) != 12:
+              raise RuntimeError("Age12 fixture exact_age mismatch.")
+
+          result = run(
+              context_pack=pack,
+              obligations=case.obligations,
+              api_key=os.environ["OPENROUTER_API_KEY"],
+          )
+
+          out_dir = Path("evidence/spineforge-v19-paid") / os.environ["GITHUB_RUN_ID"]
+          out_dir.mkdir(parents=True, exist_ok=True)
+          result_path = out_dir / "age12-adventure-attempt1-result.json"
+          envelope_path = out_dir / "age12-adventure-attempt1-envelope.json"
+
+          result_path.write_text(
+              json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          envelope = {
+              "schema": "spineforge-v19-paid-attempt-envelope.v1",
+              "case_id": case_id,
+              "attempt_index": 1,
+              "explicit_paid_authorization": True,
+              "authorization_marker": "PAID-V19-AGE12-ATTEMPT1",
+              "runtime_revision": freeze["runtime_revision"],
+              "runtime_verified_files": freeze["verified_files"],
+              "context_pack_id": pack.context_pack_id,
+              "context_fingerprint": pack.context_fingerprint,
+              "result_status": result.get("status"),
+              "writer_authorized": False,
+              "automatic_retry_executed": False,
+              "automatic_repair_executed": False,
+              "result_path": str(result_path),
+              "pipeline_usage_rollup": result.get("pipeline_usage_rollup"),
+          }
+          envelope_path.write_text(
+              json.dumps(envelope, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          print("===SPINEFORGE_V19_PAID_ENVELOPE===")
+          print(json.dumps(envelope, ensure_ascii=False, indent=2))
+          print("===SPINEFORGE_V19_PAID_RESULT===")
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+      - name: Upload paid qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spineforge-v19-age12-attempt1-${{ github.run_id }}
+          path: evidence/spineforge-v19-paid/${{ github.run_id }}
+          if-no-files-found: warn
