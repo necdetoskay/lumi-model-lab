@@ -180,3 +180,79 @@ For the next paid case:
 5. if Luna returns REPAIR or REPLAN, stop;
 6. if Luna ACCEPTs, present the exact Spine product to the human;
 7. Writer remains blocked until the human explicitly approves the exact ContextPack fingerprint + Spine hash.
+
+
+## v19.1 paid rerun — age 12 Adventure/Exploration
+
+Explicit rerun authorization produced a successful technical qualification run.
+
+GitHub Actions run:
+`36890722855`
+
+Trigger commit:
+`9b83ef4135736c5e9b189672366afd03156e5e22`
+
+Case:
+`spineforge.v19.age12.adventure-exploration.01`
+
+Result:
+`repair_required`
+
+Spine title:
+`The Bridge That Pulled Sideways`
+
+Context fingerprint:
+`a8f5134f88b68aa270d32abe1ca92488474342874fdec411f1b81015489200ea`
+
+Spine hash:
+`0735c6d600ea7a28fd702221f4b6c188b1c4e28c5d962d4427c74c480f7cf8de`
+
+Deterministic validation:
+- authority_valid: true
+- reveal_safe: true
+- obligations_valid: true
+- discovery_turns: 7
+- real_choice_count: 3
+
+Luna Product Gate:
+- decision: `REPAIR`
+- one blocking finding
+- dimension: `DECISION_QUALITY`
+- severity: `MAJOR`
+- repairability: `LOCAL`
+- target: `narrative_spine.beats[5].character_action`
+
+Gate finding: the Spine presents a real consequential choice, but after the choice it leaves the chosen strategy conditional (ridge vs Echo Span repeat). The climax and final payoff also remain branch-conditional, and the immediate-report option is not staged in the beat structure. Under the breadth branch, the payoff can overclaim repeatability at Echo Span after only one Echo Span reading.
+
+Luna explicitly characterized the premise, agency, causality, discovery, world use, and payoff as otherwise viable.
+
+No automatic repair was executed. Writer remains blocked.
+
+### Usage
+
+Sonnet 5.5 Architect:
+- input: 10,801
+- output: 3,763
+- total: 14,564 tokens
+- cost: $0.059232
+- latency: 30.425 s
+
+GPT-5.6 Luna Product Gate:
+- input: 8,149
+- output: 997
+- reasoning: 756
+- total: 9,146 tokens
+- cost: $0.0032335
+- latency: 14.627 s
+
+Pipeline total:
+- 2 API calls
+- 23,710 tokens
+- $0.0624655
+- 45.052 s model latency
+- token and cost reconciliation: PASS
+
+Current boundary:
+**STOP_FOR_HUMAN_REVIEW / LOCAL_REPAIR_NOT_AUTHORIZED**
+
+The existing Spine must be shown to the human before any repair or Writer action. A targeted Sonnet patch is a separate paid action and requires explicit authorization.
