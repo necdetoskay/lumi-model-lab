@@ -267,3 +267,67 @@ Current boundary:
 **STOP_FOR_HUMAN_REVIEW / LOCAL_REPAIR_NOT_AUTHORIZED**
 
 This attempt demonstrates a materially more adventure-first Spine than the rejected Echo Span premise. The only model-gate blocker is a local prop-continuity defect. Human product judgment is still required before any repair authorization.
+
+
+## v20.2 bounded LOCAL repair preflight — zero-cost
+
+The first paid v20.1 island Spine returned one Luna LOCAL finding:
+route-line physical continuity.
+
+A bounded repair harness has now been frozen without making a repair inference.
+
+Frozen revision:
+`SPINEFORGE-STORY-FIRST-FROZEN-v20.2`
+
+Runtime source commit:
+`1f2eec63413ab15f00dcf57768e6583d8aee824b`
+
+Source repair binding:
+- source run: `36908095596`
+- source Spine hash: `4ae3ef5af8316234999a7fc432feeab5e4169e4b440de5bab08cb86f15f74d9b`
+- source gate: `REPAIR`
+- finding count: 1
+- repairability: `LOCAL`
+
+Important gate-target normalization:
+Luna correctly identified the route-line contradiction, but its `target_path` named `beats[2].character_action` while the contradictory shore-anchor statement actually appears in `beats[2].external_change`.
+The repair harness therefore binds to the exact Luna evidence plus typed source inspection instead of blindly trusting the path string.
+
+Repair strategy:
+- preserve the premise, discovery chain, decision, selected turn-back path, climax purpose, payoff, hooks, and Saga boundaries;
+- prefer one minimal continuity edit: the route line may steady the glider at shore, but must be explicitly unfastened, coiled, and carried inland before the later bridge rescue;
+- reject any model output changing fields outside the frozen allowed-path set;
+- run deterministic authority/reveal/obligation validation after repair;
+- require a Luna re-gate;
+- keep Writer blocked regardless of repair result until human approval.
+
+Frozen repair files include:
+- `evidence/spineforge-v20-repair/36908095596-source.json`
+- `evidence/spineforge-v20-repair/36908095596-repair-spec.json`
+- `prompts/spineforge_v20_local_repair.md`
+- `src/spineforge_v20_local_repair.py`
+- `src/spineforge_v20_paid_repair_once.py`
+
+The repair runtime preserves repaired Spine + Sonnet usage if Luna re-gate transport fails.
+
+Paid repair guard:
+`[PAID-V20-AGE12-ISLAND-REPAIR1]`
+
+Latest zero-cost CI:
+- run `36909872966`
+- qualify: **SUCCESS**
+- freeze: **25/25 PASS**
+- tests: **24/24 PASS**
+- original paid Spine job: **SKIPPED**
+- paid LOCAL repair job: **SKIPPED**
+
+Current tracked paid totals before repair:
+- API calls: 2
+- confirmed cost: $0.06831485
+- paid LOCAL repair authorization: false
+- Writer authorization: false
+
+Current boundary:
+**READY_FOR_EXPLICIT_PAID_LOCAL_REPAIR_AUTHORIZATION**
+
+No paid repair or re-gate has executed.
