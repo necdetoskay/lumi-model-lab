@@ -1,0 +1,44 @@
+name: SpineForge v19 Narrative Spine Zero-Cost
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v19-narrative-spine-single-owner
+    paths:
+      - 'src/narrative_spine_v1_contract.py'
+      - 'src/spineforge_v19*.py'
+      - 'prompts/spineforge_v19_*.md'
+      - 'data/specifications/story_lab/spineforge_v19_qualification_cases_v1.json'
+      - 'tests/test_narrative_spine_v1_contract.py'
+      - 'tests/test_spineforge_v19_*.py'
+      - '.github/workflows/spineforge-v19-zero-cost.yml'
+  workflow_dispatch:
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: v19 contract and architecture
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_narrative_spine_v1_contract.py \
+            tests/test_spineforge_v19_obligations.py \
+            tests/test_spineforge_v19_architecture.py
+      - name: v19 authority runtime and human boundary
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v19_runtime_mock.py \
+            tests/test_spineforge_v19_human_review.py
+      - name: ContextPack reveal-safety regression
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q tests/test_spine_context_pack_v1.py
