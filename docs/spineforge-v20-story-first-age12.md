@@ -187,3 +187,83 @@ Current state remains:
 **READY_FOR_EXPLICIT_PAID_SPINE_AUTHORIZATION**
 
 No paid inference has been made for v20/v20.1.
+
+
+## v20.1 first paid qualification — age12 island
+
+Explicit paid authorization produced one frozen v20.1 qualification attempt.
+
+GitHub Actions run:
+`36908095596`
+
+Trigger commit:
+`f50f5743666aaffff9307b0108d85f299341521a`
+
+Case:
+`spineforge.v20.age12.adventure-exploration.island.01`
+
+Result:
+`repair_required`
+
+Spine title:
+`The Island That Wasn't on Any Map`
+
+Context fingerprint:
+`090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233`
+
+Spine hash:
+`4ae3ef5af8316234999a7fc432feeab5e4169e4b440de5bab08cb86f15f74d9b`
+
+Deterministic validation:
+- authority_valid: true
+- reveal_safe: true
+- obligations_valid: true
+- discovery_turns: 8
+- real_choice_count: 2
+
+Luna Product Gate:
+- decision: `REPAIR`
+- findings: 1
+- dimension: `WRITER_EXECUTABILITY`
+- severity: `MAJOR`
+- repairability: `LOCAL`
+- target: `narrative_spine.beats[2].character_action; narrative_spine.beats[6].character_action; narrative_spine.climax`
+
+Finding: the route line is left tied to a shore tree as a return anchor in beat 3, but beat 7 later uses that same line deep in the island interior to swing Nisa across a broken root bridge and the climax depends on cutting it. No beat retrieves/carries that line inland, creating a physical continuity contradiction.
+
+Luna otherwise accepted the adventure-exploration shape: Arda acts decisively, the island provides concrete wonder, the Arda/Nisa relationship conflict matters, discovery changes the meaning of the expedition, and the turn-back decision produces a local payoff.
+
+No automatic repair executed. Writer remains blocked.
+
+### Usage
+
+Sonnet 5.5 Architect:
+- input: 12,736
+- output: 3,958
+- total: 16,694 tokens
+- cost: $0.065052
+- latency: 34.700 s
+
+GPT-5.6 Luna Product Gate:
+- input: 9,356
+- output: 770
+- reasoning: 516
+- total: 10,126 tokens
+- cost: $0.00326285
+- latency: 13.011 s
+
+Pipeline total:
+- API calls: 2
+- input: 22,092
+- output: 4,728
+- reasoning: 516
+- total: 26,820 tokens
+- cost: $0.06831485
+- model latency: 47.711 s
+- cost reconciliation: PASS
+- token reconciliation: PASS
+
+Current boundary:
+**STOP_FOR_HUMAN_REVIEW / LOCAL_REPAIR_NOT_AUTHORIZED**
+
+This attempt demonstrates a materially more adventure-first Spine than the rejected Echo Span premise. The only model-gate blocker is a local prop-continuity defect. Human product judgment is still required before any repair authorization.
