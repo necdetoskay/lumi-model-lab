@@ -1,6 +1,6 @@
 # SpineForge v10.1 — Beat-Set Invariant Parity
 
-Status: ZERO-COST QUALIFICATION
+Status: FROZEN / READY_FOR_ATTEMPT_1 (parallel partitioned lineage)
 
 ## Why this successor exists
 
@@ -50,7 +50,7 @@ Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v10.1`
 Runtime source: `50d21296feeb3a613893a3e5fafff0068da5962e`  
 Frozen dependencies: **30**
 
-Final frozen verification run: `36812412910`
+Final frozen verification run: `36812596523`
 
 Result:
 - v10.1 exact-failure replay + frozen/owner guards: **9/9 PASS**
@@ -70,3 +70,9 @@ Next paid scope:
 
 A separate explicit authorization is required before trigger creation.
 
+
+## Canonical-authority note
+
+This v10.1 branch is a GREEN partitioned-lineage successor/fallback experiment. It does **not** replace the repository-wide current authority recorded in Epic #253, where the separately developed Single-Owner lineage has advanced to v18.
+
+No paid v10.1 attempt has been authorized or triggered.
