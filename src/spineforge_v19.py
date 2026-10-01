@@ -5,13 +5,13 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
-from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import parse_cost
 from src.model_registry import runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.narrative_spine_v1_contract import NarrativeSpineV1, SpineProductGateV19
 from src.spine_context_pack_v1 import SpineContextPackV1
 from src.spineforge_v19_obligations import ReaderStoryObligationsV1
+from src.spineforge_v19_transport import call_json_object_once, call_strict_json_once
 from src.spineforge_v19_validator import validate_narrative_spine
 
 
