@@ -1,6 +1,6 @@
 # SpineForge v19 — NarrativeSpineV1 single-owner baseline
 
-Status: **FROZEN ZERO-COST QUALIFICATION CANDIDATE**
+Status: **v19.1 FROZEN — READY FOR EXPLICIT PAID RERUN AUTHORIZATION**
 
 ## Canonical topology
 
@@ -13,7 +13,7 @@ Status: **FROZEN ZERO-COST QUALIFICATION CANDIDATE**
 → human-readable preview
 → **STOP / human approval**
 
-Writer, translation, and canonical-state commit are not callable inside the v19 SpineForge runtime.
+Writer, translation, and canonical-state commit are not callable inside the SpineForge runtime.
 
 ## Why v19 exists
 
@@ -38,9 +38,11 @@ Qualification uses v19-specific **one-shot** transport. There is no automatic HT
 - Sonnet Architect: JSON object transport + local `NarrativeSpineV1` validation.
 - NarrativeSpineV1 schema size: **4,633 bytes**. It is intentionally **not** provider-strict.
 - Luna Product Gate: provider-strict JSON Schema + local typed validation.
-- Luna gate schema size: **1,288 bytes**, below the **4,096-byte** strict-schema budget.
+- v19.1 Luna gate schema size: **1,308 bytes**, below the **4,096-byte** strict-schema budget.
+- All root properties in the Luna schema are provider-required, including `blocking_findings`.
 - Maximum model calls per ordinary qualification case: **2** (Architect + Gate).
 - `REPAIR` and `REPLAN` stop the run; no third call executes automatically.
+- A Luna transport failure now returns preserved Sonnet Spine + deterministic validation + usage evidence rather than losing the product.
 
 ## Qualification matrix
 
@@ -58,41 +60,96 @@ All **6/6 ContextPack fixtures are frozen**:
 
 Every fixture validates as `SpineContextPackV1`, its canonical fingerprint is recomputed in tests, and reveal-safety checks prohibit hidden payload fields such as `hidden_statement` and `reveal_steps`.
 
-## Runtime freeze
+## Original v19 freeze
+
+Original frozen revision:
+`SPINEFORGE-NARRATIVE-SPINE-FROZEN-v19`
+
+Original runtime source commit:
+`41ab5c5a43b4465207fa76c29fdcb073399c1566`
+
+Original zero-cost GitHub Actions run:
+`36887442025` — **SUCCESS**
+
+Original evidence:
+- total: **33 PASS**
+- freeze verification: **23/23 files verified**
+- paid model calls before qualification attempt: **0**
+- confirmed spend before qualification attempt: **$0**
+
+## First paid qualification attempt — age 12 Adventure/Exploration
+
+User authorization was consumed for exactly one paid qualification attempt.
+
+GitHub Actions run:
+`36888737202`
+
+Trigger commit:
+`94020195712edcd2513a32932f1190f58cdcab52`
+
+Case:
+`spineforge.v19.age12.adventure-exploration.01`
+
+Observed sequence:
+1. frozen runtime verification passed **23/23**;
+2. Sonnet 5.5 Architect completed and the runtime advanced past local NarrativeSpine/authority validation;
+3. Luna Product Gate request was rejected before Luna inference by provider HTTP 400;
+4. no automatic retry executed;
+5. Writer remained blocked.
+
+Provider error:
+`blocking_findings` existed in the JSON Schema properties but was omitted from the schema root `required` array. OpenAI strict structured output rejected the request as `invalid_json_schema`.
+
+This is classified as a **gate transport/schema defect**, not a Spine story-quality verdict.
+
+### Attempt-1 evidence loss
+
+The original v19 runtime kept the successful Sonnet Spine only in memory until after the Luna stage returned. Because Luna transport raised before the wrapper wrote the result artifact, the Sonnet Spine from this attempt was not persisted and cannot be truthfully reconstructed after the fact.
+
+The produced Spine therefore must **not** be fabricated or approximated for human review.
+
+### Attempt-1 cost evidence
+
+A Sonnet request completed and may have incurred cost. Luna inference did not start because its request was rejected as an invalid schema.
+
+The run did not persist the Sonnet generation id or its per-call usage before the Luna failure. A later read-only OpenRouter diagnostic could only retrieve key-level aggregate usage; those totals are not attributable to this single attempt. Therefore the exact attempt-1 Sonnet token count and cost are recorded as **not recoverable from current evidence** rather than guessed.
+
+Diagnostic run:
+`36890009121` — **SUCCESS**
+
+Its paid job was **SKIPPED**; it performed no inference.
+
+## v19.1 corrective freeze
+
+Source fix commit:
+`4fc9c582e0ac89b0fad24de1e1f08cfca475c9f3`
+
+Freeze commit:
+`b68bf56f82e6c31495dc0e46c7085b38b0d85055`
+
+Frozen revision:
+`SPINEFORGE-NARRATIVE-SPINE-FROZEN-v19.1`
 
 Runtime profile:
 `data/specifications/story_lab/spineforge_runtime_profile_v19_narrative_spine_frozen.json`
 
-Frozen revision:
-`SPINEFORGE-NARRATIVE-SPINE-FROZEN-v19`
-
-Runtime source commit:
-`41ab5c5a43b4465207fa76c29fdcb073399c1566`
-
 Frozen dependencies:
 **23 SHA-256 locked files**
 
-The later freeze/profile/CI documentation commits do not alter the frozen dependency set.
+Corrective changes:
+- `blocking_findings` is now required in the Luna strict schema;
+- strict schema root `required` equals root `properties`;
+- Luna gate schema is **1,308 bytes**;
+- a gate transport exception is converted to typed evidence `product_gate_transport_failed`;
+- the validated Sonnet `narrative_spine`, deterministic report, and Sonnet usage rollup remain recoverable on that failure path;
+- no retry, repair, Writer, translation, or state commit is introduced.
 
-## Zero-cost evidence
-
-Final GitHub Actions run:
-`36887442025`
-
-CI head:
-`a072bd0ff3da67bc3dc869a136a58587ec840aa0`
-
-Result:
-**SUCCESS**
-
-Direct ci-runner verification at the same final head:
-- v19 contract / obligations / fixture / architecture / transport / freeze: **22 PASS**
-- v19 runtime mock + human boundary: **5 PASS**
-- ContextPack reveal-safety regression: **6 PASS**
-- total: **33 PASS**
-- freeze verification: **23/23 files verified**
-- paid model calls: **0**
-- confirmed v19 spend: **$0**
+Zero-cost verification after the correction:
+- **35/35 PASS**
+- freeze verification **23/23**
+- automatic retry **OFF**
+- automatic repair **OFF**
+- Writer **BLOCKED**
 
 ## First paid-wave acceptance bar
 
@@ -109,14 +166,17 @@ Required first-wave evidence:
 
 ## Paid boundary
 
-Current state: **READY_FOR_EXPLICIT_PAID_AUTHORIZATION**
+Current state: **READY_FOR_EXPLICIT_PAID_RERUN_AUTHORIZATION**
 
-No `experiments/triggers/spineforge-v19.json` exists.
+The first paid authorization has already been consumed by run `36888737202`. v19.1 has not yet made a paid model call.
 
-Before the first paid case:
-1. the user must explicitly authorize the paid call;
-2. the frozen runtime/prompt/schema/model routing must remain unchanged;
-3. no automatic retry is permitted;
-4. Writer remains blocked even after Luna ACCEPT until the human approves the exact ContextPack fingerprint + Spine hash.
+A v19.1 rerun requires a new, explicit user authorization. Do not reuse or rerun the old failed v19 job.
 
-If the paid result exposes a defect that requires prompt/schema/model/routing changes, the failed attempt remains evidence and the fix becomes a new frozen revision.
+For the next paid case:
+1. use the frozen v19.1 runtime unchanged;
+2. execute only the age-12 Adventure/Exploration qualification case;
+3. no automatic retry;
+4. if Sonnet validation fails, stop before Luna;
+5. if Luna returns REPAIR or REPLAN, stop;
+6. if Luna ACCEPTs, present the exact Spine product to the human;
+7. Writer remains blocked until the human explicitly approves the exact ContextPack fingerprint + Spine hash.
