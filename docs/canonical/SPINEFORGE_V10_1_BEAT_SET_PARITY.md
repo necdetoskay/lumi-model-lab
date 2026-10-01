@@ -42,3 +42,31 @@ Run `36811432734`:
 - paid calls: **0**
 
 Freeze is required before any paid v10.1 attempt.
+
+## Frozen qualification
+
+Runtime ID: `spineforge.contextpack.v10.1`  
+Runtime revision: `SPINEFORGE-CONTEXTPACK-FROZEN-v10.1`  
+Runtime source: `50d21296feeb3a613893a3e5fafff0068da5962e`  
+Frozen dependencies: **30**
+
+Final frozen verification run: `36812412910`
+
+Result:
+- v10.1 exact-failure replay + frozen/owner guards: **9/9 PASS**
+- inherited v10 partition runtime/transport: **20/20 PASS**
+- v1→v9 historical regression: **94 PASS**
+- 4 historical snapshots deselected by design
+- v10.1 paid calls: **0**
+- v10.1 spend: **$0**
+
+Current state: `READY_FOR_ATTEMPT_1`.
+
+No paid v10.1 trigger exists.
+
+Next paid scope:
+
+`SPINEFORGE_V10_1_ATTEMPT_1_AION_THEN_BEAT_SET_PARITY_STRICT_SONNET_THEN_STRICT_LUNA_IF_ELIGIBLE`
+
+A separate explicit authorization is required before trigger creation.
+
