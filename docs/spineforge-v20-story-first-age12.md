@@ -144,3 +144,46 @@ When authorized:
 7. ACCEPT still stops for human review;
 8. show the exact Spine, gate result, ContextPack fingerprint, Spine hash, token/cost/latency;
 9. Writer remains blocked until separate explicit human approval.
+
+
+## v20.1 paid-evidence preflight freeze
+
+A zero-cost paid-run harness preflight was added before any inference authorization.
+
+Frozen revision:
+`SPINEFORGE-STORY-FIRST-FROZEN-v20.1`
+
+Runtime source commit:
+`897f249a11875b0d8eeae7df070bc9df3321d4e0`
+
+Frozen dependency verification:
+**20/20 PASS**
+
+The frozen dependency set now includes:
+`src/spineforge_v20_paid_once.py`
+
+Paid-run harness behavior:
+- writes a start envelope before inference;
+- executes exactly one SpineForge run;
+- never authorizes Writer;
+- never runs automatic retry or repair;
+- persists typed result + usage evidence on normal completion;
+- persists an explicit `unhandled_runtime_failure` result if the process-level run call raises;
+- uploads evidence with `if-no-files-found: error`.
+
+The paid job is guarded by the explicit marker:
+`[PAID-V20-AGE12-ISLAND-ATTEMPT1]`
+
+A normal push without that marker skips the paid job.
+
+Latest zero-cost CI:
+- run `36907534921`
+- qualify: **SUCCESS**
+- paid job: **SKIPPED**
+- freeze: **20/20 PASS**
+- tests: **15/15 PASS**
+
+Current state remains:
+**READY_FOR_EXPLICIT_PAID_SPINE_AUTHORIZATION**
+
+No paid inference has been made for v20/v20.1.
