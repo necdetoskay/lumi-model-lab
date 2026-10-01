@@ -46,8 +46,8 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. pytest -q tests/test_spine_context_pack_v1.py
 
-  paid-age12-attempt1:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[PAID-V19-AGE12-ATTEMPT1]')
+  paid-age12-v19-1-attempt1:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[PAID-V19.1-AGE12-ATTEMPT1]')
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:
@@ -99,8 +99,8 @@ jobs:
 
           out_dir = Path("evidence/spineforge-v19-paid") / os.environ["GITHUB_RUN_ID"]
           out_dir.mkdir(parents=True, exist_ok=True)
-          result_path = out_dir / "age12-adventure-attempt1-result.json"
-          envelope_path = out_dir / "age12-adventure-attempt1-envelope.json"
+          result_path = out_dir / "age12-adventure-v19.1-attempt1-result.json"
+          envelope_path = out_dir / "age12-adventure-v19.1-attempt1-envelope.json"
 
           result_path.write_text(
               json.dumps(result, ensure_ascii=False, indent=2) + "\n",
@@ -111,7 +111,7 @@ jobs:
               "case_id": case_id,
               "attempt_index": 1,
               "explicit_paid_authorization": True,
-              "authorization_marker": "PAID-V19-AGE12-ATTEMPT1",
+              "authorization_marker": "PAID-V19.1-AGE12-ATTEMPT1",
               "runtime_revision": freeze["runtime_revision"],
               "runtime_verified_files": freeze["verified_files"],
               "context_pack_id": pack.context_pack_id,
@@ -137,7 +137,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: spineforge-v19-age12-attempt1-${{ github.run_id }}
+          name: spineforge-v19.1-age12-attempt1-${{ github.run_id }}
           path: evidence/spineforge-v19-paid/${{ github.run_id }}
           if-no-files-found: warn
 
