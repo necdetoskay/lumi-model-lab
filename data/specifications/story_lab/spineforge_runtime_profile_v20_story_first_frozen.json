@@ -1,0 +1,139 @@
+{
+  "schema_version": "spineforge-runtime-profile.v1",
+  "runtime_id": "spineforge.contextpack.v20.story-first-single-owner",
+  "status": "FROZEN_QUALIFICATION_CANDIDATE",
+  "purpose": "Story-first age12 adventure/exploration qualification for the uncharted-island premise before any Writer call.",
+  "runtime": {
+    "generation_runtime": "src/spineforge_v20.py",
+    "architect_model": "anthropic/claude-sonnet-5.5",
+    "product_gate_model": "openai/gpt-5.6-luna",
+    "architect_prompt": "prompts/spineforge_v20_narrative_architect.md",
+    "product_gate_prompt": "prompts/spineforge_v19_product_gate.md",
+    "architect_max_tokens": 9000,
+    "product_gate_max_tokens": 2500,
+    "max_model_calls_per_case": 2,
+    "automatic_retry_enabled": false,
+    "automatic_repair_enabled": false,
+    "writer_authorized": false
+  },
+  "product_contract": {
+    "spine_schema": "narrative-spine.v1",
+    "story_first": true,
+    "procedural_adventure_reject_signal": true,
+    "post_decision_single_path_required": true,
+    "architect_provider_strict_json_schema": false,
+    "gate_schema": "spineforge-v19-product-gate.v1",
+    "gate_provider_strict_json_schema": true,
+    "strict_schema_max_bytes": 4096
+  },
+  "qualification": {
+    "case_manifest": "data/specifications/story_lab/spineforge_v20_qualification_cases_v1.json",
+    "case_count": 1,
+    "all_context_fixtures_frozen": true,
+    "human_review_required": true,
+    "case_id": "spineforge.v20.age12.adventure-exploration.island.01",
+    "premise_title": "The Island That Wasn't on Any Map",
+    "context_fingerprint": "090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233",
+    "target_words_min": 1600,
+    "target_words_max": 2500
+  },
+  "paid_boundary_policy": {
+    "explicit_user_authorization_required_before_paid_case": true,
+    "no_automatic_paid_retry": true,
+    "no_paid_trigger_present_at_freeze": true,
+    "repair_requires_separate_explicit_authorization": true,
+    "replan_requires_separate_explicit_authorization": true,
+    "no_writer_call_inside_spineforge": true,
+    "no_translation_call_inside_spineforge": true,
+    "no_state_commit_inside_spineforge": true
+  },
+  "qualification_state": {
+    "paid_authorized": false,
+    "paid_api_calls": 0,
+    "confirmed_cost_usd": 0,
+    "writer_authorized": false
+  },
+  "runtime_freeze": {
+    "enabled": true,
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20",
+    "runtime_source_commit": "35f34935b7f1a90dc78cdbd8607708157c49f30b",
+    "files": [
+      {
+        "path": "requirements.txt",
+        "sha256": "ce5e252122e139330e13f38b25b748a0bb86d36efe50e646353dd2ab7c77675d"
+      },
+      {
+        "path": "configs/model_runtime_profiles.yaml",
+        "sha256": "b4710c3ee3069604b8b0b84ca69a864ced86b3d38543b139f78c5dd6a5a72911"
+      },
+      {
+        "path": "src/spineforge_freeze_verify.py",
+        "sha256": "644248e3f2200d6ce7727317358069589a2fc1da5a5d21b360256066d045e767"
+      },
+      {
+        "path": "src/narrative_spine_v1_contract.py",
+        "sha256": "45fd07ab410618e9cf41269d606ae6481e181022e4f6f2179334d619d22cbeeb"
+      },
+      {
+        "path": "src/spine_context_pack_v1.py",
+        "sha256": "e4c82cd2a67c9821f89aab2f2ba7d5aa3a745ebd747807f0dc857334dc06ef1c"
+      },
+      {
+        "path": "src/spineforge_v19.py",
+        "sha256": "67d4e09442a40190222f18015565585181a1da72c8f7882d42a62c3ce893339e"
+      },
+      {
+        "path": "src/spineforge_v19_transport.py",
+        "sha256": "1bf0134e51278f7f24c416b93a5a6be2645ced4be882160ce1f166aa551e5228"
+      },
+      {
+        "path": "src/spineforge_v19_validator.py",
+        "sha256": "2c7c4e3f32fcf25755afc2d91c1e1e7e4c3b8dec4224038a6dfab241b0adb34e"
+      },
+      {
+        "path": "src/spineforge_v19_obligations.py",
+        "sha256": "23607d2dc11a4578cd207e92818b0718875a14f066f686370eeb9ff70d3d199d"
+      },
+      {
+        "path": "src/spineforge_v19_human_review.py",
+        "sha256": "ce3137d056d12e7faaeea80a061a6f1220f958d356b475c4a9dfa371f80dd63c"
+      },
+      {
+        "path": "src/spineforge_v20.py",
+        "sha256": "0cf030ef88abb6d8b387a26cb4728650ec167d5e84c436ba315bb0d04b44f874"
+      },
+      {
+        "path": "src/spineforge_v20_obligations.py",
+        "sha256": "5425cc0d7a2c54e5cd42f977e514670186bcad775847f3dcdfdf80bd753d67a8"
+      },
+      {
+        "path": "src/generate.py",
+        "sha256": "c3076ba9271f5dd9b19ee6059a7dda241e2c7d0ea866c06176f9d31848317496"
+      },
+      {
+        "path": "src/model_registry.py",
+        "sha256": "1ffd711f3ff3c565facfe83dfb622eadbcdd9109784479b0f315fc8d66a1bb28"
+      },
+      {
+        "path": "src/model_usage_rollup.py",
+        "sha256": "4f9fe2318e0e23ecb3c43f2c0481648b1db76f01edea7c538b5c6d1aa007cf57"
+      },
+      {
+        "path": "prompts/spineforge_v20_narrative_architect.md",
+        "sha256": "e648be436f42de99616397f64a5fd49dc7bbdfbd9f90a7630174baae31583995"
+      },
+      {
+        "path": "prompts/spineforge_v19_product_gate.md",
+        "sha256": "13dcae4a237fd84f8ab71ab9ce44ea42ff42a369b547a327c3ef4e7d44660415"
+      },
+      {
+        "path": "data/specifications/story_lab/spineforge_v20_qualification_cases_v1.json",
+        "sha256": "cbc3ba962005c5938f7948b4b3a9df30fcf059da2287508ac6d8e193e5b007b6"
+      },
+      {
+        "path": "data/specifications/story_lab/age12_island_not_on_any_map_spine_context_pack_v20.json",
+        "sha256": "d3524c41f6c8eeacbf76d881d1ec2d81400bc17d5412f0d68890d67f37f9e80c"
+      }
+    ]
+  }
+}
