@@ -46,3 +46,5 @@ def test_paid_runner_persists_failure_artifact_on_unhandled_exception(tmp_path: 
         (tmp_path / "456" / "age12-island-v20-attempt1-result.json").read_text()
     )
     assert persisted["failure"]["type"] == "RuntimeError"
+
+# paid trigger touch: v20 attempt1
