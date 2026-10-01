@@ -89,3 +89,59 @@ Next paid scope:
 
 A separate explicit authorization is required before trigger creation.
 
+## Paid Attempt 1 — terminal v10 result
+
+Run: `36810208041`
+
+Runtime result: `structural_assembly_contract_rejected`.
+
+Execution:
+- Aion Creative Blueprint: completed
+- Sonnet Structural Frame: completed
+- Sonnet Structural Beats: completed
+- Sonnet Structural Resolution: completed
+- deterministic EpisodeSpine assembly: rejected
+- Luna Product Gate: not called
+- Writer: not called
+
+Exact failure:
+
+`Episode Spine missing required phases: REVERSAL`
+
+The returned beat phases were:
+
+`HOOK → ORIENT → COMPLICATION → INVESTIGATION → ESCALATION → DECISION → CLIMAX → PAYOFF → TAG`
+
+Every beat individually validated as `EpisodeBeatV2`, but the partition contract did not enforce the final EpisodeSpine beat-set invariant requiring:
+
+`HOOK, COMPLICATION, REVERSAL, DECISION, CLIMAX, PAYOFF`
+
+Exact accounting:
+- API calls: **4**
+- input tokens: **74,824**
+- output tokens: **16,888**
+- reasoning tokens: **4,895**
+- total tokens: **91,712**
+- cost: **$0.2388673**
+- summed model latency: **225.18 s**
+
+By stage:
+- Aion: 15,922 tokens, **$0.0167993**, 151.312 s
+- Sonnet Frame: 21,605 tokens, **$0.063546**, 23.776 s
+- Sonnet Beats: 24,320 tokens, **$0.075784**, 23.392 s
+- Sonnet Resolution: 29,865 tokens, **$0.082738**, 26.700 s
+
+A second generic defect was exposed: the assembly failure generated retry ownership `STRUCTURAL_FRAME`, but this failure is owned by `STRUCTURAL_BEATS`. Because Beats should have rejected the missing phase before Resolution, the Resolution call was avoidable.
+
+v10 Attempt 2 is forbidden.
+
+A successor must:
+1. enforce final beat-set required-phase invariants at the Structural Beats boundary;
+2. classify cross-partition/final-assembly failures to the earliest owning partition;
+3. preserve already-valid upstream sections and retry only the owning partition when future paid revision feedback is authorized;
+4. prove these behaviors zero-cost before paid inference.
+
+Terminal status:
+
+`QUALIFICATION_FAILED_BEAT_SET_FINAL_INVARIANT_PARITY_GAP`
+
