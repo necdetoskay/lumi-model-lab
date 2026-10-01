@@ -401,3 +401,60 @@ Current boundary:
 **AWAITING_HUMAN_REVIEW / WRITER_NOT_AUTHORIZED**
 
 Gate ACCEPT does not authorize Writer by itself. Human approval must bind to the exact ContextPack fingerprint + repaired Spine hash before Writer can run.
+
+
+## v20.3 human approval + Aion Writer handoff — GREEN
+
+The repaired Spine was human-approved after Luna `ACCEPT`.
+
+Human approval:
+- verdict: `APPROVE`
+- approval id: `63d4b9734dc4966cac672481dc8404d02679ceea9444554a8931842a21f0d112`
+- Context fingerprint: `090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233`
+- repaired Spine hash: `f9c5bed93448d6c56787466ae583dfcee06d0f856641d9c3901136f142bffae6`
+- Writer handoff ready: true
+
+Frozen revision:
+`SPINEFORGE-STORY-FIRST-FROZEN-v20.3`
+
+Runtime source commit:
+`05df7ce9f230b63e2bc47213924969a742a2d490`
+
+Writer:
+- model: `aion-labs/aion-3.5-mini`
+- exact age: 12
+- hard range: 1,600–2,500 English words
+- preferred landing zone: 2,000–2,200 words
+- one Writer call only
+- automatic retry: forbidden
+- editor: forbidden in this run
+- judge: forbidden in this run
+- repair: forbidden in this run
+- translation: forbidden in this run
+- state commit: forbidden in this run
+
+The Writer handoff is bound to the exact approval id + Context fingerprint + repaired Spine hash. Stale context, wrong Spine hash, non-ACCEPT gate, or missing human approval blocks the handoff.
+
+Paid Writer wrapper writes an evidence envelope before inference and persists result/story/usage afterward.
+
+Paid Writer guard:
+`[PAID-V20-AGE12-ISLAND-WRITER1]`
+
+Latest zero-cost CI:
+- run `36912348087`
+- conclusion: **SUCCESS**
+- freeze: **31/31 PASS**
+- tests: **35/35 PASS**
+- paid Spine job: **SKIPPED**
+- paid repair job: **SKIPPED**
+- paid Writer job: **SKIPPED**
+
+Tracked paid cost before Writer:
+- API calls: 4
+- tokens: 57,831
+- confirmed cost: $0.14566690
+
+Current boundary:
+**WRITER_READY / READY_FOR_EXPLICIT_PAID_WRITER_AUTHORIZATION**
+
+Human approval authorizes the product handoff to Writer, but does not itself authorize a paid Writer inference.
