@@ -16,7 +16,7 @@ TRIGGER = Path("experiments/triggers/spineforge-v19.json")
 def test_v19_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-NARRATIVE-SPINE-FROZEN-v19"
+    assert result["runtime_revision"] == "SPINEFORGE-NARRATIVE-SPINE-FROZEN-v19.1"
     assert result["verified_files"] == 23
 
 
@@ -27,7 +27,7 @@ def test_v19_freeze_locks_single_owner_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v19.narrative-spine-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "41ab5c5a43b4465207fa76c29fdcb073399c1566"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "4fc9c582e0ac89b0fad24de1e1f08cfca475c9f3"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
