@@ -23,6 +23,9 @@ EpisodeRoleV10 = Literal[
 
 ReversalCertaintyV10 = Literal["OBSERVED", "INFERRED", "HYPOTHESIS"]
 
+REQUIRED_EPISODE_PHASES_V10 = {"HOOK", "COMPLICATION", "REVERSAL", "DECISION", "CLIMAX", "PAYOFF"}
+
+
 PersistentOutcomeTypeV10 = Literal[
     "KNOWLEDGE",
     "RELATIONSHIP",
@@ -84,6 +87,14 @@ class StructuralBeatsV10(StrictModel):
                     + ", ".join(invalid)
                 )
             seen.add(beat.key)
+
+        phases = {beat.phase for beat in self.beats}
+        missing = sorted(REQUIRED_EPISODE_PHASES_V10 - phases)
+        if missing:
+            raise ValueError(
+                "Structural Beats missing final EpisodeSpine required phases: "
+                + ", ".join(missing)
+            )
         return self
 
 
