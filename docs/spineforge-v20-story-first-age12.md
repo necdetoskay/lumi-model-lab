@@ -331,3 +331,73 @@ Current boundary:
 **READY_FOR_EXPLICIT_PAID_LOCAL_REPAIR_AUTHORIZATION**
 
 No paid repair or re-gate has executed.
+
+
+## v20.2 paid LOCAL repair1 — ACCEPT / awaiting human review
+
+Explicit authorization executed exactly one bounded LOCAL repair plus one Luna re-gate.
+
+GitHub Actions run:
+`36910614976`
+
+Trigger commit:
+`49c9cd6b3ebc33732ba200d512e929e96f924c80`
+
+Source Spine hash:
+`4ae3ef5af8316234999a7fc432feeab5e4169e4b440de5bab08cb86f15f74d9b`
+
+Repaired Spine hash:
+`f9c5bed93448d6c56787466ae583dfcee06d0f856641d9c3901136f142bffae6`
+
+Context fingerprint remained unchanged:
+`090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233`
+
+Changed paths:
+- `narrative_spine.world_specific_elements[2].narrative_use`
+- `narrative_spine.beats[2].external_change`
+- `narrative_spine.beats[6].character_action`
+- `narrative_spine.beats[6].consequence`
+- `narrative_spine.climax`
+
+All changes were inside the frozen allowed LOCAL repair path set.
+
+Repair result:
+- Sonnet made the route-line continuity explicit: temporary shore lash → unfasten → coil → carry inland → use at root bridge → cut at climax.
+- premise unchanged
+- decision unchanged
+- selected turn-back path unchanged
+- discovery chain unchanged
+- payoff unchanged
+- unresolved hooks unchanged
+
+Deterministic validation after repair:
+- authority_valid: true
+- reveal_safe: true
+- obligations_valid: true
+- discovery_turns: 8
+- real_choice_count: 2
+
+Luna re-gate:
+- decision: **ACCEPT**
+- blocking findings: 0
+- summary: no blocking premise, agency, causality, stakes, canon-safety, or writer-execution defect remains.
+
+Repair usage:
+- Sonnet 5.5 repair: 20,960 tokens / $0.07424 / 19.858 s
+- GPT-5.6 Luna re-gate: 10,051 tokens / $0.00311205 / 13.409 s
+- repair total: **31,011 tokens / $0.07735205 / 33.267 s**
+
+Cumulative v20 paid totals through repair:
+- API calls: **4**
+- tokens: **57,831**
+- confirmed cost: **$0.14566690**
+- Writer calls: **0**
+
+Durable paid repair evidence:
+- `evidence/spineforge-v20-paid-repair/36910614976/age12-island-v20-repair1-result.json`
+- `evidence/spineforge-v20-paid-repair/36910614976/age12-island-v20-repair1-envelope.json`
+
+Current boundary:
+**AWAITING_HUMAN_REVIEW / WRITER_NOT_AUTHORIZED**
+
+Gate ACCEPT does not authorize Writer by itself. Human approval must bind to the exact ContextPack fingerprint + repaired Spine hash before Writer can run.
