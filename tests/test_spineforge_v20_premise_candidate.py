@@ -35,7 +35,7 @@ def test_v20_manifest_points_only_to_candidate_fixture_and_writer_is_not_involve
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert len(data["cases"]) == 1
     case = data["cases"][0]
-    assert case["context_fixture_status"] == "CANDIDATE"
+    assert case["context_fixture_status"] == "FROZEN"
     assert case["context_fixture_ref"] == str(PACK)
     assert case["obligations"]["exact_age"] == 12
     assert case["obligations"]["decision_required"] is True
