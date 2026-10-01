@@ -25,7 +25,8 @@ def test_age_profiles_do_not_share_one_universal_obligation():
     assert any("age stereotyping" in x.lower() for x in age60.obligations.required_capabilities)
 
 
-def test_paid_qualification_is_not_ready_until_all_context_fixtures_are_frozen():
+def test_all_v19_qualification_context_fixtures_are_frozen():
     cases = load_qualification_cases().cases
     pending = [row for row in cases if row.context_fixture_status != "FROZEN"]
-    assert len(pending) == 5
+    assert pending == []
+    assert all(row.context_fixture_ref for row in cases)
