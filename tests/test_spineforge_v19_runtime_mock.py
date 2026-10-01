@@ -145,7 +145,7 @@ def test_v19_single_architect_then_luna_gate_then_stop():
     assert result["automatic_retry_enabled"] is False
     assert result["automatic_repair_enabled"] is False
     assert result["deterministic_validation"]["authority_valid"] is True
-    assert result["pipeline_usage_rollup"]["totals"]["model_calls"] == 2
+    assert result["pipeline_usage_rollup"]["totals"]["api_calls"] == 2
 
 
 def test_v19_repair_does_not_execute_third_paid_call():
