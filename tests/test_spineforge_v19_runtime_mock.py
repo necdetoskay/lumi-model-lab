@@ -204,3 +204,42 @@ def test_v19_authority_failure_stops_before_luna():
     )
     assert result["status"] == "architect_contract_or_authority_rejected"
     assert len(calls) == 1
+
+
+def test_v19_gate_transport_failure_returns_checkpointed_spine():
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text(encoding="utf-8"))
+    case = next(
+        x for x in load_qualification_cases().cases
+        if x.obligations.exact_age == 18
+    )
+    calls = []
+
+    def architect(**kwargs):
+        calls.append(kwargs)
+        return (
+            _spine(pack),
+            {"usage": {"prompt_tokens": 100, "completion_tokens": 50, "total_tokens": 150, "cost": 0.001}},
+            {"response_format": {"type": "json_object"}, "provider": {}},
+            [],
+        )
+
+    def broken_gate(**kwargs):
+        calls.append(kwargs)
+        raise RuntimeError("provider rejected strict schema")
+
+    result = run(
+        context_pack=pack,
+        obligations=case.obligations,
+        api_key="zero-cost-test",
+        architect_call_fn=architect,
+        gate_call_fn=broken_gate,
+        architect_prompt="architect",
+        gate_prompt="gate",
+    )
+
+    assert result["status"] == "product_gate_transport_failed"
+    assert result["narrative_spine"]["title"] == "The Returning Road"
+    assert result["deterministic_validation"]["authority_valid"] is True
+    assert result["failure"]["stage"] == "product_gate_transport"
+    assert result["pipeline_usage_rollup"]["totals"]["api_calls"] == 1
+    assert len(calls) == 2

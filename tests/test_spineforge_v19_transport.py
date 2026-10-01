@@ -156,3 +156,9 @@ def test_v19_runtime_does_not_import_shared_retry_transport():
     transport = Path("src/spineforge_v19_transport.py").read_text(encoding="utf-8")
     assert "while True" not in transport
     assert "time.sleep" not in transport
+
+
+def test_v19_gate_strict_schema_requires_every_root_property():
+    schema = SpineProductGateV19.model_json_schema(by_alias=True)
+    assert set(schema["required"]) == set(schema["properties"])
+    assert "blocking_findings" in schema["required"]

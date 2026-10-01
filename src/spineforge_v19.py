@@ -184,15 +184,27 @@ def run(
         "narrative_spine": spine.model_dump(mode="json", by_alias=True),
         "output_contract": SpineProductGateV19.model_json_schema(by_alias=True),
     }
-    raw_gate, body, request, failures, latency = _call_once(
-        call_fn=gate,
-        api_key=api_key,
-        model=LUNA_MODEL,
-        prompt=gate_prompt or DEFAULT_GATE_PROMPT.read_text(encoding="utf-8").strip(),
-        payload=gate_payload,
-        max_tokens=2500,
-        request_class="editorial_audit",
-    )
+    try:
+        raw_gate, body, request, failures, latency = _call_once(
+            call_fn=gate,
+            api_key=api_key,
+            model=LUNA_MODEL,
+            prompt=gate_prompt or DEFAULT_GATE_PROMPT.read_text(encoding="utf-8").strip(),
+            payload=gate_payload,
+            max_tokens=2500,
+            request_class="editorial_audit",
+        )
+    except Exception as exc:
+        evidence["status"] = "product_gate_transport_failed"
+        evidence["failure"] = {
+            "stage": "product_gate_transport",
+            "type": type(exc).__name__,
+            "message": str(exc),
+            "trace": getattr(exc, "trace", None),
+        }
+        evidence["pipeline_usage_rollup"] = rollup_model_calls(calls)
+        return evidence
+
     calls.append(
         _normalized_call(
             stage="spineforge_v19_product_gate",

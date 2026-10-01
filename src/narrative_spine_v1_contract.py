@@ -134,7 +134,7 @@ class GateFindingV1(StrictModel):
 class SpineProductGateV19(StrictModel):
     schema_id: Literal[GATE_SCHEMA] = Field(alias="schema")
     decision: Literal["ACCEPT", "REPAIR", "REPLAN"]
-    blocking_findings: list[GateFindingV1] = Field(default_factory=list, max_length=12)
+    blocking_findings: list[GateFindingV1] = Field(max_length=12)
     summary: str = Field(min_length=1)
 
     @model_validator(mode="after")
