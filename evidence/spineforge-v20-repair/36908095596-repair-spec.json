@@ -1,0 +1,65 @@
+{
+  "schema": "spineforge-v20-local-repair-spec.v1",
+  "source_run_id": 36908095596,
+  "source_runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.1",
+  "source_context_fingerprint": "090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233",
+  "source_spine_hash": "4ae3ef5af8316234999a7fc432feeab5e4169e4b440de5bab08cb86f15f74d9b",
+  "source_gate_decision": "REPAIR",
+  "finding": {
+    "dimension": "WRITER_EXECUTABILITY",
+    "severity": "MAJOR",
+    "repairability": "LOCAL",
+    "target_path": "narrative_spine.beats[2].character_action; narrative_spine.beats[6].character_action; narrative_spine.climax",
+    "reason": "The route line is simultaneously left behind as a shore anchor and later used deep in the island interior, creating a physical continuity contradiction at the escape climax.",
+    "evidence": "The shore_landing beat says Arda 'ties the route line to a stout trunk as a return anchor.' The escape_climb beat then says he 'swings Nisa across using the route line and then cuts the line loose,' despite no beat retrieving or carrying that line inland. The climax likewise depends on cutting it."
+  },
+  "normalized_problem": {
+    "issue": "route_line continuity contradiction",
+    "note": "Gate target_path names beats[2].character_action, but the contradictory shore-anchor statement is actually in beats[2].external_change. Repair scope is normalized from the finding evidence plus typed source inspection.",
+    "exact_goal": "Make route_line physically available during escape_climb without changing premise, decision, discovery, payoff, or unresolved hooks."
+  },
+  "allowed_change_paths": [
+    "narrative_spine.world_specific_elements[2].narrative_use",
+    "narrative_spine.beats[2].external_change",
+    "narrative_spine.beats[6].character_action",
+    "narrative_spine.beats[6].external_change",
+    "narrative_spine.beats[6].consequence",
+    "narrative_spine.climax"
+  ],
+  "preferred_minimal_solution": {
+    "description": "At shore_landing, Arda may use the route_line temporarily to secure/steady the glider, but must explicitly unfasten, coil, and carry it before leaving the shore. Then the existing bridge rescue and climax use remain physically possible.",
+    "preserve": [
+      "title",
+      "episode premise",
+      "all locations",
+      "Arda/Nisa relationship arc",
+      "abandoned camp discovery",
+      "decision options",
+      "selected turn-back path",
+      "local payoff",
+      "unresolved hooks",
+      "persistent outcome candidates except wording only if strictly needed for route_line continuity"
+    ]
+  },
+  "forbidden_changes": [
+    "new premise",
+    "new major character",
+    "new canonical location",
+    "different decision outcome",
+    "different climax purpose",
+    "reveal of island origin/destination",
+    "removal of journal or glider-tag discovery",
+    "new automatic repair or retry"
+  ],
+  "post_repair_required_checks": [
+    "NarrativeSpineV1 schema valid",
+    "deterministic authority_valid=true",
+    "deterministic reveal_safe=true",
+    "deterministic obligations_valid=true",
+    "diff touches only allowed_change_paths",
+    "route_line continuity contradiction absent",
+    "Luna re-gate required",
+    "Writer remains blocked"
+  ],
+  "paid_state": "NOT_AUTHORIZED"
+}
