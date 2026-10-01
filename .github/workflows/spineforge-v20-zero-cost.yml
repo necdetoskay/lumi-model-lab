@@ -1,0 +1,40 @@
+name: SpineForge v20 Zero-Cost Qualification
+
+on:
+  push:
+    branches:
+      - experiment/spineforge-v19-narrative-spine-single-owner
+    paths:
+      - 'src/spineforge_v20*.py'
+      - 'prompts/spineforge_v20_*.md'
+      - 'data/specifications/story_lab/age12_island_not_on_any_map_spine_context_pack_v20.json'
+      - 'data/specifications/story_lab/spineforge_v20_qualification_cases_v1.json'
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v20_story_first_frozen.json'
+      - 'tests/test_spineforge_v20_*.py'
+      - '.github/workflows/spineforge-v20-zero-cost.yml'
+  workflow_dispatch:
+
+jobs:
+  qualify:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Verify frozen v20 runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python src/spineforge_freeze_verify.py \
+            --profile data/specifications/story_lab/spineforge_runtime_profile_v20_story_first_frozen.json
+      - name: v20 story-first qualification
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. pytest -q \
+            tests/test_spineforge_v20_premise_candidate.py \
+            tests/test_spineforge_v20_runtime.py \
+            tests/test_spineforge_v20_frozen.py \
+            tests/test_spineforge_v19_human_review.py
