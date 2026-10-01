@@ -140,3 +140,71 @@ jobs:
           name: spineforge-v19-age12-attempt1-${{ github.run_id }}
           path: evidence/spineforge-v19-paid/${{ github.run_id }}
           if-no-files-found: warn
+
+  diagnose-attempt1-usage:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[DIAG-V19-ATTEMPT1-USAGE]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: Query safe OpenRouter activity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$OPENROUTER_API_KEY"
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+          import urllib.error
+
+          key = os.environ["OPENROUTER_API_KEY"]
+
+          def get(url):
+              req = urllib.request.Request(
+                  url,
+                  headers={"Authorization": f"Bearer {key}", "Accept": "application/json"},
+              )
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return r.status, json.loads(r.read().decode("utf-8"))
+              except urllib.error.HTTPError as e:
+                  raw = e.read().decode("utf-8", "replace")
+                  try:
+                      return e.code, json.loads(raw)
+                  except Exception:
+                      return e.code, {"error": raw[:1000]}
+
+          status, activity = get("https://openrouter.ai/api/v1/activity?date=2026-10-01")
+          print("ACTIVITY_STATUS", status)
+          if status == 200:
+              rows = activity.get("data", [])
+              wanted = []
+              for row in rows if isinstance(rows, list) else []:
+                  model = str(row.get("model") or "").lower()
+                  if "claude-sonnet-5.5" in model or "gpt-5.6-luna" in model:
+                      wanted.append({
+                          k: row.get(k)
+                          for k in (
+                              "date","model","model_permaslug","provider_name","requests",
+                              "prompt_tokens","completion_tokens","reasoning_tokens","usage",
+                              "byok_usage_inference","endpoint_id"
+                          )
+                          if k in row
+                      })
+              print("V19_MODELS_ACTIVITY", json.dumps(wanted, ensure_ascii=False))
+          else:
+              print("ACTIVITY_ERROR", json.dumps(activity, ensure_ascii=False)[:1500])
+
+          kstatus, keyinfo = get("https://openrouter.ai/api/v1/key")
+          print("KEY_STATUS", kstatus)
+          if kstatus == 200:
+              data = keyinfo.get("data") or {}
+              safe = {
+                  k: data.get(k)
+                  for k in ("usage","usage_daily","usage_weekly","usage_monthly","limit","limit_remaining","is_free_tier")
+                  if k in data
+              }
+              print("KEY_USAGE_SAFE", json.dumps(safe, ensure_ascii=False))
+          PY
