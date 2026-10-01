@@ -52,21 +52,29 @@
     "repair_paid_wrapper": "src/spineforge_v20_paid_repair_once.py",
     "repair_authorization_marker": "PAID-V20-AGE12-ISLAND-REPAIR1",
     "repair_diff_guard_required": true,
-    "repair_regate_required": true
+    "repair_regate_required": true,
+    "writer_handoff_frozen": true,
+    "writer_paid_wrapper": "src/spineforge_v20_paid_writer_once.py",
+    "writer_authorization_marker": "PAID-V20-AGE12-ISLAND-WRITER1",
+    "writer_requires_exact_approval_id": true,
+    "writer_requires_exact_spine_hash": true,
+    "writer_requires_exact_context_fingerprint": true,
+    "writer_one_call_only": true,
+    "writer_downstream_calls_forbidden": true
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 2,
-    "confirmed_cost_usd": 0.06831485,
-    "last_paid_run_id": 36908095596,
-    "last_result": "repair_required",
-    "local_repair_authorized": false,
-    "writer_authorized": false
+    "paid_api_calls": 4,
+    "confirmed_cost_usd": 0.1456669,
+    "last_paid_run_id": 36910614976,
+    "last_result": "accepted_after_local_repair",
+    "writer_product_authorized": true,
+    "paid_writer_execution_authorized": false
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.2",
-    "runtime_source_commit": "1f2eec63413ab15f00dcf57768e6583d8aee824b",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.3",
+    "runtime_source_commit": "05df7ce9f230b63e2bc47213924969a742a2d490",
     "files": [
       {
         "path": "requirements.txt",
@@ -167,6 +175,30 @@
       {
         "path": "src/spineforge_v20_paid_repair_once.py",
         "sha256": "ed23c5183714b88a669974a2897008564fbb742dc413938388d420a4997114db"
+      },
+      {
+        "path": "evidence/spineforge-v20-human-review/36910614976-approved.json",
+        "sha256": "72cd2ecc973884415747aed93e721c2fbb32617901c24884142585b9c54254a3"
+      },
+      {
+        "path": "evidence/spineforge-v20-writer-handoff/36910614976-writer-ready.json",
+        "sha256": "cfa97b2144b9954b665c5bf78e78fae5619be8c0e936f8262c8251145f057297"
+      },
+      {
+        "path": "prompts/spineforge_v20_writer.md",
+        "sha256": "0e1843e7a6ed263e54ad7c034ff4987283c2e6c45bdbb3eec4071528ca72ee1d"
+      },
+      {
+        "path": "src/spineforge_v20_writer_handoff.py",
+        "sha256": "02784ea145a4c869240e0fb1bd1cdb09910569b358f83de803db51c60b073948"
+      },
+      {
+        "path": "src/spineforge_v20_writer_once.py",
+        "sha256": "3e594fe861ae0bca7073c487658edd84aa03143dec7ca8587b065214bc5e3b1b"
+      },
+      {
+        "path": "src/spineforge_v20_paid_writer_once.py",
+        "sha256": "8764741d77b63555a874990b3a362bf6afddf46081d08796a8f4102a6dafa090"
       }
     ]
   },
@@ -180,5 +212,31 @@
     "paid_repair_authorized": false,
     "automatic_repair_enabled": false,
     "writer_authorized": false
+  },
+  "human_review_state": {
+    "verdict": "APPROVE",
+    "approval_id": "63d4b9734dc4966cac672481dc8404d02679ceea9444554a8931842a21f0d112",
+    "context_fingerprint": "090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233",
+    "spine_hash": "f9c5bed93448d6c56787466ae583dfcee06d0f856641d9c3901136f142bffae6",
+    "writer_handoff_ready": true
+  },
+  "writer_state": {
+    "status": "WRITER_READY",
+    "model": "aion-labs/aion-3.5-mini",
+    "approval_artifact": "evidence/spineforge-v20-human-review/36910614976-approved.json",
+    "handoff_artifact": "evidence/spineforge-v20-writer-handoff/36910614976-writer-ready.json",
+    "prompt": "prompts/spineforge_v20_writer.md",
+    "exact_age": 12,
+    "target_words_min": 1600,
+    "target_words_max": 2500,
+    "preferred_words_min": 2000,
+    "preferred_words_max": 2200,
+    "paid_writer_execution_authorized": false,
+    "automatic_retry_enabled": false,
+    "editor_authorized": false,
+    "judge_authorized": false,
+    "repair_authorized": false,
+    "translation_authorized": false,
+    "state_commit_authorized": false
   }
 }
