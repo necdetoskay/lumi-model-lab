@@ -45,3 +45,5 @@ def test_paid_repair_wrapper_persists_unhandled_failure(tmp_path: Path):
         (tmp_path / "902" / "age12-island-v20-repair1-result.json").read_text()
     )
     assert persisted["failure"]["type"] == "RuntimeError"
+
+# paid repair trigger touch: v20 repair1
