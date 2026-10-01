@@ -38,7 +38,7 @@ The fixed six-case matrix is versioned at:
 
 At this source revision, the age-18 Leyra context fixture is frozen and five additional production-like ContextPacks remain intentionally pending. This means **paid six-case qualification is blocked** even if zero-cost tests pass.
 
-No paid trigger may be added before:
+Transport rule: every qualification stage uses a v19-specific one-shot HTTP transport. Transient provider/HTTP errors are recorded as failed evidence and are never retried automatically. The compact Luna gate uses provider-strict JSON Schema; the larger Sonnet architect remains JSON-object + local typed validation.\n\nNo paid trigger may be added before:
 1. zero-cost CI is GREEN;
 2. all six context fixtures are frozen;
 3. runtime/prompt/schema hashes are frozen;

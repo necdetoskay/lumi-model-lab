@@ -25,8 +25,16 @@ JsonCall = Callable[
 ]
 
 
-def _default_call(**kwargs: Any):
-    return call_structured_json_with_retry(max_parse_attempts=1, **kwargs)
+def _default_architect_call(**kwargs: Any):
+    return call_json_object_once(**kwargs)
+
+
+def _default_gate_call(**kwargs: Any):
+    return call_strict_json_once(
+        schema_name="spineforge_v19_product_gate",
+        schema=SpineProductGateV19.model_json_schema(by_alias=True),
+        **kwargs,
+    )
 
 
 def _normalized_call(
@@ -114,7 +122,7 @@ def run(
         },
     }
 
-    architect = architect_call_fn or _default_call
+    architect = architect_call_fn or _default_architect_call
     architect_payload = {
         "task": "create_one_complete_narrative_spine_product",
         "spine_context_pack": context_pack.model_dump(mode="json", by_alias=True),
@@ -168,7 +176,7 @@ def run(
     evidence["narrative_spine"] = spine.model_dump(mode="json", by_alias=True)
     evidence["deterministic_validation"] = report.model_dump(mode="json", by_alias=True)
 
-    gate = gate_call_fn or _default_call
+    gate = gate_call_fn or _default_gate_call
     gate_payload = {
         "task": "adversarially_gate_narrative_spine",
         "spine_context_pack": context_pack.model_dump(mode="json", by_alias=True),
