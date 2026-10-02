@@ -71,10 +71,10 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 21,
-    "confirmed_cost_usd": 0.8869709,
-    "last_paid_run_id": 36987409819,
-    "last_result": "story_audit_attempt7_quality_failed_known_defect_missed",
+    "paid_api_calls": 23,
+    "confirmed_cost_usd": 1.0437254,
+    "last_paid_run_id": 36990160527,
+    "last_result": "story_audit_attempt8_qualified_local_repair_required",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false,
     "unreconciled_paid_runs": [
@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.38",
-    "runtime_source_commit": "d6c5b6088",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.39",
+    "runtime_source_commit": "dc72d1fa5",
     "files": [
       {
         "path": "requirements.txt",
@@ -375,6 +375,18 @@
       {
         "path": "evidence/spineforge-v20-paid-story-audit/36987409819/qualification-report.json",
         "sha256": "19ab329059a7b1c473026ff821b08a0803aa04141a5a382b43b1bec9568a41a9"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36990160527/age12-island-v20-story-audit8-result.json",
+        "sha256": "5ae1b2d59c2e33fb163aefc318e3b2c761a9bab56d90e6f82999fc64f94250f4"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36990160527/age12-island-v20-story-audit8-envelope.json",
+        "sha256": "e0a4580be773252e9021be1db111ff34420e84ed1ed880b1c60ff40b5f7db7ea"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36990160527/qualification-report.json",
+        "sha256": "cfdc93ae868422259d042ab8d95fb959f54bfcb8fd781493ce9301d93f6ceeb1"
       }
     ]
   },
@@ -463,10 +475,10 @@
     "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
     "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
     "next_stage": "STORY_AUDIT",
-    "paid_story_audit_authorized": true
+    "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "ATTEMPT8_PAID_EXECUTION_AUTHORIZED",
+    "status": "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -479,7 +491,7 @@
     "local_repair_routes_to": "STORY_LOCAL_REPAIR",
     "clean_routes_to": "ENGLISH_MASTER_SEAL",
     "structural_or_replan_routes_to": "STOP",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "primary_model": "anthropic/claude-sonnet-5.5",
     "secondary_model": "openai/gpt-5.6-sol",
     "audit_calls_per_execution": 2,
@@ -490,7 +502,7 @@
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_audit_once.py",
-    "authorization_consumed": false,
+    "authorization_consumed": true,
     "attempt1": {
       "run_id": 36969500342,
       "status": "audit_completed",
@@ -543,7 +555,7 @@
       "cost_usd_reconciled": false,
       "audit_artifact_created": false
     },
-    "next_harness_requirement": "attempt8_paid_result",
+    "next_harness_requirement": "stage6_story_local_repair_handoff_zero_cost",
     "locator_policy": "multi_span_unique_exact_text_rebind_v2",
     "failure_evidence_policy": "preserve_raw_audits_and_usage_v1",
     "attempt3_paid_authorized": false,
@@ -871,7 +883,7 @@
       "state_commit_executed": false,
       "audit_artifact_created": true
     },
-    "attempt8_paid_authorized": true,
+    "attempt8_paid_authorized": false,
     "attempt8_harness": {
       "attempt_index": 8,
       "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-AUDIT8",
@@ -892,7 +904,53 @@
       "locator_policy": "multi_span_unique_exact_text_rebind_v3",
       "failure_evidence_policy": "preserve_provider_trace_and_usage_v2",
       "automatic_retry_enabled": false,
-      "paid_execution_authorized": true
+      "paid_execution_authorized": false
+    },
+    "attempt8": {
+      "run_id": 36990160527,
+      "status": "audit_completed",
+      "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "audit_contract_revision": "primary-v3-plus-language-specialist-v2",
+      "secondary_contract_revision": "language-specialist-v2",
+      "secondary_sentence_scan_count": 199,
+      "s006_scan_status": "defect",
+      "s006_editor_action": "REWRITE",
+      "s006_rewrite": "\"I saw it first,\" Nisa said, arriving at his side.",
+      "known_target_detected": true,
+      "known_target_recall": 1.0,
+      "qualification_status": "PASS",
+      "api_calls": 2,
+      "input_tokens": 39978,
+      "output_tokens": 7058,
+      "reasoning_tokens": 369,
+      "total_tokens": 47036,
+      "cost_usd": 0.1567545,
+      "latency_seconds": 55.268,
+      "primary_finding_count": 13,
+      "secondary_finding_count": 12,
+      "finding_count": 25,
+      "artifact_id": "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876",
+      "decision": "LOCAL_REPAIR_REQUIRED",
+      "next_stage": "STORY_LOCAL_REPAIR",
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "audit_artifact_created": true,
+      "result_path": "evidence/spineforge-v20-paid-story-audit/36990160527/age12-island-v20-story-audit8-result.json",
+      "envelope_path": "evidence/spineforge-v20-paid-story-audit/36990160527/age12-island-v20-story-audit8-envelope.json",
+      "qualification_report_path": "evidence/spineforge-v20-paid-story-audit/36990160527/qualification-report.json"
+    },
+    "stage5_output_artifact": {
+      "artifact_id": "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "decision": "LOCAL_REPAIR_REQUIRED",
+      "next_stage": "STORY_LOCAL_REPAIR",
+      "finding_count": 25,
+      "qualification_status": "PASS",
+      "immutable": true
     }
   }
 }
