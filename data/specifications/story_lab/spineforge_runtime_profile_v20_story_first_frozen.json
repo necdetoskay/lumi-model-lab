@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.31",
-    "runtime_source_commit": "b41b86d38",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.32",
+    "runtime_source_commit": "d5839a6c3",
     "files": [
       {
         "path": "requirements.txt",
@@ -258,7 +258,7 @@
       },
       {
         "path": "src/spineforge_v20_story_audit_once.py",
-        "sha256": "f25b4027dc290e0beb713f39b09344be90e43f4393534da8047d9629294c58d3"
+        "sha256": "c0fb0ae0127cfe63a1a665a418016f66099b652d39cbeecdd73bd0138cf446ad"
       },
       {
         "path": "src/spineforge_v20_paid_story_audit_once.py",
@@ -302,7 +302,7 @@
       },
       {
         "path": "prompts/spineforge_v20_story_audit_secondary.md",
-        "sha256": "61b88d0a8caec935b8de0fa0495950dc3638429593575c01d04f66ed49aed279"
+        "sha256": "efe106c000643d7f05e03b08ef25ce55ae396bcb1a39f9afed6fbf5355caf09f"
       },
       {
         "path": "evidence/spineforge-v20-paid-story-audit/36972037743/qualification-report.json",
@@ -454,7 +454,7 @@
     "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "ATTEMPT6_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED",
+    "status": "LANGUAGE_SPECIALIST_REQUALIFICATION_PREPARED_ZERO_COST",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -504,7 +504,7 @@
       "decision": "LOCAL_REPAIR_REQUIRED",
       "finding_count": 6
     },
-    "audit_contract_revision": "family-by-family-multi-finding-v3",
+    "audit_contract_revision": "primary-v3-plus-language-specialist-v1",
     "authority_projection": "compact-reveal-safe-v1",
     "prompt_revision": "stage5-story-audit-v3",
     "attempt2_paid_authorized": false,
@@ -531,7 +531,7 @@
       "cost_usd_reconciled": false,
       "audit_artifact_created": false
     },
-    "next_harness_requirement": "secondary_language_specialist_zero_cost_qualification_before_next_paid_attempt",
+    "next_harness_requirement": "language_specialist_zero_cost_green_before_next_paid_attempt",
     "locator_policy": "multi_span_unique_exact_text_rebind_v2",
     "failure_evidence_policy": "preserve_raw_audits_and_usage_v1",
     "attempt3_paid_authorized": false,
@@ -779,6 +779,24 @@
       "known_target_recall": 0.0,
       "reprocessed_result_path": "evidence/spineforge-v20-paid-story-audit/36981205470/age12-island-v20-story-audit6-reprocessed.json",
       "qualification_report_path": "evidence/spineforge-v20-paid-story-audit/36981205470/qualification-report-reprocessed.json"
+    },
+    "secondary_language_specialist": {
+      "contract_revision": "language-specialist-v1",
+      "model": "openai/gpt-5.6-sol",
+      "schema_name": "spineforge_v20_language_specialist_v1",
+      "request_class": "spineforge_v20_story_audit",
+      "task": "audit_frozen_story_english_naturalness_only",
+      "input_policy": "frozen-story-plus-exact-age-only",
+      "full_authority_context_included": false,
+      "approved_spine_included": false,
+      "expected_sentence_count": 199,
+      "every_sentence_exactly_once_required": true,
+      "exact_canonical_order_required": true,
+      "defect_scan_ids_must_equal_finding_span_ids": true,
+      "finding_family": "language_naturalness",
+      "finding_repair_scope": "LOCAL_REPAIR",
+      "max_tokens": 6000,
+      "paid_execution_authorized": false
     }
   }
 }

@@ -1,20 +1,16 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pytest
 
 from src.spineforge_v20_story_audit_once import (
     PRIMARY_MODEL,
+    SECONDARY_AUDIT_SCHEMA_NAME,
     SECONDARY_MODEL,
     execute_story_audit_once,
 )
 
-
-MANIFEST = Path(
-    "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json"
-)
 
 FAMILY_ORDER = [
     "physical_feasibility",
@@ -47,68 +43,78 @@ def _body(prompt_tokens: int, completion_tokens: int, cost: float) -> dict:
 def _request() -> dict:
     return {
         "temperature": 0.0,
-        "max_tokens": 3500,
+        "max_tokens": 6000,
         "reasoning": None,
-        "response_format": None,
+        "response_format": {"type": "json_schema"},
     }
 
 
-def _clean_evaluations() -> list[dict]:
+def _clean_primary_evaluations() -> list[dict]:
     return [
         {
             "family": family,
             "present": False,
-            "severity": None,
-            "repair_scope": None,
-            "span_ids": [],
-            "exact_text": None,
+            "findings": [],
             "reason": "No concrete defect in this family.",
         }
         for family in FAMILY_ORDER
     ]
 
 
-def test_stage5_v2_dual_audit_uses_same_frozen_writer_artifact_and_emits_one_artifact():
+def _language_specialist_raw(
+    payload: dict,
+    *,
+    defect_span_id: str | None = None,
+    exact_text: str | None = None,
+) -> dict:
+    findings = []
+    if defect_span_id is not None:
+        findings.append(
+            {
+                "severity": "minor",
+                "span_ids": [defect_span_id],
+                "exact_text": exact_text,
+                "reason": "Understandable but idiomatically unnatural English movement phrasing.",
+            }
+        )
+    return {
+        "language_sentence_scan": [
+            {
+                "span_id": str(row["id"]),
+                "status": "defect" if str(row["id"]) == defect_span_id else "clean",
+            }
+            for row in payload["story_segments"]
+        ],
+        "findings": findings,
+        "summary": "Language-only sentence audit complete.",
+    }
+
+
+def test_stage5_language_specialist_uses_same_frozen_story_but_not_full_authority():
     seen = []
 
     def primary(**kwargs):
         payload = json.loads(kwargs["user_prompt"])
-        seen.append(("primary", payload["source_artifact"]))
-        assert "spine_context_pack" not in payload
-        assert "reader_profile" not in payload
-        assert payload["audit_authority_projection_sha256"]
-        segment = next(
-            row
-            for row in payload["story_segments"]
-            if "arriving at his shoulder" in row["text"]
-        )
-        evaluations = _clean_evaluations()
-        evaluations[FAMILY_ORDER.index("language_naturalness")] = {
-            "family": "language_naturalness",
-            "present": True,
-            "severity": "minor",
-            "repair_scope": "LOCAL_REPAIR",
-            "span_ids": [segment["id"]],
-            "exact_text": "arriving at his shoulder",
-            "reason": "The phrase is understandable but idiomatically unnatural English.",
-        }
+        seen.append(("primary", payload))
         raw = {
-            "evaluations": evaluations,
-            "summary": "One local language issue.",
+            "evaluations": _clean_primary_evaluations(),
+            "summary": "Primary audit clean.",
         }
         return raw, _body(100, 20, 0.01), _request(), []
 
     def secondary(**kwargs):
         payload = json.loads(kwargs["user_prompt"])
-        seen.append(("secondary", payload["source_artifact"]))
-        raw = {
-            "language_sentence_scan": [
-                {"span_id": str(row["id"]), "status": "clean"}
-                for row in payload["story_segments"]
-            ],
-            "evaluations": _clean_evaluations(),
-            "summary": "No additional defect.",
-        }
+        seen.append(("secondary", payload))
+        segment = next(
+            row
+            for row in payload["story_segments"]
+            if "arriving at his shoulder" in row["text"]
+        )
+        raw = _language_specialist_raw(
+            payload,
+            defect_span_id=segment["id"],
+            exact_text="arriving at his shoulder",
+        )
         return raw, _body(90, 10, 0.02), _request(), []
 
     result = execute_story_audit_once(
@@ -118,27 +124,40 @@ def test_stage5_v2_dual_audit_uses_same_frozen_writer_artifact_and_emits_one_art
     )
 
     assert result["status"] == "audit_completed"
-    assert result["audit_contract_revision"] == "family-by-family-multi-finding-v3"
+    assert result["audit_contract_revision"] == "primary-v3-plus-language-specialist-v1"
+    assert result["secondary_contract_revision"] == "language-specialist-v1"
     assert result["models"]["primary"] == PRIMARY_MODEL
     assert result["models"]["secondary"] == SECONDARY_MODEL
-    assert result["input_verified_before_inference"] is True
-    assert result["input_verified_after_inference"] is True
     assert result["source_story_mutated"] is False
-    assert result["audit_authority_projection_sha256"]
-    assert result["audit_authority_projection_bytes"] > 0
-    assert len(seen) == 2
-    assert seen[0][1] == seen[1][1]
-    assert seen[0][1]["story_sha256"] == (
+
+    primary_payload = seen[0][1]
+    secondary_payload = seen[1][1]
+    assert primary_payload["source_artifact"] == secondary_payload["source_artifact"]
+    assert primary_payload["source_artifact"]["story_sha256"] == (
         "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
     )
+    assert "audit_authority_projection" in primary_payload
+    assert "approved_narrative_spine" in primary_payload
+    assert "audit_authority_projection" not in secondary_payload
+    assert "approved_narrative_spine" not in secondary_payload
+    assert secondary_payload["task"] == "audit_frozen_story_english_naturalness_only"
+    assert len(secondary_payload["story_segments"]) == 199
 
     artifact = result["audit_artifact"]
     assert artifact["decision"] == "LOCAL_REPAIR_REQUIRED"
     assert artifact["next_stage"] == "STORY_LOCAL_REPAIR"
-    assert artifact["source_artifact_id"] == result["source_artifact_id"]
-    assert artifact["source_story_sha256"] == result["source_story_sha256"]
     assert len(artifact["findings"]) == 1
+    assert artifact["findings"][0]["family"] == "language_naturalness"
+    assert artifact["findings"][0]["repair_scope"] == "LOCAL_REPAIR"
+    assert artifact["findings"][0]["span_ids"] == ["S006"]
     assert artifact["findings"][0]["exact_text"] == "arriving at his shoulder"
+
+    assert result["secondary_language_sentence_scan_count"] == 199
+    assert next(
+        row
+        for row in result["secondary_language_sentence_scan"]
+        if row["span_id"] == "S006"
+    )["status"] == "defect"
 
     totals = result["audit_usage_rollup"]["totals"]
     assert totals["api_calls"] == 2
@@ -150,15 +169,19 @@ def test_stage5_v2_dual_audit_uses_same_frozen_writer_artifact_and_emits_one_art
     assert result["state_commit_executed"] is False
 
 
-def test_stage5_v2_requires_every_auditor_to_decide_every_family():
+def test_stage5_primary_still_requires_all_thirteen_families_before_secondary_runs():
     secondary_called = False
 
     def primary(**kwargs):
-        raw = {
-            "evaluations": _clean_evaluations()[:-1],
-            "summary": "Incomplete family coverage.",
-        }
-        return raw, _body(10, 5, 0.0), _request(), []
+        return (
+            {
+                "evaluations": _clean_primary_evaluations()[:-1],
+                "summary": "Incomplete primary coverage.",
+            },
+            _body(10, 5, 0.0),
+            _request(),
+            [],
+        )
 
     def secondary(**kwargs):
         nonlocal secondary_called
@@ -174,20 +197,62 @@ def test_stage5_v2_requires_every_auditor_to_decide_every_family():
     assert secondary_called is False
 
 
-def test_stage5_v2_clean_dual_audit_routes_to_english_master_seal():
-    def clean(**kwargs):
-        payload = json.loads(kwargs["user_prompt"])
-        raw = {
-            "evaluations": _clean_evaluations(),
-            "summary": "Clean.",
-        }
-        if kwargs.get("schema_name") == "spineforge_v20_story_audit_secondary_v4":
-            raw["language_sentence_scan"] = [
-                {"span_id": str(row["id"]), "status": "clean"}
-                for row in payload["story_segments"]
-            ]
+def test_stage5_language_specialist_requires_199_exact_order_scan_and_matching_findings():
+    def primary(**kwargs):
         return (
-            raw,
+            {
+                "evaluations": _clean_primary_evaluations(),
+                "summary": "Primary clean.",
+            },
+            _body(10, 5, 0.0),
+            _request(),
+            [],
+        )
+
+    def incomplete_secondary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        raw = _language_specialist_raw(payload)
+        raw["language_sentence_scan"] = raw["language_sentence_scan"][:-1]
+        return raw, _body(10, 5, 0.0), _request(), []
+
+    with pytest.raises(RuntimeError, match="every story sentence exactly once"):
+        execute_story_audit_once(
+            api_key="not-used",
+            primary_call_fn=primary,
+            secondary_call_fn=incomplete_secondary,
+        )
+
+    def mismatch_secondary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        raw = _language_specialist_raw(payload)
+        raw["language_sentence_scan"][5]["status"] = "defect"
+        return raw, _body(10, 5, 0.0), _request(), []
+
+    with pytest.raises(RuntimeError, match="must exactly match finding span ids"):
+        execute_story_audit_once(
+            api_key="not-used",
+            primary_call_fn=primary,
+            secondary_call_fn=mismatch_secondary,
+        )
+
+
+def test_stage5_clean_primary_and_clean_language_specialist_routes_to_english_master_seal():
+    def primary(**kwargs):
+        return (
+            {
+                "evaluations": _clean_primary_evaluations(),
+                "summary": "Primary clean.",
+            },
+            _body(10, 5, 0.0),
+            _request(),
+            [],
+        )
+
+    def secondary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        assert kwargs["schema_name"] == SECONDARY_AUDIT_SCHEMA_NAME
+        return (
+            _language_specialist_raw(payload),
             _body(10, 5, 0.0),
             _request(),
             [],
@@ -195,8 +260,8 @@ def test_stage5_v2_clean_dual_audit_routes_to_english_master_seal():
 
     result = execute_story_audit_once(
         api_key="not-used",
-        primary_call_fn=clean,
-        secondary_call_fn=clean,
+        primary_call_fn=primary,
+        secondary_call_fn=secondary,
     )
     artifact = result["audit_artifact"]
     assert artifact["decision"] == "ACCEPT"

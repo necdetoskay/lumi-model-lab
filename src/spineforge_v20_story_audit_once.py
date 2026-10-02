@@ -112,29 +112,61 @@ AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
         "summary": {"type": "string", "maxLength": 600},
     },
 }
-SECONDARY_AUDIT_SCHEMA_NAME = "spineforge_v20_story_audit_secondary_v4"
-SECONDARY_AUDIT_RESPONSE_SCHEMA: dict[str, Any] = json.loads(
-    json.dumps(AUDIT_RESPONSE_SCHEMA)
-)
-SECONDARY_AUDIT_RESPONSE_SCHEMA["required"] = [
-    "language_sentence_scan",
-    "evaluations",
-    "summary",
-]
-SECONDARY_AUDIT_RESPONSE_SCHEMA["properties"]["language_sentence_scan"] = {
-    "type": "array",
-    "minItems": 1,
-    "maxItems": 512,
-    "items": {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["span_id", "status"],
-        "properties": {
-            "span_id": {"type": "string", "maxLength": 16},
-            "status": {"type": "string", "enum": ["clean", "defect"]},
+SECONDARY_AUDIT_SCHEMA_NAME = "spineforge_v20_language_specialist_v1"
+SECONDARY_AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["language_sentence_scan", "findings", "summary"],
+    "properties": {
+        "language_sentence_scan": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 512,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["span_id", "status"],
+                "properties": {
+                    "span_id": {"type": "string", "maxLength": 16},
+                    "status": {"type": "string", "enum": ["clean", "defect"]},
+                },
+            },
         },
+        "findings": {
+            "type": "array",
+            "maxItems": 48,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["severity", "span_ids", "exact_text", "reason"],
+                "properties": {
+                    "severity": {
+                        "type": "string",
+                        "enum": ["minor", "moderate", "serious", "critical"],
+                    },
+                    "span_ids": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 6,
+                        "items": {"type": "string", "maxLength": 16},
+                    },
+                    "exact_text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 700,
+                    },
+                    "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 420,
+                    },
+                },
+            },
+        },
+        "summary": {"type": "string", "maxLength": 600},
     },
 }
+
 DEFAULT_WRITER_MANIFEST = Path(
     "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json"
 )
@@ -374,6 +406,92 @@ def _normalize_auditor_payload(
         "summary": str(raw.get("summary") or "").strip(),
     }
 
+def _normalize_language_specialist_payload(
+    *,
+    raw: dict[str, Any],
+    expected_span_ids: list[str],
+) -> dict[str, Any]:
+    scan = raw.get("language_sentence_scan")
+    if not isinstance(scan, list):
+        raise RuntimeError("Language specialist sentence scan must be a list.")
+
+    normalized_scan: list[dict[str, str]] = []
+    for item in scan:
+        if not isinstance(item, dict):
+            raise RuntimeError("Language specialist sentence scan row must be an object.")
+        span_id = str(item.get("span_id") or "")
+        status = str(item.get("status") or "").lower()
+        if not span_id:
+            raise RuntimeError("Language specialist span_id is required.")
+        if status not in {"clean", "defect"}:
+            raise RuntimeError(
+                f"Language specialist sentence status invalid: {span_id}:{status}"
+            )
+        normalized_scan.append({"span_id": span_id, "status": status})
+
+    actual_ids = [row["span_id"] for row in normalized_scan]
+    if actual_ids != expected_span_ids:
+        raise RuntimeError(
+            "Language specialist must scan every story sentence exactly once "
+            "in canonical order."
+        )
+
+    findings_raw = raw.get("findings")
+    if not isinstance(findings_raw, list):
+        raise RuntimeError("Language specialist findings must be a list.")
+
+    valid_severity = {"minor", "moderate", "serious", "critical"}
+    expected_set = set(expected_span_ids)
+    findings: list[dict[str, Any]] = []
+    for finding in findings_raw:
+        if not isinstance(finding, dict):
+            raise RuntimeError("Language specialist finding must be an object.")
+        severity = str(finding.get("severity") or "").lower()
+        span_ids = [str(x) for x in (finding.get("span_ids") or [])]
+        exact_text = str(finding.get("exact_text") or "")
+        reason = str(finding.get("reason") or "").strip()
+        if severity not in valid_severity:
+            raise RuntimeError(
+                f"Language specialist severity invalid: {severity}"
+            )
+        if not span_ids:
+            raise RuntimeError("Language specialist finding requires span_ids.")
+        if any(span_id not in expected_set for span_id in span_ids):
+            raise RuntimeError("Language specialist finding references unknown span id.")
+        if not exact_text:
+            raise RuntimeError("Language specialist finding requires exact_text.")
+        if not reason:
+            raise RuntimeError("Language specialist finding requires reason.")
+        findings.append({
+            "family": "language_naturalness",
+            "severity": severity,
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": span_ids,
+            "exact_text": exact_text,
+            "reason": reason,
+        })
+
+    defect_ids = {
+        row["span_id"] for row in normalized_scan if row["status"] == "defect"
+    }
+    finding_ids = {
+        span_id
+        for finding in findings
+        for span_id in finding["span_ids"]
+    }
+    if defect_ids != finding_ids:
+        raise RuntimeError(
+            "Language specialist defect scan ids must exactly match finding span ids."
+        )
+
+    return {
+        "evaluations": [],
+        "findings": findings,
+        "language_sentence_scan": normalized_scan,
+        "summary": str(raw.get("summary") or "").strip(),
+    }
+
+
 def _build_audit_authority_projection(authority: dict[str, Any]) -> dict[str, Any]:
     pack = authority["spine_context_pack"]
     reader = authority["reader_profile"]
@@ -585,6 +703,7 @@ def _call_auditor(
     schema: dict[str, Any] = AUDIT_RESPONSE_SCHEMA,
     require_language_sentence_scan: bool = False,
     expected_span_ids: list[str] | None = None,
+    normalize_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     started = time.perf_counter()
     raw, body, request, failures = fn(
@@ -600,11 +719,14 @@ def _call_auditor(
         schema=schema,
     )
     latency = round(time.perf_counter() - started, 3)
-    normalized = _normalize_auditor_payload(
-        raw=raw,
-        require_language_sentence_scan=require_language_sentence_scan,
-        expected_span_ids=expected_span_ids,
-    )
+    if normalize_fn is not None:
+        normalized = normalize_fn(raw)
+    else:
+        normalized = _normalize_auditor_payload(
+            raw=raw,
+            require_language_sentence_scan=require_language_sentence_scan,
+            expected_span_ids=expected_span_ids,
+        )
     call = normalize_model_call(
         stage=stage,
         model=model,
@@ -653,7 +775,7 @@ def execute_story_audit_once(
     source_story_sha = manifest["story_sha256"]
 
     authority_projection = _build_audit_authority_projection(authority)
-    payload = {
+    primary_payload = {
         "task": "audit_one_frozen_writer_story",
         "source_artifact": {
             "artifact_id": manifest["artifact_id"],
@@ -663,6 +785,18 @@ def execute_story_audit_once(
         "audit_authority_projection": authority_projection["projection"],
         "audit_authority_projection_sha256": authority_projection["sha256"],
         "approved_narrative_spine": authority["approved_narrative_spine"],
+        "story_segments": audit_source["story_segments"],
+    }
+    secondary_payload = {
+        "task": "audit_frozen_story_english_naturalness_only",
+        "source_artifact": {
+            "artifact_id": manifest["artifact_id"],
+            "story_sha256": source_story_sha,
+            "source_run_id": manifest["source_run_id"],
+        },
+        "reader": {
+            "exact_age": authority["reader_profile"].get("exact_age"),
+        },
         "story_segments": audit_source["story_segments"],
     }
     primary_system_prompt = (
@@ -681,7 +815,7 @@ def execute_story_audit_once(
         api_key=api_key,
         model=PRIMARY_MODEL,
         prompt=primary_system_prompt,
-        payload=payload,
+        payload=primary_payload,
         stage="spineforge_v20_story_audit_primary",
     )
     secondary, secondary_meta = _call_auditor(
@@ -689,12 +823,14 @@ def execute_story_audit_once(
         api_key=api_key,
         model=SECONDARY_MODEL,
         prompt=secondary_system_prompt,
-        payload=payload,
-        stage="spineforge_v20_story_audit_secondary",
+        payload=secondary_payload,
+        stage="spineforge_v20_story_audit_language_specialist",
         schema_name=SECONDARY_AUDIT_SCHEMA_NAME,
         schema=SECONDARY_AUDIT_RESPONSE_SCHEMA,
-        require_language_sentence_scan=True,
-        expected_span_ids=expected_span_ids,
+        normalize_fn=lambda raw: _normalize_language_specialist_payload(
+            raw=raw,
+            expected_span_ids=expected_span_ids,
+        ),
     )
 
     # Re-verify immutable source after both model calls.
@@ -739,7 +875,8 @@ def execute_story_audit_once(
             "input_verified_before_inference": True,
             "input_verified_after_inference": True,
             "source_story_mutated": False,
-            "audit_contract_revision": "family-by-family-multi-finding-v3",
+            "audit_contract_revision": "primary-v3-plus-language-specialist-v1",
+            "secondary_contract_revision": "language-specialist-v1",
             "audit_authority_projection_sha256": authority_projection["sha256"],
             "audit_authority_projection_bytes": authority_projection["bytes"],
             "models": {
@@ -776,7 +913,8 @@ def execute_story_audit_once(
         "input_verified_before_inference": True,
         "input_verified_after_inference": True,
         "source_story_mutated": False,
-        "audit_contract_revision": "family-by-family-multi-finding-v3",
+        "audit_contract_revision": "primary-v3-plus-language-specialist-v1",
+        "secondary_contract_revision": "language-specialist-v1",
         "audit_authority_projection_sha256": authority_projection["sha256"],
         "audit_authority_projection_bytes": authority_projection["bytes"],
         "models": {
