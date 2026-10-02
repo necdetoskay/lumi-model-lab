@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.3"
-    assert result["verified_files"] == 31
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.4"
+    assert result["verified_files"] == 33
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "05df7ce9f230b63e2bc47213924969a742a2d490"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "001d8bc8bcfc4a7b52144369b50d0d46bd2c9269"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -60,8 +60,8 @@ def test_v20_freeze_has_one_frozen_age12_island_case_and_tracked_paid_state():
 
     state = profile["qualification_state"]
     assert state["paid_authorized"] is False
-    assert state["paid_api_calls"] == 4
-    assert state["confirmed_cost_usd"] == 0.14566690
+    assert state["paid_api_calls"] == 5
+    assert state["confirmed_cost_usd"] == 0.19864990
     assert state["writer_product_authorized"] is True
     assert state["paid_writer_execution_authorized"] is False
 
@@ -85,7 +85,7 @@ def test_v20_2_freeze_locks_local_repair_source_scope_and_paid_boundary():
     assert paid["repair_authorization_marker"] == "PAID-V20-AGE12-ISLAND-REPAIR1"
 
 
-def test_v20_3_freeze_locks_human_approval_and_writer_handoff_without_paid_execution():
+def test_v20_4_freeze_locks_human_approval_and_bounded_writer_retry_without_paid_execution():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     review = profile["human_review_state"]
     writer = profile["writer_state"]
@@ -97,7 +97,7 @@ def test_v20_3_freeze_locks_human_approval_and_writer_handoff_without_paid_execu
     assert review["context_fingerprint"] == "090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233"
     assert review["writer_handoff_ready"] is True
 
-    assert writer["status"] == "WRITER_READY"
+    assert writer["status"] == "WRITER_RETRY_READY"
     assert writer["model"] == "aion-labs/aion-3.5-mini"
     assert writer["target_words_min"] == 1600
     assert writer["target_words_max"] == 2500
@@ -109,9 +109,37 @@ def test_v20_3_freeze_locks_human_approval_and_writer_handoff_without_paid_execu
     assert writer["translation_authorized"] is False
     assert writer["state_commit_authorized"] is False
 
-    assert paid["writer_authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER1"
+    assert paid["writer_authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
     assert paid["writer_requires_exact_approval_id"] is True
     assert paid["writer_requires_exact_spine_hash"] is True
     assert paid["writer_requires_exact_context_fingerprint"] is True
     assert paid["writer_one_call_only"] is True
     assert paid["writer_downstream_calls_forbidden"] is True
+
+
+def test_v20_4_writer_retry_freeze_records_failed_attempt_and_bounded_transport():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    writer = profile["writer_state"]
+    paid = profile["paid_boundary_policy"]
+
+    attempt = writer["attempt1"]
+    assert attempt["run_id"] == 36955873689
+    assert attempt["status"] == "writer_provider_failure"
+    assert attempt["finish_reason"] == "length"
+    assert attempt["output_tokens"] == 32768
+    assert attempt["reasoning_tokens"] == 33220
+    assert attempt["cost_usd"] == 0.052983
+    assert attempt["story_text_returned"] is False
+    assert attempt["automatic_retry_executed"] is False
+
+    assert writer["next_attempt_index"] == 2
+    assert writer["request_class"] == "spineforge_v20_story_writer"
+    assert writer["reasoning_effort"] == "none"
+    assert writer["max_tokens"] == 7000
+    assert writer["paid_writer_execution_authorized"] is False
+
+    assert paid["writer1_marker_consumed"] is True
+    assert paid["writer_retry_requires_explicit_authorization"] is True
+    assert paid["writer_request_class"] == "spineforge_v20_story_writer"
+    assert paid["writer_reasoning_effort"] == "none"
+    assert paid["writer_max_tokens"] == 7000
