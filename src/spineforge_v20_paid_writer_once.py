@@ -21,9 +21,12 @@ PROMPT_PATH = Path("prompts/spineforge_v20_writer.md")
 AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-WRITER3"
 STORY_AUDIT_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-AUDIT8"
 STORY_LOCAL_REPAIR_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR2"
+STORY_REAUDIT_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-REAUDIT1"
 
 
 def paid_stage_from_commit_message(message: str) -> str:
+    if STORY_REAUDIT_AUTHORIZATION_MARKER in message:
+        return "STORY_REAUDIT"
     if STORY_LOCAL_REPAIR_AUTHORIZATION_MARKER in message:
         return "STORY_LOCAL_REPAIR"
     if STORY_AUDIT_AUTHORIZATION_MARKER in message:
@@ -134,6 +137,12 @@ def execute_paid_writer_once(
 
 def main() -> None:
     stage = paid_stage_from_commit_message(current_commit_message())
+    if stage == "STORY_REAUDIT":
+        from src.spineforge_v20_paid_story_reaudit_once import (
+            main as story_reaudit_main,
+        )
+        story_reaudit_main()
+        return
     if stage == "STORY_LOCAL_REPAIR":
         from src.spineforge_v20_paid_story_local_repair_once import (
             main as story_local_repair_main,
