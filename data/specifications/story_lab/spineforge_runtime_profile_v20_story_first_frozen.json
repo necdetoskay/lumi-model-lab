@@ -71,26 +71,27 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 23,
+    "paid_api_calls": 24,
     "confirmed_cost_usd": 1.0437254,
-    "last_paid_run_id": 36990160527,
-    "last_result": "story_audit_attempt8_qualified_local_repair_required",
+    "last_paid_run_id": 36995792496,
+    "last_result": "story_local_repair_attempt1_failed_noop_patch_rejected",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false,
     "unreconciled_paid_runs": [
       36970666881,
-      36976651148
+      36976651148,
+      36995792496
     ],
     "cost_reconciliation_status": "PARTIAL",
-    "unreconciled_paid_api_calls": 4,
-    "unreconciled_paid_run_id": 36976651148,
-    "unreconciled_cost_reason": "attempt2 and attempt4 model calls completed but usage/cost evidence was not fully persisted after post-provider audit failures",
+    "unreconciled_paid_api_calls": 5,
+    "unreconciled_paid_run_id": 36995792496,
+    "unreconciled_cost_reason": "attempt2/attempt4 audit calls and stage6 repair attempt1 completed provider calls but usage/cost evidence was not fully persisted after post-provider validation failures",
     "confirmed_cost_is_lower_bound": true
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.42",
-    "runtime_source_commit": "ee3401fe9",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.43",
+    "runtime_source_commit": "b133154d4",
     "files": [
       {
         "path": "requirements.txt",
@@ -407,6 +408,14 @@
       {
         "path": "src/spineforge_v20_paid_story_local_repair_once.py",
         "sha256": "92e016987e7c0a80223e1a442d5f093d6307873e4a6c5fbf15a0e2a5ac3bb390"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-result.json",
+        "sha256": "35cbe12f48c865437200fd2deac4b2af46ccc61f087152421540f10060a5b431"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-envelope.json",
+        "sha256": "abe23e893285c0ece6b0b3d371e0b6d2036ca42bf0f1c21918a7f98068687aa1"
       }
     ]
   },
@@ -974,7 +983,7 @@
     }
   },
   "stage6_story_local_repair": {
-    "status": "PAID_EXECUTION_AUTHORIZED",
+    "status": "ATTEMPT1_FAILED_NOOP_PATCH_REJECTED",
     "stage": 6,
     "input_artifact_schema": "spineforge-v20-story-local-repair-handoff.v1",
     "artifact_type": "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT",
@@ -1033,10 +1042,10 @@
       "next_stage": "STORY_REAUDIT"
     },
     "next_stage_after_success": "STORY_REAUDIT",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "automatic_retry_enabled": false,
     "automatic_repair_loop_enabled": false,
-    "next_harness_requirement": "stage6_paid_result",
+    "next_harness_requirement": "stage6_attempt2_zero_cost_fix",
     "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
@@ -1049,7 +1058,7 @@
     "model_calls_per_execution": 1,
     "reasoning_effort": "low",
     "max_tokens": 8000,
-    "authorization_consumed": false,
+    "authorization_consumed": true,
     "paid_harness": {
       "attempt_index": 1,
       "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
@@ -1069,7 +1078,31 @@
       "reaudit_executed": false,
       "translation_executed": false,
       "state_commit_executed": false,
-      "paid_execution_authorized": true
+      "paid_execution_authorized": false
+    },
+    "attempt1": {
+      "run_id": 36995792496,
+      "status": "unhandled_story_local_repair_runtime_failure",
+      "failure_type": "RuntimeError",
+      "failure_reason": "Repair replacement did not change source: S173",
+      "failure_phase": "post_provider_repair_payload_validation",
+      "source_handoff_artifact_id": "story-local-repair-handoff:6f27c399c81ca3f8137005af4a36d4be6afd93881555e380e07b127eff5f98e1",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "source_audit_artifact_id": "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876",
+      "provider_call_completed": true,
+      "api_calls": 1,
+      "usage_evidence_persisted": false,
+      "token_usage": null,
+      "cost_usd": null,
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_artifact_created": false,
+      "repaired_story_created": false,
+      "reaudit_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "result_path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-result.json",
+      "envelope_path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-envelope.json"
     }
   }
 }
