@@ -17,7 +17,16 @@ PROFILE = Path(
 )
 
 
-def test_paid_stage6_wrapper_rejects_unapproved_current_freeze(tmp_path: Path):
+def test_paid_stage6_wrapper_rejects_unapproved_profile(tmp_path: Path):
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    profile["stage6_story_local_repair"]["paid_execution_authorized"] = False
+    profile["stage6_story_local_repair"]["authorization_consumed"] = True
+    temp_profile = tmp_path / "unapproved-profile.json"
+    temp_profile.write_text(
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     called = False
 
     def fake_run(**kwargs):
@@ -31,6 +40,7 @@ def test_paid_stage6_wrapper_rejects_unapproved_current_freeze(tmp_path: Path):
             run_id="unit",
             output_root=tmp_path,
             run_fn=fake_run,
+            profile_path=temp_profile,
         )
     assert called is False
 
