@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,7 +209,7 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -233,10 +233,10 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
 
     assert q["paid_api_calls"] == 11
     assert q["confirmed_cost_usd"] == 0.3481947
-    assert q["last_paid_run_id"] == 36969500342
-    assert q["last_result"] == "story_audit_qualification_failed_known_defect_missed"
+    assert q["last_paid_run_id"] == 36970666881
+    assert q["last_result"] == "story_audit_attempt2_contract_failure_usage_evidence_lost"
 
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -366,7 +366,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-v2"
@@ -380,7 +380,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
 def test_v20_13_freeze_locks_attempt2_paid_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
     assert audit["attempt2_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -523,11 +523,11 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert q["paid_api_calls"] == 11
     assert q["confirmed_cost_usd"] == 0.3481947
     assert q["last_paid_run_id"] == 36970666881
-    assert q["last_result"] == "story_audit_post_inference_contract_failure"
+    assert q["last_result"] == "story_audit_attempt2_contract_failure_usage_evidence_lost"
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881]
 
-    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
