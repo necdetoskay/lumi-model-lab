@@ -71,10 +71,10 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 15,
-    "confirmed_cost_usd": 0.4434799,
-    "last_paid_run_id": 36976651148,
-    "last_result": "story_audit_attempt4_invalid_json_transport_failure",
+    "paid_api_calls": 17,
+    "confirmed_cost_usd": 0.5895394,
+    "last_paid_run_id": 36978036076,
+    "last_result": "story_audit_attempt5_contract_failure_known_defect_missed",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false,
     "unreconciled_paid_runs": [
@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.25",
-    "runtime_source_commit": "ce4eac1d2",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.26",
+    "runtime_source_commit": "4ab89f69b",
     "files": [
       {
         "path": "requirements.txt",
@@ -258,7 +258,7 @@
       },
       {
         "path": "src/spineforge_v20_story_audit_once.py",
-        "sha256": "852f6eed6340cb935caf4c851d2d730ca8b5c8cb583865256663b6d734f63dee"
+        "sha256": "90f5d7cfc1282e740386673849be56af4d9efc3924c8b9aa8e5612bcf327d27d"
       },
       {
         "path": "src/spineforge_v20_paid_story_audit_once.py",
@@ -323,6 +323,18 @@
       {
         "path": "evidence/spineforge-v20-paid-story-audit/36976651148/age12-island-v20-story-audit4-envelope.json",
         "sha256": "2ff6d7e6088767bf641872587c1cd9e02633b27b75acd75f5a32230f79a557f0"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36978036076/age12-island-v20-story-audit5-result.json",
+        "sha256": "2b07d72132cdc9b14261f584a1cf261a673f369b64e948b5b65379fa40a5f782"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36978036076/age12-island-v20-story-audit5-envelope.json",
+        "sha256": "ab749d5935c08fe40e8bd177917b38aaaa75340ebbdb9b49c0ba1c2730d23ff3"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36978036076/qualification-report.json",
+        "sha256": "edc3181bd61037f2e17f4bc9a69874a20f73242d2b97c0d2161041ccc8cf744f"
       }
     ]
   },
@@ -411,10 +423,10 @@
     "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
     "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
     "next_stage": "STORY_AUDIT",
-    "paid_story_audit_authorized": true
+    "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "ATTEMPT5_PAID_EXECUTION_AUTHORIZED",
+    "status": "ATTEMPT5_QUALITY_FAILED_KNOWN_DEFECT_MISSED_LOCATOR_REPROCESS_READY",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -427,7 +439,7 @@
     "local_repair_routes_to": "STORY_LOCAL_REPAIR",
     "clean_routes_to": "ENGLISH_MASTER_SEAL",
     "structural_or_replan_routes_to": "STOP",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "primary_model": "anthropic/claude-sonnet-5.5",
     "secondary_model": "openai/gpt-5.6-sol",
     "audit_calls_per_execution": 2,
@@ -438,7 +450,7 @@
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_audit_once.py",
-    "authorization_consumed": false,
+    "authorization_consumed": true,
     "attempt1": {
       "run_id": 36969500342,
       "status": "audit_completed",
@@ -491,7 +503,7 @@
       "cost_usd_reconciled": false,
       "audit_artifact_created": false
     },
-    "next_harness_requirement": "strict_transport_zero_cost_green_before_attempt5",
+    "next_harness_requirement": "locator_reprocess_zero_cost_then_secondary_sentence_coverage_before_attempt6",
     "locator_policy": "multi_span_unique_exact_text_rebind_v2",
     "failure_evidence_policy": "preserve_raw_audits_and_usage_v1",
     "attempt3_paid_authorized": false,
@@ -588,7 +600,7 @@
       "audit_artifact_created": false,
       "qualification_status": "UNUSABLE_EVIDENCE_INVALID_JSON"
     },
-    "attempt5_paid_authorized": true,
+    "attempt5_paid_authorized": false,
     "transport_contract_revision": "strict-json-schema-v1",
     "request_class": "spineforge_v20_story_audit",
     "structured_output_mode": "json_schema_strict",
@@ -610,7 +622,38 @@
       "secondary_prompt_path": "prompts/spineforge_v20_story_audit_secondary.md",
       "locator_policy": "multi_span_unique_exact_text_rebind_v2",
       "failure_evidence_policy": "preserve_provider_trace_and_usage_v2",
-      "paid_execution_authorized": true
+      "paid_execution_authorized": false
+    },
+    "attempt5": {
+      "run_id": 36978036076,
+      "status": "audit_contract_failure",
+      "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "audit_contract_revision": "family-by-family-multi-finding-v3",
+      "transport_contract_revision": "strict-json-schema-v1",
+      "api_calls": 2,
+      "input_tokens": 46336,
+      "output_tokens": 4399,
+      "reasoning_tokens": 1186,
+      "total_tokens": 50735,
+      "cost_usd": 0.1460595,
+      "latency_seconds": 53.93,
+      "artifact_error": {
+        "type": "RuntimeError",
+        "message": "Story Audit references unknown span ids: S85, S86"
+      },
+      "finding_count_before_artifact": 25,
+      "known_target_recall": 0.0,
+      "known_target_detected": false,
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "audit_artifact_created": false,
+      "qualification_status": "FAIL_KNOWN_DEFECT_MISSED",
+      "qualification_findings_source": "merged_findings_before_artifact",
+      "qualification_report_path": "evidence/spineforge-v20-paid-story-audit/36978036076/qualification-report.json"
     }
   }
 }

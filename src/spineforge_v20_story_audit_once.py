@@ -374,10 +374,14 @@ def _repair_finding_locators(
             continue
 
         cited_ids = [str(x) for x in (item.get("span_ids") or [])]
+        valid_ids = {str(seg["id"]) for seg in story_segments}
         cited_set = set(cited_ids)
         cited = [seg for seg in story_segments if seg["id"] in cited_set]
         cited_window = " ".join(seg["text"] for seg in cited)
-        if exact_text in cited_window:
+        cited_ids_all_valid = bool(cited_ids) and all(
+            cited_id in valid_ids for cited_id in cited_ids
+        )
+        if cited_ids_all_valid and exact_text in cited_window:
             repaired.append(item)
             continue
 
