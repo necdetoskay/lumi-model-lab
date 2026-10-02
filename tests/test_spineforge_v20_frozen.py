@@ -134,12 +134,12 @@ def test_v20_4_writer_retry_freeze_records_failed_attempt_and_bounded_transport(
 
     assert writer["next_attempt_index"] == 2
     assert writer["request_class"] == "spineforge_v20_story_writer"
-    assert writer["reasoning_effort"] == "none"
+    assert writer["reasoning_effort"] == "low"
     assert writer["max_tokens"] == 7000
     assert writer["paid_writer_execution_authorized"] is False
 
     assert paid["writer1_marker_consumed"] is True
     assert paid["writer_retry_requires_explicit_authorization"] is True
     assert paid["writer_request_class"] == "spineforge_v20_story_writer"
-    assert paid["writer_reasoning_effort"] == "none"
+    assert paid["writer_reasoning_effort"] == "low"
     assert paid["writer_max_tokens"] == 7000

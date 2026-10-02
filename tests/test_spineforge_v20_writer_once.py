@@ -111,7 +111,7 @@ def test_writer_once_rejects_out_of_range_story_without_second_call():
     assert result["automatic_retry_executed"] is False
 
 
-def test_v20_writer_request_class_disables_reasoning_and_caps_completion():
+def test_v20_writer_request_class_bounds_mandatory_reasoning_and_caps_completion():
     payload = normalize_openrouter_request(
         "aion-labs/aion-3.5-mini",
         {
@@ -124,6 +124,6 @@ def test_v20_writer_request_class_disables_reasoning_and_caps_completion():
         structured_output=False,
     )
     assert payload["max_tokens"] == 7000
-    assert payload["reasoning"] == {"effort": "none", "exclude": True}
+    assert payload["reasoning"] == {"effort": "low", "exclude": True}
     assert "seed" not in payload
     assert "stream" not in payload

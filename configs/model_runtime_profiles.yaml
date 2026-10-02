@@ -191,7 +191,7 @@ profiles:
       - OpenRouter lists Aion 3.5 Mini as a storytelling/roleplaying model with a 262,144-token context window and 32,768-token maximum completion.
       - The endpoint supports reasoning and json_object response formatting, but does not advertise strict JSON-schema enforcement.
       - The endpoint metadata does not advertise seed support, so LUMI omits seed.
-      - Legacy Episode Writer proof keeps provider-default reasoning for historical reproducibility. SpineForge v20.4 uses a dedicated bounded prose request class with reasoning effort none and a 7,000-token completion cap after the v20.3 provider-default reasoning runaway.
+      - Legacy Episode Writer proof keeps provider-default reasoning for historical reproducibility. SpineForge v20.5 uses a dedicated bounded prose request class with mandatory reasoning at low effort and a 7,000-token completion cap after the v20.3 provider-default reasoning runaway and the v20.4 effort-none rejection.
     transport:
       structured_output: json_object
       reasoning:
@@ -221,7 +221,7 @@ profiles:
           reasoning:
             mode: provider_managed_required
             request:
-              effort: none
+              effort: low
               exclude: true
           temperature:
             mode: send
