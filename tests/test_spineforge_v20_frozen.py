@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.6"
-    assert result["verified_files"] == 38
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.7"
+    assert result["verified_files"] == 40
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "ee946d113"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "0a3784792"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -97,7 +97,7 @@ def test_v20_4_freeze_locks_human_approval_and_bounded_writer_retry_without_paid
     assert review["context_fingerprint"] == "090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233"
     assert review["writer_handoff_ready"] is True
 
-    assert writer["status"] == "WRITER_GENERATED_AWAITING_HUMAN_REVIEW"
+    assert writer["status"] == "WRITER_PRODUCT_FROZEN_AWAITING_STORY_AUDIT"
     assert writer["model"] == "aion-labs/aion-3.5-mini"
     assert writer["target_words_min"] == 1600
     assert writer["target_words_max"] == 2500
@@ -155,7 +155,7 @@ def test_v20_5_writer_retry_freeze_records_failed_attempts_and_bounded_transport
     assert attempt3["cost_usd"] == 0.0126168
     assert attempt3["story_text_returned"] is True
     assert attempt3["automatic_retry_executed"] is False
-    assert writer["human_story_review_required"] is True
+    assert writer["human_story_review_required"] is False
 
     assert writer["next_attempt_index"] is None
     assert writer["request_class"] == "spineforge_v20_story_writer"
@@ -170,3 +170,36 @@ def test_v20_5_writer_retry_freeze_records_failed_attempts_and_bounded_transport
     assert paid["writer_request_class"] == "spineforge_v20_story_writer"
     assert paid["writer_reasoning_effort"] == "low"
     assert paid["writer_max_tokens"] == 7000
+
+
+def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    writer = profile["writer_state"]
+    audit = profile["stage5_story_audit"]
+
+    assert writer["status"] == "WRITER_PRODUCT_FROZEN_AWAITING_STORY_AUDIT"
+    assert writer["story_artifact_id"].startswith("writer-story:")
+    assert writer["story_sha256"] == (
+        "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+    )
+    assert writer["story_manifest_path"] == (
+        "evidence/spineforge-v20-writer-product/36965340665/"
+        "writer-story-artifact.json"
+    )
+    assert writer["next_stage"] == "STORY_AUDIT"
+    assert writer["paid_story_audit_authorized"] is False
+    assert writer["human_story_review_required"] is False
+
+    assert audit["status"] == "CONTRACT_QUALIFIED_ZERO_COST"
+    assert audit["stage"] == 5
+    assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
+    assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
+    assert audit["source_artifact_id"] == writer["story_artifact_id"]
+    assert audit["source_story_sha256"] == writer["story_sha256"]
+    assert audit["immutable_input_required"] is True
+    assert audit["hash_verification_before_inference"] is True
+    assert audit["source_mutation_forbidden"] is True
+    assert audit["local_repair_routes_to"] == "STORY_LOCAL_REPAIR"
+    assert audit["clean_routes_to"] == "ENGLISH_MASTER_SEAL"
+    assert audit["structural_or_replan_routes_to"] == "STOP"
+    assert audit["paid_execution_authorized"] is False

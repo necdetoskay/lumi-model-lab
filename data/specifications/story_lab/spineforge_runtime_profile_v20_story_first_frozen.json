@@ -80,8 +80,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.6",
-    "runtime_source_commit": "ee946d113",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.7",
+    "runtime_source_commit": "0a3784792",
     "files": [
       {
         "path": "requirements.txt",
@@ -234,6 +234,14 @@
       {
         "path": "evidence/spineforge-v20-paid-writer/36965340665/age12-island-v20-writer3-story.txt",
         "sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+      },
+      {
+        "path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
+        "sha256": "aa78b74d4a2548f46d599aec2ee9abbbfb52aaa18c0bac2d03ed4a5b4f87ea13"
+      },
+      {
+        "path": "src/spineforge_v20_story_audit_artifact.py",
+        "sha256": "8e57f788f78d0b16cc121655bfec1b918e560067d746f85732db59418d484414"
       }
     ]
   },
@@ -256,7 +264,7 @@
     "writer_handoff_ready": true
   },
   "writer_state": {
-    "status": "WRITER_GENERATED_AWAITING_HUMAN_REVIEW",
+    "status": "WRITER_PRODUCT_FROZEN_AWAITING_STORY_AUDIT",
     "model": "aion-labs/aion-3.5-mini",
     "approval_artifact": "evidence/spineforge-v20-human-review/36910614976-approved.json",
     "handoff_artifact": "evidence/spineforge-v20-writer-handoff/36910614976-writer-ready.json",
@@ -317,6 +325,27 @@
       "story_text_returned": true,
       "automatic_retry_executed": false
     },
-    "human_story_review_required": true
+    "human_story_review_required": false,
+    "story_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+    "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+    "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
+    "next_stage": "STORY_AUDIT",
+    "paid_story_audit_authorized": false
+  },
+  "stage5_story_audit": {
+    "status": "CONTRACT_QUALIFIED_ZERO_COST",
+    "stage": 5,
+    "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
+    "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
+    "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+    "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+    "source_run_id": 36965340665,
+    "immutable_input_required": true,
+    "hash_verification_before_inference": true,
+    "source_mutation_forbidden": true,
+    "local_repair_routes_to": "STORY_LOCAL_REPAIR",
+    "clean_routes_to": "ENGLISH_MASTER_SEAL",
+    "structural_or_replan_routes_to": "STOP",
+    "paid_execution_authorized": false
   }
 }
