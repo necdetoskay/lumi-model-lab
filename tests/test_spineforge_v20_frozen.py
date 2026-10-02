@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.7"
-    assert result["verified_files"] == 40
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.8"
+    assert result["verified_files"] == 42
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "0a3784792"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "6aa770c39"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "CONTRACT_QUALIFIED_ZERO_COST"
+    assert audit["status"] == "HARNESS_QUALIFIED_ZERO_COST"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -202,4 +202,18 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert audit["local_repair_routes_to"] == "STORY_LOCAL_REPAIR"
     assert audit["clean_routes_to"] == "ENGLISH_MASTER_SEAL"
     assert audit["structural_or_replan_routes_to"] == "STOP"
+    assert audit["paid_execution_authorized"] is False
+
+
+def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+
+    assert audit["status"] == "HARNESS_QUALIFIED_ZERO_COST"
+    assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
+    assert audit["secondary_model"] == "openai/gpt-5.6-sol"
+    assert audit["audit_calls_per_execution"] == 2
+    assert audit["automatic_retry_enabled"] is False
+    assert audit["prompt_path"] == "prompts/spineforge_v20_story_audit.md"
+    assert audit["execution_module"] == "src/spineforge_v20_story_audit_once.py"
     assert audit["paid_execution_authorized"] is False
