@@ -80,7 +80,7 @@ def test_paid_ci_dispatch_routes_story_local_repair_marker_away_from_writer_and_
 
     message = (
         "paid story local repair "
-        "[PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1] "
+        "[PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR2] "
         "[PAID-V20-AGE12-ISLAND-WRITER2]"
     )
     assert paid_stage_from_commit_message(message) == "STORY_LOCAL_REPAIR"

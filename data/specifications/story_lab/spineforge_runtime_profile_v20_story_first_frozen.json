@@ -90,8 +90,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.44",
-    "runtime_source_commit": "187415fe9",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.45",
+    "runtime_source_commit": "99e68567f",
     "files": [
       {
         "path": "requirements.txt",
@@ -215,7 +215,7 @@
       },
       {
         "path": "src/spineforge_v20_paid_writer_once.py",
-        "sha256": "6a2cf89034c8e9136d4b30202bf2a55914919226d10f6cb99bbada9e5dd8dc7d"
+        "sha256": "ac97c299e294a3f54c4ec8b323753b6ce5ba59ba280ffa6de4a71ab600702c70"
       },
       {
         "path": "evidence/spineforge-v20-paid-writer/36955873689/age12-island-v20-writer1-result.json",
@@ -407,7 +407,7 @@
       },
       {
         "path": "src/spineforge_v20_paid_story_local_repair_once.py",
-        "sha256": "92e016987e7c0a80223e1a442d5f093d6307873e4a6c5fbf15a0e2a5ac3bb390"
+        "sha256": "62c3ab234f60b47af4ac1e1a5f1abda7f4755652176b888b97a2588f4047e546"
       },
       {
         "path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-result.json",
@@ -983,7 +983,7 @@
     }
   },
   "stage6_story_local_repair": {
-    "status": "ATTEMPT2_REQUALIFICATION_PREPARED_ZERO_COST",
+    "status": "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED",
     "stage": 6,
     "input_artifact_schema": "spineforge-v20-story-local-repair-handoff.v1",
     "artifact_type": "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT",
@@ -1023,7 +1023,7 @@
     ],
     "allowed_edit_span_count": 25,
     "repair_model": "anthropic/claude-sonnet-5.5",
-    "repair_attempt_index": 1,
+    "repair_attempt_index": 2,
     "repair_policy": {
       "repair_scope": "LOCAL_REPAIR",
       "source_story_mutation_forbidden": true,
@@ -1049,8 +1049,8 @@
     "paid_execution_authorized": false,
     "automatic_retry_enabled": false,
     "automatic_repair_loop_enabled": false,
-    "next_harness_requirement": "stage6_attempt2_zero_cost_green_before_harness",
-    "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
+    "next_harness_requirement": "stage6_attempt2_paid_authorization",
+    "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR2",
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_local_repair_once.py",
@@ -1064,16 +1064,18 @@
     "max_tokens": 8000,
     "authorization_consumed": true,
     "paid_harness": {
-      "attempt_index": 1,
-      "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
+      "attempt_index": 2,
+      "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR2",
       "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
-      "output_result": "age12-island-v20-story-local-repair1-result.json",
-      "output_story": "age12-island-v20-story-local-repair1-story.txt",
-      "output_envelope": "age12-island-v20-story-local-repair1-envelope.json",
+      "output_result": "age12-island-v20-story-local-repair2-result.json",
+      "output_story": "age12-island-v20-story-local-repair2-story.txt",
+      "output_envelope": "age12-island-v20-story-local-repair2-envelope.json",
       "model": "anthropic/claude-sonnet-5.5",
       "request_class": "spineforge_v20_story_local_repair",
       "schema_name": "spineforge_v20_story_local_repair_v1",
       "transport_contract_revision": "strict-json-schema-v1",
+      "repair_contract_revision": "local-repair-v2-noop-disposition",
+      "provider_evidence_capture_revision": "post-provider-validation-v2",
       "reasoning_effort": "low",
       "max_tokens": 8000,
       "model_calls_per_execution": 1,
@@ -1109,6 +1111,27 @@
       "envelope_path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-envelope.json"
     },
     "repair_contract_revision": "local-repair-v2-noop-disposition",
-    "provider_evidence_capture_revision": "post-provider-validation-v2"
+    "provider_evidence_capture_revision": "post-provider-validation-v2",
+    "attempt1_harness": {
+      "attempt_index": 1,
+      "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
+      "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
+      "output_result": "age12-island-v20-story-local-repair1-result.json",
+      "output_story": "age12-island-v20-story-local-repair1-story.txt",
+      "output_envelope": "age12-island-v20-story-local-repair1-envelope.json",
+      "model": "anthropic/claude-sonnet-5.5",
+      "request_class": "spineforge_v20_story_local_repair",
+      "schema_name": "spineforge_v20_story_local_repair_v1",
+      "transport_contract_revision": "strict-json-schema-v1",
+      "reasoning_effort": "low",
+      "max_tokens": 8000,
+      "model_calls_per_execution": 1,
+      "automatic_retry_enabled": false,
+      "automatic_repair_loop_enabled": false,
+      "reaudit_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "paid_execution_authorized": false
+    }
   }
 }

@@ -104,7 +104,7 @@ def test_paid_stage6_wrapper_executes_exactly_one_authorized_repair(tmp_path: Pa
     assert calls == 1
     assert result["status"] == "repair_generated"
     assert envelope["stage"] == 6
-    assert envelope["attempt_index"] == 1
+    assert envelope["attempt_index"] == 2
     assert envelope["authorization_marker"] == AUTHORIZATION_MARKER
     assert envelope["automatic_retry_executed"] is False
     assert envelope["reaudit_executed"] is False
@@ -112,9 +112,9 @@ def test_paid_stage6_wrapper_executes_exactly_one_authorized_repair(tmp_path: Pa
     assert envelope["state_commit_executed"] is False
 
     out = tmp_path / "123"
-    assert (out / "age12-island-v20-story-local-repair1-result.json").exists()
-    assert (out / "age12-island-v20-story-local-repair1-envelope.json").exists()
-    story_path = out / "age12-island-v20-story-local-repair1-story.txt"
+    assert (out / "age12-island-v20-story-local-repair2-result.json").exists()
+    assert (out / "age12-island-v20-story-local-repair2-envelope.json").exists()
+    story_path = out / "age12-island-v20-story-local-repair2-story.txt"
     assert story_path.exists()
     assert story_path.read_text(encoding="utf-8") == repaired_story
 
@@ -151,5 +151,5 @@ def test_paid_stage6_wrapper_preserves_failure_without_retry(tmp_path: Path):
     assert result["reaudit_executed"] is False
     assert envelope["automatic_retry_executed"] is False
     assert not (
-        tmp_path / "456" / "age12-island-v20-story-local-repair1-story.txt"
+        tmp_path / "456" / "age12-island-v20-story-local-repair2-story.txt"
     ).exists()

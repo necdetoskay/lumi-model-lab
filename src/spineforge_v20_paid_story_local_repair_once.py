@@ -20,7 +20,7 @@ HANDOFF_PATH = Path(
     "evidence/spineforge-v20-story-local-repair/36990160527-handoff.json"
 )
 PROMPT_PATH = Path("prompts/spineforge_v20_story_local_repair.md")
-AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1"
+AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR2"
 LEGACY_CI_TRIGGER_MARKER = "PAID-V20-AGE12-ISLAND-WRITER2"
 
 
@@ -69,8 +69,8 @@ def execute_paid_story_local_repair_once(
         )
     if stage6.get("authorization_marker") != AUTHORIZATION_MARKER:
         raise RuntimeError("Stage 6 paid Story Local Repair authorization marker mismatch.")
-    if int(stage6.get("repair_attempt_index") or 0) != 1:
-        raise RuntimeError("Stage 6 Story Local Repair attempt index must be 1.")
+    if int(stage6.get("repair_attempt_index") or 0) != 2:
+        raise RuntimeError("Stage 6 Story Local Repair attempt index must be 2.")
     if stage6.get("automatic_retry_enabled") is not False:
         raise RuntimeError("Stage 6 Story Local Repair automatic retry must remain disabled.")
     if stage6.get("automatic_repair_loop_enabled") is not False:
@@ -92,14 +92,14 @@ def execute_paid_story_local_repair_once(
 
     out_dir = output_root / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    result_path = out_dir / "age12-island-v20-story-local-repair1-result.json"
-    story_path = out_dir / "age12-island-v20-story-local-repair1-story.txt"
-    envelope_path = out_dir / "age12-island-v20-story-local-repair1-envelope.json"
+    result_path = out_dir / "age12-island-v20-story-local-repair2-result.json"
+    story_path = out_dir / "age12-island-v20-story-local-repair2-story.txt"
+    envelope_path = out_dir / "age12-island-v20-story-local-repair2-envelope.json"
 
     envelope: dict[str, Any] = {
         "schema": "spineforge-v20-paid-story-local-repair-envelope.v1",
         "stage": 6,
-        "attempt_index": 1,
+        "attempt_index": 2,
         "explicit_paid_authorization": True,
         "authorization_marker": AUTHORIZATION_MARKER,
         "legacy_ci_trigger_marker": LEGACY_CI_TRIGGER_MARKER,
