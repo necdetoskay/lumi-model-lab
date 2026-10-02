@@ -458,3 +458,104 @@ Current boundary:
 **WRITER_READY / READY_FOR_EXPLICIT_PAID_WRITER_AUTHORIZATION**
 
 Human approval authorizes the product handoff to Writer, but does not itself authorize a paid Writer inference.
+
+
+## v20.3 paid Aion Writer1 — provider failure / no story
+
+Explicit paid Writer authorization executed exactly one Aion 3.5 Mini call.
+
+GitHub Actions run:
+`36955873689`
+
+Trigger commit:
+`36627787378f09b300c5aef5e90ad6fea6ca88fb`
+
+Bound approval:
+- approval id: `63d4b9734dc4966cac672481dc8404d02679ceea9444554a8931842a21f0d112`
+- Context fingerprint: `090ae8343daa2b24e95923ee9e9dc11356664baed9a79c4ff95fd0207b834233`
+- Spine hash: `f9c5bed93448d6c56787466ae583dfcee06d0f856641d9c3901136f142bffae6`
+
+Result:
+`writer_provider_failure`
+
+Provider evidence:
+- finish_reason: `length`
+- story text returned: **false**
+- input tokens: 10,154
+- completion/output tokens: 32,768
+- reasoning tokens: 33,220
+- total tokens: 42,922
+- cost: **$0.052983**
+- model latency: **500.201 s**
+- automatic retry: **0**
+- editor/judge/repair/translation/state commit: **0**
+
+The response exhausted Aion 3.5 Mini's 32,768 completion ceiling while provider-default reasoning was active and returned no story content.
+
+Durable failure evidence:
+- `evidence/spineforge-v20-paid-writer/36955873689/age12-island-v20-writer1-result.json`
+- `evidence/spineforge-v20-paid-writer/36955873689/age12-island-v20-writer1-envelope.json`
+
+Cumulative v20 paid totals after Writer1:
+- API calls: **5**
+- tokens: **100,753**
+- confirmed cost: **$0.19864990**
+- successful story artifacts: **0** for Writer1
+
+No automatic paid retry was made.
+
+## v20.4 bounded Writer transport — zero-cost GREEN
+
+The Writer1 failure exposed a transport-policy problem, not a Spine change.
+
+Historical successful Aion 3.5 Mini Writer evidence used the same model and provider-default reasoning and produced a 1,988-word story with 6,185 completion tokens / 3,926 reasoning tokens / $0.0140658. Writer1 instead consumed the full 32,768 completion ceiling with 33,220 reasoning tokens and no story text.
+
+v20.4 therefore retains:
+- the exact human approval;
+- the exact Context fingerprint;
+- the exact repaired Spine hash;
+- Aion 3.5 Mini;
+- the exact Writer prompt and story authority.
+
+Only Writer transport is bounded.
+
+New request class:
+`spineforge_v20_story_writer`
+
+Transport:
+- reasoning effort: `none`
+- reasoning excluded: true
+- max_tokens: **7,000**
+- temperature remains 0.76
+- seed omitted
+- streaming remains omitted
+- one Writer call only
+
+Frozen revision:
+`SPINEFORGE-STORY-FIRST-FROZEN-v20.4`
+
+Runtime source commit:
+`001d8bc8bcfc4a7b52144369b50d0d46bd2c9269`
+
+Freeze:
+**33/33 PASS**
+
+Tests:
+**37/37 PASS**
+
+CI:
+- run `36957384912`
+- conclusion: **SUCCESS**
+- paid Spine job: SKIPPED
+- paid repair job: SKIPPED
+- paid Writer2 job: **SKIPPED**
+
+Writer1 marker is consumed and no longer used by the current workflow.
+
+New one-shot paid Writer retry marker:
+`[PAID-V20-AGE12-ISLAND-WRITER2]`
+
+Current boundary:
+**WRITER_RETRY_READY / READY_FOR_EXPLICIT_PAID_WRITER2_AUTHORIZATION**
+
+No Writer2 inference has executed.
