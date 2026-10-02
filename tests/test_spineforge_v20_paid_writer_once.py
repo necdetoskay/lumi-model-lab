@@ -57,3 +57,5 @@ def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: 
 
 
 # v20.4 Writer2 paid authorization trigger; no runtime behavior change.
+
+# Paid Writer3 authorization trigger; legacy workflow selector remains WRITER2-only.
