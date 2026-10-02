@@ -531,7 +531,7 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
-    assert audit["locator_policy"] == "unique_exact_text_rebind_v1"
+    assert audit["locator_policy"] == "multi_span_unique_exact_text_rebind_v2"
     assert audit["failure_evidence_policy"] == "preserve_raw_audits_and_usage_v1"
 
     assert attempt2["run_id"] == 36970666881
