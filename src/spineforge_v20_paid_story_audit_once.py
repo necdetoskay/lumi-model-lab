@@ -19,7 +19,7 @@ WRITER_MANIFEST_PATH = Path(
 WRITER_HANDOFF_PATH = Path(
     "evidence/spineforge-v20-writer-handoff/36910614976-writer-ready.json"
 )
-AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-AUDIT7"
+AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-AUDIT8"
 LEGACY_CI_TRIGGER_MARKER = "PAID-V20-AGE12-ISLAND-WRITER2"
 
 
@@ -66,13 +66,13 @@ def execute_paid_story_audit_once(
 
     out_dir = output_root / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    result_path = out_dir / "age12-island-v20-story-audit7-result.json"
-    envelope_path = out_dir / "age12-island-v20-story-audit7-envelope.json"
+    result_path = out_dir / "age12-island-v20-story-audit8-result.json"
+    envelope_path = out_dir / "age12-island-v20-story-audit8-envelope.json"
 
     envelope: dict[str, Any] = {
         "schema": "spineforge-v20-paid-story-audit-envelope.v1",
         "stage": 5,
-        "attempt_index": 7,
+        "attempt_index": 8,
         "explicit_paid_authorization": True,
         "authorization_marker": AUTHORIZATION_MARKER,
         "legacy_ci_trigger_marker": LEGACY_CI_TRIGGER_MARKER,
