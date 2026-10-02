@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.39"
-    assert result["verified_files"] == 74
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.40"
+    assert result["verified_files"] == 76
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "dc72d1fa5"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "c13b49307"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -1397,7 +1397,7 @@ def test_v20_28_freeze_locks_secondary_sentence_coverage_before_attempt6():
     assert audit["status"] == "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt6_paid_authorized"] is False
-    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_zero_cost"
+    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_ready"
 
     assert reprocessed["status"] == "audit_reprocessed_zero_cost"
     assert reprocessed["model_calls_executed"] == 0
@@ -1560,7 +1560,7 @@ def test_v20_29_freeze_locks_attempt6_sentence_coverage_harness_without_paid_aut
     assert audit["attempt6_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
-    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_zero_cost"
+    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_ready"
 
     assert harness["attempt_index"] == 6
     assert harness["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT6"
@@ -1648,7 +1648,7 @@ def test_v20_32_freeze_locks_language_specialist_requalification_without_paid_au
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert audit["audit_contract_revision"] == "primary-v3-plus-language-specialist-v2"
-    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_zero_cost"
+    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_ready"
 
     assert specialist["contract_revision"] == "language-specialist-v2"
     assert specialist["model"] == "openai/gpt-5.6-sol"
@@ -1731,7 +1731,7 @@ def test_v20_33_freeze_locks_attempt7_language_specialist_harness_without_paid_a
     assert audit["attempt7_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
-    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_zero_cost"
+    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_ready"
 
     assert harness["attempt_index"] == 7
     assert harness["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT7"
@@ -1767,7 +1767,7 @@ def test_v20_35_freeze_records_attempt7_quality_failure_and_reconciled_usage():
     assert audit["attempt7_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert audit["next_harness_requirement"] == (
-        "stage6_story_local_repair_handoff_zero_cost"
+        "stage6_story_local_repair_handoff_ready"
     )
 
     assert attempt7["run_id"] == 36987409819
@@ -1819,7 +1819,7 @@ def test_v20_36_freeze_locks_contrastive_editor_requalification():
         "primary-v3-plus-language-specialist-v2"
     )
     assert audit["next_harness_requirement"] == (
-        "stage6_story_local_repair_handoff_zero_cost"
+        "stage6_story_local_repair_handoff_ready"
     )
 
     assert specialist["contract_revision"] == "language-specialist-v2"
@@ -1908,7 +1908,7 @@ def test_v20_37_freeze_locks_attempt8_contrastive_harness_without_paid_authoriza
     assert audit["attempt8_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
-    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_zero_cost"
+    assert audit["next_harness_requirement"] == "stage6_story_local_repair_handoff_ready"
 
     assert harness["attempt_index"] == 8
     assert harness["authorization_marker"] == audit["authorization_marker"]
@@ -1952,7 +1952,7 @@ def test_v20_39_freeze_records_attempt8_qualification_success_and_routes_stage6(
     assert audit["attempt8_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert audit["next_harness_requirement"] == (
-        "stage6_story_local_repair_handoff_zero_cost"
+        "stage6_story_local_repair_handoff_ready"
     )
 
     assert attempt8["run_id"] == 36990160527
@@ -2009,7 +2009,7 @@ def test_v20_39_freeze_records_attempt8_qualification_pass_and_stage5_product():
     assert audit["attempt8_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert audit["next_harness_requirement"] == (
-        "stage6_story_local_repair_handoff_zero_cost"
+        "stage6_story_local_repair_handoff_ready"
     )
 
     assert attempt8["run_id"] == 36990160527
@@ -2067,3 +2067,51 @@ def test_v20_39_freeze_exposes_immutable_stage5_output_artifact():
     assert out["finding_count"] == 25
     assert out["qualification_status"] == "PASS"
     assert out["immutable"] is True
+
+
+def test_v20_40_freeze_locks_stage6_story_local_repair_handoff():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    stage6 = profile["stage6_story_local_repair"]
+
+    assert audit["status"] == "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
+    assert audit["next_harness_requirement"] == (
+        "stage6_story_local_repair_handoff_ready"
+    )
+
+    assert stage6["status"] == "READY_NOT_AUTHORIZED"
+    assert stage6["stage"] == 6
+    assert stage6["input_artifact_schema"] == (
+        "spineforge-v20-story-local-repair-handoff.v1"
+    )
+    assert stage6["source_stage5_artifact_id"] == (
+        "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876"
+    )
+    assert stage6["source_story_artifact_id"] == (
+        "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3"
+    )
+    assert stage6["source_story_sha256"] == (
+        "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+    )
+    assert stage6["handoff_artifact_id"] == (
+        "story-local-repair-handoff:6f27c399c81ca3f8137005af4a36d4be6afd93881555e380e07b127eff5f98e1"
+    )
+    assert stage6["handoff_sha256"] == (
+        "d96428c26c35f27b54e8337dc3ad3b7c203ab4cd41f9f7caf982b607a9a65356"
+    )
+    assert stage6["finding_count"] == 25
+    assert stage6["allowed_edit_span_count"] == 25
+    assert "S006" in stage6["allowed_edit_span_ids"]
+    assert stage6["artifact_type"] == "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT"
+    assert stage6["repair_model"] == "anthropic/claude-sonnet-5.5"
+    assert stage6["repair_attempt_index"] == 1
+    assert stage6["repair_policy"]["patches_only"] is True
+    assert stage6["repair_policy"]["all_findings_must_be_addressed"] is True
+    assert stage6["output_contract"]["next_stage"] == "STORY_REAUDIT"
+    assert stage6["next_stage_after_success"] == "STORY_REAUDIT"
+    assert stage6["paid_execution_authorized"] is False
+    assert stage6["automatic_retry_enabled"] is False
+    assert stage6["automatic_repair_loop_enabled"] is False
+    assert stage6["next_harness_requirement"] == (
+        "stage6_paid_story_local_repair_harness_zero_cost"
+    )

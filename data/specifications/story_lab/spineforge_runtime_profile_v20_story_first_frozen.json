@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.39",
-    "runtime_source_commit": "dc72d1fa5",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.40",
+    "runtime_source_commit": "c13b49307",
     "files": [
       {
         "path": "requirements.txt",
@@ -387,6 +387,14 @@
       {
         "path": "evidence/spineforge-v20-paid-story-audit/36990160527/qualification-report.json",
         "sha256": "cfdc93ae868422259d042ab8d95fb959f54bfcb8fd781493ce9301d93f6ceeb1"
+      },
+      {
+        "path": "src/spineforge_v20_story_local_repair_handoff.py",
+        "sha256": "73e5de13d85fc1d727fe783b1f8593cf8261e0d91e691943af43a6b5e8154735"
+      },
+      {
+        "path": "evidence/spineforge-v20-story-local-repair/36990160527-handoff.json",
+        "sha256": "d96428c26c35f27b54e8337dc3ad3b7c203ab4cd41f9f7caf982b607a9a65356"
       }
     ]
   },
@@ -555,7 +563,7 @@
       "cost_usd_reconciled": false,
       "audit_artifact_created": false
     },
-    "next_harness_requirement": "stage6_story_local_repair_handoff_zero_cost",
+    "next_harness_requirement": "stage6_story_local_repair_handoff_ready",
     "locator_policy": "multi_span_unique_exact_text_rebind_v2",
     "failure_evidence_policy": "preserve_raw_audits_and_usage_v1",
     "attempt3_paid_authorized": false,
@@ -952,5 +960,70 @@
       "qualification_status": "PASS",
       "immutable": true
     }
+  },
+  "stage6_story_local_repair": {
+    "status": "READY_NOT_AUTHORIZED",
+    "stage": 6,
+    "input_artifact_schema": "spineforge-v20-story-local-repair-handoff.v1",
+    "artifact_type": "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT",
+    "source_stage5_artifact_id": "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876",
+    "source_story_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+    "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+    "handoff_artifact_id": "story-local-repair-handoff:6f27c399c81ca3f8137005af4a36d4be6afd93881555e380e07b127eff5f98e1",
+    "handoff_path": "evidence/spineforge-v20-story-local-repair/36990160527-handoff.json",
+    "handoff_sha256": "d96428c26c35f27b54e8337dc3ad3b7c203ab4cd41f9f7caf982b607a9a65356",
+    "finding_count": 25,
+    "allowed_edit_span_ids": [
+      "S006",
+      "S027",
+      "S047",
+      "S048",
+      "S057",
+      "S072",
+      "S074",
+      "S075",
+      "S081",
+      "S086",
+      "S113",
+      "S114",
+      "S123",
+      "S138",
+      "S160",
+      "S161",
+      "S172",
+      "S173",
+      "S175",
+      "S183",
+      "S187",
+      "S195",
+      "S196",
+      "S197",
+      "S199"
+    ],
+    "allowed_edit_span_count": 25,
+    "repair_model": "anthropic/claude-sonnet-5.5",
+    "repair_attempt_index": 1,
+    "repair_policy": {
+      "repair_scope": "LOCAL_REPAIR",
+      "source_story_mutation_forbidden": true,
+      "unreferenced_span_edit_forbidden": true,
+      "structural_rewrite_forbidden": true,
+      "premise_change_forbidden": true,
+      "canon_change_forbidden": true,
+      "new_plot_event_forbidden": true,
+      "all_findings_must_be_addressed": true,
+      "patches_only": true
+    },
+    "output_contract": {
+      "schema": "spineforge-v20-story-local-repair-artifact.v1",
+      "source_story_remains_immutable": true,
+      "changed_spans_must_be_subset_of_allowed_edit_span_ids": true,
+      "next_stage": "STORY_REAUDIT"
+    },
+    "next_stage_after_success": "STORY_REAUDIT",
+    "paid_execution_authorized": false,
+    "automatic_retry_enabled": false,
+    "automatic_repair_loop_enabled": false,
+    "next_harness_requirement": "stage6_paid_story_local_repair_harness_zero_cost"
   }
 }
