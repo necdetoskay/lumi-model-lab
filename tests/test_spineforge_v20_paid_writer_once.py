@@ -52,3 +52,5 @@ def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: 
     persisted = json.loads((out / "age12-island-v20-writer1-result.json").read_text())
     assert persisted["failure"]["type"] == "RuntimeError"
     assert not (out / "age12-island-v20-writer1-story.txt").exists()
+
+# paid writer trigger touch: v20 writer1
