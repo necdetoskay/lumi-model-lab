@@ -4,6 +4,7 @@ from copy import deepcopy
 
 import pytest
 
+from src.model_registry import normalize_openrouter_request
 from src.spineforge_v20_writer_once import execute_writer_once, validate_writer_handoff
 
 
@@ -70,6 +71,8 @@ def test_writer_once_uses_one_aion_call_and_blocks_all_downstream_stages():
     )
     assert len(calls) == 1
     assert calls[0]["model"] == "aion-labs/aion-3.5-mini"
+    assert calls[0]["max_tokens"] == 7000
+    assert calls[0]["request_class"] == "spineforge_v20_story_writer"
     assert result["status"] == "writer_generated"
     assert result["deterministic_checks"]["length_pass"] is True
     assert result["automatic_retry_executed"] is False
@@ -106,3 +109,21 @@ def test_writer_once_rejects_out_of_range_story_without_second_call():
     assert result["status"] == "writer_generated_deterministic_check_failed"
     assert result["deterministic_checks"]["length_pass"] is False
     assert result["automatic_retry_executed"] is False
+
+
+def test_v20_writer_request_class_disables_reasoning_and_caps_completion():
+    payload = normalize_openrouter_request(
+        "aion-labs/aion-3.5-mini",
+        {
+            "model": "aion-labs/aion-3.5-mini",
+            "messages": [{"role": "user", "content": "write"}],
+            "temperature": 0.76,
+            "max_tokens": 9000,
+        },
+        request_class="spineforge_v20_story_writer",
+        structured_output=False,
+    )
+    assert payload["max_tokens"] == 7000
+    assert payload["reasoning"] == {"effort": "none", "exclude": True}
+    assert "seed" not in payload
+    assert "stream" not in payload
