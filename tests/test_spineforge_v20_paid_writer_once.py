@@ -66,7 +66,7 @@ def test_paid_ci_dispatch_routes_story_audit_marker_away_from_writer():
 
     message = (
         "paid story audit "
-        "[PAID-V20-AGE12-ISLAND-STORY-AUDIT4] "
+        "[PAID-V20-AGE12-ISLAND-STORY-AUDIT5] "
         "[PAID-V20-AGE12-ISLAND-WRITER2]"
     )
     assert paid_stage_from_commit_message(message) == "STORY_AUDIT"
