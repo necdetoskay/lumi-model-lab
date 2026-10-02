@@ -213,6 +213,50 @@ def _build_audit_authority_projection(authority: dict[str, Any]) -> dict[str, An
         "bytes": len(encoded),
     }
 
+
+
+def _repair_finding_locators(
+    *,
+    findings: list[dict[str, Any]],
+    story_segments: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    repaired: list[dict[str, Any]] = []
+    corrections: list[dict[str, Any]] = []
+    for row in findings:
+        item = dict(row)
+        exact_text = str(item.get("exact_text") or "")
+        if not exact_text:
+            repaired.append(item)
+            continue
+
+        cited = [
+            seg for seg in story_segments
+            if seg["id"] in set(str(x) for x in (item.get("span_ids") or []))
+        ]
+        if any(exact_text in seg["text"] for seg in cited):
+            repaired.append(item)
+            continue
+
+        matches = [seg for seg in story_segments if exact_text in seg["text"]]
+        if len(matches) != 1:
+            raise RuntimeError(
+                "Story Audit locator repair requires exact_text to resolve uniquely "
+                f"in frozen story: {item.get('family')}:{len(matches)}"
+            )
+
+        old_ids = list(item.get("span_ids") or [])
+        new_ids = [matches[0]["id"]]
+        item["span_ids"] = new_ids
+        repaired.append(item)
+        corrections.append({
+            "family": item.get("family"),
+            "exact_text": exact_text,
+            "old_span_ids": old_ids,
+            "new_span_ids": new_ids,
+            "reason": "deterministic_unique_exact_text_rebind",
+        })
+    return repaired, corrections
+
 def _merge_findings(
     primary: list[dict[str, Any]],
     secondary: list[dict[str, Any]],
@@ -346,25 +390,64 @@ def execute_story_audit_once(
     if after["manifest"]["story_sha256"] != source_story_sha:
         raise RuntimeError("Writer artifact changed during Story Audit.")
 
-    merged = _merge_findings(primary["findings"], secondary["findings"])
-
-    def combined_audit(**kwargs: Any) -> dict[str, Any]:
-        return {
-            "findings": merged,
-            "summary": (
-                f"Primary findings={len(primary['findings'])}; "
-                f"secondary findings={len(secondary['findings'])}; "
-                f"merged findings={len(merged)}."
-            ),
-        }
-
-    artifact = run_story_audit_once(
-        manifest_path=writer_manifest_path,
-        audit_call_fn=combined_audit,
-        repo_root=repo_root,
-    )
     calls = [primary_meta["model_call"], secondary_meta["model_call"]]
     usage = rollup_model_calls(calls)
+
+    merged = _merge_findings(primary["findings"], secondary["findings"])
+    try:
+        merged, locator_corrections = _repair_finding_locators(
+            findings=merged,
+            story_segments=audit_source["story_segments"],
+        )
+
+        def combined_audit(**kwargs: Any) -> dict[str, Any]:
+            return {
+                "findings": merged,
+                "summary": (
+                    f"Primary findings={len(primary['findings'])}; "
+                    f"secondary findings={len(secondary['findings'])}; "
+                    f"merged findings={len(merged)}."
+                ),
+            }
+
+        artifact = run_story_audit_once(
+            manifest_path=writer_manifest_path,
+            audit_call_fn=combined_audit,
+            repo_root=repo_root,
+        )
+    except Exception as exc:
+        return {
+            "schema": "spineforge-v20-story-audit-execution.v1",
+            "status": "audit_contract_failure",
+            "source_artifact_id": manifest["artifact_id"],
+            "source_story_sha256": source_story_sha,
+            "input_verified_before_inference": True,
+            "input_verified_after_inference": True,
+            "source_story_mutated": False,
+            "audit_contract_revision": "family-by-family-v2",
+            "audit_authority_projection_sha256": authority_projection["sha256"],
+            "audit_authority_projection_bytes": authority_projection["bytes"],
+            "models": {
+                "primary": PRIMARY_MODEL,
+                "secondary": SECONDARY_MODEL,
+            },
+            "primary_audit": primary,
+            "secondary_audit": secondary,
+            "primary_meta": primary_meta,
+            "secondary_meta": secondary_meta,
+            "merged_findings_before_artifact": merged,
+            "artifact_error": {
+                "type": type(exc).__name__,
+                "message": str(exc),
+            },
+            "audit_usage_rollup": usage,
+            "incremental_cost_usd": usage["totals"]["cost_usd"],
+            "incremental_latency_seconds": usage["totals"]["latency_seconds"],
+            "automatic_retry_executed": False,
+            "repair_executed": False,
+            "translation_executed": False,
+            "state_commit_executed": False,
+        }
 
     return {
         "schema": "spineforge-v20-story-audit-execution.v1",
@@ -385,6 +468,7 @@ def execute_story_audit_once(
         "secondary_audit": secondary,
         "primary_meta": primary_meta,
         "secondary_meta": secondary_meta,
+        "locator_corrections": locator_corrections,
         "audit_artifact": artifact,
         "audit_usage_rollup": usage,
         "incremental_cost_usd": usage["totals"]["cost_usd"],

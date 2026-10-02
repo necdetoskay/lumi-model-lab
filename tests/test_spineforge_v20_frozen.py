@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.14"
-    assert result["verified_files"] == 48
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.15"
+    assert result["verified_files"] == 50
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "1b443ab75"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "7894e3fe9"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -60,7 +60,7 @@ def test_v20_freeze_has_one_frozen_age12_island_case_and_tracked_paid_state():
 
     state = profile["qualification_state"]
     assert state["paid_authorized"] is False
-    assert state["paid_api_calls"] == 9
+    assert state["paid_api_calls"] == 11
     assert state["confirmed_cost_usd"] == 0.3481947
     assert state["writer_product_authorized"] is True
     assert state["paid_writer_execution_authorized"] is False
@@ -187,10 +187,10 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
         "writer-story-artifact.json"
     )
     assert writer["next_stage"] == "STORY_AUDIT"
-    assert writer["paid_story_audit_authorized"] is True
+    assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT2_PAID_EXECUTION_AUTHORIZED"
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -202,14 +202,14 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert audit["local_repair_routes_to"] == "STORY_LOCAL_REPAIR"
     assert audit["clean_routes_to"] == "ENGLISH_MASTER_SEAL"
     assert audit["structural_or_replan_routes_to"] == "STOP"
-    assert audit["paid_execution_authorized"] is True
+    assert audit["paid_execution_authorized"] is False
 
 
 def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_PAID_EXECUTION_AUTHORIZED"
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -220,8 +220,8 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     assert audit["legacy_ci_trigger_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
     assert audit["ci_transport_job"] == "paid-age12-island-writer2"
     assert audit["paid_wrapper"] == "src/spineforge_v20_paid_story_audit_once.py"
-    assert audit["authorization_consumed"] is False
-    assert audit["paid_execution_authorized"] is True
+    assert audit["authorization_consumed"] is True
+    assert audit["paid_execution_authorized"] is False
 
 
 
@@ -231,14 +231,14 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     audit = profile["stage5_story_audit"]
     attempt1 = audit["attempt1"]
 
-    assert q["paid_api_calls"] == 9
+    assert q["paid_api_calls"] == 11
     assert q["confirmed_cost_usd"] == 0.3481947
     assert q["last_paid_run_id"] == 36969500342
     assert q["last_result"] == "story_audit_qualification_failed_known_defect_missed"
 
-    assert audit["status"] == "ATTEMPT2_PAID_EXECUTION_AUTHORIZED"
-    assert audit["paid_execution_authorized"] is True
-    assert audit["authorization_consumed"] is False
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
     assert attempt1["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
     assert attempt1["known_target_recall"] == 0.0
@@ -366,9 +366,9 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_PAID_EXECUTION_AUTHORIZED"
-    assert audit["paid_execution_authorized"] is True
-    assert audit["attempt2_paid_authorized"] is True
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-v2"
     assert audit["authority_projection"] == "compact-reveal-safe-v1"
     assert audit["prompt_revision"] == "stage5-story-audit-v2"
@@ -380,9 +380,169 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
 def test_v20_13_freeze_locks_attempt2_paid_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT2_PAID_EXECUTION_AUTHORIZED"
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
-    assert audit["attempt2_paid_authorized"] is True
-    assert audit["paid_execution_authorized"] is True
-    assert audit["authorization_consumed"] is False
+    assert audit["attempt2_paid_authorized"] is False
+    assert audit["paid_execution_authorized"] is False
+    assert audit["authorization_consumed"] is True
     assert audit["attempt1"]["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
+
+
+def _stage5_v2_eval_rows(*, defect_exact_text=None, defect_span_id=None):
+    order = [
+        "physical_feasibility",
+        "causal_logic",
+        "state_continuity",
+        "epistemic_order",
+        "spatial_consistency",
+        "temporal_consistency",
+        "response_causality",
+        "closure_integrity",
+        "canon_integrity",
+        "language_naturalness",
+        "age_suitability",
+        "spine_fidelity",
+        "narrative_coherence",
+    ]
+    rows = []
+    for family in order:
+        if family == "language_naturalness" and defect_exact_text is not None:
+            rows.append({
+                "family": family,
+                "present": True,
+                "severity": "minor",
+                "repair_scope": "LOCAL_REPAIR",
+                "span_ids": [defect_span_id],
+                "exact_text": defect_exact_text,
+                "reason": "Synthetic local language defect.",
+            })
+        else:
+            rows.append({
+                "family": family,
+                "present": False,
+                "severity": None,
+                "repair_scope": None,
+                "span_ids": [],
+                "exact_text": None,
+                "reason": "No concrete defect in this family.",
+            })
+    return rows
+
+
+def _stage5_fake_transport(raw, *, prompt_tokens=100, completion_tokens=20, cost=0.01):
+    def call(**kwargs):
+        return (
+            raw,
+            {
+                "usage": {
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": completion_tokens,
+                    "total_tokens": prompt_tokens + completion_tokens,
+                    "cost": cost,
+                }
+            },
+            {
+                "temperature": 0.0,
+                "max_tokens": 3500,
+                "reasoning": None,
+                "response_format": {"type": "json_object"},
+            },
+            [],
+        )
+    return call
+
+
+def test_v20_15_stage5_rebinds_wrong_span_when_exact_text_is_unique():
+    from src.spineforge_v20_story_audit_once import execute_story_audit_once
+
+    primary = {
+        "evaluations": _stage5_v2_eval_rows(
+            defect_exact_text="arriving at his shoulder",
+            defect_span_id="S999",
+        ),
+        "summary": "One local language defect.",
+    }
+    clean = {
+        "evaluations": _stage5_v2_eval_rows(),
+        "summary": "Clean.",
+    }
+    result = execute_story_audit_once(
+        api_key="not-used",
+        primary_call_fn=_stage5_fake_transport(primary),
+        secondary_call_fn=_stage5_fake_transport(clean),
+    )
+    assert result["status"] == "audit_completed"
+    assert result["audit_artifact"]["decision"] == "LOCAL_REPAIR_REQUIRED"
+    assert result["audit_artifact"]["source_story_mutated"] is False
+    assert len(result["locator_corrections"]) == 1
+    correction = result["locator_corrections"][0]
+    assert correction["exact_text"] == "arriving at his shoulder"
+    assert correction["old_span_ids"] == ["S999"]
+    assert correction["new_span_ids"] != ["S999"]
+    assert result["audit_usage_rollup"]["totals"]["api_calls"] == 2
+
+
+def test_v20_15_stage5_preserves_paid_evidence_when_exact_text_is_invented():
+    from src.spineforge_v20_story_audit_once import execute_story_audit_once
+
+    primary = {
+        "evaluations": _stage5_v2_eval_rows(
+            defect_exact_text="THIS TEXT DOES NOT EXIST IN THE FROZEN STORY",
+            defect_span_id="S001",
+        ),
+        "summary": "Synthetic invalid locator.",
+    }
+    clean = {
+        "evaluations": _stage5_v2_eval_rows(),
+        "summary": "Clean.",
+    }
+    result = execute_story_audit_once(
+        api_key="not-used",
+        primary_call_fn=_stage5_fake_transport(primary, cost=0.03),
+        secondary_call_fn=_stage5_fake_transport(clean, cost=0.04),
+    )
+    assert result["status"] == "audit_contract_failure"
+    assert "resolve uniquely" in result["artifact_error"]["message"]
+    assert result["source_story_mutated"] is False
+    assert result["audit_usage_rollup"]["totals"]["api_calls"] == 2
+    assert result["audit_usage_rollup"]["totals"]["cost_usd"] == 0.07
+    assert result["primary_audit"]["findings"]
+    assert result["secondary_audit"]["findings"] == []
+    assert result["repair_executed"] is False
+    assert result["translation_executed"] is False
+    assert result["state_commit_executed"] is False
+
+
+
+def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    q = profile["qualification_state"]
+    audit = profile["stage5_story_audit"]
+    attempt2 = audit["attempt2"]
+
+    assert q["paid_api_calls"] == 11
+    assert q["confirmed_cost_usd"] == 0.3481947
+    assert q["last_paid_run_id"] == 36970666881
+    assert q["last_result"] == "story_audit_post_inference_contract_failure"
+    assert q["cost_reconciliation_status"] == "PARTIAL"
+    assert q["unreconciled_paid_runs"] == [36970666881]
+
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt2_paid_authorized"] is False
+    assert audit["authorization_consumed"] is True
+    assert audit["locator_policy"] == "unique_exact_text_rebind_v1"
+    assert audit["failure_evidence_policy"] == "preserve_raw_audits_and_usage_v1"
+
+    assert attempt2["run_id"] == 36970666881
+    assert attempt2["status"] == "unhandled_story_audit_runtime_failure"
+    assert attempt2["failure_phase"] == "post_inference_artifact_contract"
+    assert attempt2["api_calls"] == 2
+    assert attempt2["usage_tokens_reconciled"] is False
+    assert attempt2["cost_usd_reconciled"] is False
+    assert attempt2["source_story_mutated"] is False
+    assert attempt2["automatic_retry_executed"] is False
+    assert attempt2["repair_executed"] is False
+    assert attempt2["translation_executed"] is False
+    assert attempt2["state_commit_executed"] is False
+    assert attempt2["audit_artifact_created"] is False

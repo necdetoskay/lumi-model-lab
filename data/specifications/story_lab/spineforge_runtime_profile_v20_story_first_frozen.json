@@ -71,17 +71,24 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 9,
+    "paid_api_calls": 11,
     "confirmed_cost_usd": 0.3481947,
-    "last_paid_run_id": 36969500342,
-    "last_result": "story_audit_qualification_failed_known_defect_missed",
+    "last_paid_run_id": 36970666881,
+    "last_result": "story_audit_attempt2_contract_failure_usage_evidence_lost",
     "writer_product_authorized": true,
-    "paid_writer_execution_authorized": false
+    "paid_writer_execution_authorized": false,
+    "unreconciled_paid_runs": [
+      36970666881
+    ],
+    "cost_reconciliation_status": "PARTIAL",
+    "unreconciled_paid_api_calls": 2,
+    "unreconciled_paid_run_id": 36970666881,
+    "unreconciled_cost_reason": "attempt2 model calls completed but usage/cost evidence was lost before persistence during audit artifact validation failure"
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.14",
-    "runtime_source_commit": "1b443ab75",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.15",
+    "runtime_source_commit": "7894e3fe9",
     "files": [
       {
         "path": "requirements.txt",
@@ -249,7 +256,7 @@
       },
       {
         "path": "src/spineforge_v20_story_audit_once.py",
-        "sha256": "17521764ee850f0a44f15fccee59082b84f8c8cf0fd58bb844c037b6b78631e9"
+        "sha256": "7391624f03046b05c9ceeaa3f81acf0dd1053a61eaad8977f870477bcfcfe8fa"
       },
       {
         "path": "src/spineforge_v20_paid_story_audit_once.py",
@@ -274,6 +281,14 @@
       {
         "path": "src/spineforge_v20_story_audit_qualification.py",
         "sha256": "1a87aa6d22a134acbb17c838f56b6a3a70d62117e10e530e7fa219ccf9fe8350"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36970666881/age12-island-v20-story-audit2-result.json",
+        "sha256": "316155eeb6147458b34ddc567418f4ac9813a482faf3de6bbdc88ce5f84a8c9f"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36970666881/age12-island-v20-story-audit2-envelope.json",
+        "sha256": "4ad21951f447a05cd2cf5763b4e137cd8ba5c86aeecf71ce617a1a9bb91c9d5e"
       }
     ]
   },
@@ -362,10 +377,10 @@
     "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
     "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
     "next_stage": "STORY_AUDIT",
-    "paid_story_audit_authorized": true
+    "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "ATTEMPT2_PAID_EXECUTION_AUTHORIZED",
+    "status": "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -378,7 +393,7 @@
     "local_repair_routes_to": "STORY_LOCAL_REPAIR",
     "clean_routes_to": "ENGLISH_MASTER_SEAL",
     "structural_or_replan_routes_to": "STOP",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "primary_model": "anthropic/claude-sonnet-5.5",
     "secondary_model": "openai/gpt-5.6-sol",
     "audit_calls_per_execution": 2,
@@ -389,7 +404,7 @@
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_audit_once.py",
-    "authorization_consumed": false,
+    "authorization_consumed": true,
     "attempt1": {
       "run_id": 36969500342,
       "status": "audit_completed",
@@ -418,6 +433,27 @@
     "audit_contract_revision": "family-by-family-v2",
     "authority_projection": "compact-reveal-safe-v1",
     "prompt_revision": "stage5-story-audit-v2",
-    "attempt2_paid_authorized": true
+    "attempt2_paid_authorized": false,
+    "attempt2": {
+      "run_id": 36970666881,
+      "status": "unhandled_story_audit_runtime_failure",
+      "failure_type": "RuntimeError",
+      "failure_reason": "LOCAL_REPAIR exact_text is not present in referenced source span.",
+      "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "api_calls_completed": 2,
+      "usage_evidence_persisted": false,
+      "token_usage": null,
+      "cost_usd": null,
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "qualification_status": "UNUSABLE_EVIDENCE_ARTIFACT_VALIDATION_FAILURE"
+    },
+    "next_harness_requirement": "deterministic_unique_exact_text_span_rebind_and_preseal_usage_persistence",
+    "locator_policy": "unique_exact_text_rebind_v1",
+    "failure_evidence_policy": "preserve_raw_audits_and_usage_v1"
   }
 }
