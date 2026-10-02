@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 from pathlib import Path
@@ -70,28 +71,147 @@ def _normalize_auditor_payload(
     *,
     raw: dict[str, Any],
 ) -> dict[str, Any]:
-    coverage = raw.get("coverage")
-    if not isinstance(coverage, list):
-        raise RuntimeError("Story auditor coverage must be a list.")
-    coverage_values = [str(item) for item in coverage]
-    if len(coverage_values) != len(set(coverage_values)):
-        raise RuntimeError("Story auditor coverage contains duplicates.")
-    if set(coverage_values) != set(AUDIT_FAMILIES):
-        missing = sorted(set(AUDIT_FAMILIES) - set(coverage_values))
-        extra = sorted(set(coverage_values) - set(AUDIT_FAMILIES))
+    order = [
+        "physical_feasibility",
+        "causal_logic",
+        "state_continuity",
+        "epistemic_order",
+        "spatial_consistency",
+        "temporal_consistency",
+        "response_causality",
+        "closure_integrity",
+        "canon_integrity",
+        "language_naturalness",
+        "age_suitability",
+        "spine_fidelity",
+        "narrative_coherence",
+    ]
+    rows = raw.get("evaluations")
+    if not isinstance(rows, list):
+        raise RuntimeError("Story auditor evaluations must be a list.")
+    families = [str(row.get("family") or "") for row in rows if isinstance(row, dict)]
+    if families != order:
         raise RuntimeError(
-            f"Story auditor coverage mismatch. missing={missing} extra={extra}"
+            f"Story auditor must evaluate every family exactly once in canonical order: {families}"
         )
+    if len(rows) != len(order):
+        raise RuntimeError("Story auditor evaluation count mismatch.")
 
-    findings = raw.get("findings") or []
-    if not isinstance(findings, list):
-        raise RuntimeError("Story auditor findings must be a list.")
+    findings: list[dict[str, Any]] = []
+    normalized_rows: list[dict[str, Any]] = []
+    valid_severity = {"minor", "moderate", "serious", "critical"}
+    valid_scope = {"LOCAL_REPAIR", "STRUCTURAL_REPAIR", "REPLAN", "NO_REPAIR"}
+
+    for row in rows:
+        if not isinstance(row, dict):
+            raise RuntimeError("Story auditor evaluation must be an object.")
+        family = str(row["family"])
+        present = row.get("present")
+        if not isinstance(present, bool):
+            raise RuntimeError(f"Story auditor present flag must be boolean: {family}")
+        reason = str(row.get("reason") or "").strip()
+        if not reason:
+            raise RuntimeError(f"Story auditor reason is required: {family}")
+
+        if not present:
+            if row.get("severity") is not None:
+                raise RuntimeError(f"Clean audit severity must be null: {family}")
+            if row.get("repair_scope") is not None:
+                raise RuntimeError(f"Clean audit repair_scope must be null: {family}")
+            if list(row.get("span_ids") or []):
+                raise RuntimeError(f"Clean audit span_ids must be empty: {family}")
+            if row.get("exact_text") not in (None, ""):
+                raise RuntimeError(f"Clean audit exact_text must be null: {family}")
+            normalized_rows.append({
+                "family": family,
+                "present": False,
+                "severity": None,
+                "repair_scope": None,
+                "span_ids": [],
+                "exact_text": None,
+                "reason": reason,
+            })
+            continue
+
+        severity = str(row.get("severity") or "").lower()
+        scope = str(row.get("repair_scope") or "").upper()
+        span_ids = [str(x) for x in (row.get("span_ids") or [])]
+        exact_text = str(row.get("exact_text") or "")
+        if severity not in valid_severity:
+            raise RuntimeError(f"Invalid Story Audit severity: {family}:{severity}")
+        if scope not in valid_scope:
+            raise RuntimeError(f"Invalid Story Audit repair scope: {family}:{scope}")
+        if not span_ids:
+            raise RuntimeError(f"Present Story Audit finding requires span_ids: {family}")
+        if not exact_text:
+            raise RuntimeError(f"Present Story Audit finding requires exact_text: {family}")
+
+        normalized = {
+            "family": family,
+            "present": True,
+            "severity": severity,
+            "repair_scope": scope,
+            "span_ids": span_ids,
+            "exact_text": exact_text,
+            "reason": reason,
+        }
+        normalized_rows.append(normalized)
+        findings.append({
+            "family": family,
+            "severity": severity,
+            "repair_scope": scope,
+            "span_ids": span_ids,
+            "exact_text": exact_text,
+            "reason": reason,
+        })
+
     return {
-        "coverage": coverage_values,
+        "evaluations": normalized_rows,
         "findings": findings,
         "summary": str(raw.get("summary") or "").strip(),
     }
 
+
+def _build_audit_authority_projection(authority: dict[str, Any]) -> dict[str, Any]:
+    pack = authority["spine_context_pack"]
+    reader = authority["reader_profile"]
+    projection = {
+        "context_pack_id": authority["context_pack_id"],
+        "context_fingerprint": authority["context_fingerprint"],
+        "approval_id": authority["approval_id"],
+        "spine_hash": authority["spine_hash"],
+        "reader": {
+            "exact_age": reader.get("exact_age"),
+            "audience_band": reader.get("audience_band"),
+            "developmental_stage": reader.get("developmental_stage"),
+            "dimensions": reader.get("dimensions"),
+        },
+        "character": pack.get("character"),
+        "origin": pack.get("origin"),
+        "current_situation": pack.get("current_situation"),
+        "relationships": pack.get("relationships"),
+        "inventory": pack.get("inventory"),
+        "memories": pack.get("memories"),
+        "world": pack.get("world"),
+        "knowledge_boundaries": pack.get("knowledge_boundaries"),
+        "saga": pack.get("saga"),
+        "opportunities": pack.get("opportunities"),
+        "approved_premise": pack.get("approved_premise"),
+        "creative_permission_envelope": pack.get("creative_permission_envelope"),
+        "authority_rules": pack.get("authority_rules"),
+        "hard_freezes": pack.get("hard_freezes"),
+    }
+    encoded = json.dumps(
+        projection,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return {
+        "projection": projection,
+        "sha256": hashlib.sha256(encoded).hexdigest(),
+        "bytes": len(encoded),
+    }
 
 def _merge_findings(
     primary: list[dict[str, Any]],
@@ -183,6 +303,7 @@ def execute_story_audit_once(
     )
     source_story_sha = manifest["story_sha256"]
 
+    authority_projection = _build_audit_authority_projection(authority)
     payload = {
         "task": "audit_one_frozen_writer_story",
         "source_artifact": {
@@ -190,8 +311,8 @@ def execute_story_audit_once(
             "story_sha256": source_story_sha,
             "source_run_id": manifest["source_run_id"],
         },
-        "reader_profile": authority["reader_profile"],
-        "spine_context_pack": authority["spine_context_pack"],
+        "audit_authority_projection": authority_projection["projection"],
+        "audit_authority_projection_sha256": authority_projection["sha256"],
         "approved_narrative_spine": authority["approved_narrative_spine"],
         "story_segments": audit_source["story_segments"],
     }
@@ -253,6 +374,9 @@ def execute_story_audit_once(
         "input_verified_before_inference": True,
         "input_verified_after_inference": True,
         "source_story_mutated": False,
+        "audit_contract_revision": "family-by-family-v2",
+        "audit_authority_projection_sha256": authority_projection["sha256"],
+        "audit_authority_projection_bytes": authority_projection["bytes"],
         "models": {
             "primary": PRIMARY_MODEL,
             "secondary": SECONDARY_MODEL,

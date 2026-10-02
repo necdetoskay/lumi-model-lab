@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.11"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.12"
     assert result["verified_files"] == 48
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "f2e8e614a"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "c5aba70c5"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,7 +209,7 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -236,7 +236,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["last_paid_run_id"] == 36969500342
     assert q["last_result"] == "story_audit_qualification_failed_known_defect_missed"
 
-    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -295,3 +295,82 @@ def test_v20_11_writer_artifact_still_verifies_after_paid_story_audit():
         "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
     )
     assert "arriving at his shoulder" in verified["story"]
+
+
+def test_v20_12_story_audit_v2_requires_explicit_decision_for_every_family():
+    from src.spineforge_v20_story_audit_once import _normalize_auditor_payload
+
+    order = [
+        "physical_feasibility",
+        "causal_logic",
+        "state_continuity",
+        "epistemic_order",
+        "spatial_consistency",
+        "temporal_consistency",
+        "response_causality",
+        "closure_integrity",
+        "canon_integrity",
+        "language_naturalness",
+        "age_suitability",
+        "spine_fidelity",
+        "narrative_coherence",
+    ]
+    evaluations = []
+    for family in order:
+        if family == "language_naturalness":
+            evaluations.append({
+                "family": family,
+                "present": True,
+                "severity": "minor",
+                "repair_scope": "LOCAL_REPAIR",
+                "span_ids": ["S005"],
+                "exact_text": "arriving at his shoulder",
+                "reason": "Understandable but idiomatically unnatural English.",
+            })
+        else:
+            evaluations.append({
+                "family": family,
+                "present": False,
+                "severity": None,
+                "repair_scope": None,
+                "span_ids": [],
+                "exact_text": None,
+                "reason": "No concrete defect in this family.",
+            })
+
+    normalized = _normalize_auditor_payload(
+        raw={"evaluations": evaluations, "summary": "one local defect"}
+    )
+    assert len(normalized["evaluations"]) == 13
+    assert normalized["findings"] == [{
+        "family": "language_naturalness",
+        "severity": "minor",
+        "repair_scope": "LOCAL_REPAIR",
+        "span_ids": ["S005"],
+        "exact_text": "arriving at his shoulder",
+        "reason": "Understandable but idiomatically unnatural English.",
+    }]
+
+    try:
+        _normalize_auditor_payload(
+            raw={"evaluations": evaluations[:-1], "summary": "missing family"}
+        )
+    except RuntimeError as exc:
+        assert "every family exactly once" in str(exc)
+    else:
+        raise AssertionError("Audit v2 must reject incomplete family coverage.")
+
+
+
+def test_v20_12_freeze_locks_story_audit_requalification_contract():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+
+    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt2_paid_authorized"] is False
+    assert audit["audit_contract_revision"] == "family-by-family-v2"
+    assert audit["authority_projection"] == "compact-reveal-safe-v1"
+    assert audit["prompt_revision"] == "stage5-story-audit-v2"
+    assert audit["attempt1"]["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
+    assert audit["attempt1"]["known_target_recall"] == 0.0
