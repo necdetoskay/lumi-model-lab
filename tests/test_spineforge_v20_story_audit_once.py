@@ -114,7 +114,7 @@ def test_stage5_v2_dual_audit_uses_same_frozen_writer_artifact_and_emits_one_art
     )
 
     assert result["status"] == "audit_completed"
-    assert result["audit_contract_revision"] == "family-by-family-v2"
+    assert result["audit_contract_revision"] == "family-by-family-multi-finding-v3"
     assert result["models"]["primary"] == PRIMARY_MODEL
     assert result["models"]["secondary"] == SECONDARY_MODEL
     assert result["input_verified_before_inference"] is True
