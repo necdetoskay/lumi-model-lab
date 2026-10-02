@@ -112,7 +112,7 @@ AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
         "summary": {"type": "string", "maxLength": 600},
     },
 }
-SECONDARY_AUDIT_SCHEMA_NAME = "spineforge_v20_language_specialist_v1"
+SECONDARY_AUDIT_SCHEMA_NAME = "spineforge_v20_language_specialist_v2"
 SECONDARY_AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -125,10 +125,18 @@ SECONDARY_AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
             "items": {
                 "type": "object",
                 "additionalProperties": False,
-                "required": ["span_id", "status"],
+                "required": ["span_id", "status", "editor_action", "rewrite"],
                 "properties": {
                     "span_id": {"type": "string", "maxLength": 16},
                     "status": {"type": "string", "enum": ["clean", "defect"]},
+                    "editor_action": {
+                        "type": "string",
+                        "enum": ["KEEP", "REWRITE"],
+                    },
+                    "rewrite": {
+                        "type": "string",
+                        "maxLength": 700,
+                    },
                 },
             },
         },
@@ -410,24 +418,60 @@ def _normalize_language_specialist_payload(
     *,
     raw: dict[str, Any],
     expected_span_ids: list[str],
+    story_text_by_id: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     scan = raw.get("language_sentence_scan")
     if not isinstance(scan, list):
         raise RuntimeError("Language specialist sentence scan must be a list.")
 
     normalized_scan: list[dict[str, str]] = []
+    story_lookup = story_text_by_id or {}
     for item in scan:
         if not isinstance(item, dict):
             raise RuntimeError("Language specialist sentence scan row must be an object.")
         span_id = str(item.get("span_id") or "")
         status = str(item.get("status") or "").lower()
+        editor_action = str(item.get("editor_action") or "").upper()
+        rewrite = str(item.get("rewrite") or "")
         if not span_id:
             raise RuntimeError("Language specialist span_id is required.")
         if status not in {"clean", "defect"}:
             raise RuntimeError(
                 f"Language specialist sentence status invalid: {span_id}:{status}"
             )
-        normalized_scan.append({"span_id": span_id, "status": status})
+        if editor_action not in {"KEEP", "REWRITE"}:
+            raise RuntimeError(
+                f"Language specialist editor_action invalid: {span_id}:{editor_action}"
+            )
+        if status == "clean":
+            if editor_action != "KEEP":
+                raise RuntimeError(
+                    f"Language specialist clean sentence must be KEEP: {span_id}"
+                )
+            if rewrite:
+                raise RuntimeError(
+                    f"Language specialist KEEP sentence rewrite must be empty: {span_id}"
+                )
+        else:
+            if editor_action != "REWRITE":
+                raise RuntimeError(
+                    f"Language specialist defect sentence must be REWRITE: {span_id}"
+                )
+            if not rewrite.strip():
+                raise RuntimeError(
+                    f"Language specialist REWRITE sentence needs replacement: {span_id}"
+                )
+            original = story_lookup.get(span_id)
+            if original is not None and rewrite.strip() == original.strip():
+                raise RuntimeError(
+                    f"Language specialist REWRITE must differ from source: {span_id}"
+                )
+        normalized_scan.append({
+            "span_id": span_id,
+            "status": status,
+            "editor_action": editor_action,
+            "rewrite": rewrite,
+        })
 
     actual_ids = [row["span_id"] for row in normalized_scan]
     if actual_ids != expected_span_ids:
@@ -788,7 +832,7 @@ def execute_story_audit_once(
         "story_segments": audit_source["story_segments"],
     }
     secondary_payload = {
-        "task": "audit_frozen_story_english_naturalness_only",
+        "task": "contrastive_edit_frozen_story_english_naturalness",
         "source_artifact": {
             "artifact_id": manifest["artifact_id"],
             "story_sha256": source_story_sha,
@@ -809,6 +853,10 @@ def execute_story_audit_once(
     primary_fn = primary_call_fn or call_strict_json_once
     secondary_fn = secondary_call_fn or call_strict_json_once
     expected_span_ids = [str(row["id"]) for row in audit_source["story_segments"]]
+    story_text_by_id = {
+        str(row["id"]): str(row["text"])
+        for row in audit_source["story_segments"]
+    }
 
     primary, primary_meta = _call_auditor(
         fn=primary_fn,
@@ -830,6 +878,7 @@ def execute_story_audit_once(
         normalize_fn=lambda raw: _normalize_language_specialist_payload(
             raw=raw,
             expected_span_ids=expected_span_ids,
+            story_text_by_id=story_text_by_id,
         ),
     )
 
@@ -875,8 +924,8 @@ def execute_story_audit_once(
             "input_verified_before_inference": True,
             "input_verified_after_inference": True,
             "source_story_mutated": False,
-            "audit_contract_revision": "primary-v3-plus-language-specialist-v1",
-            "secondary_contract_revision": "language-specialist-v1",
+            "audit_contract_revision": "primary-v3-plus-language-specialist-v2",
+            "secondary_contract_revision": "language-specialist-v2",
             "audit_authority_projection_sha256": authority_projection["sha256"],
             "audit_authority_projection_bytes": authority_projection["bytes"],
             "models": {
@@ -913,8 +962,8 @@ def execute_story_audit_once(
         "input_verified_before_inference": True,
         "input_verified_after_inference": True,
         "source_story_mutated": False,
-        "audit_contract_revision": "primary-v3-plus-language-specialist-v1",
-        "secondary_contract_revision": "language-specialist-v1",
+        "audit_contract_revision": "primary-v3-plus-language-specialist-v2",
+        "secondary_contract_revision": "language-specialist-v2",
         "audit_authority_projection_sha256": authority_projection["sha256"],
         "audit_authority_projection_bytes": authority_projection["bytes"],
         "models": {

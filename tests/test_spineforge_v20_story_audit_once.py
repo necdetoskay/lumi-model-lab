@@ -82,6 +82,14 @@ def _language_specialist_raw(
             {
                 "span_id": str(row["id"]),
                 "status": "defect" if str(row["id"]) == defect_span_id else "clean",
+                "editor_action": (
+                    "REWRITE" if str(row["id"]) == defect_span_id else "KEEP"
+                ),
+                "rewrite": (
+                    "Nisa said, coming up beside him."
+                    if str(row["id"]) == defect_span_id
+                    else ""
+                ),
             }
             for row in payload["story_segments"]
         ],
@@ -124,8 +132,8 @@ def test_stage5_language_specialist_uses_same_frozen_story_but_not_full_authorit
     )
 
     assert result["status"] == "audit_completed"
-    assert result["audit_contract_revision"] == "primary-v3-plus-language-specialist-v1"
-    assert result["secondary_contract_revision"] == "language-specialist-v1"
+    assert result["audit_contract_revision"] == "primary-v3-plus-language-specialist-v2"
+    assert result["secondary_contract_revision"] == "language-specialist-v2"
     assert result["models"]["primary"] == PRIMARY_MODEL
     assert result["models"]["secondary"] == SECONDARY_MODEL
     assert result["source_story_mutated"] is False
@@ -140,7 +148,7 @@ def test_stage5_language_specialist_uses_same_frozen_story_but_not_full_authorit
     assert "approved_narrative_spine" in primary_payload
     assert "audit_authority_projection" not in secondary_payload
     assert "approved_narrative_spine" not in secondary_payload
-    assert secondary_payload["task"] == "audit_frozen_story_english_naturalness_only"
+    assert secondary_payload["task"] == "contrastive_edit_frozen_story_english_naturalness"
     assert len(secondary_payload["story_segments"]) == 199
 
     artifact = result["audit_artifact"]
@@ -226,6 +234,8 @@ def test_stage5_language_specialist_requires_199_exact_order_scan_and_matching_f
         payload = json.loads(kwargs["user_prompt"])
         raw = _language_specialist_raw(payload)
         raw["language_sentence_scan"][5]["status"] = "defect"
+        raw["language_sentence_scan"][5]["editor_action"] = "REWRITE"
+        raw["language_sentence_scan"][5]["rewrite"] = "Synthetic native-English rewrite."
         return raw, _body(10, 5, 0.0), _request(), []
 
     with pytest.raises(RuntimeError, match="must exactly match finding span ids"):
