@@ -176,3 +176,78 @@ def test_stage6_prompt_does_not_leak_human_gold_phrase():
     assert "PATCHES ONLY" in prompt
     assert "allowed_edit_span_ids" in prompt
     assert "arriving at his shoulder" not in prompt
+
+
+def test_stage6_noop_patch_becomes_explicit_resolution_and_routes_to_reaudit():
+    handoff = build_story_local_repair_handoff()
+    patches = _all_target_patches(handoff)
+    target = next(row for row in handoff["target_segments"] if row["span_id"] == "S173")
+    for row in patches:
+        if row["span_id"] == "S173":
+            row["replacement_text"] = target["source_text"]
+            break
+
+    normalized = _normalize_repair_payload(
+        raw={"patches": patches, "summary": "Synthetic with one no-op."},
+        handoff=handoff,
+    )
+    assert len(normalized["no_change_resolutions"]) == 1
+    no_change = normalized["no_change_resolutions"][0]
+    assert no_change["span_id"] == "S173"
+    assert no_change["disposition"] == "NO_CHANGE"
+    assert no_change["source_text"] == target["source_text"]
+    assert 1 in no_change["addresses_finding_indexes"]
+    assert all(row["span_id"] != "S173" for row in normalized["patches"])
+
+    def fake_call(**kwargs):
+        return (
+            {"patches": patches, "summary": "Synthetic with one no-op."},
+            _fake_body(),
+            _fake_request(),
+            [],
+        )
+
+    result = execute_story_local_repair_once(
+        api_key="not-used",
+        handoff=handoff,
+        call_fn=fake_call,
+    )
+    assert result["status"] == "repair_generated"
+    assert result["no_change_resolution_count"] == 1
+    assert result["no_change_resolutions"][0]["span_id"] == "S173"
+    assert "S173" not in result["changed_span_ids"]
+    assert result["all_findings_addressed"] is True
+    assert result["all_findings_changed"] is False
+    assert result["reaudit_required_for_no_change_resolutions"] is True
+    assert result["next_stage"] == "STORY_REAUDIT"
+
+
+def test_stage6_post_provider_validation_failure_preserves_usage_and_raw_evidence():
+    handoff = build_story_local_repair_handoff()
+
+    def fake_call(**kwargs):
+        raw = {
+            "patches": [{
+                "span_id": "S001",
+                "replacement_text": "Forbidden change.",
+                "addresses_finding_indexes": [0],
+            }],
+            "summary": "Synthetic invalid response.",
+        }
+        return raw, _fake_body(), _fake_request(), []
+
+    with pytest.raises(RuntimeError, match="forbidden span") as excinfo:
+        execute_story_local_repair_once(
+            api_key="not-used",
+            handoff=handoff,
+            call_fn=fake_call,
+        )
+
+    trace = getattr(excinfo.value, "trace", None)
+    assert isinstance(trace, dict)
+    assert trace["phase"] == "post_provider_repair_payload_validation"
+    assert trace["raw_response"]["patches"][0]["span_id"] == "S001"
+    assert trace["repair_usage_rollup"]["totals"]["api_calls"] == 1
+    assert trace["repair_usage_rollup"]["totals"]["cost_usd"] == 0.01
+    assert trace["incremental_cost_usd"] == 0.01
+    assert trace["incremental_latency_seconds"] >= 0

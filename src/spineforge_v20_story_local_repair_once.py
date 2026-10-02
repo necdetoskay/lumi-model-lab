@@ -133,6 +133,7 @@ def _normalize_repair_payload(
     finding_indexes = set(range(int(handoff["finding_count"])))
 
     patches: list[dict[str, Any]] = []
+    no_change_resolutions: list[dict[str, Any]] = []
     seen_spans: set[str] = set()
     addressed: set[int] = set()
 
@@ -149,8 +150,6 @@ def _normalize_repair_payload(
             raise RuntimeError(f"Duplicate repair patch span: {span_id}")
         if not replacement:
             raise RuntimeError(f"Repair replacement is empty: {span_id}")
-        if replacement == str(target_by_id[span_id]["source_text"]).strip():
-            raise RuntimeError(f"Repair replacement did not change source: {span_id}")
         if not indexes:
             raise RuntimeError(f"Repair patch addresses no findings: {span_id}")
         if any(index not in finding_indexes for index in indexes):
@@ -164,6 +163,20 @@ def _normalize_repair_payload(
 
         seen_spans.add(span_id)
         addressed.update(indexes)
+        source_text = str(target_by_id[span_id]["source_text"]).strip()
+        if replacement == source_text:
+            no_change_resolutions.append({
+                "span_id": span_id,
+                "disposition": "NO_CHANGE",
+                "source_text": source_text,
+                "addresses_finding_indexes": sorted(set(indexes)),
+                "reason": (
+                    "Repair model returned the frozen source unchanged; "
+                    "mandatory Story Re-audit must adjudicate this finding."
+                ),
+            })
+            continue
+
         patches.append({
             "span_id": span_id,
             "replacement_text": replacement,
@@ -178,6 +191,7 @@ def _normalize_repair_payload(
 
     return {
         "patches": patches,
+        "no_change_resolutions": no_change_resolutions,
         "summary": str(raw.get("summary") or "").strip(),
     }
 
@@ -278,13 +292,6 @@ def execute_story_local_repair_once(
     )
     latency = round(time.perf_counter() - started, 3)
 
-    normalized = _normalize_repair_payload(raw=raw, handoff=handoff)
-    repaired_story, changed_ids = _apply_patches(
-        source_story=source_story,
-        handoff=handoff,
-        patches=normalized["patches"],
-    )
-
     model_call = normalize_model_call(
         stage="spineforge_v20_story_local_repair",
         model=REPAIR_MODEL,
@@ -295,6 +302,30 @@ def execute_story_local_repair_once(
     )
     usage = rollup_model_calls([model_call])
 
+    try:
+        normalized = _normalize_repair_payload(raw=raw, handoff=handoff)
+    except Exception as exc:
+        setattr(exc, "trace", {
+            "phase": "post_provider_repair_payload_validation",
+            "raw_response": raw,
+            "request": {
+                "temperature": request.get("temperature"),
+                "max_tokens": request.get("max_tokens"),
+                "response_format": request.get("response_format"),
+            },
+            "transport_failures": failures,
+            "repair_usage_rollup": usage,
+            "incremental_cost_usd": usage["totals"]["cost_usd"],
+            "incremental_latency_seconds": usage["totals"]["latency_seconds"],
+        })
+        raise
+
+    repaired_story, changed_ids = _apply_patches(
+        source_story=source_story,
+        handoff=handoff,
+        patches=normalized["patches"],
+    )
+
     return {
         "schema": "spineforge-v20-story-local-repair-execution.v1",
         "status": "repair_generated",
@@ -303,12 +334,18 @@ def execute_story_local_repair_once(
         "source_audit_artifact_id": handoff["source_audit_artifact_id"],
         "repair_model": REPAIR_MODEL,
         "patches": normalized["patches"],
+        "no_change_resolutions": normalized["no_change_resolutions"],
         "changed_span_ids": changed_ids,
         "patch_count": len(normalized["patches"]),
+        "no_change_resolution_count": len(normalized["no_change_resolutions"]),
         "repaired_story": repaired_story,
         "repaired_story_sha256": _sha256_text(repaired_story),
         "source_story_mutated": False,
         "all_findings_addressed": True,
+        "all_findings_changed": not bool(normalized["no_change_resolutions"]),
+        "reaudit_required_for_no_change_resolutions": bool(
+            normalized["no_change_resolutions"]
+        ),
         "changed_spans_subset_of_allowed": set(changed_ids).issubset(
             set(handoff["allowed_edit_span_ids"])
         ),

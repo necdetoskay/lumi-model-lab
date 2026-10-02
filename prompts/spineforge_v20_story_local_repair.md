@@ -26,10 +26,11 @@ Return PATCHES ONLY. Do not return the whole story.
 For every patch:
 - span_id must be one of the allowed edit span IDs;
 - replacement_text must be a complete replacement for that one source sentence;
-- replacement_text must differ from the source text;
+- replacement_text should differ from the source text when a change is warranted;
+- if the cited source is already correct and changing it would worsen the story, return the exact frozen source sentence unchanged for that span; the runtime will record a NO_CHANGE disposition and mandatory Story Re-audit will adjudicate it;
 - addresses_finding_indexes must list every finding index that this patch fixes.
 
-Every finding index must be addressed by at least one patch. Do not patch a span merely for style preference.
+Every finding index must receive a disposition through at least one returned row. A row may be a real patch or an exact-source NO_CHANGE disposition. Do not use NO_CHANGE to avoid a valid fix; Story Re-audit will verify it. Do not patch a span merely for style preference.
 
 Return JSON only:
 

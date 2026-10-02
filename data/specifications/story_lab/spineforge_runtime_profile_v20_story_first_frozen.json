@@ -90,8 +90,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.43",
-    "runtime_source_commit": "b133154d4",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.44",
+    "runtime_source_commit": "187415fe9",
     "files": [
       {
         "path": "requirements.txt",
@@ -399,11 +399,11 @@
       },
       {
         "path": "src/spineforge_v20_story_local_repair_once.py",
-        "sha256": "eee652e37b02c176325be0ab9db658d6245c2a9efbaa5355111316ebbfa9b17a"
+        "sha256": "27743d202565570818b6d0732dd6e4b282c9ec5e6bfcb661d3cb803e2e05ddae"
       },
       {
         "path": "prompts/spineforge_v20_story_local_repair.md",
-        "sha256": "af13169f35a49cc21885774e0a8e5783d7586d5143a366a89d921d1a2a95f8bb"
+        "sha256": "fc295b334fe07fb0f4ca4db13102da01ac50a73251ada0c13f20a7efab06efa0"
       },
       {
         "path": "src/spineforge_v20_paid_story_local_repair_once.py",
@@ -983,7 +983,7 @@
     }
   },
   "stage6_story_local_repair": {
-    "status": "ATTEMPT1_FAILED_NOOP_PATCH_REJECTED",
+    "status": "ATTEMPT2_REQUALIFICATION_PREPARED_ZERO_COST",
     "stage": 6,
     "input_artifact_schema": "spineforge-v20-story-local-repair-handoff.v1",
     "artifact_type": "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT",
@@ -1033,19 +1033,23 @@
       "canon_change_forbidden": true,
       "new_plot_event_forbidden": true,
       "all_findings_must_be_addressed": true,
-      "patches_only": true
+      "patches_only": true,
+      "no_change_disposition_allowed": true,
+      "no_change_requires_mandatory_reaudit": true
     },
     "output_contract": {
       "schema": "spineforge-v20-story-local-repair-artifact.v1",
       "source_story_remains_immutable": true,
       "changed_spans_must_be_subset_of_allowed_edit_span_ids": true,
-      "next_stage": "STORY_REAUDIT"
+      "next_stage": "STORY_REAUDIT",
+      "no_change_resolutions_preserved": true,
+      "provider_usage_preserved_on_post_validation_failure": true
     },
     "next_stage_after_success": "STORY_REAUDIT",
     "paid_execution_authorized": false,
     "automatic_retry_enabled": false,
     "automatic_repair_loop_enabled": false,
-    "next_harness_requirement": "stage6_attempt2_zero_cost_fix",
+    "next_harness_requirement": "stage6_attempt2_zero_cost_green_before_harness",
     "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
@@ -1103,6 +1107,8 @@
       "state_commit_executed": false,
       "result_path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-result.json",
       "envelope_path": "evidence/spineforge-v20-paid-story-local-repair/36995792496/age12-island-v20-story-local-repair1-envelope.json"
-    }
+    },
+    "repair_contract_revision": "local-repair-v2-noop-disposition",
+    "provider_evidence_capture_revision": "post-provider-validation-v2"
   }
 }
