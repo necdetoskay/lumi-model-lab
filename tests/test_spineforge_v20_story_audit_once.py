@@ -102,6 +102,10 @@ def test_stage5_v2_dual_audit_uses_same_frozen_writer_artifact_and_emits_one_art
         payload = json.loads(kwargs["user_prompt"])
         seen.append(("secondary", payload["source_artifact"]))
         raw = {
+            "language_sentence_scan": [
+                {"span_id": str(row["id"]), "status": "clean"}
+                for row in payload["story_segments"]
+            ],
             "evaluations": _clean_evaluations(),
             "summary": "No additional defect.",
         }
@@ -172,11 +176,18 @@ def test_stage5_v2_requires_every_auditor_to_decide_every_family():
 
 def test_stage5_v2_clean_dual_audit_routes_to_english_master_seal():
     def clean(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        raw = {
+            "evaluations": _clean_evaluations(),
+            "summary": "Clean.",
+        }
+        if kwargs.get("schema_name") == "spineforge_v20_story_audit_secondary_v4":
+            raw["language_sentence_scan"] = [
+                {"span_id": str(row["id"]), "status": "clean"}
+                for row in payload["story_segments"]
+            ]
         return (
-            {
-                "evaluations": _clean_evaluations(),
-                "summary": "Clean.",
-            },
+            raw,
             _body(10, 5, 0.0),
             _request(),
             [],

@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.27"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.28"
     assert result["verified_files"] == 63
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "6e6fbb56f"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "f48021413"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,7 +209,7 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -236,7 +236,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["last_paid_run_id"] == 36978036076
     assert q["last_result"] == "story_audit_attempt5_contract_failure_known_defect_missed"
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -366,7 +366,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-multi-finding-v3"
@@ -380,7 +380,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
 def test_v20_13_freeze_locks_attempt2_paid_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT5"
     assert audit["attempt2_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -431,8 +431,32 @@ def _stage5_v2_eval_rows(*, defect_exact_text=None, defect_span_id=None):
 
 def _stage5_fake_transport(raw, *, prompt_tokens=100, completion_tokens=20, cost=0.01):
     def call(**kwargs):
+        import copy
+
+        emitted = copy.deepcopy(raw)
+        if kwargs.get("schema_name") == "spineforge_v20_story_audit_secondary_v4":
+            payload = json.loads(kwargs["user_prompt"])
+            language_ids = set()
+            for evaluation in emitted.get("evaluations") or []:
+                if evaluation.get("family") != "language_naturalness":
+                    continue
+                findings = evaluation.get("findings")
+                if isinstance(findings, list):
+                    for finding in findings:
+                        language_ids.update(str(x) for x in (finding.get("span_ids") or []))
+                elif evaluation.get("present"):
+                    language_ids.update(
+                        str(x) for x in (evaluation.get("span_ids") or [])
+                    )
+            emitted["language_sentence_scan"] = [
+                {
+                    "span_id": str(row["id"]),
+                    "status": "defect" if str(row["id"]) in language_ids else "clean",
+                }
+                for row in payload["story_segments"]
+            ]
         return (
-            raw,
+            emitted,
             {
                 "usage": {
                     "prompt_tokens": prompt_tokens,
@@ -443,9 +467,9 @@ def _stage5_fake_transport(raw, *, prompt_tokens=100, completion_tokens=20, cost
             },
             {
                 "temperature": 0.0,
-                "max_tokens": 3500,
+                "max_tokens": 6000,
                 "reasoning": None,
-                "response_format": {"type": "json_object"},
+                "response_format": {"type": "json_schema"},
             },
             [],
         )
@@ -527,7 +551,7 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -553,7 +577,7 @@ def test_v20_16_freeze_locks_attempt3_harness_not_authorized():
     audit = profile["stage5_story_audit"]
     harness = audit["attempt3_harness"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt3_paid_authorized"] is False
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT5"
@@ -570,7 +594,7 @@ def test_v20_16_freeze_locks_attempt3_harness_not_authorized():
 def test_v20_16_freeze_locks_attempt3_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT5"
     assert audit["attempt3_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -719,7 +743,7 @@ def test_v20_19_freeze_locks_v3_story_audit_requalification_without_paid_authori
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt4_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -887,7 +911,7 @@ def test_v20_22_freeze_records_attempt4_invalid_json_transport_failure():
     audit = profile["stage5_story_audit"]
     harness = audit["attempt4_harness"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT5"
     assert audit["attempt4_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -917,7 +941,7 @@ def test_v20_22_attempt4_failure_evidence_is_frozen_and_unreconciled():
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
     assert q["unreconciled_paid_api_calls"] == 4
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt4_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -949,7 +973,7 @@ def test_v20_23_strict_story_audit_transport_contract_is_zero_cost_qualified():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt5_paid_authorized"] is False
     assert audit["transport_contract_revision"] == "strict-json-schema-v1"
@@ -1073,7 +1097,7 @@ def test_v20_26_freeze_records_attempt5_paid_result_and_seals_harness():
     audit = profile["stage5_story_audit"]
     harness = audit["attempt5_harness"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT5"
     assert audit["attempt5_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -1166,7 +1190,7 @@ def test_v20_26_freeze_records_attempt5_quality_failure_with_reconciled_usage():
     assert q["unreconciled_paid_api_calls"] == 4
     assert q["confirmed_cost_is_lower_bound"] is True
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt5_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -1193,7 +1217,7 @@ def test_v20_27_freeze_locks_attempt5_reprocessed_artifact_without_new_model_cal
     audit = profile["stage5_story_audit"]
     reprocessed = audit["attempt5_reprocess"]
 
-    assert audit["status"] == "ATTEMPT5_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
     assert reprocessed["status"] == "audit_reprocessed_zero_cost"
     assert reprocessed["model_calls_executed"] == 0
     assert reprocessed["source_paid_usage_reused"] is True
@@ -1215,3 +1239,281 @@ def test_v20_27_freeze_locks_attempt5_reprocessed_artifact_without_new_model_cal
     assert result["audit_artifact"]["artifact_id"] == reprocessed["audit_artifact_id"]
     assert report["status"] == "FAIL_KNOWN_DEFECT_MISSED"
     assert report["target_recall"] == 0.0
+
+
+def test_v20_28_secondary_sentence_scan_contract_covers_every_frozen_story_sentence():
+    from src.spineforge_v19_transport import schema_size_bytes
+    from src.spineforge_v20_story_audit_artifact import build_story_audit_source
+    from src.spineforge_v20_story_audit_once import (
+        SECONDARY_AUDIT_RESPONSE_SCHEMA,
+        SECONDARY_AUDIT_SCHEMA_NAME,
+        _normalize_auditor_payload,
+    )
+
+    manifest = Path(
+        "evidence/spineforge-v20-writer-product/36965340665/"
+        "writer-story-artifact.json"
+    )
+    source = build_story_audit_source(manifest_path=manifest)
+    expected_ids = [str(row["id"]) for row in source["story_segments"]]
+    assert len(expected_ids) == 199
+    assert expected_ids[5] == "S006"
+
+    rows = _stage5_v3_clean_rows()
+    language_index = next(
+        i for i, row in enumerate(rows)
+        if row["family"] == "language_naturalness"
+    )
+    rows[language_index] = {
+        "family": "language_naturalness",
+        "present": True,
+        "findings": [{
+            "severity": "minor",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": ["S006"],
+            "exact_text": "arriving at his shoulder",
+            "reason": "Idiomatic movement phrasing is unnatural.",
+        }],
+        "reason": "",
+    }
+    scan = [
+        {
+            "span_id": span_id,
+            "status": "defect" if span_id == "S006" else "clean",
+        }
+        for span_id in expected_ids
+    ]
+    normalized = _normalize_auditor_payload(
+        raw={
+            "language_sentence_scan": scan,
+            "evaluations": rows,
+            "summary": "One language defect.",
+        },
+        require_language_sentence_scan=True,
+        expected_span_ids=expected_ids,
+    )
+    assert len(normalized["language_sentence_scan"]) == 199
+    assert normalized["language_sentence_scan"][5] == {
+        "span_id": "S006",
+        "status": "defect",
+    }
+    assert normalized["findings"][0]["exact_text"] == "arriving at his shoulder"
+    assert SECONDARY_AUDIT_SCHEMA_NAME == "spineforge_v20_story_audit_secondary_v4"
+    assert schema_size_bytes(SECONDARY_AUDIT_RESPONSE_SCHEMA) <= 4096
+
+
+def test_v20_28_secondary_sentence_scan_rejects_missing_or_unmatched_coverage():
+    from src.spineforge_v20_story_audit_artifact import build_story_audit_source
+    from src.spineforge_v20_story_audit_once import _normalize_auditor_payload
+
+    manifest = Path(
+        "evidence/spineforge-v20-writer-product/36965340665/"
+        "writer-story-artifact.json"
+    )
+    source = build_story_audit_source(manifest_path=manifest)
+    expected_ids = [str(row["id"]) for row in source["story_segments"]]
+    rows = _stage5_v3_clean_rows()
+
+    incomplete_scan = [
+        {"span_id": span_id, "status": "clean"}
+        for span_id in expected_ids[:-1]
+    ]
+    try:
+        _normalize_auditor_payload(
+            raw={
+                "language_sentence_scan": incomplete_scan,
+                "evaluations": rows,
+                "summary": "Incomplete scan.",
+            },
+            require_language_sentence_scan=True,
+            expected_span_ids=expected_ids,
+        )
+    except RuntimeError as exc:
+        assert "every story sentence exactly once" in str(exc)
+    else:
+        raise AssertionError("Secondary sentence scan must reject missing coverage.")
+
+    mismatch_scan = [
+        {
+            "span_id": span_id,
+            "status": "defect" if span_id == "S006" else "clean",
+        }
+        for span_id in expected_ids
+    ]
+    try:
+        _normalize_auditor_payload(
+            raw={
+                "language_sentence_scan": mismatch_scan,
+                "evaluations": rows,
+                "summary": "Scan/finding mismatch.",
+            },
+            require_language_sentence_scan=True,
+            expected_span_ids=expected_ids,
+        )
+    except RuntimeError as exc:
+        assert "must exactly match language_naturalness" in str(exc)
+    else:
+        raise AssertionError("Secondary scan defects must match language findings.")
+
+
+def test_v20_28_freeze_locks_secondary_sentence_coverage_before_attempt6():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    coverage = audit["secondary_sentence_coverage"]
+    reprocessed = audit["attempt5_reprocess"]
+
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt6_paid_authorized"] is False
+    assert audit["next_harness_requirement"] == (
+        "sentence_coverage_zero_cost_qualification_before_attempt6_paid"
+    )
+
+    assert reprocessed["status"] == "audit_reprocessed_zero_cost"
+    assert reprocessed["model_calls_executed"] == 0
+    assert reprocessed["decision"] == "STRUCTURAL_REPAIR_REQUIRED"
+    assert reprocessed["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
+    assert reprocessed["known_target_recall"] == 0.0
+    assert reprocessed["reprocessed_result_path"].endswith(
+        "age12-island-v20-story-audit5-reprocessed.json"
+    )
+
+    assert coverage["contract_revision"] == "language-sentence-scan-v1"
+    assert coverage["schema_name"] == "spineforge_v20_story_audit_secondary_v4"
+    assert coverage["prompt_revision"] == "stage5-secondary-v4-sentence-coverage"
+    assert coverage["required"] is True
+    assert coverage["expected_sentence_count"] == 199
+    assert coverage["exact_canonical_order_required"] is True
+    assert coverage["every_sentence_exactly_once_required"] is True
+    assert coverage["statuses"] == ["clean", "defect"]
+    assert coverage["defect_scan_ids_must_equal_language_finding_span_ids"] is True
+    assert coverage["max_tokens_per_auditor"] == 6000
+
+
+def test_v20_28_secondary_language_sentence_scan_covers_every_story_segment_without_gold_leak():
+    from src.spineforge_v19_transport import STRICT_SCHEMA_MAX_BYTES, schema_size_bytes
+    from src.spineforge_v20_story_audit_artifact import build_story_audit_source
+    from src.spineforge_v20_story_audit_once import (
+        SECONDARY_AUDIT_RESPONSE_SCHEMA,
+        SECONDARY_AUDIT_SCHEMA_NAME,
+        _normalize_auditor_payload,
+    )
+
+    manifest = Path(
+        "evidence/spineforge-v20-writer-product/36965340665/"
+        "writer-story-artifact.json"
+    )
+    source = build_story_audit_source(manifest_path=manifest)
+    expected_ids = [str(row["id"]) for row in source["story_segments"]]
+    assert len(expected_ids) == 199
+    assert len(expected_ids) == len(set(expected_ids))
+
+    gold = json.loads(Path(
+        "data/specifications/story_lab/"
+        "spineforge_v20_story_audit_qualification_gold.json"
+    ).read_text(encoding="utf-8"))
+    anchor = gold["targets"][0]["anchor"]
+    target_segment = next(
+        row for row in source["story_segments"] if anchor in row["text"]
+    )
+    target_id = str(target_segment["id"])
+
+    order = [
+        "physical_feasibility",
+        "causal_logic",
+        "state_continuity",
+        "epistemic_order",
+        "spatial_consistency",
+        "temporal_consistency",
+        "response_causality",
+        "closure_integrity",
+        "canon_integrity",
+        "language_naturalness",
+        "age_suitability",
+        "spine_fidelity",
+        "narrative_coherence",
+    ]
+    evaluations = [
+        {
+            "family": family,
+            "present": False,
+            "findings": [],
+            "reason": "clean",
+        }
+        for family in order
+    ]
+    evaluations[order.index("language_naturalness")] = {
+        "family": "language_naturalness",
+        "present": True,
+        "findings": [{
+            "severity": "minor",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": [target_id],
+            "exact_text": anchor,
+            "reason": "Synthetic human-gold qualification target.",
+        }],
+        "reason": "",
+    }
+    scan = [
+        {
+            "span_id": span_id,
+            "status": "defect" if span_id == target_id else "clean",
+        }
+        for span_id in expected_ids
+    ]
+    raw = {
+        "language_sentence_scan": scan,
+        "evaluations": evaluations,
+        "summary": "Synthetic exhaustive sentence scan.",
+    }
+
+    normalized = _normalize_auditor_payload(
+        raw=raw,
+        require_language_sentence_scan=True,
+        expected_span_ids=expected_ids,
+    )
+    assert normalized["language_sentence_scan"] == scan
+    assert len(normalized["language_sentence_scan"]) == 199
+    assert normalized["findings"][0]["exact_text"] == anchor
+
+    broken = dict(raw)
+    broken["language_sentence_scan"] = scan[:-1]
+    try:
+        _normalize_auditor_payload(
+            raw=broken,
+            require_language_sentence_scan=True,
+            expected_span_ids=expected_ids,
+        )
+    except RuntimeError as exc:
+        assert "every story sentence exactly once" in str(exc)
+    else:
+        raise AssertionError("Secondary audit must reject incomplete sentence coverage.")
+
+    assert SECONDARY_AUDIT_SCHEMA_NAME == "spineforge_v20_story_audit_secondary_v4"
+    assert "language_sentence_scan" in SECONDARY_AUDIT_RESPONSE_SCHEMA["required"]
+    assert schema_size_bytes(SECONDARY_AUDIT_RESPONSE_SCHEMA) <= STRICT_SCHEMA_MAX_BYTES
+
+    prompt = Path(
+        "prompts/spineforge_v20_story_audit_secondary.md"
+    ).read_text(encoding="utf-8")
+    assert anchor not in prompt
+
+
+def test_v20_28_freeze_locks_attempt6_sentence_coverage_requalification_without_paid_authorization():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    coverage = audit["secondary_sentence_coverage"]
+
+    assert audit["status"] == "ATTEMPT6_REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt6_paid_authorized"] is False
+    assert coverage["contract_revision"] == "language-sentence-scan-v1"
+    assert coverage["schema_name"] == "spineforge_v20_story_audit_secondary_v4"
+    assert coverage["prompt_revision"] == "stage5-secondary-v4-sentence-coverage"
+    assert coverage["required"] is True
+    assert coverage["expected_sentence_count"] == 199
+    assert coverage["exact_canonical_order_required"] is True
+    assert coverage["every_sentence_exactly_once_required"] is True
+    assert coverage["statuses"] == ["clean", "defect"]
+    assert coverage["defect_scan_ids_must_equal_language_finding_span_ids"] is True
+    assert coverage["max_tokens_per_auditor"] == 6000

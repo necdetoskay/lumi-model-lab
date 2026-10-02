@@ -111,6 +111,29 @@ AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
         "summary": {"type": "string", "maxLength": 600},
     },
 }
+SECONDARY_AUDIT_SCHEMA_NAME = "spineforge_v20_story_audit_secondary_v4"
+SECONDARY_AUDIT_RESPONSE_SCHEMA: dict[str, Any] = json.loads(
+    json.dumps(AUDIT_RESPONSE_SCHEMA)
+)
+SECONDARY_AUDIT_RESPONSE_SCHEMA["required"] = [
+    "language_sentence_scan",
+    "evaluations",
+    "summary",
+]
+SECONDARY_AUDIT_RESPONSE_SCHEMA["properties"]["language_sentence_scan"] = {
+    "type": "array",
+    "minItems": 1,
+    "maxItems": 512,
+    "items": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["span_id", "status"],
+        "properties": {
+            "span_id": {"type": "string", "maxLength": 16},
+            "status": {"type": "string", "enum": ["clean", "defect"]},
+        },
+    },
+}
 DEFAULT_WRITER_MANIFEST = Path(
     "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json"
 )
@@ -160,6 +183,8 @@ def _load_authority(
 def _normalize_auditor_payload(
     *,
     raw: dict[str, Any],
+    require_language_sentence_scan: bool = False,
+    expected_span_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     order = [
         "physical_feasibility",
@@ -298,9 +323,53 @@ def _normalize_auditor_payload(
             "reason": "",
         })
 
+    language_sentence_scan: list[dict[str, str]] = []
+    if require_language_sentence_scan:
+        scan = raw.get("language_sentence_scan")
+        if not isinstance(scan, list):
+            raise RuntimeError("Secondary Story Audit language_sentence_scan must be a list.")
+        normalized_scan: list[dict[str, str]] = []
+        for item in scan:
+            if not isinstance(item, dict):
+                raise RuntimeError("Secondary Story Audit sentence scan row must be an object.")
+            span_id = str(item.get("span_id") or "")
+            status = str(item.get("status") or "").lower()
+            if not span_id:
+                raise RuntimeError("Secondary Story Audit sentence scan span_id is required.")
+            if status not in {"clean", "defect"}:
+                raise RuntimeError(
+                    f"Secondary Story Audit sentence scan status invalid: {span_id}:{status}"
+                )
+            normalized_scan.append({"span_id": span_id, "status": status})
+
+        expected = list(expected_span_ids or [])
+        actual = [row["span_id"] for row in normalized_scan]
+        if actual != expected:
+            raise RuntimeError(
+                "Secondary Story Audit must scan every story sentence exactly once "
+                "in canonical order."
+            )
+
+        defect_ids = {
+            row["span_id"] for row in normalized_scan if row["status"] == "defect"
+        }
+        language_finding_ids = {
+            span_id
+            for finding in flattened
+            if finding["family"] == "language_naturalness"
+            for span_id in finding["span_ids"]
+        }
+        if defect_ids != language_finding_ids:
+            raise RuntimeError(
+                "Secondary Story Audit sentence-scan defects must exactly match "
+                "language_naturalness finding span ids."
+            )
+        language_sentence_scan = normalized_scan
+
     return {
         "evaluations": normalized_rows,
         "findings": flattened,
+        "language_sentence_scan": language_sentence_scan,
         "summary": str(raw.get("summary") or "").strip(),
     }
 
@@ -454,6 +523,10 @@ def _call_auditor(
     prompt: str,
     payload: dict[str, Any],
     stage: str,
+    schema_name: str = AUDIT_SCHEMA_NAME,
+    schema: dict[str, Any] = AUDIT_RESPONSE_SCHEMA,
+    require_language_sentence_scan: bool = False,
+    expected_span_ids: list[str] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     started = time.perf_counter()
     raw, body, request, failures = fn(
@@ -465,11 +538,15 @@ def _call_auditor(
         max_tokens=6000,
         seed=None,
         request_class=AUDIT_REQUEST_CLASS,
-        schema_name=AUDIT_SCHEMA_NAME,
-        schema=AUDIT_RESPONSE_SCHEMA,
+        schema_name=schema_name,
+        schema=schema,
     )
     latency = round(time.perf_counter() - started, 3)
-    normalized = _normalize_auditor_payload(raw=raw)
+    normalized = _normalize_auditor_payload(
+        raw=raw,
+        require_language_sentence_scan=require_language_sentence_scan,
+        expected_span_ids=expected_span_ids,
+    )
     call = normalize_model_call(
         stage=stage,
         model=model,
@@ -539,6 +616,7 @@ def execute_story_audit_once(
 
     primary_fn = primary_call_fn or call_strict_json_once
     secondary_fn = secondary_call_fn or call_strict_json_once
+    expected_span_ids = [str(row["id"]) for row in audit_source["story_segments"]]
 
     primary, primary_meta = _call_auditor(
         fn=primary_fn,
@@ -555,6 +633,10 @@ def execute_story_audit_once(
         prompt=secondary_system_prompt,
         payload=payload,
         stage="spineforge_v20_story_audit_secondary",
+        schema_name=SECONDARY_AUDIT_SCHEMA_NAME,
+        schema=SECONDARY_AUDIT_RESPONSE_SCHEMA,
+        require_language_sentence_scan=True,
+        expected_span_ids=expected_span_ids,
     )
 
     # Re-verify immutable source after both model calls.
@@ -610,6 +692,10 @@ def execute_story_audit_once(
             "secondary_audit": secondary,
             "primary_meta": primary_meta,
             "secondary_meta": secondary_meta,
+            "secondary_language_sentence_scan": secondary["language_sentence_scan"],
+            "secondary_language_sentence_scan_count": len(
+                secondary["language_sentence_scan"]
+            ),
             "merged_findings_before_artifact": merged,
             "artifact_error": {
                 "type": type(exc).__name__,
@@ -643,6 +729,10 @@ def execute_story_audit_once(
         "secondary_audit": secondary,
         "primary_meta": primary_meta,
         "secondary_meta": secondary_meta,
+        "secondary_language_sentence_scan": secondary["language_sentence_scan"],
+        "secondary_language_sentence_scan_count": len(
+            secondary["language_sentence_scan"]
+        ),
         "locator_corrections": locator_corrections,
         "audit_artifact": artifact,
         "audit_usage_rollup": usage,
