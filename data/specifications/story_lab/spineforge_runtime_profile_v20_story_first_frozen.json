@@ -14,7 +14,13 @@
     "max_model_calls_per_case": 2,
     "automatic_retry_enabled": false,
     "automatic_repair_enabled": false,
-    "writer_authorized": false
+    "writer_authorized": false,
+    "automatic_pipeline_enabled": true,
+    "human_review_required": false,
+    "max_local_story_repair_rounds": 1,
+    "automatic_translation_after_clean_story": true,
+    "automatic_fidelity_gate": true,
+    "state_commit_only_after_final_gate": true
   },
   "product_contract": {
     "spine_schema": "narrative-spine.v1",
@@ -80,8 +86,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.6",
-    "runtime_source_commit": "ee946d113",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.7",
+    "runtime_source_commit": "cd564178f",
     "files": [
       {
         "path": "requirements.txt",
@@ -234,6 +240,10 @@
       {
         "path": "evidence/spineforge-v20-paid-writer/36965340665/age12-island-v20-writer3-story.txt",
         "sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+      },
+      {
+        "path": "src/spineforge_v20_auto_pipeline.py",
+        "sha256": "6b29e66a6c826e16feb11b2d2880632f011f7e5314c3b2c984fa43597cb8a8cb"
       }
     ]
   },
@@ -318,5 +328,20 @@
       "automatic_retry_executed": false
     },
     "human_story_review_required": true
+  },
+  "automation_policy": {
+    "mode": "FULL_AUTO_NEXT_STORY",
+    "manual_checkpoints": 0,
+    "spine_accept_source": "deterministic_validation_plus_product_gate",
+    "writer_after_clean_spine": true,
+    "story_audit_required": true,
+    "local_repair_automatic": true,
+    "local_repair_max_rounds": 1,
+    "post_repair_reaudit_required": true,
+    "structural_repair_action": "STOP",
+    "replan_action": "STOP",
+    "translation_after_clean_english": true,
+    "fidelity_required": true,
+    "state_commit_only_when_publication_ready": true
   }
 }

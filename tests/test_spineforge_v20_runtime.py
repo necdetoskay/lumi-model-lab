@@ -142,3 +142,177 @@ def test_v20_runtime_uses_story_first_prompt_and_stops_for_human_review():
     assert result["deterministic_validation"]["authority_valid"] is True
     assert result["deterministic_validation"]["reveal_safe"] is True
     assert result["deterministic_validation"]["obligations_valid"] is True
+
+
+def test_v20_auto_pipeline_runs_clean_story_to_publication_without_human_checkpoint():
+    from src.spineforge_v20_auto_pipeline import run_auto_pipeline
+
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text(encoding="utf-8"))
+    case = load_qualification_cases().cases[0]
+    base_story = "The Test Story\n\n" + ("adventure " * 1800)
+
+    def spine_fn(**kwargs):
+        return run(
+            context_pack=kwargs["context_pack"],
+            obligations=kwargs["obligations"],
+            api_key=kwargs["api_key"],
+            architect_call_fn=_architect_call,
+            gate_call_fn=_gate_call,
+        )
+
+    def writer_fn(**kwargs):
+        handoff = kwargs["handoff"]
+        assert handoff["approval_mode"] == "AUTOMATED_PRODUCT_GATE_ACCEPT"
+        assert handoff["human_review"]["automated_compatibility_shim"] is True
+        return {"status": "writer_generated", "story": base_story}
+
+    def audit_fn(**kwargs):
+        return {"status": "clean", "findings": []}
+
+    def repair_fn(**kwargs):
+        raise AssertionError("repair must not run for clean story")
+
+    def translation_fn(**kwargs):
+        return {"status": "translated", "turkish_delivery": "Türkçe teslim"}
+
+    def fidelity_fn(**kwargs):
+        return {"status": "clean", "findings": []}
+
+    result = run_auto_pipeline(
+        context_pack=pack,
+        obligations=case.obligations,
+        api_key="not-used",
+        system_prompt="not-used",
+        spine_fn=spine_fn,
+        writer_fn=writer_fn,
+        audit_fn=audit_fn,
+        local_repair_fn=repair_fn,
+        translation_fn=translation_fn,
+        fidelity_fn=fidelity_fn,
+    )
+    assert result["status"] == "PUBLICATION_READY"
+    assert result["approval_mode"] == "AUTOMATED_PRODUCT_GATE_ACCEPT"
+    assert result["repair_rounds"] == 0
+    assert result["state_commit_authorized"] is True
+    assert [row["stage"] for row in result["trace"]] == [
+        "SPINE", "WRITER", "STORY_AUDIT", "TRANSLATION", "FIDELITY"
+    ]
+
+
+def test_v20_auto_pipeline_repairs_local_language_defect_and_rechecks_before_translation():
+    from src.spineforge_v20_auto_pipeline import run_auto_pipeline
+
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text(encoding="utf-8"))
+    case = load_qualification_cases().cases[0]
+    defect = "Nisa said, arriving at his shoulder."
+    fixed = "Nisa said, coming up beside him."
+    base_story = "The Test Story\n\n" + defect + " " + ("adventure " * 1800)
+    audit_calls = []
+
+    def spine_fn(**kwargs):
+        return run(
+            context_pack=kwargs["context_pack"],
+            obligations=kwargs["obligations"],
+            api_key=kwargs["api_key"],
+            architect_call_fn=_architect_call,
+            gate_call_fn=_gate_call,
+        )
+
+    def writer_fn(**kwargs):
+        return {"status": "writer_generated", "story": base_story}
+
+    def audit_fn(**kwargs):
+        story = kwargs["story"]
+        audit_calls.append(story)
+        if defect in story:
+            return {
+                "status": "findings",
+                "findings": [{
+                    "family": "language_naturalness",
+                    "severity": "minor",
+                    "repair_scope": "LOCAL_REPAIR",
+                    "exact_text": defect,
+                    "reason": "Awkward idiom.",
+                }],
+            }
+        return {"status": "clean", "findings": []}
+
+    def repair_fn(**kwargs):
+        assert kwargs["findings"][0]["repair_scope"] == "LOCAL_REPAIR"
+        return {"replacements": [{"old": defect, "new": fixed}]}
+
+    def translation_fn(**kwargs):
+        assert defect not in kwargs["english_master"]
+        assert fixed in kwargs["english_master"]
+        return {"status": "translated", "turkish_delivery": "Türkçe teslim"}
+
+    def fidelity_fn(**kwargs):
+        return {"status": "clean", "findings": []}
+
+    result = run_auto_pipeline(
+        context_pack=pack,
+        obligations=case.obligations,
+        api_key="not-used",
+        system_prompt="not-used",
+        spine_fn=spine_fn,
+        writer_fn=writer_fn,
+        audit_fn=audit_fn,
+        local_repair_fn=repair_fn,
+        translation_fn=translation_fn,
+        fidelity_fn=fidelity_fn,
+    )
+    assert result["status"] == "PUBLICATION_READY"
+    assert result["repair_rounds"] == 1
+    assert len(audit_calls) == 2
+    assert defect not in result["english_master"]
+    assert fixed in result["english_master"]
+    assert result["repair_evidence"][0]["applied"] == [{"old": defect, "new": fixed}]
+
+
+def test_v20_auto_pipeline_stops_on_structural_or_replan_defect_without_translation():
+    from src.spineforge_v20_auto_pipeline import run_auto_pipeline
+
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text(encoding="utf-8"))
+    case = load_qualification_cases().cases[0]
+    base_story = "The Test Story\n\n" + ("adventure " * 1800)
+
+    def spine_fn(**kwargs):
+        return run(
+            context_pack=kwargs["context_pack"],
+            obligations=kwargs["obligations"],
+            api_key=kwargs["api_key"],
+            architect_call_fn=_architect_call,
+            gate_call_fn=_gate_call,
+        )
+
+    def writer_fn(**kwargs):
+        return {"status": "writer_generated", "story": base_story}
+
+    def audit_fn(**kwargs):
+        return {
+            "status": "findings",
+            "findings": [{
+                "family": "plot",
+                "severity": "serious",
+                "repair_scope": "REPLAN",
+                "reason": "Selected plot path is invalid.",
+            }],
+        }
+
+    def must_not_run(**kwargs):
+        raise AssertionError("downstream stage must not run after REPLAN")
+
+    result = run_auto_pipeline(
+        context_pack=pack,
+        obligations=case.obligations,
+        api_key="not-used",
+        system_prompt="not-used",
+        spine_fn=spine_fn,
+        writer_fn=writer_fn,
+        audit_fn=audit_fn,
+        local_repair_fn=must_not_run,
+        translation_fn=must_not_run,
+        fidelity_fn=must_not_run,
+    )
+    assert result["status"] == "STOP_REPLAN"
+    assert result["trace"][-1]["stage"] == "STORY_AUDIT"
