@@ -2049,3 +2049,21 @@ def test_v20_39_freeze_records_attempt8_qualification_pass_and_stage5_product():
     assert product["finding_count"] == 25
     assert product["qualification_status"] == "PASS"
     assert product["immutable"] is True
+
+
+def test_v20_39_freeze_exposes_immutable_stage5_output_artifact():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    out = audit["stage5_output_artifact"]
+
+    assert out["artifact_id"] == (
+        "story-audit:8ed94a19c3b8637df0378dc3ec64eacef97096efaa3013f19231ee4cf73e4876"
+    )
+    assert out["source_story_sha256"] == (
+        "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+    )
+    assert out["decision"] == "LOCAL_REPAIR_REQUIRED"
+    assert out["next_stage"] == "STORY_LOCAL_REPAIR"
+    assert out["finding_count"] == 25
+    assert out["qualification_status"] == "PASS"
+    assert out["immutable"] is True
