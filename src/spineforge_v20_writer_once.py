@@ -69,9 +69,9 @@ def execute_writer_once(
             system_prompt=system_prompt,
             user_prompt=json.dumps(handoff["writer_input"], ensure_ascii=False),
             temperature=0.76,
-            max_tokens=None,
+            max_tokens=7000,
             seed=2026100101,
-            request_class="teacher_story_medium_reasoning",
+            request_class="spineforge_v20_story_writer",
             structured_output=False,
         )
     except OpenRouterCallError as exc:
