@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.51"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.52"
     assert result["verified_files"] == 108
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "061b212f0"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "b02b12e6b"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -2493,7 +2493,7 @@ def test_v20_51_freeze_records_stage8_result_and_arms_stage9_reaudit():
     assert product["no_change_resolution_count"] == 2
     assert product["immutable"] is True
 
-    assert stage9["status"] == "HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert stage9["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert stage9["stage"] == 9
     assert stage9["source_stage8_artifact_id"] == product["artifact_id"]
     assert stage9["source_repaired_story_sha256"] == product["repaired_story_text_sha256"]
@@ -2507,12 +2507,12 @@ def test_v20_51_freeze_records_stage8_result_and_arms_stage9_reaudit():
     assert stage9["all_199_stable_spans_required"] is True
     assert stage9["changed_spans_only_forbidden"] is True
     assert stage9["model_calls_per_execution"] == 2
-    assert stage9["paid_execution_authorized"] is False
-    assert stage9["authorization_consumed"] is True
+    assert stage9["paid_execution_authorized"] is True
+    assert stage9["authorization_consumed"] is False
     assert stage9["automatic_retry_enabled"] is False
     assert stage9["automatic_repair_loop_enabled"] is False
-    assert stage9["next_harness_requirement"] == "stage9_paid_authorization"
+    assert stage9["next_harness_requirement"] == "stage9_paid_result"
     assert stage9["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-REAUDIT2"
     assert harness["reaudit_attempt_index"] == 2
     assert harness["model_calls_per_execution"] == 2
-    assert harness["paid_execution_authorized"] is False
+    assert harness["paid_execution_authorized"] is True
