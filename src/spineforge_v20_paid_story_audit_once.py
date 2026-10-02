@@ -23,6 +23,25 @@ AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-AUDIT4"
 LEGACY_CI_TRIGGER_MARKER = "PAID-V20-AGE12-ISLAND-WRITER2"
 
 
+def build_story_audit_failure_result(exc: Exception) -> dict[str, Any]:
+    provider_trace = getattr(exc, "trace", None)
+    return {
+        "schema": "spineforge-v20-story-audit-execution.v1",
+        "status": "unhandled_story_audit_runtime_failure",
+        "stage": 5,
+        "failure": {
+            "type": type(exc).__name__,
+            "message": str(exc),
+            "traceback": traceback.format_exc(),
+            "provider_trace": provider_trace if isinstance(provider_trace, dict) else None,
+        },
+        "automatic_retry_executed": False,
+        "repair_executed": False,
+        "translation_executed": False,
+        "state_commit_executed": False,
+    }
+
+
 def execute_paid_story_audit_once(
     *,
     api_key: str,
@@ -81,20 +100,7 @@ def execute_paid_story_audit_once(
             writer_handoff_path=WRITER_HANDOFF_PATH,
         )
     except Exception as exc:
-        result = {
-            "schema": "spineforge-v20-story-audit-execution.v1",
-            "status": "unhandled_story_audit_runtime_failure",
-            "stage": 5,
-            "failure": {
-                "type": type(exc).__name__,
-                "message": str(exc),
-                "traceback": traceback.format_exc(),
-            },
-            "automatic_retry_executed": False,
-            "repair_executed": False,
-            "translation_executed": False,
-            "state_commit_executed": False,
-        }
+        result = build_story_audit_failure_result(exc)
 
     result_path.write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",

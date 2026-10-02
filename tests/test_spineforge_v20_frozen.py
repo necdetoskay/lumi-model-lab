@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.22"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.23"
     assert result["verified_files"] == 58
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "0cf0ec757"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "1e500a7a5"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,7 +209,7 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -236,7 +236,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["last_paid_run_id"] == 36976651148
     assert q["last_result"] == "story_audit_attempt4_invalid_json_transport_failure"
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -366,7 +366,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-multi-finding-v3"
@@ -380,7 +380,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
 def test_v20_13_freeze_locks_attempt2_paid_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT4"
     assert audit["attempt2_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -527,7 +527,7 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -553,7 +553,7 @@ def test_v20_16_freeze_locks_attempt3_harness_not_authorized():
     audit = profile["stage5_story_audit"]
     harness = audit["attempt3_harness"]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt3_paid_authorized"] is False
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT4"
@@ -570,7 +570,7 @@ def test_v20_16_freeze_locks_attempt3_harness_not_authorized():
 def test_v20_16_freeze_locks_attempt3_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT4"
     assert audit["attempt3_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -719,7 +719,7 @@ def test_v20_19_freeze_locks_v3_story_audit_requalification_without_paid_authori
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt4_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -887,7 +887,7 @@ def test_v20_22_freeze_records_attempt4_invalid_json_transport_failure():
     audit = profile["stage5_story_audit"]
     harness = audit["attempt4_harness"]
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT4"
     assert audit["attempt4_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
@@ -917,7 +917,7 @@ def test_v20_22_attempt4_failure_evidence_is_frozen_and_unreconciled():
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148]
     assert q["unreconciled_paid_api_calls"] == 4
 
-    assert audit["status"] == "ATTEMPT4_TRANSPORT_FAILURE_INVALID_JSON_FIX_PENDING"
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt4_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -933,3 +933,135 @@ def test_v20_22_attempt4_failure_evidence_is_frozen_and_unreconciled():
     assert attempt4["state_commit_executed"] is False
     assert attempt4["audit_artifact_created"] is False
     assert attempt4["qualification_status"] == "UNUSABLE_EVIDENCE_INVALID_JSON"
+
+
+
+def test_v20_23_strict_story_audit_transport_contract_is_zero_cost_qualified():
+    from src.model_registry import resolve_model_request_behavior
+    from src.spineforge_v19_transport import STRICT_SCHEMA_MAX_BYTES, schema_size_bytes
+    from src.spineforge_v20_story_audit_once import (
+        AUDIT_REQUEST_CLASS,
+        AUDIT_RESPONSE_SCHEMA,
+        AUDIT_SCHEMA_NAME,
+        _call_auditor,
+    )
+
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+
+    assert audit["status"] == "STRICT_TRANSPORT_REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt5_paid_authorized"] is False
+    assert audit["transport_contract_revision"] == "strict-json-schema-v1"
+    assert audit["request_class"] == "spineforge_v20_story_audit"
+    assert audit["structured_output_mode"] == "json_schema_strict"
+    assert audit["strict_schema_name"] == "spineforge_v20_story_audit_v3"
+    assert audit["max_tokens_per_auditor"] == 6000
+    assert audit["failure_trace_persistence_required"] is True
+
+    size = schema_size_bytes(AUDIT_RESPONSE_SCHEMA)
+    assert size == audit["strict_schema_bytes"]
+    assert size <= STRICT_SCHEMA_MAX_BYTES
+
+    for model in ("anthropic/claude-sonnet-5.5", "openai/gpt-5.6-sol"):
+        behavior = resolve_model_request_behavior(model, AUDIT_REQUEST_CLASS)
+        assert behavior["reasoning"]["request"] == {"effort": "low", "exclude": True}
+        assert behavior["max_tokens"]["cap"] == 6000
+
+    order = [
+        "physical_feasibility",
+        "causal_logic",
+        "state_continuity",
+        "epistemic_order",
+        "spatial_consistency",
+        "temporal_consistency",
+        "response_causality",
+        "closure_integrity",
+        "canon_integrity",
+        "language_naturalness",
+        "age_suitability",
+        "spine_fidelity",
+        "narrative_coherence",
+    ]
+    raw = {
+        "evaluations": [
+            {
+                "family": family,
+                "present": False,
+                "findings": [],
+                "reason": "clean",
+            }
+            for family in order
+        ],
+        "summary": "clean",
+    }
+    seen = {}
+
+    def fake(**kwargs):
+        seen.update(kwargs)
+        return (
+            raw,
+            {
+                "usage": {
+                    "prompt_tokens": 10,
+                    "completion_tokens": 5,
+                    "total_tokens": 15,
+                    "cost": 0.001,
+                }
+            },
+            {
+                "temperature": None,
+                "max_tokens": 6000,
+                "reasoning": {"effort": "low", "exclude": True},
+                "response_format": {"type": "json_schema"},
+            },
+            [],
+        )
+
+    normalized, _ = _call_auditor(
+        fn=fake,
+        api_key="not-used",
+        model="openai/gpt-5.6-sol",
+        prompt="test",
+        payload={"test": True},
+        stage="test",
+    )
+    assert normalized["findings"] == []
+    assert seen["request_class"] == AUDIT_REQUEST_CLASS
+    assert seen["schema_name"] == AUDIT_SCHEMA_NAME
+    assert seen["schema"] == AUDIT_RESPONSE_SCHEMA
+    assert seen["max_tokens"] == 6000
+
+
+def test_v20_23_paid_story_audit_failure_preserves_provider_trace():
+    from src.spineforge_v20_paid_story_audit_once import (
+        build_story_audit_failure_result,
+    )
+
+    class SyntheticProviderError(RuntimeError):
+        def __init__(self):
+            super().__init__("synthetic provider parse failure")
+            self.trace = {
+                "stage": "structured_parse",
+                "raw_usage": {
+                    "prompt_tokens": 123,
+                    "completion_tokens": 45,
+                    "total_tokens": 168,
+                },
+                "cost": {"usd": 0.0123},
+            }
+
+    try:
+        raise SyntheticProviderError()
+    except SyntheticProviderError as exc:
+        result = build_story_audit_failure_result(exc)
+
+    trace = result["failure"]["provider_trace"]
+    assert result["status"] == "unhandled_story_audit_runtime_failure"
+    assert trace["stage"] == "structured_parse"
+    assert trace["raw_usage"]["total_tokens"] == 168
+    assert trace["cost"]["usd"] == 0.0123
+    assert result["automatic_retry_executed"] is False
+    assert result["repair_executed"] is False
+    assert result["translation_executed"] is False
+    assert result["state_commit_executed"] is False

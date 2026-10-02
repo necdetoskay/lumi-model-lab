@@ -9,7 +9,7 @@ from typing import Any, Callable
 from src.generate import parse_cost
 from src.model_registry import runtime_profile_identity
 from src.model_usage_rollup import normalize_model_call, rollup_model_calls
-from src.spineforge_v19_transport import call_json_object_once
+from src.spineforge_v19_transport import call_strict_json_once
 from src.spineforge_v20_story_audit_artifact import (
     AUDIT_FAMILIES,
     build_story_audit_source,
@@ -22,6 +22,95 @@ PRIMARY_MODEL = "anthropic/claude-sonnet-5.5"
 SECONDARY_MODEL = "openai/gpt-5.6-sol"
 PRIMARY_PROMPT = Path("prompts/spineforge_v20_story_audit.md")
 SECONDARY_PROMPT = Path("prompts/spineforge_v20_story_audit_secondary.md")
+
+AUDIT_REQUEST_CLASS = "spineforge_v20_story_audit"
+AUDIT_SCHEMA_NAME = "spineforge_v20_story_audit_v3"
+AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["evaluations", "summary"],
+    "properties": {
+        "evaluations": {
+            "type": "array",
+            "minItems": 13,
+            "maxItems": 13,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["family", "present", "findings", "reason"],
+                "properties": {
+                    "family": {
+                        "type": "string",
+                        "enum": [
+                            "physical_feasibility",
+                            "causal_logic",
+                            "state_continuity",
+                            "epistemic_order",
+                            "spatial_consistency",
+                            "temporal_consistency",
+                            "response_causality",
+                            "closure_integrity",
+                            "canon_integrity",
+                            "language_naturalness",
+                            "age_suitability",
+                            "spine_fidelity",
+                            "narrative_coherence",
+                        ],
+                    },
+                    "present": {"type": "boolean"},
+                    "findings": {
+                        "type": "array",
+                        "maxItems": 6,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": [
+                                "severity",
+                                "repair_scope",
+                                "span_ids",
+                                "exact_text",
+                                "reason",
+                            ],
+                            "properties": {
+                                "severity": {
+                                    "type": "string",
+                                    "enum": ["minor", "moderate", "serious", "critical"],
+                                },
+                                "repair_scope": {
+                                    "type": "string",
+                                    "enum": [
+                                        "LOCAL_REPAIR",
+                                        "STRUCTURAL_REPAIR",
+                                        "REPLAN",
+                                        "NO_REPAIR",
+                                    ],
+                                },
+                                "span_ids": {
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "maxItems": 6,
+                                    "items": {"type": "string", "maxLength": 16},
+                                },
+                                "exact_text": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 700,
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 420,
+                                },
+                            },
+                        },
+                    },
+                    "reason": {"type": "string", "maxLength": 240},
+                },
+            },
+        },
+        "summary": {"type": "string", "maxLength": 600},
+    },
+}
 DEFAULT_WRITER_MANIFEST = Path(
     "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json"
 )
@@ -369,9 +458,11 @@ def _call_auditor(
         system_prompt=prompt,
         user_prompt=json.dumps(payload, ensure_ascii=False),
         temperature=0.0,
-        max_tokens=3500,
+        max_tokens=6000,
         seed=None,
-        request_class="editorial_audit",
+        request_class=AUDIT_REQUEST_CLASS,
+        schema_name=AUDIT_SCHEMA_NAME,
+        schema=AUDIT_RESPONSE_SCHEMA,
     )
     latency = round(time.perf_counter() - started, 3)
     normalized = _normalize_auditor_payload(raw=raw)
@@ -442,8 +533,8 @@ def execute_story_audit_once(
         secondary_prompt or SECONDARY_PROMPT.read_text(encoding="utf-8").strip()
     )
 
-    primary_fn = primary_call_fn or call_json_object_once
-    secondary_fn = secondary_call_fn or call_json_object_once
+    primary_fn = primary_call_fn or call_strict_json_once
+    secondary_fn = secondary_call_fn or call_strict_json_once
 
     primary, primary_meta = _call_auditor(
         fn=primary_fn,

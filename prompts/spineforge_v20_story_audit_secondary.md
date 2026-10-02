@@ -27,6 +27,12 @@ For every finding:
 
 Do not report personal taste or optional polish.
 
+Keep the response compact:
+- clean-family reason: at most 12 words;
+- finding reason: at most 35 words;
+- summary: at most 60 words;
+- exact_text: copy only the smallest story span that proves the defect.
+
 Return JSON only in this shape:
 {
   "evaluations": [

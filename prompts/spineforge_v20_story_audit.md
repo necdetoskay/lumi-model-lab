@@ -28,6 +28,12 @@ Every concrete finding requires:
 - exact_text copied verbatim from the frozen story
 - concrete reason
 
+Keep the response compact:
+- clean-family reason: at most 12 words;
+- finding reason: at most 35 words;
+- summary: at most 60 words;
+- exact_text: copy only the smallest story span that proves the defect.
+
 Return JSON only:
 {
   "evaluations": [
