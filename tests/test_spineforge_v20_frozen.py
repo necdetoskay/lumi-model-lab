@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT2_POST_INFERENCE_CONTRACT_FAILURE"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -234,7 +234,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["paid_api_calls"] == 11
     assert q["confirmed_cost_usd"] == 0.3481947
     assert q["last_paid_run_id"] == 36970666881
-    assert q["last_result"] == "story_audit_attempt2_contract_failure_usage_evidence_lost"
+    assert q["last_result"] == "story_audit_post_inference_contract_failure"
 
     assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
     assert audit["paid_execution_authorized"] is False
