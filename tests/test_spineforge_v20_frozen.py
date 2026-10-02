@@ -14,7 +14,7 @@ def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
     assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.19"
-    assert result["verified_files"] == 55
+    assert result["verified_files"] == 56
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -860,7 +860,7 @@ def test_v20_19_attempt3_zero_cost_reprocess_is_deterministic_and_still_fails_hu
     )
     report_path = Path(
         "evidence/spineforge-v20-paid-story-audit/36972037743/"
-        "qualification-report.json"
+        "qualification-report-reprocessed.json"
     )
     result = json.loads(result_path.read_text(encoding="utf-8"))
     frozen_report = json.loads(report_path.read_text(encoding="utf-8"))
