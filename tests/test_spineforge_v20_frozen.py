@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.15"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.16"
     assert result["verified_files"] == 50
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "7894e3fe9"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "6bf5a2e16"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,14 +209,14 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
     assert audit["automatic_retry_enabled"] is False
     assert audit["prompt_path"] == "prompts/spineforge_v20_story_audit.md"
     assert audit["execution_module"] == "src/spineforge_v20_story_audit_once.py"
-    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT3"
     assert audit["legacy_ci_trigger_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
     assert audit["ci_transport_job"] == "paid-age12-island-writer2"
     assert audit["paid_wrapper"] == "src/spineforge_v20_paid_story_audit_once.py"
@@ -236,7 +236,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["last_paid_run_id"] == 36970666881
     assert q["last_result"] == "story_audit_post_inference_contract_failure"
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -366,7 +366,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-v2"
@@ -380,8 +380,8 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
 def test_v20_13_freeze_locks_attempt2_paid_boundary():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
-    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT3"
     assert audit["attempt2_paid_authorized"] is False
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -527,7 +527,7 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881]
 
-    assert audit["status"] == "ATTEMPT2_CONTRACT_FAILURE_FIX_QUALIFICATION_PENDING"
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["authorization_consumed"] is True
@@ -546,3 +546,33 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert attempt2["translation_executed"] is False
     assert attempt2["state_commit_executed"] is False
     assert attempt2["audit_artifact_created"] is False
+
+
+def test_v20_16_freeze_locks_attempt3_harness_not_authorized():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    harness = audit["attempt3_harness"]
+
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["attempt3_paid_authorized"] is False
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT3"
+    assert harness["attempt_index"] == 3
+    assert harness["authorization_marker"] == audit["authorization_marker"]
+    assert harness["output_result"] == "age12-island-v20-story-audit3-result.json"
+    assert harness["output_envelope"] == "age12-island-v20-story-audit3-envelope.json"
+    assert harness["locator_policy"] == "unique_exact_text_rebind_v1"
+    assert harness["failure_evidence_policy"] == "preserve_raw_audits_and_usage_v1"
+    assert harness["paid_execution_authorized"] is False
+
+
+
+def test_v20_16_freeze_locks_attempt3_boundary():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    assert audit["status"] == "ATTEMPT3_HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT3"
+    assert audit["attempt3_paid_authorized"] is False
+    assert audit["paid_execution_authorized"] is False
+    assert audit["authorization_consumed"] is True
+    assert audit["attempt2"]["qualification_status"] == "UNUSABLE_EVIDENCE_ARTIFACT_VALIDATION_FAILURE"
