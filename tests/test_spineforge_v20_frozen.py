@@ -109,7 +109,7 @@ def test_v20_4_freeze_locks_human_approval_and_bounded_writer_retry_without_paid
     assert writer["translation_authorized"] is False
     assert writer["state_commit_authorized"] is False
 
-    assert paid["writer_authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
+    assert paid["writer_authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER3"
     assert paid["writer_requires_exact_approval_id"] is True
     assert paid["writer_requires_exact_spine_hash"] is True
     assert paid["writer_requires_exact_context_fingerprint"] is True

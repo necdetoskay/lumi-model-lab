@@ -31,11 +31,11 @@ def test_paid_writer_wrapper_persists_story_and_result(tmp_path: Path):
     assert envelope["result_status"] == "writer_generated"
     assert envelope["editor_executed"] is False
     assert envelope["translation_executed"] is False
-    assert envelope["attempt_index"] == 2
-    assert envelope["authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
+    assert envelope["attempt_index"] == 3
+    assert envelope["authorization_marker"] == "PAID-V20-AGE12-ISLAND-WRITER3"
     out = tmp_path / "1001"
-    assert (out / "age12-island-v20-writer2-result.json").exists()
-    assert (out / "age12-island-v20-writer2-story.txt").read_text().startswith("Title")
+    assert (out / "age12-island-v20-writer3-result.json").exists()
+    assert (out / "age12-island-v20-writer3-story.txt").read_text().startswith("Title")
 
 
 def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: Path):
@@ -51,9 +51,9 @@ def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: 
     assert result["status"] == "unhandled_writer_runtime_failure"
     assert envelope["result_status"] == "unhandled_writer_runtime_failure"
     out = tmp_path / "1002"
-    persisted = json.loads((out / "age12-island-v20-writer2-result.json").read_text())
+    persisted = json.loads((out / "age12-island-v20-writer3-result.json").read_text())
     assert persisted["failure"]["type"] == "RuntimeError"
-    assert not (out / "age12-island-v20-writer2-story.txt").exists()
+    assert not (out / "age12-island-v20-writer3-story.txt").exists()
 
 
 # v20.4 Writer2 paid authorization trigger; no runtime behavior change.

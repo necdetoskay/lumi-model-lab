@@ -17,7 +17,7 @@ HANDOFF_PATH = Path(
     "evidence/spineforge-v20-writer-handoff/36910614976-writer-ready.json"
 )
 PROMPT_PATH = Path("prompts/spineforge_v20_writer.md")
-AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-WRITER2"
+AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-WRITER3"
 
 
 def execute_paid_writer_once(
@@ -36,13 +36,13 @@ def execute_paid_writer_once(
 
     out_dir = output_root / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    result_path = out_dir / "age12-island-v20-writer2-result.json"
-    story_path = out_dir / "age12-island-v20-writer2-story.txt"
-    envelope_path = out_dir / "age12-island-v20-writer2-envelope.json"
+    result_path = out_dir / "age12-island-v20-writer3-result.json"
+    story_path = out_dir / "age12-island-v20-writer3-story.txt"
+    envelope_path = out_dir / "age12-island-v20-writer3-envelope.json"
 
     envelope: dict[str, Any] = {
         "schema": "spineforge-v20-paid-writer-envelope.v1",
-        "attempt_index": 2,
+        "attempt_index": 3,
         "explicit_paid_authorization": True,
         "authorization_marker": AUTHORIZATION_MARKER,
         "runtime_revision": freeze["runtime_revision"],
