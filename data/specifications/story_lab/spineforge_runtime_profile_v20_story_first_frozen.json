@@ -71,17 +71,17 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 7,
-    "confirmed_cost_usd": 0.2112667,
-    "last_paid_run_id": 36965340665,
-    "last_result": "writer_generated",
+    "paid_api_calls": 9,
+    "confirmed_cost_usd": 0.3481947,
+    "last_paid_run_id": 36969500342,
+    "last_result": "story_audit_qualification_failed_known_defect_missed",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.10",
-    "runtime_source_commit": "0ae7f6617",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.11",
+    "runtime_source_commit": "f2e8e614a",
     "files": [
       {
         "path": "requirements.txt",
@@ -254,6 +254,26 @@
       {
         "path": "src/spineforge_v20_paid_story_audit_once.py",
         "sha256": "b27cef9242ce54d6d75b4daa00869262c05822ff6c87ea3bb9e0520329b9e70c"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36969500342/age12-island-v20-story-audit1-result.json",
+        "sha256": "1b6c8e592414e18b6072c5b5a0a129dea6c1a876d139c16912b9ecd5a1a8979e"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36969500342/age12-island-v20-story-audit1-envelope.json",
+        "sha256": "56b3bb9455c07a53d0da9d0d36e18186e20deaaaefcee7bd70d2b5f8c856217e"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36969500342/qualification-report.json",
+        "sha256": "eeb20809307a135d725c30d2d2a76209add2e4bae2e2e457526eef7b734edb6c"
+      },
+      {
+        "path": "data/specifications/story_lab/spineforge_v20_story_audit_qualification_gold.json",
+        "sha256": "8700e321c1a4fc87f6eacaa0a0c9ad32b86eab64e07e573e90c01581d1a7ce76"
+      },
+      {
+        "path": "src/spineforge_v20_story_audit_qualification.py",
+        "sha256": "1a87aa6d22a134acbb17c838f56b6a3a70d62117e10e530e7fa219ccf9fe8350"
       }
     ]
   },
@@ -342,10 +362,10 @@
     "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
     "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
     "next_stage": "STORY_AUDIT",
-    "paid_story_audit_authorized": true
+    "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "PAID_EXECUTION_AUTHORIZED",
+    "status": "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -358,7 +378,7 @@
     "local_repair_routes_to": "STORY_LOCAL_REPAIR",
     "clean_routes_to": "ENGLISH_MASTER_SEAL",
     "structural_or_replan_routes_to": "STOP",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "primary_model": "anthropic/claude-sonnet-5.5",
     "secondary_model": "openai/gpt-5.6-sol",
     "audit_calls_per_execution": 2,
@@ -369,6 +389,31 @@
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_audit_once.py",
-    "authorization_consumed": false
+    "authorization_consumed": true,
+    "attempt1": {
+      "run_id": 36969500342,
+      "status": "audit_completed",
+      "qualification_status": "FAIL_KNOWN_DEFECT_MISSED",
+      "known_target_recall": 0.0,
+      "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "primary_model": "anthropic/claude-sonnet-5.5",
+      "secondary_model": "openai/gpt-5.6-sol",
+      "api_calls": 2,
+      "input_tokens": 52488,
+      "output_tokens": 2128,
+      "reasoning_tokens": 818,
+      "total_tokens": 54616,
+      "cost_usd": 0.136928,
+      "latency_seconds": 28.837,
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "audit_artifact_id": "story-audit:048dd68d41bd4dcb1a5012f30bdd29a9c21fa56af718814095cea2d3f84a6f4e",
+      "decision": "LOCAL_REPAIR_REQUIRED",
+      "finding_count": 6
+    }
   }
 }

@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.10"
-    assert result["verified_files"] == 43
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.11"
+    assert result["verified_files"] == 48
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "0ae7f6617"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "f2e8e614a"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -187,10 +187,10 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
         "writer-story-artifact.json"
     )
     assert writer["next_stage"] == "STORY_AUDIT"
-    assert writer["paid_story_audit_authorized"] is True
+    assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "PAID_EXECUTION_AUTHORIZED"
+    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -202,14 +202,14 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert audit["local_repair_routes_to"] == "STORY_LOCAL_REPAIR"
     assert audit["clean_routes_to"] == "ENGLISH_MASTER_SEAL"
     assert audit["structural_or_replan_routes_to"] == "STOP"
-    assert audit["paid_execution_authorized"] is True
+    assert audit["paid_execution_authorized"] is False
 
 
 def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "PAID_EXECUTION_AUTHORIZED"
+    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
@@ -220,5 +220,78 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     assert audit["legacy_ci_trigger_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
     assert audit["ci_transport_job"] == "paid-age12-island-writer2"
     assert audit["paid_wrapper"] == "src/spineforge_v20_paid_story_audit_once.py"
-    assert audit["authorization_consumed"] is False
-    assert audit["paid_execution_authorized"] is True
+    assert audit["authorization_consumed"] is True
+    assert audit["paid_execution_authorized"] is False
+
+
+
+def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    q = profile["qualification_state"]
+    audit = profile["stage5_story_audit"]
+    attempt1 = audit["attempt1"]
+
+    assert q["paid_api_calls"] == 9
+    assert q["confirmed_cost_usd"] == 0.3481947
+    assert q["last_paid_run_id"] == 36969500342
+    assert q["last_result"] == "story_audit_qualification_failed_known_defect_missed"
+
+    assert audit["status"] == "QUALIFICATION_FAILED_KNOWN_DEFECT_MISSED"
+    assert audit["paid_execution_authorized"] is False
+    assert audit["authorization_consumed"] is True
+    assert attempt1["run_id"] == 36969500342
+    assert attempt1["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
+    assert attempt1["known_target_recall"] == 0.0
+    assert attempt1["api_calls"] == 2
+    assert attempt1["input_tokens"] == 52488
+    assert attempt1["output_tokens"] == 2128
+    assert attempt1["reasoning_tokens"] == 818
+    assert attempt1["total_tokens"] == 54616
+    assert attempt1["cost_usd"] == 0.136928
+    assert attempt1["source_story_mutated"] is False
+    assert attempt1["repair_executed"] is False
+    assert attempt1["translation_executed"] is False
+    assert attempt1["state_commit_executed"] is False
+
+
+def test_v20_11_paid_story_audit_qualification_report_is_deterministic_fail():
+    from src.spineforge_v20_story_audit_qualification import (
+        evaluate_story_audit_qualification,
+    )
+
+    result_path = Path(
+        "evidence/spineforge-v20-paid-story-audit/36969500342/"
+        "age12-island-v20-story-audit1-result.json"
+    )
+    gold_path = Path(
+        "data/specifications/story_lab/"
+        "spineforge_v20_story_audit_qualification_gold.json"
+    )
+    report = evaluate_story_audit_qualification(
+        result_path=result_path,
+        gold_path=gold_path,
+    )
+    assert report["status"] == "FAIL_KNOWN_DEFECT_MISSED"
+    assert report["qualification_pass"] is False
+    assert report["target_count"] == 1
+    assert report["matched_target_count"] == 0
+    assert report["target_recall"] == 0.0
+    assert report["target_results"][0]["target_id"] == "HUMAN-LANGUAGE-001"
+    assert report["target_results"][0]["matched"] is False
+
+
+def test_v20_11_writer_artifact_still_verifies_after_paid_story_audit():
+    from src.spineforge_v20_story_audit_artifact import (
+        load_verified_writer_story_artifact,
+    )
+
+    manifest = Path(
+        "evidence/spineforge-v20-writer-product/36965340665/"
+        "writer-story-artifact.json"
+    )
+    verified = load_verified_writer_story_artifact(manifest_path=manifest)
+    assert verified["input_verified"] is True
+    assert verified["manifest"]["story_sha256"] == (
+        "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f"
+    )
+    assert "arriving at his shoulder" in verified["story"]
