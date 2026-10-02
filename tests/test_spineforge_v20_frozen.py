@@ -523,7 +523,7 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     assert q["paid_api_calls"] == 11
     assert q["confirmed_cost_usd"] == 0.3481947
     assert q["last_paid_run_id"] == 36970666881
-    assert q["last_result"] == "story_audit_attempt2_contract_failure_usage_evidence_lost"
+    assert q["last_result"] == "story_audit_post_inference_contract_failure"
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881]
 
