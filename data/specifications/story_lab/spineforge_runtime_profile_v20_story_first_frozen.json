@@ -71,10 +71,10 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 25,
-    "confirmed_cost_usd": 1.1035794,
-    "last_paid_run_id": 37006087948,
-    "last_result": "story_local_repair_attempt2_generated",
+    "paid_api_calls": 27,
+    "confirmed_cost_usd": 1.2422234,
+    "last_paid_run_id": 37007924152,
+    "last_result": "story_reaudit1_local_repair_required",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false,
     "unreconciled_paid_runs": [
@@ -90,8 +90,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.48",
-    "runtime_source_commit": "ab6ccaf88",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.49",
+    "runtime_source_commit": "a0471bf25",
     "files": [
       {
         "path": "requirements.txt",
@@ -215,7 +215,7 @@
       },
       {
         "path": "src/spineforge_v20_paid_writer_once.py",
-        "sha256": "761ed06e1135cdb2220f90dba2c2189f012c4100771be7c3e8c9d7378a5d255e"
+        "sha256": "91d451f4c55606149554830b449debabc9dcdb28cffd372768f3161ae456232c"
       },
       {
         "path": "evidence/spineforge-v20-paid-writer/36955873689/age12-island-v20-writer1-result.json",
@@ -452,6 +452,42 @@
       {
         "path": "src/spineforge_v20_paid_story_reaudit_once.py",
         "sha256": "2a1f2f2ec5ec40151a5a625dcbdaf937fdacfea539e0d5478f05c43c93a86771"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-reaudit/37007924152/age12-island-v20-story-reaudit1-result.json",
+        "sha256": "89fcf8f1149b950f56f36d26d673ea919ab7b4755e6465ef9a672c421064e5cb"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-reaudit/37007924152/age12-island-v20-story-reaudit1-envelope.json",
+        "sha256": "a2a5c3b80133d8336827708a41267e9ad8f562c39a8f406dab0ae0f86fb1f75e"
+      },
+      {
+        "path": "src/spineforge_v20_story_reaudit_artifact.py",
+        "sha256": "8526f8ebaa2bb6fb000809ca47b075b1bc606f8c8b81e8cc1b9dc8b08fb64376"
+      },
+      {
+        "path": "evidence/spineforge-v20-story-reaudit-product/37007924152/story-reaudit-product.json",
+        "sha256": "36ac01253ce670998d336cb90cce25537e2ec2a571689ddea1dc40c68dd4cdff"
+      },
+      {
+        "path": "src/spineforge_v20_story_local_repair_cycle2_handoff.py",
+        "sha256": "c249b76d8ee0cf00ba0659a272461259865d554150da1fe9a6952b0ba57e1201"
+      },
+      {
+        "path": "evidence/spineforge-v20-story-local-repair-cycle2/37007924152-handoff.json",
+        "sha256": "b82ddaf7324cba64f8cbbb6d13f6c3e891801d4d9f4f4a4ec648299a444fc2f0"
+      },
+      {
+        "path": "prompts/spineforge_v20_story_local_repair_cycle2.md",
+        "sha256": "21975e93782e2ade63f2b2ed98cd6b2a2320c30116470f8df2675d7d91da5426"
+      },
+      {
+        "path": "src/spineforge_v20_story_local_repair_cycle2_once.py",
+        "sha256": "f60f45f21a8f5c8d16895085b82d51f23cee1be86361637eb50d062cee54f4e0"
+      },
+      {
+        "path": "src/spineforge_v20_paid_story_local_repair_cycle2_once.py",
+        "sha256": "e0636b5656ec6eb2150b7f6832562bd5290128aec973528d94632ee76ade45b7"
       }
     ]
   },
@@ -1238,7 +1274,7 @@
     }
   },
   "stage7_story_reaudit": {
-    "status": "PAID_EXECUTION_AUTHORIZED",
+    "status": "REAUDIT_COMPLETED_LOCAL_REPAIR_REQUIRED",
     "stage": 7,
     "input_artifact_schema": "spineforge-v20-story-reaudit-handoff.v1",
     "output_artifact_schema": "spineforge-v20-story-reaudit-artifact.v1",
@@ -1265,14 +1301,14 @@
     "full_story_reaudit_required": true,
     "all_199_stable_spans_required": true,
     "changed_spans_only_forbidden": true,
-    "paid_execution_authorized": true,
-    "authorization_consumed": false,
+    "paid_execution_authorized": false,
+    "authorization_consumed": true,
     "automatic_retry_enabled": false,
     "automatic_repair_loop_enabled": false,
     "repair_executed": false,
     "translation_executed": false,
     "state_commit_executed": false,
-    "next_harness_requirement": "stage7_paid_result",
+    "next_harness_requirement": "stage8_story_local_repair_handoff_ready",
     "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-REAUDIT1",
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
@@ -1293,7 +1329,117 @@
       "repair_executed": false,
       "translation_executed": false,
       "state_commit_executed": false,
-      "paid_execution_authorized": true
+      "paid_execution_authorized": false
+    },
+    "attempt1": {
+      "run_id": 37007924152,
+      "status": "reaudit_completed",
+      "api_calls": 2,
+      "input_tokens": 33716,
+      "output_tokens": 6646,
+      "reasoning_tokens": 627,
+      "cache_write_tokens": 9504,
+      "total_tokens": 40362,
+      "cost_usd": 0.138644,
+      "latency_seconds": 53.53,
+      "secondary_sentence_scan_count": 199,
+      "artifact_id": "story-reaudit:bb0eab55d2c5e5f868fff67c7ce742ecd2a5877c5a82263d6cee8dafbe514874",
+      "decision": "LOCAL_REPAIR_REQUIRED",
+      "next_stage": "STORY_LOCAL_REPAIR",
+      "finding_count": 16,
+      "s161_language_status": "clean",
+      "s161_language_editor_action": "KEEP",
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false
+    },
+    "stage7_output_artifact": {
+      "artifact_id": "story-reaudit-product:7ec8360d92ab8a77431e78a039340b56277cc2ec7ac2ea301fe847f059655abe",
+      "path": "evidence/spineforge-v20-story-reaudit-product/37007924152/story-reaudit-product.json",
+      "sha256": "36ac01253ce670998d336cb90cce25537e2ec2a571689ddea1dc40c68dd4cdff",
+      "embedded_reaudit_artifact_id": "story-reaudit:bb0eab55d2c5e5f868fff67c7ce742ecd2a5877c5a82263d6cee8dafbe514874",
+      "decision": "LOCAL_REPAIR_REQUIRED",
+      "next_stage": "STORY_LOCAL_REPAIR",
+      "finding_count": 16,
+      "stable_span_count": 199,
+      "immutable": true
+    }
+  },
+  "stage8_story_local_repair": {
+    "status": "HARNESS_PREPARED_NOT_AUTHORIZED",
+    "stage": 8,
+    "source_stage7_product_artifact_id": "story-reaudit-product:7ec8360d92ab8a77431e78a039340b56277cc2ec7ac2ea301fe847f059655abe",
+    "source_stage7_reaudit_artifact_id": "story-reaudit:bb0eab55d2c5e5f868fff67c7ce742ecd2a5877c5a82263d6cee8dafbe514874",
+    "source_stage6_artifact_id": "story-local-repair:eca2fd757acea1bc5bf982ea3ded100a62fdae68687d0652d61ff729795614f1",
+    "source_story_sha256": "a3298380efdb74b3d7ddd30d84d9b959bece6f7ee9f0b45d83bdf62c5639a1d4",
+    "source_story_file_sha256": "4a241d65e87440a2ce97297aa3be794d2f476633b28348d38c395a73f57b36ed",
+    "handoff_artifact_id": "story-local-repair-cycle2-handoff:ccbb5ef3fbed5b5babb5a1ec07f57daa04d62b83eed68d0864b65258d87a1804",
+    "handoff_path": "evidence/spineforge-v20-story-local-repair-cycle2/37007924152-handoff.json",
+    "handoff_sha256": "b82ddaf7324cba64f8cbbb6d13f6c3e891801d4d9f4f4a4ec648299a444fc2f0",
+    "finding_count": 16,
+    "allowed_edit_span_count": 16,
+    "allowed_edit_span_ids": [
+      "S017",
+      "S057",
+      "S080",
+      "S086",
+      "S116",
+      "S158",
+      "S159",
+      "S160",
+      "S161",
+      "S172",
+      "S173",
+      "S175",
+      "S182",
+      "S183",
+      "S185",
+      "S199"
+    ],
+    "repair_model": "anthropic/claude-sonnet-5.5",
+    "repair_cycle_index": 2,
+    "paid_attempt_index": 3,
+    "model_calls_per_execution": 1,
+    "paid_execution_authorized": false,
+    "authorization_consumed": true,
+    "automatic_retry_enabled": false,
+    "automatic_repair_loop_enabled": false,
+    "next_harness_requirement": "stage8_paid_authorization",
+    "input_artifact_schema": "spineforge-v20-story-local-repair-cycle2-handoff.v1",
+    "output_artifact_schema": "spineforge-v20-story-local-repair-cycle2-artifact.v1",
+    "repair_contract_revision": "local-repair-cycle2-v1-noop-disposition",
+    "request_class": "spineforge_v20_story_local_repair",
+    "schema_name": "spineforge_v20_story_local_repair_cycle2_v1",
+    "transport_contract_revision": "strict-json-schema-v1",
+    "reasoning_effort": "low",
+    "max_tokens": 8000,
+    "reaudit_executed": false,
+    "translation_executed": false,
+    "state_commit_executed": false,
+    "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR3",
+    "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
+    "ci_transport_job": "paid-age12-island-writer2",
+    "execution_module": "src/spineforge_v20_story_local_repair_cycle2_once.py",
+    "paid_wrapper": "src/spineforge_v20_paid_story_local_repair_cycle2_once.py",
+    "prompt_path": "prompts/spineforge_v20_story_local_repair_cycle2.md",
+    "paid_harness": {
+      "repair_cycle_index": 2,
+      "paid_attempt_index": 3,
+      "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR3",
+      "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
+      "output_result": "age12-island-v20-story-local-repair3-result.json",
+      "output_story": "age12-island-v20-story-local-repair3-story.txt",
+      "output_envelope": "age12-island-v20-story-local-repair3-envelope.json",
+      "model": "anthropic/claude-sonnet-5.5",
+      "model_calls_per_execution": 1,
+      "automatic_retry_enabled": false,
+      "automatic_repair_loop_enabled": false,
+      "reaudit_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "paid_execution_authorized": false
     }
   }
 }

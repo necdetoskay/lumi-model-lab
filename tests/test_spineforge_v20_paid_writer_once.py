@@ -95,3 +95,14 @@ def test_paid_ci_dispatch_routes_story_reaudit_marker_away_from_writer_audit_and
         "[PAID-V20-AGE12-ISLAND-WRITER2]"
     )
     assert paid_stage_from_commit_message(message) == "STORY_REAUDIT"
+
+
+def test_paid_ci_dispatch_routes_story_local_repair_cycle2_marker():
+    from src.spineforge_v20_paid_writer_once import paid_stage_from_commit_message
+
+    message = (
+        "paid story local repair cycle2 "
+        "[PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR3] "
+        "[PAID-V20-AGE12-ISLAND-WRITER2]"
+    )
+    assert paid_stage_from_commit_message(message) == "STORY_LOCAL_REPAIR_CYCLE2"
