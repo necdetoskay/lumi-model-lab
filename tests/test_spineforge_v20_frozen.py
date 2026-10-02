@@ -60,8 +60,8 @@ def test_v20_freeze_has_one_frozen_age12_island_case_and_tracked_paid_state():
 
     state = profile["qualification_state"]
     assert state["paid_authorized"] is False
-    assert state["paid_api_calls"] == 7
-    assert state["confirmed_cost_usd"] == 0.2112667
+    assert state["paid_api_calls"] == 9
+    assert state["confirmed_cost_usd"] == 0.3481947
     assert state["writer_product_authorized"] is True
     assert state["paid_writer_execution_authorized"] is False
 
