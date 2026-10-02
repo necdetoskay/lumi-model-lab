@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.12"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.13"
     assert result["verified_files"] == 48
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "c5aba70c5"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "560d26faf"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -190,7 +190,7 @@ def test_v20_7_freeze_locks_writer_artifact_boundary_before_story_audit():
     assert writer["paid_story_audit_authorized"] is False
     assert writer["human_story_review_required"] is False
 
-    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["status"] == "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["stage"] == 5
     assert audit["input_artifact_schema"] == "spineforge-v20-writer-story-artifact.v1"
     assert audit["output_artifact_schema"] == "spineforge-v20-story-audit-artifact.v1"
@@ -209,14 +209,14 @@ def test_v20_8_freeze_locks_stage5_dual_audit_harness_without_paid_authorization
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["status"] == "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["primary_model"] == "anthropic/claude-sonnet-5.5"
     assert audit["secondary_model"] == "openai/gpt-5.6-sol"
     assert audit["audit_calls_per_execution"] == 2
     assert audit["automatic_retry_enabled"] is False
     assert audit["prompt_path"] == "prompts/spineforge_v20_story_audit.md"
     assert audit["execution_module"] == "src/spineforge_v20_story_audit_once.py"
-    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT1"
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
     assert audit["legacy_ci_trigger_marker"] == "PAID-V20-AGE12-ISLAND-WRITER2"
     assert audit["ci_transport_job"] == "paid-age12-island-writer2"
     assert audit["paid_wrapper"] == "src/spineforge_v20_paid_story_audit_once.py"
@@ -236,7 +236,7 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     assert q["last_paid_run_id"] == 36969500342
     assert q["last_result"] == "story_audit_qualification_failed_known_defect_missed"
 
-    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["status"] == "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["paid_execution_authorized"] is False
     assert audit["authorization_consumed"] is True
     assert attempt1["run_id"] == 36969500342
@@ -366,7 +366,7 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     profile = json.loads(PROFILE.read_text(encoding="utf-8"))
     audit = profile["stage5_story_audit"]
 
-    assert audit["status"] == "REQUALIFICATION_PREPARED_ZERO_COST"
+    assert audit["status"] == "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert audit["paid_execution_authorized"] is False
     assert audit["attempt2_paid_authorized"] is False
     assert audit["audit_contract_revision"] == "family-by-family-v2"
@@ -374,3 +374,15 @@ def test_v20_12_freeze_locks_story_audit_requalification_contract():
     assert audit["prompt_revision"] == "stage5-story-audit-v2"
     assert audit["attempt1"]["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
     assert audit["attempt1"]["known_target_recall"] == 0.0
+
+
+
+def test_v20_13_freeze_locks_attempt2_paid_boundary():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    audit = profile["stage5_story_audit"]
+    assert audit["status"] == "ATTEMPT2_HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert audit["authorization_marker"] == "PAID-V20-AGE12-ISLAND-STORY-AUDIT2"
+    assert audit["attempt2_paid_authorized"] is False
+    assert audit["paid_execution_authorized"] is False
+    assert audit["authorization_consumed"] is True
+    assert audit["attempt1"]["qualification_status"] == "FAIL_KNOWN_DEFECT_MISSED"
