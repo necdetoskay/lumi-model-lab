@@ -23,8 +23,15 @@ def evaluate_story_audit_qualification(
 
     if result.get("schema") != "spineforge-v20-story-audit-execution.v1":
         raise RuntimeError("Story Audit qualification result schema mismatch.")
-    if result.get("status") != "audit_completed":
-        raise RuntimeError("Story Audit qualification requires completed audit evidence.")
+    if result.get("status") not in {
+        "audit_completed",
+        "audit_reprocessed_zero_cost",
+        "audit_contract_failure",
+    }:
+        raise RuntimeError(
+            "Story Audit qualification requires completed, contract-failure, "
+            "or zero-cost reprocessed audit evidence."
+        )
     if gold.get("schema") != "spineforge-v20-story-audit-qualification-gold.v1":
         raise RuntimeError("Story Audit qualification gold schema mismatch.")
     if result.get("source_story_sha256") != gold.get("source_story_sha256"):
@@ -33,7 +40,12 @@ def evaluate_story_audit_qualification(
         raise RuntimeError("Story Audit qualification source artifact mismatch.")
 
     artifact = result.get("audit_artifact") or {}
-    findings = list(artifact.get("findings") or [])
+    if artifact.get("findings") is not None:
+        findings = list(artifact.get("findings") or [])
+        findings_source = "audit_artifact"
+    else:
+        findings = list(result.get("merged_findings_before_artifact") or [])
+        findings_source = "merged_findings_before_artifact"
     targets = list(gold.get("targets") or [])
 
     target_results: list[dict[str, Any]] = []
@@ -78,6 +90,7 @@ def evaluate_story_audit_qualification(
         "matched_target_count": matched_count,
         "target_recall": recall,
         "target_results": target_results,
+        "findings_source": findings_source,
         "qualification_pass": passed,
         "status": "PASS" if passed else "FAIL_KNOWN_DEFECT_MISSED",
     }

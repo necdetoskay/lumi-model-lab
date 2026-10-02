@@ -20,7 +20,8 @@ from src.spineforge_v20_story_audit_artifact import (
 
 PRIMARY_MODEL = "anthropic/claude-sonnet-5.5"
 SECONDARY_MODEL = "openai/gpt-5.6-sol"
-DEFAULT_PROMPT = Path("prompts/spineforge_v20_story_audit.md")
+PRIMARY_PROMPT = Path("prompts/spineforge_v20_story_audit.md")
+SECONDARY_PROMPT = Path("prompts/spineforge_v20_story_audit_secondary.md")
 DEFAULT_WRITER_MANIFEST = Path(
     "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json"
 )
@@ -90,17 +91,15 @@ def _normalize_auditor_payload(
     if not isinstance(rows, list):
         raise RuntimeError("Story auditor evaluations must be a list.")
     families = [str(row.get("family") or "") for row in rows if isinstance(row, dict)]
-    if families != order:
+    if families != order or len(rows) != len(order):
         raise RuntimeError(
             f"Story auditor must evaluate every family exactly once in canonical order: {families}"
         )
-    if len(rows) != len(order):
-        raise RuntimeError("Story auditor evaluation count mismatch.")
 
-    findings: list[dict[str, Any]] = []
-    normalized_rows: list[dict[str, Any]] = []
     valid_severity = {"minor", "moderate", "serious", "critical"}
     valid_scope = {"LOCAL_REPAIR", "STRUCTURAL_REPAIR", "REPLAN", "NO_REPAIR"}
+    flattened: list[dict[str, Any]] = []
+    normalized_rows: list[dict[str, Any]] = []
 
     for row in rows:
         if not isinstance(row, dict):
@@ -109,10 +108,62 @@ def _normalize_auditor_payload(
         present = row.get("present")
         if not isinstance(present, bool):
             raise RuntimeError(f"Story auditor present flag must be boolean: {family}")
+
+        # v3 canonical form: each family may carry multiple concrete findings.
+        if "findings" in row:
+            family_findings = row.get("findings")
+            if not isinstance(family_findings, list):
+                raise RuntimeError(f"Story auditor family findings must be a list: {family}")
+            clean_reason = str(row.get("reason") or "").strip()
+            if present and not family_findings:
+                raise RuntimeError(f"Present Story Audit family requires findings: {family}")
+            if not present and family_findings:
+                raise RuntimeError(f"Clean Story Audit family findings must be empty: {family}")
+            if not present and not clean_reason:
+                raise RuntimeError(f"Clean Story Audit family reason is required: {family}")
+
+            normalized_findings: list[dict[str, Any]] = []
+            for finding in family_findings:
+                if not isinstance(finding, dict):
+                    raise RuntimeError(f"Story auditor family finding must be an object: {family}")
+                severity = str(finding.get("severity") or "").lower()
+                scope = str(finding.get("repair_scope") or "").upper()
+                span_ids = [str(x) for x in (finding.get("span_ids") or [])]
+                exact_text = str(finding.get("exact_text") or "")
+                reason = str(finding.get("reason") or "").strip()
+                if severity not in valid_severity:
+                    raise RuntimeError(f"Invalid Story Audit severity: {family}:{severity}")
+                if scope not in valid_scope:
+                    raise RuntimeError(f"Invalid Story Audit repair scope: {family}:{scope}")
+                if not span_ids:
+                    raise RuntimeError(f"Present Story Audit finding requires span_ids: {family}")
+                if not exact_text:
+                    raise RuntimeError(f"Present Story Audit finding requires exact_text: {family}")
+                if not reason:
+                    raise RuntimeError(f"Present Story Audit finding requires reason: {family}")
+                normalized = {
+                    "family": family,
+                    "severity": severity,
+                    "repair_scope": scope,
+                    "span_ids": span_ids,
+                    "exact_text": exact_text,
+                    "reason": reason,
+                }
+                normalized_findings.append(normalized)
+                flattened.append(normalized)
+
+            normalized_rows.append({
+                "family": family,
+                "present": present,
+                "findings": normalized_findings,
+                "reason": clean_reason if not present else str(row.get("reason") or "").strip(),
+            })
+            continue
+
+        # Backward-compatible v2 parsing for frozen synthetic tests/evidence.
         reason = str(row.get("reason") or "").strip()
         if not reason:
             raise RuntimeError(f"Story auditor reason is required: {family}")
-
         if not present:
             if row.get("severity") is not None:
                 raise RuntimeError(f"Clean audit severity must be null: {family}")
@@ -125,10 +176,7 @@ def _normalize_auditor_payload(
             normalized_rows.append({
                 "family": family,
                 "present": False,
-                "severity": None,
-                "repair_scope": None,
-                "span_ids": [],
-                "exact_text": None,
+                "findings": [],
                 "reason": reason,
             })
             continue
@@ -145,32 +193,27 @@ def _normalize_auditor_payload(
             raise RuntimeError(f"Present Story Audit finding requires span_ids: {family}")
         if not exact_text:
             raise RuntimeError(f"Present Story Audit finding requires exact_text: {family}")
-
         normalized = {
             "family": family,
-            "present": True,
             "severity": severity,
             "repair_scope": scope,
             "span_ids": span_ids,
             "exact_text": exact_text,
             "reason": reason,
         }
-        normalized_rows.append(normalized)
-        findings.append({
+        flattened.append(normalized)
+        normalized_rows.append({
             "family": family,
-            "severity": severity,
-            "repair_scope": scope,
-            "span_ids": span_ids,
-            "exact_text": exact_text,
-            "reason": reason,
+            "present": True,
+            "findings": [normalized],
+            "reason": "",
         })
 
     return {
         "evaluations": normalized_rows,
-        "findings": findings,
+        "findings": flattened,
         "summary": str(raw.get("summary") or "").strip(),
     }
-
 
 def _build_audit_authority_projection(authority: dict[str, Any]) -> dict[str, Any]:
     pack = authority["spine_context_pack"]
@@ -222,6 +265,18 @@ def _repair_finding_locators(
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     repaired: list[dict[str, Any]] = []
     corrections: list[dict[str, Any]] = []
+    all_text = " ".join(seg["text"] for seg in story_segments)
+
+    # Build offsets in the normalized joined representation used for deterministic lookup.
+    offsets: list[tuple[int, int, str]] = []
+    cursor = 0
+    for index, seg in enumerate(story_segments):
+        text = seg["text"]
+        start_pos = cursor
+        end_pos = start_pos + len(text)
+        offsets.append((start_pos, end_pos, seg["id"]))
+        cursor = end_pos + (1 if index < len(story_segments) - 1 else 0)
+
     for row in findings:
         item = dict(row)
         exact_text = str(item.get("exact_text") or "")
@@ -229,23 +284,42 @@ def _repair_finding_locators(
             repaired.append(item)
             continue
 
-        cited = [
-            seg for seg in story_segments
-            if seg["id"] in set(str(x) for x in (item.get("span_ids") or []))
-        ]
-        if any(exact_text in seg["text"] for seg in cited):
+        cited_ids = [str(x) for x in (item.get("span_ids") or [])]
+        cited_set = set(cited_ids)
+        cited = [seg for seg in story_segments if seg["id"] in cited_set]
+        cited_window = " ".join(seg["text"] for seg in cited)
+        if exact_text in cited_window:
             repaired.append(item)
             continue
 
-        matches = [seg for seg in story_segments if exact_text in seg["text"]]
-        if len(matches) != 1:
+        occurrences: list[int] = []
+        start_at = 0
+        while True:
+            idx = all_text.find(exact_text, start_at)
+            if idx < 0:
+                break
+            occurrences.append(idx)
+            start_at = idx + 1
+
+        if len(occurrences) != 1:
             raise RuntimeError(
                 "Story Audit locator repair requires exact_text to resolve uniquely "
-                f"in frozen story: {item.get('family')}:{len(matches)}"
+                f"in frozen story: {item.get('family')}:{len(occurrences)}"
             )
 
-        old_ids = list(item.get("span_ids") or [])
-        new_ids = [matches[0]["id"]]
+        occ_start = occurrences[0]
+        occ_end = occ_start + len(exact_text)
+        new_ids = [
+            seg_id
+            for seg_start, seg_end, seg_id in offsets
+            if seg_end > occ_start and seg_start < occ_end
+        ]
+        if not new_ids:
+            raise RuntimeError(
+                f"Story Audit locator repair resolved no source spans: {item.get('family')}"
+            )
+
+        old_ids = cited_ids
         item["span_ids"] = new_ids
         repaired.append(item)
         corrections.append({
@@ -329,7 +403,8 @@ def execute_story_audit_once(
     writer_handoff_path: Path = DEFAULT_WRITER_HANDOFF,
     primary_call_fn: JsonCall | None = None,
     secondary_call_fn: JsonCall | None = None,
-    prompt: str | None = None,
+    primary_prompt: str | None = None,
+    secondary_prompt: str | None = None,
     repo_root: Path = Path("."),
 ) -> dict[str, Any]:
     verified = load_verified_writer_story_artifact(
@@ -360,7 +435,12 @@ def execute_story_audit_once(
         "approved_narrative_spine": authority["approved_narrative_spine"],
         "story_segments": audit_source["story_segments"],
     }
-    system_prompt = prompt or DEFAULT_PROMPT.read_text(encoding="utf-8").strip()
+    primary_system_prompt = (
+        primary_prompt or PRIMARY_PROMPT.read_text(encoding="utf-8").strip()
+    )
+    secondary_system_prompt = (
+        secondary_prompt or SECONDARY_PROMPT.read_text(encoding="utf-8").strip()
+    )
 
     primary_fn = primary_call_fn or call_json_object_once
     secondary_fn = secondary_call_fn or call_json_object_once
@@ -369,7 +449,7 @@ def execute_story_audit_once(
         fn=primary_fn,
         api_key=api_key,
         model=PRIMARY_MODEL,
-        prompt=system_prompt,
+        prompt=primary_system_prompt,
         payload=payload,
         stage="spineforge_v20_story_audit_primary",
     )
@@ -377,7 +457,7 @@ def execute_story_audit_once(
         fn=secondary_fn,
         api_key=api_key,
         model=SECONDARY_MODEL,
-        prompt=system_prompt,
+        prompt=secondary_system_prompt,
         payload=payload,
         stage="spineforge_v20_story_audit_secondary",
     )
@@ -424,7 +504,7 @@ def execute_story_audit_once(
             "input_verified_before_inference": True,
             "input_verified_after_inference": True,
             "source_story_mutated": False,
-            "audit_contract_revision": "family-by-family-v2",
+            "audit_contract_revision": "family-by-family-multi-finding-v3",
             "audit_authority_projection_sha256": authority_projection["sha256"],
             "audit_authority_projection_bytes": authority_projection["bytes"],
             "models": {
@@ -457,7 +537,7 @@ def execute_story_audit_once(
         "input_verified_before_inference": True,
         "input_verified_after_inference": True,
         "source_story_mutated": False,
-        "audit_contract_revision": "family-by-family-v2",
+        "audit_contract_revision": "family-by-family-multi-finding-v3",
         "audit_authority_projection_sha256": authority_projection["sha256"],
         "audit_authority_projection_bytes": authority_projection["bytes"],
         "models": {
@@ -477,4 +557,69 @@ def execute_story_audit_once(
         "repair_executed": False,
         "translation_executed": False,
         "state_commit_executed": False,
+    }
+
+
+def reprocess_story_audit_evidence(
+    *,
+    prior_result: dict[str, Any],
+    writer_manifest_path: Path = DEFAULT_WRITER_MANIFEST,
+    repo_root: Path = Path("."),
+) -> dict[str, Any]:
+    if prior_result.get("schema") != "spineforge-v20-story-audit-execution.v1":
+        raise RuntimeError("Story Audit reprocess schema mismatch.")
+    if prior_result.get("status") != "audit_contract_failure":
+        raise RuntimeError("Story Audit reprocess requires audit_contract_failure evidence.")
+    if prior_result.get("source_story_mutated") is not False:
+        raise RuntimeError("Story Audit reprocess requires immutable source evidence.")
+    if not isinstance(prior_result.get("merged_findings_before_artifact"), list):
+        raise RuntimeError("Story Audit reprocess requires persisted merged findings.")
+    if not isinstance(prior_result.get("audit_usage_rollup"), dict):
+        raise RuntimeError("Story Audit reprocess requires persisted usage evidence.")
+
+    verified = load_verified_writer_story_artifact(
+        manifest_path=writer_manifest_path,
+        repo_root=repo_root,
+    )
+    manifest = verified["manifest"]
+    if prior_result.get("source_artifact_id") != manifest["artifact_id"]:
+        raise RuntimeError("Story Audit reprocess source artifact mismatch.")
+    if prior_result.get("source_story_sha256") != manifest["story_sha256"]:
+        raise RuntimeError("Story Audit reprocess source story SHA mismatch.")
+
+    audit_source = build_story_audit_source(
+        manifest_path=writer_manifest_path,
+        repo_root=repo_root,
+    )
+    findings, locator_corrections = _repair_finding_locators(
+        findings=list(prior_result["merged_findings_before_artifact"]),
+        story_segments=audit_source["story_segments"],
+    )
+
+    def combined_audit(**kwargs: Any) -> dict[str, Any]:
+        return {
+            "findings": findings,
+            "summary": (
+                "Zero-cost artifact reprocess of already-paid Stage 5 findings; "
+                f"findings={len(findings)}."
+            ),
+        }
+
+    artifact = run_story_audit_once(
+        manifest_path=writer_manifest_path,
+        audit_call_fn=combined_audit,
+        repo_root=repo_root,
+    )
+
+    return {
+        **prior_result,
+        "status": "audit_reprocessed_zero_cost",
+        "artifact_error": None,
+        "locator_corrections": locator_corrections,
+        "audit_artifact": artifact,
+        "reprocess": {
+            "model_calls_executed": 0,
+            "source_paid_usage_reused": True,
+            "source_story_mutated": False,
+        },
     }
