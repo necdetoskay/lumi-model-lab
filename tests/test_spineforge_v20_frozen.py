@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.7"
-    assert result["verified_files"] == 39
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.6"
+    assert result["verified_files"] == 38
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "cd564178f"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "ee946d113"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -170,30 +170,3 @@ def test_v20_5_writer_retry_freeze_records_failed_attempts_and_bounded_transport
     assert paid["writer_request_class"] == "spineforge_v20_story_writer"
     assert paid["writer_reasoning_effort"] == "low"
     assert paid["writer_max_tokens"] == 7000
-
-
-def test_v20_7_freeze_locks_fully_automatic_next_story_policy():
-    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
-    runtime = profile["runtime"]
-    policy = profile["automation_policy"]
-
-    assert runtime["automatic_pipeline_enabled"] is True
-    assert runtime["human_review_required"] is False
-    assert runtime["max_local_story_repair_rounds"] == 1
-    assert runtime["automatic_translation_after_clean_story"] is True
-    assert runtime["automatic_fidelity_gate"] is True
-    assert runtime["state_commit_only_after_final_gate"] is True
-
-    assert policy["mode"] == "FULL_AUTO_NEXT_STORY"
-    assert policy["manual_checkpoints"] == 0
-    assert policy["spine_accept_source"] == "deterministic_validation_plus_product_gate"
-    assert policy["writer_after_clean_spine"] is True
-    assert policy["story_audit_required"] is True
-    assert policy["local_repair_automatic"] is True
-    assert policy["local_repair_max_rounds"] == 1
-    assert policy["post_repair_reaudit_required"] is True
-    assert policy["structural_repair_action"] == "STOP"
-    assert policy["replan_action"] == "STOP"
-    assert policy["translation_after_clean_english"] is True
-    assert policy["fidelity_required"] is True
-    assert policy["state_commit_only_when_publication_ready"] is True
