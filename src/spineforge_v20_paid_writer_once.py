@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import traceback
 from pathlib import Path
 from typing import Any, Callable
@@ -18,6 +19,23 @@ HANDOFF_PATH = Path(
 )
 PROMPT_PATH = Path("prompts/spineforge_v20_writer.md")
 AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-WRITER3"
+STORY_AUDIT_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-AUDIT1"
+
+
+def paid_stage_from_commit_message(message: str) -> str:
+    if STORY_AUDIT_AUTHORIZATION_MARKER in message:
+        return "STORY_AUDIT"
+    return "WRITER"
+
+
+def current_commit_message() -> str:
+    completed = subprocess.run(
+        ["git", "log", "-1", "--pretty=%B"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout
 
 
 def execute_paid_writer_once(
@@ -112,6 +130,11 @@ def execute_paid_writer_once(
 
 
 def main() -> None:
+    if paid_stage_from_commit_message(current_commit_message()) == "STORY_AUDIT":
+        from src.spineforge_v20_paid_story_audit_once import main as story_audit_main
+        story_audit_main()
+        return
+
     result, envelope = execute_paid_writer_once(
         api_key=os.environ.get("OPENROUTER_API_KEY", ""),
         run_id=os.environ.get("GITHUB_RUN_ID", "local"),

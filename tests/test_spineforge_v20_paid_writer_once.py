@@ -59,3 +59,17 @@ def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: 
 # v20.4 Writer2 paid authorization trigger; no runtime behavior change.
 
 # Paid Writer3 authorization trigger; legacy workflow selector remains WRITER2-only.
+
+
+def test_paid_ci_dispatch_routes_story_audit_marker_away_from_writer():
+    from src.spineforge_v20_paid_writer_once import paid_stage_from_commit_message
+
+    message = (
+        "paid story audit "
+        "[PAID-V20-AGE12-ISLAND-STORY-AUDIT1] "
+        "[PAID-V20-AGE12-ISLAND-WRITER2]"
+    )
+    assert paid_stage_from_commit_message(message) == "STORY_AUDIT"
+    assert paid_stage_from_commit_message(
+        "paid writer [PAID-V20-AGE12-ISLAND-WRITER2]"
+    ) == "WRITER"
