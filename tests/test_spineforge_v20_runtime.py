@@ -316,3 +316,77 @@ def test_v20_auto_pipeline_stops_on_structural_or_replan_defect_without_translat
     )
     assert result["status"] == "STOP_REPLAN"
     assert result["trace"][-1]["stage"] == "STORY_AUDIT"
+
+
+def test_v20_auto_pipeline_has_production_defaults_and_usage_lineage():
+    import inspect
+    from src.spineforge_v20_auto_pipeline import run_auto_pipeline
+
+    params = inspect.signature(run_auto_pipeline).parameters
+    for name in [
+        "system_prompt", "spine_fn", "audit_fn", "local_repair_fn",
+        "translation_fn", "fidelity_fn"
+    ]:
+        assert params[name].default is None
+
+    for path in [
+        "src/spineforge_v20_auto_stages.py",
+        "prompts/spineforge_v20_story_audit.md",
+        "prompts/spineforge_v20_story_local_repair.md",
+        "prompts/translation_en_tr_v2_generic.md",
+        "prompts/translation_fidelity_gate_v2_generic.md",
+    ]:
+        assert Path(path).exists()
+
+    pack = SpineContextPackV1.model_validate_json(PACK.read_text(encoding="utf-8"))
+    case = load_qualification_cases().cases[0]
+    story = "The Test Story\n\n" + ("adventure " * 1800)
+
+    def spine_fn(**kwargs):
+        return run(
+            context_pack=kwargs["context_pack"],
+            obligations=kwargs["obligations"],
+            api_key=kwargs["api_key"],
+            architect_call_fn=_architect_call,
+            gate_call_fn=_gate_call,
+        )
+
+    def writer_fn(**kwargs):
+        return {
+            "status": "writer_generated",
+            "story": story,
+            "writer_usage_rollup": {
+                "calls": [{
+                    "stage": "writer", "model": "fake", "provider": "test",
+                    "status": "completed", "attempt": 1,
+                    "input_tokens": 10, "output_tokens": 20, "reasoning_tokens": 0,
+                    "cached_tokens": 0, "cache_write_tokens": 0,
+                    "total_tokens": 30, "cost_usd": 0.01, "latency_seconds": 1.0,
+                }]
+            },
+        }
+
+    def audit_fn(**kwargs):
+        return {"status": "clean", "findings": []}
+
+    def translation_fn(**kwargs):
+        return {"status": "translated", "turkish_delivery": "Türkçe teslim"}
+
+    def fidelity_fn(**kwargs):
+        return {"status": "clean", "findings": []}
+
+    result = run_auto_pipeline(
+        context_pack=pack,
+        obligations=case.obligations,
+        api_key="not-used",
+        spine_fn=spine_fn,
+        writer_fn=writer_fn,
+        audit_fn=audit_fn,
+        local_repair_fn=lambda **kwargs: {"replacements": []},
+        translation_fn=translation_fn,
+        fidelity_fn=fidelity_fn,
+    )
+    assert result["status"] == "PUBLICATION_READY"
+    assert result["pipeline_usage_rollup"]["totals"]["total_tokens"] == 30
+    assert result["total_cost_usd"] == 0.01
+    assert result["total_latency_seconds"] == 1.0
