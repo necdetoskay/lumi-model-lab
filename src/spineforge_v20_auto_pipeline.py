@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+from copy import deepcopy
 from typing import Any, Callable
 
 from src.generate import count_words
@@ -8,32 +10,9 @@ from src.narrative_spine_v1_contract import NarrativeSpineV1
 from src.spine_context_pack_v1 import SpineContextPackV1, canonical_json
 from src.spineforge_v19_human_review import spine_hash
 from src.spineforge_v20_writer_once import WRITER_MODEL, execute_writer_once
-from src.model_usage_rollup import rollup_model_calls
 
 
 StageFn = Callable[..., dict[str, Any]]
-
-
-def _result_calls(result: dict[str, Any]) -> list[dict[str, Any]]:
-    for key in ("pipeline_usage_rollup", "writer_usage_rollup"):
-        rollup = result.get(key)
-        if isinstance(rollup, dict) and isinstance(rollup.get("calls"), list):
-            return list(rollup["calls"])
-    meta = result.get("meta")
-    if isinstance(meta, dict) and isinstance(meta.get("model_call"), dict):
-        return [meta["model_call"]]
-    if isinstance(result.get("model_call"), dict):
-        return [result["model_call"]]
-    return []
-
-
-def _with_usage(payload: dict[str, Any], calls: list[dict[str, Any]]) -> dict[str, Any]:
-    out = dict(payload)
-    rollup = rollup_model_calls(calls)
-    out["pipeline_usage_rollup"] = rollup
-    out["total_cost_usd"] = rollup["totals"]["cost_usd"]
-    out["total_latency_seconds"] = rollup["totals"]["latency_seconds"]
-    return out
 
 
 def _approval_id(*, pack: SpineContextPackV1, spine: NarrativeSpineV1) -> str:
@@ -140,41 +119,22 @@ def run_auto_pipeline(
     context_pack: SpineContextPackV1,
     obligations: Any,
     api_key: str,
-    system_prompt: str | None = None,
-    spine_fn: StageFn | None = None,
-    audit_fn: StageFn | None = None,
-    local_repair_fn: StageFn | None = None,
-    translation_fn: StageFn | None = None,
-    fidelity_fn: StageFn | None = None,
+    system_prompt: str,
+    spine_fn: StageFn,
+    audit_fn: StageFn,
+    local_repair_fn: StageFn,
+    translation_fn: StageFn,
+    fidelity_fn: StageFn,
     writer_fn: StageFn = execute_writer_once,
     max_local_repair_rounds: int = 1,
 ) -> dict[str, Any]:
     trace: list[dict[str, Any]] = []
-    usage_calls: list[dict[str, Any]] = []
-
-    if spine_fn is None:
-        from src.spineforge_v20 import run as spine_fn
-    if audit_fn is None or local_repair_fn is None or translation_fn is None or fidelity_fn is None:
-        from src.spineforge_v20_auto_stages import (
-            fidelity_gate,
-            local_story_repair,
-            story_audit,
-            translate_story,
-        )
-        audit_fn = audit_fn or story_audit
-        local_repair_fn = local_repair_fn or local_story_repair
-        translation_fn = translation_fn or translate_story
-        fidelity_fn = fidelity_fn or fidelity_gate
-    if system_prompt is None:
-        from pathlib import Path
-        system_prompt = Path("prompts/spineforge_v20_writer.md").read_text(encoding="utf-8").strip()
 
     spine_result = spine_fn(
         context_pack=context_pack,
         obligations=obligations,
         api_key=api_key,
     )
-    usage_calls.extend(_result_calls(spine_result))
     trace.append({"stage": "SPINE", "status": spine_result.get("status")})
     if spine_result.get("status") != "awaiting_human_review":
         return {
@@ -193,7 +153,6 @@ def run_auto_pipeline(
         api_key=api_key,
         system_prompt=system_prompt,
     )
-    usage_calls.extend(_result_calls(writer_result))
     trace.append({"stage": "WRITER", "status": writer_result.get("status")})
     if writer_result.get("status") != "writer_generated":
         return {
@@ -209,7 +168,6 @@ def run_auto_pipeline(
         handoff=handoff,
         api_key=api_key,
     )
-    usage_calls.extend(_result_calls(audit))
     findings = list(audit.get("findings") or [])
     classification = _classify_findings(findings)
     trace.append({"stage": "STORY_AUDIT", "status": classification, "findings": len(findings)})
@@ -224,7 +182,6 @@ def run_auto_pipeline(
                 handoff=handoff,
                 api_key=api_key,
             )
-            usage_calls.extend(_result_calls(repair))
             repaired, applied = _apply_exact_replacements(
                 english,
                 list(repair.get("replacements") or []),
@@ -243,7 +200,6 @@ def run_auto_pipeline(
                 handoff=handoff,
                 api_key=api_key,
             )
-            usage_calls.extend(_result_calls(audit))
             findings = list(audit.get("findings") or [])
             classification = _classify_findings(findings)
             trace.append({
@@ -279,7 +235,6 @@ def run_auto_pipeline(
         exact_age=int(handoff["exact_age"]),
         api_key=api_key,
     )
-    usage_calls.extend(_result_calls(translation))
     trace.append({"stage": "TRANSLATION", "status": translation.get("status")})
     if translation.get("status") != "translated":
         return {
@@ -294,7 +249,6 @@ def run_auto_pipeline(
         turkish_delivery=str(translation["turkish_delivery"]),
         api_key=api_key,
     )
-    usage_calls.extend(_result_calls(fidelity))
     trace.append({"stage": "FIDELITY", "status": fidelity.get("status")})
     if fidelity.get("status") != "clean":
         return {
@@ -306,7 +260,7 @@ def run_auto_pipeline(
             "fidelity": fidelity,
         }
 
-    return _with_usage({
+    return {
         "schema": "spineforge-v20-auto-pipeline.v1",
         "status": "PUBLICATION_READY",
         "trace": trace,
@@ -324,4 +278,4 @@ def run_auto_pipeline(
         "turkish_delivery": translation["turkish_delivery"],
         "fidelity": fidelity,
         "state_commit_authorized": True,
-    }, usage_calls)
+    }
