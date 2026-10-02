@@ -55,3 +55,5 @@ def test_paid_writer_wrapper_persists_unhandled_failure_without_story(tmp_path: 
     assert persisted["failure"]["type"] == "RuntimeError"
     assert not (out / "age12-island-v20-writer2-story.txt").exists()
 
+
+# v20.4 Writer2 paid authorization trigger; no runtime behavior change.
