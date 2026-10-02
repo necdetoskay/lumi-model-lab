@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.40"
-    assert result["verified_files"] == 76
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.41"
+    assert result["verified_files"] == 79
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "c13b49307"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "c99724ffa"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -2079,7 +2079,7 @@ def test_v20_40_freeze_locks_stage6_story_local_repair_handoff():
         "stage6_story_local_repair_handoff_ready"
     )
 
-    assert stage6["status"] == "READY_NOT_AUTHORIZED"
+    assert stage6["status"] == "PAID_HARNESS_PREPARED_NOT_AUTHORIZED"
     assert stage6["stage"] == 6
     assert stage6["input_artifact_schema"] == (
         "spineforge-v20-story-local-repair-handoff.v1"
@@ -2113,5 +2113,69 @@ def test_v20_40_freeze_locks_stage6_story_local_repair_handoff():
     assert stage6["automatic_retry_enabled"] is False
     assert stage6["automatic_repair_loop_enabled"] is False
     assert stage6["next_harness_requirement"] == (
-        "stage6_paid_story_local_repair_harness_zero_cost"
+        "stage6_paid_authorization"
     )
+
+
+def test_v20_41_freeze_locks_stage6_paid_harness_without_authorization():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    stage6 = profile["stage6_story_local_repair"]
+    harness = stage6["paid_harness"]
+
+    assert stage6["status"] == "PAID_HARNESS_PREPARED_NOT_AUTHORIZED"
+    assert stage6["authorization_marker"] == (
+        "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1"
+    )
+    assert stage6["legacy_ci_trigger_marker"] == (
+        "PAID-V20-AGE12-ISLAND-WRITER2"
+    )
+    assert stage6["ci_transport_job"] == "paid-age12-island-writer2"
+    assert stage6["paid_wrapper"] == (
+        "src/spineforge_v20_paid_story_local_repair_once.py"
+    )
+    assert stage6["execution_module"] == (
+        "src/spineforge_v20_story_local_repair_once.py"
+    )
+    assert stage6["prompt_path"] == (
+        "prompts/spineforge_v20_story_local_repair.md"
+    )
+    assert stage6["repair_request_class"] == (
+        "spineforge_v20_story_local_repair"
+    )
+    assert stage6["repair_schema_name"] == (
+        "spineforge_v20_story_local_repair_v1"
+    )
+    assert stage6["transport_contract_revision"] == "strict-json-schema-v1"
+    assert stage6["model_calls_per_execution"] == 1
+    assert stage6["reasoning_effort"] == "low"
+    assert stage6["max_tokens"] == 8000
+    assert stage6["paid_execution_authorized"] is False
+    assert stage6["authorization_consumed"] is True
+    assert stage6["next_harness_requirement"] == "stage6_paid_authorization"
+
+    assert harness["attempt_index"] == 1
+    assert harness["authorization_marker"] == stage6["authorization_marker"]
+    assert harness["legacy_ci_trigger_marker"] == (
+        "PAID-V20-AGE12-ISLAND-WRITER2"
+    )
+    assert harness["output_result"] == (
+        "age12-island-v20-story-local-repair1-result.json"
+    )
+    assert harness["output_story"] == (
+        "age12-island-v20-story-local-repair1-story.txt"
+    )
+    assert harness["output_envelope"] == (
+        "age12-island-v20-story-local-repair1-envelope.json"
+    )
+    assert harness["model"] == "anthropic/claude-sonnet-5.5"
+    assert harness["request_class"] == "spineforge_v20_story_local_repair"
+    assert harness["schema_name"] == "spineforge_v20_story_local_repair_v1"
+    assert harness["reasoning_effort"] == "low"
+    assert harness["max_tokens"] == 8000
+    assert harness["model_calls_per_execution"] == 1
+    assert harness["automatic_retry_enabled"] is False
+    assert harness["automatic_repair_loop_enabled"] is False
+    assert harness["reaudit_executed"] is False
+    assert harness["translation_executed"] is False
+    assert harness["state_commit_executed"] is False
+    assert harness["paid_execution_authorized"] is False

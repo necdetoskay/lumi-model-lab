@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.40",
-    "runtime_source_commit": "c13b49307",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.41",
+    "runtime_source_commit": "c99724ffa",
     "files": [
       {
         "path": "requirements.txt",
@@ -98,7 +98,7 @@
       },
       {
         "path": "configs/model_runtime_profiles.yaml",
-        "sha256": "afdc0361f823881dd9fbca8f724d7f0b7e9ed3d8bf5fcba5174632ea2324d9f2"
+        "sha256": "f0e637a0c7af1fc6805d39cfcc971003d64a58ad6223132bb053edbdcb0e9073"
       },
       {
         "path": "src/spineforge_freeze_verify.py",
@@ -214,7 +214,7 @@
       },
       {
         "path": "src/spineforge_v20_paid_writer_once.py",
-        "sha256": "4152d824906628c0c8155d76ce97c8285a7adaee08d96b91bf67017e223b1327"
+        "sha256": "6a2cf89034c8e9136d4b30202bf2a55914919226d10f6cb99bbada9e5dd8dc7d"
       },
       {
         "path": "evidence/spineforge-v20-paid-writer/36955873689/age12-island-v20-writer1-result.json",
@@ -395,6 +395,18 @@
       {
         "path": "evidence/spineforge-v20-story-local-repair/36990160527-handoff.json",
         "sha256": "d96428c26c35f27b54e8337dc3ad3b7c203ab4cd41f9f7caf982b607a9a65356"
+      },
+      {
+        "path": "src/spineforge_v20_story_local_repair_once.py",
+        "sha256": "eee652e37b02c176325be0ab9db658d6245c2a9efbaa5355111316ebbfa9b17a"
+      },
+      {
+        "path": "prompts/spineforge_v20_story_local_repair.md",
+        "sha256": "af13169f35a49cc21885774e0a8e5783d7586d5143a366a89d921d1a2a95f8bb"
+      },
+      {
+        "path": "src/spineforge_v20_paid_story_local_repair_once.py",
+        "sha256": "92e016987e7c0a80223e1a442d5f093d6307873e4a6c5fbf15a0e2a5ac3bb390"
       }
     ]
   },
@@ -962,7 +974,7 @@
     }
   },
   "stage6_story_local_repair": {
-    "status": "READY_NOT_AUTHORIZED",
+    "status": "PAID_HARNESS_PREPARED_NOT_AUTHORIZED",
     "stage": 6,
     "input_artifact_schema": "spineforge-v20-story-local-repair-handoff.v1",
     "artifact_type": "IMMUTABLE_STAGE6_LOCAL_REPAIR_INPUT",
@@ -1024,6 +1036,40 @@
     "paid_execution_authorized": false,
     "automatic_retry_enabled": false,
     "automatic_repair_loop_enabled": false,
-    "next_harness_requirement": "stage6_paid_story_local_repair_harness_zero_cost"
+    "next_harness_requirement": "stage6_paid_authorization",
+    "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
+    "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
+    "ci_transport_job": "paid-age12-island-writer2",
+    "paid_wrapper": "src/spineforge_v20_paid_story_local_repair_once.py",
+    "execution_module": "src/spineforge_v20_story_local_repair_once.py",
+    "prompt_path": "prompts/spineforge_v20_story_local_repair.md",
+    "repair_request_class": "spineforge_v20_story_local_repair",
+    "repair_schema_name": "spineforge_v20_story_local_repair_v1",
+    "transport_contract_revision": "strict-json-schema-v1",
+    "model_calls_per_execution": 1,
+    "reasoning_effort": "low",
+    "max_tokens": 8000,
+    "authorization_consumed": true,
+    "paid_harness": {
+      "attempt_index": 1,
+      "authorization_marker": "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR1",
+      "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
+      "output_result": "age12-island-v20-story-local-repair1-result.json",
+      "output_story": "age12-island-v20-story-local-repair1-story.txt",
+      "output_envelope": "age12-island-v20-story-local-repair1-envelope.json",
+      "model": "anthropic/claude-sonnet-5.5",
+      "request_class": "spineforge_v20_story_local_repair",
+      "schema_name": "spineforge_v20_story_local_repair_v1",
+      "transport_contract_revision": "strict-json-schema-v1",
+      "reasoning_effort": "low",
+      "max_tokens": 8000,
+      "model_calls_per_execution": 1,
+      "automatic_retry_enabled": false,
+      "automatic_repair_loop_enabled": false,
+      "reaudit_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "paid_execution_authorized": false
+    }
   }
 }
