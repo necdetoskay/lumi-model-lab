@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -416,6 +417,45 @@ def _build_audit_authority_projection(authority: dict[str, Any]) -> dict[str, An
 
 
 
+def _map_ordered_exact_text_fragments_to_segments(
+    *,
+    exact_text: str,
+    story_segments: list[dict[str, Any]],
+) -> list[str]:
+    fragments = [
+        part.strip()
+        for part in re.split(r"(?<=[.!?…])\s+", exact_text.strip())
+        if part.strip()
+    ]
+    if len(fragments) < 2:
+        return []
+
+    mapped: list[str] = []
+    previous_index = -1
+    for fragment in fragments:
+        fragment_variants = [fragment]
+        trimmed = fragment.rstrip(".!?…")
+        if trimmed != fragment and len(trimmed) >= 12:
+            fragment_variants.append(trimmed)
+        matches = [
+            (index, str(segment["id"]))
+            for index, segment in enumerate(story_segments)
+            if any(
+                variant in str(segment["text"])
+                for variant in fragment_variants
+            )
+        ]
+        if len(matches) != 1:
+            return []
+        index, span_id = matches[0]
+        if index < previous_index:
+            return []
+        previous_index = index
+        if not mapped or mapped[-1] != span_id:
+            mapped.append(span_id)
+    return mapped
+
+
 def _repair_finding_locators(
     *,
     findings: list[dict[str, Any]],
@@ -453,6 +493,24 @@ def _repair_finding_locators(
         if cited_ids_all_valid and exact_text in cited_window:
             repaired.append(item)
             continue
+
+        if str(item.get("repair_scope") or "").upper() != "LOCAL_REPAIR":
+            mapped_ids = _map_ordered_exact_text_fragments_to_segments(
+                exact_text=exact_text,
+                story_segments=story_segments,
+            )
+            if mapped_ids:
+                old_ids = cited_ids
+                item["span_ids"] = mapped_ids
+                repaired.append(item)
+                corrections.append({
+                    "family": item.get("family"),
+                    "exact_text": exact_text,
+                    "old_span_ids": old_ids,
+                    "new_span_ids": mapped_ids,
+                    "reason": "deterministic_ordered_exact_text_fragment_rebind",
+                })
+                continue
 
         occurrences: list[int] = []
         start_at = 0

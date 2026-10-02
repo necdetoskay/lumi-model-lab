@@ -71,10 +71,10 @@
   },
   "qualification_state": {
     "paid_authorized": false,
-    "paid_api_calls": 17,
-    "confirmed_cost_usd": 0.5895394,
-    "last_paid_run_id": 36978036076,
-    "last_result": "story_audit_attempt5_contract_failure_known_defect_missed",
+    "paid_api_calls": 19,
+    "confirmed_cost_usd": 0.7523889,
+    "last_paid_run_id": 36981205470,
+    "last_result": "story_audit_attempt6_reprocessed_quality_failed_known_defect_missed",
     "writer_product_authorized": true,
     "paid_writer_execution_authorized": false,
     "unreconciled_paid_runs": [
@@ -89,8 +89,8 @@
   },
   "runtime_freeze": {
     "enabled": true,
-    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.30",
-    "runtime_source_commit": "34e656b23",
+    "runtime_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.31",
+    "runtime_source_commit": "b41b86d38",
     "files": [
       {
         "path": "requirements.txt",
@@ -258,7 +258,7 @@
       },
       {
         "path": "src/spineforge_v20_story_audit_once.py",
-        "sha256": "e82e3e0f94ae83a5c2eebd99c4bd58cef859bb0a37c5aff71010fcede6f5f83a"
+        "sha256": "f25b4027dc290e0beb713f39b09344be90e43f4393534da8047d9629294c58d3"
       },
       {
         "path": "src/spineforge_v20_paid_story_audit_once.py",
@@ -342,6 +342,26 @@
       },
       {
         "path": "evidence/spineforge-v20-paid-story-audit/36978036076/qualification-report-reprocessed.json",
+        "sha256": "19ab329059a7b1c473026ff821b08a0803aa04141a5a382b43b1bec9568a41a9"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36981205470/age12-island-v20-story-audit6-result.json",
+        "sha256": "6943e580c67e9d92326b00060cfe11ff708751b4a0b1187cda0a882b527e5465"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36981205470/age12-island-v20-story-audit6-envelope.json",
+        "sha256": "d37b8619fe0c32de9039f6b0f11d7de29016f3e3d76bc6b89dd48bd1a14ce361"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36981205470/qualification-report.json",
+        "sha256": "edc3181bd61037f2e17f4bc9a69874a20f73242d2b97c0d2161041ccc8cf744f"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36981205470/age12-island-v20-story-audit6-reprocessed.json",
+        "sha256": "3dcc60463685d1d7d562fb6d87a682a3b30a15f5edc0698db3f7beb52d7f8655"
+      },
+      {
+        "path": "evidence/spineforge-v20-paid-story-audit/36981205470/qualification-report-reprocessed.json",
         "sha256": "19ab329059a7b1c473026ff821b08a0803aa04141a5a382b43b1bec9568a41a9"
       }
     ]
@@ -431,10 +451,10 @@
     "story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
     "story_manifest_path": "evidence/spineforge-v20-writer-product/36965340665/writer-story-artifact.json",
     "next_stage": "STORY_AUDIT",
-    "paid_story_audit_authorized": true
+    "paid_story_audit_authorized": false
   },
   "stage5_story_audit": {
-    "status": "ATTEMPT6_PAID_EXECUTION_AUTHORIZED",
+    "status": "ATTEMPT6_REPROCESSED_QUALITY_FAILED_KNOWN_DEFECT_MISSED",
     "stage": 5,
     "input_artifact_schema": "spineforge-v20-writer-story-artifact.v1",
     "output_artifact_schema": "spineforge-v20-story-audit-artifact.v1",
@@ -447,7 +467,7 @@
     "local_repair_routes_to": "STORY_LOCAL_REPAIR",
     "clean_routes_to": "ENGLISH_MASTER_SEAL",
     "structural_or_replan_routes_to": "STOP",
-    "paid_execution_authorized": true,
+    "paid_execution_authorized": false,
     "primary_model": "anthropic/claude-sonnet-5.5",
     "secondary_model": "openai/gpt-5.6-sol",
     "audit_calls_per_execution": 2,
@@ -458,7 +478,7 @@
     "legacy_ci_trigger_marker": "PAID-V20-AGE12-ISLAND-WRITER2",
     "ci_transport_job": "paid-age12-island-writer2",
     "paid_wrapper": "src/spineforge_v20_paid_story_audit_once.py",
-    "authorization_consumed": false,
+    "authorization_consumed": true,
     "attempt1": {
       "run_id": 36969500342,
       "status": "audit_completed",
@@ -511,7 +531,7 @@
       "cost_usd_reconciled": false,
       "audit_artifact_created": false
     },
-    "next_harness_requirement": "attempt6_paid_result",
+    "next_harness_requirement": "secondary_language_specialist_zero_cost_qualification_before_next_paid_attempt",
     "locator_policy": "multi_span_unique_exact_text_rebind_v2",
     "failure_evidence_policy": "preserve_raw_audits_and_usage_v1",
     "attempt3_paid_authorized": false,
@@ -678,7 +698,7 @@
       "qualification_report_path": "evidence/spineforge-v20-paid-story-audit/36978036076/qualification-report-reprocessed.json",
       "reprocessed_result_path": "evidence/spineforge-v20-paid-story-audit/36978036076/age12-island-v20-story-audit5-reprocessed.json"
     },
-    "attempt6_paid_authorized": true,
+    "attempt6_paid_authorized": false,
     "secondary_sentence_coverage": {
       "contract_revision": "language-sentence-scan-v1",
       "schema_name": "spineforge_v20_story_audit_secondary_v4",
@@ -710,8 +730,55 @@
       "secondary_prompt_path": "prompts/spineforge_v20_story_audit_secondary.md",
       "locator_policy": "multi_span_unique_exact_text_rebind_v2",
       "failure_evidence_policy": "preserve_provider_trace_and_usage_v2",
-      "paid_execution_authorized": true,
+      "paid_execution_authorized": false,
       "expected_sentence_count": 199
+    },
+    "attempt6": {
+      "run_id": 36981205470,
+      "status": "audit_contract_failure",
+      "source_artifact_id": "writer-story:f1000691c85665ea6894e45e0318faaf5cdf7c1dac91fa453153e392af8192f3",
+      "source_story_sha256": "e08f686cc06c5c5a65a86f4bd8f5069aabd04e9a818b2abea5305887ec53cf0f",
+      "audit_contract_revision": "family-by-family-multi-finding-v3",
+      "transport_contract_revision": "strict-json-schema-v1",
+      "secondary_sentence_coverage_contract": "language-sentence-scan-v1",
+      "secondary_sentence_scan_count": 199,
+      "s006_scan_status": "clean",
+      "api_calls": 2,
+      "input_tokens": 46652,
+      "output_tokens": 5999,
+      "reasoning_tokens": 1200,
+      "total_tokens": 52651,
+      "cost_usd": 0.1628495,
+      "latency_seconds": 66.183,
+      "finding_count_before_artifact": 18,
+      "known_target_recall": 0.0,
+      "known_target_detected": false,
+      "artifact_error": {
+        "type": "RuntimeError",
+        "message": "Story Audit locator repair requires exact_text to resolve uniquely in frozen story: spatial_consistency:0"
+      },
+      "automatic_retry_executed": false,
+      "source_story_mutated": false,
+      "repair_executed": false,
+      "translation_executed": false,
+      "state_commit_executed": false,
+      "audit_artifact_created": false,
+      "qualification_status": "FAIL_KNOWN_DEFECT_MISSED"
+    },
+    "attempt6_reprocess": {
+      "status": "audit_reprocessed_zero_cost",
+      "model_calls_executed": 0,
+      "source_paid_usage_reused": true,
+      "source_story_mutated": false,
+      "audit_artifact_id": "story-audit:a2adc043f3828dfe0c6b03ff78e4eaf0014a32ed3eb4a03c0510bdcfee6ba7e8",
+      "decision": "STRUCTURAL_REPAIR_REQUIRED",
+      "next_stage": "STOP",
+      "finding_count": 18,
+      "locator_correction_count": 2,
+      "qualification_status": "FAIL_KNOWN_DEFECT_MISSED",
+      "known_target_recall": 0.0,
+      "reprocessed_result_path": "evidence/spineforge-v20-paid-story-audit/36981205470/age12-island-v20-story-audit6-reprocessed.json",
+      "qualification_report_path": "evidence/spineforge-v20-paid-story-audit/36981205470/qualification-report-reprocessed.json"
     }
   }
 }
