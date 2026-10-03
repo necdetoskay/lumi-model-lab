@@ -24,9 +24,12 @@ STORY_LOCAL_REPAIR_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REP
 STORY_REAUDIT_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-REAUDIT1"
 STORY_LOCAL_REPAIR_CYCLE2_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-LOCAL-REPAIR3"
 STORY_REAUDIT_CYCLE2_AUTHORIZATION_MARKER = "PAID-V20-AGE12-ISLAND-STORY-REAUDIT2"
+STORY_QUALITY_LOOP_AUTHORIZATION_MARKER = "PAID-V20-STORY-QUALITY-LOOP"
 
 
 def paid_stage_from_commit_message(message: str) -> str:
+    if STORY_QUALITY_LOOP_AUTHORIZATION_MARKER in message:
+        return "STORY_QUALITY_LOOP"
     if STORY_REAUDIT_CYCLE2_AUTHORIZATION_MARKER in message:
         return "STORY_REAUDIT_CYCLE2"
     if STORY_LOCAL_REPAIR_CYCLE2_AUTHORIZATION_MARKER in message:
@@ -143,6 +146,12 @@ def execute_paid_writer_once(
 
 def main() -> None:
     stage = paid_stage_from_commit_message(current_commit_message())
+    if stage == "STORY_QUALITY_LOOP":
+        from src.spineforge_v20_paid_story_quality_loop_once import (
+            main as story_quality_loop_main,
+        )
+        story_quality_loop_main()
+        return
     if stage == "STORY_REAUDIT_CYCLE2":
         from src.spineforge_v20_paid_story_reaudit_cycle2_once import (
             main as story_reaudit_cycle2_main,

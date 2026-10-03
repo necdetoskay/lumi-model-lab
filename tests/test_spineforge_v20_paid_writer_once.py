@@ -117,3 +117,14 @@ def test_paid_ci_dispatch_routes_story_reaudit_cycle2_marker():
         "[PAID-V20-AGE12-ISLAND-WRITER2]"
     )
     assert paid_stage_from_commit_message(message) == "STORY_REAUDIT_CYCLE2"
+
+
+def test_paid_ci_dispatch_routes_generic_story_quality_loop_marker():
+    from src.spineforge_v20_paid_writer_once import paid_stage_from_commit_message
+
+    message = (
+        "generic quality loop "
+        "[PAID-V20-STORY-QUALITY-LOOP] "
+        "[PAID-V20-AGE12-ISLAND-WRITER2]"
+    )
+    assert paid_stage_from_commit_message(message) == "STORY_QUALITY_LOOP"
