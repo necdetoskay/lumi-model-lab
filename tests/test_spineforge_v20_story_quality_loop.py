@@ -316,3 +316,110 @@ def test_generic_reaudit_contract_failure_preserves_raw_usage_and_family_manifes
     assert trace["model_call"]["total_tokens"] == 120
     assert trace["model_call"]["cost_usd"] == 0.01
     assert trace["retry_suppressed"] is True
+
+
+
+def test_generic_reaudit_normalizes_local_quote_to_valid_frozen_span():
+    handoff = build_reaudit_handoff(
+        story_artifact_path=STAGE8_STORY,
+        stage=9,
+        cycle_index=2,
+    )
+    captured = {}
+
+    def primary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        first = payload["story_segments"][0]
+        captured["span_id"] = str(first["id"])
+        captured["source_text"] = str(first["text"])
+        raw = _clean_primary()
+        row = next(
+            x for x in raw["evaluations"]
+            if x["family"] == "language_naturalness"
+        )
+        row["present"] = True
+        row["findings"] = [{
+            "severity": "minor",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": [captured["span_id"]],
+            "exact_text": "A paraphrase that is not a literal frozen quote.",
+            "reason": "Synthetic quote-normalization qualification.",
+        }]
+        row["reason"] = "One synthetic language defect."
+        return raw, _body(100, 20, 0.01), _request(), []
+
+    def secondary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        return _clean_secondary(payload), _body(90, 10, 0.02), _request(), []
+
+    result = execute_reaudit(
+        api_key="not-used",
+        handoff=handoff,
+        primary_call_fn=primary,
+        secondary_call_fn=secondary,
+    )
+
+    assert result["status"] == "reaudit_completed"
+    finding = next(
+        x for x in result["reaudit_artifact"]["findings"]
+        if x["family"] == "language_naturalness"
+    )
+    assert finding["span_ids"] == [captured["span_id"]]
+    assert finding["exact_text"] == captured["source_text"]
+    assert result["locator_corrections"] == [{
+        "family": "language_naturalness",
+        "exact_text": "A paraphrase that is not a literal frozen quote.",
+        "old_span_ids": [captured["span_id"]],
+        "new_span_ids": [captured["span_id"]],
+        "normalized_exact_text": captured["source_text"],
+        "reason": "deterministic_valid_span_quote_normalization",
+    }]
+
+
+def test_generic_reaudit_locator_failure_preserves_two_call_usage():
+    handoff = build_reaudit_handoff(
+        story_artifact_path=STAGE8_STORY,
+        stage=9,
+        cycle_index=2,
+    )
+
+    def primary(**kwargs):
+        raw = _clean_primary()
+        row = next(
+            x for x in raw["evaluations"]
+            if x["family"] == "language_naturalness"
+        )
+        row["present"] = True
+        row["findings"] = [{
+            "severity": "minor",
+            "repair_scope": "LOCAL_REPAIR",
+            "span_ids": ["S999"],
+            "exact_text": "This exact text does not exist in the frozen story.",
+            "reason": "Synthetic unrecoverable locator failure.",
+        }]
+        row["reason"] = "One synthetic language defect."
+        return raw, _body(100, 20, 0.01), _request(), []
+
+    def secondary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        return _clean_secondary(payload), _body(90, 10, 0.02), _request(), []
+
+    with pytest.raises(RuntimeError, match="resolve uniquely") as info:
+        execute_reaudit(
+            api_key="not-used",
+            handoff=handoff,
+            primary_call_fn=primary,
+            secondary_call_fn=secondary,
+        )
+
+    usage = getattr(info.value, "partial_usage_rollup")
+    trace = getattr(info.value, "trace")
+    assert usage["totals"]["api_calls"] == 2
+    assert usage["totals"]["input_tokens"] == 190
+    assert usage["totals"]["output_tokens"] == 30
+    assert usage["totals"]["total_tokens"] == 220
+    assert usage["totals"]["cost_usd"] == 0.03
+    assert trace["stage"] == (
+        "spineforge_v20_story_quality_reaudit_post_provider_locator"
+    )
+    assert len(trace["model_calls"]) == 2

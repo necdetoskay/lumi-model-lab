@@ -623,6 +623,7 @@ def _repair_finding_locators(
     *,
     findings: list[dict[str, Any]],
     story_segments: list[dict[str, Any]],
+    allow_valid_span_quote_normalization: bool = False,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     repaired: list[dict[str, Any]] = []
     corrections: list[dict[str, Any]] = []
@@ -655,6 +656,25 @@ def _repair_finding_locators(
         )
         if cited_ids_all_valid and exact_text in cited_window:
             repaired.append(item)
+            continue
+
+        if (
+            allow_valid_span_quote_normalization
+            and cited_ids_all_valid
+            and str(item.get("repair_scope") or "").upper() == "LOCAL_REPAIR"
+        ):
+            old_exact_text = exact_text
+            normalized_exact_text = cited_window
+            item["exact_text"] = normalized_exact_text
+            repaired.append(item)
+            corrections.append({
+                "family": item.get("family"),
+                "exact_text": old_exact_text,
+                "old_span_ids": cited_ids,
+                "new_span_ids": cited_ids,
+                "normalized_exact_text": normalized_exact_text,
+                "reason": "deterministic_valid_span_quote_normalization",
+            })
             continue
 
         if str(item.get("repair_scope") or "").upper() != "LOCAL_REPAIR":

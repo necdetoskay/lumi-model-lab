@@ -713,16 +713,28 @@ def execute_reaudit(
             story_text_by_id=text_by_id,
         ),
     )
-    merged = _merge_findings(primary["findings"], secondary["findings"])
-    merged, corrections = _repair_finding_locators(
-        findings=merged,
-        story_segments=segments,
-    )
-    decision, next_stage = _decision_from_findings(merged)
     usage = rollup_model_calls([
         primary_meta["model_call"],
         secondary_meta["model_call"],
     ])
+    merged = _merge_findings(primary["findings"], secondary["findings"])
+    try:
+        merged, corrections = _repair_finding_locators(
+            findings=merged,
+            story_segments=segments,
+            allow_valid_span_quote_normalization=True,
+        )
+    except Exception as exc:
+        setattr(exc, "partial_usage_rollup", usage)
+        setattr(exc, "trace", {
+            "stage": "spineforge_v20_story_quality_reaudit_post_provider_locator",
+            "model_calls": [
+                primary_meta["model_call"],
+                secondary_meta["model_call"],
+            ],
+        })
+        raise
+    decision, next_stage = _decision_from_findings(merged)
     embedded: dict[str, Any] = {
         "schema": "spineforge-v20-story-quality-reaudit-artifact.v1",
         "artifact_type": "IMMUTABLE_STORY_QUALITY_REAUDIT",

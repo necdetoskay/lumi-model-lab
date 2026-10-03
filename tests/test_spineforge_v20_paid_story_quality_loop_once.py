@@ -408,3 +408,80 @@ def test_generic_paid_wrapper_persists_partial_usage_on_post_provider_contract_f
     assert partial["totals"]["latency_seconds"] == 1.25
     assert envelope["usage_rollup"] == partial
     assert envelope["result_status"] == "unhandled_story_quality_loop_runtime_failure"
+
+
+
+def test_generic_paid_wrapper_prefers_multi_call_partial_usage_from_exception(tmp_path: Path):
+    profile_path = _profile(tmp_path, authorized=True, consumed=False)
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    loop = profile["story_quality_loop"]
+
+    stage13_handoff_path = Path(
+        "evidence/spineforge-v20-paid-writer/37114732160/"
+        "age12-island-v20-story-quality-repair-c4-next-handoff.json"
+    )
+    stage13_handoff = json.loads(stage13_handoff_path.read_text(encoding="utf-8"))
+    loop.update({
+        "status": "PAID_EXECUTION_AUTHORIZED",
+        "current_action": "REAUDIT",
+        "current_stage": 13,
+        "cycle_index": 4,
+        "action_authorization_id": "synthetic-multi-call-failure",
+        "source_story_artifact_id": stage13_handoff["source_story_artifact_id"],
+        "source_story_artifact_path": stage13_handoff["source_story_artifact_path"],
+        "source_story_artifact_sha256": stage13_handoff["source_story_artifact_sha256"],
+        "source_story_sha256": stage13_handoff["repaired_story_text_sha256"],
+        "handoff_artifact_id": stage13_handoff["artifact_id"],
+        "handoff_path": str(stage13_handoff_path),
+        "handoff_sha256": __import__("hashlib").sha256(
+            stage13_handoff_path.read_bytes()
+        ).hexdigest(),
+        "paid_execution_authorized": True,
+        "authorization_consumed": False,
+    })
+    profile_path.write_text(
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    expected = {
+        "calls": [],
+        "totals": {
+            "api_calls": 2,
+            "input_tokens": 200,
+            "output_tokens": 40,
+            "reasoning_tokens": 0,
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "total_tokens": 240,
+            "cost_usd": 0.02,
+            "latency_seconds": 2.0,
+        },
+        "by_stage": {},
+        "by_model": {},
+        "reconciled": {
+            "cost_matches_call_sum": True,
+            "token_matches_call_sum": True,
+        },
+    }
+
+    def fake_reaudit(**kwargs):
+        exc = RuntimeError("synthetic post-provider locator failure")
+        setattr(exc, "partial_usage_rollup", expected)
+        setattr(exc, "trace", {
+            "stage": "spineforge_v20_story_quality_reaudit_post_provider_locator",
+            "model_calls": [],
+        })
+        raise exc
+
+    result, envelope = execute_paid_story_quality_loop_once(
+        api_key="not-used",
+        run_id="multi-call-failure-unit",
+        output_root=tmp_path,
+        profile_path=profile_path,
+        reaudit_run_fn=fake_reaudit,
+    )
+
+    assert result["status"] == "unhandled_story_quality_loop_runtime_failure"
+    assert result["partial_usage_rollup"] == expected
+    assert envelope["usage_rollup"] == expected

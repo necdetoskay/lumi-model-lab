@@ -131,13 +131,16 @@ def execute_paid_story_quality_loop_once(
             result = reaudit_run_fn(api_key=api_key, handoff=handoff)
     except Exception as exc:
         provider_trace = getattr(exc, "trace", None)
-        partial_usage_rollup = None
-        if isinstance(provider_trace, dict) and isinstance(
-            provider_trace.get("model_call"), dict
-        ):
-            partial_usage_rollup = rollup_model_calls(
-                [provider_trace["model_call"]]
-            )
+        partial_usage_rollup = getattr(exc, "partial_usage_rollup", None)
+        if partial_usage_rollup is None and isinstance(provider_trace, dict):
+            if isinstance(provider_trace.get("model_calls"), list):
+                partial_usage_rollup = rollup_model_calls(
+                    provider_trace["model_calls"]
+                )
+            elif isinstance(provider_trace.get("model_call"), dict):
+                partial_usage_rollup = rollup_model_calls(
+                    [provider_trace["model_call"]]
+                )
         result = {
             "schema": "spineforge-v20-story-quality-loop-failure.v1",
             "status": "unhandled_story_quality_loop_runtime_failure",
