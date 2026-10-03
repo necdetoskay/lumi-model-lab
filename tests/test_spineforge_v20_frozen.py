@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.71"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.72"
     assert result["verified_files"] == 162
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "f31d5349a"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "92f2e4737"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -3145,7 +3145,7 @@ def test_v20_71_freeze_records_stage17_reaudit_and_arms_stage18_repair():
     assert completed["translation_executed"] is False
     assert completed["state_commit_executed"] is False
 
-    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert loop["current_action"] == "LOCAL_REPAIR"
     assert loop["current_stage"] == 18
     assert loop["cycle_index"] == 7
@@ -3163,12 +3163,12 @@ def test_v20_71_freeze_records_stage17_reaudit_and_arms_stage18_repair():
         "S172", "S173", "S175", "S179", "S181", "S195",
     ]
     assert loop["paid_attempt_index"] == 8
-    assert loop["paid_execution_authorized"] is False
-    assert loop["authorization_consumed"] is True
+    assert loop["paid_execution_authorized"] is True
+    assert loop["authorization_consumed"] is False
     assert loop["automatic_retry_enabled"] is False
     assert loop["automatic_paid_transition_enabled"] is False
     assert loop["automatic_repair_loop_enabled"] is False
-    assert loop["next_harness_requirement"] == "stage18_paid_authorization"
+    assert loop["next_harness_requirement"] == "stage18_paid_result"
 
     assert artifacts["result_sha256"] == (
         "3bd4fc301cb0374f6c3ebf73ef970f4efe5f35122c7e052579808050a234cd21"
