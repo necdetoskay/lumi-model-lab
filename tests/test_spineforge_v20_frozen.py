@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.57"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.58"
     assert result["verified_files"] == 127
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "3c7b7fb82"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "99120e4f5"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -2685,7 +2685,7 @@ def test_v20_57_freeze_recovers_stage11_postprocess_and_arms_stage12_repair():
         "story-quality-postprocess-recovery:8bd9675b25211d5ed7ffef8d8ec3c99dc23209cd8de140e892311fb4521248d2"
     )
 
-    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert loop["current_action"] == "LOCAL_REPAIR"
     assert loop["current_stage"] == 12
     assert loop["cycle_index"] == 4
@@ -2705,12 +2705,12 @@ def test_v20_57_freeze_recovers_stage11_postprocess_and_arms_stage12_repair():
     ]
     assert loop["paid_attempt_index"] == 5
     assert loop["next_repair_paid_attempt_index"] == 5
-    assert loop["paid_execution_authorized"] is False
-    assert loop["authorization_consumed"] is True
+    assert loop["paid_execution_authorized"] is True
+    assert loop["authorization_consumed"] is False
     assert loop["automatic_retry_enabled"] is False
     assert loop["automatic_paid_transition_enabled"] is False
     assert loop["automatic_repair_loop_enabled"] is False
-    assert loop["next_harness_requirement"] == "stage12_paid_authorization"
+    assert loop["next_harness_requirement"] == "stage12_paid_result"
 
     assert artifacts["result_sha256"] == (
         "045fe225869bd2bf69dcafabcb21b8114cd80d65466295479ac9305633be7687"
