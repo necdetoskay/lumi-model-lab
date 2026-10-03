@@ -9,6 +9,7 @@ from src.spineforge_v20_story_quality_loop import (
     build_local_repair_handoff,
     build_reaudit_handoff,
     build_reaudit_product,
+    build_recovered_reaudit_envelope,
     execute_local_repair,
     execute_reaudit,
 )
@@ -228,3 +229,37 @@ def test_generic_repair_forbidden_span_is_rejected():
             call_fn=fake_call,
             system_prompt="PATCHES ONLY",
         )
+
+
+def test_generic_reaudit_postprocess_recovery_uses_completed_result_without_reinference():
+    result_path = Path(
+        "evidence/spineforge-v20-paid-writer/37113502767/"
+        "age12-island-v20-story-quality-reaudit-c3-result.json"
+    )
+    raw_envelope_path = Path(
+        "evidence/spineforge-v20-paid-writer/37113502767/"
+        "age12-island-v20-story-quality-reaudit-c3-envelope.json"
+    )
+    recovered = build_recovered_reaudit_envelope(
+        result_path=result_path,
+        raw_envelope_path=raw_envelope_path,
+    )
+
+    assert recovered["schema"] == (
+        "spineforge-v20-paid-story-quality-loop-recovered-envelope.v1"
+    )
+    assert recovered["result_status"] == "reaudit_completed"
+    assert recovered["action"] == "REAUDIT"
+    assert recovered["usage_rollup"]["totals"]["api_calls"] == 2
+    assert recovered["usage_rollup"]["totals"]["cost_usd"] == 0.1394635
+    recovery = recovered["postprocess_recovery"]
+    assert recovery["reason"] == (
+        "envelope_status_write_order_after_successful_inference"
+    )
+    assert recovery["paid_inference_reexecuted"] is False
+    assert recovery["source_raw_envelope_sha256"] == (
+        "0654f7a2f1368219de4ab379904e1ffa3a58cbfd19844e9355e88463abd1d3b1"
+    )
+    assert recovery["source_result_sha256"] == (
+        "045fe225869bd2bf69dcafabcb21b8114cd80d65466295479ac9305633be7687"
+    )

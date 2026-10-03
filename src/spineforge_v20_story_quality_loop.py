@@ -120,6 +120,48 @@ def _story_segments(artifact: dict[str, Any]) -> list[dict[str, Any]]:
     ]
 
 
+
+
+def build_recovered_reaudit_envelope(
+    *,
+    result_path: Path,
+    raw_envelope_path: Path,
+) -> dict[str, Any]:
+    """Recover only a post-inference envelope write-order interruption.
+
+    This does not retry or infer. It requires a completed immutable re-audit
+    result and exact usage equality with the raw paid envelope.
+    """
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    raw = json.loads(raw_envelope_path.read_text(encoding="utf-8"))
+    if result.get("status") != "reaudit_completed":
+        raise RuntimeError("Re-audit recovery requires completed result.")
+    if raw.get("result_status") != "started":
+        raise RuntimeError("Re-audit recovery requires raw envelope status started.")
+    if raw.get("action") != "REAUDIT":
+        raise RuntimeError("Re-audit recovery is only valid for REAUDIT.")
+    if raw.get("explicit_paid_authorization") is not True:
+        raise RuntimeError("Re-audit recovery requires explicit paid authorization.")
+    if raw.get("automatic_retry_executed") is not False:
+        raise RuntimeError("Re-audit recovery forbids automatic retry.")
+    if raw.get("automatic_paid_transition_executed") is not False:
+        raise RuntimeError("Re-audit recovery forbids automatic paid transition.")
+    if raw.get("usage_rollup") != result.get("reaudit_usage_rollup"):
+        raise RuntimeError("Re-audit recovery usage lineage mismatch.")
+
+    recovered = dict(raw)
+    recovered["schema"] = "spineforge-v20-paid-story-quality-loop-recovered-envelope.v1"
+    recovered["result_status"] = "reaudit_completed"
+    recovered["postprocess_recovery"] = {
+        "reason": "envelope_status_write_order_after_successful_inference",
+        "source_raw_envelope_path": str(raw_envelope_path),
+        "source_raw_envelope_sha256": _sha256_file(raw_envelope_path),
+        "source_result_path": str(result_path),
+        "source_result_sha256": _sha256_file(result_path),
+        "paid_inference_reexecuted": False,
+    }
+    return recovered
+
 def build_reaudit_product(
     *,
     result_path: Path,

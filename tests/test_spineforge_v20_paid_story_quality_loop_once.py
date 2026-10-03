@@ -164,3 +164,148 @@ def test_generic_paid_repair_emits_next_reaudit_state_without_authorizing_it(tmp
     assert next_state["automatic_paid_transition_enabled"] is False
     assert (tmp_path / "123" / "age12-island-v20-story-quality-repair-c3-product.json").exists()
     assert (tmp_path / "123" / "age12-island-v20-story-quality-repair-c3-next-handoff.json").exists()
+
+
+def test_generic_paid_reaudit_writes_completed_envelope_before_product_and_advances_repair_attempt(tmp_path: Path):
+    profile_path = _profile(tmp_path, authorized=True, consumed=False)
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    loop = profile["story_quality_loop"]
+
+    stage11_handoff_path = Path(
+        "evidence/spineforge-v20-paid-writer/37112601598/"
+        "age12-island-v20-story-quality-repair-c3-next-handoff.json"
+    )
+    stage11_handoff = json.loads(stage11_handoff_path.read_text(encoding="utf-8"))
+    stage10_key = "story-quality-loop:stage10:local-repair:cycle3:attempt4"
+    loop.update({
+        "status": "PAID_EXECUTION_AUTHORIZED",
+        "current_action": "REAUDIT",
+        "current_stage": 11,
+        "cycle_index": 3,
+        "action_authorization_id": (
+            "story-quality-loop:stage11:reaudit:cycle3:attempt3"
+        ),
+        "source_story_artifact_id": stage11_handoff[
+            "source_story_artifact_id"
+        ],
+        "source_story_artifact_path": stage11_handoff[
+            "source_story_artifact_path"
+        ],
+        "source_story_artifact_sha256": stage11_handoff[
+            "source_story_artifact_sha256"
+        ],
+        "source_story_sha256": stage11_handoff[
+            "repaired_story_text_sha256"
+        ],
+        "handoff_artifact_id": stage11_handoff["artifact_id"],
+        "handoff_path": str(stage11_handoff_path),
+        "handoff_sha256": __import__("hashlib").sha256(
+            stage11_handoff_path.read_bytes()
+        ).hexdigest(),
+        "paid_execution_authorized": True,
+        "authorization_consumed": False,
+        "next_repair_paid_attempt_index": 4,
+        "last_completed_action": loop["completed_actions"][stage10_key],
+    })
+    profile_path.write_text(
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+    assert loop["current_action"] == "REAUDIT"
+    assert loop["current_stage"] == 11
+    assert loop["cycle_index"] == 3
+
+    def fake_reaudit(**kwargs):
+        return {
+            "schema": "spineforge-v20-story-quality-reaudit-execution.v1",
+            "status": "reaudit_completed",
+            "stage": 11,
+            "cycle_index": 3,
+            "source_story_artifact_id": loop["source_story_artifact_id"],
+            "source_repaired_story_sha256": loop["source_story_sha256"],
+            "reaudit_artifact": {
+                "schema": "spineforge-v20-story-quality-reaudit-artifact.v1",
+                "artifact_type": "IMMUTABLE_STORY_QUALITY_REAUDIT",
+                "stage": 11,
+                "cycle_index": 3,
+                "source_story_artifact_id": loop["source_story_artifact_id"],
+                "source_repaired_story_sha256": loop["source_story_sha256"],
+                "input_verified": True,
+                "source_story_mutated": False,
+                "full_story_reaudited": True,
+                "stable_span_count": 199,
+                "decision": "LOCAL_REPAIR_REQUIRED",
+                "next_stage": "STORY_LOCAL_REPAIR",
+                "findings": [{
+                    "family": "language_naturalness",
+                    "severity": "minor",
+                    "repair_scope": "LOCAL_REPAIR",
+                    "span_ids": ["S045"],
+                    "exact_text": "less margin",
+                    "reason": "Synthetic residual defect.",
+                }],
+                "artifact_id": "story-quality-reaudit-result:synthetic",
+            },
+            "secondary_language_sentence_scan": [],
+            "secondary_language_sentence_scan_count": 199,
+            "locator_corrections": [],
+            "reaudit_usage_rollup": {
+                "calls": [],
+                "totals": {
+                    "api_calls": 2,
+                    "input_tokens": 100,
+                    "output_tokens": 20,
+                    "reasoning_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "total_tokens": 120,
+                    "cost_usd": 0.01,
+                    "latency_seconds": 1.0,
+                },
+                "by_stage": {},
+                "by_model": {},
+                "reconciled": {
+                    "cost_matches_call_sum": True,
+                    "token_matches_call_sum": True,
+                },
+            },
+            "incremental_cost_usd": 0.01,
+            "incremental_latency_seconds": 1.0,
+            "source_story_mutated": False,
+            "automatic_retry_executed": False,
+            "repair_executed": False,
+            "translation_executed": False,
+            "state_commit_executed": False,
+        }
+
+    result, envelope = execute_paid_story_quality_loop_once(
+        api_key="not-used",
+        run_id="reaudit-unit",
+        output_root=tmp_path,
+        profile_path=profile_path,
+        reaudit_run_fn=fake_reaudit,
+    )
+    assert result["status"] == "reaudit_completed"
+    assert envelope["result_status"] == "reaudit_completed"
+    next_state = json.loads(
+        (tmp_path / "reaudit-unit" / "story-quality-loop-next-state.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert next_state["current_action"] == "LOCAL_REPAIR"
+    assert next_state["current_stage"] == 12
+    assert next_state["cycle_index"] == 4
+    assert next_state["paid_execution_authorized"] is False
+
+    handoff = json.loads(
+        (
+            tmp_path
+            / "reaudit-unit"
+            / "age12-island-v20-story-quality-reaudit-c3-next-handoff.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert handoff["repair_cycle_index"] == 4
+    assert handoff["paid_attempt_index"] == 5
+    assert handoff["paid_execution_authorized"] is False

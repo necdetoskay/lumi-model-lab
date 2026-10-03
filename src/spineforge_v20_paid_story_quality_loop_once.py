@@ -161,6 +161,7 @@ def execute_paid_story_quality_loop_once(
             raise RuntimeError("Story Quality Loop repair produced no repaired story.")
         story_path.write_text(story.rstrip() + "\n", encoding="utf-8")
         envelope["usage_rollup"] = result.get("repair_usage_rollup")
+        envelope["result_status"] = result.get("status")
         write_json(envelope_path, envelope)
         product = build_repair_product(
             result_path=result_path,
@@ -194,6 +195,7 @@ def execute_paid_story_quality_loop_once(
         }
     else:
         envelope["usage_rollup"] = result.get("reaudit_usage_rollup")
+        envelope["result_status"] = result.get("status")
         write_json(envelope_path, envelope)
         product = build_reaudit_product(
             result_path=result_path,
@@ -210,7 +212,11 @@ def execute_paid_story_quality_loop_once(
                 source_story_artifact_path=Path(loop["source_story_artifact_path"]),
                 stage=stage + 1,
                 repair_cycle_index=cycle + 1,
-                paid_attempt_index=int(loop.get("next_repair_paid_attempt_index") or (cycle + 2)),
+                paid_attempt_index=max(
+                    int(loop.get("next_repair_paid_attempt_index") or 0),
+                    int((loop.get("last_completed_action") or {}).get("paid_attempt_index") or 0) + 1,
+                    cycle + 2,
+                ),
             )
             write_json(next_handoff_path, next_handoff)
             next_state = {
