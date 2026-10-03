@@ -26,6 +26,21 @@ SECONDARY_PROMPT = Path("prompts/spineforge_v20_story_audit_secondary.md")
 
 AUDIT_REQUEST_CLASS = "spineforge_v20_story_audit"
 AUDIT_SCHEMA_NAME = "spineforge_v20_story_audit_v3"
+PRIMARY_AUDIT_CANONICAL_FAMILY_ORDER = [
+    "physical_feasibility",
+    "causal_logic",
+    "state_continuity",
+    "epistemic_order",
+    "spatial_consistency",
+    "temporal_consistency",
+    "response_causality",
+    "closure_integrity",
+    "canon_integrity",
+    "language_naturalness",
+    "age_suitability",
+    "spine_fidelity",
+    "narrative_coherence",
+]
 AUDIT_RESPONSE_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -227,21 +242,7 @@ def _normalize_auditor_payload(
     require_language_sentence_scan: bool = False,
     expected_span_ids: list[str] | None = None,
 ) -> dict[str, Any]:
-    order = [
-        "physical_feasibility",
-        "causal_logic",
-        "state_continuity",
-        "epistemic_order",
-        "spatial_consistency",
-        "temporal_consistency",
-        "response_causality",
-        "closure_integrity",
-        "canon_integrity",
-        "language_naturalness",
-        "age_suitability",
-        "spine_fidelity",
-        "narrative_coherence",
-    ]
+    order = list(PRIMARY_AUDIT_CANONICAL_FAMILY_ORDER)
     rows = raw.get("evaluations")
     if not isinstance(rows, list):
         raise RuntimeError("Story auditor evaluations must be a list.")
@@ -763,14 +764,6 @@ def _call_auditor(
         schema=schema,
     )
     latency = round(time.perf_counter() - started, 3)
-    if normalize_fn is not None:
-        normalized = normalize_fn(raw)
-    else:
-        normalized = _normalize_auditor_payload(
-            raw=raw,
-            require_language_sentence_scan=require_language_sentence_scan,
-            expected_span_ids=expected_span_ids,
-        )
     call = normalize_model_call(
         stage=stage,
         model=model,
@@ -779,6 +772,33 @@ def _call_auditor(
         cost=parse_cost(body).model_dump(mode="json"),
         latency_seconds=latency,
     )
+    try:
+        if normalize_fn is not None:
+            normalized = normalize_fn(raw)
+        else:
+            normalized = _normalize_auditor_payload(
+                raw=raw,
+                require_language_sentence_scan=require_language_sentence_scan,
+                expected_span_ids=expected_span_ids,
+            )
+    except Exception as exc:
+        setattr(exc, "trace", {
+            "phase": "post_provider_auditor_payload_validation",
+            "stage": stage,
+            "model": model,
+            "raw_response": raw,
+            "raw_usage": body.get("usage") or {},
+            "model_call": call,
+            "request": {
+                "temperature": request.get("temperature"),
+                "max_tokens": request.get("max_tokens"),
+                "reasoning": request.get("reasoning"),
+                "response_format": request.get("response_format"),
+            },
+            "parse_failures": failures,
+            "retry_suppressed": True,
+        })
+        raise
     return normalized, {
         "model": model,
         "request": {

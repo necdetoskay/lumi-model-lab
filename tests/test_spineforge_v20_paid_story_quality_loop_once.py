@@ -309,3 +309,62 @@ def test_generic_paid_reaudit_writes_completed_envelope_before_product_and_advan
     assert handoff["repair_cycle_index"] == 4
     assert handoff["paid_attempt_index"] == 5
     assert handoff["paid_execution_authorized"] is False
+
+
+def test_generic_paid_wrapper_persists_partial_usage_on_post_provider_contract_failure(tmp_path: Path):
+    profile_path = _profile(tmp_path, authorized=True, consumed=False)
+
+    def fake_reaudit(**kwargs):
+        exc = RuntimeError("synthetic primary contract failure")
+        setattr(exc, "trace", {
+            "phase": "post_provider_auditor_payload_validation",
+            "model": "anthropic/claude-sonnet-5.5",
+            "raw_response": {"evaluations": []},
+            "raw_usage": {
+                "prompt_tokens": 100,
+                "completion_tokens": 20,
+                "total_tokens": 120,
+                "cost": 0.01,
+            },
+            "model_call": {
+                "stage": "spineforge_v20_story_quality_reaudit_primary",
+                "model": "anthropic/claude-sonnet-5.5",
+                "provider": "openrouter",
+                "status": "completed",
+                "attempt": 1,
+                "input_tokens": 100,
+                "output_tokens": 20,
+                "reasoning_tokens": 0,
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "total_tokens": 120,
+                "cost_usd": 0.01,
+                "latency_seconds": 1.25,
+            },
+            "request": {},
+            "parse_failures": [],
+            "retry_suppressed": True,
+        })
+        raise exc
+
+    result, envelope = execute_paid_story_quality_loop_once(
+        api_key="not-used",
+        run_id="failure-unit",
+        output_root=tmp_path,
+        profile_path=profile_path,
+        reaudit_run_fn=fake_reaudit,
+    )
+
+    assert result["status"] == "unhandled_story_quality_loop_runtime_failure"
+    assert result["failure"]["provider_trace"]["phase"] == (
+        "post_provider_auditor_payload_validation"
+    )
+    partial = result["partial_usage_rollup"]
+    assert partial["totals"]["api_calls"] == 1
+    assert partial["totals"]["input_tokens"] == 100
+    assert partial["totals"]["output_tokens"] == 20
+    assert partial["totals"]["total_tokens"] == 120
+    assert partial["totals"]["cost_usd"] == 0.01
+    assert partial["totals"]["latency_seconds"] == 1.25
+    assert envelope["usage_rollup"] == partial
+    assert envelope["result_status"] == "unhandled_story_quality_loop_runtime_failure"

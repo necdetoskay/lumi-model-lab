@@ -7,6 +7,7 @@ import traceback
 from pathlib import Path
 from typing import Any, Callable
 
+from src.model_usage_rollup import rollup_model_calls
 from src.spineforge_freeze_verify import verify_spineforge_runtime
 from src.spineforge_v20_story_quality_loop import (
     build_local_repair_handoff,
@@ -130,6 +131,13 @@ def execute_paid_story_quality_loop_once(
             result = reaudit_run_fn(api_key=api_key, handoff=handoff)
     except Exception as exc:
         provider_trace = getattr(exc, "trace", None)
+        partial_usage_rollup = None
+        if isinstance(provider_trace, dict) and isinstance(
+            provider_trace.get("model_call"), dict
+        ):
+            partial_usage_rollup = rollup_model_calls(
+                [provider_trace["model_call"]]
+            )
         result = {
             "schema": "spineforge-v20-story-quality-loop-failure.v1",
             "status": "unhandled_story_quality_loop_runtime_failure",
@@ -142,6 +150,7 @@ def execute_paid_story_quality_loop_once(
                 "traceback": traceback.format_exc(),
                 "provider_trace": provider_trace if isinstance(provider_trace, dict) else None,
             },
+            "partial_usage_rollup": partial_usage_rollup,
             "automatic_retry_executed": False,
             "automatic_paid_transition_executed": False,
             "translation_executed": False,
@@ -149,6 +158,7 @@ def execute_paid_story_quality_loop_once(
         }
         write_json(result_path, result)
         envelope["result_status"] = result["status"]
+        envelope["usage_rollup"] = partial_usage_rollup
         write_json(envelope_path, envelope)
         return result, envelope
 

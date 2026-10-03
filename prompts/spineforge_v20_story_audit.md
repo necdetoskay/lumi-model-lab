@@ -7,6 +7,8 @@ You receive the immutable Writer artifact identity, a deterministic reveal-safe 
 Evaluate these 13 families exactly once and in this exact order:
 physical_feasibility, causal_logic, state_continuity, epistemic_order, spatial_consistency, temporal_consistency, response_causality, closure_integrity, canon_integrity, language_naturalness, age_suitability, spine_fidelity, narrative_coherence.
 
+The user payload also contains required_evaluation_families and required_evaluation_family_count. They are a hard output contract. Before returning JSON, verify that evaluations has exactly 13 rows, in exactly that order, with no omitted, duplicated, or extra family. Never stop after canon_integrity; the final four families are mandatory.
+
 Each family may contain MULTIPLE concrete findings. Do not stop after the first defect in a family.
 
 A finding must be something that should actually be changed. Do not report personal taste, harmless optional polish, compatible interpretations, or a point whose own explanation says it is acceptable.

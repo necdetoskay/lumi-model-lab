@@ -15,6 +15,7 @@ from src.spineforge_v20_story_audit_once import (
     AUDIT_SCHEMA_NAME,
     PRIMARY_MODEL,
     PRIMARY_PROMPT,
+    PRIMARY_AUDIT_CANONICAL_FAMILY_ORDER,
     SECONDARY_AUDIT_RESPONSE_SCHEMA,
     SECONDARY_AUDIT_SCHEMA_NAME,
     SECONDARY_MODEL,
@@ -663,6 +664,12 @@ def execute_reaudit(
     }
     primary_payload = {
         "task": "reaudit_story_quality_loop_frozen_story",
+        "required_evaluation_families": list(
+            PRIMARY_AUDIT_CANONICAL_FAMILY_ORDER
+        ),
+        "required_evaluation_family_count": len(
+            PRIMARY_AUDIT_CANONICAL_FAMILY_ORDER
+        ),
         "source_artifact": source_identity,
         "audit_authority_projection": projection["projection"],
         "audit_authority_projection_sha256": projection["sha256"],

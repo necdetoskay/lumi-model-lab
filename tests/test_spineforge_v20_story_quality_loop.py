@@ -263,3 +263,56 @@ def test_generic_reaudit_postprocess_recovery_uses_completed_result_without_rein
     assert recovery["source_result_sha256"] == (
         "045fe225869bd2bf69dcafabcb21b8114cd80d65466295479ac9305633be7687"
     )
+
+
+def test_generic_reaudit_contract_failure_preserves_raw_usage_and_family_manifest():
+    handoff = build_reaudit_handoff(
+        story_artifact_path=STAGE8_STORY,
+        stage=9,
+        cycle_index=2,
+    )
+    captured = {}
+
+    def invalid_primary(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        captured["payload"] = payload
+        raw = {
+            "evaluations": [
+                {
+                    "family": family,
+                    "present": False,
+                    "findings": [],
+                    "reason": "Clean.",
+                }
+                for family in FAMILIES[:9]
+            ],
+            "summary": "Invalid truncated audit.",
+        }
+        return raw, _body(100, 20, 0.01), _request(), []
+
+    def secondary_must_not_run(**kwargs):
+        raise AssertionError("secondary auditor must not execute after primary contract failure")
+
+    with pytest.raises(RuntimeError, match="every family exactly once") as excinfo:
+        execute_reaudit(
+            api_key="not-used",
+            handoff=handoff,
+            primary_call_fn=invalid_primary,
+            secondary_call_fn=secondary_must_not_run,
+        )
+
+    payload = captured["payload"]
+    assert payload["required_evaluation_family_count"] == 13
+    assert payload["required_evaluation_families"] == FAMILIES
+
+    trace = getattr(excinfo.value, "trace")
+    assert trace["phase"] == "post_provider_auditor_payload_validation"
+    assert trace["model"] == "anthropic/claude-sonnet-5.5"
+    assert len(trace["raw_response"]["evaluations"]) == 9
+    assert trace["raw_usage"]["prompt_tokens"] == 100
+    assert trace["raw_usage"]["completion_tokens"] == 20
+    assert trace["model_call"]["input_tokens"] == 100
+    assert trace["model_call"]["output_tokens"] == 20
+    assert trace["model_call"]["total_tokens"] == 120
+    assert trace["model_call"]["cost_usd"] == 0.01
+    assert trace["retry_suppressed"] is True
