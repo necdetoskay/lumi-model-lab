@@ -56,6 +56,53 @@ def test_generic_paid_repair_emits_next_reaudit_state_without_authorizing_it(tmp
     profile_path = _profile(tmp_path, authorized=True, consumed=False)
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
     loop = profile["story_quality_loop"]
+
+    repair_handoff_path = Path(
+        "evidence/spineforge-v20-story-quality-loop/"
+        "37014477600-repair-handoff.json"
+    )
+    repair_handoff = json.loads(repair_handoff_path.read_text(encoding="utf-8"))
+    loop.update({
+        "status": "PAID_EXECUTION_AUTHORIZED",
+        "current_action": "LOCAL_REPAIR",
+        "current_stage": 10,
+        "cycle_index": 3,
+        "action_authorization_id": (
+            "story-quality-loop:stage10:local-repair:cycle3:attempt4"
+        ),
+        "source_story_artifact_id": repair_handoff[
+            "source_story_artifact_id"
+        ],
+        "source_story_artifact_path": repair_handoff[
+            "source_story_artifact_path"
+        ],
+        "source_story_artifact_sha256": repair_handoff[
+            "source_story_artifact_sha256"
+        ],
+        "source_story_sha256": repair_handoff["source_story_sha256"],
+        "source_reaudit_product_artifact_id": repair_handoff[
+            "source_reaudit_product_artifact_id"
+        ],
+        "source_reaudit_product_path": repair_handoff[
+            "source_reaudit_product_path"
+        ],
+        "source_reaudit_product_sha256": repair_handoff[
+            "source_reaudit_product_sha256"
+        ],
+        "handoff_artifact_id": repair_handoff["artifact_id"],
+        "handoff_path": str(repair_handoff_path),
+        "handoff_sha256": __import__("hashlib").sha256(
+            repair_handoff_path.read_bytes()
+        ).hexdigest(),
+        "paid_attempt_index": 4,
+        "paid_execution_authorized": True,
+        "authorization_consumed": False,
+    })
+    profile_path.write_text(
+        json.dumps(profile, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
     source_artifact = json.loads(
         Path(loop["source_story_artifact_path"]).read_text(encoding="utf-8")
     )
