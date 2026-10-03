@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.61"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.62"
     assert result["verified_files"] == 135
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "0a1cce393"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "9c7d3a908"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -2828,18 +2828,18 @@ def test_v20_61_freeze_records_stage13_primary_contract_failure_and_retry_bounda
         "ddbddae9ddcf31c47d956a0574650185e650f976fcaeff74113729e80cc1653e"
     )
 
-    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert loop["current_action"] == "REAUDIT"
     assert loop["current_stage"] == 13
     assert loop["cycle_index"] == 4
     assert loop["action_authorization_id"] == (
         "story-quality-loop:stage13:reaudit:cycle4:attempt4-retry1"
     )
-    assert loop["paid_execution_authorized"] is False
-    assert loop["authorization_consumed"] is True
+    assert loop["paid_execution_authorized"] is True
+    assert loop["authorization_consumed"] is False
     assert loop["automatic_retry_enabled"] is False
     assert loop["automatic_paid_transition_enabled"] is False
     assert loop["automatic_repair_loop_enabled"] is False
     assert loop["next_harness_requirement"] == (
-        "stage13_retry1_paid_authorization"
+        "stage13_retry1_paid_result"
     )
