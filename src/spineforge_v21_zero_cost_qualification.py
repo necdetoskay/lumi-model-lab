@@ -40,6 +40,10 @@ def build_report() -> dict[str, Any]:
         findings=findings,
         story_segments=segments,
     )
+    from src.spineforge_v21_freeze import PROFILE
+    from src.spineforge_v21_constraints import load_constraints
+    profile = json.loads(PROFILE.read_text())
+    constraints = load_constraints(profile)
     handoff = build_scene_repair_handoff(
         source_story_artifact_id=story["artifact_id"],
         source_story_sha256=story["repaired_story_text_sha256"],
@@ -48,11 +52,9 @@ def build_report() -> dict[str, Any]:
         approved_spine_hash=(
             "f9c5bed93448d6c56787466ae583dfcee06d0f856641d9c3901136f142bffae6"
         ),
-        canon_invariants=[
-            "Arda performs the decisive cut.",
-            "The cut must physically release Arda from the falling bridge event.",
-            "Nisa assists the final recovery without replacing Arda's decisive action.",
-        ],
+        canon_invariants=[r["text"] for r in constraints["constraints"]],
+        approved_constraints=constraints,
+        source_story=Path(story["repaired_story_path"]).read_text().removesuffix("\n"),
     )
 
     initial_action = next_quality_action(
@@ -94,6 +96,8 @@ def build_report() -> dict[str, Any]:
         "source_revision": "SPINEFORGE-STORY-FIRST-FROZEN-v20.87",
         "architecture": contract,
         "bridge_regression": {
+            "historical_audit_replayed_for_routing_only": True,
+            "historical_audit_is_current_story_verdict": False,
             "source_finding_count": len(findings),
             "blocking_finding_count": len(blocking),
             "advisory_finding_count": len(advisory),

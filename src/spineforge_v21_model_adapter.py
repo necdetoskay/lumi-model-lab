@@ -5,9 +5,6 @@ import time
 from pathlib import Path
 from typing import Any, Callable
 
-from src.generate import parse_cost
-from src.model_registry import runtime_profile_identity
-from src.model_usage_rollup import normalize_model_call, rollup_model_calls
 from src.spineforge_v19_transport import call_strict_json_once
 
 
@@ -128,6 +125,56 @@ JsonCall = Callable[
 ]
 
 
+class AdapterResponseError(RuntimeError):
+    def __init__(self, message, usage, provider_evidence=None):
+        super().__init__(message)
+        self.usage = usage
+        self.provider_evidence = provider_evidence
+
+
+def validate_schema(value, schema):
+    kind = schema.get("type")
+    ok = {"object": isinstance(value, dict), "array": isinstance(value, list),
+          "string": isinstance(value, str), "integer": type(value) is int}.get(kind, False)
+    if not ok:
+        raise RuntimeError(f"Invalid response type: expected {kind}")
+    if "enum" in schema and value not in schema["enum"]:
+        raise RuntimeError("Invalid response enum")
+    if kind == "object":
+        if any(k not in value for k in schema.get("required", [])):
+            raise RuntimeError("Missing required response field")
+        if schema.get("additionalProperties") is False and set(value) - set(schema["properties"]):
+            raise RuntimeError("Unexpected response field")
+        for k, v in value.items():
+            validate_schema(v, schema["properties"][k])
+    if kind in {"array", "string"}:
+        suffix = "Items" if kind == "array" else "Length"
+        if not schema.get("min" + suffix, 0) <= len(value) <= schema.get("max" + suffix, float("inf")):
+            raise RuntimeError("Response length outside contract")
+    if kind == "array":
+        if schema.get("uniqueItems") and len({json.dumps(v, sort_keys=True) for v in value}) != len(value):
+            raise RuntimeError("Duplicate response items")
+        for v in value:
+            validate_schema(v, schema["items"])
+    if kind == "integer" and not schema.get("minimum", -float("inf")) <= value <= schema.get("maximum", float("inf")):
+        raise RuntimeError("Response integer outside contract")
+
+
+def provider_usage(body, stage, latency):
+    raw = body.get("usage") or {}
+    details = raw.get("completion_tokens_details") or {}
+    usage = {"api_calls": 1, "input_tokens": raw.get("prompt_tokens"),
+             "output_tokens": raw.get("completion_tokens"), "total_tokens": raw.get("total_tokens"),
+             "reasoning_tokens": details.get("reasoning_tokens", raw.get("reasoning_tokens", 0)),
+             "cost_usd": raw.get("cost"), "latency_seconds": latency}
+    from src.spineforge_v21_quality_runtime import _usage
+    try:
+        _usage({"usage": usage}, stage)
+    except RuntimeError as exc:
+        raise AdapterResponseError(str(exc), usage, {"provider_usage": raw}) from exc
+    return usage
+
+
 def _call(
     *,
     api_key: str,
@@ -139,35 +186,45 @@ def _call(
     max_tokens: int,
     stage: str,
     call_fn: JsonCall | None = None,
+    model: str = BASELINE_MODEL,
 ) -> dict[str, Any]:
     fn = call_fn or call_strict_json_once
     started = time.perf_counter()
-    raw, body, request, failures = fn(
-        api_key=api_key,
-        model=BASELINE_MODEL,
-        system_prompt=prompt_path.read_text(encoding="utf-8").strip(),
-        user_prompt=json.dumps(payload, ensure_ascii=False),
-        temperature=0.0,
-        max_tokens=max_tokens,
-        seed=None,
-        request_class=request_class,
-        schema_name=schema_name,
-        schema=schema,
-    )
+    try:
+        raw, body, request, failures = fn(
+            api_key=api_key,
+            model=model,
+            system_prompt=prompt_path.read_text(encoding="utf-8").strip(),
+            user_prompt=json.dumps(payload, ensure_ascii=False),
+            temperature=0.0,
+            max_tokens=max_tokens,
+            seed=None,
+            request_class=request_class,
+            schema_name=schema_name,
+            schema=schema,
+        )
+    except Exception as exc:
+        trace = getattr(exc, "trace", {})
+        body = trace.get("body") or {}
+        latency = round(time.perf_counter() - started, 3)
+        try:
+            usage = provider_usage(body, stage, latency)
+        except AdapterResponseError as usage_error:
+            usage = usage_error.usage
+        raise AdapterResponseError(type(exc).__name__, usage,
+                                   {"stage": trace.get("stage"), "provider_usage": body.get("usage")}) from exc
     latency = round(time.perf_counter() - started, 3)
-    model_call = normalize_model_call(
-        stage=stage,
-        model=BASELINE_MODEL,
-        provider=runtime_profile_identity(BASELINE_MODEL).get("provider"),
-        raw_usage=body.get("usage") or {},
-        cost=parse_cost(body).model_dump(mode="json"),
-        latency_seconds=latency,
-    )
-    rollup = rollup_model_calls([model_call])
+    usage = provider_usage(body, stage, latency)
+    try:
+        validate_schema(raw, schema)
+        if failures:
+            raise RuntimeError("Unexpected retry/fallback evidence")
+    except RuntimeError as exc:
+        raise AdapterResponseError(str(exc), usage) from exc
     return {
         **raw,
-        "usage": rollup["totals"],
-        "model": BASELINE_MODEL,
+        "usage": usage,
+        "model": model,
         "request_class": request_class,
         "transport_failures": failures,
         "automatic_retry_executed": False,
@@ -184,6 +241,7 @@ def execute_initial_audit_call(
     api_key: str,
     payload: dict[str, Any],
     call_fn: JsonCall | None = None,
+    model: str = BASELINE_MODEL,
 ) -> dict[str, Any]:
     return _call(
         api_key=api_key,
@@ -195,6 +253,7 @@ def execute_initial_audit_call(
         max_tokens=INITIAL_MAX_TOKENS,
         stage="spineforge_v21_initial_blocking_audit",
         call_fn=call_fn,
+        model=model,
     )
 
 
@@ -203,6 +262,7 @@ def execute_scene_repair_call(
     api_key: str,
     payload: dict[str, Any],
     call_fn: JsonCall | None = None,
+    model: str = BASELINE_MODEL,
 ) -> dict[str, Any]:
     return _call(
         api_key=api_key,
@@ -214,6 +274,7 @@ def execute_scene_repair_call(
         max_tokens=REPAIR_MAX_TOKENS,
         stage="spineforge_v21_scene_repair",
         call_fn=call_fn,
+        model=model,
     )
 
 
@@ -222,6 +283,7 @@ def execute_final_audit_call(
     api_key: str,
     payload: dict[str, Any],
     call_fn: JsonCall | None = None,
+    model: str = BASELINE_MODEL,
 ) -> dict[str, Any]:
     return _call(
         api_key=api_key,
@@ -233,4 +295,5 @@ def execute_final_audit_call(
         max_tokens=FINAL_MAX_TOKENS,
         stage="spineforge_v21_targeted_final_audit",
         call_fn=call_fn,
+        model=model,
     )

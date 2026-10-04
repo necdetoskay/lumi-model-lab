@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from typing import Any, Callable
+import hashlib
+import math
+from decimal import Decimal
+from copy import deepcopy
 
 from src.spineforge_v20_story_audit_artifact import _segment_story
 from src.spineforge_v21_bounded_quality import (
@@ -21,39 +25,40 @@ DEFAULT_STAGE_COST_LIMITS_USD = {
 }
 
 
+class QualityStop(RuntimeError):
+    def __init__(self, status: str, message: str):
+        super().__init__(message)
+        self.status = status
+
+
 def _usage(result: dict[str, Any], stage: str) -> dict[str, Any]:
-    usage = dict(result.get("usage") or {})
-    return {
-        "stage": stage,
-        "api_calls": int(usage.get("api_calls") or 1),
-        "input_tokens": int(usage.get("input_tokens") or 0),
-        "output_tokens": int(usage.get("output_tokens") or 0),
-        "reasoning_tokens": int(usage.get("reasoning_tokens") or 0),
-        "total_tokens": int(usage.get("total_tokens") or 0),
-        "cost_usd": float(usage.get("cost_usd") or 0.0),
-        "latency_seconds": float(usage.get("latency_seconds") or 0.0),
-    }
+    usage = result.get("usage")
+    if not isinstance(usage, dict):
+        raise RuntimeError("Exact provider usage is missing")
+    for key in ("api_calls", "input_tokens", "output_tokens", "reasoning_tokens", "total_tokens"):
+        if type(usage.get(key)) is not int or usage[key] < 0:
+            raise RuntimeError(f"Invalid provider usage: {key}")
+    if usage["api_calls"] != 1:
+        raise RuntimeError("Each slot must make exactly one provider call")
+    if usage["total_tokens"] != usage["input_tokens"] + usage["output_tokens"]:
+        raise RuntimeError("Token accounting does not reconcile")
+    for key in ("cost_usd", "latency_seconds"):
+        value = usage.get(key)
+        if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+            raise RuntimeError(f"Missing or invalid provider usage: {key}")
+    return {"stage": stage, **usage}
 
 
 def _rollup(calls: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
-        "api_calls": sum(row["api_calls"] for row in calls),
-        "input_tokens": sum(row["input_tokens"] for row in calls),
-        "output_tokens": sum(row["output_tokens"] for row in calls),
-        "reasoning_tokens": sum(row["reasoning_tokens"] for row in calls),
-        "total_tokens": sum(row["total_tokens"] for row in calls),
-        "cost_usd": round(sum(row["cost_usd"] for row in calls), 9),
-        "latency_seconds": round(sum(row["latency_seconds"] for row in calls), 3),
-    }
-
-
-def _stage_cost_ok(
-    *,
-    usage: dict[str, Any],
-    stage: str,
-    limits: dict[str, float],
-) -> bool:
-    return usage["cost_usd"] <= float(limits[stage])
+    known = [row["usage"] for row in calls if row.get("usage") is not None]
+    complete = len(known) == len(calls)
+    out = {"api_calls": len(calls), "accounting_complete": complete,
+           "confirmed_cost_usd": float(sum((Decimal(str(r["cost_usd"])) for r in known), Decimal(0)))}
+    for key in ("input_tokens", "output_tokens", "reasoning_tokens", "total_tokens", "cost_usd", "latency_seconds"):
+        out[key] = float(sum((Decimal(str(r[key])) for r in known), Decimal(0))) if complete else None
+        if complete and key.endswith("tokens"):
+            out[key] = int(out[key])
+    return out
 
 
 def build_initial_audit_payload(
@@ -106,6 +111,8 @@ def build_targeted_final_audit_payload(
         "repaired_story_sha256": repaired_story_sha256,
         "approved_spine_hash": approved_spine_hash,
         "canon_invariants": canon_invariants,
+        "approved_constraints": scene_repair_handoff.get("approved_constraints"),
+        "constraints_sha256": scene_repair_handoff.get("constraints_sha256"),
         "entry_boundary": scene_repair_handoff["entry_boundary"],
         "exit_boundary": scene_repair_handoff["exit_boundary"],
         "replacement_scene": replacement_scene,
@@ -134,161 +141,136 @@ def run_bounded_quality(
     scene_repair_fn: RepairFn,
     final_audit_fn: AuditFn,
     stage_cost_limits_usd: dict[str, float] | None = None,
+    approved_constraints: dict[str, Any] | None = None,
+    reader_profile: dict[str, Any] | None = None,
+    record_event: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     limits = dict(DEFAULT_STAGE_COST_LIMITS_USD)
-    if stage_cost_limits_usd:
-        limits.update(stage_cost_limits_usd)
-
+    if stage_cost_limits_usd is not None:
+        if set(stage_cost_limits_usd) != set(limits):
+            raise RuntimeError("Incomplete stage cost policy")
+        limits = dict(stage_cost_limits_usd)
+    if any(type(v) not in (int, float) or not math.isfinite(v) or v <= 0 for v in limits.values()):
+        raise RuntimeError("Invalid stage cost policy")
+    if hashlib.sha256(source_story.encode()).hexdigest() != source_story_sha256:
+        raise RuntimeError("Source story SHA mismatch before inference")
+    story_segments = deepcopy(story_segments)
+    # Exact frozen segmentation must cover the source even on the clean fast path.
+    apply_scene_rewrite(source_story=source_story, story_segments=story_segments,
+                        cluster={"start_span_id": story_segments[0]["span_id"],
+                                 "end_span_id": story_segments[-1]["span_id"],
+                                 "span_ids": [r["span_id"] for r in story_segments],
+                                 "cluster_id": "SOURCE_VALIDATION"}, replacement_scene=source_story)
+    if approved_constraints:
+        from src.spineforge_v21_constraints import digest_json
+        body = {k: v for k, v in approved_constraints.items() if k != "artifact_sha256"}
+        if (digest_json(body) != approved_constraints["artifact_sha256"]
+                or approved_constraints["approved_spine_hash"] != approved_spine_hash):
+            raise RuntimeError("Approved constraints hash mismatch before inference")
     calls: list[dict[str, Any]] = []
-    initial_payload = build_initial_audit_payload(
-        source_story_artifact_id=source_story_artifact_id,
-        source_story_sha256=source_story_sha256,
-        source_story=source_story,
-        story_segments=story_segments,
-        approved_spine_hash=approved_spine_hash,
-        canon_invariants=canon_invariants,
-    )
-    initial_raw = initial_audit_fn(initial_payload)
-    initial_usage = _usage(initial_raw, "INITIAL_AUDIT")
-    calls.append(initial_usage)
+    state: dict[str, Any] = {"initial_blocking": [], "initial_advisory": []}
 
-    initial_blocking, initial_advisory = split_findings(
-        initial_raw.get("findings") or []
-    )
-    if not _stage_cost_ok(
-        usage=initial_usage, stage="INITIAL_AUDIT", limits=limits
-    ):
-        return _result(
-            status="REJECT_COST_CEILING",
-            calls=calls,
-            initial_blocking=initial_blocking,
-            initial_advisory=initial_advisory,
-        )
+    def invoke(stage, fn, payload):
+        if len(calls) >= 3 or any(r["stage"] == stage for r in calls):
+            raise QualityStop("REJECT_CALL_LIMIT", "Repeated stage forbidden")
+        from src.spineforge_v21_constraints import digest_json
+        row = {"stage": stage, "usage": None, "status": "STARTED",
+               "input": deepcopy(payload), "input_sha256": digest_json(payload)}
+        calls.append(row)
+        # Persist BEFORE dispatch; ledger failure must never cause a retry.
+        if record_event:
+            record_event(deepcopy(row))
+        try:
+            raw = fn(deepcopy(payload))
+        except Exception as exc:
+            row["status"] = "FAILED"
+            row["failure_type"] = type(exc).__name__
+            row["provider_evidence"] = getattr(exc, "provider_evidence", None)
+            reported = getattr(exc, "usage", None)
+            if reported is not None:
+                row["raw_usage"] = reported
+                try:
+                    row["usage"] = _usage({"usage": reported}, stage)
+                except RuntimeError:
+                    pass
+            if record_event:
+                record_event(deepcopy(row))
+            raise QualityStop("REJECT_PROVIDER_FAILURE", f"{stage}: {type(exc).__name__}") from exc
+        row["response"] = deepcopy(raw)
+        row["response_sha256"] = digest_json(raw)
+        row["raw_usage"] = raw.get("usage") if isinstance(raw, dict) else None
+        try:
+            row["usage"] = _usage(raw, stage)
+        except (RuntimeError, AttributeError) as exc:
+            row["status"] = "INVALID_USAGE"
+            if record_event:
+                record_event(deepcopy(row))
+            raise QualityStop("REJECT_USAGE_ACCOUNTING", str(exc)) from exc
+        row["status"] = "COMPLETED"
+        if record_event:
+            record_event(deepcopy(row))
+        if Decimal(str(row["usage"]["cost_usd"])) > Decimal(str(limits[stage])):
+            raise QualityStop("REJECT_COST_CEILING", stage)
+        return raw
 
-    initial_action = next_quality_action(
-        audit_phase="INITIAL",
-        blocking_finding_count=len(initial_blocking),
-        repair_count=0,
-    )
-    if initial_action == "ACCEPT":
-        return _result(
-            status="ACCEPT",
-            calls=calls,
-            initial_blocking=initial_blocking,
-            initial_advisory=initial_advisory,
-            accepted_story=source_story,
-            accepted_story_sha256=source_story_sha256,
-            repair_count=0,
-            final_audit_executed=False,
-        )
+    def audit_findings(raw):
+        try:
+            return split_findings(raw["findings"])
+        except (KeyError, TypeError, RuntimeError) as exc:
+            raise QualityStop("REJECT_INVALID_RESPONSE", str(exc)) from exc
 
     try:
-        repair_handoff = build_scene_repair_handoff(
+        initial_payload = build_initial_audit_payload(
             source_story_artifact_id=source_story_artifact_id,
-            source_story_sha256=source_story_sha256,
-            findings=initial_raw.get("findings") or [],
-            story_segments=story_segments,
-            approved_spine_hash=approved_spine_hash,
-            canon_invariants=canon_invariants,
-        )
-    except RuntimeError as exc:
-        return _result(
-            status="REJECT_UNBOUNDED_REPAIR_SCOPE",
-            calls=calls,
-            initial_blocking=initial_blocking,
-            initial_advisory=initial_advisory,
-            failure_reason=str(exc),
-            repair_count=0,
-            final_audit_executed=False,
-        )
-
-    repair_raw = scene_repair_fn(repair_handoff)
-    repair_usage = _usage(repair_raw, "SCENE_REPAIR")
-    calls.append(repair_usage)
-    if not _stage_cost_ok(
-        usage=repair_usage, stage="SCENE_REPAIR", limits=limits
-    ):
-        return _result(
-            status="REJECT_COST_CEILING",
-            calls=calls,
-            initial_blocking=initial_blocking,
-            initial_advisory=initial_advisory,
-            repair_count=1,
-            final_audit_executed=False,
-        )
-
-    replacement_scene = str(repair_raw.get("replacement_scene") or "").strip()
-    if not replacement_scene:
-        raise RuntimeError("Scene repair returned no replacement_scene.")
-
-    expected_indexes = {
-        int(row["index"]) for row in repair_handoff["blocking_findings"]
-    }
-    resolved_indexes = {
-        int(x) for x in (repair_raw.get("resolved_blocking_finding_indexes") or [])
-    }
-    if resolved_indexes != expected_indexes:
-        raise RuntimeError(
-            "Scene repair did not resolve exactly the blocking finding set."
-        )
-
-    rewrite = apply_scene_rewrite(
-        source_story=source_story,
-        story_segments=story_segments,
-        cluster=repair_handoff["scene_cluster"],
-        replacement_scene=replacement_scene,
-    )
-    final_payload = build_targeted_final_audit_payload(
-        repaired_story_sha256=rewrite["repaired_story_sha256"],
-        replacement_scene=replacement_scene,
-        scene_repair_handoff=repair_handoff,
-        approved_spine_hash=approved_spine_hash,
-        canon_invariants=canon_invariants,
-    )
-    final_raw = final_audit_fn(final_payload)
-    final_usage = _usage(final_raw, "FINAL_AUDIT")
-    calls.append(final_usage)
-
-    final_blocking, final_advisory = split_findings(
-        final_raw.get("findings") or []
-    )
-    if not _stage_cost_ok(
-        usage=final_usage, stage="FINAL_AUDIT", limits=limits
-    ):
-        return _result(
-            status="REJECT_COST_CEILING",
-            calls=calls,
-            initial_blocking=initial_blocking,
-            initial_advisory=initial_advisory,
-            final_blocking=final_blocking,
-            final_advisory=final_advisory,
-            repair_count=1,
-            final_audit_executed=True,
-            rewrite=rewrite,
-        )
-
-    final_action = next_quality_action(
-        audit_phase="FINAL",
-        blocking_finding_count=len(final_blocking),
-        repair_count=1,
-    )
-    status = "ACCEPT" if final_action == "ACCEPT" else "REJECT_NON_CONVERGENT"
-    return _result(
-        status=status,
-        calls=calls,
-        initial_blocking=initial_blocking,
-        initial_advisory=initial_advisory,
-        final_blocking=final_blocking,
-        final_advisory=final_advisory,
-        accepted_story=rewrite["repaired_story"] if status == "ACCEPT" else None,
-        accepted_story_sha256=(
-            rewrite["repaired_story_sha256"] if status == "ACCEPT" else None
-        ),
-        repair_count=1,
-        final_audit_executed=True,
-        rewrite=rewrite,
-        final_audit_scope=final_payload["routing_policy"]["scope"],
-    )
+            source_story_sha256=source_story_sha256, source_story=source_story,
+            story_segments=story_segments, approved_spine_hash=approved_spine_hash,
+            canon_invariants=canon_invariants)
+        initial_payload["approved_constraints"] = approved_constraints
+        initial_payload["reader_profile"] = reader_profile
+        initial_raw = invoke("INITIAL_AUDIT", initial_audit_fn, initial_payload)
+        blocking, advisory = audit_findings(initial_raw)
+        state.update(initial_blocking=blocking, initial_advisory=advisory)
+        if not blocking:
+            return _result(status="ACCEPT", calls=calls, **state,
+                           accepted_story=source_story, accepted_story_sha256=source_story_sha256)
+        try:
+            handoff = build_scene_repair_handoff(
+                source_story_artifact_id=source_story_artifact_id,
+                source_story_sha256=source_story_sha256, source_story=source_story,
+                findings=initial_raw["findings"], story_segments=story_segments,
+                approved_spine_hash=approved_spine_hash, canon_invariants=canon_invariants,
+                approved_constraints=approved_constraints)
+        except RuntimeError as exc:
+            raise QualityStop("REJECT_UNBOUNDED_REPAIR_SCOPE", str(exc)) from exc
+        handoff["reader_profile"] = reader_profile
+        state["repair_count"] = 1
+        repair_raw = invoke("SCENE_REPAIR", scene_repair_fn, handoff)
+        replacement = repair_raw.get("replacement_scene")
+        resolved = repair_raw.get("resolved_blocking_finding_indexes")
+        expected = {r["index"] for r in handoff["blocking_findings"]}
+        if (not isinstance(replacement, str) or not replacement.strip()
+                or not isinstance(resolved, list) or any(type(i) is not int for i in resolved)
+                or len(resolved) != len(set(resolved)) or set(resolved) != expected):
+            raise QualityStop("REJECT_INVALID_REPAIR_CLAIM", "Repair must claim exactly the blocking set")
+        replacement = replacement.strip()
+        rewrite = apply_scene_rewrite(source_story=source_story, story_segments=story_segments,
+                                      cluster=handoff["scene_cluster"], replacement_scene=replacement)
+        state["rewrite"] = rewrite
+        final_payload = build_targeted_final_audit_payload(
+            repaired_story_sha256=rewrite["repaired_story_sha256"], replacement_scene=replacement,
+            scene_repair_handoff=handoff, approved_spine_hash=approved_spine_hash,
+            canon_invariants=canon_invariants)
+        final_payload["reader_profile"] = reader_profile
+        state.update(final_audit_executed=True, final_audit_scope="REPAIRED_SCENE_PLUS_BOUNDARIES")
+        final_raw = invoke("FINAL_AUDIT", final_audit_fn, final_payload)
+        blocking, advisory = audit_findings(final_raw)
+        state.update(final_blocking=blocking, final_advisory=advisory)
+        status = "REJECT_NON_CONVERGENT" if blocking else "ACCEPT"
+        return _result(status=status, calls=calls, **state,
+                       accepted_story=rewrite["repaired_story"] if status == "ACCEPT" else None,
+                       accepted_story_sha256=rewrite["repaired_story_sha256"] if status == "ACCEPT" else None)
+    except QualityStop as exc:
+        return _result(status=exc.status, calls=calls, **state, failure_reason=str(exc))
 
 
 def _result(
@@ -315,6 +297,7 @@ def _result(
         "status": status,
         "quality_model_calls": rollup["api_calls"],
         "quality_usage_rollup": rollup,
+        "quality_calls": calls,
         "initial_blocking_count": len(initial_blocking),
         "initial_advisory_count": len(initial_advisory),
         "final_blocking_count": len(final_blocking or []),

@@ -59,9 +59,19 @@ class QualityFinding:
 
 
 def normalize_findings(rows: Iterable[dict[str, Any]]) -> list[QualityFinding]:
+    if not isinstance(rows, (list, tuple)):
+        raise RuntimeError("Audit findings must be an explicit list")
     normalized: list[QualityFinding] = []
     for index, row in enumerate(rows):
-        span_ids = tuple(str(x) for x in row.get("span_ids") or [])
+        if not isinstance(row, dict) or row.get("family") not in BLOCKING_FAMILIES | EDITORIAL_FAMILIES:
+            raise RuntimeError("Unknown or missing finding family")
+        if row.get("severity") not in {"minor", "moderate", "serious", "critical"}:
+            raise RuntimeError("Unknown or missing finding severity")
+        if row.get("repair_scope") not in {"LOCAL_REPAIR", "SCENE_REPAIR", "STRUCTURAL_REPAIR", "REPLAN", "NO_REPAIR"}:
+            raise RuntimeError("Unknown or missing repair scope")
+        if not isinstance(row.get("span_ids"), list) or not row["span_ids"]:
+            raise RuntimeError("Finding spans required")
+        span_ids = tuple(str(x) for x in row["span_ids"])
         normalized.append(
             QualityFinding(
                 index=index,
@@ -92,7 +102,10 @@ def _span_number(span_id: str) -> int:
 
 
 def _segment_map(story_segments: Iterable[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    rows = {str(row["span_id"]): row for row in story_segments}
+    segments = list(story_segments)
+    rows = {str(row["span_id"]): row for row in segments}
+    if len(rows) != len(segments):
+        raise RuntimeError("Duplicate story span ids")
     if not rows:
         raise RuntimeError("Story segments are required.")
     return rows
@@ -141,6 +154,8 @@ def build_scene_repair_cluster(
         )
 
     segment_map = _segment_map(story_segments)
+    if any(span not in segment_map for finding in blocking for span in finding.span_ids):
+        raise RuntimeError("Blocking finding references unknown span")
     referenced_ids = sorted(
         {
             span_id
@@ -217,7 +232,11 @@ def next_quality_action(
     blocking_finding_count: int,
     repair_count: int,
 ) -> str:
+    if repair_count < 0 or blocking_finding_count < 0:
+        raise RuntimeError("Invalid negative quality state")
     if audit_phase == "INITIAL":
+        if repair_count != 0:
+            raise RuntimeError("Initial audit cannot start after a repair.")
         if blocking_finding_count == 0:
             return "ACCEPT"
         if repair_count == 0:
@@ -336,6 +355,9 @@ def apply_scene_rewrite(
         "source_story_sha256": digest(source_story),
         "repaired_story_sha256": digest(repaired_story),
         "source_cluster_sha256": digest(source_cluster),
+        "source_cluster_text": source_cluster,
+        "source_char_start": start,
+        "source_char_end": end,
         "replacement_scene_sha256": digest(replacement),
         "prefix_sha256": digest(prefix),
         "suffix_sha256": digest(suffix),
@@ -377,6 +399,8 @@ def build_scene_repair_handoff(
     story_segments: Iterable[dict[str, Any]],
     approved_spine_hash: str,
     canon_invariants: Iterable[str],
+    source_story: str | None = None,
+    approved_constraints: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     rows = list(story_segments)
     plan = build_scene_repair_cluster(
@@ -388,6 +412,29 @@ def build_scene_repair_handoff(
 
     segment_map = _segment_map(rows)
     cluster = plan["cluster"]
+    if approved_constraints:
+        scope = approved_constraints["scene_scope"]
+        first, last = _span_number(scope["start_span_id"]), _span_number(scope["end_span_id"])
+        if (approved_constraints["approved_spine_hash"] != approved_spine_hash
+                or _span_number(cluster["start_span_id"]) < first
+                or _span_number(cluster["end_span_id"]) > last
+                or last - first + 1 > 40):
+            raise RuntimeError("Repair outside approved constraint scene scope")
+        ids = [f"S{i:03d}" for i in range(first, last + 1)]
+        if any(i not in segment_map for i in ids):
+            raise RuntimeError("Approved constraint scene missing source spans")
+        cluster.update(start_span_id=ids[0], end_span_id=ids[-1], span_ids=ids,
+                       span_count=len(ids), paragraph_start=segment_map[ids[0]]["paragraph_index"],
+                       paragraph_end=segment_map[ids[-1]]["paragraph_index"],
+                       entry_boundary_span_id=f"S{first-1:03d}" if first > 1 else None,
+                       exit_boundary_span_id=f"S{last+1:03d}" if f"S{last+1:03d}" in segment_map else None)
+        cluster["cluster_id"] = f"SCENE-{cluster['paragraph_start']:03d}-{cluster['paragraph_end']:03d}"
+    scene_segments = [segment_map[i] for i in cluster["span_ids"]]
+    scene_text = " ".join(row["repaired_text"] for row in scene_segments)
+    if source_story is not None:
+        located = apply_scene_rewrite(source_story=source_story, story_segments=rows,
+                                     cluster=cluster, replacement_scene=scene_text)
+        scene_text = located["source_cluster_text"]
     entry_id = cluster["entry_boundary_span_id"]
     exit_id = cluster["exit_boundary_span_id"]
 
@@ -419,6 +466,10 @@ def build_scene_repair_handoff(
             else None
         ),
         "canon_invariants": list(canon_invariants),
+        "source_scene": scene_text,
+        "source_scene_segments": scene_segments,
+        "approved_constraints": approved_constraints,
+        "constraints_sha256": approved_constraints["artifact_sha256"] if approved_constraints else None,
         "repair_policy": {
             "max_scene_repairs": 1,
             "rewrite_entire_scene": True,

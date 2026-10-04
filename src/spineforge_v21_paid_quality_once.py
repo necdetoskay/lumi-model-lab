@@ -8,7 +8,8 @@ import traceback
 from pathlib import Path
 from typing import Any, Callable
 
-from src.spineforge_freeze_verify import verify_spineforge_runtime
+from src.spineforge_v21_freeze import verify_v21_runtime
+from src.spineforge_v21_constraints import load_constraints
 from src.spineforge_v21_model_adapter import (
     execute_final_audit_call,
     execute_initial_audit_call,
@@ -67,53 +68,75 @@ def execute_paid_quality_once(
     initial_audit_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
     scene_repair_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
     final_audit_fn: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
-    verify_fn: Callable[[Path], dict[str, Any]] = verify_spineforge_runtime,
+    verify_fn: Callable[[Path], dict[str, Any]] = verify_v21_runtime,
     require_commit_marker: bool = True,
     commit_message: str | None = None,
+    simulation: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    if not api_key:
+    if simulation:
+        if api_key or not all((initial_audit_fn, scene_repair_fn, final_audit_fn)):
+            raise RuntimeError("Simulation requires all fake callbacks and no API key")
+    elif not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is required.")
 
     profile = json.loads(profile_path.read_text(encoding="utf-8"))
     paid = profile.get("paid_boundary") or {}
-    if paid.get("paid_execution_authorized") is not True:
+    if not simulation and paid.get("paid_execution_authorized") is not True:
         raise RuntimeError("v21 paid quality execution is not authorized.")
     if paid.get("authorization_marker") != AUTHORIZATION_MARKER:
         raise RuntimeError("v21 paid authorization marker mismatch.")
-    if paid.get("authorization_consumed") is not False:
+    if not simulation and paid.get("authorization_consumed") is not False:
         raise RuntimeError("v21 paid authorization is already consumed.")
 
-    message = commit_message if commit_message is not None else current_commit_message()
-    if require_commit_marker and f"[{AUTHORIZATION_MARKER}]" not in message:
+    message = commit_message if commit_message is not None else ("simulation" if simulation else current_commit_message())
+    if not simulation and not require_commit_marker:
+        raise RuntimeError("Paid commit marker guard cannot be disabled")
+    if not simulation and f"[{AUTHORIZATION_MARKER}]" not in message:
         raise RuntimeError("v21 paid authorization marker missing from commit.")
 
     freeze = verify_fn(profile_path)
     artifact, story = _load_source_story(profile)
     approved_spine_hash = str(profile["source_story"]["approved_spine_hash"])
-    canon_invariants = list(profile["source_story"]["canon_invariants"])
+    constraints = load_constraints(profile)
+    canon_invariants = [row["text"] for row in constraints["constraints"]]
+    slots = profile["model_slots"]
     stage_limits = dict(profile["cost_policy"]["quality_stage_limits_usd"])
 
     initial = initial_audit_fn or (
         lambda payload: execute_initial_audit_call(
             api_key=api_key,
             payload=payload,
+            model=slots["BLOCKING_AUDITOR"],
         )
     )
     repair = scene_repair_fn or (
         lambda payload: execute_scene_repair_call(
             api_key=api_key,
             payload=payload,
+            model=slots["SCENE_REPAIRER"],
         )
     )
     final = final_audit_fn or (
         lambda payload: execute_final_audit_call(
             api_key=api_key,
             payload=payload,
+            model=slots["BLOCKING_AUDITOR"],
         )
     )
 
+    if not run_id or Path(run_id).name != run_id or run_id in {".", ".."}:
+        raise RuntimeError("Invalid run id")
+    output_root.mkdir(parents=True, exist_ok=True)
+    if not simulation:
+        if os.environ.get("GITHUB_RUN_ATTEMPT", "1") != "1":
+            raise RuntimeError("Paid workflow reruns are forbidden")
+        claim = output_root / ("authorization-" + profile["profile_sha256"] + ".claimed")
+        with claim.open("x", encoding="utf-8") as handle:
+            handle.write(run_id + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
     out_dir = output_root / run_id
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(exist_ok=False)
     result_path = out_dir / "v21-bounded-quality-result.json"
     envelope_path = out_dir / "v21-bounded-quality-envelope.json"
     accepted_story_path = out_dir / "v21-accepted-story.txt"
@@ -123,7 +146,9 @@ def execute_paid_quality_once(
         "run_id": run_id,
         "runtime_revision": freeze["runtime_revision"],
         "runtime_verified_files": freeze["verified_files"],
-        "explicit_paid_authorization": True,
+        "explicit_paid_authorization": not simulation,
+        "simulation": simulation,
+        "constraints_sha256": constraints["artifact_sha256"],
         "authorization_marker": AUTHORIZATION_MARKER,
         "source_story_artifact_id": artifact["artifact_id"],
         "source_story_sha256": profile["source_story"]["story_sha256"],
@@ -141,6 +166,13 @@ def execute_paid_quality_once(
         encoding="utf-8",
     )
 
+    ledger_path = out_dir / "quality-call-ledger.jsonl"
+    def record_event(event):
+        with ledger_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(event, ensure_ascii=False) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+
     try:
         result = run_bounded_quality(
             source_story_artifact_id=artifact["artifact_id"],
@@ -149,6 +181,9 @@ def execute_paid_quality_once(
             story_segments=artifact["repaired_segments"],
             approved_spine_hash=approved_spine_hash,
             canon_invariants=canon_invariants,
+            approved_constraints=constraints,
+            reader_profile=profile["reader_profile"],
+            record_event=record_event,
             initial_audit_fn=initial,
             scene_repair_fn=repair,
             final_audit_fn=final,
@@ -173,6 +208,7 @@ def execute_paid_quality_once(
             "state_commit_executed": False,
         }
 
+    envelope["call_ledger_path"] = str(ledger_path)
     result_path.write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

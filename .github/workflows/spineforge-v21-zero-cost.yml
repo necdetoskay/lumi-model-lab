@@ -8,6 +8,8 @@ on:
       - 'src/spineforge_v21_*.py'
       - 'prompts/spineforge_v21_*.md'
       - 'data/specifications/story_lab/spineforge_v21_*.json'
+      - 'data/specifications/story_lab/spineforge_runtime_profile_v21_*.json'
+      - 'evidence/spineforge-v21-zero-cost/**'
       - 'tests/test_spineforge_v21_*.py'
       - 'docs/experiments/spineforge-v21-bounded-quality.md'
       - '.github/workflows/spineforge-v21-zero-cost.yml'
@@ -24,27 +26,26 @@ jobs:
           python-version: '3.11'
       - name: Install zero-cost test dependencies
         run: python -m pip install -r requirements.txt pytest
-      - name: Run v21 bounded-quality tests
+      - name: Verify v21 freeze and run offline qualification
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m pytest -q \
-            tests/test_spineforge_v21_bounded_quality.py \
-            tests/test_spineforge_v21_quality_runtime.py \
-            tests/test_spineforge_v21_model_adapter.py \
-            tests/test_spineforge_v21_paid_quality_once.py
-      - name: Build zero-cost bridge regression evidence
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python src/spineforge_v21_zero_cost_qualification.py
+          PYTHONPATH=. python -m src.spineforge_v21_freeze
+          PYTHONPATH=. python -m pytest -q tests/test_spineforge_v21_*.py
+          PYTHONPATH=. python -m src.spineforge_v21_zero_cost_qualification > /tmp/v21-regression.json
+          PYTHONPATH=. python -m src.spineforge_v21_simulation
       - name: Upload zero-cost evidence
         uses: actions/upload-artifact@v4
         with:
           name: spineforge-v21-zero-cost-${{ github.run_id }}
-          path: evidence/spineforge-v21-zero-cost/bridge-regression-qualification.json
+          path: evidence/spineforge-v21-zero-cost/
           if-no-files-found: error
 
   paid-v21-bounded-quality:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[PAID-V21-BOUNDED-QUALITY-E2E]')
+    needs: qualify
+    concurrency:
+      group: spineforge-v21-paid-quality
+      cancel-in-progress: false
+    if: github.event_name == 'push' && github.run_attempt == 1 && contains(github.event.head_commit.message, '[PAID-V21-BOUNDED-QUALITY-E2E]')
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:
@@ -59,8 +60,7 @@ jobs:
       - name: Verify frozen v21 runtime
         run: |
           set -euo pipefail
-          PYTHONPATH=. python src/spineforge_freeze_verify.py \
-            --profile data/specifications/story_lab/spineforge_runtime_profile_v21_bounded_quality_frozen.json
+          PYTHONPATH=. python -m src.spineforge_v21_freeze
       - name: Run bounded v21 quality E2E
         run: |
           set -euo pipefail
