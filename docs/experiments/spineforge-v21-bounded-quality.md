@@ -14,7 +14,7 @@ Hard limits:
 
 - initial audit: exactly one production auditor call;
 - scene repair: zero or one call;
-- final audit: zero or one call, required after repair;
+- final audit: zero or one call, required after repair; it audits only the repaired scene plus immutable boundaries;
 - no second repair;
 - no automatic loop;
 - final audit may return only ACCEPT or REJECT_NON_CONVERGENT;
@@ -54,7 +54,7 @@ The topology does not encode a permanent model choice. Writer, blocking auditor,
 
 After the topology is stable, Model Lab may replace one slot at a time against frozen inputs and compare pass rate, blocking-defect recall, repair success, latency, tokens, and actual API cost.
 
-The initial English-pipeline optimization target is <= $0.10 per accepted story. Cost optimization must not change topology or artifact contracts.
+The initial English-pipeline optimization target is <= $0.10 per accepted story. The provisional quality budgets are $0.040 initial audit, $0.035 scene repair, and $0.025 targeted final audit. Cost optimization must not change topology or artifact contracts.
 
 ## v20 bridge regression
 

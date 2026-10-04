@@ -16,11 +16,11 @@ BLOCKING_FAMILIES = {
     "canon_integrity",
     "spine_fidelity",
     "narrative_coherence",
+    "age_suitability",
 }
 
 EDITORIAL_FAMILIES = {
     "language_naturalness",
-    "age_suitability",
 }
 
 BLOCKING_SEVERITIES = {"moderate", "serious", "critical"}
