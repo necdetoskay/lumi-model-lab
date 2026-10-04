@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.75"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.76"
     assert result["verified_files"] == 170
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "7620589e7"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "18020400e"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -3281,7 +3281,7 @@ def test_v20_75_freeze_records_stage19_locator_failure_and_arms_retry1():
         "2a08431ae5cba0cffa2148de2e422d5a8c973c343b43d159c3c32afcc96fc3e1"
     )
 
-    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert loop["current_action"] == "REAUDIT"
     assert loop["current_stage"] == 19
     assert loop["cycle_index"] == 7
@@ -3298,11 +3298,11 @@ def test_v20_75_freeze_records_stage19_locator_failure_and_arms_retry1():
     assert loop["handoff_artifact_id"] == (
         "story-quality-reaudit-handoff:84b26be211e538d62778d59c69d90f8a17c8e72b60a78478c010e5d513285ee7"
     )
-    assert loop["paid_execution_authorized"] is False
-    assert loop["authorization_consumed"] is True
+    assert loop["paid_execution_authorized"] is True
+    assert loop["authorization_consumed"] is False
     assert loop["automatic_retry_enabled"] is False
     assert loop["automatic_paid_transition_enabled"] is False
     assert loop["automatic_repair_loop_enabled"] is False
     assert loop["next_harness_requirement"] == (
-        "stage19_retry1_paid_authorization"
+        "stage19_retry1_paid_result"
     )
