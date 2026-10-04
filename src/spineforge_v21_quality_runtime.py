@@ -221,6 +221,17 @@ def run_bounded_quality(
     if not replacement_scene:
         raise RuntimeError("Scene repair returned no replacement_scene.")
 
+    expected_indexes = {
+        int(row["index"]) for row in repair_handoff["blocking_findings"]
+    }
+    resolved_indexes = {
+        int(x) for x in (repair_raw.get("resolved_blocking_finding_indexes") or [])
+    }
+    if resolved_indexes != expected_indexes:
+        raise RuntimeError(
+            "Scene repair did not resolve exactly the blocking finding set."
+        )
+
     rewrite = apply_scene_rewrite(
         source_story=source_story,
         story_segments=story_segments,

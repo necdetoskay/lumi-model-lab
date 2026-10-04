@@ -129,6 +129,17 @@ def build_scene_repair_cluster(
             "cluster": None,
         }
 
+    unsupported = [
+        row for row in blocking
+        if row.repair_scope not in {"LOCAL_REPAIR", "SCENE_REPAIR"}
+    ]
+    if unsupported:
+        scopes = sorted({row.repair_scope for row in unsupported})
+        raise RuntimeError(
+            "Blocking finding requires non-scene repair scope: "
+            + ",".join(scopes)
+        )
+
     segment_map = _segment_map(story_segments)
     referenced_ids = sorted(
         {

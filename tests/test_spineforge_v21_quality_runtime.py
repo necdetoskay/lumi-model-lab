@@ -94,6 +94,7 @@ def test_bridge_case_repair_then_targeted_final_accept_uses_three_calls():
                 "Arda cut the loaded line from his harness, lunged for the ledge, and Nisa caught his wrist. "
                 "Together they hauled him onto solid root."
             ),
+            "resolved_blocking_finding_indexes": [0, 1, 2, 4],
             "usage": _usage(0.02),
         }
 
@@ -142,6 +143,7 @@ def test_final_blocking_finding_rejects_without_second_repair():
                 "The line pulled him toward the drop. He cut himself free. "
                 "Nisa caught him."
             ),
+            "resolved_blocking_finding_indexes": [0, 1, 2, 4],
             "usage": _usage(0.01),
         }
 
@@ -239,6 +241,7 @@ def test_age_suitability_moderate_is_blocking():
         repair_seen = True
         return {
             "replacement_scene": "They reached the bridge and safely turned back.",
+            "resolved_blocking_finding_indexes": [0],
             "usage": _usage(0.01),
         }
 

@@ -228,3 +228,29 @@ def test_scene_repair_handoff_is_non_authorizing_and_bounded():
     assert handoff["repair_policy"]["max_scene_repairs"] == 1
     assert handoff["repair_policy"]["same_sentence_count_required"] is False
     assert handoff["repair_policy"]["final_audit_may_request_another_repair"] is False
+
+
+def test_structural_or_replan_blocking_finding_cannot_route_to_scene_repair():
+    findings = [
+        {
+            "family": "causal_logic",
+            "severity": "serious",
+            "repair_scope": "REPLAN",
+            "span_ids": ["S010"],
+            "exact_text": "broken premise",
+            "reason": "The approved path itself cannot produce the required outcome.",
+        }
+    ]
+    segments = [
+        {
+            "span_id": "S010",
+            "paragraph_id": "P004",
+            "paragraph_index": 4,
+            "repaired_text": "broken premise",
+        }
+    ]
+    with pytest.raises(RuntimeError, match="non-scene repair scope"):
+        build_scene_repair_cluster(
+            findings=findings,
+            story_segments=segments,
+        )
