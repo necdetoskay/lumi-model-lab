@@ -30,7 +30,8 @@ jobs:
           PYTHONPATH=. python -m pytest -q \
             tests/test_spineforge_v21_bounded_quality.py \
             tests/test_spineforge_v21_quality_runtime.py \
-            tests/test_spineforge_v21_model_adapter.py
+            tests/test_spineforge_v21_model_adapter.py \
+            tests/test_spineforge_v21_paid_quality_once.py
       - name: Build zero-cost bridge regression evidence
         run: |
           set -euo pipefail
@@ -40,4 +41,35 @@ jobs:
         with:
           name: spineforge-v21-zero-cost-${{ github.run_id }}
           path: evidence/spineforge-v21-zero-cost/bridge-regression-qualification.json
+          if-no-files-found: error
+
+  paid-v21-bounded-quality:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[PAID-V21-BOUNDED-QUALITY-E2E]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify frozen v21 runtime
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python src/spineforge_freeze_verify.py \
+            --profile data/specifications/story_lab/spineforge_runtime_profile_v21_bounded_quality_frozen.json
+      - name: Run bounded v21 quality E2E
+        run: |
+          set -euo pipefail
+          test -n "$OPENROUTER_API_KEY"
+          PYTHONPATH=. python src/spineforge_v21_paid_quality_once.py
+      - name: Upload paid v21 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spineforge-v21-paid-quality-${{ github.run_id }}
+          path: evidence/spineforge-v21-paid-quality/${{ github.run_id }}
           if-no-files-found: error
