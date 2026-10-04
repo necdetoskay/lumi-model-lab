@@ -13,7 +13,7 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.83"
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.84"
     assert result["verified_files"] == 192
 
 
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "2d913392a"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "6680c948d"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -3580,7 +3580,7 @@ def test_v20_83_freeze_records_stage22_repair_and_arms_stage23_reaudit():
     assert completed["translation_executed"] is False
     assert completed["state_commit_executed"] is False
 
-    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
     assert loop["current_action"] == "REAUDIT"
     assert loop["current_stage"] == 23
     assert loop["cycle_index"] == 9
@@ -3594,12 +3594,12 @@ def test_v20_83_freeze_records_stage22_repair_and_arms_stage23_reaudit():
     assert loop["allowed_edit_span_count"] is None
     assert loop["allowed_edit_span_ids"] == []
     assert loop["next_repair_paid_attempt_index"] == 11
-    assert loop["paid_execution_authorized"] is False
-    assert loop["authorization_consumed"] is True
+    assert loop["paid_execution_authorized"] is True
+    assert loop["authorization_consumed"] is False
     assert loop["automatic_retry_enabled"] is False
     assert loop["automatic_paid_transition_enabled"] is False
     assert loop["automatic_repair_loop_enabled"] is False
-    assert loop["next_harness_requirement"] == "stage23_paid_authorization"
+    assert loop["next_harness_requirement"] == "stage23_paid_result"
     assert "paid_attempt_index" not in loop
     assert "source_reaudit_product_artifact_id" not in loop
 
