@@ -65,7 +65,18 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$OPENROUTER_API_KEY"
-          PYTHONPATH=. python src/spineforge_v21_paid_quality_once.py
+          PYTHONPATH=. python - <<'PYPAID'
+          import os
+          import json
+          from pathlib import Path
+          from src.spineforge_v21_paid_quality_once import execute_paid_quality_once
+          profile = Path("data/specifications/story_lab/spineforge_runtime_profile_v21_bridge_experiment_authorized.json")
+          result, envelope = execute_paid_quality_once(api_key=os.environ["OPENROUTER_API_KEY"], run_id=os.environ["GITHUB_RUN_ID"], profile_path=profile)
+          print("===SPINEFORGE_V21_PAID_QUALITY_ENVELOPE===")
+          print(json.dumps(envelope, ensure_ascii=False, indent=2))
+          print("===SPINEFORGE_V21_PAID_QUALITY_RESULT===")
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PYPAID
       - name: Upload paid v21 evidence
         if: always()
         uses: actions/upload-artifact@v4
