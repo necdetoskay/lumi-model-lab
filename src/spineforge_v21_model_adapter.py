@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Any, Callable
 
 from src.spineforge_v19_transport import call_strict_json_once
+from src.spineforge_v21_wire import project_payload
+from src.spineforge_v21_constraints import digest_json
 
 
 BASELINE_MODEL = "anthropic/claude-sonnet-5.5"
@@ -189,13 +191,14 @@ def _call(
     model: str = BASELINE_MODEL,
 ) -> dict[str, Any]:
     fn = call_fn or call_strict_json_once
+    wire_payload = project_payload(payload)
     started = time.perf_counter()
     try:
         raw, body, request, failures = fn(
             api_key=api_key,
             model=model,
             system_prompt=prompt_path.read_text(encoding="utf-8").strip(),
-            user_prompt=json.dumps(payload, ensure_ascii=False),
+            user_prompt=json.dumps(wire_payload, ensure_ascii=False, separators=(",", ":")),
             temperature=0.0,
             max_tokens=max_tokens,
             seed=None,
@@ -229,6 +232,8 @@ def _call(
         "transport_failures": failures,
         "automatic_retry_executed": False,
         "request": {
+            "wire_payload": wire_payload,
+            "wire_payload_sha256": digest_json(wire_payload),
             "temperature": request.get("temperature"),
             "max_tokens": request.get("max_tokens"),
             "response_format": request.get("response_format"),

@@ -39,7 +39,7 @@ def simulate_case(name: str, output_root: Path) -> dict:
             if name == "initial_cost_ceiling":
                 cost = 0.041
         elif "scene_repair" in stage:
-            assert payload["source_scene"]
+            assert payload["source_scene_segments"]["spans"]
             assert payload["scene_cluster"]["start_span_id"] == "S159"
             assert payload["scene_cluster"]["end_span_id"] == "S177"
             assert payload["entry_boundary"]["span_id"] == "S158"

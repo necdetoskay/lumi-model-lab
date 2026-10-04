@@ -114,3 +114,35 @@ request-budget review plus explicit user authorization remain required before
 the first paid run. Quality's $0.10 worst-case allowance does not establish the
 whole English pipeline's $0.10-per-accepted-story target: Spine, Writer and
 rejected attempts must also be included. Translation has a separate ledger.
+
+## v21.2 lossless wire projection
+
+v21.1 remains available at freeze commit
+`7c1ae41e70fdd30775738a779a65e9778d3e38d8`. The active canonical profile now
+identifies v21.2; this is a new freeze, not a claim that v21.1 hashes still match.
+
+Only the adapter's model-facing projection changes. Full runtime artifacts,
+topology, model slots, output token limits and stage cost ceilings are retained.
+Current prose is sent once as rows of span ID, preceding whitespace and current
+text. Trailing whitespace is retained. Concatenation reconstructs the exact
+original prose; models see text adjacent to its ID rather than needing to count
+character offsets. Historical source prose and repair bookkeeping are omitted
+from the wire payload. Only exact duplicate canon-invariant quotes are removed;
+extra invariants, approved quotes, findings and immutable boundaries survive.
+The actual projected payload and its digest are recorded in the adapter result.
+
+69 zero-cost tests include complete current-span recovery, repeated/Unicode text,
+whitespace preservation, constraint/boundary preservation and rejection of
+incomplete mappings. The six harness scenarios retain their original outcomes.
+This proves data preservation and control flow, not real-model audit quality.
+
+The fixture's measured prompt/schema character count falls from 84,818 to 25,320
+for initial audit (70.1%), 24,685 to 16,104 for repair (34.8%), and 13,309 to
+10,553 for final audit (20.7%). Final measurement uses synthetic two-sentence
+prose and is not a prediction of the live final request. See
+`evidence/spineforge-v21-zero-cost/wire-payload-measurement.json`.
+
+Budget qualification remains open: at full configured output allowances, rough
+chars/4 planning estimates still exceed the initial and repair ceilings. No
+paid run is authorized. Input reduction must not be presented as proof of the
+$0.10 accepted-story target; request/output budgeting is the next separate step.

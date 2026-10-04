@@ -38,3 +38,5 @@ Return JSON only:
   "preserved_invariants": ["brief invariant"],
   "summary": "brief summary"
 }
+
+Wire format: prose is sent once as a segment table with columns span_id, whitespace_before, current_text. Read current_text in order and use the adjacent span_id for findings. Concatenating whitespace_before + current_text for all rows, then trailing_whitespace, reconstructs the exact original prose field named by replaces_text_field. Approved constraint quotes remain authoritative even when the duplicate canon_invariants list is empty.
