@@ -13,8 +13,8 @@ PROFILE = Path("data/specifications/story_lab/spineforge_runtime_profile_v20_sto
 def test_v20_frozen_runtime_hashes_verify():
     result = verify_spineforge_runtime(PROFILE)
     assert result["verified"] is True
-    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.80"
-    assert result["verified_files"] == 181
+    assert result["runtime_revision"] == "SPINEFORGE-STORY-FIRST-FROZEN-v20.81"
+    assert result["verified_files"] == 186
 
 
 def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
@@ -24,7 +24,7 @@ def test_v20_freeze_locks_story_first_topology_and_paid_boundary():
     paid = profile["paid_boundary_policy"]
 
     assert profile["runtime_id"] == "spineforge.contextpack.v20.story-first-single-owner"
-    assert profile["runtime_freeze"]["runtime_source_commit"] == "c1e3c0c25"
+    assert profile["runtime_freeze"]["runtime_source_commit"] == "082822ae4"
     assert runtime["architect_model"] == "anthropic/claude-sonnet-5.5"
     assert runtime["product_gate_model"] == "openai/gpt-5.6-luna"
     assert runtime["max_model_calls_per_case"] == 2
@@ -60,8 +60,8 @@ def test_v20_freeze_has_one_frozen_age12_island_case_and_tracked_paid_state():
 
     state = profile["qualification_state"]
     assert state["paid_authorized"] is False
-    assert state["paid_api_calls"] == 49
-    assert state["confirmed_cost_usd"] == 2.2211254
+    assert state["paid_api_calls"] == 51
+    assert state["confirmed_cost_usd"] == 2.3582994
     assert state["writer_product_authorized"] is True
     assert state["paid_writer_execution_authorized"] is False
 
@@ -231,10 +231,10 @@ def test_v20_11_freeze_records_failed_paid_story_audit_qualification():
     audit = profile["stage5_story_audit"]
     attempt1 = audit["attempt1"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert audit["status"] == "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
     assert audit["paid_execution_authorized"] is False
@@ -575,10 +575,10 @@ def test_v20_15_freeze_records_attempt2_post_inference_contract_failure():
     audit = profile["stage5_story_audit"]
     attempt2 = audit["attempt2"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148, 36995792496]
 
@@ -768,9 +768,9 @@ def test_v20_19_freeze_locks_v3_story_audit_requalification_without_paid_authori
     audit = profile["stage5_story_audit"]
     reprocessed = audit["attempt3_reprocess"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
     assert q["cost_reconciliation_status"] == "PARTIAL"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148, 36995792496]
 
@@ -966,8 +966,8 @@ def test_v20_22_attempt4_failure_evidence_is_frozen_and_unreconciled():
     audit = profile["stage5_story_audit"]
     attempt4 = audit["attempt4"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
     assert q["confirmed_cost_is_lower_bound"] is True
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148, 36995792496]
     assert q["unreconciled_paid_api_calls"] == 5
@@ -1214,10 +1214,10 @@ def test_v20_26_freeze_records_attempt5_quality_failure_with_reconciled_usage():
     audit = profile["stage5_story_audit"]
     attempt5 = audit["attempt5"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["unreconciled_paid_runs"] == [36970666881, 36976651148, 36995792496]
     assert q["unreconciled_paid_api_calls"] == 5
     assert q["confirmed_cost_is_lower_bound"] is True
@@ -1583,10 +1583,10 @@ def test_v20_31_freeze_records_attempt6_paid_result_and_zero_cost_reprocess():
     attempt6 = audit["attempt6"]
     reprocessed = audit["attempt6_reprocess"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert attempt6["run_id"] == 36981205470
     assert attempt6["status"] == "audit_contract_failure"
@@ -1755,10 +1755,10 @@ def test_v20_35_freeze_records_attempt7_quality_failure_and_reconciled_usage():
     audit = profile["stage5_story_audit"]
     attempt7 = audit["attempt7"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert audit["status"] == "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
     assert audit["paid_execution_authorized"] is False
@@ -1937,10 +1937,10 @@ def test_v20_39_freeze_records_attempt8_qualification_success_and_routes_stage6(
     audit = profile["stage5_story_audit"]
     attempt8 = audit["attempt8"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["confirmed_cost_is_lower_bound"] is True
 
     assert audit["status"] == "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
@@ -1991,10 +1991,10 @@ def test_v20_39_freeze_records_attempt8_qualification_pass_and_stage5_product():
     attempt8 = audit["attempt8"]
     product = audit["stage5_output_artifact"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert audit["status"] == (
         "ATTEMPT8_QUALIFIED_LOCAL_REPAIR_REQUIRED"
@@ -2179,11 +2179,11 @@ def test_v20_43_freeze_records_stage6_attempt1_noop_failure():
     stage6 = profile["stage6_story_local_repair"]
     attempt1 = stage6["attempt1"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
     assert q["confirmed_cost_is_lower_bound"] is True
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert 36995792496 in q["unreconciled_paid_runs"]
     assert q["unreconciled_paid_api_calls"] == 5
 
@@ -2305,10 +2305,10 @@ def test_v20_47_freeze_records_stage6_attempt2_and_arms_stage7_reaudit():
     stage7 = profile["stage7_story_reaudit"]
     harness = stage7["paid_harness"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["confirmed_cost_is_lower_bound"] is True
 
     assert stage6["status"] == "ATTEMPT2_REPAIR_GENERATED_AWAITING_REAUDIT"
@@ -2380,10 +2380,10 @@ def test_v20_49_freeze_records_stage7_result_and_arms_stage8_local_repair():
     stage8 = profile["stage8_story_local_repair"]
     harness = stage8["paid_harness"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert stage7["status"] == "REAUDIT_COMPLETED_LOCAL_REPAIR_REQUIRED"
     assert stage7["paid_execution_authorized"] is False
@@ -2458,10 +2458,10 @@ def test_v20_51_freeze_records_stage8_result_and_arms_stage9_reaudit():
     stage9 = profile["stage9_story_reaudit"]
     harness = stage9["paid_harness"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
 
     assert stage8["status"] == "REPAIR_GENERATED_AWAITING_REAUDIT"
     assert stage8["paid_execution_authorized"] is False
@@ -2518,10 +2518,10 @@ def test_v20_53_freeze_records_stage9_result_and_arms_generic_quality_loop():
     generic_product = stage9["generic_output_artifact"]
     loop = profile["story_quality_loop"]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["confirmed_cost_is_lower_bound"] is True
 
     assert stage9["status"] == "REAUDIT_COMPLETED_LOCAL_REPAIR_REQUIRED"
@@ -2700,10 +2700,10 @@ def test_v20_59_freeze_records_stage12_repair_and_arms_stage13_reaudit():
     completed = loop["completed_actions"][key]
     artifacts = loop["completed_artifacts"][key]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["confirmed_cost_is_lower_bound"] is True
 
     assert completed["run_id"] == 37114732160
@@ -3230,11 +3230,11 @@ def test_v20_75_freeze_records_stage19_locator_failure_and_arms_retry1():
     failed = loop["failed_actions"][key]
     artifacts = loop["failed_artifacts"][key]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
     assert q["last_result"] == (
-        "story_quality_loop_stage20_repair_generated"
+        "story_quality_loop_stage21_reaudit_local_repair_required"
     )
     assert q["confirmed_cost_is_lower_bound"] is True
     assert q["unreconciled_paid_run_ids"] == [37117361651, 37126453862]
@@ -3291,11 +3291,11 @@ def test_v20_77_freeze_records_stage19_retry1_and_arms_stage20_repair():
     completed = loop["completed_actions"][key]
     artifacts = loop["completed_artifacts"][key]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
     assert q["last_result"] == (
-        "story_quality_loop_stage20_repair_generated"
+        "story_quality_loop_stage21_reaudit_local_repair_required"
     )
     assert q["confirmed_cost_is_lower_bound"] is True
     assert q["unreconciled_paid_run_ids"] == [37117361651, 37126453862]
@@ -3370,10 +3370,10 @@ def test_v20_79_freeze_records_stage20_repair_and_arms_stage21_reaudit():
     completed = loop["completed_actions"][key]
     artifacts = loop["completed_artifacts"][key]
 
-    assert q["paid_api_calls"] == 49
-    assert q["confirmed_cost_usd"] == 2.2211254
-    assert q["last_paid_run_id"] == 37196489485
-    assert q["last_result"] == "story_quality_loop_stage20_repair_generated"
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == "story_quality_loop_stage21_reaudit_local_repair_required"
     assert q["confirmed_cost_is_lower_bound"] is True
     assert q["unreconciled_paid_run_ids"] == [37117361651, 37126453862]
 
@@ -3423,29 +3423,6 @@ def test_v20_79_freeze_records_stage20_repair_and_arms_stage21_reaudit():
     assert completed["translation_executed"] is False
     assert completed["state_commit_executed"] is False
 
-    assert loop["status"] == "PAID_EXECUTION_AUTHORIZED"
-    assert loop["current_action"] == "REAUDIT"
-    assert loop["current_stage"] == 21
-    assert loop["cycle_index"] == 8
-    assert loop["action_authorization_id"] == (
-        "story-quality-loop:stage21:reaudit:cycle8:attempt8"
-    )
-    assert loop["source_story_artifact_id"] == completed["product_artifact_id"]
-    assert loop["source_story_sha256"] == completed["repaired_story_sha256"]
-    assert loop["handoff_artifact_id"] == completed["next_handoff_artifact_id"]
-    assert loop["finding_count"] is None
-    assert loop["allowed_edit_span_count"] is None
-    assert loop["allowed_edit_span_ids"] == []
-    assert loop["next_repair_paid_attempt_index"] == 10
-    assert loop["paid_execution_authorized"] is True
-    assert loop["authorization_consumed"] is False
-    assert loop["automatic_retry_enabled"] is False
-    assert loop["automatic_paid_transition_enabled"] is False
-    assert loop["automatic_repair_loop_enabled"] is False
-    assert loop["next_harness_requirement"] == "stage21_paid_result"
-    assert "paid_attempt_index" not in loop
-    assert "source_reaudit_product_artifact_id" not in loop
-
     assert artifacts["result_sha256"] == (
         "14ffaa4a597f1abaf89d08670a48db7f3b096bbc3c6eed9a5d57510c4b2f8505"
     )
@@ -3463,4 +3440,106 @@ def test_v20_79_freeze_records_stage20_repair_and_arms_stage21_reaudit():
     )
     assert artifacts["next_state_sha256"] == (
         "69d3245faafc5ff7f6aeee8539178b9b53a1b27360afc706668e795dc1c4d9c6"
+    )
+
+
+def test_v20_81_freeze_records_stage21_reaudit_and_arms_stage22_repair():
+    profile = json.loads(PROFILE.read_text(encoding="utf-8"))
+    q = profile["qualification_state"]
+    loop = profile["story_quality_loop"]
+    key = "story-quality-loop:stage21:reaudit:cycle8:attempt8"
+    completed = loop["completed_actions"][key]
+    artifacts = loop["completed_artifacts"][key]
+
+    assert q["paid_api_calls"] == 51
+    assert q["confirmed_cost_usd"] == 2.3582994
+    assert q["last_paid_run_id"] == 37196986989
+    assert q["last_result"] == (
+        "story_quality_loop_stage21_reaudit_local_repair_required"
+    )
+    assert q["confirmed_cost_is_lower_bound"] is True
+    assert q["unreconciled_paid_run_ids"] == [37117361651, 37126453862]
+
+    assert completed["run_id"] == 37196986989
+    assert completed["workflow_conclusion"] == "success"
+    assert completed["model_inference_completed"] is True
+    assert completed["postprocess_recovered"] is False
+    assert completed["paid_inference_reexecuted"] is False
+    assert completed["action"] == "REAUDIT"
+    assert completed["stage"] == 21
+    assert completed["cycle_index"] == 8
+    assert completed["action_authorization_id"] == key
+    assert completed["status"] == "reaudit_completed"
+    assert completed["api_calls"] == 2
+    assert completed["input_tokens"] == 34008
+    assert completed["output_tokens"] == 6438
+    assert completed["reasoning_tokens"] == 484
+    assert completed["cache_write_tokens"] == 9556
+    assert completed["total_tokens"] == 40446
+    assert completed["cost_usd"] == 0.137174
+    assert completed["latency_seconds"] == 47.237
+    assert completed["decision"] == "LOCAL_REPAIR_REQUIRED"
+    assert completed["finding_count"] == 15
+    assert completed["source_story_artifact_id"] == (
+        "story-quality-story:64e2ca03b51a9ef11f7b89ea97de7ed93a16aee7b24036ad1f23ebe94b09cf3e"
+    )
+    assert completed["source_story_sha256"] == (
+        "82c54f27838fa43c601e28b30c61eec9dfd476403c618da3bba67b49d2a20e4e"
+    )
+    assert completed["product_artifact_id"] == (
+        "story-quality-reaudit:c615452238419a3fc9068834643721d8f677b205f3ab8af0fba752cecbcb0e26"
+    )
+    assert completed["next_handoff_artifact_id"] == (
+        "story-quality-repair-handoff:d12ca08791cf26ce15e5aff229aa0da5442dbe4fb44f416bc9db725a5fd93a31"
+    )
+    assert completed["next_action"] == "LOCAL_REPAIR"
+    assert completed["next_stage"] == 22
+    assert completed["next_cycle_index"] == 9
+    assert completed["next_paid_attempt_index"] == 10
+    assert completed["next_paid_execution_authorized"] is False
+    assert completed["automatic_retry_executed"] is False
+    assert completed["automatic_paid_transition_executed"] is False
+    assert completed["translation_executed"] is False
+    assert completed["state_commit_executed"] is False
+
+    assert loop["status"] == "NEXT_ACTION_READY_NOT_AUTHORIZED"
+    assert loop["current_action"] == "LOCAL_REPAIR"
+    assert loop["current_stage"] == 22
+    assert loop["cycle_index"] == 9
+    assert loop["action_authorization_id"] == (
+        "story-quality-loop:stage22:local-repair:cycle9:attempt10"
+    )
+    assert loop["source_story_artifact_id"] == completed["source_story_artifact_id"]
+    assert loop["source_story_sha256"] == completed["source_story_sha256"]
+    assert loop["source_reaudit_product_artifact_id"] == completed["product_artifact_id"]
+    assert loop["handoff_artifact_id"] == completed["next_handoff_artifact_id"]
+    assert loop["finding_count"] == 15
+    assert loop["allowed_edit_span_count"] == 14
+    assert loop["allowed_edit_span_ids"] == [
+        "S038", "S058", "S074", "S080", "S122", "S158", "S161",
+        "S172", "S173", "S174", "S175", "S176", "S177", "S183",
+    ]
+    assert loop["paid_attempt_index"] == 10
+    assert loop["next_repair_paid_attempt_index"] == 10
+    assert loop["paid_execution_authorized"] is False
+    assert loop["authorization_consumed"] is True
+    assert loop["automatic_retry_enabled"] is False
+    assert loop["automatic_paid_transition_enabled"] is False
+    assert loop["automatic_repair_loop_enabled"] is False
+    assert loop["next_harness_requirement"] == "stage22_paid_authorization"
+
+    assert artifacts["result_sha256"] == (
+        "7b6e35900f50702530f9e8463f055360c360e2141cd73bf92fbb6715b6170328"
+    )
+    assert artifacts["product_sha256"] == (
+        "6181dfdbdaf3a3b17418879ae3739849427ae78e3e40329a6cc88e8f44d1f33a"
+    )
+    assert artifacts["handoff_sha256"] == (
+        "d492214fa8b15cfda3688bc4d2fe76e9adcaf727ae5c4682a3d4eb8f2c0043da"
+    )
+    assert artifacts["envelope_sha256"] == (
+        "a175da273726cfe23ddd0480a8c0ef3972ad6ed07ac8861e5dac47dfdb39354e"
+    )
+    assert artifacts["next_state_sha256"] == (
+        "276b41396c7e76f284ae2ff6cdeb91db9a6ee4271b355eed31cb08115ae06e1d"
     )
