@@ -1,0 +1,39 @@
+name: Lighthouse Saved Story Quality Once
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths:
+      - '.github/workflows/lighthouse-quality-once.yml'
+      - 'evidence/lighthouse-editorial/quality-continuation-authorization.json'
+permissions:
+  contents: read
+concurrency:
+  group: lighthouse-saved-story-quality-once
+  cancel-in-progress: false
+jobs:
+  quality-once:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-QUALITY-01]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Verify offline continuation and exact source
+        run: |
+          python -m pytest -q tests/test_lighthouse_*.py tests/test_spineforge_v21_*.py
+          python -m src.lighthouse_quality_continuation
+          git diff --exit-code -- evidence/lighthouse-editorial/quality-continuation-prepared.json
+      - name: Single authorized saved-story continuation
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m src.lighthouse_quality_continuation --execute --authorization evidence/lighthouse-editorial/quality-continuation-authorization.json
+      - name: Preserve continuation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-quality-once-${{ github.run_id }}
+          path: evidence/lighthouse-quality-continuation/
+          if-no-files-found: warn
