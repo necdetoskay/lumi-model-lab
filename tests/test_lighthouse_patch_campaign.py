@@ -15,7 +15,7 @@ def patch_rows(payload):
     by={r['span_id']:r for r in payload['story_segments']}
     sid=payload['allowed_span_ids'][0]
     old=by[sid]['repaired_text']
-    return [{'span_id':sid,'old_text':old,'replacement_text':old.replace('the size of a fishing boat','waist-high')}]
+    return [{'span_id':sid,'old_text':old,'replacement_text':old + ' This is synthetic test prose.'}]
 
 
 def test_saved_cross_scene_finding_completes_and_consumes_once(tmp_path):
@@ -25,7 +25,7 @@ def test_saved_cross_scene_finding_completes_and_consumes_once(tmp_path):
         if stage=='PATCH':return {'patches':patch_rows(payload),'summary':'mock repair','usage':usage()}
         return audit([])
     r=campaign.run(authorization=grant(),output_dir=tmp_path,call_fn=call)
-    assert r['status']=='ACCEPT' and r['writer_calls']==0 and stages==['AUDIT']
+    assert r['status']=='ACCEPT' and r['writer_calls']==0 and stages==['PATCH','AUDIT']
     proof=json.loads((tmp_path/'FAKE-CAMPAIGN/patch-proof-01.json').read_text())
     assert proof['outside_patches_unchanged']
     with pytest.raises(FileExistsError):
@@ -50,7 +50,7 @@ def test_multiple_scene_edits_preserve_all_other_bytes():
     by={r['span_id']:r for r in payload['story_segments']}
     rows=[]
     for sid in sorted(ids):
-        old=by[sid]['repaired_text'];new=old.replace('the size of a fishing boat','waist-high').replace("twice Ekin's height",'broad and grey')
+        old=by[sid]['repaired_text'];new=old + ' This is synthetic test prose.'.replace("twice Ekin's height",'broad and grey')
         rows.append({'span_id':sid,'old_text':old,'replacement_text':new})
     candidate,proof=campaign.apply_patches(raw,plan,ids,rows)
     expected=raw
@@ -59,7 +59,7 @@ def test_multiple_scene_edits_preserve_all_other_bytes():
 
 
 def test_budget_blocks_before_dispatch(tmp_path,monkeypatch):
-    monkeypatch.setattr(campaign,'BUDGET',.07)
+    monkeypatch.setattr(campaign,'BUDGET',.18)
     r=campaign.run(authorization=grant(),output_dir=tmp_path,
                    call_fn=lambda *a:pytest.fail('Budget must stop before call'))
     assert r['new_call_count']==0 and 'reservation' in r['failure_message']

@@ -16,7 +16,11 @@ AUTH = Path('evidence/lighthouse-editorial/patch-campaign-authorization.json')
 OUTPUT = Path('evidence/lighthouse-patch-campaign')
 EXPERIMENT_ID = 'LIGHTHOUSE-SINGLE-STORY-COMPLETION-01'
 RESUME_PATCH = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-01-20261005/calls.json')
-PRIOR_COST = 0.0618471
+RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-20261005/calls.json')
+RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-20261005/candidate-02.txt')
+PRIOR_COST = 0.1771231
+COMPLETION_AUDIT_SCHEMA = json.loads(json.dumps(AUDIT_RESPONSE_SCHEMA))
+COMPLETION_AUDIT_SCHEMA['properties']['findings']['items']['properties']['reason']['maxLength'] = 2000
 BUDGET = 3.0
 PATCH_SCHEMA = {'type': 'object', 'additionalProperties': False, 'required': ['patches','summary'],
     'properties': {'summary': {'type':'string','maxLength':1200}, 'patches': {
@@ -38,10 +42,21 @@ def prepare():
     findings = calls[0]['response']['findings']
     paths = {r['path'] for r in dependency_manifest()}
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
-                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),
+                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),
                   'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',
                   '.github/workflows/lighthouse-completion-once.yml'])
     manifest = [{'path': p, 'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
+    payload, ids = scope_payload(raw, plan, findings)
+    raw, _ = apply_patches(raw, plan, ids, json.loads(RESUME_PATCH.read_text())[0]['response']['patches'])
+    resume_calls = json.loads(RESUME_LEDGER.read_text())
+    for row in resume_calls:
+        if row['stage'] == 'PATCH' and row.get('response'):
+            raw, _ = apply_patches(raw, plan, set(row['input']['allowed_span_ids']), row['response']['patches'])
+    artifact = bind_story(raw, plan)
+    if artifact['story'] != RESUME_TEXT.read_text():
+        raise RuntimeError('Replay differs from saved candidate')
+    findings = resume_calls[-1]['provider_evidence']['parsed_response']['findings']
+    validate_schema(resume_calls[-1]['provider_evidence']['parsed_response'], COMPLETION_AUDIT_SCHEMA)
     prepared = {'experiment_id':EXPERIMENT_ID,'plan_sha256':digest_json(plan),
         'source_story_sha256':artifact['story_sha256'],'saved_findings_sha256':digest_json(findings),
         'resume_patch_sha256':hashlib.sha256(RESUME_PATCH.read_bytes()).hexdigest(),
@@ -108,7 +123,7 @@ def call_model(key,stage,payload):
         prompt_path=Path('prompts/lighthouse_patch_repair.md' if stage=='PATCH' else 'prompts/lighthouse_completion_audit.md'),
         request_class='spineforge_v21_scene_repair' if stage=='PATCH' else 'spineforge_v21_initial_blocking_audit',
         schema_name='lighthouse_patch_v1' if stage=='PATCH' else 'lighthouse_completion_audit_v1',
-        schema=PATCH_SCHEMA if stage=='PATCH' else AUDIT_RESPONSE_SCHEMA,
+        schema=PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA,
         max_tokens=3500 if stage=='PATCH' else 3000,stage=stage)
 
 def run(*,authorization,output_dir,call_fn):
@@ -139,8 +154,8 @@ def run(*,authorization,output_dir,call_fn):
             row['response']=response;row['usage']=_usage(response,stage)
             cost+=row['usage']['cost_usd'];row['status']='COMPLETED';save('calls.json',ledger)
             if cost>BUDGET:raise RuntimeError('Actual story budget exceeded; no further calls')
-            validate_schema({k:response[k] for k in (PATCH_SCHEMA if stage=='PATCH' else AUDIT_RESPONSE_SCHEMA)['properties']},
-                            PATCH_SCHEMA if stage=='PATCH' else AUDIT_RESPONSE_SCHEMA)
+            validate_schema({k:response[k] for k in (PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA)['properties']},
+                            PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA)
             return response
         except Exception as exc:
             row['status']='FAILED';row['failure_message']=getattr(exc,'diagnostic_message',str(exc))
@@ -159,11 +174,7 @@ def run(*,authorization,output_dir,call_fn):
                 result.update(status='ACCEPT',accepted_story_sha256=a['story_sha256'],word_count=a['word_count'])
                 break
             payload,ids=scope_payload(raw,plan,findings)
-            if cycle==0:
-                patch=json.loads(RESUME_PATCH.read_text())[0]['response']
-                save('reused-patch-response.json',patch)
-            else:
-                patch=invoke('PATCH',payload)
+            patch=invoke('PATCH',payload)
             raw,proof=apply_patches(raw,plan,ids,patch['patches'])
             save(f'patch-proof-{cycle+1:02}.json',proof)
             (out/f'candidate-{cycle+1:02}.txt').write_text(bind_story(raw,plan)['story'])
