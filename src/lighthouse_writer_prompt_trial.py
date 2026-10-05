@@ -7,7 +7,7 @@ from src.lighthouse_experiment import approved_input, digest_json, dependency_ma
 from src.lighthouse_writer_once import request_payload, scene_artifact, MODEL, PROMPT
 from src.lighthouse_audit_decision import call_audit, decision
 from src.lighthouse_decision_qualification import payload
-from src.spineforge_v19_transport import _request_once
+from src.lighthouse_writer_stream_transport import dispatch, MAX_TOKENS
 from src.spineforge_v21_model_adapter import provider_usage
 from src.spineforge_v21_quality_runtime import _usage
 
@@ -15,8 +15,8 @@ TRIAL_PROMPT = Path('prompts/lighthouse_editorial_writer_prompt_trial_v1.md')
 ROOT = Path('evidence/lighthouse-writer-prompt-trial')
 PREPARED = Path('evidence/lighthouse-editorial/writer-prompt-trial-prepared.json')
 AUTH = Path('evidence/lighthouse-editorial/writer-prompt-trial-authorization.json')
-PRIOR = 1.7585491
-ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-02-20261005'
+PRIOR = 1.78123954
+ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005'
 # First trial lost the provider body in its new harness error handler. Do not
 # report its unknown charge as zero; reserve the entire failed-call allowance.
 UNRECONCILED_PRIOR_RESERVE = .04
@@ -24,6 +24,7 @@ UNRECONCILED_PRIOR_RESERVE = .04
 
 def requests(plan):
     baseline = request_payload(plan)
+    baseline.update(max_tokens=MAX_TOKENS, stream=True, stream_options={"include_usage": True})
     enhanced = json.loads(json.dumps(baseline))
     enhanced['messages'][0]['content'] = TRIAL_PROMPT.read_text()
     if not enhanced['messages'][0]['content'].startswith(baseline['messages'][0]['content']):
@@ -33,10 +34,14 @@ def requests(plan):
 
 def prepare():
     plan = approved_input()
-    if json.loads(Path('evidence/lighthouse-editorial/decision-stabilization-summary.json').read_text())['actual_total_cost_usd'] != PRIOR:
+    if json.loads(Path('evidence/lighthouse-writer-prompt-trial/comparison-summary.json').read_text())['confirmed_story_cost_usd'] != PRIOR:
         raise RuntimeError('Prior accounting drift')
     paths = {x['path'] for x in dependency_manifest()}
     paths.update(['src/lighthouse_writer_prompt_trial.py', str(TRIAL_PROMPT),
+        'src/lighthouse_writer_stream_transport.py', 'tests/test_lighthouse_writer_stream_transport.py',
+        'evidence/lighthouse-editorial/writer-stream-profile-v1.json',
+        'evidence/lighthouse-writer-prompt-trial/comparison-summary.json',
+        'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-02-20261005/result.json',
         'src/lighthouse_audit_decision.py', 'src/lighthouse_audit_requirements.py',
         'src/lighthouse_decision_qualification.py', 'prompts/lighthouse_decision_audit.md',
         'evidence/lighthouse-editorial/audit-requirements.json',
@@ -58,10 +63,7 @@ def prepare():
 
 def writer(api_key, request):
     start = time.perf_counter()
-    text, body, actual = _request_once(api_key=api_key, model=MODEL,
-        system_prompt=request['messages'][0]['content'], user_prompt=request['messages'][1]['content'],
-        temperature=request['temperature'], max_tokens=request['max_tokens'], seed=None,
-        request_class='spineforge_v20_story_writer', response_format={'type':'text'}, require_parameters=False)
+    text, body, actual = dispatch(api_key, request)
     return {'story': text, 'usage': provider_usage(body, 'WRITER', round(time.perf_counter()-start,3)),
             'actual_request': actual, 'provider_response': {k:body[k] for k in ('id','model','choices','usage') if k in body}}
 
@@ -83,7 +85,7 @@ def run(authorization, output_dir, writer_fn, audit_fn):
     calls=[]; cases=[];cost=PRIOR;failure=None
     def invoke(stage, variant, data, fn):
         nonlocal cost
-        reserve = .04 if stage=='WRITER' else (len(json.dumps(data,ensure_ascii=False).encode())+20000)*2/1e6+.035
+        reserve = .06 if stage=='WRITER' else (len(json.dumps(data,ensure_ascii=False).encode())+20000)*2/1e6+.035
         if cost+UNRECONCILED_PRIOR_RESERVE+reserve>3: raise RuntimeError('Budget lacks next-call reservation')
         row={'stage':stage,'variant':variant,'input':data,'status':'STARTED','reserved_cost_usd':reserve}
         calls.append(row);save('calls.json',calls)
