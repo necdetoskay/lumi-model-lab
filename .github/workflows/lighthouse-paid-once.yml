@@ -17,7 +17,7 @@ concurrency:
 jobs:
   qualify:
     if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-PAID-01]')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
   paid-once:
     needs: qualify
     if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-PAID-01]')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
