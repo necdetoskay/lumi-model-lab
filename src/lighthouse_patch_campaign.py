@@ -18,7 +18,10 @@ EXPERIMENT_ID = 'LIGHTHOUSE-SINGLE-STORY-COMPLETION-01'
 RESUME_PATCH = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-01-20261005/calls.json')
 RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-20261005/calls.json')
 RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-20261005/candidate-02.txt')
-PRIOR_COST = 0.1771231
+NEXT_RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/calls.json')
+NEXT_RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt')
+EDITORIAL_REVIEW = Path('evidence/lighthouse-editorial/independent-review-03.json')
+PRIOR_COST = 0.3951711
 COMPLETION_AUDIT_SCHEMA = json.loads(json.dumps(AUDIT_RESPONSE_SCHEMA))
 COMPLETION_AUDIT_SCHEMA['properties']['findings']['items']['properties']['reason']['maxLength'] = 2000
 BUDGET = 3.0
@@ -42,7 +45,7 @@ def prepare():
     findings = calls[0]['response']['findings']
     paths = {r['path'] for r in dependency_manifest()}
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
-                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),
+                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),str(NEXT_RESUME_LEDGER),str(NEXT_RESUME_TEXT),str(EDITORIAL_REVIEW),
                   'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',
                   '.github/workflows/lighthouse-completion-once.yml'])
     manifest = [{'path': p, 'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
@@ -57,6 +60,17 @@ def prepare():
         raise RuntimeError('Replay differs from saved candidate')
     findings = resume_calls[-1]['provider_evidence']['parsed_response']['findings']
     validate_schema(resume_calls[-1]['provider_evidence']['parsed_response'], COMPLETION_AUDIT_SCHEMA)
+    next_calls = json.loads(NEXT_RESUME_LEDGER.read_text())
+    for row in next_calls:
+        if row['stage'] == 'PATCH' and row.get('response'):
+            raw, _ = apply_patches(raw, plan, set(row['input']['allowed_span_ids']), row['response']['patches'])
+    artifact = bind_story(raw, plan)
+    if artifact['story'] != NEXT_RESUME_TEXT.read_text():
+        raise RuntimeError('Latest replay differs from saved candidate')
+    review = json.loads(EDITORIAL_REVIEW.read_text())
+    if review['source_story_sha256'] != artifact['story_sha256']:
+        raise RuntimeError('Editorial review belongs to another candidate')
+    findings = next_calls[-1]['response']['findings'] + review['findings']
     prepared = {'experiment_id':EXPERIMENT_ID,'plan_sha256':digest_json(plan),
         'source_story_sha256':artifact['story_sha256'],'saved_findings_sha256':digest_json(findings),
         'resume_patch_sha256':hashlib.sha256(RESUME_PATCH.read_bytes()).hexdigest(),

@@ -17,3 +17,9 @@ across scenes; STRUCTURAL_REPAIR or REPLAN only when required by the actual defe
 For every finding return family, severity, repair_scope, span_ids, exact_text, reason.
 Return JSON only. Empty findings means no material defect found in this pass, not a guarantee.
 Wire prose is a table: concatenate whitespace_before + current_text, then trailing_whitespace.
+
+Compare each required_end_state with the actual story, including the final paragraph.
+An image appearing earlier is not sufficient if a different ending follows it. Additional
+entry/exit routes or substituted endings materially changing the approved plan are
+spine_fidelity findings of at least moderate severity, even if physically plausible.
+Do not confuse a plan deviation with optional stylistic preference.
