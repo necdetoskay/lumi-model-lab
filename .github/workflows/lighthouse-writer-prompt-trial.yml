@@ -1,0 +1,35 @@
+name: Lighthouse Writer Prompt Comparison
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths:
+      - 'evidence/lighthouse-editorial/writer-prompt-trial-authorization.json'
+permissions:
+  contents: read
+concurrency:
+  group: lighthouse-writer-prompt-trial
+  cancel-in-progress: false
+jobs:
+  compare:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-WRITER-PROMPT-TRIAL-01]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Offline checks before spending
+        run: python -m pytest -q tests/test_lighthouse_*.py tests/test_plan_audit_contract.py tests/test_spineforge_v21_*.py
+      - name: Same-context prompt comparison, no retries or repairs
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m src.lighthouse_writer_prompt_trial --execute
+      - name: Preserve both stories and calls
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-writer-prompt-trial-${{ github.run_id }}
+          path: evidence/lighthouse-writer-prompt-trial/
+          if-no-files-found: warn
