@@ -22,7 +22,9 @@ RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-
 NEXT_RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/calls.json')
 NEXT_RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt')
 EDITORIAL_REVIEW = Path('evidence/lighthouse-editorial/independent-review-03.json')
-PRIOR_COST = 1.4986211
+QUALIFIED_AUDIT = Path('evidence/lighthouse-decision-qualification/LIGHTHOUSE-DECISION-03-20261005/calls.json')
+QUALIFIED_RESULT = Path('evidence/lighthouse-decision-qualification/LIGHTHOUSE-DECISION-03-20261005/result.json')
+PRIOR_COST = 1.5918431
 COMPLETION_AUDIT_SCHEMA = json.loads(json.dumps(AUDIT_RESPONSE_SCHEMA))
 COMPLETION_AUDIT_SCHEMA['properties']['findings']['items']['properties']['reason']['maxLength'] = 2000
 BUDGET = 3.0
@@ -46,7 +48,7 @@ def prepare():
     findings = calls[0]['response']['findings']
     paths = {r['path'] for r in dependency_manifest()}
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
-                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),str(NEXT_RESUME_LEDGER),str(NEXT_RESUME_TEXT),str(EDITORIAL_REVIEW),
+                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),str(NEXT_RESUME_LEDGER),str(NEXT_RESUME_TEXT),str(EDITORIAL_REVIEW),str(QUALIFIED_AUDIT),str(QUALIFIED_RESULT),
                   'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',str(DECISION_PROMPT),
                   'src/lighthouse_audit_decision.py','src/lighthouse_audit_requirements.py',
                   'evidence/lighthouse-editorial/audit-requirements.json','tests/test_lighthouse_audit_decision.py',
@@ -73,7 +75,13 @@ def prepare():
     review = json.loads(EDITORIAL_REVIEW.read_text())
     if review['source_story_sha256'] != artifact['story_sha256']:
         raise RuntimeError('Editorial review belongs to another candidate')
-    findings = next_calls[-1]['response']['findings'] + review['findings']
+    qualified_result = json.loads(QUALIFIED_RESULT.read_text())
+    if qualified_result['status']!='PASS' or qualified_result['total_story_cost_usd']!=PRIOR_COST:
+        raise RuntimeError('Qualified audit status or prior cost drift')
+    qualified_call = json.loads(QUALIFIED_AUDIT.read_text())[-1]
+    if qualified_call['input']['source_story_sha256']!=artifact['story_sha256']:
+        raise RuntimeError('Qualified audit belongs to another candidate')
+    findings = decision(qualified_call['response'],artifact['segments'],plan)['findings']
     prepared = {'experiment_id':EXPERIMENT_ID,'plan_sha256':digest_json(plan),
         'source_story_sha256':artifact['story_sha256'],'saved_findings_sha256':digest_json(findings),
         'resume_patch_sha256':hashlib.sha256(RESUME_PATCH.read_bytes()).hexdigest(),
