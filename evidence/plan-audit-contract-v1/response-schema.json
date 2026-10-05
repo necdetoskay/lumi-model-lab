@@ -1,0 +1,158 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "requirement_checks",
+    "observations",
+    "summary"
+  ],
+  "properties": {
+    "requirement_checks": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "requirement_id",
+          "span_ids",
+          "exact_text",
+          "reason",
+          "repair_span_ids",
+          "assessment"
+        ],
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "enum": [
+              "GLOBAL_MOCK_CONTEXT",
+              "GLOBAL_SETTING_AND_HAZARDS",
+              "GLOBAL_PRESERVED_OUTCOMES",
+              "GLOBAL_APPROVED_CLARIFICATIONS",
+              "SCENE_SC01_ACTION",
+              "SCENE_SC01_END_STATE",
+              "SCENE_SC02_ACTION",
+              "SCENE_SC02_END_STATE",
+              "SCENE_SC03_ACTION",
+              "SCENE_SC03_END_STATE",
+              "SCENE_SC04_ACTION",
+              "SCENE_SC04_END_STATE",
+              "SCENE_SC05_ACTION",
+              "SCENE_SC05_END_STATE",
+              "SCENE_SC06_ACTION",
+              "SCENE_SC06_END_STATE"
+            ]
+          },
+          "span_ids": {
+            "type": "array",
+            "maxItems": 24,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 16
+            }
+          },
+          "exact_text": {
+            "type": "string",
+            "maxLength": 1200
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "repair_span_ids": {
+            "type": "array",
+            "maxItems": 24,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 16
+            }
+          },
+          "assessment": {
+            "type": "string",
+            "enum": [
+              "SATISFIED",
+              "MATERIAL_VIOLATION",
+              "UNCERTAIN"
+            ]
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "family",
+          "span_ids",
+          "exact_text",
+          "reason",
+          "material_impact",
+          "classification"
+        ],
+        "properties": {
+          "family": {
+            "type": "string",
+            "enum": [
+              "physical_feasibility",
+              "causal_logic",
+              "state_continuity",
+              "epistemic_order",
+              "spatial_consistency",
+              "temporal_consistency",
+              "response_causality",
+              "closure_integrity",
+              "canon_integrity",
+              "language_naturalness",
+              "age_suitability",
+              "spine_fidelity",
+              "narrative_coherence"
+            ]
+          },
+          "span_ids": {
+            "type": "array",
+            "maxItems": 24,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 16
+            }
+          },
+          "exact_text": {
+            "type": "string",
+            "maxLength": 1200
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "material_impact": {
+            "type": "string",
+            "maxLength": 1200
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "DEFECT_SCENE",
+              "DEFECT_STRUCTURAL",
+              "DEFECT_REPLAN",
+              "ADVISORY",
+              "VERIFIED"
+            ]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 1500
+    }
+  }
+}
