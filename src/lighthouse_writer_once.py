@@ -144,7 +144,7 @@ def scene_artifact(marked_story, writer_input):
            'writer_input_sha256': digest_json(writer_input),
            'approved_spine_hash': digest_json(writer_input),
            'story_segments': segments, 'scenes': scenes, 'word_count': words,
-           'target_length_hit': 1400 <= words <= 1800, 'publication_ready': False}
+           'target_length_hit': words >= writer_input['target_words']['min'], 'publication_ready': False}
     out['artifact_sha256'] = digest_json(out)
     return out
 

@@ -57,6 +57,26 @@ def test_clean_path_and_consumed_authorization(tmp_path):
         run(tmp_path)
 
 
+@pytest.mark.parametrize('repetitions,expected,calls', [
+    (10, 'REJECT_RUNTIME', 1), (60, 'ACCEPT', 2),
+])
+def test_minimum_only_length_policy(tmp_path, repetitions, expected, calls):
+    plan = approved_input()
+    assert plan['target_words'] == {'min': 1400}
+    prose = ' '.join(['This synthetic paragraph tests exact scene boundary preservation'] * repetitions) + '.'
+    marked = 'Synthetic Title\n' + '\n'.join(f'[[SC{i:02}]]\n{prose}' for i in range(1, 7))
+    observed = []
+    def initial(payload):
+        observed.append(payload)
+        return audit([])
+    result = run_once(plan=plan, authorization=authorization(plan), output_dir=tmp_path,
+        writer_fn=lambda req: {'story': marked, 'usage': usage()},
+        initial_fn=initial, repair_fn=lambda p: pytest.fail('Unexpected repair'),
+        final_fn=lambda p: pytest.fail('Unexpected final audit'))
+    assert result['status'] == expected and result['call_count'] == calls
+    assert bool(observed) == (expected == 'ACCEPT')
+
+
 def test_single_repair_and_targeted_final(tmp_path):
     plan = approved_input()
     artifact = bind_story(raw_story(), plan)

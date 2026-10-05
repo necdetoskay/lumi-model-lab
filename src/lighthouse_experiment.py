@@ -225,8 +225,8 @@ def run_once(*, plan, authorization, output_dir, writer_fn, initial_fn, repair_f
         artifact = bind_story(writer['story'], plan)
         save('writer-artifact.json', artifact)
         (out / 'original-story.txt').write_text(artifact['story'])
-        if not plan['target_words']['min'] <= artifact['word_count'] <= plan['target_words']['max']:
-            raise RuntimeError('Writer length outside approved range')
+        if artifact['word_count'] < plan['target_words']['min']:
+            raise RuntimeError('Writer length below approved minimum')
         invariant_texts = [plan['mock_context'], plan['setting_and_hazards'],
                            plan['preserved_outcomes']] + [s['approved_action'] + '\n' +
                            s['required_end_state'] for s in plan['scenes']]

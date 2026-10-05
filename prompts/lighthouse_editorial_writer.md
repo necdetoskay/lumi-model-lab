@@ -19,8 +19,10 @@ The children return on the already shown safe path; the storm need not end.
 Do not assume the grandfather is dead. No new subplot or Saga revelation.
 
 The supplied plan is Turkish; the story must be entirely English.
-Aim for 1,400–1,800 English words. Tell a complete story rather than padding
-to hit a number. First line: the English story title.
+Write at least 1,400 English words. There is no upper word-count limit.
+The input's target_words and length_policy override the historical length
+range quoted in the source plan. Tell a complete story without padding,
+repetition or unnecessary explanation. First line: the English story title.
 
 For artifact boundaries, put [[SC01]] through [[SC06]] on separate lines before
 each corresponding scene, exactly once and in order. These labels will be
