@@ -15,8 +15,8 @@ TRIAL_PROMPT = Path('prompts/lighthouse_editorial_writer_prompt_trial_v1.md')
 ROOT = Path('evidence/lighthouse-writer-prompt-trial')
 PREPARED = Path('evidence/lighthouse-editorial/writer-prompt-trial-prepared.json')
 AUTH = Path('evidence/lighthouse-editorial/writer-prompt-trial-authorization.json')
-PRIOR = 1.78123954
-ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005'
+PRIOR = 1.8284507
+ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-04-20261005'
 # First trial lost the provider body in its new harness error handler. Do not
 # report its unknown charge as zero; reserve the entire failed-call allowance.
 UNRECONCILED_PRIOR_RESERVE = .04
@@ -24,7 +24,7 @@ UNRECONCILED_PRIOR_RESERVE = .04
 
 def requests(plan):
     baseline = request_payload(plan)
-    baseline.update(max_tokens=MAX_TOKENS, stream=True, stream_options={"include_usage": True})
+    baseline.update(max_tokens=MAX_TOKENS, reasoning_effort='low', stream=True, stream_options={"include_usage": True})
     enhanced = json.loads(json.dumps(baseline))
     enhanced['messages'][0]['content'] = TRIAL_PROMPT.read_text()
     if not enhanced['messages'][0]['content'].startswith(baseline['messages'][0]['content']):
@@ -39,9 +39,10 @@ def prepare():
     paths = {x['path'] for x in dependency_manifest()}
     paths.update(['src/lighthouse_writer_prompt_trial.py', str(TRIAL_PROMPT),
         'src/lighthouse_writer_stream_transport.py', 'tests/test_lighthouse_writer_stream_transport.py',
-        'evidence/lighthouse-editorial/writer-stream-profile-v1.json',
+        'evidence/lighthouse-editorial/writer-stream-profile-v2.json',
         'evidence/lighthouse-writer-prompt-trial/comparison-summary.json',
         'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-02-20261005/result.json',
+        'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005/result.json',
         'src/lighthouse_audit_decision.py', 'src/lighthouse_audit_requirements.py',
         'src/lighthouse_decision_qualification.py', 'prompts/lighthouse_decision_audit.md',
         'evidence/lighthouse-editorial/audit-requirements.json',
@@ -85,7 +86,7 @@ def run(authorization, output_dir, writer_fn, audit_fn):
     calls=[]; cases=[];cost=PRIOR;failure=None
     def invoke(stage, variant, data, fn):
         nonlocal cost
-        reserve = .06 if stage=='WRITER' else (len(json.dumps(data,ensure_ascii=False).encode())+20000)*2/1e6+.035
+        reserve = .10 if stage=='WRITER' else (len(json.dumps(data,ensure_ascii=False).encode())+20000)*2/1e6+.035
         if cost+UNRECONCILED_PRIOR_RESERVE+reserve>3: raise RuntimeError('Budget lacks next-call reservation')
         row={'stage':stage,'variant':variant,'input':data,'status':'STARTED','reserved_cost_usd':reserve}
         calls.append(row);save('calls.json',calls)

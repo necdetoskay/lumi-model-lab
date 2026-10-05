@@ -26,7 +26,7 @@ def test_exact_streaming_request_no_historical_cap_clamp(monkeypatch):
     monkeypatch.setattr('src.lighthouse_writer_stream_transport.requests.post',post)
     text,body,actual = dispatch('synthetic-test-key', request)
     assert text == 'Story' and actual == request and body['usage']['cost'] == .0001
-    assert seen[0]['json']['max_tokens'] == 16384 and seen[0]['stream'] is True
+    assert seen[0]['json']['max_tokens'] == 32768 and seen[0]['stream'] is True
     assert len(seen) == 1 and response.closed
 
 

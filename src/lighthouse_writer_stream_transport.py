@@ -3,7 +3,7 @@ import json
 import requests
 from src.generate import OPENROUTER_URL, OpenRouterCallError
 
-MAX_TOKENS = 16384
+MAX_TOKENS = 32768
 MODEL = 'aion-labs/aion-3.5-mini'
 
 
@@ -11,6 +11,7 @@ def dispatch(api_key, payload):
     # Do not renormalize through the historical 7,000-token request class.
     if (payload.get('model') != MODEL or payload.get('max_tokens') != MAX_TOKENS
             or payload.get('reasoning') != {'effort': 'low', 'exclude': True}
+            or payload.get('reasoning_effort') != 'low'
             or payload.get('stream') is not True
             or payload.get('stream_options') != {'include_usage': True}):
         raise RuntimeError('Frozen streaming Writer profile drift')
