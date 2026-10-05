@@ -23,11 +23,11 @@ def test_saved_cross_scene_finding_completes_and_consumes_once(tmp_path):
     def call(stage,payload):
         stages.append(stage)
         if stage=='PATCH':return {'patches':patch_rows(payload),'summary':'mock repair','usage':usage()}
-        sid=payload['story_segments'][1]['span_id']
-        return {'blocking_findings':[],
-                'advisory_notes':[{'span_ids':[sid],'note':'Optional prose polish'}],
-                'verified_requirements':[{'span_ids':[sid],'note':'The approved event is already correct; no repair.'}],
-                'summary':'mock', 'usage':usage()}
+        from tests.test_lighthouse_audit_decision import empty
+        rows=payload['story_segments'];result=empty(rows);sid=rows[1]['span_id']
+        result['observations']=[{'family':'narrative_coherence','span_ids':[sid],
+            'exact_text':'','reason':'Already correct; no repair.','material_impact':'','classification':'VERIFIED'}]
+        return {**result,'usage':usage()}
     r=campaign.run(authorization=grant(),output_dir=tmp_path,call_fn=call)
     assert r['status']=='ACCEPT' and r['writer_calls']==0 and stages==['PATCH','AUDIT']
     proof=json.loads((tmp_path/'FAKE-CAMPAIGN/patch-proof-01.json').read_text())

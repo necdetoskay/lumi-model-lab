@@ -9,7 +9,7 @@ from src.lighthouse_audit_decision import call_audit, decision, PROMPT
 PREPARED=Path('evidence/lighthouse-editorial/decision-qualification-prepared.json')
 AUTH=Path('evidence/lighthouse-editorial/decision-qualification-authorization.json')
 OUTPUT=Path('evidence/lighthouse-decision-qualification')
-PRIOR=1.4208331
+PRIOR=1.4986211
 BUDGET=3.0
 CASES=[('accepted_control',Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-04-20261005/accepted-story.txt')),
        ('recorded_plan_deviations',Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt'))]
@@ -24,19 +24,22 @@ def payload(story,plan):
 
 def prepare():
     plan=approved_input();paths={x['path'] for x in dependency_manifest()}
-    paths.update([str(PROMPT),'src/lighthouse_audit_decision.py','src/lighthouse_decision_qualification.py',
+    paths.update([str(PROMPT),'src/lighthouse_audit_decision.py','src/lighthouse_audit_requirements.py',
+                  'evidence/lighthouse-editorial/audit-requirements.json','src/lighthouse_decision_qualification.py',
                   'src/lighthouse_patch_campaign.py','tests/test_lighthouse_audit_decision.py',
                   'tests/test_lighthouse_patch_campaign.py','tests/test_lighthouse_decision_qualification.py',
                   '.github/workflows/lighthouse-decision-qualification.yml',
-                  'evidence/lighthouse-editorial/completion-summary.json'])
+                  'evidence/lighthouse-editorial/completion-summary.json',
+                  'evidence/lighthouse-decision-qualification/LIGHTHOUSE-DECISION-02-20261005/calls.json',
+                  'evidence/lighthouse-decision-qualification/LIGHTHOUSE-DECISION-02-20261005/result.json'])
     paths.update(str(p) for _,p in CASES)
     # The patch tests replay these exact saved ledgers and independent findings.
     from src.lighthouse_patch_campaign import prepare as patch_prepare
     prior_prepared,*_=patch_prepare();paths.update(x['path'] for x in prior_prepared['runtime_manifest'])
     manifest=[{'path':p,'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
-    total=json.loads(Path('evidence/lighthouse-editorial/completion-summary.json').read_text())['actual_total_cost_usd']
+    total=json.loads(Path('evidence/lighthouse-decision-qualification/LIGHTHOUSE-DECISION-02-20261005/result.json').read_text())['total_story_cost_usd']
     if total!=PRIOR:raise RuntimeError('Prior cost drift')
-    return {'experiment_id':'LIGHTHOUSE-AUDIT-DECISION-V2','plan_sha256':digest_json(plan),
+    return {'experiment_id':'LIGHTHOUSE-AUDIT-DECISION-V3','plan_sha256':digest_json(plan),
             'runtime_manifest':manifest,'runtime_manifest_sha256':digest_json(manifest),
             'prior_story_cost_usd':PRIOR,'total_story_budget_usd':BUDGET,
             'cases':[{'id':n,'path':str(p),'story_sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for n,p in CASES],
@@ -66,7 +69,7 @@ def run(authorization,output_dir,call_fn):
                 response=call_fn(data);row['response']=response;row['usage']=_usage(response,'AUDIT')
                 cost+=row['usage']['cost_usd'];row['status']='COMPLETED';save('calls.json',calls)
                 if cost>BUDGET:raise RuntimeError('Actual budget exceeded')
-                choice=decision(response,data['story_segments'])
+                choice=decision(response,data['story_segments'],plan)
                 if case['id']=='accepted_control':passed=choice['status']=='ACCEPT'
                 else:
                     groups=[{'S054','S060','S061','S183'},{f'S{i:03}' for i in range(197,213)}]

@@ -1,8 +1,7 @@
 import json
-from copy import deepcopy
 from pathlib import Path
 import pytest
-from src.lighthouse_audit_decision import decision
+from src.lighthouse_audit_decision import decision, IDS
 from src.spineforge_v20_story_audit_artifact import _segment_story
 
 LEDGER=Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-04-20261005')
@@ -12,46 +11,60 @@ def segments(story):
     return [{'span_id':r['id'],'repaired_text':r['text']} for r in _segment_story(story)]
 
 
-def empty():
-    return {'blocking_findings':[], 'advisory_notes':[], 'verified_requirements':[], 'summary':'test'}
+def empty(rows):
+    return {'requirement_checks':[{'requirement_id':i,'span_ids':[rows[1]['span_id']],
+        'exact_text':rows[1]['repaired_text'],'reason':'Synthetic verified requirement',
+        'repair_span_ids':[],'assessment':'SATISFIED'} for i in IDS], 'observations':[], 'summary':'test'}
 
 
-@pytest.mark.parametrize('call_index,channel',[(11,'advisory_notes'),(13,'verified_requirements'),(15,'advisory_notes'),(17,'advisory_notes'),(19,'verified_requirements')])
-def test_recorded_nondefects_cannot_dispatch_repairs(call_index,channel):
-    # Editorially labelled regression fixtures, not automatic legacy-text classification.
-    row=json.loads((LEDGER/'calls.json').read_text())[call_index]
-    old=row['response']['findings'][0]
+@pytest.mark.parametrize('call_index,kind',[(11,'ADVISORY'),(13,'VERIFIED'),(15,'ADVISORY'),(17,'ADVISORY'),(19,'VERIFIED')])
+def test_recorded_nondefects_cannot_dispatch_repairs(call_index,kind):
+    row=json.loads((LEDGER/'calls.json').read_text())[call_index];old=row['response']['findings'][0]
     assert old['severity']=='moderate' and old['repair_scope']=='SCENE_REPAIR'
-    response=empty();response[channel]=[{'span_ids':old['span_ids'],'note':old['reason']}]
-    result=decision(response,segments(row['input']['full_story']))
-    assert result['status']=='ACCEPT' and result['findings']==[]
+    rows=segments(row['input']['full_story']);response=empty(rows)
+    response['observations']=[{'family':old['family'],'span_ids':old['span_ids'],'exact_text':'',
+        'reason':old['reason'],'material_impact':'','classification':kind}]
+    result=decision(response,rows);assert result['status']=='ACCEPT' and result['findings']==[]
 
 
 def defect_case():
-    root=Path('evidence/lighthouse-editorial/independent-review-03.json')
-    old=json.loads(root.read_text())['findings'][0]
-    old.update(broken_requirement='Upper door leads directly into the dry upper room.',
-               material_impact='An extra tower ascent changes the approved entry and exit route.')
-    response=empty();response['blocking_findings']=[old]
+    old=json.loads(Path('evidence/lighthouse-editorial/independent-review-03.json').read_text())['findings'][0]
     story=Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt').read_text()
-    return response,segments(story)
+    rows=segments(story);response=empty(rows);response['requirement_checks'][0].update(
+        span_ids=old['span_ids'],exact_text=old['exact_text'],reason=old['reason'],
+        repair_span_ids=old['span_ids'],assessment='MATERIAL_VIOLATION')
+    return response,rows
 
 
 def test_actual_plan_violation_still_requires_repair():
-    response,rows=defect_case()
-    result=decision(response,rows)
+    response,rows=defect_case();result=decision(response,rows)
     assert result['status']=='REPAIR' and result['findings'][0]['span_ids']==['S054','S060','S061','S183']
 
 
-@pytest.mark.parametrize('change',['quote','unknown_span','no_repair','minor','missing_requirement','missing_impact','duplicate_span','note_with_severity'])
-def test_invalid_audit_must_not_silently_accept_or_repair(change):
-    response,rows=defect_case();r=response['blocking_findings'][0]
+@pytest.mark.parametrize('change',['quote','unknown_span','unknown_repair_span','missing_requirement','duplicate_requirement','uncertain','missing_evidence','duplicate_span'])
+def test_invalid_or_uncertain_audit_cannot_silently_accept_or_repair(change):
+    response,rows=defect_case();r=response['requirement_checks'][0]
     if change=='quote':r['exact_text']='invented quotation'
     if change=='unknown_span':r['span_ids']=['S999']
-    if change=='no_repair':r['repair_scope']='NO_REPAIR'
-    if change=='minor':r['severity']='minor'
-    if change=='missing_requirement':r.pop('broken_requirement')
-    if change=='missing_impact':r.pop('material_impact')
+    if change=='unknown_repair_span':r['repair_span_ids']=['S999']
+    if change=='missing_requirement':response['requirement_checks'].pop()
+    if change=='duplicate_requirement':response['requirement_checks'][1]['requirement_id']=r['requirement_id']
+    if change=='uncertain':r['assessment']='UNCERTAIN'
+    if change=='missing_evidence':r['exact_text']=''
     if change=='duplicate_span':r['span_ids'].append(r['span_ids'][0])
-    if change=='note_with_severity':response['advisory_notes']=[{'span_ids':[], 'note':'test','severity':'moderate'}]
     with pytest.raises(RuntimeError):decision(response,rows)
+
+
+def test_withdrawn_observation_cannot_trigger_repair():
+    response,rows=defect_case();response=empty(rows)
+    response['observations']=[{'family':'closure_integrity','span_ids':['S197'],'exact_text':'',
+        'reason':'No defect found; this entry is withdrawn.','material_impact':'none','classification':'VERIFIED'}]
+    assert decision(response,rows)['status']=='ACCEPT'
+
+
+def test_additional_actual_defect_still_blocks():
+    response,rows=defect_case();response=empty(rows)
+    response['observations']=[{'family':'state_continuity','span_ids':[rows[1]['span_id']],
+        'exact_text':rows[1]['repaired_text'],'reason':'Synthetic contradiction with material consequence',
+        'material_impact':'Makes the rescue impossible','classification':'DEFECT_SCENE'}]
+    assert decision(response,rows)['status']=='REPAIR'

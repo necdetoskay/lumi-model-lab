@@ -22,7 +22,7 @@ RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-
 NEXT_RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/calls.json')
 NEXT_RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt')
 EDITORIAL_REVIEW = Path('evidence/lighthouse-editorial/independent-review-03.json')
-PRIOR_COST = 1.4208331
+PRIOR_COST = 1.4986211
 COMPLETION_AUDIT_SCHEMA = json.loads(json.dumps(AUDIT_RESPONSE_SCHEMA))
 COMPLETION_AUDIT_SCHEMA['properties']['findings']['items']['properties']['reason']['maxLength'] = 2000
 BUDGET = 3.0
@@ -48,7 +48,8 @@ def prepare():
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
                   'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),str(NEXT_RESUME_LEDGER),str(NEXT_RESUME_TEXT),str(EDITORIAL_REVIEW),
                   'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',str(DECISION_PROMPT),
-                  'src/lighthouse_audit_decision.py','tests/test_lighthouse_audit_decision.py',
+                  'src/lighthouse_audit_decision.py','src/lighthouse_audit_requirements.py',
+                  'evidence/lighthouse-editorial/audit-requirements.json','tests/test_lighthouse_audit_decision.py',
                   '.github/workflows/lighthouse-completion-once.yml'])
     manifest = [{'path': p, 'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
     payload, ids = scope_payload(raw, plan, findings)
@@ -135,10 +136,13 @@ def scope_payload(raw, plan, findings):
             'source_story_sha256':artifact['story_sha256']}, ids
 
 def call_model(key,stage,payload):
+    if stage=='AUDIT':
+        from src.lighthouse_audit_requirements import requirements
+        payload={**payload,'binding_requirements':requirements(payload['approved_plan'])}
     return _call(api_key=key,payload=payload,
         prompt_path=Path('prompts/lighthouse_patch_repair.md' if stage=='PATCH' else str(DECISION_PROMPT)),
         request_class='spineforge_v21_scene_repair' if stage=='PATCH' else 'spineforge_v21_initial_blocking_audit',
-        schema_name='lighthouse_patch_v1' if stage=='PATCH' else 'lighthouse_audit_decision_v2',
+        schema_name='lighthouse_patch_v1' if stage=='PATCH' else 'lighthouse_audit_decision_v3',
         schema=PATCH_SCHEMA if stage=='PATCH' else DECISION_SCHEMA,
         max_tokens=3500,stage=stage)
 
@@ -198,7 +202,7 @@ def run(*,authorization,output_dir,call_fn):
             audit_payload={'full_story':a['story'],'story_segments':a['segments'],'approved_plan':plan,
                            'previous_findings':findings,'patch_proof':proof,'reader_profile':{'age':12,'language':'en'}}
             response=invoke('AUDIT',audit_payload)
-            audit_result=decision(response,a['segments'])
+            audit_result=decision(response,a['segments'],plan)
             save(f'audit-decision-{cycle+1:02}.json',audit_result)
             findings=audit_result['findings']
             result.update(final_advisory_notes=audit_result['advisory_notes'],

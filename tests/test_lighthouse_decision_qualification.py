@@ -12,11 +12,13 @@ def grant():
 
 
 def answer(data):
-    d={'blocking_findings':[],'advisory_notes':[],'verified_requirements':[],'summary':'mock','usage':usage()}
+    from tests.test_lighthouse_audit_decision import empty
+    d=empty(data['story_segments']);d['usage']=usage()
     if 'wide entrance stairs' in data['full_story']:
         fs=json.loads(Path('evidence/lighthouse-editorial/independent-review-03.json').read_text())['findings']
-        for f in fs:f.update(broken_requirement='Approved plan',material_impact='Changed route or final image')
-        d['blocking_findings']=fs
+        for i,f in enumerate(fs):
+            d['requirement_checks'][i].update(span_ids=f['span_ids'],exact_text=f['exact_text'],
+                reason=f['reason'],repair_span_ids=f['span_ids'],assessment='MATERIAL_VIOLATION')
     return d
 
 
@@ -30,7 +32,11 @@ def test_two_saved_versions_consumed_once_without_story_change(tmp_path):
 
 
 def test_negative_control_cannot_pass_with_empty_defects(tmp_path):
-    r=q.run(grant(),tmp_path,lambda d:{**answer(d),'blocking_findings':[]})
+    def call(d):
+        a=answer(d)
+        for row in a['requirement_checks']:row.update(assessment='SATISFIED',repair_span_ids=[])
+        return a
+    r=q.run(grant(),tmp_path,call)
     assert r['status']=='QUALIFICATION_FAILED' and not r['cases'][1]['passed']
 
 
