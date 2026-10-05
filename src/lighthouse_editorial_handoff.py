@@ -39,6 +39,8 @@ def build(source: bytes, approval: dict) -> dict:
         'status': 'PREPARED_NOT_RUNTIME_QUALIFIED',
         'experiment_kind': 'HUMAN_EDITORIAL_PLAN_WRITER_QUALITY',
         'source_sha256': digest,
+        'plan_approval_sha256': hashlib.sha256(json.dumps(approval, ensure_ascii=False,
+            sort_keys=True, separators=(',', ':')).encode()).hexdigest(),
         'paid_execution_authorized': False,
         'production_canon_write_authorized': False,
         'spine_architect_evaluated': False,
