@@ -1,0 +1,56 @@
+name: Lighthouse Authorized Single Experiment
+
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths:
+      - '.github/workflows/lighthouse-paid-once.yml'
+      - 'evidence/lighthouse-editorial/paid-authorization.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lighthouse-editorial-paid-once
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-PAID-01]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Verify frozen inputs and offline routes
+        run: |
+          python -m pytest -q tests/test_lighthouse_*.py tests/test_spineforge_v21_*.py
+          python -m src.lighthouse_writer_once
+          python -m src.lighthouse_experiment
+          git diff --exit-code -- evidence/lighthouse-editorial/prepared-experiment.json evidence/lighthouse-editorial/writer-input.json
+
+  paid-once:
+    needs: qualify
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-PAID-01]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Single authorized experiment — never retry
+        run: python -m src.lighthouse_experiment --execute --authorization evidence/lighthouse-editorial/paid-authorization.json
+      - name: Preserve all evidence including rejected candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-paid-once-${{ github.run_id }}
+          path: evidence/lighthouse-paid-experiment/
+          if-no-files-found: warn
