@@ -27,6 +27,7 @@ def dispatch(api_key, payload):
                      'X-Title': 'LUMI Model Lab'},
             json=payload, stream=True, timeout=(30, 240))
         response.raise_for_status()
+        response.encoding = 'utf-8'
         for raw in response.iter_lines(decode_unicode=True):
             if isinstance(raw, bytes): raw = raw.decode('utf-8')
             if not raw or not raw.startswith('data:'): continue

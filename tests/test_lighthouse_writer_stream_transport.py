@@ -46,3 +46,16 @@ def test_profile_drift_blocks_network(monkeypatch):
     monkeypatch.setattr('src.lighthouse_writer_stream_transport.requests.post',lambda *a,**k:pytest.fail('Network'))
     request=requests(approved_input())[0][1]; request['max_tokens']=7000
     with pytest.raises(RuntimeError): dispatch('test',request)
+
+
+def test_sse_without_charset_is_decoded_as_utf8(monkeypatch):
+    class EncodedResponse(Response):
+        encoding = 'latin1'
+        def iter_lines(self, **kwargs):
+            for line in self.lines: yield line.encode('utf8').decode(self.encoding)
+    lines=stream('Salt — sea');lines[0]='data: '+json.dumps(
+        {'choices':[{'delta':{'content':'Salt — sea'}}]},ensure_ascii=False)
+    response=EncodedResponse(lines)
+    monkeypatch.setattr('src.lighthouse_writer_stream_transport.requests.post',lambda *a,**k:response)
+    text,_,_=dispatch('test',requests(approved_input())[0][1])
+    assert text=='Salt — sea' and response.encoding=='utf-8'

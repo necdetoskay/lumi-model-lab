@@ -1,0 +1,28 @@
+name: Lighthouse Prompt Reading Audit
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths: ['evidence/lighthouse-editorial/prompt-read-audit-authorization.json']
+permissions:
+  contents: read
+jobs:
+  audit:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-READ-AUDIT-01]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests/test_lighthouse_*.py tests/test_plan_audit_contract.py tests/test_spineforge_v21_*.py
+      - name: Audit saved reading copy, no new Writer
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m src.lighthouse_prompt_read_audit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-prompt-read-audit-${{ github.run_id }}
+          path: evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-READ-AUDIT-01-20261005/
