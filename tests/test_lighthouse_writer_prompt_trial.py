@@ -19,6 +19,29 @@ def authorization():
     return {**prepared,'explicit_paid_authorization':True}
 
 
+def test_mutable_comparison_report_is_not_a_budget_checkpoint(monkeypatch):
+    original=Path.read_text
+    def read(path,*args,**kwargs):
+        if str(path)=='evidence/lighthouse-writer-prompt-trial/comparison-summary.json':
+            return '{"confirmed_story_cost_usd":9999}'
+        return original(path,*args,**kwargs)
+    monkeypatch.setattr(Path,'read_text',read)
+    prepared,_=prepare()
+    assert prepared['prior_story_cost_usd']==1.8284507
+    assert all(x['path']!='evidence/lighthouse-writer-prompt-trial/comparison-summary.json'
+               for x in prepared['runtime_manifest'])
+
+
+def test_immutable_budget_checkpoint_drift_still_blocks(monkeypatch):
+    original=Path.read_text
+    def read(path,*args,**kwargs):
+        if str(path)=='evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005/result.json':
+            return '{"confirmed_story_cost_usd":9999}'
+        return original(path,*args,**kwargs)
+    monkeypatch.setattr(Path,'read_text',read)
+    with pytest.raises(RuntimeError):prepare()
+
+
 @pytest.mark.parametrize('key',['plan_sha256','writer_requests','runtime_manifest_sha256','prior_story_cost_usd','max_new_calls'])
 def test_changed_trial_cannot_call_provider(tmp_path,key):
     auth=authorization();auth[key]=None

@@ -34,13 +34,12 @@ def requests(plan):
 
 def prepare():
     plan = approved_input()
-    if json.loads(Path('evidence/lighthouse-writer-prompt-trial/comparison-summary.json').read_text())['confirmed_story_cost_usd'] != PRIOR:
+    if json.loads(Path('evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005/result.json').read_text())['confirmed_story_cost_usd'] != PRIOR:
         raise RuntimeError('Prior accounting drift')
     paths = {x['path'] for x in dependency_manifest()}
     paths.update(['src/lighthouse_writer_prompt_trial.py', str(TRIAL_PROMPT),
         'src/lighthouse_writer_stream_transport.py', 'tests/test_lighthouse_writer_stream_transport.py',
         'evidence/lighthouse-editorial/writer-stream-profile-v2.json',
-        'evidence/lighthouse-writer-prompt-trial/comparison-summary.json',
         'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-02-20261005/result.json',
         'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-03-20261005/result.json',
         'src/lighthouse_audit_decision.py', 'src/lighthouse_audit_requirements.py',

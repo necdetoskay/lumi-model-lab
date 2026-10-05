@@ -1,0 +1,31 @@
+name: Lighthouse Saved Delivery Replay
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths:
+      - 'src/story_delivery.py'
+      - 'src/audit_citation_projection.py'
+      - 'src/lighthouse_delivery_replay.py'
+      - 'tests/test_story_delivery.py'
+      - 'tests/test_audit_citation_projection.py'
+      - '.github/workflows/lighthouse-delivery-replay.yml'
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests/test_story_delivery.py tests/test_audit_citation_projection.py tests/test_lighthouse_*.py tests/test_plan_audit_contract.py tests/test_spineforge_v21_*.py
+      - name: Replay stored responses without provider credentials
+        run: python -m src.lighthouse_delivery_replay --output-dir evidence/lighthouse-writer-prompt-trial/ci-replay-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-delivery-replay-${{ github.run_id }}
+          path: evidence/lighthouse-writer-prompt-trial/ci-replay-${{ github.run_id }}/
