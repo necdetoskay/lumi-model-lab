@@ -22,3 +22,7 @@ Yerel kontrol: 233 PASS / 20.89 s. Yeni teslimat, alıntı ve replay kontrolleri
 Bilinen hikâye/geliştirme ücreti $1.95169086, kaydı eksik ilk çağrı rezervi $0.04, bütçede izlenen toplam $1.99169086 olarak kaldı. Toplam gerçek fatura hâlâ tamamlanmış değil. Production LUMI yazımı ve çeviri yok.
 
 Sınır: yeni adaptörler replay hattına bağlandı; canlı ücretli üretim hattına henüz bağlanıp doğrulanmadı. Sonnet'in mevcut altı kontrolü kordon sürekliliği ve Duru konumu gibi bazı kaynak okumada saptanan kusurları eksik yakalıyor. Teslimatın otomatik geçmesi denetçinin içerik kapsamını tamamlamaz. Sıradaki iş, aynı değişmez temiz/bozuk metinlerle bu denetim kapsamını doğrulamak; Writer'ı tekrar çalıştırmak gerekmiyor.
+
+## Sunucu doğrulaması
+
+Commit 5d012c185b554cf7c0bdd04e4025d6f73b942d5d; replay run 37364473471 PASS. CI 225 test PASS / 15.22 s. Yerelde 233 test; sekiz fark önceki kısmi checkout testlerinden geliyor. Replay artifact 11368300582 ZIP SHA256 300a2b000d7746bf32c609f88821b3c6b7016e1c10887ecd931ba1c500140ee1. ZIP indirildi, hash doğrulandı ve içindeki beş dosya yerel replay çıktılarıyla byte düzeyinde aynı bulundu. Ek editorial zero-cost run 37364473297 de PASS. Sağlayıcı anahtarı kullanılmadan iki hikâye aynı kararlara ulaştı; yeni API çağrısı ve ücret yok.
