@@ -4,8 +4,9 @@ from src.lighthouse_audit_decision import SCHEMA, decision
 from src.spineforge_v21_model_adapter import validate_schema
 
 
-def project_citations(response, segments):
-    validate_schema({k:response[k] for k in SCHEMA['properties']},SCHEMA)
+def project_citations(response, segments, *, schema=None):
+    schema = SCHEMA if schema is None else schema
+    validate_schema({k:response[k] for k in schema['properties']},schema)
     positions = {row['span_id']: i for i,row in enumerate(segments)}
     if len(positions) != len(segments):
         raise RuntimeError('Duplicate source spans')
