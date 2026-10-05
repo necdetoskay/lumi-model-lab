@@ -15,7 +15,8 @@ PREPARED = Path('evidence/lighthouse-editorial/patch-campaign-prepared.json')
 AUTH = Path('evidence/lighthouse-editorial/patch-campaign-authorization.json')
 OUTPUT = Path('evidence/lighthouse-patch-campaign')
 EXPERIMENT_ID = 'LIGHTHOUSE-SINGLE-STORY-COMPLETION-01'
-PRIOR_COST = 0.0340231
+RESUME_PATCH = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-01-20261005/calls.json')
+PRIOR_COST = 0.0618471
 BUDGET = 3.0
 PATCH_SCHEMA = {'type': 'object', 'additionalProperties': False, 'required': ['patches','summary'],
     'properties': {'summary': {'type':'string','maxLength':1200}, 'patches': {
@@ -37,12 +38,13 @@ def prepare():
     findings = calls[0]['response']['findings']
     paths = {r['path'] for r in dependency_manifest()}
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
-                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',
+                  'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),
                   'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',
                   '.github/workflows/lighthouse-completion-once.yml'])
     manifest = [{'path': p, 'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
     prepared = {'experiment_id':EXPERIMENT_ID,'plan_sha256':digest_json(plan),
         'source_story_sha256':artifact['story_sha256'],'saved_findings_sha256':digest_json(findings),
+        'resume_patch_sha256':hashlib.sha256(RESUME_PATCH.read_bytes()).hexdigest(),
         'runtime_manifest':manifest,'runtime_manifest_sha256':digest_json(manifest),
         'total_story_budget_usd':BUDGET,'prior_story_cost_usd':PRIOR_COST,
         'paid_execution_authorized':False,'new_writer_calls':0,'max_patch_spans':24}
@@ -67,13 +69,14 @@ def apply_patches(raw, plan, allowed_ids, patches):
             raise RuntimeError('Patch outside approved span scope or duplicate')
         seen.add(sid); row=rows[sid]; scene=segment_scenes[sid]
         if scene=='TITLE':raise RuntimeError('Title patch forbidden')
-        if p['old_text'] != row['text']:raise RuntimeError('Patch source mismatch')
+        old=p['old_text']
+        if not old or row['text'].count(old)!=1:raise RuntimeError('Patch source mismatch or ambiguity')
         replacement=p['replacement_text']
         if (not replacement.strip() or '[[' in replacement or '\n' in replacement
                 or replacement == p['old_text']):raise RuntimeError('Invalid or unchanged replacement')
-        start=raw_starts[scene]+row['char_start']-bounds[scene]['char_start']
-        end=start+len(row['text'])
-        if raw[start:end]!=row['text']:raise RuntimeError('Raw/span alignment mismatch')
+        start=raw_starts[scene]+row['char_start']-bounds[scene]['char_start']+row['text'].index(old)
+        end=start+len(old)
+        if raw[start:end]!=old:raise RuntimeError('Raw/span alignment mismatch')
         edits.append((start,end,replacement))
     edits.sort()
     cursor=0; parts=[]; preserved=[]
@@ -111,7 +114,7 @@ def call_model(key,stage,payload):
 def run(*,authorization,output_dir,call_fn):
     prepared,plan,raw,findings=prepare()
     for k in ['experiment_id','plan_sha256','source_story_sha256','saved_findings_sha256',
-              'runtime_manifest_sha256','total_story_budget_usd','prior_story_cost_usd']:
+              'runtime_manifest_sha256','total_story_budget_usd','prior_story_cost_usd','resume_patch_sha256']:
         if authorization.get(k)!=prepared[k]:raise RuntimeError('Authorization drift: '+k)
     if authorization.get('explicit_paid_authorization') is not True:raise RuntimeError('Paid authorization required')
     aid=authorization.get('authorization_id','')
@@ -156,7 +159,11 @@ def run(*,authorization,output_dir,call_fn):
                 result.update(status='ACCEPT',accepted_story_sha256=a['story_sha256'],word_count=a['word_count'])
                 break
             payload,ids=scope_payload(raw,plan,findings)
-            patch=invoke('PATCH',payload)
+            if cycle==0:
+                patch=json.loads(RESUME_PATCH.read_text())[0]['response']
+                save('reused-patch-response.json',patch)
+            else:
+                patch=invoke('PATCH',payload)
             raw,proof=apply_patches(raw,plan,ids,patch['patches'])
             save(f'patch-proof-{cycle+1:02}.json',proof)
             (out/f'candidate-{cycle+1:02}.txt').write_text(bind_story(raw,plan)['story'])

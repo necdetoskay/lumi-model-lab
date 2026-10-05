@@ -1,6 +1,8 @@
 Repair material defects in one existing English story, preserving its human-approved plot.
 You may change only allowed_span_ids. These may occur in different scenes.
-Return patches with the exact old_text and a replacement_text for each necessary change.
+Return patches with exact old_text and replacement_text for each necessary change.
+old_text may be the whole current_text or one exact substring occurring only once inside
+the allowed span. Everything outside that substring is automatically preserved.
 Keep each replacement within its sentence or dialogue span; no newlines or scene markers.
 Do not rewrite the rest of the story, invent a new route, ability, equipment, reward, or ending.
 Use the full story to check interactions; preserve voice and ordinary age-12 adventure dialogue.

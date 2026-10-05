@@ -7,7 +7,7 @@ from tests.test_lighthouse_experiment import usage, audit
 def grant():
     p,*_=campaign.prepare()
     return {k:p[k] for k in ['experiment_id','plan_sha256','source_story_sha256','saved_findings_sha256',
-        'runtime_manifest_sha256','total_story_budget_usd','prior_story_cost_usd']} | {
+        'runtime_manifest_sha256','total_story_budget_usd','prior_story_cost_usd','resume_patch_sha256']} | {
         'explicit_paid_authorization':True,'authorization_id':'FAKE-CAMPAIGN'}
 
 
@@ -25,7 +25,7 @@ def test_saved_cross_scene_finding_completes_and_consumes_once(tmp_path):
         if stage=='PATCH':return {'patches':patch_rows(payload),'summary':'mock repair','usage':usage()}
         return audit([])
     r=campaign.run(authorization=grant(),output_dir=tmp_path,call_fn=call)
-    assert r['status']=='ACCEPT' and r['writer_calls']==0 and stages==['PATCH','AUDIT']
+    assert r['status']=='ACCEPT' and r['writer_calls']==0 and stages==['AUDIT']
     proof=json.loads((tmp_path/'FAKE-CAMPAIGN/patch-proof-01.json').read_text())
     assert proof['outside_patches_unchanged']
     with pytest.raises(FileExistsError):
@@ -59,7 +59,7 @@ def test_multiple_scene_edits_preserve_all_other_bytes():
 
 
 def test_budget_blocks_before_dispatch(tmp_path,monkeypatch):
-    monkeypatch.setattr(campaign,'BUDGET',.04)
+    monkeypatch.setattr(campaign,'BUDGET',.07)
     r=campaign.run(authorization=grant(),output_dir=tmp_path,
                    call_fn=lambda *a:pytest.fail('Budget must stop before call'))
     assert r['new_call_count']==0 and 'reservation' in r['failure_message']
