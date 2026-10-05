@@ -21,8 +21,8 @@ def audit_schema(contract):
                 'summary': {'type': 'string', 'maxLength': 1500}}}
 
 
-def decision(response, segments, contract, plan, approved_plan_sha256):
-    validate_contract(contract, plan, approved_plan_sha256)
+def decision(response, segments, contract, plan, approved_plan_sha256, *, contract_validator=validate_contract):
+    contract_validator(contract, plan, approved_plan_sha256)
     validate_schema(response, audit_schema(contract))
     text = {}
     for segment in segments:
