@@ -185,6 +185,7 @@ def run_bounded_quality(
         except Exception as exc:
             row["status"] = "FAILED"
             row["failure_type"] = type(exc).__name__
+            row["failure_message"] = getattr(exc, "diagnostic_message", type(exc).__name__)
             row["provider_evidence"] = getattr(exc, "provider_evidence", None)
             reported = getattr(exc, "usage", None)
             if reported is not None:
@@ -195,7 +196,7 @@ def run_bounded_quality(
                     pass
             if record_event:
                 record_event(deepcopy(row))
-            raise QualityStop("REJECT_PROVIDER_FAILURE", f"{stage}: {type(exc).__name__}") from exc
+            raise QualityStop("REJECT_PROVIDER_FAILURE", f"{stage}: {row['failure_message']}") from exc
         row["response"] = deepcopy(raw)
         row["response_sha256"] = digest_json(raw)
         row["raw_usage"] = raw.get("usage") if isinstance(raw, dict) else None
@@ -293,15 +294,16 @@ def _result(
     if rollup["api_calls"] > 3:
         raise RuntimeError("v21 quality runtime exceeded three model calls.")
     return {
-        "schema": "spineforge-v21-bounded-quality-result.v1",
+        "schema": "spineforge-v21-bounded-quality-result.v2",
         "status": status,
         "quality_model_calls": rollup["api_calls"],
         "quality_usage_rollup": rollup,
         "quality_calls": calls,
         "initial_blocking_count": len(initial_blocking),
         "initial_advisory_count": len(initial_advisory),
-        "final_blocking_count": len(final_blocking or []),
-        "final_advisory_count": len(final_advisory or []),
+        "final_audit_validated": final_blocking is not None,
+        "final_blocking_count": len(final_blocking) if final_blocking is not None else None,
+        "final_advisory_count": len(final_advisory) if final_advisory is not None else None,
         "repair_count": repair_count,
         "final_audit_executed": final_audit_executed,
         "final_audit_scope": final_audit_scope,

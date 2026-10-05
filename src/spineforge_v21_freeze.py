@@ -64,7 +64,7 @@ def build_profile(source_commit: str) -> dict:
         "schema_version": "spineforge-runtime-profile.v1",
         "runtime_id": "spineforge.v21.bounded-quality",
         "qualification_state": "ZERO_COST_FROZEN_PAID_NOT_AUTHORIZED",
-        "runtime_freeze": {"enabled": True, "runtime_revision": "SPINEFORGE-BOUNDED-QUALITY-FROZEN-v21.3",
+        "runtime_freeze": {"enabled": True, "runtime_revision": "SPINEFORGE-BOUNDED-QUALITY-FROZEN-v21.4",
                            "source_commit": source_commit,
                            "files": [{"path": str(p), "sha256": sha_file(p)} for p in dependency_paths()]},
         "source_story": {"artifact_path": str(SOURCE), "artifact_id": story["artifact_id"],

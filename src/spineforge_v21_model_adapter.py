@@ -132,34 +132,45 @@ class AdapterResponseError(RuntimeError):
         super().__init__(message)
         self.usage = usage
         self.provider_evidence = provider_evidence
+        self.diagnostic_message = message
 
 
-def validate_schema(value, schema):
+def validate_schema(value, schema, path="$"):
     kind = schema.get("type")
     ok = {"object": isinstance(value, dict), "array": isinstance(value, list),
           "string": isinstance(value, str), "integer": type(value) is int}.get(kind, False)
     if not ok:
-        raise RuntimeError(f"Invalid response type: expected {kind}")
+        raise RuntimeError(f"{path}: Invalid response type: expected {kind}")
     if "enum" in schema and value not in schema["enum"]:
-        raise RuntimeError("Invalid response enum")
+        raise RuntimeError(f"{path}: Invalid response enum")
     if kind == "object":
-        if any(k not in value for k in schema.get("required", [])):
-            raise RuntimeError("Missing required response field")
+        missing = [k for k in schema.get("required", []) if k not in value]
+        if missing:
+            raise RuntimeError(f"{path}: Missing required response field: {', '.join(missing)}")
         if schema.get("additionalProperties") is False and set(value) - set(schema["properties"]):
-            raise RuntimeError("Unexpected response field")
+            raise RuntimeError(f"{path}: Unexpected response field")
         for k, v in value.items():
-            validate_schema(v, schema["properties"][k])
+            validate_schema(v, schema["properties"][k], f"{path}.{k}")
     if kind in {"array", "string"}:
         suffix = "Items" if kind == "array" else "Length"
         if not schema.get("min" + suffix, 0) <= len(value) <= schema.get("max" + suffix, float("inf")):
-            raise RuntimeError("Response length outside contract")
+            raise RuntimeError(f"{path}: Response length outside contract")
     if kind == "array":
         if schema.get("uniqueItems") and len({json.dumps(v, sort_keys=True) for v in value}) != len(value):
-            raise RuntimeError("Duplicate response items")
-        for v in value:
-            validate_schema(v, schema["items"])
+            raise RuntimeError(f"{path}: Duplicate response items")
+        for i, v in enumerate(value):
+            validate_schema(v, schema["items"], f"{path}[{i}]")
     if kind == "integer" and not schema.get("minimum", -float("inf")) <= value <= schema.get("maximum", float("inf")):
-        raise RuntimeError("Response integer outside contract")
+        raise RuntimeError(f"{path}: Response integer outside contract")
+
+
+def response_evidence(body, wire_payload, *, raw=None, phase):
+    # Never copy transport headers, API keys, or arbitrary exception traces.
+    response = {k: body[k] for k in ("id", "model", "choices", "usage") if k in body}
+    return {"phase": phase, "parsed_response": raw,
+            "parsed_response_sha256": digest_json(raw),
+            "provider_response": response, "provider_response_sha256": digest_json(response),
+            "wire_payload": wire_payload, "wire_payload_sha256": digest_json(wire_payload)}
 
 
 def provider_usage(body, stage, latency):
@@ -215,15 +226,20 @@ def _call(
         except AdapterResponseError as usage_error:
             usage = usage_error.usage
         raise AdapterResponseError(type(exc).__name__, usage,
-                                   {"stage": trace.get("stage"), "provider_usage": body.get("usage")}) from exc
+                                   response_evidence(body, wire_payload, phase=trace.get("stage", "transport"))) from exc
     latency = round(time.perf_counter() - started, 3)
-    usage = provider_usage(body, stage, latency)
+    try:
+        usage = provider_usage(body, stage, latency)
+    except AdapterResponseError as exc:
+        exc.provider_evidence = response_evidence(body, wire_payload, raw=raw, phase="usage_validation")
+        raise
     try:
         validate_schema(raw, schema)
         if failures:
             raise RuntimeError("Unexpected retry/fallback evidence")
     except RuntimeError as exc:
-        raise AdapterResponseError(str(exc), usage) from exc
+        raise AdapterResponseError(str(exc), usage,
+                                   response_evidence(body, wire_payload, raw=raw, phase="response_validation")) from exc
     return {
         **raw,
         "usage": usage,

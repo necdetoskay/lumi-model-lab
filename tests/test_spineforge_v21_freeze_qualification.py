@@ -170,3 +170,59 @@ def test_ledger_failure_prevents_dispatch():
         raise OSError("ledger unavailable")
     with pytest.raises(OSError):
         run_bounded_quality(**runtime_args(), initial_audit_fn=lambda _: pytest.fail("ledger failed"), record_event=fail)
+
+
+@pytest.mark.parametrize("invalid_field,invalid_value,expected_path", [
+    ("family", "not_a_family", "$.findings[0].family"),
+    ("repair_scope", "LOCAL_REPAIR", "$.findings[0].repair_scope"),
+    ("reason", "x" * 501, "$.findings[0].reason"),
+])
+def test_failed_final_response_retains_diagnostics_and_never_looks_clean(invalid_field, invalid_value, expected_path):
+    from src.spineforge_v21_model_adapter import execute_final_audit_call
+    from src.spineforge_v21_constraints import digest_json
+    finding = {"family": "causal_logic", "severity": "serious", "repair_scope": "SCENE_REPAIR",
+               "span_ids": ["S159"], "exact_text": "x", "reason": "bounded"}
+    final = {**finding, "span_ids": ["R001"], invalid_field: invalid_value}
+    raw = {"findings": [final], "summary": "Synthetic invalid response; not the lost paid response"}
+    calls, events = [], []
+    def transport(**kwargs):
+        calls.append(kwargs["request_class"])
+        return raw, {"usage": {"prompt_tokens": 100, "completion_tokens": 20,
+                               "total_tokens": 120, "cost": 0.01},
+                     "choices": [{"message": {"content": json.dumps(raw)}}],
+                     "headers": {"Authorization": "NEVER_STORE_THIS"}}, {}, []
+    args = runtime_args()
+    args["scene_repair_fn"] = lambda _: {"replacement_scene": "A scene.", "resolved_blocking_finding_indexes": [0], "usage": usage()}
+    args["final_audit_fn"] = lambda p: execute_final_audit_call(api_key="", payload=p, call_fn=transport)
+    result = run_bounded_quality(**args, record_event=events.append,
+                                 initial_audit_fn=lambda _: {"findings": [finding], "usage": usage()})
+    assert result["status"] == "REJECT_PROVIDER_FAILURE"
+    assert result["quality_model_calls"] == 3 and result["repair_count"] == 1
+    assert len(calls) == 1
+    assert result["quality_usage_rollup"]["cost_usd"] == 0.03
+    assert result["final_audit_validated"] is False
+    assert result["final_blocking_count"] is None
+    assert result["accepted_story"] is None
+    assert expected_path in result["failure_reason"]
+    assert expected_path in events[-1]["failure_message"]
+    evidence = events[-1]["provider_evidence"]
+    assert evidence["parsed_response"] == raw
+    assert evidence["parsed_response_sha256"] == digest_json(raw)
+    assert evidence["provider_response"]["choices"][0]["message"]["content"] == json.dumps(raw)
+    assert "NEVER_STORE_THIS" not in json.dumps(result)
+
+
+def test_transport_parse_failure_preserves_available_response_body():
+    from src.generate import OpenRouterCallError
+    def transport(**_):
+        raise OpenRouterCallError("private diagnostic", {
+            "stage": "structured_parse", "request": {"secret": "NEVER_STORE_THIS"},
+            "body": {"choices": [{"message": {"content": "{invalid JSON"}}],
+                     "usage": {"prompt_tokens": 100, "completion_tokens": 20,
+                               "total_tokens": 120, "cost": 0.01}}})
+    result = run_bounded_quality(**runtime_args(), initial_audit_fn=lambda p: execute_initial_audit_call(api_key="", payload=p, call_fn=transport))
+    evidence = result["quality_calls"][0]["provider_evidence"]
+    assert evidence["phase"] == "structured_parse"
+    assert evidence["provider_response"]["choices"][0]["message"]["content"] == "{invalid JSON"
+    assert "NEVER_STORE_THIS" not in json.dumps(result)
+    assert result["quality_model_calls"] == 1

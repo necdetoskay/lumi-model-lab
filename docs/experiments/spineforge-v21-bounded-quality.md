@@ -146,3 +146,32 @@ Budget qualification remains open: at full configured output allowances, rough
 chars/4 planning estimates still exceed the initial and repair ceilings. No
 paid run is authorized. Input reduction must not be presented as proof of the
 $0.10 accepted-story target; request/output budgeting is the next separate step.
+
+## Paid bridge result and v21.4 offline diagnostics
+
+Run 37230896244 completed three calls and one repair at $0.057988 reported cost
+and 21.023 seconds of summed model-call latency. Initial audit found one serious
+physical defect. Final audit failed adapter validation; the outcome was
+REJECT_PROVIDER_FAILURE, not ACCEPT or a validated NON_CONVERGENT verdict.
+See `evidence/spineforge-v21-paid-quality/37230896244/review.md`.
+The one-time authorization was consumed and closed. No new paid run is authorized.
+
+v21.3 only isolated the experiment authorization profile in the workflow.
+v21.4 fixes the diagnostic loss exposed by that run: adapter validation errors
+retain the parsed response, available provider message content, exact field path,
+wire payload and hashes. The runtime persists the safe diagnostic message.
+Transport headers, credentials and arbitrary exception traces are excluded.
+Transport failures without a response still cannot manufacture missing evidence.
+
+The result envelope schema is explicitly v2: `final_audit_validated` indicates
+whether final findings were successfully parsed, and final finding counts are
+null until then (including when final audit was not needed on the clean path).
+Provider response schemas, story inputs, models, budgets and routing are unchanged.
+Historical v1 evidence is preserved verbatim. Its final_blocking_count=0 must not
+be interpreted as clean when final response validation failed.
+
+Synthetic tests cover invalid family, invalid repair_scope, oversized reason and
+malformed JSON, with exact diagnostic retention and no follow-up inference. These
+are representative error cases, not a reconstruction of the lost final response.
+The original invalid field remains unknown. This patch does not demonstrate that
+the bridge's remaining physical or spatial defects have been solved.
