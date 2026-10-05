@@ -1,5 +1,48 @@
 # Aion Writer prompt karşılaştırması — 5 Ekim 2026
 
+## Sonuç: ek prompt bu örnekte iyileşme sağlamadı
+
+Aynı onaylı plan, aynı Aion 3.5 Mini modeli, aynı temperature 0.76, 32.768 toplam completion tavanı, akışlı yanıt ve iki biçimde açık low düşünme ayarıyla iki metin üretildi. İstekler arasındaki tek fark system prompta eklenen beş kategori kontrolüydü. Hikâyelere anlamsal onarım uygulanmadı. Üst kelime sınırı yok; minimum 1.400.
+
+| Kontrol | Güncel mevcut prompt | Beş kategori ekli prompt |
+|---|---|---|
+| Okuma nüshası uzunluğu | 2.100 kelime | 2.663 kelime |
+| Fazladan giriş merdiveni | Yok | Yok |
+| Anne boyutu / yetenekleri | Bel hizası açık; kurallar korunuyor | Boy belirsiz bir tekne/boathouse benzetmesi; kesin boy ihlali sayılmadı |
+| Kordonun nasıl elde kaldığı | Kurulmamış; kordon yuvada da gösteriliyor, sonra cepte beliriyor | En sonda somehow kemer halkasında kaldığı söyleniyor; önceden kurulmamış |
+| Gerçek son görüntü | Cepte kordonla kapanmıyor; son görüntü fener | Kordon dışarıda çevriliyor; son paragraf yan yana rüzgâra yürümek |
+| Duru'nun kurtarma konumu | Bir üst basamak ve yavru aktarımı korunuyor | Yarım merdiven yukarıda; planlanan konum ve aktarım korunmuyor |
+| Kaynak okumada belirgin içerik sorunu | 2 | 3 |
+
+Bunlar Codex'in kaynak plana karşı yaptığı okumanın sayılarıdır. Sonnet'in altı gereklilikli denetimi iki nüshada da kapanış için tek maddi bulgu verdi; kordon sürekliliğini bağımsız bulgu olarak çıkarmadı ve ekli metindeki Duru konumunu yeterli saydı. Bu uyuşmazlık korunuyor: denetçi sayısı gerçek kusur sayısı veya tam kapsam kanıtı değildir. Kesin olmayan boy benzetmesi ve annenin merdiven ağzında sıkışırken çocukların geçişinin açıklığı, maddi hata sayısına eklenmedi. Ekli metindeki teşekkür etmedi/armağan vermedi/pusula üretmedi listesi anlatımı daha görünür biçimde kurala bağlı hale getiriyor; bu ayrı editoryal değerlendirme, otomatik puan değil.
+
+Her prompttan tek örnek var. Gözlenen fark genel başarı oranını veya promptun nedensel olarak hata artırdığını kanıtlamaz. Bu örnek, bu ek promptun seçili sorunları güvenilir biçimde önlediğini desteklemiyor. Ek prompt başarılı olarak dondurulmadı.
+
+## Hikâye içeriği ve hattın sonucu farklı
+
+32.768 tavanlı dördüncü denemede iki Writer da `stop` ile görünür metin verdi. Kontrol $0.01424794 / 154.028 s, ekli prompt $0.01971222 / 212.724 s. Kontrol audit'i $0.042982 / 10.031 s. Dördüncü toplam $0.07694216 / 376.783 s. Hangi düzeltmenin üretimi açtığı ayrıştırılmadı: tavan ve açık üst düzey low aynı sürümde değişti.
+
+Ham otomatik çalışma COMPARISON_INCOMPLETE olarak kaldı. Yeni transport SSE'yi UTF-8'e zorlamadığı için noktalama işaretlerinde Latin-1 bozulması oluştu; bu bizim kod hatamızdır, modelin dil hatası değildir. Transport artık UTF-8'i açıkça kullanıyor; charset belirtmeyen SSE için regresyon testi geçti. Eski kayıtlar değiştirilmedi. Okuma nüshaları `Latin-1 encode → UTF-8 decode` ile birebir geri dönüş kanıtı içeren türevlerdir.
+
+Ekli yanıt aynı tam hikâyenin üç birebir kopyasını içeriyor. Tek kopyanın SHA-256 eşitliği ve başlangıç konumları reading-derivation-proof.json içinde. Kaynak kopyalardan tek örnek okumak anlamsal yeniden yazım değildir; ham teslimat hâlâ geçersizdir. Ham stream chunk'ları saklanmadığından tekrarın model veya sağlayıcı akışı kaynaklı olduğu ayrıştırılamaz; prompta bağlanamaz.
+
+Kontrol audit'indeki aynı alıntılar UTF-8 düzeltilmiş nüshada ve aynı span ID'lerinde tam eşleşti; yeniden model çağrısı yapılmadan DERIVED karar REPAIR oldu. Eksik ekli-metni denetimi tek yeni Sonnet çağrısıyla yapıldı: $0.046298 / 10.949 s. Bu audit, `She didn't fit.` alıntısına yanlış span'lar verdi. Alıntı kaynakta yalnızca S109'da bulunuyor; denetçinin işaretlediği S110 ile aynı paragrafta ve bitişik. Kaynakla doğrulanmış türev kayda S109 eklendi; gerekçe, sınıflandırma ve onarım alanları değişmedi. Türev karar REPAIR. Orijinal audit ve başarısız runtime sonucu aynen korunuyor. Bu elle kaynak doğrulamasıyla oluşturulan türev, otomatik hattın yeşil olduğu anlamına gelmez.
+
+Son yerel kontroller 205 PASS / 15.07 s; son CI kontrolleri 197 PASS / 14.54 s. Sekiz test farkı eski kısmi yerel checkout kapsamından geliyor. Kod testlerinin geçmesi, canlı model teslimatının veya audit alıntılarının kabul edildiği anlamına gelmez. Production LUMI yazımı, çeviri veya hikâye onarımı yapılmadı.
+
+## Ücret ve süre
+
+Bilinen bütün bu hikâye/geliştirme çağrıları toplamı $1.95169086. İlk kayıtsız denemenin gerçek ücreti bilinmiyor; $0.04 rezervle bütçede izlenen tutar $1.99169086. Gerçek fatura toplamı tamamlanmış olarak raporlanamaz. Prompt karşılaştırması serisinin bilinen ilave ücreti $0.19314176; ilk kayıtsız çağrı buna ayrıca bilinmeyen olarak kalır. 58 bilinen çağrı ve 1 ücreti kayıtsız deneme var. Son karşılaştırmanın iki Writer + iki audit çağrısı $0.12324016 / 387.732 model saniyesi; tüm önceki geliştirme çağrıları ayrıca toplamda yer alır. Bu test sırasında akışın müşteri için birkaç dakikalık, manuel müdahalesiz üretim hedefini sağladığı kanıtlanmadı.
+
+## Sonraki karar
+
+Daha fazla kör Writer tekrarı yapılmamalı. Önce teslimat katmanının UTF-8 ve tam kopya tekrarlarını kanıtla ayırması, audit alıntılarının kaynakla otomatik bağlanması gerekir. Sonra aynı değişmez metinler üzerinde kapanış, nesne sürekliliği ve kurtarma konumunu kapsayan denetim doğrulanmalıdır. Prompt eki bu denemeden başarı etiketi almıyor; basit bir hatırlatma, bağlayıcı plana uyumu garantilemiyor.
+
+---
+
+Aşağıda deneme geçmişi yer alıyor; önceki başarısız sonuçlar bu son bölümle silinmiş veya başarıya çevrilmiş değildir.
+
+
 ## Deney tasarımı
 
 Kullanıcı, hataları beş kategoriye ayıran kısa Writer prompt ekinin ilk üretimde hataları azaltıp azaltmadığını görmek istedi. Aynı onaylı plan, Aion modeli ve üretim ayarlarıyla iki yeni metin karşılaştırılır. Birinci metin güncel mevcut promptu, ikinci metin aynı promptun sonuna eklenen karakter kuralları, mekân/hareket, nesne sürekliliği, fiziksel eylem ve gerçek kapanış kontrolünü kullanır. Ek metin 1.507 karakterdir. Promptun geri kalanı ve user message aynıdır.
