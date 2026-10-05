@@ -26,7 +26,7 @@ def test_changed_trial_cannot_call_provider(tmp_path,key):
         run(auth,tmp_path,lambda _:pytest.fail('Unexpected paid call'),lambda _:pytest.fail('Unexpected paid call'))
 
 
-def test_incomplete_writer_saves_charge_and_stops_without_audit_or_retry(tmp_path):
+def test_incomplete_writer_saves_charge_and_continues_other_variant_without_audit_or_retry(tmp_path):
     auth=authorization();called=[]
     def writer(request):
         called.append(request)
@@ -35,6 +35,30 @@ def test_incomplete_writer_saves_charge_and_stops_without_audit_or_retry(tmp_pat
                 'usage':{'api_calls':1,'input_tokens':10,'output_tokens':10,'total_tokens':20,
                          'reasoning_tokens':0,'cost_usd':.001,'latency_seconds':1}}
     result=run(auth,tmp_path,writer,lambda _:pytest.fail('Unexpected audit'))
-    assert result['status']=='REJECT_RUNTIME' and len(called)==1
-    assert result['accounting_complete'] and result['new_cost_usd']==.001
+    assert result['status']=='COMPARISON_INCOMPLETE' and len(called)==2
+    assert result['new_calls_accounting_complete'] and result['new_cost_usd']==.002
+    assert result['accounting_complete'] is False and result['total_story_cost_usd'] is None
     with pytest.raises(FileExistsError): run(auth,tmp_path,writer,lambda _:None)
+
+
+def test_empty_provider_response_retains_actual_cost_and_raw_evidence(tmp_path):
+    from src.generate import OpenRouterCallError
+    auth=authorization()
+    body={'id':'synthetic-empty-response','model':'aion-labs/aion-3.5-mini',
+          'choices':[{'message':{'content':''},'finish_reason':'length'}],
+          'usage':{'prompt_tokens':10,'completion_tokens':7000,'total_tokens':7010,
+                   'cost':.009807,'completion_tokens_details':{'reasoning_tokens':7000}}}
+    def writer(_): raise OpenRouterCallError('No text',{'stage':'provider_response','body':body})
+    result=run(auth,tmp_path,writer,lambda _:pytest.fail('Unexpected audit'))
+    assert result['new_calls_accounting_complete'] and result['new_cost_usd']==.019614
+    calls=json.loads(next(tmp_path.glob('*/calls.json')).read_text())
+    assert calls[0]['provider_evidence']['provider_response']==body
+
+
+def test_unknown_charge_blocks_other_variant(tmp_path):
+    auth=authorization();called=[]
+    def writer(request):
+        called.append(request);raise RuntimeError('No provider usage available')
+    result=run(auth,tmp_path,writer,lambda _:pytest.fail('Unexpected audit'))
+    assert len(called)==1 and result['status']=='REJECT_RUNTIME'
+    assert result['new_calls_accounting_complete'] is False

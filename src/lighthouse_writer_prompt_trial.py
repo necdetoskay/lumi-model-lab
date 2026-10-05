@@ -16,7 +16,10 @@ ROOT = Path('evidence/lighthouse-writer-prompt-trial')
 PREPARED = Path('evidence/lighthouse-editorial/writer-prompt-trial-prepared.json')
 AUTH = Path('evidence/lighthouse-editorial/writer-prompt-trial-authorization.json')
 PRIOR = 1.7585491
-ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-01-20261005'
+ID = 'LIGHTHOUSE-WRITER-PROMPT-TRIAL-02-20261005'
+# First trial lost the provider body in its new harness error handler. Do not
+# report its unknown charge as zero; reserve the entire failed-call allowance.
+UNRECONCILED_PRIOR_RESERVE = .04
 
 
 def requests(plan):
@@ -38,6 +41,8 @@ def prepare():
         'src/lighthouse_decision_qualification.py', 'prompts/lighthouse_decision_audit.md',
         'evidence/lighthouse-editorial/audit-requirements.json',
         'evidence/lighthouse-editorial/decision-stabilization-summary.json',
+        'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-01-20261005/calls.json',
+        'evidence/lighthouse-writer-prompt-trial/LIGHTHOUSE-WRITER-PROMPT-TRIAL-01-20261005/result.json',
         'tests/test_lighthouse_writer_prompt_trial.py',
         '.github/workflows/lighthouse-writer-prompt-trial.yml'])
     manifest = [{'path': p, 'sha256': hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
@@ -45,6 +50,8 @@ def prepare():
             'runtime_manifest': manifest, 'runtime_manifest_sha256': digest_json(manifest),
             'writer_requests': [{'variant': name, 'request_sha256': digest_json(r)} for name,r in requests(plan)],
             'prior_story_cost_usd': PRIOR, 'total_story_budget_usd': 3,
+            'prior_accounting_complete': False,
+            'unreconciled_prior_cost_reserve_usd': UNRECONCILED_PRIOR_RESERVE,
             'max_new_calls': 4, 'max_writer_calls': 2, 'max_audit_calls': 2,
             'automatic_retry': False, 'repair_calls': 0, 'production_write': False}, plan
 
@@ -62,7 +69,8 @@ def writer(api_key, request):
 def run(authorization, output_dir, writer_fn, audit_fn):
     prepared, plan = prepare()
     for key in ('experiment_id','plan_sha256','runtime_manifest_sha256','writer_requests',
-                'prior_story_cost_usd','total_story_budget_usd','max_new_calls'):
+                'prior_story_cost_usd','total_story_budget_usd','max_new_calls',
+                'prior_accounting_complete','unreconciled_prior_cost_reserve_usd'):
         if authorization.get(key) != prepared[key]:
             raise RuntimeError('Authorization drift: '+key)
     if authorization.get('explicit_paid_authorization') is not True:
@@ -76,9 +84,10 @@ def run(authorization, output_dir, writer_fn, audit_fn):
     def invoke(stage, variant, data, fn):
         nonlocal cost
         reserve = .04 if stage=='WRITER' else (len(json.dumps(data,ensure_ascii=False).encode())+20000)*2/1e6+.035
-        if cost+reserve>3: raise RuntimeError('Budget lacks next-call reservation')
+        if cost+UNRECONCILED_PRIOR_RESERVE+reserve>3: raise RuntimeError('Budget lacks next-call reservation')
         row={'stage':stage,'variant':variant,'input':data,'status':'STARTED','reserved_cost_usd':reserve}
         calls.append(row);save('calls.json',calls)
+        started=time.perf_counter()
         try:
             response=fn(data);row['response']=response
             row['usage']=_usage(response,stage);cost+=row['usage']['cost_usd']
@@ -88,35 +97,54 @@ def run(authorization, output_dir, writer_fn, audit_fn):
         except Exception as exc:
             row['status']='FAILED';row['failure_type']=type(exc).__name__
             row['provider_evidence']=getattr(exc,'provider_evidence',None)
+            trace=getattr(exc,'trace',None) or {}
+            body=trace.get('body') or {}
+            if body:
+                row['provider_evidence']={'phase':trace.get('stage'),
+                    'provider_response':{k:body[k] for k in ('id','model','choices','usage') if k in body}}
             if 'usage' not in row:
                 try:
-                    row['usage']=_usage({'usage':getattr(exc,'usage',None)},stage);cost+=row['usage']['cost_usd']
+                    usage=provider_usage(body,stage,round(time.perf_counter()-started,3)) if body else getattr(exc,'usage',None)
+                    row['usage']=_usage({'usage':usage},stage);cost+=row['usage']['cost_usd']
                 except RuntimeError: pass
             save('calls.json',calls);raise
     try:
         for variant, request in requests(plan):
-            generated=invoke('WRITER',variant,request,writer_fn)
-            if generated['actual_request']!=request:
-                raise RuntimeError('Dispatched request differs from frozen trial')
-            finish=(generated['provider_response'].get('choices') or [{}])[0].get('finish_reason')
-            if finish!='stop': raise RuntimeError('Incomplete Writer response')
-            artifact=scene_artifact(generated['story'],plan)
-            save(variant+'-story-artifact.json',artifact)
-            (out/(variant+'-story.txt')).write_text(artifact['story'])
-            if not artifact['target_length_hit']: raise RuntimeError('Story below minimum length')
-            # The auditor sees only plan and story: no variant label or expected result.
-            data=payload(artifact['story'],plan)
-            audited=invoke('AUDIT',variant,data,audit_fn)
-            chosen=decision(audited,data['story_segments'],plan)
-            cases.append({'variant':variant,'word_count':artifact['word_count'],
-                          'story_sha256':artifact['story_sha256'],**chosen})
-            save('case-results.json',cases)
-        status='COMPARISON_COMPLETED'
+            try:
+                generated=invoke('WRITER',variant,request,writer_fn)
+                if generated['actual_request']!=request:
+                    raise RuntimeError('Dispatched request differs from frozen trial')
+                finish=(generated['provider_response'].get('choices') or [{}])[0].get('finish_reason')
+                if finish!='stop': raise RuntimeError('Incomplete Writer response')
+                artifact=scene_artifact(generated['story'],plan)
+                save(variant+'-story-artifact.json',artifact)
+                (out/(variant+'-story.txt')).write_text(artifact['story'])
+                if not artifact['target_length_hit']: raise RuntimeError('Story below minimum length')
+                # The auditor sees only plan and story: no variant label or expected result.
+                data=payload(artifact['story'],plan)
+                audited=invoke('AUDIT',variant,data,audit_fn)
+                chosen=decision(audited,data['story_segments'],plan)
+                cases.append({'variant':variant,'word_count':artifact['word_count'],
+                              'story_sha256':artifact['story_sha256'],**chosen})
+                save('case-results.json',cases)
+            except Exception as exc:
+                cases.append({'variant':variant,'status':'NO_VALID_COMPARISON',
+                              'failure':type(exc).__name__+': '+str(exc)})
+                save('case-results.json',cases)
+                # Do not retry this variant. Continue the independent variant only
+                # after its predecessor's usage is known and the budget is intact.
+                if not calls or 'usage' not in calls[-1] or cost+UNRECONCILED_PRIOR_RESERVE>3:
+                    raise
+        status='COMPARISON_COMPLETED' if all(c['status'] in {'ACCEPT','REPAIR'} for c in cases) else 'COMPARISON_INCOMPLETE'
     except Exception as exc:
         status='REJECT_RUNTIME';failure=type(exc).__name__+': '+str(exc)
     result={'status':status,'failure':failure,'new_call_count':len(calls),
-            'new_cost_usd':round(cost-PRIOR,10),'total_story_cost_usd':round(cost,10),
-            'accounting_complete':all('usage' in c for c in calls),
+            'new_cost_usd':round(cost-PRIOR,10),'total_story_cost_usd':None,
+            'confirmed_story_cost_usd':round(cost,10),
+            'unreconciled_prior_cost_reserve_usd':UNRECONCILED_PRIOR_RESERVE,
+            'budget_committed_total_usd':round(cost+UNRECONCILED_PRIOR_RESERVE,10),
+            'accounting_complete':False,
+            'new_calls_accounting_complete':all('usage' in c for c in calls),
             'model_latency_seconds':round(sum(c.get('usage',{}).get('latency_seconds',0) for c in calls),3),
             'cases':cases,'repair_calls':0,'production_write':False,'translation_executed':False,
             'single_sample_per_prompt_not_statistical_proof':True}
