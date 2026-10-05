@@ -23,3 +23,7 @@ V3 yerel test kapsamı: 160 PASS. V3, aynı iki kaydı yeni sözleşme ile değe
 ## V3 canlı qualification: PASS
 
 Çalışma 37302674403, commit 996f7874a9da87a1f245a44bc54d34780b74fd22: iki vaka da geçti. Son kabul edilmiş metnin altı gerekliliği SATISFIED; yalnız bir üslup önerisi var, onarım bulgusu yok. Negatif kontrolde ENTRY_ROUTE ve ACTUAL_FINAL_IMAGE ayrı MATERIAL_VIOLATION olarak bulundu; diğer dört gereklilik SATISFIED. Alıntı/span kanıtı doğrulandı. Yeni ücret $0.093222, model süresi 23.985 saniye; birikimli toplam $1.5918431. Kaydedilmiş negatif audit cevabı, bir sonraki bounded repair denemesinin değişmez girdisidir; aynı audit tekrar çağrılmayacak.
+
+## V3 uçtan uca onarım: ACCEPT
+
+Çalışma 37303889453, aynı denetim sözleşmesi ve onarım istemiyle kayıtlı negatif audit girdisini iki bounded repair turunda düzeltti. Son audit altı gerekliliği doğruladı; üslup önerisi yeni onarım başlatmadı. Dört yeni çağrı $0.166706; birikimli toplam $1.7585491. Ayrıntılar: [sonuç raporu](lighthouse-audit-stabilization-result-2026-10-05.md).
