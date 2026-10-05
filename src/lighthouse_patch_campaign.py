@@ -8,6 +8,7 @@ from src.spineforge_v20_story_audit_artifact import _segment_story
 from src.spineforge_v21_bounded_quality import split_findings
 from src.spineforge_v21_model_adapter import _call, AUDIT_RESPONSE_SCHEMA, validate_schema
 from src.spineforge_v21_quality_runtime import _usage
+from src.lighthouse_audit_decision import SCHEMA as DECISION_SCHEMA, PROMPT as DECISION_PROMPT, decision
 
 SOURCE = Path('evidence/lighthouse-paid-experiment/LIGHTHOUSE-PAID-01-20261005')
 AUDIT_SOURCE = Path('evidence/lighthouse-quality-continuation/LIGHTHOUSE-QUALITY-01-20261005/calls.json')
@@ -21,7 +22,7 @@ RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-02-
 NEXT_RESUME_LEDGER = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/calls.json')
 NEXT_RESUME_TEXT = Path('evidence/lighthouse-patch-campaign/LIGHTHOUSE-COMPLETION-03-20261005/accepted-story.txt')
 EDITORIAL_REVIEW = Path('evidence/lighthouse-editorial/independent-review-03.json')
-PRIOR_COST = 0.3951711
+PRIOR_COST = 1.4208331
 COMPLETION_AUDIT_SCHEMA = json.loads(json.dumps(AUDIT_RESPONSE_SCHEMA))
 COMPLETION_AUDIT_SCHEMA['properties']['findings']['items']['properties']['reason']['maxLength'] = 2000
 BUDGET = 3.0
@@ -46,7 +47,8 @@ def prepare():
     paths = {r['path'] for r in dependency_manifest()}
     paths.update([str(SOURCE/'writer-raw.json'), str(SOURCE/'original-story.txt'), str(AUDIT_SOURCE),
                   'src/lighthouse_patch_campaign.py', 'tests/test_lighthouse_patch_campaign.py',str(RESUME_PATCH),str(RESUME_LEDGER),str(RESUME_TEXT),str(NEXT_RESUME_LEDGER),str(NEXT_RESUME_TEXT),str(EDITORIAL_REVIEW),
-                  'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',
+                  'prompts/lighthouse_patch_repair.md', 'prompts/lighthouse_completion_audit.md',str(DECISION_PROMPT),
+                  'src/lighthouse_audit_decision.py','tests/test_lighthouse_audit_decision.py',
                   '.github/workflows/lighthouse-completion-once.yml'])
     manifest = [{'path': p, 'sha256':hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sorted(paths)]
     payload, ids = scope_payload(raw, plan, findings)
@@ -134,11 +136,11 @@ def scope_payload(raw, plan, findings):
 
 def call_model(key,stage,payload):
     return _call(api_key=key,payload=payload,
-        prompt_path=Path('prompts/lighthouse_patch_repair.md' if stage=='PATCH' else 'prompts/lighthouse_completion_audit.md'),
+        prompt_path=Path('prompts/lighthouse_patch_repair.md' if stage=='PATCH' else str(DECISION_PROMPT)),
         request_class='spineforge_v21_scene_repair' if stage=='PATCH' else 'spineforge_v21_initial_blocking_audit',
-        schema_name='lighthouse_patch_v1' if stage=='PATCH' else 'lighthouse_completion_audit_v1',
-        schema=PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA,
-        max_tokens=3500 if stage=='PATCH' else 3000,stage=stage)
+        schema_name='lighthouse_patch_v1' if stage=='PATCH' else 'lighthouse_audit_decision_v2',
+        schema=PATCH_SCHEMA if stage=='PATCH' else DECISION_SCHEMA,
+        max_tokens=3500,stage=stage)
 
 def run(*,authorization,output_dir,call_fn):
     prepared,plan,raw,findings=prepare()
@@ -158,8 +160,8 @@ def run(*,authorization,output_dir,call_fn):
         nonlocal cost
         # Reserve conservative UTF-8 input allowance plus schema/envelope allowance and output cap.
         input_allowance=len(json.dumps(payload,ensure_ascii=False).encode())+len(Path(
-            'prompts/lighthouse_patch_repair.md' if stage=='PATCH' else 'prompts/lighthouse_completion_audit.md').read_bytes())+12000
-        reserve=input_allowance*2/1e6+(3500 if stage=='PATCH' else 3000)*10/1e6
+            'prompts/lighthouse_patch_repair.md' if stage=='PATCH' else str(DECISION_PROMPT)).read_bytes())+12000
+        reserve=input_allowance*2/1e6+(3500)*10/1e6
         if cost+reserve>BUDGET:raise RuntimeError('Story budget lacks next-call reservation')
         row={'stage':stage,'input':payload,'status':'STARTED','reserved_cost_usd':reserve};ledger.append(row)
         save('calls.json',ledger)
@@ -168,8 +170,8 @@ def run(*,authorization,output_dir,call_fn):
             row['response']=response;row['usage']=_usage(response,stage)
             cost+=row['usage']['cost_usd'];row['status']='COMPLETED';save('calls.json',ledger)
             if cost>BUDGET:raise RuntimeError('Actual story budget exceeded; no further calls')
-            validate_schema({k:response[k] for k in (PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA)['properties']},
-                            PATCH_SCHEMA if stage=='PATCH' else COMPLETION_AUDIT_SCHEMA)
+            validate_schema({k:response[k] for k in (PATCH_SCHEMA if stage=='PATCH' else DECISION_SCHEMA)['properties']},
+                            PATCH_SCHEMA if stage=='PATCH' else DECISION_SCHEMA)
             return response
         except Exception as exc:
             row['status']='FAILED';row['failure_message']=getattr(exc,'diagnostic_message',str(exc))
@@ -196,7 +198,11 @@ def run(*,authorization,output_dir,call_fn):
             audit_payload={'full_story':a['story'],'story_segments':a['segments'],'approved_plan':plan,
                            'previous_findings':findings,'patch_proof':proof,'reader_profile':{'age':12,'language':'en'}}
             response=invoke('AUDIT',audit_payload)
-            findings=response['findings']
+            audit_result=decision(response,a['segments'])
+            save(f'audit-decision-{cycle+1:02}.json',audit_result)
+            findings=audit_result['findings']
+            result.update(final_advisory_notes=audit_result['advisory_notes'],
+                          final_verified_requirements=audit_result['verified_requirements'])
             known={r['span_id'] for r in a['segments']}
             if any(s not in known for f in findings for s in f['span_ids']):raise RuntimeError('Audit unknown span')
         else:raise RuntimeError('Non-convergent after 30 patch cycles')
