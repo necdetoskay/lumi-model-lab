@@ -145,7 +145,7 @@ def test_undeclared_persistent_state_change_is_rejected():
             after="S3",
         )],
     )
-    with pytest.raises(InvalidRelayTransition, match="Unauthorized"):
+    with pytest.raises(InvalidRelayTransition, match="Protected state path"):
         apply_scene_delta(state, delta, contract)
 
 
