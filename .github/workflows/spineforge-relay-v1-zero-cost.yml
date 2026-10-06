@@ -37,7 +37,7 @@ jobs:
         run: python -m pytest -q tests/test_spineforge_relay_v1_*.py
 
   q5-paid-single-scene:
-    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, sfr-q5-temp]
     timeout-minutes: 10
     env:
@@ -95,22 +95,6 @@ jobs:
             echo '::error::Repository secret OPENROUTER_API_KEY is not configured.'
             exit 1
           fi
-
-      - name: Claim frozen Q5 authorization before inference
-        if: ${{ steps.auth.outputs.approved == 'true' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          SHORT_SHA="$(printf '%s' "${{ steps.auth.outputs.preflight_sha }}" | cut -c1-16)"
-          TAG="sfr-v1-q5-paid-$SHORT_SHA"
-          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "::error::Q5 authorization already claimed by tag $TAG"
-            exit 1
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Claim SFR-v1 Q5 paid authorization ${{ steps.auth.outputs.preflight_sha }}"
-          git push origin "refs/tags/$TAG"
 
       - name: Execute exactly one paid Q5 writer call
         if: ${{ steps.auth.outputs.approved == 'true' }}
