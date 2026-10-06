@@ -93,6 +93,8 @@ def test_scene_contract_uses_pointer_state_and_one_rewrite_maximum():
         story_state_sha256=canonical_sha256(state),
         global_spine_sha256=state.global_spine_sha256,
         story_intent_sha256=state.story_intent_sha256,
+        consumed_spine_beats=["S2"],
+        next_spine_beat="S3",
         required_events=["Leyra climbs upstairs"],
         entry_state={"/characters/Leyra/location": "tower_ground"},
         required_exit_state={"/characters/Leyra/location": "tower_floor_2"},
