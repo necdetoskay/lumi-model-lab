@@ -1,7 +1,7 @@
 """Fail-closed data contracts for SpineForge Relay v1.
 
-Q1 scope only: schemas, cross-field invariants and canonical fingerprints.
-No model calls and no state mutation engine live in this module.
+Q1/Q2 scope: schemas, cross-field invariants, state-transition authorization
+and canonical fingerprints. No model calls live in this module.
 """
 from __future__ import annotations
 
@@ -24,6 +24,12 @@ def _unique(values: list[str], field_name: str) -> list[str]:
 def _sha(value: str, field_name: str) -> str:
     if len(value) != _SHA256_LEN or any(c not in "0123456789abcdef" for c in value):
         raise ValueError(f"{field_name} must be a lowercase SHA-256 hex digest")
+    return value
+
+
+def _pointer(value: str, field_name: str) -> str:
+    if not value.startswith("/") or value == "/":
+        raise ValueError(f"{field_name} must contain absolute non-root JSON pointers")
     return value
 
 
@@ -120,6 +126,7 @@ class SceneContractV1(StrictModel):
     required_events: list[str] = Field(min_length=1)
     entry_state: dict[str, Any] = Field(default_factory=dict)
     required_exit_state: dict[str, Any] = Field(default_factory=dict)
+    allowed_state_paths: list[str] = Field(default_factory=list)
     immutable_facts: list[str] = Field(default_factory=list)
     forbidden: list[str] = Field(default_factory=list)
     emotional_transition: dict[str, str] | None = None
@@ -139,6 +146,14 @@ class SceneContractV1(StrictModel):
         _unique(self.required_events, "required_events")
         _unique(self.immutable_facts, "immutable_facts")
         _unique(self.forbidden, "forbidden")
+        _unique(self.allowed_state_paths, "allowed_state_paths")
+        for field_name, pointers in (
+            ("entry_state", list(self.entry_state)),
+            ("required_exit_state", list(self.required_exit_state)),
+            ("allowed_state_paths", self.allowed_state_paths),
+        ):
+            for pointer in pointers:
+                _pointer(pointer, field_name)
         if self.target_words_min > self.target_words_max:
             raise ValueError("target_words_min must be <= target_words_max")
         return self
@@ -152,8 +167,7 @@ class StateMutation(StrictModel):
 
     @model_validator(mode="after")
     def validate_mutation(self) -> "StateMutation":
-        if not self.path.startswith("/"):
-            raise ValueError("mutation path must be an absolute JSON pointer")
+        _pointer(self.path, "mutation path")
         if self.op == "ADD" and self.after is None:
             raise ValueError("ADD requires after")
         if self.op == "REMOVE" and self.before is None:
