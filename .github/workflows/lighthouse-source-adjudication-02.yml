@@ -1,0 +1,28 @@
+name: Lighthouse Source Evidence v2 and Bounded Repair
+on:
+  push:
+    branches: [experiment/spineforge-v21-bounded-scene-quality]
+    paths: ['evidence/lighthouse-editorial/source-adjudication-02-authorization.json']
+permissions:
+  contents: read
+jobs:
+  qualify-and-repair:
+    if: github.run_attempt == 1 && contains(github.event.head_commit.message, '[LIGHTHOUSE-SOURCE-ADJUDICATION-02]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - run: python -m pytest -q tests/test_lighthouse_*.py tests/test_plan_audit_contract.py tests/test_story_delivery.py tests/test_audit_citation_projection.py tests/test_spineforge_v21_*.py
+      - name: Qualify on saved controls and repair only if both pass
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python -m src.lighthouse_source_adjudication_v2
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-source-audit-${{ github.run_id }}
+          path: evidence/lighthouse-source-audit/LIGHTHOUSE-SOURCE-ADJUDICATION-02-20261006/
