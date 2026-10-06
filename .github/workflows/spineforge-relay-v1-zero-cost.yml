@@ -8,7 +8,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/authorization-template.json'
+      - 'evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   pull_request:
     paths:
@@ -16,7 +16,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/authorization-template.json'
+      - 'evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   workflow_dispatch:
 
@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Check exact Q5 authorization
+      - name: Check exact Q5B authorization
         id: auth
         shell: bash
         run: |
@@ -66,7 +66,7 @@ jobs:
           from src.spineforge_relay_v1_q5 import MAX_COST_USD, verify
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json"
           ).read_text())
           report = verify()
           approved = (
@@ -96,7 +96,7 @@ jobs:
             exit 1
           fi
 
-      - name: Execute exactly one paid Q5 writer call
+      - name: Execute exactly one paid Q5B writer call
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
@@ -108,7 +108,7 @@ jobs:
           from src.spineforge_relay_v1_q5 import execute_once
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json"
           ).read_text())
           out = execute_once(
               api_key=os.environ["OPENROUTER_API_KEY"],
@@ -124,7 +124,7 @@ jobs:
               "failure_type": out.get("failure_type"),
               "failure_message": out.get("failure_message"),
           }
-          Path("q5-summary.json").write_text(
+          Path("q5b-summary.json").write_text(
               json.dumps(summary, indent=2) + "\n",
               encoding="utf-8",
           )
@@ -133,13 +133,13 @@ jobs:
               raise SystemExit(2)
           PY
 
-      - name: Upload Q5 evidence
+      - name: Upload Q5B evidence
         if: ${{ always() && steps.auth.outputs.approved == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: sfr-v1-q5-${{ github.run_id }}
+          name: sfr-v1-q5b-${{ github.run_id }}
           path: |
-            q5-summary.json
-            evidence/spineforge-relay/q5-runs/github-${{ github.run_id }}/
+            q5b-summary.json
+            evidence/spineforge-relay/q5b-runs/github-${{ github.run_id }}/
           if-no-files-found: warn
           retention-days: 30
