@@ -47,14 +47,14 @@ def contract():
         required_events=["Duru points Ekin toward the lighthouse."],
         entry_state={},
         required_exit_state={},
-        target_words_min=3,
-        target_words_max=8,
+        target_words_min=40,
+        target_words_max=50,
     )
 
 
 def test_deterministic_word_budget_is_blocking():
     findings = deterministic_scene_findings(
-        prose="one two three four five six seven eight nine",
+        prose=" ".join(["word"] * 51),
         contract=contract(),
     )
     assert [x.code for x in findings] == ["WORD_BUDGET_OUTSIDE_CONTRACT"]
@@ -159,7 +159,7 @@ def test_combined_attempt_two_rejects_non_convergent():
 
 
 def test_guard_input_carries_authoritative_state_and_deterministic_findings():
-    prose = "one two three four five six seven eight nine"
+    prose = " ".join(["word"] * 51)
     det = deterministic_scene_findings(prose=prose, contract=contract())
     payload = build_semantic_guard_input(
         state=state(),
