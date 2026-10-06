@@ -148,6 +148,9 @@ Second failure ends that scene as REJECT_NON_CONVERGENT.
 
 - State updates use absolute JSON-pointer-like paths.
 - State mutations must be explicit and traceable.
+- Scene entry/exit state keys are absolute JSON pointers and are verified against the bound StoryState.
+- A persistent mutation path is legal only when the Scene Contract pre-authorizes it through required_exit_state or allowed_state_paths.
+- Unplanned object reappearance, ownership changes, and character location jumps therefore fail closed instead of becoming new story truth.
 - Open and resolved thread sets cannot overlap.
 - A state revision increments only after an accepted scene.
 - Upstream fingerprint drift invalidates downstream artifacts before inference.
@@ -257,3 +260,13 @@ If this three-scene chain cannot be represented and validated deterministically,
 ## 15. One-sentence definition
 
 SpineForge Relay v1 is a stateful story-generation pipeline that turns a frozen global spine into a story scene by scene using structured state relay, immutable accepted scenes, explicit scene contracts and bounded local repair.
+
+
+## 16. Qualification implementation status — 2026-10-06
+
+- Q0 Architecture baseline: REPO RECORDED.
+- Q1 Contracts: LOCAL GREEN; repository CI trigger still pending because connector-authored pushes did not start Actions automatically.
+- Q2 Deterministic state engine: LOCAL GREEN.
+- Q3 Historical failure fixtures: LOCAL GREEN for the recorded compass-cord reappearance and Duru location-transition regressions.
+- Q4 Three-scene saved-data relay simulation: next gate.
+- Paid inference calls used by SFR-v1 so far: 0.
