@@ -30,6 +30,7 @@ from src.spineforge_relay_v1_contracts import (
     canonical_sha256,
 )
 from src.spineforge_v19_transport import _request_once
+from src.spineforge_v21_model_adapter import provider_usage
 
 
 MODEL = "aion-labs/aion-3.5-mini"
@@ -39,7 +40,7 @@ FIXTURE = Path("tests/fixtures/spineforge_relay_v1/q5_lighthouse_scene01.json")
 DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006")
 MAX_TOKENS = 1600
 TEMPERATURE = 0.76
-MAX_COST_USD = 0.02
+MAX_COST_USD = 0.01
 
 TextCall = Callable[..., tuple[str, dict[str, Any], dict[str, Any]]]
 
@@ -274,6 +275,10 @@ def execute_once(
         or authorization.get("scope") != "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL"
         or authorization.get("preflight_sha256") != report["artifact_sha256"]
         or authorization.get("max_cost_usd") != MAX_COST_USD
+        or authorization.get("max_writer_calls") != 1
+        or authorization.get("automatic_retry") is not False
+        or authorization.get("production_write") is not False
+        or authorization.get("state_application_authorized") is not False
         or not authorization.get("explicit_user_message")
     ):
         raise RuntimeError("Separate explicit SFR-v1 Q5 paid authorization required")
@@ -295,6 +300,7 @@ def execute_once(
         "authorization": authorization,
         "request_sha256": report["request_sha256"],
         "automatic_retry_executed": False,
+        "api_calls": 0,
         "usage": None,
         "state_application_authorized": False,
     }
@@ -315,7 +321,21 @@ def execute_once(
             response_format={"type": "text"},
             require_parameters=False,
         )
-        evidence["usage"] = _usage(body, time.perf_counter() - started)
+        evidence["api_calls"] = 1
+        evidence["raw_response"] = text
+        evidence["provider_response"] = {
+            key: body[key] for key in ("id", "model", "choices", "usage") if key in body
+        }
+        evidence["actual_request"] = actual_request
+        call_path.write_text(
+            json.dumps(evidence, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        evidence["usage"] = provider_usage(
+            body,
+            "SFR_V1_Q5_SCENE_WRITER",
+            time.perf_counter() - started,
+        )
         if actual_request != request:
             raise RuntimeError("Q5 dispatched request differs from frozen preflight")
         finish = (body.get("choices") or [{}])[0].get("finish_reason")
@@ -337,10 +357,21 @@ def execute_once(
         evidence["writer_artifact_sha256"] = artifact["artifact_sha256"]
     except Exception as exc:
         if isinstance(exc, OpenRouterCallError):
+            evidence["api_calls"] = 1
             trace = getattr(exc, "trace", None) or {}
             body = trace.get("body") or {}
+            evidence["provider_response"] = {
+                key: body[key] for key in ("id", "model", "choices", "usage") if key in body
+            }
             if body:
-                evidence["usage"] = _usage(body, time.perf_counter() - started)
+                try:
+                    evidence["usage"] = provider_usage(
+                        body,
+                        "SFR_V1_Q5_SCENE_WRITER",
+                        time.perf_counter() - started,
+                    )
+                except RuntimeError:
+                    pass
             evidence["provider_failure_stage"] = trace.get("stage")
         evidence["status"] = "STOPPED_NO_RETRY"
         evidence["failure_type"] = type(exc).__name__
