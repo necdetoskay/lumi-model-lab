@@ -31,6 +31,8 @@ _PROTECTED_ROOTS = {
     "revision",
     "global_spine_sha256",
     "story_intent_sha256",
+    "completed_spine_beats",
+    "next_spine_beat",
 }
 
 
@@ -144,6 +146,12 @@ def _assert_binding(state: StoryStateV1, delta: SceneDeltaV1, contract: SceneCon
         raise StaleRelayInput("Contract global spine fingerprint is stale")
     if contract.story_intent_sha256 != state.story_intent_sha256:
         raise StaleRelayInput("Contract story intent fingerprint is stale")
+    if not contract.consumed_spine_beats:
+        raise StaleRelayInput("Contract does not consume a spine beat")
+    if state.next_spine_beat != contract.consumed_spine_beats[0]:
+        raise StaleRelayInput("Contract spine progression is stale")
+    if any(beat in state.completed_spine_beats for beat in contract.consumed_spine_beats):
+        raise StaleRelayInput("Contract attempts to consume an already completed spine beat")
 
 
 def _assert_entry_state(payload: dict[str, Any], contract: SceneContractV1) -> None:
@@ -193,6 +201,13 @@ def apply_scene_delta(
         _apply(parent, token, mutation)
 
     _assert_exit_state(payload, contract)
+
+    # Spine progression is reducer-owned metadata. Writers/deltas cannot mutate it.
+    payload["completed_spine_beats"] = [
+        *payload["completed_spine_beats"],
+        *contract.consumed_spine_beats,
+    ]
+    payload["next_spine_beat"] = contract.next_spine_beat
     payload["revision"] = state.revision + 1
 
     try:
