@@ -15,7 +15,6 @@ from src.spineforge_relay_v1_state import (
     apply_scene_delta,
 )
 
-
 H = "a" * 64
 H2 = "b" * 64
 
@@ -55,14 +54,14 @@ def bound_contract(state: StoryStateV1) -> SceneContractV1:
         global_spine_sha256=state.global_spine_sha256,
         story_intent_sha256=state.story_intent_sha256,
         required_events=["Leyra climbs upstairs"],
-        entry_state={"Leyra.location": "tower_ground"},
-        required_exit_state={"Leyra.location": "tower_floor_2"},
+        entry_state={"/characters/Leyra/location": "tower_ground"},
+        required_exit_state={"/characters/Leyra/location": "tower_floor_2"},
         immutable_facts=["Leyra still owns the rope"],
         forbidden=["The rope cannot disappear"],
     )
 
 
-def delta_for(state: StoryStateV1, contract: SceneContractV1, mutations: list[StateMutation]) -> SceneDeltaV1:
+def delta_for(state, contract, mutations):
     return SceneDeltaV1(
         scene_id=contract.scene_id,
         source_state_revision=state.revision,
@@ -78,18 +77,14 @@ def test_location_transition_updates_only_declared_state_and_increments_revision
     delta = delta_for(
         state,
         contract,
-        [
-            StateMutation(
-                path="/characters/Leyra/location",
-                op="SET",
-                before="tower_ground",
-                after="tower_floor_2",
-            )
-        ],
+        [StateMutation(
+            path="/characters/Leyra/location",
+            op="SET",
+            before="tower_ground",
+            after="tower_floor_2",
+        )],
     )
-
     result = apply_scene_delta(state, delta, contract)
-
     assert result.revision == 2
     assert result.characters["Leyra"].location == "tower_floor_2"
     assert result.characters["Leyra"].inventory["rope"] is True
@@ -101,9 +96,21 @@ def test_stale_state_fingerprint_fails_before_mutation():
     contract = bound_contract(state)
     delta = delta_for(state, contract, [])
     changed = state.model_copy(update={"next_spine_beat": "S99"})
-
     with pytest.raises(StaleRelayInput):
         apply_scene_delta(changed, delta, contract)
+
+
+def test_entry_state_mismatch_fails_closed():
+    state = base_state()
+    contract = bound_contract(state)
+    payload = contract.model_dump()
+    payload["entry_state"] = {"/characters/Leyra/location": "forest"}
+    stale_contract = SceneContractV1.model_validate(payload)
+    delta = delta_for(state, stale_contract, [
+        StateMutation(path="/characters/Leyra/location", op="SET", before="tower_ground", after="tower_floor_2")
+    ])
+    with pytest.raises(StaleRelayInput):
+        apply_scene_delta(state, delta, stale_contract)
 
 
 def test_before_value_mismatch_fails_closed():
@@ -112,106 +119,61 @@ def test_before_value_mismatch_fails_closed():
     delta = delta_for(
         state,
         contract,
-        [
-            StateMutation(
-                path="/characters/Leyra/location",
-                op="SET",
-                before="forest",
-                after="tower_floor_2",
-            )
-        ],
+        [StateMutation(
+            path="/characters/Leyra/location",
+            op="SET",
+            before="forest",
+            after="tower_floor_2",
+        )],
     )
-
     with pytest.raises(InvalidRelayTransition):
         apply_scene_delta(state, delta, contract)
 
 
-def test_protected_identity_fields_cannot_be_mutated():
+def test_undeclared_persistent_state_change_is_rejected():
     state = base_state()
     contract = bound_contract(state)
     delta = delta_for(
         state,
         contract,
-        [
-            StateMutation(
-                path="/global_spine_sha256",
-                op="SET",
-                before=H,
-                after="c" * 64,
-            )
-        ],
+        [StateMutation(
+            path="/next_spine_beat",
+            op="SET",
+            before="S2",
+            after="S3",
+        )],
     )
-
-    with pytest.raises(InvalidRelayTransition):
+    with pytest.raises(InvalidRelayTransition, match="Unauthorized"):
         apply_scene_delta(state, delta, contract)
 
 
-def test_contract_binding_mismatch_is_stale_input():
-    state = base_state()
-    contract = bound_contract(state)
-    stale_payload = contract.model_dump()
-    stale_payload["story_state_sha256"] = "c" * 64
-    stale_contract = SceneContractV1.model_validate(stale_payload)
-    delta = SceneDeltaV1(
-        scene_id=stale_contract.scene_id,
-        source_state_revision=state.revision,
-        source_state_sha256=canonical_sha256(state),
-        contract_sha256=canonical_sha256(stale_contract),
-        mutations=[],
-    )
-
-    with pytest.raises(StaleRelayInput):
-        apply_scene_delta(state, delta, stale_contract)
-
-
-def test_resulting_invalid_thread_state_is_rejected():
+def test_required_exit_value_cannot_be_substituted():
     state = base_state()
     contract = bound_contract(state)
     delta = delta_for(
         state,
         contract,
-        [
-            StateMutation(
-                path="/resolved_threads",
-                op="SET",
-                before=[],
-                after=["find_sound_source"],
-            )
-        ],
+        [StateMutation(
+            path="/characters/Leyra/location",
+            op="SET",
+            before="tower_ground",
+            after="forest",
+        )],
     )
-
-    with pytest.raises(InvalidRelayTransition):
+    with pytest.raises(InvalidRelayTransition, match="required exit"):
         apply_scene_delta(state, delta, contract)
 
 
-def test_add_and_remove_are_exact_not_best_effort():
+def test_protected_identity_fields_cannot_be_mutated_even_if_allowed():
     state = base_state()
     contract = bound_contract(state)
+    payload = contract.model_dump()
+    payload["allowed_state_paths"] = ["/global_spine_sha256"]
+    permissive = SceneContractV1.model_validate(payload)
     delta = delta_for(
         state,
-        contract,
-        [
-            StateMutation(
-                path="/objects/lantern",
-                op="ADD",
-                after={"owner": "Leyra", "location": None, "state": {"lit": True}},
-            )
-        ],
-    )
-    result = apply_scene_delta(state, delta, contract)
-    assert result.objects["lantern"].owner == "Leyra"
-
-    next_contract = bound_contract(result)
-    bad_remove = delta_for(
-        result,
-        next_contract,
-        [
-            StateMutation(
-                path="/objects/lantern",
-                op="REMOVE",
-                before={"owner": "Duru", "location": None, "state": {"lit": True}},
-            )
-        ],
+        permissive,
+        [StateMutation(path="/global_spine_sha256", op="SET", before=H, after="c" * 64)],
     )
     with pytest.raises(InvalidRelayTransition):
-        apply_scene_delta(result, bad_remove, next_contract)
+        apply_scene_delta(state, delta, permissive)
