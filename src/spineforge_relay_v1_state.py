@@ -80,6 +80,12 @@ def _read(parent: Any, token: str) -> tuple[bool, Any]:
     raise InvalidRelayTransition("Mutation parent must be a dict or list")
 
 
+def _value_at(root: Any, pointer: str) -> tuple[bool, Any]:
+    parts = _tokens(pointer)
+    parent, token = _parent(root, parts)
+    return _read(parent, token)
+
+
 def _apply(parent: Any, token: str, mutation: StateMutation) -> None:
     exists, current = _read(parent, token)
 
@@ -140,31 +146,53 @@ def _assert_binding(state: StoryStateV1, delta: SceneDeltaV1, contract: SceneCon
         raise StaleRelayInput("Contract story intent fingerprint is stale")
 
 
+def _assert_entry_state(payload: dict[str, Any], contract: SceneContractV1) -> None:
+    for pointer, expected in contract.entry_state.items():
+        exists, actual = _value_at(payload, pointer)
+        if not exists or actual != expected:
+            raise StaleRelayInput(f"Scene entry state mismatch: {pointer}")
+
+
+def _assert_authorized(mutation: StateMutation, contract: SceneContractV1) -> None:
+    if mutation.path in contract.required_exit_state:
+        expected = contract.required_exit_state[mutation.path]
+        if mutation.op == "REMOVE" or mutation.after != expected:
+            raise InvalidRelayTransition(
+                f"Mutation does not satisfy required exit state: {mutation.path}"
+            )
+        return
+    if mutation.path in contract.allowed_state_paths:
+        return
+    raise InvalidRelayTransition(f"Unauthorized persistent state path: {mutation.path}")
+
+
+def _assert_exit_state(payload: dict[str, Any], contract: SceneContractV1) -> None:
+    for pointer, expected in contract.required_exit_state.items():
+        exists, actual = _value_at(payload, pointer)
+        if not exists or actual != expected:
+            raise InvalidRelayTransition(f"Required exit state not reached: {pointer}")
+
+
 def apply_scene_delta(
     state: StoryStateV1,
     delta: SceneDeltaV1,
     contract: SceneContractV1,
 ) -> StoryStateV1:
-    """Apply one validated scene delta to the exact bound StoryState.
-
-    The function is deliberately strict:
-    - exact state/contract fingerprint binding is mandatory;
-    - canonical identity fields cannot be mutated;
-    - each before-value must match;
-    - output is revalidated as StoryStateV1;
-    - successful application increments revision exactly once.
-    """
+    """Apply one contract-authorized delta to the exact bound StoryState."""
     _assert_binding(state, delta, contract)
 
     payload = deepcopy(state.model_dump(mode="json"))
+    _assert_entry_state(payload, contract)
 
     for mutation in delta.mutations:
         parts = _tokens(mutation.path)
         if not parts or parts[0] in _PROTECTED_ROOTS:
             raise InvalidRelayTransition(f"Protected state path: {mutation.path}")
+        _assert_authorized(mutation, contract)
         parent, token = _parent(payload, parts)
         _apply(parent, token, mutation)
 
+    _assert_exit_state(payload, contract)
     payload["revision"] = state.revision + 1
 
     try:
