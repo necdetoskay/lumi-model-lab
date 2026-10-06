@@ -39,3 +39,34 @@ ayrıca çalıştırılır. Bunlar anlamsal kalite kanıtı değildir. İstem bu
 
 Yeni deneme öncesi durum: hazır; canlı v2 sonucu henüz yok. Model çağrısı başına
 rezerv kontrolü yeterli bütçe yoksa durur. Eski başarısız çağrılar yeniden çalıştırılmaz.
+
+## Canlı v2 sonucu ve sıfır maliyetli devam kontrolü
+
+Run 37409932527, kod 7757fcb2bb7aa7248c93084765d6ca4c3295b6f5:
+sunucuda **265 test PASS / 25.65 s**. Model adımı REJECT_RUNTIME.
+Artifact 11389013055, ZIP SHA-256
+`31750f9b1b7b535f6e63434f0e716a7659b873e486cb44ac8e9c33d16e666fd9` doğrulandı.
+
+Temiz kontrol çağrısı 27,259 giriş + 2,500 çıkış tokenı kullandı; çıkışın 2,087'si
+reasoning tokenıydı. `finish_reason=length`, JSON eksik: sonuç kabul edilemez.
+Eksik JSON tamamlanmadı veya olumlu sonuç olarak kullanılmadı. Hatalı metin denetimi
+ve patch hiç başlamadı. Bu tur bir çağrı: **$0.079518**. Bilinen model toplamı
+**$2.64901286**, eski rezervlerle bütçe hesabı **$2.78901286 / $3**.
+
+Çıkış tavanını 2,500'e düşürmek bu model için yetersizdi; bu bir çalıştırma ayarı
+hatasıdır. Sonraki ayrı deneme 03 için AUDIT=6,000, PATCH=3,500 hazırlandı. Ayrıca
+ilk çağrıdan önce iki zorunlu kontrolün rezervini birlikte kontrol eden kapı eklendi;
+yarım qualification'a ücret harcanmasını önler. Bu sınırlar başarı garantisi değildir.
+
+Bu yeni hazırlık sıfır model çağrısıyla **BUDGET_BLOCKED** verdi: iki zorunlu kontrol
+rezervi $0.416736; toplam gerekli bütçe $3.20574886, daha onarım dahil değil.
+Mevcut tavan yükseltilmedi. Deneme 03'ün kaydı ücretli sonuç değil, sıfır maliyetli
+preflight sonucudur. Yeni izin olmadan $3 üzerinde hiçbir çağrı yetkisi yoktur.
+
+İlgili son test grubu: v2/v3 toplam 9 PASS. İki yeni test, kayıtlı yarım yanıtın
+kabul edilmediğini ve bütçe duruşunda tek bir model çağrısı bile olmadığını doğrular.
+
+Kalan iş: toplam deney tavanı yeterliyse aynı iki kontrolü tam yanıt bütçesiyle
+çalıştırmak; yalnız ikisi geçerse bölgesel otomatik onarım ve tam yeniden denetim.
+Kordon/Duru yakalama başarısı veya hikâye onarımı tamamlandı denmiyor. Sonraki deneme
+için önerilen toplam tavan $4'tür; önceki $3 yetkisi bunu kapsamaz.
