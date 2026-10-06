@@ -14,7 +14,6 @@ from src.spineforge_relay_v1_contracts import (
     canonical_sha256,
 )
 
-
 H = "a" * 64
 H2 = "b" * 64
 H3 = "c" * 64
@@ -68,7 +67,6 @@ def test_scene_plan_allows_multiple_spine_beats_but_not_duplicates():
         turn="The tower begins to fail.",
     )
     assert plan.spine_beats == ["S3", "S4"]
-
     with pytest.raises(ValidationError):
         ScenePlanV1(
             scene_id="SC03",
@@ -79,7 +77,7 @@ def test_scene_plan_allows_multiple_spine_beats_but_not_duplicates():
         )
 
 
-def test_scene_contract_binds_state_and_forces_one_rewrite_maximum():
+def test_scene_contract_uses_pointer_state_and_one_rewrite_maximum():
     state = sample_state()
     plan = ScenePlanV1(
         scene_id="SC02",
@@ -96,19 +94,23 @@ def test_scene_contract_binds_state_and_forces_one_rewrite_maximum():
         global_spine_sha256=state.global_spine_sha256,
         story_intent_sha256=state.story_intent_sha256,
         required_events=["Leyra climbs upstairs"],
-        entry_state={"Leyra.location": "tower_ground"},
-        required_exit_state={"Leyra.location": "tower_floor_2"},
+        entry_state={"/characters/Leyra/location": "tower_ground"},
+        required_exit_state={"/characters/Leyra/location": "tower_floor_2"},
         immutable_facts=["Leyra owns the rope"],
         forbidden=["The rope cannot disappear"],
         max_rewrites=1,
     )
-    assert contract.story_state_revision == 1
     assert contract.max_rewrites == 1
 
     bad = contract.model_dump()
     bad["max_rewrites"] = 2
     with pytest.raises(ValidationError):
         SceneContractV1.model_validate(bad)
+
+    bad_pointer = contract.model_dump()
+    bad_pointer["entry_state"] = {"Leyra.location": "tower_ground"}
+    with pytest.raises(ValidationError):
+        SceneContractV1.model_validate(bad_pointer)
 
 
 def test_delta_requires_unique_absolute_mutation_paths():
