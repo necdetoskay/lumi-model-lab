@@ -1,39 +1,20 @@
-name: Model Qualification
+name: SFR-v1 Q5 Paid Single Scene
 
 on:
   workflow_dispatch:
     inputs:
-      model:
-        description: 'OpenRouter model id'
+      approval:
+        description: 'Exact paid approval gate'
         required: true
-        type: string
-      judge_model:
-        description: 'Exact OpenRouter judge model id'
-        required: true
-        default: 'anthropic/claude-haiku-4.5'
-        type: string
-      screen_only:
-        description: 'Run benchmark + judge screen only'
-        required: true
-        default: true
-        type: boolean
-      rerun:
-        description: 'Allow intentional rerun of same fingerprint'
-        required: true
-        default: false
-        type: boolean
-      qualification_config:
-        description: 'Qualification config path or exact Relay Q5 sentinel'
-        required: true
-        default: 'configs/qualification.yaml'
+        default: 'APPROVED_SFR_V1_Q5_ONE_CALL'
         type: string
 
 permissions:
   contents: write
 
 jobs:
-  qualify:
-    if: ${{ inputs.qualification_config == 'SFR_V1_Q5_SINGLE_SCENE' && inputs.model == 'aion-labs/aion-3.5-mini' }}
+  q5:
+    if: ${{ inputs.approval == 'APPROVED_SFR_V1_Q5_ONE_CALL' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -41,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: experiment/spineforge-relay-v1
+          ref: experiment/spineforge-relay-q5-live
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -52,8 +33,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Verify exact frozen authorization
-        id: auth
+      - name: Verify frozen Q5 authorization and credential
         shell: bash
         run: |
           set -euo pipefail
@@ -66,52 +46,49 @@ jobs:
           from pathlib import Path
           from src.spineforge_relay_v1_q5 import MAX_COST_USD, verify
 
+          report = verify()
           auth = json.loads(Path(
               "evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/authorization-template.json"
           ).read_text())
-          report = verify()
-          checks = {
-              "status": auth.get("status") == "AUTHORIZED",
-              "paid": auth.get("paid_execution_authorized") is True,
-              "scope": auth.get("scope") == "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL",
-              "preflight": auth.get("preflight_sha256") == report["artifact_sha256"],
-              "cost": auth.get("max_cost_usd") == MAX_COST_USD,
-              "calls": auth.get("max_writer_calls") == 1,
-              "retry": auth.get("automatic_retry") is False,
-              "production": auth.get("production_write") is False,
-              "state": auth.get("state_application_authorized") is False,
-              "message": bool(auth.get("explicit_user_message")),
-          }
-          if not all(checks.values()):
-              raise SystemExit("Q5 authorization check failed: " + str(checks))
-          print("Q5 authorization verified for preflight " + report["artifact_sha256"])
+          assert auth["status"] == "AUTHORIZED"
+          assert auth["paid_execution_authorized"] is True
+          assert auth["scope"] == "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL"
+          assert auth["preflight_sha256"] == report["artifact_sha256"]
+          assert auth["max_cost_usd"] == MAX_COST_USD == 0.01
+          assert auth["max_writer_calls"] == 1
+          assert auth["automatic_retry"] is False
+          assert auth["production_write"] is False
+          assert auth["state_application_authorized"] is False
+          assert auth["explicit_user_message"]
+          print(json.dumps({
+              "preflight_sha256": report["artifact_sha256"],
+              "planned_cost_usd": report["planned_uncached_cost_usd"],
+              "max_cost_usd": MAX_COST_USD
+          }, indent=2))
           PY
 
-      - name: Claim exact preflight before paid inference
+      - name: Claim authorization before inference
         shell: bash
         run: |
           set -euo pipefail
-          PREFLIGHT_SHA="$(python - <<'PY'
-          import json
-          print(json.load(open("evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/preflight.json"))["artifact_sha256"])
-          PY
-          )"
-          TAG="sfr-v1-q5-paid-$(printf '%s' "$PREFLIGHT_SHA" | cut -c1-16)"
+          SHA="cc7245e49a5290d1375522bf71069fbf99242e6dc3d73e73a6603d1a4122006d"
+          TAG="sfr-v1-q5-paid-${SHA:0:16}"
           if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "::error::Q5 authorization already claimed by $TAG"
+            echo "::error::Authorization already claimed: $TAG"
             exit 1
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Claim SFR-v1 Q5 paid authorization $PREFLIGHT_SHA"
+          git tag -a "$TAG" -m "Claim SFR-v1 Q5 paid authorization $SHA"
           git push origin "refs/tags/$TAG"
 
-      - name: Execute one paid scene writer call
+      - name: Execute exactly one paid scene call
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os
+          import json
+          import os
           from pathlib import Path
           from src.spineforge_relay_v1_q5 import execute_once
 
@@ -132,7 +109,9 @@ jobs:
               "failure_type": out.get("failure_type"),
               "failure_message": out.get("failure_message"),
           }
-          Path("q5-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+          Path("q5-summary.json").write_text(
+              json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+          )
           print(json.dumps(summary, indent=2))
           if out.get("status") != "WRITER_GENERATED_PENDING_SCENE_REVIEW":
               raise SystemExit(2)
