@@ -4,6 +4,7 @@ import json
 import pytest
 
 from src.spineforge_relay_v1_q5 import (
+    AUTH_SCOPE,
     MAX_COST_USD,
     MAX_TOKENS,
     MODEL,
@@ -39,7 +40,7 @@ def valid_prose() -> str:
 def authorization(report, **overrides):
     value = {
         "paid_execution_authorized": True,
-        "scope": "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL",
+        "scope": AUTH_SCOPE,
         "preflight_sha256": report["artifact_sha256"],
         "max_cost_usd": MAX_COST_USD,
         "max_writer_calls": 1,
@@ -96,7 +97,7 @@ def test_q5_request_is_bounded_low_reasoning_scene_writer():
     writer_input, *_ = build_inputs()
     request = request_payload(writer_input)
     assert request["model"] == MODEL
-    assert request["max_tokens"] == MAX_TOKENS == 1600
+    assert request["max_tokens"] == MAX_TOKENS == 5000
     assert request["reasoning"] == {"effort": "low", "exclude": True}
     assert request["response_format"] == {"type": "text"}
     assert "seed" not in request
@@ -110,7 +111,7 @@ def test_q5_prepare_is_zero_cost_and_round_trips(tmp_path):
     assert report["automatic_retry"] is False
     assert report["paid_execution_authorized"] is False
     assert report["state_application_authorized"] is False
-    assert report["proposed_max_cost_usd"] == MAX_COST_USD == 0.01
+    assert report["proposed_max_cost_usd"] == MAX_COST_USD == 0.015
     assert report["planned_uncached_cost_usd"] < MAX_COST_USD
     verified = verify(tmp_path / "preflight.json", tmp_path / "writer-input.json")
     assert verified["artifact_sha256"] == report["artifact_sha256"]
@@ -124,7 +125,7 @@ def test_q5_unauthorized_execution_fails_before_call(tmp_path):
         calls["n"] += 1
         raise AssertionError("must not call provider")
 
-    with pytest.raises(RuntimeError, match="explicit SFR-v1 Q5 paid authorization"):
+    with pytest.raises(RuntimeError, match="explicit SFR-v1 Q5B paid authorization"):
         execute_once(
             api_key="not-a-real-key",
             run_id="unauthorized",
