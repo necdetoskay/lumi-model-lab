@@ -264,9 +264,13 @@ SpineForge Relay v1 is a stateful story-generation pipeline that turns a frozen 
 
 ## 16. Qualification implementation status — 2026-10-06
 
-- Q0 Architecture baseline: REPO RECORDED.
-- Q1 Contracts: LOCAL GREEN; repository CI trigger still pending because connector-authored pushes did not start Actions automatically.
-- Q2 Deterministic state engine: LOCAL GREEN.
-- Q3 Historical failure fixtures: LOCAL GREEN for the recorded compass-cord reappearance and Duru location-transition regressions.
-- Q4 Three-scene saved-data relay simulation: next gate.
+- Q0 Architecture baseline: GREEN.
+- Q1 Contracts: GREEN.
+- Q2 Deterministic state engine: GREEN.
+- Q3 Historical failure fixtures: GREEN for compass-cord reappearance and Duru location-transition regressions.
+- Q4 Three-scene saved-data relay simulation: GREEN.
+- Direct qualification proof: 25/25 pytest PASS on isolated ci-runner clone at tested head 3dfb42068b347b4ece2d88230c7d75dc38997ba7.
+- Frozen evidence: evidence/spineforge-relay/SFR-V1-Q0-Q4-20261006/result.json.
+- GitHub Actions jobs were queued at evidence time and are not counted as qualification proof.
+- Q5 Single-scene paid qualification: NOT AUTHORIZED / NOT RUN.
 - Paid inference calls used by SFR-v1 so far: 0.
