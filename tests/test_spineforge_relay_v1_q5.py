@@ -93,6 +93,11 @@ def test_q5_fixture_compiles_to_exact_sc01_contract():
     assert writer_input["continuity_window"] is None
 
 
+def test_q5_runtime_profile_has_single_scene_writer_request_class():
+    raw = open("configs/model_runtime_profiles.yaml", encoding="utf-8").read()
+    assert raw.count("spineforge_relay_v1_scene_writer:") == 1
+
+
 def test_q5_request_is_bounded_low_reasoning_scene_writer():
     writer_input, *_ = build_inputs()
     request = request_payload(writer_input)
