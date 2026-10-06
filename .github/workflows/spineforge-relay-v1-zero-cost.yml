@@ -63,7 +63,7 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-          from src.spineforge_relay_v1_q5 import MAX_COST_USD, verify
+          from src.spineforge_relay_v1_q5 import AUTH_SCOPE, MAX_COST_USD, verify
 
           auth = json.loads(Path(
               "evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json"
@@ -72,7 +72,7 @@ jobs:
           approved = (
               auth.get("status") == "AUTHORIZED"
               and auth.get("paid_execution_authorized") is True
-              and auth.get("scope") == "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL"
+              and auth.get("scope") == AUTH_SCOPE
               and auth.get("preflight_sha256") == report["artifact_sha256"]
               and auth.get("max_cost_usd") == MAX_COST_USD
               and auth.get("max_writer_calls") == 1
@@ -114,6 +114,7 @@ jobs:
               api_key=os.environ["OPENROUTER_API_KEY"],
               run_id="github-" + os.environ["GITHUB_RUN_ID"],
               authorization=auth,
+              output_root=Path("evidence/spineforge-relay/q5b-runs"),
           )
           summary = {
               "status": out.get("status"),
