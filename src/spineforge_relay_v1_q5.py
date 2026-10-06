@@ -35,6 +35,7 @@ from src.spineforge_v21_model_adapter import provider_usage
 
 MODEL = "aion-labs/aion-3.5-mini"
 REQUEST_CLASS = "spineforge_relay_v1_scene_writer"
+AUTH_SCOPE = "SFR_V1_Q5B_SINGLE_SCENE_ONE_CALL"
 PROMPT = Path("prompts/spineforge_relay_v1_scene_writer.md")
 FIXTURE = Path("tests/fixtures/spineforge_relay_v1/q5_lighthouse_scene01.json")
 DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006")
@@ -141,7 +142,7 @@ def prepare(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     )
 
     report = {
-        "schema": "spineforge-relay.q5-preflight.v1",
+        "schema": "spineforge-relay.q5b-preflight.v1",
         "status": "OFFLINE_PREPARED_PAID_NOT_AUTHORIZED",
         "qualification_id": "SFR-V1-Q5B-SINGLE-SCENE-20261006",
         "fixture_id": writer_input["fixture_id"],
@@ -231,7 +232,7 @@ def _validate_generated_scene(text: str, writer_input: dict[str, Any]) -> dict[s
             f"[{contract['target_words_min']}, {contract['target_words_max']}]"
         )
     return {
-        "schema": "spineforge-relay.q5-writer-artifact.v1",
+        "schema": "spineforge-relay.q5b-writer-artifact.v1",
         "status": "WRITER_GENERATED_PENDING_SCENE_REVIEW",
         "scene_id": contract["scene_id"],
         "prose": text.strip(),
@@ -272,7 +273,7 @@ def execute_once(
     report = verify(preflight_path, writer_input_path)
     if (
         authorization.get("paid_execution_authorized") is not True
-        or authorization.get("scope") != "SFR_V1_Q5_SINGLE_SCENE_ONE_CALL"
+        or authorization.get("scope") != AUTH_SCOPE
         or authorization.get("preflight_sha256") != report["artifact_sha256"]
         or authorization.get("max_cost_usd") != MAX_COST_USD
         or authorization.get("max_writer_calls") != 1
@@ -281,7 +282,7 @@ def execute_once(
         or authorization.get("state_application_authorized") is not False
         or not authorization.get("explicit_user_message")
     ):
-        raise RuntimeError("Separate explicit SFR-v1 Q5 paid authorization required")
+        raise RuntimeError("Separate explicit SFR-v1 Q5B paid authorization required")
     if not api_key or not run_id or Path(run_id).name != run_id or run_id in {".", ".."}:
         raise RuntimeError("Q5 API key/run id missing or invalid")
 
@@ -294,7 +295,7 @@ def execute_once(
     writer_input = json.loads(writer_input_path.read_text(encoding="utf-8"))
     request = report["request"]
     evidence = {
-        "schema": "spineforge-relay.q5-call.v1",
+        "schema": "spineforge-relay.q5b-call.v1",
         "status": "STARTED",
         "preflight_sha256": report["artifact_sha256"],
         "authorization": authorization,
@@ -333,7 +334,7 @@ def execute_once(
         )
         evidence["usage"] = provider_usage(
             body,
-            "SFR_V1_Q5_SCENE_WRITER",
+            "SFR_V1_Q5B_SCENE_WRITER",
             time.perf_counter() - started,
         )
         if actual_request != request:
@@ -367,7 +368,7 @@ def execute_once(
                 try:
                     evidence["usage"] = provider_usage(
                         body,
-                        "SFR_V1_Q5_SCENE_WRITER",
+                        "SFR_V1_Q5B_SCENE_WRITER",
                         time.perf_counter() - started,
                     )
                 except RuntimeError:
