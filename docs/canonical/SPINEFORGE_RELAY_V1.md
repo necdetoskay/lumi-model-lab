@@ -269,8 +269,14 @@ SpineForge Relay v1 is a stateful story-generation pipeline that turns a frozen 
 - Q2 Deterministic state engine: GREEN.
 - Q3 Historical failure fixtures: GREEN for compass-cord reappearance and Duru location-transition regressions.
 - Q4 Three-scene saved-data relay simulation: GREEN.
-- Direct qualification proof: 25/25 pytest PASS on isolated ci-runner clone at tested head 3dfb42068b347b4ece2d88230c7d75dc38997ba7.
-- Frozen evidence: evidence/spineforge-relay/SFR-V1-Q0-Q4-20261006/result.json.
-- GitHub Actions jobs were queued at evidence time and are not counted as qualification proof.
-- Q5 Single-scene paid qualification: NOT AUTHORIZED / NOT RUN.
+- Q0-Q4 direct qualification proof: 25/25 pytest PASS on isolated ci-runner clone at tested head 3dfb42068b347b4ece2d88230c7d75dc38997ba7.
+- Frozen Q0-Q4 evidence: evidence/spineforge-relay/SFR-V1-Q0-Q4-20261006/result.json.
+- Q5 offline preflight + authorization-gate suite: GREEN; total SFR-v1 zero-cost suite 31/31 pytest PASS on a fresh committed-branch clone.
+- Q5 model: aion-labs/aion-3.5-mini; request class: spineforge_relay_v1_scene_writer; max_tokens: 1600; reasoning: low; max writer calls: 1; automatic retry: false.
+- Q5 conservative planned uncached cost: USD 0.006566; authorization ceiling: USD 0.02.
+- Frozen Q5 preflight SHA256: fe2ba796c7aba72bac7db6bfd51ee2a359f54bf8f05ccd46492fe07aa32f3bfb.
+- Frozen Q5 artifacts: evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006/.
+- Q5 generated prose, when eventually authorized, remains WRITER_GENERATED_PENDING_SCENE_REVIEW and cannot mutate StoryState automatically.
+- GitHub Actions jobs were still queued at evidence time and are not counted as qualification proof.
+- Q5 Single-scene paid qualification: PREPARED, NOT AUTHORIZED, NOT RUN.
 - Paid inference calls used by SFR-v1 so far: 0.
