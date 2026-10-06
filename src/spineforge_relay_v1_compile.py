@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 from src.spineforge_relay_v1_contracts import (
+    FrozenSpineRouteV1,
     SceneContractV1,
     ScenePlanV1,
     StoryStateV1,
@@ -12,7 +13,7 @@ from src.spineforge_relay_v1_contracts import (
 
 
 class SceneCompileError(RuntimeError):
-    """Raised when a scene plan cannot be bound to the current story state."""
+    """Raised when a scene plan cannot be bound to current frozen inputs."""
 
 
 def _tokens(pointer: str) -> list[str]:
@@ -44,20 +45,52 @@ def _value_at(root: Any, pointer: str) -> tuple[bool, Any]:
     return True, current
 
 
-def compile_scene_contract(state: StoryStateV1, plan: ScenePlanV1) -> SceneContractV1:
-    """Bind one structured ScenePlan to the exact current StoryState.
-
-    No semantic inference is performed here. The planner owns the proposed
-    structured transition; this compiler only validates/binds it.
-    """
+def _assert_spine_progression(
+    state: StoryStateV1,
+    plan: ScenePlanV1,
+    route: FrozenSpineRouteV1,
+) -> None:
+    if route.global_spine_sha256 != state.global_spine_sha256:
+        raise SceneCompileError("Frozen spine route hash does not match StoryState")
     if state.next_spine_beat is None:
         raise SceneCompileError("Story state has no next spine beat")
-    if not plan.spine_beats or plan.spine_beats[0] != state.next_spine_beat:
+
+    try:
+        start = route.beat_ids.index(state.next_spine_beat)
+    except ValueError as exc:
+        raise SceneCompileError("Current next spine beat is absent from frozen route") from exc
+
+    stop = start + len(plan.spine_beats)
+    if stop > len(route.beat_ids):
+        raise SceneCompileError("Scene plan consumes beyond frozen spine route")
+
+    expected = route.beat_ids[start:stop]
+    if plan.spine_beats != expected:
         raise SceneCompileError(
-            f"Scene plan does not begin at current next spine beat: {state.next_spine_beat}"
+            f"Scene plan must consume contiguous frozen beats: expected {expected}"
         )
+
+    expected_next = route.beat_ids[stop] if stop < len(route.beat_ids) else None
+    if plan.next_spine_beat != expected_next:
+        raise SceneCompileError(
+            f"Scene plan next beat mismatch: expected {expected_next!r}"
+        )
+
     if any(beat in state.completed_spine_beats for beat in plan.spine_beats):
         raise SceneCompileError("Scene plan attempts to consume an already completed spine beat")
+
+
+def compile_scene_contract(
+    state: StoryStateV1,
+    plan: ScenePlanV1,
+    route: FrozenSpineRouteV1,
+) -> SceneContractV1:
+    """Bind one structured ScenePlan to exact StoryState and frozen spine route.
+
+    No semantic inference is performed here. Scene planning owns the structured
+    proposal; this compiler owns deterministic route, state and fingerprint checks.
+    """
+    _assert_spine_progression(state, plan, route)
 
     state_payload = state.model_dump(mode="json")
     for pointer, expected in plan.entry_state.items():
