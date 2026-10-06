@@ -118,7 +118,6 @@ class ScenePlanV1(StrictModel):
         _unique(self.spine_beats, "spine_beats")
         _unique(self.entry_requirements, "entry_requirements")
         _unique(self.exit_requirements, "exit_requirements")
-        _unique(self.consumed_spine_beats, "consumed_spine_beats")
         _unique(self.required_events, "required_events")
         _unique(self.allowed_state_paths, "allowed_state_paths")
         _unique(self.immutable_facts, "immutable_facts")
@@ -165,6 +164,7 @@ class SceneContractV1(StrictModel):
             "story_intent_sha256",
         ):
             _sha(getattr(self, name), name)
+        _unique(self.consumed_spine_beats, "consumed_spine_beats")
         _unique(self.required_events, "required_events")
         _unique(self.immutable_facts, "immutable_facts")
         _unique(self.forbidden, "forbidden")
