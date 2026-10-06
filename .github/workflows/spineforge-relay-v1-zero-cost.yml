@@ -7,6 +7,14 @@ on:
       - 'docs/canonical/SPINEFORGE_RELAY_V1.md'
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
+      - 'tests/fixtures/spineforge_relay_v1/**'
+      - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
+  pull_request:
+    paths:
+      - 'docs/canonical/SPINEFORGE_RELAY_V1.md'
+      - 'src/spineforge_relay_v1_*.py'
+      - 'tests/test_spineforge_relay_v1_*.py'
+      - 'tests/fixtures/spineforge_relay_v1/**'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   workflow_dispatch:
 
@@ -14,7 +22,7 @@ permissions:
   contents: read
 
 jobs:
-  q1-contracts:
+  q0-q4-zero-cost:
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     steps:
@@ -23,5 +31,5 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -r requirements.txt pytest
-      - name: Q1 contract invariants
-        run: python -m pytest -q tests/test_spineforge_relay_v1_contracts.py
+      - name: SFR-v1 Q1-Q4 qualification
+        run: python -m pytest -q tests/test_spineforge_relay_v1_*.py
