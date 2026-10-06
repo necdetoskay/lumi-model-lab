@@ -92,6 +92,20 @@ class StoryStateV1(StrictModel):
         return self
 
 
+class FrozenSpineRouteV1(StrictModel):
+    schema_name: Literal["spineforge-relay.frozen-spine-route.v1"] = "spineforge-relay.frozen-spine-route.v1"
+    global_spine_sha256: str
+    beat_ids: list[str] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_route(self) -> "FrozenSpineRouteV1":
+        _sha(self.global_spine_sha256, "global_spine_sha256")
+        _unique(self.beat_ids, "beat_ids")
+        if any(not beat.strip() for beat in self.beat_ids):
+            raise ValueError("beat_ids must contain nonempty ids")
+        return self
+
+
 class ScenePlanV1(StrictModel):
     schema_name: Literal["spineforge-relay.scene-plan.v1"] = "spineforge-relay.scene-plan.v1"
     scene_id: str = Field(min_length=1)
