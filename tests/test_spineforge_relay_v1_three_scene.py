@@ -3,6 +3,7 @@ import pytest
 from src.spineforge_relay_v1_compile import compile_scene_contract
 from src.spineforge_relay_v1_contracts import (
     CharacterState,
+    FrozenSpineRouteV1,
     ObjectState,
     SceneArtifactV1,
     SceneDeltaV1,
@@ -65,6 +66,11 @@ def freeze(scene_id, state_before, state_after, contract, prose):
 
 
 def test_three_scene_relay_preserves_state_and_advances_spine_without_prose_memory():
+    route = FrozenSpineRouteV1(
+        global_spine_sha256=H,
+        beat_ids=["S1", "S2", "S3"],
+    )
+
     s0 = StoryStateV1(
         story_id="relay-three-scene-proof",
         revision=0,
@@ -85,7 +91,7 @@ def test_three_scene_relay_preserves_state_and_advances_spine_without_prose_memo
         {"/characters/Leyra/location": "outside_tower", "/objects/rope/owner": "Leyra"},
         {"/characters/Leyra/location": "tower_ground"},
     )
-    c1 = compile_scene_contract(s0, p1)
+    c1 = compile_scene_contract(s0, p1, route)
     d1 = make_delta(s0, c1, [
         StateMutation(
             path="/characters/Leyra/location",
@@ -102,7 +108,7 @@ def test_three_scene_relay_preserves_state_and_advances_spine_without_prose_memo
         {"/characters/Leyra/location": "tower_ground", "/objects/rope/owner": "Leyra"},
         {"/characters/Leyra/location": "tower_floor_2"},
     )
-    c2 = compile_scene_contract(s1, p2)
+    c2 = compile_scene_contract(s1, p2, route)
     d2 = make_delta(s1, c2, [
         StateMutation(
             path="/characters/Leyra/location",
@@ -124,7 +130,7 @@ def test_three_scene_relay_preserves_state_and_advances_spine_without_prose_memo
         {"/characters/Leyra/location": "tower_floor_3"},
         allowed=["/characters/Leyra/knowledge/-"],
     )
-    c3 = compile_scene_contract(s2, p3)
+    c3 = compile_scene_contract(s2, p3, route)
     d3 = make_delta(s2, c3, [
         StateMutation(
             path="/characters/Leyra/location",
