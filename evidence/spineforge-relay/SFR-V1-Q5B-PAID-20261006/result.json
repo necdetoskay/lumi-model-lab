@@ -1,0 +1,61 @@
+{
+  "schema": "spineforge-relay.q5b-paid-result.v1",
+  "qualification_id": "SFR-V1-Q5B-SINGLE-SCENE-20261006",
+  "status": "REWRITE_REQUIRED",
+  "run_id": 37527438701,
+  "job_id": 112487909439,
+  "head_sha": "1bafd98f5cf732f8966aea9e45c7da6c190daaf0",
+  "model": "aion-labs/aion-3.5-mini",
+  "request_class": "spineforge_relay_v1_scene_writer",
+  "preflight_sha256": "0d63f09ed16957d33f5a1bb6bd450879a3ba2bc63309e90017649a218a06350c",
+  "api_calls": 1,
+  "automatic_retry_executed": false,
+  "state_application_authorized": false,
+  "usage": {
+    "input_tokens": 1493,
+    "output_tokens": 1959,
+    "total_tokens": 3452,
+    "reasoning_tokens": 1641,
+    "cost_usd": 0.00301654,
+    "latency_seconds": 35.61739309830591
+  },
+  "provider": {
+    "response_id": "gen-1791318976-KtcCpFh4BG7daGvBcuTS",
+    "finish_reason": "stop"
+  },
+  "candidate": {
+    "word_count": 289,
+    "contract_word_min": 180,
+    "contract_word_max": 280,
+    "prose": "Ekin turned the brass compass over in her hands, watching the needle wobble and settle. Grandfather's parting gift—worn smooth at the edges, smelling faintly of his workshop. She was still smiling when the water beside the dock went suddenly, strangely still.\n\nThen something rose. A broad, scarred she-dragon, neck longer than a mast, scales slick with brine. A webbed claw snapped out, plucked the compass clean from Ekin's palm, and slid back beneath the chop with barely a ripple.\n\n\"Hey—no!\" Ekin was already running, boots hammering the planks. She lunged over the water at the dock's end, snatched at empty air, and nearly went in herself. Far out in the harbor, the dragon's head bobbed up, brass glinting in its jaws. Then it turned—unhurried, almost smug—toward the headland.\n\n\"Come back with that!\"\n\n\"It won't.\" A girl stood at the top of the gangplank, arms crossed, salt-stained and unimpressed. \"Sea dragons don't come back. You go after them.\"\n\nEkin spun. \"Who are you?\"\n\n\"Duru. And I know where it's headed.\" She crouched and pointed at a trail of glistening scales scattered across the boards, each one catching the grey light, leading away toward the old lighthouse on the headland, where storm clouds were stacking up like unloaded cargo. \"They always carry their treasure to the tower before a storm. That one's a mother. Mothers nest up high.\"\n\nEkin looked at the water, then the scales, then the stranger. Every stubborn bone in her body wanted to follow the trail alone. But the compass was already a shrinking spark in the dragon's jaws.\n\n\"Fine,\" she muttered, shoulders tight. \"But stay out of my way.\"\n\nDuru just shrugged and started walking. Ekin followed, jaw set, two steps behind."
+  },
+  "deterministic_findings": [
+    {
+      "code": "WORD_BUDGET_EXCEEDED",
+      "family": "contract",
+      "severity": "BLOCKING",
+      "detail": "289 words exceeds SceneContract maximum 280 by 9 words."
+    }
+  ],
+  "architecture_review_findings": [
+    {
+      "code": "DURU_KNOWLEDGE_LEAK_DRAGON_BEHAVIOR",
+      "family": "epistemic",
+      "severity": "BLOCKING",
+      "detail": "Duru asserts general sea-dragon treasure behavior and storm behavior although current StoryState only gives her lighthouse_location and coastal_route knowledge."
+    },
+    {
+      "code": "DURU_KNOWLEDGE_LEAK_MOTHER_STATUS",
+      "family": "epistemic",
+      "severity": "BLOCKING",
+      "detail": "Duru states that this dragon is a mother and generalizes maternal nesting behavior although that knowledge is not present in her current StoryState."
+    }
+  ],
+  "positive_observations": [
+    "Provider returned complete prose with finish_reason=stop after increasing headroom.",
+    "Core SC01 theft/pursuit/Duru/lighthouse/joint-decision structure is present.",
+    "No retry occurred and StoryState was not mutated."
+  ],
+  "conclusion": "Q5B proves the single-scene writer can complete prose with adequate headroom, but the scene must not be accepted. Local semantic guard and bounded targeted rewrite must be qualified before state advancement.",
+  "cumulative_paid_cost_usd": 0.00553048
+}
