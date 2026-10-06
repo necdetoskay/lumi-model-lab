@@ -1,8 +1,10 @@
+import pytest
+
+from src.spineforge_relay_v1_compile import compile_scene_contract
 from src.spineforge_relay_v1_contracts import (
     CharacterState,
     ObjectState,
     SceneArtifactV1,
-    SceneContractV1,
     SceneDeltaV1,
     ScenePlanV1,
     SceneValidationV1,
@@ -12,28 +14,19 @@ from src.spineforge_relay_v1_contracts import (
 )
 from src.spineforge_relay_v1_state import StaleRelayInput, apply_scene_delta
 
-import pytest
-
 
 H = "a" * 64
 H2 = "b" * 64
 
 
-def make_contract(state, scene_id, beat, purpose, entry, exit_state, allowed=None):
-    plan = ScenePlanV1(
+def make_plan(state, scene_id, beat, next_beat, purpose, entry, exit_state, allowed=None):
+    return ScenePlanV1(
         scene_id=scene_id,
         spine_beats=[beat],
+        next_spine_beat=next_beat,
         narrative_purpose=purpose,
         objective=purpose,
         turn=f"{scene_id} reaches its intended turn.",
-    )
-    return SceneContractV1(
-        scene_id=scene_id,
-        scene_plan_sha256=canonical_sha256(plan),
-        story_state_revision=state.revision,
-        story_state_sha256=canonical_sha256(state),
-        global_spine_sha256=state.global_spine_sha256,
-        story_intent_sha256=state.story_intent_sha256,
         required_events=[purpose],
         entry_state=entry,
         required_exit_state=exit_state,
@@ -71,7 +64,7 @@ def freeze(scene_id, state_before, state_after, contract, prose):
     )
 
 
-def test_three_scene_relay_preserves_object_and_location_state_without_prose_memory():
+def test_three_scene_relay_preserves_state_and_advances_spine_without_prose_memory():
     s0 = StoryStateV1(
         story_id="relay-three-scene-proof",
         revision=0,
@@ -87,11 +80,12 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
         next_spine_beat="S1",
     )
 
-    c1 = make_contract(
-        s0, "SC01", "S1", "Leyra enters the tower.",
+    p1 = make_plan(
+        s0, "SC01", "S1", "S2", "Leyra enters the tower.",
         {"/characters/Leyra/location": "outside_tower", "/objects/rope/owner": "Leyra"},
         {"/characters/Leyra/location": "tower_ground"},
     )
+    c1 = compile_scene_contract(s0, p1)
     d1 = make_delta(s0, c1, [
         StateMutation(
             path="/characters/Leyra/location",
@@ -103,11 +97,12 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
     s1 = apply_scene_delta(s0, d1, c1)
     a1 = freeze("SC01", s0, s1, c1, "Leyra entered the tower with the rope still over her shoulder.")
 
-    c2 = make_contract(
-        s1, "SC02", "S2", "Leyra climbs to the second floor.",
+    p2 = make_plan(
+        s1, "SC02", "S2", "S3", "Leyra climbs to the second floor.",
         {"/characters/Leyra/location": "tower_ground", "/objects/rope/owner": "Leyra"},
         {"/characters/Leyra/location": "tower_floor_2"},
     )
+    c2 = compile_scene_contract(s1, p2)
     d2 = make_delta(s1, c2, [
         StateMutation(
             path="/characters/Leyra/location",
@@ -119,8 +114,8 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
     s2 = apply_scene_delta(s1, d2, c2)
     a2 = freeze("SC02", s1, s2, c2, "Leyra climbed the worn stairs to the second floor.")
 
-    c3 = make_contract(
-        s2, "SC03", "S3", "Leyra reaches Duru.",
+    p3 = make_plan(
+        s2, "SC03", "S3", None, "Leyra reaches Duru.",
         {
             "/characters/Leyra/location": "tower_floor_2",
             "/characters/Duru/location": "tower_floor_3",
@@ -129,6 +124,7 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
         {"/characters/Leyra/location": "tower_floor_3"},
         allowed=["/characters/Leyra/knowledge/-"],
     )
+    c3 = compile_scene_contract(s2, p3)
     d3 = make_delta(s2, c3, [
         StateMutation(
             path="/characters/Leyra/location",
@@ -147,6 +143,8 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
 
     assert [s0.revision, s1.revision, s2.revision, s3.revision] == [0, 1, 2, 3]
     assert [a1.status, a2.status, a3.status] == ["ACCEPTED", "ACCEPTED", "ACCEPTED"]
+    assert s3.completed_spine_beats == ["S1", "S2", "S3"]
+    assert s3.next_spine_beat is None
     assert s3.characters["Leyra"].location == "tower_floor_3"
     assert s3.characters["Duru"].location == "tower_floor_3"
     assert "Duru_is_here" in s3.characters["Leyra"].knowledge
@@ -154,6 +152,5 @@ def test_three_scene_relay_preserves_object_and_location_state_without_prose_mem
     assert s3.objects["rope"].location == "carried_by_Leyra"
     assert s3.objects["rope"].state["usable"] is True
 
-    # A previously bound scene delta cannot be replayed against a newer state.
     with pytest.raises(StaleRelayInput):
         apply_scene_delta(s2, d1, c1)
