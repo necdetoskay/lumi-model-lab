@@ -37,10 +37,10 @@ MODEL = "aion-labs/aion-3.5-mini"
 REQUEST_CLASS = "spineforge_relay_v1_scene_writer"
 PROMPT = Path("prompts/spineforge_relay_v1_scene_writer.md")
 FIXTURE = Path("tests/fixtures/spineforge_relay_v1/q5_lighthouse_scene01.json")
-DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5-PREFLIGHT-20261006")
-MAX_TOKENS = 1600
+DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006")
+MAX_TOKENS = 5000
 TEMPERATURE = 0.76
-MAX_COST_USD = 0.01
+MAX_COST_USD = 0.015
 
 TextCall = Callable[..., tuple[str, dict[str, Any], dict[str, Any]]]
 
@@ -143,7 +143,7 @@ def prepare(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
     report = {
         "schema": "spineforge-relay.q5-preflight.v1",
         "status": "OFFLINE_PREPARED_PAID_NOT_AUTHORIZED",
-        "qualification_id": "SFR-V1-Q5-SINGLE-SCENE-20261006",
+        "qualification_id": "SFR-V1-Q5B-SINGLE-SCENE-20261006",
         "fixture_id": writer_input["fixture_id"],
         "source_kind": writer_input["source_kind"],
         "model": MODEL,
