@@ -37,6 +37,7 @@ def test_historical_continuity_failures_are_encoded_and_blocked():
         objects={
             "compass_cord": ObjectState(owner=None, location="with_dragon"),
         },
+        next_spine_beat="HIST",
     )
 
     plan = ScenePlanV1(
@@ -53,6 +54,8 @@ def test_historical_continuity_failures_are_encoded_and_blocked():
         story_state_sha256=canonical_sha256(state),
         global_spine_sha256=state.global_spine_sha256,
         story_intent_sha256=state.story_intent_sha256,
+        consumed_spine_beats=["HIST"],
+        next_spine_beat=None,
         required_events=["Ekin returns to the upper room"],
         entry_state={
             "/characters/Duru/location": "upper_room",
