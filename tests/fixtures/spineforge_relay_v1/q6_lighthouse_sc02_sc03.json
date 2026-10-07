@@ -1,0 +1,217 @@
+{
+  "schema": "spineforge-relay.q6-two-scene-fixture.v1",
+  "qualification_id": "SFR-V1-Q6-SC02-SC03-20261007",
+  "source_accepted_scene": "evidence/spineforge-relay/SFR-V1-Q5T-STRUCTURED-20261007/accepted-scene.json",
+  "source_q5t_fixture": "tests/fixtures/spineforge_relay_v1/q5t_lighthouse_scene01.json",
+  "route": ["SC01", "SC02", "SC03", "SC04", "SC05", "SC06"],
+  "scene_plans": [
+    {
+      "scene_id": "SC02",
+      "spine_beats": ["SC02"],
+      "next_spine_beat": "SC03",
+      "narrative_purpose": "Ekin and Duru travel together by the known coastal route and enter the dry upper lighthouse room.",
+      "location": "coastal_route_to_lighthouse",
+      "objective": "Duru guides the coastal route; Ekin reluctantly follows; both reach the lighthouse upper room.",
+      "turn": "Ekin accepts Duru's route guidance without becoming a close friend.",
+      "required_events": [
+        {
+          "id": "SC02-E01",
+          "actor": "Duru",
+          "action": "GUIDE_ROUTE",
+          "target": "coastal_route",
+          "required_observer": "Ekin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "EITHER",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "Duru", "action": "GUIDE_ROUTE", "target": "coastal_route"},
+            {"id": "P2", "subject": "Ekin", "action": "ACKNOWLEDGE", "target": "coastal_route"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION", "STORY_STATE_KNOWLEDGE"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["secret_route", "boat", "rope", "magic"],
+          "resulting_state": {}
+        },
+        {
+          "id": "SC02-E02",
+          "actor": "Ekin_and_Duru",
+          "action": "ENTER",
+          "target": "lighthouse_upper_room",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "Ekin_and_Duru", "action": "ENTER", "target": "lighthouse_upper_room"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["secret_route", "boat", "rope", "magic"],
+          "resulting_state": {
+            "/characters/Ekin/location": "lighthouse_upper_room",
+            "/characters/Duru/location": "lighthouse_upper_room"
+          }
+        }
+      ],
+      "entry_state": {
+        "/characters/Ekin/location": "harbor",
+        "/characters/Duru/location": "harbor",
+        "/objects/compass/location": "mother_dragon"
+      },
+      "required_exit_state": {
+        "/characters/Ekin/location": "lighthouse_upper_room",
+        "/characters/Duru/location": "lighthouse_upper_room",
+        "/objects/compass/location": "mother_dragon"
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "Duru knows the coastal route to the lighthouse.",
+        "The lighthouse door is open.",
+        "The storm is approaching but the route remains passable during this scene.",
+        "The compass remains with the mother sea dragon during SC02."
+      ],
+      "forbidden": [
+        "Do not recover or see the compass yet.",
+        "Do not introduce a secret route, boat, rescue gear, magic, or an adult rescuer.",
+        "Do not enter the lower maintenance room.",
+        "Do not make Ekin and Duru instant close friends."
+      ],
+      "emotional_transition": {
+        "from": "Ekin reluctantly accepts temporary help",
+        "to": "Ekin follows Duru's route while remaining guarded"
+      },
+      "target_words_min": 180,
+      "target_words_max": 300
+    },
+    {
+      "scene_id": "SC03",
+      "spine_beats": ["SC03"],
+      "next_spine_beat": "SC04",
+      "narrative_purpose": "Inside the upper room, Ekin finds the compass at the nest, Duru notices the hatchling, and the physical layout needed for the next scene is established.",
+      "location": "lighthouse_upper_room",
+      "objective": "Reveal the nest, compass, hatchling, mother dragon's blocking posture, narrow stair and lower grate without advancing into SC04.",
+      "turn": "Ekin treats Duru's warning as an unwanted command and remains focused on the compass.",
+      "required_events": [
+        {
+          "id": "SC03-E01",
+          "actor": "sea_dragon",
+          "action": "PLACE",
+          "target": "compass_at_lighthouse_nest",
+          "required_observer": "Ekin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "sea_dragon", "action": "PLACE", "target": "compass_at_lighthouse_nest"},
+            {"id": "P2", "subject": "Ekin", "action": "OBSERVE", "target": "compass_at_lighthouse_nest"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["magic", "treasure_rule"],
+          "resulting_state": {"/objects/compass/location": "lighthouse_nest"}
+        },
+        {
+          "id": "SC03-E02",
+          "actor": "Duru",
+          "action": "NOTICE",
+          "target": "dragon_hatchling",
+          "required_observer": "Ekin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "Duru", "action": "NOTICE", "target": "dragon_hatchling"},
+            {"id": "P2", "subject": "Ekin", "action": "OBSERVE", "target": "dragon_hatchling"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["magic", "prophecy"],
+          "resulting_state": {
+            "/objects/dragon_hatchling": {
+              "owner": null,
+              "location": "lighthouse_upper_room",
+              "state": {"size": "cat_sized", "can_fly": false, "condition": "uninjured"}
+            }
+          }
+        },
+        {
+          "id": "SC03-E03",
+          "actor": "sea_dragon",
+          "action": "BLOCK",
+          "target": "nest_approach",
+          "required_observer": "Ekin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "sea_dragon", "action": "BLOCK", "target": "nest_approach"},
+            {"id": "P2", "subject": "Ekin", "action": "OBSERVE", "target": "sea_dragon_blocking_nest"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["mind_reading", "speech"],
+          "resulting_state": {}
+        },
+        {
+          "id": "SC03-E04",
+          "actor": "Ekin_and_Duru",
+          "action": "OBSERVE",
+          "target": "narrow_stair_and_lower_grate",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {"id": "P1", "subject": "Ekin_and_Duru", "action": "OBSERVE", "target": "narrow_stair_and_lower_grate"}
+          ],
+          "allowed_provenance": ["DIRECT_OBSERVATION"],
+          "forbidden_provenance": ["INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"],
+          "forbidden_evidence_subjects": ["secret_route", "hidden_exit"],
+          "resulting_state": {
+            "/world/narrow_stair_to_lower_room": true,
+            "/world/lower_room_sea_grate": true
+          }
+        }
+      ],
+      "entry_state": {
+        "/characters/Ekin/location": "lighthouse_upper_room",
+        "/characters/Duru/location": "lighthouse_upper_room",
+        "/objects/compass/location": "mother_dragon"
+      },
+      "required_exit_state": {
+        "/characters/Ekin/location": "lighthouse_upper_room",
+        "/characters/Duru/location": "lighthouse_upper_room",
+        "/objects/compass/location": "lighthouse_nest",
+        "/objects/dragon_hatchling": {
+          "owner": null,
+          "location": "lighthouse_upper_room",
+          "state": {"size": "cat_sized", "can_fly": false, "condition": "uninjured"}
+        },
+        "/world/narrow_stair_to_lower_room": true,
+        "/world/lower_room_sea_grate": true
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The compass is a non-magical brass keepsake belonging to Ekin.",
+        "The mother sea dragon does not speak, cast magic, or read human intentions.",
+        "The upper lighthouse room is dry and daylight reaches it.",
+        "The hatchling is cat-sized, cannot fly, and is not injured.",
+        "A narrow turning human stair leads to the lower maintenance room.",
+        "The lower room has a fixed sea-facing iron grate."
+      ],
+      "forbidden": [
+        "Do not let Ekin grab the compass yet.",
+        "Do not send the hatchling down the stair yet.",
+        "Do not move the children into the lower room.",
+        "Do not recover or lose the compass in this scene.",
+        "Do not introduce magic, new equipment, a hidden exit, or an adult rescuer."
+      ],
+      "emotional_transition": {
+        "from": "Ekin is guarded but cooperating",
+        "to": "Ekin becomes impatient with Duru's warning because the compass is in sight"
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    }
+  ]
+}
