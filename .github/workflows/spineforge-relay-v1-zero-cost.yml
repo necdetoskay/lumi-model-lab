@@ -8,7 +8,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/**'
+      - 'evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/authorization-template.json'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   pull_request:
     paths:
@@ -106,17 +106,15 @@ jobs:
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
           preflight = "${{ steps.auth.outputs.preflight_sha }}"
-          claim_path = f"evidence/spineforge-relay/claims/q5sg-{preflight[:16]}.json"
+          short_sha = preflight[:16]
+          claim_path = f"evidence/spineforge-relay/claims/q5sg-{short_sha}.json"
           url = f"https://api.github.com/repos/{repo}/contents/{claim_path}"
           headers = {
               "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
               "X-GitHub-Api-Version": "2022-11-28",
           }
-          existing = requests.get(
-              url, headers=headers,
-              params={"ref": "experiment/spineforge-relay-v1"}, timeout=30
-          )
+          existing = requests.get(url, headers=headers, params={"ref": "experiment/spineforge-relay-v1"}, timeout=30)
           if existing.status_code == 200:
               raise SystemExit(f"Q5SG authorization already claimed at {claim_path}")
           if existing.status_code != 404:
@@ -128,22 +126,17 @@ jobs:
               "status": "CLAIMED_BEFORE_INFERENCE",
           }
           payload = {
-              "message": "claim(sfr-v1): reserve Q5SG semantic guard authorization",
-              "content": base64.b64encode(
-                  json.dumps(claim, separators=(",", ":")).encode()
-              ).decode(),
+              "message": "claim(sfr-v1): reserve Q5SG semantic-guard authorization",
+              "content": base64.b64encode(json.dumps(claim, separators=(",", ":")).encode()).decode(),
               "branch": "experiment/spineforge-relay-v1",
           }
           created = requests.put(url, headers=headers, json=payload, timeout=30)
           if created.status_code not in (200, 201):
-              raise SystemExit(
-                  f"Failed to create Q5SG claim: HTTP {created.status_code} "
-                  + created.text[:500]
-              )
+              raise SystemExit(f"Failed to create Q5SG claim: HTTP {created.status_code} " + created.text[:500])
           print(claim_path)
           PY
 
-      - name: Execute exactly one paid Q5SG semantic guard call
+      - name: Execute exactly one paid Q5SG guard call
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
@@ -167,18 +160,14 @@ jobs:
               "api_calls": out.get("api_calls"),
               "usage": out.get("usage"),
               "automatic_retry_executed": out.get("automatic_retry_executed"),
+              "rewrite_authorized": out.get("rewrite_authorized"),
               "state_application_authorized": out.get("state_application_authorized"),
               "failure_type": out.get("failure_type"),
               "failure_message": out.get("failure_message"),
           }
-          Path("q5sg-summary.json").write_text(
-              json.dumps(summary, indent=2) + "\n", encoding="utf-8"
-          )
+          Path("q5sg-summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
           print(json.dumps(summary, indent=2))
-          if out.get("status") not in {
-              "GUARD_COMPLETED_ACCEPT",
-              "GUARD_COMPLETED_REWRITE",
-          }:
+          if out.get("status") not in {"GUARD_COMPLETED_ACCEPT", "GUARD_COMPLETED_REWRITE"}:
               raise SystemExit(2)
           PY
 
