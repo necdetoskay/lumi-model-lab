@@ -300,3 +300,12 @@ The original Aion writer lane is closed for the SC01 qualification run.
 - Q5S maximum writer calls: 1; automatic retry: false; state application: false; semantic guard mandatory.
 - Q5S paid authorization: AUTHORIZED, not yet consumed at this status checkpoint.
 - Production LUMI remains unchanged.
+
+
+## 18. Q5SG execution note — 2026-10-07
+
+- Q5SG semantic-guard code and zero-cost tests are GREEN.
+- Direct isolated suite: 75/75 pytest PASS.
+- Frozen Q5SG preflight SHA256: a947d998cf03734ca281d118a333e89217c6d2fb544163d5e41c2bc5be1dd00b.
+- One Sonnet 5.5 guard call is authorized with USD 0.05 ceiling, no retry, no rewrite execution, and no StoryState application.
+- Previous Q5SG Actions attempt was cancelled before inference because its ephemeral runner died during setup-python; no guard API call was consumed.
