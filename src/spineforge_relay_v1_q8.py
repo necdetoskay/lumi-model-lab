@@ -16,6 +16,7 @@ FIXTURES = [
 ]
 ABORT_EVIDENCE = Path("evidence/spineforge-relay/SFR-V1-Q8A-INFRA-ABORT-20261007/result.json")
 RUNTIME_FILES = [
+    Path("src/spineforge_relay_v1_q8.py"),
     Path("src/spineforge_relay_v1_runner.py"),
     Path("src/spineforge_relay_v1_q6d.py"),
     Path("prompts/spineforge_relay_v1_q6d_writer.md"),
