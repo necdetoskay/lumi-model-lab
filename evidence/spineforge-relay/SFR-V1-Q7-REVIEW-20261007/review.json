@@ -1,0 +1,40 @@
+{
+  "schema": "spineforge-relay.q7-review.v1",
+  "workflow_run_id": 37603184979,
+  "execution_status": "ACCEPT",
+  "qualification_status": "REJECT_ENTITY_LOCATION_CONTINUITY_GAP",
+  "accepted_scenes": [
+    "SC04",
+    "SC05",
+    "SC06"
+  ],
+  "state_relay": {
+    "status": "PASS",
+    "final_revision": 6,
+    "next_spine_beat": null
+  },
+  "usage": {
+    "provider_calls": 8,
+    "known_cost_usd": 0.170263,
+    "automatic_retry": false,
+    "attempts": {
+      "SC04": 2,
+      "SC05": 1,
+      "SC06": 1
+    }
+  },
+  "blocking_quality_finding": {
+    "code": "MOTHER_DRAGON_LOCATION_NOT_RELAYED",
+    "family": "spatial",
+    "severity": "BLOCKING",
+    "scene_id": "SC06",
+    "detail": "SC03-SC05 establish the mother sea dragon in the lighthouse upper room / at the top of the narrow stair. Accepted SC06 reintroduces her as a broad shadow crossing the doorway and says she pushes head and shoulders into the upper room while the rest cannot fit through a narrow way. This contradicts the immediately prior spatial continuity.",
+    "evidence": [
+      "SC05: its mother waited above, unable to squeeze down the narrow stair.",
+      "SC06: A broad shadow crossed the doorway.",
+      "SC06: The mother sea dragon pushed her head and shoulders into the upper room, unable to force the rest of her body through the narrow way."
+    ],
+    "root_cause": "StoryState does not carry mother_dragon location, so writer and semantic guard lacked authoritative mutable entity-location truth. Character canon and prop policy do not cover this state dimension."
+  },
+  "decision": "Preserve Q7 evidence as rejected qualification. Add mother dragon location to structured relay state in a fresh SC03 qualification, then rerun SC04-SC06 from that corrected accepted state. Do not patch or rewrite the already accepted Q7 artifacts."
+}
