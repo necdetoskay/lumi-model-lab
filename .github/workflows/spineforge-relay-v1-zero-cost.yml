@@ -29,12 +29,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Create isolated Python environment
-        run: |
-          python3 -m venv .venv
-          .venv/bin/python -m pip install -r requirements.txt pytest
+      - name: Install Python dependencies
+        run: python3 -m pip install --break-system-packages -r requirements.txt pytest
       - name: SFR-v1 zero-cost qualification
-        run: .venv/bin/python -m pytest -q tests/test_spineforge_relay_v1_*.py
+        run: python3 -m pytest -q tests/test_spineforge_relay_v1_*.py
 
   q5sg-paid-semantic-guard:
     needs: q0-q5sg-zero-cost
@@ -49,17 +47,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - name: Create isolated Python environment
-        run: |
-          python3 -m venv .venv
-          .venv/bin/python -m pip install -r requirements.txt
+      - name: Install Python dependencies
+        run: python3 -m pip install --break-system-packages -r requirements.txt
 
       - name: Check exact Q5SG authorization
         id: auth
         shell: bash
         run: |
           set -euo pipefail
-          .venv/bin/python - <<'PY' >> "$GITHUB_OUTPUT"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
           from src.spineforge_relay_v1_q5sg import AUTH_SCOPE, MAX_COST_USD, verify
@@ -99,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          .venv/bin/python - <<'PY'
+          python3 - <<'PY'
           import base64, json, os, requests
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
@@ -139,7 +135,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          .venv/bin/python - <<'PY'
+          python3 - <<'PY'
           import json, os
           from pathlib import Path
           from src.spineforge_relay_v1_q5sg import execute_once
