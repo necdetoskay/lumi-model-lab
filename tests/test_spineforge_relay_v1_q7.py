@@ -115,3 +115,143 @@ def test_q7_tampered_preflight_fails_before_claim(tmp_path):
             output=tmp_path / "q7",
         )
     assert not (tmp_path / "q7").exists()
+
+
+def _q7_fake_prose(scene_id: str) -> str:
+    base = {
+        "SC04": "Ekin moved too quickly in the lighthouse while Duru watched. The hatchling fled down the narrow stair, the mother tried to follow and could not make the turn, and the compass was washed through the lower grate into the sea. Both girls stayed on the dry stair section and saw that the compass was gone.",
+        "SC05": "Ekin watched the frightened hatchling retreat as water rose below. She admitted to Duru that her rush had caused the danger and asked for help. Using only the jacket Ekin already wore, they worked together from the dry stair and brought the hatchling safely back to the upper room.",
+        "SC06": "The mother sheltered the hatchling in the dry upper room while Ekin and Duru watched. Ekin accepted that her grandfather's compass was gone and would not be replaced. They returned together by the known coastal route while the storm continued, and Ekin decided she would tell the truth about the loss.",
+    }[scene_id]
+    # Deterministic runtime tests need contract-valid length; semantic content is
+    # supplied by the fake structured guard, not inferred from these filler words.
+    words = base.split()
+    while len(words) < 270:
+        words.extend("Wind rain stone sea step breath careful together onward".split())
+    return " ".join(words[:270])
+
+
+def _q7_fake_guard(payload, prose, *, block=False):
+    rows = []
+    for event in payload["scene_contract"]["required_events"]:
+        for pred in event["predicates"]:
+            rows.append({
+                "event_id": event["id"],
+                "predicate_id": pred["id"],
+                "subject": pred["subject"],
+                "action": pred["action"],
+                "target": pred["target"],
+                "verdict": "SUPPORTED",
+                "provenance": "DIRECT_OBSERVATION",
+                "exact_text": prose,
+                "evidence_subject": pred["target"],
+                "state_pointer": None,
+                "reason": "Fake provider supplies explicit structured support.",
+            })
+    residual = {
+        "schema_name": "spineforge-relay.semantic-guard.v1",
+        "decision": "PASS",
+        "findings": [],
+        "summary": "No residual blockers.",
+    }
+    if block:
+        residual = {
+            "schema_name": "spineforge-relay.semantic-guard.v1",
+            "decision": "REWRITE",
+            "findings": [{
+                "code": "FAKE_BLOCK",
+                "family": "spine",
+                "severity": "BLOCKING",
+                "exact_text": prose,
+                "reason": "Forced non-convergence for stop-chain testing.",
+                "repair_instruction": "Repair the blocked scene.",
+            }],
+            "summary": "Forced blocker.",
+        }
+    return {"event_evidence": rows, "residual": residual}
+
+
+def _q7_fake_call_factory(*, fail_scene=None):
+    from src.spineforge_relay_v1_q6d import request_for
+    calls = []
+
+    def fake_call(**kwargs):
+        payload = json.loads(kwargs["user_prompt"])
+        scene = payload["scene_contract"]["scene_id"]
+        is_writer = "gpt-5.6-sol" in kwargs["model"]
+        stage = "writer" if is_writer else "guard"
+        calls.append((scene, stage, payload.get("attempt")))
+        if is_writer:
+            text = _q7_fake_prose(scene)
+        else:
+            text = json.dumps(
+                _q7_fake_guard(
+                    payload,
+                    payload["candidate_prose"],
+                    block=(scene == fail_scene),
+                )
+            )
+        _, actual = request_for(stage, payload)
+        body = {
+            "choices": [{"finish_reason": "stop", "message": {"content": text}}],
+            "usage": {
+                "prompt_tokens": 1800,
+                "completion_tokens": 600,
+                "total_tokens": 2400,
+                "cost": 0.01,
+            },
+        }
+        return text, body, actual
+
+    return calls, fake_call
+
+
+def test_q7_fake_full_run_accepts_all_three_scenes_and_closes_story(tmp_path):
+    p = prepare()
+    a = authorization_for(p)
+    calls, fake = _q7_fake_call_factory()
+    out = execute(
+        api_key="fake",
+        preflight=p,
+        authorization=a,
+        output=tmp_path / "q7",
+        call_fn=fake,
+    )
+    assert out["status"] == "ACCEPT"
+    assert out["accepted_scenes"] == ["SC04", "SC05", "SC06"]
+    assert out["state_advanced_to_revision"] == 6
+    assert out["next_spine_beat"] is None
+    assert len(calls) == 6
+    final = json.loads((tmp_path / "q7/SC06-accepted.json").read_text())["state_after"]
+    assert final["open_threads"] == []
+    assert final["resolved_threads"] == ["recover_compass"]
+    assert final["objects"]["compass"]["location"] == "lost_at_sea"
+    assert all(x["status"] == "SATISFIED" for x in final["narrative_obligations"])
+
+
+@pytest.mark.parametrize(
+    ("fail_scene", "forbidden_later"),
+    [("SC04", {"SC05", "SC06"}), ("SC05", {"SC06"})],
+)
+def test_q7_nonconvergent_scene_stops_before_later_provider_calls(
+    tmp_path, fail_scene, forbidden_later
+):
+    p = prepare()
+    a = authorization_for(p)
+    calls, fake = _q7_fake_call_factory(fail_scene=fail_scene)
+    out = execute(
+        api_key="fake",
+        preflight=p,
+        authorization=a,
+        output=tmp_path / ("q7-" + fail_scene),
+        call_fn=fake,
+    )
+    assert out["status"] == "REJECT_NON_CONVERGENT"
+    assert not any(scene in forbidden_later for scene, _stage, _attempt in calls)
+    attempts = [row for row in calls if row[0] == fail_scene]
+    assert attempts == [
+        (fail_scene, "writer", 1),
+        (fail_scene, "guard", None),
+        (fail_scene, "writer", 2),
+        (fail_scene, "guard", None),
+    ]
