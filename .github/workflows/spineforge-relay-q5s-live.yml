@@ -1,0 +1,28 @@
+name: SFR v1 Q5S Sol Preflight
+
+on:
+  push:
+    branches: [experiment/spineforge-relay-q5s-live]
+
+permissions:
+  contents: read
+
+jobs:
+  q5s-zero-cost:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Relay Sol lane tests
+        run: python -m pytest -q tests/test_spineforge_relay_v1_q5_sol.py
+      - name: Build Q5S preflight
+        run: python -m src.spineforge_relay_v1_q5_sol --prepare
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sfr-v1-q5s-preflight-${{ github.run_id }}
+          path: evidence/spineforge-relay/SFR-V1-Q5S-PREFLIGHT-20261007/
+          retention-days: 30
