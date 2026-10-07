@@ -1,0 +1,75 @@
+{
+  "schema": "spineforge-relay.q5sg-paid-result.v1",
+  "qualification_id": "SFR-V1-Q5SG-SOL-SC01-GUARD-20261007",
+  "run_id": 37574002132,
+  "job": "q5sg-paid-semantic-guard",
+  "status": "GUARD_COMPLETED_REWRITE",
+  "decision": "REWRITE",
+  "preflight_sha256": "7407b13d60214b6072d09ce04b2ea89e4415e586797ac0f950f38d29ebb5d280",
+  "api_calls": 1,
+  "automatic_retry_executed": false,
+  "state_application_authorized": false,
+  "usage": {
+    "api_calls": 1,
+    "input_tokens": 3584,
+    "output_tokens": 720,
+    "total_tokens": 4304,
+    "reasoning_tokens": 0,
+    "cost_usd": 0.014368,
+    "latency_seconds": 8.184925619047135
+  },
+  "scene_validation": {
+    "schema_name": "spineforge-relay.scene-validation.v1",
+    "scene_id": "SC01",
+    "attempt": 1,
+    "deterministic_pass": true,
+    "semantic_guard_used": true,
+    "decision": "REWRITE",
+    "findings": [
+      {
+        "code": "EPISTEMIC_UNSUPPORTED_WORLD_RULE",
+        "family": "epistemic",
+        "severity": "BLOCKING",
+        "message": "Duru's StoryState knowledge covers only lighthouse_location and coastal_route. The prose has her state persistent world facts (the weed's habitat, the shells' origin in caves below the lighthouse) that have no authority in StoryState or SceneContract. The caves are also a new location fact. The contract requires evidence that the dragon went toward the lighthouse, but it does not authorize these specific facts.",
+        "evidence": [
+          "“That weed only grows around the headland.” The girl stood. “And those shells come from the caves below the lighthouse.”",
+          "Rework the evidence Duru shows so it relies only on what she knows or on what is directly observable in the scene, such as the dragon's heading. Remove the claims about where the weed grows and where the shells come from, along with the caves. Do not add new world rules."
+        ]
+      },
+      {
+        "code": "EPISTEMIC_UNSUPPORTED_EVIDENCE_INFERENCE",
+        "family": "epistemic",
+        "severity": "BLOCKING",
+        "message": "This introduces a new physical clue object that the dragon supposedly left behind. It is used to establish a persistent fact (the dragon's destination) without StoryState or SceneContract support.",
+        "evidence": [
+          "Three torn strands of dark-green weed clung to the stones, mixed with chips of pale shell.",
+          "Make the evidence of the dragon's direction something directly observable in the scene, or something Duru can legitimately know, without inventing new clue objects that carry persistent logic."
+        ]
+      }
+    ]
+  },
+  "semantic_report": {
+    "schema_name": "spineforge-relay.semantic-guard.v1",
+    "decision": "REWRITE",
+    "findings": [
+      {
+        "code": "EPISTEMIC_UNSUPPORTED_WORLD_RULE",
+        "family": "epistemic",
+        "severity": "BLOCKING",
+        "exact_text": "“That weed only grows around the headland.” The girl stood. “And those shells come from the caves below the lighthouse.”",
+        "reason": "Duru's StoryState knowledge covers only lighthouse_location and coastal_route. The prose has her state persistent world facts (the weed's habitat, the shells' origin in caves below the lighthouse) that have no authority in StoryState or SceneContract. The caves are also a new location fact. The contract requires evidence that the dragon went toward the lighthouse, but it does not authorize these specific facts.",
+        "repair_instruction": "Rework the evidence Duru shows so it relies only on what she knows or on what is directly observable in the scene, such as the dragon's heading. Remove the claims about where the weed grows and where the shells come from, along with the caves. Do not add new world rules."
+      },
+      {
+        "code": "EPISTEMIC_UNSUPPORTED_EVIDENCE_INFERENCE",
+        "family": "epistemic",
+        "severity": "BLOCKING",
+        "exact_text": "Three torn strands of dark-green weed clung to the stones, mixed with chips of pale shell.",
+        "reason": "This introduces a new physical clue object that the dragon supposedly left behind. It is used to establish a persistent fact (the dragon's destination) without StoryState or SceneContract support.",
+        "repair_instruction": "Make the evidence of the dragon's direction something directly observable in the scene, or something Duru can legitimately know, without inventing new clue objects that carry persistent logic."
+      }
+    ],
+    "summary": "The scene hits most required beats: the theft, Ekin's pursuit, the decision to go together, and an exit with Ekin and Duru still in the harbor. However, Duru's evidence depends on unsupported world facts (weed habitat, cave shells) that she has no StoryState knowledge of and the contract does not authorize. The scene needs a rewrite to ground the evidence properly."
+  },
+  "guard_decision_sha256": "9d26f2d0f71aca1c5529bee385b36743d2f377a316fdca843816377e949ff991"
+}
