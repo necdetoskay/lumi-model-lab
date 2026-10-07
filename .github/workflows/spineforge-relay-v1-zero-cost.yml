@@ -97,21 +97,60 @@ jobs:
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          SHORT_SHA="$(printf '%s' "${{ steps.auth.outputs.preflight_sha }}" | cut -c1-16)"
-          CLAIM_PATH="evidence/spineforge-relay/claims/q5g-$SHORT_SHA.json"
-          if gh api "repos/$GITHUB_REPOSITORY/contents/$CLAIM_PATH?ref=experiment/spineforge-relay-v1" >/dev/null 2>&1; then
-            echo "::error::Q5G authorization already claimed at $CLAIM_PATH"
-            exit 1
-          fi
-          CLAIM_JSON="$(printf '{"preflight_sha256":"%s","run_id":"%s","job":"%s","status":"CLAIMED_BEFORE_INFERENCE"}' "${{ steps.auth.outputs.preflight_sha }}" "$GITHUB_RUN_ID" "$GITHUB_JOB")"
-          CLAIM_B64="$(printf '%s' "$CLAIM_JSON" | base64 -w0)"
-          gh api --method PUT "repos/$GITHUB_REPOSITORY/contents/$CLAIM_PATH" \
-            -f message="claim(sfr-v1): reserve Q5G paid authorization" \
-            -f content="$CLAIM_B64" \
-            -f branch="experiment/spineforge-relay-v1" >/dev/null
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import requests
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GITHUB_TOKEN"]
+          preflight = "${{ steps.auth.outputs.preflight_sha }}"
+          short_sha = preflight[:16]
+          claim_path = f"evidence/spineforge-relay/claims/q5g-{short_sha}.json"
+          url = f"https://api.github.com/repos/{repo}/contents/{claim_path}"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+          existing = requests.get(
+              url,
+              headers=headers,
+              params={"ref": "experiment/spineforge-relay-v1"},
+              timeout=30,
+          )
+          if existing.status_code == 200:
+              raise SystemExit(f"Q5G authorization already claimed at {claim_path}")
+          if existing.status_code != 404:
+              raise SystemExit(
+                  f"Cannot verify Q5G claim state: HTTP {existing.status_code}"
+              )
+
+          claim = {
+              "preflight_sha256": preflight,
+              "run_id": os.environ["GITHUB_RUN_ID"],
+              "job": os.environ["GITHUB_JOB"],
+              "status": "CLAIMED_BEFORE_INFERENCE",
+          }
+          payload = {
+              "message": "claim(sfr-v1): reserve Q5G paid authorization",
+              "content": base64.b64encode(
+                  json.dumps(claim, separators=(",", ":")).encode()
+              ).decode(),
+              "branch": "experiment/spineforge-relay-v1",
+          }
+          created = requests.put(url, headers=headers, json=payload, timeout=30)
+          if created.status_code not in (200, 201):
+              raise SystemExit(
+                  f"Failed to create Q5G claim: HTTP {created.status_code} "
+                  + created.text[:500]
+              )
+          print(claim_path)
+          PY
 
       - name: Execute exactly one paid Q5G guard call
         if: ${{ steps.auth.outputs.approved == 'true' }}
