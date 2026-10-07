@@ -219,6 +219,24 @@ def execute_story(
         finally:
             row["latency_seconds"] = round(time.perf_counter() - started, 3)
             save(str(prefix) + "-ledger.json", row)
+            print(
+                "SFR_Q8_LEDGER "
+                + json.dumps(
+                    {
+                        "story_id": fixture["story_id"],
+                        "scene_id": scene_id,
+                        "stage": stage,
+                        "attempt": attempt,
+                        "status": row["status"],
+                        "cost_usd": row["cost_usd"],
+                        "input_tokens": row["input_tokens"],
+                        "output_tokens": row["output_tokens"],
+                        "total_tokens": row["total_tokens"],
+                    },
+                    separators=(",", ":"),
+                ),
+                flush=True,
+            )
 
     try:
         for plan, _precompiled, _expected_before in rows:
