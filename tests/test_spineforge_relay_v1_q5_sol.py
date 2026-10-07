@@ -2,7 +2,7 @@ import json
 import pytest
 
 from src.spineforge_relay_v1_q5_sol import (
-    AUTH_SCOPE, MAX_COST_USD, MAX_TOKENS, MODEL,
+    AUTH_SCOPE, MAX_COST_USD, MAX_TOKENS, MODEL, REQUEST_CLASS,
     build_inputs, execute_once, prepare, request_payload, validate_candidate,
 )
 
@@ -48,6 +48,7 @@ def test_q5s_request_is_sol_low_reasoning_plain_text():
     payload, *_ = build_inputs()
     req = request_payload(payload)
     assert req["model"] == MODEL == "openai/gpt-5.6-sol"
+    assert REQUEST_CLASS == "spineforge_relay_v1_scene_writer_sol"
     assert req["max_tokens"] == MAX_TOKENS == 3500
     assert req["reasoning"] == {"effort":"low","exclude":True}
     assert req["response_format"] == {"type":"text"}
