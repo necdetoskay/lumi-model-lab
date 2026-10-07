@@ -96,18 +96,22 @@ jobs:
       - name: Claim frozen Q5G authorization before inference
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           SHORT_SHA="$(printf '%s' "${{ steps.auth.outputs.preflight_sha }}" | cut -c1-16)"
-          TAG="sfr-v1-q5g-paid-$SHORT_SHA"
-          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
-            echo "::error::Q5G authorization already claimed by $TAG"
+          CLAIM_PATH="evidence/spineforge-relay/claims/q5g-$SHORT_SHA.json"
+          if gh api "repos/$GITHUB_REPOSITORY/contents/$CLAIM_PATH?ref=experiment/spineforge-relay-v1" >/dev/null 2>&1; then
+            echo "::error::Q5G authorization already claimed at $CLAIM_PATH"
             exit 1
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$TAG" -m "Claim SFR-v1 Q5G paid authorization ${{ steps.auth.outputs.preflight_sha }}"
-          git push origin "refs/tags/$TAG"
+          CLAIM_JSON="$(printf '{"preflight_sha256":"%s","run_id":"%s","job":"%s","status":"CLAIMED_BEFORE_INFERENCE"}' "${{ steps.auth.outputs.preflight_sha }}" "$GITHUB_RUN_ID" "$GITHUB_JOB")"
+          CLAIM_B64="$(printf '%s' "$CLAIM_JSON" | base64 -w0)"
+          gh api --method PUT "repos/$GITHUB_REPOSITORY/contents/$CLAIM_PATH" \
+            -f message="claim(sfr-v1): reserve Q5G paid authorization" \
+            -f content="$CLAIM_B64" \
+            -f branch="experiment/spineforge-relay-v1" >/dev/null
 
       - name: Execute exactly one paid Q5G guard call
         if: ${{ steps.auth.outputs.approved == 'true' }}
