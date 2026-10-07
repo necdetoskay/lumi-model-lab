@@ -354,3 +354,31 @@ The complete evidence is under `SFR-V1-Q8B-REPEATABILITY-20261007`. The consumed
 PR trigger is retired. Q8B proves bounded repeatability on these two short fixtures;
 Q7 full-story qualification remains rejected. Production is unchanged and PR #264
 remains draft with no merge authorization.
+
+## 22. Q7C SC06 and assembled-story review — 2026-10-07
+
+Q7C uses a fresh SC06 contract from accepted Q7B SC05 revision 5. Required event
+SC06-E03 now requires explicit upper-room-door EXIT_VIA and coastal-path TRAVERSE
+evidence. Writer and guard also receive the same preceding accepted scene bundle.
+All 197 local Relay tests passed. Self-hosted CI stayed queued because the pool was
+offline; an isolated temporary runner also failed GitHub SSL authentication and its
+workspace was removed. The user explicitly approved local GREEN as the execution
+gate for this run. CI is not recorded as passed.
+
+Q7C accepted attempt 2 after exactly one bounded rewrite. Four calls, no retry:
+USD 0.1081895, 33,307 tokens, 42.984 seconds of call latency. Initial guard requested
+removal of an ambiguous bodily compass-placement reference. Final guard and event
+checks pass without findings. SC06 exits directly through the upper-room door;
+mother/hatchling remain safe, compass remains lost, storm continues. The frozen
+delta advances revision 5 to 6 and next_spine_beat becomes null. Offline replay
+reproduced every request/response/validation/state binding.
+
+The assembled SC01-SC06 state fingerprint chain also passes, but full-story editorial
+qualification remains REJECT_CROSS_SCENE_SPATIAL_CONTINUITY. Two older prose gaps are
+preserved with exact anchors in `SFR-V1-Q7C-SC06-20261007/six-scene-review.json`:
+SC02 enters the building then climbs inside to the upper room, whereas canonical
+ingress/egress is the coastal upper-room door; SC04 reaches the compass without
+showing how the mother still blocking the nest approach at SC03 exit is bypassed.
+Next contracts need shared structured ingress topology and persistent access-blocking
+posture/constraints. No extra Q7C rewrite is permitted. Existing rejected runs and
+accepted scene artifacts remain immutable. Production LUMI is unchanged; do not merge.
