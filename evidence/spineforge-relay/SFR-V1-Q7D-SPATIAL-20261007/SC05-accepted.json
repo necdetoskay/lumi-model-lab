@@ -1,0 +1,209 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "SC05",
+    "source_state_revision": 4,
+    "source_state_sha256": "613030e74066f2aec5601b2e3fbac404d603df2e9a54654d1cd27c86cfb72b46",
+    "contract_sha256": "5ad77e257f5cbb54788b1f5911b29264a7f5eea2902c519f390f1bb789cddf09",
+    "mutations": [
+      {
+        "path": "/characters/Ekin/location",
+        "op": "SET",
+        "before": "lighthouse_stair_dry_section",
+        "after": "lighthouse_upper_room"
+      },
+      {
+        "path": "/characters/Duru/location",
+        "op": "SET",
+        "before": "lighthouse_stair_dry_section",
+        "after": "lighthouse_upper_room"
+      },
+      {
+        "path": "/objects/dragon_hatchling/location",
+        "op": "SET",
+        "before": "lower_room_dry_ledge",
+        "after": "lighthouse_upper_room"
+      },
+      {
+        "path": "/characters/Ekin/relationships/Duru/trust",
+        "op": "SET",
+        "before": "none",
+        "after": "earned_initial"
+      },
+      {
+        "path": "/characters/Duru/relationships/Ekin/trust",
+        "op": "SET",
+        "before": "none",
+        "after": "earned_initial"
+      },
+      {
+        "path": "/world/spatial",
+        "op": "SET",
+        "before": {
+          "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+          "positions": {
+            "Ekin": "lighthouse_stair_dry_section",
+            "Duru": "lighthouse_stair_dry_section",
+            "sea_dragon": "lighthouse_upper_room",
+            "dragon_hatchling": "lower_room_dry_ledge"
+          },
+          "access_constraints": [
+            {
+              "id": "nest_guard",
+              "blocker": "sea_dragon",
+              "subject": "Ekin",
+              "target": "nest_approach",
+              "active": false
+            }
+          ]
+        },
+        "after": {
+          "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+          "positions": {
+            "Ekin": "lighthouse_upper_room",
+            "Duru": "lighthouse_upper_room",
+            "sea_dragon": "lighthouse_upper_room",
+            "dragon_hatchling": "lighthouse_upper_room"
+          },
+          "access_constraints": [
+            {
+              "id": "nest_guard",
+              "blocker": "sea_dragon",
+              "subject": "Ekin",
+              "target": "nest_approach",
+              "active": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "lighthouse-relay-q5",
+    "revision": 5,
+    "global_spine_sha256": "8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad",
+    "story_intent_sha256": "66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e",
+    "characters": {
+      "Ekin": {
+        "location": "lighthouse_upper_room",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {
+          "jacket": true
+        },
+        "knowledge": [],
+        "relationships": {
+          "Duru": {
+            "familiarity": "stranger",
+            "trust": "earned_initial"
+          }
+        }
+      },
+      "Duru": {
+        "location": "lighthouse_upper_room",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "lighthouse_location",
+          "coastal_route"
+        ],
+        "relationships": {
+          "Ekin": {
+            "familiarity": "stranger",
+            "trust": "earned_initial"
+          }
+        }
+      }
+    },
+    "world": {
+      "weather": "storm_active_lower_room_flooding",
+      "lighthouse_door": "open",
+      "lighthouse_location": "headland",
+      "spatial": {
+        "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+        "positions": {
+          "Ekin": "lighthouse_upper_room",
+          "Duru": "lighthouse_upper_room",
+          "sea_dragon": "lighthouse_upper_room",
+          "dragon_hatchling": "lighthouse_upper_room"
+        },
+        "access_constraints": [
+          {
+            "id": "nest_guard",
+            "blocker": "sea_dragon",
+            "subject": "Ekin",
+            "target": "nest_approach",
+            "active": false
+          }
+        ]
+      },
+      "narrow_stair_to_lower_room": true,
+      "lower_room_sea_grate": true,
+      "mother_dragon_location": "lighthouse_upper_room",
+      "mother_blocked_by_narrow_stair": true
+    },
+    "objects": {
+      "compass": {
+        "owner": "Ekin",
+        "location": "lost_at_sea",
+        "state": {
+          "material": "brass",
+          "magical": false
+        }
+      },
+      "dragon_hatchling": {
+        "owner": null,
+        "location": "lighthouse_upper_room",
+        "state": {
+          "size": "cat_sized",
+          "can_fly": false,
+          "condition": "uninjured"
+        }
+      }
+    },
+    "open_threads": [
+      "recover_compass"
+    ],
+    "resolved_threads": [],
+    "completed_spine_beats": [
+      "SC01",
+      "SC02",
+      "SC03",
+      "SC04",
+      "SC05"
+    ],
+    "next_spine_beat": "SC06",
+    "narrative_obligations": [
+      {
+        "id": "ekin_duru_trust",
+        "detail": "Trust must change through earned cooperation, not instant friendship.",
+        "status": "OPEN",
+        "target_scene_id": "SC06"
+      },
+      {
+        "id": "compass_loss",
+        "detail": "The compass must ultimately remain lost rather than be replaced by a reward.",
+        "status": "OPEN",
+        "target_scene_id": "SC06"
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "SC05",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "Water surged below the dry ledge, and the hatchling shrank from the spray. Above, its mother cried from the upper room, unable to force herself down the narrow stair.\n\nEkin stared at the frightened little dragon. “I scared it down there. I put it in danger.” She swallowed and looked at Duru. “I have to get it back to its mother.”\n\nDuru watched her crouch at the edge of the dry stair section. “Then I’ll help.”\n\nEkin pulled off her jacket and spread it between her hands. She leaned down without stepping into the floodwater. The hatchling snapped at the sleeve, then recoiled as another wash struck below.\n\n“It’s all right,” Ekin murmured, though her voice shook. She lowered the jacket around the hatchling and folded the sides gently over its wet body. Duru saw her secure it against her chest.\n\nEkin lifted. Wrapped in her jacket, the hatchling rose from the lower ledge and reached the dry stair section.\n\nDuru glanced up the twisting passage. “Pass it to me from above. That will be steadier.”\n\nBefore Ekin could object, Duru climbed the narrow internal stair and entered the upper room.\n\nShe turned at the top and reached down. Ekin raised the bundled hatchling toward her. Duru took its weight carefully, bracing herself as thunder shook the lighthouse.\n\nFor one breath, Ekin resisted letting go. Then she met Duru’s eyes and loosened her hold. “I’ve got you,” Duru said.\n\nEkin nodded. “I know. Thank you.”\n\nDuru drew the hatchling up the narrow internal stair. Still wrapped in Ekin’s jacket, it reached the upper room.\n\nEkin climbed the same stair and entered the upper room after it.\n\nThe mother dragon lowered her head toward her hatchling. Ekin stayed back beside Duru, breathing hard. They were not friends yet, but when Duru’s shoulder touched hers, Ekin did not move away.",
+    "word_count": 308,
+    "contract_sha256": "5ad77e257f5cbb54788b1f5911b29264a7f5eea2902c519f390f1bb789cddf09",
+    "state_before_sha256": "613030e74066f2aec5601b2e3fbac404d603df2e9a54654d1cd27c86cfb72b46",
+    "validation_sha256": "f67d6a865b16f37590e088d089f5659d5636045892baffac0eee89e89e50c02d",
+    "state_after_sha256": "25a55a8cfd00330759c8e936bf1c40186dd44af80757464ff7c583e38da8a3e3"
+  }
+}

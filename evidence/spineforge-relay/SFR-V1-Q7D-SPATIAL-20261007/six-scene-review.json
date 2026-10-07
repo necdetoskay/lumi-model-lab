@@ -1,0 +1,58 @@
+{
+  "schema": "spineforge-relay.q7d-six-scene-review.v1",
+  "spatial_qualification_status": "ACCEPT",
+  "offline_replay_status": "PASS",
+  "whole_story_qualification_status": "REJECT_SPINE_TO_CONTRACT_COVERAGE_GAP",
+  "review_method": "Codex editorial reading of assembled prose against frozen canon, source scene plans and structured contracts; no additional provider call. Does not override saved scene acceptance.",
+  "provider_calls": 10,
+  "rewrite_count": 0,
+  "cost_usd": 0.320349,
+  "total_tokens": 101888,
+  "sum_call_latency_seconds": 95.442,
+  "word_count": 1743,
+  "final_revision": 6,
+  "next_spine_beat": null,
+  "ci_status": "NOT_GREEN_USER_EXPLICITLY_APPROVED_LOCAL_GATE",
+  "local_tests_before_inference": 228,
+  "candidate_sha256": "8022a0642e04905fb474304d90d86fcae7c567471942dfbb3ff0bd69fc56b92f",
+  "resolved_findings": [
+    {
+      "code": "ENTRY_EXIT_TOPOLOGY_INCONSISTENT",
+      "entry_quote": "She moved through the open upper-room door and entered the lighthouse upper room.",
+      "exit_quote": "Duru stepped through the open upper-room door and reached the coastal path.",
+      "result": "SC02/SC06 share the same declared edge; no interior ascent is narrated after entry."
+    },
+    {
+      "code": "GUARDING_ENTITY_BYPASSED_WITHOUT_TRANSITION",
+      "prior_quote": "The mother remained across the approach, silent and unmoving.",
+      "transition_quote": "Her broad body swung away from the nest approach, leaving a brief opening.",
+      "access_quote": "Ekin rushed through the open approach.",
+      "result": "SC03 blocker persists; SC04 release precedes access in exact grounded order."
+    }
+  ],
+  "blocking_findings": [
+    {
+      "code": "SCENE_TURN_NOT_COMPILED_TO_REQUIRED_EVENT",
+      "scene_id": "SC05",
+      "source_plan_path": "tests/fixtures/spineforge_relay_v1/q7_lighthouse_sc04_sc06.json",
+      "source_plan_turn": "Ekin asks Duru for help instead of acting alone.",
+      "source_plan_objective": "Choose responsibility over fixation on the lost compass and complete a simple safe rescue with earned cooperation.",
+      "exact_text": "Duru watched her crouch at the edge of the dry stair section. “Then I’ll help.”",
+      "reason": "The frozen SC05 turn requires Ekin to ask Duru for help. Ekin takes responsibility and states her rescue intention, but Duru volunteers assistance; Ekin never asks. The active contract requires responsibility, jacket use, Duru assistance and acknowledgement, so these can all pass while omitting the planned change in initiative. The compiler does not propagate ScenePlan.turn/objective as structured obligations. This is a plan-to-contract coverage gap, not a failed spatial operation.",
+      "next_step": "Prepare a general plan-obligation coverage model and ASK_FOR_HELP predicate, preserve Q7D, then qualify fresh affected scenes under a new run; do not rewrite Q7D."
+    }
+  ],
+  "warnings": [
+    {
+      "code": "SPATIAL_PROSE_REPETITION",
+      "reason": "Individual movement clauses make topology auditable but repeat wording, especially ingress/egress. Style improvement should retain grounded movement ordering."
+    },
+    {
+      "code": "HANDOFF_REACH_UNSPECIFIED",
+      "scene_id": "SC05",
+      "reason": "Duru takes the bundle from the stair top. Exact stair distance is unspecified; this is not proven impossible, but adjacent-step handoff would make the physical staging clearer."
+    }
+  ],
+  "production_write": false,
+  "merge": false
+}
