@@ -309,3 +309,22 @@ The original Aion writer lane is closed for the SC01 qualification run.
 - Frozen Q5SG preflight SHA256: a947d998cf03734ca281d118a333e89217c6d2fb544163d5e41c2bc5be1dd00b.
 - One Sonnet 5.5 guard call is authorized with USD 0.05 ceiling, no retry, no rewrite execution, and no StoryState application.
 - Previous Q5SG Actions attempt was cancelled before inference because its ephemeral runner died during setup-python; no guard API call was consumed.
+
+## 20. Q6 final qualification status — 2026-10-07
+
+- Q6A state relay proof was preserved but rejected for a character-identity canon gap.
+- Q6B added immutable character canon and passed SC02/SC03, but review found unauthorized portable/actionable prop leakage (rope/sailcloth) in SC03.
+- Q6C qualified a fail-closed actionable-prop guard: one Sonnet call, USD 0.031628, no retry; rope/sailcloth anchors were correctly BLOCKING.
+- Q6D is the final Q6 lane. Writer and guard receive the same StoryState, structured SceneContract, immutable relevant_character_canon, and prop_authorization_policy.
+- Q6D zero-cost suite: 144/144 pytest PASS.
+- Q6D paid sequential relay: ACCEPT. SC02 attempt 1 ACCEPT; SC03 attempt 1 ACCEPT; no rewrite; no automatic retry.
+- Q6D provider calls: 4. Total known cost USD 0.0627705.
+- SC02: Sol writer USD 0.0087235 + Sonnet guard USD 0.017348.
+- SC03: Sol writer USD 0.010971 + Sonnet guard USD 0.025728.
+- Both SC02 and SC03 final validations contain zero findings.
+- Final StoryState revision is 3 and next_spine_beat is SC04.
+- Final persisted state includes compass at lighthouse_nest; dragon_hatchling in lighthouse_upper_room with cat_sized/cannot-fly/uninjured state; narrow stair and lower sea grate are persisted world facts.
+- Accepted SC03 prose contains no unauthorized rope/sailcloth/actionable equipment and preserves Duru/Ekin identity canon.
+- Frozen Q6D evidence: evidence/spineforge-relay/SFR-V1-Q6D-SC02-SC03-20261007/.
+- Q6 Three-scene sequential relay qualification: GREEN.
+- Production LUMI remains unchanged. Q7 full-story qualification is next and must start from this frozen revision-3 state.
