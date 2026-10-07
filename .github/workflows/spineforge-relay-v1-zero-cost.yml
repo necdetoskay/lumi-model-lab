@@ -8,7 +8,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json'
+      - 'evidence/spineforge-relay/SFR-V1-Q5G-PREFLIGHT-20261006/authorization-template.json'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   pull_request:
     paths:
@@ -16,7 +16,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json'
+      - 'evidence/spineforge-relay/SFR-V1-Q5G-PREFLIGHT-20261006/**'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ permissions:
   contents: write
 
 jobs:
-  q0-q4-zero-cost:
+  q0-q5g-zero-cost:
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     steps:
@@ -36,9 +36,9 @@ jobs:
       - name: SFR-v1 zero-cost qualification
         run: python -m pytest -q tests/test_spineforge_relay_v1_*.py
 
-  q5-paid-single-scene:
+  q5g-paid-scene-guard:
     if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: sfr-q5-temp
+    runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -55,7 +55,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Check exact Q5B authorization
+      - name: Check exact Q5G authorization
         id: auth
         shell: bash
         run: |
@@ -63,10 +63,10 @@ jobs:
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-          from src.spineforge_relay_v1_q5 import AUTH_SCOPE, MAX_COST_USD, verify
+          from src.spineforge_relay_v1_guard_paid import AUTH_SCOPE, MAX_COST_USD, verify
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5G-PREFLIGHT-20261006/authorization-template.json"
           ).read_text())
           report = verify()
           approved = (
@@ -75,9 +75,9 @@ jobs:
               and auth.get("scope") == AUTH_SCOPE
               and auth.get("preflight_sha256") == report["artifact_sha256"]
               and auth.get("max_cost_usd") == MAX_COST_USD
-              and auth.get("max_writer_calls") == 1
+              and auth.get("max_guard_calls") == 1
               and auth.get("automatic_retry") is False
-              and auth.get("production_write") is False
+              and auth.get("rewrite_authorized") is False
               and auth.get("state_application_authorized") is False
               and bool(auth.get("explicit_user_message"))
           )
@@ -91,56 +91,66 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "$OPENROUTER_API_KEY" ]; then
-            echo '::error::Repository secret OPENROUTER_API_KEY is not configured.'
+          test -n "$OPENROUTER_API_KEY" || { echo '::error::OPENROUTER_API_KEY missing'; exit 1; }
+
+      - name: Claim frozen Q5G authorization before inference
+        if: ${{ steps.auth.outputs.approved == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(printf '%s' "${{ steps.auth.outputs.preflight_sha }}" | cut -c1-16)"
+          TAG="sfr-v1-q5g-paid-$SHORT_SHA"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error::Q5G authorization already claimed by $TAG"
             exit 1
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Claim SFR-v1 Q5G paid authorization ${{ steps.auth.outputs.preflight_sha }}"
+          git push origin "refs/tags/$TAG"
 
-      - name: Execute exactly one paid Q5B writer call
+      - name: Execute exactly one paid Q5G guard call
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json
-          import os
+          import json, os
           from pathlib import Path
-          from src.spineforge_relay_v1_q5 import execute_once
+          from src.spineforge_relay_v1_guard_paid import execute_once
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5B-PREFLIGHT-20261006/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5G-PREFLIGHT-20261006/authorization-template.json"
           ).read_text())
           out = execute_once(
               api_key=os.environ["OPENROUTER_API_KEY"],
               run_id="github-" + os.environ["GITHUB_RUN_ID"],
               authorization=auth,
-              output_root=Path("evidence/spineforge-relay/q5b-runs"),
           )
           summary = {
               "status": out.get("status"),
+              "qualification_pass": out.get("qualification_pass"),
               "api_calls": out.get("api_calls"),
               "usage": out.get("usage"),
               "automatic_retry_executed": out.get("automatic_retry_executed"),
+              "rewrite_authorized": out.get("rewrite_authorized"),
               "state_application_authorized": out.get("state_application_authorized"),
               "failure_type": out.get("failure_type"),
               "failure_message": out.get("failure_message"),
           }
-          Path("q5b-summary.json").write_text(
-              json.dumps(summary, indent=2) + "\n",
-              encoding="utf-8",
-          )
+          Path("q5g-summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
           print(json.dumps(summary, indent=2))
-          if out.get("status") != "WRITER_GENERATED_PENDING_SCENE_REVIEW":
+          if out.get("status") != "GUARD_QUALIFIED_REWRITE":
               raise SystemExit(2)
           PY
 
-      - name: Upload Q5B evidence
+      - name: Upload Q5G evidence
         if: ${{ always() && steps.auth.outputs.approved == 'true' }}
         uses: actions/upload-artifact@v4
         with:
-          name: sfr-v1-q5b-${{ github.run_id }}
+          name: sfr-v1-q5g-${{ github.run_id }}
           path: |
-            q5b-summary.json
-            evidence/spineforge-relay/q5b-runs/github-${{ github.run_id }}/
+            q5g-summary.json
+            evidence/spineforge-relay/q5g-runs/github-${{ github.run_id }}/
           if-no-files-found: warn
           retention-days: 30
