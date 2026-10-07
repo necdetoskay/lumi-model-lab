@@ -8,7 +8,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/**'
+      - 'evidence/spineforge-relay/SFR-V1-Q5SR-PREFLIGHT-20261007/**'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   pull_request:
     paths:
@@ -16,7 +16,7 @@ on:
       - 'src/spineforge_relay_v1_*.py'
       - 'tests/test_spineforge_relay_v1_*.py'
       - 'tests/fixtures/spineforge_relay_v1/**'
-      - 'evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/**'
+      - 'evidence/spineforge-relay/SFR-V1-Q5SR-PREFLIGHT-20261007/**'
       - '.github/workflows/spineforge-relay-v1-zero-cost.yml'
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ permissions:
   contents: write
 
 jobs:
-  q0-q5sg-zero-cost:
+  q0-q5sr-zero-cost:
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
@@ -42,17 +42,21 @@ jobs:
           git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
 
       - name: Bootstrap Python dependencies
+        shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y python3-pip >/dev/null
-          python3 -m pip install --break-system-packages -r requirements.txt pytest
+          set -euo pipefail
+          python3 -m pip --version >/dev/null 2>&1 || {
+            curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+            python3 /tmp/get-pip.py --user --break-system-packages
+          }
+          python3 -m pip install --user --break-system-packages -r requirements.txt pytest
 
       - name: SFR-v1 zero-cost qualification
         run: python3 -m pytest -q tests/test_spineforge_relay_v1_*.py
 
-  q5sg-paid-semantic-guard:
-    needs: q0-q5sg-zero-cost
-    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q0-q5sg-zero-cost.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
+  q5sr-paid-sol-rewrite:
+    needs: q0-q5sr-zero-cost
+    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q0-q5sr-zero-cost.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
@@ -71,12 +75,16 @@ jobs:
           git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
 
       - name: Bootstrap Python dependencies
+        shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y python3-pip >/dev/null
-          python3 -m pip install --break-system-packages -r requirements.txt
+          set -euo pipefail
+          python3 -m pip --version >/dev/null 2>&1 || {
+            curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+            python3 /tmp/get-pip.py --user --break-system-packages
+          }
+          python3 -m pip install --user --break-system-packages -r requirements.txt
 
-      - name: Check exact Q5SG authorization
+      - name: Check exact Q5SR authorization
         id: auth
         shell: bash
         run: |
@@ -84,10 +92,10 @@ jobs:
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-          from src.spineforge_relay_v1_q5sg import AUTH_SCOPE, MAX_COST_USD, verify
+          from src.spineforge_relay_v1_q5sr import AUTH_SCOPE, MAX_COST_USD, verify
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5SR-PREFLIGHT-20261007/authorization-template.json"
           ).read_text())
           report = verify()
           approved = (
@@ -96,9 +104,8 @@ jobs:
               and auth.get("scope") == AUTH_SCOPE
               and auth.get("preflight_sha256") == report["artifact_sha256"]
               and auth.get("max_cost_usd") == MAX_COST_USD
-              and auth.get("max_guard_calls") == 1
+              and auth.get("max_rewrite_calls") == 1
               and auth.get("automatic_retry") is False
-              and auth.get("rewrite_authorized") is False
               and auth.get("state_application_authorized") is False
               and bool(auth.get("explicit_user_message"))
           )
@@ -111,7 +118,7 @@ jobs:
         if: ${{ steps.auth.outputs.approved == 'true' }}
         run: test -n "$OPENROUTER_API_KEY"
 
-      - name: Claim frozen Q5SG authorization before inference
+      - name: Claim frozen Q5SR authorization before inference
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
@@ -121,7 +128,7 @@ jobs:
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
           preflight = "${{ steps.auth.outputs.preflight_sha }}"
-          claim_path = f"evidence/spineforge-relay/claims/q5sg-{preflight[:16]}.json"
+          claim_path = f"evidence/spineforge-relay/claims/q5sr-{preflight[:16]}.json"
           url = f"https://api.github.com/repos/{repo}/contents/{claim_path}"
           headers = {
               "Authorization": f"Bearer {token}",
@@ -130,9 +137,9 @@ jobs:
           }
           existing = requests.get(url, headers=headers, params={"ref":"experiment/spineforge-relay-v1"}, timeout=30)
           if existing.status_code == 200:
-              raise SystemExit(f"Q5SG authorization already claimed: {claim_path}")
+              raise SystemExit(f"Q5SR authorization already claimed: {claim_path}")
           if existing.status_code != 404:
-              raise SystemExit(f"Cannot verify Q5SG claim state: HTTP {existing.status_code}")
+              raise SystemExit(f"Cannot verify Q5SR claim state: HTTP {existing.status_code}")
           claim = {
               "preflight_sha256": preflight,
               "run_id": os.environ["GITHUB_RUN_ID"],
@@ -140,16 +147,16 @@ jobs:
               "status": "CLAIMED_BEFORE_INFERENCE",
           }
           payload = {
-              "message": "claim(sfr-v1): reserve Q5SG semantic guard authorization",
+              "message": "claim(sfr-v1): reserve Q5SR Sol rewrite authorization",
               "content": base64.b64encode(json.dumps(claim,separators=(",",":")).encode()).decode(),
               "branch": "experiment/spineforge-relay-v1",
           }
-          created = requests.put(url, headers=headers, json=payload, timeout=30)
+          created = requests.put(url,headers=headers,json=payload,timeout=30)
           if created.status_code not in (200,201):
-              raise SystemExit(f"Failed to create Q5SG claim: HTTP {created.status_code} " + created.text[:500])
+              raise SystemExit(f"Failed to create Q5SR claim: HTTP {created.status_code} " + created.text[:500])
           PY
 
-      - name: Execute exactly one paid Q5SG guard call
+      - name: Execute exactly one paid Q5SR rewrite
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
@@ -157,10 +164,10 @@ jobs:
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          from src.spineforge_relay_v1_q5sg import execute_once
+          from src.spineforge_relay_v1_q5sr import execute_once
 
           auth = json.loads(Path(
-              "evidence/spineforge-relay/SFR-V1-Q5SG-PREFLIGHT-20261007/authorization-template.json"
+              "evidence/spineforge-relay/SFR-V1-Q5SR-PREFLIGHT-20261007/authorization-template.json"
           ).read_text())
           out = execute_once(
               api_key=os.environ["OPENROUTER_API_KEY"],
@@ -169,7 +176,6 @@ jobs:
           )
           summary = {
               "status": out.get("status"),
-              "decision": out.get("decision"),
               "api_calls": out.get("api_calls"),
               "usage": out.get("usage"),
               "automatic_retry_executed": out.get("automatic_retry_executed"),
@@ -177,46 +183,41 @@ jobs:
               "failure_type": out.get("failure_type"),
               "failure_message": out.get("failure_message"),
           }
-          Path("q5sg-summary.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
+          Path("q5sr-summary.json").write_text(json.dumps(summary,indent=2)+"\n",encoding="utf-8")
           print(json.dumps(summary,indent=2))
-          if out.get("status") not in {"GUARD_COMPLETED_ACCEPT","GUARD_COMPLETED_REWRITE"}:
+          if out.get("status") != "REWRITE_GENERATED_PENDING_FINAL_GUARD":
               raise SystemExit(2)
           PY
 
-      - name: Persist Q5SG result to branch
+      - name: Persist Q5SR result to branch
         if: ${{ steps.auth.outputs.approved == 'true' }}
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64, json, os
+          import base64, json, os, requests
           from pathlib import Path
-          import requests
 
           run_id = os.environ["GITHUB_RUN_ID"]
-          root = Path("evidence/spineforge-relay/q5sg-runs") / ("github-" + run_id)
-          call = json.loads((root / "guard-call.json").read_text())
-          decision = json.loads((root / "guard-decision.json").read_text())
+          root = Path("evidence/spineforge-relay/q5sr-runs") / ("github-" + run_id)
+          call = json.loads((root / "rewrite-call.json").read_text())
+          artifact = json.loads((root / "rewrite-artifact.json").read_text())
           result = {
-              "schema": "spineforge-relay.q5sg-paid-result.v1",
-              "qualification_id": "SFR-V1-Q5SG-SOL-SC01-GUARD-20261007",
+              "schema": "spineforge-relay.q5sr-paid-result.v1",
+              "qualification_id": "SFR-V1-Q5SR-SOL-SC01-TARGETED-REWRITE-20261007",
               "run_id": int(run_id),
               "job": os.environ["GITHUB_JOB"],
               "status": call["status"],
-              "decision": call.get("decision"),
               "preflight_sha256": call["preflight_sha256"],
               "api_calls": call.get("api_calls"),
               "automatic_retry_executed": call.get("automatic_retry_executed"),
               "state_application_authorized": call.get("state_application_authorized"),
               "usage": call.get("usage"),
-              "scene_validation": decision.get("scene_validation"),
-              "semantic_report": decision.get("semantic_report"),
-              "guard_decision_sha256": decision.get("artifact_sha256"),
+              "candidate": artifact,
           }
-
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
-          path = "evidence/spineforge-relay/SFR-V1-Q5SG-PAID-20261007/result.json"
+          path = "evidence/spineforge-relay/SFR-V1-Q5SR-PAID-20261007/result.json"
           url = f"https://api.github.com/repos/{repo}/contents/{path}"
           headers = {
               "Authorization": f"Bearer {token}",
@@ -224,7 +225,7 @@ jobs:
               "X-GitHub-Api-Version": "2022-11-28",
           }
           payload = {
-              "message": "evidence(sfr-v1): freeze Q5SG semantic guard result",
+              "message": "evidence(sfr-v1): freeze Q5SR Sol rewrite result",
               "content": base64.b64encode((json.dumps(result,ensure_ascii=False,indent=2)+"\n").encode()).decode(),
               "branch": "experiment/spineforge-relay-v1",
           }
@@ -232,8 +233,8 @@ jobs:
           if existing.status_code == 200:
               payload["sha"] = existing.json()["sha"]
           elif existing.status_code != 404:
-              raise SystemExit(f"Cannot inspect Q5SG result path: HTTP {existing.status_code}")
+              raise SystemExit(f"Cannot inspect Q5SR result path: HTTP {existing.status_code}")
           saved = requests.put(url,headers=headers,json=payload,timeout=30)
           if saved.status_code not in (200,201):
-              raise SystemExit(f"Failed to persist Q5SG result: HTTP {saved.status_code} " + saved.text[:500])
+              raise SystemExit(f"Failed to persist Q5SR result: HTTP {saved.status_code} " + saved.text[:500])
           PY
