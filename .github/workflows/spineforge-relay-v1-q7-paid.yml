@@ -1,20 +1,20 @@
-name: SFR v1 Q7 Full Story Completion
+name: SFR v1 Q7B Entity Location Completion
 
 on:
   pull_request:
     paths:
-      - 'src/spineforge_relay_v1_q7.py'
-      - 'tests/test_spineforge_relay_v1_q7.py'
+      - 'src/spineforge_relay_v1_q7b.py'
+      - 'tests/test_spineforge_relay_v1_q7b.py'
       - 'tests/fixtures/spineforge_relay_v1/q7_lighthouse_sc04_sc06.json'
-      - 'evidence/spineforge-relay/SFR-V1-Q7-PREFLIGHT-20261007/**'
-      - '.github/workflows/spineforge-relay-v1-q7-paid.yml'
+      - 'evidence/spineforge-relay/SFR-V1-Q7B-PREFLIGHT-20261007/**'
+      - '.github/workflows/spineforge-relay-v1-q7b-paid.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  q7-zero-cost-gate:
+  q7b-zero-cost-gate:
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
@@ -51,8 +51,8 @@ jobs:
           python3 - <<'PY'
           import json
           from pathlib import Path
-          from src.spineforge_relay_v1_q7 import prepare, authorization_for
-          base = Path("evidence/spineforge-relay/SFR-V1-Q7-PREFLIGHT-20261007")
+          from src.spineforge_relay_v1_q7b import prepare, authorization_for
+          base = Path("evidence/spineforge-relay/SFR-V1-Q7B-PREFLIGHT-20261007")
           p = json.loads((base / "preflight.json").read_text())
           a = json.loads((base / "authorization.json").read_text())
           assert p == prepare()
@@ -60,9 +60,9 @@ jobs:
           print(a["preflight_sha256"])
           PY
 
-  q7-paid-story-completion:
-    needs: q7-zero-cost-gate
-    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q7-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
+  q7b-paid-story-completion:
+    needs: q7b-zero-cost-gate
+    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q7b-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:
@@ -90,7 +90,7 @@ jobs:
           }
           python3 -m pip install --user --break-system-packages -r requirements.txt pytest
 
-      - name: Verify credential and exact Q7 authorization
+      - name: Verify credential and exact Q7B authorization
         id: auth
         shell: bash
         run: |
@@ -99,8 +99,8 @@ jobs:
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           from pathlib import Path
-          from src.spineforge_relay_v1_q7 import prepare, authorization_for
-          base = Path("evidence/spineforge-relay/SFR-V1-Q7-PREFLIGHT-20261007")
+          from src.spineforge_relay_v1_q7b import prepare, authorization_for
+          base = Path("evidence/spineforge-relay/SFR-V1-Q7B-PREFLIGHT-20261007")
           p = json.loads((base / "preflight.json").read_text())
           a = json.loads((base / "authorization.json").read_text())
           assert p == prepare()
@@ -108,7 +108,7 @@ jobs:
           print("preflight_sha=" + a["preflight_sha256"])
           PY
 
-      - name: Claim Q7 authorization before inference
+      - name: Claim Q7B authorization before inference
         shell: bash
         run: |
           set -euo pipefail
@@ -117,7 +117,7 @@ jobs:
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
           sha = "${{ steps.auth.outputs.preflight_sha }}"
-          path = f"evidence/spineforge-relay/claims/q7-{sha[:16]}.json"
+          path = f"evidence/spineforge-relay/claims/q7b-{sha[:16]}.json"
           url = f"https://api.github.com/repos/{repo}/contents/{path}"
           headers = {
               "Authorization": f"Bearer {token}",
@@ -126,7 +126,7 @@ jobs:
           }
           existing = requests.get(url, headers=headers, params={"ref": "experiment/spineforge-relay-v1"}, timeout=30)
           if existing.status_code == 200:
-              raise SystemExit("Q7 authorization already claimed")
+              raise SystemExit("Q7B authorization already claimed")
           if existing.status_code != 404:
               raise SystemExit(f"Cannot verify Q7 claim state: HTTP {existing.status_code}")
           claim = {
@@ -146,24 +146,24 @@ jobs:
           print(path)
           PY
 
-      - name: Execute bounded Q7 story completion
+      - name: Execute bounded Q7B story completion
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          from src.spineforge_relay_v1_q7 import execute
-          base = Path("evidence/spineforge-relay/SFR-V1-Q7-PREFLIGHT-20261007")
+          from src.spineforge_relay_v1_q7b import execute
+          base = Path("evidence/spineforge-relay/SFR-V1-Q7B-PREFLIGHT-20261007")
           p = json.loads((base / "preflight.json").read_text())
           a = json.loads((base / "authorization.json").read_text())
           out = execute(
               api_key=os.environ["OPENROUTER_API_KEY"],
               preflight=p,
               authorization=a,
-              output=Path("q7-live"),
+              output=Path("q7b-live"),
           )
-          Path("q7-summary.json").write_text(
+          Path("q7b-summary.json").write_text(
               json.dumps(out, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
           )
@@ -176,9 +176,9 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: sfr-v1-q7-${{ github.run_id }}
+          name: sfr-v1-q7b-${{ github.run_id }}
           path: |
-            q7-summary.json
-            q7-live/
+            q7b-summary.json
+            q7b-live/
           if-no-files-found: warn
           retention-days: 30
