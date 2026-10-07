@@ -1,3 +1,4 @@
+from tests.relay_event_fixture import event
 import pytest
 
 from src.spineforge_relay_v1_compile import compile_scene_contract
@@ -28,7 +29,7 @@ def make_plan(state, scene_id, beat, next_beat, purpose, entry, exit_state, allo
         narrative_purpose=purpose,
         objective=purpose,
         turn=f"{scene_id} reaches its intended turn.",
-        required_events=[purpose],
+        required_events=[event("ensemble", "ADVANCE", purpose)],
         entry_state=entry,
         required_exit_state=exit_state,
         allowed_state_paths=allowed or [],

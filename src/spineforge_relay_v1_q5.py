@@ -22,8 +22,8 @@ from src.model_registry import (
     require_qualification_runtime_profile,
     runtime_profile_identity,
 )
-from src.spineforge_relay_v1_compile import compile_scene_contract
-from src.spineforge_relay_v1_contracts import (
+from src.spineforge_relay_v1_legacy_compile import compile_scene_contract
+from src.spineforge_relay_v1_legacy_contracts import (
     FrozenSpineRouteV1,
     ScenePlanV1,
     StoryStateV1,
@@ -51,7 +51,7 @@ def _file_sha256(path: Path) -> str:
 
 
 def _word_count(text: str) -> int:
-    return len(re.findall(r"\b[\w]+(?:['’-][\w]+)*\b", text))
+    return len(re.findall(r"\b[\w]+(?:['â€™-][\w]+)*\b", text))
 
 
 def _dependencies() -> list[Path]:
@@ -59,6 +59,8 @@ def _dependencies() -> list[Path]:
         Path(__file__).relative_to(Path.cwd()),
         Path("src/spineforge_relay_v1_contracts.py"),
         Path("src/spineforge_relay_v1_compile.py"),
+        Path("src/spineforge_relay_v1_legacy_contracts.py"),
+        Path("src/spineforge_relay_v1_legacy_compile.py"),
         Path("src/model_registry.py"),
         Path("src/spineforge_v19_transport.py"),
         Path("configs/model_runtime_profiles.yaml"),

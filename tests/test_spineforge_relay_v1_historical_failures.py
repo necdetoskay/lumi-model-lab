@@ -1,3 +1,4 @@
+from tests.relay_event_fixture import event
 import json
 from pathlib import Path
 
@@ -56,7 +57,7 @@ def test_historical_continuity_failures_are_encoded_and_blocked():
         story_intent_sha256=state.story_intent_sha256,
         consumed_spine_beats=["HIST"],
         next_spine_beat=None,
-        required_events=["Ekin returns to the upper room"],
+        required_events=[event("Ekin", "RETURN", "upper_room")],
         entry_state={
             "/characters/Duru/location": "upper_room",
             "/objects/compass_cord/location": "with_dragon",

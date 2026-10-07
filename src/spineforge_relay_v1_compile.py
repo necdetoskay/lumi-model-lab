@@ -98,7 +98,9 @@ def compile_scene_contract(
         if not exists or actual != expected:
             raise SceneCompileError(f"Scene plan entry state is stale: {pointer}")
 
-    required_events = plan.required_events or [plan.objective]
+    if not plan.required_events:
+        raise SceneCompileError("Structured required_events are mandatory; natural-language fallback is forbidden")
+    required_events = plan.required_events
 
     return SceneContractV1(
         scene_id=plan.scene_id,

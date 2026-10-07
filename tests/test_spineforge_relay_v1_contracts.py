@@ -1,3 +1,4 @@
+from tests.relay_event_fixture import event
 import pytest
 from pydantic import ValidationError
 
@@ -95,7 +96,7 @@ def test_scene_contract_uses_pointer_state_and_one_rewrite_maximum():
         story_intent_sha256=state.story_intent_sha256,
         consumed_spine_beats=["S2"],
         next_spine_beat="S3",
-        required_events=["Leyra climbs upstairs"],
+        required_events=[event("Leyra", "CLIMB", "upstairs")],
         entry_state={"/characters/Leyra/location": "tower_ground"},
         required_exit_state={"/characters/Leyra/location": "tower_floor_2"},
         immutable_facts=["Leyra owns the rope"],

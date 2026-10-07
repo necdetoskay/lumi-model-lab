@@ -1,3 +1,4 @@
+from tests.relay_event_fixture import event
 import pytest
 from pydantic import ValidationError
 
@@ -44,7 +45,7 @@ def contract():
         story_intent_sha256=H,
         consumed_spine_beats=["SC01"],
         next_spine_beat="SC02",
-        required_events=["Duru points Ekin toward the lighthouse."],
+        required_events=[event("Duru", "INDICATE_DESTINATION", "lighthouse")],
         entry_state={},
         required_exit_state={},
         target_words_min=40,

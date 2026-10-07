@@ -106,6 +106,55 @@ class FrozenSpineRouteV1(StrictModel):
         return self
 
 
+Provenance = Literal["DIRECT_OBSERVATION", "STORY_STATE_KNOWLEDGE", "INVENTED_WORLD_RULE", "INVENTED_CLUE", "UNESTABLISHED_LORE"]
+
+
+class EventPredicateV1(StrictModel):
+    id: str = Field(min_length=1)
+    subject: str = Field(min_length=1)
+    action: str = Field(min_length=1)
+    target: str = Field(min_length=1)
+
+
+class RequiredEventSpecV1(StrictModel):
+    schema_name: Literal["spineforge-relay.required-event.v1"] = "spineforge-relay.required-event.v1"
+    id: str = Field(min_length=1)
+    actor: str = Field(min_length=1)
+    action: str = Field(min_length=1)
+    target: str = Field(min_length=1)
+    required_observer: str | None
+    satisfaction_mode: Literal["ALL_PREDICATES"] = "ALL_PREDICATES"
+    evidence_mode: Literal["DIRECT_OBSERVATION", "ESTABLISHED_KNOWLEDGE", "EITHER"]
+    separate_physical_clue_required: bool = False
+    predicates: list[EventPredicateV1] = Field(min_length=1)
+    allowed_provenance: list[Provenance] = Field(min_length=1)
+    forbidden_provenance: list[Provenance] = Field(min_length=1)
+    forbidden_evidence_subjects: list[str] = Field(default_factory=list)
+    resulting_state: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_event(self) -> "RequiredEventSpecV1":
+        _unique([p.id for p in self.predicates], "predicates.id")
+        _unique(self.allowed_provenance, "allowed_provenance")
+        _unique(self.forbidden_provenance, "forbidden_provenance")
+        if set(self.allowed_provenance) & set(self.forbidden_provenance):
+            raise ValueError("allowed and forbidden provenance must be disjoint")
+        if not set(self.allowed_provenance) <= {"DIRECT_OBSERVATION", "STORY_STATE_KNOWLEDGE"}:
+            raise ValueError("Invented provenance cannot authorize event satisfaction")
+        expected = {"DIRECT_OBSERVATION"} if self.evidence_mode == "DIRECT_OBSERVATION" else {"STORY_STATE_KNOWLEDGE"} if self.evidence_mode == "ESTABLISHED_KNOWLEDGE" else {"DIRECT_OBSERVATION", "STORY_STATE_KNOWLEDGE"}
+        if set(self.allowed_provenance) != expected:
+            raise ValueError("evidence_mode and allowed_provenance disagree")
+        if not any((p.subject, p.action, p.target) == (self.actor, self.action, self.target) for p in self.predicates):
+            raise ValueError("Event action must be represented by a predicate")
+        if self.required_observer and not any(p.subject == self.required_observer and p.action in {"OBSERVE", "ACKNOWLEDGE"} for p in self.predicates):
+            raise ValueError("Required observer needs an explicit observation or acknowledgement predicate")
+        if self.separate_physical_clue_required and not any(p.action == "SHOW_PHYSICAL_CLUE" for p in self.predicates):
+            raise ValueError("Physical clue needs an explicit predicate")
+        for pointer in self.resulting_state:
+            _pointer(pointer, "resulting_state")
+        return self
+
+
 class ScenePlanV1(StrictModel):
     schema_name: Literal["spineforge-relay.scene-plan.v1"] = "spineforge-relay.scene-plan.v1"
     scene_id: str = Field(min_length=1)
@@ -116,7 +165,7 @@ class ScenePlanV1(StrictModel):
     turn: str = Field(min_length=1)
     entry_requirements: list[str] = Field(default_factory=list)
     exit_requirements: list[str] = Field(default_factory=list)
-    required_events: list[str] = Field(default_factory=list)
+    required_events: list[RequiredEventSpecV1] = Field(default_factory=list)
     entry_state: dict[str, Any] = Field(default_factory=dict)
     required_exit_state: dict[str, Any] = Field(default_factory=dict)
     allowed_state_paths: list[str] = Field(default_factory=list)
@@ -132,7 +181,7 @@ class ScenePlanV1(StrictModel):
         _unique(self.spine_beats, "spine_beats")
         _unique(self.entry_requirements, "entry_requirements")
         _unique(self.exit_requirements, "exit_requirements")
-        _unique(self.required_events, "required_events")
+        _unique([e.id for e in self.required_events], "required_events.id")
         _unique(self.allowed_state_paths, "allowed_state_paths")
         _unique(self.immutable_facts, "immutable_facts")
         _unique(self.forbidden, "forbidden")
@@ -158,7 +207,7 @@ class SceneContractV1(StrictModel):
     story_intent_sha256: str
     consumed_spine_beats: list[str] = Field(min_length=1)
     next_spine_beat: str | None = None
-    required_events: list[str] = Field(min_length=1)
+    required_events: list[RequiredEventSpecV1] = Field(min_length=1)
     entry_state: dict[str, Any] = Field(default_factory=dict)
     required_exit_state: dict[str, Any] = Field(default_factory=dict)
     allowed_state_paths: list[str] = Field(default_factory=list)
@@ -179,7 +228,11 @@ class SceneContractV1(StrictModel):
         ):
             _sha(getattr(self, name), name)
         _unique(self.consumed_spine_beats, "consumed_spine_beats")
-        _unique(self.required_events, "required_events")
+        _unique([e.id for e in self.required_events], "required_events.id")
+        for event in self.required_events:
+            for pointer, expected in event.resulting_state.items():
+                if pointer not in self.required_exit_state or self.required_exit_state[pointer] != expected:
+                    raise ValueError("Event resulting_state must match required_exit_state")
         _unique(self.immutable_facts, "immutable_facts")
         _unique(self.forbidden, "forbidden")
         _unique(self.allowed_state_paths, "allowed_state_paths")

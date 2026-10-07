@@ -1,3 +1,4 @@
+from tests.relay_event_fixture import event
 import pytest
 
 from src.spineforge_relay_v1_compile import SceneCompileError, compile_scene_contract
@@ -38,6 +39,7 @@ def plan(beats, next_beat, entry="coastal_path"):
         next_spine_beat=next_beat,
         narrative_purpose="Advance the frozen lighthouse spine.",
         objective="Advance the scene.",
+        required_events=[event("Ekin", "MOVE", "lighthouse_upper")],
         turn="The scene reaches its turn.",
         entry_state={"/characters/Ekin/location": entry},
         required_exit_state={"/characters/Ekin/location": "lighthouse_upper"},
