@@ -20,18 +20,18 @@ jobs:
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
-      GITHUB_TOKEN: \${{ github.token }}
-      HEAD_SHA: \${{ github.event.pull_request.head.sha || github.sha }}
+      GITHUB_TOKEN: ${{ github.token }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout exact head
         shell: bash
         run: |
           set -euo pipefail
           git init .
-          git remote add origin "https://x-access-token:\${GITHUB_TOKEN}@github.com/\${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "\${HEAD_SHA}"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_SHA}"
           git checkout --detach FETCH_HEAD
-          git remote set-url origin "https://github.com/\${GITHUB_REPOSITORY}.git"
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
 
       - name: Bootstrap Python dependencies
         shell: bash
@@ -64,23 +64,23 @@ jobs:
 
   q8-paid-repeatability:
     needs: q8-zero-cost-gate
-    if: \${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q8-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q8-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:
-      OPENROUTER_API_KEY: \${{ secrets.OPENROUTER_API_KEY }}
-      GITHUB_TOKEN: \${{ github.token }}
-      HEAD_SHA: \${{ github.event.pull_request.head.sha }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - name: Checkout exact PR head
         shell: bash
         run: |
           set -euo pipefail
           git init .
-          git remote add origin "https://x-access-token:\${GITHUB_TOKEN}@github.com/\${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "\${HEAD_SHA}"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_SHA}"
           git checkout --detach FETCH_HEAD
-          git remote set-url origin "https://github.com/\${GITHUB_REPOSITORY}.git"
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
 
       - name: Bootstrap Python dependencies
         shell: bash
@@ -118,7 +118,7 @@ jobs:
           import base64, json, os, requests
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GITHUB_TOKEN"]
-          sha = "\${{ steps.auth.outputs.preflight_sha }}"
+          sha = "${{ steps.auth.outputs.preflight_sha }}"
           path = f"evidence/spineforge-relay/claims/q8-{sha[:16]}.json"
           url = f"https://api.github.com/repos/{repo}/contents/{path}"
           headers = {
@@ -182,10 +182,10 @@ jobs:
           PY
 
       - name: Upload Q8 evidence
-        if: \${{ always() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: sfr-v1-q8-\${{ github.run_id }}
+          name: sfr-v1-q8-${{ github.run_id }}
           path: |
             q8-summary.json
             q8-live/
