@@ -41,11 +41,15 @@ def _sha_file(path: Path) -> str:
 def build_inputs():
     source = json.loads(SOURCE_RESULT.read_text(encoding="utf-8"))
     candidate = source.get("candidate") or {}
+    if source.get("status") != "REWRITE_GENERATED_PENDING_FINAL_GUARD":
+        raise RuntimeError("Q5SF requires rewrite pending final guard")
     if candidate.get("attempt") != 2:
         raise RuntimeError("Q5SF requires attempt-2 rewrite candidate")
     prose = str(candidate.get("prose") or "")
     if not prose:
         raise RuntimeError("Q5SF source prose missing")
+    if candidate.get("prose_sha256") != hashlib.sha256(prose.encode("utf-8")).hexdigest():
+        raise RuntimeError("Q5SF source prose hash mismatch")
     _writer_input, state, _plan, _route, contract = build_q5_inputs()
     deterministic = deterministic_scene_findings(prose=prose, contract=contract)
     guard_input = build_semantic_guard_input(
@@ -186,7 +190,7 @@ def decide(raw: dict[str, Any], prose: str, deterministic: list[Any], scene_id: 
         "scene_validation": validation.model_dump(mode="json"),
         "semantic_report": semantic.model_dump(mode="json"),
         "state_application_authorized": validation.decision == "ACCEPT",
-        "publication_ready": validation.decision == "ACCEPT",
+        "publication_ready": False,
     }
 
 
@@ -209,6 +213,7 @@ def execute_once(
         or authorization.get("max_guard_calls") != 1
         or authorization.get("automatic_retry") is not False
         or authorization.get("rewrite_authorized") is not False
+        or authorization.get("state_application_authorized") is not False
         or not authorization.get("explicit_user_message")
     ):
         raise RuntimeError("Separate explicit SFR-v1 Q5SF authorization required")
