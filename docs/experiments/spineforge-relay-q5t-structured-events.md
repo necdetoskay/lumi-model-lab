@@ -52,3 +52,20 @@ On Windows use PowerShell file enumeration and `python -X utf8`; choose a writab
 pytest basetemp. Fake providers test plumbing only, not actual model qualification.
 Paid execution uses `python -m src.spineforge_relay_v1_q5t execute` with an exact
 saved preflight and authorization, and the lab's existing OpenRouter credential.
+
+## Q5T result — 2026-10-07
+
+After 122 Relay tests, 23 runtime-profile tests and self-hosted CI passed,
+the user explicitly approved transmitting the frozen story inputs through OpenRouter.
+The fresh run accepted attempt 1: all six predicate evidence rows were supported,
+local checks passed, and Sonnet's residual report returned PASS with no findings.
+No rewrite or retry was used. Sol cost $0.008901 (1,941 input / 405 output tokens,
+9.444 seconds); Sonnet cost $0.024146 (5,968 input / 1,221 output tokens,
+11.308 seconds). Total: $0.033047, 9,535 tokens, 20.752 seconds of call latency.
+
+SC01 is frozen in `evidence/spineforge-relay/SFR-V1-Q5T-STRUCTURED-20261007/accepted-scene.json`.
+The deterministic delta moves the compass from Ekin's hands to the dragon;
+StoryState advances from revision 0 to 1 and next_spine_beat becomes SC02.
+The bundle was independently reproduced from saved evidence without another model
+call. All 43 historical evidence files retain their original Git content hashes.
+This qualifies this single scene and contract, not long-horizon production readiness.
