@@ -1,4 +1,4 @@
-name: SpineForge Relay v1 Qualification
+name: SpineForge Relay v1 Zero-Cost Qualification
 
 on:
   push:
@@ -27,7 +27,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   q0-q6-zero-cost:
@@ -74,122 +74,3 @@ jobs:
           assert a == authorization_for(p)
           print(a["preflight_sha256"])
           PY
-
-  q6-paid-sequential-relay:
-    needs: q0-q6-zero-cost
-    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q0-q6-zero-cost.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
-    runs-on: [self-hosted, local-runner-pool]
-    timeout-minutes: 15
-    env:
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      GITHUB_TOKEN: ${{ github.token }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-    steps:
-      - name: Checkout exact PR head
-        shell: bash
-        run: |
-          set -euo pipefail
-          git init .
-          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git fetch --depth=1 origin "${HEAD_SHA}"
-          git checkout --detach FETCH_HEAD
-          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
-
-      - name: Bootstrap Python dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 -m pip --version >/dev/null 2>&1 || {
-            curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-            python3 /tmp/get-pip.py --user --break-system-packages
-          }
-          python3 -m pip install --user --break-system-packages -r requirements.txt pytest
-
-      - name: Verify credential and exact Q6 authorization
-        id: auth
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "$OPENROUTER_API_KEY" || { echo '::error::OPENROUTER_API_KEY missing'; exit 1; }
-          python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import json
-          from pathlib import Path
-          from src.spineforge_relay_v1_q6 import prepare, authorization_for
-          p = json.loads(Path("evidence/spineforge-relay/SFR-V1-Q6-PREFLIGHT-20261007/preflight.json").read_text())
-          a = json.loads(Path("evidence/spineforge-relay/SFR-V1-Q6-PREFLIGHT-20261007/authorization.json").read_text())
-          assert p == prepare()
-          assert a == authorization_for(p)
-          print("preflight_sha=" + a["preflight_sha256"])
-          PY
-
-      - name: Claim Q6 authorization before inference
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import base64, json, os, requests
-          repo = os.environ["GITHUB_REPOSITORY"]
-          token = os.environ["GITHUB_TOKEN"]
-          sha = "${{ steps.auth.outputs.preflight_sha }}"
-          path = f"evidence/spineforge-relay/claims/q6-{sha[:16]}.json"
-          url = f"https://api.github.com/repos/{repo}/contents/{path}"
-          headers = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-          }
-          existing = requests.get(url, headers=headers, params={"ref": "experiment/spineforge-relay-v1"}, timeout=30)
-          if existing.status_code == 200:
-              raise SystemExit("Q6 authorization already claimed")
-          if existing.status_code != 404:
-              raise SystemExit(f"Cannot verify Q6 claim state: HTTP {existing.status_code}")
-          claim = {
-              "preflight_sha256": sha,
-              "run_id": os.environ["GITHUB_RUN_ID"],
-              "job": os.environ["GITHUB_JOB"],
-              "status": "CLAIMED_BEFORE_INFERENCE",
-          }
-          body = {
-              "message": "claim(sfr-v1): reserve Q6 SC02-SC03 paid authorization",
-              "content": base64.b64encode((json.dumps(claim, separators=(",", ":")) + "\n").encode()).decode(),
-              "branch": "experiment/spineforge-relay-v1",
-          }
-          created = requests.put(url, headers=headers, json=body, timeout=30)
-          if created.status_code not in (200, 201):
-              raise SystemExit(f"Failed Q6 claim: HTTP {created.status_code} " + created.text[:500])
-          print(path)
-          PY
-
-      - name: Execute bounded Q6 sequential relay
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os
-          from pathlib import Path
-          from src.spineforge_relay_v1_q6 import execute
-          base = Path("evidence/spineforge-relay/SFR-V1-Q6-PREFLIGHT-20261007")
-          p = json.loads((base / "preflight.json").read_text())
-          a = json.loads((base / "authorization.json").read_text())
-          out = execute(
-              api_key=os.environ["OPENROUTER_API_KEY"],
-              preflight=p,
-              authorization=a,
-              output=Path("q6-live"),
-          )
-          Path("q6-summary.json").write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n")
-          print(json.dumps(out, ensure_ascii=False, indent=2))
-          if out["status"] != "ACCEPT":
-              raise SystemExit(2)
-          PY
-
-      - name: Upload Q6 evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: sfr-v1-q6-${{ github.run_id }}
-          path: |
-            q6-summary.json
-            q6-live/
-          if-no-files-found: warn
-          retention-days: 30
