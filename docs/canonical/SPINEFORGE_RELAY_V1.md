@@ -282,3 +282,21 @@ SpineForge Relay v1 is a stateful story-generation pipeline that turns a frozen 
 - GitHub Actions jobs were still queued at evidence time and are not counted as qualification proof.
 - Q5 Single-scene paid qualification: PREPARED, NOT AUTHORIZED, NOT RUN.
 - Paid inference calls used by SFR-v1 so far: 0.
+
+
+## 17. Q5 qualification status — 2026-10-07
+
+The original Aion writer lane is closed for the SC01 qualification run.
+
+- Q5B Aion initial writer produced SC01 but required rewrite: USD 0.00301654.
+- Q5G Sonnet semantic guard correctly detected the expected epistemic leaks and word-budget violation: USD 0.019744.
+- Q5R Aion bounded rewrite exhausted the output/reasoning budget before usable prose and stopped without retry: USD 0.0084973.
+- The Aion SC01 run is therefore REJECT_NON_CONVERGENT. No second rewrite is permitted.
+- Frozen StoryState, ScenePlan, FrozenSpineRoute and SceneContract remain unchanged.
+- A fresh writer-model qualification lane, Q5S, uses openai/gpt-5.6-sol for the initial SC01 writer only.
+- Q5S zero-cost qualification: 65/65 pytest PASS on isolated ci-runner clone.
+- Q5S preflight SHA256: 0d4f05380cc8be8a7e5955fdcd57967ace1713ffc950ddf7f7b33a5a7a999d03.
+- Q5S conservative planned uncached cost: USD 0.047486; maximum authorized cost: USD 0.05.
+- Q5S maximum writer calls: 1; automatic retry: false; state application: false; semantic guard mandatory.
+- Q5S paid authorization: AUTHORIZED, not yet consumed at this status checkpoint.
+- Production LUMI remains unchanged.
