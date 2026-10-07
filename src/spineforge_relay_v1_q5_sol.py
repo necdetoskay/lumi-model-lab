@@ -23,7 +23,7 @@ from src.spineforge_v19_transport import _request_once
 from src.spineforge_v21_model_adapter import provider_usage
 
 MODEL = "openai/gpt-5.6-sol"
-REQUEST_CLASS = "spineforge_relay_v1_scene_writer"
+REQUEST_CLASS = "spineforge_relay_v1_scene_writer_sol"
 AUTH_SCOPE = "SFR_V1_Q5S_SOL_SC01_ONE_CALL"
 PROMPT = Path("prompts/spineforge_relay_v1_scene_writer.md")
 DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5S-PREFLIGHT-20261007")
