@@ -30,6 +30,7 @@ SOURCE_RESULT = Path("evidence/spineforge-relay/SFR-V1-Q5SR-PAID-20261007/result
 DEFAULT_OUTPUT = Path("evidence/spineforge-relay/SFR-V1-Q5SF-PREFLIGHT-20261007")
 MAX_TOKENS = 2500
 MAX_COST_USD = 0.05
+AUTHORIZATION_SCHEMA_VERSION = 2
 
 GuardCall = Callable[..., tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]]
 
@@ -136,6 +137,7 @@ def prepare(output_dir: Path = DEFAULT_OUTPUT) -> dict[str, Any]:
         "planned_uncached_cost_usd": planned,
         "proposed_max_cost_usd": MAX_COST_USD,
         "max_guard_calls": 1,
+        "authorization_schema_version": AUTHORIZATION_SCHEMA_VERSION,
         "automatic_retry": False,
         "attempt": 2,
         "rewrite_authorized": False,
@@ -211,6 +213,7 @@ def execute_once(
         or authorization.get("preflight_sha256") != preflight["artifact_sha256"]
         or authorization.get("max_cost_usd") != MAX_COST_USD
         or authorization.get("max_guard_calls") != 1
+        or authorization.get("authorization_schema_version") != AUTHORIZATION_SCHEMA_VERSION
         or authorization.get("automatic_retry") is not False
         or authorization.get("rewrite_authorized") is not False
         or authorization.get("state_application_authorized") is not False

@@ -1,6 +1,6 @@
 import json
 from src.spineforge_relay_v1_q5sf import (
-    AUTH_SCOPE, MAX_COST_USD, build_inputs, decide, execute_once, prepare, request_payload,
+    AUTH_SCOPE, AUTHORIZATION_SCHEMA_VERSION, MAX_COST_USD, build_inputs, decide, execute_once, prepare, request_payload,
 )
 
 def pass_report():
@@ -35,6 +35,7 @@ def auth(p):
         "preflight_sha256":p["artifact_sha256"],
         "max_cost_usd":MAX_COST_USD,
         "max_guard_calls":1,
+        "authorization_schema_version":AUTHORIZATION_SCHEMA_VERSION,
         "automatic_retry":False,
         "rewrite_authorized":False,
         "state_application_authorized":False,
@@ -64,6 +65,7 @@ def test_q5sf_preflight_is_one_call(tmp_path):
     p=prepare(tmp_path)
     assert p["attempt"] == 2
     assert p["max_guard_calls"] == 1
+    assert p["authorization_schema_version"] == 2
     assert p["automatic_retry"] is False
     assert p["rewrite_authorized"] is False
     assert p["planned_uncached_cost_usd"] < MAX_COST_USD
