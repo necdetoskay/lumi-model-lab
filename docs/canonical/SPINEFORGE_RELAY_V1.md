@@ -328,3 +328,29 @@ The original Aion writer lane is closed for the SC01 qualification run.
 - Frozen Q6D evidence: evidence/spineforge-relay/SFR-V1-Q6D-SC02-SC03-20261007/.
 - Q6 Three-scene sequential relay qualification: GREEN.
 - Production LUMI remains unchanged. Q7 full-story qualification is next and must start from this frozen revision-3 state.
+
+## 21. Q7B / Q8B evidence review — 2026-10-07
+
+Q6E subsequently qualified a fresh SC03 state carrying the mother dragon's upper-room
+location. Q7B then generated SC04-SC06 from that state in run 37605094807. Its runtime
+returned ACCEPT (six calls, USD 0.122343), and offline replay reproduces revision 6.
+Independent editorial review nevertheless rejects full-story qualification:
+SC06 exits the upper room by descending the internal narrow stair, which leads to
+the flooded lower maintenance room, then jumps outside without an established exit.
+The established safe return route starts at the upper room's open door. The mutable
+entity-location fix resolved the old mother-dragon defect but did not bind egress
+topology. Preserve the raw ACCEPT and this separate REJECT_EGRESS_ROUTE_CONTINUITY_GAP
+review under `SFR-V1-Q7B-REVIEW-20261007`; never treat runtime acceptance alone as
+full-story qualification. A fresh terminal-scene contract must explicitly require
+upper-door egress before any new paid qualification.
+
+Q8B run 37611065037 accepted two unrelated two-scene fixtures with the same generic
+runner, writer and guard. All four scenes passed on attempt 1, with eight calls,
+zero rewrites/retries, USD 0.1249196, 38,829 tokens and 64.739 seconds of call latency.
+Saved requests/responses, event evidence, validations, deltas and final states were
+independently replayed without inference. Both states finish at revision 2 with no
+next beat. Editorial review found no blocker or cross-story data contamination.
+The complete evidence is under `SFR-V1-Q8B-REPEATABILITY-20261007`. The consumed paid
+PR trigger is retired. Q8B proves bounded repeatability on these two short fixtures;
+Q7 full-story qualification remains rejected. Production is unchanged and PR #264
+remains draft with no merge authorization.
