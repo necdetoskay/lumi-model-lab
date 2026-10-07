@@ -36,6 +36,7 @@ def auth(p):
         "max_cost_usd":MAX_COST_USD,
         "max_guard_calls":1,
         "automatic_retry":False,
+        "rewrite_authorized":False,
         "state_application_authorized":False,
         "explicit_user_message":"FAKE TEST AUTHORIZATION",
     }
@@ -58,13 +59,16 @@ def test_q5sg_pass_becomes_accept():
     guard_input, _state, contract, prose, deterministic = build_inputs()
     out=decide(pass_report(),prose,deterministic,contract.scene_id)
     assert out["decision"] == "ACCEPT"
-    assert out["publication_ready"] is True
+    assert out["guard_passed"] is True
+    assert out["publication_ready"] is False
+    assert out["state_application_authorized"] is False
 
 def test_q5sg_blocking_becomes_single_rewrite():
     guard_input, _state, contract, prose, deterministic = build_inputs()
     out=decide(rewrite_report(prose),prose,deterministic,contract.scene_id)
     assert out["decision"] == "REWRITE"
-    assert out["rewrite_authorized"] is True
+    assert out["rewrite_required"] is True
+    assert out["rewrite_authorized"] is False
     assert out["state_application_authorized"] is False
 
 def test_q5sg_fake_call_is_one_shot(tmp_path):
