@@ -37,6 +37,7 @@ def auth(p):
         "max_guard_calls":1,
         "automatic_retry":False,
         "rewrite_authorized":False,
+        "state_application_authorized":False,
         "explicit_user_message":"FAKE TEST AUTHORIZATION",
     }
 
@@ -51,6 +52,7 @@ def test_q5sf_pass_means_accept_and_state_may_advance():
     out=decide(pass_report(),p,d,c.scene_id)
     assert out["decision"] == "ACCEPT"
     assert out["state_application_authorized"] is True
+    assert out["publication_ready"] is False
 
 def test_q5sf_blocker_means_non_convergent_no_third_rewrite():
     _i,_s,c,p,d=build_inputs()
