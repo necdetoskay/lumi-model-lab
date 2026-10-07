@@ -1,0 +1,34 @@
+{
+  "schema": "spineforge-relay.q6a-review.v1",
+  "qualification_id": "SFR-V1-Q6A-SC02-SC03-20261007",
+  "workflow_run_id": 37598994190,
+  "workflow_job_id": 112718868974,
+  "execution_status": "ACCEPT",
+  "qualification_status": "REJECT_IDENTITY_CANON_GAP",
+  "accepted_scenes": ["SC02", "SC03"],
+  "state_relay": {
+    "status": "PASS",
+    "final_revision": 3,
+    "next_spine_beat": "SC04",
+    "compass_location": "lighthouse_nest",
+    "dragon_hatchling_persisted": true,
+    "narrow_stair_persisted": true,
+    "lower_grate_persisted": true
+  },
+  "usage": {
+    "provider_calls": 6,
+    "known_cost_usd": 0.101132,
+    "automatic_retry": false,
+    "sc02_attempts": 1,
+    "sc03_attempts": 2
+  },
+  "blocking_quality_finding": {
+    "code": "CHARACTER_IDENTITY_CANON_NOT_RELAYED",
+    "family": "canon",
+    "severity": "BLOCKING",
+    "scene_id": "SC03",
+    "detail": "Duru is canonically a girl, but accepted attempt-2 prose contains masculine pronouns for Duru: 'Ekin followed his finger.' and 'He was right that the nest was blocked.' The semantic guard used those lines as supported event evidence and returned PASS.",
+    "root_cause": "StoryState carries mutable continuity facts but the writer/guard payload did not carry immutable character identity/pronoun canon. The guard therefore had no authoritative identity fact against which to detect the contradiction."
+  },
+  "decision": "Q6A does not qualify long-horizon Relay. Preserve the state-relay proof, add an immutable Relevant Character Canon layer shared by writer and guard, then run a fresh Q6B authorization. Do not reuse the Q6A claim."
+}
