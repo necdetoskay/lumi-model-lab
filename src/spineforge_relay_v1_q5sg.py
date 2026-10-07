@@ -186,8 +186,10 @@ def decide(raw: dict[str, Any], prose: str, deterministic: list[Any], scene_id: 
         "scene_validation": validation.model_dump(mode="json"),
         "semantic_report": semantic.model_dump(mode="json"),
         "state_application_authorized": False,
-        "rewrite_authorized": validation.decision == "REWRITE",
-        "publication_ready": validation.decision == "ACCEPT",
+        "rewrite_required": validation.decision == "REWRITE",
+        "rewrite_authorized": False,
+        "guard_passed": validation.decision == "ACCEPT",
+        "publication_ready": False,
     }
 
 
@@ -209,6 +211,7 @@ def execute_once(
         or authorization.get("max_cost_usd") != MAX_COST_USD
         or authorization.get("max_guard_calls") != 1
         or authorization.get("automatic_retry") is not False
+        or authorization.get("rewrite_authorized") is not False
         or authorization.get("state_application_authorized") is not False
         or not authorization.get("explicit_user_message")
     ):
