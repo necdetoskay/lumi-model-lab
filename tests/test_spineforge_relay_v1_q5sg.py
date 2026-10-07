@@ -12,7 +12,7 @@ def pass_report():
     }
 
 def rewrite_report(prose):
-    anchor='"That weed only grows around the headland."'
+    anchor="That weed only grows around the headland."
     assert anchor in prose
     return {
         "schema_name":"spineforge-relay.semantic-guard.v1",
