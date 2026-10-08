@@ -11,3 +11,13 @@ Prepared inputs are under `SFR-V1-Q9-PREFLIGHT-20261008/`. The proposed new enve
 After any paid execution, offline evidence replay and assembled prose review against all frozen goals are required before reporting whole-story qualification. Synthetic tests establish orchestration only. General spatial sidecars and longer unrelated routes are outside this change. Production LUMI and PR merging remain outside scope.
 
 Validation: 314 local Relay tests PASS, including shared coverage/prompt transmission, chronological failure, residual rejection, pre-dispatch bad mapping rejection and current saved preflight verification. LF/CRLF simulations and staged source fingerprints match. Zero new provider calls.
+
+## Q9 recorded result — 2026-10-08
+
+Following explicit submission and secret-access approval, the common local entry registered and consumed one shared scope. A1 and A2 both ACCEPT on attempt 1: four calls, no rewrite/retry, USD 0.0834675, 27,635 tokens and 33.176 seconds summed provider latency. The shared ledger settled the exact usage and the Q9 grant is CLOSED. No unused allowance is reopened.
+
+Offline replay reproduces frozen inputs, both prompts, canon/prop policy, coverage, predecessor prose, provider responses/usage, validations and deterministic state bundles. Initial revision 0 advances to 1 then 2; next beat null. Agent editorial reading of the saved assembled prose finds no blocking defect: explicit request precedes accepted assistance, recovery uses the same notebook and return/earned trust close the route. This review made no additional model call.
+
+Evidence: `SFR-V1-Q9-GREENHOUSE-COMPLETE-20261008/`, including complete calls/ledgers, accepted bundles, replay and assembled review. The initial automatic approval block and subsequent explicit secret-access resolution are retained separately in the preflight archive. This qualifies the two-scene fixture; it does not establish unseen-story, longer-route or production readiness. Next work should prepare a longer unrelated route and general spatial coverage before further inference. PR remains draft; no merge or production change.
+
+Post-run validation: 319 local Relay tests PASS, including replay and four corruption controls. All staged raw/review evidence preserves original bytes; editorial anchors are grounded.

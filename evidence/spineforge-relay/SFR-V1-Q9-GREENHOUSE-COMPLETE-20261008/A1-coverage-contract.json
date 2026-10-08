@@ -1,0 +1,97 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "31ff66eb21b5c4fb515984918502726661a1b4b914484c820874e2b5aabc8eb4",
+  "scene_contract_sha256": "20c5618b1f8ddb498c85346e64b41631607a07b7243f92bbba5ff2c2d683edf0",
+  "obligations": [
+    {
+      "id": "A1-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Move the notebook into the greenhouse and establish Bora's useful route knowledge without resolving the problem.",
+      "required_predicates": [
+        {
+          "event_id": "A1-E01",
+          "predicate_id": "P1",
+          "subject": "wind",
+          "action": "CARRY",
+          "target": "notebook_to_greenhouse_floor"
+        },
+        {
+          "event_id": "A1-E02",
+          "predicate_id": "P1",
+          "subject": "Bora",
+          "action": "GUIDE_ROUTE",
+          "target": "greenhouse_side_path"
+        }
+      ]
+    },
+    {
+      "id": "A1-objective",
+      "source_field": "objective",
+      "source_text": "The wind carries Selin's notebook into the greenhouse; Bora guides the side path; both reach the greenhouse entry.",
+      "required_predicates": [
+        {
+          "event_id": "A1-E01",
+          "predicate_id": "P1",
+          "subject": "wind",
+          "action": "CARRY",
+          "target": "notebook_to_greenhouse_floor"
+        },
+        {
+          "event_id": "A1-E03",
+          "predicate_id": "P1",
+          "subject": "Selin_and_Bora",
+          "action": "MOVE_TO",
+          "target": "greenhouse_entry"
+        }
+      ]
+    },
+    {
+      "id": "A1-turn",
+      "source_field": "turn",
+      "source_text": "Selin reluctantly follows Bora because his route knowledge is useful.",
+      "required_predicates": [
+        {
+          "event_id": "A1-E02",
+          "predicate_id": "P2",
+          "subject": "Selin",
+          "action": "ACKNOWLEDGE",
+          "target": "greenhouse_side_path"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "A1-E01",
+        "predicate_id": "P1",
+        "subject": "wind",
+        "action": "CARRY",
+        "target": "notebook_to_greenhouse_floor"
+      },
+      "after": {
+        "event_id": "A1-E02",
+        "predicate_id": "P1",
+        "subject": "Bora",
+        "action": "GUIDE_ROUTE",
+        "target": "greenhouse_side_path"
+      }
+    },
+    {
+      "before": {
+        "event_id": "A1-E02",
+        "predicate_id": "P1",
+        "subject": "Bora",
+        "action": "GUIDE_ROUTE",
+        "target": "greenhouse_side_path"
+      },
+      "after": {
+        "event_id": "A1-E03",
+        "predicate_id": "P1",
+        "subject": "Selin_and_Bora",
+        "action": "MOVE_TO",
+        "target": "greenhouse_entry"
+      }
+    }
+  ]
+}

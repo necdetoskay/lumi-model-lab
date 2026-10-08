@@ -1,0 +1,171 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "4c542e311872289a979944f24f9497873ac877fa18faddfda0961eb84f0b068f",
+  "scene_contract_sha256": "05eea6602d4f72a2fc3f1738f25dd355b6b2f27511531888b87ed4bc7bf705f9",
+  "obligations": [
+    {
+      "id": "A2-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Recover the notebook through simple cooperation and close the thread without adding equipment.",
+      "required_predicates": [
+        {
+          "event_id": "A2-E01",
+          "predicate_id": "P1",
+          "subject": "Selin",
+          "action": "ASK_HELP",
+          "target": "notebook_recovery"
+        },
+        {
+          "event_id": "A2-E02",
+          "predicate_id": "P1",
+          "subject": "Bora",
+          "action": "ASSIST",
+          "target": "notebook_recovery"
+        },
+        {
+          "event_id": "A2-E03",
+          "predicate_id": "P1",
+          "subject": "Selin",
+          "action": "RECOVER",
+          "target": "notebook"
+        }
+      ]
+    },
+    {
+      "id": "A2-objective",
+      "source_field": "objective",
+      "source_text": "Selin asks for help, Bora assists, Selin recovers the same notebook, and they return to the courtyard with earned initial trust.",
+      "required_predicates": [
+        {
+          "event_id": "A2-E01",
+          "predicate_id": "P1",
+          "subject": "Selin",
+          "action": "ASK_HELP",
+          "target": "notebook_recovery"
+        },
+        {
+          "event_id": "A2-E01",
+          "predicate_id": "P2",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Selin_asking_for_help"
+        },
+        {
+          "event_id": "A2-E02",
+          "predicate_id": "P1",
+          "subject": "Bora",
+          "action": "ASSIST",
+          "target": "notebook_recovery"
+        },
+        {
+          "event_id": "A2-E02",
+          "predicate_id": "P2",
+          "subject": "Selin",
+          "action": "ACKNOWLEDGE",
+          "target": "Bora_assistance"
+        },
+        {
+          "event_id": "A2-E03",
+          "predicate_id": "P1",
+          "subject": "Selin",
+          "action": "RECOVER",
+          "target": "notebook"
+        },
+        {
+          "event_id": "A2-E03",
+          "predicate_id": "P2",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Selin_recovers_notebook"
+        },
+        {
+          "event_id": "A2-E04",
+          "predicate_id": "P1",
+          "subject": "Selin_and_Bora",
+          "action": "RETURN_TO",
+          "target": "school_courtyard"
+        }
+      ]
+    },
+    {
+      "id": "A2-turn",
+      "source_field": "turn",
+      "source_text": "Selin openly acknowledges that accepting help was useful.",
+      "required_predicates": [
+        {
+          "event_id": "A2-E02",
+          "predicate_id": "P2",
+          "subject": "Selin",
+          "action": "ACKNOWLEDGE",
+          "target": "Bora_assistance"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "A2-E01",
+        "predicate_id": "P1",
+        "subject": "Selin",
+        "action": "ASK_HELP",
+        "target": "notebook_recovery"
+      },
+      "after": {
+        "event_id": "A2-E02",
+        "predicate_id": "P1",
+        "subject": "Bora",
+        "action": "ASSIST",
+        "target": "notebook_recovery"
+      }
+    },
+    {
+      "before": {
+        "event_id": "A2-E02",
+        "predicate_id": "P1",
+        "subject": "Bora",
+        "action": "ASSIST",
+        "target": "notebook_recovery"
+      },
+      "after": {
+        "event_id": "A2-E03",
+        "predicate_id": "P1",
+        "subject": "Selin",
+        "action": "RECOVER",
+        "target": "notebook"
+      }
+    },
+    {
+      "before": {
+        "event_id": "A2-E03",
+        "predicate_id": "P1",
+        "subject": "Selin",
+        "action": "RECOVER",
+        "target": "notebook"
+      },
+      "after": {
+        "event_id": "A2-E04",
+        "predicate_id": "P1",
+        "subject": "Selin_and_Bora",
+        "action": "RETURN_TO",
+        "target": "school_courtyard"
+      }
+    },
+    {
+      "before": {
+        "event_id": "A2-E02",
+        "predicate_id": "P1",
+        "subject": "Bora",
+        "action": "ASSIST",
+        "target": "notebook_recovery"
+      },
+      "after": {
+        "event_id": "A2-E02",
+        "predicate_id": "P2",
+        "subject": "Selin",
+        "action": "ACKNOWLEDGE",
+        "target": "Bora_assistance"
+      }
+    }
+  ]
+}
