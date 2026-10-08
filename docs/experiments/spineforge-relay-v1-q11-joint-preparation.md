@@ -15,3 +15,15 @@ Prepared evidence: `SFR-V1-Q11-PREFLIGHT-20261008/`. Proposed new envelope: at m
 Synthetic execution, replay and negative controls establish mechanics only. Live qualification still requires paid execution, offline evidence replay and assembled prose review. Production LUMI and PR merging are outside scope; PR #264 remains draft.
 
 Validation: 348 local Relay tests PASS. Joint atomic replay, nine negative movement controls, synthetic six-scene execution/offline replay and ambiguity stop at revision 3 pass. Historical Q9/Q10 replay remains valid. Staged source fingerprints and LF/CRLF simulations match the frozen Q11 preflight. No new provider calls.
+
+## Q11 recorded result — 2026-10-08
+
+Explicit Q11 submission/budget/secret-access approval was received. S01–S03 ACCEPT on attempt 1. S04 exhausted its single bounded rewrite and the run ended **REJECT_NON_CONVERGENT**, revision 3 / next S04. S05–S06 were never generated and S04 was never frozen. **10 calls, USD 0.2376985 / 0.60, 87,681 tokens, 80.604 seconds summed model latency**; one rewrite, no retry or third attempt. Shared scope SETTLED for exact usage and grant CLOSED; saved ledger matches live registry.
+
+Both S04 JOINT_MOVE anchors are verbatim and supported, and both semantic residual reports say PASS. Rejection comes from the separate MATCH_PACE evidence: Sonnet changes Sol's curly apostrophe `Mert’s` into ASCII `Mert's` in both attempts. Exact event/coverage grounding rejects the copied quote. Diagnostic apostrophe-only equivalence is recorded without being used for acceptance, modifying evidence or overriding the rejection. Q11 is not whole-story qualification, despite promising sampled joint crossing prose.
+
+Offline replay now supports complete bounded terminal rejections as well as acceptance; it reconstructs both attempts, preserves the last accepted state and rejects additional calls, fake advancement or retroactive quote repair. Evidence: `SFR-V1-Q11-JOINT-MOSAIC-20261008/`, including raw requests/responses, ledgers, accepted prefix, failed validations, replay and failure analysis. No full assembled story exists.
+
+Next general upgrade: typed trusted source-span IDs, with exact quotes reconstructed locally from original prose, rather than fuzzy matching or model-retyped quotation. The failed Q11 guard/evidence must stay immutable; a new qualification requires fresh frozen inputs/authority. Historical Q10 acceptance is unchanged. Production LUMI and merging remain outside scope.
+
+Post-run validation: 354 local Relay tests PASS, including exact rejection replay and four controls against reclassification, fake advancement, altered spend or retrospective quote repair. All 61 staged raw/diagnostic files preserve original bytes; live shared ledger matches the closed snapshot. No provider calls during validation.

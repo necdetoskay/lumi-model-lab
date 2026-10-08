@@ -47,10 +47,14 @@ def verify_story(root, fixture_path):
     root = Path(root)
     preflight = _read(root / "preflight.json")
     _require(preflight == engine.prepare(Path(fixture_path)), "frozen generic preflight")
+    result = _read(root / "result.json")
+    rejected_scene = None
     state = start
     ledgers = []
     accepted_ids = []
     for plan, _precompiled, _expected_before in rows:
+        if rejected_scene is not None:
+            break
         contract = compile_scene_contract(state, plan, route)
         coverage = PlanCoverageContractV1.model_validate(_read(root / f"{plan.scene_id}-coverage-contract.json"))
         _require(coverage == engine.coverage_for(fixture, plan, contract), "frozen plan coverage")
@@ -63,8 +67,9 @@ def verify_story(root, fixture_path):
             spatial = SpatialContractV1.model_validate(_read(root / f"{plan.scene_id}-spatial-contract.json"))
             _require(spatial == engine.spatial_for(fixture, plan, contract, state), "frozen spatial contract")
         rewrite = None
-        bundle = _read(root / f"{plan.scene_id}-accepted.json")
-        attempt_count = bundle["artifact"]["attempt"]
+        bundle_path = root / f"{plan.scene_id}-accepted.json"
+        bundle = _read(bundle_path) if bundle_path.exists() else None
+        attempt_count = bundle["artifact"]["attempt"] if bundle else 2
         _require(attempt_count in (1, 2), "attempt bound")
         for attempt in range(1, attempt_count + 1):
             prose = _read(root / f"{plan.scene_id}-{attempt}-writer-text.json")["text"].strip()
@@ -123,22 +128,32 @@ def verify_story(root, fixture_path):
                 _require(validation.decision == "REWRITE", "rewrite justification")
                 rewrite = {"candidate_prose": prose, "validation": validation.model_dump(mode="json")}
                 continue
+            if bundle is None:
+                _require(validation.decision == "REJECT_NON_CONVERGENT" and attempt == 2, "bounded terminal rejection")
+                rejected_scene = plan.scene_id
+                break
             _require(validation.decision == "ACCEPT", "final acceptance")
             delta, after, artifact = freeze_scene(state, contract, prose, validation)
             _require(bundle == {"delta": delta.model_dump(mode="json"), "state_after": after.model_dump(mode="json"), "artifact": artifact.model_dump(mode="json")}, "accepted state bundle")
             previous = {**bundle, "prose": prose}
             state = after
             accepted_ids.append(plan.scene_id)
-    result = _read(root / "result.json")
-    _require(result["status"] == "ACCEPT" and result["accepted_scenes"] == accepted_ids, "result acceptance")
+    expected_status = "REJECT_NON_CONVERGENT" if rejected_scene else "ACCEPT"
+    _require(result["status"] == expected_status and result["accepted_scenes"] == accepted_ids, "result decision")
+    if rejected_scene:
+        _require(result["reason"] == "SCENE_REJECT_NON_CONVERGENT:" + rejected_scene, "rejection reason")
+        _require(not any((root / f"{p.scene_id}-accepted.json").exists() for p, _, _ in rows if p.scene_id not in accepted_ids), "no frozen rejected/later scene")
     _require(result["ledger"] == ledgers, "aggregate ledger")
     _require(result["automatic_retry"] is False and result["usage_complete"] is True, "retry/usage policy")
     _require(result["state_advanced_to_revision"] == state.revision and result["next_spine_beat"] == state.next_spine_beat, "result state")
-    _require(canonical_sha256(state) == canonical_sha256(expected_final), "terminal state")
+    if not rejected_scene:
+        _require(canonical_sha256(state) == canonical_sha256(expected_final), "terminal state")
+    _require(len(list(root.glob("*-ledger.json"))) == len(ledgers), "no additional calls")
     _require(math.isclose(result["known_cost_usd"], sum(r["cost_usd"] for r in ledgers), abs_tol=1e-8), "cost sum")
     _require(len({_read(root / f"{r['scene_id']}-{r['attempt']}-{r['stage']}-response.json")["id"] for r in ledgers}) == len(ledgers), "distinct provider IDs")
     _require(len(ledgers) <= preflight["max_calls"] and result["known_cost_usd"] <= preflight["max_story_cost_usd"], "paid ceilings")
     return {"status": "OFFLINE_REPLAY_PASS", "semantic_qualification": "REQUIRES_SEPARATE_EDITORIAL_REVIEW",
+        "recorded_decision": expected_status, "rejected_scene": rejected_scene,
         "accepted_scenes": accepted_ids, "final_revision": state.revision, "next_spine_beat": state.next_spine_beat,
         "final_state_sha256": canonical_sha256(state), "provider_calls": len(ledgers),
         "rewrite_count": sum(1 for r in ledgers if r["stage"] == "writer" and r["attempt"] == 2),
