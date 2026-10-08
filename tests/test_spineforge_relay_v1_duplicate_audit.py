@@ -28,10 +28,10 @@ def test_audit_preserves_every_original_byte_and_overrun_accounting():
 def test_all_legacy_direct_paid_workflow_jobs_are_disabled():
     for path in Path(".github/workflows").glob("spineforge-relay-v1-*-paid.yml"):
         workflow=yaml.safe_load(path.read_text(encoding="utf-8"))
-        if path.name in {"spineforge-relay-v1-reserved-paid.yml", "spineforge-relay-v1-spatial-reserved-paid.yml", "spineforge-relay-v1-joint-reserved-paid.yml"}:
+        if path.name in {"spineforge-relay-v1-reserved-paid.yml", "spineforge-relay-v1-spatial-reserved-paid.yml", "spineforge-relay-v1-joint-reserved-paid.yml", "spineforge-relay-v1-span-reserved-paid.yml"}:
             assert set(workflow.get("on",workflow.get(True,{}))) == {"workflow_dispatch"}
             assert all(job['if'] == 'github.run_attempt == 1' for job in workflow['jobs'].values())
-            entry = 'spineforge_joint_paid_entry' if 'joint-reserved' in path.name else ('spineforge_spatial_paid_entry' if 'spatial-reserved' in path.name else 'spineforge_relay_v1_paid_entry')
+            entry = 'spineforge_span_paid_entry' if 'span-reserved' in path.name else 'spineforge_joint_paid_entry' if 'joint-reserved' in path.name else ('spineforge_spatial_paid_entry' if 'spatial-reserved' in path.name else 'spineforge_relay_v1_paid_entry')
             assert '-m src.' + entry in path.read_text(encoding='utf-8')
             continue
         assert all(job["if"] == "${{ false }}" for job in workflow["jobs"].values())

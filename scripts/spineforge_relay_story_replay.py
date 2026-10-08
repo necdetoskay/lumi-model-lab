@@ -35,7 +35,9 @@ def _require(condition, message):
 def verify_story(root, fixture_path):
     """Reproduce accepted scenes from complete saved requests/responses/ledgers."""
     schema = _read(fixture_path)["schema"]
-    if schema == "spineforge-relay.repeatability-fixture.v4":
+    if schema == "spineforge-relay.repeatability-fixture.v5":
+        from src import spineforge_span_story_runner as engine
+    elif schema == "spineforge-relay.repeatability-fixture.v4":
         from src import spineforge_joint_story_runner as engine
     elif schema == "spineforge-relay.repeatability-fixture.v3":
         from src import spineforge_spatial_story_runner as engine
@@ -49,6 +51,7 @@ def verify_story(root, fixture_path):
     _require(preflight == engine.prepare(Path(fixture_path)), "frozen generic preflight")
     result = _read(root / "result.json")
     rejected_scene = None
+    reference_failure = False
     state = start
     ledgers = []
     accepted_ids = []
@@ -59,8 +62,8 @@ def verify_story(root, fixture_path):
         coverage = PlanCoverageContractV1.model_validate(_read(root / f"{plan.scene_id}-coverage-contract.json"))
         _require(coverage == engine.coverage_for(fixture, plan, contract), "frozen plan coverage")
         spatial = None
-        if schema in {"spineforge-relay.repeatability-fixture.v3", "spineforge-relay.repeatability-fixture.v4"}:
-            if schema.endswith(".v4"):
+        if schema in {"spineforge-relay.repeatability-fixture.v3", "spineforge-relay.repeatability-fixture.v4", "spineforge-relay.repeatability-fixture.v5"}:
+            if schema.endswith((".v4",".v5")):
                 from src.spineforge_joint_spatial import JointSpatialContractV1 as SpatialContractV1, evaluate_joint_spatial as evaluate_spatial
             else:
                 from src.spineforge_relay_v1_spatial import SpatialContractV1, evaluate_spatial
@@ -70,6 +73,10 @@ def verify_story(root, fixture_path):
         bundle_path = root / f"{plan.scene_id}-accepted.json"
         bundle = _read(bundle_path) if bundle_path.exists() else None
         attempt_count = bundle["artifact"]["attempt"] if bundle else 2
+        if bundle is None and schema.endswith(".v5") and result["reason"] == "FAILED_CLOSED_NO_RETRY":
+            complete = [n for n in (1,2) if (root / f"{plan.scene_id}-{n}-guard-response.json").exists()]
+            _require(bool(complete), "complete guard response for reference failure")
+            attempt_count = max(complete)
         _require(attempt_count in (1, 2), "attempt bound")
         for attempt in range(1, attempt_count + 1):
             prose = _read(root / f"{plan.scene_id}-{attempt}-writer-text.json")["text"].strip()
@@ -113,10 +120,24 @@ def verify_story(root, fixture_path):
                 _require(ledger['cost_usd'] <= preflight['max_call_cost_usd'], 'per-call cost ceiling')
                 if stage == "guard":
                     _require(payload["candidate_prose"] == prose, "guard candidate")
+                    if schema.endswith(".v5"):
+                        from src.spineforge_source_spans import source_table
+                        _require(payload["source_span_table"] == source_table(prose), "trusted source table")
                     _require(payload["deterministic_findings"] == [f.model_dump(mode="json") for f in deterministic], "guard deterministic input")
                 ledgers.append(ledger)
             guard_raw = json.loads(_read(root / f"{plan.scene_id}-{attempt}-guard-text.json")["text"])
-            guard = StructuredGuardV1.model_validate(guard_raw)
+            if schema.endswith(".v5"):
+                from src.spineforge_source_spans import resolve_span_guard
+                try:
+                    guard = resolve_span_guard(guard_raw,prose)
+                except ValueError as exc:
+                    _require(bundle is None and attempt == attempt_count and result["reason"] == "FAILED_CLOSED_NO_RETRY" and result.get("failure_type") == type(exc).__name__, "recorded source reference failure")
+                    rejected_scene = plan.scene_id
+                    reference_failure = True
+                    break
+                _require(guard.model_dump(mode="json") == _read(root / f"{plan.scene_id}-{attempt}-resolved-guard.json"), "resolved guard evidence")
+            else:
+                guard = StructuredGuardV1.model_validate(guard_raw)
             semantic = normalize_semantic_guard(raw=guard.residual.model_dump(mode="json"), prose=prose)
             deterministic += evaluate_events(contract=contract, state=state, prose=prose, evidence=guard.event_evidence)
             if spatial is not None:
@@ -141,7 +162,7 @@ def verify_story(root, fixture_path):
     expected_status = "REJECT_NON_CONVERGENT" if rejected_scene else "ACCEPT"
     _require(result["status"] == expected_status and result["accepted_scenes"] == accepted_ids, "result decision")
     if rejected_scene:
-        _require(result["reason"] == "SCENE_REJECT_NON_CONVERGENT:" + rejected_scene, "rejection reason")
+        _require(result["reason"] == ("FAILED_CLOSED_NO_RETRY" if reference_failure else "SCENE_REJECT_NON_CONVERGENT:" + rejected_scene), "rejection reason")
         _require(not any((root / f"{p.scene_id}-accepted.json").exists() for p, _, _ in rows if p.scene_id not in accepted_ids), "no frozen rejected/later scene")
     _require(result["ledger"] == ledgers, "aggregate ledger")
     _require(result["automatic_retry"] is False and result["usage_complete"] is True, "retry/usage policy")
