@@ -1,0 +1,139 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "c73e29620381e62207628e18df838093a1f786082946fccef640be622f0aefa2",
+  "scene_contract_sha256": "135d98cbc7ae487aeeb0c4646d0b25cf2f715298cae8d702bacd84b7691f40fd",
+  "obligations": [
+    {
+      "id": "S05-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Sustain cooperation along the covered ramp while weather and object constraints persist.",
+      "required_predicates": [
+        {
+          "event_id": "S05-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_SLOWER_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "MATCH_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E03",
+          "predicate_id": "P1",
+          "subject": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "gallery_entry"
+        }
+      ]
+    },
+    {
+      "id": "S05-objective",
+      "source_field": "objective",
+      "source_text": "Aya, Mert and the same panel traverse the level covered ramp from covered yard to gallery entry; no stairs or uncovered shortcut is used.",
+      "required_predicates": [
+        {
+          "event_id": "S05-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_SLOWER_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E01",
+          "predicate_id": "P2",
+          "subject": "Mert",
+          "action": "OBSERVE",
+          "target": "Aya_ASK_SLOWER_PACE_shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "MATCH_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E02",
+          "predicate_id": "P2",
+          "subject": "Aya",
+          "action": "OBSERVE",
+          "target": "Mert_MATCH_PACE_shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E03",
+          "predicate_id": "P1",
+          "subject": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "gallery_entry"
+        }
+      ]
+    },
+    {
+      "id": "S05-turn",
+      "source_field": "turn",
+      "source_text": "Aya requests a slower shared pace and Mert responds.",
+      "required_predicates": [
+        {
+          "event_id": "S05-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_SLOWER_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "MATCH_PACE",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S05-E03",
+          "predicate_id": "P1",
+          "subject": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "gallery_entry"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "S05-E01",
+        "predicate_id": "P1",
+        "subject": "Aya",
+        "action": "ASK_SLOWER_PACE",
+        "target": "shared_panel_carry"
+      },
+      "after": {
+        "event_id": "S05-E02",
+        "predicate_id": "P1",
+        "subject": "Mert",
+        "action": "MATCH_PACE",
+        "target": "shared_panel_carry"
+      }
+    },
+    {
+      "before": {
+        "event_id": "S05-E02",
+        "predicate_id": "P1",
+        "subject": "Mert",
+        "action": "MATCH_PACE",
+        "target": "shared_panel_carry"
+      },
+      "after": {
+        "event_id": "S05-E03",
+        "predicate_id": "P1",
+        "subject": "shared_panel_carry",
+        "action": "JOINT_MOVE",
+        "target": "gallery_entry"
+      }
+    }
+  ]
+}

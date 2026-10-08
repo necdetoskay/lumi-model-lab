@@ -1,4 +1,4 @@
-# Trusted source selection / Q12 preparation
+# Trusted source selection / Q12 qualification
 
 Q11 exhausted its single rewrite because Sonnet retyped a curly apostrophe as ASCII in otherwise supported MATCH_PACE evidence. Q11 remains immutable REJECT_NON_CONVERGENT. No old validator is relaxed and no historical quotation is repaired.
 
@@ -8,8 +8,14 @@ Resolved reports then enter the existing event/provenance, coverage, joint spati
 
 The separately versioned v5 runner/entry preserves all recorded v1–v4 source fingerprints. Guard requests save the source table and candidate-specific response schema; raw responses and locally resolved reports are saved separately. Offline replay regenerates the table, exact request and resolved evidence before reproducing validations/state. Shared reservation and single-use transport remain mandatory; invalid references fail closed without provider retry.
 
-Q12 uses Q11's same frozen mosaic canon, intent, initial state, spine route, goals and joint movement contracts. Only guard evidence selection changes. All six scenes would be generated fresh from revision 0; prior accepted/rejected prose is never reused. Expected terminal revision 6 is not a live result.
+Q12 uses Q11's same frozen mosaic canon, intent, initial state, spine route, goals and joint movement contracts. Only guard evidence selection changes. All six scenes were generated fresh from revision 0; prior accepted/rejected prose was not reused.
 
-Prepared inputs: `SFR-V1-Q12-PREFLIGHT-20261008/`. Proposed new envelope: at most 24 calls / USD 0.60, USD 0.15 per call, GPT-5.6 Sol + Sonnet 5.5, one rewrite per scene, no retry. No new authority has been registered or inference performed. Previous grants are CLOSED. Explicit new approval is required; after execution, offline replay and assembled review are required for qualification. PR #264 remains draft; no production LUMI change or merge.
+## Recorded result
 
-Validation: 366 local Relay tests PASS. Original Unicode/event/residual quote preservation, candidate-bound schema enums/hash, six invalid-reference controls, synthetic six-scene execution/replay and immediate bad-reference rejection replay pass. Historical Q11 stays rejected. Staged source/prompt fingerprints and LF/CRLF simulations match. No new provider calls.
+User explicitly authorized the 24-call / USD 0.60 envelope with USD 0.15 per-call local admission, one rewrite per scene and no retry. Q12 ACCEPT: all six scenes accepted on attempt 1, revision 0→6, next_spine_beat null. Twelve complete provider calls cost USD 0.3322835, 126873 tokens and 104.352 summed call-latency seconds. No rewrite or retry occurred. The shared GitHub authority is CLOSED and matches the saved closure record. The local ceiling is not a provider-enforced spend guarantee.
+
+Raw requests/responses, ledgers, source tables, resolved guards and frozen scene bundles are preserved in SFR-V1-Q12-SOURCE-SPAN-MOSAIC-20261008. Offline replay PASS regenerates requests, source references, validation, state and accounting. Original smart apostrophes are copied from trusted prose; Q11 evidence is unchanged.
+
+The assembled story review is PASS_WITH_WARNINGS: covered-route and intact-panel continuity, joint crossings, prior boundary release and Aya's cooperation arc are supported. Rain repetition and explicit state/boundary language remain stylistic warnings; S04 briefly corrects a tilt while preserving the panel. This is one six-scene qualification, not production readiness. Source identity remains separate from semantic truth. No production change or merge.
+
+Pre-execution validation: 366 local Relay tests PASS and exact-head CI 37783670584 SUCCESS. Recorded-run and tamper controls are added after execution; final validation is recorded beside the closed authority. Previous grants remain CLOSED.
