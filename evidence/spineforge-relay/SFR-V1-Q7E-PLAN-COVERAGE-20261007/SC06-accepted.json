@@ -1,0 +1,258 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "SC06",
+    "source_state_revision": 5,
+    "source_state_sha256": "25a55a8cfd00330759c8e936bf1c40186dd44af80757464ff7c583e38da8a3e3",
+    "contract_sha256": "7ee974f66dc13f3e944094268798c5ad83db411274bd7fe8c1de570b5c1d26f2",
+    "mutations": [
+      {
+        "path": "/characters/Ekin/location",
+        "op": "SET",
+        "before": "lighthouse_upper_room",
+        "after": "harbor"
+      },
+      {
+        "path": "/characters/Duru/location",
+        "op": "SET",
+        "before": "lighthouse_upper_room",
+        "after": "harbor"
+      },
+      {
+        "path": "/characters/Ekin/relationships/Duru/trust",
+        "op": "SET",
+        "before": "earned_initial",
+        "after": "earned"
+      },
+      {
+        "path": "/characters/Duru/relationships/Ekin/trust",
+        "op": "SET",
+        "before": "earned_initial",
+        "after": "earned"
+      },
+      {
+        "path": "/world/weather",
+        "op": "SET",
+        "before": "storm_active_lower_room_flooding",
+        "after": "storm_active_return_route_passable"
+      },
+      {
+        "path": "/open_threads",
+        "op": "SET",
+        "before": [
+          "recover_compass"
+        ],
+        "after": []
+      },
+      {
+        "path": "/resolved_threads",
+        "op": "SET",
+        "before": [],
+        "after": [
+          "recover_compass"
+        ]
+      },
+      {
+        "path": "/narrative_obligations",
+        "op": "SET",
+        "before": [
+          {
+            "id": "ekin_duru_trust",
+            "detail": "Trust must change through earned cooperation, not instant friendship.",
+            "status": "OPEN",
+            "target_scene_id": "SC06"
+          },
+          {
+            "id": "compass_loss",
+            "detail": "The compass must ultimately remain lost rather than be replaced by a reward.",
+            "status": "OPEN",
+            "target_scene_id": "SC06"
+          }
+        ],
+        "after": [
+          {
+            "id": "ekin_duru_trust",
+            "detail": "Trust must change through earned cooperation, not instant friendship.",
+            "status": "SATISFIED",
+            "target_scene_id": "SC06"
+          },
+          {
+            "id": "compass_loss",
+            "detail": "The compass must ultimately remain lost rather than be replaced by a reward.",
+            "status": "SATISFIED",
+            "target_scene_id": "SC06"
+          }
+        ]
+      },
+      {
+        "path": "/world/spatial",
+        "op": "SET",
+        "before": {
+          "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+          "positions": {
+            "Ekin": "lighthouse_upper_room",
+            "Duru": "lighthouse_upper_room",
+            "sea_dragon": "lighthouse_upper_room",
+            "dragon_hatchling": "lighthouse_upper_room"
+          },
+          "access_constraints": [
+            {
+              "id": "nest_guard",
+              "blocker": "sea_dragon",
+              "subject": "Ekin",
+              "target": "nest_approach",
+              "active": false
+            }
+          ]
+        },
+        "after": {
+          "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+          "positions": {
+            "Ekin": "harbor",
+            "Duru": "harbor",
+            "sea_dragon": "lighthouse_upper_room",
+            "dragon_hatchling": "lighthouse_upper_room"
+          },
+          "access_constraints": [
+            {
+              "id": "nest_guard",
+              "blocker": "sea_dragon",
+              "subject": "Ekin",
+              "target": "nest_approach",
+              "active": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "lighthouse-relay-q5",
+    "revision": 6,
+    "global_spine_sha256": "8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad",
+    "story_intent_sha256": "66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e",
+    "characters": {
+      "Ekin": {
+        "location": "harbor",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {
+          "jacket": true
+        },
+        "knowledge": [],
+        "relationships": {
+          "Duru": {
+            "familiarity": "stranger",
+            "trust": "earned"
+          }
+        }
+      },
+      "Duru": {
+        "location": "harbor",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "lighthouse_location",
+          "coastal_route"
+        ],
+        "relationships": {
+          "Ekin": {
+            "familiarity": "stranger",
+            "trust": "earned"
+          }
+        }
+      }
+    },
+    "world": {
+      "weather": "storm_active_return_route_passable",
+      "lighthouse_door": "open",
+      "lighthouse_location": "headland",
+      "spatial": {
+        "topology_sha256": "391a1d2dbefdd58af2badc314168178136c5c2dcfb112c2cbb8e3cb5fd57c0ae",
+        "positions": {
+          "Ekin": "harbor",
+          "Duru": "harbor",
+          "sea_dragon": "lighthouse_upper_room",
+          "dragon_hatchling": "lighthouse_upper_room"
+        },
+        "access_constraints": [
+          {
+            "id": "nest_guard",
+            "blocker": "sea_dragon",
+            "subject": "Ekin",
+            "target": "nest_approach",
+            "active": false
+          }
+        ]
+      },
+      "narrow_stair_to_lower_room": true,
+      "lower_room_sea_grate": true,
+      "mother_dragon_location": "lighthouse_upper_room",
+      "mother_blocked_by_narrow_stair": true
+    },
+    "objects": {
+      "compass": {
+        "owner": "Ekin",
+        "location": "lost_at_sea",
+        "state": {
+          "material": "brass",
+          "magical": false
+        }
+      },
+      "dragon_hatchling": {
+        "owner": null,
+        "location": "lighthouse_upper_room",
+        "state": {
+          "size": "cat_sized",
+          "can_fly": false,
+          "condition": "uninjured"
+        }
+      }
+    },
+    "open_threads": [],
+    "resolved_threads": [
+      "recover_compass"
+    ],
+    "completed_spine_beats": [
+      "SC01",
+      "SC02",
+      "SC03",
+      "SC04",
+      "SC05",
+      "SC06"
+    ],
+    "next_spine_beat": null,
+    "narrative_obligations": [
+      {
+        "id": "ekin_duru_trust",
+        "detail": "Trust must change through earned cooperation, not instant friendship.",
+        "status": "SATISFIED",
+        "target_scene_id": "SC06"
+      },
+      {
+        "id": "compass_loss",
+        "detail": "The compass must ultimately remain lost rather than be replaced by a reward.",
+        "status": "SATISFIED",
+        "target_scene_id": "SC06"
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "SC06",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "The hatchling pressed close to its mother. The sea dragon curved her body around the little creature, sheltering it from the wind that rushed through the open upper-room door. One broad wing settled over the hatchling until only its small face showed.\n\nEkin and Duru watched the pair nestle together in the dry upper room. The mother made no move toward them. She simply kept the hatchling safe beneath her wing.\n\nBeyond the doorway, rain swept across the headland.\n\n“My grandfather’s compass is still out there,” Ekin said. Her throat tightened, but she did not turn toward the sea. “I wanted to believe I could get it back.”\n\nDuru waited, watching her.\n\nEkin drew a slow breath. “But it’s gone. Chasing it again won’t change that.” She looked at Duru. “You know the coastal route. I’ll follow your lead.”\n\nDuru gave a serious nod. “Stay near me.”\n\nDuru stepped through the open upper-room door onto the coastal path.\n\nEkin stepped through the open upper-room door onto the coastal path after her.\n\nThey set out together toward the harbor along the established coastal route. The storm continued throughout their return, driving rain against their faces and roaring over the coast. Both girls saw the dark clouds still churning above them, and both bent into the wind.\n\nWhen Duru slowed, Ekin slowed. When Duru chose the safer footing, Ekin followed without arguing. In return, Ekin kept close enough that neither girl faced the storm alone.\n\nAt the end of the established coastal path, Duru entered the harbor.\n\nEkin entered the harbor behind her.\n\nThey stood there soaked and breathing hard. The brass compass remained lost at sea, and Ekin felt the emptiness of that loss. Yet when Duru glanced back to make sure she had arrived safely, Ekin met her eyes and nodded.\n\n“Good route,” Ekin said.\n\n“Good rescue,” Duru replied.\n\nThey were not best friends. Not yet. But they had crossed the storm together, and each now trusted the other to stay.",
+    "word_count": 331,
+    "contract_sha256": "7ee974f66dc13f3e944094268798c5ad83db411274bd7fe8c1de570b5c1d26f2",
+    "state_before_sha256": "25a55a8cfd00330759c8e936bf1c40186dd44af80757464ff7c583e38da8a3e3",
+    "validation_sha256": "411b5708bcbf646ad330ad367367a702cf3fa7ffea567954c5c95e98949b377d",
+    "state_after_sha256": "4fa9db5d946250e70164da152aa7f876bda0e9d232552c476f2552cee1097db3"
+  }
+}
