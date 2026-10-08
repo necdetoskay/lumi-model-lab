@@ -34,19 +34,29 @@ def _require(condition, message):
 
 def verify_story(root, fixture_path):
     """Reproduce accepted scenes from complete saved requests/responses/ledgers."""
-    fixture, _intent, route, start, rows, expected_final = build_chain(Path(fixture_path))
-    request_factory = runner_request_for
+    schema = _read(fixture_path)["schema"]
+    if schema == "spineforge-relay.repeatability-fixture.v3":
+        from src import spineforge_spatial_story_runner as engine
+    else:
+        from src import spineforge_relay_v1_runner as engine
+    fixture, _intent, route, start, rows, expected_final = engine.build_chain(Path(fixture_path))
+    request_factory = engine.runner_request_for
     previous = None
     root = Path(root)
     preflight = _read(root / "preflight.json")
-    _require(preflight == prepare(Path(fixture_path)), "frozen generic preflight")
+    _require(preflight == engine.prepare(Path(fixture_path)), "frozen generic preflight")
     state = start
     ledgers = []
     accepted_ids = []
     for plan, _precompiled, _expected_before in rows:
         contract = compile_scene_contract(state, plan, route)
         coverage = PlanCoverageContractV1.model_validate(_read(root / f"{plan.scene_id}-coverage-contract.json"))
-        _require(coverage == coverage_for(fixture, plan, contract), "frozen plan coverage")
+        _require(coverage == engine.coverage_for(fixture, plan, contract), "frozen plan coverage")
+        spatial = None
+        if schema == "spineforge-relay.repeatability-fixture.v3":
+            from src.spineforge_relay_v1_spatial import SpatialContractV1, evaluate_spatial
+            spatial = SpatialContractV1.model_validate(_read(root / f"{plan.scene_id}-spatial-contract.json"))
+            _require(spatial == engine.spatial_for(fixture, plan, contract, state), "frozen spatial contract")
         rewrite = None
         bundle = _read(root / f"{plan.scene_id}-accepted.json")
         attempt_count = bundle["artifact"]["attempt"]
@@ -62,6 +72,8 @@ def verify_story(root, fixture_path):
                 ledger = _read(str(prefix) + "-ledger.json")
                 messages = request["messages"]
                 payload = json.loads(messages[1]["content"])
+                if spatial is not None:
+                    _require(payload["spatial_contract"] == spatial.model_dump(mode="json"), "request spatial contract")
                 _require(payload["plan_coverage_contract"] == coverage.model_dump(mode="json"), "request goal coverage")
                 _require(payload["relevant_character_canon"] == fixture["relevant_character_canon"], "canon")
                 _require(payload["prop_authorization_policy"] == fixture["prop_authorization_policy"], "prop policy")
@@ -97,6 +109,8 @@ def verify_story(root, fixture_path):
             guard = StructuredGuardV1.model_validate(guard_raw)
             semantic = normalize_semantic_guard(raw=guard.residual.model_dump(mode="json"), prose=prose)
             deterministic += evaluate_events(contract=contract, state=state, prose=prose, evidence=guard.event_evidence)
+            if spatial is not None:
+                deterministic += evaluate_spatial(contract=spatial, scene=contract, state=state, prose=prose, evidence=guard.event_evidence)
             deterministic += evaluate_plan_coverage(coverage=coverage, plan=plan, scene=contract, prose=prose, evidence=guard.event_evidence)
             validation = combine_scene_validation(scene_id=plan.scene_id, attempt=attempt, deterministic=deterministic, semantic=semantic)
             _require(validation.model_dump(mode="json") == _read(root / f"{plan.scene_id}-{attempt}-validation.json"), "validation")

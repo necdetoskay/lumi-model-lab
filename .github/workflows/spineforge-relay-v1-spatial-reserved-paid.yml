@@ -1,0 +1,63 @@
+name: SFR v1 Spatial Shared Reserved Paid Entry
+on:
+  workflow_dispatch:
+    inputs:
+      grant_id:
+        required: true
+        type: string
+      scope_id:
+        required: true
+        type: string
+      fixture:
+        required: true
+        type: string
+      preflight:
+        required: true
+        type: string
+      output:
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  reserved:
+    if: github.run_attempt == 1
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GRANT_ID: ${{ inputs.grant_id }}
+      SCOPE_ID: ${{ inputs.scope_id }}
+      FIXTURE: ${{ inputs.fixture }}
+      PREFLIGHT: ${{ inputs.preflight }}
+      OUTPUT: ${{ inputs.output }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Isolated dependencies and zero-cost suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv --without-pip "${RUNNER_TEMP}/sfr-reserved-venv"
+          curl -fsSL https://bootstrap.pypa.io/get-pip.py -o "${RUNNER_TEMP}/sfr-reserved-pip.py"
+          "${RUNNER_TEMP}/sfr-reserved-venv/bin/python" "${RUNNER_TEMP}/sfr-reserved-pip.py"
+          "${RUNNER_TEMP}/sfr-reserved-venv/bin/python" -m pip install -r requirements.txt pytest
+          "${RUNNER_TEMP}/sfr-reserved-venv/bin/python" -m pytest -q tests/test_spineforge_relay_v1_*.py
+      - name: Shared-authority-only execution
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          "${RUNNER_TEMP}/sfr-reserved-venv/bin/python" -m src.spineforge_spatial_paid_entry \
+            --repository "${GITHUB_REPOSITORY}" --grant-id "${GRANT_ID}" --scope-id "${SCOPE_ID}" \
+            --executor-id "ci:${GITHUB_RUN_ID}" --fixture "${FIXTURE}" --preflight "${PREFLIGHT}" --output "${OUTPUT}"
+      - name: Preserve evidence after any outcome
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sfr-shared-reserved-${{ github.run_id }}
+          path: evidence/spineforge-relay/
+          retention-days: 90
+          if-no-files-found: warn
