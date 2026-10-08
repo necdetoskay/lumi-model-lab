@@ -35,7 +35,9 @@ def _require(condition, message):
 def verify_story(root, fixture_path):
     """Reproduce accepted scenes from complete saved requests/responses/ledgers."""
     schema = _read(fixture_path)["schema"]
-    if schema == "spineforge-relay.repeatability-fixture.v3":
+    if schema == "spineforge-relay.repeatability-fixture.v4":
+        from src import spineforge_joint_story_runner as engine
+    elif schema == "spineforge-relay.repeatability-fixture.v3":
         from src import spineforge_spatial_story_runner as engine
     else:
         from src import spineforge_relay_v1_runner as engine
@@ -53,8 +55,11 @@ def verify_story(root, fixture_path):
         coverage = PlanCoverageContractV1.model_validate(_read(root / f"{plan.scene_id}-coverage-contract.json"))
         _require(coverage == engine.coverage_for(fixture, plan, contract), "frozen plan coverage")
         spatial = None
-        if schema == "spineforge-relay.repeatability-fixture.v3":
-            from src.spineforge_relay_v1_spatial import SpatialContractV1, evaluate_spatial
+        if schema in {"spineforge-relay.repeatability-fixture.v3", "spineforge-relay.repeatability-fixture.v4"}:
+            if schema.endswith(".v4"):
+                from src.spineforge_joint_spatial import JointSpatialContractV1 as SpatialContractV1, evaluate_joint_spatial as evaluate_spatial
+            else:
+                from src.spineforge_relay_v1_spatial import SpatialContractV1, evaluate_spatial
             spatial = SpatialContractV1.model_validate(_read(root / f"{plan.scene_id}-spatial-contract.json"))
             _require(spatial == engine.spatial_for(fixture, plan, contract, state), "frozen spatial contract")
         rewrite = None
