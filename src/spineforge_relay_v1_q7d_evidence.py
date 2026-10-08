@@ -16,6 +16,7 @@ from src.spineforge_relay_v1_spatial import (
 )
 from src.spineforge_relay_v1_q7d_inputs import build_chain, request_for
 from src.generate import _extract_text_content
+from src.spineforge_relay_v1_source_archives import verify_historical_source
 from src.spineforge_relay_v1_compile import compile_scene_contract
 from src.spineforge_relay_v1_contracts import canonical_sha256
 from src.spineforge_relay_v1_events import evaluate_events
@@ -42,7 +43,7 @@ def verify_q7d(root):
     root = Path(root)
     preflight = _read(root / "preflight.json")
     for row in preflight["files"]:
-        _require(hashlib.sha256(Path(row["path"]).read_bytes()).hexdigest() == row["sha256"], "frozen source bytes")
+        verify_historical_source(row)
     state = start
     ledgers = []
     accepted_ids = []

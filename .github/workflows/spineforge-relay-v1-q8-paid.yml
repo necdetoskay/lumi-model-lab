@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   q8b-zero-cost-gate:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
@@ -55,8 +56,8 @@ jobs:
           PY
 
   q8b-paid-repeatability:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
     needs: q8b-zero-cost-gate
-    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q8b-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 20
     env:

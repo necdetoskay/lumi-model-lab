@@ -3,6 +3,13 @@ on:
   push:
     branches: [experiment/spineforge-relay-v1]
     paths:
+      - 'src/spineforge_relay_v1_lease_context.py'
+      - 'src/spineforge_relay_v1_source_archives.py'
+      - 'src/spineforge_v19_transport.py'
+      - 'tests/test_spineforge_relay_v1_*.py'
+      - 'src/spineforge_relay_v1_reservations.py'
+      - 'src/spineforge_relay_v1_paid_entry.py'
+      - 'tests/test_spineforge_relay_v1_reservations.py'
       - 'src/spineforge_relay_v1_q7c.py'
       - 'tests/test_spineforge_relay_v1_q7c.py'
       - 'src/spineforge_relay_v1_q7d*.py'
@@ -21,7 +28,7 @@ permissions:
   contents: read
 jobs:
   q7c-zero-cost:
-    runs-on: [self-hosted, local-runner-pool, sfr-q7c-ci]
+    runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
       GITHUB_TOKEN: ${{ github.token }}
@@ -47,4 +54,12 @@ jobs:
           "${RUNNER_TEMP}/q7c-venv/bin/python" -m pip install -r requirements.txt pytest
       - name: SFR-v1 zero-cost qualification
         shell: bash
-        run: '"${RUNNER_TEMP}/q7c-venv/bin/python" -m pytest -q tests/test_spineforge_relay_v1_*.py'
+        run: '"${RUNNER_TEMP}/q7c-venv/bin/python" -m pytest -q tests/test_spineforge_relay_v1_*.py --junitxml="${RUNNER_TEMP}/sfr-zero-cost.xml"'
+      - name: Preserve zero-cost CI diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sfr-reservation-zero-cost-${{ github.run_id }}
+          path: ${{ runner.temp }}/sfr-zero-cost.xml
+          if-no-files-found: warn
+          retention-days: 90

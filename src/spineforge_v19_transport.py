@@ -41,6 +41,14 @@ def _request_once(
     response_format: dict[str, Any] | None,
     require_parameters: bool,
 ) -> tuple[str, dict[str, Any], dict[str, Any]]:
+    if request_class.startswith("spineforge_relay_v1"):
+        from src.spineforge_relay_v1_lease_context import require_reserved_transport
+        require_reserved_transport({
+            "model": model, "system_prompt": system_prompt, "user_prompt": user_prompt,
+            "temperature": temperature, "max_tokens": max_tokens, "seed": seed,
+            "request_class": request_class, "response_format": response_format,
+            "require_parameters": require_parameters,
+        })
     payload: dict[str, Any] = {
         "model": model,
         "messages": [

@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   q6-zero-cost-gate:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 10
     env:
@@ -51,8 +52,8 @@ jobs:
           PY
 
   q6-paid-sequential-relay:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
     needs: q6-zero-cost-gate
-    if: ${{ github.event_name == 'pull_request' && github.run_attempt == 1 && needs.q6-zero-cost-gate.result == 'success' && github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: [self-hosted, local-runner-pool]
     timeout-minutes: 15
     env:

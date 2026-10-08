@@ -1,82 +1,14 @@
-name: SFR v1 Q7E Bounded Plan Coverage
+name: SFR v1 Q7E Retired Paid Entry
 on:
-  push:
-    branches: [experiment/spineforge-relay-v1]
-    paths: ['.github/workflows/spineforge-relay-v1-q7e-paid.yml']
+  workflow_dispatch:
 permissions:
-  contents: write
-concurrency:
-  group: sfr-v1-q7e-plan-coverage-20261007
-  cancel-in-progress: false
+  contents: read
 jobs:
-  qualify:
-    if: github.run_attempt == 1
+  retired:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
     runs-on: [self-hosted, local-runner-pool]
-    timeout-minutes: 15
-    env:
-      GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Prepare isolated dependencies
+      - name: Refuse consumed authorization
         run: |
-          set -euo pipefail
-          python3 -m venv --without-pip .q7e-venv
-          curl --fail --silent --show-error --location https://bootstrap.pypa.io/get-pip.py -o .q7e-venv/get-pip.py
-          .q7e-venv/bin/python .q7e-venv/get-pip.py
-          .q7e-venv/bin/python -m pip install -r requirements.txt pytest
-      - name: Zero-cost regression and frozen authorization
-        run: |
-          .q7e-venv/bin/python -m pytest -q tests/test_spineforge_relay_v1_*.py
-          .q7e-venv/bin/python - <<'PY'
-          import json
-          from pathlib import Path
-          from src.spineforge_relay_v1_q7e_inputs import prepare, authorization_for
-          base = Path("evidence/spineforge-relay/SFR-V1-Q7E-PREFLIGHT-20261007")
-          p = json.loads((base / "preflight.json").read_text())
-          assert p == prepare()
-          assert json.loads((base / "authorization.json").read_text()) == authorization_for(p)
-          assert not Path("evidence/spineforge-relay/SFR-V1-Q7E-PLAN-COVERAGE-20261007").exists()
-          assert not Path("evidence/spineforge-relay/claims/q7e-plan-coverage-20261007.json").exists()
-          PY
-      - name: Reserve authorization and execute once
-        env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-        run: |
-          .q7e-venv/bin/python - <<'PY'
-          import base64, json, os, requests
-          from pathlib import Path
-          from src.spineforge_relay_v1_q7e_inputs import prepare, authorization_for
-          from src.spineforge_relay_v1_q7e import execute
-          key = os.environ.get("OPENROUTER_API_KEY")
-          if not key:
-              raise SystemExit("Missing OPENROUTER_API_KEY")
-          p = prepare()
-          a = authorization_for(p)
-          claim = {"status": "CLAIMED_BEFORE_INFERENCE", "head_sha": os.environ["GITHUB_SHA"],
-                   "run_id": os.environ["GITHUB_RUN_ID"], **a}
-          body = {"branch": "experiment/spineforge-relay-v1",
-                  "message": "claim(sfr-v1): reserve bounded Q7E authorization",
-                  "content": base64.b64encode((json.dumps(claim, indent=2)+"\n").encode()).decode()}
-          # Creation without a blob SHA fails if a claim already exists.
-          response = requests.put(
-              "https://api.github.com/repos/"+os.environ["GITHUB_REPOSITORY"]+"/contents/evidence/spineforge-relay/claims/q7e-plan-coverage-20261007.json",
-              headers={"Authorization": "Bearer "+os.environ["GH_TOKEN"], "Accept": "application/vnd.github+json"},
-              json=body, timeout=30)
-          if response.status_code != 201:
-              raise SystemExit("Exclusive Q7E claim failed: HTTP "+str(response.status_code))
-          result = execute(api_key=key, preflight=p, authorization=a)
-          print(json.dumps({k: result[k] for k in
-              ("status","reason","known_cost_usd","usage_complete","state_advanced_to_revision")}))
-          if result["status"] != "ACCEPT":
-              raise SystemExit(2)
-          PY
-      - name: Preserve evidence even after rejection
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sfr-v1-q7e-${{ github.run_id }}
-          path: evidence/spineforge-relay/SFR-V1-Q7E-PLAN-COVERAGE-20261007/
-          if-no-files-found: warn
-          retention-days: 90
+          echo "Q7E authorization consumed; use shared reserved entry with a new approved grant."
+          exit 1
