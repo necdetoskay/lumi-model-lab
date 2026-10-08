@@ -1,0 +1,123 @@
+{
+  "schema_name": "spineforge-relay.spatial-contract.v1",
+  "scene_contract_sha256": "65b0a131f5000b84688928a094089e5b37e495f7b8ffc8dc16b776b89b302828",
+  "story_state_sha256": "85c89a177efd0950dd45374cd9536ed17aba01c20ce77a79f370ef2cc935c2ae",
+  "topology": {
+    "schema_name": "spineforge-relay.spatial-topology.v1",
+    "locations": [
+      "workshop",
+      "covered_yard",
+      "gallery_entry",
+      "display_alcove"
+    ],
+    "edges": [
+      {
+        "id": "yard_gate",
+        "source": "workshop",
+        "destination": "covered_yard",
+        "passage": "wide_workshop_gate",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      },
+      {
+        "id": "covered_ramp",
+        "source": "covered_yard",
+        "destination": "gallery_entry",
+        "passage": "level_covered_ramp",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      },
+      {
+        "id": "gallery_door",
+        "source": "gallery_entry",
+        "destination": "display_alcove",
+        "passage": "wide_open_gallery_door",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      }
+    ],
+    "position_state_paths": {
+      "Aya": "/characters/Aya/location",
+      "Mert": "/characters/Mert/location",
+      "mosaic_panel": "/objects/mosaic_panel/location"
+    }
+  },
+  "entry": {
+    "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+    "positions": {
+      "Aya": "covered_yard",
+      "Mert": "covered_yard",
+      "mosaic_panel": "covered_yard"
+    },
+    "access_constraints": [
+      {
+        "id": "safe_carry_gate",
+        "blocker": "Mert",
+        "subject": "Aya",
+        "target": "yard_gate",
+        "active": false
+      }
+    ]
+  },
+  "operations": [
+    {
+      "id": "S05-MOVE-Aya",
+      "kind": "MOVE",
+      "subject": "Aya",
+      "target": "gallery_entry",
+      "event_id": "S05-E03",
+      "predicate_id": "P1",
+      "edge_id": "covered_ramp",
+      "constraint_id": null
+    },
+    {
+      "id": "S05-MOVE-Mert",
+      "kind": "MOVE",
+      "subject": "Mert",
+      "target": "gallery_entry",
+      "event_id": "S05-E04",
+      "predicate_id": "P1",
+      "edge_id": "covered_ramp",
+      "constraint_id": null
+    },
+    {
+      "id": "S05-MOVE-mosaic_panel",
+      "kind": "MOVE",
+      "subject": "mosaic_panel",
+      "target": "gallery_entry",
+      "event_id": "S05-E05",
+      "predicate_id": "P1",
+      "edge_id": "covered_ramp",
+      "constraint_id": null
+    }
+  ],
+  "exit": {
+    "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+    "positions": {
+      "Aya": "gallery_entry",
+      "Mert": "gallery_entry",
+      "mosaic_panel": "gallery_entry"
+    },
+    "access_constraints": [
+      {
+        "id": "safe_carry_gate",
+        "blocker": "Mert",
+        "subject": "Aya",
+        "target": "yard_gate",
+        "active": false
+      }
+    ]
+  }
+}
