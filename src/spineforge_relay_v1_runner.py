@@ -22,6 +22,8 @@ from src.spineforge_relay_v1_contracts import (
     canonical_sha256,
 )
 from src.spineforge_relay_v1_events import evaluate_events
+from src.spineforge_relay_v1_coverage import PlanObligationV1, PredicateOrderV1, compile_plan_coverage, evaluate_plan_coverage
+from src.model_registry import normalize_openrouter_request
 from src.spineforge_relay_v1_guard import (
     combine_scene_validation,
     deterministic_scene_findings,
@@ -46,15 +48,47 @@ def load_fixture(path: Path) -> dict[str, Any]:
         "prop_authorization_policy",
         "scene_plans",
     }
+    covered = raw.get("schema") == "spineforge-relay.repeatability-fixture.v2"
+    if covered:
+        required.add("coverage_plans")
     if set(raw) != required:
         raise RuntimeError("Q8 fixture keys drift")
-    if raw["schema"] != "spineforge-relay.repeatability-fixture.v1":
+    if raw["schema"] not in ("spineforge-relay.repeatability-fixture.v1", "spineforge-relay.repeatability-fixture.v2"):
         raise RuntimeError("Q8 fixture schema drift")
     if len(raw["route"]) < 2:
         raise RuntimeError("Q8 fixture needs at least two beats")
     if [p["scene_id"] for p in raw["scene_plans"]] != raw["route"]:
         raise RuntimeError("Q8 scene plans must cover route exactly")
+    if covered and [p["scene_id"] for p in raw["coverage_plans"]] != raw["route"]:
+        raise RuntimeError("Coverage plans must cover route exactly and in order")
     return raw
+
+
+def coverage_for(fixture, plan, contract):
+    if fixture["schema"] == "spineforge-relay.repeatability-fixture.v1":
+        return None
+    row = next(p for p in fixture["coverage_plans"] if p["scene_id"] == plan.scene_id)
+    if set(row) != {"scene_id", "obligations", "ordered_dependencies"}:
+        raise ValueError("Coverage plan keys drift")
+    return compile_plan_coverage(plan=plan, scene=contract,
+        obligations=[PlanObligationV1.model_validate(o) for o in row["obligations"]],
+        ordered_dependencies=[PredicateOrderV1.model_validate(o) for o in row["ordered_dependencies"]])
+
+
+def runner_request_for(stage, payload):
+    kwargs, request = request_for(stage, payload)
+    if "plan_coverage_contract" not in payload:
+        return kwargs, request
+    kwargs["system_prompt"] += "\n\n" + Path(f"prompts/spineforge_relay_v1_coverage_{stage}.md").read_text(encoding="utf-8").strip()
+    request = normalize_openrouter_request(kwargs["model"], {
+        "model": kwargs["model"], "messages": [
+            {"role": "system", "content": kwargs["system_prompt"]},
+            {"role": "user", "content": kwargs["user_prompt"]}],
+        "temperature": kwargs["temperature"], "max_tokens": kwargs["max_tokens"]},
+        request_class=kwargs["request_class"], structured_output=False)
+    request["response_format"] = kwargs["response_format"]
+    request["provider"] = {**request.get("provider", {}), "require_parameters": True}
+    return kwargs, request
 
 
 def build_chain(path: Path):
@@ -84,6 +118,7 @@ def build_chain(path: Path):
     for raw_plan in fixture["scene_plans"]:
         plan = ScenePlanV1.model_validate(raw_plan)
         contract = compile_scene_contract(expected, plan, route)
+        coverage_for(fixture, plan, contract)
         rows.append((plan, contract, expected))
         expected = _expected_advance(expected, contract)
     return fixture, intent, route, state, rows, expected
@@ -93,7 +128,7 @@ def prepare(path: Path) -> dict[str, Any]:
     for model in (WRITER, GUARD):
         require_qualification_runtime_profile(model)
     fixture, intent, route, start, rows, expected = build_chain(path)
-    return {
+    preflight = {
         "schema": "spineforge-relay.repeatability-preflight.v1",
         "fixture_path": path.as_posix(),
         "fixture_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -123,6 +158,19 @@ def prepare(path: Path) -> dict[str, Any]:
         "max_call_cost_usd": MAX_CALL_COST,
         "max_story_cost_usd": MAX_STORY_COST_USD,
     }
+    if fixture["schema"] == "spineforge-relay.repeatability-fixture.v2":
+        preflight["schema"] = "spineforge-relay.repeatability-preflight.v2"
+        preflight["coverage_contract_sha256"] = [canonical_sha256(coverage_for(fixture, p, c)) for p, c, _ in rows]
+        # Freeze executable modules and registry/config/prompt dependencies, not only fixture data.
+        paths = sorted(Path("src").glob("spineforge_relay_v1*.py")) + [
+            Path("src/spineforge_v19_transport.py"), Path("src/model_registry.py"),
+            Path("configs/model_runtime_profiles.yaml"), Path("requirements.txt")]
+        paths += sorted(Path("prompts").glob("spineforge_relay_v1*.md"))
+        preflight["source_encoding"] = "UTF-8 with CRLF normalized to LF"
+        preflight["fixture_sha256"] = hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+        preflight["sources"] = [{"path": p.as_posix(), "sha256": hashlib.sha256(p.read_bytes().replace(b"\r\n", b"\n")).hexdigest()} for p in paths]
+        preflight["max_calls"] = len(rows) * 4
+    return preflight
 
 
 def execute_story(
@@ -156,7 +204,7 @@ def execute_story(
     }
 
     def call(scene_id: str, stage: str, attempt: int, payload: dict[str, Any]) -> str:
-        kwargs, request = request_for(stage, payload)
+        kwargs, request = runner_request_for(stage, payload)
         rates = require_qualification_runtime_profile(kwargs["model"])["metadata"]["pricing_usd_per_million_tokens"]
         planned = (
             len(json.dumps(request, ensure_ascii=False).encode("utf-8")) * float(rates["input"])
@@ -238,9 +286,13 @@ def execute_story(
                 flush=True,
             )
 
+    previous_accepted = None
     try:
         for plan, _precompiled, _expected_before in rows:
             contract = compile_scene_contract(state, plan, route)
+            coverage = coverage_for(fixture, plan, contract)
+            if coverage is not None:
+                save(output / f"{plan.scene_id}-coverage-contract.json", coverage.model_dump(mode="json"))
             rewrite = None
             scene_accepted = False
             for attempt in (1, 2):
@@ -252,6 +304,9 @@ def execute_story(
                     "relevant_character_canon": canon,
                     "prop_authorization_policy": prop_policy,
                 }
+                if coverage is not None:
+                    inputs["plan_coverage_contract"] = coverage.model_dump(mode="json")
+                    inputs["previous_accepted_scene"] = previous_accepted
                 payload = {**inputs, "attempt": attempt, "rewrite": rewrite}
                 prose = call(plan.scene_id, "writer", attempt, payload).strip()
                 det = deterministic_scene_findings(prose=prose, contract=contract)
@@ -279,6 +334,8 @@ def execute_story(
                     prose=prose,
                     evidence=report.event_evidence,
                 )
+                if coverage is not None:
+                    det += evaluate_plan_coverage(coverage=coverage, plan=plan, scene=contract, prose=prose, evidence=report.event_evidence)
                 validation = combine_scene_validation(
                     scene_id=contract.scene_id,
                     attempt=attempt,
@@ -295,6 +352,7 @@ def execute_story(
                         "artifact": artifact.model_dump(mode="json"),
                     }
                     save(output / f"{plan.scene_id}-accepted.json", bundle)
+                    previous_accepted = {**bundle, "prose": prose}
                     state = after
                     scene_accepted = True
                     result["accepted_scenes"].append(plan.scene_id)

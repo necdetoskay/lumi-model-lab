@@ -23,9 +23,16 @@ def prepare_reserved_story(fixture):
     fixture = workspace_path(fixture, "tests/fixtures").relative_to(Path.cwd().resolve())
     sources = ["src/spineforge_relay_v1_paid_entry.py", "src/spineforge_relay_v1_reservations.py",
                "src/spineforge_relay_v1_lease_context.py", "src/spineforge_v19_transport.py", "requirements.txt"]
+    runner_preflight = prepare_story(fixture)
+    normalize_text = runner_preflight.get("schema") == "spineforge-relay.repeatability-preflight.v2"
+    def source_sha(path):
+        data = Path(path).read_bytes()
+        if normalize_text:
+            data = data.replace(b"\r\n", b"\n")
+        return hashlib.sha256(data).hexdigest()
     return {"schema": "spineforge-relay.reserved-preflight.v1", "fixture": fixture.as_posix(),
-            "registry_branch": "sfr-paid-reservations", "runner_preflight": prepare_story(fixture),
-            "gate_sources": [{"path": p, "sha256": hashlib.sha256(Path(p).read_bytes()).hexdigest()} for p in sources]}
+            "registry_branch": "sfr-paid-reservations", "runner_preflight": runner_preflight,
+            "gate_sources": [{"path": p, "sha256": source_sha(p)} for p in sources]}
 
 
 def main():
