@@ -6,7 +6,7 @@ StoryRequest + immutable StorySeed + RunConfig -> planner -> structural admissio
 
 RunConfig selects planner, plan guard, scene writer and scene guard independently, with qualified exact runtime profiles, output limits and spend ceilings. Unknown/unqualified models fail before inference. This interface enables future comparisons; no Haiku qualification or model-quality equivalence is claimed. Current structural scope inherits 2–12 scenes and v5 event/coverage/spatial contracts.
 
-A planner has one bounded rewrite for structurally invalid plans or grounded semantic REWRITE. Invalid/mismatched review or transport/usage/finish errors stop without retry. Semantic review is a model judgment: valid evidence pointers do not certify causal or literary truth. Scene writing retains initial + at most one rewrite, source-span guard grounding and fail-closed freeze. Scenario IDs must be safe file identifiers.
+A planner has one bounded rewrite for structurally invalid plans or grounded semantic REWRITE. Invalid/mismatched review or transport/usage/finish errors stop without retry. Semantic review is a model judgment: valid source selections do not certify causal or literary truth. Scene writing retains initial + at most one rewrite, source-span guard grounding and fail-closed freeze. Scenario IDs must be safe file identifiers.
 
 ## Shared admission
 
@@ -94,4 +94,19 @@ Both Q16 rejected proposals structurally pass a separate test-only v3 migration.
 
 The remaining real qualification must start fresh from the same immutable robot request/seed under a new v3 fingerprint and shared grant. No old scope can be reopened/reused; production and merge remain out of scope.
 
-Compact v3 validation: **484 local Relay tests PASS in 243.28 seconds**. Q17 is prepared but unapproved at root SHA-256 `a75fcb8501041d279d32e299259d136d9de122e0f6d589fcbcf134c9d708634c`. No v3 paid dispatch/grant exists. Q15+Q16 actual spend this continuation is 4 calls / USD 0.329574; neither generated a story.
+Compact v3 validation: **484 local Relay tests PASS in 243.28 seconds**. Q17 was initially prepared at root SHA-256 `a75fcb8501041d279d32e299259d136d9de122e0f6d589fcbcf134c9d708634c`. This was its pre-run proposal; the later approved Q17 outcome is recorded below. Q15+Q16 actual spend this continuation is 4 calls / USD 0.329574; neither generated a story.
+
+
+## Q17 recorded rejection and bound plan review v2
+
+Q17 was explicitly approved and executed once from frozen commit c7f3c1ffb33cfe758fbd85a54938b99a477c7cd7 (zero-cost CI 37903615221 SUCCESS). The first v3 Sol proposal passed structural admission for all six scenes. Sonnet returned complete REWRITE JSON with six findings, but authored pointers rooted at /design/fixture while legacy admission required /fixture relative to the design object. The invalid review stopped the run before a planner rewrite or any scene call; seed/state remained unchanged. Q17 is immutable REJECT_NON_CONVERGENT, CLOSED / SETTLED, matching the live registry: two calls, USD 0.149573, 41761 tokens, 90.288 summed latency seconds. Q13 USD 1.20 remains separately held and unknown.
+
+Offline failure audit reproduces that boundary rejection and verifies raw requests/responses, usage, frozen sources, manifests and closure. Diagnostic removal of /design shows all six quoted source values actually match; the emotional-transition typo is real. This inspection does not admit the review, adjudicate its other semantic claims, accept the plan or reopen Q17.
+
+The reusable review-v2 boundary supplies code-owned field IDs and planned entry/exit transitions. Strict JSON output constrains the current review ID and allowed field IDs; the guard selects a semantic source field/category, reason and repair instruction. Code binds exact compact pointers/values and frozen request/seed/design hashes. Stale IDs, unknown fields, copied extra values, table/projection drift, decision mismatch and duplicate findings fail closed. Optional compiler metadata is not an editable source field. This prevents pointer-root/copy errors without proving semantic correctness or weakening causal, knowledge, resource, deadline or earned-resolution review. Historical v1 review admission remains available to audit Q17 unchanged.
+
+Two new independently recorded synthetic controls traverse the entire v3 + review-v2 pipeline: six-scene joint delivery and two-scene stationary decision. They preserve full call/state/replay evidence under SFR-REVIEW-V2-ZERO-COST-CONTROLS-20261009; actual provider calls/spend are zero. Synthetic ledger figures are explicitly not billing, model qualification or golden labels.
+
+Fresh Q18 preparation uses the identical frozen robot request/seed/config, planner v3, bound semantic review v2 and a new source fingerprint. It proposes a new 28-call / additional USD 1.20 scope, USD 0.30 per call / 0.15 per scene call, one plan/scene rewrite and no retry. Q17 and prior closed allowances are not reused; no Q18 authority or provider dispatch exists. Production and merge remain disabled.
+
+Bound-review validation: 501 local Relay tests PASS in 253.67 seconds; targeted Q17/review controls 17 PASS and pipeline controls 17 PASS. Q18 proposed root SHA-256: d44574a9cda458c0fc049cd66f6fd84292ce36f597663b84a6b730e02fc298ba.

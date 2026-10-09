@@ -64,10 +64,10 @@ def provider(config,design,calls,defect=None):
             text=json.dumps(raw)
             expected=request_for(stage,payload,config)[1]
         elif stage=="plan_guard":
-            raw=dict(request_sha256=payload["request_sha256"],seed_sha256=payload["seed_sha256"],design_sha256=payload["design_sha256"],decision="PASS",findings=[],summary="Synthetic control")
-            if defect=="stale_review":raw["design_sha256"]="0"*64
+            raw=dict(review_id=payload["review_id"],decision="PASS",findings=[],summary="Synthetic control")
+            if defect=="stale_review":raw["review_id"]="0"*64
             if defect=="semantic" and calls.count("plan_guard")==1:
-                raw.update(decision="REWRITE",findings=[dict(design_pointer="/fixture/story_id",source_value=design.fixture["story_id"],reason="Synthetic review blocker",repair_instruction="Reconsider plan")])
+                raw.update(decision="REWRITE",findings=[dict(field_id=payload["source_fields"][0]["id"],category="CAUSALITY",reason="Synthetic review blocker",repair_instruction="Reconsider plan")])
             text=json.dumps(raw);expected=request_for(stage,payload,config)[1]
         else:
             stage="guard" if "candidate_prose" in payload else "writer"

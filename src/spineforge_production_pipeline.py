@@ -16,6 +16,7 @@ from src.spineforge_relay_v1_compile import _value_at
 from src.spineforge_seeded_design import verify_frozen_seed,seeded_planner_input,SeededStoryDesignV2,validate_seeded_design
 from src.spineforge_story_design import StoryRequestV1
 from src.spineforge_production_compact_v3 import compact_planner_input_v3, CompactStoryPlanV3, compile_compact_v3
+from src.spineforge_production_plan_review_v2 import build_review_input,bind_review
 from src.spineforge_production_config import RunConfigV1
 from src.model_registry import require_qualification_runtime_profile,normalize_openrouter_request
 from src.spineforge_relay_v1_q5t import save
@@ -69,11 +70,13 @@ def prepare(request_path,seed_path,freeze_path,config_path):
 
 def request_for(stage,payload,config):
     model=config.planner if stage=="planner" else config.plan_guard
-    prompt=payload["instructions"] if stage=="planner" else Path("prompts/spineforge_production_plan_guard.md").read_text(encoding="utf8")
+    prompt=payload["instructions"] if stage=="planner" else Path("prompts/spineforge_production_plan_guard_v2.md" if payload.get("schema")=="spineforge.plan-review-input.v2" else "prompts/spineforge_production_plan_guard.md").read_text(encoding="utf8")
     prompt += "\nReturn exactly one valid JSON object. Do not include Markdown fences or prose outside the JSON object."
     kwargs=dict(model=model,system_prompt=prompt,user_prompt=json.dumps(payload,ensure_ascii=False,separators=(",",":")),
         temperature=.3 if stage=="planner" else 0.,max_tokens=config.planner_max_tokens if stage=="planner" else config.plan_guard_max_tokens,
         seed=None,request_class="spineforge_relay_v1_production_"+stage,response_format={"type":"json_object"},require_parameters=True)
+    if stage=="plan_guard" and payload.get("schema")=="spineforge.plan-review-input.v2":
+        kwargs["response_format"]={"type":"json_schema","json_schema":{"name":"bound_plan_review","strict":True,"schema":payload["output_schema"]}}
     expected=normalize_openrouter_request(model,dict(model=model,messages=[dict(role="system",content=prompt),dict(role="user",content=kwargs["user_prompt"])],
         temperature=kwargs["temperature"],max_tokens=kwargs["max_tokens"]),request_class=kwargs["request_class"],structured_output=False)
     expected["response_format"]=kwargs["response_format"];expected["provider"]={**expected.get("provider",{}),"require_parameters":True}
@@ -147,9 +150,10 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
                 feedback=dict(kind="STRUCTURAL",reason=str(exc),candidate=text)
                 save(output/f"plan-{attempt}-structural.json",dict(status="REJECTED_DESIGN",failure_type=type(exc).__name__,message=str(exc)))
                 continue
-            review_payload=dict(request=request.model_dump(mode="json"),seed=seed.model_dump(mode="json"),design=design.model_dump(mode="json"),
-                request_sha256=canonical_sha256(request),seed_sha256=canonical_sha256(seed),design_sha256=canonical_sha256(design),output_schema=PlanReviewV1.model_json_schema())
-            review=validate_review(json.loads(call("plan_guard",attempt,review_payload)),request,seed,design)
+            rows=engine.build_chain(fixture_path)[4]
+            review_payload=build_review_input(request,seed,compact,design,rows)
+            save(output/f"plan-{attempt}-review-input.json",review_payload)
+            review=bind_review(json.loads(call("plan_guard",attempt,review_payload)),review_payload,request,seed,compact,design,rows)
             save(output/f"plan-{attempt}-review.json",review.model_dump(mode="json"))
             if review.decision=="PASS":accepted=(design,fixture_path);break
             feedback=dict(kind="SEMANTIC",review=review.model_dump(mode="json"),candidate=text)
