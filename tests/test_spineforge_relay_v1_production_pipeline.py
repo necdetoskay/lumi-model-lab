@@ -3,12 +3,12 @@ from pathlib import Path
 import pytest
 from src.spineforge_production_config import RunConfigV1
 from src.spineforge_production_pipeline import prepare,execute,request_for,validate_review
-from src.spineforge_production_story import runner_request_for
+from src.spineforge_production_range_story import runner_request_for
 from src.spineforge_seeded_design import StorySeedV1,freeze_seed,SeededStoryDesignV2
 from src.spineforge_story_design import StoryRequestV1
 from src.spineforge_relay_v1_contracts import canonical_sha256
 from src.spineforge_relay_v1_spatial import SpatialTopologyV1
-from src.spineforge_source_spans import source_table
+from src.spineforge_production_source_ranges import range_table as source_table
 from tests.test_spineforge_relay_v1_joint_movement import fake as scene_fake
 from tests.spineforge_compact_controls import compact_control_v3
 
@@ -74,9 +74,9 @@ def provider(config,design,calls,defect=None):
             delegated={**kwargs,"model":"openai/gpt-5.6-sol" if stage=="writer" else "anthropic/claude-sonnet-5.5"}
             text,body,_=scenes(**delegated)
             if stage=="guard":
-                report=json.loads(text);table=payload["source_span_table"];report["source_sha256"]=table["source_sha256"]
+                report=json.loads(text);table=payload["source_range_table"];report["source_sha256"]=table["source_sha256"]
                 for row in report["event_evidence"]:
-                    quote=row.pop("exact_text");row["source_span_ids"]=[next(s["id"] for s in table["spans"] if s["text"]==quote)]
+                    quote=row.pop("exact_text");index=next(i for i,s in enumerate(table["spans"]) if s["text"]==quote);row["source_range_id"]=next(r[0] for r in table["ranges"] if r[1:]==[index,index])
                 text=json.dumps(report)
             expected=runner_request_for(stage,payload,config)[1]
         if defect=="transport":raise RuntimeError("Synthetic transport failure")
@@ -119,7 +119,7 @@ def test_failed_plan_never_dispatches_scene_writer(tmp_path,defect):
 def test_run_config_changes_requests_and_rejects_unknown_profiles(tmp_path):
     paths,design=sample(tmp_path/"input")
     cfg=RunConfigV1(writer="anthropic/claude-sonnet-5.5",scene_guard="openai/gpt-5.6-sol")
-    payload=dict(plan_coverage_contract={},source_span_table=source_table("A fact."))
+    payload=dict(plan_coverage_contract={},source_range_table=source_table("A fact."))
     assert runner_request_for("writer",payload,cfg)[0]["model"]==cfg.writer
     assert runner_request_for("guard",payload,cfg)[1]["model"]==cfg.scene_guard
     write(paths["config"],RunConfigV1(planner="unknown/model").model_dump(mode="json"))
