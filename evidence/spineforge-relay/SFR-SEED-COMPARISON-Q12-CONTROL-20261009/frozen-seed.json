@@ -1,0 +1,167 @@
+{
+  "schema": "spineforge.frozen-story-seed.v1",
+  "seed": {
+    "schema_name": "spineforge.story-seed.v1",
+    "story_id": "q10-mosaic-covered-route",
+    "scenario_id": "Q12-COMPARISON-CONTROL",
+    "characters": {
+      "Aya": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "covered_route"
+        ],
+        "relationships": {
+          "Mert": {
+            "familiarity": "classmate",
+            "trust": "limited"
+          }
+        }
+      },
+      "Mert": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "covered_route"
+        ],
+        "relationships": {
+          "Aya": {
+            "familiarity": "classmate",
+            "trust": "limited"
+          }
+        }
+      }
+    },
+    "relevant_character_canon": {
+      "Aya": {
+        "age": 12,
+        "pronouns": [
+          "she",
+          "her"
+        ]
+      },
+      "Mert": {
+        "age": 12,
+        "pronouns": [
+          "he",
+          "him"
+        ]
+      }
+    },
+    "world": {
+      "weather": "windy_rain_strengthening",
+      "gallery_door": "open",
+      "display_mount": "empty_fixed_mount",
+      "spatial": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "workshop",
+          "Mert": "workshop",
+          "mosaic_panel": "workshop"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": true
+          }
+        ]
+      }
+    },
+    "objects": {
+      "mosaic_panel": {
+        "owner": "community_gallery",
+        "location": "workshop",
+        "state": {
+          "fragile": true,
+          "restored": true,
+          "intact": true,
+          "carried_by": [],
+          "displayed": false
+        }
+      }
+    },
+    "topology": {
+      "schema_name": "spineforge-relay.spatial-topology.v1",
+      "locations": [
+        "workshop",
+        "covered_yard",
+        "gallery_entry",
+        "display_alcove"
+      ],
+      "edges": [
+        {
+          "id": "yard_gate",
+          "source": "workshop",
+          "destination": "covered_yard",
+          "passage": "wide_workshop_gate",
+          "bidirectional": true,
+          "allowed_entities": [
+            "Aya",
+            "Mert",
+            "mosaic_panel"
+          ]
+        },
+        {
+          "id": "covered_ramp",
+          "source": "covered_yard",
+          "destination": "gallery_entry",
+          "passage": "level_covered_ramp",
+          "bidirectional": true,
+          "allowed_entities": [
+            "Aya",
+            "Mert",
+            "mosaic_panel"
+          ]
+        },
+        {
+          "id": "gallery_door",
+          "source": "gallery_entry",
+          "destination": "display_alcove",
+          "passage": "wide_open_gallery_door",
+          "bidirectional": true,
+          "allowed_entities": [
+            "Aya",
+            "Mert",
+            "mosaic_panel"
+          ]
+        }
+      ],
+      "position_state_paths": {
+        "Aya": "/characters/Aya/location",
+        "Mert": "/characters/Mert/location",
+        "mosaic_panel": "/objects/mosaic_panel/location"
+      }
+    },
+    "prop_authorization_policy": {
+      "authorized_actionable_props": [
+        "mosaic_panel"
+      ],
+      "rule": "Only the same mosaic panel is a portable actionable prop. Established wide gate, covered ramp, open door and fixed display mount are allowed structures. No carts, straps, tools, covers, phones, bags, ladders, vehicles or adult rescue."
+    },
+    "open_threads": [
+      "deliver_panel"
+    ],
+    "narrative_obligations": [
+      {
+        "id": "deliver_panel_together",
+        "detail": "Aya must request and acknowledge practical help; the same fragile panel must reach its fixed display mount intact.",
+        "status": "OPEN",
+        "target_scene_id": "S06"
+      }
+    ],
+    "assumptions": []
+  },
+  "seed_sha256": "9a3afeb6fdd494e48a916fdb46a52c302494e62111f306ba9e7b5a26cb1c08e1",
+  "seed_file_sha256": "3549e3ae4ea31cfefa1c979675e3d21f729c07af0b1d00aa5d242e5d295680e8"
+}
