@@ -10,7 +10,7 @@ from src.spineforge_relay_v1_contracts import canonical_sha256
 from src.spineforge_relay_v1_spatial import SpatialTopologyV1
 from src.spineforge_source_spans import source_table
 from tests.test_spineforge_relay_v1_joint_movement import fake as scene_fake
-from tests.spineforge_compact_controls import compact_control
+from tests.spineforge_compact_controls import compact_control_v2
 
 
 def write(path,value):path.write_bytes((json.dumps(value,ensure_ascii=False,indent=2)+"\n").encode())
@@ -57,7 +57,7 @@ def provider(config,design,calls,defect=None):
         payload=json.loads(kwargs["user_prompt"]);stage=kwargs["request_class"].split("production_")[-1]
         calls.append(stage)
         if stage=="planner":
-            raw=compact_control(design).model_dump(mode="json",exclude_defaults=True)
+            raw=compact_control_v2(design).model_dump(mode="json",exclude_defaults=True)
             if defect=="structural" and calls.count("planner")==1:raw["request_bindings"]=[]
             if defect=="nonconvergent":raw["request_bindings"]=[]
             if defect=="unsafe_id":raw["scenes"][0]["scene_id"]="../outside"

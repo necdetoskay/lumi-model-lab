@@ -36,3 +36,18 @@ def compact_control(design):
         premise=f["story_intent"]["premise"], character_arc=f["story_intent"].get("character_arc", f["story_intent"]["premise"]),
         resolution="Explicit authored control resolution; synthetic, not a quality verdict.",
         scenes=scenes, carry_groups=f["carry_groups"], request_bindings=design.request_bindings)
+
+
+def upgrade_plan_control(plan):
+    """Offline test migration only. Real inference never falls back to v1 output."""
+    from src.spineforge_production_compact_v2 import CompactStoryPlanV2
+    raw = plan.model_dump(mode="json")
+    raw["schema_name"] = "spineforge.compact-story-plan.v2"
+    for scene in raw["scenes"]:
+        scene["goal_bindings"] = {field:list(dict.fromkeys(r["event_id"] for r in refs)) for field,refs in scene["goal_bindings"].items()}
+        for op in scene["spatial_operations"]: op.pop("predicate_id")
+    return CompactStoryPlanV2.model_validate(raw)
+
+
+def compact_control_v2(design):
+    return upgrade_plan_control(compact_control(design))
