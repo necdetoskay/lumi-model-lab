@@ -1,0 +1,902 @@
+{
+  "schema": "spineforge.compact-planner-input.v3",
+  "request": {
+    "schema_name": "spineforge.story-request.v1",
+    "original_prompt": "Nisa ile Eren, kütüphanedeki okuma etkinliği öncesinde Nisa’nın kırmızı ayracını bulamaz. Atlası en son kullanan arkadaşları Cem’den şüphelenirler. Yerleşik ipuçlarını araştırıp gerçekte ne olduğunu bulmalı, yanlış şüphelerini düzeltmeli ve Cem’den özür dilemelidirler.",
+    "language": "tr",
+    "reader_age": 12,
+    "genre": "realistic_mystery",
+    "tone": [
+      "meraklı",
+      "sıcak",
+      "umutlu"
+    ],
+    "scene_count": 6,
+    "requirements": [
+      {
+        "id": "R01",
+        "source_text": "Nisa’nın kırmızı ayracını bulamaz",
+        "meaning": "Begin with the missing bookmark before the reading activity"
+      },
+      {
+        "id": "R02",
+        "source_text": "Yerleşik ipuçlarını araştırıp gerçekte ne olduğunu bulmalı",
+        "meaning": "Nisa and Eren investigate established physical/written evidence, discover the bookmark and explain its actual placement"
+      },
+      {
+        "id": "R03",
+        "source_text": "yanlış şüphelerini düzeltmeli ve Cem’den özür dilemelidirler",
+        "meaning": "Both friends correct their unfounded suspicion using discovered evidence and apologize to Cem"
+      }
+    ],
+    "assumptions": [
+      "Three classmates are 12; Turkish narration and six scenes are experiment defaults.",
+      "The bookmark was placed inside the blue atlas by Nisa yesterday; she does not initially remember or know its current location.",
+      "Nisa recorded that placement in her preparation notebook yesterday; no character initially knows the exact entry.",
+      "Cem returned the atlas without noticing the bookmark. He knows he returned the atlas, not where the bookmark is.",
+      "The written preparation entry and return log are authored established evidence, not inventions to rescue a scene.",
+      "Initial world/object truth is not automatically character knowledge; discovery must be earned in scenes.",
+      "All action can occur in the single established reading room; no travel is required."
+    ],
+    "forbidden": []
+  },
+  "seed": {
+    "schema_name": "spineforge.story-seed.v1",
+    "story_id": "library-bookmark-nisa-eren",
+    "scenario_id": "FRESH-MYSTERY-01",
+    "characters": {
+      "Nisa": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "worried",
+          "goal": "find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "bookmark_is_mine",
+          "last_saw_bookmark_near_reading_table",
+          "Cem_used_blue_atlas",
+          "preparation_notebook_has_activity_notes"
+        ],
+        "relationships": {
+          "Eren": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Eren": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "curious",
+          "goal": "help_find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "Nisa_cannot_find_bookmark",
+          "Cem_used_blue_atlas",
+          "library_has_return_log"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Cem": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "calm",
+          "goal": "join_reading_activity"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "I_returned_blue_atlas_yesterday",
+          "I_did_not_take_Nisas_bookmark"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "classmate",
+            "trust": "good"
+          },
+          "Eren": {
+            "familiarity": "classmate",
+            "trust": "good"
+          }
+        }
+      }
+    },
+    "relevant_character_canon": {
+      "Nisa": {
+        "age": 12,
+        "strength": "organizes_reading_activity",
+        "difficulty": "assumes_before_checking"
+      },
+      "Eren": {
+        "age": 12,
+        "strength": "asks_questions",
+        "difficulty": "echoes_friends_suspicion"
+      },
+      "Cem": {
+        "age": 12,
+        "strength": "careful_with_borrowed_books",
+        "difficulty": "feels_hurt_when_suspected"
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school_library",
+      "time": {
+        "period": "after_school",
+        "minutes_until_reading_activity": 30
+      },
+      "fixed_features": [
+        "reading_table",
+        "returned_books_shelf"
+      ],
+      "rules": [
+        "No magic or instant expert knowledge.",
+        "Use established notebook, return log, atlas and bookmark; no invented decisive clues."
+      ],
+      "spatial": {
+        "topology_sha256": "e10fbf35d79017ebd5337c1e4265bba25de856b5cda3b8ff7f6822abec74fae6",
+        "positions": {
+          "Nisa": "library_reading_room",
+          "Eren": "library_reading_room",
+          "Cem": "library_reading_room",
+          "red_bookmark": "library_reading_room",
+          "blue_atlas": "library_reading_room",
+          "preparation_notebook": "library_reading_room",
+          "return_log": "library_reading_room"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "red_bookmark": {
+        "owner": "Nisa",
+        "location": "library_reading_room",
+        "state": {
+          "color": "red",
+          "container": "blue_atlas",
+          "placed_by": "Nisa",
+          "found": false,
+          "returned_to_owner": false,
+          "intentionally_stolen": false
+        }
+      },
+      "blue_atlas": {
+        "owner": "library",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "returned_books_shelf",
+          "contains": [
+            "red_bookmark"
+          ],
+          "returned_by": "Cem",
+          "available": true
+        }
+      },
+      "preparation_notebook": {
+        "owner": "Nisa",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "reading_table",
+          "author": "Nisa",
+          "entry_day": "yesterday",
+          "entry_text": "Kırmızı ayracı mavi atlasın içine koydum. Nisa.",
+          "available": true
+        }
+      },
+      "return_log": {
+        "owner": "library",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "reading_table",
+          "entries": [
+            {
+              "book": "blue_atlas",
+              "returned_by": "Cem",
+              "day": "yesterday"
+            }
+          ],
+          "available": true
+        }
+      }
+    },
+    "topology": {
+      "schema_name": "spineforge-relay.spatial-topology.v1",
+      "locations": [
+        "library_reading_room"
+      ],
+      "edges": [],
+      "position_state_paths": {
+        "Nisa": "/characters/Nisa/location",
+        "Eren": "/characters/Eren/location",
+        "Cem": "/characters/Cem/location",
+        "red_bookmark": "/objects/red_bookmark/location",
+        "blue_atlas": "/objects/blue_atlas/location",
+        "preparation_notebook": "/objects/preparation_notebook/location",
+        "return_log": "/objects/return_log/location"
+      }
+    },
+    "prop_authorization_policy": {
+      "authorized_actionable_props": [
+        "red_bookmark",
+        "blue_atlas",
+        "preparation_notebook",
+        "return_log"
+      ],
+      "rule": "Only established evidence/resources; no new cameras, recordings, messages, fingerprints or adult solving the mystery."
+    },
+    "open_threads": [
+      "find_missing_bookmark",
+      "explain_actual_placement",
+      "correct_suspicion"
+    ],
+    "narrative_obligations": [
+      {
+        "id": "investigate_evidence",
+        "detail": "Nisa and Eren use established evidence before acquiring the hidden placement knowledge.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "recover_bookmark",
+        "detail": "Locate the real red bookmark in the established atlas and recover it for Nisa.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "correct_and_apologize",
+        "detail": "Both friends correct their suspicion and apologize to Cem on the basis of discovered evidence, without instant intimacy.",
+        "status": "OPEN",
+        "target_scene_id": null
+      }
+    ],
+    "assumptions": [
+      "Three classmates are 12; Turkish narration and six scenes are experiment defaults.",
+      "The bookmark was placed inside the blue atlas by Nisa yesterday; she does not initially remember or know its current location.",
+      "Nisa recorded that placement in her preparation notebook yesterday; no character initially knows the exact entry.",
+      "Cem returned the atlas without noticing the bookmark. He knows he returned the atlas, not where the bookmark is.",
+      "The written preparation entry and return log are authored established evidence, not inventions to rescue a scene.",
+      "Initial world/object truth is not automatically character knowledge; discovery must be earned in scenes.",
+      "All action can occur in the single established reading room; no travel is required."
+    ]
+  },
+  "request_sha256": "540abdcacc8105d0958a8a355515698ca6966b654c1dd135125cbecdbacb4914",
+  "seed_sha256": "777b2d432ad292a91d9390725d4fe03c2ad91e4d358c9e3dcc785ee0b1daeb88",
+  "instructions": "Plan a complete causal story from the request and immutable seed. Return one compact-story-plan.v3 JSON object matching output_schema, with no Markdown/outside prose. Be concise. Never regenerate a fixture, seed/canon/topology, state hashes, route metadata, coverage triples or projected spatial states.\n\nChoose meaningful decisions and consequences, using established abilities/resources/rules. Physical truth is not initial character knowledge: show discovery. Respect the deadline. Do not assume perfect repair or success unless requested. A resolution must be earned by events, not declared by metadata.\n\nEach event's first predicate is its principal actor/action/target; additional predicates describe explicit details. required_observer is a DECLARATION of who must observe/acknowledge that action. Code supplies the required OBSERVE predicate if absent; do not duplicate technical observer protocol. A visible physical fact is ordinarily DIRECT_OBSERVATION and needs no separate clue. Only if the plan actually calls for an additional physical demonstration, declare physical_clue with its subject (who shows it) and target (the established thing shown). Code supplies SHOW_PHYSICAL_CLUE. Do not output separate_physical_clue_required. Do not invent clues/items/lore/rules. These generated predicates are requirements for later writer/guard evidence, not automatic satisfaction.\n\nEvidence provenance is derived from evidence_mode. resulting_state contains only explicit consequences: complete replacement values at absolute JSON pointers into existing characters' condition/inventory/knowledge/relationships, existing objects' state, or world fields excluding rules/spatial. Never write revision/route metadata, entity locations, closures, spatial state, new entities, overlapping paths or incompatible intermediate values in one scene. Effects describe the scene's final values; planning only projects state.\n\nEach scene has narrative_purpose/objective/turn. goal_bindings maps each to a list of EVENT IDs; choosing an event includes its complete predicate specification. Every event needs a goal binding. ordered_dependencies has before/after event anchors (event_id, optional predicate_id for a specific sub-action; otherwise the principal action). Code expands coverage, so sub-actions remain covered.\n\nspatial_operations declares id, literal kind LOCATE/MOVE/BLOCK/RELEASE/ACCESS/JOINT_MOVE, subject (established tracked entity or declared group), target, event_id and applicable existing edge_id/constraint_id. No predicate_id: code reuses/derives the exact physical predicate from this declaration. No movement is guessed from narrative verbs; carrying an object can declare MOVE of that object plus explicit character moves as needed. No new entities/locations/passages. JOINT_MOVE needs a declared group and established shared hold from a previous scene. Spatial events must permit direct evidence.\n\nResolve existing open threads/obligations explicitly using kind/id and an evidence predicate reference in the resolving scene. Code preserves details and sets SATISFIED only for declared resolutions. Resolve all by the final scene. Optional existing-state preconditions are checked, not repaired. Bind every request requirement to a real scene/event/predicate with a rationale. Use the exact requested scene count and unique safe scene IDs. Optional defaults may be omitted; no unresolved questions. Existing structural/semantic guards still check the expanded proposal. Rewrite findings point into the expanded design: fix their source in this compact proposal.\n",
+  "output_schema": {
+    "$defs": {
+      "CarryGroupV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "carriers": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "title": "Carriers",
+            "type": "array"
+          },
+          "carried_object": {
+            "minLength": 1,
+            "title": "Carried Object",
+            "type": "string"
+          },
+          "carried_by_state_pointer": {
+            "title": "Carried By State Pointer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "carriers",
+          "carried_object",
+          "carried_by_state_pointer"
+        ],
+        "title": "CarryGroupV1",
+        "type": "object"
+      },
+      "CompactEventV3": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "predicates": {
+            "items": {
+              "$ref": "#/$defs/EventPredicateV1"
+            },
+            "minItems": 1,
+            "title": "Predicates",
+            "type": "array"
+          },
+          "required_observer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Required Observer"
+          },
+          "evidence_mode": {
+            "default": "DIRECT_OBSERVATION",
+            "enum": [
+              "DIRECT_OBSERVATION",
+              "ESTABLISHED_KNOWLEDGE",
+              "EITHER"
+            ],
+            "title": "Evidence Mode",
+            "type": "string"
+          },
+          "forbidden_evidence_subjects": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Forbidden Evidence Subjects",
+            "type": "array"
+          },
+          "resulting_state": {
+            "additionalProperties": true,
+            "title": "Resulting State",
+            "type": "object"
+          },
+          "physical_clue": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PhysicalClueV3"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "id",
+          "predicates"
+        ],
+        "title": "CompactEventV3",
+        "type": "object"
+      },
+      "CompactSceneV3": {
+        "additionalProperties": false,
+        "properties": {
+          "scene_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            "title": "Scene Id",
+            "type": "string"
+          },
+          "narrative_purpose": {
+            "minLength": 1,
+            "title": "Narrative Purpose",
+            "type": "string"
+          },
+          "objective": {
+            "minLength": 1,
+            "title": "Objective",
+            "type": "string"
+          },
+          "turn": {
+            "minLength": 1,
+            "title": "Turn",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Location"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/$defs/CompactEventV3"
+            },
+            "minItems": 1,
+            "title": "Events",
+            "type": "array"
+          },
+          "goal_bindings": {
+            "$ref": "#/$defs/GoalEventsV2"
+          },
+          "ordered_dependencies": {
+            "items": {
+              "$ref": "#/$defs/EventOrderV2"
+            },
+            "title": "Ordered Dependencies",
+            "type": "array"
+          },
+          "spatial_operations": {
+            "items": {
+              "$ref": "#/$defs/SpatialStepV2"
+            },
+            "title": "Spatial Operations",
+            "type": "array"
+          },
+          "resolutions": {
+            "items": {
+              "$ref": "#/$defs/Resolution"
+            },
+            "title": "Resolutions",
+            "type": "array"
+          },
+          "preconditions": {
+            "additionalProperties": true,
+            "title": "Preconditions",
+            "type": "object"
+          },
+          "entry_requirements": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Entry Requirements",
+            "type": "array"
+          },
+          "exit_requirements": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Exit Requirements",
+            "type": "array"
+          },
+          "immutable_facts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Immutable Facts",
+            "type": "array"
+          },
+          "forbidden": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Forbidden",
+            "type": "array"
+          },
+          "emotional_transition": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Emotional Transition"
+          },
+          "target_words_min": {
+            "default": 120,
+            "maximum": 2000,
+            "minimum": 40,
+            "title": "Target Words Min",
+            "type": "integer"
+          },
+          "target_words_max": {
+            "default": 260,
+            "maximum": 3000,
+            "minimum": 40,
+            "title": "Target Words Max",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scene_id",
+          "narrative_purpose",
+          "objective",
+          "turn",
+          "events",
+          "goal_bindings"
+        ],
+        "title": "CompactSceneV3",
+        "type": "object"
+      },
+      "EventAnchorV2": {
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Predicate Id"
+          }
+        },
+        "required": [
+          "event_id"
+        ],
+        "title": "EventAnchorV2",
+        "type": "object"
+      },
+      "EventOrderV2": {
+        "additionalProperties": false,
+        "properties": {
+          "before": {
+            "$ref": "#/$defs/EventAnchorV2"
+          },
+          "after": {
+            "$ref": "#/$defs/EventAnchorV2"
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ],
+        "title": "EventOrderV2",
+        "type": "object"
+      },
+      "EventPredicateV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "action": {
+            "minLength": 1,
+            "title": "Action",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "action",
+          "target"
+        ],
+        "title": "EventPredicateV1",
+        "type": "object"
+      },
+      "GoalEventsV2": {
+        "additionalProperties": false,
+        "properties": {
+          "narrative_purpose": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Narrative Purpose",
+            "type": "array"
+          },
+          "objective": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Objective",
+            "type": "array"
+          },
+          "turn": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Turn",
+            "type": "array"
+          }
+        },
+        "required": [
+          "narrative_purpose",
+          "objective",
+          "turn"
+        ],
+        "title": "GoalEventsV2",
+        "type": "object"
+      },
+      "PhysicalClueV3": {
+        "additionalProperties": false,
+        "properties": {
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "subject",
+          "target"
+        ],
+        "title": "PhysicalClueV3",
+        "type": "object"
+      },
+      "PredicateRef": {
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id",
+          "predicate_id"
+        ],
+        "title": "PredicateRef",
+        "type": "object"
+      },
+      "RequestBindingV1": {
+        "additionalProperties": false,
+        "properties": {
+          "requirement_id": {
+            "minLength": 1,
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "scene_id": {
+            "minLength": 1,
+            "title": "Scene Id",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          },
+          "rationale": {
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "scene_id",
+          "event_id",
+          "predicate_id",
+          "rationale"
+        ],
+        "title": "RequestBindingV1",
+        "type": "object"
+      },
+      "Resolution": {
+        "additionalProperties": false,
+        "description": "A proposed resolution must cite a predicate; semantic review judges entailment.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "THREAD",
+              "OBLIGATION"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "evidence": {
+            "$ref": "#/$defs/PredicateRef"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "evidence"
+        ],
+        "title": "Resolution",
+        "type": "object"
+      },
+      "SpatialStepV2": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "LOCATE",
+              "MOVE",
+              "BLOCK",
+              "RELEASE",
+              "ACCESS",
+              "JOINT_MOVE"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "edge_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Edge Id"
+          },
+          "constraint_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Constraint Id"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "subject",
+          "target",
+          "event_id"
+        ],
+        "title": "SpatialStepV2",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_name": {
+        "const": "spineforge.compact-story-plan.v3",
+        "default": "spineforge.compact-story-plan.v3",
+        "title": "Schema Name",
+        "type": "string"
+      },
+      "request_sha256": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Request Sha256",
+        "type": "string"
+      },
+      "seed_sha256": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Seed Sha256",
+        "type": "string"
+      },
+      "premise": {
+        "minLength": 1,
+        "title": "Premise",
+        "type": "string"
+      },
+      "character_arc": {
+        "minLength": 1,
+        "title": "Character Arc",
+        "type": "string"
+      },
+      "resolution": {
+        "minLength": 1,
+        "title": "Resolution",
+        "type": "string"
+      },
+      "scenes": {
+        "items": {
+          "$ref": "#/$defs/CompactSceneV3"
+        },
+        "maxItems": 12,
+        "minItems": 2,
+        "title": "Scenes",
+        "type": "array"
+      },
+      "carry_groups": {
+        "items": {
+          "$ref": "#/$defs/CarryGroupV1"
+        },
+        "title": "Carry Groups",
+        "type": "array"
+      },
+      "request_bindings": {
+        "items": {
+          "$ref": "#/$defs/RequestBindingV1"
+        },
+        "minItems": 1,
+        "title": "Request Bindings",
+        "type": "array"
+      },
+      "unresolved_questions": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Unresolved Questions",
+        "type": "array"
+      }
+    },
+    "required": [
+      "request_sha256",
+      "seed_sha256",
+      "premise",
+      "character_arc",
+      "resolution",
+      "scenes",
+      "request_bindings"
+    ],
+    "title": "CompactStoryPlanV3",
+    "type": "object"
+  }
+}
