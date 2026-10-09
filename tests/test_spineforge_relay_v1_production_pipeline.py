@@ -58,6 +58,14 @@ def provider(config,design,calls,defect=None):
         calls.append(stage)
         if stage=="planner":
             raw=compact_control_v3(design).model_dump(mode="json",exclude_defaults=True)
+            raw["schema_name"]="spineforge.compact-story-plan.v4"
+            if defect=="links" and calls.count("planner")==1:
+                scene=raw["scenes"][0]
+                event=scene["events"][0]["id"]
+                scene["ordered_dependencies"]=[dict(before=dict(event_id="OTHER_SCENE_EVENT"),after=dict(event_id=event))]
+                scene["spatial_operations"]=[dict(id="invalid_locate",kind="LOCATE",subject="Reader",target="reading_room",event_id=event)]
+            if defect=="links" and calls.count("planner")==2:
+                assert {f["code"] for f in payload["rewrite"]["findings"]}=={"NONLOCAL_ORDER_EVENT","UNAVAILABLE_SPATIAL_KIND"}
             if defect=="structural" and calls.count("planner")==1:raw["request_bindings"]=[]
             if defect=="nonconvergent":raw["request_bindings"]=[]
             if defect=="unsafe_id":raw["scenes"][0]["scene_id"]="../outside"
@@ -93,6 +101,14 @@ def run(tmp_path,kind="mosaic",defect=None):
     calls=[]
     result=execute(request_path=paths["request"],seed_path=paths["seed"],freeze_path=paths["freeze"],config_path=paths["config"],preflight=pf,output=tmp_path/"run",api_key="synthetic",call_fn=provider(config,design,calls,defect))
     return result,calls
+
+def test_link_findings_are_saved_and_sent_to_single_bounded_rewrite(tmp_path):
+    result,calls=run(tmp_path,"dialogue","links")
+    assert result["status"]=="ACCEPT"
+    assert calls.count("planner")==2 and calls.count("plan_guard")==1
+    proof=json.loads((tmp_path/"run"/"plan-1-structural.json").read_text())
+    assert proof["failure_type"]=="PlanLinkErrorV4"
+    assert len(proof["findings"])==2
 
 @pytest.mark.parametrize("kind,expected",[("mosaic",14),("dialogue",6)])
 def test_same_pipeline_handles_joint_delivery_and_nonspatial_decision(tmp_path,kind,expected):

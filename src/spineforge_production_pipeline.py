@@ -15,7 +15,7 @@ from src.spineforge_relay_v1_contracts import StrictModel,canonical_sha256
 from src.spineforge_relay_v1_compile import _value_at
 from src.spineforge_seeded_design import verify_frozen_seed,seeded_planner_input,SeededStoryDesignV2,validate_seeded_design
 from src.spineforge_story_design import StoryRequestV1
-from src.spineforge_production_compact_v3 import compact_planner_input_v3, CompactStoryPlanV3, compile_compact_v3
+from src.spineforge_production_compact_v4 import compact_planner_input_v4, parse_compact_v4, compile_compact_v4, PlanLinkErrorV4
 from src.spineforge_production_plan_review_v2 import build_review_input,bind_review
 from src.spineforge_production_config import RunConfigV1
 from src.model_registry import require_qualification_runtime_profile,normalize_openrouter_request
@@ -134,13 +134,13 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
     try:
         feedback=None;accepted=None
         for attempt in (1,2):
-            payload=compact_planner_input_v3(request,seed);payload["rewrite"]=feedback
+            payload=compact_planner_input_v4(request,seed);payload["rewrite"]=feedback
             payload["instructions"] += "\nScene/route IDs must match [A-Za-z0-9][A-Za-z0-9_-]{0,63}; never use paths or spaces."
             text=call("planner",attempt,payload)
             try:
-                compact=CompactStoryPlanV3.model_validate_json(text)
+                compact=parse_compact_v4(json.loads(text),seed)
                 save(output/f"plan-{attempt}-compact.json",compact.model_dump(mode="json"))
-                design=compile_compact_v3(request,seed,compact)
+                design=compile_compact_v4(request,seed,compact)
                 save(output/f"plan-{attempt}-expanded-design.json",design.model_dump(mode="json"))
                 fixture_path=output/f"plan-{attempt}-fixture.json";save(fixture_path,design.fixture)
                 engine.load_fixture(fixture_path)
@@ -148,7 +148,10 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
                 save(output/f"plan-{attempt}-structural.json",proof)
             except (ValueError,RuntimeError,KeyError,TypeError) as exc:
                 feedback=dict(kind="STRUCTURAL",reason=str(exc),candidate=text)
-                save(output/f"plan-{attempt}-structural.json",dict(status="REJECTED_DESIGN",failure_type=type(exc).__name__,message=str(exc)))
+                if isinstance(exc,PlanLinkErrorV4):feedback["findings"]=exc.findings
+                rejection=dict(status="REJECTED_DESIGN",failure_type=type(exc).__name__,message=str(exc))
+                if isinstance(exc,PlanLinkErrorV4):rejection["findings"]=exc.findings
+                save(output/f"plan-{attempt}-structural.json",rejection)
                 continue
             rows=engine.build_chain(fixture_path)[4]
             review_payload=build_review_input(request,seed,compact,design,rows)
