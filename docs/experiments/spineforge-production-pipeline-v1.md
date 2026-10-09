@@ -110,3 +110,12 @@ Two new independently recorded synthetic controls traverse the entire v3 + revie
 Fresh Q18 preparation uses the identical frozen robot request/seed/config, planner v3, bound semantic review v2 and a new source fingerprint. It proposes a new 28-call / additional USD 1.20 scope, USD 0.30 per call / 0.15 per scene call, one plan/scene rewrite and no retry. Q17 and prior closed allowances are not reused; no Q18 authority or provider dispatch exists. Production and merge remain disabled.
 
 Bound-review validation: 501 local Relay tests PASS in 253.67 seconds; targeted Q17/review controls 17 PASS and pipeline controls 17 PASS. Q18 proposed root SHA-256: d44574a9cda458c0fc049cd66f6fd84292ce36f597663b84a6b730e02fc298ba.
+
+
+## Q18 recorded partial-story rejection
+
+The user explicitly approved Q18 and it ran once from f98cada93885624d9011babc092a000dee0faf95, whose isolated zero-cost CI 37911216497 succeeded. The first Sol plan passed structure and the bound Sonnet plan review PASS. Scenes S1-S3 accepted on first attempts, advancing a working state to revision 3. At S4 the raw guard residual PASS selected source spans 0 and 5 for E4_Repair/P4b; frozen source-span admission requires unique ordered contiguous spans, so the invalid reference stopped the chain before any rewrite or later scene. No complete story, terminal state or S4 freeze is claimed.
+
+Q18 is immutable REJECT_NON_CONVERGENT / FAILED_CLOSED_NO_RETRY, CLOSED / SETTLED matching live registry: 10 calls, USD 0.348339, 116646 tokens, 162.237 summed call-latency seconds. Initial seed is unchanged; partial offline replay PASS confirms three accepted scenes, revision 3 and next S4_OnarimVeTest. Exact raw captures, bound plan review, frozen sources, accepted prefix and explicitly partial state comparison are retained under SFR-V1-Q18-BOUND-REVIEW-ROBOT-20261009. The raw S4 guard judgment was not admitted or repaired; no retry, reopening, production write or merge. Q13 USD 1.20 remains separately held.
+
+This exposes a generic evidence-selection protocol limitation: strict JSON bounds individual IDs but cannot enforce contiguity of a selected list. Future work should move permitted evidence ranges to code-owned choices rather than relying on model-selected index sequences. This is an unpaid next design step, not an approved new paid run.

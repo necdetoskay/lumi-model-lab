@@ -1,0 +1,172 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "e9a21b4d9aace762db61da34376b3207390f674eb6cfecc3b8e16a1e9884223b",
+  "scene_contract_sha256": "55a682b659fd59f86a6b2d08dcf7671acd552dba73cdfb2a7acfaa9b00420321",
+  "obligations": [
+    {
+      "id": "S4_OnarimVeTest-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Çözümü mevcut beceri ve araçlarla kazanılmış bir sonuca dönüştürmek.",
+      "required_predicates": [
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "P4a",
+          "subject": "Bora",
+          "action": "TIGHTENS",
+          "target": "loose_motor_connector"
+        },
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "P4b",
+          "subject": "Bora",
+          "action": "USES",
+          "target": "small_screwdriver"
+        },
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "OBSERVER",
+          "subject": "Ada",
+          "action": "OBSERVE",
+          "target": "Bora_TIGHTENS_loose_motor_connector"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4c",
+          "subject": "Ada",
+          "action": "TESTS",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4d",
+          "subject": "Ada",
+          "action": "BUILDS_ON_BORAS_REPAIR",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4e",
+          "subject": "robot",
+          "action": "RUNS",
+          "target": "loaded_program"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_TESTS_robot"
+        }
+      ]
+    },
+    {
+      "id": "S4_OnarimVeTest-objective",
+      "source_field": "objective",
+      "source_text": "Bağlantıyı sağlamlaştırıp yüklü programla kontrollü test yapmak.",
+      "required_predicates": [
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "P4a",
+          "subject": "Bora",
+          "action": "TIGHTENS",
+          "target": "loose_motor_connector"
+        },
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "P4b",
+          "subject": "Bora",
+          "action": "USES",
+          "target": "small_screwdriver"
+        },
+        {
+          "event_id": "E4_Repair",
+          "predicate_id": "OBSERVER",
+          "subject": "Ada",
+          "action": "OBSERVE",
+          "target": "Bora_TIGHTENS_loose_motor_connector"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4c",
+          "subject": "Ada",
+          "action": "TESTS",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4d",
+          "subject": "Ada",
+          "action": "BUILDS_ON_BORAS_REPAIR",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4e",
+          "subject": "robot",
+          "action": "RUNS",
+          "target": "loaded_program"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_TESTS_robot"
+        }
+      ]
+    },
+    {
+      "id": "S4_OnarimVeTest-turn",
+      "source_field": "turn",
+      "source_text": "Bora bağlantıyı sıkıştırdıktan sonra Ada'nın testi robotu yeniden çalıştırır.",
+      "required_predicates": [
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4c",
+          "subject": "Ada",
+          "action": "TESTS",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4d",
+          "subject": "Ada",
+          "action": "BUILDS_ON_BORAS_REPAIR",
+          "target": "robot"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "P4e",
+          "subject": "robot",
+          "action": "RUNS",
+          "target": "loaded_program"
+        },
+        {
+          "event_id": "E4_Test",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_TESTS_robot"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "E4_Repair",
+        "predicate_id": "P4a",
+        "subject": "Bora",
+        "action": "TIGHTENS",
+        "target": "loose_motor_connector"
+      },
+      "after": {
+        "event_id": "E4_Test",
+        "predicate_id": "P4c",
+        "subject": "Ada",
+        "action": "TESTS",
+        "target": "robot"
+      }
+    }
+  ]
+}
