@@ -1,0 +1,241 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "S4_RepairTest",
+    "source_state_revision": 3,
+    "source_state_sha256": "12df48ae29497cce7c5d54b8bad435ed087119c94915eab484f957f9dd321086",
+    "contract_sha256": "6319f9d11a461ea27a422866714199415d9c46ae11505bf29d8a767cbc6a4106",
+    "mutations": [
+      {
+        "path": "/objects/robot/state/fault",
+        "op": "SET",
+        "before": "loose_motor_connector",
+        "after": "connector_reseated"
+      },
+      {
+        "path": "/objects/robot/state/operational",
+        "op": "SET",
+        "before": false,
+        "after": true
+      },
+      {
+        "path": "/characters/Ada/condition/emotion",
+        "op": "SET",
+        "before": "anxious",
+        "after": "cautiously_relieved"
+      },
+      {
+        "path": "/characters/Bora/condition/emotion",
+        "op": "SET",
+        "before": "defensive",
+        "after": "cautiously_relieved"
+      },
+      {
+        "path": "/narrative_obligations",
+        "op": "SET",
+        "before": [
+          {
+            "id": "investigate_together",
+            "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+            "status": "SATISFIED",
+            "target_scene_id": null
+          },
+          {
+            "id": "choose_presentation",
+            "detail": "They decide and carry out an honest presentation of their project.",
+            "status": "OPEN",
+            "target_scene_id": null
+          },
+          {
+            "id": "repair_cooperation",
+            "detail": "They move from blame toward practical cooperation without instant intimacy.",
+            "status": "OPEN",
+            "target_scene_id": null
+          }
+        ],
+        "after": [
+          {
+            "id": "investigate_together",
+            "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+            "status": "SATISFIED",
+            "target_scene_id": null
+          },
+          {
+            "id": "choose_presentation",
+            "detail": "They decide and carry out an honest presentation of their project.",
+            "status": "OPEN",
+            "target_scene_id": null
+          },
+          {
+            "id": "repair_cooperation",
+            "detail": "They move from blame toward practical cooperation without instant intimacy.",
+            "status": "SATISFIED",
+            "target_scene_id": null
+          }
+        ]
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "broken-robot-ada-bora",
+    "revision": 4,
+    "global_spine_sha256": "efa3e45b0a4516ad50cc92a869c1b3244ffa80049e1d8887f49fc18d821339ee",
+    "story_intent_sha256": "f2f3a54d608b1354cf07caeb2b4bfac25caf3475857cd57301405a01268d52cd",
+    "characters": {
+      "Ada": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "cautiously_relieved",
+          "goal": "present_the_project"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "cautiously_relieved",
+          "goal": "understand_the_failure"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ],
+        "relationships": {
+          "Ada": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school",
+      "time": {
+        "day": "exhibition_day",
+        "period": "morning",
+        "minutes_until_opening": 20
+      },
+      "rules": [
+        "No magic or instant expert skills.",
+        "Tools and parts must come from established resources."
+      ],
+      "spatial": {
+        "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+        "positions": {
+          "Ada": "school_workshop",
+          "Bora": "school_workshop",
+          "robot": "school_workshop",
+          "toolkit": "school_workshop",
+          "project_notebook": "school_workshop"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "robot": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "power_source": "low_voltage_battery",
+          "battery_charged": true,
+          "operational": true,
+          "fault": "connector_reseated",
+          "fault_discovered": true,
+          "program_loaded": true,
+          "presented": false
+        }
+      },
+      "toolkit": {
+        "owner": "school",
+        "location": "school_workshop",
+        "state": {
+          "contents": [
+            "small_screwdriver"
+          ],
+          "available": true
+        }
+      },
+      "project_notebook": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "contains": [
+            "assembly_diagram",
+            "program_notes"
+          ],
+          "available": true
+        }
+      }
+    },
+    "open_threads": [
+      "decide_project_presentation",
+      "resolve_partner_blame"
+    ],
+    "resolved_threads": [
+      "understand_robot_failure"
+    ],
+    "completed_spine_beats": [
+      "S1_Failure",
+      "S2_Checks",
+      "S3_Discovery",
+      "S4_RepairTest"
+    ],
+    "next_spine_beat": "S5_DecisionMove",
+    "narrative_obligations": [
+      {
+        "id": "investigate_together",
+        "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      },
+      {
+        "id": "choose_presentation",
+        "detail": "They decide and carry out an honest presentation of their project.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "repair_cooperation",
+        "detail": "They move from blame toward practical cooperation without instant intimacy.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "S4_RepairTest",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "Ada, robotun gövdesini iki eliyle kavrayıp sabit tuttu. “Böyle oynar mı?” diye sordu.\n\nBora bağlantıyı gözden geçirip başını salladı. “Hayır, şimdi sabit. Ben sıkarken bırakma.”\n\nOkulun alet çantasındaki küçük tornavidayı aldı. Ada, Bora’nın tornavidayı gevşek motor bağlantısına dikkatle yerleştirdiğini gördü. Bora acele etmeden bağlantıyı yeniden oturttu ve küçük tornavidayla sabitledi. Ada bu sırada robotu kıpırdatmadan tutmayı sürdürdü.\n\n“Tamam,” dedi Bora. Sesindeki savunmacılık azalmıştı. “Şimdi deneyebiliriz.”\n\nAda ellerini çekmeden önce bağlantıya baktı. Bora’nın yaptığı iş sağlam görünüyordu ama ikisi de hemen sevinmedi. Ada robotu yeniden çalıştırdı. Bora, onun testi başlatmasını dikkatle izledi.\n\nKısa bir sessizliğin ardından robotun motorları Ada ile Bora’nın önünde yanıt verdi. Robot bu kez çalışıyordu.\n\nAda derin bir nefes aldı. “Oldu,” dedi, sonra daha ölçülü bir sesle ekledi: “En azından bu testte.”\n\nBora’nın yüzündeki gerginlik hafifledi. “Sen sabit tutmasaydın düzgün sıkamazdım.”\n\nAda başını salladı. “Sen de bağlantıyı fark edip düzelttin.”\n\nAralarındaki sorun bütünüyle kaybolmamıştı; yine de artık birbirlerinden uzaklaşmak yerine aynı işin farklı parçalarını üstlenebileceklerini biliyorlardı.",
+    "word_count": 158,
+    "contract_sha256": "6319f9d11a461ea27a422866714199415d9c46ae11505bf29d8a767cbc6a4106",
+    "state_before_sha256": "12df48ae29497cce7c5d54b8bad435ed087119c94915eab484f957f9dd321086",
+    "validation_sha256": "d52567e3fa23cb76004a464c7f47a97c81aa67048df860bcfebef3c1dc0c9ab8",
+    "state_after_sha256": "f0665e2a405b650c03065336013cc95b4e4ec83476f2b4bc5dd3ad5fde18cba0"
+  }
+}

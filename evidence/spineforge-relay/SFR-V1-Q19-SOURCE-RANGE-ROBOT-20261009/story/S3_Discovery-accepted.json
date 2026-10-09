@@ -1,0 +1,285 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "S3_Discovery",
+    "source_state_revision": 2,
+    "source_state_sha256": "cd5af6aed4b8ae87eace0b482263f6a6b684fbbc32ad944f62ed0e9142fb95de",
+    "contract_sha256": "598ebb3901ec1ae41f374d8fd7b056549df60391f4fdda458259b22031de3e9b",
+    "mutations": [
+      {
+        "path": "/objects/robot/state/fault_discovered",
+        "op": "SET",
+        "before": false,
+        "after": true
+      },
+      {
+        "path": "/characters/Ada/knowledge",
+        "op": "SET",
+        "before": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection"
+        ],
+        "after": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ]
+      },
+      {
+        "path": "/characters/Bora/knowledge",
+        "op": "SET",
+        "before": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection"
+        ],
+        "after": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ]
+      },
+      {
+        "path": "/open_threads",
+        "op": "SET",
+        "before": [
+          "understand_robot_failure",
+          "decide_project_presentation",
+          "resolve_partner_blame"
+        ],
+        "after": [
+          "decide_project_presentation",
+          "resolve_partner_blame"
+        ]
+      },
+      {
+        "path": "/resolved_threads",
+        "op": "SET",
+        "before": [],
+        "after": [
+          "understand_robot_failure"
+        ]
+      },
+      {
+        "path": "/narrative_obligations",
+        "op": "SET",
+        "before": [
+          {
+            "id": "investigate_together",
+            "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+            "status": "OPEN",
+            "target_scene_id": null
+          },
+          {
+            "id": "choose_presentation",
+            "detail": "They decide and carry out an honest presentation of their project.",
+            "status": "OPEN",
+            "target_scene_id": null
+          },
+          {
+            "id": "repair_cooperation",
+            "detail": "They move from blame toward practical cooperation without instant intimacy.",
+            "status": "OPEN",
+            "target_scene_id": null
+          }
+        ],
+        "after": [
+          {
+            "id": "investigate_together",
+            "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+            "status": "SATISFIED",
+            "target_scene_id": null
+          },
+          {
+            "id": "choose_presentation",
+            "detail": "They decide and carry out an honest presentation of their project.",
+            "status": "OPEN",
+            "target_scene_id": null
+          },
+          {
+            "id": "repair_cooperation",
+            "detail": "They move from blame toward practical cooperation without instant intimacy.",
+            "status": "OPEN",
+            "target_scene_id": null
+          }
+        ]
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "broken-robot-ada-bora",
+    "revision": 3,
+    "global_spine_sha256": "efa3e45b0a4516ad50cc92a869c1b3244ffa80049e1d8887f49fc18d821339ee",
+    "story_intent_sha256": "f2f3a54d608b1354cf07caeb2b4bfac25caf3475857cd57301405a01268d52cd",
+    "characters": {
+      "Ada": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "anxious",
+          "goal": "present_the_project"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "defensive",
+          "goal": "understand_the_failure"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "battery_charged",
+          "program_loaded",
+          "failure_requires_physical_inspection",
+          "loose_motor_connector"
+        ],
+        "relationships": {
+          "Ada": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school",
+      "time": {
+        "day": "exhibition_day",
+        "period": "morning",
+        "minutes_until_opening": 20
+      },
+      "rules": [
+        "No magic or instant expert skills.",
+        "Tools and parts must come from established resources."
+      ],
+      "spatial": {
+        "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+        "positions": {
+          "Ada": "school_workshop",
+          "Bora": "school_workshop",
+          "robot": "school_workshop",
+          "toolkit": "school_workshop",
+          "project_notebook": "school_workshop"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "robot": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "power_source": "low_voltage_battery",
+          "battery_charged": true,
+          "operational": false,
+          "fault": "loose_motor_connector",
+          "fault_discovered": true,
+          "program_loaded": true,
+          "presented": false
+        }
+      },
+      "toolkit": {
+        "owner": "school",
+        "location": "school_workshop",
+        "state": {
+          "contents": [
+            "small_screwdriver"
+          ],
+          "available": true
+        }
+      },
+      "project_notebook": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "contains": [
+            "assembly_diagram",
+            "program_notes"
+          ],
+          "available": true
+        }
+      }
+    },
+    "open_threads": [
+      "decide_project_presentation",
+      "resolve_partner_blame"
+    ],
+    "resolved_threads": [
+      "understand_robot_failure"
+    ],
+    "completed_spine_beats": [
+      "S1_Failure",
+      "S2_Checks",
+      "S3_Discovery"
+    ],
+    "next_spine_beat": "S4_RepairTest",
+    "narrative_obligations": [
+      {
+        "id": "investigate_together",
+        "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      },
+      {
+        "id": "choose_presentation",
+        "detail": "They decide and carry out an honest presentation of their project.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "repair_cooperation",
+        "detail": "They move from blame toward practical cooperation without instant intimacy.",
+        "status": "OPEN",
+        "target_scene_id": null
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "S3_Discovery",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "Ada proje defterindeki montaj şemasını robotun yanında açık tuttu. Bora, şemada gösterilen motor bağlantılarını robotun üzerindekilerle tek tek karşılaştırarak incelemeye başladı. Ada onun ellerini ve baktığı noktaları dikkatle izliyor, şemadaki sırayı kaçırmamasını sağlıyordu.\n\n“Sağ motorun bağlantısı yerinde,” dedi Bora. Sonra diğer tarafa eğildi. Önce sessiz kaldı; sanki gördüğünden emin olmak istiyordu. Geri çekilmek yerine parmağıyla yalnızca ilgili noktayı gösterdi.\n\n“Buraya bak. Sol motor bağlantısı tam oturmamış.”\n\nAda’nın aklına kısa bir an için yine kimin hata yaptığı sorusu geldi. Bunu dile getirmedi. Şemadaki bağlantı biçimine baktı, ardından robotun üzerindeki aynı bölgeyi yakından kontrol etti. Bağlantı, şemadaki gibi sıkıca yerleşmiş değildi; gevşek duruyordu.\n\n“Haklısın,” dedi Ada. “Gevşek motor bağlantısını bulduk. Bu yüzden motor güç alamıyor olabilir.”\n\nBora rahatlamış görünse de bağlantıya dokunmadı. Ada da defteri kapatmadı. Arızanın nedeni artık tahmin değil, ikisinin de gördüğü somut bir bulguydu; sıradaki işleri onu dikkatle yeniden sabitlemekti.",
+    "word_count": 141,
+    "contract_sha256": "598ebb3901ec1ae41f374d8fd7b056549df60391f4fdda458259b22031de3e9b",
+    "state_before_sha256": "cd5af6aed4b8ae87eace0b482263f6a6b684fbbc32ad944f62ed0e9142fb95de",
+    "validation_sha256": "5977c8bb0eeed4bbf8b7a9a3768fd4e53a0286071a06c27e8e3a448af78252e5",
+    "state_after_sha256": "12df48ae29497cce7c5d54b8bad435ed087119c94915eab484f957f9dd321086"
+  }
+}
