@@ -1,0 +1,132 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "3133c1365916903d47b202b81f13c6cbe85234744ece1980b211e399e909b9e7",
+  "scene_contract_sha256": "2bd04c39b1de1dcd413b0e390f8456f979f997983e552f34bbc3bb1d315c7858",
+  "obligations": [
+    {
+      "id": "S1_Kayip_ve_Kusku-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Kayıp ayracı ve kanıtsız kuşkunun doğurduğu incinmeyi kurmak.",
+      "required_predicates": [
+        {
+          "event_id": "E1_Kayip",
+          "predicate_id": "P1_Bulamaz",
+          "subject": "Nisa",
+          "action": "ARAMADA_BULAMAZ",
+          "target": "red_bookmark"
+        },
+        {
+          "event_id": "E1_Nisa_Kuskulanir",
+          "predicate_id": "P1_Kusku_Dile_Getirir",
+          "subject": "Nisa",
+          "action": "KANITSIZ_KUSKUYU_DILE_GETIRIR",
+          "target": "Cem"
+        },
+        {
+          "event_id": "E1_Nisa_Kuskulanir",
+          "predicate_id": "OBSERVER",
+          "subject": "Cem",
+          "action": "OBSERVE",
+          "target": "Nisa_KANITSIZ_KUSKUYU_DILE_GETIRIR_Cem"
+        },
+        {
+          "event_id": "E1_Eren_Yineler",
+          "predicate_id": "P1_Kuskuyu_Yineler",
+          "subject": "Eren",
+          "action": "KANITSIZ_KUSKUYU_YINELER",
+          "target": "Cem"
+        },
+        {
+          "event_id": "E1_Eren_Yineler",
+          "predicate_id": "OBSERVER",
+          "subject": "Cem",
+          "action": "OBSERVE",
+          "target": "Eren_KANITSIZ_KUSKUYU_YINELER_Cem"
+        }
+      ]
+    },
+    {
+      "id": "S1_Kayip_ve_Kusku-objective",
+      "source_field": "objective",
+      "source_text": "Nisa’nın etkinlik öncesinde ayracı bulamadığını göstermek.",
+      "required_predicates": [
+        {
+          "event_id": "E1_Kayip",
+          "predicate_id": "P1_Bulamaz",
+          "subject": "Nisa",
+          "action": "ARAMADA_BULAMAZ",
+          "target": "red_bookmark"
+        }
+      ]
+    },
+    {
+      "id": "S1_Kayip_ve_Kusku-turn",
+      "source_field": "turn",
+      "source_text": "Nisa’nın kuşkusunu Eren de yineleyince Cem incinir.",
+      "required_predicates": [
+        {
+          "event_id": "E1_Nisa_Kuskulanir",
+          "predicate_id": "P1_Kusku_Dile_Getirir",
+          "subject": "Nisa",
+          "action": "KANITSIZ_KUSKUYU_DILE_GETIRIR",
+          "target": "Cem"
+        },
+        {
+          "event_id": "E1_Nisa_Kuskulanir",
+          "predicate_id": "OBSERVER",
+          "subject": "Cem",
+          "action": "OBSERVE",
+          "target": "Nisa_KANITSIZ_KUSKUYU_DILE_GETIRIR_Cem"
+        },
+        {
+          "event_id": "E1_Eren_Yineler",
+          "predicate_id": "P1_Kuskuyu_Yineler",
+          "subject": "Eren",
+          "action": "KANITSIZ_KUSKUYU_YINELER",
+          "target": "Cem"
+        },
+        {
+          "event_id": "E1_Eren_Yineler",
+          "predicate_id": "OBSERVER",
+          "subject": "Cem",
+          "action": "OBSERVE",
+          "target": "Eren_KANITSIZ_KUSKUYU_YINELER_Cem"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "E1_Kayip",
+        "predicate_id": "P1_Bulamaz",
+        "subject": "Nisa",
+        "action": "ARAMADA_BULAMAZ",
+        "target": "red_bookmark"
+      },
+      "after": {
+        "event_id": "E1_Nisa_Kuskulanir",
+        "predicate_id": "P1_Kusku_Dile_Getirir",
+        "subject": "Nisa",
+        "action": "KANITSIZ_KUSKUYU_DILE_GETIRIR",
+        "target": "Cem"
+      }
+    },
+    {
+      "before": {
+        "event_id": "E1_Nisa_Kuskulanir",
+        "predicate_id": "P1_Kusku_Dile_Getirir",
+        "subject": "Nisa",
+        "action": "KANITSIZ_KUSKUYU_DILE_GETIRIR",
+        "target": "Cem"
+      },
+      "after": {
+        "event_id": "E1_Eren_Yineler",
+        "predicate_id": "P1_Kuskuyu_Yineler",
+        "subject": "Eren",
+        "action": "KANITSIZ_KUSKUYU_YINELER",
+        "target": "Cem"
+      }
+    }
+  ]
+}

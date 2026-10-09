@@ -13,3 +13,12 @@ Fresh Q22 preparation is SFR-V1-Q22-PLAN-V4-FINAL-PREFLIGHT-20261009. It keeps Q
 Proposed fresh scope: GPT-5.6 Sol planner/writer and Sonnet 5.5 plan/scene guards; at most 28 calls, USD 1.20 total, USD 0.30 per call and USD 0.15 per scene call; one plan rewrite and one rewrite per scene, no retry, one shared reservation, fail closed. Q21's closed grant cannot fund this experiment. Q13's USD 1.20 uncertain reservation remains separately held. Known request-driven spend Q14-Q21 remains USD 2.0319913 (robot USD 1.8767918; Q21 mystery USD 0.1551995); Q13 actual cost is unknown. Earlier lighthouse/greenhouse/mosaic experiments are excluded from this subtotal.
 
 One complete robot story (Q20) and a rejected fresh mystery (Q21) do not establish reliable support for every story request. Q22 must measure first-pass success separately from bounded-rewrite completion. Production LUMI is untouched; PR #264 stays draft and must not merge.
+
+
+## Recorded Q22 outcome
+
+The user replied "devam edelim" directly to the bounded Q22 approval question. Q22 ran once from fe3c9c4e8e88593df4b1cbb8ffa552958cf419c2 on 536 local GREEN tests, source CI queued. Planner structural/bound semantic review PASS on first attempt. Six scenes accepted, two scene rewrites (S1/S4), no source/model/config patch, retry or third attempt. Whole-story first-pass false; bounded completion true. Initial seed unchanged; revision 0->6, next null. Full raw calls, frozen source archive, replay, state comparison and live CLOSED/SETTLED reconciliation are preserved.
+
+18 calls / USD 0.6973545, 251485 tokens, 262.158 summed call-latency seconds. Known request-driven Q14-Q22 spend USD 2.7293458 / 62 complete calls; Q13 cost unknown and USD 1.20 held separately. Earlier Relay experiments excluded. Cost report SFR-REQUEST-PIPELINE-COST-Q22-20261009.
+
+Manual Codex editorial read FINDINGS_PRESENT, not an independent provider/golden judgment: final prose places the bookmark in the preparation notebook, while final object state records container null. Offline replay validates declared effects, not completeness of prose effects. Mechanical observer narration also persists. Technical ACCEPT is preserved, with this separate material state-fidelity finding; no retrospective repair or paid rerun. Next general hardening target is detection of unplanned prose effects and complete object/container updates, not a story-specific patch. Production and merge disabled.
