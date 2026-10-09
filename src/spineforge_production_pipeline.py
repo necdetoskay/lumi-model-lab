@@ -69,6 +69,7 @@ def prepare(request_path,seed_path,freeze_path,config_path):
 def request_for(stage,payload,config):
     model=config.planner if stage=="planner" else config.plan_guard
     prompt=payload["instructions"] if stage=="planner" else Path("prompts/spineforge_production_plan_guard.md").read_text(encoding="utf8")
+    prompt += "\nReturn exactly one valid JSON object. Do not include Markdown fences or prose outside the JSON object."
     kwargs=dict(model=model,system_prompt=prompt,user_prompt=json.dumps(payload,ensure_ascii=False,separators=(",",":")),
         temperature=.3 if stage=="planner" else 0.,max_tokens=config.planner_max_tokens if stage=="planner" else config.plan_guard_max_tokens,
         seed=None,request_class="spineforge_relay_v1_production_"+stage,response_format={"type":"json_object"},require_parameters=True)

@@ -163,3 +163,25 @@ def test_real_transport_refuses_unreserved_generic_planner(tmp_path):
     seed=verify_frozen_seed(paths["seed"],paths["freeze"])
     kwargs,_=request_for("planner",seeded_planner_input(request,seed),RunConfigV1())
     with pytest.raises(UnreservedRelayTransportError):_request_once(api_key="synthetic",**kwargs)
+
+
+@pytest.mark.parametrize("stage",["planner","plan_guard"])
+def test_json_mode_always_includes_explicit_json_instruction(stage):
+    kwargs,expected=request_for(stage,{"instructions":"Plan a story"},RunConfigV1())
+    assert "valid JSON object" in kwargs["system_prompt"]
+    assert expected["response_format"]=={"type":"json_object"}
+    assert any("JSON" in m["content"] for m in expected["messages"])
+
+
+def test_transport_failure_retains_http_diagnostics_without_credentials():
+    from src.generate import OpenRouterCallError
+    from src.spineforge_production_paid_entry import sanitized_failure
+    secret="synthetic-private-credential"
+    exc=OpenRouterCallError("never print",dict(stage="http_response",status_code=400,attempts=1,
+        error_body={"error":{"message":"JSON required "+secret,"code":400},"headers":{"Authorization":"Bearer "+secret},"api_key":secret},
+        request={"private":secret}))
+    record=sanitized_failure(exc,secret)
+    assert record["diagnostics"]["status_code"]==400
+    assert record["diagnostics"]["error_body"]["error"]["code"]==400
+    assert secret not in json.dumps(record) and "Authorization" not in json.dumps(record)
+    assert "request" not in record["diagnostics"]

@@ -14,7 +14,7 @@ The new production-paid-entry CLI requires an already registered GitHub shared g
 
 Provider dispatch uses single-use capabilities and the unchanged no-retry transport. Raw captures are saved before broker usage settlement, including responses later rejected by usage checks. Unknown dispatch holds the reservation. Total and per-call local admission is not a provider-enforced spend guarantee. Complete calls retain requests/responses, usage, cost and latency. Plan candidates, failures, reviews, final accepted design, every scene/state artifact, output prose and manifest are preserved. Output is exclusive; no continuation/retry of a consumed scope.
 
-The default proposed six-scene envelope is at most 28 calls (4 upstream + 24 scenes), USD 1.20 aggregate, USD 0.30 per call and USD 0.15 per scene call. No grant has been registered and no provider inference has run for this pipeline. Explicit fresh approval is required before paid execution; old grants stay CLOSED.
+The default proposed six-scene envelope is at most 28 calls (4 upstream + 24 scenes), USD 1.20 aggregate, USD 0.30 per call and USD 0.15 per scene call. Q13 was explicitly approved and dispatched once, but failed before any plan response. The Q13 grant is CLOSED and its reservation UNCERTAIN; actual charge is unknown and USD 1.20 remains held. No retry or reopening occurred. Q14 is a fresh unapproved proposal with the same seed and corrected request/diagnostic source fingerprints; explicit fresh approval is required.
 
 ## Controls and limits
 
@@ -25,3 +25,13 @@ A successful runtime result still requires separate editorial reading. State equ
 Historical engines and replayer are untouched. A versioned configurable engine/replayer preserves historical fingerprints while enabling explicit model profiles and shared end-to-end admission. Their duplicated frozen algorithm requires parity/regression checks; this is a versioning tradeoff, not a different story-specific implementation.
 
 Validation: 415 local Relay tests PASS in 214.52 seconds. Complete synthetic controls are saved under SFR-PRODUCTION-ZERO-COST-CONTROLS-20261009 with explicit provenance distinguishing simulated ledger figures from real billing. Q13 proposal/preflight/local proof are prepared under SFR-V1-Q13-GENERIC-PREFLIGHT-20261009; paid authorization remains false.
+
+## Q13 recorded failure and correction
+
+Q13 attempted one planner dispatch, received no complete response/usage and produced no plan, story or state transition. Result is REJECT_NON_CONVERGENT / FAILED_CLOSED_NO_RETRY. Known recorded cost 0 is not actual zero billing; actual cost is unknown. Live registry matches saved CLOSED authority and UNCERTAIN reservation. The baseline seed is unchanged.
+
+The original request selected json_object but contained no JSON instruction/literal in any message. Official OpenAI documentation requires this in JSON mode: https://developers.openai.com/api/docs/guides/structured-outputs . The request defect is confirmed; exact original HTTP cause is unproven because the initial error capture retained only exception type. A read-only key-status check succeeded but does not recover historical response or cost. Do not reinterpret this as a model/story-planning quality failure.
+
+The generic request builder now always includes an explicit single-JSON-object instruction. Transport failure capture now preserves HTTP status/error trace with credentials/header fields removed and the actual key redacted. Regression tests cover planner/reviewer instructions and error redaction. Q13 raw evidence is unchanged; archived source bytes from 715a471 match the approved preflight. Offline failure audit validates this partial dispatch without Git history, supporting shallow CI checkouts, and cannot claim full replay or paid success.
+
+Q14 preparation uses the same request/state/config and new source fingerprints; no authorization or inference exists for Q14. It cannot consume Q13's held allowance. All synthetic control provenance remains explicit.

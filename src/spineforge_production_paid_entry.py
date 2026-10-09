@@ -9,6 +9,19 @@ from src.spineforge_production_pipeline import execute,prepare
 from src.spineforge_relay_v1_q5t import save
 
 
+def sanitized_failure(exc,secret):
+    def clean(value):
+        if isinstance(value,str):return value.replace(secret,"[REDACTED]") if secret else value
+        if isinstance(value,list):return [clean(v) for v in value]
+        if isinstance(value,dict):
+            forbidden={"authorization","api_key","apikey","api-key","x-api-key","headers","token","access_token","refresh_token","password","secret"}
+            return {k:clean(v) for k,v in value.items() if k.lower() not in forbidden}
+        return value
+    trace=getattr(exc,"trace",None) or {}
+    fields={k:trace[k] for k in ("stage","status_code","model","request_class","attempts","retry_suppressed","error_body","error","raw_usage","usage","cost") if k in trace}
+    return dict(failure_type=type(exc).__name__,automatic_retry=False,diagnostics=clean(fields))
+
+
 def workspace_path(value,prefix):
     root=Path.cwd().resolve();path=(root/value).resolve()
     if not path.is_relative_to((root/prefix).resolve()):raise ReservationError("Path outside approved workspace area")
@@ -43,7 +56,7 @@ def main():
                 save(str(prefix)+"-request.json",actual)
                 return text,body,actual
             except Exception as exc:
-                save(str(prefix)+"-failure.json",dict(failure_type=type(exc).__name__,automatic_retry=False));raise
+                save(str(prefix)+"-failure.json",sanitized_failure(exc,kwargs.get("api_key")));raise
         def invoke(call):
             try:
                 return execute(request_path=paths["request"],seed_path=paths["seed"],freeze_path=paths["freeze"],config_path=paths["config"],
