@@ -1,0 +1,109 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "788e8fca74a1c3ec20b025832296b4ae2e163388af26a5f2f0fd722e0319c542",
+  "scene_contract_sha256": "51f9030255f54f1a33ec158554f2d598160080688cf6cc911e2afac612db9c37",
+  "obligations": [
+    {
+      "id": "S1_BasarisizBaslangic-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Sergi sabahındaki arızayı ve zaman baskısını doğrudan göstermek.",
+      "required_predicates": [
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "P1A",
+          "subject": "Ada",
+          "action": "ATTEMPTS_START",
+          "target": "robot"
+        },
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "P1B",
+          "subject": "robot",
+          "action": "FAILS_TO_OPERATE",
+          "target": "start_command"
+        },
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_ATTEMPTS_START_robot"
+        }
+      ]
+    },
+    {
+      "id": "S1_BasarisizBaslangic-objective",
+      "source_field": "objective",
+      "source_text": "Robotun gerçekten çalışmadığını doğrulamak.",
+      "required_predicates": [
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "P1A",
+          "subject": "Ada",
+          "action": "ATTEMPTS_START",
+          "target": "robot"
+        },
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "P1B",
+          "subject": "robot",
+          "action": "FAILS_TO_OPERATE",
+          "target": "start_command"
+        },
+        {
+          "event_id": "E1A_StartFailure",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_ATTEMPTS_START_robot"
+        }
+      ]
+    },
+    {
+      "id": "S1_BasarisizBaslangic-turn",
+      "source_field": "turn",
+      "source_text": "Ada, ilk gerginliğine rağmen Bora'yı suçlamak yerine kanıt toplamayı seçer.",
+      "required_predicates": [
+        {
+          "event_id": "E1B_ChooseEvidence",
+          "predicate_id": "P1C",
+          "subject": "Ada",
+          "action": "CHOOSES",
+          "target": "evidence_first_investigation"
+        },
+        {
+          "event_id": "E1B_ChooseEvidence",
+          "predicate_id": "P1D",
+          "subject": "Bora",
+          "action": "AGREES_TO",
+          "target": "evidence_first_investigation"
+        },
+        {
+          "event_id": "E1B_ChooseEvidence",
+          "predicate_id": "OBSERVER",
+          "subject": "Bora",
+          "action": "OBSERVE",
+          "target": "Ada_CHOOSES_evidence_first_investigation"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "E1A_StartFailure",
+        "predicate_id": "P1A",
+        "subject": "Ada",
+        "action": "ATTEMPTS_START",
+        "target": "robot"
+      },
+      "after": {
+        "event_id": "E1B_ChooseEvidence",
+        "predicate_id": "P1C",
+        "subject": "Ada",
+        "action": "CHOOSES",
+        "target": "evidence_first_investigation"
+      }
+    }
+  ]
+}

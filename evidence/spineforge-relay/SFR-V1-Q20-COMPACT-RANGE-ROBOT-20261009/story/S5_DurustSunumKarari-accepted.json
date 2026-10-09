@@ -1,0 +1,254 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "S5_DurustSunumKarari",
+    "source_state_revision": 4,
+    "source_state_sha256": "7e17c9cf313d4688971136f6b0367a419795ea9cc3b8ebf4f2e6c134be634ead",
+    "contract_sha256": "2f7ddc8a87837cd229f4d3655e712818e28b49baf72d8dbfd2a96832fefda3c2",
+    "mutations": [
+      {
+        "path": "/characters/Ada/relationships/Bora",
+        "op": "SET",
+        "before": {
+          "familiarity": "classmate_and_project_partner",
+          "trust": "strained"
+        },
+        "after": {
+          "familiarity": "classmate_and_project_partner",
+          "trust": "cautiously_rebuilding"
+        }
+      },
+      {
+        "path": "/characters/Bora/relationships/Ada",
+        "op": "SET",
+        "before": {
+          "familiarity": "classmate_and_project_partner",
+          "trust": "strained"
+        },
+        "after": {
+          "familiarity": "classmate_and_project_partner",
+          "trust": "cautiously_rebuilding"
+        }
+      },
+      {
+        "path": "/characters/Ada/knowledge",
+        "op": "SET",
+        "before": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "robot_program_confirmed",
+          "loose_motor_connector_is_fault"
+        ],
+        "after": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "robot_program_confirmed",
+          "loose_motor_connector_is_fault",
+          "honest_presentation_plan"
+        ]
+      },
+      {
+        "path": "/characters/Bora/knowledge",
+        "op": "SET",
+        "before": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "assembly_diagram_checked",
+          "loose_motor_connector_is_fault"
+        ],
+        "after": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "assembly_diagram_checked",
+          "loose_motor_connector_is_fault",
+          "honest_presentation_plan"
+        ]
+      },
+      {
+        "path": "/open_threads",
+        "op": "SET",
+        "before": [
+          "decide_project_presentation",
+          "resolve_partner_blame"
+        ],
+        "after": []
+      },
+      {
+        "path": "/resolved_threads",
+        "op": "SET",
+        "before": [
+          "understand_robot_failure"
+        ],
+        "after": [
+          "understand_robot_failure",
+          "resolve_partner_blame",
+          "decide_project_presentation"
+        ]
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "broken-robot-ada-bora",
+    "revision": 5,
+    "global_spine_sha256": "4b49614d44d4550bead5cd6b674a1b6b1ad63f86ff06e92e28dce68692412f86",
+    "story_intent_sha256": "0e405898de795a7311f0d5924c854400384291bc299eefca7f42ac29a4a28ca4",
+    "characters": {
+      "Ada": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "relieved_but_focused",
+          "goal": "present_the_project"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "robot_program_confirmed",
+          "loose_motor_connector_is_fault",
+          "honest_presentation_plan"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "cautiously_rebuilding"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "relieved_but_cautious",
+          "goal": "understand_the_failure"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "assembly_diagram_checked",
+          "loose_motor_connector_is_fault",
+          "honest_presentation_plan"
+        ],
+        "relationships": {
+          "Ada": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "cautiously_rebuilding"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school",
+      "time": {
+        "day": "exhibition_day",
+        "period": "morning",
+        "minutes_until_opening": 20
+      },
+      "rules": [
+        "No magic or instant expert skills.",
+        "Tools and parts must come from established resources."
+      ],
+      "spatial": {
+        "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+        "positions": {
+          "Ada": "school_workshop",
+          "Bora": "school_workshop",
+          "robot": "school_workshop",
+          "toolkit": "school_workshop",
+          "project_notebook": "school_workshop"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "robot": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "power_source": "low_voltage_battery",
+          "battery_charged": true,
+          "operational": true,
+          "fault": "none",
+          "fault_discovered": true,
+          "program_loaded": true,
+          "presented": false
+        }
+      },
+      "toolkit": {
+        "owner": "school",
+        "location": "school_workshop",
+        "state": {
+          "contents": [
+            "small_screwdriver"
+          ],
+          "available": true
+        }
+      },
+      "project_notebook": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "contains": [
+            "assembly_diagram",
+            "program_notes"
+          ],
+          "available": true
+        }
+      }
+    },
+    "open_threads": [],
+    "resolved_threads": [
+      "understand_robot_failure",
+      "resolve_partner_blame",
+      "decide_project_presentation"
+    ],
+    "completed_spine_beats": [
+      "S1_BasarisizBaslangic",
+      "S2_KontrolListesi",
+      "S3_GevsekBaglanti",
+      "S4_OnarimVeSinama",
+      "S5_DurustSunumKarari"
+    ],
+    "next_spine_beat": "S6_SergideSunum",
+    "narrative_obligations": [
+      {
+        "id": "investigate_together",
+        "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      },
+      {
+        "id": "choose_presentation",
+        "detail": "They decide and carry out an honest presentation of their project.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "repair_cooperation",
+        "detail": "They move from blame toward practical cooperation without instant intimacy.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "S5_DurustSunumKarari",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "Çalışan robotun düzenli hareketi atölyedeki sessizliği biraz yumuşattı. Ada sevincini bastırıp Bora’ya döndü.\n\n“Az önce arızayı anlamadan senden kuşkulanmakla hata ettim,” dedi. “Seni suçlamaya kalktığım için özür dilerim.”\n\nBora, Ada’nın özrünü sessizce dinledi. Hemen gülümsemedi; yine de yüzündeki sert ifade azaldı.\n\n“Birlikte kontrol etmeyi kabul ettin ve bağlantıyı bulunca bana yardımcı oldun,” dedi. “Bunu görmezden gelmeyeceğim. Keşke başta beni dinleseydin ama sonunda gerçekten iş birliği yaptın.”\n\nAda başını salladı. Aralarındaki kırgınlık tamamen kaybolmamıştı, fakat artık konuşmalarını engellemiyordu.\n\n“Sergide yalnızca çalışan robotu göstermeyelim,” diye önerdi Ada. “Önce robotun gösterimini yapalım. Sonra da motor bağlantısının gevşediğini, bunu nasıl araştırdığımızı ve birlikte nasıl onardığımızı anlatalım. Arızayı saklamak yerine çözüm sürecini de sunalım.”\n\nBora öneriyi dikkatle dinledi. Bir an robota baktı, ardından Ada’ya döndü.\n\n“Tamam,” dedi. “Dürüstçe anlatırsak projenin nasıl çalıştığını da, hata çıkınca ne yaptığımızı da göstermiş oluruz. Bu sunum biçimini kabul ediyorum.”\n\nAda’nın içindeki aceleci gerginliğin yerini sorumluluk alan bir umut aldı. Bora da hâlâ temkinliydi, ancak artık Ada’ya ölçülü bir güvenle bakıyordu.",
+    "word_count": 161,
+    "contract_sha256": "2f7ddc8a87837cd229f4d3655e712818e28b49baf72d8dbfd2a96832fefda3c2",
+    "state_before_sha256": "7e17c9cf313d4688971136f6b0367a419795ea9cc3b8ebf4f2e6c134be634ead",
+    "validation_sha256": "2f6398e09c202bcc02b1524639649929945b66ef084c4cdb0e4c884d03620541",
+    "state_after_sha256": "84a3dae8472710da76bea118a60e0629c6460811901a7a5c13c3cee2368773b7"
+  }
+}

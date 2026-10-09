@@ -1,0 +1,90 @@
+{
+  "schema_name": "spineforge-relay.joint-spatial-contract.v1",
+  "scene_contract_sha256": "6484e5fe045b4e9cc2fdf70b5e5e5d3c27a8d7f944e2fda34145cd391ce61d69",
+  "story_state_sha256": "84a3dae8472710da76bea118a60e0629c6460811901a7a5c13c3cee2368773b7",
+  "topology": {
+    "schema_name": "spineforge-relay.spatial-topology.v1",
+    "locations": [
+      "school_workshop",
+      "exhibition_hall"
+    ],
+    "edges": [
+      {
+        "id": "workshop_hall",
+        "source": "school_workshop",
+        "destination": "exhibition_hall",
+        "passage": "indoor_door",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Ada",
+          "Bora",
+          "robot",
+          "toolkit",
+          "project_notebook"
+        ]
+      }
+    ],
+    "position_state_paths": {
+      "Ada": "/characters/Ada/location",
+      "Bora": "/characters/Bora/location",
+      "robot": "/objects/robot/location",
+      "toolkit": "/objects/toolkit/location",
+      "project_notebook": "/objects/project_notebook/location"
+    }
+  },
+  "carry_groups": [],
+  "entry": {
+    "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+    "positions": {
+      "Ada": "school_workshop",
+      "Bora": "school_workshop",
+      "robot": "school_workshop",
+      "toolkit": "school_workshop",
+      "project_notebook": "school_workshop"
+    },
+    "access_constraints": []
+  },
+  "operations": [
+    {
+      "id": "SP6A",
+      "kind": "MOVE",
+      "subject": "Ada",
+      "target": "exhibition_hall",
+      "event_id": "E6A_AdaMoves",
+      "predicate_id": "P6A",
+      "edge_id": "workshop_hall",
+      "constraint_id": null
+    },
+    {
+      "id": "SP6B",
+      "kind": "MOVE",
+      "subject": "robot",
+      "target": "exhibition_hall",
+      "event_id": "E6B_RobotMoves",
+      "predicate_id": "P6B",
+      "edge_id": "workshop_hall",
+      "constraint_id": null
+    },
+    {
+      "id": "SP6C",
+      "kind": "MOVE",
+      "subject": "Bora",
+      "target": "exhibition_hall",
+      "event_id": "E6C_BoraMoves",
+      "predicate_id": "P6C",
+      "edge_id": "workshop_hall",
+      "constraint_id": null
+    }
+  ],
+  "exit": {
+    "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+    "positions": {
+      "Ada": "exhibition_hall",
+      "Bora": "exhibition_hall",
+      "robot": "exhibition_hall",
+      "toolkit": "school_workshop",
+      "project_notebook": "school_workshop"
+    },
+    "access_constraints": []
+  }
+}

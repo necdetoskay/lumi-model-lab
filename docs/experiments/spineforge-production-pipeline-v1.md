@@ -156,3 +156,12 @@ For the five recorded Q19 guard contexts, old/new conservative ceilings are resp
 Fresh Q20 is prepared from the unchanged immutable robot request/seed/config, planner v3, bound review v2 and compact source ranges v2. Proposed new scope: at most 28 calls / additional USD 1.20, USD 0.30 per call / 0.15 per scene call, one plan/scene rewrite, no retry, one shared reservation, Sol planner/writer + Sonnet guards. No Q20 authorization or inference exists; Q19 and prior scopes remain closed. Known robot spend is unchanged at USD 1.3331293; Q13 USD 1.20 remains separately held with unknown actual charge. No production or merge.
 
 Compact-range validation: 522 local Relay tests PASS in 303.78 seconds; eight focused compact-range controls PASS in 4.51 seconds and 17 pipeline controls PASS in 53.35 seconds. Q20 proposed root SHA-256: 1bbe47a7a43628c0844489dbb816cfea039d68eb32ff7d44e56245d4951c5e8d.
+
+
+## Q20 complete robot production
+
+The user explicitly approved Q20 and it executed once from frozen 52e8447c4af3f145918981c3f023e77aa8c300c4 on 522 local GREEN tests; source CI was queued. Initial plan structure and bound semantic review PASS. All six scenes accepted on first attempts, no plan/scene rewrite, revision 0->6, next_spine_beat null. Original immutable seed remains unchanged. Deterministic SceneDelta/StoryState freeze, complete offline replay and initial/final comparison PASS. This is the first complete paid generic robot request->plan->story result, not retrospective acceptance of prior failed runs.
+
+Q20: ACCEPT, 14 calls, USD 0.5436625, 184963 tokens, 224.465 summed call-latency seconds; CLOSED / SETTLED matches live registry. Planning/review USD 0.140907, scene calls USD 0.4027555. Known robot development spend Q14-Q20 totals USD 1.8767918 / 42 complete calls; Q13 actual cost unknown and USD 1.20 separately held. Detailed updated JSON/Turkish cost report is SFR-ROBOT-COST-STATUS-Q20-20261009.
+
+Full prose, state comparison, accepted bundles, raw calls, archived frozen sources, replay, bound plan review and chain audit are preserved under SFR-V1-Q20-COMPACT-RANGE-ROBOT-20261009. Manual Codex full-story editorial reading is PASS_WITH_WARNINGS: coherent child-led causal resolution using established resources, but mechanical observer narration, repetitive tension summaries and lightly dramatized blame/apology. This is not an independent paid editorial judgment, golden semantic label or qualification for all requests/models. Production and merge remain disabled; all prior rejected evidence is unchanged.
