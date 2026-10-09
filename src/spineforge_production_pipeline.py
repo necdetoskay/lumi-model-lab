@@ -15,6 +15,7 @@ from src.spineforge_relay_v1_contracts import StrictModel,canonical_sha256
 from src.spineforge_relay_v1_compile import _value_at
 from src.spineforge_seeded_design import verify_frozen_seed,seeded_planner_input,SeededStoryDesignV2,validate_seeded_design
 from src.spineforge_story_design import StoryRequestV1
+from src.spineforge_production_compact import compact_planner_input, CompactStoryPlanV1, compile_compact
 from src.spineforge_production_config import RunConfigV1
 from src.model_registry import require_qualification_runtime_profile,normalize_openrouter_request
 from src.spineforge_relay_v1_q5t import save
@@ -130,11 +131,14 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
     try:
         feedback=None;accepted=None
         for attempt in (1,2):
-            payload=seeded_planner_input(request,seed);payload["rewrite"]=feedback
+            payload=compact_planner_input(request,seed);payload["rewrite"]=feedback
             payload["instructions"] += "\nScene/route IDs must match [A-Za-z0-9][A-Za-z0-9_-]{0,63}; never use paths or spaces."
             text=call("planner",attempt,payload)
             try:
-                design=SeededStoryDesignV2.model_validate_json(text)
+                compact=CompactStoryPlanV1.model_validate_json(text)
+                save(output/f"plan-{attempt}-compact.json",compact.model_dump(mode="json"))
+                design=compile_compact(request,seed,compact)
+                save(output/f"plan-{attempt}-expanded-design.json",design.model_dump(mode="json"))
                 fixture_path=output/f"plan-{attempt}-fixture.json";save(fixture_path,design.fixture)
                 engine.load_fixture(fixture_path)
                 proof=validate_seeded_design(request,seed,design,fixture_path)
