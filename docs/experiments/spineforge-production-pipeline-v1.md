@@ -79,4 +79,19 @@ Both rejected Q15 proposals pass structural checks after an offline test-only fo
 
 Next real qualification must be a fresh v2 run from the unchanged robot request/seed, with a new source/contract fingerprint and a new shared grant. Q15 is not reusable. Production LUMI and PR merge remain outside scope.
 
-Compact v2 validation: **468 local Relay tests PASS in 294.37 seconds**. Seven Q15 immutable-failure audit controls and thirteen v2 protocol controls are included. Q16 prepared root SHA-256: `3746df9587b2bb67e925281c23c3109bbc83a903a69f31d4a271b9655423d17e`; no Q16 grant or inference exists.
+Compact v2 validation: **468 local Relay tests PASS in 294.37 seconds**. Seven Q15 immutable-failure audit controls and thirteen v2 protocol controls are included. Q16 prepared root SHA-256: `3746df9587b2bb67e925281c23c3109bbc83a903a69f31d4a271b9655423d17e`; This was the pre-run Q16 preparation; subsequent authorization and result are recorded below.
+
+
+## Q16 recorded rejection and compact v3
+
+The user explicitly approved Q16's fresh 28-call / additional USD 1.20 scope. Its frozen source commit 46d8e81 passed isolated zero-cost CI (run 37900137842). The initial planner and one structural rewrite both returned complete JSON but failed RequiredEventSpec validation: first OBSERVES/ACKNOWLEDGES did not satisfy required_observer's canonical OBSERVE/ACKNOWLEDGE contract; then separate_physical_clue_required=true lacked SHOW_PHYSICAL_CLUE. No Sonnet plan review, scene writer, state transition, retry or third attempt followed.
+
+Q16 is CLOSED / SETTLED at USD 0.1744970, two calls, 28820 tokens and 139.518 summed latency seconds, matching live registry. Source archives match the approved preflight. Offline failure audit reproduces the frozen v2 failures, verifies raw usage/cost/manifest/seed/closure, and preserves original diagnostics. Stable ValidationError constraint messages are compared independently of library URL/input-repr formatting; original raw bytes remain hash-checked. Q15 stays rejected at USD 0.1550770, Q14 at USD 0.1362735; Q13's unknown USD 1.20 stays held.
+
+V3 removes the remaining duplicated observer/clue protocol. required_observer declares intent; code adds the canonical OBSERVE requirement when absent, without renaming ordinary narrative verbs or claiming satisfaction. physical_clue explicitly names who shows what when a separate demonstration is actually required. Its compiler adds SHOW_PHYSICAL_CLUE and the derived flag. The ambiguous boolean is absent from the planner schema and rejected as an extra field. Direct observation alone never generates a separate clue. Unknown observers/clue actors, ID collisions and established-knowledge-only physical clues reject. Existing v1/v2 admission, source-span writer/guard evidence, state checks and bounded rewrites remain unchanged. All generated predicates are requirements, never invented guard verdicts or prose evidence.
+
+Both Q16 rejected proposals structurally pass a separate test-only v3 migration. For legacy ambiguous clue booleans, the migration control explicitly authors a subject/target proposal; this is not semantic equivalence, proof of a clue, retrospective acceptance or a third paid attempt. Q16 files remain unchanged. Independent joint-delivery and stationary decision controls run through the same v3 production pipeline, with actual inference/spend zero. These records are not golden semantic labels or production-quality stories.
+
+The remaining real qualification must start fresh from the same immutable robot request/seed under a new v3 fingerprint and shared grant. No old scope can be reopened/reused; production and merge remain out of scope.
+
+Compact v3 validation: **484 local Relay tests PASS in 243.28 seconds**. Q17 is prepared but unapproved at root SHA-256 `a75fcb8501041d279d32e299259d136d9de122e0f6d589fcbcf134c9d708634c`. No v3 paid dispatch/grant exists. Q15+Q16 actual spend this continuation is 4 calls / USD 0.329574; neither generated a story.

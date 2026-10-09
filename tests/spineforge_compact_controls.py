@@ -51,3 +51,19 @@ def upgrade_plan_control(plan):
 
 def compact_control_v2(design):
     return upgrade_plan_control(compact_control(design))
+
+
+def upgrade_v2_control(plan):
+    from src.spineforge_production_compact_v3 import CompactStoryPlanV3
+    raw=plan.model_dump(mode="json");raw["schema_name"]="spineforge.compact-story-plan.v3"
+    for scene in raw["scenes"]:
+        for event in scene["events"]:
+            clue=event.pop("separate_physical_clue_required")
+            if clue:
+                p=next((p for p in event["predicates"] if p["action"]=="SHOW_PHYSICAL_CLUE"),event["predicates"][0])
+                event["physical_clue"]={"subject":p["subject"],"target":p["target"]}
+    return CompactStoryPlanV3.model_validate(raw)
+
+
+def compact_control_v3(design):
+    return upgrade_v2_control(compact_control_v2(design))

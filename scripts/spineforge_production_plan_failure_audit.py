@@ -7,6 +7,7 @@ from src.spineforge_relay_v1_contracts import canonical_sha256
 from src.spineforge_seeded_design import verify_frozen_seed
 from src.spineforge_story_design import StoryRequestV1
 from src.spineforge_production_compact import CompactStoryPlanV1, compile_compact
+from src.spineforge_production_compact_v2 import CompactStoryPlanV2, compile_compact_v2
 from src.model_registry import normalize_openrouter_request
 
 
@@ -39,12 +40,22 @@ def verify_plan_failure(root, authority):
         require(body == read(f"transport-captures/dispatch-{attempt}-response.json") and body["choices"][0]["finish_reason"] == "stop", "complete response")
         text = read(prefix+"-text.json")["text"]
         require(text == body["choices"][0]["message"]["content"], "raw text")
-        plan = CompactStoryPlanV1.model_validate_json(text)
+        version=json.loads(text).get("schema_name")
+        if version=="spineforge.compact-story-plan.v1": model,compiler=CompactStoryPlanV1,compile_compact
+        elif version=="spineforge.compact-story-plan.v2": model,compiler=CompactStoryPlanV2,compile_compact_v2
+        else: raise RuntimeError("Saved plan failure mismatch: unsupported frozen planner version")
+        plan = model.model_validate_json(text)
         require(plan.model_dump(mode="json") == read(f"plan-{attempt}-compact.json"), "parsed proposal")
         structural = read(f"plan-{attempt}-structural.json")
-        try: compile_compact(request_input, seed, plan)
+        try: compiler(request_input, seed, plan)
         except (ValueError, RuntimeError, KeyError, TypeError) as exc:
-            require(structural == dict(status="REJECTED_DESIGN", failure_type=type(exc).__name__, message=str(exc)), "reproduced structural rejection")
+            if type(exc).__name__=="ValidationError":
+                # Library URLs and shortened input repr may vary by environment.
+                # Raw manifest still protects the original complete diagnostic.
+                require(structural["status"]=="REJECTED_DESIGN" and structural["failure_type"]=="ValidationError" and
+                    all(e["msg"] in structural["message"] for e in exc.errors(include_url=False,include_input=False)), "reproduced structural rejection")
+            else:
+                require(structural == dict(status="REJECTED_DESIGN", failure_type=type(exc).__name__, message=str(exc)), "reproduced structural rejection")
         else: raise RuntimeError("Saved plan failure mismatch: invalid plan admitted")
         failures.append(structural["message"])
         usage = body["usage"]

@@ -1,0 +1,5 @@
+The supplied StorySeed is frozen starting truth, not a finished story plan. Preserve its characters, canon, world, objects, topology, prop policy, initial threads and obligations exactly. Copy initial_state_template replacing only its first-beat placeholder with the actual route's first beat. Do not invent a spine/intent hash; downstream compilation binds them after planning.
+
+Return SeededStoryDesignV2 bound to both request_sha256 and seed_sha256. Develop the causal route and events from this state. Physical object facts are not automatically character knowledge: discovery must precede diagnosis-based action. Skills/canon are not guarantees of success or instant friendship. State changes occur through explicit scene contracts, never by silently improving starting state. Seed assumptions are visible design defaults, not extra user mandates.
+
+Leave the ending mechanism to the plan unless explicitly constrained. A satisfying resolution may use repair or an honest alternative demonstration when permitted by the request. Request fidelity and semantic knowledge acquisition still require independent review; exact seed equality alone does not prove them.
