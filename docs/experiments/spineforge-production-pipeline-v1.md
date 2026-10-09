@@ -14,7 +14,7 @@ The new production-paid-entry CLI requires an already registered GitHub shared g
 
 Provider dispatch uses single-use capabilities and the unchanged no-retry transport. Raw captures are saved before broker usage settlement, including responses later rejected by usage checks. Unknown dispatch holds the reservation. Total and per-call local admission is not a provider-enforced spend guarantee. Complete calls retain requests/responses, usage, cost and latency. Plan candidates, failures, reviews, final accepted design, every scene/state artifact, output prose and manifest are preserved. Output is exclusive; no continuation/retry of a consumed scope.
 
-The default proposed six-scene envelope is at most 28 calls (4 upstream + 24 scenes), USD 1.20 aggregate, USD 0.30 per call and USD 0.15 per scene call. Q13 was explicitly approved and dispatched once, but failed before any plan response. The Q13 grant is CLOSED and its reservation UNCERTAIN; actual charge is unknown and USD 1.20 remains held. No retry or reopening occurred. Q14 is a fresh unapproved proposal with the same seed and corrected request/diagnostic source fingerprints; explicit fresh approval is required.
+The default proposed six-scene envelope is at most 28 calls (4 upstream + 24 scenes), USD 1.20 aggregate, USD 0.30 per call and USD 0.15 per scene call. Q13 was explicitly approved and dispatched once, but failed before any plan response. The Q13 grant is CLOSED and its reservation UNCERTAIN; actual charge is unknown and USD 1.20 remains held. No retry or reopening occurred. Q14 was subsequently explicitly approved and dispatched once; its token-limit rejection is recorded below.
 
 ## Controls and limits
 
@@ -34,4 +34,15 @@ The original request selected json_object but contained no JSON instruction/lite
 
 The generic request builder now always includes an explicit single-JSON-object instruction. Transport failure capture now preserves HTTP status/error trace with credentials/header fields removed and the actual key redacted. Regression tests cover planner/reviewer instructions and error redaction. Q13 raw evidence is unchanged; archived source bytes from 715a471 match the approved preflight. Offline failure audit validates this partial dispatch without Git history, supporting shallow CI checkouts, and cannot claim full replay or paid success.
 
-Q14 preparation uses the same request/state/config and new source fingerprints; no authorization or inference exists for Q14. It cannot consume Q13's held allowance. All synthetic control provenance remains explicit.
+Q14 used its own explicitly approved scope, with the same immutable request/state/config and corrected source fingerprints. It did not consume Q13's held allowance. All synthetic control provenance remains explicit.
+
+
+## Q14 token-limit rejection
+
+Q14 was authorized, dispatched once and CLOSED / SETTLED at USD 0.1362735. GPT-5.6 Sol returned finish_reason=length: 6510 input tokens, 12000 output tokens, 18510 total, 110.569 seconds. Output includes 1688 reasoning tokens. The raw JSON is incomplete; no plan was parsed/admitted/reviewed, no scene writer ran, and revision stayed 0. No retry, rewrite, repair of partial JSON or continuation was performed. Q13 remains separately CLOSED / UNCERTAIN with USD 1.20 held.
+
+The approved source bytes from commit 33e9eb6df113cd64d23274d3c9c0f4d600a43729 are archived against the preflight hashes. The offline truncation audit verifies request/response captures, incomplete JSON, exact usage/cost, immutable seed, raw manifest, and closed settlement. It does not certify the partial plan's semantics or a generated story. Tamper controls reject reclassification, changed finish/usage/text/source and false settlement.
+
+The current planner boundary requires a fully materialized v5 fixture, including copied immutable state and repeated coverage/spatial/frame fields. The returned fragment also contains apparent protocol mismatches (route/scene identities, RESOLVED obligation status, metadata state writes); it has not undergone structural validation. Increasing the output ceiling alone would not resolve these concerns.
+
+Next proposed change: a versioned compact planner output containing explicit scene/event semantics, predicate bindings, state effects and event-bound thread/obligation resolutions. A deterministic generic compiler would inject frozen state/canon/topology, derive route metadata and repeated control fields, then retain existing structural and semantic admission. The compiler must not invent events/effects, silently close unresolved obligations or contain scenario-specific branches. This change is proposed, not yet implemented or qualified. No Q15 grant exists, and Q14's unused allowance cannot be reused.
