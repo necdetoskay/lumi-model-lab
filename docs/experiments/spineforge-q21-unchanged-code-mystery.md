@@ -29,3 +29,12 @@ Fresh proposed Q21 scope: at most 28 calls, additional USD 1.20, USD 0.30 per ca
 
 Q21 root preflight SHA-256: 059f9bd90e8e5006a5b969cfcb1503626971847aa6659838f2bde9839301ba88.
 Seed SHA-256: 777b2d432ad292a91d9390725d4fe03c2ad91e4d358c9e3dcc785ee0b1daeb88.
+
+
+## Recorded outcome
+
+The user explicitly approved Q21 and it ran once from 3d740835e1cab777c8da504eeb61798066f9c928, with the identical Q20 source/config vector. Initial planner failed Unknown ordered event due to cross-scene references in local ordering lists. Its single rewrite removed those refs, then failed LOCATE can only establish an untracked entity at a declared location. Both LOCATE subjects already exist in tracked positions; their targets are a fixed shelf/object container rather than declared locations. LOCATE is still exposed by the schema even though seeded spatial subjects must already be tracked. No plan guard, scene writer, accepted plan/state or third attempt followed. No code, prompt, test, model/config or contract patch was made.
+
+Q21 is immutable REJECT_NON_CONVERGENT, 2 planner calls / USD 0.1551995, 26705 tokens, 132.411 summed call-latency seconds, CLOSED / SETTLED matching live registry. First-pass success false; unchanged-code completion false; seed unchanged and revision 0. Same-code offline failure audit reproduces both failures and checks raw transport/source/input/manifest/closure. Source equality before/after is proven. This is a planning-protocol failure, not a measured scene-writing failure or semantic golden verdict. Full records: SFR-V1-Q21-FRESH-MYSTERY-20261009.
+
+Known request-driven robot + mystery experiment spend Q14-Q21 is USD 2.0319913 / 44 complete calls; Q13 actual cost unknown and USD 1.20 separately held. Robot-only cost remains USD 1.8767918; mystery Q21 adds USD 0.1551995. Runtime remains unchanged, production and merge disabled.

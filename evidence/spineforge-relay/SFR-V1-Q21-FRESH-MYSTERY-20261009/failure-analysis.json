@@ -1,0 +1,64 @@
+{
+  "status": "OBSERVED_PROTOCOL_FAILURES",
+  "first_attempt_cross_scene_order_refs": [
+    {
+      "pointer": "/scenes/2/ordered_dependencies/0/before/event_id",
+      "value": "E2_Kayit",
+      "scene_id": "S3_Hazirlik_Notu"
+    },
+    {
+      "pointer": "/scenes/3/ordered_dependencies/0/before/event_id",
+      "value": "E3_Not",
+      "scene_id": "S4_Atlasin_Ici"
+    },
+    {
+      "pointer": "/scenes/4/ordered_dependencies/0/before/event_id",
+      "value": "E4_Ayrac",
+      "scene_id": "S5_Gercegi_Duzeltmek"
+    },
+    {
+      "pointer": "/scenes/5/ordered_dependencies/0/before/event_id",
+      "value": "E5_Duzeltme",
+      "scene_id": "S6_Ozur_ve_Etkinlik"
+    }
+  ],
+  "rewrite_locate_operations": [
+    {
+      "pointer": "/scenes/3/spatial_operations/0",
+      "operation": {
+        "id": "SO4_AtlasKonum",
+        "kind": "LOCATE",
+        "subject": "blue_atlas",
+        "target": "returned_books_shelf",
+        "event_id": "E4_Atlas",
+        "edge_id": null,
+        "constraint_id": null
+      },
+      "subject_already_tracked": true,
+      "target_is_declared_location": false
+    },
+    {
+      "pointer": "/scenes/3/spatial_operations/2",
+      "operation": {
+        "id": "SO4_AyracKonum",
+        "kind": "LOCATE",
+        "subject": "red_bookmark",
+        "target": "blue_atlas",
+        "event_id": "E4_Ayrac",
+        "edge_id": null,
+        "constraint_id": null
+      },
+      "subject_already_tracked": true,
+      "target_is_declared_location": false
+    }
+  ],
+  "findings": [
+    "Ordered dependencies resolve within the current scene; narrative scene-to-scene chronology cannot be encoded with cross-scene anchors there.",
+    "LOCATE establishes an untracked entity at a declared topology location, not discovery of a bookmark inside a tracked atlas.",
+    "The seeded compiler requires a tracked subject for a spatial step while the exposed LOCATE option requires an untracked subject in spatial replay; this is a contextual schema capability mismatch."
+  ],
+  "remaining_semantic_conditions_adjudicated": false,
+  "planner_or_writer_quality_gold_label": false,
+  "source_changed": false,
+  "retrospective_repair": false
+}
