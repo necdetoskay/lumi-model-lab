@@ -3,12 +3,12 @@ from pathlib import Path
 import pytest
 from src.spineforge_production_config import RunConfigV1
 from src.spineforge_production_pipeline import prepare,execute,request_for,validate_review
-from src.spineforge_production_range_story import runner_request_for
+from src.spineforge_production_compact_range_story import runner_request_for
 from src.spineforge_seeded_design import StorySeedV1,freeze_seed,SeededStoryDesignV2
 from src.spineforge_story_design import StoryRequestV1
 from src.spineforge_relay_v1_contracts import canonical_sha256
 from src.spineforge_relay_v1_spatial import SpatialTopologyV1
-from src.spineforge_production_source_ranges import range_table as source_table
+from src.spineforge_production_compact_ranges import range_table as source_table
 from tests.test_spineforge_relay_v1_joint_movement import fake as scene_fake
 from tests.spineforge_compact_controls import compact_control_v3
 
@@ -76,7 +76,7 @@ def provider(config,design,calls,defect=None):
             if stage=="guard":
                 report=json.loads(text);table=payload["source_range_table"];report["source_sha256"]=table["source_sha256"]
                 for row in report["event_evidence"]:
-                    quote=row.pop("exact_text");index=next(i for i,s in enumerate(table["spans"]) if s["text"]==quote);row["source_range_id"]=next(r[0] for r in table["ranges"] if r[1:]==[index,index])
+                    quote=row.pop("exact_text");index=next(i for i,s in enumerate(table["units"]) if s[2]==quote);row["source_range_id"]=next(r[0] for r in table["ranges"] if r[1:]==[index,index])
                 text=json.dumps(report)
             expected=runner_request_for(stage,payload,config)[1]
         if defect=="transport":raise RuntimeError("Synthetic transport failure")

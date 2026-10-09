@@ -20,8 +20,8 @@ from src.spineforge_production_plan_review_v2 import build_review_input,bind_rev
 from src.spineforge_production_config import RunConfigV1
 from src.model_registry import require_qualification_runtime_profile,normalize_openrouter_request
 from src.spineforge_relay_v1_q5t import save
-from src import spineforge_production_range_story as engine
-from scripts.spineforge_production_range_replay import verify_story
+from src import spineforge_production_compact_range_story as engine
+from scripts.spineforge_production_compact_range_replay import verify_story
 
 
 class PlanFindingV1(StrictModel):
@@ -58,7 +58,7 @@ def prepare(request_path,seed_path,freeze_path,config_path):
     paths.update(Path(p) for p in ["src/spineforge_seeded_design.py","src/spineforge_story_design.py",
         "src/spineforge_joint_spatial.py","src/spineforge_source_spans.py","src/spineforge_v19_transport.py",
         "src/model_registry.py","src/generate.py","src/spineforge_span_story_runner.py","src/spineforge_span_paid_entry.py",
-        "scripts/spineforge_production_replay.py","scripts/spineforge_production_range_replay.py","configs/model_runtime_profiles.yaml","requirements.txt",
+        "scripts/spineforge_production_replay.py","scripts/spineforge_production_range_replay.py","scripts/spineforge_production_compact_range_replay.py","configs/model_runtime_profiles.yaml","requirements.txt",
         "prompts/spineforge_seeded_design.md","prompts/spineforge_story_design.md","prompts/spineforge_span_guard.md"])
     return dict(schema="spineforge.production-preflight.v1",request_sha256=canonical_sha256(request),
         seed_sha256=canonical_sha256(seed),config=config.model_dump(mode="json"),max_calls=4+4*request.scene_count,
