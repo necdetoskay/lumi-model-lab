@@ -96,7 +96,8 @@ def test_untrusted_raw_injections_fail_closed(damage):
     elif damage == "wrong_quote":
         raw["goal_claims"][0]["evidence"][0]["quote"] = "The unicorn found the red bookmark."
     elif damage == "whitespace_drift":
-        raw["goal_claims"][0]["evidence"][0]["quote"] += " "
+        evidence = raw["goal_claims"][0]["evidence"][0]
+        evidence["quote"] = evidence["quote"].replace(" ", "  ", 1)
     elif damage == "uncertain_location":
         raw["character_claims"][0].update(field="location", value="unknown_room",
                                           epistemic_type=None)
