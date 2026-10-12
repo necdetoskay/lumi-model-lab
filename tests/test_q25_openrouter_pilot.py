@@ -151,8 +151,8 @@ def test_genuinely_one_paid_call_then_hash_bound_readonly_audit(tmp_path):
     assert d == before
     assert sorted(p.name for p in dir_.iterdir()) == [
         "ledger.json", "offline-gate-result.json",
-        "provider-response.json", "raw-extraction.json", "request.json",
-        "semantic-review-packet.json",
+        "provider-response.json", "raw-extraction.json", "raw-terminal-hypothesis.json",
+        "request.json", "semantic-review-packet.json",
     ]
     packet = load(dir_ / "semantic-review-packet.json")
     assert packet["candidate_count"] == 15
@@ -160,6 +160,11 @@ def test_genuinely_one_paid_call_then_hash_bound_readonly_audit(tmp_path):
     assert ledger["review_packet_sha256"] == review_packet_digest(packet)
     assert ledger["review_candidate_count"] == 15
     assert ledger["review_status"] == "AWAITING_EXTERNAL_REVIEW"
+    candidate = load(dir_ / "raw-terminal-hypothesis.json")
+    assert candidate["schema"] == "q25.raw-terminal-hypothesis.v1"
+    assert candidate["state_commit_authorized"] is False
+    assert candidate["independent_semantic_review_completed"] is False
+    assert ledger["terminal_state_complete"] is False
     assert ledger["independent_semantic_review_complete"] is False
     assert packet["semantic_support_certified"] is False
     assert packet["state_commit_authorized"] is False
