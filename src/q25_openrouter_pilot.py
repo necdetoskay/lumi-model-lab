@@ -365,6 +365,10 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
     ledger["wire_sha256"] = request_sha
     started = time.monotonic()
     ledger["attempted_calls"] = 1
+    # A rejected HTTP POST is still a provider request attempt. It may be
+    # billable; do not report 0 calls or 0 USD without a provider usage record.
+    ledger["provider_calls"] = 1
+    ledger["billing_status"] = "UNKNOWN_UNTIL_VERIFIED_PROVIDER_USAGE"
     try:
         body = client(url=API + "/chat/completions", method="POST",
                       api_key=api_key, payload=wire, timeout=100)
@@ -382,6 +386,7 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
         }
         if usage.get("cost") is None:
             raise PilotStop("No actual cost returned: cannot certify budget")
+        ledger["billing_status"] = "PROVIDER_REPORTED_USAGE"
         if decimal_price(usage["cost"]) > cap:
             raise PilotStop("Actual provider cost exceeded authorized pilot limit")
         parsed = parse_completion(body)
