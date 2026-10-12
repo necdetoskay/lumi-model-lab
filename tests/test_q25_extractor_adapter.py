@@ -228,3 +228,33 @@ def test_cli_is_read_only_and_replays_q24_exactly():
     response = json.loads(subprocess.check_output(command, encoding="utf8", text=True))
     assert response == offline_replay(**d)
     assert before == [hashlib.sha256(x.read_bytes()).hexdigest() for x in paths]
+
+
+def test_repeated_quote_requires_exact_surrounding_context():
+    d = q24()
+    raw = d["raw_output"]
+    quote = raw["objects"][0]["mention"]["quote"]
+    d["prose"] += "\nSECOND APPEARANCE: " + quote
+    raw["source_sha256"] = digest(d["prose"])
+    with pytest.raises(ValueError, match="Ambiguous repeated quote"):
+        materialize_quotes(seed=d["seed"], prose=d["prose"], raw_output=raw)
+    # The original occurrence has a different immediate prefix; the artificial
+    # repeated occurrence is chosen without trusting a provider-supplied offset.
+    raw["objects"][0]["mention"]["context_before"] = "SECOND APPEARANCE: "
+    materialized = materialize_quotes(seed=d["seed"], prose=d["prose"], raw_output=raw)
+    assert materialized["entity_proposal"]["objects"][0]["mention"]["start"] == (
+        len(d["prose"]) - len(quote)
+    )
+    # A forged context may not silently fall back to the first matching quote.
+    raw["objects"][0]["mention"]["context_before"] = "NONEXISTENT PREFIX"
+    with pytest.raises(ValueError, match="does not exist"):
+        materialize_quotes(seed=d["seed"], prose=d["prose"], raw_output=raw)
+
+
+def test_unique_quote_context_is_also_checked_not_ignored():
+    d = q24()
+    item = d["raw_output"]["objects"][0]["mention"]
+    item["context_after"] = "unrelated invented ending"
+    with pytest.raises(ValueError, match="does not exist"):
+        materialize_quotes(seed=d["seed"], prose=d["prose"],
+                           raw_output=d["raw_output"])
