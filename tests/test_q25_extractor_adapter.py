@@ -241,6 +241,9 @@ def test_repeated_quote_requires_exact_surrounding_context():
     # The original occurrence has a different immediate prefix; the artificial
     # repeated occurrence is chosen without trusting a provider-supplied offset.
     raw["objects"][0]["mention"]["context_before"] = "SECOND APPEARANCE: "
+    for relation in raw["terminal_relations"]:
+        if relation["evidence"]["quote"] == quote:
+            relation["evidence"]["context_before"] = "SECOND APPEARANCE: "
     materialized = materialize_quotes(seed=d["seed"], prose=d["prose"], raw_output=raw)
     assert materialized["entity_proposal"]["objects"][0]["mention"]["start"] == (
         len(d["prose"]) - len(quote)
