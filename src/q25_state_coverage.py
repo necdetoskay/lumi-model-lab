@@ -16,6 +16,113 @@ def ptr(*parts):
     return "/" + "/".join(str(p).replace("~", "~0").replace("/", "~1") for p in parts)
 
 
+
+def compare_seed_to_candidates(*, seed, draft, property_claims, coverage_rows, entity_proposal):
+    """Read-only seed-to-terminal-candidate diff; no claim is a verified state write."""
+    object_changes = []
+    relations = entity_proposal.get("terminal_relations", [])
+    def relation_quotes(subject):
+        return [r["evidence"] for r in relations
+                if r["subject"] == "object:" + subject and r["kind"] == "IN_CONTAINER"]
+
+    for object_id, original in sorted(seed["objects"].items()):
+        state = original.get("state", {})
+        candidate = draft["objects"][object_id]
+        for field in ("container", "contains"):
+            if field not in state:
+                continue
+            before = state[field]
+            after = (candidate["container"]["ref"] if candidate["container"]["status"] == "KNOWN"
+                     else None) if field == "container" else candidate["contains"]
+            if before != after:
+                quotes = relation_quotes(object_id)
+                if field == "contains":
+                    quotes = [q for nested in state[field] + after for q in relation_quotes(nested)]
+                object_changes.append(dict(
+                    path=ptr("objects", object_id, field), seed_value=before,
+                    candidate_terminal_value=after, evidence=quotes,
+                    disposition="STRUCTURAL_CANDIDATE_NOT_SEMANTICALLY_CERTIFIED"))
+    for key, claim in sorted(property_claims.items()):
+        object_id, field = key
+        object_changes.append(dict(
+            path=ptr("objects", object_id, "properties", field),
+            seed_value=seed["objects"][object_id]["state"][field],
+            candidate_terminal_value=claim["proposed_terminal_value"],
+            evidence=claim["evidence"],
+            disposition="SOURCE_BOUND_CANDIDATE_NOT_SEMANTICALLY_CERTIFIED"))
+    character_changes = []
+    for claim in draft["proposed_character_changes"]:
+        actor, field = claim["actor"], claim["field"]
+        initial = seed["characters"][actor]
+        if field == "knowledge":
+            before = list(initial["knowledge"])
+        elif field in ("emotion", "health"):
+            before = initial["condition"][field]
+        elif field == "relationship_trust":
+            before = initial["relationships"][claim["other_actor"]]["trust"]
+        else:
+            before = initial["location"]
+        character_changes.append(dict(
+            actor=actor, field=field, other_actor=claim.get("other_actor"),
+            seed_value=before, candidate_terminal_value=claim["value"],
+            epistemic_type=claim.get("epistemic_type"),
+            evidence=[claim["evidence"]],
+            disposition="PARTIAL_KNOWLEDGE_CANDIDATE" if field == "knowledge"
+                        else "SOURCE_BOUND_CANDIDATE_NOT_SEMANTICALLY_CERTIFIED"))
+
+    goal_changes = []
+    for claim in draft["proposed_goal_outcomes"]:
+        goal_changes.append(dict(
+            actor=claim["actor"],
+            seed_goal=seed["characters"][claim["actor"]]["condition"]["goal"],
+            proposed_outcome=claim["outcome"], evidence=claim["evidence"],
+            disposition="CANDIDATE_NOT_SEMANTICALLY_CERTIFIED"))
+
+    obligation_by_id = {c["obligation_id"]: c for c in draft["proposed_narrative_obligations"]}
+    obligations = []
+    for item in seed.get("narrative_obligations", []):
+        proposal = obligation_by_id.get(item["id"])
+        obligations.append(dict(
+            obligation_id=item["id"], seed_status=item["status"],
+            proposed_outcome=proposal["outcome"] if proposal else None,
+            evidence=proposal["evidence"] if proposal else [],
+            disposition="PENDING_INDEPENDENT_SEMANTIC_REVIEW" if proposal else "UNASSESSED"))
+
+    thread_by_id = {c["thread_id"]: c for c in draft["proposed_thread_outcomes"]}
+    threads = []
+    for item in seed.get("open_threads", []):
+        proposal = thread_by_id.get(item)
+        threads.append(dict(
+            thread_id=item, seed_status="OPEN",
+            proposed_outcome=proposal["outcome"] if proposal else None,
+            evidence=proposal["evidence"] if proposal else [],
+            disposition="PENDING_INDEPENDENT_SEMANTIC_REVIEW" if proposal else "UNASSESSED"))
+
+    missing = [dict(path=r["path"], status=r["status"], note=r["note"])
+               for r in coverage_rows if r["status"] in ("UNKNOWN", "UNASSESSED", "PARTIAL_CANDIDATES")]
+    proposed_new = [dict(object_id=k, owner=v["owner"], location=v["location"],
+                         identity_status="PROPOSED")
+                    for k, v in sorted(draft["objects"].items()) if v["identity_status"] == "PROPOSED"]
+    return dict(
+        schema="q25.seed-candidate-comparison.v1",
+        acceptance="NOT_ACCEPTED_INCOMPLETE",
+        object_changes=object_changes,
+        new_object_candidates=proposed_new,
+        character_changes=character_changes,
+        goal_outcomes=goal_changes,
+        narrative_obligations=obligations,
+        proposed_closed_obligations=[o["obligation_id"] for o in obligations
+                                      if o["proposed_outcome"] == "SATISFIED"],
+        independently_certified_closed_obligations=[],
+        contested_or_unverified_obligations=[o["obligation_id"] for o in obligations],
+        open_threads=threads,
+        explicit_gaps=missing,
+        world_time=dict(seed_value=seed.get("world", {}).get("time"),
+                        candidate_terminal_value=None, disposition="UNASSESSED"),
+        state_commit_authorized=False,
+    )
+
+
 def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal, property_proposal=None):
     """Rebuild the full Q25 candidate lineage and identify every unresolved slot."""
     original = copy.deepcopy(seed)
@@ -126,6 +233,9 @@ def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal, pro
         **({"property_proposal_sha256": property_view["proposal_sha256"]} if property_view else {}),
         coverage="INCOMPLETE_REQUIRES_SEMANTIC_ADJUDICATION_AND_EXTRACTION",
         fields=rows, counts=counts,
+        initial_to_candidate_comparison=compare_seed_to_candidates(
+            seed=seed, draft=draft, property_claims=property_claims,
+            coverage_rows=rows, entity_proposal=entity_proposal),
         blocking_field_count=len(rows),
         state_commit_authorized=False,
         full_story_state_qualified=False,
