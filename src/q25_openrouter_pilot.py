@@ -231,6 +231,18 @@ def build_wire_request(*, seed, prose, model, max_tokens):
         "Existing object state is a SEED, not automatically the final value. "
         "Cite exact contiguous original quotations, at least 8 characters. "
         "Only propose objects truly introduced in the story as ORDINARY_OBJECT. "
+        "RELATION ID CONTRACT: subject must be object:<existing_object_id> "
+        "or new:<proposed_object_key>. Do not use bare object IDs. "
+        "For IN_CONTAINER target use object:<existing_object_id> or new:<key>; "
+        "for HELD_BY and OWNED_BY target use character:<actor>; "
+        "for LOCATED_IN target use location:<location_id>; "
+        "null target only means the relation was explicitly cleared. "
+        "CHARACTER CLAIM CONTRACT: epistemic_type is OBSERVED, REPORTED, "
+        "BELIEF or INFERRED only when field=knowledge; for emotion, health, "
+        "location or relationship_trust always use null or omit epistemic_type. "
+        "A speaker's uncertainty about trust is not independently verified "
+        "terminal trust. Do not infer a closed lid from merely putting a box "
+        "back on a shelf. Keep ambiguity unknown instead of guessing. "
         "Do not return a story rewrite, state commit, or semantic judgement."
     )
     context = {
