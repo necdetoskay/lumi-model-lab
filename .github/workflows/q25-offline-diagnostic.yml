@@ -28,6 +28,7 @@ on:
       - src/q25_semantic_review.py
       - src/q25_review_worklist.py
       - src/q25_provisional_review.py
+      - src/q25_terminal_reconciler.py
       - tests/test_q25_*.py
       - evidence/q25/**
       - .github/workflows/q25-offline-diagnostic.yml
@@ -50,7 +51,7 @@ jobs:
       - name: Install offline test dependencies
         run: python -m pip install "pydantic>=2.8,<3" pytest
       - name: Run citation, authority and frozen baseline tests
-        run: python -m pytest -q tests/test_q25_offline_diagnostic.py tests/test_q25_frozen_baseline.py tests/test_q25_entity_candidates.py tests/test_q25_entity_frozen_case.py tests/test_q25_state_admission.py tests/test_q25_admission_frozen_case.py tests/test_q25_story_evidence.py tests/test_q25_state_coverage.py tests/test_q25_terminal_properties.py tests/test_q25_extractor_adapter.py tests/test_q25_openrouter_pilot.py tests/test_q25_semantic_review.py tests/test_q25_review_worklist.py tests/test_q25_provisional_review.py
+        run: python -m pytest -q tests/test_q25_offline_diagnostic.py tests/test_q25_frozen_baseline.py tests/test_q25_entity_candidates.py tests/test_q25_entity_frozen_case.py tests/test_q25_state_admission.py tests/test_q25_admission_frozen_case.py tests/test_q25_story_evidence.py tests/test_q25_state_coverage.py tests/test_q25_terminal_properties.py tests/test_q25_extractor_adapter.py tests/test_q25_openrouter_pilot.py tests/test_q25_semantic_review.py tests/test_q25_review_worklist.py tests/test_q25_provisional_review.py tests/test_q25_terminal_reconciler.py
 
   paid-extractor-pilot:
     # Never starts from PRs, pushes, or CI retries. The run is manually
