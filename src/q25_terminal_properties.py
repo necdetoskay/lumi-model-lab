@@ -56,7 +56,7 @@ def property_candidates(*, seed, prose, entity_proposal, policy, proposal):
         if claim.object_id not in objects:
             raise ValueError("New or unknown object property needs independent admission")
         raw = objects[claim.object_id].get("state", {})
-        if claim.property_name not in raw or claim.property_name in ("container", "contains"):
+        if claim.property_name not in raw or claim.property_name in ("container", "contains", "owner", "location", "held_by", "identity_status", "inventory"):
             raise ValueError("Only existing non-relational properties are eligible")
         old = raw[claim.property_name]
         new = claim.proposed_terminal_value
