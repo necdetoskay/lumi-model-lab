@@ -93,6 +93,28 @@ branch `experiment/q25-narrative-memory-intent`, selects a pinned
 model, and sets `execute_paid=true`. The state check remains
 `SOURCE_BOUND_CANDIDATES_ONLY`, not `ACCEPTED`.
 
+## Same-run semantic review packet (2026-10-12)
+
+The single-call paid pilot now creates `semantic-review-packet.json` **within
+the same archive directory** after the offline model-response checks succeed.
+It groups each untrusted claim by type, includes the original exact citation
+and a stable claim identifier, and records `review_packet_sha256`,
+`review_candidate_count`, `review_status=AWAITING_EXTERNAL_REVIEW` and
+`independent_semantic_review_complete=false` in the immutable run ledger.
+The workflow's existing private 7-day artifact upload includes this file.
+
+This change makes *inspection* repeatable; it is **not an automatic semantic
+judge**. A response failing structural/seed/source checks produces no review
+packet, cannot claim evidence verification, and never triggers another paid
+request. Even a correctly generated packet cannot authorize `StoryState`
+writes. Inspect `docs/canonical/Q25_SEMANTIC_REVIEW_BOUNDARY_V1.md` for the
+separate human-review contract.
+
+The previous dry-run, historic Q24 model-shaped fixture, and fake-transport
+tests **are not genuine LLM extraction measurements**. Real paid execution
+still requires a human-initiated GitHub Actions dispatch. Never bypass a
+manual workflow security refusal using another execution tool.
+
 ## Formal acceptance gates still missing
 
 - Actual live OpenRouter extraction result from unseen story
