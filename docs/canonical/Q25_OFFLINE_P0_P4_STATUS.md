@@ -27,3 +27,19 @@ Thirteen focused local tests passed, covering invalid citations, authority bound
 Evidence lineage records exact source commits and byte hashes. These are selected archived artifacts, not a complete historical-engine replay. Q22/Q24 historical decisions, sources and closed paid scopes remain untouched. Paid provider calls and actual incremental model cost: zero.
 
 Next engineering work is an agreed acceptance policy for narrative versus persistence, source-supported semantic adjudication and authorized new-entity/relationship representation. Independent human benchmark and the creative Intent/Memory/Outline hypothesis are still open; this commit does not qualify the story pipeline.
+
+## Ordinary-object candidate representation
+
+`src/q25_entity_candidates.py` now represents explicit source-bound ordinary-object proposals and terminal IN_CONTAINER, HELD_BY, OWNED_BY and LOCATED_IN relations. A relation graph distinguishes ownership from direct holding and containment; contents are derived from the same edges. Seed/source mismatches, bad spans, unknown or wrong-kind references, duplicate terminal relations, holding/containment conflicts, self-containment and cycles fail closed. New DECISIVE_CLUE proposals are outside this policy. A misleading ordinary-object role remains a semantic risk; typed validation is not a clue detector.
+
+The saved Q24 case at `evidence/q25/Q25-ENTITY-CANDIDATE-20261012` represents the bookmark inside a candidate reading book, with the atlas contents empty and no direct hand-held bookmark. Original Nisa ownership is preserved. The book's owner is not inferred from her reading it. This input is an offline Codex annotation, not a successful automatic extraction or independently adjudicated label.
+
+Candidate IDs are deterministic for seed/source/mention/key, with explicit local references; aliases are not automatically merged or carried across stories. The view supports individually identified objects and unit inventory counts; ambiguous quantities, new actors and new topology need another policy. It is not a full canonical state conversion or simulation of all physics. Entity admission, exact canonical identity, full state coverage and semantic evidence remain pending; no persistence grant is issued. Historical STATE_MODEL_GAP and Q24 rejection records remain unchanged.
+
+Read-only replay:
+
+```sh
+python -m src.q25_entity_candidates --seed evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/seed-input.json --prose-record evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/writer-2-text.json --proposal evidence/q25/Q25-ENTITY-CANDIDATE-20261012/proposal.json
+```
+
+CLI success means a candidate was represented, not that a story or final state was accepted. The expanded Q25 test suite now includes ordinary-object negatives and frozen-case/CLI replay. Earlier 13-test record remains historical; the current engineering check records the new count and source fingerprints. No paid call or production change.
