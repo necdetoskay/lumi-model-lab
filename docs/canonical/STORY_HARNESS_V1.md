@@ -81,7 +81,7 @@ Future integration order:
 ## MVP verification
 
 ```bash
-python -m unittest -q tests.test_story_harness_v1
+python -m unittest discover -s tests -p 'test_story_harness_v1.py' -q
 python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --repo-root .
 ```
 
