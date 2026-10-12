@@ -101,7 +101,12 @@ def test_untrusted_interpretations_fail_closed(damage):
     case = saved_case()
     findings = case["assessments"]["findings"]
     if damage in ("wrong_seed_hash", "wrong_source_hash", "wrong_annotations_hash"):
-        case["assessments"][damage[6:] + "_sha256"] = "0" * 64
+        key = {
+            "wrong_seed_hash": "seed_sha256",
+            "wrong_source_hash": "source_sha256",
+            "wrong_annotations_hash": "annotations_sha256",
+        }[damage]
+        case["assessments"][key] = "0" * 64
     elif damage == "missing":
         findings.pop()
     elif damage == "duplicate":
