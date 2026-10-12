@@ -9,13 +9,14 @@ import json
 from src.q25_entity_candidates import fingerprint
 from src.q25_state_admission import build_draft
 from src.q25_story_evidence import extend_draft
+from src.q25_terminal_properties import property_candidates
 
 
 def ptr(*parts):
     return "/" + "/".join(str(p).replace("~", "~0").replace("/", "~1") for p in parts)
 
 
-def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal):
+def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal, property_proposal=None):
     """Rebuild the full Q25 candidate lineage and identify every unresolved slot."""
     original = copy.deepcopy(seed)
     admission = build_draft(seed=seed, prose=prose, proposal=entity_proposal, policy=policy)
@@ -25,6 +26,11 @@ def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal):
         story_proposal=story_proposal,
     )
     draft = extension["draft_state"]
+    property_view = (property_candidates(seed=seed, prose=prose,
+        entity_proposal=entity_proposal, policy=policy, proposal=property_proposal)
+        if property_proposal is not None else None)
+    property_claims = ({(c['object_id'], c['property_name']): c
+        for c in property_view['proposed_properties']} if property_view else {})
     rows = []
     seen = set()
 
@@ -50,8 +56,12 @@ def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal):
             row(ptr(*base, field), "OBJECT", "STRUCTURAL_ONLY",
                 "Relation consistency only, not independent semantic verification")
         for field in sorted(obj.get("properties", {})):
-            row(ptr(*base, "properties", field), "OBJECT_PROPERTY", "UNASSESSED",
-                "Initial property copied from seed; terminal value is unverified")
+            property_claim = property_claims.get((object_id, field))
+            row(ptr(*base, "properties", field), "OBJECT_PROPERTY",
+                "CANDIDATE" if property_claim else "UNASSESSED",
+                "Source-bound terminal change is only a candidate; initial property remains unchanged"
+                if property_claim else "Initial property copied from seed; terminal value is unverified",
+                property_claim["evidence"] if property_claim else [])
         if obj["identity_status"] == "PROPOSED":
             row(ptr(*base, "identity_status"), "ENTITY_ADMISSION", "CANDIDATE",
                 "New ordinary object structurally eligible only; semantic role unresolved")
@@ -113,6 +123,7 @@ def coverage_report(*, seed, prose, entity_proposal, policy, story_proposal):
         seed_sha256=fingerprint(seed),
         source_sha256=draft["source_sha256"],
         story_proposal_sha256=extension["story_proposal_sha256"],
+        **({"property_proposal_sha256": property_view["proposal_sha256"]} if property_view else {}),
         coverage="INCOMPLETE_REQUIRES_SEMANTIC_ADJUDICATION_AND_EXTRACTION",
         fields=rows, counts=counts,
         blocking_field_count=len(rows),
@@ -137,12 +148,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("seed", "prose-record", "entity-proposal", "policy", "story-proposal"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--property-proposal", type=Path)
     args = parser.parse_args()
     read = lambda p: json.loads(p.read_text(encoding="utf8"))
     result = coverage_report(
         seed=read(args.seed), prose=read(args.prose_record)["text"],
         entity_proposal=read(args.entity_proposal), policy=read(args.policy),
         story_proposal=read(args.story_proposal),
+        property_proposal=read(args.property_proposal) if args.property_proposal else None,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
