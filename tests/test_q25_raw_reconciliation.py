@@ -120,6 +120,35 @@ def test_invalid_response_cannot_reach_reconciliation(corruption):
         project_raw(**values)
 
 
+
+def test_frozen_q24_raw_envelope_still_projects_without_annotation_worklist():
+    root = Path("evidence/q25")
+    old = root / "Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24"
+    q24_data = {
+        "seed": json.loads((old / "seed-input.json").read_text(encoding="utf8")),
+        "prose": json.loads((old / "writer-2-text.json").read_text(encoding="utf8"))["text"],
+        "raw_output": json.loads((
+            root / "Q25-STORY-STATE-CANDIDATES-20261012/raw-extractor-replay.json"
+        ).read_text(encoding="utf8")),
+        "policy": json.loads((
+            root / "Q25-ADMISSION-DRAFT-20261012/policy.json"
+        ).read_text(encoding="utf8")),
+    }
+    result = project_raw(**q24_data)
+    objects = result["candidate_state"]["objects"]
+    book = next(k for k in objects if k.startswith("new_"))
+    assert objects["red_bookmark"]["container"]["ref"] == book
+    assert objects["blue_atlas"]["contains"] == []
+    assert objects["red_bookmark"]["properties"]["found"]["terminal_proposal"] is True
+    assert objects["red_bookmark"]["properties"]["returned_to_owner"][
+        "terminal_proposal"] is None  # old Q24 raw output never claimed it
+    assert result["blocking_field_count"] == 70
+    assert set(result["proposed_obligation_closures"]) == {
+        "investigate_evidence", "recover_bookmark", "correct_and_apologize"}
+    assert result["approved_obligation_closures"] == []
+    assert result["full_story_state_qualified"] is False
+
+
 def test_readonly_cli_projects_saved_json_on_unseen_story(tmp_path):
     case = saved()
     sources = {
