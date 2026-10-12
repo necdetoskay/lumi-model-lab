@@ -9,10 +9,11 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, StrictInt
 
 from src.q25_entity_candidates import fingerprint
 from src.q25_extractor_adapter import Quote, RawExtractorOutput, materialize_quotes, offline_replay
@@ -22,8 +23,8 @@ from src.q25_raw_reconciliation import project_raw
 
 class ClockCandidate(Strict):
     field: str = Field(min_length=1, pattern=r"^minutes_until_[a-z0-9_]+$")
-    expected_seed_value: int
-    proposed_terminal_value: int
+    expected_seed_value: StrictInt
+    proposed_terminal_value: StrictInt
     evidence: Quote
 
 
@@ -63,6 +64,38 @@ def _quoted_span(prose: str, source_sha: str, quote: Quote):
     return span.model_dump(mode="json")
 
 
+def _explicit_turkish_minute_anchor(text: str, amount: int) -> bool:
+    """Require an actually quoted number + dakika, not an unsupported guess.
+
+    Bounded v1: Turkish 0..99 and plain digits. Semantic understanding,
+    terminal relevance and chronology are still reserved for human review.
+    """
+    words = {"sıfır": 0, "bir": 1, "iki": 2, "üç": 3,
+             "dört": 4, "beş": 5, "altı": 6, "yedi": 7,
+             "sekiz": 8, "dokuz": 9}
+    tens = {"on": 10, "yirmi": 20, "otuz": 30,
+            "kırk": 40, "elli": 50, "altmış": 60,
+            "yetmiş": 70, "seksen": 80, "doksan": 90}
+
+    def parse_token(token):
+        if token.isascii() and token.isdecimal():
+            return int(token)
+        return words.get(token, tens.get(token))
+
+    lowered = text.lower()
+    for match in re.finditer(r"(?<!\\w)dakika\\b", lowered):
+        parts = lowered[:match.start()].strip().split()
+        if not parts:
+            continue
+        last = parts[-1]
+        if parse_token(last) == amount:
+            return True
+        if (len(parts) >= 2 and parts[-2] in tens and last in words
+                and tens[parts[-2]] + words[last] == amount):
+            return True
+    return False
+
+
 def project_supplement(*, seed, prose, raw_output, policy, supplement):
     """Derive two kinds of *unverified* terminal observations; leave raw unchanged."""
     inputs = copy.deepcopy((seed, prose, raw_output, policy, supplement))
@@ -100,6 +133,9 @@ def project_supplement(*, seed, prose, raw_output, policy, supplement):
             raise ValueError("Countdown proposal rewrites the immutable seed")
         if not (0 <= claim.proposed_terminal_value < saved):
             raise ValueError("Countdown must decrease to a nonnegative explicit candidate")
+        if not _explicit_turkish_minute_anchor(
+                claim.evidence.quote, claim.proposed_terminal_value):
+            raise ValueError("Countdown lacks its explicit numeric minute anchor")
         clocks.append({
             "path": "/world/time/" + claim.field,
             "seed_value": saved,
