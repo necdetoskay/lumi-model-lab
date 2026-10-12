@@ -44,6 +44,39 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf8"))
 
 
+def classify_http_error_body(raw):
+    """Only stable diagnostic CATEGORY leaves the process, never provider text.
+
+    Error bodies may contain portions of the prompt, request or identifiers,
+    so do not archive or echo arbitrary provider error descriptions.
+    """
+    try:
+        data = json.loads(raw.decode("utf8") if isinstance(raw, bytes) else raw)
+    except (ValueError, UnicodeError, TypeError, AttributeError):
+        return "UNCLASSIFIED"
+    if not isinstance(data, dict):
+        return "UNCLASSIFIED"
+    record = data.get("error", {})
+    msg = (record.get("message", "") if isinstance(record, dict) else "")
+    if not isinstance(msg, str):
+        return "UNCLASSIFIED"
+    lowered = msg.lower()[:16_384]
+    if any(token in lowered for token in ("minlength", "maxlength", "minlength",
+                                          "unsupported schema constraint")):
+        return "SCHEMA_UNSUPPORTED_STRING_CONSTRAINT"
+    if "schema" in lowered and ("complex" in lowered or "compil" in lowered):
+        return "SCHEMA_GRAMMAR_COMPILATION"
+    if "schema" in lowered or "response_format" in lowered or "json_schema" in lowered:
+        return "SCHEMA_OR_RESPONSE_FORMAT_REJECTED"
+    if "context" in lowered and ("length" in lowered or "token" in lowered):
+        return "MODEL_CONTEXT_LIMIT"
+    if "provider" in lowered or "route" in lowered:
+        return "PROVIDER_ROUTING_REJECTED"
+    if "model" in lowered and ("support" in lowered or "invalid" in lowered):
+        return "MODEL_PARAMETER_REJECTED"
+    return "UNCLASSIFIED"
+
+
 def transport_json(*, url, method="GET", api_key=None, payload=None,
                    timeout=18):
     """One HTTP request without implicit retries or redirects to other hosts."""
@@ -69,8 +102,15 @@ def transport_json(*, url, method="GET", api_key=None, payload=None,
                 raise PilotStop("Response exceeds size limit")
             return json.loads(content.decode("utf8"))
     except urllib.error.HTTPError as e:
-        # Do not echo HTTP body: may include provider prompt or identifiers.
-        raise PilotStop(f"OpenRouter HTTP {e.code}; no retry attempted") from None
+        # Classify safely; never leak the potentially sensitive error body.
+        try:
+            category = classify_http_error_body(e.read(16_384))
+        except (OSError, ValueError):
+            category = "UNCLASSIFIED"
+        raise PilotStop(
+            f"OpenRouter HTTP {e.code}; no retry attempted"
+            f"; category={category}"
+        ) from None
     except (urllib.error.URLError, TimeoutError, ValueError, UnicodeError) as e:
         raise PilotStop(f"OpenRouter {type(e).__name__}; no retry attempted") from None
 
