@@ -161,13 +161,32 @@ def test_kite_ambiguity_cannot_be_filled_using_source_free_time_annotation():
         "proposed_terminal_value": 7,
         "evidence": {"quote": "Tam kaç dakika geçtiği söylenmedi."},
     }]
-    # The quoted uncertainty exists; a cite cannot prove the numerical value.
-    # Projection is an untrusted hypothesis, not semantic certification.
-    result = project_supplement(**case)
-    assert result["world_time_candidates"][0]["terminal_proposal"] == 7
-    assert result["world_time_candidates"][0]["terminal_time_certified"] is False
-    assert result["semantic_support_certified"] is False
-    assert result["state_commit_authorized"] is False
+    # Even though this uncertainty quote exists, it never supplies the
+    # numerical 7-minute value. Fail closed before producing a candidate.
+    with pytest.raises(ValueError, match="numeric minute anchor"):
+        project_supplement(**case)
+
+
+def test_wrong_numeric_value_or_unspecified_terminal_time_is_not_proposed():
+    case = scenario(GREENHOUSE)
+    claim = case["supplement"]["world_time_claims"][0]
+    claim["proposed_terminal_value"] = 9
+    with pytest.raises(ValueError, match="numeric minute anchor"):
+        project_supplement(**case)
+    claim["proposed_terminal_value"] = 10
+    claim["evidence"]["quote"] = "Nöbetin bitmesine yirmi beş dakika vardı."
+    with pytest.raises(ValueError, match="numeric minute anchor"):
+        project_supplement(**case)
+
+
+def test_clock_lexical_anchor_is_conservative_and_explicit():
+    from src.q25_terminal_supplement import _explicit_turkish_minute_anchor
+    assert _explicit_turkish_minute_anchor("Nöbet bitimine on dakika kaldı", 10)
+    assert _explicit_turkish_minute_anchor("yirmi beş dakika vardı", 25)
+    assert _explicit_turkish_minute_anchor("12 dakika kaldı", 12)
+    assert not _explicit_turkish_minute_anchor("yirmi beş dakika vardı", 10)
+    assert not _explicit_turkish_minute_anchor("Tam kaç dakika geçtiği söylenmedi.", 7)
+    assert not _explicit_turkish_minute_anchor("on dakika kaldı", 11)
 
 
 def test_cli_replay_creates_no_model_call_or_canonical_state_write():
