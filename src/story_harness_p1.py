@@ -24,6 +24,48 @@ FILE_KEYS = {"kind", "archive", "source_path", "sha256"}
 SHA = re.compile(r"^[0-9a-f]{64}$")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
 CASE_ID = re.compile(r"^[A-Z0-9][A-Z0-9_-]{3,79}$")
+# P1 is a frozen, independently reviewed import set, NOT an open-ended
+# mechanism for relabeling rejected historical runs under a new case name.
+PINNED_SOURCE_COMMIT = "2eb3d825b5baf8f0f16ccb23805f619d433c7236"
+FROZEN_CASES = {
+    "SPINE-V20-HUMAN-APPROVED": {
+        "adapter": "spine_human_review",
+        "files": {"decision": (
+            "spine-v20-approved.json",
+            "evidence/spineforge-v20-human-review/36910614976-approved.json",
+            "72cd2ecc973884415747aed93e721c2fbb32617901c24884142585b9c54254a3")},
+    },
+    "SPINE-V20-AUDIT-REJECTED": {
+        "adapter": "spine_story_audit",
+        "files": {"decision": (
+            "spine-v20-audit-rejected.json",
+            "evidence/spineforge-v20-paid-story-audit/36969500342/qualification-report.json",
+            "eeb20809307a135d725c30d2d2a76209add2e4bae2e2e457526eef7b734edb6c")},
+    },
+    "Q25-KITE01-CANDIDATES": {
+        "adapter": "q25_paid_extractor",
+        "files": {
+            "ledger": ("kite-q25-ledger.json",
+                "evidence/q25/Q25-WITHHELD-TRIAL-20261012/paid-attempt-03-public-ledger.json",
+                "794bdb6807b43bc16807252378f786c87ddfe920063cc7101c9d8def49ae2848"),
+            "raw": ("kite-q25-raw.json",
+                "evidence/q25/Q25-WITHHELD-TRIAL-20261012/paid-attempt-03-raw-extraction.json",
+                "41581dfc081c41c2fa29007b85ade49902edc222ba4a31ed26168db7773ba2d2"),
+        },
+    },
+    "Q25-GREENHOUSE01-REJECTED": {
+        "adapter": "q25_paid_extractor",
+        "files": {
+            "ledger": ("greenhouse-q25-ledger.json",
+                "evidence/q25/Q25-GREENHOUSE-COLD-TRIAL-20261012/paid-attempt-01-public-ledger.json",
+                "40b844ba3521100b9fd6de86b74a1339e2a40b341170492b4bf5ab3045e2bfa4"),
+            "raw": ("greenhouse-q25-raw.json",
+                "evidence/q25/Q25-GREENHOUSE-COLD-TRIAL-20261012/paid-attempt-01-raw-extraction.json",
+                "c551895a16957b0f6e6650e720cd8572dd8260e8a774b52b083bf63eceb770bb"),
+        },
+    },
+}
+
 
 
 def _fail_unless(condition, reason):
@@ -39,7 +81,8 @@ def _validate_import(manifest):
         manifest["source_repository"] == SOURCE_REPO and
         manifest["source_branch_at_import"] == "experiment/q25-narrative-memory-intent" and
         isinstance(manifest["source_commit"], str) and COMMIT.fullmatch(manifest["source_commit"]) and
-        manifest["mode"] == "HISTORICAL_READ_ONLY",
+        manifest["mode"] == "HISTORICAL_READ_ONLY" and
+        manifest["source_commit"] == PINNED_SOURCE_COMMIT,
         "Historical provenance or execution mode not qualified",
     )
     cases = manifest["cases"]
@@ -81,6 +124,16 @@ def _validate_import(manifest):
                 _fail_unless(source.startswith("evidence/q25/"),
                              "Q25 adapter bound to wrong source family")
         _fail_unless(kinds == expected, "Missing or repeated historical source role")
+        pinned = FROZEN_CASES.get(ident)
+        _fail_unless(pinned is not None and adapter == pinned["adapter"],
+                     "Historical case identity/adapter is not pinned")
+        for item in parts:
+            registered = pinned["files"].get(item["kind"])
+            _fail_unless(registered is not None and
+                         item["archive"] == "evidence/story_harness_p1/snapshots/" + registered[0] and
+                         item["source_path"] == registered[1] and
+                         item["sha256"] == registered[2],
+                         "Historical source path, identity and frozen hash mismatch")
 
 
 def _q25_record(case, records):
