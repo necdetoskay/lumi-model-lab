@@ -103,6 +103,10 @@ def build_extraction_request(*, seed, prose):
         seed_sha256=fingerprint(seed),
         source_sha256=digest(prose),
         output_schema="q25.extractor-raw-output.v1",
+        response_json_schema=RawExtractorOutput.model_json_schema(),
+        # Model needs original goals, beliefs, properties and canon to decide
+        # what it may *propose*. Hard authority stays on the validator side.
+        immutable_seed=copy.deepcopy(seed),
         allowed_characters=sorted(seed.get("characters", {})),
         allowed_existing_objects=sorted(seed.get("objects", {})),
         allowed_locations=sorted(seed["topology"]["locations"]),
