@@ -90,6 +90,10 @@ def test_q24_seed_to_candidate_comparison_exposes_changes_and_all_gaps():
     assert delta["world_time"]["disposition"] == "UNASSESSED"
     assert not delta["state_commit_authorized"]
     assert not report["state_commit_authorized"]
+    assert report["counts"] == {
+        "CANDIDATE": 12, "PARTIAL_CANDIDATES": 3,
+        "STRUCTURAL_ONLY": 23, "UNASSESSED": 30, "UNKNOWN": 2,
+    }
     assert kw == before
 
 
