@@ -37,7 +37,7 @@ def test_open_story_projects_structurally_coherent_unverified_state(scenario):
     assert result["structural_consistency"]["status"] == (
         "STRUCTURALLY_COHERENT_CANDIDATES_ONLY")
     assert result["structural_consistency"]["reciprocal_container_pairs"] == 1
-    assert result["blocked" ] is None if "blocked" in result else True
+    assert "blocked" not in result
     assert result["blocking_field_count"] == sum(result["coverage_counts"].values())
     assert all(not row["terminal_accepted"] and not row["inherited_seed_is_proof"]
                for row in result["field_decisions"])
