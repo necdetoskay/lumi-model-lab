@@ -36,18 +36,28 @@ class RawObject(Strict):
 
 
 class RawRelation(Strict):
-    subject: str = Field(min_length=1)
+    subject: str = Field(
+        min_length=1,
+        description="REQUIRED canonical relation namespace: object:<existing_id> or new:<proposed_key>; bare object IDs are INVALID.",
+    )
     kind: Literal["IN_CONTAINER", "HELD_BY", "OWNED_BY", "LOCATED_IN"]
-    target: str | None
+    target: str | None = Field(
+        description="For IN_CONTAINER use object:<existing_id> or new:<key>; HELD_BY/OWNED_BY use character:<actor>; LOCATED_IN use location:<id>. null only for an explicitly cleared relation.",
+    )
     evidence: Quote
 
 
 class RawCharacter(Strict):
     actor: str = Field(min_length=1)
-    field: Literal["emotion", "health", "location", "knowledge", "relationship_trust"]
+    field: Literal["emotion", "health", "location", "knowledge", "relationship_trust"] = Field(
+        description="Use knowledge for an actor's knowledge/belief/report; relationship_trust must never be inferred from another actor's uncertainty.",
+    )
     value: str = Field(min_length=1)
     evidence: Quote
-    epistemic_type: Literal["OBSERVED", "REPORTED", "BELIEF", "INFERRED"] | None = None
+    epistemic_type: Literal["OBSERVED", "REPORTED", "BELIEF", "INFERRED"] | None = Field(
+        default=None,
+        description="Set epistemic_type only when field=knowledge. MUST be null for emotion, health, location and relationship_trust.",
+    )
     other_actor: str | None = None
 
 
