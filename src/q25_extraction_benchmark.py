@@ -65,7 +65,7 @@ def _claims(materialized):
                 source = [source]
             result[key] = {
                 "group": group,
-                "identity": _identity(group, claim),
+                "identity": list(_identity(group, claim)),
                 "quotes": [s["text"] for s in source],
                 "citations": copy.deepcopy(source),
             }
