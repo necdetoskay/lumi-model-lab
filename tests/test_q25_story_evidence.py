@@ -42,7 +42,8 @@ def test_q24_character_knowledge_goals_obligations_and_threads_are_separate_prop
     before = (copy.deepcopy(seed), copy.deepcopy(admission))
     result = run(seed, prose, admission, story)
     draft = result["draft_state"]
-    assert len(draft["proposed_character_changes"]) == 2
+    assert len(draft["proposed_character_changes"]) == 4
+    assert {c["actor"] for c in draft["proposed_character_changes"] if c["field"] == "knowledge"} == {"Nisa", "Eren", "Cem"}
     assert len(draft["proposed_goal_outcomes"]) == 3
     assert len(draft["proposed_narrative_obligations"]) == 3
     assert len(draft["proposed_thread_outcomes"]) == 3
