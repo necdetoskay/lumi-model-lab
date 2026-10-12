@@ -48,7 +48,7 @@ def classify_field(row):
     raise ValueError("Cannot classify a terminal field")
 
 
-def _checked_graph(objects, allowed_locations, characters):
+def _checked_graph(objects, allowed_locations, characters, seed_external_owners=()):
     """Independent reciprocal relation checks on the candidate projection."""
     ids = set(objects)
     occupants = {key: set() for key in objects}
@@ -62,6 +62,10 @@ def _checked_graph(objects, allowed_locations, characters):
                 raise ValueError("Known relation cannot have null target")
             if slot["status"] != "KNOWN" and slot["ref"] is not None:
                 raise ValueError("Non-known relation cannot have a target")
+        owner = obj["owner"]
+        if owner["status"] == "KNOWN" and owner["ref"] not in (
+                set(characters) | set(seed_external_owners)):
+            raise ValueError("Unknown owner identity")
         container = obj["container"]
         holder = obj["held_by"]
         if container["status"] == "KNOWN":
@@ -78,6 +82,13 @@ def _checked_graph(objects, allowed_locations, characters):
         if location["status"] == "KNOWN" and location["ref"] not in allowed_locations:
             raise ValueError("Location outside approved topology")
     for key, obj in objects.items():
+        box = obj["container"]
+        if box["status"] == "KNOWN":
+            child_location = obj["location"]
+            parent_location = objects[box["ref"]]["location"]
+            if child_location["status"] == "KNOWN" and parent_location["status"] == "KNOWN" and (
+                    child_location["ref"] != parent_location["ref"]):
+                raise ValueError("Child location disagrees with known container location")
         if len(obj["contains"]) != len(set(obj["contains"])):
             raise ValueError("Duplicate candidate contents")
         if set(obj["contains"]) != occupants[key]:
@@ -163,8 +174,13 @@ def reconcile(*, seed, prose, entity_proposal, policy, story_proposal,
                 "semantic_support_certified": False,
             }
 
+    historical_owners = {
+        item["owner"] for item in seed["objects"].values()
+        if item.get("owner") is not None and item["owner"] not in seed["characters"]
+    }
     graph = _checked_graph(
-        objects, set(seed["topology"]["locations"]), seed["characters"])
+        objects, set(seed["topology"]["locations"]), seed["characters"],
+        seed_external_owners=historical_owners)
     for actor, inventory in draft["characters"].items():
         observed = {name: count for name, count in inventory["inventory"].items()}
         computed = {name: 1 for name in graph["directly_held_objects"][actor]}
