@@ -88,6 +88,81 @@ def test_all_eleven_provisional_interpretations_are_explicitly_non_authoritative
     assert assess_worklist(**source) == result
 
 
+
+def test_all_seventy_fields_have_a_seed_snapshot_and_no_fake_final_values():
+    case = saved_case()
+    report = assess_worklist(**case)
+    matrix = report["full_field_matrix"]
+    summary = report["full_field_matrix_summary"]
+    rows = {r["path"]: r for r in matrix}
+    assert len(matrix) == len(rows) == summary["field_count"] == 70
+    assert summary == {
+        "field_count": 70,
+        "author_draft_review_count": 11,
+        "not_individually_triaged_count": 59,
+        "independently_certified_count": 0,
+        "terminal_values_committable_count": 0,
+    }
+    assert all(r["independently_certified"] is False and
+               r["terminal_value_committable"] is False for r in matrix)
+    assert {r["individual_review"]["status"] for r in matrix} == {
+        "AUTHOR_DRAFT_ONLY", "NOT_INDIVIDUALLY_SEMANTICALLY_TRIAGED",
+    }
+    def row(path):
+        return rows[path]
+    bookmark = row("/objects/red_bookmark/properties/found")
+    assert bookmark["seed_snapshot"] == {"status": "PRESENT", "value": False}
+    assert bookmark["terminal_hypothesis"]["value"] is True
+    assert bookmark["terminal_hypothesis"]["status"] == "SOURCE_BOUND_DELTA_CANDIDATE"
+    returned = row("/objects/red_bookmark/properties/returned_to_owner")
+    assert returned["seed_snapshot"]["value"] is False
+    assert returned["terminal_hypothesis"]["value"] is True
+    assert returned["individual_review"]["provisional_category"] == "CONTEXT_DEPENDENT"
+    contained = row("/objects/blue_atlas/contains")
+    assert contained["seed_snapshot"]["value"] == ["red_bookmark"]
+    assert contained["terminal_hypothesis"]["value"] == []
+    book_owner = next(r for r in matrix
+                      if r["path"].startswith("/objects/new_")
+                      and r["path"].endswith("/owner"))
+    assert book_owner["seed_snapshot"] == {"status": "NOT_IN_INITIAL_SEED"}
+    assert book_owner["terminal_hypothesis"]["status"] == "EXPLICIT_UNKNOWN_NEW_ENTITY_FIELD"
+    assert book_owner["required_next_action"].startswith("RETAIN_UNKNOWN")
+    unchanged_seed = row("/objects/blue_atlas/owner")
+    assert unchanged_seed["seed_snapshot"] == {"status": "PRESENT", "value": "library"}
+    assert unchanged_seed["terminal_hypothesis"] == {"status": "NO_TERMINAL_VALUE_PROPOSED"}
+    assert unchanged_seed["coverage_status"] == "STRUCTURAL_ONLY"
+    trust = row("/characters/Cem/relationships/Nisa/trust")
+    assert trust["seed_snapshot"] == {"status": "PRESENT", "value": "good"}
+    assert trust["terminal_hypothesis"]["status"] == "NO_TERMINAL_VALUE_PROPOSED"
+    assert trust["individual_review"]["provisional_category"] == "UNDETERMINED"
+    nisa = row("/characters/Nisa/knowledge")
+    assert len(nisa["seed_snapshot"]["value"]) == 5
+    assert nisa["terminal_hypothesis"]["status"] == "PARTIAL_EPISTEMIC_ADDITIONS"
+    assert nisa["coverage_status"] == "PARTIAL_CANDIDATES"
+    goal = row("/characters/Cem/condition/goal")
+    assert goal["seed_snapshot"]["value"] == "join_reading_activity"
+    assert goal["terminal_hypothesis"]["status"] == "GOAL_OUTCOME_ONLY_NOT_A_NEW_GOAL"
+    assert goal["terminal_hypothesis"]["outcome"] == "ACHIEVED"
+    obligation = row("/narrative_obligations/correct_and_apologize/status")
+    assert obligation["seed_snapshot"]["value"] == "OPEN"
+    assert obligation["terminal_hypothesis"]["outcome"] == "SATISFIED"
+    assert obligation["individual_review"]["provisional_category"] == "CONTEXT_DEPENDENT"
+    clock = row("/world/time")
+    assert clock["seed_snapshot"]["value"]["minutes_until_reading_activity"] == 30
+    assert clock["terminal_hypothesis"] == {"status": "NO_TERMINAL_VALUE_PROPOSED"}
+
+
+def test_matrix_does_not_mutate_or_complete_missing_terminal_fields():
+    case = saved_case()
+    before = copy.deepcopy(case)
+    result = assess_worklist(**case)
+    assert sum(x["terminal_hypothesis"]["status"] == "NO_TERMINAL_VALUE_PROPOSED"
+               for x in result["full_field_matrix"]) > 20
+    assert len(result["untriaged_fields"]) == 59
+    assert case == before
+    assert result == assess_worklist(**case)
+
+
 @pytest.mark.parametrize("damage", [
     "wrong_seed_hash", "wrong_source_hash", "wrong_annotations_hash",
     "missing", "duplicate", "unknown_issue", "unsupported_status",
