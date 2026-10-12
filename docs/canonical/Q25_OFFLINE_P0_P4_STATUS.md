@@ -43,3 +43,11 @@ python -m src.q25_entity_candidates --seed evidence/q25/Q25-P0-P4-OFFLINE-202610
 ```
 
 CLI success means a candidate was represented, not that a story or final state was accepted. The expanded Q25 test suite now includes ordinary-object negatives and frozen-case/CLI replay. Earlier 13-test record remains historical; the current engineering check records the new count and source fingerprints. No paid call or production change.
+
+## Structural admission policy and draft-state view
+
+`src/q25_state_admission.py` adds an explicit `EXPERIMENTAL_DRAFT_ONLY` policy. New ordinary objects are disabled by default. When enabled, the verified proposal graph can be converted to `q25.draft-state.v1`, with stable proposed entity IDs, reciprocal contents, separate direct holding/ownership, and KNOWN/UNKNOWN/NONE values. Unknown owner/location may be retained or blocked by policy; they are never replaced with invented values. Existing external ownership facts, world and topology are preserved.
+
+The saved Q24 result at `evidence/q25/Q25-ADMISSION-DRAFT-20261012` is ELIGIBLE_DRAFT for object relationships only. It has no revision or commit authority. Generic object properties such as found, character knowledge/goals and narrative obligations are not extracted by this step; their initial values must not be mistaken for verified terminal values. It is a partial view, deliberately incompatible with the old accepted StoryState schema. Semantic evidence, role classification, full state coverage and canonical authority integration remain required. This is not a repaired Q24 acceptance and does not change the prior gap/rejection records.
+
+The current 41-test focused suite includes default-deny admission, unknown-field policies, ownership retention, seed immutability, frozen full-case replay and read-only CLI execution. Historical 13/31-test checks are not overwritten. No provider calls, paid permission changes or production writes.

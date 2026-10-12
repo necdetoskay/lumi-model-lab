@@ -1,0 +1,302 @@
+{
+  "schema": "q25.admission-result.v1",
+  "policy": {
+    "schema_name": "q25.object-admission-policy.v1",
+    "scope": "EXPERIMENTAL_DRAFT_ONLY",
+    "allow_new_ordinary_objects": true,
+    "allow_unknown_owner": true,
+    "allow_unknown_location": true
+  },
+  "policy_sha256": "6589ca67327f30d2992630c7c1aa921e912873daf8872ca3c776a28482d0f205",
+  "structural_admission": "ELIGIBLE_DRAFT",
+  "reasons": [],
+  "draft_state": {
+    "schema": "q25.draft-state.v1",
+    "base_seed_sha256": "777b2d432ad292a91d9390725d4fe03c2ad91e4d358c9e3dcc785ee0b1daeb88",
+    "source_sha256": "5c68a942aae7101ecd117e24e6c8a9495ffea58d4b55f65d0fa62ba2a83be9d4",
+    "objects": {
+      "red_bookmark": {
+        "identity_status": "EXISTING",
+        "owner": {
+          "status": "KNOWN",
+          "ref": "Nisa"
+        },
+        "location": {
+          "status": "KNOWN",
+          "ref": "library_reading_room"
+        },
+        "container": {
+          "status": "KNOWN",
+          "ref": "new_9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9"
+        },
+        "held_by": {
+          "status": "NONE",
+          "ref": null
+        },
+        "contains": [],
+        "properties": {
+          "color": "red",
+          "placed_by": "Nisa",
+          "found": false,
+          "returned_to_owner": false,
+          "intentionally_stolen": false
+        }
+      },
+      "blue_atlas": {
+        "identity_status": "EXISTING",
+        "owner": {
+          "status": "KNOWN",
+          "ref": "library"
+        },
+        "location": {
+          "status": "KNOWN",
+          "ref": "library_reading_room"
+        },
+        "container": {
+          "status": "NONE",
+          "ref": null
+        },
+        "held_by": {
+          "status": "NONE",
+          "ref": null
+        },
+        "contains": [],
+        "properties": {
+          "stored_at": "returned_books_shelf",
+          "returned_by": "Cem",
+          "available": true
+        }
+      },
+      "preparation_notebook": {
+        "identity_status": "EXISTING",
+        "owner": {
+          "status": "KNOWN",
+          "ref": "Nisa"
+        },
+        "location": {
+          "status": "KNOWN",
+          "ref": "library_reading_room"
+        },
+        "container": {
+          "status": "NONE",
+          "ref": null
+        },
+        "held_by": {
+          "status": "NONE",
+          "ref": null
+        },
+        "contains": [],
+        "properties": {
+          "stored_at": "reading_table",
+          "author": "Nisa",
+          "entry_day": "yesterday",
+          "entry_text": "Kırmızı ayracı mavi atlasın içine koydum. Nisa.",
+          "available": true
+        }
+      },
+      "return_log": {
+        "identity_status": "EXISTING",
+        "owner": {
+          "status": "KNOWN",
+          "ref": "library"
+        },
+        "location": {
+          "status": "KNOWN",
+          "ref": "library_reading_room"
+        },
+        "container": {
+          "status": "NONE",
+          "ref": null
+        },
+        "held_by": {
+          "status": "NONE",
+          "ref": null
+        },
+        "contains": [],
+        "properties": {
+          "stored_at": "reading_table",
+          "entries": [
+            {
+              "book": "blue_atlas",
+              "returned_by": "Cem",
+              "day": "yesterday"
+            }
+          ],
+          "available": true
+        }
+      },
+      "new_9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9": {
+        "identity_status": "PROPOSED",
+        "owner": {
+          "status": "UNKNOWN",
+          "ref": null
+        },
+        "location": {
+          "status": "UNKNOWN",
+          "ref": null
+        },
+        "container": {
+          "status": "NONE",
+          "ref": null
+        },
+        "held_by": {
+          "status": "NONE",
+          "ref": null
+        },
+        "contains": [
+          "red_bookmark"
+        ],
+        "properties": {}
+      }
+    },
+    "characters": {
+      "Nisa": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "worried",
+          "goal": "find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "bookmark_is_mine",
+          "last_saw_bookmark_near_reading_table",
+          "Cem_used_blue_atlas",
+          "preparation_notebook_has_activity_notes"
+        ],
+        "relationships": {
+          "Eren": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Eren": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "curious",
+          "goal": "help_find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "Nisa_cannot_find_bookmark",
+          "Cem_used_blue_atlas",
+          "library_has_return_log"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Cem": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "calm",
+          "goal": "join_reading_activity"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "I_returned_blue_atlas_yesterday",
+          "I_did_not_take_Nisas_bookmark"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "classmate",
+            "trust": "good"
+          },
+          "Eren": {
+            "familiarity": "classmate",
+            "trust": "good"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school_library",
+      "time": {
+        "period": "after_school",
+        "minutes_until_reading_activity": 30
+      },
+      "fixed_features": [
+        "reading_table",
+        "returned_books_shelf"
+      ],
+      "rules": [
+        "No magic or instant expert knowledge.",
+        "Use established notebook, return log, atlas and bookmark; no invented decisive clues."
+      ],
+      "spatial": {
+        "topology_sha256": "e10fbf35d79017ebd5337c1e4265bba25de856b5cda3b8ff7f6822abec74fae6",
+        "positions": {
+          "Nisa": "library_reading_room",
+          "Eren": "library_reading_room",
+          "Cem": "library_reading_room",
+          "red_bookmark": "library_reading_room",
+          "blue_atlas": "library_reading_room",
+          "preparation_notebook": "library_reading_room",
+          "return_log": "library_reading_room"
+        },
+        "access_constraints": []
+      }
+    },
+    "topology": {
+      "schema_name": "spineforge-relay.spatial-topology.v1",
+      "locations": [
+        "library_reading_room"
+      ],
+      "edges": [],
+      "position_state_paths": {
+        "Nisa": "/characters/Nisa/location",
+        "Eren": "/characters/Eren/location",
+        "Cem": "/characters/Cem/location",
+        "red_bookmark": "/objects/red_bookmark/location",
+        "blue_atlas": "/objects/blue_atlas/location",
+        "preparation_notebook": "/objects/preparation_notebook/location",
+        "return_log": "/objects/return_log/location"
+      }
+    },
+    "identity_map": {
+      "object:red_bookmark": "red_bookmark",
+      "object:blue_atlas": "blue_atlas",
+      "object:preparation_notebook": "preparation_notebook",
+      "object:return_log": "return_log",
+      "candidate:9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9": "new_9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9"
+    },
+    "initial_seed_unchanged": true,
+    "coverage": "OBJECT_RELATIONS_ONLY_NOT_FULL_STORY_STATE",
+    "unresolved_fields": [
+      {
+        "object_id": "new_9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9",
+        "field": "owner"
+      },
+      {
+        "object_id": "new_9812aca595ec152bb0146faf97bc51e0cf92ffc47b1fd2e6b7bb68c6218c85a9",
+        "field": "location"
+      }
+    ]
+  },
+  "state_commit_authorized": false,
+  "semantic_support_certified": false,
+  "narrative_acceptance": "UNVERIFIED",
+  "required_next_checks": [
+    "Independent semantic support and role classification",
+    "Complete story state coverage",
+    "Canonical schema/authority integration"
+  ],
+  "provider_calls": 0
+}
