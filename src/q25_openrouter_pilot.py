@@ -333,7 +333,7 @@ def main():
     parser.add_argument("--prose-record", type=Path)
     parser.add_argument("--policy", type=Path)
     parser.add_argument("--request-package", type=Path)
-    parser.add_argument("--archive-dir", type=Path, required=True)
+    parser.add_argument("--archive-dir", type=Path)
     parser.add_argument("--model", required=True, choices=sorted(MODEL_ALLOWLIST))
     parser.add_argument("--max-tokens", type=int, default=3500)
     parser.add_argument("--max-cost-usd", required=True)
@@ -360,6 +360,8 @@ def main():
                               max_cost_usd=args.max_cost_usd,
                               state_commit_authorized=False)))
         return
+    if args.archive_dir is None:
+        parser.error("--archive-dir is required when --execute-paid-once is set")
     if os.environ.get("Q25_PAID_PILOT_APPROVED") != "1":
         raise SystemExit("PAID PILOT BLOCKED: Q25_PAID_PILOT_APPROVED != 1")
     outcome = paid_pilot(
