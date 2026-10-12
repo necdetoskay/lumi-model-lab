@@ -13,7 +13,7 @@ ROOT = Path("evidence/q25")
 BASE = ROOT / "Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24"
 ENTITY = ROOT / "Q25-ENTITY-CANDIDATE-20261012/proposal.json"
 POLICY = ROOT / "Q25-ADMISSION-DRAFT-20261012/policy.json"
-STORY = ROOT / "Q25-STORY-STATE-CANDIDATES-20261012/story-proposal.json"
+STORY = ROOT / "Q25-STORY-STATE-CANDIDATES-20261012/story-proposal-knowledge-extension.json"
 
 
 def read(p):
