@@ -61,7 +61,7 @@ def classify_http_error_body(raw):
     if not isinstance(msg, str):
         return "UNCLASSIFIED"
     lowered = msg.lower()[:16_384]
-    if any(token in lowered for token in ("minlength", "maxlength", "minlength",
+    if any(token in lowered for token in ("minlength", "maxlength",
                                           "unsupported schema constraint")):
         return "SCHEMA_UNSUPPORTED_STRING_CONSTRAINT"
     if "schema" in lowered and ("complex" in lowered or "compil" in lowered):
@@ -105,7 +105,7 @@ def transport_json(*, url, method="GET", api_key=None, payload=None,
         # Classify safely; never leak the potentially sensitive error body.
         try:
             category = classify_http_error_body(e.read(16_384))
-        except (OSError, ValueError):
+        except (OSError, ValueError, TypeError, AttributeError):
             category = "UNCLASSIFIED"
         raise PilotStop(
             f"OpenRouter HTTP {e.code}; no retry attempted"
