@@ -65,19 +65,22 @@ class RawGoal(Strict):
     actor: str = Field(min_length=1)
     goal_id: str = Field(min_length=1)
     outcome: Literal["ACHIEVED", "ABANDONED", "BLOCKED"]
-    evidence: list[Quote] = Field(\n        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
+    evidence: list[Quote] = Field(
+        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
 
 
 class RawObligation(Strict):
     obligation_id: str = Field(min_length=1)
     outcome: Literal["SATISFIED", "UNSATISFIED"]
-    evidence: list[Quote] = Field(\n        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
+    evidence: list[Quote] = Field(
+        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
 
 
 class RawThread(Strict):
     thread_id: str = Field(min_length=1)
     outcome: Literal["RESOLVED", "UNRESOLVED"]
-    evidence: list[Quote] = Field(\n        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
+    evidence: list[Quote] = Field(
+        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
 
 
 class RawProperty(Strict):
@@ -86,7 +89,8 @@ class RawProperty(Strict):
     expected_seed_value: bool | int | float | str | None
     proposed_terminal_value: bool | int | float | str | None
     evidence_kind: Literal["OBSERVED_ACTION", "REPORTED", "INFERRED"]
-    evidence: list[Quote] = Field(\n        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
+    evidence: list[Quote] = Field(
+        min_length=1, description="Supply exact quoted story excerpts in ascending source-text order; the adapter may safely re-order citations by verified source position, but duplicate quotes are invalid.")
 
 
 class RawExtractorOutput(Strict):
