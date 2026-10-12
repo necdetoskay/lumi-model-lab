@@ -4,9 +4,13 @@ on:
   pull_request:
     paths:
       - src/story_harness_v1.py
+      - src/story_harness_p1.py
       - tests/test_story_harness_v1.py
+      - tests/test_story_harness_p1.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
+      - configs/story_harness_p1_frozen_import.json
+      - evidence/story_harness_p1/**
       - docs/canonical/STORY_HARNESS_V1.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -31,7 +35,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Run fail-closed harness tests (stdlib, no pip install)
-        run: python -m unittest discover -s tests -p 'test_story_harness_v1.py' -q
+        run: python -m unittest discover -s tests -p 'test_story_harness*.py' -q
       - name: Deterministic zero-cost four-stage replay
         run: |
           python -m src.story_harness_v1 \
@@ -52,4 +56,28 @@ jobs:
           assert result['provider_calls'] == 0
           assert result['provider_cost_usd'] == '0'
           print('STORY_HARNESS_V1_OFFLINE_GREEN')
+          PY
+
+      - name: Re-evaluate frozen real SpineForge and Q25 historical evidence (no providers)
+        run: |
+          python -m src.story_harness_p1 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p1-a.json
+          python -m src.story_harness_p1 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p1-b.json
+          cmp /tmp/story-harness-p1-a.json /tmp/story-harness-p1-b.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p1-a.json'))
+          assert x['case_count'] == 4
+          assert x['sum_historical_provider_reported_cost_usd_for_q25_subset'] == '0.085152'
+          assert x['new_provider_calls'] == 0
+          assert x['state_commit_authorized'] is False
+          assert x['historical_verdicts_rewritten'] is False
+          assert x['spine_and_q25_story_chain_claimed'] is False
+          assert [c['inspection']['historical_original_outcome'] for c in x['historical_cases']] == [
+            'ACCEPT', 'FAIL_KNOWN_DEFECT_MISSED',
+            'SOURCE_BOUND_CANDIDATES_ONLY', 'REJECTED_BY_OFFLINE_GATE']
+          print('STORY_HARNESS_P1_HISTORICAL_GREEN')
           PY
