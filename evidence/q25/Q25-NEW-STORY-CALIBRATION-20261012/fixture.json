@@ -1,0 +1,371 @@
+{
+  "schema_name": "q25.new-story-calibration-fixture.v1",
+  "test_story_origin": "AUTHORED_OFFLINE_FIXTURE_NOT_MODEL_GENERATED",
+  "blind_holdout": false,
+  "seed": {
+    "schema_name": "spineforge.story-seed.v1",
+    "story_id": "yellow-card-calibration-01",
+    "scenario_id": "Q25-NEW-OFFLINE-ONLY",
+    "characters": {
+      "Aylin": {
+        "location": "library",
+        "condition": {
+          "health": "good",
+          "emotion": "worried",
+          "goal": "find_yellow_card"
+        },
+        "inventory": {},
+        "knowledge": [
+          "yellow_card_is_mine",
+          "Kerem_returned_green_map"
+        ],
+        "relationships": {
+          "Kerem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Kerem": {
+        "location": "library",
+        "condition": {
+          "health": "good",
+          "emotion": "calm",
+          "goal": "join_presentation"
+        },
+        "inventory": {},
+        "knowledge": [
+          "I_returned_green_map"
+        ],
+        "relationships": {
+          "Aylin": {
+            "familiarity": "classmate",
+            "trust": "good"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_school_library",
+      "time": {
+        "period": "after_school",
+        "minutes_until_presentation": 15
+      },
+      "rules": [
+        "No magic; the established return log and map suffice."
+      ]
+    },
+    "topology": {
+      "locations": [
+        "library"
+      ]
+    },
+    "objects": {
+      "yellow_card": {
+        "owner": "Aylin",
+        "location": "library",
+        "state": {
+          "color": "yellow",
+          "container": "green_map",
+          "found": false,
+          "returned_to_owner": false,
+          "intentionally_stolen": false
+        }
+      },
+      "green_map": {
+        "owner": "library",
+        "location": "library",
+        "state": {
+          "stored_at": "returns_shelf",
+          "contains": [
+            "yellow_card"
+          ],
+          "available": true
+        }
+      },
+      "return_log": {
+        "owner": "library",
+        "location": "library",
+        "state": {
+          "stored_at": "desk",
+          "available": true
+        }
+      }
+    },
+    "narrative_obligations": [
+      {
+        "id": "check_log_then_search",
+        "status": "OPEN",
+        "detail": "Check the existing return log before locating the card."
+      },
+      {
+        "id": "recover_card",
+        "status": "OPEN",
+        "detail": "Find the yellow card inside the green map."
+      },
+      {
+        "id": "correct_and_apologize",
+        "status": "OPEN",
+        "detail": "Aylin corrects her mistaken suspicion and apologizes without an instant trust reset."
+      }
+    ],
+    "open_threads": [
+      "missing_card",
+      "correct_suspicion"
+    ]
+  },
+  "prose": "Sunuma on beş dakika vardı. Aylin sarı kartını bulamadı. Yeşil haritayı dün Kerem'in iade ettiğini biliyordu.\n\n\"Kartı sen mi aldın?\" diye sordu Aylin. Kerem, \"Almadım; haritayı rafa bıraktım,\" dedi.\n\nAylin iade defterinde \"Yeşil Harita — Kerem — dün iade edildi\" satırını okudu.\n\nAylin yeşil haritayı iade rafından aldı ve sayfalarını açtı. Sarı kart haritanın iki sayfasının arasındaydı.\n\nAylin, sarı kartı haritadan çıkardı. \"Kartı ben koymuşum. Seni haksız yere suçladım; özür dilerim,\" dedi Kerem'e.\n\nKerem, \"İncindim, ama sunuma katılacağım,\" dedi. Aylin haritayı rafa geri bıraktı.\n\nAylin sarı kartı masadaki beyaz dosyanın içine yerleştirdi. Aylin gülümsedi.\n\nKerem, Aylin'in yanına geçti ve sunumda ilk cümleyi söyledi. Aylin sarı kartı gösterip konuşmaya devam etti.",
+  "gold_annotation_origin": "MANUALLY_CURATED_NOT_INDEPENDENTLY_ADJUDICATED",
+  "gold_raw_output": {
+    "schema_name": "q25.extractor-raw-output.v1",
+    "seed_sha256": "dca3d7542e67c71bae829a01f8dbdf9fc9be1fbde760df2d8866069fda1caa0c",
+    "source_sha256": "bc649a33f28883cb355abfdc984977498a24d4277c79d2181eddbaa278720a87",
+    "objects": [
+      {
+        "key": "white_folder",
+        "description": "An ordinary white folder whose owner is not established",
+        "role": "ORDINARY_OBJECT",
+        "mention": {
+          "quote": "beyaz dosyanın"
+        }
+      }
+    ],
+    "terminal_relations": [
+      {
+        "subject": "object:yellow_card",
+        "kind": "IN_CONTAINER",
+        "target": "new:white_folder",
+        "evidence": {
+          "quote": "Aylin sarı kartı masadaki beyaz dosyanın içine yerleştirdi."
+        }
+      }
+    ],
+    "character_claims": [
+      {
+        "actor": "Aylin",
+        "field": "knowledge",
+        "value": "observed_card_between_green_map_pages",
+        "epistemic_type": "OBSERVED",
+        "other_actor": null,
+        "evidence": {
+          "quote": "Sarı kart haritanın iki sayfasının arasındaydı."
+        }
+      },
+      {
+        "actor": "Kerem",
+        "field": "knowledge",
+        "value": "Aylin_had_placed_the_card",
+        "epistemic_type": "REPORTED",
+        "other_actor": null,
+        "evidence": {
+          "quote": "\"Kartı ben koymuşum. Seni haksız yere suçladım; özür dilerim,\" dedi Kerem'e."
+        }
+      }
+    ],
+    "goal_claims": [
+      {
+        "actor": "Aylin",
+        "goal_id": "find_yellow_card",
+        "outcome": "ACHIEVED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      },
+      {
+        "actor": "Kerem",
+        "goal_id": "join_presentation",
+        "outcome": "ACHIEVED",
+        "evidence": [
+          {
+            "quote": "Kerem, Aylin'in yanına geçti ve sunumda ilk cümleyi söyledi."
+          }
+        ]
+      }
+    ],
+    "obligation_claims": [
+      {
+        "obligation_id": "check_log_then_search",
+        "outcome": "SATISFIED",
+        "evidence": [
+          {
+            "quote": "Aylin iade defterinde \"Yeşil Harita — Kerem — dün iade edildi\" satırını okudu."
+          }
+        ]
+      },
+      {
+        "obligation_id": "recover_card",
+        "outcome": "SATISFIED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      },
+      {
+        "obligation_id": "correct_and_apologize",
+        "outcome": "SATISFIED",
+        "evidence": [
+          {
+            "quote": "\"Kartı ben koymuşum. Seni haksız yere suçladım; özür dilerim,\" dedi Kerem'e."
+          },
+          {
+            "quote": "Kerem, \"İncindim, ama sunuma katılacağım,\" dedi."
+          }
+        ]
+      }
+    ],
+    "thread_claims": [
+      {
+        "thread_id": "missing_card",
+        "outcome": "RESOLVED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      },
+      {
+        "thread_id": "correct_suspicion",
+        "outcome": "RESOLVED",
+        "evidence": [
+          {
+            "quote": "\"Kartı ben koymuşum. Seni haksız yere suçladım; özür dilerim,\" dedi Kerem'e."
+          }
+        ]
+      }
+    ],
+    "property_claims": [
+      {
+        "object_id": "yellow_card",
+        "property_name": "found",
+        "expected_seed_value": false,
+        "proposed_terminal_value": true,
+        "evidence_kind": "OBSERVED_ACTION",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      }
+    ]
+  },
+  "candidate_origin": "DELIBERATELY_FLAWED_SYNTHETIC_PREDICTION_NOT_AN_API_RESPONSE",
+  "flawed_candidate_raw_output": {
+    "schema_name": "q25.extractor-raw-output.v1",
+    "seed_sha256": "dca3d7542e67c71bae829a01f8dbdf9fc9be1fbde760df2d8866069fda1caa0c",
+    "source_sha256": "bc649a33f28883cb355abfdc984977498a24d4277c79d2181eddbaa278720a87",
+    "objects": [
+      {
+        "key": "white_folder",
+        "description": "An ordinary white folder whose owner is not established",
+        "role": "ORDINARY_OBJECT",
+        "mention": {
+          "quote": "beyaz dosyanın"
+        }
+      }
+    ],
+    "terminal_relations": [
+      {
+        "subject": "object:yellow_card",
+        "kind": "IN_CONTAINER",
+        "target": "new:white_folder",
+        "evidence": {
+          "quote": "Aylin sarı kartı masadaki beyaz dosyanın içine yerleştirdi."
+        }
+      },
+      {
+        "subject": "new:white_folder",
+        "kind": "OWNED_BY",
+        "target": "character:Aylin",
+        "evidence": {
+          "quote": "Aylin sarı kartı masadaki beyaz dosyanın içine yerleştirdi."
+        }
+      }
+    ],
+    "character_claims": [
+      {
+        "actor": "Kerem",
+        "field": "knowledge",
+        "value": "Aylin_had_placed_the_card",
+        "epistemic_type": "REPORTED",
+        "other_actor": null,
+        "evidence": {
+          "quote": "\"Kartı ben koymuşum. Seni haksız yere suçladım; özür dilerim,\" dedi Kerem'e."
+        }
+      },
+      {
+        "actor": "Aylin",
+        "field": "emotion",
+        "value": "relieved",
+        "epistemic_type": null,
+        "other_actor": null,
+        "evidence": {
+          "quote": "Aylin gülümsedi."
+        }
+      }
+    ],
+    "goal_claims": [
+      {
+        "actor": "Aylin",
+        "goal_id": "find_yellow_card",
+        "outcome": "ACHIEVED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      },
+      {
+        "actor": "Kerem",
+        "goal_id": "join_presentation",
+        "outcome": "ACHIEVED",
+        "evidence": [
+          {
+            "quote": "Kerem, Aylin'in yanına geçti ve sunumda ilk cümleyi söyledi."
+          }
+        ]
+      }
+    ],
+    "obligation_claims": [
+      {
+        "obligation_id": "check_log_then_search",
+        "outcome": "SATISFIED",
+        "evidence": [
+          {
+            "quote": "Aylin iade defterinde \"Yeşil Harita — Kerem — dün iade edildi\" satırını okudu."
+          }
+        ]
+      },
+      {
+        "obligation_id": "recover_card",
+        "outcome": "SATISFIED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      }
+    ],
+    "thread_claims": [
+      {
+        "thread_id": "missing_card",
+        "outcome": "RESOLVED",
+        "evidence": [
+          {
+            "quote": "Aylin, sarı kartı haritadan çıkardı."
+          }
+        ]
+      }
+    ],
+    "property_claims": []
+  },
+  "policy": {
+    "schema_name": "q25.object-admission-policy.v1",
+    "scope": "EXPERIMENTAL_DRAFT_ONLY",
+    "allow_new_ordinary_objects": true,
+    "allow_unknown_owner": true,
+    "allow_unknown_location": true
+  }
+}
