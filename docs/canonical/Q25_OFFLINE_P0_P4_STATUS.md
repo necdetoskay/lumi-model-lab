@@ -118,12 +118,12 @@ Model provider calls/cost: zero.
 
 This is **not a fully extracted final state**, not a semantic verdict, and
 not a production persistence proposal. Q24's rejection is unchanged.
-External GitHub Actions Q25 jobs are still QUEUED because
-`necdetoskay/lumi-model-lab` currently reports **0 registered self-hosted
-runners**; the existing `it-manager` and `lumi-marathon` runner services
-are attached to other repositories. The isolated manual tests above do
-not count as GitHub CI GREEN. Connecting a dedicated safe runner or
-explicitly authorizing GitHub-hosted minutes is separate infrastructure work.
+**Historical infrastructure record:** Q25 jobs were initially QUEUED
+because the repository had 0 registered runners. On 2026-10-12, a
+separate `q25-offline` runner was registered with a dedicated, non-root
+system account. Existing IT-Manager and Marathon runner services remain
+separate. The queue observation is no longer the current CI status;
+see the later GitHub GREEN records below.
 
 ## Terminal object-property claims and granular coverage (2026-10-12)
 
@@ -184,3 +184,22 @@ certification, no final state, no production deployment and no merge.
 PR remains Draft pending independent semantic extraction and
 authorized backend integration. P0/P4 are partial; P1–P3/P5–P6 remain
 outstanding.
+
+## Q25 semantic-review packet and current CI evidence (2026-10-12)
+
+`src/q25_semantic_review.py` generates a deterministic reviewer packet
+from structurally validated extractor candidates, with every exact source
+quotation and claim fingerprint. Saved Q24 replay produces 15 candidate
+claims across 7 categories. All 70 terminal-field assessments remain blocked
+for final-state admission; 15 proposals do not represent complete recall.
+
+A typed reply binds to the exact packet hash; missing, extra, duplicate,
+misbound and invalid labels fail closed. Even all `SUPPORTED` labels remain
+self-reported and unverified: a JSON label does not authenticate an independent
+human reviewer or prove the semantic truth of a citation. State commit stays
+disabled, Q24 rejection unchanged, production untouched, no provider calls.
+
+**GitHub Actions [#38238636392](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38238636392) GREEN: 177/177 tests PASS** (code commit `b75c767`).
+Paid extractor job `skipped`; no charged dispatch was made. The documentation
+commit that follows does not change code. Scope, limitations and the replay
+command: `docs/canonical/Q25_SEMANTIC_REVIEW_BOUNDARY_V1.md`.
