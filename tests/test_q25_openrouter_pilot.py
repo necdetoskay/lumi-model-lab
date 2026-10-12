@@ -86,6 +86,16 @@ def test_wire_uses_explicit_model_strict_schema_no_fallback_and_bounded_tokens()
     assert wire["stream"] is False
     assert wire["messages"][0]["role"] == "system"
     assert wire["messages"][1]["role"] == "user"
+    # These requirements are in the structured-output schema, not just prompt prose.
+    defs = wire["response_format"]["json_schema"]["schema"]["$defs"]
+    relation_subject = defs["RawRelation"]["properties"]["subject"]["description"]
+    relation_target = defs["RawRelation"]["properties"]["target"]["description"]
+    epistemic = defs["RawCharacter"]["properties"]["epistemic_type"]["description"]
+    assert "object:<existing_id>" in relation_subject
+    assert "bare object IDs are INVALID" in relation_subject
+    assert "new:<key>" in relation_target
+    assert "null for emotion, health, location" in epistemic
+    assert "minLength" not in defs["RawRelation"]["properties"]["subject"]
     system = wire["messages"][0]["content"]
     assert "RELATION ID CONTRACT" in system
     assert "subject must be object:<existing_object_id>" in system
