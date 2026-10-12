@@ -1,0 +1,1 @@
+Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı.

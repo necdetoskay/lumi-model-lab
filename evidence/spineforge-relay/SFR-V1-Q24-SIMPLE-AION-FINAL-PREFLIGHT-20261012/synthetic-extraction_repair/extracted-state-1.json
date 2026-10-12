@@ -1,0 +1,293 @@
+{
+  "extraction": {
+    "source_sha256": "49ea6e00239c8178bef218da86c93b7d4929cf979d136ac3a4cf61334ea48a73",
+    "seed_sha256": "777b2d432ad292a91d9390725d4fe03c2ad91e4d358c9e3dcc785ee0b1daeb88",
+    "changes": [
+      {
+        "path": "/objects/red_bookmark/state/container",
+        "value_json": "\"preparation_notebook\"",
+        "source_range_id": "R0003"
+      },
+      {
+        "path": "/objects/blue_atlas/state/contains",
+        "value_json": "[]",
+        "source_range_id": "R0003"
+      },
+      {
+        "path": "/objects/preparation_notebook/state/contains",
+        "value_json": "[\"red_bookmark\"]",
+        "source_range_id": "R0003"
+      }
+    ],
+    "resolved_threads": [
+      {
+        "id": "find_missing_bookmark",
+        "source_range_id": "R0003"
+      },
+      {
+        "id": "explain_actual_placement",
+        "source_range_id": "R0003"
+      },
+      {
+        "id": "correct_suspicion",
+        "source_range_id": "R0003"
+      }
+    ],
+    "satisfied_obligations": [
+      {
+        "id": "investigate_evidence",
+        "source_range_id": "R0003"
+      },
+      {
+        "id": "recover_bookmark",
+        "source_range_id": "R0003"
+      },
+      {
+        "id": "correct_and_apologize",
+        "source_range_id": "R0003"
+      }
+    ],
+    "uncertainties": []
+  },
+  "candidate": {
+    "revision": 0,
+    "characters": {
+      "Nisa": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "worried",
+          "goal": "find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "bookmark_is_mine",
+          "last_saw_bookmark_near_reading_table",
+          "Cem_used_blue_atlas",
+          "preparation_notebook_has_activity_notes"
+        ],
+        "relationships": {
+          "Eren": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Eren": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "curious",
+          "goal": "help_find_the_bookmark"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "Nisa_cannot_find_bookmark",
+          "Cem_used_blue_atlas",
+          "library_has_return_log"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "friend",
+            "trust": "good"
+          },
+          "Cem": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Cem": {
+        "location": "library_reading_room",
+        "condition": {
+          "health": "good",
+          "emotion": "calm",
+          "goal": "join_reading_activity"
+        },
+        "inventory": {},
+        "knowledge": [
+          "reading_activity_today",
+          "I_returned_blue_atlas_yesterday",
+          "I_did_not_take_Nisas_bookmark"
+        ],
+        "relationships": {
+          "Nisa": {
+            "familiarity": "classmate",
+            "trust": "good"
+          },
+          "Eren": {
+            "familiarity": "classmate",
+            "trust": "good"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school_library",
+      "time": {
+        "period": "after_school",
+        "minutes_until_reading_activity": 30
+      },
+      "fixed_features": [
+        "reading_table",
+        "returned_books_shelf"
+      ],
+      "rules": [
+        "No magic or instant expert knowledge.",
+        "Use established notebook, return log, atlas and bookmark; no invented decisive clues."
+      ],
+      "spatial": {
+        "topology_sha256": "e10fbf35d79017ebd5337c1e4265bba25de856b5cda3b8ff7f6822abec74fae6",
+        "positions": {
+          "Nisa": "library_reading_room",
+          "Eren": "library_reading_room",
+          "Cem": "library_reading_room",
+          "red_bookmark": "library_reading_room",
+          "blue_atlas": "library_reading_room",
+          "preparation_notebook": "library_reading_room",
+          "return_log": "library_reading_room"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "red_bookmark": {
+        "owner": "Nisa",
+        "location": "library_reading_room",
+        "state": {
+          "color": "red",
+          "container": "preparation_notebook",
+          "placed_by": "Nisa",
+          "found": false,
+          "returned_to_owner": false,
+          "intentionally_stolen": false
+        }
+      },
+      "blue_atlas": {
+        "owner": "library",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "returned_books_shelf",
+          "contains": [],
+          "returned_by": "Cem",
+          "available": true
+        }
+      },
+      "preparation_notebook": {
+        "owner": "Nisa",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "reading_table",
+          "author": "Nisa",
+          "entry_day": "yesterday",
+          "entry_text": "Kırmızı ayracı mavi atlasın içine koydum. Nisa.",
+          "available": true,
+          "contains": [
+            "red_bookmark"
+          ]
+        }
+      },
+      "return_log": {
+        "owner": "library",
+        "location": "library_reading_room",
+        "state": {
+          "stored_at": "reading_table",
+          "entries": [
+            {
+              "book": "blue_atlas",
+              "returned_by": "Cem",
+              "day": "yesterday"
+            }
+          ],
+          "available": true
+        }
+      }
+    },
+    "open_threads": [],
+    "resolved_threads": [
+      "find_missing_bookmark",
+      "explain_actual_placement",
+      "correct_suspicion"
+    ],
+    "completed_spine_beats": [],
+    "next_spine_beat": "STORY",
+    "narrative_obligations": [
+      {
+        "id": "investigate_evidence",
+        "detail": "Nisa and Eren use established evidence before acquiring the hidden placement knowledge.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      },
+      {
+        "id": "recover_bookmark",
+        "detail": "Locate the real red bookmark in the established atlas and recover it for Nisa.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      },
+      {
+        "id": "correct_and_apologize",
+        "detail": "Both friends correct their suspicion and apologize to Cem on the basis of discovered evidence, without instant intimacy.",
+        "status": "SATISFIED",
+        "target_scene_id": null
+      }
+    ]
+  },
+  "evidence": [
+    {
+      "path": "/objects/red_bookmark/state/container",
+      "before_present": true,
+      "before": "blue_atlas",
+      "after": "preparation_notebook",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "path": "/objects/blue_atlas/state/contains",
+      "before_present": true,
+      "before": [
+        "red_bookmark"
+      ],
+      "after": [],
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "path": "/objects/preparation_notebook/state/contains",
+      "before_present": false,
+      "before": null,
+      "after": [
+        "red_bookmark"
+      ],
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "find_missing_bookmark",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "explain_actual_placement",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "correct_suspicion",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "investigate_evidence",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "recover_bookmark",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    },
+    {
+      "resolution_id": "correct_and_apologize",
+      "exact_text": "Nisa atlasın içinden kırmızı ayracı aldı. Nisa ve Eren Cem’den özür diledi. Nisa kırmızı ayracı hazırlık defterine koydu. Üçü okuma etkinliğine başladı."
+    }
+  ],
+  "semantic_completeness_verified": false
+}
