@@ -175,3 +175,28 @@ def test_cli_replay_is_deterministic_and_source_files_are_not_changed():
     assert result["overall"]["true_positive"] == 14
     assert result["real_model_success_measured"] is False
     assert before == [hashlib.sha256(f.read_bytes()).hexdigest() for f in files]
+
+
+def test_frozen_terminal_hypothesis_matches_recomputed_raw_projection_exactly():
+    archived = load("paid-attempt-03-terminal-hypothesis.json")
+    regenerated = project_raw(**inputs())
+    assert archived == regenerated
+    assert archived["state_commit_authorized"] is False
+    assert archived["semantic_support_certified"] is False
+    assert archived["full_story_state_qualified"] is False
+    assert archived["independent_semantic_review_completed"] is False
+    assert archived["production_write_performed"] is False
+
+
+def test_frozen_semantic_packet_matches_unmodified_model_source():
+    from src.q25_semantic_review import build_review_packet
+    kw = inputs()
+    archived = load("paid-attempt-03-review-packet.json")
+    generated = build_review_packet(
+        seed=kw["seed"], prose=kw["prose"], raw_output=kw["raw_output"],
+        policy=kw["policy"],
+    )
+    assert archived == generated
+    assert archived["review_status"] == "AWAITING_EXTERNAL_REVIEW"
+    assert archived["state_commit_authorized"] is False
+    assert archived["semantic_support_certified"] is False
