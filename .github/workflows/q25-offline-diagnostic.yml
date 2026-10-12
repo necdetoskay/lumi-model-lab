@@ -26,9 +26,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   offline:
-    # Ephemeral GitHub-hosted VM isolates untrusted test code from the
-    # municipality-connected CI server. No production secrets or providers.
-    runs-on: ubuntu-latest
+    # Dedicated unprivileged host identity, no Docker/sudo, private-network deny.
+    # Repo-specific label prevents workload migration onto other LUMI runners.
+    runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
