@@ -49,6 +49,181 @@ class ProvisionalAssessment(Strict):
     findings: list[ProvisionalFinding] = Field(min_length=1)
 
 
+
+def _initial_snapshot(seed, path):
+    """Look up the exact seed field; absent is NOT the value None/False."""
+    tokens = [x.replace("~1", "/").replace("~0", "~")
+              for x in path.lstrip("/").split("/")]
+    if not path.startswith("/") or not all(tokens):
+        raise ValueError("Invalid coverage pointer")
+    data = None
+    if tokens[0] == "objects" and len(tokens) >= 3:
+        obj = seed["objects"].get(tokens[1])
+        if obj is None:
+            return {"status": "NOT_IN_INITIAL_SEED"}
+        if tokens[2] in ("owner", "location") and len(tokens) == 3:
+            data = obj
+            tokens = tokens[2:]
+        elif tokens[2] in ("container", "contains", "held_by") and len(tokens) == 3:
+            data = obj.get("state", {})
+            tokens = tokens[2:]
+        elif tokens[2] == "properties" and len(tokens) == 4:
+            data = obj.get("state", {})
+            tokens = tokens[3:]
+        elif tokens[2] == "identity_status" and len(tokens) == 3:
+            return {"status": "NOT_IN_INITIAL_SEED"}
+        else:
+            raise ValueError("Unsupported object coverage field")
+    elif tokens[0] == "characters" and len(tokens) >= 3:
+        data = seed["characters"].get(tokens[1])
+        if data is None:
+            raise ValueError("Unknown seed character in coverage")
+        tokens = tokens[2:]
+    elif tokens[0] == "narrative_obligations" and len(tokens) == 3 and tokens[2] == "status":
+        hits = [o for o in seed["narrative_obligations"] if o["id"] == tokens[1]]
+        if len(hits) != 1:
+            raise ValueError("Ambiguous seed obligation")
+        return {"status": "PRESENT", "value": hits[0]["status"]}
+    elif tokens[0] == "open_threads" and len(tokens) == 2:
+        if tokens[1] not in seed["open_threads"]:
+            raise ValueError("Unknown initial open thread")
+        return {"status": "PRESENT", "value": "OPEN"}
+    elif tokens == ["world", "time"]:
+        return {"status": "PRESENT", "value": copy.deepcopy(seed["world"]["time"])}
+    else:
+        raise ValueError("Unsupported coverage pointer")
+
+    for part in tokens:
+        if not isinstance(data, dict) or part not in data:
+            return {"status": "NOT_IN_INITIAL_SEED"}
+        data = data[part]
+    return {"status": "PRESENT", "value": copy.deepcopy(data)}
+
+
+def _field_action(row):
+    """Mechanical dispatch only, no source-semantic judgment."""
+    category, status = row["category"], row["status"]
+    if status == "UNKNOWN":
+        return "RETAIN_UNKNOWN_OR_REQUIRE_EXPLICIT_IDENTITY_EVIDENCE"
+    if status == "PARTIAL_CANDIDATES":
+        return "REVIEW_EPISTEMIC_CLAIMS_AND_EXHAUSTIVE_KNOWLEDGE"
+    if status == "CANDIDATE":
+        return ("REVIEW_GOAL_OR_NARRATIVE_COMPLETENESS"
+                if category in ("GOAL", "NARRATIVE_OBLIGATION", "OPEN_THREAD")
+                else "REVIEW_CITED_PROPOSED_TERMINAL_CHANGE")
+    if status == "STRUCTURAL_ONLY":
+        return "VERIFY_END_OF_STORY_RELATION_NOT_JUST_STRUCTURE"
+    if status == "UNASSESSED":
+        return ("REVIEW_TERMINAL_CHARACTER_OR_RELATIONSHIP"
+                if category in ("CHARACTER", "RELATIONSHIP", "CHARACTER_KNOWLEDGE")
+                else "ESTABLISH_TERMINAL_VALUE_OR_MARK_EXPLICITLY_UNDETERMINED")
+    raise ValueError("Unrecognized source coverage status")
+
+
+def _field_matrix(seed, worklist, findings):
+    """One row per blocked field, preserving seed vs hypothesis vs no evidence."""
+    comparison = worklist["initial_to_candidate_comparison"]
+    objects = {x["path"]: x for x in comparison["object_changes"]}
+    characters = {}
+    for claim in comparison["character_changes"]:
+        actor, field = claim["actor"], claim["field"]
+        if field in ("health", "emotion"):
+            path = f"/characters/{actor}/condition/{field}"
+        elif field == "relationship_trust":
+            path = f"/characters/{actor}/relationships/{claim['other_actor']}/trust"
+        else:
+            path = f"/characters/{actor}/{field}"
+        characters.setdefault(path, []).append(claim)
+    goals = {f"/characters/{x['actor']}/condition/goal": x
+             for x in comparison["goal_outcomes"]}
+    obligations = {f"/narrative_obligations/{x['obligation_id']}/status": x
+                   for x in comparison["narrative_obligations"]}
+    threads = {f"/open_threads/{x['thread_id']}": x
+               for x in comparison["open_threads"]}
+    new_objects = {
+        f"/objects/{x['object_id']}": x
+        for x in comparison["new_object_candidates"]
+    }
+    reviews = {x["target_path"]: x for x in findings}
+    all_rows = worklist["coverage_fields"]
+    field_paths = [x["path"] for x in all_rows]
+    if len(field_paths) != len(set(field_paths)):
+        raise ValueError("Duplicate source coverage field in full-field matrix")
+    if set(reviews) - set(field_paths):
+        raise ValueError("Review result references an unknown field")
+
+    rows = []
+    for field in all_rows:
+        path = field["path"]
+        hypothesis = {"status": "NO_TERMINAL_VALUE_PROPOSED"}
+        if path in objects:
+            d = objects[path]
+            hypothesis = {
+                "status": "SOURCE_BOUND_DELTA_CANDIDATE",
+                "value": copy.deepcopy(d["candidate_terminal_value"]),
+                "evidence": copy.deepcopy(d["evidence"]),
+            }
+        elif path in characters:
+            claims = characters[path]
+            hypothesis = {
+                "status": "PARTIAL_EPISTEMIC_ADDITIONS" if
+                          field["category"] == "CHARACTER_KNOWLEDGE" else
+                          "SOURCE_BOUND_CHARACTER_CANDIDATE",
+                "proposals": copy.deepcopy(claims),
+            }
+        elif path in goals:
+            d = goals[path]
+            hypothesis = {
+                "status": "GOAL_OUTCOME_ONLY_NOT_A_NEW_GOAL",
+                "outcome": d["proposed_outcome"],
+                "evidence": copy.deepcopy(d["evidence"]),
+            }
+        elif path in obligations and obligations[path]["proposed_outcome"] is not None:
+            d = obligations[path]
+            hypothesis = {
+                "status": "PROPOSED_OBLIGATION_OUTCOME_ONLY",
+                "outcome": d["proposed_outcome"],
+                "evidence": copy.deepcopy(d["evidence"]),
+            }
+        elif path in threads and threads[path]["proposed_outcome"] is not None:
+            d = threads[path]
+            hypothesis = {
+                "status": "PROPOSED_THREAD_OUTCOME_ONLY",
+                "outcome": d["proposed_outcome"],
+                "evidence": copy.deepcopy(d["evidence"]),
+            }
+        else:
+            for prefix, item in new_objects.items():
+                if path == prefix + "/identity_status":
+                    hypothesis = {"status": "PROPOSED_OBJECT_IDENTITY_ONLY"}
+                elif path == prefix + "/owner" or path == prefix + "/location":
+                    hypothesis = {"status": "EXPLICIT_UNKNOWN_NEW_ENTITY_FIELD"}
+        review = reviews.get(path)
+        rows.append({
+            "path": path,
+            "category": field["category"],
+            "coverage_status": field["status"],
+            "seed_snapshot": _initial_snapshot(seed, path),
+            "terminal_hypothesis": hypothesis,
+            "coverage_note": field["note"],
+            "source_proposal_evidence": copy.deepcopy(field["evidence"]),
+            "individual_review": (
+                {"status": "AUTHOR_DRAFT_ONLY",
+                 "issue_id": review["issue_id"],
+                 "provisional_category": review["provisional_category"],
+                 "why_not_final": review["why_not_final"]}
+                if review else
+                {"status": "NOT_INDIVIDUALLY_SEMANTICALLY_TRIAGED"}
+            ),
+            "required_next_action": _field_action(field),
+            "independently_certified": False,
+            "terminal_value_committable": False,
+        })
+    if len(rows) != worklist["blocking_field_count"] or set(field_paths) != {x["path"] for x in rows}:
+        raise ValueError("Full-field matrix does not exhaust source coverage")
+    return rows
+
+
 def assess_worklist(*, seed, prose, entity_proposal, policy, story_proposal,
                     property_proposal, annotations, assessments):
     """Replay the entire source-bound audit, then bind non-authoritative notes."""
@@ -98,6 +273,7 @@ def assess_worklist(*, seed, prose, entity_proposal, policy, story_proposal,
             "review_decision": "PENDING_INDEPENDENT_ADJUDICATION",
         })
 
+    matrix = _field_matrix(seed, worklist, result)
     counts = {
         category: sum(x["provisional_category"] == category for x in result)
         for category in ASSESSMENT_CATEGORIES
@@ -121,6 +297,18 @@ def assess_worklist(*, seed, prose, entity_proposal, policy, story_proposal,
         "provisional_category_counts": counts,
         "findings": result,
         "untriaged_fields": worklist["untriaged_fields"],
+        "full_field_matrix": matrix,
+        "full_field_matrix_summary": {
+            "field_count": len(matrix),
+            "author_draft_review_count": sum(
+                r["individual_review"]["status"] == "AUTHOR_DRAFT_ONLY"
+                for r in matrix),
+            "not_individually_triaged_count": sum(
+                r["individual_review"]["status"] ==
+                "NOT_INDIVIDUALLY_SEMANTICALLY_TRIAGED" for r in matrix),
+            "independently_certified_count": 0,
+            "terminal_values_committable_count": 0,
+        },
         "initial_to_candidate_comparison":
             worklist["initial_to_candidate_comparison"],
         "proposed_closed_obligations":
