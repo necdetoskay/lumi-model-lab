@@ -52,7 +52,7 @@ class StoryEvidenceProposal(Strict):
     thread_claims: list[ThreadClaim] = Field(default_factory=list)
 
 
-def extend_draft(*, seed, prose, admission_result, story_proposal):
+def extend_draft(*, seed, prose, admission_result, entity_proposal, policy, story_proposal):
     """Add explicitly sourced *candidate* terminal story claims to an eligible draft.
 
     Existing/unknown state remains untouched. No inferred completion, new actor,
@@ -60,6 +60,11 @@ def extend_draft(*, seed, prose, admission_result, story_proposal):
     """
     original_seed = copy.deepcopy(seed)
     original_admission = copy.deepcopy(admission_result)
+    # Never trust a caller-supplied partial state without replaying the exact
+    # structural admission from its frozen source and explicit policy.
+    recomputed = build_draft(seed=seed, prose=prose, proposal=entity_proposal, policy=policy)
+    if admission_result != recomputed:
+        raise ValueError("Admission result differs from deterministic replay")
     proposal = StoryEvidenceProposal.model_validate(story_proposal)
     if proposal.seed_sha256 != fingerprint(seed) or proposal.source_sha256 != digest(prose):
         raise ValueError("Story evidence binding differs from frozen seed/prose")
@@ -204,6 +209,7 @@ def main():
     admission = build_draft(seed=seed, prose=prose,
                             proposal=read(args.entity_proposal), policy=read(args.policy))
     result = extend_draft(seed=seed, prose=prose, admission_result=admission,
+                          entity_proposal=read(args.entity_proposal), policy=read(args.policy),
                           story_proposal=read(args.story_proposal))
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
