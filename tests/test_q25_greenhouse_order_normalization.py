@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.q25_extractor_adapter import materialize_quotes, offline_replay
+from src.q25_extractor_adapter import RawExtractorOutput, materialize_quotes, offline_replay
 from src.q25_entity_candidates import fingerprint
 from src.q25_semantic_gap_queue import make_queue
 from src.q25_raw_reconciliation import project_raw
@@ -73,7 +73,8 @@ def test_model_quote_citations_are_ordered_only_after_exact_verification():
     assert [span["start"] for span in actual] == [1190, 1373]
     assert all(d["prose"][span["start"]:span["end"]] == span["text"]
                for span in actual)
-    assert projection["raw_output_sha256"] == fingerprint(d["raw_output"])
+    assert projection["raw_output_sha256"] == fingerprint(
+        RawExtractorOutput.model_validate(d["raw_output"]).model_dump(mode="json"))
     assert d["raw_output"] == original
 
 
