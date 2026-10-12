@@ -157,3 +157,30 @@ See frozen test proof and SHA256 list at
 The dedicated low-privilege `q25-offline` runner is now functional.
 Provider calls and model API spend: zero. Original Q24 and frozen
 seed are unchanged; no production merge/write.
+
+## Provider-neutral extractor response boundary (2026-10-12)
+
+`src/q25_extractor_adapter.py` now supports a deterministic
+`q25.extractor-request.v1` with original seed and story, source/seed
+hashes and a versioned Pydantic response JSON Schema. A model-shaped,
+untrusted `q25.extractor-raw-output.v1` can be ingested offline; the
+application deterministically finds exact source citations and rejects
+missing/ambiguous quotes (unless uniquely disambiguated by explicit
+exact surrounding context). Its output is forwarded into the prior
+entity/admission, narrative evidence, object-property and coverage
+gates. A separate synthetic story verifies generic names and contract
+processing. **No actual model/provider is connected**; the Q24 raw
+fixture is derived from existing offline annotations, not a newly
+generated, human-judged extraction.
+
+GitHub Actions **#38235452237 GREEN: 134/134 tests PASS**. Full
+test/hash and scope report:
+`evidence/q25/Q25-EXTRACTOR-ADAPTER-20261012/report.md`.
+Canonical boundary design:
+`docs/canonical/Q25_EXTRACTOR_BOUNDARY_V1.md`.
+
+No provider call, no incremental model API spend, no semantic
+certification, no final state, no production deployment and no merge.
+PR remains Draft pending independent semantic extraction and
+authorized backend integration. P0/P4 are partial; P1–P3/P5–P6 remain
+outstanding.
