@@ -294,6 +294,35 @@ def test_missing_usage_or_over_budget_stops_without_retry(tmp_path, cost):
     assert (tmp_path / "pilot" / "provider-response.json").exists()
 
 
+
+def test_http_400_once_counts_attempt_without_fabricating_free_provider_usage(tmp_path):
+    class RejectingPost(Stub):
+        def __call__(self, *, url, method="GET", api_key=None,
+                     payload=None, timeout=None):
+            if url.endswith("/chat/completions"):
+                self.calls.append((url, method, api_key is not None))
+                raise PilotStop(
+                    "OpenRouter HTTP 400; no retry attempted;"
+                    " category=SCHEMA_OR_RESPONSE_FORMAT_REJECTED")
+            return super().__call__(url=url, method=method, api_key=api_key,
+                                    payload=payload, timeout=timeout)
+
+    client = RejectingPost()
+    ledger = paid_pilot(**inputs(), archive_dir=tmp_path / "pilot", client=client)
+    assert ledger["outcome"] == "STOP"
+    assert ledger["attempted_calls"] == 1
+    assert ledger["provider_calls"] == 1  # even rejected POST is a request attempt
+    assert ledger["billing_status"] == "UNKNOWN_UNTIL_VERIFIED_PROVIDER_USAGE"
+    assert "usage" not in ledger  # no fabricated cost=0 on failure
+    assert ledger["stop_reason"].startswith("OpenRouter HTTP 400")
+    assert len([c for c in client.calls if c[1] == "POST"]) == 1
+    assert not (tmp_path / "pilot" / "provider-response.json").exists()
+    assert not (tmp_path / "pilot" / "raw-extraction.json").exists()
+    assert (tmp_path / "pilot" / "request.json").exists()
+    assert (tmp_path / "pilot" / "ledger.json").exists()
+
+
+
 def test_invalid_source_bound_response_never_generates_review_packet(tmp_path):
     bad = load(RAW)
     bad["source_sha256"] = "0" * 64
