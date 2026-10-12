@@ -203,3 +203,46 @@ disabled, Q24 rejection unchanged, production untouched, no provider calls.
 Paid extractor job `skipped`; no charged dispatch was made. The documentation
 commit that follows does not change code. Scope, limitations and the replay
 command: `docs/canonical/Q25_SEMANTIC_REVIEW_BOUNDARY_V1.md`.
+
+
+## Q25 single-call pilot artifact and default-branch launcher (2026-10-12)
+
+The paid pilot transport now writes `semantic-review-packet.json` after a
+source-bound offline-gate PASS **within the same immutable evidence archive**,
+and binds its SHA256, candidate count and `AWAITING_EXTERNAL_REVIEW` status
+in the ledger. This does not certify claims or permit canonical writes. A
+model response failing provenance, schema or policy checks produces no review
+packet. The replay fixture's 15 candidates are not human-certified gold.
+
+**Real GitHub Actions [#38239282412](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38239282412):
+178/178 offline tests PASS** at code commit `999937c5`; the paid job was
+**SKIPPED**, provider calls and new API cost zero. The follow-up documentation
+changes do not alter that tested code.
+
+**Manual dispatch blocker identified:** the original Q25 experimental workflow
+is only on the experiment branch, absent from repository default branch
+`main`. For GitHub's standard Run workflow UI, default-branch workflow
+registration is required. A small inert default-branch launcher was prepared
+as **[PR #274](https://github.com/necdetoskay/lumi-model-lab/pull/274)**,
+separate from Q25 Draft PR #273. PR #274 includes only
+`.github/workflows/q25-manual-extractor-pilot.yml`; it has no push/PR
+trigger, defaults to DENY, and has been statically checked (YAML structure,
+bash syntax, owner/main/run-attempt gate, immutable Q25 SHA, q25-offline
+label, cost ceiling and private evidence archive). It is ready for human
+review but **NOT MERGED**. No change has been made to `main`.
+
+After independent human review/merge of **only PR #274**, an authorized
+operator can explicitly launch one Q24 extraction from GitHub Actions using
+the default branch `main`, the named model and `execute_paid=true`.
+The launcher runs the immutable Q25 experiment at commit `d6ad984cf30952c345de98349222beb57143f43d`,
+not whatever code may later be pushed to the experiment branch.
+The default-branch launcher reserves a persistent one-shot lock on the
+dedicated CI runner **before** handing the secret to the paid step.
+Any subsequent manual dispatch stops before provider contact. This lock
+also persists after a preflight failure and must not be reset automatically.
+
+The prior tool-environment refusal to dispatch paid work is respected; no
+alternate API/agent invocation was used to circumvent it. No live paid
+extractor run has occurred as part of this change. Q24 remains REJECTED,
+all canonical state mutations/promotion remain forbidden, and production
+LUMI is untouched.
