@@ -90,7 +90,7 @@ def test_flawed_synthetic_prediction_exposes_wrong_and_missing_claims():
                or x["identity"] == ["new:white_folder", "OWNED_BY", "character:Aylin"]
                for x in extra)
     assert any(x["group"] == "character_claims" and
-               x["identity"][1:4] == ("emotion", "relieved", None)
+               x["identity"][1:4] == ["emotion", "relieved", None]
                for x in extra)
     assert len(r["matched_reference_claims"]) == 8
     assert len(r["missed_reference_claims"]) == 4
