@@ -9,7 +9,7 @@ import pytest
 from src.q25_openrouter_pilot import (
     API, PilotStop, build_wire_request, decimal_price, enforce_preflight,
     paid_pilot, parse_completion, pricing_snapshot, upper_cost_usd,
-    provider_safe_json_schema, transport_json,
+    provider_safe_json_schema, classify_http_error_body, transport_json,
 )
 from src.q25_semantic_review import review_packet_digest
 
@@ -320,6 +320,48 @@ def test_http_error_never_exposes_auth_or_retries(monkeypatch):
     with pytest.raises(PilotStop, match="HTTP 402; no retry"):
         transport_json(url=API + "/chat/completions", method="POST",
                        api_key="sensitive-secret", payload={"hello": "test"})
+
+
+
+def test_http_400_has_sanitized_schema_diagnostic_and_never_leaks_provider_body(monkeypatch):
+    import io
+    import urllib.error
+    import urllib.request
+    sensitive = "MY_SECRET_PRIVATE_PROMPT"
+    response = {
+        "error": {
+            "message": "Schema rejected: minLength not supported. " + sensitive
+        }
+    }
+    class FakeOpener:
+        def open(self, req, timeout):
+            raise urllib.error.HTTPError(
+                req.full_url, 400, "invalid", {},
+                io.BytesIO(json.dumps(response).encode("utf8")))
+    monkeypatch.setattr(
+        urllib.request, "build_opener", lambda *args: FakeOpener())
+    with pytest.raises(PilotStop, match="category=SCHEMA_UNSUPPORTED_STRING_CONSTRAINT") as exc:
+        transport_json(url=API + "/chat/completions", method="POST",
+                       api_key="secret-key-never-log", payload={"hi": "there"})
+    assert "MY_SECRET" not in str(exc.value)
+    assert "secret-key" not in str(exc.value)
+    assert "no retry attempted" in str(exc.value)
+
+
+@pytest.mark.parametrize("message,category", [
+    ("JSON schema compilation failed: too complex", "SCHEMA_GRAMMAR_COMPILATION"),
+    ("response_format json_schema invalid", "SCHEMA_OR_RESPONSE_FORMAT_REJECTED"),
+    ("Model does not support response_format", "SCHEMA_OR_RESPONSE_FORMAT_REJECTED"),
+    ("No provider route available", "PROVIDER_ROUTING_REJECTED"),
+    ("Context length exceeded", "MODEL_CONTEXT_LIMIT"),
+    ("unknown problem including private entity identifiers", "UNCLASSIFIED"),
+])
+def test_only_safe_provider_error_categories_survive(message, category):
+    payload = {"error": {"message": message + " EXTRA_PRIVATE_MARKER"}}
+    result = classify_http_error_body(json.dumps(payload).encode())
+    assert result == category
+    assert "PRIVATE_MARKER" not in result
+
 
 
 def test_github_paid_job_is_never_activated_by_ordinary_pr_or_rerun():
