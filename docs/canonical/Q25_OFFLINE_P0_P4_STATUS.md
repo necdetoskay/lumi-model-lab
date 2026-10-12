@@ -97,3 +97,30 @@ Q25 P0/P4 remain partial; P1–P3, P5–P6, human review and actual
 automatic story-to-state semantic extraction are still pending. No paid
 authorization reopening, production release, seed mutation or Q24 decision
 replacement is permitted.
+
+## Q25 source-bound story-state annotation verification (2026-10-12)
+
+See `evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/report.md`
+for SHA256 bindings, test command and measured results. The separate
+`src/q25_story_evidence.py` stage now records two character change claims,
+three goal outcomes, three narrative obligation outcomes and three thread
+outcomes as **cited proposal records**, not accepted terminal values. The
+historical 41-test record above is retained, while the most recent
+cross-platform **isolated CI-host execution** passed **71/71 tests**
+(commit `8c813c1`).
+
+Safety improvement: given a claimed admitted object draft, the stage
+replays `build_draft` from immutable Q24 seed/prose/entity proposal/policy
+and compares the complete result; forged character, object, world, identity
+map and topology values fail closed. Frozen artifacts and original seed
+are unchanged. CLI and all tests are read-only in terms of canonical state.
+Model provider calls/cost: zero.
+
+This is **not a fully extracted final state**, not a semantic verdict, and
+not a production persistence proposal. Q24's rejection is unchanged.
+External GitHub Actions Q25 jobs are still QUEUED because
+`necdetoskay/lumi-model-lab` currently reports **0 registered self-hosted
+runners**; the existing `it-manager` and `lumi-marathon` runner services
+are attached to other repositories. The isolated manual tests above do
+not count as GitHub CI GREEN. Connecting a dedicated safe runner or
+explicitly authorizing GitHub-hosted minutes is separate infrastructure work.
