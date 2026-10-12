@@ -51,3 +51,49 @@ CLI success means a candidate was represented, not that a story or final state w
 The saved Q24 result at `evidence/q25/Q25-ADMISSION-DRAFT-20261012` is ELIGIBLE_DRAFT for object relationships only. It has no revision or commit authority. Generic object properties such as found, character knowledge/goals and narrative obligations are not extracted by this step; their initial values must not be mistaken for verified terminal values. It is a partial view, deliberately incompatible with the old accepted StoryState schema. Semantic evidence, role classification, full state coverage and canonical authority integration remain required. This is not a repaired Q24 acceptance and does not change the prior gap/rejection records.
 
 The current 41-test focused suite includes default-deny admission, unknown-field policies, ownership retention, seed immutability, frozen full-case replay and read-only CLI execution. Historical 13/31-test checks are not overwritten. No provider calls, paid permission changes or production writes.
+
+## Source-bound story-state proposals (new, still non-authoritative)
+
+`src/q25_story_evidence.py` consumes an already eligible `q25.draft-state.v1` plus
+a separately annotated `q25.story-evidence-proposal.v1`. It validates the
+seed/prose/draft binding, exact contiguous text spans, known actors, permitted
+existing locations, known initial goal IDs, known **OPEN** narrative obligation
+IDs, and known open-thread IDs. Duplicate terminal claims, invalid citations,
+out-of-order multi-span evidence and silent relabeling of seed knowledge fail
+closed. Newly acquired knowledge requires an explicit OBSERVED/REPORTED/BELIEF/
+INFERRED epistemic label. Neither an exact quote nor an annotation gives a
+semantic correctness certificate.
+
+Accepted input here means *structurally representable candidate*, not semantic
+approval. Character knowledge, emotion, health, location and established
+relationship-trust changes are recorded under `proposed_character_changes`;
+goal outcomes, obligations and thread outcomes have their own proposal lists.
+The input seed's `characters`, world, object properties and original narrative
+obligations remain unchanged, as does the original admission result.
+Unannotated fields remain unknown/unverified; initial `found=false` is not
+automatically promoted to a verified terminal fact. Full story-state coverage
+and persistence/merge/revision authority are always false.
+
+The Q24 example at
+`evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/story-proposal.json`
+is a human/Codex *offline annotation*, **not** model-generated extraction,
+independent adjudication or golden ground truth. It cites direct text for
+Nisa's newly observed bookmark location and proposed emotional change,
+three character goal outcomes, three possible narrative-obligation
+satisfactions and three proposed thread resolutions. Narrative quality and
+semantic sufficiency remain UNVERIFIED; no automatic extractor, independent
+judge or canon state writer is supplied.
+
+Read-only Q24 replay (no provider credentials or API calls):
+
+```sh
+python -m src.q25_story_evidence --seed evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/seed-input.json --prose-record evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/writer-2-text.json --entity-proposal evidence/q25/Q25-ENTITY-CANDIDATE-20261012/proposal.json --policy evidence/q25/Q25-ADMISSION-DRAFT-20261012/policy.json --story-proposal evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/story-proposal.json
+python -m pytest -q tests/test_q25_story_evidence.py
+```
+
+The historical 41-test local pass predates this additional module. The new
+tests and updated self-hosted workflow require independent CI verification.
+Q25 P0/P4 remain partial; P1–P3, P5–P6, human review and actual
+automatic story-to-state semantic extraction are still pending. No paid
+authorization reopening, production release, seed mutation or Q24 decision
+replacement is permitted.
