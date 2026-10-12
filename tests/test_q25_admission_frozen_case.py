@@ -19,7 +19,7 @@ def test_q24_admission_replays_with_explicit_unknowns_and_no_revision():
 
 def test_all_admission_sources_and_evidence_hashes_match():
     for name,sha in read(ROOT/'inventory.json')['files'].items():assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==sha
-    for row in read(ROOT/'provenance.json')['source_files']:assert hashlib.sha256(Path(row['path']).read_bytes()).hexdigest()==row['sha256']
+    for row in read(ROOT/'provenance.json')['source_files']:assert hashlib.sha256(Path(row['path'].replace('\\', '/')).read_bytes()).hexdigest()==row['sha256']
 
 def test_read_only_command_does_not_mutate_frozen_seed_or_records():
     roots=[ROOT,BASE,PREVIOUS];before={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for root in roots for p in root.rglob('*') if p.is_file()}
