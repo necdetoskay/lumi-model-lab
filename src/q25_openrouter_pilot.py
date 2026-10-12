@@ -24,12 +24,12 @@ from src.q25_extractor_adapter import (
 )
 from src.q25_semantic_review import build_review_packet, review_packet_digest
 from src.q25_raw_reconciliation import project_raw
+from src.q25_model_metadata import (
+    MODEL_METADATA, model_metadata, model_metadata_sha256,
+)
 
 API = "https://openrouter.ai/api/v1"
-MODEL_ALLOWLIST = frozenset({
-    "anthropic/claude-sonnet-5.5",
-    "google/gemini-2.5-flash",
-})
+MODEL_ALLOWLIST = frozenset(MODEL_METADATA)
 MAX_CALLS = 1
 GLOBAL_CAP_USD = Decimal("0.20")
 MAX_OUTPUT_TOKENS = 4000
@@ -147,25 +147,24 @@ def pricing_snapshot(catalog, model):
         raise PilotStop("Model token price is missing or zero")
     return {"model": model, "prompt_per_token": str(prompt),
             "completion_per_token": str(completion),
-            "context_length": row.get("context_length")}
+            "context_length": row.get("context_length"),
+            "schema_profile": model_metadata(model)["schema_profile"],
+            "model_metadata_sha256": model_metadata_sha256(model)}
 
 
-def provider_safe_json_schema(original):
-    """Compile a Claude-compatible wire schema; preserve strict local validation.
+def provider_safe_json_schema(original, model="anthropic/claude-sonnet-5.5"):
+    """Apply the selected model's metadata, preserving full local validation.
 
-    The original Pydantic schema remains the sole response-validation contract.
-    Claude's structured-output grammar rejects minLength/maxLength and other
-    unsupported constraints. Move them into descriptions, not model grammar.
-    This function performs no HTTP requests and never mutates its input.
+    Only the *wire schema* is softened. The original Pydantic validator stays
+    strict; a provider-returned invalid ID/quote/property still fails closed.
     """
+    try:
+        profile = model_metadata(model)
+    except ValueError as exc:
+        raise PilotStop("Model/schema profile is not qualified") from exc
     schema = copy.deepcopy(original)
-    bounds = {
-        "minLength", "maxLength", "minimum", "maximum",
-        "exclusiveMinimum", "exclusiveMaximum", "multipleOf",
-        "maxItems", "uniqueItems", "minProperties", "maxProperties",
-    }
-    unsupported = {"patternProperties", "unevaluatedProperties",
-                   "dependentSchemas", "not", "if", "then", "else"}
+    bounds = set(profile["wire_constraints_enforced_locally"])
+    unsupported = set(profile["rejected_schema_keywords"])
     stats = {"optional": 0, "unions": 0, "removed_constraints": 0}
 
     def visit(node):
@@ -199,8 +198,8 @@ def provider_safe_json_schema(original):
             if len(set(required)) != len(required) or set(required) - set(props):
                 raise PilotStop("Invalid required property in provider schema")
             stats["optional"] += len(props) - len(required)
-        if "minItems" in node and node["minItems"] not in (0, 1):
-            raise PilotStop("Structured outputs support minItems 0 or 1 only")
+        if "minItems" in node and node["minItems"] not in profile["allowed_min_items"]:
+            raise PilotStop("Array minimum is not qualified by model metadata")
         if "anyOf" in node:
             stats["unions"] += 1
         for value in node.values():
@@ -208,7 +207,8 @@ def provider_safe_json_schema(original):
 
     visit(schema)
     # Anthropic's current grammar rejects schemas exceeding these limits.
-    if stats["optional"] > 24 or stats["unions"] > 16:
+    if (stats["optional"] > profile["max_optional_parameters"] or
+            stats["unions"] > profile["max_union_parameters"]):
         raise PilotStop("Provider JSON schema complexity limit exceeded")
     if schema.get("type") != "object":
         raise PilotStop("Provider response schema root must be an object")
@@ -255,7 +255,8 @@ def build_wire_request(*, seed, prose, model, max_tokens):
             "type": "json_schema",
             "json_schema": {
                 "name": "q25_extractor_raw_v1", "strict": True,
-                "schema": provider_safe_json_schema(spec["response_json_schema"]),
+                "schema": provider_safe_json_schema(
+                    spec["response_json_schema"], model=model),
             },
         },
         "messages": [
@@ -351,7 +352,10 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
     # Prevent incidental reruns from spending the budget a second time.
     archive_dir.mkdir(parents=True, exist_ok=False, mode=0o700)
     ledger = dict(schema="q25.openrouter-pilot-ledger.v1",
-                  model=model, source_sha256=hashlib.sha256(prose.encode("utf8")).hexdigest(),
+                  model=model,
+                  model_metadata_sha256=model_metadata_sha256(model),
+                  model_schema_profile=model_metadata(model)["schema_profile"],
+                  source_sha256=hashlib.sha256(prose.encode("utf8")).hexdigest(),
                   seed_sha256=fingerprint(seed),
                   max_calls=MAX_CALLS, attempted_calls=0,
                   max_cost_usd=str(cap), max_tokens=max_tokens,
