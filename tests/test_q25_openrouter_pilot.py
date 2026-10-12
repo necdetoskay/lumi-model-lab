@@ -11,6 +11,7 @@ from src.q25_openrouter_pilot import (
     paid_pilot, parse_completion, pricing_snapshot, upper_cost_usd,
     transport_json,
 )
+from src.q25_semantic_review import review_packet_digest
 
 ROOT = Path("evidence/q25")
 BASE = ROOT / "Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24"
@@ -150,8 +151,18 @@ def test_genuinely_one_paid_call_then_hash_bound_readonly_audit(tmp_path):
     assert d == before
     assert sorted(p.name for p in dir_.iterdir()) == [
         "ledger.json", "offline-gate-result.json",
-        "provider-response.json", "raw-extraction.json", "request.json"
+        "provider-response.json", "raw-extraction.json", "request.json",
+        "semantic-review-packet.json",
     ]
+    packet = load(dir_ / "semantic-review-packet.json")
+    assert packet["candidate_count"] == 15
+    assert packet["unresolved_terminal_fields"] == 70
+    assert ledger["review_packet_sha256"] == review_packet_digest(packet)
+    assert ledger["review_candidate_count"] == 15
+    assert ledger["review_status"] == "AWAITING_EXTERNAL_REVIEW"
+    assert ledger["independent_semantic_review_complete"] is False
+    assert packet["semantic_support_certified"] is False
+    assert packet["state_commit_authorized"] is False
     for p in dir_.iterdir():
         assert "stub-key" not in p.read_text(encoding="utf8")
     assert load(BASE / "seed-input.json") == d["seed"]
@@ -210,6 +221,20 @@ def test_missing_usage_or_over_budget_stops_without_retry(tmp_path, cost):
     assert ledger["attempted_calls"] == 1
     assert len([c for c in fake.calls if c[1] == "POST"]) == 1
     assert (tmp_path / "pilot" / "provider-response.json").exists()
+
+
+def test_invalid_source_bound_response_never_generates_review_packet(tmp_path):
+    bad = load(RAW)
+    bad["source_sha256"] = "0" * 64
+    stub = Stub(response=bad)
+    archive = tmp_path / "pilot"
+    result = paid_pilot(**inputs(), archive_dir=archive, client=stub)
+    assert result["outcome"] == "REJECTED_BY_OFFLINE_GATE"
+    assert result["state_commit_authorized"] is False
+    assert "review_packet_sha256" not in result
+    assert not (archive / "semantic-review-packet.json").exists()
+    assert (archive / "raw-extraction.json").exists()
+    assert len([c for c in stub.calls if c[1] == "POST"]) == 1
 
 
 def test_http_error_never_exposes_auth_or_retries(monkeypatch):
