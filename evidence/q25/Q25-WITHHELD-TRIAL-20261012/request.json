@@ -1,0 +1,143 @@
+{
+  "schema_name": "q25.withheld-request.v1",
+  "request_id": "KITE-01",
+  "model_inputs_only": true,
+  "labels_included": false,
+  "seed": {
+    "schema_name": "spineforge.story-seed.v1",
+    "story_id": "kite-workshop-defne-bora-01",
+    "scenario_id": "Q25-WITHHELD-REQUEST-01",
+    "characters": {
+      "Defne": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "worried",
+          "goal": "prepare_kite_for_demo"
+        },
+        "inventory": {},
+        "knowledge": [
+          "blue_string_is_mine",
+          "demo_starts_soon",
+          "Bora_used_toolbox_yesterday",
+          "repair_notebook_on_workbench"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate",
+            "trust": "uncertain"
+          }
+        }
+      },
+      "Bora": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "calm",
+          "goal": "help_prepare_kite"
+        },
+        "inventory": {},
+        "knowledge": [
+          "I_did_not_take_blue_string",
+          "kite_needs_string"
+        ],
+        "relationships": {
+          "Defne": {
+            "familiarity": "classmate",
+            "trust": "good"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_school_kite_workshop",
+      "time": {
+        "period": "after_school",
+        "minutes_until_demo": 20
+      },
+      "rules": [
+        "No magic; established notebook, wooden box and kite must suffice.",
+        "Decorative objects may be mentioned without invented owner."
+      ]
+    },
+    "topology": {
+      "locations": [
+        "workshop"
+      ]
+    },
+    "objects": {
+      "blue_string": {
+        "owner": "Defne",
+        "location": "workshop",
+        "state": {
+          "color": "blue",
+          "container": "wooden_box",
+          "found": false,
+          "tied_to_kite": false,
+          "intentionally_stolen": false
+        }
+      },
+      "wooden_box": {
+        "owner": "school",
+        "location": "workshop",
+        "state": {
+          "stored_at": "workshop_shelf",
+          "contains": [
+            "blue_string"
+          ],
+          "lid_closed": true
+        }
+      },
+      "red_kite": {
+        "owner": "school",
+        "location": "workshop",
+        "state": {
+          "ready": false,
+          "string_attached": false,
+          "damaged": false
+        }
+      },
+      "repair_notebook": {
+        "owner": "school",
+        "location": "workshop",
+        "state": {
+          "stored_at": "workbench",
+          "entry_text": "Mavi ipi tahta kutuya yerleştirdim. Defne.",
+          "available": true
+        }
+      }
+    },
+    "narrative_obligations": [
+      {
+        "id": "check_written_note",
+        "status": "OPEN",
+        "detail": "Read the established repair note before assuming someone took the string."
+      },
+      {
+        "id": "recover_and_attach_string",
+        "status": "OPEN",
+        "detail": "Find the blue string in the wooden box and attach it to the kite using ordinary physical action."
+      },
+      {
+        "id": "correct_false_suspicion",
+        "status": "OPEN",
+        "detail": "Defne corrects false suspicion and apologizes to Bora, without assuming trust is immediately restored."
+      }
+    ],
+    "open_threads": [
+      "missing_string",
+      "kite_not_ready",
+      "bora_wrongly_suspected"
+    ]
+  },
+  "prose_record": {
+    "text": "Uçurtma gösterisine yirmi dakika kalmıştı. Okulun atölyesinde kırmızı uçurtma masanın üzerinde duruyordu. Defne, mavi ipini göremeyince telaşla çekmecelere baktı. Kuyruk sağlamdı, fakat ip takılı olmadığından uçurtma henüz hazır değildi.\n\n\"Dün alet kutusunu sen kullanmıştın,\" dedi Defne, Bora’ya. \"İpimi başka yere mi kaldırdın?\"\n\nBora kaşlarını çattı. \"İpini almadım. Beni suçlamadan önce nerelere baktığına emin ol,\" dedi. Defne, alet kutusuna bakışının kanıt olmadığını fark etti ama ne söyleyeceğini bilemedi.\n\nBora tezgâhtaki tamir defterini gösterdi. \"Dün iş bitince bir şeyler yazmıştın. Önce ona bakalım.\" Defne defterin dünkü sayfasını açtı. Kendi el yazısıyla şunu okudu: \"Mavi ipi tahta kutuya yerleştirdim. Defne.\"\n\n\"Bunu ben yazmışım,\" diye fısıldadı Defne. \"İpi senin aldığını düşünmekle acele ettim.\" Bora notu da gördü; şimdi ikisi de kutuya bakmaları gerektiğini biliyordu.\n\nAtölye rafındaki tahta kutunun kapağını Defne açtı. İçeride mavi ip, küçük bir halka hâlinde duruyordu. Defne ipi kutudan çıkardı ve uçurtmanın gövdesindeki bağlantı noktasına sağlam bir düğümle bağladı. Boş kutuyu rafa koydu.\n\nBora uçurtmayı hafifçe kaldırdı ve düğümü kontrol etti. \"İp bağlı, artık gösterebiliriz,\" dedi. Defne uçurtmanın kuyruğuna tezgâhta duran altın renkli kâğıt yıldızı yapıştırdı. Yıldızın kime ait olduğu söylenmedi.\n\nDefne Bora’ya döndü. \"Seni kanıt olmadan suçladım. İpi kutuya ben koymuşum. Özür dilerim.\" Bora, \"Kırıldım ama özrünü duydum. Uçurtmayı birlikte gösterebiliriz,\" dedi. Defne gülümsedi; Bora’nın ona eskisi kadar güvenip güvenmediğini anlayamıyordu.\n\nDefne ipi yeniden kontrol etti. Uçurtma hazırdı. Gösteri başladığında ikisi de uçurtmayı atölye kapısının yanında tuttular; bir süre sonra avluya çıkacaklardı. Tam kaç dakika geçtiği söylenmedi."
+  },
+  "policy": {
+    "schema_name": "q25.object-admission-policy.v1",
+    "scope": "EXPERIMENTAL_DRAFT_ONLY",
+    "allow_new_ordinary_objects": true,
+    "allow_unknown_owner": true,
+    "allow_unknown_location": true
+  }
+}
