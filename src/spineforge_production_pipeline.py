@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import time
+from decimal import Decimal
 from pathlib import Path
 from typing import Any,Literal
 from pydantic import Field,model_validator
@@ -18,10 +19,11 @@ from src.spineforge_story_design import StoryRequestV1
 from src.spineforge_production_compact_v4 import compact_planner_input_v4, parse_compact_v4, compile_compact_v4, PlanLinkErrorV4
 from src.spineforge_production_plan_review_v2 import build_review_input,bind_review
 from src.spineforge_production_config import RunConfigV1
+from src.spineforge_production_config_v2 import load_run_config
 from src.model_registry import require_qualification_runtime_profile,normalize_openrouter_request
 from src.spineforge_relay_v1_q5t import save
-from src import spineforge_production_compact_range_story as engine
-from scripts.spineforge_production_compact_range_replay import verify_story
+from src import spineforge_production_effects_story as engine
+from scripts.spineforge_production_effects_replay import verify_story
 
 
 class PlanFindingV1(StrictModel):
@@ -48,17 +50,17 @@ class PlanReviewV1(StrictModel):
 def prepare(request_path,seed_path,freeze_path,config_path):
     request=StoryRequestV1.model_validate_json(Path(request_path).read_bytes())
     seed=verify_frozen_seed(Path(seed_path),Path(freeze_path))
-    config=RunConfigV1.model_validate_json(Path(config_path).read_bytes())
+    config=load_run_config(config_path)
     for model in config.models():require_qualification_runtime_profile(model)
     paths=set(Path("src").glob("spineforge_relay_v1*.py"))
     paths.update(Path("src").glob("spineforge_production*.py"))
     paths.update(Path("prompts").glob("spineforge_relay_v1*.md"))
     paths.update(Path("prompts").glob("spineforge_production*.md"))
     paths.update(Path("prompts").glob("spineforge_joint*.md"))
-    paths.update(Path(p) for p in ["src/spineforge_seeded_design.py","src/spineforge_story_design.py",
+    paths.update(Path(p) for p in ["src/spineforge_state_fidelity.py","src/spineforge_seeded_design.py","src/spineforge_story_design.py",
         "src/spineforge_joint_spatial.py","src/spineforge_source_spans.py","src/spineforge_v19_transport.py",
         "src/model_registry.py","src/generate.py","src/spineforge_span_story_runner.py","src/spineforge_span_paid_entry.py",
-        "scripts/spineforge_production_replay.py","scripts/spineforge_production_range_replay.py","scripts/spineforge_production_compact_range_replay.py","configs/model_runtime_profiles.yaml","requirements.txt",
+        "scripts/spineforge_production_replay.py","scripts/spineforge_production_range_replay.py","scripts/spineforge_production_compact_range_replay.py","scripts/spineforge_production_effects_replay.py","configs/model_runtime_profiles.yaml","requirements.txt",
         "prompts/spineforge_seeded_design.md","prompts/spineforge_story_design.md","prompts/spineforge_span_guard.md"])
     return dict(schema="spineforge.production-preflight.v1",request_sha256=canonical_sha256(request),
         seed_sha256=canonical_sha256(seed),config=config.model_dump(mode="json"),max_calls=4+4*request.scene_count,
@@ -80,6 +82,7 @@ def request_for(stage,payload,config):
     expected=normalize_openrouter_request(model,dict(model=model,messages=[dict(role="system",content=prompt),dict(role="user",content=kwargs["user_prompt"])],
         temperature=kwargs["temperature"],max_tokens=kwargs["max_tokens"]),request_class=kwargs["request_class"],structured_output=False)
     expected["response_format"]=kwargs["response_format"];expected["provider"]={**expected.get("provider",{}),"require_parameters":True}
+    if kwargs["max_tokens"] is None:expected.pop("max_tokens",None)
     return kwargs,expected
 
 
@@ -102,14 +105,17 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
         (output/name).write_bytes(Path(path).read_bytes())
     request=StoryRequestV1.model_validate_json(Path(request_path).read_bytes())
     seed=verify_frozen_seed(Path(seed_path),Path(freeze_path))
-    config=RunConfigV1.model_validate_json(Path(config_path).read_bytes())
+    config=load_run_config(config_path)
     ledger=[];result=dict(status="REJECT_NON_CONVERGENT",phase="planning",automatic_retry=False,ledger=ledger)
     def call(stage,attempt,payload):
         kwargs,expected=request_for(stage,payload,config)
         rates=require_qualification_runtime_profile(kwargs["model"])["metadata"]["pricing_usd_per_million_tokens"]
-        planned=(len(json.dumps({k:v for k,v in kwargs.items()},ensure_ascii=False).encode())*rates["input"]+kwargs["max_tokens"]*rates["output"])/1e6
-        if planned>config.max_call_cost_usd or sum(r.get("cost_usd",0) or 0 for r in ledger)+planned>config.max_total_cost_usd:
-            raise RuntimeError("Pipeline conservative spend ceiling")
+        spent=sum(r.get("cost_usd",0) or 0 for r in ledger)
+        uncapped=getattr(config,"budget_policy",None)=="BETWEEN_CALLS"
+        planned=None if uncapped else (len(json.dumps({k:v for k,v in kwargs.items()},ensure_ascii=False).encode())*rates["input"]+kwargs["max_tokens"]*rates["output"])/1e6
+        exact_spent=sum((Decimal(str(r.get('cost_usd') or 0)) for r in ledger),Decimal(0))
+        if (uncapped and exact_spent>=Decimal(str(config.max_total_cost_usd))) or (not uncapped and (planned>config.max_call_cost_usd or spent+planned>config.max_total_cost_usd)):
+            raise RuntimeError("Pipeline spend admission")
         prefix=output/f"plan-{attempt}-{stage}"
         row=dict(stage=stage,attempt=attempt,model=kwargs["model"],request_sha256=canonical_sha256(expected),status="STARTED",cost_usd=None,planned_cost_usd=planned)
         ledger.append(row);save(str(prefix)+"-request.json",expected);started=time.perf_counter()
@@ -124,7 +130,7 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
             cost=usage.get("cost")
             if isinstance(cost,bool) or not isinstance(cost,(float,int)) or not math.isfinite(cost) or cost<0:raise ValueError("Invalid cost")
             row.update(cost_usd=cost,input_tokens=usage["prompt_tokens"],output_tokens=usage["completion_tokens"],total_tokens=usage["total_tokens"])
-            if cost>config.max_call_cost_usd or sum(r.get("cost_usd",0) or 0 for r in ledger)>config.max_total_cost_usd:raise ValueError("Provider spend ceiling")
+            if not uncapped and (cost>config.max_call_cost_usd or sum(r.get("cost_usd",0) or 0 for r in ledger)>config.max_total_cost_usd):raise ValueError("Provider spend ceiling")
             if body.get("choices",[{}])[0].get("finish_reason")!="stop":raise ValueError("Incomplete response")
             row["status"]="COMPLETE";return text
         except Exception as exc:
@@ -164,8 +170,8 @@ def execute(*,request_path,seed_path,freeze_path,config_path,preflight,output,ap
         else:
             design,fixture_path=accepted;result["phase"]="story"
             save(output/"accepted-design.json",design.model_dump(mode="json"))
-            remaining=config.max_total_cost_usd-sum(r["cost_usd"] for r in ledger)
-            story_config=RunConfigV1.model_validate({**config.model_dump(mode="json"),"max_total_cost_usd":remaining})
+            remaining=float(Decimal(str(config.max_total_cost_usd))-sum((Decimal(str(r['cost_usd'])) for r in ledger),Decimal(0)))
+            story_config=type(config).model_validate({**config.model_dump(mode="json"),"max_total_cost_usd":remaining})
             story_preflight=engine.prepare(fixture_path,story_config)
             story=engine.execute_story(fixture_path=fixture_path,api_key=api_key,config=story_config,preflight=story_preflight,output=output/"story",call_fn=call_fn)
             result.update(status=story["status"],story_result=story,phase="verification" if story["status"]=="ACCEPT" else "story")
