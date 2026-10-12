@@ -21,10 +21,15 @@ on:
       - .github/workflows/q25-offline-diagnostic.yml
 permissions:
   contents: read
+concurrency:
+  group: q25-offline-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   offline:
-    runs-on: self-hosted
-    timeout-minutes: 10
+    # Ephemeral GitHub-hosted VM isolates untrusted test code from the
+    # municipality-connected CI server. No production secrets or providers.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
