@@ -124,3 +124,36 @@ runners**; the existing `it-manager` and `lumi-marathon` runner services
 are attached to other repositories. The isolated manual tests above do
 not count as GitHub CI GREEN. Connecting a dedicated safe runner or
 explicitly authorizing GitHub-hosted minutes is separate infrastructure work.
+
+## Terminal object-property claims and granular coverage (2026-10-12)
+
+`src/q25_terminal_properties.py` provides a separately versioned
+`q25.terminal-property-proposal.v1` input, requiring the frozen
+seed/prose digests, exact precondition, unchanged scalar type, and
+literal evidence for non-no-op terminal property proposals. Structural
+fields, invented objects/properties and unsupported changes fail closed.
+It **does not semantically certify** even a correctly cited claim.
+
+The saved Q24 offline annotation proposes `red_bookmark.found:
+false → true` based on the observed-action excerpt where Nisa
+takes the bookmark out. The seed's `false` value **remains untouched**;
+other fields such as `returned_to_owner` remain `UNASSESSED`.
+The optional `--property-proposal` for
+`python -m src.q25_state_coverage` classifies this as a CANDIDATE.
+It does not change existing read-only replay output when the optional
+proposal is absent.
+
+Actual replay at `2109f05`: 12 CANDIDATE, 1 PARTIAL_CANDIDATES,
+23 STRUCTURAL_ONLY, 32 UNASSESSED, 2 UNKNOWN = 70 fields blocked
+for final acceptance. A non-assessed field does not imply a
+contradiction or that a value must change. Complete extraction,
+semantic/role adjudication, obligation/goal and memory completeness,
+real StoryState contract adaptation and production authorization
+remain pending.
+
+**GitHub Actions #38233908219 GREEN: 108/108 offline tests PASS.**
+See frozen test proof and SHA256 list at
+`evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/terminal-properties-report.md`.
+The dedicated low-privilege `q25-offline` runner is now functional.
+Provider calls and model API spend: zero. Original Q24 and frozen
+seed are unchanged; no production merge/write.
