@@ -168,6 +168,28 @@ def materialize_quotes(*, seed, prose, raw_output):
         pos = candidates[0]
         return Span(start=pos, end=pos + len(text), text=text).model_dump(mode="json")
 
+    evidence_order_adjustments = []
+
+    def ordered_spans(group, ordinal, citations):
+        """Canonicalize only citation-list order using verified source offsets.
+
+        Claim contents, quoted text and raw model bytes are never altered.
+        Duplicates still fail closed; this cannot make false semantics true.
+        """
+        resolved = [span(quote) for quote in citations]
+        locators = [(item["start"], item["end"]) for item in resolved]
+        if len(set(locators)) != len(locators):
+            raise ValueError("Duplicate model-provided evidence quotation")
+        sorted_spans = sorted(resolved, key=lambda item: (item["start"], item["end"]))
+        if sorted_spans != resolved:
+            evidence_order_adjustments.append(dict(
+                group=group, ordinal=ordinal,
+                original_offsets=[v["start"] for v in resolved],
+                canonical_offsets=[v["start"] for v in sorted_spans],
+                reason="SOURCE_POSITION_SORT_ONLY_NOT_SEMANTIC_REPAIR",
+            ))
+        return sorted_spans
+
     entity = Proposal(
         seed_sha256=seed_sha, source_sha256=source_sha,
         objects=[ObjectProposal(key=o.key, description=o.description,
@@ -189,18 +211,18 @@ def materialize_quotes(*, seed, prose, raw_output):
         ],
         goal_claims=[
             dict(actor=c.actor, goal_id=c.goal_id, outcome=c.outcome,
-                 evidence=[span(q) for q in c.evidence])
-            for c in parsed.goal_claims
+                 evidence=ordered_spans("goal_claims", i, c.evidence))
+            for i, c in enumerate(parsed.goal_claims, 1)
         ],
         obligation_claims=[
             dict(obligation_id=c.obligation_id, outcome=c.outcome,
-                 evidence=[span(q) for q in c.evidence])
-            for c in parsed.obligation_claims
+                 evidence=ordered_spans("obligation_claims", i, c.evidence))
+            for i, c in enumerate(parsed.obligation_claims, 1)
         ],
         thread_claims=[
             dict(thread_id=c.thread_id, outcome=c.outcome,
-                 evidence=[span(q) for q in c.evidence])
-            for c in parsed.thread_claims
+                 evidence=ordered_spans("thread_claims", i, c.evidence))
+            for i, c in enumerate(parsed.thread_claims, 1)
         ],
     ).model_dump(mode="json")
     properties = TerminalPropertyProposal(
@@ -209,14 +231,15 @@ def materialize_quotes(*, seed, prose, raw_output):
                      expected_seed_value=c.expected_seed_value,
                      proposed_terminal_value=c.proposed_terminal_value,
                      evidence_kind=c.evidence_kind,
-                     evidence=[span(q) for q in c.evidence])
-                for c in parsed.property_claims],
+                     evidence=ordered_spans("property_claims", i, c.evidence))
+                for i, c in enumerate(parsed.property_claims, 1)],
     ).model_dump(mode="json")
     assert raw_output == original
     return dict(schema="q25.materialized-extraction.v1",
                 raw_output_sha256=fingerprint(parsed.model_dump(mode="json")),
                 entity_proposal=entity, story_proposal=story,
-                property_proposal=properties)
+                property_proposal=properties,
+                evidence_order_adjustments=evidence_order_adjustments)
 
 
 def offline_replay(*, seed, prose, raw_output, policy):
@@ -239,6 +262,7 @@ def offline_replay(*, seed, prose, raw_output, policy):
             status="BLOCKED_BY_POLICY",
             rejection_reasons=admission["reasons"],
             raw_output_sha256=materialized["raw_output_sha256"],
+            evidence_order_adjustments=materialized["evidence_order_adjustments"],
             coverage=None,
             state_commit_authorized=False,
             semantic_support_certified=False,
@@ -255,6 +279,7 @@ def offline_replay(*, seed, prose, raw_output, policy):
             status="SOURCE_BOUND_CANDIDATES_ONLY",
             rejection_reasons=[],
             raw_output_sha256=materialized["raw_output_sha256"],
+            evidence_order_adjustments=materialized["evidence_order_adjustments"],
             coverage=audit,
             state_commit_authorized=False,
             semantic_support_certified=False,
