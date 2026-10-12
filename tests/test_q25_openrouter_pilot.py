@@ -9,7 +9,7 @@ import pytest
 from src.q25_openrouter_pilot import (
     API, PilotStop, build_wire_request, decimal_price, enforce_preflight,
     paid_pilot, parse_completion, pricing_snapshot, upper_cost_usd,
-    transport_json,
+    provider_safe_json_schema, transport_json,
 )
 from src.q25_semantic_review import review_packet_digest
 
@@ -87,6 +87,72 @@ def test_wire_uses_explicit_model_strict_schema_no_fallback_and_bounded_tokens()
     assert wire["messages"][0]["role"] == "system"
     assert wire["messages"][1]["role"] == "user"
     assert load(BASE / "seed-input.json") == d["seed"]
+
+
+
+def test_wire_schema_strips_unsupported_string_bounds_but_local_guard_remains_strict():
+    from src.q25_extractor_adapter import RawExtractorOutput
+    base = RawExtractorOutput.model_json_schema()
+    original = copy.deepcopy(base)
+    compatible = provider_safe_json_schema(base)
+    assert base == original
+    assert compatible["additionalProperties"] is False
+    assert compatible["type"] == "object"
+    assert compatible != base
+
+    def traverse(obj):
+        if isinstance(obj, list):
+            for item in obj:
+                yield from traverse(item)
+        elif isinstance(obj, dict):
+            yield obj
+            for item in obj.values():
+                yield from traverse(item)
+
+    all_nodes = list(traverse(compatible))
+    assert not any("minLength" in obj or "maxLength" in obj for obj in all_nodes)
+    assert not any("minimum" in obj or "maximum" in obj for obj in all_nodes)
+    assert any("enforced by application" in obj.get("description", "")
+               for obj in all_nodes)
+    assert all(obj.get("additionalProperties") is False
+               for obj in all_nodes if obj.get("type") == "object")
+    assert set(compatible["properties"]) == set(base["properties"])
+    assert compatible["$defs"]["RawProperty"]["required"] == (
+        base["$defs"]["RawProperty"]["required"])
+    wire = build_wire_request(seed=inputs()["seed"], prose=inputs()["prose"],
+                              model=MODEL, max_tokens=3500)
+    assert wire["response_format"]["json_schema"]["schema"] == compatible
+    assert wire["response_format"]["json_schema"]["strict"] is True
+    assert wire["provider"]["allow_fallbacks"] is False
+    # Removing only *wire* constraints may never relax the local Pydantic contract.
+    damaged = load(RAW)
+    damaged["objects"][0]["description"] = "X" * 501
+    with pytest.raises(PilotStop, match="raw JSON contract"):
+        parse_completion({"choices": [{
+            "finish_reason": "stop",
+            "message": {"content": json.dumps(damaged, ensure_ascii=False)}
+        }]})
+
+
+@pytest.mark.parametrize("damage", ["open_object", "too_many_optionals", "unsupported_minitems",
+                                     "unsupported_schema_keyword"])
+def test_provider_safe_schema_fails_closed_on_unqualified_schema(damage):
+    from src.q25_extractor_adapter import RawExtractorOutput
+    original = RawExtractorOutput.model_json_schema()
+    modified = copy.deepcopy(original)
+    if damage == "open_object":
+        modified["$defs"]["RawObject"]["additionalProperties"] = True
+    elif damage == "too_many_optionals":
+        modified["properties"].update({
+            "extra_" + str(i): {"type": "string"} for i in range(28)
+        })
+    elif damage == "unsupported_minitems":
+        modified["properties"]["objects"]["minItems"] = 2
+    else:
+        modified["$defs"]["RawObject"]["patternProperties"] = {".*": {"type": "string"}}
+    with pytest.raises(PilotStop):
+        provider_safe_json_schema(modified)
+    assert "minLength" in json.dumps(original)
 
 
 def test_live_catalog_pricing_is_conservatively_bounded():
