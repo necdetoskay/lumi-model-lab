@@ -83,7 +83,7 @@ def _explicit_turkish_minute_anchor(text: str, amount: int) -> bool:
         return words.get(token, tens.get(token))
 
     lowered = text.lower()
-    for match in re.finditer(r"(?<!\\w)dakika\\b", lowered):
+    for match in re.finditer(r"(?<!\w)dakika\b", lowered):
         parts = lowered[:match.start()].strip().split()
         if not parts:
             continue
