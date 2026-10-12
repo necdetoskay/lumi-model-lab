@@ -22,6 +22,7 @@ REQUIRED = {"schema", "source_repository", "source_commit", "source_branch_at_im
 CASE_KEYS = {"case_id", "adapter", "files"}
 FILE_KEYS = {"kind", "archive", "source_path", "sha256"}
 SHA = re.compile(r"^[0-9a-f]{64}$")
+COMMIT = re.compile(r"^[0-9a-f]{40}$")
 CASE_ID = re.compile(r"^[A-Z0-9][A-Z0-9_-]{3,79}$")
 
 
@@ -37,7 +38,7 @@ def _validate_import(manifest):
         manifest["schema"] == ARCHIVE_SCHEMA and
         manifest["source_repository"] == SOURCE_REPO and
         manifest["source_branch_at_import"] == "experiment/q25-narrative-memory-intent" and
-        isinstance(manifest["source_commit"], str) and SHA.fullmatch(manifest["source_commit"]) and
+        isinstance(manifest["source_commit"], str) and COMMIT.fullmatch(manifest["source_commit"]) and
         manifest["mode"] == "HISTORICAL_READ_ONLY",
         "Historical provenance or execution mode not qualified",
     )
