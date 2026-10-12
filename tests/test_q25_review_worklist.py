@@ -17,7 +17,7 @@ CAND = ROOT / "Q25-STORY-STATE-CANDIDATES-20261012"
 ENTITY = ROOT / "Q25-ENTITY-CANDIDATE-20261012/proposal.json"
 POLICY = ROOT / "Q25-ADMISSION-DRAFT-20261012/policy.json"
 STORY = CAND / "story-proposal-knowledge-extension.json"
-PROPERTY = CAND / "property-proposal.json"
+PROPERTY = CAND / "property-proposal-return-candidate.json"
 ISSUES = CAND / "review-gap-annotations.json"
 
 
@@ -43,8 +43,8 @@ def test_q24_worklist_preserves_explicit_ambiguity_and_every_other_gap():
     result = build_worklist(**inputs)
     assert result["blocking_field_count"] == 70
     assert result["coverage_counts"] == {
-        "CANDIDATE": 12, "PARTIAL_CANDIDATES": 3,
-        "STRUCTURAL_ONLY": 23, "UNASSESSED": 30, "UNKNOWN": 2,
+        "CANDIDATE": 13, "PARTIAL_CANDIDATES": 3,
+        "STRUCTURAL_ONLY": 23, "UNASSESSED": 29, "UNKNOWN": 2,
     }
     assert result["triaged_issue_count"] == 11
     assert result["untriaged_field_count"] == 59
@@ -52,8 +52,10 @@ def test_q24_worklist_preserves_explicit_ambiguity_and_every_other_gap():
     issues = {x["issue_id"]: x for x in result["issues"]}
     bookmark = issues["bookmark_return_semantics"]
     assert bookmark["target_path"] == "/objects/red_bookmark/properties/returned_to_owner"
-    assert bookmark["coverage_status"] == "UNASSESSED"
+    assert bookmark["coverage_status"] == "CANDIDATE"
     assert len(bookmark["supporting_evidence"]) == 2
+    assert bookmark["review_decision"] == "PENDING_INDEPENDENT_ADJUDICATION"
+    assert not result["semantic_support_certified"]
     apology = issues["apology_without_instant_intimacy"]
     assert apology["coverage_status"] == "CANDIDATE"
     assert len(apology["supporting_evidence"]) == 2
