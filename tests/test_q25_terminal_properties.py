@@ -148,3 +148,37 @@ def test_q24_property_cli_replays_without_mutating_archived_files():
     output = json.loads(subprocess.check_output(cmd, encoding="utf8", text=True))
     assert output == property_candidates(**kw)
     assert original_hashes == [hashlib.sha256(p.read_bytes()).hexdigest() for p in sources]
+
+
+@pytest.mark.parametrize("structural_key", ["owner", "location", "held_by", "identity_status", "inventory"])
+def test_property_claim_cannot_impersonate_graph_or_identity_field(structural_key):
+    from src.q25_entity_candidates import fingerprint
+    kw = inputs()
+    kw["seed"]["objects"]["red_bookmark"]["state"][structural_key] = "seed_value"
+    sha = fingerprint(kw["seed"])
+    kw["entity_proposal"]["seed_sha256"] = sha
+    kw["proposal"]["seed_sha256"] = sha
+    kw["proposal"]["claims"][0].update(
+        property_name=structural_key,
+        expected_seed_value="seed_value", proposed_terminal_value="changed_value",
+    )
+    with pytest.raises(ValueError, match="non-relational properties"):
+        property_candidates(**kw)
+
+
+def test_coverage_cli_with_explicit_property_proposal_is_deterministic():
+    kw = inputs()
+    sources = [BASE / "seed-input.json", BASE / "writer-2-text.json",
+               ENTITY, POLICY, STORY, PROPERTY]
+    before = [hashlib.sha256(p.read_bytes()).hexdigest() for p in sources]
+    cmd = [sys.executable, "-X", "utf8", "-m", "src.q25_state_coverage",
+           "--seed", str(sources[0]), "--prose-record", str(sources[1]),
+           "--entity-proposal", str(ENTITY), "--policy", str(POLICY),
+           "--story-proposal", str(STORY), "--property-proposal", str(PROPERTY)]
+    actual = json.loads(subprocess.check_output(cmd, encoding="utf8", text=True))
+    expected = coverage_report(seed=kw["seed"], prose=kw["prose"],
+        entity_proposal=kw["entity_proposal"], policy=kw["policy"],
+        story_proposal=read(STORY), property_proposal=kw["proposal"])
+    assert actual == expected
+    assert actual["fields"] and actual["state_commit_authorized"] is False
+    assert before == [hashlib.sha256(p.read_bytes()).hexdigest() for p in sources]
