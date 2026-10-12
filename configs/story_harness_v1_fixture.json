@@ -1,0 +1,43 @@
+{
+  "schema": "lumi.story-harness-plan.v1",
+  "run_id": "fixture-story-control-001",
+  "mode": "OFFLINE_REPLAY_ONLY",
+  "budget": {
+    "max_provider_calls": 0,
+    "max_cost_usd": "0"
+  },
+  "stages": [
+    {
+      "stage_id": "context",
+      "artifact": "tests/fixtures/story_harness_v1/context.json",
+      "sha256": "3f0bfe7b04cb801444dccea5b7b88e77bd762b1e461ecfd9947b954c51904dd5",
+      "depends_on": null,
+      "consumed_sha256": null,
+      "reported_gate": "REPORTED_PASS"
+    },
+    {
+      "stage_id": "spine",
+      "artifact": "tests/fixtures/story_harness_v1/spine.json",
+      "sha256": "b0ad93940826b5dfca662283d475615cfcce844f8f733c66f9d955633eb787bf",
+      "depends_on": "context",
+      "consumed_sha256": "3f0bfe7b04cb801444dccea5b7b88e77bd762b1e461ecfd9947b954c51904dd5",
+      "reported_gate": "REPORTED_PASS"
+    },
+    {
+      "stage_id": "writer",
+      "artifact": "tests/fixtures/story_harness_v1/writer.json",
+      "sha256": "e16041c5d0b88b73444f759f694c4fd6765df9f078e16cc3b77d533170b3fc54",
+      "depends_on": "spine",
+      "consumed_sha256": "b0ad93940826b5dfca662283d475615cfcce844f8f733c66f9d955633eb787bf",
+      "reported_gate": "REPORTED_PASS"
+    },
+    {
+      "stage_id": "q25",
+      "artifact": "tests/fixtures/story_harness_v1/q25.json",
+      "sha256": "43169373c4fbeff71daf953d190956a27ccaea0d4122fb9968a72ec055afa8e2",
+      "depends_on": "writer",
+      "consumed_sha256": "e16041c5d0b88b73444f759f694c4fd6765df9f078e16cc3b77d533170b3fc54",
+      "reported_gate": "REPORTED_PASS"
+    }
+  ]
+}
