@@ -22,6 +22,7 @@ from src.q25_extractor_adapter import (
     RawExtractorOutput,
 )
 from src.q25_semantic_review import build_review_packet, review_packet_digest
+from src.q25_raw_reconciliation import project_raw
 
 API = "https://openrouter.ai/api/v1"
 MODEL_ALLOWLIST = frozenset({
@@ -301,6 +302,13 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
                     archive_dir, "semantic-review-packet.json", review_packet)
                 ledger["review_packet_sha256"] = review_digest
                 ledger["review_candidate_count"] = review_packet["candidate_count"]
+                candidate_state = project_raw(
+                    seed=seed, prose=prose, raw_output=parsed, policy=policy)
+                save_exclusive(
+                    archive_dir, "raw-terminal-hypothesis.json", candidate_state)
+                ledger["terminal_hypothesis_status"] = candidate_state[
+                    "raw_response_trust"]
+                ledger["terminal_state_complete"] = False
                 ledger["review_status"] = review_packet["review_status"]
                 ledger["independent_semantic_review_complete"] = False
         except (ValueError, TypeError, KeyError) as exc:
@@ -321,18 +329,28 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seed", type=Path, required=True)
-    parser.add_argument("--prose-record", type=Path, required=True)
-    parser.add_argument("--policy", type=Path, required=True)
+    parser.add_argument("--seed", type=Path)
+    parser.add_argument("--prose-record", type=Path)
+    parser.add_argument("--policy", type=Path)
+    parser.add_argument("--request-package", type=Path)
     parser.add_argument("--archive-dir", type=Path, required=True)
     parser.add_argument("--model", required=True, choices=sorted(MODEL_ALLOWLIST))
     parser.add_argument("--max-tokens", type=int, default=3500)
     parser.add_argument("--max-cost-usd", required=True)
     parser.add_argument("--execute-paid-once", action="store_true")
     args = parser.parse_args()
-    seed = read_json(args.seed)
-    prose = read_json(args.prose_record)["text"]
-    policy = read_json(args.policy)
+    if args.request_package:
+        if args.seed or args.prose_record or args.policy:
+            parser.error("--request-package cannot be combined with individual inputs")
+        from src.q25_withheld_trial import unpack_request
+        case = unpack_request(read_json(args.request_package))
+        seed, prose, policy = case["seed"], case["prose"], case["policy"]
+    else:
+        if not (args.seed and args.prose_record and args.policy):
+            parser.error("--seed, --prose-record and --policy are required")
+        seed = read_json(args.seed)
+        prose = read_json(args.prose_record)["text"]
+        policy = read_json(args.policy)
     wire = build_wire_request(seed=seed, prose=prose, model=args.model,
                               max_tokens=args.max_tokens)
     if not args.execute_paid_once:
