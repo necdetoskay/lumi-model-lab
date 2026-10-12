@@ -30,8 +30,11 @@ def q24():
     return seed, prose, admission, read(STORY)
 
 
-def run(seed, prose, admission, story):
-    return extend_draft(seed=seed, prose=prose, admission_result=admission, story_proposal=story)
+def run(seed, prose, admission, story, entity_proposal=None, policy=None):
+    return extend_draft(seed=seed, prose=prose, admission_result=admission,
+                        entity_proposal=entity_proposal if entity_proposal is not None else read(ENTITY),
+                        policy=policy if policy is not None else read(POLICY),
+                        story_proposal=story)
 
 
 def test_q24_character_knowledge_goals_obligations_and_threads_are_separate_proposals():
@@ -69,6 +72,7 @@ def test_q24_character_knowledge_goals_obligations_and_threads_are_separate_prop
 def test_untrusted_story_claims_fail_closed(damage):
     seed, prose, admission, story = q24()
     item = story["character_claims"][0]
+    entity = read(ENTITY)
     if damage == "wrong_seed":
         story["seed_sha256"] = "0" * 64
     elif damage == "wrong_source":
@@ -102,7 +106,8 @@ def test_untrusted_story_claims_fail_closed(damage):
     elif damage == "not_open_obligation":
         seed["narrative_obligations"][0]["status"] = "DONE"
         story["seed_sha256"] = fingerprint(seed)
-        admission["draft_state"]["base_seed_sha256"] = fingerprint(seed)
+        entity["seed_sha256"] = fingerprint(seed)
+        admission = build_draft(seed=seed, prose=prose, proposal=entity, policy=read(POLICY))
     elif damage == "unknown_thread":
         story["thread_claims"][0]["thread_id"] = "invented"
     elif damage == "duplicate_thread":
@@ -110,7 +115,7 @@ def test_untrusted_story_claims_fail_closed(damage):
     elif damage == "out_of_order_evidence":
         story["obligation_claims"][0]["evidence"].reverse()
     with pytest.raises(ValueError):
-        run(seed, prose, admission, story)
+        run(seed, prose, admission, story, entity_proposal=entity)
 
 
 def test_blocked_admission_and_tampered_draft_cannot_be_extended():
@@ -128,6 +133,30 @@ def test_blocked_admission_and_tampered_draft_cannot_be_extended():
     bad["draft_state"]["source_sha256"] = "0" * 64
     with pytest.raises(ValueError):
         run(seed, prose, bad, story)
+
+
+@pytest.mark.parametrize("tamper", [
+    "object_contents", "object_owner", "knowledge", "world", "topology", "identity_map"
+])
+def test_forged_admission_fields_cannot_be_laundered(tamper):
+    seed, prose, admission, story = q24()
+    forged = copy.deepcopy(admission)
+    draft = forged["draft_state"]
+    if tamper == "object_contents":
+        draft["objects"]["blue_atlas"]["contains"] = ["red_bookmark"]
+    elif tamper == "object_owner":
+        new_book = draft["objects"]["red_bookmark"]["container"]["ref"]
+        draft["objects"][new_book]["owner"] = {"status": "KNOWN", "ref": "Nisa"}
+    elif tamper == "knowledge":
+        draft["characters"]["Nisa"]["knowledge"].append("invented_knowledge")
+    elif tamper == "world":
+        draft["world"]["setting"] = "magical_library"
+    elif tamper == "topology":
+        draft["topology"]["locations"].append("invented_room")
+    elif tamper == "identity_map":
+        draft["identity_map"]["object:red_bookmark"] = "blue_atlas"
+    with pytest.raises(ValueError, match="deterministic replay"):
+        run(seed, prose, forged, story)
 
 
 def test_unannotated_fields_remain_unresolved_and_none_are_inferred():
