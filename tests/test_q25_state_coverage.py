@@ -58,6 +58,41 @@ def test_q24_coverage_is_incomplete_even_when_all_obligations_have_citations():
     assert report == coverage_report(**kw)
 
 
+
+def test_q24_seed_to_candidate_comparison_exposes_changes_and_all_gaps():
+    kw = case()
+    kw["property_proposal"] = read(ROOT / "Q25-STORY-STATE-CANDIDATES-20261012/property-proposal.json")
+    before = copy.deepcopy(kw)
+    report = coverage_report(**kw)
+    delta = report["initial_to_candidate_comparison"]
+    objects = {d["path"]: d for d in delta["object_changes"]}
+    assert objects["/objects/red_bookmark/properties/found"]["seed_value"] is False
+    assert objects["/objects/red_bookmark/properties/found"]["candidate_terminal_value"] is True
+    assert objects["/objects/red_bookmark/container"]["seed_value"] == "blue_atlas"
+    assert objects["/objects/red_bookmark/container"]["candidate_terminal_value"].startswith("new_")
+    assert objects["/objects/blue_atlas/contains"]["seed_value"] == ["red_bookmark"]
+    assert objects["/objects/blue_atlas/contains"]["candidate_terminal_value"] == []
+    assert "/objects/red_bookmark/properties/returned_to_owner" not in objects
+    assert any(x["path"] == "/objects/red_bookmark/properties/returned_to_owner"
+               and x["status"] == "UNASSESSED" for x in delta["explicit_gaps"])
+    assert {c["actor"] for c in delta["character_changes"] if c["field"] == "knowledge"} == {"Nisa", "Eren", "Cem"}
+    assert len(delta["goal_outcomes"]) == 3
+    assert set(delta["proposed_closed_obligations"]) == {
+        "investigate_evidence", "recover_bookmark", "correct_and_apologize"}
+    assert delta["independently_certified_closed_obligations"] == []
+    assert set(delta["contested_or_unverified_obligations"]) == set(delta["proposed_closed_obligations"])
+    assert all(x["disposition"] == "PENDING_INDEPENDENT_SEMANTIC_REVIEW"
+               for x in delta["narrative_obligations"])
+    assert {x["proposed_outcome"] for x in delta["open_threads"]} == {"RESOLVED"}
+    assert len(delta["new_object_candidates"]) == 1
+    assert delta["new_object_candidates"][0]["owner"]["status"] == "UNKNOWN"
+    assert delta["new_object_candidates"][0]["location"]["status"] == "UNKNOWN"
+    assert delta["world_time"]["disposition"] == "UNASSESSED"
+    assert not delta["state_commit_authorized"]
+    assert not report["state_commit_authorized"]
+    assert kw == before
+
+
 def test_no_claims_never_infers_a_closed_goal_or_obligation():
     kw = case()
     kw["story_proposal"].update(
