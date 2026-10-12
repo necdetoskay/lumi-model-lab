@@ -45,8 +45,18 @@ def _identity(group, claim):
 def _claims(materialized):
     """A source-quoted claim may still be semantically unsupported."""
     result = {}
+    proposal_for = {
+        "objects": ("entity_proposal", "objects"),
+        "terminal_relations": ("entity_proposal", "terminal_relations"),
+        "character_claims": ("story_proposal", "character_claims"),
+        "goal_claims": ("story_proposal", "goal_claims"),
+        "obligation_claims": ("story_proposal", "obligation_claims"),
+        "thread_claims": ("story_proposal", "thread_claims"),
+        "property_claims": ("property_proposal", "claims"),
+    }
     for group in CLAIM_GROUPS:
-        for claim in materialized[group]:
+        proposal, name = proposal_for[group]
+        for claim in materialized[proposal][name]:
             key = fingerprint({"group": group, "identity": _identity(group, claim)})
             if key in result:
                 raise ValueError("Duplicate semantic identity within extractor output")
