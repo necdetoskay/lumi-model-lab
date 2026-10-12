@@ -224,3 +224,21 @@ def test_http_error_never_exposes_auth_or_retries(monkeypatch):
     with pytest.raises(PilotStop, match="HTTP 402; no retry"):
         transport_json(url=API + "/chat/completions", method="POST",
                        api_key="sensitive-secret", payload={"hello": "test"})
+
+
+def test_github_paid_job_is_never_activated_by_ordinary_pr_or_rerun():
+    wf = Path(".github/workflows/q25-offline-diagnostic.yml").read_text(encoding="utf8")
+    assert "  workflow_dispatch:" in wf
+    assert "  pull_request:" in wf
+    assert "  paid-extractor-pilot:\n" in wf
+    offline, paid = wf.split("  paid-extractor-pilot:\n", 1)
+    assert "secrets.OPENROUTER_API_KEY" not in offline
+    assert ("github.event_name == 'workflow_dispatch' && "
+            "inputs.execute_paid == true && github.run_attempt == 1") in paid
+    assert "secrets.OPENROUTER_API_KEY" in paid
+    assert paid.count("--execute-paid-once") == 1
+    assert "--max-cost-usd 0.20" in paid
+    assert "--max-tokens 3500" in paid
+    assert "run_attempt == 1" in paid
+    assert "actions/upload-artifact@v4" in paid
+    assert "retention-days: 7" in paid
