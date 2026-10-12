@@ -21,6 +21,7 @@ from src.q25_extractor_adapter import (
     offline_replay,
     RawExtractorOutput,
 )
+from src.q25_semantic_review import build_review_packet, review_packet_digest
 
 API = "https://openrouter.ai/api/v1"
 MODEL_ALLOWLIST = frozenset({
@@ -289,6 +290,19 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
             ledger["coverage_counts"] = (result["coverage"]["counts"]
                                          if result["coverage"] else None)
             save_exclusive(archive_dir, "offline-gate-result.json", result)
+            if result["status"] == "SOURCE_BOUND_CANDIDATES_ONLY":
+                # Prepare a read-only, citation-bound review artifact as part
+                # of the SAME paid run. Re-evaluate offline; never treat
+                # model suggestions or self-attested labels as adjudicated.
+                review_packet = build_review_packet(
+                    seed=seed, prose=prose, raw_output=parsed, policy=policy)
+                review_digest = review_packet_digest(review_packet)
+                save_exclusive(
+                    archive_dir, "semantic-review-packet.json", review_packet)
+                ledger["review_packet_sha256"] = review_digest
+                ledger["review_candidate_count"] = review_packet["candidate_count"]
+                ledger["review_status"] = review_packet["review_status"]
+                ledger["independent_semantic_review_complete"] = False
         except (ValueError, TypeError, KeyError) as exc:
             ledger["outcome"] = "REJECTED_BY_OFFLINE_GATE"
             ledger["gate_failure_type"] = type(exc).__name__
