@@ -1,0 +1,14 @@
+name: SFR v1 Q7E Retired Paid Entry
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  retired:
+    if: ${{ false }} # Consumed legacy paid entry; shared authority is mandatory.
+    runs-on: [self-hosted, local-runner-pool]
+    steps:
+      - name: Refuse consumed authorization
+        run: |
+          echo "Q7E authorization consumed; use shared reserved entry with a new approved grant."
+          exit 1

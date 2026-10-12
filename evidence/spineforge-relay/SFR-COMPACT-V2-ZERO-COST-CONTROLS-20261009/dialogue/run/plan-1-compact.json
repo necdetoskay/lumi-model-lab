@@ -1,0 +1,141 @@
+{
+  "schema_name": "spineforge.compact-story-plan.v2",
+  "request_sha256": "968fb9676666eb32efeb99dbbd946296c0d5e7af67e1c442b010aeb9b2e90800",
+  "seed_sha256": "642841c7c7bd234ae34e418856c91c9ec5d419db8fe3466ced73ade597392cae",
+  "premise": "A reader notices a question and chooses an honest answer.",
+  "character_arc": "A reader notices a question and chooses an honest answer.",
+  "resolution": "Explicit authored control resolution; synthetic, not a quality verdict.",
+  "scenes": [
+    {
+      "scene_id": "S01",
+      "narrative_purpose": "NOTICE_QUESTION",
+      "objective": "NOTICE_QUESTION",
+      "turn": "NOTICE_QUESTION",
+      "location": "reading_room",
+      "events": [
+        {
+          "id": "S01-E01",
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Reader",
+              "action": "NOTICE_QUESTION",
+              "target": "question"
+            }
+          ],
+          "required_observer": null,
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Reader/knowledge": [
+              "question"
+            ]
+          }
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "S01-E01"
+        ],
+        "objective": [
+          "S01-E01"
+        ],
+        "turn": [
+          "S01-E01"
+        ]
+      },
+      "ordered_dependencies": [],
+      "spatial_operations": [],
+      "resolutions": [],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": null,
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S02",
+      "narrative_purpose": "CHOOSE_ANSWER",
+      "objective": "CHOOSE_ANSWER",
+      "turn": "CHOOSE_ANSWER",
+      "location": "reading_room",
+      "events": [
+        {
+          "id": "S02-E01",
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Reader",
+              "action": "CHOOSE_ANSWER",
+              "target": "answer"
+            }
+          ],
+          "required_observer": null,
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Reader/knowledge": [
+              "question",
+              "answer"
+            ]
+          }
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "S02-E01"
+        ],
+        "objective": [
+          "S02-E01"
+        ],
+        "turn": [
+          "S02-E01"
+        ]
+      },
+      "ordered_dependencies": [],
+      "spatial_operations": [],
+      "resolutions": [
+        {
+          "kind": "THREAD",
+          "id": "question",
+          "evidence": {
+            "event_id": "S02-E01",
+            "predicate_id": "P1"
+          }
+        },
+        {
+          "kind": "OBLIGATION",
+          "id": "answer",
+          "evidence": {
+            "event_id": "S02-E01",
+            "predicate_id": "P1"
+          }
+        }
+      ],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": null,
+      "target_words_min": 120,
+      "target_words_max": 260
+    }
+  ],
+  "carry_groups": [],
+  "request_bindings": [
+    {
+      "requirement_id": "R1",
+      "scene_id": "S02",
+      "event_id": "S02-E01",
+      "predicate_id": "P1",
+      "rationale": "Honest answer decision"
+    }
+  ],
+  "unresolved_questions": []
+}

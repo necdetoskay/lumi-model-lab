@@ -1,0 +1,857 @@
+{
+  "schema": "spineforge.compact-planner-input.v1",
+  "request": {
+    "schema_name": "spineforge.story-request.v1",
+    "original_prompt": "Ada ile Bora, okul sergisi için yaptıkları robotun sergi sabahı çalışmadığını görür. Birbirlerini suçlamak yerine sorunu bulmaları ve projelerini nasıl sunacaklarına karar vermeleri gerekir.",
+    "language": "tr",
+    "reader_age": 12,
+    "genre": "realistic_school_story",
+    "tone": [
+      "gerilimli",
+      "sıcak",
+      "umutlu"
+    ],
+    "scene_count": 6,
+    "requirements": [
+      {
+        "id": "R01",
+        "source_text": "sergi sabahı çalışmadığını",
+        "meaning": "Begin with the robot failing on exhibition morning"
+      },
+      {
+        "id": "R02",
+        "source_text": "Birbirlerini suçlamak yerine sorunu bulmaları",
+        "meaning": "Investigation and cooperation replace blame"
+      },
+      {
+        "id": "R03",
+        "source_text": "projelerini nasıl sunacaklarına karar vermeleri",
+        "meaning": "They make a presentation decision and follow through"
+      }
+    ],
+    "assumptions": [
+      "Ages 12, ordinary contemporary school, Turkish narration and six scenes are experiment defaults.",
+      "The physical fault is a loose connector; neither character initially knows this.",
+      "Opening in twenty minutes supplies pressure; exact minute-by-minute scheduling is not required.",
+      "The solution may be a repair or an honest alternative demonstration; a perfect repair is not mandated."
+    ],
+    "forbidden": []
+  },
+  "seed": {
+    "schema_name": "spineforge.story-seed.v1",
+    "story_id": "broken-robot-ada-bora",
+    "scenario_id": "SCENARIO-03",
+    "characters": {
+      "Ada": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "anxious",
+          "goal": "present_the_project"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "defensive",
+          "goal": "understand_the_failure"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly"
+        ],
+        "relationships": {
+          "Ada": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      }
+    },
+    "relevant_character_canon": {
+      "Ada": {
+        "age": 12,
+        "strength": "patient_with_code",
+        "difficulty": "jumps_to_blame_under_pressure"
+      },
+      "Bora": {
+        "age": 12,
+        "strength": "observes_physical_details",
+        "difficulty": "withdraws_when_accused"
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school",
+      "time": {
+        "day": "exhibition_day",
+        "period": "morning",
+        "minutes_until_opening": 20
+      },
+      "rules": [
+        "No magic or instant expert skills.",
+        "Tools and parts must come from established resources."
+      ],
+      "spatial": {
+        "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+        "positions": {
+          "Ada": "school_workshop",
+          "Bora": "school_workshop",
+          "robot": "school_workshop",
+          "toolkit": "school_workshop",
+          "project_notebook": "school_workshop"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "robot": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "power_source": "low_voltage_battery",
+          "battery_charged": true,
+          "operational": false,
+          "fault": "loose_motor_connector",
+          "fault_discovered": false,
+          "program_loaded": true,
+          "presented": false
+        }
+      },
+      "toolkit": {
+        "owner": "school",
+        "location": "school_workshop",
+        "state": {
+          "contents": [
+            "small_screwdriver"
+          ],
+          "available": true
+        }
+      },
+      "project_notebook": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "contains": [
+            "assembly_diagram",
+            "program_notes"
+          ],
+          "available": true
+        }
+      }
+    },
+    "topology": {
+      "schema_name": "spineforge-relay.spatial-topology.v1",
+      "locations": [
+        "school_workshop",
+        "exhibition_hall"
+      ],
+      "edges": [
+        {
+          "id": "workshop_hall",
+          "source": "school_workshop",
+          "destination": "exhibition_hall",
+          "passage": "indoor_door",
+          "bidirectional": true,
+          "allowed_entities": [
+            "Ada",
+            "Bora",
+            "robot",
+            "toolkit",
+            "project_notebook"
+          ]
+        }
+      ],
+      "position_state_paths": {
+        "Ada": "/characters/Ada/location",
+        "Bora": "/characters/Bora/location",
+        "robot": "/objects/robot/location",
+        "toolkit": "/objects/toolkit/location",
+        "project_notebook": "/objects/project_notebook/location"
+      }
+    },
+    "prop_authorization_policy": {
+      "authorized_actionable_props": [
+        "robot",
+        "toolkit",
+        "project_notebook"
+      ],
+      "rule": "Use established tools and notes; no unexplained replacement robot or adult solving the problem for them."
+    },
+    "open_threads": [
+      "understand_robot_failure",
+      "decide_project_presentation",
+      "resolve_partner_blame"
+    ],
+    "narrative_obligations": [
+      {
+        "id": "investigate_together",
+        "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "choose_presentation",
+        "detail": "They decide and carry out an honest presentation of their project.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "repair_cooperation",
+        "detail": "They move from blame toward practical cooperation without instant intimacy.",
+        "status": "OPEN",
+        "target_scene_id": null
+      }
+    ],
+    "assumptions": [
+      "Ages 12, ordinary contemporary school, Turkish narration and six scenes are experiment defaults.",
+      "The physical fault is a loose connector; neither character initially knows this.",
+      "Opening in twenty minutes supplies pressure; exact minute-by-minute scheduling is not required.",
+      "The solution may be a repair or an honest alternative demonstration; a perfect repair is not mandated."
+    ]
+  },
+  "request_sha256": "1f38023118af12ea4be9f33c9249676c2ca5dfcbea28f0620586207916e9ff93",
+  "seed_sha256": "7c321d5a19f244d3ae05735d3d83a95ee2e9733bfc870560e6f0b97d4c818034",
+  "instructions": "Plan a complete story from the request and immutable seed. Return one compact-story-plan.v1 JSON object matching output_schema. Be concise; do not output a fixture, initial state, canon, topology, route hashes, coverage triples, allowed paths or projected spatial states.\n\nChoose the causal events and character decisions, not just a checklist. Preserve the seed's established abilities, resources, knowledge and world rules. Physical truth is not automatically character knowledge. Keep the ending coherent with the request; do not assume perfect repair or success unless required. Each scene needs narrative_purpose, objective, turn and explicit goal_bindings to its predicates. Bind every request requirement to an actual scene/event/predicate with a rationale.\n\nEach event's first predicate is its principal actor/action/target. Observer requirements need a separate OBSERVE or ACKNOWLEDGE predicate. Direct evidence requires no separate physical clue unless explicitly chosen. Evidence provenance is derived from evidence_mode; invented rules, clues and unestablished lore are forbidden. resulting_state contains only explicit consequences of that event, using absolute JSON pointers into existing characters' condition/inventory/knowledge/relationships, existing objects' state, or world fields excluding rules/spatial. Values are complete replacement values at the pointer, not patches or increments. Never write revision, route metadata, entity locations, threads, obligations or /world/spatial. Do not write overlapping or conflicting effects, or incompatible intermediate values to the same path within one scene.\n\nMovement/access uses spatial_operations bound to exact event/predicate identities and existing topology edges. JOINT_MOVE uses an explicitly declared carry group and an established shared hold from a previous scene. The compiler derives entity locations and spatial exit from those operations. No new locations, entities, passages or seed edits are allowed.\n\nResolve each seed thread/obligation explicitly using resolutions with kind, id and an evidence predicate reference in the resolving scene. The compiler preserves obligation details and changes status to SATISFIED; it never invents resolution. All initial threads/obligations must be resolved by the last scene. Semantic review judges whether the cited action really earns each resolution.\n\nScene IDs must be unique safe identifiers. Scene count must match the request. Preconditions are optional explicit existing-state requirements; code verifies them against the projected entry. Code derives one spine beat per scene, next beat, coverage source text/triples, spatial preconditions, allowed paths and frozen seed bindings. Optional fields may be omitted to keep output short. In a rewrite, correct the compact semantic proposal in response to findings on its expanded design; compiler-owned fields cannot be edited directly. No unresolved questions, Markdown fences, or prose outside JSON.\n",
+  "output_schema": {
+    "$defs": {
+      "CarryGroupV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "carriers": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "title": "Carriers",
+            "type": "array"
+          },
+          "carried_object": {
+            "minLength": 1,
+            "title": "Carried Object",
+            "type": "string"
+          },
+          "carried_by_state_pointer": {
+            "title": "Carried By State Pointer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "carriers",
+          "carried_object",
+          "carried_by_state_pointer"
+        ],
+        "title": "CarryGroupV1",
+        "type": "object"
+      },
+      "CompactEventV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "predicates": {
+            "items": {
+              "$ref": "#/$defs/EventPredicateV1"
+            },
+            "minItems": 1,
+            "title": "Predicates",
+            "type": "array"
+          },
+          "required_observer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Required Observer"
+          },
+          "evidence_mode": {
+            "default": "DIRECT_OBSERVATION",
+            "enum": [
+              "DIRECT_OBSERVATION",
+              "ESTABLISHED_KNOWLEDGE",
+              "EITHER"
+            ],
+            "title": "Evidence Mode",
+            "type": "string"
+          },
+          "separate_physical_clue_required": {
+            "default": false,
+            "title": "Separate Physical Clue Required",
+            "type": "boolean"
+          },
+          "forbidden_evidence_subjects": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Forbidden Evidence Subjects",
+            "type": "array"
+          },
+          "resulting_state": {
+            "additionalProperties": true,
+            "title": "Resulting State",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "predicates"
+        ],
+        "title": "CompactEventV1",
+        "type": "object"
+      },
+      "CompactSceneV1": {
+        "additionalProperties": false,
+        "properties": {
+          "scene_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$",
+            "title": "Scene Id",
+            "type": "string"
+          },
+          "narrative_purpose": {
+            "minLength": 1,
+            "title": "Narrative Purpose",
+            "type": "string"
+          },
+          "objective": {
+            "minLength": 1,
+            "title": "Objective",
+            "type": "string"
+          },
+          "turn": {
+            "minLength": 1,
+            "title": "Turn",
+            "type": "string"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Location"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/$defs/CompactEventV1"
+            },
+            "minItems": 1,
+            "title": "Events",
+            "type": "array"
+          },
+          "goal_bindings": {
+            "$ref": "#/$defs/GoalRefs"
+          },
+          "ordered_dependencies": {
+            "items": {
+              "$ref": "#/$defs/OrderRef"
+            },
+            "title": "Ordered Dependencies",
+            "type": "array"
+          },
+          "spatial_operations": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/JointMoveV1"
+                },
+                {
+                  "$ref": "#/$defs/SpatialOperationV1"
+                }
+              ]
+            },
+            "title": "Spatial Operations",
+            "type": "array"
+          },
+          "resolutions": {
+            "items": {
+              "$ref": "#/$defs/Resolution"
+            },
+            "title": "Resolutions",
+            "type": "array"
+          },
+          "preconditions": {
+            "additionalProperties": true,
+            "title": "Preconditions",
+            "type": "object"
+          },
+          "entry_requirements": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Entry Requirements",
+            "type": "array"
+          },
+          "exit_requirements": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Exit Requirements",
+            "type": "array"
+          },
+          "immutable_facts": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Immutable Facts",
+            "type": "array"
+          },
+          "forbidden": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Forbidden",
+            "type": "array"
+          },
+          "emotional_transition": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Emotional Transition"
+          },
+          "target_words_min": {
+            "default": 120,
+            "maximum": 2000,
+            "minimum": 40,
+            "title": "Target Words Min",
+            "type": "integer"
+          },
+          "target_words_max": {
+            "default": 260,
+            "maximum": 3000,
+            "minimum": 40,
+            "title": "Target Words Max",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "scene_id",
+          "narrative_purpose",
+          "objective",
+          "turn",
+          "events",
+          "goal_bindings"
+        ],
+        "title": "CompactSceneV1",
+        "type": "object"
+      },
+      "EventPredicateV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "action": {
+            "minLength": 1,
+            "title": "Action",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "subject",
+          "action",
+          "target"
+        ],
+        "title": "EventPredicateV1",
+        "type": "object"
+      },
+      "GoalRefs": {
+        "additionalProperties": false,
+        "properties": {
+          "narrative_purpose": {
+            "items": {
+              "$ref": "#/$defs/PredicateRef"
+            },
+            "minItems": 1,
+            "title": "Narrative Purpose",
+            "type": "array"
+          },
+          "objective": {
+            "items": {
+              "$ref": "#/$defs/PredicateRef"
+            },
+            "minItems": 1,
+            "title": "Objective",
+            "type": "array"
+          },
+          "turn": {
+            "items": {
+              "$ref": "#/$defs/PredicateRef"
+            },
+            "minItems": 1,
+            "title": "Turn",
+            "type": "array"
+          }
+        },
+        "required": [
+          "narrative_purpose",
+          "objective",
+          "turn"
+        ],
+        "title": "GoalRefs",
+        "type": "object"
+      },
+      "JointMoveV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "JOINT_MOVE",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          },
+          "edge_id": {
+            "minLength": 1,
+            "title": "Edge Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "subject",
+          "target",
+          "event_id",
+          "predicate_id",
+          "edge_id"
+        ],
+        "title": "JointMoveV1",
+        "type": "object"
+      },
+      "OrderRef": {
+        "additionalProperties": false,
+        "properties": {
+          "before": {
+            "$ref": "#/$defs/PredicateRef"
+          },
+          "after": {
+            "$ref": "#/$defs/PredicateRef"
+          }
+        },
+        "required": [
+          "before",
+          "after"
+        ],
+        "title": "OrderRef",
+        "type": "object"
+      },
+      "PredicateRef": {
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id",
+          "predicate_id"
+        ],
+        "title": "PredicateRef",
+        "type": "object"
+      },
+      "RequestBindingV1": {
+        "additionalProperties": false,
+        "properties": {
+          "requirement_id": {
+            "minLength": 1,
+            "title": "Requirement Id",
+            "type": "string"
+          },
+          "scene_id": {
+            "minLength": 1,
+            "title": "Scene Id",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          },
+          "rationale": {
+            "minLength": 1,
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "scene_id",
+          "event_id",
+          "predicate_id",
+          "rationale"
+        ],
+        "title": "RequestBindingV1",
+        "type": "object"
+      },
+      "Resolution": {
+        "additionalProperties": false,
+        "description": "A proposed resolution must cite a predicate; semantic review judges entailment.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "THREAD",
+              "OBLIGATION"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "evidence": {
+            "$ref": "#/$defs/PredicateRef"
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "evidence"
+        ],
+        "title": "Resolution",
+        "type": "object"
+      },
+      "SpatialOperationV1": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "LOCATE",
+              "MOVE",
+              "BLOCK",
+              "RELEASE",
+              "ACCESS"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "subject": {
+            "minLength": 1,
+            "title": "Subject",
+            "type": "string"
+          },
+          "target": {
+            "minLength": 1,
+            "title": "Target",
+            "type": "string"
+          },
+          "event_id": {
+            "minLength": 1,
+            "title": "Event Id",
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "title": "Predicate Id",
+            "type": "string"
+          },
+          "edge_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Edge Id"
+          },
+          "constraint_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Constraint Id"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "subject",
+          "target",
+          "event_id",
+          "predicate_id"
+        ],
+        "title": "SpatialOperationV1",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "schema_name": {
+        "const": "spineforge.compact-story-plan.v1",
+        "default": "spineforge.compact-story-plan.v1",
+        "title": "Schema Name",
+        "type": "string"
+      },
+      "request_sha256": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Request Sha256",
+        "type": "string"
+      },
+      "seed_sha256": {
+        "pattern": "^[0-9a-f]{64}$",
+        "title": "Seed Sha256",
+        "type": "string"
+      },
+      "premise": {
+        "minLength": 1,
+        "title": "Premise",
+        "type": "string"
+      },
+      "character_arc": {
+        "minLength": 1,
+        "title": "Character Arc",
+        "type": "string"
+      },
+      "resolution": {
+        "minLength": 1,
+        "title": "Resolution",
+        "type": "string"
+      },
+      "scenes": {
+        "items": {
+          "$ref": "#/$defs/CompactSceneV1"
+        },
+        "maxItems": 12,
+        "minItems": 2,
+        "title": "Scenes",
+        "type": "array"
+      },
+      "carry_groups": {
+        "items": {
+          "$ref": "#/$defs/CarryGroupV1"
+        },
+        "title": "Carry Groups",
+        "type": "array"
+      },
+      "request_bindings": {
+        "items": {
+          "$ref": "#/$defs/RequestBindingV1"
+        },
+        "minItems": 1,
+        "title": "Request Bindings",
+        "type": "array"
+      },
+      "unresolved_questions": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Unresolved Questions",
+        "type": "array"
+      }
+    },
+    "required": [
+      "request_sha256",
+      "seed_sha256",
+      "premise",
+      "character_arc",
+      "resolution",
+      "scenes",
+      "request_bindings"
+    ],
+    "title": "CompactStoryPlanV1",
+    "type": "object"
+  }
+}

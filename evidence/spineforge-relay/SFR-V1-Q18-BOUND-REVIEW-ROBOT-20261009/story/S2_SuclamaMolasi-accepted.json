@@ -1,0 +1,198 @@
+{
+  "delta": {
+    "schema_name": "spineforge-relay.scene-delta.v1",
+    "scene_id": "S2_SuclamaMolasi",
+    "source_state_revision": 1,
+    "source_state_sha256": "4e90dc7fb26a39e483d83cce4439c5a8c02d225934268797f1a5f41ba5211303",
+    "contract_sha256": "73338c265bec4976adeddccc9a54a555ab89c6569cbd390937c7bdc0c2036628",
+    "mutations": [
+      {
+        "path": "/characters/Ada/condition/emotion",
+        "op": "SET",
+        "before": "anxious",
+        "after": "focused_but_anxious"
+      },
+      {
+        "path": "/characters/Bora/condition/emotion",
+        "op": "SET",
+        "before": "defensive",
+        "after": "cautious_but_engaged"
+      },
+      {
+        "path": "/open_threads",
+        "op": "SET",
+        "before": [
+          "understand_robot_failure",
+          "decide_project_presentation",
+          "resolve_partner_blame"
+        ],
+        "after": [
+          "understand_robot_failure",
+          "decide_project_presentation"
+        ]
+      },
+      {
+        "path": "/resolved_threads",
+        "op": "SET",
+        "before": [],
+        "after": [
+          "resolve_partner_blame"
+        ]
+      }
+    ]
+  },
+  "state_after": {
+    "schema_name": "spineforge-relay.story-state.v1",
+    "story_id": "broken-robot-ada-bora",
+    "revision": 2,
+    "global_spine_sha256": "d8636be0b5e057e72349625109d737fbb8d24068ab22d975401759936dc423dd",
+    "story_intent_sha256": "3b47c9f1b497835353c63bfef6adf24402b282c31fdbfd2d557830a1a8e76be9",
+    "characters": {
+      "Ada": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "focused_but_anxious",
+          "goal": "present_the_project"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_programming",
+          "robot_failed_exhibition_morning"
+        ],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_workshop",
+        "condition": {
+          "health": "good",
+          "emotion": "cautious_but_engaged",
+          "goal": "understand_the_failure"
+        },
+        "inventory": {},
+        "knowledge": [
+          "exhibition_today",
+          "robot_worked_yesterday",
+          "basic_mechanical_assembly",
+          "robot_failed_exhibition_morning"
+        ],
+        "relationships": {
+          "Ada": {
+            "familiarity": "classmate_and_project_partner",
+            "trust": "strained"
+          }
+        }
+      }
+    },
+    "world": {
+      "setting": "ordinary_contemporary_school",
+      "time": {
+        "day": "exhibition_day",
+        "period": "morning",
+        "minutes_until_opening": 20
+      },
+      "rules": [
+        "No magic or instant expert skills.",
+        "Tools and parts must come from established resources."
+      ],
+      "spatial": {
+        "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+        "positions": {
+          "Ada": "school_workshop",
+          "Bora": "school_workshop",
+          "robot": "school_workshop",
+          "toolkit": "school_workshop",
+          "project_notebook": "school_workshop"
+        },
+        "access_constraints": []
+      }
+    },
+    "objects": {
+      "robot": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "power_source": "low_voltage_battery",
+          "battery_charged": true,
+          "operational": false,
+          "fault": "loose_motor_connector",
+          "fault_discovered": false,
+          "program_loaded": true,
+          "presented": false
+        }
+      },
+      "toolkit": {
+        "owner": "school",
+        "location": "school_workshop",
+        "state": {
+          "contents": [
+            "small_screwdriver"
+          ],
+          "available": true
+        }
+      },
+      "project_notebook": {
+        "owner": "school_project",
+        "location": "school_workshop",
+        "state": {
+          "contains": [
+            "assembly_diagram",
+            "program_notes"
+          ],
+          "available": true
+        }
+      }
+    },
+    "open_threads": [
+      "understand_robot_failure",
+      "decide_project_presentation"
+    ],
+    "resolved_threads": [
+      "resolve_partner_blame"
+    ],
+    "completed_spine_beats": [
+      "S1_SabahArizasi",
+      "S2_SuclamaMolasi"
+    ],
+    "next_spine_beat": "S3_ArizaTespiti",
+    "narrative_obligations": [
+      {
+        "id": "investigate_together",
+        "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "choose_presentation",
+        "detail": "They decide and carry out an honest presentation of their project.",
+        "status": "OPEN",
+        "target_scene_id": null
+      },
+      {
+        "id": "repair_cooperation",
+        "detail": "They move from blame toward practical cooperation without instant intimacy.",
+        "status": "OPEN",
+        "target_scene_id": null
+      }
+    ]
+  },
+  "artifact": {
+    "schema_name": "spineforge-relay.scene-artifact.v1",
+    "scene_id": "S2_SuclamaMolasi",
+    "attempt": 1,
+    "status": "ACCEPTED",
+    "prose": "Ada’nın aklına ilk gelen soru, robotu en son kimin kurcaladığıydı. Sözcükler neredeyse ağzından çıkacaktı. Bora’nın gergin yüzünü görünce durdu. Onu suçlarsa Bora’nın yine sessizleşeceğini biliyordu; üstelik bunun sorunu çözmeyeceği açıktı.\n\nAda derin bir nefes aldı. Kaygısı geçmemişti ama sesini sakin tutmaya çalıştı.\n\n“Birbirimizi suçlamayalım,” dedi. “Neyin bozulduğunu henüz bilmiyoruz. Sırayla ilerleyelim: önce kodu, sonra gücü, en son bağlantıları birlikte kontrol edelim. Böylece hiçbir şeyi atlamayız.”\n\nBora, Ada’nın önerisini dikkatle dinledi. İlk anda cevap vermedi. Omuzları hâlâ gergindi ve bakışları kısa bir süre robotta kaldı. Sonra geri çekilmek yerine Ada’ya döndü.\n\n“Tamam,” dedi. “Bu planı kabul ediyorum. Sen kodu benden daha iyi izlersin. Ben de güç ve bağlantı kontrollerinde dikkat ederim. Ama her adımı beraber değerlendirelim.”\n\nAda başını salladı. Aralarındaki kırgınlık bir anda yok olmamıştı. Yine de artık karşı karşıya değil, aynı sorunun karşısında duruyorlardı. Ada hâlâ kaygılıydı fakat ne yapacaklarına odaklanmıştı. Bora’nın savunmacı sessizliği de temkinli bir katılıma dönüşmüştü.",
+    "word_count": 149,
+    "contract_sha256": "73338c265bec4976adeddccc9a54a555ab89c6569cbd390937c7bdc0c2036628",
+    "state_before_sha256": "4e90dc7fb26a39e483d83cce4439c5a8c02d225934268797f1a5f41ba5211303",
+    "validation_sha256": "b4cf7a4532e01a1606d08ac6c84e390e32dd0deb2f646489721cb64fcad0ec1c",
+    "state_after_sha256": "776ba17caf5bb181f735f56d3005a5934d7617571da54da70ab4718995e080b9"
+  }
+}

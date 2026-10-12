@@ -1,0 +1,26 @@
+{
+  "schema": "spineforge-relay.q7b-review.v1",
+  "workflow_run_id": 37605094807,
+  "execution_status": "ACCEPT",
+  "state_replay_status": "OFFLINE_REPLAY_PASS",
+  "qualification_status": "REJECT_EGRESS_ROUTE_CONTINUITY_GAP",
+  "provider_calls": 6,
+  "cost_usd": 0.122343,
+  "automatic_retry": false,
+  "blocking_findings": [
+    {
+      "code": "UPPER_EXIT_REPLACED_BY_FLOODED_LOWER_STAIR",
+      "family": "spatial",
+      "severity": "BLOCKING",
+      "scene_id": "SC06",
+      "exact_text": "They left the mother sheltering her hatchling in the upper room and descended the narrow stair. Outside, the storm still hammered the coast.",
+      "canon_source": "docs/experiments/lighthouse-context-and-spine-draft.md",
+      "established_topology": "The open door in the dry upper room leads to the coastal return path. The narrow turning internal stair descends to the flooded lower maintenance room with a fixed sea grate. There is no established second lower exit.",
+      "prior_scene_evidence": "SC05: Keeping both feet on the dry stair, she crouched and stretched toward the hatchling.",
+      "reason": "The scene exits via the internal stair into the flooded lower room, then jumps outside without an established exit or a return to the dry upper door. Local state ends at harbor and the semantic guard passed, but the actual movement violates the established topology.",
+      "root_cause": "Persistent entity location was fixed in Q7B, but traversable egress topology and exact return route remain unbound in required events."
+    }
+  ],
+  "decision": "Preserve Q7B as rejected qualification evidence. Prepare a fresh SC06 contract from the accepted revision-5 SC05 state with explicit upper-door egress and a forbidden lower-stair exit; do not rewrite or replace this consumed run.",
+  "production_write": false
+}

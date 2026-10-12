@@ -1,0 +1,47 @@
+{
+  "schema": "spineforge-relay.q5-paid-result.v1",
+  "qualification_id": "SFR-V1-Q5-SINGLE-SCENE-20261006",
+  "status": "FAILED_BOUNDED_NO_RETRY",
+  "run_id": 37525324385,
+  "job_id": 112480736344,
+  "head_sha": "f558b49a49447125a8e092c3fa43e680a4c295ea",
+  "model": "aion-labs/aion-3.5-mini",
+  "request_class": "spineforge_relay_v1_scene_writer",
+  "preflight_sha256": "cc7245e49a5290d1375522bf71069fbf99242e6dc3d73e73a6603d1a4122006d",
+  "api_calls": 1,
+  "automatic_retry_executed": false,
+  "state_application_authorized": false,
+  "provider": {
+    "response_id": "gen-1791318271-ZNRxXyyD6ZzAKzntyRc0",
+    "finish_reason": "length",
+    "content": null
+  },
+  "usage": {
+    "input_tokens": 1493,
+    "output_tokens": 1600,
+    "total_tokens": 3093,
+    "reasoning_tokens": 1759,
+    "cost_usd": 0.00251394,
+    "latency_seconds": 26.86880483198911
+  },
+  "failure": {
+    "type": "OpenRouterCallError",
+    "message": "OpenRouter response did not contain structured text.",
+    "classification": "OUTPUT_BUDGET_EXHAUSTED_BEFORE_PROSE",
+    "evidence": "finish_reason=length and assistant content=null at max_tokens=1600"
+  },
+  "architectural_result": {
+    "bounded_call_enforced": true,
+    "retry_count": 0,
+    "story_state_mutated": false,
+    "production_write": false,
+    "conclusion": "Relay fail-closed boundary behaved as designed; Q5 did not qualify the scene writer because no prose was returned."
+  },
+  "next_gate": {
+    "id": "Q5B",
+    "invariant": "Keep story state, scene contract and writer prompt frozen; change only Aion output headroom.",
+    "proposed_max_tokens": 7000,
+    "proposed_max_cost_usd": 0.02,
+    "max_calls": 1
+  }
+}

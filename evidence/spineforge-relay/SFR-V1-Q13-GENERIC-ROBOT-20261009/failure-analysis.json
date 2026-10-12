@@ -1,0 +1,33 @@
+{
+  "classification": "REJECT_NON_CONVERGENT / FAILED_CLOSED_NO_RETRY before plan",
+  "attempted_provider_dispatches": 1,
+  "provider_response_received": false,
+  "exact_original_http_status": null,
+  "actual_cost_usd": null,
+  "usage_complete": false,
+  "source_commit": "715a471eb300c72e1f44ea8035a3e848006c9621",
+  "observed_request_contract_defect": {
+    "response_format": "json_object",
+    "json_instruction_present": false,
+    "official_requirement": "Explicit JSON instruction and JSON literal in message context",
+    "reference": "https://developers.openai.com/api/docs/guides/structured-outputs",
+    "original_provider_cause_proven": false
+  },
+  "diagnostics_gap": "HTTP error status/body was discarded by the first generic capture implementation; cannot recover original details without provider evidence.",
+  "corrections": [
+    "Always add explicit single-JSON-object instructions to planner and plan review requests.",
+    "Persist sanitized provider failure trace including HTTP status/error body; never credentials."
+  ],
+  "read_only_key_check": "GET /api/v1/key succeeded; this does not recover original request failure/cost.",
+  "authority_status": "CLOSED",
+  "reservation_status": "UNCERTAIN",
+  "held_scope_cost_usd": "1.20",
+  "retry": false,
+  "plan_generated": false,
+  "story_generated": false,
+  "initial_state_unchanged": true,
+  "limits": [
+    "Request contract defect is confirmed; exact original transport rejection cause remains unknown.",
+    "Missing usage is not zero billing; reservation must not be released or reopened."
+  ]
+}

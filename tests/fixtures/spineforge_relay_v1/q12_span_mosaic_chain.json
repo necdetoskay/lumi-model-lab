@@ -1,0 +1,2218 @@
+{
+  "schema": "spineforge-relay.repeatability-fixture.v5",
+  "story_id": "q10-mosaic-covered-route",
+  "story_intent": {
+    "reader_age": 12,
+    "language": "en",
+    "tone": [
+      "grounded",
+      "tense",
+      "warm"
+    ],
+    "premise": "Aya and Mert must carry a restored fragile mosaic panel from the community workshop to the gallery display through an established covered route while rain strengthens.",
+    "character_arc": "Aya begins impatient to carry the panel alone, explicitly asks Mert for help, and ends crediting their careful cooperation without instant intimacy.",
+    "scene_role": "Complete six-scene delivery story with persistent access control, coordinated movement and fragile-object continuity."
+  },
+  "route": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06"
+  ],
+  "initial_state": {
+    "revision": 0,
+    "characters": {
+      "Aya": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "covered_route"
+        ],
+        "relationships": {
+          "Mert": {
+            "familiarity": "classmate",
+            "trust": "limited"
+          }
+        }
+      },
+      "Mert": {
+        "location": "workshop",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "covered_route"
+        ],
+        "relationships": {
+          "Aya": {
+            "familiarity": "classmate",
+            "trust": "limited"
+          }
+        }
+      }
+    },
+    "world": {
+      "weather": "windy_rain_strengthening",
+      "gallery_door": "open",
+      "display_mount": "empty_fixed_mount",
+      "spatial": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "workshop",
+          "Mert": "workshop",
+          "mosaic_panel": "workshop"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": true
+          }
+        ]
+      }
+    },
+    "objects": {
+      "mosaic_panel": {
+        "owner": "community_gallery",
+        "location": "workshop",
+        "state": {
+          "fragile": true,
+          "restored": true,
+          "intact": true,
+          "carried_by": [],
+          "displayed": false
+        }
+      }
+    },
+    "open_threads": [
+      "deliver_panel"
+    ],
+    "resolved_threads": [],
+    "completed_spine_beats": [],
+    "next_spine_beat": "S01",
+    "narrative_obligations": [
+      {
+        "id": "deliver_panel_together",
+        "detail": "Aya must request and acknowledge practical help; the same fragile panel must reach its fixed display mount intact.",
+        "status": "OPEN",
+        "target_scene_id": "S06"
+      }
+    ]
+  },
+  "relevant_character_canon": {
+    "Aya": {
+      "age": 12,
+      "pronouns": [
+        "she",
+        "her"
+      ]
+    },
+    "Mert": {
+      "age": 12,
+      "pronouns": [
+        "he",
+        "him"
+      ]
+    }
+  },
+  "prop_authorization_policy": {
+    "authorized_actionable_props": [
+      "mosaic_panel"
+    ],
+    "rule": "Only the same mosaic panel is a portable actionable prop. Established wide gate, covered ramp, open door and fixed display mount are allowed structures. No carts, straps, tools, covers, phones, bags, ladders, vehicles or adult rescue."
+  },
+  "scene_plans": [
+    {
+      "scene_id": "S01",
+      "spine_beats": [
+        "S01"
+      ],
+      "next_spine_beat": "S02",
+      "narrative_purpose": "Expose Aya\u2019s impatience and Mert\u2019s existing safety boundary without leaving the workshop.",
+      "location": "declared_covered_route",
+      "objective": "Aya proposes carrying the panel alone; Mert maintains the already active gate boundary and explains the covered route.",
+      "turn": "Aya recognizes the covered route but has not yet asked for help.",
+      "required_events": [
+        {
+          "id": "S01-E01",
+          "actor": "Aya",
+          "action": "PROPOSE_SOLO_CARRY",
+          "target": "mosaic_panel",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "PROPOSE_SOLO_CARRY",
+              "target": "mosaic_panel"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_PROPOSE_SOLO_CARRY_mosaic_panel"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "S01-E02",
+          "actor": "Mert",
+          "action": "EXPLAIN_ROUTE",
+          "target": "covered_route_and_existing_gate_boundary",
+          "required_observer": "Aya",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Mert",
+              "action": "EXPLAIN_ROUTE",
+              "target": "covered_route_and_existing_gate_boundary"
+            },
+            {
+              "id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_EXPLAIN_ROUTE_covered_route_and_existing_gate_boundary"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "S01-E03",
+          "actor": "Aya",
+          "action": "ACKNOWLEDGE",
+          "target": "covered_route",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE",
+              "target": "covered_route"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ACKNOWLEDGE_covered_route"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "workshop",
+                "Mert": "workshop",
+                "mosaic_panel": "workshop"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": true
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": true
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "workshop",
+        "/characters/Mert/location": "workshop",
+        "/objects/mosaic_panel/location": "workshop"
+      },
+      "required_exit_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": true
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove.",
+        "The panel remains resting in the workshop; the two-person lift must not occur before S03."
+      ],
+      "forbidden": [
+        "No new portable equipment, magic, adults, vehicles or replacement panel.",
+        "No uncovered shortcut, stairs or invented door.",
+        "No crossing the workshop gate while its safety boundary is active.",
+        "Do not display the panel or close the thread before S06.",
+        "Do not lift the panel or release the gate boundary in this scene."
+      ],
+      "emotional_transition": {
+        "from": "Aya impatient with shared caution",
+        "to": "Aya recognizes the covered route but has not yet asked for help."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    },
+    {
+      "scene_id": "S02",
+      "spine_beats": [
+        "S02"
+      ],
+      "next_spine_beat": "S03",
+      "narrative_purpose": "Make Aya initiate cooperation through an explicit request, not Mert volunteering.",
+      "location": "declared_covered_route",
+      "objective": "Aya asks Mert for help carrying the same panel; he accepts while the gate boundary remains active.",
+      "turn": "Aya chooses to ask instead of insisting on acting alone.",
+      "required_events": [
+        {
+          "id": "S02-E01",
+          "actor": "Aya",
+          "action": "ASK_FOR_HELP",
+          "target": "shared_panel_carry",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "ASK_FOR_HELP",
+              "target": "shared_panel_carry"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ASK_FOR_HELP_shared_panel_carry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "S02-E02",
+          "actor": "Mert",
+          "action": "ACCEPT_HELP_REQUEST",
+          "target": "shared_panel_carry",
+          "required_observer": "Aya",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Mert",
+              "action": "ACCEPT_HELP_REQUEST",
+              "target": "shared_panel_carry"
+            },
+            {
+              "id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_ACCEPT_HELP_REQUEST_shared_panel_carry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "workshop",
+                "Mert": "workshop",
+                "mosaic_panel": "workshop"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": true
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": true
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "workshop",
+        "/characters/Mert/location": "workshop",
+        "/objects/mosaic_panel/location": "workshop"
+      },
+      "required_exit_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": true
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove.",
+        "The panel remains resting in the workshop; the two-person lift must not occur before S03."
+      ],
+      "forbidden": [
+        "No new portable equipment, magic, adults, vehicles or replacement panel.",
+        "No uncovered shortcut, stairs or invented door.",
+        "No crossing the workshop gate while its safety boundary is active.",
+        "Do not display the panel or close the thread before S06.",
+        "Do not lift the panel or release the gate boundary in this scene."
+      ],
+      "emotional_transition": {
+        "from": "Aya recognizes the covered route but has not yet asked for help.",
+        "to": "Aya chooses to ask instead of insisting on acting alone."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    },
+    {
+      "scene_id": "S03",
+      "spine_beats": [
+        "S03"
+      ],
+      "next_spine_beat": "S04",
+      "narrative_purpose": "Prepare a stable shared hold and release the persistent safety boundary only after agreement.",
+      "location": "declared_covered_route",
+      "objective": "Aya and Mert lift the same intact panel together; Mert explicitly releases the gate boundary while co-located with Aya.",
+      "turn": "Aya follows Mert\u2019s practical coordination rather than rushing ahead.",
+      "required_events": [
+        {
+          "id": "S03-E01",
+          "actor": "Aya_and_Mert",
+          "action": "LIFT_TOGETHER",
+          "target": "mosaic_panel",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "LIFT_TOGETHER",
+              "target": "mosaic_panel"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/objects/mosaic_panel/state/carried_by": [
+              "Aya",
+              "Mert"
+            ]
+          }
+        },
+        {
+          "id": "S03-E02",
+          "actor": "Mert",
+          "action": "RELEASE",
+          "target": "yard_gate",
+          "required_observer": "Aya",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Mert",
+              "action": "RELEASE",
+              "target": "yard_gate"
+            },
+            {
+              "id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_RELEASE_yard_gate"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "workshop",
+                "Mert": "workshop",
+                "mosaic_panel": "workshop"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": true
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "workshop",
+        "/characters/Mert/location": "workshop",
+        "/objects/mosaic_panel/location": "workshop"
+      },
+      "required_exit_state": {
+        "/objects/mosaic_panel/state/carried_by": [
+          "Aya",
+          "Mert"
+        ],
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove."
+      ],
+      "forbidden": [
+        "No new portable equipment, magic, adults, vehicles or replacement panel.",
+        "No uncovered shortcut, stairs or invented door.",
+        "No crossing the workshop gate while its safety boundary is active.",
+        "Do not display the panel or close the thread before S06."
+      ],
+      "emotional_transition": {
+        "from": "Aya chooses to ask instead of insisting on acting alone.",
+        "to": "Aya follows Mert\u2019s practical coordination rather than rushing ahead."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    },
+    {
+      "scene_id": "S04",
+      "spine_beats": [
+        "S04"
+      ],
+      "next_spine_beat": "S05",
+      "narrative_purpose": "Carry the panel through the declared wide gate without teleporting or bypassing the route.",
+      "location": "declared_covered_route",
+      "objective": "Aya, Mert and the same panel move from the workshop through the wide gate into the covered yard; their shared hold stays stable.",
+      "turn": "Aya matches Mert\u2019s pace rather than trying to lead alone.",
+      "required_events": [
+        {
+          "id": "S04-E01",
+          "actor": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "covered_yard",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "covered_yard"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/characters/Aya/location": "covered_yard",
+            "/characters/Mert/location": "covered_yard",
+            "/objects/mosaic_panel/location": "covered_yard"
+          }
+        },
+        {
+          "id": "S04-E04",
+          "actor": "Aya",
+          "action": "MATCH_PACE",
+          "target": "shared_panel_carry",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_MATCH_PACE_shared_panel_carry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "covered_yard",
+                "Mert": "covered_yard",
+                "mosaic_panel": "covered_yard"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "workshop",
+            "Mert": "workshop",
+            "mosaic_panel": "workshop"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "workshop",
+        "/characters/Mert/location": "workshop",
+        "/objects/mosaic_panel/location": "workshop"
+      },
+      "required_exit_state": {
+        "/characters/Aya/location": "covered_yard",
+        "/characters/Mert/location": "covered_yard",
+        "/objects/mosaic_panel/location": "covered_yard",
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "covered_yard",
+            "Mert": "covered_yard",
+            "mosaic_panel": "covered_yard"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove."
+      ],
+      "forbidden": [
+        "No new portable equipment, magic, adults, vehicles or replacement panel.",
+        "No uncovered shortcut, stairs or invented door.",
+        "No crossing the workshop gate while its safety boundary is active.",
+        "Do not display the panel or close the thread before S06."
+      ],
+      "emotional_transition": {
+        "from": "Aya follows Mert\u2019s practical coordination rather than rushing ahead.",
+        "to": "Aya matches Mert\u2019s pace rather than trying to lead alone."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    },
+    {
+      "scene_id": "S05",
+      "spine_beats": [
+        "S05"
+      ],
+      "next_spine_beat": "S06",
+      "narrative_purpose": "Sustain cooperation along the covered ramp while weather and object constraints persist.",
+      "location": "declared_covered_route",
+      "objective": "Aya, Mert and the same panel traverse the level covered ramp from covered yard to gallery entry; no stairs or uncovered shortcut is used.",
+      "turn": "Aya requests a slower shared pace and Mert responds.",
+      "required_events": [
+        {
+          "id": "S05-E01",
+          "actor": "Aya",
+          "action": "ASK_SLOWER_PACE",
+          "target": "shared_panel_carry",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "ASK_SLOWER_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ASK_SLOWER_PACE_shared_panel_carry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "S05-E02",
+          "actor": "Mert",
+          "action": "MATCH_PACE",
+          "target": "shared_panel_carry",
+          "required_observer": "Aya",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Mert",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_MATCH_PACE_shared_panel_carry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "S05-E03",
+          "actor": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "gallery_entry",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "gallery_entry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/characters/Aya/location": "gallery_entry",
+            "/characters/Mert/location": "gallery_entry",
+            "/objects/mosaic_panel/location": "gallery_entry",
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "gallery_entry",
+                "Mert": "gallery_entry",
+                "mosaic_panel": "gallery_entry"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "covered_yard",
+            "Mert": "covered_yard",
+            "mosaic_panel": "covered_yard"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "covered_yard",
+        "/characters/Mert/location": "covered_yard",
+        "/objects/mosaic_panel/location": "covered_yard"
+      },
+      "required_exit_state": {
+        "/characters/Aya/location": "gallery_entry",
+        "/characters/Mert/location": "gallery_entry",
+        "/objects/mosaic_panel/location": "gallery_entry",
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "gallery_entry",
+            "Mert": "gallery_entry",
+            "mosaic_panel": "gallery_entry"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove."
+      ],
+      "forbidden": [
+        "No new portable equipment, magic, adults, vehicles or replacement panel.",
+        "No uncovered shortcut, stairs or invented door.",
+        "No crossing the workshop gate while its safety boundary is active.",
+        "Do not display the panel or close the thread before S06."
+      ],
+      "emotional_transition": {
+        "from": "Aya matches Mert\u2019s pace rather than trying to lead alone.",
+        "to": "Aya requests a slower shared pace and Mert responds."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    },
+    {
+      "scene_id": "S06",
+      "spine_beats": [
+        "S06"
+      ],
+      "next_spine_beat": null,
+      "narrative_purpose": "Finish the complete delivery and earned cooperation arc without resetting weather.",
+      "location": "declared_covered_route",
+      "objective": "Aya, Mert and the same panel pass the open gallery door into the display alcove, place the panel on the existing fixed mount intact, and Aya acknowledges Mert\u2019s help.",
+      "turn": "Aya credits their careful cooperation; the delivery thread closes without instant best-friend intimacy.",
+      "required_events": [
+        {
+          "id": "S06-E01",
+          "actor": "shared_panel_carry",
+          "action": "JOINT_MOVE",
+          "target": "display_alcove",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "display_alcove"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/characters/Aya/location": "display_alcove",
+            "/characters/Mert/location": "display_alcove",
+            "/objects/mosaic_panel/location": "display_alcove"
+          }
+        },
+        {
+          "id": "S06-E04",
+          "actor": "Aya_and_Mert",
+          "action": "PLACE_ON_MOUNT",
+          "target": "mosaic_panel",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "PLACE_ON_MOUNT",
+              "target": "mosaic_panel"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/objects/mosaic_panel/state/carried_by": [],
+            "/objects/mosaic_panel/state/displayed": true,
+            "/world/display_mount": "holding_same_panel_intact"
+          }
+        },
+        {
+          "id": "S06-E05",
+          "actor": "Aya",
+          "action": "ACKNOWLEDGE_HELP",
+          "target": "Mert_cooperation",
+          "required_observer": "Mert",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE_HELP",
+              "target": "Mert_cooperation"
+            },
+            {
+              "id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ACKNOWLEDGE_HELP_Mert_cooperation"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer",
+            "replacement_panel"
+          ],
+          "resulting_state": {
+            "/characters/Aya/relationships/Mert/trust": "earned",
+            "/characters/Mert/relationships/Aya/trust": "earned",
+            "/world/spatial": {
+              "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+              "positions": {
+                "Aya": "display_alcove",
+                "Mert": "display_alcove",
+                "mosaic_panel": "display_alcove"
+              },
+              "access_constraints": [
+                {
+                  "id": "safe_carry_gate",
+                  "blocker": "Mert",
+                  "subject": "Aya",
+                  "target": "yard_gate",
+                  "active": false
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "entry_state": {
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "gallery_entry",
+            "Mert": "gallery_entry",
+            "mosaic_panel": "gallery_entry"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        },
+        "/objects/mosaic_panel/state/intact": true,
+        "/characters/Aya/location": "gallery_entry",
+        "/characters/Mert/location": "gallery_entry",
+        "/objects/mosaic_panel/location": "gallery_entry"
+      },
+      "required_exit_state": {
+        "/characters/Aya/location": "display_alcove",
+        "/characters/Mert/location": "display_alcove",
+        "/objects/mosaic_panel/location": "display_alcove",
+        "/objects/mosaic_panel/state/carried_by": [],
+        "/objects/mosaic_panel/state/displayed": true,
+        "/world/display_mount": "holding_same_panel_intact",
+        "/characters/Aya/relationships/Mert/trust": "earned",
+        "/characters/Mert/relationships/Aya/trust": "earned",
+        "/open_threads": [],
+        "/resolved_threads": [
+          "deliver_panel"
+        ],
+        "/narrative_obligations": [
+          {
+            "id": "deliver_panel_together",
+            "detail": "Aya must request and acknowledge practical help; the same fragile panel must reach its fixed display mount intact.",
+            "status": "SATISFIED",
+            "target_scene_id": "S06"
+          }
+        ],
+        "/world/spatial": {
+          "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+          "positions": {
+            "Aya": "display_alcove",
+            "Mert": "display_alcove",
+            "mosaic_panel": "display_alcove"
+          },
+          "access_constraints": [
+            {
+              "id": "safe_carry_gate",
+              "blocker": "Mert",
+              "subject": "Aya",
+              "target": "yard_gate",
+              "active": false
+            }
+          ]
+        }
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The mosaic panel is the same restored fragile intact panel.",
+        "Wind and strengthening rain persist.",
+        "Only the declared wide gate, covered yard, covered level ramp and open gallery door connect the locations.",
+        "Mert and Aya coordinate their two-person hold; neither teleports or carries the panel alone.",
+        "The existing fixed display mount is in the display alcove."
+      ],
+      "forbidden": [
+        "No new equipment, magic, adults, vehicles, replacement panel or instant intimacy.",
+        "Do not reset wind or rain."
+      ],
+      "emotional_transition": {
+        "from": "Aya requests a slower shared pace and Mert responds.",
+        "to": "Aya credits their careful cooperation; the delivery thread closes without instant best-friend intimacy."
+      },
+      "target_words_min": 200,
+      "target_words_max": 320
+    }
+  ],
+  "coverage_plans": [
+    {
+      "scene_id": "S01",
+      "obligations": [
+        {
+          "id": "S01-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Expose Aya\u2019s impatience and Mert\u2019s existing safety boundary without leaving the workshop.",
+          "required_predicates": [
+            {
+              "event_id": "S01-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "PROPOSE_SOLO_CARRY",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S01-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "EXPLAIN_ROUTE",
+              "target": "covered_route_and_existing_gate_boundary"
+            },
+            {
+              "event_id": "S01-E03",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE",
+              "target": "covered_route"
+            }
+          ]
+        },
+        {
+          "id": "S01-objective",
+          "source_field": "objective",
+          "source_text": "Aya proposes carrying the panel alone; Mert maintains the already active gate boundary and explains the covered route.",
+          "required_predicates": [
+            {
+              "event_id": "S01-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "PROPOSE_SOLO_CARRY",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S01-E01",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_PROPOSE_SOLO_CARRY_mosaic_panel"
+            },
+            {
+              "event_id": "S01-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "EXPLAIN_ROUTE",
+              "target": "covered_route_and_existing_gate_boundary"
+            },
+            {
+              "event_id": "S01-E02",
+              "predicate_id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_EXPLAIN_ROUTE_covered_route_and_existing_gate_boundary"
+            },
+            {
+              "event_id": "S01-E03",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE",
+              "target": "covered_route"
+            },
+            {
+              "event_id": "S01-E03",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ACKNOWLEDGE_covered_route"
+            }
+          ]
+        },
+        {
+          "id": "S01-turn",
+          "source_field": "turn",
+          "source_text": "Aya recognizes the covered route but has not yet asked for help.",
+          "required_predicates": [
+            {
+              "event_id": "S01-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "PROPOSE_SOLO_CARRY",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S01-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "EXPLAIN_ROUTE",
+              "target": "covered_route_and_existing_gate_boundary"
+            },
+            {
+              "event_id": "S01-E03",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE",
+              "target": "covered_route"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S01-E01",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "PROPOSE_SOLO_CARRY",
+            "target": "mosaic_panel"
+          },
+          "after": {
+            "event_id": "S01-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "EXPLAIN_ROUTE",
+            "target": "covered_route_and_existing_gate_boundary"
+          }
+        },
+        {
+          "before": {
+            "event_id": "S01-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "EXPLAIN_ROUTE",
+            "target": "covered_route_and_existing_gate_boundary"
+          },
+          "after": {
+            "event_id": "S01-E03",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "ACKNOWLEDGE",
+            "target": "covered_route"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "S02",
+      "obligations": [
+        {
+          "id": "S02-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Make Aya initiate cooperation through an explicit request, not Mert volunteering.",
+          "required_predicates": [
+            {
+              "event_id": "S02-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_FOR_HELP",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S02-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "ACCEPT_HELP_REQUEST",
+              "target": "shared_panel_carry"
+            }
+          ]
+        },
+        {
+          "id": "S02-objective",
+          "source_field": "objective",
+          "source_text": "Aya asks Mert for help carrying the same panel; he accepts while the gate boundary remains active.",
+          "required_predicates": [
+            {
+              "event_id": "S02-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_FOR_HELP",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S02-E01",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ASK_FOR_HELP_shared_panel_carry"
+            },
+            {
+              "event_id": "S02-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "ACCEPT_HELP_REQUEST",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S02-E02",
+              "predicate_id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_ACCEPT_HELP_REQUEST_shared_panel_carry"
+            }
+          ]
+        },
+        {
+          "id": "S02-turn",
+          "source_field": "turn",
+          "source_text": "Aya chooses to ask instead of insisting on acting alone.",
+          "required_predicates": [
+            {
+              "event_id": "S02-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_FOR_HELP",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S02-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "ACCEPT_HELP_REQUEST",
+              "target": "shared_panel_carry"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S02-E01",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "ASK_FOR_HELP",
+            "target": "shared_panel_carry"
+          },
+          "after": {
+            "event_id": "S02-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "ACCEPT_HELP_REQUEST",
+            "target": "shared_panel_carry"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "S03",
+      "obligations": [
+        {
+          "id": "S03-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Prepare a stable shared hold and release the persistent safety boundary only after agreement.",
+          "required_predicates": [
+            {
+              "event_id": "S03-E01",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "LIFT_TOGETHER",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S03-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "RELEASE",
+              "target": "yard_gate"
+            }
+          ]
+        },
+        {
+          "id": "S03-objective",
+          "source_field": "objective",
+          "source_text": "Aya and Mert lift the same intact panel together; Mert explicitly releases the gate boundary while co-located with Aya.",
+          "required_predicates": [
+            {
+              "event_id": "S03-E01",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "LIFT_TOGETHER",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S03-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "RELEASE",
+              "target": "yard_gate"
+            },
+            {
+              "event_id": "S03-E02",
+              "predicate_id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_RELEASE_yard_gate"
+            }
+          ]
+        },
+        {
+          "id": "S03-turn",
+          "source_field": "turn",
+          "source_text": "Aya follows Mert\u2019s practical coordination rather than rushing ahead.",
+          "required_predicates": [
+            {
+              "event_id": "S03-E01",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "LIFT_TOGETHER",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S03-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "RELEASE",
+              "target": "yard_gate"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S03-E01",
+            "predicate_id": "P1",
+            "subject": "Aya_and_Mert",
+            "action": "LIFT_TOGETHER",
+            "target": "mosaic_panel"
+          },
+          "after": {
+            "event_id": "S03-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "RELEASE",
+            "target": "yard_gate"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "S04",
+      "obligations": [
+        {
+          "id": "S04-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Carry the panel through the declared wide gate without teleporting or bypassing the route.",
+          "required_predicates": [
+            {
+              "event_id": "S04-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "covered_yard"
+            },
+            {
+              "event_id": "S04-E04",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            }
+          ]
+        },
+        {
+          "id": "S04-objective",
+          "source_field": "objective",
+          "source_text": "Aya, Mert and the same panel move from the workshop through the wide gate into the covered yard; their shared hold stays stable.",
+          "required_predicates": [
+            {
+              "event_id": "S04-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "covered_yard"
+            },
+            {
+              "event_id": "S04-E04",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S04-E04",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_MATCH_PACE_shared_panel_carry"
+            }
+          ]
+        },
+        {
+          "id": "S04-turn",
+          "source_field": "turn",
+          "source_text": "Aya matches Mert\u2019s pace rather than trying to lead alone.",
+          "required_predicates": [
+            {
+              "event_id": "S04-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "covered_yard"
+            },
+            {
+              "event_id": "S04-E04",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S04-E01",
+            "predicate_id": "P1",
+            "subject": "shared_panel_carry",
+            "action": "JOINT_MOVE",
+            "target": "covered_yard"
+          },
+          "after": {
+            "event_id": "S04-E04",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "MATCH_PACE",
+            "target": "shared_panel_carry"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "S05",
+      "obligations": [
+        {
+          "id": "S05-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Sustain cooperation along the covered ramp while weather and object constraints persist.",
+          "required_predicates": [
+            {
+              "event_id": "S05-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_SLOWER_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E03",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "gallery_entry"
+            }
+          ]
+        },
+        {
+          "id": "S05-objective",
+          "source_field": "objective",
+          "source_text": "Aya, Mert and the same panel traverse the level covered ramp from covered yard to gallery entry; no stairs or uncovered shortcut is used.",
+          "required_predicates": [
+            {
+              "event_id": "S05-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_SLOWER_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E01",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ASK_SLOWER_PACE_shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E02",
+              "predicate_id": "P2",
+              "subject": "Aya",
+              "action": "OBSERVE",
+              "target": "Mert_MATCH_PACE_shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E03",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "gallery_entry"
+            }
+          ]
+        },
+        {
+          "id": "S05-turn",
+          "source_field": "turn",
+          "source_text": "Aya requests a slower shared pace and Mert responds.",
+          "required_predicates": [
+            {
+              "event_id": "S05-E01",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ASK_SLOWER_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E02",
+              "predicate_id": "P1",
+              "subject": "Mert",
+              "action": "MATCH_PACE",
+              "target": "shared_panel_carry"
+            },
+            {
+              "event_id": "S05-E03",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "gallery_entry"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S05-E01",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "ASK_SLOWER_PACE",
+            "target": "shared_panel_carry"
+          },
+          "after": {
+            "event_id": "S05-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "MATCH_PACE",
+            "target": "shared_panel_carry"
+          }
+        },
+        {
+          "before": {
+            "event_id": "S05-E02",
+            "predicate_id": "P1",
+            "subject": "Mert",
+            "action": "MATCH_PACE",
+            "target": "shared_panel_carry"
+          },
+          "after": {
+            "event_id": "S05-E03",
+            "predicate_id": "P1",
+            "subject": "shared_panel_carry",
+            "action": "JOINT_MOVE",
+            "target": "gallery_entry"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "S06",
+      "obligations": [
+        {
+          "id": "S06-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Finish the complete delivery and earned cooperation arc without resetting weather.",
+          "required_predicates": [
+            {
+              "event_id": "S06-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "display_alcove"
+            },
+            {
+              "event_id": "S06-E04",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "PLACE_ON_MOUNT",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S06-E05",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE_HELP",
+              "target": "Mert_cooperation"
+            }
+          ]
+        },
+        {
+          "id": "S06-objective",
+          "source_field": "objective",
+          "source_text": "Aya, Mert and the same panel pass the open gallery door into the display alcove, place the panel on the existing fixed mount intact, and Aya acknowledges Mert\u2019s help.",
+          "required_predicates": [
+            {
+              "event_id": "S06-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "display_alcove"
+            },
+            {
+              "event_id": "S06-E04",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "PLACE_ON_MOUNT",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S06-E05",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE_HELP",
+              "target": "Mert_cooperation"
+            },
+            {
+              "event_id": "S06-E05",
+              "predicate_id": "P2",
+              "subject": "Mert",
+              "action": "OBSERVE",
+              "target": "Aya_ACKNOWLEDGE_HELP_Mert_cooperation"
+            }
+          ]
+        },
+        {
+          "id": "S06-turn",
+          "source_field": "turn",
+          "source_text": "Aya credits their careful cooperation; the delivery thread closes without instant best-friend intimacy.",
+          "required_predicates": [
+            {
+              "event_id": "S06-E01",
+              "predicate_id": "P1",
+              "subject": "shared_panel_carry",
+              "action": "JOINT_MOVE",
+              "target": "display_alcove"
+            },
+            {
+              "event_id": "S06-E04",
+              "predicate_id": "P1",
+              "subject": "Aya_and_Mert",
+              "action": "PLACE_ON_MOUNT",
+              "target": "mosaic_panel"
+            },
+            {
+              "event_id": "S06-E05",
+              "predicate_id": "P1",
+              "subject": "Aya",
+              "action": "ACKNOWLEDGE_HELP",
+              "target": "Mert_cooperation"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "S06-E01",
+            "predicate_id": "P1",
+            "subject": "shared_panel_carry",
+            "action": "JOINT_MOVE",
+            "target": "display_alcove"
+          },
+          "after": {
+            "event_id": "S06-E04",
+            "predicate_id": "P1",
+            "subject": "Aya_and_Mert",
+            "action": "PLACE_ON_MOUNT",
+            "target": "mosaic_panel"
+          }
+        },
+        {
+          "before": {
+            "event_id": "S06-E04",
+            "predicate_id": "P1",
+            "subject": "Aya_and_Mert",
+            "action": "PLACE_ON_MOUNT",
+            "target": "mosaic_panel"
+          },
+          "after": {
+            "event_id": "S06-E05",
+            "predicate_id": "P1",
+            "subject": "Aya",
+            "action": "ACKNOWLEDGE_HELP",
+            "target": "Mert_cooperation"
+          }
+        }
+      ]
+    }
+  ],
+  "topology": {
+    "schema_name": "spineforge-relay.spatial-topology.v1",
+    "locations": [
+      "workshop",
+      "covered_yard",
+      "gallery_entry",
+      "display_alcove"
+    ],
+    "edges": [
+      {
+        "id": "yard_gate",
+        "source": "workshop",
+        "destination": "covered_yard",
+        "passage": "wide_workshop_gate",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      },
+      {
+        "id": "covered_ramp",
+        "source": "covered_yard",
+        "destination": "gallery_entry",
+        "passage": "level_covered_ramp",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      },
+      {
+        "id": "gallery_door",
+        "source": "gallery_entry",
+        "destination": "display_alcove",
+        "passage": "wide_open_gallery_door",
+        "bidirectional": true,
+        "allowed_entities": [
+          "Aya",
+          "Mert",
+          "mosaic_panel"
+        ]
+      }
+    ],
+    "position_state_paths": {
+      "Aya": "/characters/Aya/location",
+      "Mert": "/characters/Mert/location",
+      "mosaic_panel": "/objects/mosaic_panel/location"
+    }
+  },
+  "spatial_plans": [
+    {
+      "scene_id": "S01",
+      "operations": [],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "workshop",
+          "Mert": "workshop",
+          "mosaic_panel": "workshop"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "scene_id": "S02",
+      "operations": [],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "workshop",
+          "Mert": "workshop",
+          "mosaic_panel": "workshop"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": true
+          }
+        ]
+      }
+    },
+    {
+      "scene_id": "S03",
+      "operations": [
+        {
+          "id": "S03-RELEASE",
+          "kind": "RELEASE",
+          "subject": "Mert",
+          "target": "yard_gate",
+          "event_id": "S03-E02",
+          "predicate_id": "P1",
+          "constraint_id": "safe_carry_gate"
+        }
+      ],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "workshop",
+          "Mert": "workshop",
+          "mosaic_panel": "workshop"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "scene_id": "S04",
+      "operations": [
+        {
+          "id": "S04-JOINT",
+          "kind": "JOINT_MOVE",
+          "subject": "shared_panel_carry",
+          "target": "covered_yard",
+          "event_id": "S04-E01",
+          "predicate_id": "P1",
+          "edge_id": "yard_gate"
+        }
+      ],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "covered_yard",
+          "Mert": "covered_yard",
+          "mosaic_panel": "covered_yard"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "scene_id": "S05",
+      "operations": [
+        {
+          "id": "S05-JOINT",
+          "kind": "JOINT_MOVE",
+          "subject": "shared_panel_carry",
+          "target": "gallery_entry",
+          "event_id": "S05-E03",
+          "predicate_id": "P1",
+          "edge_id": "covered_ramp"
+        }
+      ],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "gallery_entry",
+          "Mert": "gallery_entry",
+          "mosaic_panel": "gallery_entry"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": false
+          }
+        ]
+      }
+    },
+    {
+      "scene_id": "S06",
+      "operations": [
+        {
+          "id": "S06-JOINT",
+          "kind": "JOINT_MOVE",
+          "subject": "shared_panel_carry",
+          "target": "display_alcove",
+          "event_id": "S06-E01",
+          "predicate_id": "P1",
+          "edge_id": "gallery_door"
+        }
+      ],
+      "expected_exit": {
+        "topology_sha256": "d5ab767ea856798693a870180427e9c7d5756e157a0659e23361c9442bbd6772",
+        "positions": {
+          "Aya": "display_alcove",
+          "Mert": "display_alcove",
+          "mosaic_panel": "display_alcove"
+        },
+        "access_constraints": [
+          {
+            "id": "safe_carry_gate",
+            "blocker": "Mert",
+            "subject": "Aya",
+            "target": "yard_gate",
+            "active": false
+          }
+        ]
+      }
+    }
+  ],
+  "carry_groups": [
+    {
+      "id": "shared_panel_carry",
+      "carriers": [
+        "Aya",
+        "Mert"
+      ],
+      "carried_object": "mosaic_panel",
+      "carried_by_state_pointer": "/objects/mosaic_panel/state/carried_by"
+    }
+  ]
+}

@@ -232,6 +232,21 @@ profiles:
             mode: omit
           stream:
             mode: omit
+        spineforge_relay_v1_scene_writer:
+          reasoning:
+            mode: provider_managed_required
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: send
+          max_tokens:
+            mode: send
+            cap: 5000
+          seed:
+            mode: omit
+          stream:
+            mode: omit
 
   - model_id: openai/gpt-5.6-luna
     display_name: GPT-5.6 Luna
@@ -553,6 +568,22 @@ profiles:
           stream:
             mode: omit
 
+        spineforge_relay_v1_scene_writer_sol:
+          structured_output: provider_default
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 4000
+          seed:
+            mode: omit
+          stream:
+            mode: omit
         spineforge_v20_story_audit:
           structured_output: provider_default
           reasoning:
@@ -720,6 +751,41 @@ profiles:
           max_tokens:
             mode: send
             cap: 3500
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        spineforge_relay_v1_q5t_guard:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 5000
+          provider_routing:
+            allow_fallbacks: false
+            require_parameters: true
+          seed:
+            mode: omit
+          stream:
+            mode: omit
+        spineforge_relay_v1_scene_guard:
+          structured_output: json_object
+          reasoning:
+            mode: client_configurable
+            request:
+              effort: low
+              exclude: true
+          temperature:
+            mode: omit
+          max_tokens:
+            mode: send
+            cap: 2500
           seed:
             mode: omit
           stream:

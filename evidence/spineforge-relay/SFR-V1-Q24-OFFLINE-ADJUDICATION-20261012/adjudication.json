@@ -1,0 +1,207 @@
+{
+  "status": "OFFLINE_REVIEW_DRAFT",
+  "reviewer": "Codex",
+  "independent_human_adjudication": false,
+  "semantic_golden_label": false,
+  "model_accuracy_metric": false,
+  "actual_provider_calls": 0,
+  "actual_cost_usd": 0,
+  "qualification_rejection_unchanged": true,
+  "findings": [
+    {
+      "id": "A1-F1",
+      "attempt": 1,
+      "classification": "EDITORIAL_SUGGESTION",
+      "assessment": "İlk aramada fiziksel ayracı arayıp notu okumamak mümkündür. Açıklama önerisi yararlı; mantıksal imkânsızlık kanıtlanmıyor. R0236 aramayı göstermiyor.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "The story gives an illogical account of how the notebook entry was found. Nisa had already said she did not remember where she last saw the bookmark, and Eren then said the 'dünkü satır' entry was a note. The notebook was initially open on the table, and the scene earlier states Nisa and Eren had leafed through it without finding the bookmark. The prose does not explain why the entry was missed, which weakens the earned discovery.",
+        "repair_instruction": "Dramatize the first notebook search so they looked for the bookmark itself, not for a written note. Then have Eren's question direct them to read yesterday's entry, so the discovery of the entry is earned.",
+        "source_range_id": "R0236",
+        "exact_text": "\"En son sen kullanmıştın...\"\n\n\"Kullanmak bir şey, almak başka bir şey,\" dedi Cem; sesi incinmişti. \"Ödünç aldığım kitaplara her zaman dikkat ederim, biliyorsun. Demek beni hırsız sanıyorsun.\"\n\nEren, ikisinin arasına girdi."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "İkisi de defteri ve kitapları tek tek karıştırdı.",
+          "start": 435,
+          "end": 484
+        }
+      ]
+    },
+    {
+      "id": "A1-F2",
+      "attempt": 1,
+      "classification": "VALID_CONTINUITY_CONCERN",
+      "assessment": "Nisa atlası iade rafına bıraktığını hatırlıyor; donmuş kanonda iade eden Cem. Aradaki hareket açıklanmıyor. İlk metinde gerçek süreklilik açığı var; R0357 yalnız iade kaydını gösteriyor, Nisa hatırasını göstermiyor.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "Early in the story Nisa and Eren check for the bookmark at the reading table and nearby, but the story never establishes when or why the atlas was placed on the returned books shelf. The prose states that Nisa put the atlas on the return shelf, yet the return log says Cem returned it. This is contradictory: the atlas was returned by Cem, but Nisa's memory says she closed it and left it on the return shelf.",
+        "repair_instruction": "Fix the memory: Nisa placed the bookmark in the atlas and left it on the table or in the book stack. Cem then used it and returned it to the shelf without noticing the bookmark inside. Keep the return log consistent with this.",
+        "source_range_id": "R0357",
+        "exact_text": "Sayfaları birlikte açtılar. Dünkü satırda şunu gördüler: \"Mavi Atlas — Cem — dün iade edildi.\"\n\n\"Cem doğru söylemiş,\" dedi Eren. \"Atlası gerçekten dün iade etmiş.\"\n\nNisa deftere, sonra Cem'e baktı. \"Ama ayracım hâlâ yok.\""
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "sonra atlası kapatıp iade rafına bırakmıştı.",
+          "start": 2754,
+          "end": 2798
+        }
+      ]
+    },
+    {
+      "id": "A1-F3",
+      "attempt": 1,
+      "classification": "MIXED_STYLE_AND_SUBJECTIVE_CONSTRAINT",
+      "assessment": "Doğrudan ders cümlesi üslup tercihidir. Artık tamam ifadesi donmuş without instant intimacy yükümlülüğü açısından tartışılabilir; anında yakınlık ile özrü kabul etmek aynı şey değildir. Bu kısıt özgün kullanıcı özetinde değil, deney seed yükümlülüğünde eklenmiş.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "The ending narrates a moral lesson directly ('öğrendiler') and a generic closing line about friendship. Cem's forgiveness is also immediate ('Artık tamam'), which conflicts with the 'without instant intimacy' obligation.",
+        "repair_instruction": "Remove the stated lesson. Show Cem's reconciliation as partial and gradual, for example he accepts the apology but stays a little reserved, then a small gesture such as offering to help shows warmth returning. Do not state that the friendship is fully restored.",
+        "source_range_id": "R0743",
+        "exact_text": "Ben de özür dilerim.\"\n\nCem, bir süre sustu. \"İncindim,\" dedi sonunda, dürüstçe. \"Ama ayracı bulduğunuza sevindim. Artık tamam.\"\n\nÜçü, okuma masasına döndüler. Etkinlik başlamak üzereydi. Nisa, kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "Artık tamam.",
+          "start": 3905,
+          "end": 3917
+        },
+        {
+          "exact_text": "kendi hatalarıyla yüzleşerek öğrendiler.",
+          "start": 4187,
+          "end": 4227
+        }
+      ]
+    },
+    {
+      "id": "A1-F4",
+      "attempt": 1,
+      "classification": "MIXED_VALID_STATE_ERROR_AND_FALSE_SUBCLAIMS",
+      "assessment": "Ayraç son kitapta fakat container blue_atlas: gerçek state hatası. Son atlas konumu açık değil. Cem, Çünkü ben koymuştum ve unutmuştum sözünü doğrudan duyuyor: bilgi edinmedi itirazı yanlış. Nisa/Eren → Cem güvenini, Cem’in incinmişliğiyle karıştırmak ilişki yönü hatasıdır; masumiyetin kanıtlanması onların güvenini artırabilir.",
+      "original_finding": {
+        "category": "STATE_EXTRACTION",
+        "reason": "The final placement of the bookmark is not extracted and some values are unsupported. The bookmark is taken out of the atlas and placed into the book Nisa will read, but its container is left as blue_atlas. The prose also never states that Nisa holds it in inventory at the end. Trust values for Cem are set to 'good' even though Cem is still hurt, and Cem's knowledge claim that the bookmark was placed by Nisa is not directly shown as told to him. The atlas is also left on the shelf although Nisa took it to open it.",
+        "repair_instruction": "Update red_bookmark container to the reading book (or null), and make the atlas location/stored_at consistent with the prose. Set Nisa/Eren trust toward Cem to a value consistent with the lingering hurt, or flag it as uncertain. Make sure Cem's knowledge matches what is actually stated to him in the apology.",
+        "source_range_id": "R0743",
+        "exact_text": "Ben de özür dilerim.\"\n\nCem, bir süre sustu. \"İncindim,\" dedi sonunda, dürüstçe. \"Ama ayracı bulduğunuza sevindim. Artık tamam.\"\n\nÜçü, okuma masasına döndüler. Etkinlik başlamak üzereydi. Nisa, kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "Çünkü ben koymuştum ve unutmuştum.",
+          "start": 3583,
+          "end": 3617
+        },
+        {
+          "exact_text": "Nisa, kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi.",
+          "start": 3978,
+          "end": 4045
+        }
+      ]
+    },
+    {
+      "id": "A2-F1",
+      "attempt": 2,
+      "classification": "REPAIR_CRITERIA_DRIFT",
+      "assessment": "İlk kontrol leave it on the table or in the book stack önerdi. İkinci metin bu öneriyi izliyor. Son kontrol aynı ayrıntıyı invented unsupported detail diye reddediyor. Yeni belirleyici ipucu icat edilmiyor; hafıza not okunduktan sonra geliyor. Yığından Cem’e geçiş anlatıcı tarafından açıkça anlatılıyor. R0343 hatıra bölümünü göstermiyor.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "The notebook is searched for the bookmark as a red leaf, but the entry is only read later. That is acceptable. The real problem is that the first scene has Nisa say she saw the bookmark \"yesterday\" and the prose already says the atlas was last used by Cem. In scene 4 Nisa \"remembers\" placing the bookmark and then closing the atlas and leaving it on the book pile. This is an invented, unsupported detail (marking pages, leaving the atlas on a pile) beyond the established notebook entry. It is also unclear how the atlas then reached Cem, and this is stated as fact (\"Cem atlası almış, kullanmış\") that no one has verified.",
+        "repair_instruction": "Remove the invented memory details about marking pages and leaving the atlas on a pile. Let Nisa only recognise her own handwriting and conclude the bookmark must be in the atlas. Make the return-log entry plus the notebook entry the basis for reasoning that Cem returned the atlas with the bookmark inside.",
+        "source_range_id": "R0343",
+        "exact_text": "İçinde küçük bir ses, \"Ya yanılıyorsam?\" diye fısıldadı. \"Bilmiyorum... Masanın yakınındaydı sanıyorum. Ama tam olarak ne zaman, hatırlamıyorum.\"\n\n\"Demek emin değiliz,\" dedi Eren. \"O zaman suçlamayalım. Elimizde ne varsa tek tek bakalım.\""
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "sonra atlası kapatıp kitap yığınının üstüne bırakmıştı.",
+          "start": 3241,
+          "end": 3296
+        },
+        {
+          "exact_text": "Sonra Cem atlası almış, kullanmış ve iade rafına geri koymuştu — ayraç hâlâ içindeyken.",
+          "start": 3316,
+          "end": 3403
+        }
+      ]
+    },
+    {
+      "id": "A2-F2",
+      "attempt": 2,
+      "classification": "SUBJECTIVE_NOT_PROVEN_BLOCKER",
+      "assessment": "Cem önce incindiğini söylüyor, susuyor ve duraksıyor; sonra etkinliğe katılıyor. Oturmak tek başına instant intimacy kanıtı değildir. Masumiyetin söylenmesinden sonra özür dilemekte nesnel sıra hatası yok; rapor Kanıtım olmadan sözünü yanlışlıkla sahne 5’e yerleştiriyor, söz sahne 6’da.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "The apology rests on a premise Nisa herself states in scene 5 (\"Kanıtım olmadan\"), but the ordering is weak: in scene 5 Nisa tells Cem he is blameless, and in scene 6 she apologises. Also, the apology scene has Cem moving to sit by Nisa right after saying he was hurt, which is quick and borders on instant intimacy. The request asks for no instant intimacy.",
+        "repair_instruction": "Let Cem keep a little reserve: he accepts the apology but still needs a moment. Give a small, concrete gesture of rebuilding trust (for example, Nisa asking him to help with the activity) instead of an immediate warm seat-taking and friendly chatter.",
+        "source_range_id": "R0951",
+        "exact_text": "Bir an duraksadı. Sonra, masaya doğru yürüdü ve Nisa'nın yanına oturdu. \"Etkinlik için hangi kitabı okuyacaksın?\" diye sordu.\n\nNisa gülümsedi. Kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi. \"Bu kitabı,\" dedi.\n\nCem, kendi kitabını aldı ve açtı."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "Cem, bir süre sustu.",
+          "start": 4533,
+          "end": 4553
+        },
+        {
+          "exact_text": "Bir an duraksadı.",
+          "start": 4626,
+          "end": 4643
+        },
+        {
+          "exact_text": "Cem... Kanıtım olmadan seni suçladım.",
+          "start": 4354,
+          "end": 4391
+        }
+      ]
+    },
+    {
+      "id": "A2-F3",
+      "attempt": 2,
+      "classification": "FALSE_PROSE_AMBIGUITY",
+      "assessment": "Metin ayracı çıkarıp avucunda tuttuğunu, atlası rafa geri koyduğunu ve ayracı okuyacağı kitaba yerleştirdiğini açıkça söylüyor. Ucun dışarıda kalması kitap içinde bulunmayı çelişkili yapmaz. Hangi kanonik kitap olduğu ayrı bir state kimliği problemidir.",
+      "original_finding": {
+        "category": "PROSE",
+        "reason": "The ending is ambiguous about where the bookmark finally is. Nisa places it in the book she will read, yet she also left its tip outside. The earlier passage says she took it \"avucunda\" and put the atlas back, but never says she took it out of the atlas for good, so the final location and container are unclear.",
+        "repair_instruction": "State clearly that Nisa removes the bookmark from the atlas and keeps it, and that in the last scene she puts it into the book she will read at the activity. Keep the atlas on the returned-books shelf with nothing inside.",
+        "source_range_id": "R0951",
+        "exact_text": "Bir an duraksadı. Sonra, masaya doğru yürüdü ve Nisa'nın yanına oturdu. \"Etkinlik için hangi kitabı okuyacaksın?\" diye sordu.\n\nNisa gülümsedi. Kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi. \"Bu kitabı,\" dedi.\n\nCem, kendi kitabını aldı ve açtı."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "Nisa, ayracı çıkarıp avucunda tuttu.",
+          "start": 4085,
+          "end": 4121
+        },
+        {
+          "exact_text": "Atlası dikkatlice rafa geri yerleştirdi.",
+          "start": 4276,
+          "end": 4316
+        },
+        {
+          "exact_text": "Kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi.",
+          "start": 4769,
+          "end": 4830
+        }
+      ]
+    },
+    {
+      "id": "A2-F4",
+      "attempt": 2,
+      "classification": "VALID_STATE_AND_CITATION_ERROR_WITH_OVERREACH",
+      "assessment": "State container null ve inventory elde ayraç; terminal metin kitap içinde ayraç. Bunlar tam uyuşmuyor. Birçok çıkarım yanlış aralıkları kanıt diye gösteriyor. R0535 kurtarma yerine defter aramasını gösteriyor. Cem bilgi/duygu değerlerinin yalnız açık sözle kurulabileceği şartı aşırı katıdır; davranış da kanıt olabilir. State kesinliğini aşan çıkarımlar ayrıca işaretlenmelidir.",
+      "original_finding": {
+        "category": "STATE_EXTRACTION",
+        "reason": "The extraction cites R0951 for many unrelated changes and uses a range that does not match the evidence, such as the bookmark leaving the atlas (the right evidence is the scene 5 passage). The Nisa inventory entry also conflicts with the ending, where the bookmark is placed inside her reading book. The extractor itself reports uncertainty about this, so there is no clean final state for the bookmark.",
+        "repair_instruction": "After the prose repair, re-extract with exact ranges for each change. Cite the scene 5 passage for the bookmark leaving the atlas, and record the bookmark's final location and container consistently with the ending (inside Nisa's reading book, not in the atlas), with inventory and contents agreeing. Do not add the Cem knowledge items or emotion labels unless the prose states them.",
+        "source_range_id": "R0535",
+        "exact_text": "Ben de senin şüphene sorgulamadan katıldım. Az önce defterde ayraç diye bir şey aradık ama notları okumadık. Hazırlık defterinde dünden bir kayıt kalmış mıdır?\"\n\n**4.**\n\nNisa'nın yüzü kızardı. Kendi defterini açmak, \"Cem yaptı\" demekten çok daha zordu; çünkü yanılıyor olabilirdi ve bu, hem Cem'den hem de kendisinden özür dilemek anlamına gelirdi. Ama etkinliğe yarım saat vardı ve tahminler hiçbir yere götürmüyordu. Derin bir nefes aldı."
+      },
+      "verified_story_evidence": [
+        {
+          "exact_text": "Kırmızı ayracı okuyacağı kitabın doğru sayfasına yerleştirdi.",
+          "start": 4769,
+          "end": 4830
+        }
+      ]
+    }
+  ]
+}

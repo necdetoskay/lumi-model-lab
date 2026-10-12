@@ -1,0 +1,98 @@
+name: SFR v1 Isolated Zero-Cost Gate
+on:
+  push:
+    branches: [experiment/spineforge-relay-v1]
+    paths:
+      - 'src/spineforge_production*.py'
+      - 'prompts/spineforge_production*.md'
+      - 'scripts/spineforge_production_replay.py'
+      - 'scripts/spineforge_production_range_replay.py'
+      - 'scripts/spineforge_production_compact_range_replay.py'
+      - 'scripts/spineforge_production_range_budget_audit.py'
+      - 'scripts/spineforge_production_failure_audit.py'
+      - 'scripts/spineforge_production_truncation_audit.py'
+      - 'scripts/spineforge_production_plan_failure_audit.py'
+      - 'scripts/spineforge_production_review_failure_audit.py'
+      - 'tests/fixtures/production_pipeline_v1/**'
+      - 'src/spineforge_seeded_design.py'
+      - 'prompts/spineforge_seeded_design.md'
+      - 'scripts/spineforge_compare_seed_state.py'
+      - 'tests/fixtures/story_scenarios_v1/**'
+      - 'src/spineforge_story_design.py'
+      - 'prompts/spineforge_story_design.md'
+      - 'tests/fixtures/story_design_v1/**'
+      - 'src/spineforge_source_spans.py'
+      - 'src/spineforge_span_*.py'
+      - 'prompts/spineforge_span_*.md'
+      - 'tests/fixtures/spineforge_relay_v1/q12_*.json'
+      - '.github/workflows/spineforge-relay-v1-span-reserved-paid.yml'
+      - 'src/spineforge_joint_*.py'
+      - 'prompts/spineforge_joint_*.md'
+      - 'tests/fixtures/spineforge_relay_v1/q11_*.json'
+      - '.github/workflows/spineforge-relay-v1-joint-reserved-paid.yml'
+      - 'scripts/spineforge_relay_story_replay.py'
+      - '.github/workflows/spineforge-relay-v1-spatial-reserved-paid.yml'
+      - 'src/spineforge_spatial_*.py'
+      - 'tests/fixtures/spineforge_relay_v1/q10_*.json'
+      - 'src/spineforge_relay_v1_runner.py'
+      - 'tests/fixtures/spineforge_relay_v1/q9_*.json'
+      - 'src/spineforge_relay_v1_lease_context.py'
+      - 'src/spineforge_relay_v1_source_archives.py'
+      - 'src/spineforge_v19_transport.py'
+      - 'tests/test_spineforge_relay_v1_*.py'
+      - 'src/spineforge_relay_v1_reservations.py'
+      - 'src/spineforge_relay_v1_paid_entry.py'
+      - 'tests/test_spineforge_relay_v1_reservations.py'
+      - 'src/spineforge_relay_v1_q7c.py'
+      - 'tests/test_spineforge_relay_v1_q7c.py'
+      - 'src/spineforge_relay_v1_q7d*.py'
+      - 'src/spineforge_relay_v1_q7e*.py'
+      - 'src/spineforge_relay_v1_coverage.py'
+      - 'tests/test_spineforge_relay_v1_coverage.py'
+      - 'tests/fixtures/spineforge_relay_v1/q7e_plan_coverage_chain.json'
+      - 'prompts/spineforge_relay_v1_coverage_*.md'
+      - 'src/spineforge_relay_v1_spatial.py'
+      - 'tests/test_spineforge_relay_v1_q7d.py'
+      - 'tests/test_spineforge_relay_v1_spatial.py'
+      - 'tests/fixtures/spineforge_relay_v1/q7d_spatial_chain.json'
+      - 'prompts/spineforge_relay_v1_spatial_*.md'
+      - '.github/workflows/spineforge-relay-v1-q7c-zero-cost.yml'
+permissions:
+  contents: read
+jobs:
+  q7c-zero-cost:
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      HEAD_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout exact head without external action
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --depth=1 origin "${HEAD_SHA}"
+          git checkout --detach FETCH_HEAD
+          git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Create isolated Python environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv --without-pip "${RUNNER_TEMP}/q7c-venv"
+          curl -fsSL https://bootstrap.pypa.io/get-pip.py -o "${RUNNER_TEMP}/q7c-get-pip.py"
+          "${RUNNER_TEMP}/q7c-venv/bin/python" "${RUNNER_TEMP}/q7c-get-pip.py"
+          "${RUNNER_TEMP}/q7c-venv/bin/python" -m pip install -r requirements.txt pytest
+      - name: SFR-v1 zero-cost qualification
+        shell: bash
+        run: '"${RUNNER_TEMP}/q7c-venv/bin/python" -m pytest -q tests/test_spineforge_relay_v1_*.py --junitxml="${RUNNER_TEMP}/sfr-zero-cost.xml"'
+      - name: Preserve zero-cost CI diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sfr-reservation-zero-cost-${{ github.run_id }}
+          path: ${{ runner.temp }}/sfr-zero-cost.xml
+          if-no-files-found: warn
+          retention-days: 90

@@ -1,0 +1,754 @@
+{
+  "schema": "spineforge-relay.repeatability-fixture.v2",
+  "story_id": "q9-greenhouse-complete-coverage",
+  "story_intent": {
+    "reader_age": 12,
+    "language": "en",
+    "tone": [
+      "adventurous",
+      "grounded",
+      "warm"
+    ],
+    "premise": "A gust blows Selin's field notebook into the school greenhouse, forcing her to accept Bora's practical help to recover it before the rain worsens.",
+    "character_arc": "Selin begins determined to handle the problem alone and ends willing to acknowledge Bora's useful help.",
+    "scene_role": "Short grounded cooperation story with object and location continuity."
+  },
+  "route": [
+    "A1",
+    "A2"
+  ],
+  "initial_state": {
+    "revision": 0,
+    "characters": {
+      "Selin": {
+        "location": "school_courtyard",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {
+          "jacket": true
+        },
+        "knowledge": [],
+        "relationships": {
+          "Bora": {
+            "familiarity": "classmate",
+            "trust": "low"
+          }
+        }
+      },
+      "Bora": {
+        "location": "school_courtyard",
+        "condition": {
+          "health": "good",
+          "mobility": "normal"
+        },
+        "inventory": {},
+        "knowledge": [
+          "greenhouse_side_path"
+        ],
+        "relationships": {
+          "Selin": {
+            "familiarity": "classmate",
+            "trust": "low"
+          }
+        }
+      }
+    },
+    "world": {
+      "weather": "windy_rain_approaching",
+      "greenhouse_door": "open",
+      "greenhouse_side_path": "clear"
+    },
+    "objects": {
+      "notebook": {
+        "owner": "Selin",
+        "location": "Selin_hands",
+        "state": {
+          "paper": true,
+          "important": true
+        }
+      }
+    },
+    "open_threads": [
+      "recover_notebook"
+    ],
+    "resolved_threads": [],
+    "completed_spine_beats": [],
+    "next_spine_beat": "A1",
+    "narrative_obligations": [
+      {
+        "id": "selin_bora_trust",
+        "detail": "Selin must acknowledge Bora's help through action, not instant intimacy.",
+        "status": "OPEN",
+        "target_scene_id": "A2"
+      },
+      {
+        "id": "notebook_return",
+        "detail": "The same notebook must return to Selin by the end.",
+        "status": "OPEN",
+        "target_scene_id": "A2"
+      }
+    ]
+  },
+  "relevant_character_canon": {
+    "Selin": {
+      "age": 12,
+      "identity": "girl",
+      "pronouns": [
+        "she",
+        "her"
+      ]
+    },
+    "Bora": {
+      "age": 12,
+      "identity": "boy",
+      "pronouns": [
+        "he",
+        "him"
+      ]
+    }
+  },
+  "prop_authorization_policy": {
+    "authorized_actionable_props": [
+      "notebook",
+      "Selin_jacket"
+    ],
+    "rule": "Any newly materialized portable or action-capable physical prop not authorized by StoryState, SceneContract, immutable canon, or this list is BLOCKING. Fixed structural features explicitly required by the contract are allowed."
+  },
+  "scene_plans": [
+    {
+      "scene_id": "A1",
+      "spine_beats": [
+        "A1"
+      ],
+      "next_spine_beat": "A2",
+      "narrative_purpose": "Move the notebook into the greenhouse and establish Bora's useful route knowledge without resolving the problem.",
+      "location": "school_courtyard_to_greenhouse",
+      "objective": "The wind carries Selin's notebook into the greenhouse; Bora guides the side path; both reach the greenhouse entry.",
+      "turn": "Selin reluctantly follows Bora because his route knowledge is useful.",
+      "required_events": [
+        {
+          "id": "A1-E01",
+          "actor": "wind",
+          "action": "CARRY",
+          "target": "notebook_to_greenhouse_floor",
+          "required_observer": "Selin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "wind",
+              "action": "CARRY",
+              "target": "notebook_to_greenhouse_floor"
+            },
+            {
+              "id": "P2",
+              "subject": "Selin",
+              "action": "OBSERVE",
+              "target": "notebook_on_greenhouse_floor"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "magic",
+            "new_tool"
+          ],
+          "resulting_state": {
+            "/objects/notebook/location": "greenhouse_floor"
+          }
+        },
+        {
+          "id": "A1-E02",
+          "actor": "Bora",
+          "action": "GUIDE_ROUTE",
+          "target": "greenhouse_side_path",
+          "required_observer": "Selin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "EITHER",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Bora",
+              "action": "GUIDE_ROUTE",
+              "target": "greenhouse_side_path"
+            },
+            {
+              "id": "P2",
+              "subject": "Selin",
+              "action": "ACKNOWLEDGE",
+              "target": "greenhouse_side_path"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION",
+            "STORY_STATE_KNOWLEDGE"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "secret_route",
+            "vehicle"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "A1-E03",
+          "actor": "Selin_and_Bora",
+          "action": "MOVE_TO",
+          "target": "greenhouse_entry",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Selin_and_Bora",
+              "action": "MOVE_TO",
+              "target": "greenhouse_entry"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "vehicle",
+            "new_gear"
+          ],
+          "resulting_state": {
+            "/characters/Selin/location": "greenhouse_entry",
+            "/characters/Bora/location": "greenhouse_entry"
+          }
+        }
+      ],
+      "entry_state": {
+        "/characters/Selin/location": "school_courtyard",
+        "/characters/Bora/location": "school_courtyard",
+        "/objects/notebook/location": "Selin_hands"
+      },
+      "required_exit_state": {
+        "/characters/Selin/location": "greenhouse_entry",
+        "/characters/Bora/location": "greenhouse_entry",
+        "/objects/notebook/location": "greenhouse_floor"
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The notebook is Selin's same paper field notebook.",
+        "Bora already knows the greenhouse side path.",
+        "The greenhouse door is open.",
+        "No one has special equipment."
+      ],
+      "forbidden": [
+        "Do not recover the notebook yet.",
+        "Do not introduce keys, ladders, tools, umbrellas, phones, bags, or adult rescue.",
+        "Do not make Selin and Bora suddenly close friends.",
+        "Do not use magic."
+      ],
+      "emotional_transition": {
+        "from": "Selin wants to solve the problem alone",
+        "to": "Selin reluctantly accepts Bora's route help"
+      },
+      "target_words_min": 170,
+      "target_words_max": 280
+    },
+    {
+      "scene_id": "A2",
+      "spine_beats": [
+        "A2"
+      ],
+      "next_spine_beat": null,
+      "narrative_purpose": "Recover the notebook through simple cooperation and close the thread without adding equipment.",
+      "location": "greenhouse_to_school_courtyard",
+      "objective": "Selin asks for help, Bora assists, Selin recovers the same notebook, and they return to the courtyard with earned initial trust.",
+      "turn": "Selin openly acknowledges that accepting help was useful.",
+      "required_events": [
+        {
+          "id": "A2-E01",
+          "actor": "Selin",
+          "action": "ASK_HELP",
+          "target": "notebook_recovery",
+          "required_observer": "Bora",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Selin",
+              "action": "ASK_HELP",
+              "target": "notebook_recovery"
+            },
+            {
+              "id": "P2",
+              "subject": "Bora",
+              "action": "OBSERVE",
+              "target": "Selin_asking_for_help"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "new_tool",
+            "adult_rescuer"
+          ],
+          "resulting_state": {}
+        },
+        {
+          "id": "A2-E02",
+          "actor": "Bora",
+          "action": "ASSIST",
+          "target": "notebook_recovery",
+          "required_observer": "Selin",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Bora",
+              "action": "ASSIST",
+              "target": "notebook_recovery"
+            },
+            {
+              "id": "P2",
+              "subject": "Selin",
+              "action": "ACKNOWLEDGE",
+              "target": "Bora_assistance"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "tool",
+            "container"
+          ],
+          "resulting_state": {
+            "/characters/Selin/relationships/Bora/trust": "earned_initial",
+            "/characters/Bora/relationships/Selin/trust": "earned_initial"
+          }
+        },
+        {
+          "id": "A2-E03",
+          "actor": "Selin",
+          "action": "RECOVER",
+          "target": "notebook",
+          "required_observer": "Bora",
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Selin",
+              "action": "RECOVER",
+              "target": "notebook"
+            },
+            {
+              "id": "P2",
+              "subject": "Bora",
+              "action": "OBSERVE",
+              "target": "Selin_recovers_notebook"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "replacement_notebook"
+          ],
+          "resulting_state": {
+            "/objects/notebook/location": "Selin_hands"
+          }
+        },
+        {
+          "id": "A2-E04",
+          "actor": "Selin_and_Bora",
+          "action": "RETURN_TO",
+          "target": "school_courtyard",
+          "required_observer": null,
+          "satisfaction_mode": "ALL_PREDICATES",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "separate_physical_clue_required": false,
+          "predicates": [
+            {
+              "id": "P1",
+              "subject": "Selin_and_Bora",
+              "action": "RETURN_TO",
+              "target": "school_courtyard"
+            }
+          ],
+          "allowed_provenance": [
+            "DIRECT_OBSERVATION"
+          ],
+          "forbidden_provenance": [
+            "INVENTED_WORLD_RULE",
+            "INVENTED_CLUE",
+            "UNESTABLISHED_LORE"
+          ],
+          "forbidden_evidence_subjects": [
+            "vehicle"
+          ],
+          "resulting_state": {
+            "/characters/Selin/location": "school_courtyard",
+            "/characters/Bora/location": "school_courtyard",
+            "/open_threads": [],
+            "/resolved_threads": [
+              "recover_notebook"
+            ]
+          }
+        }
+      ],
+      "entry_state": {
+        "/characters/Selin/location": "greenhouse_entry",
+        "/characters/Bora/location": "greenhouse_entry",
+        "/objects/notebook/location": "greenhouse_floor"
+      },
+      "required_exit_state": {
+        "/characters/Selin/location": "school_courtyard",
+        "/characters/Bora/location": "school_courtyard",
+        "/objects/notebook/location": "Selin_hands",
+        "/characters/Selin/relationships/Bora/trust": "earned_initial",
+        "/characters/Bora/relationships/Selin/trust": "earned_initial",
+        "/open_threads": [],
+        "/resolved_threads": [
+          "recover_notebook"
+        ],
+        "/narrative_obligations": [
+          {
+            "id": "selin_bora_trust",
+            "detail": "Selin must acknowledge Bora's help through action, not instant intimacy.",
+            "status": "SATISFIED",
+            "target_scene_id": "A2"
+          },
+          {
+            "id": "notebook_return",
+            "detail": "The same notebook must return to Selin by the end.",
+            "status": "SATISFIED",
+            "target_scene_id": "A2"
+          }
+        ]
+      },
+      "allowed_state_paths": [],
+      "immutable_facts": [
+        "The notebook on the greenhouse floor is Selin's original notebook.",
+        "Selin already has her jacket, but no new portable equipment is available.",
+        "The open greenhouse door and side path remain usable.",
+        "Rain is approaching; it does not instantly disappear."
+      ],
+      "forbidden": [
+        "Do not introduce keys, tools, ladders, umbrellas, bags, phones, or adult rescue.",
+        "Do not replace or duplicate the notebook.",
+        "Do not create instant best-friend intimacy.",
+        "Do not use magic."
+      ],
+      "emotional_transition": {
+        "from": "Selin reluctantly accepted route help",
+        "to": "Selin acknowledges Bora's concrete help and accepts earned initial trust"
+      },
+      "target_words_min": 190,
+      "target_words_max": 300
+    }
+  ],
+  "coverage_plans": [
+    {
+      "scene_id": "A1",
+      "obligations": [
+        {
+          "id": "A1-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Move the notebook into the greenhouse and establish Bora's useful route knowledge without resolving the problem.",
+          "required_predicates": [
+            {
+              "event_id": "A1-E01",
+              "predicate_id": "P1",
+              "subject": "wind",
+              "action": "CARRY",
+              "target": "notebook_to_greenhouse_floor"
+            },
+            {
+              "event_id": "A1-E02",
+              "predicate_id": "P1",
+              "subject": "Bora",
+              "action": "GUIDE_ROUTE",
+              "target": "greenhouse_side_path"
+            }
+          ]
+        },
+        {
+          "id": "A1-objective",
+          "source_field": "objective",
+          "source_text": "The wind carries Selin's notebook into the greenhouse; Bora guides the side path; both reach the greenhouse entry.",
+          "required_predicates": [
+            {
+              "event_id": "A1-E01",
+              "predicate_id": "P1",
+              "subject": "wind",
+              "action": "CARRY",
+              "target": "notebook_to_greenhouse_floor"
+            },
+            {
+              "event_id": "A1-E03",
+              "predicate_id": "P1",
+              "subject": "Selin_and_Bora",
+              "action": "MOVE_TO",
+              "target": "greenhouse_entry"
+            }
+          ]
+        },
+        {
+          "id": "A1-turn",
+          "source_field": "turn",
+          "source_text": "Selin reluctantly follows Bora because his route knowledge is useful.",
+          "required_predicates": [
+            {
+              "event_id": "A1-E02",
+              "predicate_id": "P2",
+              "subject": "Selin",
+              "action": "ACKNOWLEDGE",
+              "target": "greenhouse_side_path"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "A1-E01",
+            "predicate_id": "P1",
+            "subject": "wind",
+            "action": "CARRY",
+            "target": "notebook_to_greenhouse_floor"
+          },
+          "after": {
+            "event_id": "A1-E02",
+            "predicate_id": "P1",
+            "subject": "Bora",
+            "action": "GUIDE_ROUTE",
+            "target": "greenhouse_side_path"
+          }
+        },
+        {
+          "before": {
+            "event_id": "A1-E02",
+            "predicate_id": "P1",
+            "subject": "Bora",
+            "action": "GUIDE_ROUTE",
+            "target": "greenhouse_side_path"
+          },
+          "after": {
+            "event_id": "A1-E03",
+            "predicate_id": "P1",
+            "subject": "Selin_and_Bora",
+            "action": "MOVE_TO",
+            "target": "greenhouse_entry"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "A2",
+      "obligations": [
+        {
+          "id": "A2-narrative_purpose",
+          "source_field": "narrative_purpose",
+          "source_text": "Recover the notebook through simple cooperation and close the thread without adding equipment.",
+          "required_predicates": [
+            {
+              "event_id": "A2-E01",
+              "predicate_id": "P1",
+              "subject": "Selin",
+              "action": "ASK_HELP",
+              "target": "notebook_recovery"
+            },
+            {
+              "event_id": "A2-E02",
+              "predicate_id": "P1",
+              "subject": "Bora",
+              "action": "ASSIST",
+              "target": "notebook_recovery"
+            },
+            {
+              "event_id": "A2-E03",
+              "predicate_id": "P1",
+              "subject": "Selin",
+              "action": "RECOVER",
+              "target": "notebook"
+            }
+          ]
+        },
+        {
+          "id": "A2-objective",
+          "source_field": "objective",
+          "source_text": "Selin asks for help, Bora assists, Selin recovers the same notebook, and they return to the courtyard with earned initial trust.",
+          "required_predicates": [
+            {
+              "event_id": "A2-E01",
+              "predicate_id": "P1",
+              "subject": "Selin",
+              "action": "ASK_HELP",
+              "target": "notebook_recovery"
+            },
+            {
+              "event_id": "A2-E01",
+              "predicate_id": "P2",
+              "subject": "Bora",
+              "action": "OBSERVE",
+              "target": "Selin_asking_for_help"
+            },
+            {
+              "event_id": "A2-E02",
+              "predicate_id": "P1",
+              "subject": "Bora",
+              "action": "ASSIST",
+              "target": "notebook_recovery"
+            },
+            {
+              "event_id": "A2-E02",
+              "predicate_id": "P2",
+              "subject": "Selin",
+              "action": "ACKNOWLEDGE",
+              "target": "Bora_assistance"
+            },
+            {
+              "event_id": "A2-E03",
+              "predicate_id": "P1",
+              "subject": "Selin",
+              "action": "RECOVER",
+              "target": "notebook"
+            },
+            {
+              "event_id": "A2-E03",
+              "predicate_id": "P2",
+              "subject": "Bora",
+              "action": "OBSERVE",
+              "target": "Selin_recovers_notebook"
+            },
+            {
+              "event_id": "A2-E04",
+              "predicate_id": "P1",
+              "subject": "Selin_and_Bora",
+              "action": "RETURN_TO",
+              "target": "school_courtyard"
+            }
+          ]
+        },
+        {
+          "id": "A2-turn",
+          "source_field": "turn",
+          "source_text": "Selin openly acknowledges that accepting help was useful.",
+          "required_predicates": [
+            {
+              "event_id": "A2-E02",
+              "predicate_id": "P2",
+              "subject": "Selin",
+              "action": "ACKNOWLEDGE",
+              "target": "Bora_assistance"
+            }
+          ]
+        }
+      ],
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "A2-E01",
+            "predicate_id": "P1",
+            "subject": "Selin",
+            "action": "ASK_HELP",
+            "target": "notebook_recovery"
+          },
+          "after": {
+            "event_id": "A2-E02",
+            "predicate_id": "P1",
+            "subject": "Bora",
+            "action": "ASSIST",
+            "target": "notebook_recovery"
+          }
+        },
+        {
+          "before": {
+            "event_id": "A2-E02",
+            "predicate_id": "P1",
+            "subject": "Bora",
+            "action": "ASSIST",
+            "target": "notebook_recovery"
+          },
+          "after": {
+            "event_id": "A2-E03",
+            "predicate_id": "P1",
+            "subject": "Selin",
+            "action": "RECOVER",
+            "target": "notebook"
+          }
+        },
+        {
+          "before": {
+            "event_id": "A2-E03",
+            "predicate_id": "P1",
+            "subject": "Selin",
+            "action": "RECOVER",
+            "target": "notebook"
+          },
+          "after": {
+            "event_id": "A2-E04",
+            "predicate_id": "P1",
+            "subject": "Selin_and_Bora",
+            "action": "RETURN_TO",
+            "target": "school_courtyard"
+          }
+        },
+        {
+          "before": {
+            "event_id": "A2-E02",
+            "predicate_id": "P1",
+            "subject": "Bora",
+            "action": "ASSIST",
+            "target": "notebook_recovery"
+          },
+          "after": {
+            "event_id": "A2-E02",
+            "predicate_id": "P2",
+            "subject": "Selin",
+            "action": "ACKNOWLEDGE",
+            "target": "Bora_assistance"
+          }
+        }
+      ]
+    }
+  ]
+}

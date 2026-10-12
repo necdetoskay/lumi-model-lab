@@ -1,0 +1,130 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "6d4eb9ce3047470b1a35b78df308c1713beeb556387057f9e1b513206b65f302",
+  "scene_contract_sha256": "413a68ac2a1b2cd90b3ca967575b660c6d090357d0335b8ceed05a7a140c23b6",
+  "obligations": [
+    {
+      "id": "S02-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Make Aya initiate cooperation through an explicit request, not Mert volunteering.",
+      "required_predicates": [
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_FOR_HELP",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P2",
+          "subject": "Mert",
+          "action": "OBSERVE",
+          "target": "Aya_ASK_FOR_HELP_shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "ACCEPT_HELP_REQUEST",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P2",
+          "subject": "Aya",
+          "action": "OBSERVE",
+          "target": "Mert_ACCEPT_HELP_REQUEST_shared_panel_carry"
+        }
+      ]
+    },
+    {
+      "id": "S02-objective",
+      "source_field": "objective",
+      "source_text": "Aya asks Mert for help carrying the same panel; he accepts while the gate boundary remains active.",
+      "required_predicates": [
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_FOR_HELP",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P2",
+          "subject": "Mert",
+          "action": "OBSERVE",
+          "target": "Aya_ASK_FOR_HELP_shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "ACCEPT_HELP_REQUEST",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P2",
+          "subject": "Aya",
+          "action": "OBSERVE",
+          "target": "Mert_ACCEPT_HELP_REQUEST_shared_panel_carry"
+        }
+      ]
+    },
+    {
+      "id": "S02-turn",
+      "source_field": "turn",
+      "source_text": "Aya chooses to ask instead of insisting on acting alone.",
+      "required_predicates": [
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P1",
+          "subject": "Aya",
+          "action": "ASK_FOR_HELP",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E01",
+          "predicate_id": "P2",
+          "subject": "Mert",
+          "action": "OBSERVE",
+          "target": "Aya_ASK_FOR_HELP_shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "ACCEPT_HELP_REQUEST",
+          "target": "shared_panel_carry"
+        },
+        {
+          "event_id": "S02-E02",
+          "predicate_id": "P2",
+          "subject": "Aya",
+          "action": "OBSERVE",
+          "target": "Mert_ACCEPT_HELP_REQUEST_shared_panel_carry"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "S02-E01",
+        "predicate_id": "P1",
+        "subject": "Aya",
+        "action": "ASK_FOR_HELP",
+        "target": "shared_panel_carry"
+      },
+      "after": {
+        "event_id": "S02-E02",
+        "predicate_id": "P1",
+        "subject": "Mert",
+        "action": "ACCEPT_HELP_REQUEST",
+        "target": "shared_panel_carry"
+      }
+    }
+  ]
+}

@@ -1,0 +1,696 @@
+{
+  "schema_name": "spineforge.compact-story-plan.v4",
+  "request_sha256": "540abdcacc8105d0958a8a355515698ca6966b654c1dd135125cbecdbacb4914",
+  "seed_sha256": "777b2d432ad292a91d9390725d4fe03c2ad91e4d358c9e3dcc785ee0b1daeb88",
+  "premise": "Okuma etkinliğine yarım saat kala kırmızı ayracını bulamayan Nisa, Eren ile birlikte atlası son kullanan Cem’den kuşkulanır; ancak yerleşik kayıtları dikkatle incelemeleri onları kendi varsayımlarıyla yüzleşmeye götürür.",
+  "character_arc": "Nisa kontrol etmeden varsayım kurmak yerine kendi notlarına dönmeyi, Eren ise arkadaşının kuşkusunu yinelemek yerine kanıt sınamayı öğrenir; ikisi de Cem’e karşı hatalarını açıkça kabul eder.",
+  "resolution": "Hazırlık defteri ayracı atlasa Nisa’nın koyduğunu, atlasın içindeki ayraç da gerçeği doğrular. Nisa ve Eren kuşkularını düzeltip Cem’den ayrı ayrı özür diler; Cem özrü kabul ederken kırgınlığının hemen bütünüyle geçmediğini dürüstçe belirtir ve etkinlik zamanında başlar.",
+  "scenes": [
+    {
+      "scene_id": "S1_Kayip_ve_Kusku",
+      "narrative_purpose": "Kayıp ayracı ve kanıtsız kuşkunun doğurduğu incinmeyi kurmak.",
+      "objective": "Nisa’nın etkinlik öncesinde ayracı bulamadığını göstermek.",
+      "turn": "Nisa’nın kuşkusunu Eren de yineleyince Cem incinir.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E1_Kayip",
+          "predicates": [
+            {
+              "id": "P1_Bulamaz",
+              "subject": "Nisa",
+              "action": "ARAMADA_BULAMAZ",
+              "target": "red_bookmark"
+            }
+          ],
+          "required_observer": null,
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {},
+          "physical_clue": null
+        },
+        {
+          "id": "E1_Nisa_Kuskulanir",
+          "predicates": [
+            {
+              "id": "P1_Kusku_Dile_Getirir",
+              "subject": "Nisa",
+              "action": "KANITSIZ_KUSKUYU_DILE_GETIRIR",
+              "target": "Cem"
+            }
+          ],
+          "required_observer": "Cem",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {},
+          "physical_clue": null
+        },
+        {
+          "id": "E1_Eren_Yineler",
+          "predicates": [
+            {
+              "id": "P1_Kuskuyu_Yineler",
+              "subject": "Eren",
+              "action": "KANITSIZ_KUSKUYU_YINELER",
+              "target": "Cem"
+            }
+          ],
+          "required_observer": "Cem",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Cem/condition/emotion": "hurt"
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E1_Kayip",
+          "E1_Nisa_Kuskulanir",
+          "E1_Eren_Yineler"
+        ],
+        "objective": [
+          "E1_Kayip"
+        ],
+        "turn": [
+          "E1_Nisa_Kuskulanir",
+          "E1_Eren_Yineler"
+        ]
+      },
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "E1_Kayip",
+            "predicate_id": null
+          },
+          "after": {
+            "event_id": "E1_Nisa_Kuskulanir",
+            "predicate_id": null
+          }
+        },
+        {
+          "before": {
+            "event_id": "E1_Nisa_Kuskulanir",
+            "predicate_id": null
+          },
+          "after": {
+            "event_id": "E1_Eren_Yineler",
+            "predicate_id": null
+          }
+        }
+      ],
+      "spatial_operations": [],
+      "resolutions": [],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": {
+        "Nisa": "endişeden aceleci kuşkuya",
+        "Eren": "meraktan kuşkuyu yinelemeye",
+        "Cem": "sakinlikten kırgınlığa"
+      },
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S2_Iade_Kaydi",
+      "narrative_purpose": "İlk yerleşik yazılı kanıtı sınayarak söylenti yerine araştırmayı başlatmak.",
+      "objective": "Eren’in iade kaydındaki atlas girdisini Nisa ile doğrulaması.",
+      "turn": "Kayıt, Cem’in atlası dün iade ettiğini doğrular fakat ayracın ne olduğunu tek başına açıklamaz.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E2_Kaydi_Inceler",
+          "predicates": [
+            {
+              "id": "P1_Kaydi_Okur",
+              "subject": "Eren",
+              "action": "OKUR",
+              "target": "return_log"
+            },
+            {
+              "id": "P2_Iadeyi_Dogrular",
+              "subject": "Eren",
+              "action": "YAZILI_GIRDISINI_DOGRULAR",
+              "target": "blue_atlas"
+            }
+          ],
+          "required_observer": "Nisa",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Eren/knowledge": [
+              "reading_activity_today",
+              "Nisa_cannot_find_bookmark",
+              "Cem_used_blue_atlas",
+              "library_has_return_log",
+              "return_log_confirms_Cem_returned_blue_atlas_yesterday"
+            ],
+            "/characters/Nisa/knowledge": [
+              "reading_activity_today",
+              "bookmark_is_mine",
+              "last_saw_bookmark_near_reading_table",
+              "Cem_used_blue_atlas",
+              "preparation_notebook_has_activity_notes",
+              "return_log_confirms_Cem_returned_blue_atlas_yesterday"
+            ]
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E2_Kaydi_Inceler"
+        ],
+        "objective": [
+          "E2_Kaydi_Inceler"
+        ],
+        "turn": [
+          "E2_Kaydi_Inceler"
+        ]
+      },
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "E2_Kaydi_Inceler",
+            "predicate_id": "P1_Kaydi_Okur"
+          },
+          "after": {
+            "event_id": "E2_Kaydi_Inceler",
+            "predicate_id": "P2_Iadeyi_Dogrular"
+          }
+        }
+      ],
+      "spatial_operations": [],
+      "resolutions": [],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": null,
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S3_Hazirlik_Notu",
+      "narrative_purpose": "Nisa’nın kendi yazılı kaydından gizli yerleştirme bilgisini edinmesini sağlamak.",
+      "objective": "Hazırlık defterindeki dünkü girdiyi okuyup ayracı atlasa Nisa’nın koyduğunu öğrenmek.",
+      "turn": "Nisa, Cem’i suçlamadan önce kontrol etmesi gereken notu kendisinin yazdığını fark eder.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E3_Notu_Okur",
+          "predicates": [
+            {
+              "id": "P1_Defteri_Okur",
+              "subject": "Nisa",
+              "action": "OKUR",
+              "target": "preparation_notebook"
+            },
+            {
+              "id": "P2_Yerlestirmeyi_Kesfeder",
+              "subject": "Nisa",
+              "action": "YAZILI_GIRDIDEN_KESFEDER",
+              "target": "red_bookmark_was_placed_in_blue_atlas_by_Nisa"
+            }
+          ],
+          "required_observer": "Eren",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Nisa/knowledge": [
+              "reading_activity_today",
+              "bookmark_is_mine",
+              "last_saw_bookmark_near_reading_table",
+              "Cem_used_blue_atlas",
+              "preparation_notebook_has_activity_notes",
+              "return_log_confirms_Cem_returned_blue_atlas_yesterday",
+              "preparation_entry_says_Nisa_placed_red_bookmark_in_blue_atlas"
+            ],
+            "/characters/Eren/knowledge": [
+              "reading_activity_today",
+              "Nisa_cannot_find_bookmark",
+              "Cem_used_blue_atlas",
+              "library_has_return_log",
+              "return_log_confirms_Cem_returned_blue_atlas_yesterday",
+              "preparation_entry_says_Nisa_placed_red_bookmark_in_blue_atlas"
+            ]
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E3_Notu_Okur"
+        ],
+        "objective": [
+          "E3_Notu_Okur"
+        ],
+        "turn": [
+          "E3_Notu_Okur"
+        ]
+      },
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "E3_Notu_Okur",
+            "predicate_id": "P1_Defteri_Okur"
+          },
+          "after": {
+            "event_id": "E3_Notu_Okur",
+            "predicate_id": "P2_Yerlestirmeyi_Kesfeder"
+          }
+        }
+      ],
+      "spatial_operations": [],
+      "resolutions": [
+        {
+          "kind": "THREAD",
+          "id": "explain_actual_placement",
+          "evidence": {
+            "event_id": "E3_Notu_Okur",
+            "predicate_id": "P2_Yerlestirmeyi_Kesfeder"
+          }
+        },
+        {
+          "kind": "OBLIGATION",
+          "id": "investigate_evidence",
+          "evidence": {
+            "event_id": "E3_Notu_Okur",
+            "predicate_id": "P2_Yerlestirmeyi_Kesfeder"
+          }
+        }
+      ],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": {
+        "Nisa": "kuşkudan mahcubiyete",
+        "Eren": "kuşkudan temkinli anlayışa"
+      },
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S4_Atlasin_Ici",
+      "narrative_purpose": "Yazılı açıklamayı fiziksel incelemeyle sınayıp ayracı kurtarmak.",
+      "objective": "Mavi atlası inceleyerek kırmızı ayracı bulmak ve Nisa’ya geri vermek.",
+      "turn": "Ayraç atlasın içinden çıkınca nottaki açıklama görünür biçimde doğrulanır.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E4_Atlasi_Inceler",
+          "predicates": [
+            {
+              "id": "P1_Atlasi_Inceler",
+              "subject": "Eren",
+              "action": "INCELER",
+              "target": "blue_atlas"
+            },
+            {
+              "id": "P2_Ayraci_Bulur",
+              "subject": "Eren",
+              "action": "ICINDE_BULUR",
+              "target": "red_bookmark"
+            }
+          ],
+          "required_observer": "Nisa",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {},
+          "physical_clue": null
+        },
+        {
+          "id": "E4_Ayraci_Kurtarir",
+          "predicates": [
+            {
+              "id": "P1_Ayraci_Geri_Alir",
+              "subject": "Nisa",
+              "action": "GERI_ALIR",
+              "target": "red_bookmark"
+            }
+          ],
+          "required_observer": "Eren",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/objects/red_bookmark/state": {
+              "color": "red",
+              "container": null,
+              "placed_by": "Nisa",
+              "found": true,
+              "returned_to_owner": true,
+              "intentionally_stolen": false
+            },
+            "/objects/blue_atlas/state/contains": [],
+            "/characters/Nisa/inventory": {
+              "red_bookmark": true
+            }
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E4_Atlasi_Inceler",
+          "E4_Ayraci_Kurtarir"
+        ],
+        "objective": [
+          "E4_Atlasi_Inceler",
+          "E4_Ayraci_Kurtarir"
+        ],
+        "turn": [
+          "E4_Atlasi_Inceler"
+        ]
+      },
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "E4_Atlasi_Inceler",
+            "predicate_id": "P1_Atlasi_Inceler"
+          },
+          "after": {
+            "event_id": "E4_Atlasi_Inceler",
+            "predicate_id": "P2_Ayraci_Bulur"
+          }
+        },
+        {
+          "before": {
+            "event_id": "E4_Atlasi_Inceler",
+            "predicate_id": "P2_Ayraci_Bulur"
+          },
+          "after": {
+            "event_id": "E4_Ayraci_Kurtarir",
+            "predicate_id": null
+          }
+        }
+      ],
+      "spatial_operations": [],
+      "resolutions": [
+        {
+          "kind": "THREAD",
+          "id": "find_missing_bookmark",
+          "evidence": {
+            "event_id": "E4_Atlasi_Inceler",
+            "predicate_id": "P2_Ayraci_Bulur"
+          }
+        },
+        {
+          "kind": "OBLIGATION",
+          "id": "recover_bookmark",
+          "evidence": {
+            "event_id": "E4_Ayraci_Kurtarir",
+            "predicate_id": "P1_Ayraci_Geri_Alir"
+          }
+        }
+      ],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": {
+        "Nisa": "mahcubiyetten gerçeği kabul etmeye",
+        "Eren": "temkinli anlayıştan kesinliğe"
+      },
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S5_Duzeltme_ve_Ozur",
+      "narrative_purpose": "Nisa ile Eren’in kanıta dayanarak yanlış kuşkularını düzeltmesi ve sorumluluk alması.",
+      "objective": "İki arkadaşın Cem’den ayrı ayrı ve açıkça özür dilemesi.",
+      "turn": "Cem özürleri kabul eder fakat kırgınlığının geçmesi için biraz zamana ihtiyacı olduğunu söyler.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E5_Nisa_Ozur",
+          "predicates": [
+            {
+              "id": "P1_Nisa_Kuskuyu_Duzeltir",
+              "subject": "Nisa",
+              "action": "YANLIS_KUSKUSUNU_DUZELTIR",
+              "target": "Cem"
+            },
+            {
+              "id": "P2_Nisa_Kaniti_Anlatir",
+              "subject": "Nisa",
+              "action": "DAYANAK_OLARAK_ANAR",
+              "target": "preparation_notebook"
+            },
+            {
+              "id": "P3_Nisa_Ozur_Diler",
+              "subject": "Nisa",
+              "action": "OZUR_DILER",
+              "target": "Cem"
+            }
+          ],
+          "required_observer": "Cem",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Nisa/relationships/Cem": {
+              "familiarity": "classmate",
+              "trust": "good"
+            }
+          },
+          "physical_clue": null
+        },
+        {
+          "id": "E5_Eren_Ozur",
+          "predicates": [
+            {
+              "id": "P1_Eren_Kuskuyu_Duzeltir",
+              "subject": "Eren",
+              "action": "YANLIS_KUSKUSUNU_DUZELTIR",
+              "target": "Cem"
+            },
+            {
+              "id": "P2_Eren_Bulguyu_Anar",
+              "subject": "Eren",
+              "action": "DAYANAK_OLARAK_ANAR",
+              "target": "red_bookmark"
+            },
+            {
+              "id": "P3_Eren_Ozur_Diler",
+              "subject": "Eren",
+              "action": "OZUR_DILER",
+              "target": "Cem"
+            }
+          ],
+          "required_observer": "Cem",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/characters/Eren/relationships/Cem": {
+              "familiarity": "classmate",
+              "trust": "good"
+            },
+            "/characters/Cem/condition/emotion": "relieved_but_still_tender"
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E5_Nisa_Ozur",
+          "E5_Eren_Ozur"
+        ],
+        "objective": [
+          "E5_Nisa_Ozur",
+          "E5_Eren_Ozur"
+        ],
+        "turn": [
+          "E5_Eren_Ozur"
+        ]
+      },
+      "ordered_dependencies": [
+        {
+          "before": {
+            "event_id": "E5_Nisa_Ozur",
+            "predicate_id": "P1_Nisa_Kuskuyu_Duzeltir"
+          },
+          "after": {
+            "event_id": "E5_Nisa_Ozur",
+            "predicate_id": "P3_Nisa_Ozur_Diler"
+          }
+        },
+        {
+          "before": {
+            "event_id": "E5_Eren_Ozur",
+            "predicate_id": "P1_Eren_Kuskuyu_Duzeltir"
+          },
+          "after": {
+            "event_id": "E5_Eren_Ozur",
+            "predicate_id": "P3_Eren_Ozur_Diler"
+          }
+        }
+      ],
+      "spatial_operations": [],
+      "resolutions": [
+        {
+          "kind": "THREAD",
+          "id": "correct_suspicion",
+          "evidence": {
+            "event_id": "E5_Eren_Ozur",
+            "predicate_id": "P1_Eren_Kuskuyu_Duzeltir"
+          }
+        },
+        {
+          "kind": "OBLIGATION",
+          "id": "correct_and_apologize",
+          "evidence": {
+            "event_id": "E5_Eren_Ozur",
+            "predicate_id": "P3_Eren_Ozur_Diler"
+          }
+        }
+      ],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": {
+        "Nisa": "mahcubiyetten sorumluluk almaya",
+        "Eren": "kesinlikten öz eleştiriye",
+        "Cem": "kırgınlıktan temkinli rahatlamaya"
+      },
+      "target_words_min": 120,
+      "target_words_max": 260
+    },
+    {
+      "scene_id": "S6_Etkinlik_Baslar",
+      "narrative_purpose": "Araştırmanın ve özrün ardından sıcak fakat ölçülü bir ortak kapanış sağlamak.",
+      "objective": "Bulunan ayraçla okuma etkinliğini zamanında başlatmak.",
+      "turn": "Cem de etkinliğe katılır; güvenin dikkatli davranışlarla yeniden güçlenebileceği görülür.",
+      "location": "library_reading_room",
+      "events": [
+        {
+          "id": "E6_Etkinligi_Baslatir",
+          "predicates": [
+            {
+              "id": "P1_Etkinligi_Baslatir",
+              "subject": "Nisa",
+              "action": "ZAMANINDA_BASLATIR",
+              "target": "reading_activity"
+            },
+            {
+              "id": "P2_Ayraci_Kullanir",
+              "subject": "Nisa",
+              "action": "KULLANIR",
+              "target": "red_bookmark"
+            },
+            {
+              "id": "P3_Cem_Katilir",
+              "subject": "Cem",
+              "action": "KATILIR",
+              "target": "reading_activity"
+            }
+          ],
+          "required_observer": "Eren",
+          "evidence_mode": "DIRECT_OBSERVATION",
+          "forbidden_evidence_subjects": [],
+          "resulting_state": {
+            "/world/time/minutes_until_reading_activity": 0,
+            "/characters/Nisa/condition/goal": "lead_reading_activity",
+            "/characters/Nisa/condition/emotion": "relieved",
+            "/characters/Eren/condition/emotion": "thoughtful"
+          },
+          "physical_clue": null
+        }
+      ],
+      "goal_bindings": {
+        "narrative_purpose": [
+          "E6_Etkinligi_Baslatir"
+        ],
+        "objective": [
+          "E6_Etkinligi_Baslatir"
+        ],
+        "turn": [
+          "E6_Etkinligi_Baslatir"
+        ]
+      },
+      "ordered_dependencies": [],
+      "spatial_operations": [],
+      "resolutions": [],
+      "preconditions": {},
+      "entry_requirements": [],
+      "exit_requirements": [],
+      "immutable_facts": [],
+      "forbidden": [],
+      "emotional_transition": {
+        "Nisa": "sorumluluktan rahatlamaya",
+        "Eren": "öz eleştiriden düşünceli umuda",
+        "Cem": "temkinli rahatlamadan katılmaya"
+      },
+      "target_words_min": 120,
+      "target_words_max": 260
+    }
+  ],
+  "carry_groups": [],
+  "request_bindings": [
+    {
+      "requirement_id": "R01",
+      "scene_id": "S1_Kayip_ve_Kusku",
+      "event_id": "E1_Kayip",
+      "predicate_id": "P1_Bulamaz",
+      "rationale": "İlk sahne, okuma etkinliği başlamadan Nisa’nın kırmızı ayracı arayıp bulamamasıyla açılır."
+    },
+    {
+      "requirement_id": "R02",
+      "scene_id": "S2_Iade_Kaydi",
+      "event_id": "E2_Kaydi_Inceler",
+      "predicate_id": "P2_Iadeyi_Dogrular",
+      "rationale": "Nisa ve Eren yerleşik iade kaydını inceleyerek Cem’in atlası geri verdiğini doğrular."
+    },
+    {
+      "requirement_id": "R02",
+      "scene_id": "S3_Hazirlik_Notu",
+      "event_id": "E3_Notu_Okur",
+      "predicate_id": "P2_Yerlestirmeyi_Kesfeder",
+      "rationale": "Hazırlık defterindeki yerleşik girdi, ayracı mavi atlasa Nisa’nın koyduğunu açıklar."
+    },
+    {
+      "requirement_id": "R02",
+      "scene_id": "S4_Atlasin_Ici",
+      "event_id": "E4_Atlasi_Inceler",
+      "predicate_id": "P2_Ayraci_Bulur",
+      "rationale": "Atlasın doğrudan incelenmesi kırmızı ayracı ortaya çıkarır ve yazılı açıklamayı fiziksel olarak doğrular."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S5_Duzeltme_ve_Ozur",
+      "event_id": "E5_Nisa_Ozur",
+      "predicate_id": "P1_Nisa_Kuskuyu_Duzeltir",
+      "rationale": "Nisa, defter girdisine dayanarak Cem hakkındaki yanlış kuşkusunu açıkça düzeltir."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S5_Duzeltme_ve_Ozur",
+      "event_id": "E5_Nisa_Ozur",
+      "predicate_id": "P3_Nisa_Ozur_Diler",
+      "rationale": "Nisa, kanıtsız suçlaması için Cem’den doğrudan özür diler."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S5_Duzeltme_ve_Ozur",
+      "event_id": "E5_Eren_Ozur",
+      "predicate_id": "P1_Eren_Kuskuyu_Duzeltir",
+      "rationale": "Eren, bulunan ayraca dayanarak yinelediği kuşkunun yanlış olduğunu kabul eder."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S5_Duzeltme_ve_Ozur",
+      "event_id": "E5_Eren_Ozur",
+      "predicate_id": "P3_Eren_Ozur_Diler",
+      "rationale": "Eren de kendi payı için Cem’den ayrı ve açık bir özür diler."
+    }
+  ],
+  "unresolved_questions": []
+}

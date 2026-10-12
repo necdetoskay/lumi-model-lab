@@ -1,0 +1,107 @@
+{
+  "schema": "spineforge-relay.q5s-preflight.v1",
+  "status": "OFFLINE_PREPARED_PAID_NOT_AUTHORIZED",
+  "qualification_id": "SFR-V1-Q5S-SOL-SC01-20261007",
+  "parent_architecture": "SFR-v1",
+  "supersedes_aion_writer": false,
+  "new_run_reason": "Aion writer/rewrite showed nondeterministic hidden-reasoning budget exhaustion; test a stable writer boundary without changing frozen story inputs.",
+  "model": "openai/gpt-5.6-sol",
+  "request_class": "spineforge_relay_v1_scene_writer_sol",
+  "model_runtime_profile": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "openai/gpt-5.6-sol",
+    "display_name": "GPT-5.6 Sol",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "openai/gpt-5.6-sol"
+    },
+    "profile_sha256": "dcfd58b64f0e5857149f94c1c3c5916ec7a38b94ed0a38624bb03a327fb55bf6",
+    "runtime_contract_sha256": "2b08bb5ed355692669fccd74a1e0376afeacd1dbd376097e7a3e31e31248ca9a",
+    "production_policy_sha256": "1bb5d7733dfce6c3cfbe020a19e48179e4f17024d3fe424e1a2f23b8aeee7b48"
+  },
+  "story_state_sha256": "e1bccd39338919c8a1a913277db62124806f0a3a924b5a252f151f4e787b56ce",
+  "scene_plan_sha256": "890baab932dc4f8ffead5722f87da3cfc7d6ef93ee3a4837f10713b11bb823ba",
+  "frozen_spine_route_sha256": "902544cbf9ff7b852d7a846aed1f1ad494a40520a0fa22f0571a6ba6ae9bb6c8",
+  "scene_contract_sha256": "6f6699aae7fa39c459fb4256a3602da9d0e93be5e0f7c02e5a920ea636b98908",
+  "writer_input_sha256": "8bf4a3a57c6a6347db5fd448e2d3343fb19b0e717c88c7879f0fa6bdf68f6517",
+  "request": {
+    "model": "openai/gpt-5.6-sol",
+    "messages": [
+      {
+        "role": "system",
+        "content": "# SpineForge Relay v1 — Single Scene Writer\n\nYou are the prose writer for exactly one scene in a larger story.\n\nThe JSON input is authoritative. Write only the current scene. Do not write later\nspine beats, do not summarize the whole story, and do not alter canonical facts.\n\nPriorities, in order:\n\n1. Respect the current story state and scene entry state.\n2. Realize every required event naturally in prose.\n3. Reach the required exit state by the end of the scene.\n4. Preserve immutable facts and avoid every forbidden condition.\n5. Preserve the story intent, reader age, tone, and character dynamics.\n6. Make the scene feel like fiction, not a checklist or a mechanical simulation.\n\nContinuity rules:\n\n- A character or object may not change location, possession, condition, knowledge,\n  or relationship state unless the scene contract permits or requires it.\n- Do not invent equipment, exits, powers, history, or knowledge to solve the scene.\n- Physical movement must be visible or naturally inferable in the prose.\n- Do not pre-write the next scene just because you know the frozen spine route.\n- The input may include JSON-pointer state paths. Treat them as facts, not text to\n  quote to the reader.\n\nStyle:\n\n- English prose.\n- Natural middle-grade adventure voice for the stated reader age.\n- Concrete action and sensory detail.\n- Dialogue is welcome when natural.\n- Avoid didactic moral summaries.\n- Avoid headings, bullet lists, JSON, analysis, notes, and scene labels.\n\nOutput contract:\n\nReturn only the scene prose as plain text."
+      },
+      {
+        "role": "user",
+        "content": "{\"schema\":\"spineforge-relay.scene-writer-input.v1\",\"fixture_id\":\"LIGHTHOUSE-SC01-Q5\",\"source_kind\":\"HUMAN_APPROVED_EDITORIAL_SPINE_FIXTURE_NOT_AUTOMATIC_SPINEFORGE_OUTPUT\",\"story_intent\":{\"reader_age\":12,\"language\":\"en\",\"tone\":[\"adventurous\",\"tense\",\"warm\"],\"premise\":\"Ekin pursues the sea dragon that steals her grandfather's brass compass and reluctantly begins working with Duru.\",\"character_arc\":\"Ekin begins defensive and resistant to guidance; trust with Duru must be earned over the story.\",\"scene_role\":\"Inciting theft and reluctant first contact with Duru.\"},\"frozen_spine_route\":{\"schema_name\":\"spineforge-relay.frozen-spine-route.v1\",\"global_spine_sha256\":\"8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad\",\"beat_ids\":[\"SC01\",\"SC02\",\"SC03\",\"SC04\",\"SC05\",\"SC06\"]},\"current_story_state\":{\"schema_name\":\"spineforge-relay.story-state.v1\",\"story_id\":\"lighthouse-relay-q5\",\"revision\":0,\"global_spine_sha256\":\"8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad\",\"story_intent_sha256\":\"66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e\",\"characters\":{\"Ekin\":{\"location\":\"harbor\",\"condition\":{\"health\":\"good\",\"mobility\":\"normal\"},\"inventory\":{\"jacket\":true},\"knowledge\":[],\"relationships\":{\"Duru\":{\"familiarity\":\"stranger\",\"trust\":\"none\"}}},\"Duru\":{\"location\":\"harbor\",\"condition\":{\"health\":\"good\",\"mobility\":\"normal\"},\"inventory\":{},\"knowledge\":[\"lighthouse_location\",\"coastal_route\"],\"relationships\":{\"Ekin\":{\"familiarity\":\"stranger\",\"trust\":\"none\"}}}},\"world\":{\"weather\":\"storm_approaching_but_harbor_still_safe\",\"lighthouse_door\":\"open\",\"lighthouse_location\":\"headland\"},\"objects\":{\"compass\":{\"owner\":\"Ekin\",\"location\":\"Ekin_hands\",\"state\":{\"material\":\"brass\",\"magical\":false}}},\"open_threads\":[\"recover_compass\"],\"resolved_threads\":[],\"completed_spine_beats\":[],\"next_spine_beat\":\"SC01\",\"narrative_obligations\":[{\"id\":\"ekin_duru_trust\",\"detail\":\"Trust must change through earned cooperation, not instant friendship.\",\"status\":\"OPEN\",\"target_scene_id\":\"SC06\"},{\"id\":\"compass_loss\",\"detail\":\"The compass must ultimately remain lost rather than be replaced by a reward.\",\"status\":\"OPEN\",\"target_scene_id\":\"SC06\"}]},\"scene_contract\":{\"schema_name\":\"spineforge-relay.scene-contract.v1\",\"scene_id\":\"SC01\",\"scene_plan_sha256\":\"890baab932dc4f8ffead5722f87da3cfc7d6ef93ee3a4837f10713b11bb823ba\",\"story_state_revision\":0,\"story_state_sha256\":\"e1bccd39338919c8a1a913277db62124806f0a3a924b5a252f151f4e787b56ce\",\"global_spine_sha256\":\"8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad\",\"story_intent_sha256\":\"66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e\",\"consumed_spine_beats\":[\"SC01\"],\"next_spine_beat\":\"SC02\",\"required_events\":[\"The sea dragon steals Ekin's brass compass.\",\"Ekin immediately tries to pursue it.\",\"Duru shows Ekin evidence that the dragon went toward the lighthouse.\",\"Ekin and Duru decide to go toward the lighthouse together.\"],\"entry_state\":{\"/characters/Ekin/location\":\"harbor\",\"/characters/Duru/location\":\"harbor\",\"/objects/compass/location\":\"Ekin_hands\",\"/objects/compass/owner\":\"Ekin\"},\"required_exit_state\":{\"/characters/Ekin/location\":\"harbor\",\"/characters/Duru/location\":\"harbor\",\"/objects/compass/location\":\"mother_dragon\"},\"allowed_state_paths\":[],\"immutable_facts\":[\"The compass belongs to Ekin and is a non-magical brass keepsake from her grandfather.\",\"The sea dragon does not speak, cast magic, or read human intentions.\",\"The storm is approaching but the harbor is not yet in immediate flood danger.\",\"Ekin and Duru are strangers at scene entry.\"],\"forbidden\":[\"Do not recover the compass in this scene.\",\"Do not make Ekin and Duru instant close friends.\",\"Do not introduce rescue equipment, magic, a secret route, or an adult rescuer.\",\"Do not enter the lighthouse yet.\"],\"emotional_transition\":{\"from\":\"Ekin acts alone and resists guidance\",\"to\":\"Ekin reluctantly accepts Duru as a temporary partner\"},\"target_words_min\":180,\"target_words_max\":280,\"max_rewrites\":1},\"continuity_window\":null}"
+      }
+    ],
+    "max_tokens": 3500,
+    "reasoning": {
+      "effort": "low",
+      "exclude": true
+    },
+    "provider": {
+      "order": [
+        "openai"
+      ],
+      "allow_fallbacks": false,
+      "require_parameters": true
+    },
+    "response_format": {
+      "type": "text"
+    }
+  },
+  "request_sha256": "3fedc980ada52be7ad137aa815573620b326aa91b8b745b194a6189c95aa4a9e",
+  "input_utf8_bytes": 6243,
+  "pricing_usd_per_million": {
+    "input": 2.0,
+    "output": 10.0
+  },
+  "max_tokens": 3500,
+  "planned_uncached_cost_usd": 0.047486,
+  "proposed_max_cost_usd": 0.05,
+  "max_writer_calls": 1,
+  "automatic_retry": false,
+  "semantic_guard_required": true,
+  "rewrite_authorized": false,
+  "state_application_authorized": false,
+  "paid_execution_authorized": false,
+  "files": [
+    {
+      "path": "src/spineforge_relay_v1_q5_sol.py",
+      "sha256": "06c6a2356e7d2645205c3a4a16445aa4d283c13d5073e096fb460dd1672c1439"
+    },
+    {
+      "path": "src/spineforge_relay_v1_q5.py",
+      "sha256": "82e440cde967b2e1bfb6c87a9aaa47dae4067de33b6d7104ec4131bffbdf229a"
+    },
+    {
+      "path": "src/spineforge_relay_v1_contracts.py",
+      "sha256": "9b9764d96f001f3879780ee43976a99c16f74f509690fc04ad5b2b04fafa1591"
+    },
+    {
+      "path": "src/spineforge_relay_v1_compile.py",
+      "sha256": "1fc758dc512d8f11d67a1141763887c0d398a8837247d047da18b44996b39715"
+    },
+    {
+      "path": "configs/model_runtime_profiles.yaml",
+      "sha256": "5392a04aa4fe6e5478cd980aed87977b932440fba4bcef4b91446c370f760bfb"
+    },
+    {
+      "path": "prompts/spineforge_relay_v1_scene_writer.md",
+      "sha256": "19ce95fb41c49fbeec1817052725eb3f7d02baee4799d34341d8fb01390e7963"
+    },
+    {
+      "path": "tests/fixtures/spineforge_relay_v1/q5_lighthouse_scene01.json",
+      "sha256": "be54f58f8cea6ef8046293194b58909082d389831e4a1ef6048fc496bfb4d367"
+    },
+    {
+      "path": "docs/experiments/lighthouse-context-and-spine-draft.md",
+      "sha256": "8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad"
+    }
+  ],
+  "artifact_sha256": "0d4f05380cc8be8a7e5955fdcd57967ace1713ffc950ddf7f7b33a5a7a999d03"
+}

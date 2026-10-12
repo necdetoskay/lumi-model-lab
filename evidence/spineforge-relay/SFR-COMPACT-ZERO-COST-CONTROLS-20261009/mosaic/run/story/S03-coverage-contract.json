@@ -1,0 +1,95 @@
+{
+  "schema_name": "spineforge-relay.plan-coverage.v1",
+  "scene_plan_sha256": "93f4a4fb44f2ad9ab665009a5a132b7a311583571e399958a004d6a1e0b45444",
+  "scene_contract_sha256": "2fd091c0e1b111622aae250eb30aca879dcd563ec5453621ca03d03c760c79a2",
+  "obligations": [
+    {
+      "id": "S03-narrative_purpose",
+      "source_field": "narrative_purpose",
+      "source_text": "Prepare a stable shared hold and release the persistent safety boundary only after agreement.",
+      "required_predicates": [
+        {
+          "event_id": "S03-E01",
+          "predicate_id": "P1",
+          "subject": "Aya_and_Mert",
+          "action": "LIFT_TOGETHER",
+          "target": "mosaic_panel"
+        },
+        {
+          "event_id": "S03-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "RELEASE",
+          "target": "yard_gate"
+        }
+      ]
+    },
+    {
+      "id": "S03-objective",
+      "source_field": "objective",
+      "source_text": "Aya and Mert lift the same intact panel together; Mert explicitly releases the gate boundary while co-located with Aya.",
+      "required_predicates": [
+        {
+          "event_id": "S03-E01",
+          "predicate_id": "P1",
+          "subject": "Aya_and_Mert",
+          "action": "LIFT_TOGETHER",
+          "target": "mosaic_panel"
+        },
+        {
+          "event_id": "S03-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "RELEASE",
+          "target": "yard_gate"
+        },
+        {
+          "event_id": "S03-E02",
+          "predicate_id": "P2",
+          "subject": "Aya",
+          "action": "OBSERVE",
+          "target": "Mert_RELEASE_yard_gate"
+        }
+      ]
+    },
+    {
+      "id": "S03-turn",
+      "source_field": "turn",
+      "source_text": "Aya follows Mert’s practical coordination rather than rushing ahead.",
+      "required_predicates": [
+        {
+          "event_id": "S03-E01",
+          "predicate_id": "P1",
+          "subject": "Aya_and_Mert",
+          "action": "LIFT_TOGETHER",
+          "target": "mosaic_panel"
+        },
+        {
+          "event_id": "S03-E02",
+          "predicate_id": "P1",
+          "subject": "Mert",
+          "action": "RELEASE",
+          "target": "yard_gate"
+        }
+      ]
+    }
+  ],
+  "ordered_dependencies": [
+    {
+      "before": {
+        "event_id": "S03-E01",
+        "predicate_id": "P1",
+        "subject": "Aya_and_Mert",
+        "action": "LIFT_TOGETHER",
+        "target": "mosaic_panel"
+      },
+      "after": {
+        "event_id": "S03-E02",
+        "predicate_id": "P1",
+        "subject": "Mert",
+        "action": "RELEASE",
+        "target": "yard_gate"
+      }
+    }
+  ]
+}

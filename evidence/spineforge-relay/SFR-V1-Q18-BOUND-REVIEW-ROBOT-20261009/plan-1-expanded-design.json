@@ -1,0 +1,2217 @@
+{
+  "schema_name": "spineforge.story-design.v2",
+  "request_sha256": "1f38023118af12ea4be9f33c9249676c2ca5dfcbea28f0620586207916e9ff93",
+  "fixture": {
+    "schema": "spineforge-relay.repeatability-fixture.v5",
+    "story_id": "broken-robot-ada-bora",
+    "story_intent": {
+      "language": "tr",
+      "reader_age": 12,
+      "genre": "realistic_school_story",
+      "tone": [
+        "gerilimli",
+        "sıcak",
+        "umutlu"
+      ],
+      "premise": "Serginin açılmasına yirmi dakika kala robot çalışmayınca Ada ile Bora, suçlamaya kapılmadan arızayı birlikte bulup dürüst bir sunum planlamak zorundadır.",
+      "character_arc": "Ada suçlama dürtüsünü sistemli incelemeye, Bora savunmacı geri çekilişini açık iş birliğine dönüştürür; güvenleri tamamen düzelmese de yeniden kurulmaya başlar.",
+      "resolution": "Gevşek motor bağlantısını notlar ve araçlarla bulup sağlamlaştırırlar; çalışan robotu, arızayı ve çözüm süreçlerini saklamayan bir sunumla sergilerler.",
+      "resolution_bindings": [
+        {
+          "scene_id": "S2_SuclamaMolasi",
+          "kind": "THREAD",
+          "id": "resolve_partner_blame",
+          "evidence": {
+            "event_id": "E2_CooperationChoice",
+            "predicate_id": "P2b"
+          }
+        },
+        {
+          "scene_id": "S3_ArizaTespiti",
+          "kind": "THREAD",
+          "id": "understand_robot_failure",
+          "evidence": {
+            "event_id": "E3_Discovery",
+            "predicate_id": "P3c"
+          }
+        },
+        {
+          "scene_id": "S3_ArizaTespiti",
+          "kind": "OBLIGATION",
+          "id": "investigate_together",
+          "evidence": {
+            "event_id": "E3_Discovery",
+            "predicate_id": "P3d"
+          }
+        },
+        {
+          "scene_id": "S4_OnarimVeTest",
+          "kind": "OBLIGATION",
+          "id": "repair_cooperation",
+          "evidence": {
+            "event_id": "E4_Test",
+            "predicate_id": "P4d"
+          }
+        },
+        {
+          "scene_id": "S5_SunumKarari",
+          "kind": "THREAD",
+          "id": "decide_project_presentation",
+          "evidence": {
+            "event_id": "E5_Acceptance",
+            "predicate_id": "P5b"
+          }
+        },
+        {
+          "scene_id": "S6_DurustSergi",
+          "kind": "OBLIGATION",
+          "id": "choose_presentation",
+          "evidence": {
+            "event_id": "E6_Presentation",
+            "predicate_id": "P6c"
+          }
+        }
+      ]
+    },
+    "route": [
+      "S1_SabahArizasi",
+      "S2_SuclamaMolasi",
+      "S3_ArizaTespiti",
+      "S4_OnarimVeTest",
+      "S5_SunumKarari",
+      "S6_DurustSergi"
+    ],
+    "initial_state": {
+      "revision": 0,
+      "characters": {
+        "Ada": {
+          "location": "school_workshop",
+          "condition": {
+            "health": "good",
+            "emotion": "anxious",
+            "goal": "present_the_project"
+          },
+          "inventory": {},
+          "knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_programming"
+          ],
+          "relationships": {
+            "Bora": {
+              "familiarity": "classmate_and_project_partner",
+              "trust": "strained"
+            }
+          }
+        },
+        "Bora": {
+          "location": "school_workshop",
+          "condition": {
+            "health": "good",
+            "emotion": "defensive",
+            "goal": "understand_the_failure"
+          },
+          "inventory": {},
+          "knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_mechanical_assembly"
+          ],
+          "relationships": {
+            "Ada": {
+              "familiarity": "classmate_and_project_partner",
+              "trust": "strained"
+            }
+          }
+        }
+      },
+      "world": {
+        "setting": "ordinary_contemporary_school",
+        "time": {
+          "day": "exhibition_day",
+          "period": "morning",
+          "minutes_until_opening": 20
+        },
+        "rules": [
+          "No magic or instant expert skills.",
+          "Tools and parts must come from established resources."
+        ],
+        "spatial": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "school_workshop",
+            "Bora": "school_workshop",
+            "robot": "school_workshop",
+            "toolkit": "school_workshop",
+            "project_notebook": "school_workshop"
+          },
+          "access_constraints": []
+        }
+      },
+      "objects": {
+        "robot": {
+          "owner": "school_project",
+          "location": "school_workshop",
+          "state": {
+            "power_source": "low_voltage_battery",
+            "battery_charged": true,
+            "operational": false,
+            "fault": "loose_motor_connector",
+            "fault_discovered": false,
+            "program_loaded": true,
+            "presented": false
+          }
+        },
+        "toolkit": {
+          "owner": "school",
+          "location": "school_workshop",
+          "state": {
+            "contents": [
+              "small_screwdriver"
+            ],
+            "available": true
+          }
+        },
+        "project_notebook": {
+          "owner": "school_project",
+          "location": "school_workshop",
+          "state": {
+            "contains": [
+              "assembly_diagram",
+              "program_notes"
+            ],
+            "available": true
+          }
+        }
+      },
+      "open_threads": [
+        "understand_robot_failure",
+        "decide_project_presentation",
+        "resolve_partner_blame"
+      ],
+      "resolved_threads": [],
+      "completed_spine_beats": [],
+      "next_spine_beat": "S1_SabahArizasi",
+      "narrative_obligations": [
+        {
+          "id": "investigate_together",
+          "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+          "status": "OPEN",
+          "target_scene_id": null
+        },
+        {
+          "id": "choose_presentation",
+          "detail": "They decide and carry out an honest presentation of their project.",
+          "status": "OPEN",
+          "target_scene_id": null
+        },
+        {
+          "id": "repair_cooperation",
+          "detail": "They move from blame toward practical cooperation without instant intimacy.",
+          "status": "OPEN",
+          "target_scene_id": null
+        }
+      ]
+    },
+    "relevant_character_canon": {
+      "Ada": {
+        "age": 12,
+        "strength": "patient_with_code",
+        "difficulty": "jumps_to_blame_under_pressure"
+      },
+      "Bora": {
+        "age": 12,
+        "strength": "observes_physical_details",
+        "difficulty": "withdraws_when_accused"
+      }
+    },
+    "prop_authorization_policy": {
+      "authorized_actionable_props": [
+        "robot",
+        "toolkit",
+        "project_notebook"
+      ],
+      "rule": "Use established tools and notes; no unexplained replacement robot or adult solving the problem for them."
+    },
+    "topology": {
+      "schema_name": "spineforge-relay.spatial-topology.v1",
+      "locations": [
+        "school_workshop",
+        "exhibition_hall"
+      ],
+      "edges": [
+        {
+          "id": "workshop_hall",
+          "source": "school_workshop",
+          "destination": "exhibition_hall",
+          "passage": "indoor_door",
+          "bidirectional": true,
+          "allowed_entities": [
+            "Ada",
+            "Bora",
+            "robot",
+            "toolkit",
+            "project_notebook"
+          ]
+        }
+      ],
+      "position_state_paths": {
+        "Ada": "/characters/Ada/location",
+        "Bora": "/characters/Bora/location",
+        "robot": "/objects/robot/location",
+        "toolkit": "/objects/toolkit/location",
+        "project_notebook": "/objects/project_notebook/location"
+      }
+    },
+    "carry_groups": [],
+    "scene_plans": [
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S1_SabahArizasi",
+        "spine_beats": [
+          "S1_SabahArizasi"
+        ],
+        "narrative_purpose": "Sergi sabahındaki arızayı ve zaman baskısını kurmak.",
+        "location": "school_workshop",
+        "objective": "Robotun gerçekten çalışmadığını iki ortağa da göstermek.",
+        "turn": "Dün çalışan robot, Ada başlatmayı deneyince tepki vermez.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E1_Failure",
+            "actor": "Ada",
+            "action": "ATTEMPTS_TO_START",
+            "target": "robot",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P1a",
+                "subject": "Ada",
+                "action": "ATTEMPTS_TO_START",
+                "target": "robot"
+              },
+              {
+                "id": "P1b",
+                "subject": "robot",
+                "action": "FAILS_TO_START",
+                "target": "robot"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_ATTEMPTS_TO_START_robot"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/characters/Ada/knowledge": [
+                "exhibition_today",
+                "robot_worked_yesterday",
+                "basic_programming",
+                "robot_failed_exhibition_morning"
+              ],
+              "/characters/Bora/knowledge": [
+                "exhibition_today",
+                "robot_worked_yesterday",
+                "basic_mechanical_assembly",
+                "robot_failed_exhibition_morning"
+              ]
+            }
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "school_workshop",
+          "/characters/Bora/location": "school_workshop",
+          "/objects/robot/location": "school_workshop",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "school_workshop"
+        },
+        "required_exit_state": {
+          "/characters/Ada/knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_programming",
+            "robot_failed_exhibition_morning"
+          ],
+          "/characters/Bora/knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_mechanical_assembly",
+            "robot_failed_exhibition_morning"
+          ],
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          }
+        },
+        "allowed_state_paths": [
+          "/characters/Ada/knowledge",
+          "/characters/Bora/knowledge",
+          "/world/spatial"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": "S2_SuclamaMolasi",
+        "target_words_min": 120,
+        "target_words_max": 260
+      },
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S2_SuclamaMolasi",
+        "spine_beats": [
+          "S2_SuclamaMolasi"
+        ],
+        "narrative_purpose": "Karşılıklı suçlama yerine bilinçli iş birliğini seçtirmek.",
+        "location": "school_workshop",
+        "objective": "Kod, güç ve bağlantıları sırayla kontrol edecek ortak bir yöntem belirlemek.",
+        "turn": "Ada suçlamayı durdurmayı önerir; Bora geri çekilmek yerine planı kabul eder.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E2_CooperationChoice",
+            "actor": "Ada",
+            "action": "PROPOSES",
+            "target": "blame_free_systematic_check",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P2a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "id": "P2b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_blame_free_systematic_check"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/characters/Ada/condition/emotion": "focused_but_anxious",
+              "/characters/Bora/condition/emotion": "cautious_but_engaged"
+            }
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "school_workshop",
+          "/characters/Bora/location": "school_workshop",
+          "/objects/robot/location": "school_workshop",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "school_workshop"
+        },
+        "required_exit_state": {
+          "/characters/Ada/condition/emotion": "focused_but_anxious",
+          "/characters/Bora/condition/emotion": "cautious_but_engaged",
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/open_threads": [
+            "understand_robot_failure",
+            "decide_project_presentation"
+          ],
+          "/resolved_threads": [
+            "resolve_partner_blame"
+          ]
+        },
+        "allowed_state_paths": [
+          "/characters/Ada/condition/emotion",
+          "/characters/Bora/condition/emotion",
+          "/world/spatial",
+          "/open_threads",
+          "/resolved_threads"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": "S3_ArizaTespiti",
+        "target_words_min": 120,
+        "target_words_max": 260
+      },
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S3_ArizaTespiti",
+        "spine_beats": [
+          "S3_ArizaTespiti"
+        ],
+        "narrative_purpose": "Arızayı önceden bilmeden, ortak incelemeyle keşfettirmek.",
+        "location": "school_workshop",
+        "objective": "Proje notlarını robotun fiziksel bağlantılarıyla karşılaştırmak.",
+        "turn": "Ada şemadaki motor hattını izlerken Bora gevşek motor bağlantısını görür.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E3_Diagram",
+            "actor": "Ada",
+            "action": "TRACES",
+            "target": "assembly_diagram",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P3a",
+                "subject": "Ada",
+                "action": "TRACES",
+                "target": "assembly_diagram"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TRACES_assembly_diagram"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {}
+          },
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E3_Discovery",
+            "actor": "Bora",
+            "action": "INSPECTS",
+            "target": "robot",
+            "required_observer": "Ada",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P3b",
+                "subject": "Bora",
+                "action": "INSPECTS",
+                "target": "robot"
+              },
+              {
+                "id": "P3c",
+                "subject": "Bora",
+                "action": "IDENTIFIES",
+                "target": "loose_motor_connector"
+              },
+              {
+                "id": "P3d",
+                "subject": "Bora",
+                "action": "INVESTIGATES_WITH",
+                "target": "Ada"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_INSPECTS_robot"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/objects/robot/state/fault_discovered": true,
+              "/characters/Ada/knowledge": [
+                "exhibition_today",
+                "robot_worked_yesterday",
+                "basic_programming",
+                "robot_failed_exhibition_morning",
+                "loose_motor_connector_causes_failure"
+              ],
+              "/characters/Bora/knowledge": [
+                "exhibition_today",
+                "robot_worked_yesterday",
+                "basic_mechanical_assembly",
+                "robot_failed_exhibition_morning",
+                "loose_motor_connector_causes_failure"
+              ]
+            }
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "school_workshop",
+          "/characters/Bora/location": "school_workshop",
+          "/objects/robot/location": "school_workshop",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "school_workshop"
+        },
+        "required_exit_state": {
+          "/objects/robot/state/fault_discovered": true,
+          "/characters/Ada/knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_programming",
+            "robot_failed_exhibition_morning",
+            "loose_motor_connector_causes_failure"
+          ],
+          "/characters/Bora/knowledge": [
+            "exhibition_today",
+            "robot_worked_yesterday",
+            "basic_mechanical_assembly",
+            "robot_failed_exhibition_morning",
+            "loose_motor_connector_causes_failure"
+          ],
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/open_threads": [
+            "decide_project_presentation"
+          ],
+          "/resolved_threads": [
+            "resolve_partner_blame",
+            "understand_robot_failure"
+          ],
+          "/narrative_obligations": [
+            {
+              "id": "investigate_together",
+              "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            },
+            {
+              "id": "choose_presentation",
+              "detail": "They decide and carry out an honest presentation of their project.",
+              "status": "OPEN",
+              "target_scene_id": null
+            },
+            {
+              "id": "repair_cooperation",
+              "detail": "They move from blame toward practical cooperation without instant intimacy.",
+              "status": "OPEN",
+              "target_scene_id": null
+            }
+          ]
+        },
+        "allowed_state_paths": [
+          "/objects/robot/state/fault_discovered",
+          "/characters/Ada/knowledge",
+          "/characters/Bora/knowledge",
+          "/world/spatial",
+          "/open_threads",
+          "/resolved_threads",
+          "/narrative_obligations"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": "S4_OnarimVeTest",
+        "target_words_min": 120,
+        "target_words_max": 260
+      },
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S4_OnarimVeTest",
+        "spine_beats": [
+          "S4_OnarimVeTest"
+        ],
+        "narrative_purpose": "Çözümü mevcut beceri ve araçlarla kazanılmış bir sonuca dönüştürmek.",
+        "location": "school_workshop",
+        "objective": "Bağlantıyı sağlamlaştırıp yüklü programla kontrollü test yapmak.",
+        "turn": "Bora bağlantıyı sıkıştırdıktan sonra Ada'nın testi robotu yeniden çalıştırır.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E4_Repair",
+            "actor": "Bora",
+            "action": "TIGHTENS",
+            "target": "loose_motor_connector",
+            "required_observer": "Ada",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P4a",
+                "subject": "Bora",
+                "action": "TIGHTENS",
+                "target": "loose_motor_connector"
+              },
+              {
+                "id": "P4b",
+                "subject": "Bora",
+                "action": "USES",
+                "target": "small_screwdriver"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_TIGHTENS_loose_motor_connector"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/objects/robot/state/fault": "none"
+            }
+          },
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E4_Test",
+            "actor": "Ada",
+            "action": "TESTS",
+            "target": "robot",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P4c",
+                "subject": "Ada",
+                "action": "TESTS",
+                "target": "robot"
+              },
+              {
+                "id": "P4d",
+                "subject": "Ada",
+                "action": "BUILDS_ON_BORAS_REPAIR",
+                "target": "robot"
+              },
+              {
+                "id": "P4e",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TESTS_robot"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/objects/robot/state/operational": true
+            }
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "school_workshop",
+          "/characters/Bora/location": "school_workshop",
+          "/objects/robot/location": "school_workshop",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "school_workshop"
+        },
+        "required_exit_state": {
+          "/objects/robot/state/fault": "none",
+          "/objects/robot/state/operational": true,
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/narrative_obligations": [
+            {
+              "id": "investigate_together",
+              "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            },
+            {
+              "id": "choose_presentation",
+              "detail": "They decide and carry out an honest presentation of their project.",
+              "status": "OPEN",
+              "target_scene_id": null
+            },
+            {
+              "id": "repair_cooperation",
+              "detail": "They move from blame toward practical cooperation without instant intimacy.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            }
+          ]
+        },
+        "allowed_state_paths": [
+          "/objects/robot/state/fault",
+          "/objects/robot/state/operational",
+          "/world/spatial",
+          "/narrative_obligations"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": "S5_SunumKarari",
+        "target_words_min": 120,
+        "target_words_max": 260
+      },
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S5_SunumKarari",
+        "spine_beats": [
+          "S5_SunumKarari"
+        ],
+        "narrative_purpose": "Onarımın ardından dürüst ve uygulanabilir sunum biçimini seçmek.",
+        "location": null,
+        "objective": "Canlı gösteriyi, arıza-çözüm açıklamasını ve not defteri yedeğini kararlaştırıp sergi salonuna geçmek.",
+        "turn": "Bora, Ada'nın yalnızca sonucu değil süreci de anlatma önerisini kabul eder.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E5_Proposal",
+            "actor": "Ada",
+            "action": "PROPOSES",
+            "target": "live_demo_with_honest_repair_account_and_notebook_backup",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P5a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_live_demo_with_honest_repair_account_and_notebook_backup"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {}
+          },
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E5_Acceptance",
+            "actor": "Bora",
+            "action": "ACCEPTS",
+            "target": "live_demo_with_honest_repair_account_and_notebook_backup",
+            "required_observer": "Ada",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P5b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_ACCEPTS_live_demo_with_honest_repair_account_and_notebook_backup"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {}
+          },
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E5_MoveAda",
+            "actor": "Ada",
+            "action": "CARRIES",
+            "target": "robot",
+            "required_observer": "Bora",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P5c",
+                "subject": "Ada",
+                "action": "CARRIES",
+                "target": "robot"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_CARRIES_robot"
+              },
+              {
+                "id": "SP_SP5_Ada",
+                "subject": "Ada",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              },
+              {
+                "id": "SP_SP5_Robot",
+                "subject": "robot",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {}
+          },
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E5_MoveBora",
+            "actor": "Bora",
+            "action": "CARRIES",
+            "target": "project_notebook",
+            "required_observer": "Ada",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P5d",
+                "subject": "Bora",
+                "action": "CARRIES",
+                "target": "project_notebook"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_CARRIES_project_notebook"
+              },
+              {
+                "id": "SP_SP5_Bora",
+                "subject": "Bora",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              },
+              {
+                "id": "SP_SP5_Notebook",
+                "subject": "project_notebook",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {}
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "school_workshop",
+              "Bora": "school_workshop",
+              "robot": "school_workshop",
+              "toolkit": "school_workshop",
+              "project_notebook": "school_workshop"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "school_workshop",
+          "/characters/Bora/location": "school_workshop",
+          "/objects/robot/location": "school_workshop",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "school_workshop"
+        },
+        "required_exit_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "exhibition_hall",
+              "Bora": "exhibition_hall",
+              "robot": "exhibition_hall",
+              "toolkit": "school_workshop",
+              "project_notebook": "exhibition_hall"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "exhibition_hall",
+          "/characters/Bora/location": "exhibition_hall",
+          "/objects/robot/location": "exhibition_hall",
+          "/objects/project_notebook/location": "exhibition_hall",
+          "/open_threads": [],
+          "/resolved_threads": [
+            "resolve_partner_blame",
+            "understand_robot_failure",
+            "decide_project_presentation"
+          ]
+        },
+        "allowed_state_paths": [
+          "/world/spatial",
+          "/characters/Ada/location",
+          "/characters/Bora/location",
+          "/objects/robot/location",
+          "/objects/project_notebook/location",
+          "/open_threads",
+          "/resolved_threads"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": "S6_DurustSergi",
+        "target_words_min": 120,
+        "target_words_max": 260
+      },
+      {
+        "schema_name": "spineforge-relay.scene-plan.v1",
+        "scene_id": "S6_DurustSergi",
+        "spine_beats": [
+          "S6_DurustSergi"
+        ],
+        "narrative_purpose": "Seçilen sunum biçimini açılış öncesinde uygulamak.",
+        "location": "exhibition_hall",
+        "objective": "Robotu çalıştırırken arızayı ve ortak çözümü dürüstçe açıklamak.",
+        "turn": "Canlı gösteri işler; asıl başarıları hatayı saklamak değil, birlikte çözüm süreçlerini anlatmaktır.",
+        "entry_requirements": [],
+        "exit_requirements": [],
+        "required_events": [
+          {
+            "schema_name": "spineforge-relay.required-event.v1",
+            "id": "E6_Presentation",
+            "actor": "Ada",
+            "action": "DEMONSTRATES",
+            "target": "robot",
+            "required_observer": "Ada",
+            "satisfaction_mode": "ALL_PREDICATES",
+            "evidence_mode": "DIRECT_OBSERVATION",
+            "separate_physical_clue_required": false,
+            "predicates": [
+              {
+                "id": "P6a",
+                "subject": "Ada",
+                "action": "DEMONSTRATES",
+                "target": "robot"
+              },
+              {
+                "id": "P6b",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "id": "P6c",
+                "subject": "Bora",
+                "action": "EXPLAINS_HONESTLY",
+                "target": "loose_connector_and_cooperative_repair"
+              },
+              {
+                "id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Ada_DEMONSTRATES_robot"
+              }
+            ],
+            "allowed_provenance": [
+              "DIRECT_OBSERVATION"
+            ],
+            "forbidden_provenance": [
+              "INVENTED_WORLD_RULE",
+              "INVENTED_CLUE",
+              "UNESTABLISHED_LORE"
+            ],
+            "forbidden_evidence_subjects": [],
+            "resulting_state": {
+              "/objects/robot/state/presented": true,
+              "/characters/Ada/condition/emotion": "relieved",
+              "/characters/Bora/condition/emotion": "quietly_proud",
+              "/characters/Ada/relationships/Bora/trust": "recovering",
+              "/characters/Bora/relationships/Ada/trust": "recovering"
+            }
+          }
+        ],
+        "entry_state": {
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "exhibition_hall",
+              "Bora": "exhibition_hall",
+              "robot": "exhibition_hall",
+              "toolkit": "school_workshop",
+              "project_notebook": "exhibition_hall"
+            },
+            "access_constraints": []
+          },
+          "/characters/Ada/location": "exhibition_hall",
+          "/characters/Bora/location": "exhibition_hall",
+          "/objects/robot/location": "exhibition_hall",
+          "/objects/toolkit/location": "school_workshop",
+          "/objects/project_notebook/location": "exhibition_hall"
+        },
+        "required_exit_state": {
+          "/objects/robot/state/presented": true,
+          "/characters/Ada/condition/emotion": "relieved",
+          "/characters/Bora/condition/emotion": "quietly_proud",
+          "/characters/Ada/relationships/Bora/trust": "recovering",
+          "/characters/Bora/relationships/Ada/trust": "recovering",
+          "/world/spatial": {
+            "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+            "positions": {
+              "Ada": "exhibition_hall",
+              "Bora": "exhibition_hall",
+              "robot": "exhibition_hall",
+              "toolkit": "school_workshop",
+              "project_notebook": "exhibition_hall"
+            },
+            "access_constraints": []
+          },
+          "/narrative_obligations": [
+            {
+              "id": "investigate_together",
+              "detail": "Ada and Bora investigate the failure without unexplained prior diagnosis.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            },
+            {
+              "id": "choose_presentation",
+              "detail": "They decide and carry out an honest presentation of their project.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            },
+            {
+              "id": "repair_cooperation",
+              "detail": "They move from blame toward practical cooperation without instant intimacy.",
+              "status": "SATISFIED",
+              "target_scene_id": null
+            }
+          ]
+        },
+        "allowed_state_paths": [
+          "/objects/robot/state/presented",
+          "/characters/Ada/condition/emotion",
+          "/characters/Bora/condition/emotion",
+          "/characters/Ada/relationships/Bora/trust",
+          "/characters/Bora/relationships/Ada/trust",
+          "/world/spatial",
+          "/narrative_obligations"
+        ],
+        "immutable_facts": [],
+        "forbidden": [],
+        "emotional_transition": null,
+        "next_spine_beat": null,
+        "target_words_min": 120,
+        "target_words_max": 260
+      }
+    ],
+    "coverage_plans": [
+      {
+        "scene_id": "S1_SabahArizasi",
+        "obligations": [
+          {
+            "id": "S1_SabahArizasi-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Sergi sabahındaki arızayı ve zaman baskısını kurmak.",
+            "required_predicates": [
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1a",
+                "subject": "Ada",
+                "action": "ATTEMPTS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1b",
+                "subject": "robot",
+                "action": "FAILS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_ATTEMPTS_TO_START_robot"
+              }
+            ]
+          },
+          {
+            "id": "S1_SabahArizasi-objective",
+            "source_field": "objective",
+            "source_text": "Robotun gerçekten çalışmadığını iki ortağa da göstermek.",
+            "required_predicates": [
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1a",
+                "subject": "Ada",
+                "action": "ATTEMPTS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1b",
+                "subject": "robot",
+                "action": "FAILS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_ATTEMPTS_TO_START_robot"
+              }
+            ]
+          },
+          {
+            "id": "S1_SabahArizasi-turn",
+            "source_field": "turn",
+            "source_text": "Dün çalışan robot, Ada başlatmayı deneyince tepki vermez.",
+            "required_predicates": [
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1a",
+                "subject": "Ada",
+                "action": "ATTEMPTS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "P1b",
+                "subject": "robot",
+                "action": "FAILS_TO_START",
+                "target": "robot"
+              },
+              {
+                "event_id": "E1_Failure",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_ATTEMPTS_TO_START_robot"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": []
+      },
+      {
+        "scene_id": "S2_SuclamaMolasi",
+        "obligations": [
+          {
+            "id": "S2_SuclamaMolasi-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Karşılıklı suçlama yerine bilinçli iş birliğini seçtirmek.",
+            "required_predicates": [
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_blame_free_systematic_check"
+              }
+            ]
+          },
+          {
+            "id": "S2_SuclamaMolasi-objective",
+            "source_field": "objective",
+            "source_text": "Kod, güç ve bağlantıları sırayla kontrol edecek ortak bir yöntem belirlemek.",
+            "required_predicates": [
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_blame_free_systematic_check"
+              }
+            ]
+          },
+          {
+            "id": "S2_SuclamaMolasi-turn",
+            "source_field": "turn",
+            "source_text": "Ada suçlamayı durdurmayı önerir; Bora geri çekilmek yerine planı kabul eder.",
+            "required_predicates": [
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "P2b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "blame_free_systematic_check"
+              },
+              {
+                "event_id": "E2_CooperationChoice",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_blame_free_systematic_check"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": []
+      },
+      {
+        "scene_id": "S3_ArizaTespiti",
+        "obligations": [
+          {
+            "id": "S3_ArizaTespiti-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Arızayı önceden bilmeden, ortak incelemeyle keşfettirmek.",
+            "required_predicates": [
+              {
+                "event_id": "E3_Diagram",
+                "predicate_id": "P3a",
+                "subject": "Ada",
+                "action": "TRACES",
+                "target": "assembly_diagram"
+              },
+              {
+                "event_id": "E3_Diagram",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TRACES_assembly_diagram"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3b",
+                "subject": "Bora",
+                "action": "INSPECTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3c",
+                "subject": "Bora",
+                "action": "IDENTIFIES",
+                "target": "loose_motor_connector"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3d",
+                "subject": "Bora",
+                "action": "INVESTIGATES_WITH",
+                "target": "Ada"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_INSPECTS_robot"
+              }
+            ]
+          },
+          {
+            "id": "S3_ArizaTespiti-objective",
+            "source_field": "objective",
+            "source_text": "Proje notlarını robotun fiziksel bağlantılarıyla karşılaştırmak.",
+            "required_predicates": [
+              {
+                "event_id": "E3_Diagram",
+                "predicate_id": "P3a",
+                "subject": "Ada",
+                "action": "TRACES",
+                "target": "assembly_diagram"
+              },
+              {
+                "event_id": "E3_Diagram",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TRACES_assembly_diagram"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3b",
+                "subject": "Bora",
+                "action": "INSPECTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3c",
+                "subject": "Bora",
+                "action": "IDENTIFIES",
+                "target": "loose_motor_connector"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3d",
+                "subject": "Bora",
+                "action": "INVESTIGATES_WITH",
+                "target": "Ada"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_INSPECTS_robot"
+              }
+            ]
+          },
+          {
+            "id": "S3_ArizaTespiti-turn",
+            "source_field": "turn",
+            "source_text": "Ada şemadaki motor hattını izlerken Bora gevşek motor bağlantısını görür.",
+            "required_predicates": [
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3b",
+                "subject": "Bora",
+                "action": "INSPECTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3c",
+                "subject": "Bora",
+                "action": "IDENTIFIES",
+                "target": "loose_motor_connector"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "P3d",
+                "subject": "Bora",
+                "action": "INVESTIGATES_WITH",
+                "target": "Ada"
+              },
+              {
+                "event_id": "E3_Discovery",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_INSPECTS_robot"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": [
+          {
+            "before": {
+              "event_id": "E3_Diagram",
+              "predicate_id": "P3a",
+              "subject": "Ada",
+              "action": "TRACES",
+              "target": "assembly_diagram"
+            },
+            "after": {
+              "event_id": "E3_Discovery",
+              "predicate_id": "P3b",
+              "subject": "Bora",
+              "action": "INSPECTS",
+              "target": "robot"
+            }
+          }
+        ]
+      },
+      {
+        "scene_id": "S4_OnarimVeTest",
+        "obligations": [
+          {
+            "id": "S4_OnarimVeTest-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Çözümü mevcut beceri ve araçlarla kazanılmış bir sonuca dönüştürmek.",
+            "required_predicates": [
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "P4a",
+                "subject": "Bora",
+                "action": "TIGHTENS",
+                "target": "loose_motor_connector"
+              },
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "P4b",
+                "subject": "Bora",
+                "action": "USES",
+                "target": "small_screwdriver"
+              },
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_TIGHTENS_loose_motor_connector"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4c",
+                "subject": "Ada",
+                "action": "TESTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4d",
+                "subject": "Ada",
+                "action": "BUILDS_ON_BORAS_REPAIR",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4e",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TESTS_robot"
+              }
+            ]
+          },
+          {
+            "id": "S4_OnarimVeTest-objective",
+            "source_field": "objective",
+            "source_text": "Bağlantıyı sağlamlaştırıp yüklü programla kontrollü test yapmak.",
+            "required_predicates": [
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "P4a",
+                "subject": "Bora",
+                "action": "TIGHTENS",
+                "target": "loose_motor_connector"
+              },
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "P4b",
+                "subject": "Bora",
+                "action": "USES",
+                "target": "small_screwdriver"
+              },
+              {
+                "event_id": "E4_Repair",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_TIGHTENS_loose_motor_connector"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4c",
+                "subject": "Ada",
+                "action": "TESTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4d",
+                "subject": "Ada",
+                "action": "BUILDS_ON_BORAS_REPAIR",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4e",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TESTS_robot"
+              }
+            ]
+          },
+          {
+            "id": "S4_OnarimVeTest-turn",
+            "source_field": "turn",
+            "source_text": "Bora bağlantıyı sıkıştırdıktan sonra Ada'nın testi robotu yeniden çalıştırır.",
+            "required_predicates": [
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4c",
+                "subject": "Ada",
+                "action": "TESTS",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4d",
+                "subject": "Ada",
+                "action": "BUILDS_ON_BORAS_REPAIR",
+                "target": "robot"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "P4e",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E4_Test",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_TESTS_robot"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": [
+          {
+            "before": {
+              "event_id": "E4_Repair",
+              "predicate_id": "P4a",
+              "subject": "Bora",
+              "action": "TIGHTENS",
+              "target": "loose_motor_connector"
+            },
+            "after": {
+              "event_id": "E4_Test",
+              "predicate_id": "P4c",
+              "subject": "Ada",
+              "action": "TESTS",
+              "target": "robot"
+            }
+          }
+        ]
+      },
+      {
+        "scene_id": "S5_SunumKarari",
+        "obligations": [
+          {
+            "id": "S5_SunumKarari-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Onarımın ardından dürüst ve uygulanabilir sunum biçimini seçmek.",
+            "required_predicates": [
+              {
+                "event_id": "E5_Proposal",
+                "predicate_id": "P5a",
+                "subject": "Ada",
+                "action": "PROPOSES",
+                "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "event_id": "E5_Proposal",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_PROPOSES_live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "event_id": "E5_Acceptance",
+                "predicate_id": "P5b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "event_id": "E5_Acceptance",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_ACCEPTS_live_demo_with_honest_repair_account_and_notebook_backup"
+              }
+            ]
+          },
+          {
+            "id": "S5_SunumKarari-objective",
+            "source_field": "objective",
+            "source_text": "Canlı gösteriyi, arıza-çözüm açıklamasını ve not defteri yedeğini kararlaştırıp sergi salonuna geçmek.",
+            "required_predicates": [
+              {
+                "event_id": "E5_MoveAda",
+                "predicate_id": "P5c",
+                "subject": "Ada",
+                "action": "CARRIES",
+                "target": "robot"
+              },
+              {
+                "event_id": "E5_MoveAda",
+                "predicate_id": "OBSERVER",
+                "subject": "Bora",
+                "action": "OBSERVE",
+                "target": "Ada_CARRIES_robot"
+              },
+              {
+                "event_id": "E5_MoveAda",
+                "predicate_id": "SP_SP5_Ada",
+                "subject": "Ada",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              },
+              {
+                "event_id": "E5_MoveAda",
+                "predicate_id": "SP_SP5_Robot",
+                "subject": "robot",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              },
+              {
+                "event_id": "E5_MoveBora",
+                "predicate_id": "P5d",
+                "subject": "Bora",
+                "action": "CARRIES",
+                "target": "project_notebook"
+              },
+              {
+                "event_id": "E5_MoveBora",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_CARRIES_project_notebook"
+              },
+              {
+                "event_id": "E5_MoveBora",
+                "predicate_id": "SP_SP5_Bora",
+                "subject": "Bora",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              },
+              {
+                "event_id": "E5_MoveBora",
+                "predicate_id": "SP_SP5_Notebook",
+                "subject": "project_notebook",
+                "action": "MOVE",
+                "target": "exhibition_hall"
+              }
+            ]
+          },
+          {
+            "id": "S5_SunumKarari-turn",
+            "source_field": "turn",
+            "source_text": "Bora, Ada'nın yalnızca sonucu değil süreci de anlatma önerisini kabul eder.",
+            "required_predicates": [
+              {
+                "event_id": "E5_Acceptance",
+                "predicate_id": "P5b",
+                "subject": "Bora",
+                "action": "ACCEPTS",
+                "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+              },
+              {
+                "event_id": "E5_Acceptance",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Bora_ACCEPTS_live_demo_with_honest_repair_account_and_notebook_backup"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": [
+          {
+            "before": {
+              "event_id": "E5_Proposal",
+              "predicate_id": "P5a",
+              "subject": "Ada",
+              "action": "PROPOSES",
+              "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+            },
+            "after": {
+              "event_id": "E5_Acceptance",
+              "predicate_id": "P5b",
+              "subject": "Bora",
+              "action": "ACCEPTS",
+              "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+            }
+          },
+          {
+            "before": {
+              "event_id": "E5_Acceptance",
+              "predicate_id": "P5b",
+              "subject": "Bora",
+              "action": "ACCEPTS",
+              "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+            },
+            "after": {
+              "event_id": "E5_MoveAda",
+              "predicate_id": "P5c",
+              "subject": "Ada",
+              "action": "CARRIES",
+              "target": "robot"
+            }
+          },
+          {
+            "before": {
+              "event_id": "E5_Acceptance",
+              "predicate_id": "P5b",
+              "subject": "Bora",
+              "action": "ACCEPTS",
+              "target": "live_demo_with_honest_repair_account_and_notebook_backup"
+            },
+            "after": {
+              "event_id": "E5_MoveBora",
+              "predicate_id": "P5d",
+              "subject": "Bora",
+              "action": "CARRIES",
+              "target": "project_notebook"
+            }
+          }
+        ]
+      },
+      {
+        "scene_id": "S6_DurustSergi",
+        "obligations": [
+          {
+            "id": "S6_DurustSergi-narrative_purpose",
+            "source_field": "narrative_purpose",
+            "source_text": "Seçilen sunum biçimini açılış öncesinde uygulamak.",
+            "required_predicates": [
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6a",
+                "subject": "Ada",
+                "action": "DEMONSTRATES",
+                "target": "robot"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6b",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6c",
+                "subject": "Bora",
+                "action": "EXPLAINS_HONESTLY",
+                "target": "loose_connector_and_cooperative_repair"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Ada_DEMONSTRATES_robot"
+              }
+            ]
+          },
+          {
+            "id": "S6_DurustSergi-objective",
+            "source_field": "objective",
+            "source_text": "Robotu çalıştırırken arızayı ve ortak çözümü dürüstçe açıklamak.",
+            "required_predicates": [
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6a",
+                "subject": "Ada",
+                "action": "DEMONSTRATES",
+                "target": "robot"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6b",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6c",
+                "subject": "Bora",
+                "action": "EXPLAINS_HONESTLY",
+                "target": "loose_connector_and_cooperative_repair"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Ada_DEMONSTRATES_robot"
+              }
+            ]
+          },
+          {
+            "id": "S6_DurustSergi-turn",
+            "source_field": "turn",
+            "source_text": "Canlı gösteri işler; asıl başarıları hatayı saklamak değil, birlikte çözüm süreçlerini anlatmaktır.",
+            "required_predicates": [
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6a",
+                "subject": "Ada",
+                "action": "DEMONSTRATES",
+                "target": "robot"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6b",
+                "subject": "robot",
+                "action": "RUNS",
+                "target": "loaded_program"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "P6c",
+                "subject": "Bora",
+                "action": "EXPLAINS_HONESTLY",
+                "target": "loose_connector_and_cooperative_repair"
+              },
+              {
+                "event_id": "E6_Presentation",
+                "predicate_id": "OBSERVER",
+                "subject": "Ada",
+                "action": "OBSERVE",
+                "target": "Ada_DEMONSTRATES_robot"
+              }
+            ]
+          }
+        ],
+        "ordered_dependencies": []
+      }
+    ],
+    "spatial_plans": [
+      {
+        "scene_id": "S1_SabahArizasi",
+        "operations": [],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "school_workshop",
+            "Bora": "school_workshop",
+            "robot": "school_workshop",
+            "toolkit": "school_workshop",
+            "project_notebook": "school_workshop"
+          },
+          "access_constraints": []
+        }
+      },
+      {
+        "scene_id": "S2_SuclamaMolasi",
+        "operations": [],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "school_workshop",
+            "Bora": "school_workshop",
+            "robot": "school_workshop",
+            "toolkit": "school_workshop",
+            "project_notebook": "school_workshop"
+          },
+          "access_constraints": []
+        }
+      },
+      {
+        "scene_id": "S3_ArizaTespiti",
+        "operations": [],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "school_workshop",
+            "Bora": "school_workshop",
+            "robot": "school_workshop",
+            "toolkit": "school_workshop",
+            "project_notebook": "school_workshop"
+          },
+          "access_constraints": []
+        }
+      },
+      {
+        "scene_id": "S4_OnarimVeTest",
+        "operations": [],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "school_workshop",
+            "Bora": "school_workshop",
+            "robot": "school_workshop",
+            "toolkit": "school_workshop",
+            "project_notebook": "school_workshop"
+          },
+          "access_constraints": []
+        }
+      },
+      {
+        "scene_id": "S5_SunumKarari",
+        "operations": [
+          {
+            "id": "SP5_Ada",
+            "kind": "MOVE",
+            "subject": "Ada",
+            "target": "exhibition_hall",
+            "event_id": "E5_MoveAda",
+            "predicate_id": "SP_SP5_Ada",
+            "edge_id": "workshop_hall",
+            "constraint_id": null
+          },
+          {
+            "id": "SP5_Robot",
+            "kind": "MOVE",
+            "subject": "robot",
+            "target": "exhibition_hall",
+            "event_id": "E5_MoveAda",
+            "predicate_id": "SP_SP5_Robot",
+            "edge_id": "workshop_hall",
+            "constraint_id": null
+          },
+          {
+            "id": "SP5_Bora",
+            "kind": "MOVE",
+            "subject": "Bora",
+            "target": "exhibition_hall",
+            "event_id": "E5_MoveBora",
+            "predicate_id": "SP_SP5_Bora",
+            "edge_id": "workshop_hall",
+            "constraint_id": null
+          },
+          {
+            "id": "SP5_Notebook",
+            "kind": "MOVE",
+            "subject": "project_notebook",
+            "target": "exhibition_hall",
+            "event_id": "E5_MoveBora",
+            "predicate_id": "SP_SP5_Notebook",
+            "edge_id": "workshop_hall",
+            "constraint_id": null
+          }
+        ],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "exhibition_hall",
+            "Bora": "exhibition_hall",
+            "robot": "exhibition_hall",
+            "toolkit": "school_workshop",
+            "project_notebook": "exhibition_hall"
+          },
+          "access_constraints": []
+        }
+      },
+      {
+        "scene_id": "S6_DurustSergi",
+        "operations": [],
+        "expected_exit": {
+          "topology_sha256": "0d5b16680b654efe58d1fa2bfbe2e5060cb4fddb1f6226798df4fda2eae73a1e",
+          "positions": {
+            "Ada": "exhibition_hall",
+            "Bora": "exhibition_hall",
+            "robot": "exhibition_hall",
+            "toolkit": "school_workshop",
+            "project_notebook": "exhibition_hall"
+          },
+          "access_constraints": []
+        }
+      }
+    ]
+  },
+  "request_bindings": [
+    {
+      "requirement_id": "R01",
+      "scene_id": "S1_SabahArizasi",
+      "event_id": "E1_Failure",
+      "predicate_id": "P1b",
+      "rationale": "Öykü sergi sabahında robotun başlatılamamasıyla açılır."
+    },
+    {
+      "requirement_id": "R02",
+      "scene_id": "S2_SuclamaMolasi",
+      "event_id": "E2_CooperationChoice",
+      "predicate_id": "P2b",
+      "rationale": "Bora, suçlama yerine sistemli ortak kontrolü kabul eder."
+    },
+    {
+      "requirement_id": "R02",
+      "scene_id": "S3_ArizaTespiti",
+      "event_id": "E3_Discovery",
+      "predicate_id": "P3c",
+      "rationale": "Ortak inceleme gevşek motor bağlantısının gerçekten bulunmasını sağlar."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S5_SunumKarari",
+      "event_id": "E5_Acceptance",
+      "predicate_id": "P5b",
+      "rationale": "İkili canlı ve dürüst sunum planında anlaşır."
+    },
+    {
+      "requirement_id": "R03",
+      "scene_id": "S6_DurustSergi",
+      "event_id": "E6_Presentation",
+      "predicate_id": "P6c",
+      "rationale": "Karar, arıza ve çözümün dürüstçe anlatılmasıyla uygulanır."
+    }
+  ],
+  "unresolved_questions": [],
+  "seed_sha256": "7c321d5a19f244d3ae05735d3d83a95ee2e9733bfc870560e6f0b97d4c818034"
+}

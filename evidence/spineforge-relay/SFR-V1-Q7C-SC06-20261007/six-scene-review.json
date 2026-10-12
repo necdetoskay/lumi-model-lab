@@ -1,0 +1,45 @@
+{
+  "schema": "spineforge-relay.q7c-six-scene-review.v1",
+  "sc06_qualification_status": "ACCEPT",
+  "full_story_qualification_status": "REJECT_CROSS_SCENE_SPATIAL_CONTINUITY",
+  "state_chain_status": "PASS",
+  "final_revision": 6,
+  "next_spine_beat": null,
+  "provider_calls": 4,
+  "rewrite_count": 1,
+  "cost_usd": 0.1081895,
+  "ci_status": "NOT_RUN_USER_APPROVED_LOCAL_GREEN",
+  "local_tests_passed": 197,
+  "resolved_findings": [
+    "SC06 now exits via the open upper-room door and traverses the established coastal path.",
+    "Mother and hatchling remain in the upper room; compass remains lost at sea; storm continues."
+  ],
+  "blocking_findings": [
+    {
+      "code": "ENTRY_EXIT_TOPOLOGY_INCONSISTENT",
+      "family": "spatial",
+      "severity": "BLOCKING",
+      "scene_id": "SC02",
+      "exact_text": "They climbed through the lighthouse together until they entered the upper room.",
+      "later_scene_id": "SC06",
+      "later_exact_text": "Duru stepped through the open upper-room door, and Ekin followed her directly onto the established coastal path.",
+      "reason": "SC02 crosses the lighthouse threshold and then climbs inside to the upper room. Canon and fresh SC06 place the coastal entry/exit directly at the upper-room door. No separate exterior entry or interior ascent is established in the frozen topology.",
+      "required_contract_change": "Bind both ingress and egress to the same canonical upper-door edge; require explicit ENTER_VIA evidence in a fresh SC02 contract, preserving old evidence."
+    },
+    {
+      "code": "GUARDING_ENTITY_BYPASSED_WITHOUT_TRANSITION",
+      "family": "causal",
+      "severity": "BLOCKING",
+      "scene_id": "SC04",
+      "prior_scene_id": "SC03",
+      "prior_exact_text": "She leaned forward again, though the mother dragon still guarded the nest and held the upper room.",
+      "exact_text": "She stepped past the cat-sized hatchling and reached for it.",
+      "additional_prior_exact_text": "Its broad body completely blocked Ekin’s path.",
+      "reason": "The previous scene ends with the mother physically blocking the nest approach. SC04 begins with Ekin reaching the compass without showing how that blocking position changes or is traversed; the mother moves only later toward the stair. Entity location alone does not carry the guarding posture/access constraint.",
+      "required_contract_change": "Carry access-blocking posture/constraint in relay state and require a grounded interaction/transition before the compass reach; use structured generic spatial constraints, not a prose-only story-name patch."
+    }
+  ],
+  "advisory_guard_calibration": "Attempt-1 guard itself called the compass bodily-placement concern minor, weak and ambiguous but marked it BLOCKING. The permitted rewrite removed it; preserve as a guard calibration observation without overriding the consumed decision.",
+  "decision": "Preserve Q7C SC06 ACCEPT and its frozen revision-6 state. The assembled six-scene candidate is not fully qualified. Prepare structured ingress and access-constraint changes before a fresh affected-scene qualification. No additional rewrite of Q7C is permitted.",
+  "production_write": false
+}

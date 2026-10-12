@@ -1,0 +1,184 @@
+{
+  "schema": "spineforge-relay.q5g-preflight.v1",
+  "status": "OFFLINE_PREPARED_PAID_NOT_AUTHORIZED",
+  "qualification_id": "SFR-V1-Q5G-SCENE-GUARD-20261006",
+  "model": "anthropic/claude-sonnet-5.5",
+  "request_class": "spineforge_relay_v1_scene_guard",
+  "model_runtime_profile": {
+    "schema_version": "model-runtime-profile.v2",
+    "provider": "openrouter",
+    "model_id": "anthropic/claude-sonnet-5.5",
+    "display_name": "Claude Sonnet 5.5",
+    "source": "verified_runtime",
+    "match": {
+      "type": "exact",
+      "value": "anthropic/claude-sonnet-5.5"
+    },
+    "profile_sha256": "ab01c0d84c24edda1d4ea3241351309683dd590b515b01c3bfc5ec3ddadefe95",
+    "runtime_contract_sha256": "15b41b691d8ca00c1a3ec539eb479e8e1151efc1656e4f6bdf437f2744ca314d",
+    "production_policy_sha256": "49ace329dcbf772252959067dce24c4b10944631b354a7e92c5e799fc79e35e1"
+  },
+  "source_result_sha256": "2fd0e3c5e8ce708fa43c27f3133c9c001f53a0a58072d9ac9f1427fbb02656fd",
+  "gold_sha256": "c57a6f4438b28ef7f485bdf25490066e85b2592a5867472a4dff83852c44a409",
+  "story_state_sha256": "e1bccd39338919c8a1a913277db62124806f0a3a924b5a252f151f4e787b56ce",
+  "scene_contract_sha256": "6f6699aae7fa39c459fb4256a3602da9d0e93be5e0f7c02e5a920ea636b98908",
+  "candidate_prose_sha256": "71437fdc6a6ed7ac4a2d0e1852c4af933b4589151487a72e9de03b9b94819fab",
+  "guard_input_sha256": "5ab130123435e03718739642f4946677fc83f4359e6d6df3cf7ff7bdda9c0505",
+  "request": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "messages": [
+      {
+        "role": "system",
+        "content": "# SpineForge Relay v1 — Scene Semantic Guard\n\nYou audit exactly ONE candidate scene.\n\nAuthoritative inputs:\n1. StoryState = facts already established before this scene.\n2. SceneContract = what this scene is allowed/required to do.\n3. Candidate prose = what the writer actually wrote.\n4. Deterministic findings = already-known mechanical defects.\n\nYour task is NOT to improve style and NOT to rewrite prose. Identify only real continuity,\ncanon, scene-contract, causal, spatial, physical, epistemic, spine, or narrative defects.\n\nEpistemic rule is strict:\n- A character may state a fact as known only if it is present in that character's StoryState\n  knowledge, was directly observable in this scene, or is explicitly authorized by the\n  SceneContract.\n- Do not excuse unsupported knowledge merely because the fact is true elsewhere in the\n  global story.\n- General rules about creatures/world behavior are persistent facts. They require authority.\n\nPersistent-fact rule:\n- Do not allow new equipment, routes, powers, history, world rules, object ownership,\n  character knowledge, or relationship facts unless supported by StoryState or SceneContract.\n- Harmless sensory/color details may remain advisory or clean if they do not alter persistent\n  logic.\n\nSeverity:\n- BLOCKING: accepting the scene would corrupt story truth, violate the contract/canon, break\n  causal/physical/spatial continuity, leak knowledge, or miss/contradict a required spine event.\n- WARN: real but non-blocking concern.\n- Do not report taste, wording preference, or minor style as blocking.\n\nFor every finding:\n- exact_text must be copied exactly from the candidate prose and be the smallest useful anchor.\n- repair_instruction must say what must change without inventing replacement story facts.\n\nDecision:\n- PASS only if there are no BLOCKING semantic findings.\n- REWRITE if one or more BLOCKING semantic findings exist.\n\nReturn only the required structured response."
+      },
+      {
+        "role": "user",
+        "content": "{\"schema\":\"spineforge-relay.semantic-guard-input.v1\",\"story_state\":{\"schema_name\":\"spineforge-relay.story-state.v1\",\"story_id\":\"lighthouse-relay-q5\",\"revision\":0,\"global_spine_sha256\":\"8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad\",\"story_intent_sha256\":\"66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e\",\"characters\":{\"Ekin\":{\"location\":\"harbor\",\"condition\":{\"health\":\"good\",\"mobility\":\"normal\"},\"inventory\":{\"jacket\":true},\"knowledge\":[],\"relationships\":{\"Duru\":{\"familiarity\":\"stranger\",\"trust\":\"none\"}}},\"Duru\":{\"location\":\"harbor\",\"condition\":{\"health\":\"good\",\"mobility\":\"normal\"},\"inventory\":{},\"knowledge\":[\"lighthouse_location\",\"coastal_route\"],\"relationships\":{\"Ekin\":{\"familiarity\":\"stranger\",\"trust\":\"none\"}}}},\"world\":{\"weather\":\"storm_approaching_but_harbor_still_safe\",\"lighthouse_door\":\"open\",\"lighthouse_location\":\"headland\"},\"objects\":{\"compass\":{\"owner\":\"Ekin\",\"location\":\"Ekin_hands\",\"state\":{\"material\":\"brass\",\"magical\":false}}},\"open_threads\":[\"recover_compass\"],\"resolved_threads\":[],\"completed_spine_beats\":[],\"next_spine_beat\":\"SC01\",\"narrative_obligations\":[{\"id\":\"ekin_duru_trust\",\"detail\":\"Trust must change through earned cooperation, not instant friendship.\",\"status\":\"OPEN\",\"target_scene_id\":\"SC06\"},{\"id\":\"compass_loss\",\"detail\":\"The compass must ultimately remain lost rather than be replaced by a reward.\",\"status\":\"OPEN\",\"target_scene_id\":\"SC06\"}]},\"scene_contract\":{\"schema_name\":\"spineforge-relay.scene-contract.v1\",\"scene_id\":\"SC01\",\"scene_plan_sha256\":\"890baab932dc4f8ffead5722f87da3cfc7d6ef93ee3a4837f10713b11bb823ba\",\"story_state_revision\":0,\"story_state_sha256\":\"e1bccd39338919c8a1a913277db62124806f0a3a924b5a252f151f4e787b56ce\",\"global_spine_sha256\":\"8d1b2fd80e5a633b5255c98356cd2903027dc359f6b2c739398618afb19036ad\",\"story_intent_sha256\":\"66b254c7f0aa3d81a66fa8ba405c70b8ac9e750e38e2e6cc9533dd7dd721364e\",\"consumed_spine_beats\":[\"SC01\"],\"next_spine_beat\":\"SC02\",\"required_events\":[\"The sea dragon steals Ekin's brass compass.\",\"Ekin immediately tries to pursue it.\",\"Duru shows Ekin evidence that the dragon went toward the lighthouse.\",\"Ekin and Duru decide to go toward the lighthouse together.\"],\"entry_state\":{\"/characters/Ekin/location\":\"harbor\",\"/characters/Duru/location\":\"harbor\",\"/objects/compass/location\":\"Ekin_hands\",\"/objects/compass/owner\":\"Ekin\"},\"required_exit_state\":{\"/characters/Ekin/location\":\"harbor\",\"/characters/Duru/location\":\"harbor\",\"/objects/compass/location\":\"mother_dragon\"},\"allowed_state_paths\":[],\"immutable_facts\":[\"The compass belongs to Ekin and is a non-magical brass keepsake from her grandfather.\",\"The sea dragon does not speak, cast magic, or read human intentions.\",\"The storm is approaching but the harbor is not yet in immediate flood danger.\",\"Ekin and Duru are strangers at scene entry.\"],\"forbidden\":[\"Do not recover the compass in this scene.\",\"Do not make Ekin and Duru instant close friends.\",\"Do not introduce rescue equipment, magic, a secret route, or an adult rescuer.\",\"Do not enter the lighthouse yet.\"],\"emotional_transition\":{\"from\":\"Ekin acts alone and resists guidance\",\"to\":\"Ekin reluctantly accepts Duru as a temporary partner\"},\"target_words_min\":180,\"target_words_max\":280,\"max_rewrites\":1},\"candidate_prose\":\"Ekin turned the brass compass over in her hands, watching the needle wobble and settle. Grandfather's parting gift—worn smooth at the edges, smelling faintly of his workshop. She was still smiling when the water beside the dock went suddenly, strangely still.\\n\\nThen something rose. A broad, scarred she-dragon, neck longer than a mast, scales slick with brine. A webbed claw snapped out, plucked the compass clean from Ekin's palm, and slid back beneath the chop with barely a ripple.\\n\\n\\\"Hey—no!\\\" Ekin was already running, boots hammering the planks. She lunged over the water at the dock's end, snatched at empty air, and nearly went in herself. Far out in the harbor, the dragon's head bobbed up, brass glinting in its jaws. Then it turned—unhurried, almost smug—toward the headland.\\n\\n\\\"Come back with that!\\\"\\n\\n\\\"It won't.\\\" A girl stood at the top of the gangplank, arms crossed, salt-stained and unimpressed. \\\"Sea dragons don't come back. You go after them.\\\"\\n\\nEkin spun. \\\"Who are you?\\\"\\n\\n\\\"Duru. And I know where it's headed.\\\" She crouched and pointed at a trail of glistening scales scattered across the boards, each one catching the grey light, leading away toward the old lighthouse on the headland, where storm clouds were stacking up like unloaded cargo. \\\"They always carry their treasure to the tower before a storm. That one's a mother. Mothers nest up high.\\\"\\n\\nEkin looked at the water, then the scales, then the stranger. Every stubborn bone in her body wanted to follow the trail alone. But the compass was already a shrinking spark in the dragon's jaws.\\n\\n\\\"Fine,\\\" she muttered, shoulders tight. \\\"But stay out of my way.\\\"\\n\\nDuru just shrugged and started walking. Ekin followed, jaw set, two steps behind.\",\"candidate_prose_sha256\":\"63162b61b61449feacaf9a2b272b28d930cabd89dba976f7a651eadb6cf44461\",\"deterministic_findings\":[{\"code\":\"WORD_BUDGET_OUTSIDE_CONTRACT\",\"family\":\"contract\",\"severity\":\"BLOCKING\",\"message\":\"Scene word count 289 is outside 180..280.\",\"evidence\":[\"289\"]}],\"semantic_policy\":{\"blocking_only_for_real_state_or_story_contract_defects\":true,\"style_preference_is_not_blocking\":true,\"epistemic_claims_need_provenance\":true,\"new_persistent_facts_need_contract_authority\":true,\"do_not_rewrite\":true}}"
+      }
+    ],
+    "max_tokens": 2500,
+    "reasoning": {
+      "effort": "low",
+      "exclude": true
+    },
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "spineforge_relay_scene_guard_v1",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_name",
+            "decision",
+            "findings",
+            "summary"
+          ],
+          "properties": {
+            "schema_name": {
+              "type": "string",
+              "enum": [
+                "spineforge-relay.semantic-guard.v1"
+              ]
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "PASS",
+                "REWRITE"
+              ]
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "code",
+                  "family",
+                  "severity",
+                  "exact_text",
+                  "reason",
+                  "repair_instruction"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "family": {
+                    "type": "string",
+                    "enum": [
+                      "physical",
+                      "causal",
+                      "state",
+                      "spatial",
+                      "temporal",
+                      "epistemic",
+                      "canon",
+                      "spine",
+                      "narrative"
+                    ]
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "BLOCKING",
+                      "WARN"
+                    ]
+                  },
+                  "exact_text": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "repair_instruction": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "provider": {
+      "require_parameters": true
+    }
+  },
+  "request_sha256": "329546981e5f02794b43bf7bc60e382c7b0ad7235b35b9928e126b212a017b59",
+  "expected_blocking_count": 2,
+  "max_tokens": 2500,
+  "input_utf8_bytes": 9171,
+  "pricing_usd_per_million": {
+    "input": 2.0,
+    "output": 10.0
+  },
+  "planned_uncached_cost_usd": 0.043342,
+  "proposed_max_cost_usd": 0.05,
+  "max_guard_calls": 1,
+  "automatic_retry": false,
+  "rewrite_authorized": false,
+  "state_application_authorized": false,
+  "paid_execution_authorized": false,
+  "files": [
+    {
+      "path": "src/spineforge_relay_v1_guard_paid.py",
+      "sha256": "bd23434570c4c86e3978d38c45f1aadfe728e256aaa22363d24b3eb96dba5cc1"
+    },
+    {
+      "path": "src/spineforge_relay_v1_guard.py",
+      "sha256": "c0a11da0f7f6ecf75cb4554d45949fc2c25edddc7eb65b6cf06383093687fb90"
+    },
+    {
+      "path": "src/spineforge_relay_v1_q5.py",
+      "sha256": "82e440cde967b2e1bfb6c87a9aaa47dae4067de33b6d7104ec4131bffbdf229a"
+    },
+    {
+      "path": "configs/model_runtime_profiles.yaml",
+      "sha256": "f486c8734295b39560ac250d600d46267ed56c9685e7285cacdb17ba79e9abad"
+    },
+    {
+      "path": "prompts/spineforge_relay_v1_scene_guard.md",
+      "sha256": "ddfdc76c5919a42632c887e5db9d3496ec7a8edce74d32f9207a63b1e00d91ec"
+    },
+    {
+      "path": "evidence/spineforge-relay/SFR-V1-Q5B-PAID-20261006/result.json",
+      "sha256": "2fd0e3c5e8ce708fa43c27f3133c9c001f53a0a58072d9ac9f1427fbb02656fd"
+    },
+    {
+      "path": "tests/fixtures/spineforge_relay_v1/q5b_semantic_guard_gold.json",
+      "sha256": "c57a6f4438b28ef7f485bdf25490066e85b2592a5867472a4dff83852c44a409"
+    }
+  ],
+  "artifact_sha256": "8712bf7fa66e63c786cc727d366949c93f0da94db054d6aaf087246d0b7c3417"
+}
