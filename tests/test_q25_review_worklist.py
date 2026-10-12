@@ -47,6 +47,12 @@ def test_q24_worklist_preserves_explicit_ambiguity_and_every_other_gap():
         "STRUCTURAL_ONLY": 23, "UNASSESSED": 29, "UNKNOWN": 2,
     }
     assert result["triaged_issue_count"] == 11
+    changes = {x["path"]: x for x in result["initial_to_candidate_comparison"]["object_changes"]}
+    returned = changes["/objects/red_bookmark/properties/returned_to_owner"]
+    assert returned["seed_value"] is False
+    assert returned["candidate_terminal_value"] is True
+    assert len(returned["evidence"]) == 2
+    assert "CANDIDATE" in returned["disposition"]
     assert result["untriaged_field_count"] == 59
     assert result["triaged_issue_count"] + result["untriaged_field_count"] == 70
     issues = {x["issue_id"]: x for x in result["issues"]}
