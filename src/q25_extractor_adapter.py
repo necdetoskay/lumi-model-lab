@@ -22,6 +22,10 @@ from src.q25_terminal_properties import TerminalPropertyProposal
 
 class Quote(Strict):
     quote: str = Field(min_length=8, max_length=1200)
+    # Optional exact left/right context disambiguates repeated source phrases.
+    # No model-authored offset is trusted.
+    context_before: str | None = Field(default=None, min_length=1, max_length=240)
+    context_after: str | None = Field(default=None, min_length=1, max_length=240)
 
 
 class RawObject(Strict):
@@ -134,11 +138,20 @@ def materialize_quotes(*, seed, prose, raw_output):
 
     def span(quote):
         text = quote.quote
+        candidates = []
         pos = prose.find(text)
-        if pos < 0:
-            raise ValueError("Extractor quote does not exist exactly in source")
-        if prose.find(text, pos + 1) >= 0:
-            raise ValueError("Ambiguous repeated quote; cannot assign evidence position")
+        while pos >= 0:
+            left = quote.context_before
+            right = quote.context_after
+            if ((left is None or prose[:pos].endswith(left)) and
+                    (right is None or prose[pos + len(text):].startswith(right))):
+                candidates.append(pos)
+            pos = prose.find(text, pos + 1)
+        if not candidates:
+            raise ValueError("Extractor quote or exact context does not exist in source")
+        if len(candidates) != 1:
+            raise ValueError("Ambiguous repeated quote; supply exact context to disambiguate")
+        pos = candidates[0]
         return Span(start=pos, end=pos + len(text), text=text).model_dump(mode="json")
 
     entity = Proposal(
