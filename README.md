@@ -6,6 +6,31 @@ Hands-on experimentation repository for learning synthetic data generation, teac
 
 This README is the human entry point and current-state document for the repository. Any PR that materially changes the experiment pipeline, primary commands, dataset policy, model-selection protocol, or current milestone must update this README in the same PR.
 
+## Story Harness V1 — offline control-plane experiment
+
+A separate **Story Harness** experiment now explores deterministic orchestration
+of the LUMI story stages (Context, SpineForge, Writer, Q25 and quality gates).
+This is **different** from the existing Decision Engine/JEV harness and does
+not replace any stage's authoritative validator.
+
+V1 can **only replay demo stage-artifact lineage**: pinned SHA-256 inputs,
+ordered dependencies, stop-on-reported-reject/review, no automatic model
+calls and no semantic or canonical state approval. The example is **not**
+a real generated story, and a green harness test **does not qualify** Q25.
+
+```bash
+python -m unittest discover -s tests -p 'test_story_harness_v1.py' -q
+python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --repo-root .
+```
+
+- Canonical architecture: [Story Harness V1](docs/canonical/STORY_HARNESS_V1.md).
+- Source: `src/story_harness_v1.py` (stdlib only).
+- Branch: `experiment/story-harness-control-plane-v1`; no integration or
+  modification of frozen production LUMI/SpineForge/Q25 code is authorized.
+- Follow-on work: bind read-only **real frozen** stage artifacts and their
+  original gate outcome; model registry, budgets and execution will require
+  distinct, versioned future adapters.
+
 ## Current milestone
 
 Milestone 1 validates the complete learning loop with a deliberately small but reproducible dataset before scaling data volume or training cost.
