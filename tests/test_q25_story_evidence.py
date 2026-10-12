@@ -16,7 +16,7 @@ from src.q25_story_evidence import extend_draft
 Q24 = Path("evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24")
 ENTITY = Path("evidence/q25/Q25-ENTITY-CANDIDATE-20261012/proposal.json")
 POLICY = Path("evidence/q25/Q25-ADMISSION-DRAFT-20261012/policy.json")
-STORY = Path("evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/story-proposal.json")
+STORY = Path("evidence/q25/Q25-STORY-STATE-CANDIDATES-20261012/story-proposal-knowledge-extension.json")
 
 
 def read(path):
