@@ -65,8 +65,10 @@ The reconciler recomputes the upstream admission, checks seed/prose/review linea
 3. Every object's `container` agrees reciprocally with its container's `contains`.
 4. No duplicate content membership, self containment or containment cycle.
 5. Known object locations are within the existing approved topology.
-6. Directly held objects match character inventory exactly.
-7. Exactly **70** source coverage fields have field decisions; every decision remains noncommittable.
+6. A known owner must be a known character or a seed-established non-character owner (such as the library); no invented ownership identity is allowed.
+7. Known child and container locations cannot disagree when both are explicitly present in the candidate graph.
+8. Directly held objects match character inventory exactly.
+9. Exactly **70** source coverage fields have field decisions; every decision remains noncommittable.
 
 This proves *structural consistency under candidate assumptions*. It does **not** prove a quoted inference is true, that all narrative events were extracted, or that all inherited facts survived.
 
@@ -98,7 +100,7 @@ python -m src.q25_terminal_reconciler \
 python -m pytest -q tests/test_q25_terminal_reconciler.py
 ```
 
-The command only prints JSON to stdout. The canonical story seed/prose and all source proposals remain byte-for-byte unchanged. The full existing Q25 offline GitHub workflow runs the reconciler test suite without an API key. CI after initial implementation: [#38264156148](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38264156148), **243/243 PASS**; `paid-extractor-pilot` SKIPPED. API calls and incremental spend: **0 / $0**.
+The command only prints JSON to stdout. The canonical story seed/prose and all source proposals remain byte-for-byte unchanged. The full existing Q25 offline GitHub workflow runs the reconciler test suite without an API key. Latest code regression: [#38264603114](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38264603114), **245/245 PASS**, including forged owner and conflicting known-location regression tests; `paid-extractor-pilot` SKIPPED. API calls and incremental spend: **0 / $0**.
 
 ## What this does not solve
 
