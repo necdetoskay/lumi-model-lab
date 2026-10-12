@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from src.q25_withheld_trial import preflight, evaluate, unpack_request
-from src.q25_openrouter_pilot import build_wire_request, upper_cost_usd, pricing_snapshot
+from src.q25_openrouter_pilot import build_wire_request, upper_cost_usd, pricing_snapshot, PilotStop
 from src.q25_raw_reconciliation import project_raw
 
 ROOT = Path("evidence/q25/Q25-WITHHELD-TRIAL-20261012")
@@ -145,7 +145,7 @@ def test_trust_and_reference_boundaries_fail_closed(mutation):
             evidence={"quote": "altın renkli kâğıt yıldızı"},
         ))
     if mutation in ("wrong_request", "labels_injected", "unknown_model", "output_limit"):
-        with pytest.raises(ValueError):
+        with pytest.raises((ValueError, PilotStop)):
             preflight(
                 request_package=request,
                 model="unqualified/model" if mutation == "unknown_model" else MODEL,
