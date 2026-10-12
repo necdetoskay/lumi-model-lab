@@ -411,6 +411,8 @@ def paid_pilot(*, seed, prose, policy, model, max_tokens, max_cost_usd,
             result = offline_replay(seed=seed, prose=prose,
                                     raw_output=parsed, policy=policy)
             ledger["outcome"] = result["status"]
+            ledger["evidence_order_adjustments"] = result["evidence_order_adjustments"]
+            ledger["evidence_reordering_is_semantic_approval"] = False
             ledger["candidate_count"] = (
                 sum(len(parsed[k]) for k in (
                     "objects", "terminal_relations", "character_claims",
