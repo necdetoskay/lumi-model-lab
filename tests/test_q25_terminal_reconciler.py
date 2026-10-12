@@ -70,6 +70,8 @@ def test_q24_reconciler_has_coherent_container_graph_without_forging_canon():
     assert objects["blue_atlas"]["contains"] == []
     assert objects["red_bookmark"]["owner"]["ref"] == "Nisa"
     assert objects["blue_atlas"]["owner"]["ref"] == "library"
+    assert _checked_graph(objects, {"library_reading_room"}, source()["seed"]["characters"],
+                          seed_external_owners={"library"})["reciprocal_container_pairs"] == 1
     assert objects["red_bookmark"]["properties"]["found"]["initial_value"] is False
     assert objects["red_bookmark"]["properties"]["found"]["proposed_terminal_value"] is True
     assert objects["red_bookmark"]["properties"]["returned_to_owner"][
@@ -137,6 +139,7 @@ def test_no_unobserved_seed_value_is_promoted_to_proven_terminal():
     "nonreciprocal", "duplicate_contains", "invented_container",
     "dual_holder", "unknown_holder", "forged_location", "self_cycle",
     "wrong_known_ref", "none_with_ref", "invalid_status",
+    "forged_owner", "mismatched_child_location",
 ])
 def test_candidate_graph_guard_fails_closed_on_inconsistencies(bad):
     r = reconcile(**source())
@@ -164,8 +167,14 @@ def test_candidate_graph_guard_fails_closed_on_inconsistencies(bad):
         obj["held_by"]["ref"] = "Nisa"
     elif bad == "invalid_status":
         obj["held_by"]["status"] = "CERTIFIED"
+    elif bad == "forged_owner":
+        obj["owner"]["ref"] = "NeverSeenPerson"
+    elif bad == "mismatched_child_location":
+        book = next(k for k in objects if k.startswith("new_"))
+        objects[book]["location"] = {"status": "KNOWN", "ref": "other_approved_room"}
     with pytest.raises(ValueError):
-        _checked_graph(objects, {"library_reading_room"}, source()["seed"]["characters"])
+        _checked_graph(objects, {"library_reading_room", "other_approved_room"},
+                       source()["seed"]["characters"], seed_external_owners={"library"})
 
 
 @pytest.mark.parametrize("tamper", [
