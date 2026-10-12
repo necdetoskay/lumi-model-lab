@@ -1,0 +1,55 @@
+name: Story Harness V1 Offline
+
+on:
+  pull_request:
+    paths:
+      - src/story_harness_v1.py
+      - tests/test_story_harness_v1.py
+      - tests/fixtures/story_harness_v1/**
+      - configs/story_harness_v1_fixture.json
+      - docs/canonical/STORY_HARNESS_V1.md
+      - .github/workflows/story-harness-v1-offline.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: story-harness-v1-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  offline:
+    # Reuse dedicated offline-only LUMI runner. No provider secrets or model calls.
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run fail-closed harness tests (stdlib, no pip install)
+        run: python -m unittest discover -s tests -p 'test_story_harness_v1.py' -q
+      - name: Deterministic zero-cost four-stage replay
+        run: |
+          python -m src.story_harness_v1 \
+            --plan configs/story_harness_v1_fixture.json \
+            --repo-root . > /tmp/story-harness-fixture-first.json
+          python -m src.story_harness_v1 \
+            --plan configs/story_harness_v1_fixture.json \
+            --repo-root . > /tmp/story-harness-fixture-second.json
+          cmp /tmp/story-harness-fixture-first.json /tmp/story-harness-fixture-second.json
+          python - <<'PY'
+          import json
+          result = json.load(open('/tmp/story-harness-fixture-first.json'))
+          assert result['stage_count_inspected'] == 4
+          assert result['status'] == 'REPLAYED_REPORTED_CHAIN_ONLY'
+          for name in ('state_commit_authorized', 'semantic_support_certified',
+                       'production_write_performed', 'model_execution_performed'):
+              assert result[name] is False
+          assert result['provider_calls'] == 0
+          assert result['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_V1_OFFLINE_GREEN')
+          PY
