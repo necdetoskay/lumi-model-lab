@@ -210,3 +210,19 @@ def test_withheld_model_request_cannot_see_author_supplement():
     assert wire["reference_labels_loaded"] is False
     assert wire["reference_labels_sent_to_model"] is False
     assert "terminal-supplement-annotation" not in json.dumps(package)
+
+
+@pytest.mark.parametrize("case", [GREENHOUSE, KITE])
+def test_frozen_sidecar_projection_is_recomputed_exactly_without_authority(case):
+    archive = read(case / "terminal-supplement-projection.json")
+    actual = project_supplement(**scenario(case))
+    assert archive == actual
+    assert archive["base_hypothesis_sha256"] == actual["base_hypothesis_sha256"]
+    assert archive["annotation_sha256"] == actual["annotation_sha256"]
+    assert archive["provider_calls"] == 0
+    assert archive["provider_cost_usd"] == 0
+    assert archive["state_commit_authorized"] is False
+    assert archive["full_story_state_qualified"] is False
+    assert archive["independently_authenticated_reviewer"] is False
+    assert archive["semantic_support_certified"] is False
+    assert archive["source_kind"] == "AUTHOR_CURATED_NOT_INDEPENDENTLY_REVIEWED"
