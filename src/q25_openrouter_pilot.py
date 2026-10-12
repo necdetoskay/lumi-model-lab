@@ -6,6 +6,7 @@ or prod writes. Secrets are read only from the runtime environment.
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -109,6 +110,72 @@ def pricing_snapshot(catalog, model):
             "context_length": row.get("context_length")}
 
 
+def provider_safe_json_schema(original):
+    """Compile a Claude-compatible wire schema; preserve strict local validation.
+
+    The original Pydantic schema remains the sole response-validation contract.
+    Claude's structured-output grammar rejects minLength/maxLength and other
+    unsupported constraints. Move them into descriptions, not model grammar.
+    This function performs no HTTP requests and never mutates its input.
+    """
+    schema = copy.deepcopy(original)
+    bounds = {
+        "minLength", "maxLength", "minimum", "maximum",
+        "exclusiveMinimum", "exclusiveMaximum", "multipleOf",
+        "maxItems", "uniqueItems", "minProperties", "maxProperties",
+    }
+    unsupported = {"patternProperties", "unevaluatedProperties",
+                   "dependentSchemas", "not", "if", "then", "else"}
+    stats = {"optional": 0, "unions": 0, "removed_constraints": 0}
+
+    def visit(node):
+        if isinstance(node, list):
+            for part in node:
+                visit(part)
+            return
+        if not isinstance(node, dict):
+            return
+        forbidden = unsupported.intersection(node)
+        if forbidden:
+            raise PilotStop("Unsupported structured-output schema keyword")
+        hints = []
+        for key in sorted(bounds):
+            if key in node:
+                hints.append(f"{key}={node.pop(key)}")
+                stats["removed_constraints"] += 1
+        if hints:
+            prev = node.get("description") or ""
+            node["description"] = (
+                prev + (" " if prev else "") +
+                "[enforced by application: " + ", ".join(hints) + "]"
+            )
+        if node.get("type") == "object":
+            if node.get("additionalProperties") is not False:
+                raise PilotStop("Structured-output objects must be closed")
+            props = node.get("properties", {})
+            required = node.get("required", [])
+            if not isinstance(props, dict) or not isinstance(required, list):
+                raise PilotStop("Malformed provider JSON schema object")
+            if len(set(required)) != len(required) or set(required) - set(props):
+                raise PilotStop("Invalid required property in provider schema")
+            stats["optional"] += len(props) - len(required)
+        if "minItems" in node and node["minItems"] not in (0, 1):
+            raise PilotStop("Structured outputs support minItems 0 or 1 only")
+        if "anyOf" in node:
+            stats["unions"] += 1
+        for value in node.values():
+            visit(value)
+
+    visit(schema)
+    # Anthropic's current grammar rejects schemas exceeding these limits.
+    if stats["optional"] > 24 or stats["unions"] > 16:
+        raise PilotStop("Provider JSON schema complexity limit exceeded")
+    if schema.get("type") != "object":
+        raise PilotStop("Provider response schema root must be an object")
+    assert original != schema or stats["removed_constraints"] == 0
+    return schema
+
+
 def build_wire_request(*, seed, prose, model, max_tokens):
     if model not in MODEL_ALLOWLIST:
         raise PilotStop("Model is outside Q25 pilot allowlist")
@@ -148,7 +215,7 @@ def build_wire_request(*, seed, prose, model, max_tokens):
             "type": "json_schema",
             "json_schema": {
                 "name": "q25_extractor_raw_v1", "strict": True,
-                "schema": spec["response_json_schema"],
+                "schema": provider_safe_json_schema(spec["response_json_schema"]),
             },
         },
         "messages": [
