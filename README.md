@@ -27,9 +27,25 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
 - Source: `src/story_harness_v1.py` (stdlib only).
 - Branch: `experiment/story-harness-control-plane-v1`; no integration or
   modification of frozen production LUMI/SpineForge/Q25 code is authorized.
-- Follow-on work: bind read-only **real frozen** stage artifacts and their
-  original gate outcome; model registry, budgets and execution will require
-  distinct, versioned future adapters.
+- **P1 real-evidence inspection:** six **byte-identical** frozen historical
+  SpineForge/Q25 JSON artifacts from experiment Q25 PR #273 are recorded in
+  `configs/story_harness_p1_frozen_import.json`. These represent **four
+  independent historical cases**, not a fabricated end-to-end story.
+  A historically approved spine, a failed SpineForge audit, a provisional
+  KITE-01 Q25 extraction and a historically rejected GREENHOUSE-01 attempt
+  preserve their original decisions; no automatic state promotion occurs.
+- Run actual saved evidence replay, **free and read-only**:
+
+  ```bash
+  python -m unittest discover -s tests -p 'test_story_harness*.py' -q
+  python -m src.story_harness_p1 --manifest configs/story_harness_p1_frozen_import.json --repo-root .
+  ```
+
+- Historical Q25 provider-billed subtotal on these two saved records is
+  `$0.085152`; **new harness cost is $0**.
+- Provenance, limitations and trust boundary: [P1 frozen real evidence](docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md).
+- Future work: independently authenticated real gate receipts, then bounded
+  model registry and executable stage adapters, each on new qualified versions.
 
 ## Current milestone
 
