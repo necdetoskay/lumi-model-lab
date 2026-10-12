@@ -1,0 +1,90 @@
+name: Q25 Manual One-Call Extractor Pilot
+
+# Bootstrap workflow must be reviewed/merged to default branch to become
+# visible to GitHub's Run workflow UI. It has NO automatic triggers.
+on:
+  workflow_dispatch:
+    inputs:
+      execute_paid:
+        description: "One charged Q24 extractor attempt (max $0.20); default DENY"
+        type: boolean
+        required: true
+        default: false
+      model:
+        description: "Pinned qualified extractor model; no fallback"
+        type: choice
+        required: true
+        default: anthropic/claude-sonnet-5.5
+        options:
+          - anthropic/claude-sonnet-5.5
+          - google/gemini-2.5-flash
+
+permissions:
+  contents: read
+
+# Do not interrupt an already-sent paid request. A persistent runner-host
+# one-shot guard additionally blocks separately dispatched duplicate runs.
+concurrency:
+  group: q25-q24-manual-one-call-v1
+  cancel-in-progress: false
+
+jobs:
+  q25-manual-pilot:
+    # One explicit attempt, named operator, default branch only.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.actor == 'necdetoskay' && inputs.execute_paid == true && github.run_attempt == 1 }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 5
+    steps:
+      - name: Checkout immutable tested Q25 experiment
+        uses: actions/checkout@v4
+        with:
+          ref: d6ad984cf30952c345de98349222beb57143f43d
+          persist-credentials: false
+      - name: Validate immutable source revision
+        run: |
+          test "$(git rev-parse HEAD)" = "d6ad984cf30952c345de98349222beb57143f43d"
+          test "$(id -un)" = "q25-runner"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install minimal pilot dependencies
+        run: python -m pip install "pydantic>=2.8,<3"
+      - name: Reserve single non-reusable paid attempt (fail closed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          GUARD_ROOT=/var/lib/q25-runner/paid-dispatch-guard
+          mkdir -p "$GUARD_ROOT"
+          if ! mkdir "$GUARD_ROOT/q25-q24-one-call-v1"; then
+            echo "::error::STOP: Q25 Q24 paid attempt has already been reserved; no second dispatch"
+            exit 4
+          fi
+          printf '%s\n' 'd6ad984cf30952c345de98349222beb57143f43d' > "$GUARD_ROOT/q25-q24-one-call-v1/pinned-revision"
+          printf '%s\n' "${{ github.run_id }}" > "$GUARD_ROOT/q25-q24-one-call-v1/run-id"
+      - name: Send at most one capped OpenRouter request
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          Q25_PAID_PILOT_APPROVED: '1'
+          Q25_MODEL: ${{ inputs.model }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m src.q25_openrouter_pilot \
+            --seed evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/seed-input.json \
+            --prose-record evidence/q25/Q25-P0-P4-OFFLINE-20261012/frozen-evidence/Q24/writer-2-text.json \
+            --policy evidence/q25/Q25-ADMISSION-DRAFT-20261012/policy.json \
+            --model "$Q25_MODEL" \
+            --max-tokens 3500 \
+            --max-cost-usd 0.20 \
+            --execute-paid-once \
+            --archive-dir "$RUNNER_TEMP/q25-paid-${{ github.run_id }}"
+      - name: Preserve private evidence including review packet
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: q25-once-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/q25-paid-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 7
