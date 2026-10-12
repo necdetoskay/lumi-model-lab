@@ -86,6 +86,17 @@ def test_wire_uses_explicit_model_strict_schema_no_fallback_and_bounded_tokens()
     assert wire["stream"] is False
     assert wire["messages"][0]["role"] == "system"
     assert wire["messages"][1]["role"] == "user"
+    system = wire["messages"][0]["content"]
+    assert "RELATION ID CONTRACT" in system
+    assert "subject must be object:<existing_object_id>" in system
+    assert "or new:<proposed_object_key>" in system
+    assert "Do not use bare object IDs" in system
+    assert "for HELD_BY and OWNED_BY target use character:<actor>" in system
+    assert "CHARACTER CLAIM CONTRACT" in system
+    assert "only when field=knowledge" in system
+    assert "for emotion, health, location or relationship_trust" in system
+    assert "uncertainty about trust" in system
+    assert "closed lid" in system
     assert load(BASE / "seed-input.json") == d["seed"]
 
 
