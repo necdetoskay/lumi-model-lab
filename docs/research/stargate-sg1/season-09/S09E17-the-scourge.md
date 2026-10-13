@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 17
 title_original: "The Scourge"
-status: draft
-word_count: 228
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Pentagon, Uluslararası Denetim Danışma Kurulu üyelerine Stargate Programı'n
 Böceklerin Ori rahipleri tarafından değiştirilmiş olabileceği düşünülür. Yeraltında ilerleyebilen sürü bir anda ormanda belirir ve bir askeri saniyeler içinde parçalar. Ekip araştırma karakoluna ulaşamadan kayalık bölgeye çekilir, mağarada saklanır. Silahların patlama sesleri böcekleri bir süre uzak tutar, fakat mühimmat sınırlıdır. F-302 uçaklarına ulaşmayı tartışırlarken büyük bir patlama duyulur: Gamma Üssü kendi kendini imha etmiştir. Sivil temsilciler, görevin olağan riskleriyle ilk kez ölüm kalım düzeyinde karşı karşıya gelir.
 
 Odyssey'ye R75'i yok edebilecek sinir zehriyle bölgeyi temizleme emri verilir. Fakat gemi yerdeki insanlarla haberleşememektedir ve operasyon SG-1'i de öldürebilir. Carter, yakındaki başka bir araştırma istasyonunun vericisine ulaşmaları gerektiğini söyler. Grup böceklerin takip ettiği ormanda yürürken savunma için kalan mermiler azalır. İstasyona vardıklarında Carter acil durum sinyali gönderir. Odyssey son anda hepsini ışınlayarak kurtarır, ardından temizlik operasyonunu sürdürür. Görevden sağ çıkan denetim kurulu üyeleri tehlikenin boyutunu bizzat görmüştür. Ancak R75 böceklerinin başka iki gezegende daha görüldüğü haberleri tehdidin kapanmadığını gösterir.
+
+Kurul üyeleri için başlangıçta güvenli tanıtım görevi olan ziyaret, askerlerin her gün yaşadığı ölümcül risklerin gerçek anlamını açığa çıkarır. Böcekler sıradan canlıların aksine olağanüstü hızla çoğaldığı için bilimsel karantina kısa sürede yetersiz kalır. Odyssey'nin müdahalesi gezegenin temizlenmesini sağlasa da benzer salgın başka dünyalarda tekrarlanabilir.
 
 ## Kaynaklar
 

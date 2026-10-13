@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 16
 title_original: "Off the Grid"
-status: draft
-word_count: 220
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Galakside kassa denen mısır benzeri ürünün hızla yayıldığı ve tüketen
 Worrel, kapının kaybolmasından SG-1'i sorumlu tutarak onları esir alır ve sorgular. Dünya'da başka gezegenlerde de kapıların ortadan kaybolduğu tespit edilir. General Landry kayıp ekibi kurtarması için yeni Odyssey gemisini ve Albay Emerson'ı gönderir. Nerus hâlâ Area 51'de tutukludur. Landry bol yiyecek karşılığında onu konuşturur. Nerus kapıları Ba'al'ın çaldığını, böylece eski imparatorluğunu yeniden kurmaya çalıştığını söyler. Yerini göstermek için serbest bırakılmasını ister. Landry onu salarken üzerine gizli konum işaretleyici yerleştirir.
 
 Worrel SG-1'in öldürülmesini emrettiğinde Odyssey son anda yetişip ekibi ışınlar. Nerus'u takip eden gemi Ba'al'ın ana gemisine ulaşır. SG-1 depoya sızıp çalınmış onlarca geçidi işaretleyerek geri almak ister. Ancak Jaffa muhafızları farklarına varır, aynı anda Lucian Alliance'ın üç ana gemisi saldırır. Odyssey kapıları ışınlamayı başarır fakat Ba'al'ın gemisi patlamadan ekibi alamaz. SG-1 gemide kalan bir geçidi ve DHD'yi kullanarak Dünya'ya kaçar. Kayıp geçitler kurtarılmıştır; Ba'al'ın ölümüne ilişkin kesin kanıt yoktur, Lucian Alliance da güçlü bir rakip olarak varlığını sürdürür.
+
+Nerus'un serbest bırakılması ilk bakışta önemli risk oluşturur, fakat Landry onun açgözlülüğünü bilgi toplamak için kullanır. Ba'al ile Lucian Alliance arasındaki düşmanlık, SG-1'in kaçmasını istemeden kolaylaştırır. Çalınan geçitlerin sayısının çokluğu Ba'al'ın yalnız tek bir dünyayı değil bütün galaktik geçit ulaşımını denetlemeyi amaçladığını gösterir.
 
 ## Kaynaklar
 
