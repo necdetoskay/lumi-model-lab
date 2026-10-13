@@ -16,6 +16,7 @@ on:
       - configs/story_harness_p1_frozen_import.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
+      - evidence/story_harness_p21/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -138,6 +139,10 @@ jobs:
           python -m unittest discover -s tests -p 'test_story_harness_p21.py' -v
           python -m src.story_harness_p21 \
             --repo-root . --pinned-q25-root "$STORY_HARNESS_PINNED_Q25_ROOT" > /tmp/story-harness-p21-gates.json
+          python -m src.story_harness_p21 \
+            --repo-root . --pinned-q25-root "$STORY_HARNESS_PINNED_Q25_ROOT" \
+            --verify-report evidence/story_harness_p21/pinned-real-q25-offline-replay.json > /tmp/story-harness-p21-verified.json
+          cmp /tmp/story-harness-p21-gates.json /tmp/story-harness-p21-verified.json
           python - <<'PY'
           import json
           x = json.load(open('/tmp/story-harness-p21-gates.json'))
