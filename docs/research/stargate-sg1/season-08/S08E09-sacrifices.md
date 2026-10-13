@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 9
 title_original: "Sacrifices"
-status: draft
-word_count: 248
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Rya'c ile Kar'yn törenin provasında evlilik geleneğine uygun biçimde eğilme
 SGC insansız araçla tretonin ve hedef işaretleme düzeneği göndermeye çalışır. Jaffa kuvvetleri aracı düşürür, fakat Teal'c ile Aron enkaza ulaşarak malzemeleri almayı başarır. Aron, Teal'c'i başka bir pusudan kurtararak güven kazanır. Teal'c Moloc'un bulunduğu yere sızıp Ishta'yı serbest bırakır. Aron lazerle hedefi işaretler; Yıldız Geçidi'nden geçen güdümlü füzeler Moloc'u ve çevresini vurur. Bu zafer kadın Jaffaları özgürleştirir, fakat Moloc'un toprakları kısa sürede Ba'al'ın eline geçecektir. Üsse dönüldüğünde Rya'c ile Kar'yn barışır ve Bra'tac düğünü yönetir. Hak'tyl savaşçıları daha güvenli yeni dünyalarına yerleşmek üzere ayrılır.
 
 Moloc'un yenilgisinin ardından açılan güç boşluğu, Jaffa özgürlük mücadelesinin sona erdiği anlamına gelmez. Ba'al'ın saldırı tehdidi devam ederken Hak'tyl halkı yeni bir yerde güvenliğini sağlamak zorundadır.
+
+Düğün, zaferin ardından Jaffaların yalnız savaşla değil kendi geleneklerini özgürce yaşayarak da gelecek kurabileceğini hatırlatır.
 
 ## Kaynaklar
 

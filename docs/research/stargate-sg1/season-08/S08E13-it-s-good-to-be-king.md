@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 13
 title_original: "It's Good to Be King"
-status: draft
-word_count: 247
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Kral Arkhan, yabancıların gelip eski efendileri yeneceğini önceden söylemi�
 Ares'in filosu gezegenin yörüngesine girer. İlk Başkomutanı Trelak, Jaffa askerleriyle köyü ele geçirir. Carter aracın onarımını bitirdiğinde düşman ateşi başlar. Köyde Teal'c, Daniel ve Maybourne askerlerle çatışır; Teal'c Trelak'ı öldürür. O'Neill kadim gemiyi zihniyle uçurarak yörüngeye çıkarır ve Ares'in ana gemisini tek atışla yok eder. Kehanet gerçekleşmiş, köy eski efendisinden kurtulmuştur. SG-1 Dünya'ya dönmeye hazırlanırken Maybourne ayrılmayı reddeder. Kendisine yuva olan halkı, kurduğu düzeni ve eşlerini geride bırakmak istemez. Artık beklenmedik biçimde kral olarak kalmayı seçer.
 
 Maybourne'un geleceği bildiği sanılan kehanetleri, aslında zaman yolculuğu yapan bir Kadim araştırmacının tuttuğu eski kayıtların yorumudur. Böylece halkın gözünde olağanüstü görünen bilgi açıklanır.
+
+Bu deneyim, Maybourne'un kendisini bir kral olarak görmesinin aksine gezegende yaşayan insanların sorumluluğunu üstlenmesini de gerektirir.
 
 ## Kaynaklar
 

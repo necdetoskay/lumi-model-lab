@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 10
 title_original: "Endgame"
-status: draft
-word_count: 236
+status: complete
+word_count: 255
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Teal'c özgür Jaffa önderleriyle görüşürken eski dostu M'zel ile yeniden b
 Carter yanlışlıkla gemiye ışınlanır. Daniel, bilekliği kullanıp onu takip eder ve geminin denetimini bozmaya çalışır. Ancak ikisi de Trust ajanlarına esir düşer. Prometheus gemiyi hedef almış, O'Neill'in ateş emrini beklemektedir. Tam o sırada Teal'c gemideki geçitten çıkar; SG-1 birlikte düşmanları etkisizleştirir. Konum işaretleyicisi etkinleştirilince Prometheus askerleri ve çalınan kapıyı güvenli biçimde ışınlar. Trust üyeleri ise gemileriyle hiperuzaya kaçmayı başarır. Dünya'nın geçidi eski yerine getirilmiştir, fakat Asgard teknolojisine ve simbiyot zehrine sahip yasa dışı örgüt hâlâ büyük bir tehdittir.
 
 Trust'ın gerçekleştirdiği saldırı, Dünya'nın geliştirdiği silahların dost nüfusları da nasıl yok edebileceğini gösterir. Kapının geri alınması milyonlarca Jaffa'nın ölümüyle açılan yarayı ortadan kaldırmaz.
+
+Kapının yerinin tespit edilmesi, üssün bilgisayar ve güvenlik sistemlerinin yabancı ışınlama teknolojilerine karşı ne kadar savunmasız kaldığını da gösterir.
 
 ## Kaynaklar
 

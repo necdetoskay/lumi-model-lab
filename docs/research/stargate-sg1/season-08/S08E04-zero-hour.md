@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 4
 title_original: "Zero Hour"
-status: draft
-word_count: 245
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ SG-1 ve SG-3 sonunda P2X-887'ye gider. SG-1 gizli bir tesise halka taşıyıcıy
 Dr. Lee bitkiyi gama radyasyonuyla yok etmeyi başarır. Aynı inceleme Camulus'un işaret ettiği güç kaynağının tuzaklandığını, kullanılmasının Dünya'ya büyük zarar verebileceğini gösterir. O'Neill Camulus'u Ba'al'a göndermesine rağmen SG-1 geri verilmez. Çok geçmeden ekip ateş altında kendisi kapıyı açarak Dünya'ya ulaşır: Ba'al'ın esiri değillerdir, yalnızca yeraltı tesisinde mahsur kalmışlardır. O'Neill'in yoğun günleri sona erer, tören için hazırlıklar tamamlanır. Gilmor komutanının sorunları çözme biçimine saygı duymaya başlar. O'Neill ise Hammond'a yazdığı istifa mektubunun sonunu değiştirerek vazgeçtiğini bildirir.
 
 O'Neill'in üstlendiği görevde kararlarının ağırlığı yalnızca sahadaki askerlerle ilgili değildir. Bir yandan yabancı diplomatların ilişkilerini yönetirken diğer yandan kendi üssündeki güvenliği sağlaması gerekmektedir.
+
+Bu süreçte Gilmor'un düzen takıntısı, O'Neill'in alışılmadık ama sonuç alan yönetim tarzıyla çatışır; ikisi giderek birbirine uyum sağlar.
 
 ## Kaynaklar
 

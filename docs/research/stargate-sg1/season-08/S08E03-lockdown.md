@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 3
 title_original: "Lockdown"
-status: draft
-word_count: 245
+status: complete
+word_count: 261
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Daniel ve Vaselov bilinçlerini kaybettikleri dönemlerden yalnızca parçalı g
 O'Neill üssü sıkı karantinaya alır ve kapıyı kontrol altında tutacak güvenlik bölgeleri oluşturur. Anubis'in doğrudan yükselmiş güçlerini kullanması kendi üstündeki varlıkların müdahalesini doğuracağından bir insanın vücuduna ihtiyacı vardır. Önce Carter'ı ele geçirip güvenlik protokolünü değiştirmeye çalışır; ardından O'Neill'in bedenine geçerek kaçış hazırlığı yapar. Ölmek üzere olduğunu bilen Vaselov kendisini sunar ve Anubis onu ele geçirir. Böylece kapı açıldığında düşman kaçtığını sanır. Fakat Carter hedef adresi gizlice değiştirmiştir: Anubis ile Vaselov, hiçbir yaşam belirtisi taşımayan buzlu bir dünyaya gönderilir. Üs kurtulur; yine de Anubis'in yok edildiğine ilişkin kesin bir kanıt yoktur.
 
 Vaselov'un fedakârlığı, hayatının son günlerinde Anubis'in yeni bir kurban bulmasını engeller. Carter'ın son anda hedefi değiştirmesi ise saldırıyı doğrudan yok etmeden uzaklaştırır.
+
+Vaselov kendi ölümünün yaklaştığını bildiği hâlde bilinçli biçimde harekete geçerek başka askerlerin Anubis tarafından kullanılmasını engeller.
 
 ## Kaynaklar
 
