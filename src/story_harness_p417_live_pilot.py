@@ -236,7 +236,7 @@ class BoundedOncePilot:
             "exact_wire_sha256": hashlib.sha256(canonical_json(request)).hexdigest(),
             "provider_call_attempted": True,
             "outcome": "SETTLED" if ok else "STOP_UNKNOWN_OR_INVALID",
-            "provider_usage": usage if ok else None,
+            "provider_usage": usage if (ok or usage is not None) else None,
             "provider_reported_cost_usd": format(cost, "f") if cost is not None else None,
             "cumulative_reported_usd": format(self.cost + cost, "f") if cost is not None else None,
             "retry_authorized": False,
