@@ -80,7 +80,8 @@ SPINE_JSON = {
     "type": "object", "additionalProperties": False,
     "properties": {
         "source_pack_sha256": {"type": "string"},
-        "beats": {"type": "array", "minItems": 4, "maxItems": 8,
+        "beats": {"type": "array",
+                  "description": "Exactly four to eight ordered beats, verified by the local immutable Spine validator.",
                   "items": SPINE_BEAT},
         "spine_summary": {"type": "string"},
     },
@@ -161,8 +162,10 @@ def wire(stage, prompt):
             prompt["source_pack_sha256"]]
         schema["properties"]["spine_sha256"]["enum"] = [sha_spine]
         schema["properties"]["beat_ids"]["items"]["enum"] = ids
-        schema["properties"]["beat_ids"]["minItems"] = len(ids)
-        schema["properties"]["beat_ids"]["maxItems"] = len(ids)
+        schema["properties"]["beat_ids"]["description"] = (
+            "Include all " + str(len(ids)) +
+            " approved beat IDs exactly once in their approved order; "
+            "source-bound application validation enforces this.")
     body = {
         "model": MODEL,
         "messages": [{"role": "system", "content": sys_prompt},
