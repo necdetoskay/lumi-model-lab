@@ -109,7 +109,19 @@ def build_spine_request(pack):
         "causal, temporal and ownership continuity. Unknown facts are not known. "
         "Scene actions and consequences must connect; protagonists make "
         "meaningful decisions. Every open obligation must be addressed or "
-        "explicitly remain open. Return one valid JSON object matching schema."
+        "explicitly remain open. Generate between four and eight beats. "
+        "The beat IDs MUST be consecutive exact strings BEAT_01, BEAT_02, "
+        "BEAT_03, BEAT_04 and so on (no scene_1 or variations). "
+        "The first beat location MUST exactly match canonical protagonist.location. "
+        "For EVERY beat, location MUST exactly equal one name from "
+        "canonical_state.locations, without inventing another place. "
+        "obligation_reference MUST be either JSON null or one exact verbatim "
+        "string copied from open_obligations, never a paraphrase; at least one "
+        "beat must reference an open obligation. Each beat needs a concrete "
+        "goal, an emotionally meaningful choice and physical cause/effect "
+        "consequence; do not invent physical state or unknown ownership. "
+        "Use source_pack_sha256 exactly as supplied. "
+        "Return one valid JSON object matching schema."
     )
     data = {
         "pack_sha256": pack["pack_sha256"],
@@ -192,7 +204,12 @@ def build_writer_request(pack, prepared_spine):
         "ownership/knowledge and never resolve an unknown fact without a "
         "shown cause. Match reader age and target word range. Maintain scene "
         "order, plausible travel and all obligations. Return the story body "
-        "and corresponding beat references in a strict JSON object."
+        "and corresponding beat references in a strict JSON object. "
+        "Copy source_pack_sha256 and approved_spine_sha256 exactly, with the "
+        "latter returned as spine_sha256. Return beat_ids as the EXACT list of "
+        "all approved beat IDs in order, with no omissions or aliases. "
+        "Set story_text to ONLY the continuous English prose, not a scene "
+        "outline or markdown checklist. Stay strictly within word_targets."
     )
     data = {
         "source_pack_sha256": pack["pack_sha256"],
