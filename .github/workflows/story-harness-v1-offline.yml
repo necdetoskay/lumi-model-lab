@@ -36,6 +36,8 @@ on:
       - src/story_harness_p419_rich_schema_probe.py
       - src/story_harness_p420_recover_spine.py
       - src/story_harness_p422_independent_audit.py
+      - src/story_harness_p423_master.py
+      - src/story_harness_p424_q25_evidence.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -66,6 +68,8 @@ on:
       - tests/test_story_harness_p419_rich_schema_probe.py
       - tests/test_story_harness_p420_recover_spine.py
       - tests/test_story_harness_p422_independent_audit.py
+      - tests/test_story_harness_p423_master.py
+      - tests/test_story_harness_p424_q25_evidence.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -105,6 +109,7 @@ on:
       - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
       - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
       - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
+      - docs/canonical/STORY_HARNESS_P424_B01_Q25_EVIDENCE.md
       - .github/workflows/story-harness-p418-tiny-once.yml
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
@@ -922,3 +927,22 @@ jobs:
           assert row['english_master_authorized'] is False
           print('P422_INDEPENDENT_QUALITY_OFFLINE_GREEN')
           PY26
+
+      - name: Verify actual same-source pilot Master admission and Q25 quote evidence contracts
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p423_master.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -v
+          python -m src.story_harness_p423_master > /tmp/story-harness-p423.json
+          python -m src.story_harness_p424_q25_evidence > /tmp/story-harness-p424.json
+          python - <<'PY27'
+          import json
+          a=json.load(open('/tmp/story-harness-p423.json'))
+          b=json.load(open('/tmp/story-harness-p424.json'))
+          assert a['model_calls']==0 and a['sealed_master'] is False
+          assert a['production_state_write_authorized'] is False
+          assert b['schema']=='lumi.story-harness-p424-q25-evidence-proposal.v1'
+          assert b['model_calls']==0 and b['q25_candidate_authorized'] is False
+          assert b['production_state_write_authorized'] is False
+          assert b['stage_cap_usd']=='0.050'
+          print('P423_PILOT_MASTER_AND_P424_Q25_OFFLINE_GREEN')
+          PY27
