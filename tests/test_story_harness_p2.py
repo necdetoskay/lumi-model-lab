@@ -155,6 +155,29 @@ class P2RealIntegrityGate(unittest.TestCase):
                 with self.assertRaises(HarnessStop):
                     generate_receipts(manifest=m,repo_root=ROOT)
 
+    def test_frozen_real_stage_receipts_match_recomputation_exactly(self):
+        archived_path = ROOT / "evidence/story_harness_p2/pinned-local-integrity-receipts.json"
+        original = archived_path.read_bytes()
+        saved = json.loads(original.decode("utf8"))
+        computed = generate_receipts(manifest=source(),repo_root=ROOT)
+        self.assertEqual(saved, computed)
+        self.assertTrue(verify_report(saved, manifest=source(), repo_root=ROOT))
+        self.assertEqual(original, archived_path.read_bytes())
+        self.assertEqual(saved["provider_calls"],0)
+        self.assertFalse(saved["original_spine_or_q25_gates_reexecuted"])
+        self.assertFalse(saved["state_commit_authorized"])
+
+    def test_cli_verifies_frozen_report_but_does_not_promote(self):
+        command=[sys.executable,"-m","src.story_harness_p2",
+                 "--manifest",MANIFEST,
+                 "--verify-report","evidence/story_harness_p2/pinned-local-integrity-receipts.json",
+                 "--repo-root",str(ROOT)]
+        output=subprocess.check_output(command,text=True,encoding="utf8",cwd=ROOT)
+        report=json.loads(output)
+        self.assertEqual(report,generate_receipts(manifest=source(),repo_root=ROOT))
+        self.assertEqual(report["downstream_stage_executions_authorized"],0)
+        self.assertEqual(report["provider_cost_usd"],"0")
+
     def test_cli_twice_same_bytes(self):
         cmd=[sys.executable,"-m","src.story_harness_p2",
              "--manifest",MANIFEST,"--repo-root",str(ROOT)]
