@@ -196,6 +196,18 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   [P4.7 rationale](docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md)
   · [full manuscript](evidence/story_harness_p47/offline-full-story-route-truth-revision.txt)
   · [issue #290](https://github.com/necdetoskay/lumi-model-lab/issues/290).
+- **P4.8 actual Writer candidate through frozen original v21 model adapters,
+  offline only:** a fresh immutable 2491-word English source and 228
+  source-derived spans are bound to the approved Spine with a new provisional
+  profile. The original frozen quality core and real model-adapter callback
+  functions execute **five fake provider scenarios** against the actual NEW
+  full story. The bridge now spans 45 segments, above the 40-span maximum
+  repair scope; only a 37-span subset can be bounded, with out-of-scope
+  issues rejected. **No actual API calls/quality ACCEPT** and no approved
+  new scene scope or paid user grant. The old frozen profile is unchanged.
+  [P4.8 qualification](docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md)
+  · [new Writer artifact](evidence/story_harness_p48/new-story-writer-candidate.json)
+  · [issue #291](https://github.com/necdetoskay/lumi-model-lab/issues/291).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

@@ -21,6 +21,8 @@ on:
       - src/story_harness_p45.py
       - src/story_harness_p46.py
       - src/story_harness_p47.py
+      - src/story_harness_p48.py
+      - src/story_harness_p48_offline_runner.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -37,6 +39,7 @@ on:
       - tests/test_story_harness_p45.py
       - tests/test_story_harness_p46.py
       - tests/test_story_harness_p47.py
+      - tests/test_story_harness_p48.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -49,6 +52,8 @@ on:
       - configs/story_harness_p45_editorial_bridge_candidate.json
       - configs/story_harness_p46_full_story_editorial.json
       - configs/story_harness_p47_route_truth_revision.json
+      - configs/story_harness_p48_source_profile.json
+      - configs/story_harness_p48_remapped_scene_selection.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -64,6 +69,7 @@ on:
       - evidence/story_harness_p45/**
       - evidence/story_harness_p46/**
       - evidence/story_harness_p47/**
+      - evidence/story_harness_p48/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -80,6 +86,7 @@ on:
       - docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md
       - docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md
       - docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md
+      - docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -541,3 +548,33 @@ jobs:
           assert x['stop_reason'] == 'NEW_STORY_SHA_REQUIRES_SEPARATE_QUALITY_RUNNER_QUALIFICATION'
           print('STORY_HARNESS_P47_SOURCE_BOUND_ROUTE_TRUTH_GREEN')
           PY13
+
+      - name: Verify actual new 2491-word Writer artifact through original v21 adapters OFFLINE
+        env:
+          STORY_HARNESS_PINNED_P48_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p48.py' -v
+          python -m src.story_harness_p48 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P48_ROOT" > /tmp/story-harness-p48.json
+          python -m src.story_harness_p48 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P48_ROOT" \
+            --verify-report evidence/story_harness_p48/new-story-adapter-preflight.json > /tmp/story-harness-p48-verified.json
+          cmp /tmp/story-harness-p48.json /tmp/story-harness-p48-verified.json
+          python - <<'PY14'
+          import json
+          x=json.load(open('/tmp/story-harness-p48.json'))
+          assert x['actual_english_story_words'] == 2491
+          assert x['new_writer_segment_count'] == 228
+          assert x['real_v21_4_code_and_adapters_executed_offline'] is True
+          assert x['bridge_scene_exceeds_bounded_repair_scope'] is True
+          assert x['strict_out_of_scope_repair_rejection_observed'] is True
+          assert len(x['synthetic_adapter_scenarios']) == 5
+          assert x['independent_semantic_quality_accepted'] is False
+          assert x['actual_new_paid_provider_calls'] == 0
+          assert x['actual_new_paid_cost_usd'] == '0'
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_admission_authorized'] is False
+          assert x['finite_explicit_paid_authorization_issued'] is False
+          assert x['stop_reason'] == 'P48_OFFLINE_NEW_STORY_ADAPTER_BOUND_PAID_DISABLED'
+          print('STORY_HARNESS_P48_NEW_STORY_ADAPTER_QUALIFIED_GREEN')
+          PY14
