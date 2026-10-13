@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 5
 title_original: "Uninvited"
-status: draft
-word_count: 230
+status: complete
+word_count: 280
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ General Landry, galaksiyi kurtarma baskısından biraz uzaklaşmaları için SG-
 Dünya'da kulübe çevresindeki ormanda bir avcı parçalanmış hâlde bulunur. Fırtına yüzünden yollar ve telefonlar kesilir. Landry ile Mitchell yerel şerife yardımcı olur, ancak olayın sıradan bir ayı saldırısı gibi görünmediğini düşünür. Bir başka gezegende de benzer ölümler yaşanınca Carter ortak noktayı belirler: üç dünyada da Sodan görünmezlik teknolojisi kullanan gizli SG ekipleri bulunmaktadır. Aygıtlar geri çağrılıp incelenir. Görünmezlik alanında başka boyuttan gelen sülük benzeri parazitlerin kısa süreliğine ortaya çıkabildiği tespit edilir.
 
 Sodan aygıtının radyasyon ayarı değiştirildiğinden parazitler boyut bariyerini aşarak yerel hayvanlara girmekte ve onları saldırgan biçimde dönüştürmektedir. Mitchell kulübe yakınında yaralı bir Trust ajanının aynı görünmezlik aygıtını kullandığını görünce Dünya'da da tehlikenin yayıldığı anlaşılır. SG ekipleri ormana girip yaratıkları aramaya başlar. Karanlıkta iki büyük canavar ortaya çıkar; yoğun ateş sonucu ikisi de öldürülür. Başka saldırı belirtisi kalmayınca Landry ve Mitchell nihayet kulübeye dönebilir. İzin günü büyük ölçüde göreve dönüşmüş olsa da ekip kısa süreli dinlenmek için poker masasına oturur.
+
+Ortaya çıkan yaratıkların aslında farklı gezegenlerin kendi canlıları olması, tehdidin tek bir istilacı türden kaynaklanmadığını gösterir. Sorun görünmezlik aygıtının boyutlar arasında yanlış bağlantı kurmasıdır. Trust ajanının kullanmış olması, tehlikeli Sodan teknolojisinin resmî ekipler dışında da yayıldığına işaret eder. Kulübedeki olayın çözülmesiyle dinlenme mümkün olur; ancak cihazların dikkatli denetlenmesi gerektiği anlaşılır.
 
 ## Kaynaklar
 

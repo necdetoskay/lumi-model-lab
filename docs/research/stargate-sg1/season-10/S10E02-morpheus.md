@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 2
 title_original: "Morpheus"
-status: draft
-word_count: 229
+status: complete
+word_count: 285
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Merlin'in yükselmiş varlıkları öldürebilen Sangreal silahı, Ori'ye karş�
 Dr. Reimer'ın yaptığı inceleme beyinde çoğalan mikroskobik bir parazit bulunduğunu gösterir. Parazit melatoninle beslenir; hasta uyuduğunda ölümcül biçimde gelişmektedir. Doktorun aniden kalp krizi geçirip ölmesi, yardım umudunu azaltır. Üyeler uykuya yenilmemek için birbirlerini sürekli uyanık tutmak zorundadır. Mitchell ile Teal'c yakındaki mağaralarda çözüm ararken bir kertenkele türünün hastalığa karşı doğal bağışıklığı olduğunu fark eder. Teal'c örnek canlıyı yakalar. Koruyucu giysili kurtarma ekibi hastaları ve hayvanı Dünya'ya getirir. Araştırmacılar kertenkeleden elde edilen verileri kullanarak paraziti öldürecek serum hazırlar; bütün takım iyileşir.
 
 Dünya'da Vala'nın psikolojik testi de kolay geçmez. Mürekkep lekelerini ve yalan makinesini kandırmaya çalışması güven sorunlarını artırır. Woolsey ona SG-1 ile ilgili gizli bilgileri Uluslararası Denetim Kuruluna vermesi karşılığında kurumda kalma sözü verir. Vala bu teklifi reddeder. Kendisine güvenilmediğini düşünerek ayrılmaya hazırlanırken Woolsey'nin önerisinin de sınavın bir parçası olduğunu öğrenir. Sadakati kanıtlanmış, adaylık sürecini geçmiştir. Böylece Vala SGC'nin deneme statüsündeki üyesi olur ve kendini SG-1'in bir parçası saymaya başlar.
+
+Hastalığın uykuyla bağlantılı olması, araştırmanın hem fiziksel hem psikolojik açıdan olağanüstü yıpratıcı olmasına yol açar. Her insan daha çok yorulurken uyumak ölüm anlamına gelmektedir. Vala'nın Woolsey'nin gizli bilgi teklifini reddetmesi ise geçmişte para ve fırsat için türlü hilelere başvuran birinin değişebildiğini kanıtlar. Ekip içinde kazanacağı güvene artık sadece maceracı yetenekleriyle değil bilinçli tercihiyle de katkı sağlamaktadır.
 
 ## Kaynaklar
 
