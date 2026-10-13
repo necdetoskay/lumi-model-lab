@@ -123,7 +123,45 @@ def wire(stage, prompt):
     must(type(sys_prompt) is str and type(usr_prompt) is str and
          50 < len(sys_prompt) < 10000 and 50 < len(usr_prompt) < 15000,
          "Invalid generation prompt length")
-    schema = SPINE_JSON if stage == "SPINEFORGE" else WRITER_JSON
+    # Third same-method correction: mirror source-specific allowed values in
+    # the strict JSON Schema itself. Prompt-only instructions are not a
+    # contract when the decoder can choose unknown places or obligation text.
+    schema = deepcopy(SPINE_JSON if stage == "SPINEFORGE" else WRITER_JSON)
+    try:
+        input_payload = json.loads(usr_prompt)
+    except (TypeError, ValueError):
+        raise HarnessStop("Malformed model source payload") from None
+    must(type(input_payload) is dict and
+         input_payload.get("pack_sha256",
+                           input_payload.get("source_pack_sha256")) ==
+         prompt["source_pack_sha256"],
+         "Model prompt SHA differs from the source pack")
+    if stage == "SPINEFORGE":
+        state = input_payload.get("canonical_state")
+        must(type(state) is dict and type(state.get("locations")) is list
+             and state["locations"] and
+             type(input_payload.get("open_obligations")) is list,
+             "Invalid source-specific Spine schema inputs")
+        props = schema["properties"]["beats"]["items"]["properties"]
+        schema["properties"]["source_pack_sha256"]["enum"] = [
+            prompt["source_pack_sha256"]]
+        props["id"]["enum"] = [f"BEAT_{n:02d}" for n in range(1, 9)]
+        props["location"]["enum"] = list(state["locations"])
+        props["obligation_reference"]["enum"] = [
+            None, *input_payload["open_obligations"]]
+    else:
+        sha_spine = prompt.get("spine_sha256")
+        beats = input_payload.get("approved_beats")
+        must(type(sha_spine) is str and len(sha_spine) == 64
+             and type(beats) is list and 4 <= len(beats) <= 8,
+             "Invalid Writer Spine source/beat list")
+        ids = [b["id"] for b in beats]
+        schema["properties"]["source_pack_sha256"]["enum"] = [
+            prompt["source_pack_sha256"]]
+        schema["properties"]["spine_sha256"]["enum"] = [sha_spine]
+        schema["properties"]["beat_ids"]["items"]["enum"] = ids
+        schema["properties"]["beat_ids"]["minItems"] = len(ids)
+        schema["properties"]["beat_ids"]["maxItems"] = len(ids)
     body = {
         "model": MODEL,
         "messages": [{"role": "system", "content": sys_prompt},
