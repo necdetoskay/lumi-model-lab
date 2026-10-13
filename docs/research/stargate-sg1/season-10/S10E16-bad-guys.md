@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 16
 title_original: "Bad Guys"
-status: draft
-word_count: 245
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ekip saklanmaya çalışırken davetlilerden biri silahlı yabancıları fark ed
 Müze çalışanı Cicero farklı bir yaklaşım gösterir. Yıldız Geçidi hakkındaki anlatıyı kabul eder ve Mitchell ile Vala'yı eski Goa'uld eserlerinin bulunduğu bölüme götürür. Orada naquadah çekirdeği olan bir bomba sergilenmektedir. Çekirdek, geçidi elle çevirmek için gerekli gücü sağlayabilir. Kendini kahraman sanan güvenlik görevlisi Jayem Seran müdahale edince Vala onu korkutmak için bombayı çalıştırır; ancak kapatılamadığını fark eder. Patlamaya bir saatten az süre kalmıştır.
 
 Vala çekirdeği geçide bağlayıp enerji tüketilince bombanın da etkisizleşeceği bir çözüm hazırlar. Polis binaya hücum ettiği sırada geçit açılır. Quartus, ekibin gerçek amacını kabul ederek kaçmalarına izin verir. SG-1 Dünya'ya döner. Gezegenin halkıysa resmî haberlerde Seran'ın isyancıları öldürüp rehineleri kurtardığını duyar. Gerçek ziyaret gizli kalır; ekip yanlış anlaşılmanın ne kadar tehlikeli olabileceğini öğrenmiştir.
+
+Bu hikâye, SG-1'in silah kullanmadan sorun çözmek için müzakere etmesinin ne kadar önemli olabileceğini de gösterir. Cicero olmasaydı kimse geçidin gerçek niteliğini öğrenemeyecek, bomba çok sayıda insanı öldürecekti.
 
 ## Kaynaklar
 

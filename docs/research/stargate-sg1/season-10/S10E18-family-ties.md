@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 18
 title_original: "Family Ties"
-status: draft
-word_count: 249
+status: complete
+word_count: 270
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Jacek kısa zamanda Amerikan gündelik hayatına uyum sağlar görünür, fakat 
 Gerçekte Arkad'ın bir kargo gemisi daha Dünya yakınında saklanmaktadır. Jacek bu geminin içindeki naquadahı Jaffa ortaklarıyla birlikte satıp büyük para kazanmayı amaçlamaktadır. SG-1 sahte işbirliği yapmaya karar verir: Jacek'in yardımıyla görünmez geminin yeri saptanır, askerler muhafızları etkisizleştirir. Jacek geminin tuzaklandığını söyleyip Vala'ya bir kolye vererek vedalaşır. Sonra kargo gemisine binip kaçar. Fakat ekip onun daima hile yapacağını bildiği için asıl gemiyi önceden kurtarmış, ona sahte bir taşıt ve değersiz yük bırakmıştır.
 
 Başka dünyaya vardığında Jacek naquadah yerine kurşun külçeleri ve paket dolgu malzemeleri bulur. Bunları da mucizevi ürün diye satmaya çalışır. Dünya'da Vala, babasının verdiği kolyeyi yatağının altında sakladığı çocukluk hediyelerinin kutusuna koyar. Babasına güvenmemesine rağmen geçmişteki bağını bütünüyle koparamamıştır.
+
+Vala'nın kolyeyi saklaması, babasının hatalarını affettiği anlamına gelmez; ancak geçmişteki mutlu anıları tümüyle unutamadığını açıkça gösterir. Jacek başka gezegende dolandırıcılığını sürdürür.
 
 ## Kaynaklar
 
