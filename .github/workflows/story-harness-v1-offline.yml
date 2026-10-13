@@ -29,6 +29,7 @@ on:
       - src/story_harness_p412.py
       - src/story_harness_p413.py
       - src/story_harness_p414.py
+      - src/story_harness_p415_benchmark.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -52,6 +53,7 @@ on:
       - tests/test_story_harness_p412.py
       - tests/test_story_harness_p413.py
       - tests/test_story_harness_p414.py
+      - tests/test_story_harness_p415_benchmark.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -66,6 +68,7 @@ on:
       - configs/story_harness_p47_route_truth_revision.json
       - configs/story_harness_p48_source_profile.json
       - configs/story_harness_p48_remapped_scene_selection.json
+      - configs/story_harness_p415_benchmark.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -86,6 +89,8 @@ on:
       - docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md
       - docs/canonical/STORY_HARNESS_P413_TEMPERATURE_COMPATIBILITY.md
       - docs/canonical/STORY_HARNESS_P414_KEY_LIMIT_PREFLIGHT.md
+      - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
+      - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -750,3 +755,30 @@ jobs:
           assert x['stop_reason'] == 'P414_USER_KEY_LIMIT_AND_GRANT_NOT_PROVISIONED_LIVE_STOP'
           print('STORY_HARNESS_P414_CREDENTIAL_KEY_LIMIT_OFFLINE_GREEN')
           PY19
+
+      - name: Qualify 90 percent diverse state topic benchmark without fake success
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p415_benchmark.py' -v
+          python -m src.story_harness_p415_benchmark --repo-root . > /tmp/story-harness-p415-a.json
+          python -m src.story_harness_p415_benchmark --repo-root . > /tmp/story-harness-p415-b.json
+          cmp /tmp/story-harness-p415-a.json /tmp/story-harness-p415-b.json
+          python - <<'PY20'
+          import json
+          x = json.load(open('/tmp/story-harness-p415-a.json'))
+          assert x['pilot_sample_size'] == 10
+          assert x['required_pilot_successes'] == 9
+          assert x['release_holdout_sample_size'] == 30
+          assert x['required_holdout_successes'] == 27
+          assert x['frozen_budget_ceiling_usd'] == '10.00'
+          assert x['max_corrective_fixes_per_failure'] == 3
+          assert len(x['case_ids']) == len(x['input_fingerprints']) == 10
+          assert x['status'] == 'NOT_YET_INDEPENDENTLY_ATTESTED'
+          assert x['ninety_percent_achieved'] is False
+          assert x['externally_verified_genuine_success_count'] is None
+          assert x['verified_observed_success_rate'] is None
+          assert x['actual_model_cost_verified'] is False
+          assert x['production_admission_authorized'] is False
+          assert x['live_model_calls'] == 0
+          assert x['claimed_model_cost_usd'] == '0'
+          print('STORY_HARNESS_P415_DIVERSE_90_PERCENT_BENCHMARK_OFFLINE_GREEN')
+          PY20
