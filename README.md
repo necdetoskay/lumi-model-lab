@@ -150,6 +150,18 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   English Master, Q25, paid model dispatch and production state remain OFF.
   [P4.3 runner](docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md)
   · [issue #287](https://github.com/necdetoskay/lumi-model-lab/issues/287).
+- **P4.4 original age-12 island story review and controlled budget exception:**
+  full original 2,407-word prose and the real paid v21 failed repair were
+  compared, yielding five **source-quoted preliminary blocking issues**
+  and two continuity/narrative advisories. Verified old paid run had
+  3 calls/$0.057988 and ended `REJECT_PROVIDER_FAILURE`. Public Sonnet 5.5
+  prices ($2/M in, $10/M out) imply a **conditional** $0.123178 exposure
+  if original input tokens remain unchanged and frozen output caps are hit.
+  User allowed exceeding the $0.10 target, **not unlimited spending**;
+  a finite authorized total and real provider preflight remain mandatory.
+  Zero API calls, English Master and Q25 still denied.
+  [P4.4 source-bound review](docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md)
+  · [issue #288](https://github.com/necdetoskay/lumi-model-lab/issues/288).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

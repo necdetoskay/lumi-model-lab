@@ -17,6 +17,7 @@ on:
       - src/story_harness_p42_diagnostics.py
       - src/story_harness_p43.py
       - src/story_harness_p43_runner.py
+      - src/story_harness_p44.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -29,6 +30,7 @@ on:
       - tests/test_story_harness_p41.py
       - tests/test_story_harness_p42.py
       - tests/test_story_harness_p43.py
+      - tests/test_story_harness_p44.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -37,6 +39,7 @@ on:
       - configs/story_harness_p40_v21_producer_preflight.json
       - configs/story_harness_p41_seal_trust_registry.json
       - configs/story_harness_p43_offline_runner.json
+      - configs/story_harness_p44_story_quality_preflight.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -48,6 +51,7 @@ on:
       - evidence/story_harness_p41/**
       - evidence/story_harness_p42/**
       - evidence/story_harness_p43/**
+      - evidence/story_harness_p44/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -60,6 +64,7 @@ on:
       - docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md
       - docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md
       - docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md
+      - docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -415,3 +420,32 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P43_PAID_KILL_SWITCH_GREEN')
           PY9
+
+      - name: Verify actual story source-anchored blocking defects and paid cost-overrun permission
+        env:
+          STORY_HARNESS_PINNED_P44_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p44.py' -v
+          python -m src.story_harness_p44 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P44_ROOT" > /tmp/story-harness-p44.json
+          python -m src.story_harness_p44 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P44_ROOT" \
+            --verify-report evidence/story_harness_p44/pinned-story-review-budget-receipt.json > /tmp/story-harness-p44-verified.json
+          cmp /tmp/story-harness-p44.json /tmp/story-harness-p44-verified.json
+          python - <<'PY10'
+          import json
+          x=json.load(open('/tmp/story-harness-p44.json'))
+          assert x['stop_reason'] == 'NOT_READY_FOR_REAL_BOUNDED_QUALITY_ATTEMPT'
+          assert x['actual_story_word_count'] == 2407
+          assert x['confirmed_preliminary_blockers'] == 5
+          assert x['preliminary_advisories'] == 2
+          assert x['quality_target_overrun_user_permitted'] is True
+          assert x['authorized_paid_spend_ceiling_usd'] is None
+          assert x['current_public_price_and_budget_exposure']['historical_paid_cost_usd'] == 0.057988
+          assert x['current_public_price_and_budget_exposure']['conditional_exposure_original_output_caps_usd'] == 0.123178
+          assert x['real_final_quality_accept_present'] is False
+          assert x['paid_execution_authorized'] is False
+          assert x['q25_request_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P44_REAL_STORY_EDITORIAL_PREFLIGHT_GREEN')
+          PY10
