@@ -101,6 +101,15 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   Master, Q25 or Final StoryState admission. Source integrity/lineage
   GREEN **does not certify a successful story**. [P3.1 frozen scope](docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md)
   · [P3.1 tracking issue #282](https://github.com/necdetoskay/lumi-model-lab/issues/282).
+- **P3.2 English Master admission (original island story):** the original
+  quality pipeline's `ACCEPT → ENGLISH_MASTER_SEAL` policy is verified
+  as a **conditional rule**, not a historical success. Cycle 10 is only
+  `REAUDIT` pending; no exact same-story English Master seal exists in
+  the 152-file pinned island source cohort. An unrelated Lighthouse
+  `ACCEPT` must never be reused. Frozen result:
+  `ENGLISH_MASTER_NOT_ADMISSIBLE`; no Q25, StoryState commit, new model
+  call, or production write. [P3.2 source/acceptance boundary](docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md)
+  and [issue #283](https://github.com/necdetoskay/lumi-model-lab/issues/283).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

@@ -10,6 +10,7 @@ on:
       - src/story_harness_p22.py
       - src/story_harness_p30.py
       - src/story_harness_p31.py
+      - src/story_harness_p32.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -17,16 +18,19 @@ on:
       - tests/test_story_harness_p22.py
       - tests/test_story_harness_p30.py
       - tests/test_story_harness_p31.py
+      - tests/test_story_harness_p32.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
       - configs/story_harness_p31_pinned_quality_cohort.json
+      - configs/story_harness_p32_english_master_admission.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
       - evidence/story_harness_p22/**
       - evidence/story_harness_p30/**
       - evidence/story_harness_p31/**
+      - evidence/story_harness_p32/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -34,6 +38,7 @@ on:
       - docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md
       - docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md
       - docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md
+      - docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -249,3 +254,33 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P31_HISTORICAL_QUALITY_GREEN')
           PY4
+
+      - name: Verify frozen English Master admission denial and cross-story isolation
+        env:
+          STORY_HARNESS_PINNED_P32_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p32.py' -v
+          python -m src.story_harness_p32 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P32_ROOT" > /tmp/story-harness-p32-denied.json
+          python -m src.story_harness_p32 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P32_ROOT" \
+            --verify-report evidence/story_harness_p32/pinned-english-master-denial-receipt.json > /tmp/story-harness-p32-verified.json
+          cmp /tmp/story-harness-p32-denied.json /tmp/story-harness-p32-verified.json
+          python - <<'PY5'
+          import json
+          x = json.load(open('/tmp/story-harness-p32-denied.json'))
+          assert x['stop_reason'] == 'ENGLISH_MASTER_NOT_ADMISSIBLE'
+          assert x['state'] == 'STOPPED_UNSEALED_UNACCEPTED_STORY'
+          assert x['historical_island_tracked_source_file_count'] == 152
+          assert x['historical_english_master_artifact_found'] is False
+          assert x['historical_policy']['accept_branch_is_actual_history'] is False
+          assert x['terminal_candidate']['next_state_action'] == 'REAUDIT'
+          assert x['terminal_candidate']['last_qualified_cycle'] == 9
+          assert x['unrelated_accepted_story_reference']['accepted_as_island_english_master'] is False
+          assert x['english_master_story_accepted'] is False
+          assert x['english_master_seal_execution_authorized'] is False
+          assert x['q25_extraction_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P32_ENGLISH_MASTER_FAIL_CLOSED_GREEN')
+          PY5
