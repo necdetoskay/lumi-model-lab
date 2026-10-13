@@ -223,7 +223,7 @@ class P417Tests(unittest.TestCase):
                                  run_variant="r02")
             with self.assertRaises(HarnessStop):
                 BoundedOncePilot(td, case_id="B01", plan=self.plan,
-                                 run_variant="r06")
+                                 run_variant="r07")
 
     def test_provider_charge_recorded_even_when_spine_fails(self):
         with TemporaryDirectory() as td:
@@ -430,6 +430,53 @@ class P417Tests(unittest.TestCase):
         self.assertEqual(caught.exception.hint, "SCHEMA_UNSUPPORTED_ARRAY_BOUNDS")
         self.assertNotIn("SECRET_TEXT", str(caught.exception))
         self.assertNotIn(key, str(caught.exception))
+
+    def test_r06_immutable_full_spine_is_archived_before_writer(self):
+        from src.story_harness_p416_input_bridge import sha
+        with TemporaryDirectory() as td:
+            pilot=BoundedOncePilot(td,case_id="B01",plan=self.plan,
+                                   run_variant="r06")
+            provider=FakeProvider(self.pack)
+            output=pilot.execute(transport=provider)
+            plan_path=pilot.dir / "spine-plan.json"
+            self.assertTrue(plan_path.is_file())
+            record=json.loads(plan_path.read_text())
+            story=json.loads((pilot.dir / "story-draft.json").read_text())
+            self.assertEqual(record["schema"],
+                "lumi.story-harness-p421-real-spine-artifact.v1")
+            self.assertEqual(sha(record["spine"]),record["spine_sha256"])
+            self.assertEqual(record["source_pack_sha256"],self.pack["pack_sha256"])
+            self.assertEqual(story["spine_sha256"],record["spine_sha256"])
+            self.assertEqual(story["spine_artifact_path"],"spine-plan.json")
+            self.assertFalse(record["original_semantic_quality_accepted"])
+            self.assertFalse(story["quality_accepted"])
+            self.assertFalse(output["quality_accepted"])
+
+    def test_r06_failure_on_first_stage_never_creates_fake_spine(self):
+        with TemporaryDirectory() as td:
+            pilot=BoundedOncePilot(td,case_id="B01",plan=self.plan,
+                                   run_variant="r06")
+            calls=[]
+            def bad(body):
+                calls.append(1)
+                raise TimeoutError("fake provider failure")
+            with self.assertRaises(HarnessStop):
+                pilot.execute(transport=bad)
+            self.assertFalse((pilot.dir / "spine-plan.json").exists())
+            self.assertFalse((pilot.dir / "story-draft.json").exists())
+            self.assertEqual(len(calls),1)
+
+    def test_r06_is_distinct_one_use_from_earlier_original_claims(self):
+        with TemporaryDirectory() as td:
+            old=BoundedOncePilot(td,case_id="B01",plan=self.plan,
+                                  run_variant="r05")
+            current=BoundedOncePilot(td,case_id="B01",plan=self.plan,
+                                      run_variant="r06")
+            self.assertNotEqual(old.dir,current.dir)
+            self.assertTrue(current.use_simple_envelope)
+            with self.assertRaises(FileExistsError):
+                BoundedOncePilot(td,case_id="B01",plan=self.plan,
+                                 run_variant="r06")
 
     def test_r05_new_one_use_claim_and_higher_output_finite_caps(self):
         from src.story_harness_p417_live_pilot import OUTPUT_CAPS, STAGE_MAX_USD
