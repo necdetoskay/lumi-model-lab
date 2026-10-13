@@ -223,7 +223,7 @@ class P417Tests(unittest.TestCase):
                                  run_variant="r02")
             with self.assertRaises(HarnessStop):
                 BoundedOncePilot(td, case_id="B01", plan=self.plan,
-                                 run_variant="r04")
+                                 run_variant="r05")
 
     def test_provider_charge_recorded_even_when_spine_fails(self):
         with TemporaryDirectory() as td:
