@@ -137,7 +137,7 @@ def extraction_wire(bundle):
         "unknown_facts_retained copied verbatim as an array and "
         "world_time_delta JSON null. Quotes must match case and punctuation "
         "in English_Master_Text, with no paraphrasing. "
-        "Each canonical open_obligation MUST have exactly one 
+        "Each canonical open_obligation MUST have exactly one "
         "entry with its exact obligation text, a SATISFIED/OPEN/UNPROVEN "
         "status, and a short supporting verbatim quote. Numeric elapsed "
         "world time must stay unknown; no fabricated timestamps. "
