@@ -235,5 +235,79 @@ class P424Tests(unittest.TestCase):
             self.assertEqual(result["status"],"STOP_UNKNOWN_OR_INVALID")
             self.assertIsNone(result["billed_cost_usd"])
 
+    def test_corrected_prompt_explicitly_matches_strict_relationship_contract(self):
+        body=extraction_wire(self.bundle)
+        system=body["messages"][0]["content"]
+        for phrase in ("ALWAYS set to the exact string UNKNOWN",
+                       "HELD_BY_PROTAGONIST", "AT_WINDOW",
+                       "unknown_facts_retained", "world_time_delta JSON null",
+                       "final_location {location_id, quote}"):
+            self.assertIn(phrase,system)
+
+    def test_r02_is_a_new_unique_claim_not_a_repeat_of_consumed_r01(self):
+        with TemporaryDirectory() as td:
+            old=extract_once(self.bundle,td,
+                             transport=lambda b:response(self.bundle))
+            newer=extract_once(self.bundle,td,run_variant="r02",
+                               transport=lambda b:response(self.bundle))
+            self.assertEqual(old["story_sha256"],newer["story_sha256"])
+            self.assertEqual(len(list(Path(td).iterdir())),2)
+            with self.assertRaises(FileExistsError):
+                extract_once(self.bundle,td,run_variant="r02",
+                             transport=lambda b:response(self.bundle))
+            with self.assertRaises(HarnessStop):
+                extract_once(self.bundle,td,run_variant="r03",
+                             transport=lambda b:response(self.bundle))
+
+    def test_provider_billed_usage_retained_when_semantic_result_is_invalid(self):
+        with TemporaryDirectory() as td:
+            changed=response(self.bundle)
+            answer=json.loads(changed["choices"][0]["message"]["content"])
+            observations=json.loads(answer["evidence_json"])
+            observations["object_observations"][0]["ownership"]="invented owner"
+            answer["evidence_json"]=json.dumps(observations)
+            changed["choices"][0]["message"]["content"]=json.dumps(answer)
+            with self.assertRaisesRegex(HarnessStop,"Q25_OBJECT_RELATION_OR_OWNER_INVALID"):
+                extract_once(self.bundle,td,run_variant="r02",
+                             transport=lambda b:changed)
+            path=next(Path(td).glob("*/01-q25-proposal.json"))
+            d=json.loads(path.read_text())
+            self.assertEqual(d["billed_cost_usd"],"0.019")
+            self.assertEqual(d["safe_failure_code"],
+                             "Q25_OBJECT_RELATION_OR_OWNER_INVALID")
+            self.assertEqual(d["provider_generation_id"],"gen-P424MOCK12345")
+            self.assertEqual(d["provider_usage"]["prompt_tokens"],2500)
+            self.assertTrue(d["provider_response_received"])
+            self.assertIsNotNone(d["provider_completion_sha256"])
+            self.assertFalse(d["state_write_authorized"])
+            self.assertFalse(d["retry_allowed"])
+            self.assertNotIn("invented owner",path.read_text())
+
+    def test_truncated_generation_is_classified_and_cost_not_lost(self):
+        with TemporaryDirectory() as td:
+            reply=response(self.bundle)
+            reply["choices"][0]["finish_reason"]="length"
+            with self.assertRaisesRegex(HarnessStop,"Q25_MODEL_OUTPUT_TRUNCATED"):
+                extract_once(self.bundle,td,run_variant="r02",
+                             transport=lambda b:reply)
+            d=json.loads(next(Path(td).glob("*/01-q25-proposal.json")).read_text())
+            self.assertEqual(d["finish_reason"],"length")
+            self.assertEqual(d["billed_cost_usd"],"0.019")
+
+    def test_unknown_network_failure_never_logs_raw_exception_or_key(self):
+        with TemporaryDirectory() as td:
+            def fail(body):
+                raise TimeoutError("Bearer sk-or-secret NOT FOR LOGS")
+            with self.assertRaisesRegex(HarnessStop,"PROVIDER_POST_OR_UNKNOWN_EXCEPTION"):
+                extract_once(self.bundle,td,run_variant="r02",
+                             transport=fail)
+            text=next(Path(td).glob("*/01-q25-proposal.json")).read_text()
+            self.assertNotIn("sk-or-",text)
+            self.assertNotIn("Bearer",text)
+            d=json.loads(text)
+            self.assertFalse(d["provider_response_received"])
+            self.assertIsNone(d["billed_cost_usd"])
+
+
 if __name__=="__main__":
     unittest.main()
