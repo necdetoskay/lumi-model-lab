@@ -89,6 +89,22 @@ class P416InputBridgeTests(unittest.TestCase):
         with self.assertRaises(HarnessStop):
             compile_case(c)
 
+    def test_generation_prompt_matches_verifier_exact_ids_and_obligations(self):
+        for case in self.plan["cases"]:
+            pack = compile_case(case)
+            prompt = build_spine_request(pack)["system_prompt"]
+            self.assertIn("BEAT_01", prompt)
+            self.assertIn("BEAT_04", prompt)
+            self.assertIn("canonical_state.locations", prompt)
+            self.assertIn("verbatim", prompt)
+            self.assertIn("source_pack_sha256", prompt)
+            self.assertIn("JSON null", prompt)
+            prepared = approve_spine_for_writer(pack, synthetic_spine(pack))
+            writer = build_writer_request(pack, prepared)["system_prompt"]
+            self.assertIn("EXACT list", writer)
+            self.assertIn("approved_spine_sha256", writer)
+            self.assertIn("word_targets", writer)
+
     def test_built_spine_tethers_first_beat_and_obligations(self):
         for case in self.plan["cases"]:
             pack = compile_case(case)
