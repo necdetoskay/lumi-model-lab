@@ -25,6 +25,7 @@ on:
       - src/story_harness_p48_offline_runner.py
       - src/story_harness_p49.py
       - src/story_harness_p410.py
+      - src/story_harness_p411.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -44,6 +45,7 @@ on:
       - tests/test_story_harness_p48.py
       - tests/test_story_harness_p49.py
       - tests/test_story_harness_p410.py
+      - tests/test_story_harness_p411.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -93,6 +95,7 @@ on:
       - docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md
       - docs/canonical/STORY_HARNESS_P49_PAID_READINESS_PACKET.md
       - docs/canonical/STORY_HARNESS_P410_PROVIDER_ROUTING_OFFLINE.md
+      - docs/canonical/STORY_HARNESS_P411_SIGNED_GRANT_TRANSPORT.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -202,7 +205,7 @@ jobs:
           path: _pinned_q25_source
           persist-credentials: false
       - name: Install pinned offline validator dependencies
-        run: python -m pip install "pydantic>=2.8,<3" "PyYAML>=6,<7" "requests>=2.31,<3" "python-dotenv>=1.0,<2" "rich>=13,<15" "httpx>=0.27,<1"
+        run: python -m pip install "pydantic>=2.8,<3" "PyYAML>=6,<7" "requests>=2.31,<3" "python-dotenv>=1.0,<2" "rich>=13,<15" "httpx>=0.27,<1" "cryptography>=44,<48"
       - name: Execute real frozen Q25 source-bound validators and negative tests
         env:
           STORY_HARNESS_PINNED_Q25_ROOT: ${{ github.workspace }}/_pinned_q25_source
@@ -637,3 +640,29 @@ jobs:
           assert x['stop_reason'] == 'P410_OFFLINE_ROUTING_AND_LEDGER_QUALIFIED_LIVE_DISABLED'
           print('STORY_HARNESS_P410_ROUTING_AND_RESERVATION_OFFLINE_GREEN')
           PY16
+
+      - name: Verify externally signed one-attempt grant and mock-only provider transport
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p411.py' -v
+          python -m src.story_harness_p411 --repo-root . > /tmp/story-harness-p411-a.json
+          python -m src.story_harness_p411 --repo-root . > /tmp/story-harness-p411-b.json
+          cmp /tmp/story-harness-p411-a.json /tmp/story-harness-p411-b.json
+          python - <<'PY17'
+          import json
+          x = json.load(open('/tmp/story-harness-p411-a.json'))
+          assert x['writer_segments'] == 228
+          assert x['signed_grant_verifier_available'] is True
+          assert x['external_trusted_human_key_configured'] is False
+          assert x['provider_price_cap_shape'] == {'prompt':2,'completion':10}
+          assert x['provider_token_count_verified'] is False
+          assert x['authentic_live_provider_route_verified'] is False
+          assert x['real_paid_dispatch_possible'] is False
+          assert x['fake_post_contract_available'] is True
+          assert x['new_api_calls'] == 0 and x['new_api_cost_usd'] == '0'
+          assert x['story_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P411_SIGNED_GRANT_OFFLINE_TRANSPORT_ONLY_LIVE_STOP'
+          print('STORY_HARNESS_P411_SIGNED_GRANT_FAKE_TRANSPORT_GREEN')
+          PY17
