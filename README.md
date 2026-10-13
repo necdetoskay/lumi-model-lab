@@ -174,6 +174,16 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   run. [P4.5 architecture](docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md)
   · [candidate scene](evidence/story_harness_p45/offline-editorial-bridge-scene.txt)
   · [full edited story](evidence/story_harness_p45/offline-editorial-full-story.txt).
+- **P4.6 full-story editorial cleanup:** a separately sourced 2,482-word
+  authorial Writer revision secures both gliders with independent landing
+  tethers before Arda removes the expedition line and makes the return-trail
+  camp/journal interruption shorter after their turnaround promise. All four
+  changes are source-anchored and replayed against P4.5; the 370-word bridge
+  fix stays identical. This is **UNREVIEWED** prose, not a new model run,
+  signed semantic ACCEPT, English Master or Q25 source.
+  [P4.6 details](docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md)
+  · [new full draft](evidence/story_harness_p46/offline-full-story-writer-revision.txt)
+  · [issue #289](https://github.com/necdetoskay/lumi-model-lab/issues/289).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

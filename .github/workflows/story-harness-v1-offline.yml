@@ -19,6 +19,7 @@ on:
       - src/story_harness_p43_runner.py
       - src/story_harness_p44.py
       - src/story_harness_p45.py
+      - src/story_harness_p46.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -33,6 +34,7 @@ on:
       - tests/test_story_harness_p43.py
       - tests/test_story_harness_p44.py
       - tests/test_story_harness_p45.py
+      - tests/test_story_harness_p46.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -43,6 +45,7 @@ on:
       - configs/story_harness_p43_offline_runner.json
       - configs/story_harness_p44_story_quality_preflight.json
       - configs/story_harness_p45_editorial_bridge_candidate.json
+      - configs/story_harness_p46_full_story_editorial.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -56,6 +59,7 @@ on:
       - evidence/story_harness_p43/**
       - evidence/story_harness_p44/**
       - evidence/story_harness_p45/**
+      - evidence/story_harness_p46/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -70,6 +74,7 @@ on:
       - docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md
       - docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md
       - docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md
+      - docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -482,3 +487,23 @@ jobs:
           assert x['stop_reason'] == 'EDITORIAL_REWRITE_READY_FOR_INDEPENDENT_QUALITY_REVIEW'
           print('STORY_HARNESS_P45_REAL_EDITORIAL_SCENE_REWRITE_GREEN')
           PY11
+
+      - name: Verify full-manuscript revised English writer candidate remains unreviewed
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p46.py' -v
+          python -m src.story_harness_p46 --repo-root . \
+            --verify-receipt evidence/story_harness_p46/writer-revision-proof.json > /tmp/story-harness-p46.json
+          python - <<'PY12'
+          import json
+          x=json.load(open('/tmp/story-harness-p46.json'))
+          assert x['revised_story_words'] == 2482
+          assert x['status'] == 'UNREVIEWED_AUTHORIAL_FULL_STORY_REVISION'
+          assert len(x['editorial_changes_verified']) == 4
+          assert x['other_source_content_unchanged'] is True
+          assert x['independent_semantic_quality_accept'] is False
+          assert x['english_master_seal_issued'] is False
+          assert x['q25_source_admitted'] is False
+          assert x['paid_execution_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P46_FULL_WRITER_REVISION_GREEN')
+          PY12
