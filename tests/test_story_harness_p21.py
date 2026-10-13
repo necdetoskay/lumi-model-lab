@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 from src.story_harness_p21 import (
     GATE, SCHEMA, PINNED_SOURCE_COMMIT, SOURCE, VALIDATOR_SHA,
-    _verify_checkout, rerun_q25,
+    _verify_checkout, rerun_q25, verify_pinned_report,
 )
 from src.story_harness_v1 import HarnessStop, canonical_bytes, digest
 
@@ -130,6 +130,38 @@ class P21ActualQ25ValidatorTests(unittest.TestCase):
         m["cases"][3]["case_id"] = "Q25-KITE01-CANDIDATES"
         with self.assertRaises(HarnessStop):
             self.run_replay(manifest=m)
+
+    def test_replay_receipt_matches_frozen_artifact_and_refuses_forged_history(self):
+        archive = ROOT / "evidence/story_harness_p21/pinned-real-q25-offline-replay.json"
+        frozen = json.loads(archive.read_text(encoding="utf8"))
+        fresh = self.run_replay()
+        self.assertEqual(frozen, fresh)
+        self.assertTrue(verify_pinned_report(
+            frozen, manifest=_manifest(), repo_root=ROOT,
+            pinned_q25_root=_source_root(),
+        ))
+        for damage in ("rewrite_paid_reject", "fake_spine_gate",
+                       "approve_semantics", "fake_provider_call",
+                       "delete_source_order_fix", "promote_canonical_state"):
+            with self.subTest(damage=damage):
+                changed = copy.deepcopy(frozen)
+                if damage == "rewrite_paid_reject":
+                    changed["cases"][1]["original_paid_outcome_immutable"] = "SOURCE_BOUND_CANDIDATES_ONLY"
+                elif damage == "fake_spine_gate":
+                    changed["spineforge_gate_invocations"] = 1
+                elif damage == "approve_semantics":
+                    changed["semantic_support_certified"] = True
+                elif damage == "fake_provider_call":
+                    changed["provider_calls"] = 1
+                elif damage == "delete_source_order_fix":
+                    changed["cases"][1]["current_offline_source_order_adjustments"] = []
+                elif damage == "promote_canonical_state":
+                    changed["state_commit_authorized"] = True
+                with self.assertRaises(HarnessStop):
+                    verify_pinned_report(
+                        changed, manifest=_manifest(), repo_root=ROOT,
+                        pinned_q25_root=_source_root(),
+                    )
 
     def test_real_validator_cli_is_pure_replay_no_provider_keys(self):
         cmd = [
