@@ -228,7 +228,7 @@ class OneAttemptLedger:
         default_wire["provider"]["max_price"] = {"prompt": 2, "completion": 10}
         if wire_body is None:
             wire_body = default_wire
-        else:
+        elif wire_body != default_wire:
             # The only offline alternative is omission of temperature=0;
             # never admit arbitrary model, schema, prompt or routing changes.
             omitted = copy.deepcopy(default_wire)
