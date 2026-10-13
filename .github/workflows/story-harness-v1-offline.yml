@@ -62,6 +62,7 @@ on:
       - tests/test_story_harness_p417_live_pilot.py
       - tests/test_story_harness_p418_compat_probe.py
       - tests/test_story_harness_p419_rich_schema_probe.py
+      - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -882,3 +883,9 @@ jobs:
           assert r['status']=='PAID_DISABLED_DEFAULT'
           print('P419_EXACT_NESTED_SCHEMA_DIAGNOSTIC_OFFLINE_GREEN')
           PY24
+
+      - name: Validate P4.20 flat outer structured output, original local continuity gates retained
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p420_flat_envelope.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p417_live_pilot.py' -v
+          echo 'P420_FLAT_ENVELOPE_WITH_STRICT_LOCAL_VALIDATOR_GREEN'
