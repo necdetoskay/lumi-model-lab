@@ -16,6 +16,8 @@ from src.story_harness_v1 import HarnessStop
 class P423Tests(unittest.TestCase):
     def setUp(self):
         self.source=fixture.fake_source()
+        self.source["story"]["word_count"]=len(
+            self.source["story"]["story_text"].split())
         self.audit=verify_auditor_reply(
             self.source, fixture.fake_reply(self.source))
 
