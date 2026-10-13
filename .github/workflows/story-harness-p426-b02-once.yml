@@ -1,0 +1,124 @@
+name: Story Harness P4.26 Second B02 Story Once
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p426_b02_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p426-b02-second-source-story-once
+  cancel-in-progress: false
+
+jobs:
+  b02-second-story:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 16
+    defaults:
+      run:
+        working-directory: p426-b02-source-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 2
+          path: p426-b02-source-isolated
+      - name: Deny ordinary commits and repeated calls before using any key
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert changed==['configs/story_harness_p426_b02_trigger.json'],(
+              'Not the unique B02 provider-call manifest commit')
+          print('P426_ONE_APPROVED_B02_TRIGGER_ONLY_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify dynamic B02 source and full $10 aggregate budget before POST
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p426_second_case.py' -q
+          python - <<'PY'
+          from decimal import Decimal
+          from pathlib import Path
+          import json
+          from src.story_harness_p426_second_case import get_case
+          _,case,pack=get_case('.')
+          grant=json.loads(Path('configs/story_harness_p426_b02_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p426-one-b02-generation.v1',
+              'case_id':'B02',
+              'run_variant':'r06',
+              'source_pack_sha256':pack['pack_sha256'],
+              'reader_age':4,
+              'max_model_posts':2,
+              'max_new_exposure_usd':'0.35',
+              'prior_reserved_spend_usd':'1.294372',
+              'user_aggregate_budget_usd':'10.00',
+              'model':'anthropic/claude-sonnet-5.5',
+              'automatic_retries':False,
+              'production_write':False
+          }, 'B02 paid grant/source/budget mismatch'
+          assert Decimal(grant['prior_reserved_spend_usd'])+Decimal('0.35')<=Decimal('10')
+          assert pack['canonical_state']['protagonist']['location']=='GARDEN'
+          assert case['input']['topic']=='Şarkı söylemeyi unutan bulut'
+          print('P426_B02_SOURCE_AGE_COST_AND_VARIANT_GREEN')
+          PY
+      - name: Check existing limited OpenRouter inference key read-only
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.35')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P426_EXISTING_PROVIDER_INFERENCE_KEY_PREFLIGHT_OK')
+          PY
+      - name: Generate one genuine distinct B02 Spine and Writer story
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P426_RUN_B02: ONE_DISTINCT_STATE_TOPIC_REAL_STORY
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p426_second_case_claims"
+          mkdir -p "$root"
+          chmod 700 "$root"
+          python -m src.story_harness_p426_second_case \
+             --repo-root . --claim-root "$root" --paid-b02-once \
+             > /tmp/lumi-p426-b02-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p426-b02-summary.json').read_text())
+          assert r['case_id']=='B02'
+          assert r['real_provider_transport_called'] is True
+          assert r['independent_quality_accepted'] is False
+          assert r['english_master_authorized'] is False
+          assert r['q25_evidence_accepted'] is False
+          assert r['production_state_write_authorized'] is False
+          print('P426_REAL_B02_SPINE_AND_WRITER_DONE')
+          print('P426_B02_WORD_COUNT='+str(r['word_count']))
+          print('P426_B02_SOURCE_PACK_SHA='+r['source_pack_sha256'])
+          print('P426_B02_SPINE_SHA='+r['spine_sha256'])
+          print('P426_B02_WRITER_SHA='+r['writer_sha256'])
+          print('P426_B02_REAL_MODEL_COST_USD='+r['provider_reported_spine_writer_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p426-distinct-b02-original-sonnet-spine-writer
+          path: ${{ runner.workspace }}/_lumi_p426_second_case_claims/b02-*-r06/
+          if-no-files-found: warn
+          retention-days: 30
