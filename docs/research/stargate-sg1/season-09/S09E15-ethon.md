@@ -3,15 +3,23 @@ series: "Stargate SG-1"
 season: 9
 episode: 15
 title_original: "Ethon"
-status: pending_research
-word_target: "250-400"
-source_verified: false
+status: draft
+word_count: 234
+source_verified: true
+spoilers: true
 ---
 
 # S09E15 — Ethon
 
-**Durum:** Bölüm kimliği katalogdan eşleştirildi; özgün Türkçe 250–400 kelimelik özet henüz araştırılmadı. Doğrulama tamamlanmadan olay örgüsü uydurulmaz.
+## Türkçe olay özeti
 
-## Araştırma referansı
-- [Richard Dean Anderson — bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/09-15ethon.htm)
-- [GateWorld — Sezon 9](https://www.gateworld.net/sg1/s9)
+Jared Kane Stargate Komutanlığı'na gelerek gezegeni Tegalus'ta yeni bir felaketin yaklaştığını anlatır. Rand Koruyuculuğu ile Caledonian Federasyonu önceki savaştan sonra ilişkilerini düzeltememiştir. Ori rahibi Rand halkına üstün bir yörünge silahı vermiş, Başkan Nadal da Caledonia'ya beş gün içinde teslim olma ya da yok edilme tehdidinde bulunmuştur. Daniel, yine önceki temasın yol açtığı bir iç savaşı engellemek ister. Jared'la gezegene giderek barış görüşmesi yapmayı önerir. Ancak gelir gelmez vatana ihanetle suçlanıp tutuklanırlar.
+
+Prometheus, Rand'ın uydusunu yok etmek için Tegalus yörüngesine gelir. Uydu aktif olduğunda gemi ilk ateşi açar, fakat Ori silahı saldırıyı geri püskürtür ve Prometheus'un savunmasını deler. Albay Pendergast geminin boşaltılmasını ve teslim olmayı emreder. Nadal hiçbir müzakere kabul etmez; Prometheus'u tamamen yok ettirir. Birçok asker kurtarma kapsülleriyle kaçsa da Pendergast ve gemide kalanlar ölür. Dünya'nın ilk büyük yıldız gemisi kaybedilmiştir.
+
+Hayatta kalan personel Caledonia'da yeniden bir araya gelir. Carter, uydunun haberleşmesini elektromanyetik darbe ile devre dışı bırakıp F-302'yi ikinci saldırı için kullanabileceklerini hesaplar. Mitchell ile Teal'c saldırıya hazırlanır. Fakat Daniel barış için son kez pazarlık yapar. Rand, uyduyu elinde tutma karşılığında Caledonia'ya Yıldız Geçidi üzerinden tahliye olma hakkı vermeyi kabul eder gibi görünür. Caledonian Bakan Chaska saldırıyı durdurur. İletişim yeniden kurulunca Nadal verdiği sözü bozarak Caledonian başkentini hedef alır. Kendi subayları isyan edip Nadal'ı öldürür; uydu kapatılır. Ancak bu zafer de barışı getirmez. Dünya ekibi ayrıldıktan sonra iki tarafın savaşı yeniden başlar, geçit enkaz altında kalır. SG-1, kurtarmaya çalıştığı dünyadan büyük kayıpla ayrılır.
+
+## Kaynaklar
+
+- [RDA bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/09-15ethon.htm)
+- [GateWorld dokuzuncu sezon](https://www.gateworld.net/sg1/s9/)
