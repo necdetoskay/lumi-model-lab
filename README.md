@@ -91,6 +91,16 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   certification, new paid call or automatic handoff is possible.
   [P3.0 same-story receipt](docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md)
   and [tracking issue #281](https://github.com/necdetoskay/lumi-model-lab/issues/281).
+- **P3.1 real historical Story Audit + repair/reaudit evidence:** the
+  frozen Writer #3 story now has a pinned Stage 6/7/8 ancestry and
+  continuous cycles 3–10 audit/repair artifact hashes. The later Story
+  Audit #8 *qualification* is `PASS` but its **story quality decision**
+  remains `LOCAL_REPAIR_REQUIRED`; all seven completed cycle 3–9
+  reaudits likewise require local repair, and cycle 10 has no successful
+  reaudit. Offline result: `STORY_QUALITY_NOT_ACCEPTED`, no English
+  Master, Q25 or Final StoryState admission. Source integrity/lineage
+  GREEN **does not certify a successful story**. [P3.1 frozen scope](docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md)
+  · [P3.1 tracking issue #282](https://github.com/necdetoskay/lumi-model-lab/issues/282).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

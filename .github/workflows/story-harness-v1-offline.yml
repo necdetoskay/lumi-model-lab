@@ -9,26 +9,31 @@ on:
       - src/story_harness_p21.py
       - src/story_harness_p22.py
       - src/story_harness_p30.py
+      - src/story_harness_p31.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
       - tests/test_story_harness_p21.py
       - tests/test_story_harness_p22.py
       - tests/test_story_harness_p30.py
+      - tests/test_story_harness_p31.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
+      - configs/story_harness_p31_pinned_quality_cohort.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
       - evidence/story_harness_p22/**
       - evidence/story_harness_p30/**
+      - evidence/story_harness_p31/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
       - docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md
       - docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md
       - docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md
+      - docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -217,3 +222,30 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P30_SAME_STORY_GREEN')
           PY3
+
+      - name: Verify immutable same-story quality lineage and fail-closed quality STOP
+        env:
+          STORY_HARNESS_PINNED_P31_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p31.py' -v
+          python -m src.story_harness_p31 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P31_ROOT" > /tmp/story-harness-p31-quality.json
+          python -m src.story_harness_p31 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P31_ROOT" \
+            --verify-report evidence/story_harness_p31/pinned-quality-chain-receipt.json > /tmp/story-harness-p31-verified.json
+          cmp /tmp/story-harness-p31-quality.json /tmp/story-harness-p31-verified.json
+          python - <<'PY4'
+          import json
+          x = json.load(open('/tmp/story-harness-p31-quality.json'))
+          assert x['original_audit_records'][0]['qualification'] == 'FAIL_KNOWN_DEFECT_MISSED'
+          assert x['original_audit_records'][1]['qualification'] == 'PASS'
+          assert x['original_audit_records'][1]['story_audit_decision'] == 'LOCAL_REPAIR_REQUIRED'
+          assert x['full_cycle3_to_cycle10_lineage_ids_and_hashes_verified'] is True
+          assert x['last_completed_reaudit_cycle'] == 9
+          assert x['unreviewed_cycle10_story_pending_reaudit'] is True
+          assert x['stop_reason'] == 'STORY_QUALITY_NOT_ACCEPTED'
+          assert x['q25_execution_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P31_HISTORICAL_QUALITY_GREEN')
+          PY4
