@@ -24,6 +24,35 @@ SCHEMA = "lumi.story-harness-p424-q25-evidence-proposal.v1"
 OUTPUT_CAP = 3500
 COST_CAP = Decimal("0.050")
 RUN_NAME = "p424-b01-r06-q25-evidence-v01"
+R02_RUN_NAME = "p424-b01-r06-q25-evidence-v02"
+
+SAFE_FAILURE_CODE = {
+    "Q25 provider model identity wrong": "PROVIDER_MODEL_MISMATCH",
+    "Missing actual Q25 model token usage": "PROVIDER_TOKEN_USAGE_INVALID",
+    "Q25 observed model stage exceeded allowed cost": "PROVIDER_COST_OVER_STAGE_CAP",
+    "Incomplete Q25 generation": "Q25_MODEL_OUTPUT_TRUNCATED",
+    "Q25 provider completion missing": "PROVIDER_CONTENT_ABSENT",
+    "Q25 provider returned invalid JSON": "PROVIDER_JSON_PARSE_FAILED",
+    "Q25 JSON envelope contract mismatch": "PROVIDER_ENVELOPE_SHAPE_INVALID",
+    "Cross-story Q25 source identity": "Q25_LINEAGE_MISMATCH",
+    "Q25 evidence_json not valid JSON": "Q25_NESTED_JSON_INVALID",
+    "Q25 evidence proposal missing exact required fields": "Q25_FIELDS_MISSING_OR_EXTRA",
+    "Q25 final location not within canonical locations": "Q25_FINAL_LOCATION_NOT_CANON",
+    "Invented or overbroad Q25 prose evidence": "Q25_UNGROUNDED_QUOTE",
+    "Final location citation not from story ending": "Q25_FINAL_LOCATION_NOT_END_ANCHORED",
+    "Q25 discovered location evidence unbounded": "Q25_LOCATION_COUNT_INVALID",
+    "Q25 unknown/duplicate/no-new location": "Q25_DISCOVERY_UNGROUNDED",
+    "Q25 final location not previously known or discovered with proof": "Q25_FINAL_LOCATION_UNPROVEN",
+    "Q25 object extraction unbounded": "Q25_OBJECT_COUNT_INVALID",
+    "Q25 object cannot establish unproven ownership": "Q25_OBJECT_RELATION_OR_OWNER_INVALID",
+    "Q25 object is not mentioned in its quoted evidence": "Q25_OBJECT_NAME_NOT_IN_QUOTE",
+    "Canonical obligations missing or duplicated": "Q25_OBLIGATION_COUNT_INVALID",
+    "Q25 did not account for exact original obligations": "Q25_OBLIGATION_ID_OR_STATUS_INVALID",
+    "Unknown ownership/locations cannot be overwritten by Writer inference": "Q25_UNKNOWN_FACTS_NOT_PRESERVED",
+    "Unobserved numeric world time must not be invented": "Q25_WORLD_TIME_INVENTED",
+    "Missing bounded model extraction explanation": "Q25_EXPLANATION_MISSING",
+}
+
 ALLOWED_RELATIONS = {
     "HELD_BY_PROTAGONIST", "AT_HOME", "AT_MEADOW", "WITH_PROTAGONIST",
     "LAST_SEEN_UNKNOWN", "AT_WINDOW",
@@ -95,8 +124,20 @@ def extraction_wire(bundle):
         "known, each with a verbatim quote showing actual discovery. "
         "Give at most six object_observations, each with a brief object name "
         "that appears in its quoted text, a last_seen_relation and an "
-        "ownership field UNKNOWN unless ownership is EXPLICITLY established "
-        "in quoted text. Each canonical open_obligation MUST have exactly one "
+        "ownership field ALWAYS set to the exact string UNKNOWN. Do not "
+        "infer ownership even if possession or affection is shown; later "
+        "validation may determine an owner. Choose last_seen_relation from "
+        "EXACT allowed enum: HELD_BY_PROTAGONIST, AT_HOME, AT_MEADOW, "
+        "WITH_PROTAGONIST, LAST_SEEN_UNKNOWN, AT_WINDOW. No other values. "
+        "The evidence_json must encode an object with EXACT fields: "
+        "final_location {location_id, quote}, discovered_locations "
+        "list of {location_id, quote}, object_observations list of "
+        "{object_name, last_seen_relation, ownership, quote}, "
+        "open_obligation_outcomes list of {obligation, status, quote}, "
+        "unknown_facts_retained copied verbatim as an array and "
+        "world_time_delta JSON null. Quotes must match case and punctuation "
+        "in English_Master_Text, with no paraphrasing. "
+        "Each canonical open_obligation MUST have exactly one 
         "entry with its exact obligation text, a SATISFIED/OPEN/UNPROVEN "
         "status, and a short supporting verbatim quote. Numeric elapsed "
         "world time must stay unknown; no fabricated timestamps. "
@@ -296,15 +337,16 @@ def _write_once(path,data):
         os.fsync(file.fileno())
 
 
-def extract_once(bundle, root, *, transport):
+def extract_once(bundle, root, *, transport, run_variant="r01"):
     base=Path(root)
     must(base.is_dir() and not base.is_symlink(),
          "Protected Q25 evidence-only ledger root absent")
-    folder=base/RUN_NAME
+    must(run_variant in ("r01","r02"), "Disallowed Q25 one-use variant")
+    folder=base/(RUN_NAME if run_variant=="r01" else R02_RUN_NAME)
     folder.mkdir(mode=0o700,exist_ok=False)
     body=extraction_wire(bundle)
     _write_once(folder/"00-intent.json",{
-        "schema":SCHEMA,
+        "schema":SCHEMA, "run_variant":run_variant,
         "story_sha256":bundle["source"]["story"]["story_sha256"],
         "spine_sha256":bundle["source"]["spine"]["spine_sha256"],
         "request_sha256":hashlib.sha256(canonical_json(body)).hexdigest(),
@@ -313,19 +355,72 @@ def extract_once(bundle, root, *, transport):
         "automatic_retry":False,
         "state_write_authorized":False,
     })
+    provider_response=None
     try:
-        result=verify_model_response(bundle,transport(body))
+        provider_response=transport(body)
+        result=verify_model_response(bundle,provider_response)
         _write_once(folder/"01-q25-proposal.json",result)
         return result
-    except Exception:
+    except Exception as exc:
+        # Record only typed model envelope metadata, SHA and bounded safe reason.
+        # Never copy untrusted model prose, provider errors or credentials.
+        usage=(provider_response.get("usage")
+               if type(provider_response) is dict else None)
+        charge=None
+        usage_counts=None
+        if type(usage) is dict:
+            try:
+                charge=money(usage.get("cost"))
+            except HarnessStop:
+                pass
+            if (type(usage.get("prompt_tokens")) is int and
+                type(usage.get("completion_tokens")) is int and
+                usage["prompt_tokens"]>=0 and
+                usage["completion_tokens"]>=0):
+                usage_counts={
+                    "prompt_tokens":usage["prompt_tokens"],
+                    "completion_tokens":usage["completion_tokens"]}
+        gid=(provider_response.get("id") if
+             type(provider_response) is dict else None)
+        if not (type(gid) is str and
+                re.fullmatch(r"gen-[A-Za-z0-9_-]{6,120}",gid)):
+            gid=None
+        completion=None
+        choices=(provider_response.get("choices") if
+                 type(provider_response) is dict else None)
+        finish_reason=None
+        if type(choices) is list and len(choices)==1 and type(choices[0]) is dict:
+            finish_reason=choices[0].get("finish_reason")
+            message=choices[0].get("message")
+            if type(message) is dict and type(message.get("content")) is str:
+                completion=message["content"]
+        if isinstance(exc,HarnessStop):
+            why=SAFE_FAILURE_CODE.get(str(exc),"UNKNOWN_SAFE_CONTRACT_FAILURE")
+        elif isinstance(exc,(ValueError,TypeError,KeyError)):
+            why="Q25_RESPONSE_RUNTIME_SHAPE_ERROR"
+        else:
+            why="PROVIDER_POST_OR_UNKNOWN_EXCEPTION"
         if not (folder/"01-q25-proposal.json").exists():
             _write_once(folder/"01-q25-proposal.json",{
                 "schema":SCHEMA,"case_id":"B01",
                 "status":"STOP_UNKNOWN_OR_INVALID",
-                "billed_cost_usd":None,
+                "safe_failure_code":why,
+                "provider_response_received":provider_response is not None,
+                "provider_generation_id":gid,
+                "provider_model_matched":
+                    (provider_response.get("model")==MODEL
+                     if type(provider_response) is dict else None),
+                "finish_reason":
+                    (finish_reason if finish_reason in
+                     ("stop","length","content_filter") else "OTHER_OR_MISSING"),
+                "provider_completion_sha256":
+                    (hashlib.sha256(completion.encode("utf-8")).hexdigest()
+                     if completion is not None else None),
+                "billed_cost_usd":format(charge,"f") if charge is not None else None,
+                "provider_usage":usage_counts,
                 "state_write_authorized":False,"retry_allowed":False,
             })
-        raise HarnessStop("Evidence-only Q25 was consumed, no retry") from None
+        raise HarnessStop("Q25 consumed without retry; safe reason="+why) from None
 
 
 def main():
@@ -337,6 +432,7 @@ def main():
     cli.add_argument("--master-root")
     cli.add_argument("--evidence-root")
     cli.add_argument("--paid-once",action="store_true")
+    cli.add_argument("--run-variant",choices=("r01","r02"),default="r01")
     args=cli.parse_args()
     if not args.paid_once:
         print(json.dumps({"schema":SCHEMA,"model_calls":0,
@@ -344,14 +440,15 @@ def main():
                           "production_state_write_authorized":False,
                           "stage_cap_usd":format(COST_CAP,"f")},sort_keys=True))
         return
-    must(os.getenv("LUMI_P424_Q25_ENABLE")=="ONE_EVIDENCE_ONLY_B01_Q25",
-         "No one-time scoped Q25 model dispatch switch")
+    must(os.getenv("LUMI_P424_Q25_ENABLE")=="ONE_EVIDENCE_ONLY_B01_Q25"
+         and args.run_variant=="r02",
+         "Only corrected r02 Q25 attempt may send a provider request")
     must(args.producer_claims and args.quality_claims and args.master_root
          and args.evidence_root,
          "Q25 claim paths missing")
     bundle=load_pilot_source(args.repo_root,args.producer_claims,
                              args.quality_claims,args.master_root)
-    result=extract_once(bundle,args.evidence_root,
+    result=extract_once(bundle,args.evidence_root,run_variant=args.run_variant,
         transport=lambda body:https_post_once(
             os.getenv("OPENROUTER_API_KEY",""),body))
     print(json.dumps({
