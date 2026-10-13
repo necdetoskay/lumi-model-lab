@@ -32,6 +32,7 @@ on:
       - src/story_harness_p415_benchmark.py
       - src/story_harness_p416_input_bridge.py
       - src/story_harness_p417_live_pilot.py
+      - src/story_harness_p418_compat_probe.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -58,6 +59,7 @@ on:
       - tests/test_story_harness_p415_benchmark.py
       - tests/test_story_harness_p416_input_bridge.py
       - tests/test_story_harness_p417_live_pilot.py
+      - tests/test_story_harness_p418_compat_probe.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -96,6 +98,7 @@ on:
       - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
       - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
       - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
+      - .github/workflows/story-harness-p418-tiny-once.yml
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
@@ -845,3 +848,21 @@ jobs:
           assert x['stop_reason'] == 'P417_OFFLINE_UNTIL_OPERATOR_CONTROLLED_PAID_ONE_SHOT_EXEC'
           print('STORY_HARNESS_P417_REAL_CAPABLE_GENERATION_MOCK_ONLY_GREEN')
           PY22
+
+      - name: Verify P4.18 public prompt strict schema comparison with no paid calls
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p418_compat_probe.py' -v
+          python -m src.story_harness_p418_compat_probe > /tmp/story-harness-p418-a.json
+          python -m src.story_harness_p418_compat_probe > /tmp/story-harness-p418-b.json
+          cmp /tmp/story-harness-p418-a.json /tmp/story-harness-p418-b.json
+          python - <<'PY23'
+          import json
+          r=json.load(open('/tmp/story-harness-p418-a.json'))
+          assert r['model']=='anthropic/claude-sonnet-5.5'
+          assert r['provider_calls']==0
+          assert r['max_posts']==2
+          assert r['microprobe_exposure_cap_usd']=='0.06'
+          assert r['paid_run_disabled_by_default'] is True
+          assert r['real_story_generated'] is False
+          print('P418_TINY_COMPATIBILITY_MOCK_ONLY_GREEN')
+          PY23
