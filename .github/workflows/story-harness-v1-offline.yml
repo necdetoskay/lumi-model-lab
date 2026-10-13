@@ -39,6 +39,7 @@ on:
       - src/story_harness_p423_master.py
       - src/story_harness_p424_q25_evidence.py
       - src/story_harness_p425_final_state_draft.py
+      - src/story_harness_p426_second_case.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -72,6 +73,7 @@ on:
       - tests/test_story_harness_p423_master.py
       - tests/test_story_harness_p424_q25_evidence.py
       - tests/test_story_harness_p425_final_state_draft.py
+      - tests/test_story_harness_p426_second_case.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -112,6 +114,8 @@ on:
       - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
       - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
       - docs/canonical/STORY_HARNESS_P424_B01_Q25_EVIDENCE.md
+      - docs/canonical/STORY_HARNESS_P425_REAL_Q25_READ_ONLY_STATE.md
+      - docs/canonical/STORY_HARNESS_P426_SECOND_DISTINCT_INPUT.md
       - evidence/story_harness_p421/**
       - evidence/story_harness_p422/**
       - evidence/story_harness_p423/**
@@ -966,3 +970,19 @@ jobs:
           assert r['original_q25_source_checked'] is False
           print('P425_REAL_Q25_READ_ONLY_STATE_DRAFT_OFFLINE_GREEN')
           PY28
+
+      - name: Verify second genuinely variable B02 Canon/topic uses existing source-sealed generation
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p426_second_case.py' -v
+          python -m src.story_harness_p426_second_case > /tmp/story-harness-p426.json
+          python - <<'PY29'
+          import json
+          x=json.load(open('/tmp/story-harness-p426.json'))
+          assert x['schema']=='lumi.story-harness-p426-b02-second-variable-story-pilot.v1'
+          assert x['case_id']=='B02' and x['reader_age']==4
+          assert x['provider_calls']==0 and x['default_paid_dispatch_enabled'] is False
+          assert x['quality_accepted'] is False
+          assert x['one_story_exposure_cap_usd']=='0.35'
+          assert x['conservative_prior_spend_reserved_usd']=='1.294372'
+          print('P426_B02_DISTINCT_CANON_TOPIC_GENERATION_OFFLINE_GREEN')
+          PY29
