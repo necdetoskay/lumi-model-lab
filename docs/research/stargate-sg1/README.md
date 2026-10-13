@@ -1,23 +1,18 @@
-# Stargate SG-1 — Bölüm Bazlı Araştırma Arşivi
+# Stargate SG-1 — Bölüm Bazlı Türkçe Araştırma Arşivi
 
-**Durum:** Devam ediyor. Bu klasörün bulunması 214 bölümün tamamlandığı anlamına gelmez.
+Bu arşiv ayrı araştırma branch'inde tutulur, production hikâye üretimini veya main dalını değiştirmez.
 
-## Kapsam
-- 10 sezon, 214 yayın bölümü (pilot bölümün iki parçalı sayıldığı kataloglarla farklılıklar kontrol edilir).
-- Her bölüm için Türkçe, özgün anlatımlı 250–400 kelimelik özet; önemli spoiler ve final.
-- Bölüm sırası, özgün ad, karakterler, süreklilik ve kaynak doğrulaması.
-- Araştırma metinleri dizi senaryosu ya da kaynak sayfalardan kopya değildir.
+**Hedef:** 10 sezondaki **214 yayın parçası**, bölüm başına 250–400 Türkçe kelime, spoiler ve bölüm sonucu dahil. *Children of the Gods*, *The Tok'ra*, *Redemption*, *Evolution*, *Heroes*, *Lost City*, *New Order*, *Reckoning*, *Moebius*, *Avalon*, *The Fourth Horseman* ve *The Quest* gibi çok parçalı başlıklar ayrı yayın parçaları olarak sayılır.
 
-## Durum kuralları
-- `draft`: Henüz çapraz doğrulanmamış.
-- `verified`: Bölüm kimliği ve olaylar en az iki güvenilir kaynaktan kontrol edilmiş.
-- `complete`: 250–400 kelime, sonuç ve süreklilik kontrolü tamam.
+## Doğrulama durumları
+- `pending_research`: Katalog kaydı oluşturuldu; bölüm özeti henüz araştırılmadı.
+- `draft`: Olay özeti mevcut ama uzunluk veya çapraz kaynak kontrolü eksik.
+- `verified`: Kaynaklar karşılaştırıldı, fakat uzunluk/son kontrol bekleyebilir.
+- `complete`: 250–400 Türkçe kelime, özgün spoilerlı özet ve bölüm başına kaynak doğrulaması tamam.
 
-## Çalışma ilkeleri
-Kaynaklardan doğrulanmamış olay veya karakter ayrıntısı uydurulmaz. Eksik bölüm dosyaları oluşturulmuş gibi gösterilmez. Üretim hattına veya production ortamına otomatik bağlantı yoktur.
+> Çok parçalı kaynakların çoğu tek sayfada birlikte anlatılır. Her parçanın olaylarını doğru ayırmak için bölüm özelinde ikinci kontrol gerekir.
 
-## İlerleme
-- Hedef: 214 bölüm
-- Tamamlanan ve doğrulanan: 0
-- Hazırlanan taslak: 1
-- Kalan: 213 doğrulanmış özet + mevcut taslağın doğrulanması
+**Mevcut katalog kaydı:** 214/214. **Tamamlanmış 250–400 kelimelik bölüm:** 0/214. Katalog oluşturma, özet üretimi ile karıştırılmamalıdır.
+
+- [Bütün bölüm indeksi](CATALOG.md)
+- [Kaynaklar ve yöntem](sources.md)
