@@ -350,7 +350,10 @@ class P417Tests(unittest.TestCase):
             self.assertFalse(diag["billable_cost_field_present"])
             self.assertIsNone(receipt["provider_reported_cost_usd"])
             self.assertNotIn("SECRET_STORY", json.dumps(receipt))
-            self.assertNotIn("gen-sensitive", json.dumps(receipt))
+            # A generation ID is not the model prose or a bearer secret; it is
+            # retained deliberately so actual billing can later be reconciled.
+            self.assertEqual(receipt["provider_generation_id"],
+                             "gen-sensitive-request-trace-XYZ")
 
     def test_http_error_status_cannot_leak_credentials_or_json(self):
         import urllib.error
