@@ -30,6 +30,7 @@ on:
       - src/story_harness_p413.py
       - src/story_harness_p414.py
       - src/story_harness_p415_benchmark.py
+      - src/story_harness_p416_input_bridge.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -54,6 +55,7 @@ on:
       - tests/test_story_harness_p413.py
       - tests/test_story_harness_p414.py
       - tests/test_story_harness_p415_benchmark.py
+      - tests/test_story_harness_p416_input_bridge.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -90,6 +92,7 @@ on:
       - docs/canonical/STORY_HARNESS_P413_TEMPERATURE_COMPATIBILITY.md
       - docs/canonical/STORY_HARNESS_P414_KEY_LIMIT_PREFLIGHT.md
       - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
+      - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
@@ -782,3 +785,26 @@ jobs:
           assert x['claimed_model_cost_usd'] == '0'
           print('STORY_HARNESS_P415_DIVERSE_90_PERCENT_BENCHMARK_OFFLINE_GREEN')
           PY20
+
+      - name: Qualify ten genuine variable state topic input contracts and bounded provenance
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p416_input_bridge.py' -v
+          python -m src.story_harness_p416_input_bridge --repo-root . > /tmp/story-harness-p416-a.json
+          python -m src.story_harness_p416_input_bridge --repo-root . > /tmp/story-harness-p416-b.json
+          cmp /tmp/story-harness-p416-a.json /tmp/story-harness-p416-b.json
+          python - <<'PY21'
+          import json
+          x = json.load(open('/tmp/story-harness-p416-a.json'))
+          assert x['distinct_state_topic_inputs'] == 10
+          assert len(x['inputs']) == 10
+          assert len({z['pack_sha256'] for z in x['inputs']}) == 10
+          assert x['spine_writer_prompt_compilation_available'] is True
+          assert x['live_spineforge_connected'] is False
+          assert x['live_writer_connected'] is False
+          assert x['independent_quality_accepted'] is False
+          assert x['full_state_topic_pipeline_completed'] is False
+          assert x['new_model_calls'] == 0 and x['new_model_cost_usd'] == '0'
+          assert x['budget_total_cap_usd'] == '10.00'
+          assert x['stop_reason'] == 'P416_DYNAMIC_INPUT_COMPILED_MODEL_TRANSPORT_MISSING'
+          print('STORY_HARNESS_P416_DYNAMIC_STATE_TOPIC_INPUT_OFFLINE_GREEN')
+          PY21
