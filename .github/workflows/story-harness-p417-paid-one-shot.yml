@@ -1,0 +1,101 @@
+name: Story Harness P4.17 Paid B01 One-Shot
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p417_paid_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p417-b01-one-shot
+  cancel-in-progress: false
+
+jobs:
+  first-real-story:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate exact reviewed paid run manifest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/story_harness_p417_paid_trigger.json').read_text())
+          assert p == {
+            'schema': 'lumi.story-harness-p417-paid-single-trigger.v1',
+            'case_id': 'B01',
+            'maximum_model_posts': 2,
+            'maximum_pilot_usd': '0.35',
+            'aggregate_user_approved_budget_usd': '10.00',
+            'user_approved_aggregate_budget': True,
+            'automatic_retries': False,
+            'production_write': False
+          }, 'Changed authorization scope: paid pilot STOP'
+          print('ONE_SHOT_REVIEWED_SCOPE_OK')
+          PY
+      - name: Authenticate existing GitHub OpenRouter secret with READ ONLY metadata
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal, InvalidOperation
+          from src.story_harness_p414 import read_current_key
+          from src.story_harness_v1 import HarnessStop
+          data=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          limit_remaining=data.get('limit_remaining')
+          if limit_remaining is not None:
+              try:
+                  n=Decimal(str(limit_remaining))
+              except (InvalidOperation, ValueError):
+                  raise HarnessStop('Invalid provider remaining credit')
+              if not n.is_finite() or n < Decimal('0.35'):
+                  raise HarnessStop('Not enough spendable OpenRouter credit for bounded pilot')
+          if data.get('is_free_tier') is True or data.get('is_management_key') is True:
+              raise HarnessStop('Not a paid inference key')
+          print('EXISTING_OPENROUTER_SECRET_READ_ONLY_PRECHECK_GREEN')
+          PY
+      - name: Execute exactly one actual B01 SpineForge to Writer attempt
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P417_ENABLE_PAID: ONE_SHOT_APPROVED_10_USD_USER_LIMIT
+        run: |
+          set -euo pipefail
+          # Adjacent to checkout; survives normal actions/checkout workspace cleaning
+          # on the dedicated offline self-hosted runner. EXCLUSIVE mkdir is the claim.
+          export P417_LEDGER_ROOT="${RUNNER_WORKSPACE}/_lumi_p417_durable_claims"
+          mkdir -p "$P417_LEDGER_ROOT"
+          chmod 700 "$P417_LEDGER_ROOT"
+          python -m src.story_harness_p417_live_pilot \
+            --repo-root . --paid-one-shot --case-id B01 \
+            --run-root "$P417_LEDGER_ROOT" > /tmp/lumi-p417-paid-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p417-paid-summary.json').read_text())
+          assert r['quality_accepted'] is False
+          assert r['english_master_authorized'] is False
+          assert r['q25_authorized'] is False
+          assert r['state_write_authorized'] is False
+          assert r['two_stage_cost_usd']
+          print('REAL_B01_STORY_DRAFT_CREATED_NOT_QUALITY_ACCEPTED')
+          print('B01_WRITER_WORD_COUNT=' + str(r['story_words']))
+          print('B01_ACTUAL_MODEL_COST_USD=' + r['two_stage_cost_usd'])
+          print('B01_WRITER_SHA256=' + r['story_sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p417-b01-first-real-provider-result
+          path: ${{ runner.workspace }}/_lumi_p417_durable_claims/b01-*/ 
+          if-no-files-found: warn
+          retention-days: 30
