@@ -6,9 +6,11 @@ on:
       - src/story_harness_v1.py
       - src/story_harness_p1.py
       - src/story_harness_p2.py
+      - src/story_harness_p21.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
+      - tests/test_story_harness_p21.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -17,6 +19,7 @@ on:
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
+      - docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -117,4 +120,33 @@ jobs:
              'ACCEPT','FAIL_KNOWN_DEFECT_MISSED',
              'SOURCE_BOUND_CANDIDATES_ONLY','REJECTED_BY_OFFLINE_GATE']
           print('STORY_HARNESS_P2_LOCAL_GATE_GREEN')
+          PY
+
+      - name: Checkout exact frozen Q25 validator code (no historical edits)
+        uses: actions/checkout@v4
+        with:
+          ref: 2eb3d825b5baf8f0f16ccb23805f619d433c7236
+          path: _pinned_q25_source
+          persist-credentials: false
+      - name: Install pinned Q25 offline validator dependency
+        run: python -m pip install "pydantic>=2.8,<3"
+      - name: Execute real frozen Q25 source-bound validators and negative tests
+        env:
+          STORY_HARNESS_PINNED_Q25_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          test -d "$STORY_HARNESS_PINNED_Q25_ROOT/.git"
+          python -m unittest discover -s tests -p 'test_story_harness_p21.py' -v
+          python -m src.story_harness_p21 \
+            --repo-root . --pinned-q25-root "$STORY_HARNESS_PINNED_Q25_ROOT" > /tmp/story-harness-p21-gates.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p21-gates.json'))
+          assert x['actual_q25_offline_gate_invocations'] == 2
+          assert x['cases'][0]['replay_status'] == 'SOURCE_BOUND_CANDIDATES_ONLY'
+          assert x['cases'][1]['original_paid_outcome_immutable'] == 'REJECTED_BY_OFFLINE_GATE'
+          assert x['cases'][1]['replay_status'] == 'SOURCE_BOUND_CANDIDATES_ONLY'
+          assert x['spineforge_gate_invocations'] == 0
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0
+          print('STORY_HARNESS_P21_ACTUAL_Q25_OFFLINE_GATE_GREEN')
           PY
