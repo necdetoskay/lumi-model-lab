@@ -5,14 +5,17 @@ on:
     paths:
       - src/story_harness_v1.py
       - src/story_harness_p1.py
+      - src/story_harness_p2.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
+      - tests/test_story_harness_p2.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
       - evidence/story_harness_p1/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
+      - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -82,4 +85,33 @@ jobs:
             'ACCEPT', 'FAIL_KNOWN_DEFECT_MISSED',
             'SOURCE_BOUND_CANDIDATES_ONLY', 'REJECTED_BY_OFFLINE_GATE']
           print('STORY_HARNESS_P1_HISTORICAL_GREEN')
+          PY
+
+      - name: Verify typed StageResults and actual local integrity-gate receipts
+        run: |
+          python -m src.story_harness_p2 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p2-first.json
+          python -m src.story_harness_p2 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p2-second.json
+          cmp /tmp/story-harness-p2-first.json /tmp/story-harness-p2-second.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p2-first.json'))
+          assert x['case_count'] == 4
+          assert x['actual_local_integrity_checks_executed'] == 4
+          assert all(r['local_integrity_result'] == 'PASS' for r in x['gate_receipts'])
+          assert x['original_spine_or_q25_gates_reexecuted'] is False
+          assert x['original_human_review_authenticated'] is False
+          assert x['semantic_support_certified'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['downstream_stage_executions_authorized'] == 0
+          assert x['model_execution_performed'] is False
+          assert x['provider_calls'] == 0
+          assert x['provider_cost_usd'] == '0'
+          assert [r['original_historical_outcome'] for r in x['stage_results']] == [
+             'ACCEPT','FAIL_KNOWN_DEFECT_MISSED',
+             'SOURCE_BOUND_CANDIDATES_ONLY','REJECTED_BY_OFFLINE_GATE']
+          print('STORY_HARNESS_P2_LOCAL_GATE_GREEN')
           PY
