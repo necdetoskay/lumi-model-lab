@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 20
 title_original: "Inauguration"
-status: draft
-word_count: 241
+status: complete
+word_count: 262
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Başkan Hayes, Genelkurmay Başkanı Maynard ve NID adına inceleme yapan Richar
 Woolsey, delilleri yeniden incelerken Kinsey'nin karanlık bağlantılarının boyutundan kuşkulanmaya başlar. Hammond'ın yıllar önce görevden ayrılması ve hemen geri dönmesi konusundaki eski olaylar, siyasi şantaj olasılığını gündeme getirir. Woolsey, Hammond'la görüştüğünde O'Neill ve Maybourne'un Kinsey'nin bilgisayarından elde ettiği suçlayıcı kayıtlarla karşılaşır. Bu diski alıp Hayes'e teslim eder. Bölümde bir gezegen kurtarılmasa da Dünya'nın savunulması için gerekli kumanda yapısının kaderi belirlenmektedir. Başkanın önüne gelen bilgiler, Kinsey'nin iddialarının gerçek niyetlerle ne kadar bağlantılı olduğunu ortaya çıkarabilecek durumdadır.
 
 Kinsey'nin görünüşte ulusal güvenliği savunması, iktidarı kendi çevresine aktarmaya yönelik girişimleriyle çelişir. Woolsey'nin delilleri yeniden değerlendirmesi, iyi niyetle başlayan bir denetimin de yanlış kişilerin elinde siyasi araca dönüşebileceğini ortaya koyar.
+
+Woolsey'nin sunduğu disk, başkanın yalnızca raporlara ve Kinsey'nin siyasi yorumlarına dayanarak karar vermesini önler. Belgeler üst yönetimdeki çıkar çatışmasını açıkça gösterir.
 
 ## Kaynaklar
 

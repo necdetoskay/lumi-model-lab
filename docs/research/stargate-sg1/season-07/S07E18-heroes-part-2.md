@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 18
 title_original: "Heroes, Part 2"
-status: draft
-word_count: 242
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bregman, Daniel'ın kurtarma sırasında kullandığı video kameranın kayıtla
 Fraiser'ın anma töreninde Samantha Carter, onun sağlığına kavuşturduğu insanların adlarını ve hayatlarını hatırlatır. Daniel, kurtarılan Wells'in ailesini ziyaret ettiğinde yeni doğan kızlarına Janet adının verildiğini öğrenir. Bregman da filmini sansasyon yaratacak bir araştırmadan çıkarıp görev yapan insanlara saygı sunan bir belgeye dönüştürür. Hammond bu yaklaşımı görünce desteğini artırır; sonunda O'Neill bile kameranın önüne oturmayı kabul eder. Bölümün duygusal sonucu, bir insanın fedakârlığının kurtardığı hayatlar aracılığıyla yaşamayı sürdürmesidir.
 
 Bregman için gerçek görüntüler, televizyonda gösterilecek şaşırtıcı sahnelerden çok daha ağır bir sorumluluk hâline gelir. Hammond'ın bakışının değişmesi de bu yüzden önemlidir. Belgesel, bir güvenlik açığı yaratmak yerine yıllardır kimse tarafından bilinmeyen insanların hikâyesine saygı gösterebilir.
+
+Wells'in kurtulması, Fraiser'ın müdahalesinin sonucudur. Çocuğuna doktorun adının verilmesi fedakârlığın bir ailede nasıl yaşamayı sürdüreceğini somutlaştırır. Bregman bu kaybın önemini görerek mesleki yaklaşımını değiştirir.
 
 ## Kaynaklar
 

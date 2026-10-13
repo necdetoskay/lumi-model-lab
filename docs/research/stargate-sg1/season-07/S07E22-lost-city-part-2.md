@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 22
 title_original: "Lost City, Part 2"
-status: draft
-word_count: 241
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bu sırada Anubis'in kuvvetleri Dünya yörüngesine gelmektedir. Başkan Hayes,
 Dünya kurtulmuştur; ancak O'Neill'in başındaki Kadim bilgisi beynini tüketmektedir. Onun kullandığı teknolojiye rağmen kurtarılmasını sağlayacak tıbbi yöntem hemen bulunamaz. Aynı tesis onu yaşatmak için kriyojenik bir kapsüle alır. Carter, Daniel ve Teal'c komutanlarını Antarktika'da uyku hâlinde bırakmak zorunda kalır. Böylece SG-1, gezegenin yok edilmesini önleyen tarihi bir zafer kazanırken kendi liderini kaybetme tehlikesiyle baş başa kalır. Kayıp Şehir'in izine de ulaşılmıştır, fakat araştırmanın devamı için yeni sorular kalmıştır.
 
 Antarktika'daki keşif yalnızca bir savunma üssünü değil, Dünya tarihinde sanılandan çok daha eski bir Kadim varlığının kalıntılarını ortaya koyar. Anubis'in yenilmesi ve O'Neill'in uykuya yatırılması, sonraki araştırmaların hem bilimsel hem kişisel hedefini belirler.
+
+O'Neill'in dondurulması, son zaferin hemen ardından çözülemeyen bir sorunu geride bırakır. Kadim karakolunun bulunmasıysa Dünya'nın çok eski tarihini araştırmak için yeni bir başlangıç noktası olur.
 
 ## Kaynaklar
 

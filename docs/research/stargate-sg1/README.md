@@ -12,7 +12,7 @@ Bu arşiv ayrı araştırma branch'inde tutulur, production hikâye üretimini v
 
 > Çok parçalı kaynakların çoğu tek sayfada birlikte anlatılır. Her parçanın olaylarını doğru ayırmak için bölüm özelinde ikinci kontrol gerekir.
 
-**Mevcut katalog kaydı:** 214/214. **Tamamlanmış 250–400 kelimelik bölüm:** 135/214. Katalog oluşturma, özet üretimi ile karıştırılmamalıdır.
+**Mevcut katalog kaydı:** 214/214. **Tamamlanmış 250–400 kelimelik bölüm:** 140/214. Katalog oluşturma, özet üretimi ile karıştırılmamalıdır.
 
 - [Bütün bölüm indeksi](CATALOG.md)
 - [Kaynaklar ve yöntem](sources.md)

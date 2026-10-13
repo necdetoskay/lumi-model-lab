@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 17
 title_original: "Heroes, Part 1"
-status: draft
-word_count: 241
+status: complete
+word_count: 265
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Aynı zamanda Dixon'ın yönettiği SG-13, P3X-666'da Kadimler'e ait kalıntıla
 Wells ciddi biçimde yaralanınca Hammond, pusu riskine rağmen kurtarma birliği göndermeyi kabul eder. O'Neill diğer SG ekipleriyle birlikte harekete geçer; Fraiser da yaralıya müdahale etmek için geçitten gider. Bregman ise çekimlerinin ötesinde gerçek bir görevin nasıl yürütüldüğünü anlamaya çalışmaktadır. İlk bölüm, sıradan bir araştırmanın ölümcül bir çatışmaya dönüşmesiyle kapanır. Kameradan uzak tutulan olayların perde arkasında, askerlerin birbirlerini kurtarmak uğruna üstlendikleri risk vardır.
 
 Fraiser'ın tehlikeye rağmen sahaya gitmesi askerî doktorların yalnızca üste değil çatışmanın içinde de çalıştığını gösterir. Bregman'ın belgelemek istediği gündelik kahramanlık, operasyonun sonunda geri döndürülemez bir bedel ödeyebilecek insanların verdiği kararlarda ortaya çıkacaktır.
+
+Sondanın gönderdiği sinyal, araştırmanın basit bir keşif olmaktan çıktığını gösterir. Kurtarma ekibinin görevlendirilmesi sırasında personelin kendi hayatlarını riske attığı henüz kameraların göremediği asıl gerçektir.
 
 ## Kaynaklar
 
