@@ -91,9 +91,12 @@ def _fail(condition, message):
         raise HarnessStop(message)
 
 
-def _verifier_sha(repo_root: Path):
-    # This is a source revision fingerprint, NOT cryptographic code signing.
-    return digest(secure_artifact(repo_root, "configs/story_harness_p1_frozen_import.json"))
+def _verifier_source_sha(repo_root: Path) -> str:
+    """Bind a local checker implementation by bytes, never call it an identity signature."""
+    src = repo_root / "src" / "story_harness_p1.py"
+    if src.is_symlink() or not src.is_file() or src.stat().st_size > 1_048_576:
+        raise HarnessStop("Unqualified local integrity verifier source")
+    return digest(src.read_bytes())
 
 
 def generate_receipts(*, manifest, repo_root: str | Path):
@@ -113,7 +116,7 @@ def generate_receipts(*, manifest, repo_root: str | Path):
           report["state_commit_authorized"] is False,
           "P1 report cannot be promoted into authority")
 
-    source_file_sha = digest((root / "src/story_harness_p1.py").read_bytes())
+    source_file_sha = _verifier_source_sha(root)
     manifest_sha = digest(canonical_bytes(manifest))
     inputs, receipts, stages = [], [], []
     for case, checked in zip(manifest["cases"], report["historical_cases"]):
