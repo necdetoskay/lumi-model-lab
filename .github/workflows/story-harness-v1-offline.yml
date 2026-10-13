@@ -33,6 +33,7 @@ on:
       - src/story_harness_p416_input_bridge.py
       - src/story_harness_p417_live_pilot.py
       - src/story_harness_p418_compat_probe.py
+      - src/story_harness_p419_rich_schema_probe.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -60,6 +61,7 @@ on:
       - tests/test_story_harness_p416_input_bridge.py
       - tests/test_story_harness_p417_live_pilot.py
       - tests/test_story_harness_p418_compat_probe.py
+      - tests/test_story_harness_p419_rich_schema_probe.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -866,3 +868,17 @@ jobs:
           assert r['real_story_generated'] is False
           print('P418_TINY_COMPATIBILITY_MOCK_ONLY_GREEN')
           PY23
+
+      - name: Verify P4.19 exact original nested Spine schema probe without inference
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p419_rich_schema_probe.py' -v
+          python -m src.story_harness_p419_rich_schema_probe > /tmp/story-harness-p419.json
+          python - <<'PY24'
+          import json
+          r=json.load(open('/tmp/story-harness-p419.json'))
+          assert r['schema']=='lumi.story-harness-p419-rich-schema-differential.v1'
+          assert r['provider_post_calls']==0
+          assert r['max_billed_exposure_usd']=='0.03'
+          assert r['status']=='PAID_DISABLED_DEFAULT'
+          print('P419_EXACT_NESTED_SCHEMA_DIAGNOSTIC_OFFLINE_GREEN')
+          PY24
