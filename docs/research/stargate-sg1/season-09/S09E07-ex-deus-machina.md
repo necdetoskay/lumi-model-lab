@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 7
 title_original: "Ex Deus Machina"
-status: draft
-word_count: 212
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Virginia'da yol kenarında bir Jaffa'nın bulunması ve havacılık firması Far
 Ba'al aslında yenilginin ardından Dünya'ya sığınmış, Farrow-Marshall'ın içine yerleşerek iş insanı kimliğiyle faaliyet göstermiştir. Carter ve Daniel, Agent Barrett'la birlikte onu bulmaya çalışır. Mitchell ile Teal'c Prometheus üzerinde Gerak'ın Jaffalarını izler. Ba'al ofisine yapılan gece baskınından kaçar; kendisiyle uğraşılırsa güçlü bir naquadah bombasını patlatacağını ilan eder. Kısa süre sonra Seattle'daki Halcyon Tower'ın kırk beş dakika içinde yok edileceği tehdidi gelir. Ekip binada arama yapınca tehlikenin tek bir bombayla sınırlı olmadığını görür: bütün yapı patlayıcı düzeneğin parçasıdır.
 
 Zaman tükenirken Gerak'ın askerleri Ba'al'ın gizli yerleşkesini basar. SG-1 zehirle müdahale etmeye hazırlanır; Prometheus ise Seattle'daki kuleyi ışınlayıp uzaya taşıyarak patlamanın şehirde felakete yol açmasını önler. Gerak, Ba'al olduğunu düşündüğü esiri Dakara'ya götürür ve Jaffa Konseyi'nin önünde öldürür. Bu eylem kendi halkındaki otoritesini güçlendirir. Ancak Dünya'da bulunan araştırma kayıtları Ba'al'ın klonlama teknolojisi üzerinde çalıştığını gösterir. Öldürülen varlık asıl Ba'al'ın kopyası olabilir. Böylece Jaffalar kesin zafer kazandıklarını sansa da eski düşmanın hayatta kaldığı kuşkusu devam eder.
+
+Gerak'ın gösterişli zaferi yeni Jaffa devletinde desteğini artırır; bununla birlikte bir liderin ölümüyle Goa'uld tehdidinin tamamen bittiğine inanmak yanlıştır. Ba'al'ın kopyalar üretmiş olma olasılığı, onun Dünya'ya sızıp ekonomik gücü ve gizli teknoloji bilgisini kullanmaya devam edebileceğini gösterir. SGC'nin kuleyi uzaya taşıması, tek bir düşmanla mücadele ederken binlerce sivili korumak zorunda olduğu gerçeğini de öne çıkarır.
 
 ## Kaynaklar
 

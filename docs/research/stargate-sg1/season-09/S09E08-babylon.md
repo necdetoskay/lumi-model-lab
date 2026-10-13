@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 8
 title_original: "Babylon"
-status: draft
-word_count: 220
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ SG-1, beş bin yıl önce Goa'uld Ishkur'a başkaldırmış ve daha sonra dış 
 Mitchell uzak bir Sodan yerleşiminde uyanır. Lider Haikon, bir Sodan'ın kanını döktüğü için ölümüne dövüş anlamına gelen kel shak lo ritüeline katılması gerektiğini açıklar. Onu eğitmek üzere Volnek'in kardeşi Jolan görevlendirilir. Başlangıçta birbirinden hoşlanmayan iki savaşçı, eğitim boyunca birbirlerinin cesaretini ve disiplinini tanımaya başlar. Mitchell, Sodanların tanrı yerine gerçek aydınlanmayı aradığını öğrenir. Ancak Ori rahiplerinden biri bu arayışı kendi dinine bağlamış, Haikon'u sözde gerçek tanrıların Ori olduğuna ikna etmiştir. Mitchell yeni inancın arkasındaki tehdidi anlatmaya çalışır.
 
 Dövüş günü geldiğinde Jolan, kardeşi adına dövüşme hakkını kullanır. Kısa mücadelede Mitchell yenilir ve Haikon onun öldüğünü ilan eder. Gerçekte Jolan, ona ölüm taklidi sağlayan bir ilaç vermiştir. Ormanda bilinci yerine gelen Mitchell, Jolan'ın kendisini bilerek kurtardığını öğrenir. Sodanların Ori'ye bağlanmasına ilişkin uyarıları dostunun zihninde iz bırakmıştır. Mitchell Dünya'ya döner ve hayatta kalır. Volnek de tedaviden sonra kendi halkına gönderilir. İki taraf kesin bir ittifak kuramamış olsa da Sodanlarla güvene dayalı temasın kapısı aralanmıştır.
+
+Mitchell'ın Jolan'la kurduğu kişisel ilişki, Sodanları askerî güç kullanarak ikna etmekten daha etkili sonuç verir. Haikon'un Ori öğretisini kabul etmesi ise geçmişte Goa'uldlara başkaldırmış bir halkın başka yükselmiş güçleri gerçek tanrı sanabileceğini gösterir. Volnek'in Dünya'da hayatta kalması ve geri dönmesi, savaşçıların karşılıklı borçlarını ve onur anlayışlarını sürdürmelerine olanak tanır. İttifak henüz kurulmamış olsa da kan davası büyütülmeden çözülür.
 
 ## Kaynaklar
 

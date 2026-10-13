@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 9
 title_original: "Prototype"
-status: draft
-word_count: 218
+status: complete
+word_count: 281
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ SG-1, P3X-584 yakınındaki kütleçekimi anomalisinin başka bir Ori süpergeç
 Khalek olağanüstü hızlı biçimde değişmeye devam etmektedir. Bedeni iyileşir, zihni başkalarına uzaktan müdahale edebilir, hatta enerji saldırılarını saptıracak yetenekler gösterir. Bilim insanları onun sonunda yükselmeye erişip kontrol edilemez bir varlığa dönüşebileceğinden korkar. Daniel, tehlikenin büyümesine izin verilmemesini ister. SG-1 Khalek'i yeniden kapsüle koymayı tartışırken Uluslararası Denetim Komitesi adına Richard Woolsey gelir. Ori rahiplerini durdurabilecek bir karşı teknoloji geliştirme umuduyla Khalek'in hayatta tutulup incelenmesini emreder.
 
 Landry, güvenliği ön planda tutarak Khalek'in staz odasına geri götürülmesine karar verir. Carter ise onun gerçek amacının laboratuvardaki genetik yeniden düzenleyiciyi kullanarak yükselmek olduğunu ortaya çıkarır. Karar değiştirilir fakat Khalek telekinetik gücüyle nöbetçilerden kurtulur ve kapıya koşar. Geçidi çevirmeyi başarır; eski güvenlik protokolü onu aynı kapının Dünya tarafına geri gönderir. Mitchell ona ateş açsa da Khalek mermileri zihniyle durdurur. Arkasından yaklaşan Daniel ateş edince savunması parçalanır. İki adamın birlikte ateş etmesiyle Khalek ölür. Dünya, düşmanı araştırma fırsatından vazgeçerek Anubis'in yeni bir yükselmiş tehdit yaratma girişimini durdurmuştur.
+
+Woolsey'nin bilimsel fayda beklentisi ile Landry'nin üs güvenliğine ilişkin sorumluluğu doğrudan çatışır. Khalek'in genetik özelliklerini incelemek Ori'yi durdurma fırsatı sunabilir, fakat çok kısa sürede yükselmeye yaklaşması bütün Dünya'yı tehlikeye atar. Daniel'ın sert tutumu, Anubis'in yükselmiş varlık olarak yarattığı yıkımı kişisel olarak görmüş olmasına dayanır. Bu nedenle kaçan deneğin öldürülmesi, kurtarılabilecek bir denek üzerindeki bilimsel çalışmayı bitirse de çok daha büyük bir tehdidi önler.
 
 ## Kaynaklar
 
