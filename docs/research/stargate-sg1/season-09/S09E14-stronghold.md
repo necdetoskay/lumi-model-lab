@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 14
 title_original: "Stronghold"
-status: draft
-word_count: 218
+status: complete
+word_count: 262
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ spoilers: true
 Teal'c aslında Ba'al'ın kontrolündeki bir kalede esirdir. Ba'al, tekrar tekrar zihin değiştirme teknikleri uygulayarak onu kendi siyasi planına bağlamaya çalışır. Amacı Ori'ye karşı Jaffaları birleştirecek güçlü lider olarak ortaya çıkmaktır. Çok sayıda konsey üyesini önceden baskı altına almıştır. Teal'c'i kendi tarafına çekebilirse direnişin sembolü olan bir savaşçıdan yararlanacaktır. Bu sırada Mitchell, Ferguson için son bir hediye hazırlar. Galar'ın bellek aktarım cihazı sayesinde SG-1'de yaşadığı maceraları arkadaşına geçici olarak deneyimletir.
 
 Mitchell daha sonra kurtarma görevine katılır. Bra'tac havadan destek verirken diğerleri Ba'al'ın kalesine ulaşır; ancak Bra'tac da esir alınır. Teal'c'in zihninin kırıldığı sanılmaktadır. Ba'al, eski öğretmeni Bra'tac'ı öldürmesini emreder. Teal'c silahını ona doğrultur, ardından son anda düşmanına dönerek Ba'al'ı vurur. Esirler kurtulur ve demokratik yönetim önerisi Jaffa halkının oyuyla kabul edilir. Mitchell Dünya'ya döndüğünde Ferguson'ın öldüğünü öğrenir. Teal'c'in kendi değerlerini korumaya ilişkin sözleri, arkadaşını kurtaramamış subayın yaşadıklarını düşünmesine yardım eder.
+
+Ba'al'ın Jaffa liderlerini zihin kontrolüyle kendisine bağlama girişimi, Goa'uld iktidarının silah ve ordular dışında psikolojik denetime de dayandığını hatırlatır. Teal'c'in son anda verdiği karar kendi iradesini koruduğunun kanıtıdır. Mitchell ise dostuna aktardığı görev anılarıyla onun yaşayamadığı fırsatları kısa süreliğine paylaşır; bunun Ferguson'ı iyileştirmeyeceğini bilmektedir.
 
 ## Kaynaklar
 
