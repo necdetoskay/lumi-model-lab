@@ -140,6 +140,16 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   Result `REAL_QUALITY_NOT_ACCEPTED_DIAGNOSTIC_READY`; no English Master,
   Q25, state writes or paid calls. [P4.2 diagnostics](docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md)
   · [issue #286](https://github.com/necdetoskay/lumi-model-lab/issues/286).
+- **P4.3 v21.5 offline-only runner / paid kill switch:** the *original*
+  frozen v21.4 audit, repair and final adapter callbacks now run behind a
+  separately SHA-pinned, fake-transport-only, one-shot runner. Four callback
+  cases qualify (one synthetic ACCEPT, three fail-closed final-audit errors),
+  and pre-dispatch checks reject paid mode, invented grant/price/route,
+  retries and unverified provider token budgets. Request sizes and output
+  token allowances are recorded **only as exposure data, not cost guarantees**.
+  English Master, Q25, paid model dispatch and production state remain OFF.
+  [P4.3 runner](docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md)
+  · [issue #287](https://github.com/necdetoskay/lumi-model-lab/issues/287).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

@@ -15,6 +15,8 @@ on:
       - src/story_harness_p41.py
       - src/story_harness_p42.py
       - src/story_harness_p42_diagnostics.py
+      - src/story_harness_p43.py
+      - src/story_harness_p43_runner.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -26,6 +28,7 @@ on:
       - tests/test_story_harness_p40.py
       - tests/test_story_harness_p41.py
       - tests/test_story_harness_p42.py
+      - tests/test_story_harness_p43.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -33,6 +36,7 @@ on:
       - configs/story_harness_p32_english_master_admission.json
       - configs/story_harness_p40_v21_producer_preflight.json
       - configs/story_harness_p41_seal_trust_registry.json
+      - configs/story_harness_p43_offline_runner.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -43,6 +47,7 @@ on:
       - evidence/story_harness_p40/**
       - evidence/story_harness_p41/**
       - evidence/story_harness_p42/**
+      - evidence/story_harness_p43/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -54,6 +59,7 @@ on:
       - docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md
       - docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md
       - docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md
+      - docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -381,3 +387,31 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P42_FINAL_DIAGNOSTIC_GREEN')
           PY8
+
+      - name: Verify v21.5 offline single-attempt callback runner and paid kill switch
+        env:
+          STORY_HARNESS_PINNED_P43_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p43.py' -v
+          python -m src.story_harness_p43 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P43_ROOT" > /tmp/story-harness-p43-proof.json
+          python -m src.story_harness_p43 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P43_ROOT" \
+            --verify-report evidence/story_harness_p43/pinned-v21-5-offline-runner-receipt.json > /tmp/story-harness-p43-verified.json
+          cmp /tmp/story-harness-p43-proof.json /tmp/story-harness-p43-verified.json
+          python - <<'PY9'
+          import json
+          x=json.load(open('/tmp/story-harness-p43-proof.json'))
+          assert x['stop_reason'] == 'REAL_PAID_DISPATCH_DISABLED_OFFLINE_RUNNER_QUALIFIED'
+          assert x['original_provider_callback_shape_injected'] is True
+          assert x['offline_qualification_once_claim_consumed'] is True
+          assert x['kill_switch_premode_negative_case_count'] >= 13
+          assert len(x['offline_provider_callback_cases']) == 4
+          assert all(v['model_call_attempts'] == 3 for v in x['offline_provider_callback_cases'])
+          assert all(v['provider_network_requests'] == 0 for v in x['offline_provider_callback_cases'])
+          assert x['real_paid_user_authorization_granted'] is False
+          assert x['actual_english_master_accepted'] is False
+          assert x['q25_handoff_emitted'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P43_PAID_KILL_SWITCH_GREEN')
+          PY9
