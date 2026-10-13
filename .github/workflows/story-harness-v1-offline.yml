@@ -28,6 +28,7 @@ on:
       - src/story_harness_p411.py
       - src/story_harness_p412.py
       - src/story_harness_p413.py
+      - src/story_harness_p414.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -50,6 +51,7 @@ on:
       - tests/test_story_harness_p411.py
       - tests/test_story_harness_p412.py
       - tests/test_story_harness_p413.py
+      - tests/test_story_harness_p414.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -83,6 +85,7 @@ on:
       - evidence/story_harness_p412/**
       - docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md
       - docs/canonical/STORY_HARNESS_P413_TEMPERATURE_COMPATIBILITY.md
+      - docs/canonical/STORY_HARNESS_P414_KEY_LIMIT_PREFLIGHT.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -718,3 +721,32 @@ jobs:
           assert x['stop_reason'] == 'P413_ROUTING_COMPATIBILITY_OFFLINE_QUALITY_STILL_BLOCKED'
           print('STORY_HARNESS_P413_EXPLICIT_NON_EQUIVALENT_ROUTE_OFFLINE_GREEN')
           PY18
+
+      - name: Verify signed user consent precedes mock current-key HTTPS GET and no inference
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p414.py' -v
+          python -m src.story_harness_p414 --repo-root . > /tmp/story-harness-p414-a.json
+          python -m src.story_harness_p414 --repo-root . > /tmp/story-harness-p414-b.json
+          cmp /tmp/story-harness-p414-a.json /tmp/story-harness-p414-b.json
+          python - <<'PY19'
+          import json
+          x = json.load(open('/tmp/story-harness-p414-a.json'))
+          assert x['current_key_endpoint'] == 'https://openrouter.ai/api/v1/key'
+          assert x['key_management_mutations_supported'] is False
+          assert x['read_only_key_metadata_verifier_implemented'] is True
+          assert x['key_provisioned'] is False
+          assert x['key_limit_verified_on_user_account'] is False
+          assert x['external_trust_anchor_provisioned'] is False
+          assert x['authenticated_signed_user_grant_consumed'] is False
+          assert x['non_equivalent_temperature_change_user_approved'] is False
+          assert x['authoritative_request_token_ceiling_verified'] is False
+          assert x['independent_live_spending_lock_provisioned'] is False
+          assert x['live_dispatch_allowed'] is False
+          assert x['model_calls'] == 0 and x['api_cost_usd'] == '0'
+          assert x['story_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P414_USER_KEY_LIMIT_AND_GRANT_NOT_PROVISIONED_LIVE_STOP'
+          print('STORY_HARNESS_P414_CREDENTIAL_KEY_LIMIT_OFFLINE_GREEN')
+          PY19
