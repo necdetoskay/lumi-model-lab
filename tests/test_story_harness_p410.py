@@ -164,6 +164,14 @@ class RealNewStoryOfflineRequestTests(unittest.TestCase):
         with self.assertRaises(HarnessStop):
             self.build("FINAL_AUDIT", k)
 
+    def test_scene_prose_tampering_blocked_even_with_correct_story_sha(self):
+        k = self.kwargs("SCENE_REPAIR")
+        payload = json.loads(k["user_prompt"])
+        payload["source_scene_segments"]["spans"][17][2] = "A fake repaired load path"
+        k["user_prompt"] = json.dumps(payload)
+        with self.assertRaises(HarnessStop):
+            self.build("SCENE_REPAIR", k)
+
     def test_fallback_or_forged_routing_denied_in_receipt(self):
         preview = self.build()
         preview["body"]["provider"]["allow_fallbacks"] = True
