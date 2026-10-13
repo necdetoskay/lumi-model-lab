@@ -190,22 +190,28 @@ class BoundedOncePilot:
     Default fake transport is allowed only in tests. Real request method is a
     CLI-only guarded explicit entry; no exposed generic arbitrary transport.
     """
-    def __init__(self, run_root, *, case_id, plan):
+    def __init__(self, run_root, *, case_id, plan, run_variant='r01'):
         must(case_id in [c["id"] for c in plan["cases"]],
              "Case not in approved 10 input benchmark")
+        must(run_variant in ('r01','r02'),
+             "Disallowed or reused paid one-shot run variant")
         must(type(run_root) in (str, Path), "Missing ledger directory")
         root = Path(run_root)
         must(root.is_dir() and not root.is_symlink(),
              "Create protected run root before pilot")
         self.case = next(c for c in plan["cases"] if c["id"] == case_id)
         self.pack = compile_case(self.case)
-        self.dir = root / (case_id.lower() + "-" + self.pack["pack_sha256"][:16])
+        label = case_id.lower() + "-" + self.pack["pack_sha256"][:16]
+        if run_variant != 'r01':
+            label += '-' + run_variant
+        self.dir = root / label
         self.dir.mkdir(mode=0o700, exist_ok=False)
         self.cost = Decimal("0")
         self.calls = 0
         self.halted = False
         self._write("00-claim.json", {
             "schema": SCHEMA, "run_id": self.dir.name,
+            "run_variant": run_variant,
             "case_id": case_id, "source_sha256": self.pack["pack_sha256"],
             "max_run_spend_usd": format(USD_CAP, "f"),
             "user_total_ceiling_usd": format(GLOBAL_USER_CAP, "f"),
@@ -445,18 +451,21 @@ def main():
     cli.add_argument("--paid-one-shot", action="store_true")
     cli.add_argument("--case-id", default="B01")
     cli.add_argument("--run-root")
+    cli.add_argument("--run-variant", default="r01", choices=("r01","r02"))
     args = cli.parse_args()
     if not args.paid_one_shot:
         print(json.dumps(public_offline_status(args.repo_root), sort_keys=True))
         return
     must(os.getenv("LUMI_P417_ENABLE_PAID") == "ONE_SHOT_APPROVED_10_USD_USER_LIMIT",
          "Run-specific paid execution switch absent")
-    must(args.case_id == "B01" and args.run_root,
-         "Paid pilot limited to B01 and explicit durable claims")
+    must(args.case_id == "B01" and args.run_root and
+         args.run_variant == "r02",
+         "Paid rerun limited to B01 distinct r02 with durable claim")
     api_key = os.getenv(KEY_ENV, "")
     must(bool(api_key), "No pre-existing GitHub Actions OpenRouter inference secret")
     plan = load_plan(args.repo_root)
-    pilot = BoundedOncePilot(args.run_root, case_id=args.case_id, plan=plan)
+    pilot = BoundedOncePilot(args.run_root, case_id=args.case_id,
+                             plan=plan, run_variant=args.run_variant)
     # Never print provider response or prompts, only redacted and hashed result.
     print(json.dumps(pilot.execute(
         transport=lambda body: https_post_once(api_key, body)), sort_keys=True))
