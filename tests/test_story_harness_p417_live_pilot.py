@@ -240,6 +240,67 @@ class P417Tests(unittest.TestCase):
             with self.assertRaises(HarnessStop):
                 main()
 
+    def test_failure_diagnostic_discloses_only_phase_not_model_text(self):
+        with TemporaryDirectory() as td:
+            runner = BoundedOncePilot(td, case_id="B01", plan=self.plan)
+            p = FakeProvider(self.pack)
+            def missing_usage(body):
+                reply = p(body)
+                reply["usage"] = {"prompt_tokens":100,
+                                  "completion_tokens":300}
+                reply["id"] = "gen-sensitive-request-trace-XYZ"
+                reply["choices"][0]["message"]["content"] = (
+                    "SECRET_STORY_SHOULD_NOT_BE_LOGGED")
+                return reply
+            with self.assertRaises(HarnessStop) as cm:
+                runner.execute(transport=missing_usage)
+            self.assertIn("BILLED_COST", str(cm.exception))
+            receipt = json.loads((runner.dir / "01-spineforge-receipt.json").read_text())
+            diag = receipt["safe_failure_diagnostic"]
+            self.assertEqual(diag["phase"], "PROVIDER_USAGE")
+            self.assertEqual(diag["safe_failure_code"], "BILLED_COST_NOT_PRESENT")
+            self.assertTrue(diag["provider_generation_id_present"])
+            self.assertFalse(diag["billable_cost_field_present"])
+            self.assertIsNone(receipt["provider_reported_cost_usd"])
+            self.assertNotIn("SECRET_STORY", json.dumps(receipt))
+            self.assertNotIn("gen-sensitive", json.dumps(receipt))
+
+    def test_http_error_status_cannot_leak_credentials_or_json(self):
+        import urllib.error
+        from src.story_harness_p417_live_pilot import https_post_once
+        from unittest.mock import patch as monkey
+        from io import BytesIO
+        secret = "sk-or-offline-example-not-a-real-secret"
+        http_error = urllib.error.HTTPError(
+            ENDPOINT, 400,
+            "SECRET_PROMPT_AND_BEARER_SHOULD_NEVER_APPEAR",
+            {}, BytesIO(b"SECRET_PROVIDER_BODY"),
+        )
+        body = wire("SPINEFORGE", build_spine_request(self.pack))
+        with monkey("urllib.request.urlopen", side_effect=http_error):
+            with self.assertRaises(HarnessStop) as cm:
+                https_post_once(secret, body)
+        self.assertIn("HTTP_400", str(cm.exception))
+        self.assertNotIn("SECRET_", str(cm.exception))
+        self.assertNotIn(secret, str(cm.exception))
+
+    def test_transport_category_recorded_without_network_retry(self):
+        from src.story_harness_p417_live_pilot import ProviderTransportFault
+        with TemporaryDirectory() as td:
+            runner = BoundedOncePilot(td, case_id="B01", plan=self.plan)
+            calls = []
+            def provider_error(body):
+                calls.append(1)
+                raise ProviderTransportFault("HTTP_422")
+            with self.assertRaisesRegex(HarnessStop, "HTTP_422"):
+                runner.execute(transport=provider_error)
+            receipt = json.loads((runner.dir / "01-spineforge-receipt.json").read_text())
+            diag = receipt["safe_failure_diagnostic"]
+            self.assertEqual(diag["safe_failure_code"], "HTTP_422")
+            self.assertEqual(diag["phase"], "TRANSPORT")
+            self.assertFalse(diag["provider_envelope_received"])
+            self.assertEqual(calls, [1])
+
     def test_default_cli_never_touches_key_or_network(self):
         with patch.object(sys, "argv", ["p417", "--repo-root", str(ROOT)]),              patch.dict(os.environ, {}, clear=True):
             buff = io.StringIO()
