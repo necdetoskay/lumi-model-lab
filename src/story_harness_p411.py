@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import base64
 from datetime import datetime, timezone, timedelta
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import hashlib
 import json
 import os
