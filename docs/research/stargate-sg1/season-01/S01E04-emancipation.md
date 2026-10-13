@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 1
 episode: 4
 title_original: "Emancipation"
-status: draft
-word_count: 218
+status: complete
+word_count: 277
 source_verified: true
 spoilers: true
 ---
@@ -13,17 +13,17 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-SG-1, Simarka adlı gezegende geçmişte Dünya'dan taşınmış Moğol kökenli toplulukların torunlarıyla karşılaşır. Shavadai halkının katı gelenekleri, erkeklere ayrıcalık tanırken kadınların hareketlerini ve toplum içindeki yerlerini ciddi biçimde kısıtlar. Yüzbaşı Samantha Carter'ın askerî görevi ve bağımsız tavrı, bu düzenin yöneticilerini şaşırtır. Ekip ilk temas sırasında bir gencin hayatını kurtararak Shavadai lideri Moughal'ın güvenini kazanır. Kurtarılan genç, Moughal'ın oğlu Abu'dur; fakat onun da çözmeye çalıştığı kişisel bir sorunu vardır.
+SG-1, Simarka’ya ulaştığında Dünya tarihinden kopmuş bir toplulukla karşılaşır. Gezegen, eski Dünya Moğollarının soyundan gelen Şavadai halkına ev sahipliği yapmaktadır; halk kendisini “Bozkırın İnsanları” olarak tanımlar. Şavadai yasaları, kadınları korumak amacı taşıdığı söylenen eski iblis anlatılarından doğmuş olsa da uygulamada bütün kadınları ikinci sınıf konumuna iter. Kaptan Samantha Carter da bu düzenin istisnası sayılmaz. Ekip, Şavadai reisi Moughal’ın oğlu Abu’nun hayatını kurtarınca hoş karşılanır; fakat bu kabul, Carter’ın özgürlüğünü güvenceye almaz.
 
-Abu, sevdiği Nya ile birlikte olabilmek için rakip kabile lideri Turghan'la pazarlık yapmak istemektedir. Bu amaçla Carter'ı kaçırır ve onu bir değiş tokuş nesnesi gibi sunar. SG-1 için olay artık yalnızca gezegenin kültürünü gözlemlemek değil, ekip arkadaşını tutsaklıktan kurtarma meselesidir. O'Neill ile Daniel yerel geleneklerin görevi nasıl zorlaştırdığını görürken Carter, hiçbir insanın mülk gibi alınıp satılamayacağını savunur. Onun direnmesi, Nya'nın kaderini de değiştirebilecek bir ihtimale dönüşür.
+Abu, Carter’ı kaçırır. Amacı onu, Orman İnsanları olan Toughai’nin reisi Turghan’a vermek ve karşılığında Turghan’ın kızı Nya’nın elini almaktır. Böylece Carter, iki lider arasındaki evlilik ve pazarlık düzeninin bir parçası yapılır; Nya da kendi geleceği üzerinde söz sahibi olmayan bir konuma itilir. SG-1 kurtarma girişimini başlatır. Ancak olay yalnızca Carter’ın geri alınmasıyla çözülemez: Carter ile Nya’nın özgürlüğünün birlikte kazanılması gerekir. Şavadai düzeninde kadınların doğrudan karar veremediği düşünülürken Carter’ın Dünya’daki askerî eğitimi belirleyici olur. Kaynak, onun yakın dövüşte üçüncü seviye ileri eğitime sahip olduğunu belirtir.
 
-Carter, silahlı bir çıkarma yerine kendisinin ve Nya'nın özgürlüğünü güvenceye alabilecek doğrudan bir meydan okumaya yönelir. Turghan'la karşılaşması bedensel güce ve dövüş becerisine dayanan bir mücadeleye dönüşür. Carter, askerî eğitimini kullanarak rakibini yener. Bu sonuç yalnızca bir rehinenin kurtulması anlamına gelmez; Simarka halkının kadınlara yönelik değişmez sandığı kuralları da sorgulanmaya başlanır. SG-1, yerel toplumun içinde bütün sorunları anında çözmüş olarak değil, değişimin mümkün olduğunu göstermiş olarak ayrılır. Bölüm, Dünya ekibinin başka uygarlıklarla karşılaşırken kültürel farklılığa saygı ile temel özgürlükleri savunma arasında yaşayacağı gerilimin erken örneklerindendir.
+Son aşamada Carter, Nya’nın da özgür olması için Turghan’la ölümüne, bire bir dövüşmeyi kabul eder. Çatışma sırasında Carter küçük kesik ve bereler alır; buna rağmen eğitimini, kararlılığını ve fiziksel üstünlüğünü kullanarak Turghan’ı yener. Bu zafer yalnızca kaçırılan subayın kurtulması değildir. Turghan’ın otoritesi sarsılır ve Simarka’daki insanlar için yeni bir yaşam biçiminin önü açılır. Bölüm, Carter’ın başka bir dünyanın kadınlar üzerindeki yasalarını dışarıdan değiştirmek yerine, Nya’nın özgürlüğünü de kendi mücadelesine katarak düzeni içeriden kırmasıyla sona erer. Carter’ın zaferi sırasında SG-1, Şavadai’nin kendi kurallarını sorgulamasını sağlayacak bir örnek sunar. Moughal’ın reisliği, Abu’nun pazarlığı ve Turghan’ın tehdidi arasındaki güç ilişkisi, Nya’nın bir evlilik anlaşmasındaki değiş tokuş nesnesine indirgenmesini görünür kılar. Carter’ın dövüşü bu nedenle kişisel bir kaçıştan çok, iki kadının statüsünü değiştiren kamusal bir sınavdır.
 
 ## Kaynaklar
 
 - [Richard Dean Anderson bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/01-04emancipation.htm)
 - [GateWorld bölüm rehberi](https://www.gateworld.net/sg1/s1/emancipation/)
 
-## Editör notu
+## Araştırma kontrolü
 
-Bu metin kaynaklardan hareketle özgün Türkçe anlatımla hazırlanmıştır. Çok parçalı pilotun bölüm sınırları için ek sürüm karşılaştırması gerekebilir.
+Kaynaklar, bölüm kimliği ve ana olaylar için eşleştirildi. Tam olay örgüsü özgün Türkçe anlatımdır.

@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 1
 episode: 5
 title_original: "The Broca Divide"
-status: draft
-word_count: 219
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -13,17 +13,17 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-SG-1'in P3X-797'ye yaptığı ziyaret, iki farklı toplumun aynı dünyada birbirinden ayrı koşullarda yaşadığını gösterir. Gezegenin aydınlık tarafında kendilerini koruyan ve daha gelişmiş bir toplumsal düzen kurmuş insanlar bulunurken karanlıkta yaşayanlar ilkel, saldırgan ve neredeyse içgüdüleriyle hareket eden varlıklar gibidir. Dünya ekibi başlangıçta bu farkı kültürel ya da biyolojik bir ayrım sanabilir. Ancak görevden dönüşün ardından askerler arasında açıklanamayan davranış değişiklikleri görülmeye başlar. İnsanlar saldırganlaşır, konuşma ve düşünme yetenekleri geriler; sorun yalnızca gezegene özgü değildir.
+SG-1, SG-3 Deniz Piyadeleriyle birlikte P3X-797’ye gittiğinde, gezegenin kendine özgü dönüşü nedeniyle iki ayrı çevre keşfeder: aydınlık taraf ve karanlık taraf. Aydınlık Tarafta, eski Minosluların soyundan gelen ve “Dokunulmamışlar” diye anılan topluluk yaşar. Karanlık Tarafta ise erken insanı andıran, şiddet eğilimli ilkel topluluk olan “Dokunulmuşlar” bulunur. Bu karşıtlık yalnızca kültürel değildir; ekip üyeleri kısa süre sonra gezegenin hastalığının etkisini taşımaya başlar.
 
-Enfeksiyon Stargate Komutanlığı'nın içine taşınmıştır. Carter ve O'Neill de dâhil olmak üzere bazı personel giderek ilkel davranışlar göstermeye başlayınca üs için ciddi bir güvenlik krizi doğar. Hastaların çevrelerine saldırması ve kendilerini kontrol edememesi, askeri yöntemlerle bastırılamayacak bir tıbbi problem yaratır. Doktor Janet Fraiser olayı inceleyerek hastaları yalnızca tecrit etmenin yeterli olmayacağını, bulaşmanın nedeninin belirlenmesi gerektiğini anlar. Teal'c'in bağışıklığı ile Jaffa biyolojisine ilişkin bilgiler, hastalığa farklı bir açıdan bakılmasını sağlar.
+O’Neill ve Carter’ın ardından SGC’de General Hammond’ın da görünüşü ve davranışları ilkel bir insana benzemeye dönüşür. Hastalık, sinir ileticileriyle beslenen ve hormon salgılanmasına yol açan bulaşıcı bir histaminolitik virüstür. Sonuçta fiziksel değişimler kadar davranış değişimleri de ortaya çıkar. Daniel ve Teal’c, Dünya’daki yayılmayı durduracak yanıtı bulmak için yeniden gezegene gider. Teal’c’in içindeki simbiot onu hastalığa karşı bağışık tuttuğundan, ikili araştırmayı sürdürebilecek durumdaki kişilerdir. SGC’nin kapanması ve Code Five karantinası da tehdidin ciddiyetini gösterir: dağ mühürlenir ve ayrılmaya çalışanlar vurulma riskiyle karşılaşır.
 
-O'Neill'in kişiliği giderek kaybolsa da yer yer kendi bilincinden izler göstermesi, Fraiser'ın umudunu korumasına neden olur. Doktorlar enfeksiyonu tersine çevirecek bir tedavi üzerinde çalışırken SG-1'in asıl görevi de anlam kazanır: iki toplum arasındaki ayrımı yaratan koşullar ortadan kaldırılmadıkça gezegendeki kurbanlar da kurtulamayacaktır. Sonuçta tıbbi müdahale hastalığı geriletir ve ekibin üyeleri eski hâllerine döner. Bölümün ana tehdidi düşman bir ordu değil, temas yoluyla yayılan bilinmeyen bir etkendir. Stargate yolculuklarının Dünya'ya teknoloji kadar hastalık da getirebileceği açıkça görülür.
+Araştırmanın sonunda virüsün tedavisi belirlenir: yüksek doz Chlorpheniramine Maleate gerekir. Böylece kriz, hastalığın gizemli bir “ilkel hâle dönüşüm” değil, tedavi edilebilir biyolojik bir salgın olduğunun anlaşılmasıyla çözülür. Carter’ın hastalıkla birlikte aldığı küçük karın yarası, Daniel ile O’Neill’ın kesik ve bereleri ve Hammond’ın enfeksiyonu tehdidin bedensel sonuçlarını gösterir. Sonuçta Dünya’ya yayılma ihtimali ortadan kaldırılır ve ekip, P3X-797’nin iki halkası arasındaki farkı yalnızca bir uygarlık karşıtlığı olarak değil, virüsün etkisinin anlaşılması gereken bir sağlık sorunu olarak görür. Bölüm ayrıca Apophis’in ana dünyasına giden sembollerin Chulak’tan gelen mültecilerce belirlenmesini sağlar. Dünya’daki Stargate Command’ın eski bir füze silosunda bulunması ve her görevin bilimsel-kültürel değerinin değerlendirilmesini isteyen yeni başkanlık talimatı da bu krizin arka planını oluşturur. Buna rağmen acil öncelik, enfekte personelin davranışlarını denetlemek ve karantina sürerken ilacı uygulamaktır. Teal’c’in bağışıklığı, çözümün bulunmasında belirleyici avantaj sağlar.
 
 ## Kaynaklar
 
 - [Richard Dean Anderson bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/01-05broca.htm)
 - [GateWorld bölüm rehberi](https://www.gateworld.net/sg1/s1/the-broca-divide/)
 
-## Editör notu
+## Araştırma kontrolü
 
-Bu metin kaynaklardan hareketle özgün Türkçe anlatımla hazırlanmıştır. Çok parçalı pilotun bölüm sınırları için ek sürüm karşılaştırması gerekebilir.
+Kaynaklar, bölüm kimliği ve ana olaylar için eşleştirildi. Tam olay örgüsü özgün Türkçe anlatımdır.
