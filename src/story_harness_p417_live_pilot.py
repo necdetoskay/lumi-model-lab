@@ -94,6 +94,27 @@ SPINE_JSON = {
     },
     "required": ["source_pack_sha256", "beats", "spine_summary"],
 }
+SPINE_ENVELOPE_JSON = {
+    "type":"object", "additionalProperties":False,
+    "properties":{
+        "source_pack_sha256":{"type":"string"},
+        "spine_summary":{"type":"string"},
+        "beats_json":{"type":"string",
+            "description":"JSON-encoded array of four to eight complete scene beat objects, source-validated locally."},
+    },
+    "required":["source_pack_sha256","spine_summary","beats_json"],
+}
+WRITER_ENVELOPE_JSON = {
+    "type":"object", "additionalProperties":False,
+    "properties":{
+        "source_pack_sha256":{"type":"string"},
+        "spine_sha256":{"type":"string"},
+        "story_text":{"type":"string"},
+        "beat_ids_json":{"type":"string",
+            "description":"JSON encoded string array of all approved beat IDs in exact scene order."},
+    },
+    "required":["source_pack_sha256","spine_sha256","story_text","beat_ids_json"],
+}
 WRITER_JSON = {
     "type": "object", "additionalProperties": False,
     "properties": {
@@ -122,7 +143,7 @@ def money(value):
     return n
 
 
-def wire(stage, prompt):
+def wire(stage, prompt, *, simple_envelope=False):
     must(stage in OUTPUT_CAPS, "Unknown stage")
     must(type(prompt) is dict and prompt.get("stage") == stage
          and prompt.get("provider_dispatch_allowed") is False,
@@ -135,7 +156,10 @@ def wire(stage, prompt):
     # Third same-method correction: mirror source-specific allowed values in
     # the strict JSON Schema itself. Prompt-only instructions are not a
     # contract when the decoder can choose unknown places or obligation text.
-    schema = deepcopy(SPINE_JSON if stage == "SPINEFORGE" else WRITER_JSON)
+    schema = deepcopy(
+        (SPINE_ENVELOPE_JSON if stage=="SPINEFORGE" else WRITER_ENVELOPE_JSON)
+        if simple_envelope else
+        (SPINE_JSON if stage=="SPINEFORGE" else WRITER_JSON))
     try:
         input_payload = json.loads(usr_prompt)
     except (TypeError, ValueError):
@@ -145,7 +169,27 @@ def wire(stage, prompt):
                            input_payload.get("source_pack_sha256")) ==
          prompt["source_pack_sha256"],
          "Model prompt SHA differs from the source pack")
-    if stage == "SPINEFORGE":
+    if simple_envelope:
+        # A flat outer JSON Schema is compatible with the proven OpenRouter
+        # P4.18 primitive strict-output path. The complete nested Canon/scene
+        # validator still runs after decoding the JSON-string payload.
+        if stage == "SPINEFORGE":
+            sys_prompt += (
+                " For this provider-compatible output use exactly three "
+                "fields: source_pack_sha256, spine_summary, beats_json. "
+                "beats_json MUST be a valid JSON STRING containing a JSON "
+                "array of 4-8 beat objects with fields id,location,goal,"
+                "choice,consequence,obligation_reference; use a JSON null "
+                "for nonreferenced obligations. Do not return a beats array "
+                "as an outer JSON property.")
+        else:
+            sys_prompt += (
+                " For this provider-compatible output use exactly four "
+                "fields: source_pack_sha256,spine_sha256,story_text,beat_ids_json. "
+                "beat_ids_json MUST be a JSON STRING encoding an array of "
+                "all exact approved beat IDs in order, not an outer JSON "
+                "array or commentary.")
+    elif stage == "SPINEFORGE":
         state = input_payload.get("canonical_state")
         must(type(state) is dict and type(state.get("locations")) is list
              and state["locations"] and
@@ -186,7 +230,8 @@ def wire(stage, prompt):
             "max_price": {"prompt": 2, "completion": 10},
         },
         "response_format": {"type": "json_schema", "json_schema": {
-            "name": "lumi_p417_" + stage.lower() + "_v1",
+            "name": "lumi_p417_" + stage.lower() +
+                    ("_flat_v2" if simple_envelope else "_v1"),
             "strict": True, "schema": schema}},
     }
     must(len(canonical_json(body)) <= MAX_REQUEST_BYTES,
@@ -203,13 +248,14 @@ class BoundedOncePilot:
     def __init__(self, run_root, *, case_id, plan, run_variant='r01'):
         must(case_id in [c["id"] for c in plan["cases"]],
              "Case not in approved 10 input benchmark")
-        must(run_variant in ('r01','r02','r03'),
+        must(run_variant in ('r01','r02','r03','r04'),
              "Disallowed or reused paid one-shot run variant")
         must(type(run_root) in (str, Path), "Missing ledger directory")
         root = Path(run_root)
         must(root.is_dir() and not root.is_symlink(),
              "Create protected run root before pilot")
         self.case = next(c for c in plan["cases"] if c["id"] == case_id)
+        self.use_simple_envelope = run_variant == 'r04'
         self.pack = compile_case(self.case)
         label = case_id.lower() + "-" + self.pack["pack_sha256"][:16]
         if run_variant != 'r01':
@@ -261,7 +307,8 @@ class BoundedOncePilot:
                   self.calls == 1 and stage == "WRITER"),
              "No retries, wrong stage or consumed run")
         must(callable(transport), "Missing bounded POST transport")
-        body = wire(stage, prompt)
+        body = wire(stage, prompt,
+                    simple_envelope=self.use_simple_envelope)
         self.calls += 1
         self.halted = True
         self._write(f"{self.calls:02d}-{stage.lower()}-intent.json", {
@@ -302,6 +349,39 @@ class BoundedOncePilot:
             diagnostic_phase = "JSON_PARSE"
             parsed = json.loads(content)
             must(type(parsed) is dict, "Expected structured JSON object")
+            if self.use_simple_envelope:
+                # Only decoding the wrapper changes; all pre-existing
+                # source/scene/Word/Spine/Story admission checks below remain.
+                if stage == "SPINEFORGE":
+                    must(set(parsed) == {
+                        "source_pack_sha256","spine_summary","beats_json"
+                    } and type(parsed["beats_json"]) is str and
+                         len(parsed["beats_json"]) <= MAX_RESPONSE_BYTES,
+                         "Malformed flat Spine envelope")
+                    beat_list = json.loads(parsed["beats_json"])
+                    must(type(beat_list) is list,
+                         "Flat Spine beats were not JSON array")
+                    parsed = {
+                        "source_pack_sha256":parsed["source_pack_sha256"],
+                        "spine_summary":parsed["spine_summary"],
+                        "beats":beat_list,
+                    }
+                else:
+                    must(set(parsed) == {
+                        "source_pack_sha256","spine_sha256",
+                        "story_text","beat_ids_json"
+                    } and type(parsed["beat_ids_json"]) is str and
+                         len(parsed["beat_ids_json"]) <= 4096,
+                         "Malformed flat Writer envelope")
+                    beat_ids = json.loads(parsed["beat_ids_json"])
+                    must(type(beat_ids) is list,
+                         "Flat Writer beat IDs were not a JSON array")
+                    parsed = {
+                        "source_pack_sha256":parsed["source_pack_sha256"],
+                        "spine_sha256":parsed["spine_sha256"],
+                        "story_text":parsed["story_text"],
+                        "beat_ids":beat_ids,
+                    }
             diagnostic_phase = "SPINE_VALIDATION" if stage == "SPINEFORGE" else "WRITER_VALIDATION"
             if stage == "SPINEFORGE":
                 prepared = approve_spine_for_writer(self.pack, parsed)
@@ -510,7 +590,7 @@ def main():
     cli.add_argument("--case-id", default="B01")
     cli.add_argument("--run-root")
     cli.add_argument("--run-variant", default="r01",
-                     choices=("r01","r02","r03"))
+                     choices=("r01","r02","r03","r04"))
     args = cli.parse_args()
     if not args.paid_one_shot:
         print(json.dumps(public_offline_status(args.repo_root), sort_keys=True))
@@ -518,8 +598,8 @@ def main():
     must(os.getenv("LUMI_P417_ENABLE_PAID") == "ONE_SHOT_APPROVED_10_USD_USER_LIMIT",
          "Run-specific paid execution switch absent")
     must(args.case_id == "B01" and args.run_root and
-         args.run_variant == "r03",
-         "Paid follow-up limited to B01 distinct r03 with durable claim")
+         args.run_variant == "r04",
+         "Paid flat-schema follow-up limited to B01 distinct r04 with durable claim")
     api_key = os.getenv(KEY_ENV, "")
     must(bool(api_key), "No pre-existing GitHub Actions OpenRouter inference secret")
     plan = load_plan(args.repo_root)
