@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import sys
 import urllib.request
+import urllib.error
 
 from src.story_harness_p415_benchmark import load_plan
 from src.story_harness_p416_input_bridge import (
@@ -28,6 +29,32 @@ ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "anthropic/claude-sonnet-5.5"
 PROVIDER = "Anthropic"
 SCHEMA = "lumi.story-harness-p417-real-provider-pilot.v1"
+DIAGNOSTIC_SCHEMA = "lumi.story-harness-p417-sanitized-failure-diagnostic.v1"
+SAFE_ERROR_CODES = {
+    "Unexpected provider model": "MODEL_ID_MISMATCH",
+    "Missing/unbounded provider token count": "USAGE_TOKENS_INVALID",
+    "Provider money must be numeric": "BILLED_COST_NOT_PRESENT",
+    "Provider cost is not numeric": "BILLED_COST_NONNUMERIC",
+    "Provider cost missing/nonfinite/negative": "BILLED_COST_INVALID",
+    "Exceeded stage/one-run/global USD ceiling": "BILLED_COST_OVER_CAP",
+    "Incomplete generated JSON or output truncated": "FINISH_REASON_OR_CHOICE_INVALID",
+    "Missing/oversized provider message": "CONTENT_MISSING_OR_OVERSIZE",
+    "Expected structured JSON object": "MODEL_JSON_NOT_OBJECT",
+    "Story source/Spine identity malformed": "WRITER_LINEAGE_BAD",
+    "Writer substituted an unrelated Spine": "WRITER_SPINE_MISMATCH",
+    "Writer skipped/reordered approved story beats": "WRITER_BEAT_MISMATCH",
+    "Writer failed age-specific story length": "WRITER_WORD_COUNT_INVALID",
+}
+class ProviderTransportFault(HarnessStop):
+    def __init__(self, category):
+        if category not in {"HTTP_400","HTTP_401","HTTP_402","HTTP_403",
+                            "HTTP_404","HTTP_408","HTTP_422","HTTP_429",
+                            "HTTP_500","HTTP_502","HTTP_503","HTTP_504",
+                            "NETWORK_OR_UNKNOWN","PROVIDER_RESPONSE_OVERSIZE"}:
+            category = "PROVIDER_HTTP_OTHER"
+        self.category = category
+        super().__init__("Provider refused/failed; sanitized category=" + category)
+
 USD_CAP = Decimal("0.35")
 GLOBAL_USER_CAP = Decimal("10")
 OUTPUT_CAPS = {"SPINEFORGE": 1800, "WRITER": 2500}
@@ -157,7 +184,7 @@ class BoundedOncePilot:
             f.flush()
             os.fsync(f.fileno())
 
-    def _record(self, stage, request, *, cost=None, usage=None, ok=False):
+    def _record(self, stage, request, *, cost=None, usage=None, ok=False, diagnostic=None):
         receipt = {
             "schema": SCHEMA, "stage": stage,
             "exact_wire_sha256": hashlib.sha256(canonical_json(request)).hexdigest(),
@@ -167,6 +194,7 @@ class BoundedOncePilot:
             "provider_reported_cost_usd": format(cost, "f") if cost is not None else None,
             "cumulative_reported_usd": format(self.cost + cost, "f") if cost is not None else None,
             "retry_authorized": False,
+            "safe_failure_diagnostic": diagnostic if not ok else None,
         }
         self._write(f"{self.calls:02d}-{stage.lower()}-receipt.json", receipt)
 
@@ -187,11 +215,14 @@ class BoundedOncePilot:
             "no_retry_on_unknown_charge": True,
         })
         result = None
+        diagnostic_phase = "TRANSPORT"
         try:
             result = transport(body)
+            diagnostic_phase = "PROVIDER_ENVELOPE"
             must(type(result) is dict and result.get("model") == MODEL,
                  "Unexpected provider model")
             usage = result.get("usage")
+            diagnostic_phase = "PROVIDER_USAGE"
             must(type(usage) is dict
                  and type(usage.get("prompt_tokens")) is int
                  and type(usage.get("completion_tokens")) is int
@@ -204,14 +235,17 @@ class BoundedOncePilot:
                  and self.cost + cost <= GLOBAL_USER_CAP,
                  "Exceeded stage/one-run/global USD ceiling")
             choices = result.get("choices")
+            diagnostic_phase = "PROVIDER_FINISH"
             must(type(choices) is list and len(choices) == 1
                  and choices[0].get("finish_reason") == "stop",
                  "Incomplete generated JSON or output truncated")
             content = choices[0].get("message", {}).get("content")
             must(type(content) is str and len(content) <= MAX_RESPONSE_BYTES,
                  "Missing/oversized provider message")
+            diagnostic_phase = "JSON_PARSE"
             parsed = json.loads(content)
             must(type(parsed) is dict, "Expected structured JSON object")
+            diagnostic_phase = "SPINE_VALIDATION" if stage == "SPINEFORGE" else "WRITER_VALIDATION"
             if stage == "SPINEFORGE":
                 prepared = approve_spine_for_writer(self.pack, parsed)
                 must(prepared["spine_sha256"] == sha(parsed),
@@ -259,13 +293,40 @@ class BoundedOncePilot:
                 "total_reported_usd": format(self.cost, "f"),
             })
             return parsed
-        except Exception:
+        except Exception as exc:
+            # Never serialize arbitrary provider error messages, response prose,
+            # URL, bearer credentials or untrusted exception str().
+            if isinstance(exc, ProviderTransportFault):
+                failure = exc.category
+            elif isinstance(exc, json.JSONDecodeError):
+                failure = "MODEL_JSON_PARSE"
+            elif isinstance(exc, HarnessStop):
+                failure = SAFE_ERROR_CODES.get(str(exc),
+                    "SPINE_SEMANTIC_VALIDATION" if diagnostic_phase == "SPINE_VALIDATION"
+                    else "OTHER_CONTRACT_VALIDATION")
+            else:
+                failure = "UNEXPECTED_RUNTIME_FAILURE"
+            usage = result.get("usage") if type(result) is dict else None
+            diag = {
+                "schema": DIAGNOSTIC_SCHEMA, "phase": diagnostic_phase,
+                "safe_failure_code": failure,
+                "provider_envelope_received": result is not None,
+                "usage_object_present": type(usage) is dict,
+                "billable_cost_field_present": type(usage) is dict and
+                                               "cost" in usage,
+                "provider_generation_id_present": type(result) is dict and
+                                                   type(result.get("id")) is str,
+                "secret_or_manuscript_recorded": False,
+                "model_retry_attempts": 0,
+            }
             if not (self.dir / f"{self.calls:02d}-{stage.lower()}-receipt.json").exists():
                 try:
-                    self._record(stage, body, ok=False)
+                    self._record(stage, body, ok=False, diagnostic=diag)
                 except Exception:
                     pass
-            raise HarnessStop("Paid/synthetic stage failed, run consumed; no retry") from None
+            raise HarnessStop(
+                "Stage failed; consumed without retry. Safe category: " + failure
+            ) from None
 
     def execute(self, *, transport):
         p = build_spine_request(self.pack)
@@ -307,10 +368,12 @@ def https_post_once(api_key, body):
             must(len(raw) <= MAX_RESPONSE_BYTES,
                  "Oversized completion response")
         return json.loads(raw)
+    except urllib.error.HTTPError as exc:
+        raise ProviderTransportFault("HTTP_" + str(exc.code)) from None
     except HarnessStop:
         raise
     except Exception:
-        raise HarnessStop("Provider request failed/unknown billed status; no retry") from None
+        raise ProviderTransportFault("NETWORK_OR_UNKNOWN") from None
 
 
 def public_offline_status(repo_root="."):
