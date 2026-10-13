@@ -74,6 +74,23 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   ```
 
 - [P2.1 real Q25 version-pinned gate and recorded boundaries](docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md).
+- **P2.2 genuine SpineForge offline deterministic gate:** real frozen
+  `validate_narrative_spine()` executed on the original approved island
+  Spine, exact ContextPack and obligations. Authority/structure PASS with
+  8 discovery turns and two choices, but **no human or LLM product gate
+  authentication** and no Writer/Q25 execution authority.
+  [P2.2 boundary](docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md).
+- **P3.0 same-story source lineage:** the original frozen Writer #3 manifest,
+  result, envelope and story are now checked by the real pinned
+  `load_verified_writer_story_artifact()` alongside P2.2 SpineForge.
+  Spine hash, approval ID, context ID/fingerprint and exact story bytes
+  all match one historical island story. Its original failed Story Audit
+  qualification **remains RED** (`FAIL_KNOWN_DEFECT_MISSED`). The stored
+  KITE/GREENHOUSE Q25 records are unrelated; the harness explicitly stops
+  with `MISSING_SAME_STORY_Q25_ARTIFACT`. No Final StoryState, semantic
+  certification, new paid call or automatic handoff is possible.
+  [P3.0 same-story receipt](docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md)
+  and [tracking issue #281](https://github.com/necdetoskay/lumi-model-lab/issues/281).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

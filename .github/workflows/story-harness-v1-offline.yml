@@ -8,11 +8,13 @@ on:
       - src/story_harness_p2.py
       - src/story_harness_p21.py
       - src/story_harness_p22.py
+      - src/story_harness_p30.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
       - tests/test_story_harness_p21.py
       - tests/test_story_harness_p22.py
+      - tests/test_story_harness_p30.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -20,11 +22,13 @@ on:
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
       - evidence/story_harness_p22/**
+      - evidence/story_harness_p30/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
       - docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md
       - docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md
+      - docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -186,3 +190,30 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P22_ACTUAL_SPINEFORGE_OFFLINE_GATE_GREEN')
           PY2
+
+      - name: Verify frozen same-story SpineForge to Writer lineage and missing-Q25 STOP
+        env:
+          STORY_HARNESS_PINNED_P3_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p30.py' -v
+          python -m src.story_harness_p30 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P3_ROOT" > /tmp/story-harness-p30-lineage.json
+          python -m src.story_harness_p30 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P3_ROOT" \
+            --verify-report evidence/story_harness_p30/pinned-same-story-lineage-receipt.json > /tmp/story-harness-p30-verified.json
+          cmp /tmp/story-harness-p30-lineage.json /tmp/story-harness-p30-verified.json
+          python - <<'PY3'
+          import json
+          x = json.load(open('/tmp/story-harness-p30-lineage.json'))
+          assert x['same_story_spine_to_writer_confirmed'] is True
+          assert x['writer_original_validator_executed'] is True
+          assert x['writer_word_count'] == 2324
+          assert x['original_story_audit_qualification'] == 'FAIL_KNOWN_DEFECT_MISSED'
+          assert x['original_story_audit_qualification_pass'] is False
+          assert x['stop_reason'] == 'MISSING_SAME_STORY_Q25_ARTIFACT'
+          assert x['same_story_q25_handoff_verified'] is False
+          assert x['q25_execution_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P30_SAME_STORY_GREEN')
+          PY3
