@@ -47,13 +47,20 @@ SAFE_ERROR_CODES = {
     "Writer failed age-specific story length": "WRITER_WORD_COUNT_INVALID",
 }
 class ProviderTransportFault(HarnessStop):
-    def __init__(self, category):
+    def __init__(self, category, hint="UNCLASSIFIED"):
         if category not in {"HTTP_400","HTTP_401","HTTP_402","HTTP_403",
                             "HTTP_404","HTTP_408","HTTP_422","HTTP_429",
                             "HTTP_500","HTTP_502","HTTP_503","HTTP_504",
                             "NETWORK_OR_UNKNOWN","PROVIDER_RESPONSE_OVERSIZE"}:
             category = "PROVIDER_HTTP_OTHER"
         self.category = category
+        self.hint = hint if hint in {
+            "SCHEMA_UNSUPPORTED_ARRAY_BOUNDS",
+            "SCHEMA_OTHER",
+            "PARAMETER_UNSUPPORTED",
+            "MODEL_UNAVAILABLE",
+            "UNCLASSIFIED",
+        } else "UNCLASSIFIED"
         super().__init__("Provider refused/failed; sanitized category=" + category)
 
 USD_CAP = Decimal("0.35")
@@ -196,7 +203,7 @@ class BoundedOncePilot:
     def __init__(self, run_root, *, case_id, plan, run_variant='r01'):
         must(case_id in [c["id"] for c in plan["cases"]],
              "Case not in approved 10 input benchmark")
-        must(run_variant in ('r01','r02'),
+        must(run_variant in ('r01','r02','r03'),
              "Disallowed or reused paid one-shot run variant")
         must(type(run_root) in (str, Path), "Missing ledger directory")
         root = Path(run_root)
@@ -372,6 +379,8 @@ class BoundedOncePilot:
                                                    type(result.get("id")) is str,
                 "secret_or_manuscript_recorded": False,
                 "model_retry_attempts": 0,
+                "provider_error_hint": exc.hint
+                    if isinstance(exc, ProviderTransportFault) else None,
             }
             # Preserve verifiable usage/cost even if strict story validation
             # rejects the response. Do not turn a missing provider price into 0.
@@ -445,7 +454,25 @@ def https_post_once(api_key, body):
                  "Oversized completion response")
         return json.loads(raw)
     except urllib.error.HTTPError as exc:
-        raise ProviderTransportFault("HTTP_" + str(exc.code)) from None
+        # The provider HTTP error body is untrusted and may contain a copied
+        # prompt or other private material. Never persist or print it. Only
+        # classify a few known syntax/support problems to static labels.
+        try:
+            raw_error = exc.read(8192)
+            text_error = raw_error.decode("utf-8", "replace").lower()
+        except Exception:
+            text_error = ""
+        if "maxitems" in text_error or "minitems" in text_error:
+            hint = "SCHEMA_UNSUPPORTED_ARRAY_BOUNDS"
+        elif "json_schema" in text_error or "response_format" in text_error:
+            hint = "SCHEMA_OTHER"
+        elif "unsupported" in text_error and "parameter" in text_error:
+            hint = "PARAMETER_UNSUPPORTED"
+        elif "not available" in text_error and "model" in text_error:
+            hint = "MODEL_UNAVAILABLE"
+        else:
+            hint = "UNCLASSIFIED"
+        raise ProviderTransportFault("HTTP_" + str(exc.code), hint) from None
     except HarnessStop:
         raise
     except Exception:
@@ -482,7 +509,8 @@ def main():
     cli.add_argument("--paid-one-shot", action="store_true")
     cli.add_argument("--case-id", default="B01")
     cli.add_argument("--run-root")
-    cli.add_argument("--run-variant", default="r01", choices=("r01","r02"))
+    cli.add_argument("--run-variant", default="r01",
+                     choices=("r01","r02","r03"))
     args = cli.parse_args()
     if not args.paid_one_shot:
         print(json.dumps(public_offline_status(args.repo_root), sort_keys=True))
@@ -490,8 +518,8 @@ def main():
     must(os.getenv("LUMI_P417_ENABLE_PAID") == "ONE_SHOT_APPROVED_10_USD_USER_LIMIT",
          "Run-specific paid execution switch absent")
     must(args.case_id == "B01" and args.run_root and
-         args.run_variant == "r02",
-         "Paid rerun limited to B01 distinct r02 with durable claim")
+         args.run_variant == "r03",
+         "Paid follow-up limited to B01 distinct r03 with durable claim")
     api_key = os.getenv(KEY_ENV, "")
     must(bool(api_key), "No pre-existing GitHub Actions OpenRouter inference secret")
     plan = load_plan(args.repo_root)
