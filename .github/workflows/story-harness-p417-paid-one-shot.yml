@@ -47,9 +47,9 @@ jobs:
           assert p == {
             'schema': 'lumi.story-harness-p417-paid-single-trigger.v1',
             'case_id': 'B01',
-            'run_variant': 'r02',
-            'previous_ambiguous_reserve_usd': '0.35',
-            'remaining_aggregate_budget_before_usd': '9.65',
+            'run_variant': 'r03',
+            'previous_ambiguous_reserve_usd': '0.70',
+            'remaining_aggregate_budget_before_usd': '9.30',
             'maximum_model_posts': 2,
             'maximum_pilot_usd': '0.35',
             'aggregate_user_approved_budget_usd': '10.00',
@@ -93,7 +93,7 @@ jobs:
           mkdir -p "$P417_LEDGER_ROOT"
           chmod 700 "$P417_LEDGER_ROOT"
           python -m src.story_harness_p417_live_pilot \
-            --repo-root . --paid-one-shot --case-id B01 --run-variant r02 \
+            --repo-root . --paid-one-shot --case-id B01 --run-variant r03 \
             --run-root "$P417_LEDGER_ROOT" > /tmp/lumi-p417-paid-summary.json
           python - <<'PY'
           import json
@@ -112,7 +112,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lumi-p417-b01-r02-provider-result
-          path: ${{ runner.workspace }}/_lumi_p417_durable_claims/b01-*-r02/ 
+          name: lumi-p417-b01-r03-provider-result
+          path: ${{ runner.workspace }}/_lumi_p417_durable_claims/b01-*-r03/ 
           if-no-files-found: warn
           retention-days: 30
