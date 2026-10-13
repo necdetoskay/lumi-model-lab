@@ -65,7 +65,10 @@ class ProviderTransportFault(HarnessStop):
 
 USD_CAP = Decimal("0.35")
 GLOBAL_USER_CAP = Decimal("10")
-OUTPUT_CAPS = {"SPINEFORGE": 1800, "WRITER": 2500}
+# Sonnet 5.5 includes mandatory thinking in completion tokens. Real r04
+# finished at exactly 1,800 tokens without reaching stop; r05 raises ONLY
+# finite per-request output caps, preserving every scene/canon admission rule.
+OUTPUT_CAPS = {"SPINEFORGE": 5500, "WRITER": 6500}
 STAGE_MAX_USD = {"SPINEFORGE": Decimal("0.075"), "WRITER": Decimal("0.14")}
 MAX_REQUEST_BYTES = 30000
 MAX_RESPONSE_BYTES = 200000
@@ -248,14 +251,14 @@ class BoundedOncePilot:
     def __init__(self, run_root, *, case_id, plan, run_variant='r01'):
         must(case_id in [c["id"] for c in plan["cases"]],
              "Case not in approved 10 input benchmark")
-        must(run_variant in ('r01','r02','r03','r04'),
+        must(run_variant in ('r01','r02','r03','r04','r05'),
              "Disallowed or reused paid one-shot run variant")
         must(type(run_root) in (str, Path), "Missing ledger directory")
         root = Path(run_root)
         must(root.is_dir() and not root.is_symlink(),
              "Create protected run root before pilot")
         self.case = next(c for c in plan["cases"] if c["id"] == case_id)
-        self.use_simple_envelope = run_variant == 'r04'
+        self.use_simple_envelope = run_variant in ('r04','r05')
         self.pack = compile_case(self.case)
         label = case_id.lower() + "-" + self.pack["pack_sha256"][:16]
         if run_variant != 'r01':
@@ -590,7 +593,7 @@ def main():
     cli.add_argument("--case-id", default="B01")
     cli.add_argument("--run-root")
     cli.add_argument("--run-variant", default="r01",
-                     choices=("r01","r02","r03","r04"))
+                     choices=("r01","r02","r03","r04","r05"))
     args = cli.parse_args()
     if not args.paid_one_shot:
         print(json.dumps(public_offline_status(args.repo_root), sort_keys=True))
@@ -598,8 +601,8 @@ def main():
     must(os.getenv("LUMI_P417_ENABLE_PAID") == "ONE_SHOT_APPROVED_10_USD_USER_LIMIT",
          "Run-specific paid execution switch absent")
     must(args.case_id == "B01" and args.run_root and
-         args.run_variant == "r04",
-         "Paid flat-schema follow-up limited to B01 distinct r04 with durable claim")
+         args.run_variant == "r05",
+         "Paid higher-output-cap follow-up limited to B01 distinct r05 with durable claim")
     api_key = os.getenv(KEY_ENV, "")
     must(bool(api_key), "No pre-existing GitHub Actions OpenRouter inference secret")
     plan = load_plan(args.repo_root)
