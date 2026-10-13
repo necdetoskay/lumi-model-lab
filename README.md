@@ -162,6 +162,18 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   Zero API calls, English Master and Q25 still denied.
   [P4.4 source-bound review](docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md)
   · [issue #288](https://github.com/necdetoskay/lumi-model-lab/issues/288).
+- **P4.5 real offline manuscript improvement (NOT an accepted model story):**
+  the actual source-island bridge scene S159–S177 has been rewritten as
+  **370 words**, making character banks, the belayed Nisa swing, the line
+  snag, why Arda cuts it and his trust in Nisa explicit. The original
+  frozen v21.4 `apply_scene_rewrite` creates a fresh **2,494-word**
+  complete adventure from the immutable Writer source without changing
+  anything outside the exact scene cluster; both English files and all
+  SHA-256 provenance are locally prepared (GitHub publication pending). This is an **offline assistant-edited,
+  unreviewed** candidate, not real model ACCEPT, English Master, Q25 or paid
+  run. [P4.5 architecture](docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md)
+  · [candidate scene](evidence/story_harness_p45/offline-editorial-bridge-scene.txt)
+  · [full edited story](evidence/story_harness_p45/offline-editorial-full-story.txt).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

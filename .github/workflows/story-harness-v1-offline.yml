@@ -18,6 +18,7 @@ on:
       - src/story_harness_p43.py
       - src/story_harness_p43_runner.py
       - src/story_harness_p44.py
+      - src/story_harness_p45.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -31,6 +32,7 @@ on:
       - tests/test_story_harness_p42.py
       - tests/test_story_harness_p43.py
       - tests/test_story_harness_p44.py
+      - tests/test_story_harness_p45.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -40,6 +42,7 @@ on:
       - configs/story_harness_p41_seal_trust_registry.json
       - configs/story_harness_p43_offline_runner.json
       - configs/story_harness_p44_story_quality_preflight.json
+      - configs/story_harness_p45_editorial_bridge_candidate.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -52,6 +55,7 @@ on:
       - evidence/story_harness_p42/**
       - evidence/story_harness_p43/**
       - evidence/story_harness_p44/**
+      - evidence/story_harness_p45/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -65,6 +69,7 @@ on:
       - docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md
       - docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md
       - docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md
+      - docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -449,3 +454,31 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P44_REAL_STORY_EDITORIAL_PREFLIGHT_GREEN')
           PY10
+
+      - name: Verify actual offline new bridge scene and real v21 source-bounded edit
+        env:
+          STORY_HARNESS_PINNED_P45_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p45.py' -v
+          python -m src.story_harness_p45 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P45_ROOT" > /tmp/story-harness-p45.json
+          python -m src.story_harness_p45 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P45_ROOT" \
+            --verify-report evidence/story_harness_p45/pinned-editorial-rewrite-receipt.json > /tmp/story-harness-p45-verified.json
+          cmp /tmp/story-harness-p45.json /tmp/story-harness-p45-verified.json
+          python - <<'PY11'
+          import json
+          x=json.load(open('/tmp/story-harness-p45.json'))
+          assert x['new_full_story_words'] == 2494
+          assert x['status'] == 'EDITORIAL_TEXT_CREATED_BUT_UNREVIEWED'
+          assert x['original_v21_rewrite_verified'] is True
+          assert x['outside_cluster_unchanged'] is True
+          assert x['real_independent_semantic_audit_passed'] is False
+          assert x['real_provider_quality_accept'] is False
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_extraction_authorized'] is False
+          assert x['real_paid_execution_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          assert x['stop_reason'] == 'EDITORIAL_REWRITE_READY_FOR_INDEPENDENT_QUALITY_REVIEW'
+          print('STORY_HARNESS_P45_REAL_EDITORIAL_SCENE_REWRITE_GREEN')
+          PY11
