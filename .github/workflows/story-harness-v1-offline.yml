@@ -38,6 +38,7 @@ on:
       - src/story_harness_p422_independent_audit.py
       - src/story_harness_p423_master.py
       - src/story_harness_p424_q25_evidence.py
+      - src/story_harness_p425_final_state_draft.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -70,6 +71,7 @@ on:
       - tests/test_story_harness_p422_independent_audit.py
       - tests/test_story_harness_p423_master.py
       - tests/test_story_harness_p424_q25_evidence.py
+      - tests/test_story_harness_p425_final_state_draft.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -110,6 +112,11 @@ on:
       - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
       - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
       - docs/canonical/STORY_HARNESS_P424_B01_Q25_EVIDENCE.md
+      - evidence/story_harness_p421/**
+      - evidence/story_harness_p422/**
+      - evidence/story_harness_p423/**
+      - evidence/story_harness_p424/**
+      - evidence/story_harness_p425/**
       - .github/workflows/story-harness-p418-tiny-once.yml
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
@@ -946,3 +953,16 @@ jobs:
           assert b['stage_cap_usd']=='0.050'
           print('P423_PILOT_MASTER_AND_P424_Q25_OFFLINE_GREEN')
           PY27
+
+      - name: Verify actual original Q25 receipt projects only read-only evidence state
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p425_final_state_draft.py' -v
+          python -m src.story_harness_p425_final_state_draft > /tmp/story-harness-p425.json
+          python - <<'PY28'
+          import json
+          r=json.load(open('/tmp/story-harness-p425.json'))
+          assert r['schema']=='lumi.story-harness-p425-read-only-final-story-state-draft.v1'
+          assert r['provider_calls']==0 and r['state_commit_authorized'] is False
+          assert r['original_q25_source_checked'] is False
+          print('P425_REAL_Q25_READ_ONLY_STATE_DRAFT_OFFLINE_GREEN')
+          PY28
