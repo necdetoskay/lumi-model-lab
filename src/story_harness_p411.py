@@ -6,6 +6,7 @@ authorization in this version. All tests use mock POST; never a paid model call.
 from __future__ import annotations
 
 import base64
+import copy
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal, InvalidOperation
 import hashlib
@@ -152,15 +153,25 @@ class OneAttemptLedger:
              and verified_grant.get("signed_grant_verified") is True
              and verified_grant.get("provider_dispatch_authorized") is False,
              "Not a source-bound externally signed test grant")
-        self.root = Path(root).resolve(strict=True)
-        must(self.root.is_dir() and not self.root.is_symlink(),
+        supplied_root = Path(root).absolute()
+        must(not any(p.is_symlink() for p in (supplied_root, *supplied_root.parents)),
+             "Untrusted ledger root symlink")
+        self.root = supplied_root.resolve(strict=True)
+        must(self.root.is_dir(),
              "Untrusted ledger root")
-        self.grant = verified_grant
+        must(type(verified_grant.get("run_id")) is str and
+             RUN_PATTERN.fullmatch(verified_grant["run_id"]) is not None,
+             "Invalid ledger run ID")
+        self.grant = copy.deepcopy(verified_grant)
         self.budget = bounded_money(verified_grant["budget_usd"])
         self.dir = self.root / verified_grant["run_id"]
         self.dir.mkdir(mode=0o700, exist_ok=False)
         self.reserved = Decimal("0")
+        self.actual = Decimal("0")
         self.stages = []
+        self.settled = []
+        self.halted = False
+        self.pending = None
         self._write_once("grant-consumed.json", {
             "schema": "lumi.story-harness-p411-local-claim.v1",
             "run_id": verified_grant["run_id"],
@@ -170,6 +181,18 @@ class OneAttemptLedger:
             "provider_dispatch_authorized": False,
             "simulated_only": True,
         })
+        self._sync_directory(self.root)
+
+    @staticmethod
+    def _sync_directory(path):
+        # POSIX directory fsync persists O_EXCL names as well as file contents.
+        # Windows requires deployment-specific ACL/storage qualification for live use.
+        if os.name == "posix":
+            fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(fd)
+            finally:
+                os.close(fd)
 
     def _write_once(self, filename, receipt):
         path = self.dir / filename
@@ -181,8 +204,11 @@ class OneAttemptLedger:
             handle.write(canonical_json(receipt) + b"\n")
             handle.flush()
             os.fsync(handle.fileno())
+        self._sync_directory(self.dir)
 
     def consume_stage(self, stage, request, *, declared_input_ceiling_tokens):
+        must(not self.halted and self.stages == self.settled,
+             "Unsettled/failed prior attempt; no further dispatch")
         must(stage in STAGES and len(self.stages) < 3 and
              stage not in self.stages, "Duplicate/unbounded stage")
         must((not self.stages and stage == "INITIAL_AUDIT") or
@@ -198,12 +224,14 @@ class OneAttemptLedger:
              and receipt["live_dispatch_allowed"] is False,
              "Unexpected source or fabricated provider verification")
         exposure = bounded_money(receipt["conditional_exposure_usd"])
+        wire_body = copy.deepcopy(request["body"])
+        wire_body["provider"]["max_price"] = {"prompt": 2, "completion": 10}
         must(self.reserved + exposure <= self.budget,
              "Signed total budget exceeded before dispatch")
         row = {
             "schema": "lumi.story-harness-p411-offline-stage-reservation.v1",
             "run_id": self.grant["run_id"], "stage": stage,
-            "body_sha256": receipt["body_sha256"],
+            "body_sha256": hashlib.sha256(canonical_json(wire_body)).hexdigest(),
             "source_sha256": STORY_SHA,
             "estimated_reserved_usd": format(exposure, "f"),
             "cumulative_estimated_usd": format(self.reserved + exposure, "f"),
@@ -215,7 +243,55 @@ class OneAttemptLedger:
         self._write_once(f"{len(self.stages)+1:02d}-{stage.lower()}.json", row)
         self.reserved += exposure
         self.stages.append(stage)
+        self.pending = {"stage": stage, "exposure": exposure,
+                        "input_cap": declared_input_ceiling_tokens,
+                        "output_cap": OUTPUT_CAPS[stage], "body_sha256": row["body_sha256"]}
         return row
+
+    def record_outcome(self, stage, *, usage=None, valid_response=False):
+        """Persist redacted actual cost or UNKNOWN before allowing another stage.
+
+        Reservations are never released; any uncertain result permanently stops
+        this attempt. A new process cannot reclaim the already-created run ID.
+        This remains a local simulation store, not externally trusted accounting.
+        """
+        must(not self.halted and self.pending is not None and
+             self.pending["stage"] == stage, "No pending stage to settle")
+        self.halted = True  # disk/validation failures also poison this attempt
+        pending = self.pending
+        cost, prompt, completion = None, None, None
+        if type(usage) is dict:
+            try:
+                value = usage.get("cost")
+                if type(value) in (str, int, float, Decimal):
+                    parsed = Decimal(str(value))
+                    if parsed.is_finite() and parsed >= 0:
+                        cost = parsed
+            except (InvalidOperation, ValueError):
+                pass
+            prompt, completion = usage.get("prompt_tokens"), usage.get("completion_tokens")
+        tokens_valid = (type(prompt) is int and type(completion) is int
+                        and 0 <= prompt <= pending["input_cap"]
+                        and 0 <= completion <= pending["output_cap"])
+        cumulative = self.actual + cost if cost is not None else None
+        ok = (valid_response and tokens_valid and cost is not None
+              and cost <= pending["exposure"] and cumulative <= self.budget)
+        self._write_once(f"{len(self.stages):02d}-{stage.lower()}-outcome.json", {
+            "schema": "lumi.story-harness-p412-offline-outcome.v1",
+            "run_id": self.grant["run_id"], "stage": stage,
+            "body_sha256": pending["body_sha256"],
+            "status": "SETTLED" if ok else "STOP_UNKNOWN_OR_INVALID",
+            "reported_cost_usd": format(cost, "f") if cost is not None else None,
+            "cumulative_reported_usd": format(cumulative, "f") if cumulative is not None else None,
+            "prompt_tokens": prompt if type(prompt) is int and prompt >= 0 else None,
+            "completion_tokens": completion if type(completion) is int and completion >= 0 else None,
+            "simulated_only": True, "provider_dispatch_authorized": False,
+        })
+        must(ok, "Unsettled/invalid usage or response; attempt stopped, no retry")
+        self.actual = cumulative
+        self.settled.append(stage)
+        self.pending = None
+        self.halted = False
 
 
 def guarded_adapter_once(*, callback_kwargs, ledger, repo_root,
@@ -240,7 +316,25 @@ def guarded_adapter_once(*, callback_kwargs, ledger, repo_root,
             body=body, stage=stage,
         )
     except Exception as exc:
+        try:
+            ledger.record_outcome(stage)
+        except HarnessStop:
+            pass
         raise HarnessStop("Provider transport unknown; intent consumed, no retry") from None
+    try:
+        result = _parse_fake_response(response, body, ledger)
+    except Exception:
+        try:
+            ledger.record_outcome(stage, usage=(response.get("usage")
+                                  if type(response) is dict else None))
+        except HarnessStop:
+            pass
+        raise
+    ledger.record_outcome(stage, usage=response["usage"], valid_response=True)
+    return result
+
+
+def _parse_fake_response(response, body, ledger):
     must(type(response) is dict
          and response.get("model") == MODEL
          and type(response.get("usage")) is dict

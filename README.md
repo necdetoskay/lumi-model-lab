@@ -8,6 +8,20 @@ This README is the human entry point and current-state document for the reposito
 
 ## Story Harness V1 — offline control-plane experiment
 
+**P4.12 (Draft PR #275 / open #291):** read-only provider preflight now checks
+the actual Sonnet 5.5 endpoint catalog. The 2026-10-13 HTTPS observation lists
+Anthropic at $2/M input and $10/M output, but omits `temperature` support while
+the existing request requires it. Exact billed input-token exposure remains
+unverified. Run `python -m src.story_harness_p412 --refresh-provider` for one
+free public metadata GET (expected exit 2 / BLOCKED); omit the flag for offline
+inspection. No model POST is implemented or enabled by this command.
+The existing P4.11 ledger now persists redacted usage outcomes and cumulative
+cost, blocks continuation after uncertain/over-limit results, and binds the
+actual request including `max_price`. The store is still a local simulation,
+not externally trusted live accounting. No real user grant/key is provisioned;
+$0.25 remains unapproved. Frozen v21.4 and max-40 repair stay unchanged;
+S167–S203 remains provisional. See [P4.12 facts and blockers](docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md).
+
 A separate **Story Harness** experiment now explores deterministic orchestration
 of the LUMI story stages (Context, SpineForge, Writer, Q25 and quality gates).
 This is **different** from the existing Decision Engine/JEV harness and does

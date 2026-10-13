@@ -26,6 +26,7 @@ on:
       - src/story_harness_p49.py
       - src/story_harness_p410.py
       - src/story_harness_p411.py
+      - src/story_harness_p412.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -46,6 +47,7 @@ on:
       - tests/test_story_harness_p49.py
       - tests/test_story_harness_p410.py
       - tests/test_story_harness_p411.py
+      - tests/test_story_harness_p412.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -76,6 +78,8 @@ on:
       - evidence/story_harness_p46/**
       - evidence/story_harness_p47/**
       - evidence/story_harness_p48/**
+      - evidence/story_harness_p412/**
+      - docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -668,3 +672,23 @@ jobs:
           assert x['stop_reason'] == 'P411_SIGNED_GRANT_OFFLINE_TRANSPORT_ONLY_LIVE_STOP'
           print('STORY_HARNESS_P411_SIGNED_GRANT_FAKE_TRANSPORT_GREEN')
           PY17
+
+      - name: Verify P4.12 preflight and durable failure accounting without network
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p412.py' -v
+          set +e
+          python -m src.story_harness_p412 --repo-root . > /tmp/story-harness-p412.json
+          result=$?
+          set -e
+          test "$result" -eq 2
+          python - <<'PY18'
+          import json
+          x = json.load(open('/tmp/story-harness-p412.json'))
+          assert x['status'] == 'BLOCKED'
+          assert x['provider_dispatch_authorized'] is False
+          assert x['authorized_budget_usd'] is None
+          assert x['grant_consumed'] is False
+          assert x['request_token_quote_verified'] is False
+          assert x['catalog'] is None
+          print('STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING_OFFLINE_GREEN')
+          PY18
