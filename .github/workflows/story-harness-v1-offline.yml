@@ -31,6 +31,7 @@ on:
       - src/story_harness_p414.py
       - src/story_harness_p415_benchmark.py
       - src/story_harness_p416_input_bridge.py
+      - src/story_harness_p417_live_pilot.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -56,6 +57,7 @@ on:
       - tests/test_story_harness_p414.py
       - tests/test_story_harness_p415_benchmark.py
       - tests/test_story_harness_p416_input_bridge.py
+      - tests/test_story_harness_p417_live_pilot.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -93,6 +95,7 @@ on:
       - docs/canonical/STORY_HARNESS_P414_KEY_LIMIT_PREFLIGHT.md
       - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
       - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
+      - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
@@ -818,3 +821,27 @@ jobs:
           assert x['stop_reason'] == 'P416_DYNAMIC_INPUT_COMPILED_MODEL_TRANSPORT_MISSING'
           print('STORY_HARNESS_P416_DYNAMIC_STATE_TOPIC_INPUT_OFFLINE_GREEN')
           PY21
+
+      - name: Validate one-shot real-capable SpineForge Writer pilot stays OFF by default
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p417_live_pilot.py' -v
+          python -m src.story_harness_p417_live_pilot --repo-root . > /tmp/story-harness-p417-a.json
+          python -m src.story_harness_p417_live_pilot --repo-root . > /tmp/story-harness-p417-b.json
+          cmp /tmp/story-harness-p417-a.json /tmp/story-harness-p417-b.json
+          python - <<'PY22'
+          import json
+          x = json.load(open('/tmp/story-harness-p417-a.json'))
+          assert x['case_count'] == 10
+          assert x['first_real_pilot_case'] == 'B01'
+          assert x['max_provider_post_calls_per_attempt'] == 2
+          assert x['aggregate_user_budget_usd'] == '10'
+          assert x['per_pilot_maximum_usd'] == '0.35'
+          assert x['has_automatic_retry'] is False
+          assert x['provider_model'] == 'anthropic/claude-sonnet-5.5'
+          assert x['real_provider_calls'] == 0
+          assert x['real_model_cost_usd'] == '0'
+          assert x['genuine_independent_story_quality_accepted'] is False
+          assert x['master_q25_state_authorized'] is False
+          assert x['stop_reason'] == 'P417_OFFLINE_UNTIL_OPERATOR_CONTROLLED_PAID_ONE_SHOT_EXEC'
+          print('STORY_HARNESS_P417_REAL_CAPABLE_GENERATION_MOCK_ONLY_GREEN')
+          PY22
