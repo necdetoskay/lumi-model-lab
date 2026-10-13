@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 8
 episode: 18
 title_original: "Threads"
-status: draft
-word_count: 246
+status: complete
+word_count: 279
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Dünya'da Carter, Pete Shanahan ile evlilik hazırlığı yaparken kendi duygula
 Daniel, Oma'nın bir zamanlar Anubis'e yükselmesinde yardım ettiğini ve diğer yükselmiş varlıkların buna ceza olarak onun Anubis'in kötülüklerini seyretmesini zorunlu kıldığını öğrenir. Jim'in aslında Anubis olduğu da açığa çıkar. Dakara düşmek üzereyken Oma sonunda tarafsızlık yasağını çiğner; Anubis'le doğrudan karşı karşıya gelerek onu sonsuza dek sürecek bir mücadeleye hapseder. Anubis'in güçleri bir anda denetimsiz kalır ve Jaffalar onları yenilgiye uğratır. Daniel insan bedeniyle yeniden Dünya'da ortaya çıkar. SG-1, uzun mücadelelerin ardından O'Neill'in göl kenarındaki kulübesinde buluşur; bu kez günlerini balık tutarak sakin geçirmeye çalışırlar.
 
 Jaffa liderleri Dakara'da yeni yönetimin sorumluluğunu üstlenirken Daniel'ın yeniden insan hâline dönmesi, onun yükselme ve ölüm arasındaki uzun mücadelesinin bu aşamasını kapatır.
+
+Bu finalde tehdit bir uzay savaşından çok yükselmiş varlıkların kendi kuralları içinde çözülür. Oma'nın seçimi, müdahale etmemenin de ağır sonuçlara yol açabileceğini gösterirken Daniel'ın yeniden insan olması SG-1'in bütün üyelerini bir araya getirir.
 
 ## Kaynaklar
 
