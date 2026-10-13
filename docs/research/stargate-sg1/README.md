@@ -16,3 +16,4 @@ Bu arşiv ayrı araştırma branch'inde tutulur, production hikâye üretimini v
 
 - [Bütün bölüm indeksi](CATALOG.md)
 - [Kaynaklar ve yöntem](sources.md)
+- [Son arşiv kalite doğrulaması](QUALITY_AUDIT.md)
