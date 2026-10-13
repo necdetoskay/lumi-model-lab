@@ -11,6 +11,7 @@ on:
       - src/story_harness_p30.py
       - src/story_harness_p31.py
       - src/story_harness_p32.py
+      - src/story_harness_p40.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -19,11 +20,13 @@ on:
       - tests/test_story_harness_p30.py
       - tests/test_story_harness_p31.py
       - tests/test_story_harness_p32.py
+      - tests/test_story_harness_p40.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
       - configs/story_harness_p31_pinned_quality_cohort.json
       - configs/story_harness_p32_english_master_admission.json
+      - configs/story_harness_p40_v21_producer_preflight.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -31,6 +34,7 @@ on:
       - evidence/story_harness_p30/**
       - evidence/story_harness_p31/**
       - evidence/story_harness_p32/**
+      - evidence/story_harness_p40/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -39,6 +43,7 @@ on:
       - docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md
       - docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md
       - docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md
+      - docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -148,7 +153,7 @@ jobs:
           path: _pinned_q25_source
           persist-credentials: false
       - name: Install pinned offline validator dependencies
-        run: python -m pip install "pydantic>=2.8,<3" "PyYAML>=6,<7"
+        run: python -m pip install "pydantic>=2.8,<3" "PyYAML>=6,<7" "requests>=2.31,<3" "python-dotenv>=1.0,<2" "rich>=13,<15" "httpx>=0.27,<1"
       - name: Execute real frozen Q25 source-bound validators and negative tests
         env:
           STORY_HARNESS_PINNED_Q25_ROOT: ${{ github.workspace }}/_pinned_q25_source
@@ -284,3 +289,32 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P32_ENGLISH_MASTER_FAIL_CLOSED_GREEN')
           PY5
+
+      - name: Run authentic frozen v21 quality producer simulations, seal stays denied
+        env:
+          STORY_HARNESS_PINNED_P40_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p40.py' -v
+          python -m src.story_harness_p40 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P40_ROOT" > /tmp/story-harness-p40.json
+          python -m src.story_harness_p40 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P40_ROOT" \
+            --verify-report evidence/story_harness_p40/pinned-v21-producer-preflight.json > /tmp/story-harness-p40-verified.json
+          cmp /tmp/story-harness-p40.json /tmp/story-harness-p40-verified.json
+          python - <<'PY6'
+          import json
+          x = json.load(open('/tmp/story-harness-p40.json'))
+          assert x['real_frozen_v21_engine_executed_with_mock_transport'] is True
+          assert x['real_frozen_v21_profile_verified'] is True
+          assert x['simulated_case_count'] == 6
+          assert x['historical_paid_quality_failure']['historical_quality_status'] == 'REJECT_PROVIDER_FAILURE'
+          assert x['historical_paid_quality_failure']['historical_calls'] == 3
+          assert x['stop_reason'] == 'REAL_BOUNDED_QUALITY_ACCEPT_MISSING'
+          assert x['synthetic_ACCEPT_is_genuine_story_quality'] is False
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_handoff_emitted'] is False
+          assert x['bounded_paid_attempt_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P40_BOUNDED_PRODUCER_PRECHECK_GREEN')
+          PY6

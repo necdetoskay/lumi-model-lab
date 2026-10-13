@@ -110,6 +110,15 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   `ENGLISH_MASTER_NOT_ADMISSIBLE`; no Q25, StoryState commit, new model
   call, or production write. [P3.2 source/acceptance boundary](docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md)
   and [issue #283](https://github.com/necdetoskay/lumi-model-lab/issues/283).
+- **P4.0 genuine v21 bounded-quality offline producer preflight:** the
+  already-frozen v21 runtime and its original simulation adapter are now
+  actually executed with offline synthetic provider responses. Six routing,
+  retry, quality and budget cases pass; `ACCEPT` in these fixtures is
+  **not** an accepted story. Historical paid run `37230896244`
+  remains `REJECT_PROVIDER_FAILURE` (3 paid calls, historical $0.057988).
+  Real English Master sealing and Q25 stay **DENIED** until a separate
+  source-pinned real semantic-quality acceptance. [P4.0 preflight](docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md)
+  · [issue #284](https://github.com/necdetoskay/lumi-model-lab/issues/284).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 
