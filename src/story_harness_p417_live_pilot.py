@@ -229,7 +229,8 @@ class BoundedOncePilot:
             f.flush()
             os.fsync(f.fileno())
 
-    def _record(self, stage, request, *, cost=None, usage=None, ok=False, diagnostic=None):
+    def _record(self, stage, request, *, cost=None, usage=None, ok=False,
+                diagnostic=None, generation_id=None):
         receipt = {
             "schema": SCHEMA, "stage": stage,
             "exact_wire_sha256": hashlib.sha256(canonical_json(request)).hexdigest(),
@@ -240,6 +241,7 @@ class BoundedOncePilot:
             "cumulative_reported_usd": format(self.cost + cost, "f") if cost is not None else None,
             "retry_authorized": False,
             "safe_failure_diagnostic": diagnostic if not ok else None,
+            "provider_generation_id": generation_id,
         }
         self._write(f"{self.calls:02d}-{stage.lower()}-receipt.json", receipt)
 
@@ -314,10 +316,14 @@ class BoundedOncePilot:
                 must(self.pack["word_targets"]["min"] <= words <=
                      self.pack["word_targets"]["max"],
                      "Writer failed age-specific story length")
+            generation_id = result.get("id")
+            if not (type(generation_id) is str and
+                    re.fullmatch(r"gen-[A-Za-z0-9_-]{6,120}", generation_id)):
+                generation_id = None
             self._record(stage, body, usage={
                 "prompt_tokens": usage["prompt_tokens"],
                 "completion_tokens": usage["completion_tokens"]},
-                cost=cost, ok=True)
+                cost=cost, ok=True, generation_id=generation_id)
             self.cost += cost
             self.halted = False
             if stage == "SPINEFORGE":
@@ -364,9 +370,31 @@ class BoundedOncePilot:
                 "secret_or_manuscript_recorded": False,
                 "model_retry_attempts": 0,
             }
+            # Preserve verifiable usage/cost even if strict story validation
+            # rejects the response. Do not turn a missing provider price into 0.
+            known_charge = None
+            safe_usage = None
+            if type(usage) is dict:
+                try:
+                    if (type(usage.get("prompt_tokens")) is int and
+                        type(usage.get("completion_tokens")) is int and
+                        usage["prompt_tokens"] >= 0 and
+                        usage["completion_tokens"] >= 0):
+                        safe_usage = {
+                            "prompt_tokens": usage["prompt_tokens"],
+                            "completion_tokens": usage["completion_tokens"]}
+                    known_charge = money(usage.get("cost"))
+                except HarnessStop:
+                    pass
+            generation_id = result.get("id") if type(result) is dict else None
+            if not (type(generation_id) is str and
+                    re.fullmatch(r"gen-[A-Za-z0-9_-]{6,120}", generation_id)):
+                generation_id = None
             if not (self.dir / f"{self.calls:02d}-{stage.lower()}-receipt.json").exists():
                 try:
-                    self._record(stage, body, ok=False, diagnostic=diag)
+                    self._record(stage, body, cost=known_charge,
+                                 usage=safe_usage, ok=False,
+                                 diagnostic=diag, generation_id=generation_id)
                 except Exception:
                     pass
             raise HarnessStop(
