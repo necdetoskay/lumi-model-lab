@@ -437,7 +437,27 @@ class P417Tests(unittest.TestCase):
             pilot=BoundedOncePilot(td,case_id="B01",plan=self.plan,
                                    run_variant="r06")
             provider=FakeProvider(self.pack)
-            output=pilot.execute(transport=provider)
+            def flat_provider(body):
+                # P4.18-approved flat schema wraps the same approved scenes
+                # as JSON-in-string, not a nested provider output schema.
+                request=deepcopy(body)
+                request["response_format"]["json_schema"]["name"]=(
+                    request["response_format"]["json_schema"]["name"]
+                    .replace("_flat_v2","_v1"))
+                reply=provider(request)
+                value=json.loads(reply["choices"][0]["message"]["content"])
+                if "beats" in value:
+                    value={"source_pack_sha256":value["source_pack_sha256"],
+                           "spine_summary":value["spine_summary"],
+                           "beats_json":json.dumps(value["beats"])}
+                else:
+                    value={"source_pack_sha256":value["source_pack_sha256"],
+                           "spine_sha256":value["spine_sha256"],
+                           "story_text":value["story_text"],
+                           "beat_ids_json":json.dumps(value["beat_ids"])}
+                reply["choices"][0]["message"]["content"]=json.dumps(value)
+                return reply
+            output=pilot.execute(transport=flat_provider)
             plan_path=pilot.dir / "spine-plan.json"
             self.assertTrue(plan_path.is_file())
             record=json.loads(plan_path.read_text())
