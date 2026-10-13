@@ -206,7 +206,7 @@ class OneAttemptLedger:
             os.fsync(handle.fileno())
         self._sync_directory(self.dir)
 
-    def consume_stage(self, stage, request, *, declared_input_ceiling_tokens):
+    def consume_stage(self, stage, request, *, declared_input_ceiling_tokens, wire_body=None):
         must(not self.halted and self.stages == self.settled,
              "Unsettled/failed prior attempt; no further dispatch")
         must(stage in STAGES and len(self.stages) < 3 and
@@ -224,8 +224,17 @@ class OneAttemptLedger:
              and receipt["live_dispatch_allowed"] is False,
              "Unexpected source or fabricated provider verification")
         exposure = bounded_money(receipt["conditional_exposure_usd"])
-        wire_body = copy.deepcopy(request["body"])
-        wire_body["provider"]["max_price"] = {"prompt": 2, "completion": 10}
+        default_wire = copy.deepcopy(request["body"])
+        default_wire["provider"]["max_price"] = {"prompt": 2, "completion": 10}
+        if wire_body is None:
+            wire_body = default_wire
+        else:
+            # The only offline alternative is omission of temperature=0;
+            # never admit arbitrary model, schema, prompt or routing changes.
+            omitted = copy.deepcopy(default_wire)
+            must(omitted.pop("temperature", None) == 0.0
+                 and wire_body == omitted,
+                 "Only exact temperature omission may change paid wire preview")
         must(self.reserved + exposure <= self.budget,
              "Signed total budget exceeded before dispatch")
         row = {
@@ -295,7 +304,8 @@ class OneAttemptLedger:
 
 
 def guarded_adapter_once(*, callback_kwargs, ledger, repo_root,
-                         declared_input_ceiling_tokens, fake_post=None):
+                         declared_input_ceiling_tokens, fake_post=None,
+                         p413_catalog=None, p413_sampling_ack=False):
     """Exercise real adapter's request/response contract using FAKE POST only.
 
     Deliberate lack of a default network transport makes this impossible to
@@ -305,11 +315,22 @@ def guarded_adapter_once(*, callback_kwargs, ledger, repo_root,
          ledger.grant["provider_dispatch_authorized"] is False,
          "P4.11 prohibits live transport")
     stage, preview = validate_callback(callback_kwargs, repo_root=repo_root)
+    if p413_catalog is not None or p413_sampling_ack:
+        must(p413_catalog is not None,
+             "P4.13 sampling acknowledgement requires explicit provider catalog")
+        # Dynamic import avoids circular dependency. The trust boundary is
+        # still FAKE POST only; no original frozen adapter was changed.
+        from src.story_harness_p413 import adapt_wire
+        body, _disclosure = adapt_wire(
+            preview=preview, catalog=p413_catalog,
+            allow_sampling_semantics_change=p413_sampling_ack,
+        )
+    else:
+        body = copy.deepcopy(preview["body"])
+        body["provider"]["max_price"] = {"prompt": 2, "completion": 10}
     ledger.consume_stage(stage, preview,
-                         declared_input_ceiling_tokens=declared_input_ceiling_tokens)
-    body = dict(preview["body"])
-    body["provider"] = {**body["provider"],
-                        "max_price": {"prompt": 2, "completion": 10}}
+                         declared_input_ceiling_tokens=declared_input_ceiling_tokens,
+                         wire_body=body)
     try:
         response = fake_post(
             endpoint=ENDPOINT, headers={"Content-Type": "application/json"},
@@ -361,7 +382,7 @@ def _parse_fake_response(response, body, ledger):
     # Original v21 adapter still owns strict schema/semantic verification.
     return raw, response, {
         "max_tokens": body["max_tokens"],
-        "temperature": body["temperature"],
+        "temperature": body.get("temperature"),
         "response_format": body["response_format"],
     }, []
 
