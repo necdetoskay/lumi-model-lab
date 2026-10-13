@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 4
 title_original: "The Ties That Bind"
-status: draft
-word_count: 240
+status: complete
+word_count: 294
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Vala kor mak bileziklerinin çıkarılmasından sonra Stargate Komutanlığı'nd
 Tüccar Inago da kolyeyi geri vermek için Vala'nın bir başkasına sattığı güç bobininin bulunmasını şart koşar. Bobin, eskiden kaçakçılık yapan fakat şimdi kendisini keşiş gibi tanıtan Caius'un elindedir. Caius onu kutsal eser olarak sergilemektedir ve geri vermeden önce kendi kargo gemisini istemektedir. Gemi ise Lucian Alliance adlı kaçakçı ve paralı asker örgütünün eline geçmiştir. SG-1 için olay gittikçe uzayan bir değiş tokuş görevine dönüşür. Landry başlangıçta tehlikeli operasyona izin vermez; çünkü ekibin Washington'da programın bütçesiyle ilgili duruşmaya katılması gerekmektedir.
 
 Vala'nın duruşmada yaptığı uygunsuz konuşmalar Landry'nin fikrini değiştirir. Onu üsten uzaklaştırma umuduyla gemi kurtarma görevini onaylar. Mitchell, Daniel, Teal'c ve Vala kendilerini ödül avcısı gibi tanıtarak Tenat ile Jup adlı Lucian Alliance üyeleriyle buluşur. Daniel ve Vala'yı takas malı gibi göstererek gemiyi ele geçirir, ardından ateş altında kaçarlar. Gemi bobinle, bobin kolyeyle değiştirildikten sonra Arlos'a dönülür. Ancak adam bilezik bağını çözmeyi bilmediğini itiraf eder. Ekip Dünya'ya eli boş döner; Daniel ile Vala hâlâ birbirine bağlıdır. Komik görünen hazine takası, sorun çözülmediği için kişisel bir çıkmaza dönüşür.
+
+Arlos'un sonunda çözüm sunamaması Vala'nın eski ilişkilerinin yarattığı sorunları daha görünür kılar. Mitchell'in amacı uzun süredir dağılan ekibi tekrar toplamakken, bu görev bütün üyeleri Vala'nın borçlarını ödemek için çalışmaya zorlar. Ortak yolculuk sırasında Lucian Alliance'ın kaçakçılık ağıyla da ilk önemli temaslardan biri yaşanır. Grup artık Goa'uld sonrası iktidar boşluğunda yeni suç örgütlerinin güçlendiğini gözlemlemektedir.
 
 ## Kaynaklar
 

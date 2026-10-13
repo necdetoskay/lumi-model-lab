@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 3
 title_original: "Origin"
-status: draft
-word_count: 225
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ spoilers: true
 Dünya galaksisindeki ilk rahiplerden biri bir köye ulaşır ve Origin öğretisini yayar. Mitchell köydeki olayı araştırmak için gönderilir; rahibi SGC'ye davet eder. Aynı sırada General Landry yeni Jaffa devletinin lideri Gerak'la zorlu görüşmeler yapmaktadır. Başka galaksiden gelen dinî mesaj, müttefikleri de siyasi açıdan rahatsız edebilir. Daniel ile Vala Ver Ager'a geri döndüklerinde gizli direnişçilerden yardım alıp iletişim terminalinden kısa süreliğine Dünya'ya ulaşır. İkilinin verdiği uyarı, Ori'nin rahipleri bizim galaksimize göndermiş olduğunu ve reddedenlere karşı büyük bir savaş hazırladığını açıklar.
 
 Landry ve Mitchell, SGC'deki rahibe silah doğrultup neden geldiklerini açıklamasını ister. Ancak rahip alevlerin içinde kaybolur. Uzak galaksideki Daniel ile Vala da yakalanarak köy meydanında infaz edilmek üzere bağlanır. Alevler yükseldikçe Dünya'daki bedenleri kritik duruma girer. Mitchell ve Teal'c son çare olarak terminali Yıldız Geçidi'nin açılış sırasında oluşan enerji girdabına atar. Bağlantı kesilince ikili hayata döner. Vala, Daniel'la kendisini bağlayan bilezikleri çıkarmaya razı olur. Ancak asıl tehdit artık açıktır: Ori büyük bir dinî sefer başlatacaktır.
+
+Rahibin üsten kayboluşu, Ori'nin insana benzeyen elçilerinin bildik silahlarla durdurulamayabileceğini gösterir. Doci'nin sözleri, Kadimlerin ve Ori'nin ortak kökenine rağmen neden çok farklı yollar izlediğini de aydınlatır. Dünya galaksisinin şimdiye kadar korunmuş olması artık sır saklama anlamını yitirmiştir. SG-1'i bekleyen mücadele yalnızca askerî değildir; inanç, korku ve toplumları ikna etme yöntemleri de çatışmanın parçalarıdır.
 
 ## Kaynaklar
 

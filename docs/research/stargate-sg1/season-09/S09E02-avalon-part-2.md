@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 9
 episode: 2
 title_original: "Avalon, Part 2"
-status: draft
-word_count: 245
+status: complete
+word_count: 294
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Glastonbury Tor'un altındaki gizli Kadim kompleksinde hapsolan ekip, iki ayrı 
 Değerli eşyalar arasında Kadim yazılarla anlatılan Alteran halkının tarihi ve uzak mesafelerden bilinç aktarımı sağlayan bir iletişim terminali bulunur. Daniel, Alteranların Kadimlerin ataları olduğunu ve çok uzak bir galaksiden Dünya'ya geldiklerini düşünür. Başka galaksilerde yaşayan akrabaları bulunabileceği için terminali Stargate Komutanlığı'nda araştırmak ister. Landry onay verir. Hâlâ kor mak bilezikleriyle bağlı olan Daniel ve Vala cihazı kullandıklarında Dünya'daki bedenleri bilincini kaybeder. İkilinin zihinleri başka bir galaksiye geçer ve Orta Çağ'ı andıran Ver Ager köyünde Harrid ile Sallis adlı evli çiftin bedenlerinde uyanır.
 
 Çevrelerindeki insanlar Ori adlı güçlü varlıklara ibadet etmektedir. Harrid ile Sallis ise Fannis adında başka biriyle birlikte bu inancın dayatmalarını sorguladıkları için sapkınlıkla suçlanmıştır. Daniel ve Vala, bulunduğu bedenlerin kişisel anılarına ulaşamadığından dikkat çekmeden davranmakta zorlanır. Vala'nın sözleri onu açıkça inançsız gibi gösterir; köylüler tarafından yakalanıp yakılmaya mahkûm edilir. Daniel ateşin karşısında çaresiz kalırken Vala'nın bedeni alevler içinde ölür. Aniden beliren bir Ori rahibi onu olağanüstü gücüyle diriltir ve Daniel'a kendisini takip etmesini söyler. Böylece hazine arayışı galaktik bir dinî tehdidin keşfine dönüşür.
+
+Bilezikler yüzünden Daniel'ın Vala'yı geride bırakamaması başlangıçtaki kişisel sorunu çözümsüz bırakır. Uzaktaki insanların bedenlerini kullanmanın etik ve fiziksel tehlikesi ise kısa süre sonra ortaya çıkar. İkili, sahiplerinin hayatlarını ve içinde yaşadıkları dinî toplumun kurallarını bilmeden davranmaktadır. Vala'nın yakılması, yalnızca uzaktaki bedeni değil Dünya'da terminale bağlı bedenini de tehlikeye atar.
 
 ## Kaynaklar
 
