@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 2
 title_original: "Homecoming"
-status: draft
-word_count: 243
+status: complete
+word_count: 268
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bu sırada Teal'c hâlâ Yu'nun elindedir. Yu'nun İlk Başkomutanı Oshu'yu ikn
 Carter, Anubis'in özellikle aradığı naquadria kayıtlarını içeren kristali bulmak amacıyla depoya gider. Jaffa kuvvetleri bölgeyi basar ve kristalle birlikte ekibi ele geçirir. Jonas ile Daniel gemiden çıkarak onlara yardıma gelir; fakat Hale'in kendi halkını kurtarmak yerine Anubis'le gizlice anlaşmış olduğu ortaya çıkar. Hale, kristali düşmana teslim edip SG-1'in öldürülmesini ister. Tam bu sırada Ba'al'ın filosu gelir ve Anubis'in kuvvetleriyle büyük çatışma başlar. Ana gemi yok edilirken son anda bir kaçış kapsülünün hiperuzaya geçtiği görülür: Anubis'in öldüğü kesin değildir.
 
 Kelowna kurtulur. Jonas, uzun süre uzak kaldığı halkının yeniden kurulmasına yardımcı olmak üzere kendi gezegeninde kalmaya karar verir. Daniel ise hafızasını geri kazanmaya başladığı Dünya'ya ve SG-1'e döner. İkisi de farklı anlamlarda evine dönmüş olur.
+
+Kelowna'nın farklı güçleri ilk kez aynı düşmana karşı hareket eder. Jonas'ın dönüşü yerel siyasete katılma kararıdır; Daniel'ın SG-1'deki eski yerine dönmesi böylece doğal biçimde gerçekleşir.
 
 ## Kaynaklar
 

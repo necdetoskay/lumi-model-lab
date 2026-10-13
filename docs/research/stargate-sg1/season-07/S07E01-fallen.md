@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 1
 title_original: "Fallen"
-status: draft
-word_count: 235
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Abydos'un yok edilmesinin ardından Daniel Jackson, kim olduğunu hatırlamadan 
 Daniel, arkadaşlarını tanımakta güçlük çeker ve Dünya'ya dönme teklifinden kuşkulanır. Yine de birlikte gitmeyi kabul eder. Üste eski yaşamına ait anılar yavaş yavaş geri gelir; yükselmiş varlık olarak yaşadıklarını ise hatırlamaz. Ekip, Anubis'in galakside üstünlük kurmasını sağlayan güçlü silahını yok etmek için Vis Uban'ı tuzak olarak kullanmaya karar verir. Anubis'i gezegene çekecekler, ardından onun ana gemisindeki enerji sistemine saldıracaklardır. Daniel'la Jonas gizlice gemiye girip koordinatları iletmekle görevlendirilir. O'Neill ve Carter ise F-302 savaş uçağıyla silahın havalandırma bölümünü hedef alacaktır.
 
 Teal'c, Lord Yu'dan yardım istemek için ayrılır. Yu başlangıçta diğer Sistem Lordlarının filosunu göndermeyi kabul etse de zihinsel durumu kötüleştiğinden son anda gemileri başka bir yöne sevk eder ve Teal'c'i tutuklatır. Böylece Dünya ekibi planını tek başına yürütmek zorunda kalır. O'Neill ve Carter kısa bir altuzay geçişiyle Anubis'in kalkanlarını aşar, saldırıyla süper silahı geçici olarak durdurur. Ancak Daniel ve Jonas gemiden kaçmaya çalışırken Jonas yakalanır. Anubis, bildiklerini öğrenmek için onu ölümcül bir zihin sondasıyla tehdit eder. Bölüm Daniel'ın dönüşüne rağmen operasyonun henüz bitmediği bu tehlikeli durumda kesilir.
+
+Daniel'ın hafızasını kaybetmesi, yükselmiş olduğu zamandaki müdahaleleri bilmediğini gösterir. Bu nedenle dönüşü büyük sevinç yaratsa bile kendisi önce arkadaşlarına yeniden güvenmek zorundadır. Anubis'in kazandığı askerî üstünlük de çözülmemiştir.
 
 ## Kaynaklar
 

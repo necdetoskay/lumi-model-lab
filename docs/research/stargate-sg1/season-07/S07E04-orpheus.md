@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 4
 title_original: "Orpheus"
-status: draft
-word_count: 235
+status: complete
+word_count: 258
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ SG-1 direnişçi Jaffa Rak'nor'la görüşür. Rak'nor, Ba'al'ın kontrolündeki
 O'Neill dışarıdan doğrudan saldırının çok riskli olduğunu anlar. Carter ile Daniel, kamp yakınındaki anti-yerçekimi tersanesini sabote ederek kuvvetleri dağıtacak bir patlama hazırlar. Teal'c infaz edilmek üzereyken düzenek patlar, havada tutulan Goa'uld gemisi yere çakılır. Karışıklık içinde Jaffa tutsakları gardiyanlara karşı ayaklanır; SG birlikleri dışarıdan ateş desteği sağlar. Teal'c düşman komutanıyla göğüs göğüse dövüşerek onu öldürür. Bra'tac ve Rya'c kurtarılır, kamp özgürlüğüne kavuşur.
 
 Görevden sonra Teal'c kaybettiğini sandığı öz güvenini geri kazanır. Daniel'ın eski hatıraları da yararlı bir müdahaleye dönüşmüştür. İki arkadaş yaşadıkları belirsizliğe rağmen kendilerini tanımlayan kararların başkalarını kurtarmaya devam edebileceğini görür.
+
+Kampın özgürleştirilmesi, Ba'al'ın Jaffa esirleriyle yürüttüğü zorla çalıştırma düzenine darbe vurur. Teal'c ise tretonine geçtikten sonra da cesaretini ve savaş becerisini koruduğunu gösterir.
 
 ## Kaynaklar
 

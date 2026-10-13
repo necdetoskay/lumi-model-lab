@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 7
 episode: 3
 title_original: "Fragile Balance"
-status: draft
-word_count: 245
+status: complete
+word_count: 269
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Doktor Fraiser'ın yaptığı testler durumu daha da acil hâle getirir. Genç O
 Genç O'Neill, kendisi için düşünülen dondurulma veya tedavi seçeneklerinden kaçınarak üsten ayrılır. SG-1 onu bulduğunda Asgardların gece yarısı gerçekleştirdiği değiş tokuşu yakalamak üzere plan yaparlar. Çocuk tekrar ışınlandığında yerine yedi gündür kayıp olan gerçek O'Neill bırakılır. Genç klon, kendisini kaçıran Asgard'ı alt ederek SG-1'i gemiye alır. Bilim insanının Loki olduğu anlaşılır; insanlarla izinsiz deneyler yaptığı için geçmişte cezalandırılmıştır.
 
 Thor gelip Loki'yi azarlar ve genç klonun bozulan yapısını düzeltebileceğini açıklar. Yetişkin O'Neill yeniden görevine döner. Genç O'Neill ise bir daha çocukluk yaşayabilme olanağına kavuşur; hayatını farklı bir yoldan sürdürmek için liseye dönmeyi seçer. Bölümün sonucu aynı anılara sahip iki ayrı bireyin varlığıyla yeni bir etik soru bırakır.
+
+Thor'un yardımı olmadan genç klonun hücresel bozulması durdurulamazdı. Onun hayatta kalması, sadece Asgard deneylerinin düzeltilmesi değil bağımsız bir birey olarak yeni bir geleceğe kavuşmasıdır.
 
 ## Kaynaklar
 
