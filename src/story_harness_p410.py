@@ -83,7 +83,7 @@ def _wire_story(segments):
     return "".join(pieces) + segments["trailing_whitespace"]
 
 
-def _verify_payload(stage: str, payload: dict, profile: dict, story: str):
+def _verify_payload(stage: str, payload: dict, profile: dict, story: str, writer: dict):
     must(type(payload) is dict
          and payload.get("source_story_sha256") == STORY_SHA,
          "Provider request uses a different story identity")
@@ -111,9 +111,7 @@ def _verify_payload(stage: str, payload: dict, profile: dict, story: str):
              "Scene repair omitted/broadened 37 source segments")
         # Do not trust the attached SHA alone: a syntactically correct source
         # ID with changed scene prose could otherwise reach a live provider.
-        from_writer = json.loads(exact_file(
-            Path(profile["_repo_root"]), profile["source_story"]["artifact_path"]
-        ))["repaired_segments"]
+        from_writer = writer["repaired_segments"]
         for n, row in enumerate(scene["spans"], 167):
             must(type(row) is list and len(row) == 3
                  and row[0] == f"S{n:03d}"
@@ -187,10 +185,7 @@ def request_preview(*, repo_root, stage, callback_kwargs):
          and writer["artifact_id"] == ready["writer_artifact_id"]
          and profile["approved_spine_hash"] == SPINE,
          "P4.10 source not the reviewed P4.8 candidate")
-    # Root is already source-integrity verified; pass it for exact scene
-    # segment comparison, never reconstruct a path from untrusted wire text.
-    profile["_repo_root"] = str(root)
-    _verify_payload(stage, payload, profile, story)
+    _verify_payload(stage, payload, profile, story, writer)
 
     body = {
         "model": MODEL,
