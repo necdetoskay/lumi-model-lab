@@ -1,0 +1,97 @@
+name: Story Harness P4.22 Independent Initial Quality Once
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p422_quality_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p422-independent-b01-quality-once
+  cancel-in-progress: false
+
+jobs:
+  bounded-initial-audit:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Deny automatic paid quality from ordinary commits
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert changed==['configs/story_harness_p422_quality_trigger.json']
+          print('P422_EXACT_INDEPENDENT_AUDIT_TRIGGER_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact separate source and budget for ONE initial audit
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -q
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          from src.story_harness_p422_independent_audit import load_source
+          p=json.loads(Path('configs/story_harness_p422_quality_trigger.json').read_text())
+          assert type(p) is dict and set(p)=={
+              'schema','case_id','writer_run_variant','story_sha256',
+              'spine_sha256','max_quality_calls','max_stage_usd',
+              'aggregate_user_budget_usd','previous_total_reserved_usd',
+              'no_retries','production_state_write'
+          }
+          assert p['schema']=='lumi.story-harness-p422-paid-one-initial-audit.v1'
+          assert p['case_id']=='B01' and p['writer_run_variant']=='r06'
+          assert p['max_quality_calls']==1 and p['max_stage_usd']=='0.040'
+          assert p['aggregate_user_budget_usd']=='10.00'
+          assert p['no_retries'] is True and p['production_state_write'] is False
+          assert re.fullmatch('[0-9a-f]{64}',p['story_sha256'])
+          assert re.fullmatch('[0-9a-f]{64}',p['spine_sha256'])
+          source=load_source('.',Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p417_durable_claims')
+          assert p['story_sha256']==source['story']['story_sha256']
+          assert p['spine_sha256']==source['spine']['spine_sha256']
+          from decimal import Decimal
+          assert Decimal(p['previous_total_reserved_usd'])+Decimal('0.040')<=Decimal('10')
+          print('P422_GENUINE_WRITER_AND_ORIGINAL_SPINE_SOURCE_VERIFIED')
+          PY
+      - name: One independently scoped Sonnet quality initial audit
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P422_AUDIT_ENABLE: ONE_BOUNDED_GENUINE_INITIAL_AUDIT
+        run: |
+          set -euo pipefail
+          QUALITY_CLAIMS="${RUNNER_WORKSPACE}/_lumi_p422_quality_claims"
+          mkdir -p "$QUALITY_CLAIMS"
+          chmod 700 "$QUALITY_CLAIMS"
+          python -m src.story_harness_p422_independent_audit \
+              --repo-root . \
+              --producer-claims "${RUNNER_WORKSPACE}/_lumi_p417_durable_claims" \
+              --audit-claims "$QUALITY_CLAIMS" --paid-audit-once \
+              > /tmp/lumi-p422-quality-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p422-quality-summary.json').read_text())
+          assert r['english_master_authorized'] is False
+          print('P422_REAL_INITIAL_VERDICT='+r['quality_initial_verdict'])
+          print('P422_READER_SCORE='+str(r['reader_score']))
+          print('P422_BLOCKING_FINDINGS='+str(r['blocking_count']))
+          print('P422_AUDIT_SPEND_USD='+r['auditor_reported_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p422-original-spine-linked-b01-initial-quality
+          path: ${{ runner.workspace }}/_lumi_p422_quality_claims/p422-b01-r06-*/
+          if-no-files-found: warn
+          retention-days: 30
