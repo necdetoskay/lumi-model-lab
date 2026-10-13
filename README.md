@@ -44,6 +44,19 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
 - Historical Q25 provider-billed subtotal on these two saved records is
   `$0.085152`; **new harness cost is $0**.
 - Provenance, limitations and trust boundary: [P1 frozen real evidence](docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md).
+- **P2 typed local-gate evidence:** `StageInput.v1`, `GateReceipt.v1`
+  and `StageResult.v1` now bind four actual archived cases to a freshly
+  executed **local integrity/schema check**. Submitted receipts are verified
+  by deterministic full recomputation; all four original historical outcomes
+  stay unchanged. This check is **not** an authenticated original human/model
+  quality gate, and cannot authorize downstream production or payment.
+- Run the P2 gate receipt qualification (stdlib, $0):
+
+  ```bash
+  python -m src.story_harness_p2 --repo-root .
+  ```
+
+- [P2 StageResult and integrity-receipt scope](docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 
