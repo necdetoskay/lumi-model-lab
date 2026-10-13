@@ -102,8 +102,24 @@ def _verify_payload(stage: str, payload: dict, profile: dict, story: str):
              and (payload.get("entry_boundary") or {}).get("span_id") == "S166"
              and (payload.get("exit_boundary") or {}).get("span_id") == "S204",
              "Provider scene-repair request broadens provisional scope")
-        must("source_scene_segments" in payload,
-             "Scene repair omitted source-bounded text")
+        scene = payload.get("source_scene_segments")
+        must(type(scene) is dict
+             and type(scene.get("spans")) is list
+             and len(scene["spans"]) == 37
+             and type(scene.get("trailing_whitespace")) is str
+             and not scene["trailing_whitespace"].strip(),
+             "Scene repair omitted/broadened 37 source segments")
+        # Do not trust the attached SHA alone: a syntactically correct source
+        # ID with changed scene prose could otherwise reach a live provider.
+        from_writer = json.loads(exact_file(
+            Path(profile["_repo_root"]), profile["source_story"]["artifact_path"]
+        ))["repaired_segments"]
+        for n, row in enumerate(scene["spans"], 167):
+            must(type(row) is list and len(row) == 3
+                 and row[0] == f"S{n:03d}"
+                 and type(row[1]) is str and not row[1].strip()
+                 and row[2] == from_writer[n - 1]["repaired_text"],
+                 "Scene repair wire prose differs from immutable new Writer")
     else:
         must((payload.get("routing_policy") or {}).get("scope")
              == "REPAIRED_SCENE_PLUS_BOUNDARIES"
@@ -171,6 +187,9 @@ def request_preview(*, repo_root, stage, callback_kwargs):
          and writer["artifact_id"] == ready["writer_artifact_id"]
          and profile["approved_spine_hash"] == SPINE,
          "P4.10 source not the reviewed P4.8 candidate")
+    # Root is already source-integrity verified; pass it for exact scene
+    # segment comparison, never reconstruct a path from untrusted wire text.
+    profile["_repo_root"] = str(root)
     _verify_payload(stage, payload, profile, story)
 
     body = {
