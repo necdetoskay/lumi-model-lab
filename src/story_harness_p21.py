@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import sysconfig
 import tempfile
 
 from src.story_harness_p1 import FROZEN_CASES, PINNED_SOURCE_COMMIT
@@ -86,7 +87,17 @@ def _run_q25_validator(*, case_id, request, raw_bytes, validator_root, python_ex
         (tmp / "raw.json").write_bytes(raw_bytes)
         # Remove provider credentials and Python user startup; the pinned module
         # executes locally with fixed argv and a total subprocess time bound.
+        # setup-python's toolcache interpreter on self-hosted Linux may need
+        # its bundled libpython.so at runtime. Pass only its *resolved Python
+        # installation library directory*, never inherit the runner's
+        # arbitrary LD_LIBRARY_PATH or any model-provider credentials.
+        python_lib = sysconfig.get_config_var("LIBDIR")
+        _must(isinstance(python_lib, str) and
+              Path(python_lib).is_absolute() and
+              Path(python_lib).is_dir(),
+              "Python runtime shared library directory is unavailable")
         env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+               "LD_LIBRARY_PATH": str(Path(python_lib).resolve()),
                "PYTHONDONTWRITEBYTECODE": "1", "PYTHONNOUSERSITE": "1",
                "HOME": str(tmp)}
         argv = [
