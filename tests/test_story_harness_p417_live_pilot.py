@@ -172,6 +172,52 @@ class P417Tests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 BoundedOncePilot(td, case_id="B01", plan=self.plan)
 
+    def test_r02_is_separate_once_only_and_original_claim_remains_consumed(self):
+        with TemporaryDirectory() as td:
+            first = BoundedOncePilot(td, case_id="B01", plan=self.plan)
+            second = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                      run_variant="r02")
+            self.assertNotEqual(first.dir, second.dir)
+            self.assertTrue((first.dir / "00-claim.json").exists())
+            self.assertTrue((second.dir / "00-claim.json").exists())
+            with self.assertRaises(FileExistsError):
+                BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                 run_variant="r02")
+            with self.assertRaises(HarnessStop):
+                BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                 run_variant="r03")
+
+    def test_provider_charge_recorded_even_when_spine_fails(self):
+        with TemporaryDirectory() as td:
+            runner = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                      run_variant="r02")
+            provider = FakeProvider(self.pack)
+            def charge_and_break(body):
+                result = provider(body)
+                result["id"] = "gen-VALIDTEST123456"
+                result["usage"]["cost"] = 0.014
+                obj = json.loads(result["choices"][0]["message"]["content"])
+                obj["beats"][0]["location"] = "OUTSIDE_CANON"
+                result["choices"][0]["message"]["content"] = json.dumps(obj)
+                return result
+            with self.assertRaises(HarnessStop):
+                runner.execute(transport=charge_and_break)
+            receipt = json.loads((runner.dir / "01-spineforge-receipt.json").read_text())
+            self.assertEqual(receipt["provider_reported_cost_usd"], "0.014")
+            self.assertEqual(receipt["provider_usage"]["prompt_tokens"], 1024)
+            self.assertEqual(receipt["provider_generation_id"], "gen-VALIDTEST123456")
+            self.assertEqual(receipt["outcome"], "STOP_UNKNOWN_OR_INVALID")
+            self.assertEqual(len(provider.calls), 1)
+
+    def test_absent_generation_id_does_not_forge_provenance(self):
+        with TemporaryDirectory() as td:
+            runner = BoundedOncePilot(td, case_id="B01", plan=self.plan)
+            fake = FakeProvider(self.pack)
+            result = runner.execute(transport=fake)
+            receipt = json.loads((runner.dir / "01-spineforge-receipt.json").read_text())
+            self.assertIsNone(receipt["provider_generation_id"])
+            self.assertFalse(result["quality_accepted"])
+
     def test_only_two_calls_no_retries_or_extra_writer(self):
         with TemporaryDirectory() as td:
             runner = BoundedOncePilot(td, case_id="B01", plan=self.plan)
