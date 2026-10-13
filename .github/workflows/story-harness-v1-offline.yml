@@ -34,6 +34,7 @@ on:
       - src/story_harness_p417_live_pilot.py
       - src/story_harness_p418_compat_probe.py
       - src/story_harness_p419_rich_schema_probe.py
+      - src/story_harness_p420_recover_spine.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -62,6 +63,7 @@ on:
       - tests/test_story_harness_p417_live_pilot.py
       - tests/test_story_harness_p418_compat_probe.py
       - tests/test_story_harness_p419_rich_schema_probe.py
+      - tests/test_story_harness_p420_recover_spine.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -889,3 +891,17 @@ jobs:
           python -m unittest discover -s tests -p 'test_story_harness_p420_flat_envelope.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_p417_live_pilot.py' -v
           echo 'P420_FLAT_ENVELOPE_WITH_STRICT_LOCAL_VALIDATOR_GREEN'
+
+      - name: Verify zero-paid P4.20 exact original Spine recovery contract
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p420_recover_spine.py' -v
+          python -m src.story_harness_p420_recover_spine > /tmp/story-harness-p420.json
+          python - <<'PY25'
+          import json
+          x=json.load(open('/tmp/story-harness-p420.json'))
+          assert x['schema']=='lumi.story-harness-p420-generation-content-recovery.v1'
+          assert x['model_posts']==0
+          assert x['live_read_only_GET'] is False
+          assert x['spine_recovered'] is False
+          print('P420_PROVIDER_CONTENT_RECOVERY_OFFLINE_GREEN')
+          PY25
