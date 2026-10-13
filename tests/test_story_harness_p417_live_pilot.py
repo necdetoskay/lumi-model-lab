@@ -130,7 +130,45 @@ class P417Tests(unittest.TestCase):
                          [pack["pack_sha256"]])
         ids = [x["id"] for x in ready["spine"]["beats"]]
         self.assertEqual(fields["beat_ids"]["items"]["enum"], ids)
-        self.assertEqual(fields["beat_ids"]["minItems"], len(ids))
+        self.assertIn(str(len(ids)), fields["beat_ids"]["description"])
+        self.assertNotIn("minItems", fields["beat_ids"])
+        self.assertNotIn("maxItems", fields["beat_ids"])
+
+    def test_anthropic_wire_schema_never_sends_unsupported_array_bounds(self):
+        # The Anthropic native structured-output API rejects maxItems and
+        # minItems greater than one with HTTP 400. We still reject invalid
+        # count/order in approve_spine_for_writer and Writer lineage checks.
+        from collections import deque
+        p = self.pack
+        ready = approve_spine_for_writer(p, valid_spine(p))
+        bodies = [
+            wire("SPINEFORGE", build_spine_request(p)),
+            wire("WRITER", build_writer_request(p, ready)),
+        ]
+        for body in bodies:
+            schema = body["response_format"]["json_schema"]["schema"]
+            queue = deque([schema])
+            while queue:
+                node = queue.popleft()
+                if type(node) is dict:
+                    self.assertNotIn("maxItems", node)
+                    if "minItems" in node:
+                        self.assertIn(node["minItems"], (0, 1))
+                    queue.extend(node.values())
+                elif type(node) is list:
+                    queue.extend(node)
+
+    def test_local_spine_length_and_order_checks_remain_strict_without_wire_bounds(self):
+        p = self.pack
+        for bad in (3, 9):
+            item = valid_spine(p)
+            while len(item["beats"]) < bad:
+                item["beats"].append(deepcopy(item["beats"][-1]))
+            item["beats"] = item["beats"][:bad]
+            for i, beat in enumerate(item["beats"]):
+                beat["id"] = f"BEAT_{i+1:02d}"
+            with self.assertRaises(HarnessStop):
+                approve_spine_for_writer(p, item)
 
     def test_spine_schema_is_unique_for_each_distinct_canon(self):
         plans = [compile_case(self.plan["cases"][i]) for i in range(3)]
