@@ -431,6 +431,25 @@ class P417Tests(unittest.TestCase):
         self.assertNotIn("SECRET_TEXT", str(caught.exception))
         self.assertNotIn(key, str(caught.exception))
 
+    def test_r05_new_one_use_claim_and_higher_output_finite_caps(self):
+        from src.story_harness_p417_live_pilot import OUTPUT_CAPS, STAGE_MAX_USD
+        self.assertEqual(OUTPUT_CAPS, {"SPINEFORGE": 5500, "WRITER": 6500})
+        self.assertLessEqual(STAGE_MAX_USD["SPINEFORGE"], __import__("decimal").Decimal("0.075"))
+        self.assertLessEqual(STAGE_MAX_USD["WRITER"], __import__("decimal").Decimal("0.14"))
+        with TemporaryDirectory() as td:
+            former = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                       run_variant="r04")
+            current = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                        run_variant="r05")
+            self.assertNotEqual(former.dir, current.dir)
+            self.assertTrue(current.use_simple_envelope)
+            self.assertEqual(
+                json.loads((current.dir / "00-claim.json").read_text())["run_variant"],
+                "r05")
+            with self.assertRaises(FileExistsError):
+                BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                 run_variant="r05")
+
     def test_r03_is_distinct_from_existing_first_and_second_attempt_claims(self):
         with TemporaryDirectory() as td:
             one = BoundedOncePilot(td, case_id="B01", plan=self.plan)
