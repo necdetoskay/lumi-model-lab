@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 8
 title_original: "Memento Mori"
-status: draft
-word_count: 225
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Daniel ile Vala dışarıda akşam yemeği yemeye hazırlanırken Vala birden ka
 Çatışma sırasında bir zat ateşi bellek aygıtını aşırı yükler. Vala fırsattan yararlanarak kaçar, fakat kimliğine ilişkin bütün anılarını kaybetmiştir. Sokakta yalnız ve çaresiz dolaşırken Sal adlı lokanta sahibi ona yardım eder. İş verir ve kalabileceği yer sağlar. Vala geçmişini bilmese de eğitimli reflekslerini korumaktadır; lokantayı soymaya gelen iki silahlı kişiyi kısa sürede etkisiz hâle getirir. Olayı araştıran Dedektif Ryan verdiği çelişkili yanıtlardan şüphelenerek kimlik sorgusu başlatır. Sorguya ilişkin kayıtlar hem SGC'nin hem Trust ajanlarının eline ulaşır.
 
 Trust, SG-1'den önce Vala'yı bularak yeniden kaçırır. Mitchell motosikletle takip edip onu kurtarmaya çalışırken kolundan vurulur. Vala onu kaçıranlarla karıştırıp otel odasında kelepçeler. Mitchell'ın uzaylılar ve eski Goa'uld konağı olduğu hakkındaki sözlerine inanmaz. Diğer ekip üyeleri Mitchell'ı bulup Vala'yı izlemeye devam eder. Sonunda SG-1 ile Trust ajanları bir depoda karşı karşıya gelir. Daniel, Vala'ya geçmişten tanıdığı ayrıntıları hatırlatınca kayıp anıları geri dönmeye başlar. Ekip birlikte kurtulur. SGC'ye döndüğünde Vala'ya yeni SG-1 kimlik arması verilir. Deneme süresi sona ermiş, artık takımın resmî üyesi olmuştur.
+
+Vala'nın hafızası olmasa da tehlikeli durumlarda gösterdiği refleksler, geçmişte kazandığı alışkanlıkların bilinçli anılardan bağımsız kalabildiğini gösterir. Sal'ın ona koşulsuz yardım etmesi güven ilişkisini başka bir açıdan yaşamasına imkân verir. Kimliğini hatırlamadan Trust ve SG-1 arasında kalması, hangisine güvenmesi gerektiğini belirlemesini güçleştirir. Sonunda takımın ona arma vermesi, geçmişinden çok bugünkü seçimine değer verdiklerini gösterir.
 
 ## Kaynaklar
 

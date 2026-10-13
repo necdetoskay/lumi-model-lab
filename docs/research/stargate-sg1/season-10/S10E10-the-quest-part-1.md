@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 10
 title_original: "The Quest, Part 1"
-status: draft
-word_count: 242
+status: complete
+word_count: 294
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Vala bir rüyada Castiana, Sahal ve Vagon Brei adlı gezegenlerin kapı adresler
 Ormanda Morgan'ın bıraktığı sınavlar başlar. İlk bölgede zamanın akışı bozulmaktadır; ekip beklenmedik biçimde aynı yolları tekrar kat eder. Dikkatli gözlem ve sabırla bu tuzaktan çıkarlar. Ardından görünmez güç alanına hapsolurlar. İçeride daha önce yakalanmış Ba'al vardır. SG-1, kendisini geride bırakmak yerine bütün tutsakları kurtaran bir yöntemle alanı etkisizleştirir. Ba'al istemeden müttefik gibi yolculuğa katılır. Osric'in davranışlarındaki tutarsızlıklar ise Daniel'ı kuşkulandırmaktadır.
 
 Mağara girişine ulaştıklarında onun gerçek kimliği ortaya çıkar: Osric aslında Vala'nın kızı Adria'dır. Vala'ya gönderilen rüyanın da kendi planı olduğunu itiraf eder. Morgan'ın korunma sistemleri Adria'nın güçlerini kullanmasını engellediğinden silahı alabilecek insanlara ihtiyacı vardır. Ekibi yönlendirerek bunu başarmaya çalışmıştır. Mağaranın içinde yeni ahlaki sınavlar başlar. Ağlayan bir çocuğa yardım edilmesi gizli yolu açar; çöken taş odalarda bilmeceler çözülür. Son kapı alevlerle kapanmıştır. Daniel güvenle geçmek için inanç sınavını kabul eder. Ekip sonunda büyük uçurumun ötesindeki kırmızı Sangreal görüntüsüne ulaşır. Ancak görünen taş gerçekte hologramdır; aşağıdan devasa ateş püskürten ejderha yükselerek yollarını keser. Hikâye gerçek silah bulunmadan ölümcül bir tehditle kesilir.
+
+Sangreal'in korunduğu yerin bir servet hazinesine benzemesi yanıltıcıdır. Morgan'ın sınavları silahı kaba kuvvetle ele geçirmeyi değil, seçilen kişinin doğru değerleri göstermesini gerektirir. Ba'al'ın yardım alarak tuzaktan kurtulması bile bu ahlaki kurala göre hareket edilmesinin sonucudur. Adria'nın gizli kimliğinin açığa çıkması, Vala'nın annelik bağıyla SG-1'in ortak görevinin bir kez daha çatışmasına neden olur.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 7
 title_original: "Counterstrike"
-status: draft
-word_count: 220
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Ori'nin hâkim olduğu bir gezegende Adria, artık genç bir kadın olarak inana
 Gezegende kalan Ori savaş gemisi ele geçirilebilecek kadar değerli bir fırsattır. SG-1 gemiye ışınlanır, fakat Jaffa askerleri de aynı hedefle gelmiştir. İki taraf geminin kontrolü için çatışırken Adria'nın da hayatta olduğu ortaya çıkar. Celestis tılsımı onu Dakara silahının ölümcül dalgasından korumuştur. Adria telekinetik gücüyle Jaffaları kolayca etkisiz hâle getirir. Sorguladığı askerler silahın Dakara'da bulunduğunu söyler. Adria, SG-1'i de esir alarak gemisini Jaffaların kutsal dünyasına çevirir. Yolda karşılaştığı Jaffa ana gemilerini hızla yok eder.
 
 General Landry ile Bra'tac, Dakara'da Se'tak'ı durdurmak üzere görüşür. Jaffa lideri masum insanların öldürüldüğü suçlamasını kabul etmez; düşmana karşı her önlemi meşru saymaktadır. Adria'nın gemisi yaklaşınca Se'tak, Landry ile Bra'tac'ın kendi halkına ihanet ettiğini söyleyerek aygıtı bir kez daha çalıştırır. İkili Yıldız Geçidi'nden son anda kaçar; SG-1 de Odyssey'ye ışınlanır. Adria'nın gemisinden yapılan ateş Dakara'yı harabeye çevirir. Jaffa bağımsızlığının sembolü ve Kadim silahı yok olmuştur. Landry artık tek seçenek olarak Merlin'in Sangreal silahının bulunmasını emreder.
+
+Se'tak'ın seçimi, Goa'uld yönetiminden kurtulmuş Jaffa toplumunun özgürlüğü korumak için hangi sınırları kabul edeceğini yeniden tartışmaya açar. Dakara silahının kullanılabilmesi diğer gezegenlerde inananları da savunmasız bırakır. Adria ise güç gösterisi yaparak Jaffaların kutsal gezegenini yok eder. Böylece yeni Ori tehdidi, yalnız askerî değil Jaffa ulusunun tarihsel hafızasına yönelik de büyük bir yıkım yaratır.
 
 ## Kaynaklar
 

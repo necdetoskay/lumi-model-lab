@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 9
 title_original: "Company of Thieves"
-status: draft
-word_count: 222
+status: complete
+word_count: 275
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Carter, Albay Emerson'ın komuta ettiği Odyssey ile görevdeyken gemi Lucian Al
 Mitchell, Reole maddesiyle görünüşünü değiştirerek Netan'ın güvenilir yardımcısı Kefflin kılığına girer. Netan'ın ana gemisine alınarak örgütün komuta çevresine ulaşır. Anateo, Odyssey'yi ele geçirerek lideri Netan'ın yerini almayı hedeflemektedir; örgüt içinde bu amaçla zaten güçlü bir huzursuzluk bulunmaktadır. Teal'c yakalanıp sorguya çekilirken Mitchell sahte kimliğini korumaya çalışır. Carter, Daniel ve Vala ise Odyssey'nin içinden kaçış fırsatı bulmak için geminin güvenliğini inceler.
 
 Üçlü sonunda Anateo'yu uzaya ışınlayarak gemiyi geri alır. Netan'ın kaptanları Odyssey'nin yerini belirlerken Tenat, Mitchell'ın gerçek kimliğini fark eder fakat susmak için para ister. Netan gemiye teslim olma çağrısı yapar. Ardından Tenat'ın gemisinde bizzat belirmiş gibi görünen Netan, Tenat'a kendi ana gemisine ateş etmesini emreder. Gerçekte bu kişi yeniden kılık değiştiren Mitchell'dır. Tenat emri yerine getirince tuzak açığa çıkar; gerçek Netan ateş açarak Tenat'ın gemisini yok eder. Mitchell ile Teal'c Odyssey'ye ışınlanır ve gemi onarımları tamamlayarak kaçar. SG-1 arkadaşlarını ve yıldız gemisini kurtarmıştır; ancak Lucian Alliance ile açık bir düşmanlık da başlamıştır.
+
+Emerson'ın ölümü SG-1'in yeni gemisini kurtarmaya çalışırken ödenen en ağır bedeldir. Lucian Alliance'ın liderlik çekişmesi ise saldırgan grubun tek bir komuta altında birleşmediğini gösterir. Mitchell'ın Reole maddesini kullanması, doğrudan güç yerine kılık değiştirme ve düşmanın kuşkularını birbirine karşı çevirme stratejisidir. Odyssey'nin kaçışı bu planın başarısını kanıtlasa da Netan artık Dünya'yı doğrudan rakip görmektedir.
 
 ## Kaynaklar
 
