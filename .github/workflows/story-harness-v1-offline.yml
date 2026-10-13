@@ -24,6 +24,7 @@ on:
       - src/story_harness_p48.py
       - src/story_harness_p48_offline_runner.py
       - src/story_harness_p49.py
+      - src/story_harness_p410.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -42,6 +43,7 @@ on:
       - tests/test_story_harness_p47.py
       - tests/test_story_harness_p48.py
       - tests/test_story_harness_p49.py
+      - tests/test_story_harness_p410.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -90,6 +92,7 @@ on:
       - docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md
       - docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md
       - docs/canonical/STORY_HARNESS_P49_PAID_READINESS_PACKET.md
+      - docs/canonical/STORY_HARNESS_P410_PROVIDER_ROUTING_OFFLINE.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -607,3 +610,30 @@ jobs:
           assert x['stop_reason'] == 'P49_SOURCE_VERIFIED_LIVE_PAID_ATTEMPT_NOT_READY'
           print('STORY_HARNESS_P49_PAID_READINESS_FAIL_CLOSED_GREEN')
           PY15
+
+      - name: Prove pinned new Writer request previews and once-only OFFLINE budgets
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p410.py' -v
+          python -m src.story_harness_p410 --repo-root . > /tmp/story-harness-p410-a.json
+          python -m src.story_harness_p410 --repo-root . > /tmp/story-harness-p410-b.json
+          cmp /tmp/story-harness-p410-a.json /tmp/story-harness-p410-b.json
+          python - <<'PY16'
+          import json
+          x = json.load(open('/tmp/story-harness-p410-a.json'))
+          assert x['writer_segments'] == 228
+          assert x['model'] == 'anthropic/claude-sonnet-5.5'
+          assert x['only_provider'] == 'Anthropic'
+          assert x['provider_fallbacks_in_preview'] is False
+          assert x['strict_json_schema'] is True
+          assert x['max_stage_output_tokens'] == [3000, 3500, 1800]
+          assert x['live_routing_provider_authenticated'] is False
+          assert x['provider_token_ceiling_authenticated'] is False
+          assert x['authenticated_user_grant_consumed'] is False
+          assert x['single_run_offline_reservation_simulation_available'] is True
+          assert x['new_provider_calls'] == 0 and x['new_cost_usd'] == '0'
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P410_OFFLINE_ROUTING_AND_LEDGER_QUALIFIED_LIVE_DISABLED'
+          print('STORY_HARNESS_P410_ROUTING_AND_RESERVATION_OFFLINE_GREEN')
+          PY16
