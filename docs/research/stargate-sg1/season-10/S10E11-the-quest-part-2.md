@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 11
 title_original: "The Quest, Part 2"
-status: draft
-word_count: 246
+status: complete
+word_count: 284
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Morgan Le Fay'in mağarasında Sangreal'i koruyan dev ejderha SG-1'i dar bir ge�
 Yeni mağaradaki staz kapsülünde bir insan bulunmaktadır. Bu kişi Merlin, yani Myrddin'dir. Morgan, onun yükselmiş varlıkları öldürebilen silahı yapma bilgisiyle yakalanmasını önlemek için bin yıldan uzun süredir onu burada korumuştur. Mağara ve içindeki ekip belirli aralıklarla ayrı gezegenlere taşınmaktadır. Bu gezegenlerin geçit sistemleri olağan adreslerle bulunamayacak biçimde değiştirilmiştir. Carter ile Ba'al Dünya'ya dönebilmek için DHD yazılımını incelemeye başlar. Adria'nın askerleri onların ardından gelirken ekip çöl, buzla kaplı alan ve yağmur ormanı gibi farklı ortamlardan geçmek zorunda kalır.
 
 Merlin uyandırıldığında Sangreal'i yeniden inşa etmeye razı olur. Bedeninin artık çok yaşlı ve zayıf olduğunu bilir; gerekli bilgiyi Kadim deposuna aktarmayı seçer. Kısa süre sonra ölür. Daniel, Merlin'in zihinsel mirasını kendi beynine yükleyerek silahı tamamlama görevini devralır. Bilgi aktarımı onu hızla yormaktadır. Carter ile Ba'al çıkış adresini çözmeyi başardığında Adria ve askerleri son gezegene ulaşır. Daniel olağanüstü güçlerle Ori askerlerini durdurup arkadaşlarının kapıdan kaçmasını sağlar. Ancak Adria onun üzerinde üstünlük kurar. Daniel ile silahı tamamlamaya yarayacak aygıt düşmanın eline geçer. SG-1 kurtulmuştur, fakat Merlin'in son umudu tehlikeye girmiştir.
+
+Morgan'ın korumasındaki Merlin'in başka bir dünyaya taşınan staz odası, silahın doğrudan ele geçirilmesini önler. Daniel bilgi deposuna bağlandıktan sonra geçmişte O'Neill'in yaşadığı beyin yüklenmesine benzer ağır etkilerle karşılaşır. Bu süre içinde arkadaşlarının onu Adria'dan koruması hayati önem taşır.
 
 ## Kaynaklar
 

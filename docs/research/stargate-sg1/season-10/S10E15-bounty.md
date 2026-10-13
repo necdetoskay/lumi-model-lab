@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 10
 episode: 15
 title_original: "Bounty"
-status: draft
-word_count: 241
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ SG-1, Lucian Alliance'ın kassa sevkiyatını taşıyan üçüncü nakliye gemis
 İlk saldırı Teal'c'e yapılır. Yaralanan Jaffa savaşçısı pusu kurup kendisini öldürmeye dönen avcıyı yakalar. Daniel'ın karşısına araştırması sırasında güzel bir kadın çıkar, ardından yabancı silahını doğrultup onu kovalar. Takip sokakta sürerken saldırgan bir otobüsün önüne düşer. Carter konferansta holografik görüntüsüyle sahneye çıktığında balkondaki suikastçı ateş açar, mermiler görüntünün içinden geçer. Carter bunu avantaja çevirerek plazma silahıyla saldırganı etkisiz hâle getirir.
 
 Mitchell'ın lise buluşması da beklediği gibi geçmez. Eski arkadaşı Amy Vandenberg'le yakınlaşmaya çalışırken Odai Ventrell adlı ödül avcısı ortaya çıkar. Ventrell okul binasını kapatıp bütün mezunları rehin alır. Mitchell'ın asıl hedef değil, diğer SG-1 üyelerini tuzağa çekmek için kullanılan yem olduğunu açıklar. Carter, Teal'c ve Daniel sözde okula ışınlanır; Ventrell onları gemisine çekmek için halka taşıyıcıyı çalıştırır. Ancak gördüğü kişiler hologramdır; gerçek ekip çoktan gemisine sızmıştır. Ventrell yakalanır ve rehineler kurtarılır. SG-1, onu Netan'a karşı kullanmaya karar verir. Lucian Alliance liderinin gemisinde ortaya çıkan yeni suikastçı aslında Ventrell'dir ve silahını Netan'a doğrultur. Bölüm, ödülün hedefi olan ekibin şimdi tehlikeyi örgütün kendi liderine yöneltmesiyle kapanır.
+
+Ventrell'in ödülü almak için kurduğu tuzak SG-1'in hologram teknolojisiyle bozulur. Olay, Mitchell'ın çok eski arkadaşlarının yanında gerçek mesleğini saklama çabasını da zorlaştırır. Netan'ın kendisine yönelik tehditten nasıl kurtulacağı ise henüz belirsizdir.
 
 ## Kaynaklar
 
