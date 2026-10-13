@@ -3,8 +3,8 @@ series: "Stargate SG-1"
 season: 1
 episode: 6
 title_original: "The First Commandment"
-status: draft
-word_count: 223
+status: complete
+word_count: 259
 source_verified: true
 spoilers: true
 ---
@@ -13,17 +13,13 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-Stargate Komutanlığı, SG-9 ekibiyle bağlantısını kaybedince Jack O'Neill ve SG-1 araştırma görevine gönderilir. Ekip, geldikleri yabancı dünyada beklediği askerî keşif faaliyeti yerine bir çeşit kişisel hükümdarlık düzeniyle karşılaşır. SG-9'un komutanı Yüzbaşı Jonas Hanson, yerli halkın gözünde kendisini üstün güçlere sahip bir varlık gibi sunmuş, insanları korkuyla yönetmeye başlamıştır. Yıldız Geçidi'nden gelmiş olmak ve Dünya teknolojisini kullanmak, onun bu iddiasını sürdürmesini kolaylaştırmıştır. Hanson'ın emri altındakiler de artık her zaman kendi komutanlarını desteklememektedir.
-
-Samantha Carter için karşılaşma ayrıca kişiseldir. Hanson geçmişte nişanlandığı, fakat karakterindeki sorunları fark edince ayrıldığı kişidir. Bir zamanlar birlikte gelecek planladığı askerin bu ölçüde kontrolsüz bir güce kapılması Carter'ın değerlendirmelerini zorlaştırsa da görevdeki sorumluluğunu değiştirmez. O'Neill, kendisini tanrı yerine koyan bir askerin hem yerli halka hem de Dünya'nın güvenilirliğine zarar verdiğini görür. SG-1, Hanson'ın neden olduğu korkuyu sona erdirmek ve onun kontrolündeki insanları mümkün olduğu kadar zarar vermeden kurtarmak ister.
-
-Hanson, yerli halkın hayatta kalmak için ihtiyaç duyduğu kaynakları ve çevre koşullarını kendi sözde kutsal gücünün kanıtı olarak kullanmaktadır. Ekip, onun iddialarının ardındaki gerçekleri ortaya koyarak korkuya dayalı bağlılığı kırmaya çalışır. Halkın onun mutlak otoritesine duyduğu inanç zayıfladıkça güç dengesi değişir. Sonunda Hanson'ın yönetimi sona erer ve SG-9'un başarısızlığı ağır bir ders olarak geride kalır. Bölüm, Goa'uldların başka dünyalarda yaptığı şeyi sıradan bir insanın da taklit edebileceğini gösterir: üstün teknolojiye sahip olan herkes, ahlaki sınırlarını kaybederse kendisini kurtarıcı diye kabul ettirmeye çalışabilir.
+SG-9’un P3X-513’te kaybolduğu bildirilince General Hammond, SG-1’i ekibi bulup geri getirmek üzere görevlendirir. Ekip gezegene ulaştığında gökyüzünün turuncu göründüğünü, güneş ışınımının ise yüzeyde yaşamı tehdit edecek kadar güçlü olduğunu fark eder. İlkel, mağaralarda yaşayan halk SG-1’e saldırır; kısa süre sonra bunun nedeninin, SG-9 komutanı Kaptan Jonas Hanson’ın kendisini tanrı ilan etmesi olduğu anlaşılır. Hanson, halkı sert biçimde yönetmekte ve kendi emirlerini ilahi buyruk gibi uygulatmaktadır. SG-1, SG-9 üyeleri Hanson, Baker, Conner ve Frakes’i ararken yalnızca Teğmen Conner’ın hayatta kaldığını öğrenir. Carter’ın Hanson’la daha önce nişanlanmış olması, onunla yüzleşmeyi kişisel olarak da zorlaştırır; ancak Hanson Carter’ın itirazlarını dinlemez ve yönetimini sürdürür. Daniel, gezegenin güneşten korunmasını sağlayan iki Goa’uld aygıtının oluşturduğu enerji kalkanını inceler. Kalkan gökyüzünü turuncuya çevirir, fakat aygıtlardan biri çalışmadığında halk mağaralara sığınmak zorunda kalır. Hanson, muhalefeti bastırırken Conner’ı ölüme terk eder. SG-1, onun kurduğu düzeni yıkmak için Hanson’ın kendi keşfettiği teknolojiyi kullanmaya karar verir. Ekip, halkın Hanson’a duyduğu korkuyu kırar ve kalkanın yeniden çalıştırılmasını sağlar. Hanson’ın zalimliği sona ererken mağara halkı yeniden yüzeyde, ışık altında yaşayabilecek duruma gelir. Conner kurtarılır; SG-1, Hanson ve diğer kayıp görevlilerin durumunu tamamladıktan sonra gezegenden ayrılır. Bölümün sonunda kurtarma görevi, sahte tanrılık iddiasındaki bir subayın devrilmesi ve halkın güvenli yaşam alanını geri kazanmasıyla sonuçlanır. SG-1’in karşılaştığı halkın mağara yaşamı, güneşin zararlı ışınımından korunma zorunluluğunun sonucudur. Hanson bu teknolojik korumayı kendi iktidarının kanıtı gibi sunar. Carter’ın eski nişanlısını ikna edememesi, onun yalnızca kayıp bir ekip arkadaşını değil, otoritesini kötüye kullanan eski bir komutanı bulduğunu gösterir. Kalkan çalışınca halkın dışarı çıkabilmesi, kurtarma görevinin somut sonucudur. Böylece gezegenin ışık altındaki yaşamı, SG-1’in müdahalesiyle yeniden mümkün olur.
 
 ## Kaynaklar
 
-- [Richard Dean Anderson bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/01-06commandment.htm)
-- [GateWorld bölüm rehberi](https://www.gateworld.net/sg1/s1/the-first-commandment/)
+- [RDA bölüm rehberi](https://rdanderson.com/stargate/episodes/episodes/01-06commandment.htm)
+- [GateWorld — Birinci sezon](https://www.gateworld.net/sg1/s1)
 
 ## Editör notu
 
-Bu metin kaynaklardan hareketle özgün Türkçe anlatımla hazırlanmıştır. Çok parçalı pilotun bölüm sınırları için ek sürüm karşılaştırması gerekebilir.
+Olaylar ve sonuç ilgili bölüm rehberinden kontrol edildi; yayın sırası GateWorld ile çapraz eşlendi.
