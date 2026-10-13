@@ -48,6 +48,16 @@ The harness never invents a shared story dependency among cases.
 - `provider_calls=0`, `provider_cost_usd="0"`; original provider usage in P1 remains historical data only.
 - There is **no asynchronous or automatic model execution** and no real end-to-end same-story run. This is a narrow, auditable step toward a real stage gateway.
 
+## Frozen replayable P2 receipt artifact
+
+The four locally computed integrity receipts and typed stage records are
+also stored in [pinned-local-integrity-receipts.json](../../evidence/story_harness_p2/pinned-local-integrity-receipts.json).
+The artifact was generated with `generate_receipts` using original P1
+archived files; **no model response was synthesized for it**. Every CI
+run independently regenerates the result and compares the full JSON.
+The receipt is still only proof of local archived-byte/schema verification,
+**not** authentication of a historical human or semantic gate.
+
 ## Commands and tests
 
 ```sh
@@ -55,6 +65,8 @@ python -m unittest discover -s tests -p 'test_story_harness*.py' -q
 python -m src.story_harness_p2 \
   --manifest configs/story_harness_p1_frozen_import.json \
   --repo-root .
+python -m src.story_harness_p2 --repo-root . \\
+  --verify-report evidence/story_harness_p2/pinned-local-integrity-receipts.json
 ```
 
 Negative tests reject tampered historical decisions, altered source file hashes,
