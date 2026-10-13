@@ -55,7 +55,7 @@ def execute_second_story(repo_root, claim_root, *,transport):
     root=Path(claim_root)
     must(root.is_dir() and not root.is_symlink(),
          "Dedicated protected immutable story claim directory absent")
-    engine=BoundedOncePilot(root,case_id=CASE,plan=plan,
+    engine=BoundedOncePilot(str(root),case_id=CASE,plan=plan,
                             run_variant=VARIANT)
     must(engine.pack["pack_sha256"]==pack["pack_sha256"],
          "B02 source swapped during engine compilation")
