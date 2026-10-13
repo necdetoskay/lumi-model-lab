@@ -13,6 +13,8 @@ on:
       - src/story_harness_p32.py
       - src/story_harness_p40.py
       - src/story_harness_p41.py
+      - src/story_harness_p42.py
+      - src/story_harness_p42_diagnostics.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -23,6 +25,7 @@ on:
       - tests/test_story_harness_p32.py
       - tests/test_story_harness_p40.py
       - tests/test_story_harness_p41.py
+      - tests/test_story_harness_p42.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -39,6 +42,7 @@ on:
       - evidence/story_harness_p32/**
       - evidence/story_harness_p40/**
       - evidence/story_harness_p41/**
+      - evidence/story_harness_p42/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -49,6 +53,7 @@ on:
       - docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md
       - docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md
       - docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md
+      - docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -349,3 +354,30 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P41_SEAL_TRUST_BOUNDARY_GREEN')
           PY7
+
+      - name: Capture sanitized immutable final-audit failure receipts with original frozen v21
+        env:
+          STORY_HARNESS_PINNED_P42_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p42.py' -v
+          python -m src.story_harness_p42 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P42_ROOT" > /tmp/story-harness-p42.json
+          python -m src.story_harness_p42 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P42_ROOT" \
+            --verify-report evidence/story_harness_p42/pinned-targeted-audit-diagnostics.json > /tmp/story-harness-p42-verified.json
+          cmp /tmp/story-harness-p42.json /tmp/story-harness-p42-verified.json
+          python - <<'PY8'
+          import json
+          x=json.load(open('/tmp/story-harness-p42.json'))
+          assert x['diagnostic_case_count'] == 7
+          assert x['original_v21_4_adapter_and_runtime_exercised'] is True
+          assert x['frozen_v21_4_source_modified'] is False
+          assert x['all_failure_receipts_immutable_redacted'] is True
+          assert x['raw_provider_payload_or_secret_persisted'] is False
+          assert x['real_story_quality_accepted'] is False
+          assert x['stop_reason'] == 'REAL_QUALITY_NOT_ACCEPTED_DIAGNOSTIC_READY'
+          assert x['q25_extraction_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P42_FINAL_DIAGNOSTIC_GREEN')
+          PY8

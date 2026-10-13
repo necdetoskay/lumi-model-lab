@@ -130,6 +130,16 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   spend, English Master, Q25 or state commit**.
   [P4.1 scope](docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md)
   · [issue #285](https://github.com/necdetoskay/lumi-model-lab/issues/285).
+- **P4.2 redacted final-audit error diagnostics (experimental):** original
+  frozen v21.4 runtime + adapter are exercised with seven deliberately bad
+  **offline** targeted-final-audit responses. A separately versioned wrapper
+  persists only raw-response hashes, safe schema/type/field-count summaries,
+  validation path, and real-or-missing usage; injected secrets and raw prompt
+  content are **not** persisted. Atomic O_EXCL/0600 receipt, no retry, no
+  historical rewrite. Old v21.3 paid error details remain unrecoverable.
+  Result `REAL_QUALITY_NOT_ACCEPTED_DIAGNOSTIC_READY`; no English Master,
+  Q25, state writes or paid calls. [P4.2 diagnostics](docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md)
+  · [issue #286](https://github.com/necdetoskay/lumi-model-lab/issues/286).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 
