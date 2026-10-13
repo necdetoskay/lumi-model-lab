@@ -223,7 +223,7 @@ class P417Tests(unittest.TestCase):
                                  run_variant="r02")
             with self.assertRaises(HarnessStop):
                 BoundedOncePilot(td, case_id="B01", plan=self.plan,
-                                 run_variant="r03")
+                                 run_variant="r04")
 
     def test_provider_charge_recorded_even_when_spine_fails(self):
         with TemporaryDirectory() as td:
@@ -411,6 +411,39 @@ class P417Tests(unittest.TestCase):
         self.assertIn("HTTP_400", str(cm.exception))
         self.assertNotIn("SECRET_", str(cm.exception))
         self.assertNotIn(secret, str(cm.exception))
+
+    def test_http400_error_hint_is_classified_without_leaking_raw_provider_message(self):
+        import urllib.error
+        from src.story_harness_p417_live_pilot import https_post_once
+        from unittest.mock import patch as monkey
+        from io import BytesIO
+        body = wire("SPINEFORGE", build_spine_request(self.pack))
+        key = "sk-or-FAKE-UNIT-TEST-NOT-A-CREDENTIAL"
+        response = b'{"error":{"message":"SECRET_TEXT unsupported maxItems in JSON schema"}}'
+        with monkey("urllib.request.urlopen",
+                    side_effect=urllib.error.HTTPError(
+                        ENDPOINT, 400, "RAW_SECRET_PROVIDER_HEADER",
+                        {}, BytesIO(response))):
+            with self.assertRaises(HarnessStop) as caught:
+                https_post_once(key, body)
+        self.assertEqual(caught.exception.category, "HTTP_400")
+        self.assertEqual(caught.exception.hint, "SCHEMA_UNSUPPORTED_ARRAY_BOUNDS")
+        self.assertNotIn("SECRET_TEXT", str(caught.exception))
+        self.assertNotIn(key, str(caught.exception))
+
+    def test_r03_is_distinct_from_existing_first_and_second_attempt_claims(self):
+        with TemporaryDirectory() as td:
+            one = BoundedOncePilot(td, case_id="B01", plan=self.plan)
+            two = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                   run_variant="r02")
+            three = BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                     run_variant="r03")
+            self.assertEqual(len({str(x.dir) for x in (one,two,three)}),3)
+            with self.assertRaises(FileExistsError):
+                BoundedOncePilot(td, case_id="B01", plan=self.plan,
+                                 run_variant="r03")
+            self.assertEqual(json.loads((three.dir/"00-claim.json").read_text())
+                             ["run_variant"], "r03")
 
     def test_transport_category_recorded_without_network_retry(self):
         from src.story_harness_p417_live_pilot import ProviderTransportFault
