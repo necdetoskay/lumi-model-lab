@@ -184,6 +184,18 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   [P4.6 details](docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md)
   · [new full draft](evidence/story_harness_p46/offline-full-story-writer-revision.txt)
   · [issue #289](https://github.com/necdetoskay/lumi-model-lab/issues/289).
+- **P4.7 exact route-truth Writer correction:** a new source-anchored
+  **2,491-word** English candidate now correctly distinguishes the original
+  explorers' knot navigation from Arda's carried expedition rope (one exact
+  full-text substitution). Preserves all P4.6 evidence; editorial review
+  leaves five open questions, not independent semantic quality ACCEPT.
+  The old frozen v21.4 paid profile is pinned to a **different** story
+  SHA, so P4.7 **fails closed** until a separately versioned new-story
+  quality profile can be qualified. New paid model calls $0/0; English Master,
+  Q25 and state writes remain denied.
+  [P4.7 rationale](docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md)
+  · [full manuscript](evidence/story_harness_p47/offline-full-story-route-truth-revision.txt)
+  · [issue #290](https://github.com/necdetoskay/lumi-model-lab/issues/290).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

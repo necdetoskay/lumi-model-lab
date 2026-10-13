@@ -20,6 +20,7 @@ on:
       - src/story_harness_p44.py
       - src/story_harness_p45.py
       - src/story_harness_p46.py
+      - src/story_harness_p47.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -35,6 +36,7 @@ on:
       - tests/test_story_harness_p44.py
       - tests/test_story_harness_p45.py
       - tests/test_story_harness_p46.py
+      - tests/test_story_harness_p47.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -46,6 +48,7 @@ on:
       - configs/story_harness_p44_story_quality_preflight.json
       - configs/story_harness_p45_editorial_bridge_candidate.json
       - configs/story_harness_p46_full_story_editorial.json
+      - configs/story_harness_p47_route_truth_revision.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -60,6 +63,7 @@ on:
       - evidence/story_harness_p44/**
       - evidence/story_harness_p45/**
       - evidence/story_harness_p46/**
+      - evidence/story_harness_p47/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -75,6 +79,7 @@ on:
       - docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md
       - docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md
       - docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md
+      - docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -507,3 +512,32 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P46_FULL_WRITER_REVISION_GREEN')
           PY12
+
+      - name: Verify genuine new manuscript lineage and reject old paid model-profile substitution
+        env:
+          STORY_HARNESS_PINNED_P47_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p47.py' -v
+          python -m src.story_harness_p47 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P47_ROOT" > /tmp/story-harness-p47.json
+          python -m src.story_harness_p47 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P47_ROOT" \
+            --verify-report evidence/story_harness_p47/pinned-route-truth-preflight.json > /tmp/story-harness-p47-verified.json
+          cmp /tmp/story-harness-p47.json /tmp/story-harness-p47-verified.json
+          python - <<'PY13'
+          import json
+          x=json.load(open('/tmp/story-harness-p47.json'))
+          assert x['story_word_count'] == 2491
+          assert x['other_prose_bytes_unchanged'] is True
+          assert x['original_frozen_model_runner_reusable_for_new_story'] is False
+          assert x['editorial_open_semantic_risk_count'] == 5
+          assert x['new_quality_model_profile_required'] is True
+          assert x['independent_semantic_quality_accept'] is False
+          assert x['real_paid_attempt_authorized'] is False
+          assert x['new_model_quality_calls'] == 0 and x['provider_cost_usd'] == '0'
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_admission_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['stop_reason'] == 'NEW_STORY_SHA_REQUIRES_SEPARATE_QUALITY_RUNNER_QUALIFICATION'
+          print('STORY_HARNESS_P47_SOURCE_BOUND_ROUTE_TRUTH_GREEN')
+          PY13
