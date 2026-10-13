@@ -34,3 +34,16 @@ Each quote must appear in the original English Master text; the final-location q
 1. Run P4.24 once against actual sealed B01, inspect evidence/receipt.
 2. Build independent deterministic state-transition validator P4.25, explicitly tracking unknown ownership and unproven obligation closure; retain no production writes.
 3. Test multiple state/topic/age cases with real Spine/Writer/Quality/Q25 and a separate holdout. Only accept >=90% if all required stages and human-independent literary validation succeed; never extrapolate from B01.
+
+## P4.24 first actual Q25 attempt — fail closed, correction loop
+
+The first paid Q25 execution on [workflow #38461314321](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38461314321) initially failed **before inference** due a broken self-hosted Git checkout (`.git` absent). The q25 runner's disposable working tree was quarantined and recreated, leaving the durable B01-r06 source, initial audit and pilot English Master claims untouched. The separate [offline CI #38461314072](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38461314072) was rerun and returned GREEN. The original Q25 job was then rerun because no model POST claim existed.
+
+The subsequent genuine Q25 call ended in `STOP_UNKNOWN_OR_INVALID`; the original validator caught but suppressed its precise reason and actual usage. **No final-state evidence result was admitted**, no repeat model request and no production write. [Immutable failure receipt](../../evidence/story_harness_p424/b01-r06-q25-v01-failed-consumed.json) has null billed cost, not a zero-dollar verified invoice. Conservatively reserve an additional **$0.050** (application-stage declared maximum, not a provider billing guarantee). Previous total conservative exposure becomes **$1.268350**.
+
+Same-method fixes before alternative:
+1. Record **safe reason codes, provider model/generation ID, output finish reason, verified usage/cost even when evidence validation rejects**, without logging response prose, credentials or raw API errors.
+2. Clarify the exact nested JSON-string observation fields and valid enums in the prompt; ownership is always `UNKNOWN` at this stage, independent of possession.
+3. New provider trial must use a distinct `p424-b01-r06-q25-evidence-v02` durable claim; old `v01` remains consumed. The corrected workflow uses a separate checkout directory so damaged shared git metadata does not abort paid work. No change to Spine/Writer/English Master, or Q25 evidence verification thresholds.
+
+The additional next Q25 stage has a capped **$0.050** application allowance, so current conservative maximum reserved exposure after it is **$1.318350** out of the user's total $10. This is not verified aggregate provider billing. All other acceptance constraints and the production/Canonical write prohibition remain unchanged.
