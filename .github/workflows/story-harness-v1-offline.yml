@@ -13,6 +13,7 @@ on:
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
       - evidence/story_harness_p1/**
+      - evidence/story_harness_p2/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -96,6 +97,8 @@ jobs:
             --manifest configs/story_harness_p1_frozen_import.json \
             --repo-root . > /tmp/story-harness-p2-second.json
           cmp /tmp/story-harness-p2-first.json /tmp/story-harness-p2-second.json
+          python -m src.story_harness_p2 --repo-root . --verify-report evidence/story_harness_p2/pinned-local-integrity-receipts.json > /tmp/story-harness-p2-verified.json
+          cmp /tmp/story-harness-p2-first.json /tmp/story-harness-p2-verified.json
           python - <<'PY'
           import json
           x = json.load(open('/tmp/story-harness-p2-first.json'))
