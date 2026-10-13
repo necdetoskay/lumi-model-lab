@@ -105,6 +105,47 @@ class P417Tests(unittest.TestCase):
         self.assertTrue(r["response_format"]["json_schema"]["strict"])
         self.assertEqual(r["max_tokens"], OUTPUT_CAPS["SPINEFORGE"])
 
+    def test_real_strict_schema_enums_bind_only_known_places_and_obligations(self):
+        req = wire("SPINEFORGE", build_spine_request(self.pack))
+        schema = req["response_format"]["json_schema"]["schema"]
+        props = schema["properties"]["beats"]["items"]["properties"]
+        self.assertEqual(schema["properties"]["source_pack_sha256"]["enum"],
+                         [self.pack["pack_sha256"]])
+        self.assertEqual(props["id"]["enum"][0], "BEAT_01")
+        self.assertEqual(props["id"]["enum"][-1], "BEAT_08")
+        self.assertEqual(props["location"]["enum"],
+                         self.pack["canonical_state"]["locations"])
+        self.assertIn(None, props["obligation_reference"]["enum"])
+        self.assertEqual(props["obligation_reference"]["enum"][1:],
+                         self.pack["open_obligations"])
+
+    def test_writer_schema_enforces_actual_spine_hash_and_beat_set(self):
+        pack = self.pack
+        ready = approve_spine_for_writer(pack, valid_spine(pack))
+        req = wire("WRITER", build_writer_request(pack, ready))
+        schema = req["response_format"]["json_schema"]["schema"]
+        fields = schema["properties"]
+        self.assertEqual(fields["spine_sha256"]["enum"], [ready["spine_sha256"]])
+        self.assertEqual(fields["source_pack_sha256"]["enum"],
+                         [pack["pack_sha256"]])
+        ids = [x["id"] for x in ready["spine"]["beats"]]
+        self.assertEqual(fields["beat_ids"]["items"]["enum"], ids)
+        self.assertEqual(fields["beat_ids"]["minItems"], len(ids))
+
+    def test_spine_schema_is_unique_for_each_distinct_canon(self):
+        plans = [compile_case(self.plan["cases"][i]) for i in range(3)]
+        schemas = [
+            wire("SPINEFORGE", build_spine_request(p))[
+                "response_format"]["json_schema"]["schema"]
+            for p in plans
+        ]
+        self.assertEqual(len({str(s) for s in schemas}), 3)
+        for p,schema in zip(plans,schemas):
+            self.assertEqual(
+                schema["properties"]["beats"]["items"]["properties"]["location"]["enum"],
+                p["canonical_state"]["locations"],
+            )
+
     def test_both_mock_stages_produce_unaccepted_story_and_cost_receipts(self):
         with TemporaryDirectory() as td:
             runner = BoundedOncePilot(td, case_id="B01", plan=self.plan)
