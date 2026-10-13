@@ -91,13 +91,27 @@ def _run_q25_validator(*, case_id, request, raw_bytes, validator_root, python_ex
         # its bundled libpython.so at runtime. Pass only its *resolved Python
         # installation library directory*, never inherit the runner's
         # arbitrary LD_LIBRARY_PATH or any model-provider credentials.
-        python_lib = sysconfig.get_config_var("LIBDIR")
-        _must(isinstance(python_lib, str) and
-              Path(python_lib).is_absolute() and
-              Path(python_lib).is_dir(),
+        # actions/setup-python may *relocate* its toolcache interpreter.
+        # sysconfig's compiled LIBDIR can point to the original machine,
+        # so derive the runtime libdir from the actual executing binary first.
+        runtime_prefix = Path(python_executable).resolve(strict=True).parent.parent
+        candidates = [
+            runtime_prefix / "lib",
+            Path(sys.prefix) / "lib",
+        ]
+        compiled_libdir = sysconfig.get_config_var("LIBDIR")
+        if isinstance(compiled_libdir, str) and Path(compiled_libdir).is_absolute():
+            candidates.append(Path(compiled_libdir))
+        python_lib = next((
+            loc.resolve() for loc in candidates
+            if loc.is_dir() and any(
+                loc.glob(f"libpython{sys.version_info.major}.{sys.version_info.minor}.so*")
+            )
+        ), None)
+        _must(python_lib is not None,
               "Python runtime shared library directory is unavailable")
         env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"),
-               "LD_LIBRARY_PATH": str(Path(python_lib).resolve()),
+               "LD_LIBRARY_PATH": str(python_lib),
                "PYTHONDONTWRITEBYTECODE": "1", "PYTHONNOUSERSITE": "1",
                "HOME": str(tmp)}
         argv = [
