@@ -57,6 +57,23 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   ```
 
 - [P2 StageResult and integrity-receipt scope](docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md).
+- **P2.1 real Q25 offline gate execution:** On a *second, exactly pinned
+  experiment checkout* the Harness now executes the genuine Q25
+  `offline_replay()` source/structural validator for the original KITE-01
+  and GREENHOUSE-01 raw model outputs. KITE remains source-bound candidates,
+  GREENHOUSE's **original paid rejection remains RED** despite a later
+  no-cost offline structural replay with citation-order normalization.
+  Neither is full StoryState or semantic acceptance.
+- Reproduce the two source-bound checks (requires a local checkout at
+  `2eb3d825b5baf8f0f16ccb23805f619d433c7236` and Pydantic V2):
+
+  ```bash
+  python -m src.story_harness_p21 --repo-root . \\
+    --pinned-q25-root /path/to/strictly-pinned-q25-checkout \\
+    --verify-report evidence/story_harness_p21/pinned-real-q25-offline-replay.json
+  ```
+
+- [P2.1 real Q25 version-pinned gate and recorded boundaries](docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 
