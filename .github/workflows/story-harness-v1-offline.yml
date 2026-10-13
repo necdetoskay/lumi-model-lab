@@ -35,6 +35,7 @@ on:
       - src/story_harness_p418_compat_probe.py
       - src/story_harness_p419_rich_schema_probe.py
       - src/story_harness_p420_recover_spine.py
+      - src/story_harness_p422_independent_audit.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -64,6 +65,7 @@ on:
       - tests/test_story_harness_p418_compat_probe.py
       - tests/test_story_harness_p419_rich_schema_probe.py
       - tests/test_story_harness_p420_recover_spine.py
+      - tests/test_story_harness_p422_independent_audit.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -905,3 +907,18 @@ jobs:
           assert x['spine_recovered'] is False
           print('P420_PROVIDER_CONTENT_RECOVERY_OFFLINE_GREEN')
           PY25
+
+      - name: Verify genuine r06-only immutable story and original Spine quality source contract
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -v
+          python -m src.story_harness_p422_independent_audit > /tmp/story-harness-p422.json
+          python - <<'PY26'
+          import json
+          row=json.load(open('/tmp/story-harness-p422.json'))
+          assert row['schema']=='lumi.story-harness-p422-independent-initial-audit.v1'
+          assert row['provider_model_calls']==0
+          assert row['stage_cap_usd']=='0.040'
+          assert row['strict_spine_source_required'] is True
+          assert row['english_master_authorized'] is False
+          print('P422_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY26
