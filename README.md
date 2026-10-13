@@ -119,6 +119,17 @@ python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --re
   Real English Master sealing and Q25 stay **DENIED** until a separate
   source-pinned real semantic-quality acceptance. [P4.0 preflight](docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md)
   · [issue #284](https://github.com/necdetoskay/lumi-model-lab/issues/284).
+- **P4.1 English Master seal evidence contract (mechanical simulation only):**
+  the real frozen v21 runtime is replayed with isolated mocked model replies
+  for the 1-call clean and 3-call single-repair positive paths. Strict typed
+  seal candidate and read-only Q25 request *preview* contracts now validate
+  same-story IDs/hashes, bounded usage/ledger, audit scope and immutable
+  identities. Neither the synthetic `ACCEPT` nor an unreviewed candidate
+  can produce a real seal or Q25 admission; all real trust registries remain
+  empty. Result: `REAL_ENGLISH_MASTER_EVIDENCE_UNAVAILABLE`, **no provider
+  spend, English Master, Q25 or state commit**.
+  [P4.1 scope](docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md)
+  · [issue #285](https://github.com/necdetoskay/lumi-model-lab/issues/285).
 - Future work: independently authenticated real gate receipts, then bounded
   model registry and executable stage adapters, each on new qualified versions.
 

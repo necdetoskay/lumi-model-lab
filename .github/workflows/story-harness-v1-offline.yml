@@ -12,6 +12,7 @@ on:
       - src/story_harness_p31.py
       - src/story_harness_p32.py
       - src/story_harness_p40.py
+      - src/story_harness_p41.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -21,12 +22,14 @@ on:
       - tests/test_story_harness_p31.py
       - tests/test_story_harness_p32.py
       - tests/test_story_harness_p40.py
+      - tests/test_story_harness_p41.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
       - configs/story_harness_p31_pinned_quality_cohort.json
       - configs/story_harness_p32_english_master_admission.json
       - configs/story_harness_p40_v21_producer_preflight.json
+      - configs/story_harness_p41_seal_trust_registry.json
       - evidence/story_harness_p1/**
       - evidence/story_harness_p2/**
       - evidence/story_harness_p21/**
@@ -35,6 +38,7 @@ on:
       - evidence/story_harness_p31/**
       - evidence/story_harness_p32/**
       - evidence/story_harness_p40/**
+      - evidence/story_harness_p41/**
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
@@ -44,6 +48,7 @@ on:
       - docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md
       - docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md
       - docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md
+      - docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -318,3 +323,29 @@ jobs:
           assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
           print('STORY_HARNESS_P40_BOUNDED_PRODUCER_PRECHECK_GREEN')
           PY6
+
+      - name: Verify English Master positive mechanics and deny untrusted Q25 admission
+        env:
+          STORY_HARNESS_PINNED_P41_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p41.py' -v
+          python -m src.story_harness_p41 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P41_ROOT" > /tmp/story-harness-p41-proof.json
+          python -m src.story_harness_p41 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P41_ROOT" \
+            --verify-report evidence/story_harness_p41/pinned-synthetic-seal-contract-receipt.json > /tmp/story-harness-p41-verified.json
+          cmp /tmp/story-harness-p41-proof.json /tmp/story-harness-p41-verified.json
+          python - <<'PY7'
+          import json
+          x=json.load(open('/tmp/story-harness-p41-proof.json'))
+          assert x['synthetic_positive_case_count'] == 2
+          assert x['synthetic_previews'][0]['validation']['synthetic_quality_call_count'] == 1
+          assert x['synthetic_previews'][1]['validation']['synthetic_quality_call_count'] == 3
+          assert all(t['q25_denial_request_preview_verified'] for t in x['synthetic_previews'])
+          assert x['stop_reason'] == 'REAL_ENGLISH_MASTER_EVIDENCE_UNAVAILABLE'
+          assert x['real_english_master_seal_emitted'] is False
+          assert x['q25_source_request_produced'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P41_SEAL_TRUST_BOUNDARY_GREEN')
+          PY7
