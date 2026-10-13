@@ -251,14 +251,14 @@ class BoundedOncePilot:
     def __init__(self, run_root, *, case_id, plan, run_variant='r01'):
         must(case_id in [c["id"] for c in plan["cases"]],
              "Case not in approved 10 input benchmark")
-        must(run_variant in ('r01','r02','r03','r04','r05'),
+        must(run_variant in ('r01','r02','r03','r04','r05','r06'),
              "Disallowed or reused paid one-shot run variant")
         must(type(run_root) in (str, Path), "Missing ledger directory")
         root = Path(run_root)
         must(root.is_dir() and not root.is_symlink(),
              "Create protected run root before pilot")
         self.case = next(c for c in plan["cases"] if c["id"] == case_id)
-        self.use_simple_envelope = run_variant in ('r04','r05')
+        self.use_simple_envelope = run_variant in ('r04','r05','r06')
         self.pack = compile_case(self.case)
         label = case_id.lower() + "-" + self.pack["pack_sha256"][:16]
         if run_variant != 'r01':
@@ -420,11 +420,27 @@ class BoundedOncePilot:
             self.cost += cost
             self.halted = False
             if stage == "SPINEFORGE":
+                # P4.21: freeze the FULL approved model output before Writer
+                # begins. A hash alone is not sufficient for independent
+                # future Spine fidelity auditing or state evidence.
+                self._write("spine-plan.json", {
+                    "schema": "lumi.story-harness-p421-real-spine-artifact.v1",
+                    "case_id": self.case["id"],
+                    "source_pack_sha256": self.pack["pack_sha256"],
+                    "spine_sha256": prepared["spine_sha256"],
+                    "provider_generation_id": generation_id,
+                    "provider_reported_cost_usd": format(cost, "f"),
+                    "spine": prepared["spine"],
+                    "original_semantic_quality_accepted": False,
+                    "english_master_authorized": False,
+                    "no_manual_spine_edits": True,
+                })
                 self.prepared_spine = prepared
                 return prepared
             self._write("story-draft.json", {
                 "schema": SCHEMA, "source_pack_sha256": self.pack["pack_sha256"],
                 "spine_sha256": expected["spine_sha256"],
+                "spine_artifact_path": "spine-plan.json",
                 "model": MODEL, "model_generated": True,
                 "quality_accepted": False,
                 "english_master_authorized": False,
@@ -593,7 +609,7 @@ def main():
     cli.add_argument("--case-id", default="B01")
     cli.add_argument("--run-root")
     cli.add_argument("--run-variant", default="r01",
-                     choices=("r01","r02","r03","r04","r05"))
+                     choices=("r01","r02","r03","r04","r05","r06"))
     args = cli.parse_args()
     if not args.paid_one_shot:
         print(json.dumps(public_offline_status(args.repo_root), sort_keys=True))
@@ -601,8 +617,8 @@ def main():
     must(os.getenv("LUMI_P417_ENABLE_PAID") == "ONE_SHOT_APPROVED_10_USD_USER_LIMIT",
          "Run-specific paid execution switch absent")
     must(args.case_id == "B01" and args.run_root and
-         args.run_variant == "r05",
-         "Paid higher-output-cap follow-up limited to B01 distinct r05 with durable claim")
+         args.run_variant == "r06",
+         "Paid full-Spine-persistence follow-up limited to B01 distinct r06 with durable claim")
     api_key = os.getenv(KEY_ENV, "")
     must(bool(api_key), "No pre-existing GitHub Actions OpenRouter inference secret")
     plan = load_plan(args.repo_root)
