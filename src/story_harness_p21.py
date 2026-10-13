@@ -200,17 +200,36 @@ def rerun_q25(*, manifest, repo_root, pinned_q25_root,
         "provider_cost_usd": "0",
     }
 
+def verify_pinned_report(candidate, *, manifest, repo_root,
+                         pinned_q25_root, python_executable=sys.executable):
+    """Do not trust a saved offline-stage receipt without executing the real gate."""
+    rebuilt = rerun_q25(
+        manifest=manifest, repo_root=repo_root,
+        pinned_q25_root=pinned_q25_root,
+        python_executable=python_executable,
+    )
+    if candidate != rebuilt:
+        raise HarnessStop("Saved Q25 gate replay receipt differs from recomputed real gate")
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo-root", default=".")
     parser.add_argument("--pinned-q25-root", required=True)
     parser.add_argument("--manifest", default="configs/story_harness_p1_frozen_import.json")
+    parser.add_argument("--verify-report", default=None)
     args = parser.parse_args()
     base = Path(args.repo_root).resolve(strict=True)
     manifest = load_json(secure_artifact(base, args.manifest))
-    print(json.dumps(rerun_q25(
+    result = rerun_q25(
         manifest=manifest, repo_root=base, pinned_q25_root=args.pinned_q25_root,
-    ), indent=2, sort_keys=True, ensure_ascii=False))
+    )
+    if args.verify_report is not None:
+        candidate = load_json(secure_artifact(base, args.verify_report))
+        if candidate != result:
+            raise HarnessStop("Saved Q25 gate replay receipt differs from recomputed real gate")
+    print(json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
