@@ -23,6 +23,7 @@ on:
       - src/story_harness_p47.py
       - src/story_harness_p48.py
       - src/story_harness_p48_offline_runner.py
+      - src/story_harness_p49.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -40,6 +41,7 @@ on:
       - tests/test_story_harness_p46.py
       - tests/test_story_harness_p47.py
       - tests/test_story_harness_p48.py
+      - tests/test_story_harness_p49.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
       - configs/story_harness_p1_frozen_import.json
@@ -87,6 +89,7 @@ on:
       - docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md
       - docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md
       - docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md
+      - docs/canonical/STORY_HARNESS_P49_PAID_READINESS_PACKET.md
       - README.md
       - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
@@ -578,3 +581,29 @@ jobs:
           assert x['stop_reason'] == 'P48_OFFLINE_NEW_STORY_ADAPTER_BOUND_PAID_DISABLED'
           print('STORY_HARNESS_P48_NEW_STORY_ADAPTER_QUALIFIED_GREEN')
           PY14
+
+      - name: Verify source-bound real paid readiness remains blocked
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p49.py' -v
+          python -m src.story_harness_p49 --repo-root . > /tmp/story-harness-p49-a.json
+          python -m src.story_harness_p49 --repo-root . > /tmp/story-harness-p49-b.json
+          cmp /tmp/story-harness-p49-a.json /tmp/story-harness-p49-b.json
+          python - <<'PY15'
+          import json
+          x=json.load(open('/tmp/story-harness-p49-a.json'))
+          assert x['full_story_word_count'] == 2491
+          assert x['full_bridge_scene']['count'] == 45
+          assert x['provisional_scene_repair']['count'] == 37
+          assert x['provisional_scene_repair']['human_reapproved'] is False
+          assert x['conditional_old_input_plus_max_output_cost_usd'] == '0.123178'
+          assert x['proposed_limit_is_approved_grant'] is False
+          assert len(x['blockers']) == 5
+          assert x['paid_dispatch_possible'] is False
+          assert x['independent_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['new_provider_calls'] == 0 and x['new_provider_cost_usd'] == '0'
+          assert x['stop_reason'] == 'P49_SOURCE_VERIFIED_LIVE_PAID_ATTEMPT_NOT_READY'
+          print('STORY_HARNESS_P49_PAID_READINESS_FAIL_CLOSED_GREEN')
+          PY15
