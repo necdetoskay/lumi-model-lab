@@ -20,7 +20,7 @@ from src.story_harness_p417_live_pilot import (
 from src.story_harness_p422_independent_audit import (
     SCHEMA as AUDIT_SCHEMA, STAGE_COST_CAP, audit_wire, verify_auditor_reply
 )
-from src.story_harness_p438_b05_age12 import source_case, SOURCE_SHA
+from src.story_harness_p443_b05_age12 import source_case, SOURCE_SHA
 from src.story_harness_v1 import HarnessStop
 
 SCHEMA = "lumi.story-harness-p444-b05-independent-age12-quality.v1"
