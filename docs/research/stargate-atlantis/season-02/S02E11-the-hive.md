@@ -3,9 +3,9 @@ series: "Stargate Atlantis"
 season: 2
 episode: 11
 title_original: "The Hive"
-status: pending_research
-word_count: 0
-source_verified: false
+status: draft
+word_count: 225
+source_verified: true
 spoilers: true
 ---
 
@@ -13,9 +13,15 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-_Bölüm bazlı kaynak araştırması ve özgün 250–400 kelimelik özet henüz tamamlanmadı._
+Wraith kovan gemisindeki başarısız baskının ardından Sheppard, Teyla, Ronon ve Ford esir tutulmaktadır. Kraliçe Sheppard'ı sorgulayıp Atlantis hakkında bilgi almaya çalışır. Sheppard hiçbir şey söylemeyince arkadaşlarının hücresine geri gönderilir. Teyla, zihinsel bağlantısından ikinci bir kovan gemisinin yaklaştığını anlar. İki dev gemi kısa süre sonra nüfusu yüksek bir dünyayı avlayacaktır. Esirler ilk kaçış fırsatında hücrelerinden çıkar; ancak Sheppard koridorda koza içinde tutulan Neera adlı kadını görür ve kurtarmak için durur. Bu gecikme yüzünden hepsi yeniden yakalanır.
+
+Ford'un saklandığı gezegende tutulan McKay ise enzime bağımlı muhafızların arasından çıkmak için büyük miktarda Wraith enzimi kullanır. Madde ona kısa süreli olağanüstü güç verir, böylece gardiyanları geçip Atlantis'e ulaşır. Ancak döndükten sonra ağır yoksunluk geçirir; Beckett'in müdahalesi sayesinde hayatta kalır. McKay, Weir'e Sheppard'ın içinde bulunduğu tehlikeyi ve Wraith gemilerinin gideceği adresi anlatır. Daedalus kurtarma görevine çıkar.
+
+Sheppard'ın Neera'yla görüşmeleri sırasında kadının sıradan bir esir olmadığı belirginleşir. Wraithlerin kendi aralarındaki rekabeti öğrenen Sheppard, yaklaşan iki kovanın birbirine güvenmediğini kullanmaya karar verir. Gemiler çatışmaya sürüklenir. Daedalus uzayda muazzam bir patlama saptar ve Atlantis ekibinin öldüğünü düşünür. Fakat Sheppard, Teyla ve Ronon bir Wraith Dart'ıyla uzaklaşmıştır. Bir uzay geçidinden başka gezegene yönelip orada insan hâllerine geri dönerek Atlantis'e ulaşırlar.
+
+Ford en son patlayan geminin içindeyken görülmüştür. Sheppard onun kesin öldüğünü kabul etmez. Hayatta kalanların dönüşü sevinç yaratırken düşman kovanlarının da birbirlerine saldırabileceği anlaşılır. Bu keşif, Pegasus'taki büyük savaş için yeni bir stratejik fırsattır.
 
 ## Kaynaklar
 
-- [GateWorld — The Hive](https://www.gateworld.net/atlantis/s2/the-hive/)
-- [GateWorld Atlantis — 2. sezon](https://www.gateworld.net/atlantis/s2/)
+- [GateWorld — bölüm sayfası](https://www.gateworld.net/atlantis/s2/the-hive/)
+- [StargateWiki — bölüm rehberi](https://stargate-sg1-solutions.com/wiki/SGA_2.11_%22The_Hive_Part_2%22_Episode_Guide)
