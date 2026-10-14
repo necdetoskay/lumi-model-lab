@@ -27,6 +27,7 @@ FILES = (
     "src/story_harness_p424_q25_evidence.py",
     "src/story_harness_p425_final_state_draft.py",
     "src/story_harness_cohort_source_v1.py",
+    "src/story_harness_cohort_stages_v1.py",
     "src/story_harness_cohort_analysis_v1.py",
     "src/story_harness_frozen_cohort_v1.py",
     "src/story_harness_frozen_round_v1.py",

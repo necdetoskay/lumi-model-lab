@@ -31,9 +31,9 @@ def prepare_quality_request(source):
     """B07 original bytes need their exact historical 22000 byte exception."""
     must(type(source) is dict and source.get("case_id") in
          {f"B{i:02d}" for i in range(1, 11)}, "CASE_UNREGISTERED")
-    bound = (22000 if source["case_id"] == "B07" and
-             source["story"].get("word_count") == 2708 else 20000)
-    request = audit_wire(source, max_request_bytes=bound)
+    # One exact 40k cap for ALL ten cases, not age/story-specific adjustment.
+    request = audit_wire(source, max_request_bytes=40000,
+                         cohort_explicit=True)
     must(request["stream"] is False and
          request["provider"]["allow_fallbacks"] is False,
          "QUALITY_ROUTING_CHANGED")
@@ -75,7 +75,8 @@ def prepare_real_q25_request(bundle):
          bundle["source"]["story"]["story_sha256"] and
          bundle["master"]["manual_text_edits"] == 0,
          "MASTER_OR_SOURCE_DRIFT")
-    request = extraction_wire(bundle)
+    request = extraction_wire(bundle, max_request_bytes=40000,
+                              cohort_explicit=True)
     must(request["stream"] is False and
          request["provider"]["allow_fallbacks"] is False,
          "Q25_ROUTING_CHANGED")

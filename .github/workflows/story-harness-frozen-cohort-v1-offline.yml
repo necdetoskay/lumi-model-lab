@@ -14,6 +14,8 @@ on:
       - 'tests/test_story_harness_frozen_round_v1.py'
       - 'src/story_harness_cohort_stages_v1.py'
       - 'tests/test_story_harness_cohort_stages_v1.py'
+      - 'src/story_harness_p422_independent_audit.py'
+      - 'src/story_harness_p424_q25_evidence.py'
       - 'docs/canonical/STORY_HARNESS_FROZEN_COHORT_V1.md'
       - '.github/workflows/story-harness-frozen-cohort-v1-offline.yml'
   workflow_dispatch:
@@ -51,6 +53,8 @@ jobs:
           python -m unittest discover -s tests -p 'test_story_harness_frozen_round_v1.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_cohort_stages_v1.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_p415_benchmark.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -q
           python -m src.story_harness_frozen_cohort_v1 > "$RUNNER_TEMP/lumi-cohort-v1-offline-report.json"
           python - <<'PY'
           import json, os

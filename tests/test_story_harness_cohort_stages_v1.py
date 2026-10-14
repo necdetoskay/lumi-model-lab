@@ -106,6 +106,44 @@ class CommonStagesTests(unittest.TestCase):
                              bundle["source"]["pack"]["unknown_facts"])
             self.assertFalse(final["independent_state_semantics_certified"])
 
+
+    def test_long_age_25_and_age_40_stories_use_uniform_complete_40k_bound(self):
+        from src.story_harness_p422_independent_audit import audit_wire
+        from src.story_harness_p424_q25_evidence import extraction_wire
+        from src.story_harness_p410 import canonical_json
+        for age, case_id in ((25, "B08"), (40, "B09")):
+            case = next(c for c in load_plan()["cases"] if c["id"] == case_id)
+            pack = compile_case(case)
+            long_story = "A decision has consequences. " * 2500
+            long_story = " ".join(long_story.split()[:2650])
+            fake_source = {
+                "case_id": case_id, "pack": pack,
+                "spine": {"spine_sha256": "a" * 64,
+                          "spine": {"spine_summary": "Original frozen plan",
+                                    "beats": []}},
+                "story": {"story_sha256": hashlib.sha256(long_story.encode()).hexdigest(),
+                          "word_count": 2650, "story_text": long_story}
+            }
+            self.assertTrue(1800 <= len(long_story.split()) <= 2800)
+            with self.assertRaises(HarnessStop):
+                audit_wire(fake_source)
+            expanded = prepare_quality_request(fake_source)
+            self.assertIn(long_story, expanded["messages"][1]["content"])
+            self.assertLess(len(canonical_json(expanded)), 40000)
+            with self.assertRaises(HarnessStop):
+                audit_wire(fake_source, max_request_bytes=40000)
+            mock_bundle = {
+                "schema": "lumi.story-harness-cohort-common-stages.v1",
+                "source": fake_source, "english_master_text": long_story,
+                "master": {"source_story_sha256": fake_source["story"]["story_sha256"],
+                           "manual_text_edits": 0}
+            }
+            request = prepare_real_q25_request(mock_bundle)
+            self.assertIn(long_story, request["messages"][1]["content"])
+            self.assertLess(len(canonical_json(request)), 40000)
+            with self.assertRaises(HarnessStop):
+                extraction_wire(mock_bundle, max_request_bytes=40000)
+
     def test_rejection_never_creates_master_and_state_lineage_cannot_swap(self):
         with tempfile.TemporaryDirectory() as td:
             source = source_b07(td)

@@ -102,7 +102,7 @@ def load_source(repo_root, producer_claim_root, *, case_id=DEFAULT_CASE,
             "original_claim_id":claim.name}
 
 
-def audit_wire(source, *, max_request_bytes=20000):
+def audit_wire(source, *, max_request_bytes=20000, cohort_explicit=False):
     pack,story,spine=source["pack"],source["story"],source["spine"]
     system=(
         "You are a SEPARATE adversarial literary and Canon auditor, not the "
@@ -166,12 +166,22 @@ def audit_wire(source, *, max_request_bytes=20000):
                    "_independent_initial_audit_v1",
             "strict":True,"schema":schema}},
     }
-    must(type(max_request_bytes) is int and max_request_bytes in (20000, 22000),
+    # Historic 20k limit and B07-specific 22k exception stay unchanged.
+    # Only the NEW preregistered cohort may use one uniform 40k byte limit;
+    # no truncation, per-story override or changed historical model prompt.
+    must(type(max_request_bytes) is int and
+         max_request_bytes in (20000, 22000, 40000),
          "Unreviewed audit request ceiling")
-    if max_request_bytes != 20000:
+    if max_request_bytes == 22000:
         must(source.get("case_id") == "B07" and pack["reader_age"] == 25
-             and story.get("word_count") == 2708,
+             and story.get("word_count") == 2708 and
+             cohort_explicit is False,
              "Extended audit request bound is B07 original only")
+    if max_request_bytes == 40000:
+        must(cohort_explicit is True and
+             source.get("case_id") in {f"B{i:02d}" for i in range(1, 11)} and
+             pack.get("reader_age") in (4, 10, 12, 25, 40),
+             "40k bound requires uniform sealed-cohort protocol")
     must(len(canonical_json(body)) < max_request_bytes, "Unbounded quality request")
     return body
 

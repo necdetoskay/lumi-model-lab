@@ -119,7 +119,7 @@ def allowed_relations_for_canon(canon):
     return values
 
 
-def extraction_wire(bundle):
+def extraction_wire(bundle, *, max_request_bytes=24000, cohort_explicit=False):
     source=bundle["source"]
     pack, spine=source["pack"],source["spine"]
     canon=pack["canonical_state"]
@@ -199,7 +199,18 @@ def extraction_wire(bundle):
                    "_q25_evidence_proposal_v1",
             "strict":True,"schema":response_schema}},
     }
-    must(len(canonical_json(body))<24000,"Q25 prompt exceeds bounded size")
+    # Historic Q25 24k cap is unchanged. Uniform 40k cohort-only bound
+    # retains the COMPLETE English Master; no story-specific truncation.
+    must(type(max_request_bytes) is int and
+         max_request_bytes in (24000, 40000),
+         "Unreviewed Q25 request ceiling")
+    if max_request_bytes == 40000:
+        must(cohort_explicit is True and
+             source.get("case_id") in {f"B{i:02d}" for i in range(1, 11)} and
+             pack.get("reader_age") in (4, 10, 12, 25, 40),
+             "Q25 40k bound requires uniform frozen-cohort protocol")
+    must(len(canonical_json(body))<max_request_bytes,
+         "Q25 prompt exceeds bounded size")
     return body
 
 

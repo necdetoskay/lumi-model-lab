@@ -58,3 +58,7 @@ The new offline-only runner at src/story_harness_frozen_round_v1.py simulates a 
 ## Generalized downstream stage validators (offline)
 
 The new src/story_harness_cohort_stages_v1.py reuses the original source-bound P4.22 audit request/verifier, the generic portion of P4.23 English Master qualification, P4.24 Q25 request/response verifier and a case-independent evidence-only Final State projection. Historic B07 immutable genuine producer bytes are replayed through the full common stage interface, while QUALITY and Q25 responses are explicitly MOCKED in unit tests. None of these offline mocks counts as a genuine independent ACCEPT. The wrappers do not themselves authorize provider calls or attest external provider origin. Sealed, original quality/provider response bytes and a generic paid orchestration grant remain separate exit gates before freezing the first paid cohort.
+
+## Uniform complete-message payload limit before freeze
+
+Historical quality limits (20,000 bytes default; exact original B07 22,000-byte exception) and historical Q25 24,000-byte default are retained. A NEW explicit 40,000-byte serialized request allowance applies uniformly to all ten frozen-cohort cases, provided the caller opts into cohort_explicit=True. This is a single preregistered harness rule, not a mid-test adjustment. The original complete manuscript, Canon and Spine stay in the request; no truncation or omission. All per-stage output/cost constraints remain unchanged. Negative tests ensure legacy callers cannot borrow the extended size without the cohort protocol.
