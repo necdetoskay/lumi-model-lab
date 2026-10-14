@@ -57,7 +57,7 @@ class P458OfflineTests(unittest.TestCase):
 class P458ProtectedOriginalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.root=Path(os.environ["RUNNER_WORKSPACE"]) / "_lumi_p457_b07_story_claims"
+        cls.root=Path(os.environ["RUNNER_WORKSPACE"]) / "_lumi_p455_b07_story_claims"
         cls.source=get_original_B07(".", cls.root)
 
     def test_true_original_b07_provenance_and_age_sensitive_audit_wire(self):
