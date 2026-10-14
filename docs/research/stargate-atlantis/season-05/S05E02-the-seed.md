@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 2
 title_original: "The Seed"
-status: draft
-word_count: 233
+status: complete
+word_count: 265
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sorunu çözmek için stazda tutulan Carson Beckett klonunun uyandırılmasına 
 Yayılma şehrin altyapısını tehdit ettiğinde Woolsey sert bir kararla organizmanın bulunduğu bölgeyi yok etmeyi gündeme getirir. Sheppard ile McKay Keller'ı terk etmeyi reddeder. Beckett elindeki deneysel malzemelerle yaratığın genetik dengesini bozabilecek tedavi hazırlar. Zaman ilerledikçe koridorlar sarmaşıklarla kapanır; şehir hayatı tehlikeye girer. Tedavinin Keller'a ulaşması için ekip büyük risk alarak enfekte bölgeye girer.
 
 Beckett'ın müdahalesi sonunda yabancı dokunun büyümesini durdurur. McKay ve Sheppard enerji hatlarını kurtarırken Keller yeniden bilincini kazanır. Karantina kaldırılır. Woolsey, yazılı güvenlik kurallarını uygulamakla doktoru kurtarmak arasında yaşadığı çatışmanın ardından Atlantis'in gerçek krizlerinin masa başı prosedürlerle çözülemeyeceğini anlamaya başlar. Beckett ise geçici olarak hizmete dönmüş olsa bile klon bedeninin sağlık sorunu sürmektedir.
+
+Michael'ın biyolojik deneylerinin etkisi onun ölümünden bağımsız şekilde sürmektedir. Keller'in hastalığı gen değiştirmenin ne denli öngörülemez sonuçlar verebileceğini gösterir. Woolsey için ilk günlerinde alınacak karar personelinin güvenini kazanıp kazanamayacağını da belirleyen sınavdır.
 
 ## Kaynaklar
 

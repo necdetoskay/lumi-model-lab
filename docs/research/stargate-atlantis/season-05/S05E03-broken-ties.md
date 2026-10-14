@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 3
 title_original: "Broken Ties"
-status: draft
-word_count: 234
+status: complete
+word_count: 270
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard'ın ekibi gelen istihbaratla terk edilmiş köye ulaşır. Ronon orada 
 Wraith tesisine giren ekibin planı bozulur. Ronon artık Wraithlerin etkisi altındadır; kendisini kurtarmaya gelen arkadaşlarına saldırır. Tyre onunla karşı karşıya gelerek eski arkadaşlıklarını hatırlatmaya çalışır. Teyla ve McKay rehin askerleri serbest bırakıp kaçış yolu açar. Tyre tesiste saklanan patlayıcıların yerini kullanarak Wraith komutanının kaçmasını engeller. Sonunda Ronon sersemletilip Jumper'a taşınır.
 
 Tyre kaçışa katılmak yerine C-4'leri patlatır; Wraith araştırma merkezini yok ederek kendisini feda eder. Atlantis'e dönen Ronon, aynı ölümcül bağımlılıktan kurtulmak için uzun ve acı veren tedaviye girer. Arkadaşları onun yanında kalır. Teyla da doğum sonrası izin sürecini yeniden değerlendirerek Sheppard'ın ekibine resmen dönmek ister. Bölüm, dostluğu bozabilecek bağımlılığın kişisel fedakârlıkla sona erdirilebileceğini gösterir.
+
+Tyre'nin eski arkadaşına ihanet etmesi Wraith bağımlılığının insanların değerlerini nasıl değiştirebileceğini gösterir. Sonunda Ronon'u kurtarmak için kendisini feda etmesi ise iradesini yeniden kazandığını kanıtlar. Ronon'un iyileşmesi kısa sürede gerçekleşmez; arkadaşlıklarına ilişkin hatıralar tedaviyi sürdürmesinde yardımcı olur.
 
 ## Kaynaklar
 

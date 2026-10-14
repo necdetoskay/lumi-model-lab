@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 5
 title_original: "Ghost in the Machine"
-status: draft
-word_count: 235
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Mesajdaki bilinç, fiziksel bedeninin artık bulunmadığını ve Asuran ağınd
 Yabancı bilinçler sistemlere girerek şehri ele geçirmeye başlayınca ekip karar vermek zorunda kalır. Weir'in sözde zihni, arkadaşlarının yaşamını korumak istediğini ve diğer asiliklerin de onun düşüncesini dinleyeceğini açıklar. Ancak bütün varlıkların aynı iyi niyeti taşımadığı ortaya çıkar. McKay'le anlaşmayı kabul eden Weir, beden kazanma projesini yürütürken kendi grubunun saldırganlaşmasını engellemek zorundadır.
 
 Ekip, yeni varlıkları doğrudan şehrin bilgisayarlarına serbest bırakmak yerine ayrı sistemde tutmayı başarır. Weir kendi özgürlüğünden vazgeçerek diğer bilinçlerin zarar vermeyeceği bir yere gönderilmeyi kabul eder. Geçit üzerinden uzak dünyaya gönderilen yapay bedenler Atlantis'i terk eder. Sheppard ve McKay bir kez daha Weir'e veda eder. Orijinal liderin anıları makinede yaşayabilmiş olsa da kendisini insan olarak geri getirmek mümkün olmamıştır.
+
+Weir'e benzeyen bilincin söyledikleri gerçek anıları içerdiğinden arkadaşlarının onu kolayca reddetmesi mümkün değildir. Buna rağmen bağımsız hareket eden nanomakineler şehir için ölümcül güvenlik tehdidi oluşturmaktadır. Bu veda, insan kişiliğiyle onun teknolojik bir kopyası arasındaki sınırı yeniden düşündürür.
 
 ## Kaynaklar
 

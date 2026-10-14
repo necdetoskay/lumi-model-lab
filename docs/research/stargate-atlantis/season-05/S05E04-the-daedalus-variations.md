@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 4
 title_original: "The Daedalus Variations"
-status: draft
-word_count: 241
+status: complete
+word_count: 280
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ekip başka paralel evrenlerden gelen ölmüş Atlantis üyelerinin izlerini bul
 McKay, motorun her geçişte başka paralel evrene kilitlendiğini, belirli süre sonra kendisini yeniden çalıştırdığını açıklar. Geri dönme hesabı bu döngünün öngörülebilir olmasına bağlıdır. Ancak koruma alanı her saldırıda zayıflamaktadır. Ekip motoru onararak kendi dünyalarının enerji imzasını bulmaya uğraşır; yıldız ısısı ve yabancı askerlerle savaş aynı anda sürer.
 
 Sonunda McKay geçiş hesaplarını kullanarak motorun ürettiği atlamaları denetim altına alır. Daedalus, bilinen Atlantis yörüngesine doğru evrenler arasında geri götürülür. Ekip geminin tehlikeli deneysel sistemini devre dışı bırakıp Jumper'la Atlantis'e geçer. Kopya Daedalus geçmişteki bir başka McKay'nin tasarımıdır; onun mürettebatının kayboluşu teknolojiyi kullanmanın bedelini gösterir. Kendi gemilerine kavuşmuş olmaları, başka gerçekliklerde benzer felaketlerin yaşanmaya devam etmediğini garanti etmez.
+
+Diğer evrenlerde Atlantis'in saldırı altında olması, galaksiler arası savaşların farklı sonuçlar doğurabildiğini gösterir. Makinelerin her atlayışta biraz daha zorlanması, ekibin doğru fizik hesaplarını bulamazsa sonsuza dek kaybolacağı anlamına gelmektedir. Kendi gerçekliklerine dönmek için bütün personelin farklı alanlarda çalışması gerekir.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 1
 title_original: "Search and Rescue"
-status: draft
-word_count: 239
+status: complete
+word_count: 277
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Michael'ın gemisinde Teyla doğum yapmak üzeredir. Kanan artık Michael'ın zi
 Sheppard ağır yaralı hâlde enkazdan çıkarılır. Kısa süre sonra Daedalus kruvazörle çatışırken Sheppard da arkadaşlarını kurtarmak için gemiye alınır. Teyla doğum yapar; bir erkek çocuk dünyaya getirir. Kanan, Michael'ın kontrolünden kurtulabilmek için büyük çaba harcar. Atlantis askerleri kruvazöre sızıp Teyla ile bebeğine ulaşır. Michael çatışmadan kaçar, ancak rehineleri elinde tutamaz. Sheppard ve ekip arkadaşları hayatta kalır.
 
 Atlantis'e dönüşte Teyla oğluna Torren John adını verir. Carter yeni komuta düzenlemesi nedeniyle Dünya'ya çağrılır; Uluslararası Denetim Kurulu Richard Woolsey'yi Atlantis'in yeni yöneticisi olarak atar. Ekip büyük sevinç yaşasa da Michael kaçtığı için tehlike devam etmektedir. Teyla artık yalnız Pegasus halkını değil yeni doğmuş çocuğunu da korumak zorundadır. Bu bölüm dördüncü sezonun ölümcül tuzağını çözerken şehrin liderliğinde yeni dönemi başlatır.
+
+Carter'ın liderliğindeki kurtarma operasyonu, yıkılmış üste yaralı arkadaşları aramakla düşman kruvazörünü durdurma görevini aynı anda yürütür. Kanan'ın zihinsel baskıdan kurtulma çabası da Teyla'nın gelecekteki ailesi açısından belirleyicidir. Torren'in doğumu hem savaşın hem yeni Atlantis yönetiminin başlangıcına denk gelir.
 
 ## Kaynaklar
 
