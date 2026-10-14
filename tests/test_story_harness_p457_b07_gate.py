@@ -70,12 +70,14 @@ class P457GateTests(unittest.TestCase):
         path = REPO / ".github/workflows/story-harness-p457-b07-paid-gate.yml"
         data = path.read_text(encoding="utf-8")
         self.assertIn("configs/story_harness_p457_b07_trigger.json", data)
-        self.assertIn("github.run_attempt == 1", data)
-        self.assertIn("github.event.action == 'synchronize'", data)
+        self.assertNotIn("github.run_attempt == 1", data)
+        self.assertNotIn("github.event.action == 'synchronize'", data)
         self.assertIn("git", data)
         self.assertIn("--paid-once", data)
         self.assertIn("if-no-files-found: warn", data)
-        self.assertNotIn("workflow_dispatch:", data)
+        self.assertIn("on:\n  workflow_dispatch:", data)
+        self.assertIn("if: ${{ false }}", data)
+        self.assertNotIn("\n  pull_request:", data)
         self.assertNotIn("cancel-in-progress: true", data)
         self.assertIn("P457_B07_READY_NO_POST", data)
 

@@ -29,3 +29,5 @@ Historical 16 offline Story Harness workflows are now source-branch push filters
 - No further paid stage until independent quality and explicit budget revalidation.
 
 Acceptance: P4.56 offline CI must finish SUCCESS; queued/skipped is not sufficient. The B07 grant must be the only HEAD file modification.
+## Post-generation archival
+P4.57 run #38611801159 completed with immutable B07 model receipts and $0.093066 reported provider charges. The consumed P4.57 workflow is retired with job-level false guard; no PR update may launch the original B07 generation again. New work is independent quality P4.58 only.
