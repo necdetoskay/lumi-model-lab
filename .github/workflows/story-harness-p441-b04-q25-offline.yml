@@ -1,0 +1,41 @@
+name: Story Harness P4.41 B04 Q25 Offline Readiness
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p441-b04-q25-offline.yml
+      - src/story_harness_p441_b04_q25.py
+      - tests/test_story_harness_p441_b04_q25.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p441-b04-q25-readiness
+  cancel-in-progress: true
+
+jobs:
+  b04-source-master-q25-offline:
+    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove B04 Master and source-scoped Q25 fake-only fail-closed
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p441_b04_q25.py' -v
+          python -m src.story_harness_p441_b04_q25 > /tmp/p441-b04-q25-offline.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/p441-b04-q25-offline.json'))
+          assert r['case_id']=='B04' and r['provider_calls']==0
+          assert r['stage_cap_usd']=='0.050'
+          assert r['production_state_write_authorized'] is False
+          print('P441_B04_Q25_SOURCE_LOCKED_OFFLINE_GREEN')
+          PY
