@@ -25,5 +25,7 @@ class ManualExistingKeyWorkflow(unittest.TestCase):
         self.assertIn('method="GET"',y)
         self.assertIn("COHORT_DISPATCH_AUTHORIZED=FALSE",y)
         self.assertIn("MODEL_POSTS=0",y)
+        self.assertIn("KEY_PREVIOUS_USAGE_LE_15_60=",y)
+        self.assertIn("KEY_LIMIT_NEVER_RESETS=",y)
         self.assertIn("NoRedirect",y)
         self.assertIn("KEY_RAW_SECRET_OR_PROVIDER_LABEL_RECORDED=FALSE",y)

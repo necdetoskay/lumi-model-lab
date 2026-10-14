@@ -176,3 +176,12 @@ No provider GET or model POST took place. The prefreeze workflow now
 uses the already-provisioned self-hosted q25-offline runner rather than
 requiring new GitHub-hosted runner billing. This is a CI runner routing
 correction before B01, not an in-cohort Harness change.
+
+The authenticated GET job #38638962576 confirmed both insufficient
+existing key limit-policy protection (finite nonresetting <= $20 FALSE)
+and BYOK not included in that key's cap (FALSE). Remaining >= $4.40,
+usage metadata and required Anthropic model route passed. A guarded
+follow-up branch-only metadata GET will classify the *limit* issue into
+presence/range/reset and the historical used-amount feasibility of a
+$20 total key cap, using Boolean evidence ONLY. **No limit is being
+changed and no secret/account usage amount is printed.**
