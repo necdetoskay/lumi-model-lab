@@ -182,10 +182,15 @@ jobs:
     # Reuse dedicated offline-only LUMI runner. No provider secrets or model calls.
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: story-harness-main-offline-isolated
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: story-harness-main-offline-isolated
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
