@@ -3,9 +3,9 @@ series: "Stargate Atlantis"
 season: 5
 episode: 17
 title_original: "Infection"
-status: pending_research
-word_count: 0
-source_verified: false
+status: draft
+word_count: 234
+source_verified: true
 spoilers: true
 ---
 
@@ -13,9 +13,15 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-_Bölüm bazlı kaynak araştırması ve özgün 250–400 kelimelik özet henüz tamamlanmadı._
+Atlantis yörüngesine yaklaşan Wraith kovan gemisi acil yardım mesajı gönderir. Kayıtta Todd, Keller'ın geliştirdiği gen tedavisini gizlice ele geçirip kendi üzerinde denediğini söyler. Tedavi başlangıçta beslenme elinin kapanmasını sağlayarak insan yaşam enerjisine bağımlılığı ortadan kaldırmıştır. Todd bunun üzerine bütün mürettebatı tedavi etmiştir; ancak Wraithler kısa sürede ağır hastalanıp ölmeye başlamıştır. Hayatta kalanlar staz kapsüllerine girerken geminin kendi biyolojik yapısı da bozulmaya başlamıştır. Sheppard, Teyla, Ronon, McKay ve Keller araştırma için kovan gemisine gider.
+
+İçeride duvarlar kendiliğinden değişmekte, koridorlar kapanmakta ve bilgisayar sistemleri düzgün çalışmamaktadır. Tedavi Wraithlerin bağışıklığını bozmuş, hücrelerde kanser benzeri hızlı büyüyen hastalık başlatmıştır. Staz sırasında Wraith bedenleriyle geminin organik dokusu arasında sıvı alışverişi olduğundan enfeksiyon gemiye de yayılmıştır. Bazı askerler kapsüllerinden uyanır ve enerjiyle beslenemeyince öldürdükleri insanları doğrudan yemeye başlar. Atlantis ekibi ağır kayıplar vermeden kaçmanın yolunu arar.
+
+Todd uyandırıldığında hastalığın tedavi edilmediğini anlar. Eskiden bir Iratus kraliçe böceğinin hasta Wraithleri iyileştirebildiğini söyler. Fakat böyle bir canlıya ulaşmak günler sürecektir, gemi ise birkaç saat içinde parçalanacak durumdadır. Keller tedavi araştırmasını sürdürürken McKay kovanın denetimini geri kazanmaya çalışır. Güç sistemleri dağılır, gövde ortadan ikiye ayrılma tehlikesi yaşar. Sheppard kalan saldırgan Wraithleri etkisizleştirir.
+
+Todd son gücünü toplayarak gemiyi Atlantis'in bulunduğu okyanusa kontrollü biçimde düşürür. Kurtarma Jumperları mürettebatı çıkarır; biyolojik gemi kısa süre sonra batar. Todd ağır hasta kalır. Sheppard onun kendilerini kurtardığını hatırlatarak Woolsey'den serbest bırakılmasını ister. Todd geçitten Iratus kraliçesini aramak üzere ayrılır. Tedavi başarısız olsa da iki tarafın işbirliği tamamen sona ermemiştir.
 
 ## Kaynaklar
 
 - [GateWorld — Infection](https://www.gateworld.net/atlantis/s5/infection/)
-- [GateWorld Atlantis — 5. sezon](https://www.gateworld.net/atlantis/s5/)
+- [StargateWiki — Infection](https://stargate-sg1-solutions.com/wiki/SGA_5.17_%22Infection%22_Episode_Guide)
