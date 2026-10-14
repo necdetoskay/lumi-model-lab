@@ -105,10 +105,25 @@ def load_pilot_source(repo_root, claims_root, quality_root, master_root):
             "english_master_text":raw_text.decode("utf-8")}
 
 
+def allowed_relations_for_canon(canon):
+    # Do not ask Q25 to locate B02's cloud in B01 HOME/MEADOW.
+    locations=canon["locations"]
+    must(type(locations) is list and len(locations)>0,
+         "Q25 original canonical locations missing")
+    values={"HELD_BY_PROTAGONIST","WITH_PROTAGONIST","LAST_SEEN_UNKNOWN"}
+    values.update("AT_"+place for place in locations
+                  if type(place) is str and
+                  re.fullmatch(r"[A-Z_]{2,32}",place))
+    if "HOME" in locations:
+        values.add("AT_WINDOW")
+    return values
+
+
 def extraction_wire(bundle):
     source=bundle["source"]
     pack, spine=source["pack"],source["spine"]
     canon=pack["canonical_state"]
+    allowed=allowed_relations_for_canon(canon)
     system=(
         "You are an evidence-only read-only post-story State Extractor (Q25). "
         "Return a structured PROPOSAL, not a canonical state commit. This is "
@@ -127,8 +142,8 @@ def extraction_wire(bundle):
         "ownership field ALWAYS set to the exact string UNKNOWN. Do not "
         "infer ownership even if possession or affection is shown; later "
         "validation may determine an owner. Choose last_seen_relation from "
-        "EXACT allowed enum: HELD_BY_PROTAGONIST, AT_HOME, AT_MEADOW, "
-        "WITH_PROTAGONIST, LAST_SEEN_UNKNOWN, AT_WINDOW. No other values. "
+        "EXACT allowed enum: "+", ".join(sorted(allowed))+
+        ". No other values. "
         "The evidence_json must encode an object with EXACT fields: "
         "final_location {location_id, quote}, discovered_locations "
         "list of {location_id, quote}, object_observations list of "
@@ -147,6 +162,7 @@ def extraction_wire(bundle):
         "final quality gate and CANNOT authorize production state writes."
     )
     payload={
+        "case_id":source.get("case_id","B01"),
         "source_pack_sha256":pack["pack_sha256"],
         "story_sha256":source["story"]["story_sha256"],
         "spine_sha256":spine["spine_sha256"],
@@ -179,7 +195,8 @@ def extraction_wire(bundle):
                     "require_parameters":True,
                     "max_price":{"prompt":2,"completion":10}},
         "response_format":{"type":"json_schema","json_schema":{
-            "name":"lumi_b01_q25_evidence_proposal_v1",
+            "name":"lumi_"+source.get("case_id","B01").lower()+
+                   "_q25_evidence_proposal_v1",
             "strict":True,"schema":response_schema}},
     }
     must(len(canonical_json(body))<24000,"Q25 prompt exceeds bounded size")
@@ -249,7 +266,7 @@ def verify_candidate(bundle, answer):
             and type(o["object_name"]) is str
             and 3<=len(o["object_name"])<=80
             and type(o["last_seen_relation"]) is str
-            and o["last_seen_relation"] in ALLOWED_RELATIONS
+            and o["last_seen_relation"] in allowed_relations_for_canon(canon)
             and o["ownership"]=="UNKNOWN",
             "Q25 object cannot establish unproven ownership")
         _anchored(master,o["quote"])
@@ -308,7 +325,7 @@ def verify_model_response(bundle,response):
     source=bundle["source"]
     return {
         "schema":SCHEMA,
-        "case_id":"B01",
+        "case_id":source.get("case_id","B01"),
         "source_pack_sha256":source["pack"]["pack_sha256"],
         "spine_sha256":source["spine"]["spine_sha256"],
         "story_sha256":source["story"]["story_sha256"],
