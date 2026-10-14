@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 11
 title_original: "The Lost Tribe"
-status: draft
-word_count: 248
+status: complete
+word_count: 255
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Todd, Attero'nun Atlantis tarafından kasten açıldığını sanıp Daedalus'u 
 Todd, Daedalus'un uçuş bilgisayarını tesisle çarpışacak biçimde kilitler ve kendi küçük gemisiyle ayrılır. Mürettebat kontrolü geri alsa da otomatik rotayı durduramaz. Gezgin gemisi son anda Daedalus'un önünde hiperuzay penceresi açarak felaketi önler. Janus'un tesisinde McKay doğru kontrol kristalini sökerek Attero'yu durdurur. Daniel çatışmada ağır yaralanır; ikisi ışınlanarak kurtarılır. Sheppard Gezgin gemisinden ateş açıp aygıtı tümüyle yok eder.
 
 Atlantis, geçit ağından kalan yedek bir kapıyla iletişimini yeniden kurar. Daniel tedavi için Dünya'ya döner; Ronon, Keller'ın kalbinin başkasına yöneldiğini öğrenir. Vanirlerin tümü ortadan kalkmamıştır, ancak yıldız geçitlerini yok eden deneyleri sona erdirilmiştir.
+
+Dünya'yla bağlantıyı sağlayan kapı da değiştirilmek zorundadır.
 
 ## Kaynaklar
 

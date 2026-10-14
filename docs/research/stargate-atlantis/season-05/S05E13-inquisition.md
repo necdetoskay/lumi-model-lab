@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 13
 title_original: "Inquisition"
-status: draft
-word_count: 229
+status: complete
+word_count: 260
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard, insanların Atlantis sayesinde sayısız kere kurtarıldığını savu
 Woolsey, delillerin bağlamını açıklayarak Atlantis'in Replicatorları yok etmesinin galaksiyi daha büyük felaketten kurtardığını gösterir. Todd'la kurulan geçici ittifakın da zorunlu askerî strateji olduğunu savunur. Koalisyonun perde arkasında Genii etkisi bulunduğunu öğrenince kararsız yargıç Kelore'yle özel görüşür. Atlantis'in gelecekte galaktik siyasette daha etkin olması ve Kelore'nin bu işbirliğini temsil etmesi karşılığında desteğini kazanır.
 
 Oylamada Shiana suçlu, Dimas suçsuz kararı verir. Son oyu Kelore kullanır; sonuç beraattir. Atlantis ekibi serbest kalır. Woolsey sonradan Sheppard'a bu sonucu yalnız hukuk becerisiyle değil Kelore'ye verdiği siyasi vaatle elde ettiğini itiraf eder. Atlantis artık Pegasus halklarının yönetim ve savunma tartışmalarına çok daha yakından katılmak zorundadır.
+
+Bu karar Atlantis'in yalnız kendi askerlerinin güvenliğini değil, sayısız insan yerleşiminin siyasi geleceğini de değerlendirmesini zorunlu kılar. Woolsey'nin aldığı diplomatik risk, gerekirse daha fazla kaynak ve güvenlik sorumluluğu üstlenmeyi de kapsar.
 
 ## Kaynaklar
 
