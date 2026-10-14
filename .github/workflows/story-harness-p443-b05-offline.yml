@@ -1,0 +1,44 @@
+name: Story Harness P4.43 B05 Age12 Generation Offline
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p443-b05-offline.yml
+      - src/story_harness_p443_b05_age12.py
+      - tests/test_story_harness_p443_b05_age12.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p443-b05-source-generation-offline
+  cancel-in-progress: true
+
+jobs:
+  b05-real-source-mock-only:
+    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove original B05 12-year Canon and bounded no-retry Spine/Writer OFFLINE
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p443_b05_age12.py' -v
+          python -m src.story_harness_p443_b05_age12 > /tmp/lumi-p443-b05-offline.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/lumi-p443-b05-offline.json'))
+          assert r['case_id']=='B05' and r['reader_age']==12
+          assert r['source_pack_sha256']=='161089f1f94c0c833bc9bbfcce70d5632d7de3c637b2903af8c8b992f9d41cfb'
+          assert r['word_targets']=={'min':1600,'max':2500}
+          assert r['generation_cost_cap_usd']=='0.35'
+          assert r['provider_calls']==0 and r['paid_execution_enabled'] is False
+          assert r['production_state_write_authorized'] is False
+          print('P443_B05_AGE12_ORIGINAL_CANON_OFFLINE_GREEN')
+          PY
