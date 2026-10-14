@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 12
 title_original: "The Defiant One"
-status: draft
-word_count: 234
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Sheppard, McKay ve iki bilim insanı eski bir Kadim savunma uydusunu araştırma
 McKay ile Sheppard geminin komuta bölümünü incelerken Brendan Gall ve Abrams geride kalır. Birden canlı Wraith saldırır. Abrams öldürülür, Gall ise kısa sürede yaşlandırılıp koza içinde bırakılır. Sheppard ile McKay onu bulduklarında yaşadıkları dehşet açığa çıkar. Wraith bu sırada Jumper'a ulaşmıştır ve aracı çalıştırmaya uğraşmaktadır. Sheppard iletişim üzerinden onu dışarı çekerek savaşır, ancak sıradan mermiler ve patlayıcılar yaratığı öldürmeye yetmez. Gall, artık yaşlanmış hâliyle yaşamayı istemediğini söyleyerek kendi hayatına son verir; McKay arkadaşına yardım için ayrılır.
 
 Sheppard son anda enerji belirtileri gösteren küçük böceklerin yiyeceklere yaklaştığını hatırlar. Wraith kendisini öldürmeye hazırlanırken enerji barını ortaya atarak böcekleri düşmanın etrafında toplar. Atlantis'ten Weir'in sezgisiyle gönderilen Ford ve Teyla'nın kurtarma ekibi gezegene yaklaşmaktadır. Sheppard yoğun böcek kümesinin yerini işaretleyerek gelen Jumper'ın silahlarını hedefe yöneltir. Patlama Wraith'i sonunda yok eder. Sheppard ile McKay kurtarılır, ancak iki araştırmacı ölmüştür. İkili geri dönerken McKay'e Jumper'ı kullanma fırsatı verilir; görev, Kadim teknolojisi ararken karşılaşılabilecek uyuyan tehlikeleri ağır biçimde hatırlatır.
+
+Wraith'in çok uzun süre beslenerek hayatta kalmış olması, Pegasus savaşının eski enkazlarının bile ölümcül tehlike taşıdığını gösterir. Kadim silah uydusu çalıştırılamasa da içindeki teknoloji, Atlantis savunması açısından gelecekte yeniden incelenebilecek bir fırsattır.
 
 ## Kaynaklar
 

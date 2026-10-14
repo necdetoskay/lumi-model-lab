@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 11
 title_original: "The Eye"
-status: draft
-word_count: 232
+status: complete
+word_count: 261
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Genii komutanı Acastus Kolya, Atlantis'in kontrol odasını ele geçirmiş, Wei
 Kolya, Cowen'dan altmış asker daha getirterek Atlantis'i kalıcı biçimde işgal etmek ister. Sheppard kapı sistemini devre dışı bırakıp kontrol odasına baskın düzenler. Kolya askerlerin gelmesini sağlasa da Sheppard kapı kalkanını yeniden açar; geçitten geçmeye çalışan takviyelerin çoğu ölür. Kolya, Weir'in gerçekten hayatta olduğunu açıkladıktan sonra istasyonun onarılması için Sheppard'a on dakika süre tanır. Sheppard arkadaşını kurtarmak üzere işbirliği yapar; Ford ve Teyla da ona katılır. Weir ile McKay yıldırımlardan yararlanma düzenini tamamlar.
 
 Weir ve McKay, kalkanın çalışmadığına dair blöf yapınca Kolya şehirden çekilmeye karar verir. Fakat iki rehineyi de beraberinde götürmek ister. Sheppard kontrol odasına saldırıp askerleri etkisizleştirir. Kolya, Weir'i kalkan gibi kullanarak geçide yönelir; Sheppard onu vurur ve Kolya açık kapıdan düşerek ortadan kaybolur. Sora ise babası Tyrus'un ölümünden Teyla'yı sorumlu tutup onunla dövüşür. Teyla rakibini yense de öldürmez; baygın Beckett'i kurtarır. Son dakikada yıldırımlar şehrin sistemlerine aktarılır ve kalkan büyük dalgayı karşılar. Atlantis kurtulmuştur. Sora esir alınırken Kolya'nın hayatta kalıp kalmadığı bilinmemektedir.
+
+Sora'nın Teyla'ya saldırmasının nedeni, ilk Genii-Wraith görevinde babasının ölmesidir. Teyla'nın Sora'yı bağışlaması, Kolya'nın kontrol etmeye çalıştığı şiddet döngüsüne teslim olmamayı temsil eder. Kolya'nın düşmesi ise onun kesin ölümünü kanıtlamaz.
 
 ## Kaynaklar
 
