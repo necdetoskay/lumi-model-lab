@@ -14,4 +14,4 @@
 
 - Katalog: **100/100**
 - Tamamlanmış özet: **100/100**
-- Kontrol raporu: Araştırma ilerledikçe güncellenecek.
+- Kontrol raporu: [QUALITY_AUDIT.md](QUALITY_AUDIT.md) — **100/100 tam, kalite kapısı PASS**. Yapısal test tüm bölüm metinlerinin 250–400 kelime olduğunu ve metadata/kaynak bağlantılarını denetler.
