@@ -62,7 +62,8 @@ class StoryHarnessCIContract(unittest.TestCase):
                if not p.name.endswith(("-once.yml", "-one-shot.yml"))
                and p.name not in ("story-harness-p456-ci-guard.yml",
                                   "story-harness-p457-b07-paid-gate.yml",
-                                  "story-harness-p458-b07-quality-gate.yml")]
+                                  "story-harness-p458-b07-quality-gate.yml",
+                                  "story-harness-frozen-cohort-v1-offline.yml")]
         self.assertEqual(len(old), 16)
         for path in old:
             with self.subTest(workflow=path.name):

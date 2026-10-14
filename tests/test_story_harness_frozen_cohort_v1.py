@@ -39,6 +39,12 @@ class FrozenCohortTests(unittest.TestCase):
             with self.assertRaises(HarnessStop):
                 preflight(p)
 
+    def test_spent_b07_quality_grant_archived_no_second_provider_call(self):
+        gate = Path(".github/workflows/story-harness-p458-b07-quality-gate.yml").read_text()
+        self.assertIn("on:\\n  workflow_dispatch:", gate)
+        self.assertNotIn("  pull_request:", gate)
+        self.assertIn("    if: ${{ false }}", gate)
+
     def test_cap_cannot_exceed_explicit_20(self):
         self.mutate_policy("global_aggregate_budget_usd", "20.01")
 

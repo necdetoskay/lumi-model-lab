@@ -34,3 +34,7 @@ The user approved an increase of the **aggregate** LUMI Story Harness test ceili
 - `.github/workflows/story-harness-frozen-cohort-v1-offline.yml`: deterministic offline-only CI.
 
 **Next exit gate:** independently seal a complete real production-path-equivalent Harness V1.0, pin code and input SHA, reconcile real ledger, then authorize ten distinct paid attempts through a separately reviewed runner; no new model calls in this phase.
+
+## Previously consumed grant hygiene
+
+The original B07 P4.58 genuine quality call already returned ACCEPT in CI #38613825422. Its old PR-synchronize workflow was archived as `workflow_dispatch` with `if: ${{ false }}`, since GitHub PR path matching can retrigger old consumed grants when later commits modify unrelated files. The follow-on run #38617164730 failed **at the exact-file grant gate**; all quality/provider POST steps were skipped and this run did not create a second model call. Future cohort workflows must never inherit one-shot grants from historical branches.
