@@ -44,6 +44,7 @@ on:
       - src/story_harness_p428_b02_master.py
       - src/story_harness_p429_b02_q25.py
       - src/story_harness_p430_b02_final_state.py
+      - src/story_harness_p431_b03_age10.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -82,6 +83,7 @@ on:
       - tests/test_story_harness_p428_b02_master.py
       - tests/test_story_harness_p429_b02_q25.py
       - tests/test_story_harness_p430_b02_final_state.py
+      - tests/test_story_harness_p431_b03_age10.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -127,6 +129,7 @@ on:
       - docs/canonical/STORY_HARNESS_P427_B02_INDEPENDENT_QUALITY.md
       - docs/canonical/STORY_HARNESS_P429_B02_Q25.md
       - docs/canonical/STORY_HARNESS_P430_B02_STATE_DRAFT.md
+      - docs/canonical/STORY_HARNESS_P431_AGE10_B03.md
       - evidence/story_harness_p429/**
       - evidence/story_harness_p430/**
       - evidence/story_harness_p427/**
@@ -1056,3 +1059,20 @@ jobs:
           assert p['production_state_write_authorized'] is False
           print('P430_B02_GENUINE_Q25_FINAL_STATE_DRAFT_OFFLINE_GREEN')
           PY32
+
+      - name: Verify distinct age-10 B03 word targets and original river Canon state
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p431_b03_age10.py' -v
+          python -m src.story_harness_p431_b03_age10 > /tmp/story-harness-p431.json
+          python - <<'PY33'
+          import json
+          a=json.load(open('/tmp/story-harness-p431.json'))
+          assert a['schema']=='lumi.story-harness-p431-age10-third-distinct-story.v1'
+          assert a['case_id']=='B03' and a['reader_age']==10
+          assert a['word_targets']=={'min':800,'max':1400}
+          assert a['provider_calls']==0 and a['paid_execution_default'] is False
+          assert a['cost_cap_usd']=='0.35'
+          assert a['quality_accepted'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P431_B03_AGE10_CANON_GENERATION_OFFLINE_GREEN')
+          PY33
