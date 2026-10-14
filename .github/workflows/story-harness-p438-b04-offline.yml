@@ -1,0 +1,46 @@
+name: Story Harness P4.38 B04 Age10 Generation Offline
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p438-b04-offline.yml
+      - src/story_harness_p438_b04_age10.py
+      - tests/test_story_harness_p438_b04_age10.py
+      - docs/canonical/STORY_HARNESS_P438_B04_AGE10.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p438-b04-generation-offline
+  cancel-in-progress: true
+
+jobs:
+  b04-age10-original-generation-offline:
+    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove exact MARKET B04 source, two-stage mock and no paid call
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p438_b04_age10.py' -v
+          python -m src.story_harness_p438_b04_age10 >/tmp/lumi-p438-b04-offline.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/lumi-p438-b04-offline.json'))
+          assert p['case_id']=='B04' and p['reader_age']==10
+          assert p['source_pack_sha256']=='f6edbf321afab965b1a0166ff0a4feb267935f6be556996c4168572477fa1c47'
+          assert p['provider_calls']==0 and p['paid_execution_default'] is False
+          assert p['previous_conservative_budget_usd']=='1.539558'
+          assert p['cost_cap_usd']=='0.35'
+          assert p['quality_accepted'] is False
+          assert p['production_state_write_authorized'] is False
+          print('P438_B04_AGE10_DISTINCT_CANON_GENERATION_OFFLINE_GREEN')
+          PY
