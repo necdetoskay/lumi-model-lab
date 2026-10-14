@@ -102,3 +102,20 @@ Live public OpenRouter endpoint catalogue at `https://openrouter.ai/api/v1/model
 ## Fixed ten-case aggregate reservation journal (offline)
 
 `src/story_harness_cohort_accounting_v1.py` adds a single-use append-only reserve/intent/outcome journal. It reserves the **entire B01–B10 $4.40 upper envelope before B01** instead of releasing money on early rejection, forbids a second attempt on B01 and out-of-order progress, and persists unknown-charge STOP without treating its charge as zero or advancing to B02. All ten rejections can be recorded without fixing the shared Harness. The mock journal's external finance snapshot fields remain untrusted self-reported data and the files are not independent write-once remote storage, so it is **NOT an accepted live accounting system**. Live provider reconciliation, signer authority, isolated key and external immutable ledger are still required before enabling a paid POST.
+
+## Owner decision: permit existing GitHub OpenRouter key for prefreeze inspection (2026-10-14)
+
+The owner selected the **already registered** `OPENROUTER_API_KEY` rather
+than provisioning the proposed isolated `$4.40` key. This does **not**
+authorize a model POST, relax the $20 inclusive aggregate ceiling, remove
+the external signed grant, or override immutable B01–B10 rules.
+
+A versioned `--live-existing-key-get-only` preflight supports authenticated
+read-only provider key and catalog GETs **only when the key is made available
+inside a protected runner**. Pre-used keys may pass shape validation, but
+unlimited, resettable, management, unbounded (> $20 key cap), BYOK-excluded
+or less-than-$4.40-remaining keys fail closed. The sanitized receipt NEVER
+asserts key exclusivity, no concurrent writers, financial reconciliation,
+or budget enforcement. Such proofs and a qualified one-shot paid runner are
+still mandatory before any real B01. Never attach the existing key to a
+pull-request-accessible secret-bearing workflow.
