@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 10
 title_original: "First Contact"
-status: draft
-word_count: 233
+status: complete
+word_count: 271
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bu sırada Woolsey, Keller ve Ronon, Albay Caldwell'ın Daedalus gemisinde Todd'
 Daniel ile McKay'nin götürüldüğü yerde saldırganların ileri teknolojisi daha yakından görülür. Janus'un saklı aygıtı, Wraith gemilerinin hiperuzaydan çıkışını ölümcül hâle getiren Attero düzeniyle bağlantılıdır. Bu sistem düşmanı vurmak için galaksinin bütün yıldızgeçit ağına zarar verebilir. Maskeli yabancılar Kadim teknolojisinin tehlikesini bildiklerinden bilim insanlarını kendi amaçları için kullanmak istemektedir. McKay cihazı durdurmazsa Wraithlerin yanında siviller de tehlikeye girebilir.
 
 Atlantis'te Sheppard düşman saldırısını ve kayıp arkadaşlarını araştırırken Daedalus'ta Woolsey ölümcül rehin alma durumuyla karşı karşıyadır. Todd, gemiyi geri vermeden önce saldırının nedenini öğrenmek istemektedir. Bölüm, iki ayrı cephede çıkan büyük güvenlik krizinin çözülememesiyle sona erer. Hem kaçırılan bilim insanlarının hem Dünya'nın savaş gemisindekilerin hayatı tehlikededir.
+
+Janus'un binlerce yıl önce yasak araştırmayı gizlemesi, kullanılan teknolojinin bütün Pegasus halkını tehlikeye atabilecek sonuçlar doğurduğunu gösterir. Daniel ve Rodney başlangıçta yalnız arkeolojik bir keşif peşindedir; fakat farkında olmadan iki taraftaki askerî dengeleri değiştirecek eski bir sistemi çalıştırmışlardır.
 
 ## Kaynaklar
 

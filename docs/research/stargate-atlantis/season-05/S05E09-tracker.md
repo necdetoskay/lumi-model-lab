@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 9
 title_original: "Tracker"
-status: draft
-word_count: 247
+status: complete
+word_count: 285
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ronon iz sürmeye başlar; McKay geçitten Atlantis'e haber vermek üzere ayrıl
 Keller, Kiryk'e daha önce Wraith avcılarından kaçmayı başarmış Ronon'u anlatır. Kızın hastalığına müdahale ederken avcılar yaklaşır. Ronon onları izleyip Keller'ın bulunduğu yere ulaşır; McKay da Atlantis'ten yardım getirir. Ancak Kiryk'in bedenindeki izleme aygıtı çalıştığı sürece herkesi yeni saldırılara sürükleyecektir. Keller adamın korkusunu ve genç kızı koruma nedenini anlamaya başlar.
 
 Ekip avcılarla çatışır ve doktoru kurtarır. Kiryk, Wraithleri diğerlerinden uzaklaştırmak için son kez kaçmayı kabul eder. Kendisini izleyen düşmanları uzaklaştırırken Keller ile küçük hasta güvenli bölgeye götürülür. Ronon, yıllarca aynı avın hedefi olmanın nasıl bir yaşam olduğunu hatırlayarak Kiryk'e saygı duyar. McKay ile Ronon'un romantik rekabeti ise bu tehlikeli olayda kimsenin hayatını riske atmamaları gerektiğini öğreten yeni deneyime dönüşür.
+
+Ronon'un eski hayatı hakkındaki tecrübesi olmadan avcıların izleri anlaşılmayacaktır. McKay'nin yardım çağrısı da kurtarmanın yalnız savaş becerisine dayanmadığını gösterir. Keller ile Kiryk arasındaki güven zor koşullarda kurulsa da doktor onun yaralı çocuğu korumak istediğini öğrenince yardım etmekten vazgeçmez.
 
 ## Kaynaklar
 

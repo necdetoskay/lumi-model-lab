@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 7
 title_original: "Whispers"
-status: draft
-word_count: 236
+status: complete
+word_count: 274
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Köy neredeyse boştur; sis geceleri hızla yoğunlaşmakta ve insanların sesle
 Teldy'nin askerleri köy meydanında patlayıcılarla savunma noktası kurar. Sheppard yaratıkları açık bölgeye çekmeye uğraşır. Mehra ile Porter yüksek yerlerden ateş desteği verir, Teldy patlamanın zamanını ayarlar. Önce patlayıcılar, ardından yoğun silah ateşi canavarların çoğunu öldürür. Hayatta kalan son yaratık da etkisizleştirilir. Sheppard ve Beckett kuyudan yeraltı tesisine iner; laboratuvarın tamamen temizlendiğinden emin olmak isterler.
 
 Ekip, Michael'ın deneylerinin yeni insan avcıları üretmeyi amaçladığını gösteren bulguları Atlantis'e taşır. Beckett, zorla katıldığı eski araştırmaların sonuçlarıyla bir kez daha yüzleşir. Teldy ve arkadaşlarının soğukkanlı ortak operasyonu, köyde hayatta kalanların daha fazla kayıp vermesini önler.
+
+Mehra, Teldy ve Porter'ın birlikte hareket etmesi yaratıkların sis içindeki avantajını zayıflatır. Beckett için bu laboratuvar, Michael'ın zorla yürüttüğü araştırmalardan arta kalan insanlık dışı uygulamaların somut kanıtıdır. Ekip laboratuvardan elde edilen verilerin ileride benzer saldırıları önleyebileceğini de düşünür.
 
 ## Kaynaklar
 

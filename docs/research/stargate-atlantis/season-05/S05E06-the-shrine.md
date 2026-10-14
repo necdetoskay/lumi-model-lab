@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 6
 title_original: "The Shrine"
-status: draft
-word_count: 236
+status: complete
+word_count: 268
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Keller, durumun ölümcül olabileceğini söyleyerek Dünya'dan Jeanie Miller'�
 Tapınağa girildiğinde McKay birden eski hâline döner. Jeanie ve arkadaşlarıyla konuşup geçmişi hatırlar. Keller mabetteki özel radyasyonun paraziti büzüştürdüğünü anlar. Ancak tapınaktan çıkılırsa organizma hızla yeniden büyüyüp McKay'i öldürecektir. Doktor yeni bir çözüm önerir: Parazit radyasyondan kaçmak için büzüşmüşken kafatasından küçük açıklık açılacak ve canlı kendiliğinden dışarı çıkacaktır. Ameliyat mağarada, sınırlı araçlarla yapılır. Parazit delikten sürünerek çıktığında Keller onu uzaklaştırır; Ronon silahıyla yok eder.
 
 McKay'nin zihinsel işlevleri korunur ve arkadaşlarıyla Atlantis'e döner. Jeanie, ölümün eşiğindeki ağabeyini yeniden kazanmıştır. Keller'ın ilk bakışta yalnız son bir bilinçli gün sağlayan mabetten kalıcı tedavi üretmesi, bölümün gerçek kurtuluşunu oluşturur.
+
+Jeanie'nin ağabeyine gösterdiği bağlılık, Rodney'nin yalnız bilimsel yeteneğiyle değerli olmadığını hatırlatır. McKay zihinsel gücünü kaybettiğinde bile dostları onu terk etmez. Ronon'un halkından kalan bilginin modern tıpla birleşmesi, kalıcı iyileşmeyi sağlayan asıl çözümdür.
 
 ## Kaynaklar
 
