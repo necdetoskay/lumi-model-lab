@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 10
 title_original: "The Return, Part 1"
-status: draft
-word_count: 247
+status: complete
+word_count: 277
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Kadim komutan Helia, Weir'e şehri koruduğu için teşekkür eder ancak kontrol
 Aradan zaman geçtikten sonra O'Neill, Woolsey'ye destek için yeniden Atlantis'e gelir. Tam o sırada Asuran Replicatorlar şehre büyük saldırı başlatır. Helia'nın kendine duyduğu güven felaketi önlemeye yetmez; Kadim savunmacılar yenilir. Dünya'ya gelen bilgiler Atlantis'in büyük kısmının işgal edildiğini gösterir. General Landry, Replicatorların Dünya'ya ulaşmasını önlemek amacıyla Daedalus'a şehri nükleer bombayla yok etmesini emreder.
 
 Weir, Sheppard, McKay ve Beckett Atlantis'i kurtarmadan yok edilmesini kabul etmez. Emirleri çiğneyerek gizlice silah ve geçit erişimi sağlarlar, köprü üzerinden Pegasus'a geçerler. Teyla ile Ronon'a da ulaşarak eski takımı yeniden toplarlar. Bölüm, yıllardır evleri olarak gördükleri Atlantis'in gerçek sahipleri tarafından geri alınmasından sonra şimdi başka düşmandan kurtarılması gereken bir savaş alanı hâline gelmesiyle sona erer.
+
+Kadimlerin Atlantis'e sahip çıkması hukukî bakımdan anlaşılabilir görünse de şehri yıllarca ayakta tutan keşif personelinin bütün bağlarını koparır. Replicatorların saldırısı, bu kararı veren Kadim komutanın da durumu yanlış değerlendirdiğini gösterir.
 
 ## Kaynaklar
 

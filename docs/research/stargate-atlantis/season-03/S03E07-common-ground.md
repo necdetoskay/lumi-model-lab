@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 7
 title_original: "Common Ground"
-status: draft
-word_count: 222
+status: complete
+word_count: 254
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Weir bu şantajı kabul etmez. McKay, Ladon ve askerî ekiple Kolya'nın sakland
 Ladon'ın yardımıyla kurtarma ekibi sonunda yerlerini bulur. Sheppard'ı Wraith beslenirken gördüklerinde ateş etmeye hazırlanırlar. Fakat Wraith bu kez yaşam enerjisini geri aktarmaktadır. Sheppard kendisine yardım eden düşmanın bunu borç ödemek için yaptığını açıklar. Dış görünüşü yeniden gençleşir, hatta arkadaşlarına göre öncekinden daha sağlıklıdır. Kolya ise kaçar; Sheppard, bir sonraki karşılaşmada onu öldüreceğini bildirir.
 
 Sheppard Wraith'e verdiği sözü tutar. Onu öldürmek yerine sersemletir ve başka bir gezegende serbest bırakır. İkisi ileride karşılaşırlarsa anlaşmalarının sona ereceğini bilir. Bu olay, Wraithlerin yalnız beslenen canavarlar olmadığını, bazı koşullarda karşılıklılık ve söz tutma davranışı gösterebildiğini de ortaya koyar.
+
+Weir'in Kolya'ya boyun eğmemesi kolay değildir; Sheppard'ın giderek yaşlandığını ekrandan izlemek bütün ekibi sarsar. Kolya kaçmayı başarsa da tutsak Wraith'in gösterdiği beklenmedik merhamet, düşmanın doğasına ilişkin çok önemli bir keşif olarak kalır.
 
 ## Kaynaklar
 

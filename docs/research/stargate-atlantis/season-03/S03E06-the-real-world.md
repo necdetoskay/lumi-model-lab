@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 6
 title_original: "The Real World"
-status: draft
-word_count: 226
+status: complete
+word_count: 255
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bir süre sonra ilaç almayı kabul eder. Kendini iyi hissetmeye başlar, evine 
 Gerçekte Weir Atlantis'te Asuran nanomakinelerinin saldırısına uğramıştır. Makineler beynini ele geçirerek bilincini denetlemeye çalışmaktadır. Doktor Beckett ile McKay yabancı teknolojiyi etkisiz kılmak için tedavi uygular; fakat ilaçlar ve deneysel yöntemler yeterli olmaz. Sheppard komadaki arkadaşının yanında kalarak onun uyanması ve gerçek dünyaya dönmesi için konuşur.
 
 Weir sahte Dünya'daki insanların ikna edici açıklamalarını reddeder. Etrafındaki görüntülerin onu hapsetmeye çalışan düşman tarafından hazırlandığını kavrar. Bilinçli direnişiyle nanomakinelerin saldırısını geri çevirir ve Atlantis'teki yatağında uyanır. Bu zafer, kadim teknolojiden türemiş Asuranların yalnız silahlarla değil zihnin algıladığı gerçeklik üzerinden de öldürücü saldırı gerçekleştirebildiğini gösterir.
+
+Weir'in zihninde kurulan dünya en güçlü biçimde kaybettiği sevgilinin acısını kullanmaktadır. Nanomakineler onun Atlantis'i bir hayal olarak kabul etmesini bekler; arkadaşlarının sesine güvenmesi ise kendisini koruyabilmesi için son fırsattır.
 
 ## Kaynaklar
 

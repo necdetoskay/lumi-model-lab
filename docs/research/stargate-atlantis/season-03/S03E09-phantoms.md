@@ -4,7 +4,7 @@ season: 3
 episode: 9
 title_original: "Phantoms"
 status: draft
-word_count: 222
+word_count: 249
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard güvenlik için geri dönmeye çalışır, ancak Leonard geçit kontrol
 Beckett yaralı askerleri tedavi ederken hangisinin öldüğünü bile ayırt edemez; gözünde ölenler yeniden canlanmakta, yaşayanlar ise ölmüş gibi görünmektedir. McKay aygıtı kapatmaya çalışır, fakat uğraştığı sistemin gerçek durumunu sürekli kaybeder. Leonard çevresinin düşmanla dolu olduğuna inanıp intihar eder. Ronon da Sheppard'ı Wraith sanırken Sheppard karşısındakini Taliban askeri olarak görmektedir; birbirlerine ateş açmak üzeredirler.
 
 McKay sonunda jeneratörün nasıl çalıştığını anlayıp sinyali etkisizleştirir. Diğerleri halüsinasyonlardan kurtularak çatışmayı durdurur, yaralılar Atlantis'e alınır. Olay, Wraithlerin insan askerleri fiziksel olarak doğrudan hedef almadan birbirlerine öldürtebilecek gelişmiş psikolojik savaş teknolojisi geliştirdiğini gösterir. Ekibin kendi algısına duyduğu güven ağır biçimde sarsılmıştır.
+
+Sheppard'ın Afganistan'daki savaş anıları Wraith aygıtının zihinsel saldırısına malzeme olmuştur. Ekip gerçek hedefi kapatabildiğinde yalnız kendilerini kurtarmaz, aynı tür teknolojinin başka görevlere zarar verebileceğini de kayda geçirir.
 
 ## Kaynaklar
 
