@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 8
 title_original: "The Seer"
-status: draft
-word_count: 224
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Wraith, McKay'in programlama yeteneğinden yararlanarak Asuranların Wraithleri 
 Wraith'in kovan gemisi onu takip ederek Atlantis'in bulunduğu gezegene gelir. Ardından ikinci kovan da yaklaşır. Carter görünmezlik kalkanı açılacaksa şehir savunmasının kısa süreliğine azalacağını bilir. Sheppard temkinli davranmak ister; Wraith ise kendilerinin şehir konumunu açıklamayacağını, ikinci geminin yalnızca neden burada olduklarını merak ettiğini ileri sürer. Davos'un gördüğü korkutucu geleceğin gerçekleşip gerçekleşmeyeceği Carter'ın kararına bağlıdır.
 
 Carter riskli işbirliğini sürdürmeyi seçer ve şehrin görünmez kalmasını sağlar. Wraithlerle doğrudan çatışmadan kaçınmak için görüşmeler yürütülür. Davos ölmeden önce gördüklerinin sabit kader değil değişebilecek olasılıklar olduğunu ima eder. Ekip geleceği bilmenin onu değiştirmeyi kolaylaştırmadığını, yalnız yeni sorumluluklar yarattığını öğrenir.
+
+Davos'un gösterdiği farklı görüntüler geleceğin mutlaka tek biçimde yaşanacağını söylemez. Carter'a seçeneklerinin sonuçlarını anlaması için uyarı niteliği taşır. Wraithlerle işbirliği teklifi de karşılıklı çıkar temeline dayanır; dostluk sayılabilecek güven hâlâ oluşmamıştır. İnsan yerleşimlerinin Replicatorlarca yok edilmesi ise gecikmeye tahammül edilemeyecek ayrı bir tehdittir.
 
 ## Kaynaklar
 

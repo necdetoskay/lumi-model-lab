@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 6
 title_original: "Tabula Rasa"
-status: draft
-word_count: 218
+status: complete
+word_count: 262
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Gerçek olay, birkaç gün önce keşif ekibinin taşıdığı bakterinin şehir
 Ancak komutaları unutmaya başlayan Lorne'un askerleri Teyla'yı yakalayıp hapseder. McKay bunun üzerine kendisi için video mesajı bırakır. Şimdi mesajı gören McKay, Carter ve Zelenka onun izini sürerek hücreye ulaşır. Teyla serbest bırakılır ve havalandırma hazırlığı tamamlanır. Ana karada ise Sheppard belleğini kaybetmiş, Ronon'a silah doğrultmuştur. Ronon arkadaşını kendisine güvenmeye ikna etmelidir.
 
 Son anda Ronon bitki özünü Jumper'a yükletir ve Sheppard'la birlikte Atlantis'e getirir. Tedavi şehir havalandırmasından dağıtılır. Personelin hafızası yavaş yavaş düzelir, salgın durdurulur. Şehir neredeyse kendi insanlarının kimliklerini unutması nedeniyle yok olacakken Teyla ve Ronon'un bağışıklığı sayesinde kurtulmuştur.
+
+McKay'in kendi belleğini kaybetmeden önce mesaj hazırlaması, unutkanlık ilerledikçe bile planın sürmesini sağlar. Teyla'nın hücreden çıkarılması kurtuluşun önemli aşamasıdır. Ronon ve Sheppard'in ormandaki karşılaşması ise arkadaşlıkları geçici olarak yokmuş gibi gösteren hastalığın nasıl felaket yaratabileceğini kanıtlar. Tedavi bütün personelin kimliğini geri kazanmasının da anahtarıdır.
 
 ## Kaynaklar
 

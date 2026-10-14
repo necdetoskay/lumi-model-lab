@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 9
 title_original: "Miller's Crossing"
-status: draft
-word_count: 234
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sharon'ın kanseri iyileşecek gibi görünse de makineler bedenine beklenmedik 
 Sheppard ve Ronon laboratuvarın yerini bulup esirleri kurtarır. McKay Jeanie'yi SGC'ye götürüp nanomakineleri yavaşlatmak için onu tıbbi komaya sokar. Kodun değiştirilmesi için daha fazla uzmanlık gereklidir. Atlantis'ten getirilen Wraith esiri, Replicator programının nasıl değiştirileceğini bildiğini söyler. Ancak uzun süredir beslenemediği için güçsüzdür. Jeanie'yi kurtaracak müdahaleyi yapabilmesi için insandan yaşam enerjisi alması gerekecektir.
 
 Wallace sonunda kızının ölümünden kendisini sorumlu tutarak fedakârlık teklif eder. Wraith onun enerjisiyle güçlenir ve nanomakineleri etkisizleştirecek kodu tamamlamaya yardım eder. Jeanie kurtulur. Rodney kız kardeşiyle ilişkisini onarmaya devam ederken bu olay, kişisel acıyla hareket eden insanların kontrol edemedikleri teknolojiyi kullanmasının ne kadar yıkıcı sonuçları olabileceğini gösterir.
+
+Henry Wallace'ın yaptığı hatalar onu kızını kurtarma umuduyla başkalarının hayatlarını tehlikeye atan biri hâline getirmiştir. Kardeşler birlikte hayatta kalma yolunu bulsa da yaşananlar Jeanie'nin bilimsel araştırmalara yeniden katılma isteğini etkiler. Rodney artık bilgi sahibi olmanın tek başına bütün sonuçları kontrol etme imkânı vermediğini görür.
 
 ## Kaynaklar
 

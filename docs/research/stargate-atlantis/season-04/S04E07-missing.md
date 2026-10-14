@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 7
 title_original: "Missing"
-status: draft
-word_count: 225
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Teyla sık sık tehlikeli durumlarda çalışmış olmasına rağmen yanında bu
 Ertesi sabah Bola Kai savaşçıları ekibi yakalar. Liderleri Omal, Wraithlere hizmet etmediklerini söyler; köyün kendileri gelmeden önce boşaldığını anlatır. Nabel gardiyanlara saldırıp kadınları kurtarır gibi yapar, ardından Teyla'yı bayıltarak gerçek amacını açıklar. Genii ajanı değildir ve Atlantis'in gizli yerini öğrenmek istemektedir. Keller ona bilgi vermeyi reddeder. Korkusuyla mücadele edip esiri oyalayarak yardım gelmesine zaman kazandırır.
 
 Atlantis kurtarma ekibi sonunda gezegene ulaşır, Keller ile Teyla kurtarılır. Ancak Athos halkının akıbeti kesinleşmez; kayboluşlarına ilişkin işaretler basit Bola Kai baskınından çok daha karmaşık tehdide işaret etmektedir. Teyla, geçmişini ve halkının nerede tutulduğunu araştırmayı sürdürmeye karar verir.
+
+Teyla'nın halkını bulma isteği onun kararlarını kişisel hâle getirmiştir. Keller ise deneyimli savaşçı olmadığı hâlde yaralı bacağıyla ve silahsız olarak çok zor şartlarda hayatta kalmaya çalışır. İki kadın arasındaki dayanışma, savaş becerilerinden farklı türde bir cesaret gerektirir. Athosluların kayboluşu hâlâ araştırılmaktadır.
 
 ## Kaynaklar
 
