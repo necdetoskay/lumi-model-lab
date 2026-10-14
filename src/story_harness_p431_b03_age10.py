@@ -51,7 +51,7 @@ def third_story_once(repo_root,claim_root,*,transport):
     root=Path(claim_root)
     must(root.is_dir() and not root.is_symlink(),
          "B03 protected run ledger missing")
-    pilot=BoundedOncePilot(root,case_id=CASE_ID,plan=plan,run_variant=VARIANT)
+    pilot=BoundedOncePilot(str(root),case_id=CASE_ID,plan=plan,run_variant=VARIANT)
     must(pilot.pack["pack_sha256"]==SOURCE_SHA,
          "B03 model pack differs from preflight")
     result=pilot.execute(transport=transport)
