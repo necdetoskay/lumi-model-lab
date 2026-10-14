@@ -19,6 +19,7 @@ from src.story_harness_v1 import HarnessStop
 
 SCHEMA = "lumi.story-harness-cohort-key-read-only-v1"
 KEY_ENV = "LUMI_STORY_COHORT_ISOLATED_OPENROUTER_KEY"
+EXISTING_KEY_ENV = "OPENROUTER_API_KEY"
 BASELINE_KEY_CAP = Decimal("4.40")
 
 def analyze_isolated_key(snapshot, *, now=None):
@@ -57,6 +58,52 @@ def analyze_isolated_key(snapshot, *, now=None):
         "remaining_limit_usd": format(left, "f"),
         "baseline_total_reserved_usd": format(10 * TRIAL_CAP, "f"),
         "key_exclusivity_independently_proven": False,
+        "real_live_key_provenance": False,
+        "provider_dispatch_authorized": False,
+        "real_model_calls": 0,
+    }
+
+def analyze_existing_key(snapshot, *, now=None):
+    """Existing shared key: inspect limited balance, never attest exclusivity.
+
+    This does NOT waive the cohort-wide external financial ledger, authority
+    signature, writer quiescence, or an independent hard-spend interlock.
+    """
+    must(type(snapshot) is dict and type(snapshot.get("data")) is dict,
+         "EXISTING_PROVIDER_KEY_ENVELOPE")
+    row = snapshot["data"]
+    must(row.get("is_management_key") is False and
+         row.get("is_provisioning_key") is False and
+         row.get("is_free_tier") is False and
+         row.get("include_byok_in_limit") is True and
+         "limit_reset" in row and row["limit_reset"] is None,
+         "EXISTING_KEY_IS_NOT_FINITE_NONRESETTING_INFERENCE")
+    lim = usd(str(row.get("limit")))
+    remaining = usd(str(row.get("limit_remaining")))
+    used = usd(str(row.get("usage")))
+    byok = usd(str(row.get("byok_usage")))
+    must(Decimal("0") < lim <= CAP and
+         remaining >= BASELINE_KEY_CAP and remaining <= lim and
+         used <= lim and byok <= lim,
+         "EXISTING_SHARED_KEY_LIMIT_OR_BALANCE_UNSAFE")
+    if now is None:
+        now = datetime.now(timezone.utc)
+    must(now.utcoffset() == timedelta(0), "CLOCK_NOT_UTC")
+    expires = row.get("expires_at")
+    if expires is not None:
+        must(utc(expires) >= now + timedelta(hours=3),
+             "EXISTING_KEY_EXPIRES_DURING_BATCH")
+    return {
+        "schema": SCHEMA,
+        "provider": "openrouter", "expected_model": MODEL,
+        "expected_upstream": PROVIDER,
+        "existing_shared_key_read_only": True,
+        "configured_limit_usd": format(lim, "f"),
+        "remaining_limit_usd": format(remaining, "f"),
+        "baseline_total_reserved_usd": format(BASELINE_KEY_CAP, "f"),
+        "key_exclusivity_independently_proven": False,
+        "external_concurrent_consumers_disproved": False,
+        "account_aggregate_spend_independently_reconciled": False,
         "real_live_key_provenance": False,
         "provider_dispatch_authorized": False,
         "real_model_calls": 0,
@@ -113,15 +160,17 @@ def analyze_cohort_catalog(snapshot):
     }
 
 def observe_provider_read_only(*, api_key, now=None, key_fetch=None,
-                               catalog_fetch=None):
+                               catalog_fetch=None, key_mode="isolated"):
     """Explicit 2 GETs only; fake injected GET callbacks remain UNAUTHENTICATED."""
+    must(key_mode in ("isolated", "existing"), "UNSUPPORTED_KEY_MODE")
     must(type(api_key) is str and api_key.startswith("sk-or-") and
          len(api_key) <= 256 and not any(c.isspace() for c in api_key),
          "ISOLATED_KEY_MISSING")
     key_fetch = key_fetch or read_current_key
     catalog_fetch = catalog_fetch or fetch_catalog
     snapshot = key_fetch(api_key=api_key)
-    key = analyze_isolated_key(snapshot, now=now)
+    key = (analyze_isolated_key(snapshot, now=now) if
+           key_mode == "isolated" else analyze_existing_key(snapshot, now=now))
     catalog = analyze_cohort_catalog(catalog_fetch())
     must(type(catalog["blockers"]) is list and
          not catalog["blockers"] and
@@ -142,12 +191,18 @@ def observe_provider_read_only(*, api_key, now=None, key_fetch=None,
     key["provider_dispatch_authorized"] = False
     return key
 
-def offline_status():
+def offline_status(*, key_mode="existing"):
+    must(key_mode in ("isolated", "existing"), "UNSUPPORTED_KEY_MODE")
     return {
         "schema": SCHEMA,
-        "status": "WAITING_FOR_DEDICATED_COHORT_KEY_AND_EXTERNAL_LEDGER",
-        "required_secret_name": KEY_ENV,
-        "new_10_case_key_limit_usd": "4.40",
+        "status": ("WAITING_FOR_PROTECTED_SHARED_KEY_GET_AND_EXTERNAL_LEDGER"
+                   if key_mode == "existing" else
+                   "WAITING_FOR_DEDICATED_COHORT_KEY_AND_EXTERNAL_LEDGER"),
+        "required_secret_name": (EXISTING_KEY_ENV if key_mode == "existing"
+                                 else KEY_ENV),
+        "baseline_reserve_usd": "4.40",
+        "key_mode": key_mode,
+        "shared_key_exclusivity_verified": False,
         "live_key_observed": False,
         "paid_model_calls": 0,
         "provider_dispatch_authorized": False,
@@ -156,13 +211,18 @@ def offline_status():
 if __name__ == "__main__":
     import argparse, json
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--live-get-only", action="store_true",
-                        help="Observe a dedicated key and public route via GET only")
+    flags = parser.add_mutually_exclusive_group()
+    flags.add_argument("--live-get-only", action="store_true",
+                       help="Read isolated key and public route via GET only")
+    flags.add_argument("--live-existing-key-get-only", action="store_true",
+                       help="Read existing shared key and public route via GET only; no spend grant")
     args = parser.parse_args()
-    if not args.live_get_only:
+    if not args.live_get_only and not args.live_existing_key_get_only:
         print(json.dumps(offline_status(), sort_keys=True))
     else:
-        secret = os.environ.get(KEY_ENV, "")
-        must(bool(secret), "DEDICATED_SECRET_NOT_CONFIGURED")
-        report = observe_provider_read_only(api_key=secret)
+        key_mode = "existing" if args.live_existing_key_get_only else "isolated"
+        secret_name = EXISTING_KEY_ENV if key_mode == "existing" else KEY_ENV
+        secret = os.environ.get(secret_name, "")
+        must(bool(secret), "REQUESTED_SECRET_NOT_CONFIGURED")
+        report = observe_provider_read_only(api_key=secret, key_mode=key_mode)
         print(json.dumps(report, sort_keys=True, ensure_ascii=False))
