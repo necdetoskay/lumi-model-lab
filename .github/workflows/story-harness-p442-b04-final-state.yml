@@ -1,7 +1,9 @@
 name: Story Harness P4.42 B04 Real Q25 Final State Read Only
 
 on:
-  pull_request:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
     paths:
       - src/story_harness_p442_b04_final_state.py
       - tests/test_story_harness_p442_b04_final_state.py
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   genuine-q25-to-read-only-final-state:
-    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 10
     defaults:

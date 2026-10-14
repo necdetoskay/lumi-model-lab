@@ -1,7 +1,9 @@
 name: Story Harness P4.40 B04 Original English Master
 
 on:
-  pull_request:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
     paths:
       - src/story_harness_p440_b04_master.py
       - tests/test_story_harness_p440_b04_master.py
@@ -17,7 +19,7 @@ concurrency:
 
 jobs:
   seal-verify-b04-original-master:
-    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 10
     defaults:

@@ -1,7 +1,9 @@
 name: Story Harness P4.37 Ten Case Thirty Trial Budget Matrix
 
 on:
-  pull_request:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
     paths:
       - src/story_harness_p437_pilot_matrix.py
       - tests/test_story_harness_p437_pilot_matrix.py
@@ -20,7 +22,7 @@ concurrency:
 
 jobs:
   frozen-ten-by-three-budget-read-only:
-    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 8
     defaults:

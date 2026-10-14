@@ -56,5 +56,19 @@ class StoryHarnessCIContract(unittest.TestCase):
         self.assertNotIn("--paid-once", data)
         self.assertIn("path: " + UNIQUE, data)
 
+
+    def test_historical_offline_checks_run_only_on_changed_push_files(self):
+        old = [p for p in WORKFLOWS.glob("story-harness-*.yml")
+               if not p.name.endswith(("-once.yml", "-one-shot.yml"))
+               and p.name not in ("story-harness-p456-ci-guard.yml",
+                                  "story-harness-p457-b07-paid-gate.yml")]
+        self.assertEqual(len(old), 16)
+        for path in old:
+            with self.subTest(workflow=path.name):
+                data = path.read_text(encoding="utf-8")
+                self.assertIn("on:\n  push:\n    branches:\n      - experiment/story-harness-control-plane-v1\n", data)
+                self.assertNotRegex(data, r"(?m)^  pull_request:")
+                self.assertIn("github.sha", data if "ref:" in data else data + "github.sha")
+
 if __name__ == "__main__":
     unittest.main()

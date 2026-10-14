@@ -1,7 +1,9 @@
 name: Story Harness P4.36 B03 Final State Read Only
 
 on:
-  pull_request:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
     paths:
       - src/story_harness_p436_b03_final_state.py
       - tests/test_story_harness_p436_b03_final_state.py
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   original-b03-read-only-final-state:
-    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 10
     defaults:
@@ -28,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.sha }}
           path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/setup-python@v5
         with:

@@ -1,7 +1,9 @@
 name: Story Harness P4.39 B04 Original Independent Quality Offline
 
 on:
-  pull_request:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
     paths:
       - src/story_harness_p439_b04_quality.py
       - tests/test_story_harness_p439_b04_quality.py
@@ -16,7 +18,7 @@ concurrency:
 
 jobs:
   original-b04-audit-preflight:
-    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 8
     defaults:

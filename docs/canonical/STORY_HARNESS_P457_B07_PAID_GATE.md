@@ -7,6 +7,9 @@ Purpose: B07 (25 years, Fenerdeki eski mektup, 1,800–2,800 EN words). Generati
 - P4.56 archived 23 historical paid one-shots. P4.55 v02 run #38605301285 SKIPPED its provider step.
 - The previous P4.55 grant JSON is absent. A newly reviewed grant gate is required.
 
+## Additional trigger-scope correction
+Historical 16 offline Story Harness workflows are now source-branch push filters, not pull_request paths. GitHub pull_request paths match the entire accumulated PR diff, which had enqueued 16 old checks on every synchronization. Push paths apply to newly pushed changes only. P4.56 remains the central targeted PR guard; one B07 explicit grant gate remains PR-synchronize only and checks exact HEAD diff.
+
 ## Two explicit commits
 1. Commit only gate, checker, tests and docs; no grant. Only offline CI runs.
 2. Only after offline CI GREEN, create sole configs/story_harness_p457_b07_trigger.json in a separate commit.
