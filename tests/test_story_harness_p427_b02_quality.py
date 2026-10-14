@@ -140,7 +140,9 @@ class P427Tests(unittest.TestCase):
             with TemporaryDirectory() as tmp:
                 root=copy_original(tmp)
                 p=root/name
-                p.write_bytes(p.read_bytes()+marker)
+                changed=json.loads(p.read_text())
+                changed["unexpected_tamper_marker"]=marker.decode()
+                p.write_text(json.dumps(changed))
                 with self.subTest(name=name),self.assertRaises(HarnessStop):
                     get_b02_original(".",tmp)
 
