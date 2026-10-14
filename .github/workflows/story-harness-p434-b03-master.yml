@@ -1,0 +1,73 @@
+name: Story Harness P4.34 B03 Sealed Pilot English Master
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p434-b03-master.yml
+      - src/story_harness_p434_b03_master.py
+      - tests/test_story_harness_p434_b03_master.py
+      - evidence/story_harness_p433/b03-r06-original-independent-quality-accept.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p434-b03-sealed-english-master
+  cancel-in-progress: false
+
+jobs:
+  seal-original-b03-pilot-master:
+    if: ${{ github.run_attempt == 1 && github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: p434-b03-master-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: p434-b03-master-isolated
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove original audit receipt, source and negative tests without providers
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p434_b03_master.py' -v
+          python -m src.story_harness_p434_b03_master
+      - name: Seal B03 accepted original Writer exactly once (NO inference)
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p434_b03_master_claims"
+          chmod 700 "$root/_lumi_p434_b03_master_claims"
+          python -m src.story_harness_p434_b03_master \
+            --repo-root . \
+            --producer-root "$root/_lumi_p431_b03_story_claims" \
+            --quality-root "$root/_lumi_p433_b03_quality_claims" \
+            --master-root "$root/_lumi_p434_b03_master_claims" \
+            --seal-pilot-once > /tmp/lumi-p434-original-master.json
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          from src.story_harness_p434_b03_master import MASTER_DIR
+          r=json.loads(Path('/tmp/lumi-p434-original-master.json').read_text())
+          f=Path(__import__('os').environ['RUNNER_WORKSPACE'])/'_lumi_p434_b03_master_claims'/MASTER_DIR
+          raw=(f/'ENGLISH_MASTER.txt').read_bytes()
+          manifest=json.loads((f/'master-manifest.json').read_bytes())
+          assert r['new_model_posts']==0 and r['case_id']=='B03'
+          assert hashlib.sha256(raw).hexdigest()=='80fa8224c78c494b13bc347ecabdfff75fd5c9e1638ad88ee9ba47c6986643f9'
+          assert manifest['source_story_sha256']==r['story_sha256']
+          assert manifest['production_state_write_authorized'] is False
+          print('P434_B03_ENGLISH_MASTER_ORIGINAL_BYTES_GREEN')
+          print('P434_B03_MASTER_SHA='+manifest['accepted_story_sha256'])
+          print('P434_B03_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p434-b03-original-accepted-pilot-master
+          path: ${{ runner.workspace }}/_lumi_p434_b03_master_claims/b03-80fa8224c78c494b/
+          if-no-files-found: warn
+          retention-days: 30
