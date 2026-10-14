@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 8
 title_original: "Underground"
-status: draft
-word_count: 243
+status: complete
+word_count: 276
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Genii halkı gerçekte ileri teknolojiye sahip gizli bir toplumdur. Wraithleri k
 Sheppard, Teyla, Ford, McKay ve Genii görevlileri kovan gemisine sızar. İçeride ileride tüketilmek üzere saklanmış insanları bulurlar. Teyla onları kurtarmak isterken Genii araştırmacı Tyrus gizli görevin açığa çıkmasından korkup esirlerden birini öldürür. Wraith muhafızları onu vurur. Cowen ile McKay gerekli verileri alır, fakat geri dönüşte Cowen bütün kayıtları ve Jumper'ı ele geçirmek için Sheppard'ı tehdit eder. Sheppard ihaneti önceden öngörmüştür: yakınlarda gizlenmiş iki Jumper ortaya çıkarak askerleri silahlarıyla hedef alır. Cowen geri adım atmak zorunda kalır.
 
 Atlantis'e dönen ekip çok önemli bilgi edinmiştir: Pegasus'ta altmıştan fazla Wraith kovan gemisi bulunmaktadır. Buna karşılık Genii ittifakı başlamadan sona ermiş, düşman olabilecek yeni bir insan gücüyle karşı karşıya kalınmıştır.
+
+Teyla'nın tutsak insanları koruma ısrarı ile Genii askerlerinin görev başarısını her şeyin önüne koyması arasındaki ayrım ittifakın neden çöktüğünü gösterir. Pegasus halkları aynı düşmana sahip olsa da insan hayatı konusunda ortak değerleri paylaşmamaktadır.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 9
 title_original: "Home"
-status: draft
-word_count: 237
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Dünya'ya vardıklarında General George Hammond onları karşılar. Daha sonra 
 Hammond'un görüntüsü ışıldayan enerji varlığına dönüşerek gerçeği açıklar. Ekip Dünya'ya hiç ulaşmamıştır; bedenleri hâlâ sisli gezegende dururken zihinlerinde ayrı ayrı kurulan yanılsamalar yaşamaktadırlar. Atmosferdeki sis aslında bilinçli enerji varlıklarından oluşan bir uygarlıktır. Stargate'in her çalıştırılması onların bir bölümünü öldürmektedir. McKay'nin önerdiği sürekli enerji çekme planı bütün bu canlıları yok edebilir. Varlıklar bu nedenle ekibin evine dönmesini engellemek istemiştir.
 
 Weir ve arkadaşları bu enerji kaynağını artık kullanmayacaklarına söz verir. Zihinlerinin içindeki niyeti okuyabilen varlıklar onların samimiyetini kabul eder. Ekip gerçek bedenlerinde uyanır ve Atlantis'e döner. Yaşananlar, insanlara fayda sağlayan görünen bir enerji rezervinin başka bir toplumun hayatı olabileceğini öğretir.
+
+Teyla'nın Dünya'ya dair kendi anıları bulunmadığından görülen sahte yaşamı Sheppard'ın yanılsamasına bağlanmıştır. Ekibin bütün üyelerine farklı ihtiyaçlarına uygun dünyalar gösterilmesi, enerji varlıklarının zihinleri ne denli ayrıntılı okuyabildiğini ortaya koyar.
 
 ## Kaynaklar
 
