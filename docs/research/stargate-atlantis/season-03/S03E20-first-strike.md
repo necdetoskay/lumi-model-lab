@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 20
 title_original: "First Strike"
-status: draft
-word_count: 243
+status: complete
+word_count: 283
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Asuranlar yörüngeye kendi Yıldız Geçidi'ni taşıyan otomatik bir araç gö
 Sheppard ile McKay şehrin yıldız tahrik sistemini kullanarak uzaya kaçma fikrini geliştirir. Sondaj platformundan ek enerji alınır. Lorne'un pilotları yakındaki asteroidin rotasını değiştirerek Asuran ışınını kısa süre engelleyecek perde hazırlamaktadır. O arada Sheppard Kadim koltuğuna geçip Atlantis'in uçuş sistemlerini çalıştırır. Şehir sudan ayrılıp göğe yükselir. Asteroid ışın önüne geçse de Asuran silahı sonunda onu deler ve kısa süre açıkta kalan kontrol kulesine isabet eder.
 
 Weir ağır biçimde yaralanır. Sheppard şehirle hiperuzaya atlamayı başarır, ancak yolculuk çok kısa sürer. Atlantis'in motorları arızalanmış, şehir boş uzayda mahsur kalmıştır. Enerji kaynağı yalnız bir gün kalkanı besleyebilecektir; sonrasında bütün sakinler uzay boşluğuna maruz kalacaktır. Sezon, ağır yaralı Weir ve evleriyle birlikte ölüm tehlikesindeki ekiple sona erer.
+
+Weir'in saldırı kararına itirazı düşmanı korumak değil Atlantis'in savunmasız bırakılmasına engel olmaktır. Ellis'in emri, Asuranları yok etmek yerine kışkırtmış ve şehir halkını tehdit altına sokmuştur. Kaçış operasyonunda teknik başarıya rağmen ağır yaralanan komutanın akıbeti bir sonraki bölümün önemli sorusu olacaktır.
 
 ## Kaynaklar
 

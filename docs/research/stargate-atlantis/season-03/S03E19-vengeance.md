@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 19
 title_original: "Vengeance"
-status: draft
-word_count: 231
+status: complete
+word_count: 270
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ekip daha derinlere indiğinde patlamaya hazır kozalarla dolu başka oda keşfe
 Michael ne Wraithler ne de insanlar tarafından kabul edilmektedir. Kendisine zorla uygulanan gen tedavisinin ardından ikisine de öfke duymuştur. Bu kez Taranisli insanlarla Iratus böceklerinin DNA'sını birleştirerek kendi yaratık ordusunu üretmektedir. Teyla'yı rehin alır ve başka bir deneyi uygulamakla tehdit eder. Sheppard, Ronon ve McKay laboratuvara baskın yaparak Teyla'yı kurtarır. Michael tünellere kaçar. Ekip eski Wraithin peşinden ilerlerken yeni yaratıklarla savaşır.
 
 Sayıca fazla yaratıkla karşılaşan Atlantis ekibi can güvenliğini korumak için geri çekilir. Michael çatışmadan kurtulup ortadan kaybolur. Taranis halkı ise büyük ölçüde yok edilmiş, kurbanların bedenleri deneylerde kullanılmıştır. Ekip, kendilerinin başlattığı insanlaştırma deneyinin gelecekte giderek daha ölümcül ve intikamcı bir düşman yarattığını kabul etmek zorunda kalır.
+
+Michael'ın yaratıkları Wraithlerin beslenme sorununa başka bir yanıt aramaktadır, fakat bunun bedelini Taranisli mülteciler yaşamlarıyla öder. Doktor Beckett'in geçmişteki gen deneylerini yürüten ekipte bulunması da yapılan müdahalenin sorumluluğunu daha ağır hissettirir. Ölülerin geri getirilememesi bu görevin en acı sonucudur.
 
 ## Kaynaklar
 

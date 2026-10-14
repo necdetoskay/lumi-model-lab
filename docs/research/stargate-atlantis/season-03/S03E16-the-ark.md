@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 16
 title_original: "The Ark"
-status: draft
-word_count: 241
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Herick diğer araştırma lideri Jamus'u uyandırır. Jamus ikinci modülü taş
 Lorne kurtarma için geldiğinde herkesin hızlıca ayrılması gerekir. Jamus, kendi halkının depolandığı modülün geride bırakılacağından korkar. Teyla'yı rehin alıp kendisiyle birlikte modülün içine ışınlanır. Böylece Atlantis ekibi Teyla'yı kurtarmak isterse bin insanın bulunduğu aygıtı da taşımalıdır. Ekip üssü onarmak için kalan zamanı kullanarak modülü götürmenin yöntemini bulmaya çalışır.
 
 McKay ve Sheppard aygıtın yapısını çözerek onu Jumper'la taşınabilecek hale getirir. Ay parçalanmaya yaklaşırken herkes kurtarma aracına ulaşır; depolama modülü de korunur. Jamus'un eylemi ahlaki bakımdan kabul edilemez, fakat halkı yeniden yaratılma ihtimalini kaybetmemiştir. Atlantis ekibi şimdi geçmişten kalan bu topluluğun geleceğine ilişkin sorumluluk taşımaktadır.
+
+Eski ışınlama modülündeki bin insanın kaderi Herick'in ailesi kadar gerçek bir ahlaki sorumluluktur. Ancak Teyla'nın zorla rehin tutulması, Jamus'un korkusunun her yolu meşru kılmadığını da gösterir. Atlantis ekibi kendi hayatıyla depolanmış insanların geleceği arasında seçim yapmak zorundadır.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 18
 title_original: "Submersion"
-status: draft
-word_count: 243
+status: complete
+word_count: 281
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard onu yakalamaya çalışırken düşman zihinsel güçleriyle Jumper'ı 
 Teyla daha da tehlikeli ayrıntıyı keşfeder: kraliçe gemisini patlamak üzere programlamıştır. Deniz tabanındaki ince kabuk parçalanırsa volkanik patlama Atlantis'i bile yok edebilir. Sheppard ile McKay eski dalış kıyafetleriyle kraliçenin batık gemisine gider. Kontrol sisteminde kendi kendini imha dizisi bulunur. Kapatılabilmesi için kraliçenin güvenlik kodu gerekmektedir. Teyla son kez zihinsel bağlantıyla kodu almaya çalışır. Kraliçe bu defa saldırıyı beklemektedir.
 
 Zihinler arasındaki mücadele sırasında Teyla doğru bilgiyi elde edip arkadaşlarına iletir. Sheppard ile McKay geri sayımı durdurarak geminin patlamasını engeller. Ekip kurtarılır, Atlantis'in yok olması önlenir. Ancak Teyla'nın kendi Wraith genetik bağlantısını kullanması, bu yeteneğin hem stratejik avantaj hem de kişisel tehlike olduğunu bir kez daha hatırlatır.
+
+Kraliçenin binlerce yıl boyunca okyanusun altında kalabilmesi, Wraithlerin olağanüstü dayanıklılığını gösterir. Teyla'nın iki kez zihin kontrolüne maruz kalması ekibi tehlikeye atarken aynı genetik bağlantı son güvenlik kodunu öğrenmelerine yardımcı olur. Sorun fiziksel güçten çok doğru bilgiyi zamanında almaktır.
 
 ## Kaynaklar
 

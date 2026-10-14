@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 17
 title_original: "Sunday"
-status: draft
-word_count: 240
+status: complete
+word_count: 282
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Kısa süre sonra koridorda patlama olur. Hewston ve diğer bazı personel ölü
 Watson da aynı tehlikeyi taşımaktadır. Yaralı olarak revirde yatarken her an patlayabilir. Personel tahliye edilir. Beckett, onu bırakıp ayrılmayı reddeder; hastayı kurtarmak için son ana kadar müdahale edeceğini söyler. Bir süre sonra Watson'ın bedeni patlar. Carson Beckett de patlamada hayatını kaybeder. Atlantis uzun yıllardır hem tıbbi hem insani bakımdan güven kaynağı olan doktorunu kaybetmiştir.
 
 McKay, sıradan bir balık gezisine gitmediği için suçluluk duyar. Sheppard ve arkadaşları Carson'ın hayatındaki küçük iyilikleri, bilimsel araştırmalarını ve hastalarına gösterdiği bağlılığı hatırlar. Cenazesinde İskoç gayda ezgileri çalınır ve arkadaşları ona veda eder. Bölüm, büyük savaşların dışında, sıradan görünen kararların ve tıbbi görev sorumluluğunun da geri dönülmez kişisel bedeller yaratabileceğini gösterir.
+
+McKay'in daha sonra anılarını düşünmesi, Carson'ın kendisini küçük konularda bile sürekli desteklediğini hatırlamasına yol açar. Bir gün önce iptal edilen balık gezisi bu yüzden uzun süre unutamayacağı simgesel bir pişmanlığa dönüşür. Doktorun ölümü ekipte bıraktığı boşluğu yeni personelin doldurmasının kolay olmayacağını gösterir.
 
 ## Kaynaklar
 
