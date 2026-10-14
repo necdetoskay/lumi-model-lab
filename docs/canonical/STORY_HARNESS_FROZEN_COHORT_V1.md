@@ -168,3 +168,11 @@ Even when the two real GETs succeed, the result proves neither exclusive
 shared-key use nor whole-account financial reconciliation and authorizes no
 model POST. Do not confuse this metadata job with the still absent paid
 cohort batch executor.
+
+Initial protected metadata workflow attempt #38638654571 was rejected by
+GitHub **before any job steps**, with a hosted-runner billing/usage-limit
+annotation. The unrelated original paid qualification job was SKIPPED.
+No provider GET or model POST took place. The prefreeze workflow now
+uses the already-provisioned self-hosted q25-offline runner rather than
+requiring new GitHub-hosted runner billing. This is a CI runner routing
+correction before B01, not an in-cohort Harness change.

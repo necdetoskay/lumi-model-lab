@@ -16,6 +16,7 @@ class ManualExistingKeyWorkflow(unittest.TestCase):
 
     def test_secret_job_never_executes_pr_source_or_provider_post(self):
         y=FILE.read_text().split("  lumi-cohort-existing-key-readonly:",1)[1]
+        self.assertIn("runs-on: [self-hosted, Linux, X64, q25-offline]",y)
         self.assertNotIn("actions/checkout@",y)
         self.assertNotIn("pip install",y)
         self.assertNotIn("src.",y)

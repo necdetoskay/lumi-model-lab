@@ -86,7 +86,7 @@ jobs:
   lumi-cohort-existing-key-readonly:
     name: Cohort shared key metadata GET ONLY (no checkout, no POST)
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.qualification_config == 'LUMI_EXISTING_KEY_READONLY_V1' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' && github.sha == inputs.model }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 4
     permissions:
       contents: read
