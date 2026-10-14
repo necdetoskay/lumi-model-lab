@@ -56,6 +56,17 @@ class P436Tests(unittest.TestCase):
         self.assertEqual(record["generation_id"], "gen-1791962013-EUhZDIwF6TSPzFoV4B9S")
         self.assertFalse(record["semantic_state_fully_certified"])
 
+    def test_frozen_final_state_matches_original_projection_without_inference(self):
+        with TemporaryDirectory() as td:
+            _, bundle, q25, _ = sources(td)
+            receipt = load_original_q25(".", q25)
+            projected = project_b03_final_state(bundle, receipt)
+            frozen_path = Path("evidence/story_harness_p436/b03-r06-real-read-only-final-state-draft.json")
+            raw = frozen_path.read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                             "32deb6cd448d8d8f301298436ee22fd115e545c554aabce893f853caad56b55a")
+            self.assertEqual(json.loads(raw), projected)
+
     def test_project_real_b03_preserves_open_river_and_unknown_ownership(self):
         with TemporaryDirectory() as td:
             _, bundle, q25, _ = sources(td)
