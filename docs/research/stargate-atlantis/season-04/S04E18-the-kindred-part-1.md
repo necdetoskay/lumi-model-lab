@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 18
 title_original: "The Kindred, Part 1"
-status: draft
-word_count: 221
+status: complete
+word_count: 265
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Todd adlı Wraith müttefikleri görüşmek ister. Wraithlerin kendileri de hast
 Teyla Wraith gemisinde Michael'la karşılaşır. Kendisine Kanan'ın görüntüsünü onun gönderdiğini öğrenir. Michael hem hastalığı yaymakta hem kayıp Athosluları kaçırıp onları insan-Wraith melezlerine dönüştürmektedir. Yeni askerleriyle iki türü de kendi iktidarına bağlamayı amaçlar. Kanan'ın artık zihinsel olarak kontrol edilen melez asker olduğu ortaya çıkar. Teyla hem bebeğinin babasını hem halkını kaybetme tehlikesiyle karşı karşıyadır.
 
 Todd'dan alınan istihbarat Sheppard'ı Michael'ın üssüne götürür. Daedalus saldırı desteği verir, Lorne'un askerleri tesise girer. Ancak Michael'ın gemisi kaçmıştır; Teyla gemidedir. Ekip üs hücrelerini araştırırken beklenmedik esir bulur: bir yıl önce öldüğü sanılan Doktor Carson Beckett. Bölüm bu şaşırtıcı karşılaşmayla sona erer.
+
+Teyla'nın rüyaları yalnız geçmişe duyduğu özlemin yansıması değildir; Michael onu bulmak için özel zihinsel bağları kullanmaktadır. Hamileliğinin ilerlemesi ve Kanan'ın kontrol altında bulunması onun için her kararın bedelini artırır. Beckett'ın yeniden görünmesi ise kayıp doktorla ilgili bilinen gerçekleri değiştirecek yeni bir araştırmayı zorunlu kılar.
 
 ## Kaynaklar
 

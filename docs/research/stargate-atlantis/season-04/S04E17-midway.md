@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 17
 title_original: "Midway"
-status: draft
-word_count: 224
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Düşman kontrol odasını ele geçirip Dünya kapısını açar. Önce herkesi 
 Atlantis'te saldırı öğrenildiğinde Sheppard ve McKay Midway'e gider. Wraithlerle çatışma ağırlaşır; Sheppard kontrol odası dışındaki son asker olarak kalır. Kavanagh bilgisayara bağlandığında düşmanın tuzakladığı kendini imha düzenini çalıştırır. McKay, Sheppard'ın emriyle kontrol odası dışındaki bütün bölümlerin havasını boşaltır. Wraith askerleri boğularak ölür, ancak Sheppard da aynı boşlukta yaşamını kaybetme tehlikesi geçirir.
 
 McKay ve diğerleri sistemleri kullanarak Sheppard'ı korumayı başarır ve Midway'den ayrılır. Dünya'daki savaş da Ronon ve Teal'c'in müdahalesiyle sona erer, nükleer saldırı durdurulur. Geçit istasyonu büyük ölçüde yok olsa da Dünya korunmuştur. Coolidge'in küçümsediği iki savaşçı bütün Cheyenne Mountain personelini kurtarmış, Carter'ın başlangıçtaki endişesi tersine dönmüştür.
+
+Midway istasyonundaki saldırı yalnız iki galaksi arasındaki ulaşımı bozmaz; Wraithler Dünya'nın en gizli askerî merkezine kadar ulaşır. Teal'c ve Ronon'un birlikte çalışması, farklı dünyalardan gelen savaşçıların ortak değerlerde buluşabildiğini gösterir. Sorgu isteyen Coolidge de hayatta kalan personelin kurtuluşunu bu iki kişiye borçludur.
 
 ## Kaynaklar
 

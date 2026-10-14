@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 16
 title_original: "Trio"
-status: draft
-word_count: 241
+status: complete
+word_count: 287
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Duvar kapısını açtıklarında odanın dev yeraltı uçurumunun kenarında as
 Süre daralırken McKay ev yapımı fırlatma aygıtı hazırlayarak metal çubuğu tavan açıklığından dışarı göndermeyi önerir. Keller halatı tutar, McKay bağlantıyı gerer. Bu sırada yeni deprem yaşanır. Oda yan yatıp uçuruma doğru kayarken Keller kapıdan aşağı düşer; yalnızca elinde tuttuğu ip sayesinde asılı kalır. McKay onun yaşamını korumak için son gücüyle ipi tutmaktadır. Carter yaralı bacağıyla yardım etmenin yolunu arar.
 
 Üçlü, mühendislik hesaplarını ve birlikte geliştirdikleri basit mekanik düzenekleri kullanarak ip bağlantısını sağlamlaştırır. Keller son anda çekilip kurtarılır; diğerleri de yüzeye ulaşır. Köylüler tahliye konusunu yeniden değerlendirmek zorunda kalır. McKay için olay, kişisel korkularına rağmen Carter ile Keller'e güvenerek hareket etmeyi öğrendiği zorlu sınav olur.
+
+Keller'ın paniğe kapılmadan halatı tutması ve McKay'in onu bırakmaması son anda ikisinin de hayatını kurtarır. Carter bacağı kırılmış durumda bile hesap yaparak yeni yollar arar. Üçü arasındaki güven, fiziksel güçten daha önemli hâle gelir. Gezegenin tehlikeli madencilik geçmişi, köylülerin neden göç etmekte tereddüt ettiğini de açıklar.
 
 ## Kaynaklar
 

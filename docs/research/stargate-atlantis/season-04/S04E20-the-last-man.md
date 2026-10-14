@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 20
 title_original: "The Last Man"
-status: draft
-word_count: 227
+status: complete
+word_count: 264
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bu ordular önce Wraithleri, ardından kendilerine karşı çıkan insan topluml
 Rodney geçmişi değiştirmek için yirmi beş yıl araştırma yapar. Sheppard'ın gelecek çağda Atlantis'e ulaşacağını bildiğinden hologramını hazırlar. Planı, Sheppard'ı staz kapsülüne koyup yeterince güçlü yeni güneş patlaması gerçekleşene kadar bekletmektir. Ancak şehirde enerji azdır ve koridora kum dolmuştur. Sheppard çöl fırtınasına çıkarak başka yoldan kapsüllere ulaşır. Hologram onu içeri kapatmadan önce Teyla'nın öldürüleceği üssün adresini verir.
 
 Kurtarma planı işe yarar. Sheppard yaklaşık on iki gün sonra kendi çağına geri döner. Atlantis ekibine gelecekten öğrendiklerini anlatarak Michael'ın bulunduğu üsse baskın düzenler. Ancak Teyla artık orada değildir. Yerleşke patlayıcılarla tuzaklanmıştır; ekip binadan çıkmaya çalışırken büyük patlama başlar. Sezon, geleceği değiştirmeyi amaçlayan operasyonun hemen ölümcül bir tuzağa dönüşmesiyle sona erer.
+
+Gelecekteki McKay'nin çalışması Sheppard'ı kurtarmaktan daha büyük bir amacı taşır: Michael'ın galaksiyi yok ettiği zaman çizgisini henüz yaşanmadan değiştirmek. Yirmi beş yıllık kişisel araştırmanın sonunda eski dostunu geçmişe gönderebilmesi, kaybettiği insanların yaşamını yeniden mümkün kılan son umuttur.
 
 ## Kaynaklar
 

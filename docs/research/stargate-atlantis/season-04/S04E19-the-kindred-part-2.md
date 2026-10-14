@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 19
 title_original: "The Kindred, Part 2"
-status: draft
-word_count: 231
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Michael'ın eski üssünde iz süren ekip Nabel Golan'ı yakalar. Adam, Teyla il
 Teyla hapiste Kanan ile diğer Athoslulara ulaşmaya çalışır. Michael'ın kontrolü altında oldukları için kaçış fırsatları azdır. Kanan eski kişiliğinden bazı izler gösterse de emirleri çiğneyemez. Michael, Teyla'nın doğacak bebeğinin genetik özellikleriyle ilgilenmektedir. Sheppard, McKay, Ronon ve Beckett üssün içine sızar; muhafızlarla çatışarak ilerler. Ancak Michael zihin etkisini kullanıp Beckett'ı da kararsız bırakmaya uğraşır.
 
 Ekip Michael'ın planını bozarak Teyla'yı kurtarmaya yaklaşsa da düşman bütün kozlarını henüz kaybetmemiştir. Teyla'yı yeniden kaçırmayı başarır ve başka yere götürür. Beckett'ın durumu kritik hâle gelince Atlantis'e dönülür ve klon staza yatırılır. Teyla hâlâ kayıptır; Michael ile Athoslu melezlerin bulunduğu yer bilinmemektedir. Kurtarma savaşı bir sonraki krize taşınır.
+
+Beckett'ın anıları asıl doktorunkiyle aynı olsa bile bedeni klon olduğu için yaşamını sürdürebilmesi Michael'ın bağımlılık yaratan ilacına bağlıdır. Arkadaşlarının ona yardım etme kararı, orijinal Carson'ın ölümünün ardından gelişen duygusal bağı yansıtır. Teyla ve doğmamış bebeğinin korunması ise hâlâ en acil görevdir.
 
 ## Kaynaklar
 
