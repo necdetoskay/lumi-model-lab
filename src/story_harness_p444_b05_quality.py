@@ -228,7 +228,7 @@ def main():
     if not args.paid_audit_once:
         print(json.dumps(status(), sort_keys=True))
         return
-    must(os.getenv("LUMI_P439_B05_QA") == "ONE_REAL_INDEPENDENT_B05_SONNET_QUALITY",
+    must(os.getenv("LUMI_P444_B05_QA") == "ONE_REAL_INDEPENDENT_B05_SONNET_QUALITY",
          "B05 real QA requires an exact reviewed one-use grant")
     must(args.producer_root and args.quality_root,
          "Missing original protected B05 generation/QA claim directories")
