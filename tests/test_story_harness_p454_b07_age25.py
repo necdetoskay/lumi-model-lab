@@ -2,12 +2,15 @@
 from copy import deepcopy
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
+from pathlib import Path
 import json
 import unittest
 
 import test_story_harness_p417_live_pilot as p417fake
 from src.story_harness_p454_b07_age25 import (
-    CASE_ID,SOURCE_SHA,source_case,seventh_story_once,status
+    CASE_ID,SOURCE_SHA,source_case,seventh_story_once,status,
+    PAID_GRANT_ENV,PAID_GRANT_VALUE,main
 )
 from src.story_harness_v1 import HarnessStop
 
@@ -60,6 +63,20 @@ class P454Tests(unittest.TestCase):
         self.assertEqual(p["open_obligations"],["Mektup henüz okunmamıştır","Fırtına başlamıştır"])
         self.assertEqual(p["forbidden_state_invention"],
                          "İmkânsız zaman sıçraması yapılmaz")
+
+    def test_old_prepost_grant_cannot_authorize_paid_inference(self):
+        self.assertEqual(PAID_GRANT_ENV,"LUMI_P455_B07")
+        self.assertEqual(PAID_GRANT_VALUE,"ONE_ORIGINAL_B07_AGE25_GENERATION")
+        with TemporaryDirectory() as td:
+            with patch.dict("os.environ",{
+                "LUMI_P446_B07":"ONE_ORIGINAL_B07_AGE25_GENERATION",
+                "LUMI_P454_B07":"ONE_ORIGINAL_B07_AGE25_GENERATION",
+                "LUMI_P455_B07":"",
+            },clear=True):
+                with patch("sys.argv",["b07","--paid-once","--claim-root",td]):
+                    with self.assertRaises(HarnessStop):
+                        main()
+            self.assertEqual(list(Path(td).iterdir()),[])
 
     def test_default_refuses_provider_and_canon_authority(self):
         d=status()
