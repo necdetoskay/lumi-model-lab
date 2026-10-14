@@ -60,7 +60,7 @@ def fifth_story_once(repo_root, claim_root, *, transport):
     plan,pack=source_case(repo_root)
     root=Path(claim_root)
     must(root.is_dir() and not root.is_symlink(),"Protected B05 claim root missing")
-    pilot=BoundedOncePilot(root,case_id=CASE_ID,plan=plan,run_variant=VARIANT)
+    pilot=BoundedOncePilot(str(root),case_id=CASE_ID,plan=plan,run_variant=VARIANT)
     must(pilot.pack["pack_sha256"]==SOURCE_SHA,
          "B05 original source pack changed after claim")
     done=pilot.execute(transport=transport)
