@@ -5,7 +5,7 @@ import copy
 import unittest
 
 from src.story_harness_cohort_provider_observe_v1 import (
-    analyze_isolated_key, observe_provider_read_only, offline_status, KEY_ENV
+    analyze_isolated_key, analyze_cohort_catalog, observe_provider_read_only, offline_status, KEY_ENV
 )
 from src.story_harness_v1 import HarnessStop
 
@@ -28,7 +28,7 @@ def catalog():
             "provider_name":"Anthropic","tag":"anthropic",
             "model_id":"anthropic/claude-sonnet-5.5","status":0,
             "supported_parameters":[
-                "temperature","max_tokens","response_format","structured_outputs"
+                "max_tokens","response_format","structured_outputs"
             ],
             "pricing":{"prompt":"0.000002","completion":"0.00001"},
             "context_length":200000,"max_completion_tokens":16000,
@@ -86,3 +86,15 @@ class IsolatedReadOnlyKeyTests(unittest.TestCase):
         self.assertEqual(r["required_secret_name"],KEY_ENV)
         self.assertEqual(r["paid_model_calls"],0)
         self.assertFalse(r["live_key_observed"])
+
+
+    def test_current_sonnet_provider_route_does_not_require_temperature(self):
+        metadata=catalog()
+        self.assertNotIn("temperature",
+                         metadata["data"]["endpoints"][0]["supported_parameters"])
+        observation=analyze_cohort_catalog(metadata)
+        self.assertTrue(observation["temperature_not_required_by_current_cohort"])
+        self.assertEqual(observation["prompt_usd_per_million"],"2.000000")
+        self.assertEqual(observation["completion_usd_per_million"],"10.00000")
+        self.assertFalse(observation["live_post_authorized"])
+

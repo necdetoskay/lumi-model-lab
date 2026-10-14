@@ -11,7 +11,7 @@ from decimal import Decimal
 import os
 
 from src.story_harness_p414 import read_current_key
-from src.story_harness_p412 import fetch_catalog, analyze_catalog
+from src.story_harness_p412 import fetch_catalog, _price
 from src.story_harness_cohort_launch_gate_v1 import utc, usd, must
 from src.story_harness_frozen_cohort_v1 import TRIAL_CAP, CAP
 from src.story_harness_p417_live_pilot import MODEL, PROVIDER
@@ -62,6 +62,56 @@ def analyze_isolated_key(snapshot, *, now=None):
         "real_model_calls": 0,
     }
 
+def analyze_cohort_catalog(snapshot):
+    """Validate what the *new* frozen cohort actually sends, not old v21.
+
+    P4.17, P4.22 and P4.24 cohort wires OMIT temperature by design.
+    The historical P4.12 quality preflight requires it for a different
+    original request and MUST NOT be silently reused for this cohort.
+    """
+    must(type(snapshot) is dict and type(snapshot.get("data")) is dict,
+         "CATALOG_SHAPE")
+    data = snapshot["data"]
+    must(data.get("id") == MODEL and type(data.get("endpoints")) is list,
+         "CATALOG_WRONG_MODEL")
+    choices = [e for e in data["endpoints"] if type(e) is dict and
+               e.get("provider_name") == PROVIDER and e.get("tag") == "anthropic"]
+    must(len(choices) == 1, "CATALOG_PROVIDER_AMBIGUOUS_OR_ABSENT")
+    route = choices[0]
+    must(route.get("model_id") == MODEL and
+         type(route.get("status")) is int and route["status"] == 0 and
+         type(route.get("max_completion_tokens")) is int and
+         route["max_completion_tokens"] >= 6500,
+         "CATALOG_ROUTE_UNAVAILABLE")
+    supported = route.get("supported_parameters")
+    must(type(supported) is list and
+         all(type(v) is str for v in supported) and
+         {"max_tokens","response_format","structured_outputs"}.issubset(
+             set(supported)), "CATALOG_MISSING_WIRE_CAPABILITY")
+    prices = route.get("pricing")
+    must(type(prices) is dict, "CATALOG_MISSING_PRICE")
+    prompt = _price(prices.get("prompt"))
+    output = _price(prices.get("completion"))
+    must(Decimal("0") < prompt <= Decimal("0.000002") and
+         Decimal("0") < output <= Decimal("0.00001"),
+         "CATALOG_PRICE_EXCEEDS_PINNED_MAX")
+    # Public catalogue is NOT a proof that a given request is admitted.
+    from src.story_harness_p410 import canonical_json
+    import hashlib
+    return {
+        "model": MODEL, "provider": PROVIDER,
+        "catalog_sha256": hashlib.sha256(canonical_json(snapshot)).hexdigest(),
+        "max_completion_tokens": route["max_completion_tokens"],
+        "required_wire_parameters": [
+            "max_tokens","response_format","structured_outputs"
+        ],
+        "temperature_not_required_by_current_cohort": True,
+        "prompt_usd_per_million": format(prompt * 1_000_000, "f"),
+        "completion_usd_per_million": format(output * 1_000_000, "f"),
+        "blockers": [],
+        "live_post_authorized": False,
+    }
+
 def observe_provider_read_only(*, api_key, now=None, key_fetch=None,
                                catalog_fetch=None):
     """Explicit 2 GETs only; fake injected GET callbacks remain UNAUTHENTICATED."""
@@ -72,7 +122,7 @@ def observe_provider_read_only(*, api_key, now=None, key_fetch=None,
     catalog_fetch = catalog_fetch or fetch_catalog
     snapshot = key_fetch(api_key=api_key)
     key = analyze_isolated_key(snapshot, now=now)
-    catalog = analyze_catalog(catalog_fetch())
+    catalog = analyze_cohort_catalog(catalog_fetch())
     must(type(catalog["blockers"]) is list and
          not catalog["blockers"] and
          catalog["model"] == MODEL and
