@@ -1,0 +1,146 @@
+name: Story Harness P4.35 B03 Real Q25 Once
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p435-b03-q25-once.yml
+      - configs/story_harness_p435_b03_q25_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p435-b03-real-q25-one-grant
+  cancel-in-progress: false
+
+jobs:
+  actual-b03-q25:
+    if: ${{ github.run_attempt == 1 && github.event.action == 'synchronize' && github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p435-b03-q25-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p435-b03-q25-isolated
+      - name: Deny paid inference unless HEAD is exactly a B03-only grant change
+        id: paid_scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          paths=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          allowed=paths==['configs/story_harness_p435_b03_q25_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if allowed else 'false')+'\n')
+          print('P435_PAID_B03_GRANT_SCOPE=' + ('ELIGIBLE' if allowed else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.paid_scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Prove original B03 Master, unique scope, exact Sonnet request and budget (OFFLINE)
+        if: steps.paid_scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p434_b03_master.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p435_b03_q25.py' -q
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p435_b03_q25 import (
+              load_b03_bundle,b03_q25_wire,COST_CAP,MODEL,PREVIOUS_RESERVED_USD,
+              USER_CAP_USD,SOURCE_SHA,SPINE_SHA,STORY_SHA,
+          )
+          scope=json.loads(Path('configs/story_harness_p435_b03_q25_trigger.json').read_text())
+          assert scope=={
+              'schema':'lumi.story-harness-p435-real-b03-q25-once.v1',
+              'case_id':'B03',
+              'run_variant':'v01',
+              'original_canon_sha256':SOURCE_SHA,
+              'original_spine_sha256':SPINE_SHA,
+              'pilot_master_story_sha256':STORY_SHA,
+              'independent_quality_generation_id':'gen-1791956689-z15grh3ISk5XKZQt7NlY',
+              'model':MODEL,
+              'new_maximum_model_posts':1,
+              'max_stage_reported_usd':'0.050',
+              'prior_conservative_budget_usd':'1.489558',
+              'aggregate_user_authorized_budget_usd':'10.00',
+              'no_automatic_retry':True,
+              'production_write':False,
+          }, 'Original B03 grant scope not exact'
+          assert PREVIOUS_RESERVED_USD==Decimal(scope['prior_conservative_budget_usd'])
+          assert COST_CAP==Decimal(scope['max_stage_reported_usd'])
+          assert USER_CAP_USD==Decimal(scope['aggregate_user_authorized_budget_usd'])
+          assert PREVIOUS_RESERVED_USD+COST_CAP <= USER_CAP_USD
+          root=Path(os.environ['RUNNER_WORKSPACE'])
+          bundle=load_b03_bundle('.',
+              root/'_lumi_p431_b03_story_claims',
+              root/'_lumi_p433_b03_quality_claims',
+              root/'_lumi_p434_b03_master_claims')
+          assert bundle['audit']['auditor_generation_id']==scope['independent_quality_generation_id']
+          body=b03_q25_wire(bundle)
+          assert body['provider']['allow_fallbacks'] is False
+          assert body['stream'] is False
+          assert body['model']==scope['model']
+          print('P435_B03_ORIGINAL_MASTER_AND_USD_CAP_VERIFIED')
+          PY
+      - name: Read-only OpenRouter remaining-inference balance check
+        if: steps.paid_scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          info=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          available=info.get('limit_remaining')
+          if available is not None:
+              assert Decimal(str(available))>=Decimal('0.050')
+          assert info.get('is_management_key') is not True
+          assert info.get('is_free_tier') is not True
+          print('P435_OPENROUTER_INF_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: Execute one real Sonnet B03 Q25; never retry or write Canon
+        if: steps.paid_scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P435_Q25_B03: ONE_REVIEWED_B03_MASTER_Q25
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p435_b03_q25_claims"
+          chmod 700 "$root/_lumi_p435_b03_q25_claims"
+          python -m src.story_harness_p435_b03_q25 \
+            --repo-root . \
+            --producer-root "$root/_lumi_p431_b03_story_claims" \
+            --quality-root "$root/_lumi_p433_b03_quality_claims" \
+            --master-root "$root/_lumi_p434_b03_master_claims" \
+            --q25-root "$root/_lumi_p435_b03_q25_claims" \
+            --paid-once > /tmp/lumi-p435-original-b03-q25.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('/tmp/lumi-p435-original-b03-q25.json').read_text())
+          assert a['case_id']=='B03' and a['state_committed'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P435_REAL_B03_Q25_EVIDENCE_GREEN')
+          print('P435_B03_Q25_GENERATION_ID='+a['q25_generation_id'])
+          print('P435_B03_Q25_REPORTED_USD='+a['provider_reported_cost_usd'])
+          print('P435_B03_Q25_FINAL_LOCATION='+a['final_location_proposal'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.paid_scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p435-b03-original-q25-evidence-once
+          path: ${{ runner.workspace }}/_lumi_p435_b03_q25_claims/p435-b03-r06-q25-evidence-v01/
+          if-no-files-found: warn
+          retention-days: 30
