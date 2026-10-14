@@ -122,14 +122,16 @@ class UnifiedPipelineTests(unittest.TestCase):
                 self.assertTrue((folder/"07-final-state-draft.json").exists())
                 with self.assertRaises(FileExistsError):
                     run_one_case_with_injected_transport(".", case, td,
-                                                         transport=mock)
+                                                         transport=mock,
+                                                         harness=create_harness(".", case))
                 self.assertEqual(len(mock.calls), 4)
 
     def test_reject_does_not_call_q25_and_does_not_retry(self):
         with tempfile.TemporaryDirectory() as td:
             mock = MockProvider("B01", reject=True)
             r = run_one_case_with_injected_transport(".", "B01", td,
-                                                     transport=mock)
+                                                     transport=mock,
+                                                     harness=create_harness(".", "B01"))
             self.assertEqual(r["status"], "REJECT")
             self.assertEqual(len(mock.calls), 3)
             self.assertFalse((Path(td)/"B01"/"05-q25-intent.json").exists())
