@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 7
 title_original: "Instinct"
-status: draft
-word_count: 241
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard buna hemen inanmaz; sonuçta köyde insanlar ölmeye devam etmektedir. 
 Tedavi beklenenin tersine etki eder. Ellia'nın insani genleri ağır biçimde zarar görür ve giderek saldırgan, kontrol edilemeyen bir yaratığa dönüşür. Ekip ikinci Wraith'i durdurmayı başarsa da şimdi Ellia'yı da kurtarmaya çalışmak zorundadır. Zaddik kızını çok sevdiğini, yıllarca onun hayatta kalabilmesi için kendi yaşam enerjisinden bile verdiğini açıklar; ardından ölür. Beckett değişimin geri çevrilebileceğini düşünür ama Ellia kaçmıştır.
 
 Sheppard ormanda genç kıza yaklaşarak teslim olmasını ister. Ellia onu tanıyamaz hâle gelmiştir. Teyla'ya saldırır, ardından Sheppard'ı yaralar. Ronon yetişip açtığı ateşle yaratığı öldürür. Zaddik'in yıllarca koruduğu kız kurtarılamaz; Sheppard'ın kolundaki kesikler ise sadece yara gibi görünse de gelecekte tehlikeli sonuçlar doğuracaktır.
+
+Ellia'nın insanlarla yaşamak için geliştirdiği umut, tam da iyileşmek istediği anda deneysel tedaviyle yok edilir. Beckett'ın araştırması Wraithlerin genetik olarak dönüştürülebileceğini göstermiş olsa da bu örnek tıbbi yöntemin henüz güvenli olmadığını kanıtlar.
 
 ## Kaynaklar
 

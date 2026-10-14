@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 9
 title_original: "Aurora"
-status: draft
-word_count: 244
+status: complete
+word_count: 274
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Kaptan ve subayları Sheppard'ın gelecekte geldiğine inanmaz. Onlar hâlâ Wra
 McKay sanal ortama girip Sheppard'ı uyarır. İkili kaptanı gerçek durumuna inandırmak ve sahte subayı ortaya çıkarmak için çalışır. Dışarıda iki Wraith kruvazörü yaklaşmaktadır. Bilincin içinde geçen görüşmeler sayesinde kaptan, bedeninin artık yaşayamayacağını ve kendi günlerinin sona erdiğini kabul eder. Kadimlerin aradığı zayıflığın ayrıntılı mesajı ise eski Konseyin güvenlik kararı yüzünden kaybolmuştur. Kaptan son bir görev yapmayı seçer.
 
 Sheppard ve McKay sanal ağdan çıkar, gerçek Wraith sızmacısını öldürür. Ardından kaptan geminin kendi kendini imha kodunu verir. Daedalus uzaklaşırken Aurora büyük patlamayla kendisini ve yaklaşan iki Wraith kruvazörünü yok eder. Kadimlerin düşmanla ilgili önemli zayıflığı öğrenilememiştir, ancak Wraithler motor teknolojisini ele geçirememiştir. Atlantis'e dönen Sheppard ekibi, Aurora mürettebatının fedakârlığı anısına kadeh kaldırır.
+
+On bin yıl sonra bile kendilerini görevde sanan Kadim askerleri, insanlarının Atlantis'e sağ dönmesi için umut taşımıştır. Kaptanın gemisini feda etmesi geçmiş savaşı kazanamamış olmanın acısını yeni müttefikleri koruyarak anlamlandırır.
 
 ## Kaynaklar
 

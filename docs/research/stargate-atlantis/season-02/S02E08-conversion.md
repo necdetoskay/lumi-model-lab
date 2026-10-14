@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 8
 title_original: "Conversion"
-status: draft
-word_count: 233
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Weir onun görev yetkisini geçici olarak Caldwell'a devreder. Sheppard tedavi i
 Sheppard'ın bedeni değişmeyi sürdürür, dönüş için çok az zaman kalır. Son çare olarak canavarlaşmanın getirdiği kuvveti kullanmayı önerir. Kısa süreli baskılayıcı ilaç alarak arkadaşlarının gözetiminde aynı mağaraya gider. Kimse içeri giremezken Sheppard böceklerin arasında ilerler ve gerekli yumurtaları çıkarır. İlaç etkisini kaybettiğinde hızla saldırganlaşır; dışarı çıktığında Ronon onu sersemletmek zorunda kalır.
 
 Yumurtalardan elde edilen materyalle Beckett tedaviyi başlatır. Haftalar süren iyileşmenin ardından Sheppard eski insan hâline döner. Teyla'yla yeniden antrenman yapabilir; geçici davranışları için özür dilemeye çalışır. Ancak kolundaki izler tedavinin bütün etkilerinin silinmesinin zaman alacağını gösterir. Bu olay, Wraithlerin evrimsel kökeniyle insana müdahale etmenin risklerini yeniden gündeme getirir.
+
+Sheppard'ın kontrolsüz davranışları Teyla ve diğer arkadaşlarıyla ilişkilerini de etkiler. Beklenmedik öpücük ve güvenlik personeline saldırması, bedensel değişimin yalnız kuvvet kazandırmadığını, karakteri üzerinde de doğrudan etkili olduğunu gösterir. Beckett'ın tedavisi kişiliğinin de korunmasını sağlar.
 
 ## Kaynaklar
 
