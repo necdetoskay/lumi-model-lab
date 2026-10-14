@@ -146,3 +146,25 @@ stage**. A mismatch, failed GET, or checker exception sets
 exercise the wiring but cannot mark genuine release acceptance. The
 production-only protected key binding and external audit store remain
 unimplemented/blocked.
+
+## Existing-key protected manual GET path (preregistered before B01)
+
+The main-registered model-qualification.yml already has a manually
+dispatchable workflow_dispatch event. Its **Draft branch version only**
+adds a distinct LUMI_EXISTING_KEY_READONLY_V1 mode. The original paid
+qualification job is explicitly skipped in that mode. The new metadata-only
+job requires (a) manual dispatch on the exact Story Harness experiment
+branch and (b) its github.sha to equal the operator's explicit
+model input, used as the expected reviewed head SHA. No PR/push trigger,
+checkout, pip dependency, model request, stored raw key or provider account
+identifiers is involved. The inline, self-contained standard-library Python
+makes one authenticated GET /api/v1/key and a separate unauthenticated
+model endpoint catalog GET; HTTPS redirects and unknown billing states
+fail closed. The job can run without merging PR #275 or modifying main.
+
+Static security tests are added to the frozen-cohort OFFLINE CI. This
+workflow file itself joins the immutable Harness component file set.
+Even when the two real GETs succeed, the result proves neither exclusive
+shared-key use nor whole-account financial reconciliation and authorizes no
+model POST. Do not confuse this metadata job with the still absent paid
+cohort batch executor.
