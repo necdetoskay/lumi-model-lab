@@ -1,0 +1,137 @@
+name: Story Harness P4.58 B07 Independent Initial Quality One Grant
+
+on:
+  pull_request:
+    types: [synchronize]
+    paths:
+      - configs/story_harness_p458_b07_quality_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p458-b07-initial-quality-one-grant
+  cancel-in-progress: false
+
+jobs:
+  b07-independent-quality-once:
+    if: ${{ github.run_attempt == 1 && github.event.action == 'synchronize' && github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 13
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Reject everything but a single independently approved B07 quality grant HEAD
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(["git","diff-tree","--no-commit-id","--name-only","-r","HEAD"],text=True).splitlines()
+          if changed!=["configs/story_harness_p458_b07_quality_trigger.json"]:
+              raise SystemExit("P458_STOP_NOT_EXACT_B07_QUALITY_GRANT")
+          print("P458_B07_EXACT_GRANT_COMMIT_CONFIRMED")
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline evidence, adversarial audit contract, no provider
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p458_b07_quality.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p453_b06_final_state.py' -q
+      - name: Validate exact B07 quality grant, original immutable provider bytes and aggregate budget
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p458_b07_quality import (
+              get_original_B07, inspect_B07_audit, SOURCE_SHA, SPINE_SHA, STORY_SHA,
+              SPINE_ID, GEN_COST, PRIOR_RESERVED, USER_CAP, MODEL, AUDIT_DIR, STAGE_COST_CAP)
+          from src.story_harness_p422_independent_audit import verify_auditor_reply
+          from src.story_harness_v1 import HarnessStop
+          grant=json.loads(Path("configs/story_harness_p458_b07_quality_trigger.json").read_text())
+          expected={
+              "schema":"lumi.story-harness-p458-b07-one-independent-quality.v1",
+              "case_id":"B07", "run_variant":"r06", "source_pack_sha256":SOURCE_SHA,
+              "original_spine_sha256":SPINE_SHA, "original_story_sha256":STORY_SHA,
+              "original_spine_generation_id":SPINE_ID, "reader_age":25, "model":MODEL,
+              "maximum_quality_model_posts":1, "max_new_quality_stage_usd":"0.040",
+              "previous_conservative_budget_reserved_usd":"3.209558",
+              "user_aggregate_approved_usd":"10.00",
+              "automatic_retries":False, "production_write":False,
+              "generation_run_id":38611801159, "grant_id":"p458-b07-original-initial-quality-once"
+          }
+          if grant!=expected: raise HarnessStop("P458_STOP_GRANT_MISMATCH")
+          if PRIOR_RESERVED!=Decimal(grant["previous_conservative_budget_reserved_usd"]) or STAGE_COST_CAP!=Decimal(grant["max_new_quality_stage_usd"]) or PRIOR_RESERVED+STAGE_COST_CAP>USER_CAP:
+              raise HarnessStop("P458_STOP_BUDGET_MISMATCH")
+          workspace=Path(os.environ["RUNNER_WORKSPACE"])
+          quality_root=workspace/"_lumi_p458_b07_quality_claims"
+          if quality_root.is_symlink() or (quality_root/AUDIT_DIR).exists() or (quality_root/AUDIT_DIR).is_symlink():
+              raise HarnessStop("P458_STOP_PRIOR_AUDIT_EXISTS")
+          producer=workspace/"_lumi_p455_b07_story_claims"
+          source=get_original_B07(".",producer)
+          wire=inspect_B07_audit(source)
+          if wire["stream"] is not False or wire["provider"]["allow_fallbacks"] is not False:
+              raise HarnessStop("P458_STOP_AUDIT_ROUTING_CHANGED")
+          print("P458_B07_IMMUTABLE_ORIGINAL_SOURCE_AND_BUDGET_GREEN")
+          PY
+      - name: Read-only OpenRouter inference-key balance
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          from src.story_harness_v1 import HarnessStop
+          d=read_current_key(api_key=os.getenv("OPENROUTER_API_KEY",""))["data"]
+          val=d.get("limit_remaining")
+          if val is None: raise HarnessStop("P458_STOP_UNKNOWN_CREDIT")
+          amount=Decimal(str(val))
+          if not amount.is_finite() or amount<Decimal("0.040"): raise HarnessStop("P458_STOP_NO_CREDIT")
+          if d.get("is_management_key") is True or d.get("is_free_tier") is True:
+              raise HarnessStop("P458_STOP_WRONG_KEY")
+          print("P458_B07_READ_ONLY_BALANCE_GREEN")
+          PY
+      - name: Exactly one independent Sonnet QA POST, no retries or state writes
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P458_B07_QA: ONE_REAL_INDEPENDENT_B07_SONNET_QUALITY
+        run: |
+          set -euo pipefail
+          workspace="${RUNNER_WORKSPACE}"
+          root="$workspace/_lumi_p458_b07_quality_claims"
+          if [ -L "$root" ]; then echo P458_STOP_CLAIM_ROOT_SYMLINK; exit 1; fi
+          mkdir -p "$root"
+          chmod 700 "$root"
+          result="${RUNNER_TEMP}/lumi-p458-b07-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+          python -m src.story_harness_p458_b07_quality --repo-root . --producer-root "$workspace/_lumi_p455_b07_story_claims" --quality-root "$root" --paid-audit-once > "$result"
+          python - "$result" <<'PY'
+          import json,sys
+          r=json.load(open(sys.argv[1]))
+          assert r["case_id"]=="B07" and r["initial_quality_verdict"] in ("ACCEPT","REJECT")
+          assert r["english_master_authorized"] is False and r["q25_authorized"] is False
+          assert r["production_state_write_authorized"] is False
+          print("P458_B07_INITIAL_QUALITY_VERDICT="+r["initial_quality_verdict"])
+          print("P458_B07_READER_SCORE="+str(r["reader_score"]))
+          print("P458_B07_BLOCKERS="+str(r["blockers"]))
+          print("P458_B07_PROVIDER_USD="+r["provider_quality_cost_usd"])
+          print("P458_B07_AUDITOR_GENERATION_ID="+r["auditor_generation_id"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p458-b07-original-independent-quality
+          path: ${{ runner.workspace }}/_lumi_p458_b07_quality_claims/p458-b07-r06-cc89a48c9dde/
+          if-no-files-found: warn
+          retention-days: 30

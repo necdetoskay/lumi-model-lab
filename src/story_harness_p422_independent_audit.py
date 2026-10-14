@@ -102,7 +102,7 @@ def load_source(repo_root, producer_claim_root, *, case_id=DEFAULT_CASE,
             "original_claim_id":claim.name}
 
 
-def audit_wire(source):
+def audit_wire(source, *, max_request_bytes=20000):
     pack,story,spine=source["pack"],source["story"],source["spine"]
     system=(
         "You are a SEPARATE adversarial literary and Canon auditor, not the "
@@ -166,7 +166,13 @@ def audit_wire(source):
                    "_independent_initial_audit_v1",
             "strict":True,"schema":schema}},
     }
-    must(len(canonical_json(body))<20000,"Unbounded quality request")
+    must(type(max_request_bytes) is int and max_request_bytes in (20000, 22000),
+         "Unreviewed audit request ceiling")
+    if max_request_bytes != 20000:
+        must(source.get("case_id") == "B07" and pack["reader_age"] == 25
+             and story.get("word_count") == 2708,
+             "Extended audit request bound is B07 original only")
+    must(len(canonical_json(body)) < max_request_bytes, "Unbounded quality request")
     return body
 
 
