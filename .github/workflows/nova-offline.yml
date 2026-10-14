@@ -1,0 +1,39 @@
+name: NOVA Independent Offline
+
+on:
+  push:
+    branches: [codex/nova-independent-pilot]
+    paths: ['experiments/nova/**', 'tests/test_nova.py', '.github/workflows/nova-offline.yml', 'docs/research/nova/**']
+  pull_request:
+    branches: [research/stargate-narrative-mechanics-v1]
+    paths: ['experiments/nova/**', 'tests/test_nova.py', '.github/workflows/nova-offline.yml', 'docs/research/nova/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nova-offline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline:
+    runs-on: self-hosted
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Syntax and isolation lint
+        run: python -m experiments.nova.lint
+      - name: Source hashes and schemas
+        run: python -m experiments.nova verify
+      - name: Upstream and NOVA adversarial tests
+        run: python -m unittest tests.test_narrative_mechanics tests.test_nova -v
+      - name: Frozen source corpus completeness
+        run: python docs/research/stargate-atlantis/validate_atlantis.py
+      - name: Independent simulated OFF ON experiment
+        run: python -m experiments.nova dry-run --output runs/tmp/nova-ci-${{ github.run_id }}-${{ github.run_attempt }}
