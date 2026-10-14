@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 1
 title_original: "Adrift"
-status: draft
-word_count: 233
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Onarım sürerken büyük asteroid alanı belirir. Şehrin tahrik sistemi çalı
 Keller, Weir'in kanında önceki Asuran saldırısından kalan etkisiz nanomakineler olduğunu saptar. Bu varlıklar yeniden programlanarak yaralanmış dokuları onarabilir. Sheppard bunu aşırı riskli bulur ama McKay ile Keller başka seçenek kalmadığını söyler. Nanomakineler etkinleştirilir. Bir süre sonra Weir'in gözleri açılır, bedeni iyileşmiştir. Ancak artık içinde Asuran teknolojisi yaşamaktadır ve bunun sonuçları bilinmemektedir.
 
 Enerji hatları tümüyle onarılamadan ZPM'nin gücü tehlikeli seviyeye düşer. Atlantis hâlâ ölü uzayda asılıdır. McKay çözüm olarak bir Jumper'ı hiperuzayda kısa mesafe uçurup Asuranların dünyasından yeni ZPM çalmayı önerir. Weir'in yeni kazanılan yetenekleri bu tehlikeli görevde rehber olabilir. Bölüm, bütün şehir nüfusunun kurtuluşunu düşman gezegenindeki soyguna bağlayan planla kapanır.
+
+Şehirde kalkan küçüldükçe yalnız ekipman değil yaşanabilecek alanlar da kaybolur. Mürettebat içindeki pilotların kendi güvenliğini düşünmek yerine asteroidlere karşı görev alması önemli fedakârlıktır. Zelenka'nın yarasına rağmen onarım yapması, şehirde hayatta kalmanın tek kişinin kararına değil herkesin işbirliğine bağlı olduğunu gösterir.
 
 ## Kaynaklar
 

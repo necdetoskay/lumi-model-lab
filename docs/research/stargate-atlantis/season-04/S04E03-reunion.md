@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 3
 title_original: "Reunion"
-status: draft
-word_count: 237
+status: complete
+word_count: 273
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ronon dostlarını Atlantis'e getirmek ister ama Carter buna izin vermez. Eski e
 Gizli üsse girildiğinde Atlantis askerleri aniden kuşatılır ve yakalanır. Tyre, Rakai ve Ara ortadan kaybolmuştur. Ronon tek başına geçide ulaşarak haber verir. Carter kurtarma görevini bizzat yönetmeye karar verir. Ronon eski arkadaşlarına kavuşacağını umarak yeniden üsse girer, fakat gerçek ortaya çıkar. Üç Satedalı uzun süre önce Wraithlerce ele geçirilmiş ve onların hizmetine girmeye zorlanmıştır. Şimdi Ronon'u da kendileri gibi dönüştürmek istemektedirler.
 
 Ronon ihanetle yüzleşirken Carter diğer ekip üyelerini kurtarır. Çatışma sırasında eski Satedalı savaşçılarla dövüşmek zorunda kalan Ronon, onların artık geçmişteki yoldaşları olmadığını kabul eder. Atlantis personeli kurtarılır ve üssün araştırmaları sabote edilir. Ronon şehre dönmeyi seçer. Arkadaşlarını bulmak istediği için ayrılma düşüncesi taşımış olsa da kendisini özgürce kabul eden yeni ailesinin Atlantis olduğunu anlar.
+
+Carter'ın göreve başlar başlamaz personelini kurtarma operasyonuna katılması, Weir'den devraldığı sorumluluğu yalnız masa başından yürütmeyeceğini gösterir. Ronon'un eski dostlarına karşı savaşması geçmişini inkâr etmesi değil, kendi özgür iradesini ve yeni arkadaşlarını korumak için verdiği zor karardır.
 
 ## Kaynaklar
 

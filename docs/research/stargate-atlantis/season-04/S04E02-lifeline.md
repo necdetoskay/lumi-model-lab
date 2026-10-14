@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 2
 title_original: "Lifeline"
-status: draft
-word_count: 226
+status: complete
+word_count: 270
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Asuras'a gizlice ulaşan ekip Weir'in bağlantısını kullanarak savunma noktal
 Oberoth Weir'i durdurmaya çalışır. Weir onunla doğrudan zihin savaşı yaparak bütün nanomakineleri kısa süreliğine durdurmayı başarır. Sheppard ile Ronon kodu etkinleştirir. Ancak Oberoth kontrolü geri aldığında Weir düşmanın elinde kalır. Arkadaşlarına kendisini kurtarmaya çalışmadan gitmelerini emreder. Ekip ağır kayıpla Jumper'a döner. Hiperuzay yolculuğu için yeterli güç kalmadığından Asuran gemilerinin peşlerinden gelmesi yeni ölüm tehlikesi yaratır.
 
 Carter'ın arama çalışmasıyla elde edilen bilgi ve McKay'in kurtardığı ZPM'nin yardımıyla şehrin enerji sistemleri tekrar beslenir. Atlantis güvenli yeni gezegene götürülebilir. Ancak Weir geri dönmemiştir. Asuran-Wraith savaşını yeniden başlatacak kod çalışmıştır. Kazanılan güvenli yer, eski liderin düşmanın elinde kalması pahasına elde edilmiştir; Pegasus'ta güç dengesi değişirken Atlantis personeli ağır kayıpla yüzleşir.
+
+Weir'in Asuranlarla bağlantıya geçmesi kendi hayatı için de büyük tehlikedir. Yine de onu tanıyan arkadaşlarının yaşayabilmesi için geride kalmayı seçer. Kodun Wraithlere saldırı emri taşıması, Atlantis'in bir savaşın dışında kalabilmesini sağlayacak stratejik değişikliğe yol açar. Yeni ZPM şehri kurtarmak için somut bir fırsat yaratır.
 
 ## Kaynaklar
 

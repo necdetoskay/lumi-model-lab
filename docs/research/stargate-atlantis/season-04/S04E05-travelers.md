@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 5
 title_original: "Travelers"
-status: draft
-word_count: 234
+status: complete
+word_count: 275
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard eski savaş gemisine götürülür. Araç tehlikeli radyasyon sızınt�
 Saldırıda Sheppard ile Larrin birlikte çalışıp düşman kruvazörünü yok eder, fakat Kadim gemisinin hiperuzay motoru ağır hasar alır. Silas ve Nevik ölür. Larrin ile Sheppard artık tek başlarına mahsur kalmıştır. İkisi geminin kontrolünü paylaşmak istemez; birbirlerinden kuşkulanır. Ancak hayatta kalan Wraith askerlerinin güverteye geçtiği anlaşılır. Sheppard Larrin'i bir saldırıdan kurtarır. Düşmana karşı savaşmaları için geçici güven kurmaları gerekir.
 
 Birlikte Wraithleri etkisizleştirip gemiyi korurlar. Sonunda hem Atlantis hem Gezgin filosu kurtarma için ulaşır. Larrin kadim gemiye sahip çıkarken Sheppard Atlantis'e döner. Ayrılırken birbirlerine borçlu olduklarını kabul ederler. Gezginlerin geçmişteki kaçış yaşamı, teknolojik üstünlüğe rağmen ne kadar zor koşullarda sürdürdüklerini gösterir; Larrin ve Sheppard arasındaki karşılıklı saygı ileride işbirliğinin kapısını açık bırakır.
+
+Larrin'in halkı gemilerini terk edip bir gezegene yerleşemez; çünkü Wraith saldırılarına yakalanmamak için yüzyıllardır uzayda yaşamayı seçmişlerdir. Dolayısıyla Kadim savaş gemisinin elde tutulması yalnız askerî güç değil, toplumun geleceğini koruma meselesidir. Sheppard'ın ona yardım etmeyi seçmesi karşılıklı güvenin ilk adımı olur.
 
 ## Kaynaklar
 
