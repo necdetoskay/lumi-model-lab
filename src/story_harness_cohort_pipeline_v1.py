@@ -51,11 +51,15 @@ class ProviderCostUnknown(HarnessStop):
 
 class TrialLedger:
     """Charges from actual response envelopes; cannot assume missing cost is $0."""
-    def __init__(self, transport, harness):
+    def __init__(self, transport, harness, generation_receipt_checker=None):
         must(callable(transport), "MISSING_TRANSPORT")
         must(isinstance(harness, RuntimeHarness), "HARNESS_INSTANCE_REQUIRED")
         self.harness = harness
         self.transport = transport
+        must(generation_receipt_checker is None or callable(generation_receipt_checker),
+             "INVALID_PROVIDER_GENERATION_CHECKER")
+        self.generation_receipt_checker = generation_receipt_checker
+        self.verified_generation_stages = []
         self.total = Decimal("0")
         self.count = 0
         self.by_stage = {}
@@ -91,9 +95,33 @@ class TrialLedger:
                 self.total > CAP):
             self.unknown_cost = True
             raise ProviderCostUnknown("Provider cost exceeded bounded stage limit")
+        if self.generation_receipt_checker is not None:
+            try:
+                from src.story_harness_cohort_generation_receipt_v1 import SCHEMA as RECEIPT_SCHEMA
+                confirmation = self.generation_receipt_checker(
+                    stage=stage, generation_id=response.get("id"),
+                    reported_cost_usd=format(cost, "f"),
+                    prompt_tokens=usage.get("prompt_tokens"),
+                    completion_tokens=usage.get("completion_tokens"))
+                must(type(confirmation) is dict and
+                     confirmation.get("schema") == RECEIPT_SCHEMA and
+                     confirmation.get("stage") == stage and
+                     confirmation.get("generation_id") == response.get("id") and
+                     confirmation.get("provider_generation_cost_usd") == format(cost, "f") and
+                     confirmation.get("tokens_prompt") == usage.get("prompt_tokens") and
+                     confirmation.get("tokens_completion") == usage.get("completion_tokens"),
+                     "GENERATION_METADATA_DISAGREES_WITH_POST")
+                self.verified_generation_stages.append(stage)
+            except Exception:
+                self.unknown_cost = True
+                raise ProviderCostUnknown(
+                    "Provider generation charge could not be independently reconciled"
+                ) from None
         return response
 
-def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, transport, harness):
+def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *,
+                                         transport, harness,
+                                         generation_receipt_checker=None):
     """One new non-retryable attempt, all original artifacts written once.
 
     The caller must independently seal a versioned cohort lock and reconcile
@@ -111,7 +139,7 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
     producer = folder / "producer"
     producer.mkdir(mode=0o700)
     plan = load_plan(repo_root)
-    ledger = TrialLedger(transport, harness)
+    ledger = TrialLedger(transport, harness, generation_receipt_checker)
     exclusive(folder / "00-harness-receipt.json", harness.receipt())
     pilot = BoundedOncePilot(str(producer), case_id=case_id, plan=plan, run_variant="r06")
     try:
@@ -187,6 +215,8 @@ def report(case_id, folder, ledger, status, *, source=None):
             k: format(v, "f") for k, v in ledger.by_stage.items()
         },
         "provider_reported_total_usd": format(ledger.total, "f"),
+        "generation_metadata_checked_stages": list(ledger.verified_generation_stages),
+        "provider_generation_metadata_authenticated_for_release": False,
         "run_once_root": folder.name,
         "harness_manifest_sha256": ledger.harness.manifest_sha256,
         "harness_memory_sha256": ledger.harness.memory_snapshot_sha256,

@@ -119,3 +119,30 @@ asserts key exclusivity, no concurrent writers, financial reconciliation,
 or budget enforcement. Such proofs and a qualified one-shot paid runner are
 still mandatory before any real B01. Never attach the existing key to a
 pull-request-accessible secret-bearing workflow.
+
+## Read-only independent generation charge check (pre-freeze)
+
+\`src/story_harness_cohort_generation_receipt_v1.py\` introduces a **single**
+authenticated provider \`GET /api/v1/generation?id=<exact-generation-id>\`
+for a completed model stage, with HTTPS/redirect refusal, bounded read size,
+fixed timeout, no retries, never POST. Compare returned generation identity,
+Sonnet 5.5 / Anthropic route, exact token counts and \`total_cost\` against
+the original stage response. Any mismatch/unknown must STOP the paid batch;
+do not silently convert unknown provider charge to zero. Raw auth headers,
+key labels, external users and private provider metadata are not persisted.
+Mock GET remains untrusted even if its shape passes.
+
+This verifier is now included in **the before-B01 source component freeze**
+and CI regressions. It is **not yet connected** to the absent protected
+paid-batch executor and does not independently fetch historical account-wide
+charges. The provider's \`GET /api/v1/credits\` requires a *management key*,
+so the existing inference key alone cannot certify whole-account balances.
+No real GET using the user's key or billable POST has occurred here.
+
+The generic cohort pipeline optionally invokes the immutable generation
+receipt checker **after each reported provider charge and before the next
+stage**. A mismatch, failed GET, or checker exception sets
+\`ProviderCostUnknown\` and globally stops the round. Mock callbacks can
+exercise the wiring but cannot mark genuine release acceptance. The
+production-only protected key binding and external audit store remain
+unimplemented/blocked.

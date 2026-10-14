@@ -39,6 +39,7 @@ FILES = (
     "src/story_harness_cohort_launch_gate_v1.py",
     "src/story_harness_cohort_provider_observe_v1.py",
     "src/story_harness_cohort_accounting_v1.py",
+    "src/story_harness_cohort_generation_receipt_v1.py",
 )
 # Hash actual immutable bytes for each logical Harness component.
 # Unlike SHA(label + commit), this detects any source/config modification.
@@ -91,6 +92,7 @@ COMPONENT_FILES = {
         "src/story_harness_frozen_cohort_v1.py",
         "src/story_harness_frozen_round_v1.py",
         "src/story_harness_cohort_pipeline_v1.py",
+        "src/story_harness_cohort_generation_receipt_v1.py",
     ),
 }
 

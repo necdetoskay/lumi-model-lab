@@ -136,6 +136,48 @@ class UnifiedPipelineTests(unittest.TestCase):
             self.assertEqual(len(mock.calls), 3)
             self.assertFalse((Path(td)/"B01"/"05-q25-intent.json").exists())
 
+    def test_every_stage_can_be_receipt_bound_before_next_model_call(self):
+        from src.story_harness_cohort_generation_receipt_v1 import (
+            validate_generation)
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01")
+            seen = []
+            def checker(**req):
+                seen.append(req["stage"])
+                reply = {"data":{
+                    "id":req["generation_id"], "model":MODEL,
+                    "provider_name":"Anthropic", "cancelled":False,
+                    "finish_reason":"stop", "is_byok":False,
+                    "tokens_prompt":req["prompt_tokens"],
+                    "tokens_completion":req["completion_tokens"],
+                    "total_cost":req["reported_cost_usd"]}}
+                return validate_generation(
+                    reply, generation_id=req["generation_id"],
+                    stage=req["stage"],
+                    reported_cost_usd=req["reported_cost_usd"],
+                    prompt_tokens=req["prompt_tokens"],
+                    completion_tokens=req["completion_tokens"])
+            receipt = run_one_case_with_injected_transport(
+                ".", "B01", td, transport=mock,
+                harness=create_harness(".","B01"),
+                generation_receipt_checker=checker)
+            self.assertEqual(seen,["SPINEFORGE","WRITER","QUALITY","Q25"])
+            self.assertEqual(receipt["generation_metadata_checked_stages"],seen)
+            self.assertFalse(receipt["provider_generation_metadata_authenticated_for_release"])
+            self.assertFalse(receipt["independent_quality_certified_for_release"])
+
+    def test_provider_generation_cost_disagreement_is_global_stop(self):
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01")
+            def checker(**request):
+                return {"schema":"wrong", "stage":"SPINEFORGE"}
+            with self.assertRaises(ProviderCostUnknown):
+                run_one_case_with_injected_transport(
+                    ".", "B01", td, transport=mock,
+                    harness=create_harness(".","B01"),
+                    generation_receipt_checker=checker)
+            self.assertEqual(len(mock.calls),1)
+
     def test_provider_unknown_billing_is_global_stop(self):
         with tempfile.TemporaryDirectory() as td:
             def fail(body):
