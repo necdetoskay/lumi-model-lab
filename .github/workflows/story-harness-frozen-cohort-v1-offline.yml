@@ -1,0 +1,54 @@
+name: Story Harness Frozen Ten Cohort V1 Offline Contract
+
+on:
+  pull_request:
+    paths:
+      - 'configs/story_harness_frozen_cohort_v1.json'
+      - 'src/story_harness_frozen_cohort_v1.py'
+      - 'tests/test_story_harness_frozen_cohort_v1.py'
+      - 'docs/canonical/STORY_HARNESS_FROZEN_COHORT_V1.md'
+      - '.github/workflows/story-harness-frozen-cohort-v1-offline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-cohort-v1-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frozen-cohort-offline:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 275 }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline new $20 freeze guard and original $10 benchmark unchanged
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_frozen_cohort_v1.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p415_benchmark.py' -q
+          python -m src.story_harness_frozen_cohort_v1 > "$RUNNER_TEMP/lumi-cohort-v1-offline-report.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"lumi-cohort-v1-offline-report.json"
+          result=json.loads(p.read_text())
+          assert result["global_user_ceiling_usd"]=="20.00"
+          assert result["status"]=="PREPARED_NOT_FROZEN"
+          assert result["paid_calls_authorized"]==0
+          assert result["cohort_frozen"] is False
+          assert result["production_write_authorized"] is False
+          print("LUMI_FROZEN_COHORT_V1_OFFLINE_GREEN_ZERO_PROVIDER_CALLS")
+          PY
