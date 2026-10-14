@@ -1,0 +1,132 @@
+name: Story Harness P4.29 B02 Real Q25 Once
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p429_b02_q25_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p429-b02-real-q25-once
+  cancel-in-progress: false
+
+jobs:
+  actual-b02-q25:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p429-b02-q25-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p429-b02-q25-isolated
+      - name: Refuse every PR change except this exact new B02 Q25 run grant
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          names=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert names==['configs/story_harness_p429_b02_q25_trigger.json']
+          print('P429_B02_Q25_MANIFEST_ONLY_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source-bound B02 Master, distinct Canon, budget, Q25 tests
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p428_b02_master.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p429_b02_q25.py' -q
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p429_b02_q25 import (
+              load_b02_bundle,b02_q25_wire,SOURCE_SHA,STORY_SHA,
+              SPINE_SHA,PREVIOUS_RESERVED_USD,COST_CAP)
+          grant=json.loads(Path('configs/story_harness_p429_b02_q25_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p429-real-b02-q25-once.v1',
+              'case_id':'B02',
+              'run_variant':'v01',
+              'original_canon_sha256':SOURCE_SHA,
+              'original_spine_sha256':SPINE_SHA,
+              'pilot_master_story_sha256':STORY_SHA,
+              'independent_quality_generation_id':'gen-1791949279-wfeuT7G0vvvCMKuOjmsB',
+              'new_maximum_model_posts':1,
+              'max_stage_reported_usd':'0.050',
+              'prior_conservative_budget_usd':'1.360092',
+              'aggregate_user_authorized_budget_usd':'10.00',
+              'no_automatic_retry':True,
+              'production_write':False,
+          }, 'B02 signed-scope-equivalent manifest mismatch'
+          assert Decimal(grant['prior_conservative_budget_usd'])+COST_CAP<=Decimal('10.00')
+          root=Path(os.environ['RUNNER_WORKSPACE'])
+          bundle=load_b02_bundle('.',
+              root/'_lumi_p426_second_case_claims',
+              root/'_lumi_p427_b02_quality_claims',
+              root/'_lumi_p428_b02_master_claims')
+          assert bundle['audit']['auditor_generation_id']==grant['independent_quality_generation_id']
+          wire=b02_q25_wire(bundle)
+          assert wire['provider']['allow_fallbacks'] is False
+          assert len(wire['messages'])==2
+          print('P429_REAL_B02_SOURCE_MASTER_AND_PREPAID_CAP_VERIFIED')
+          PY
+      - name: Read-only check of existing OpenRouter key
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          available=d.get('limit_remaining')
+          if available is not None:
+              assert Decimal(str(available))>=Decimal('0.050')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P429_OPENROUTER_AUTHORIZED_INFERENCE_KEY_GREEN')
+          PY
+      - name: One genuine B02 Master-to-Q25 evidence extraction; no state commits
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P429_Q25_B02: ONE_REVIEWED_B02_MASTER_Q25
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p429_b02_q25_claims"
+          chmod 700 "$root/_lumi_p429_b02_q25_claims"
+          python -m src.story_harness_p429_b02_q25 \
+              --repo-root . \
+              --producer-root "$root/_lumi_p426_second_case_claims" \
+              --quality-root "$root/_lumi_p427_b02_quality_claims" \
+              --master-root "$root/_lumi_p428_b02_master_claims" \
+              --q25-root "$root/_lumi_p429_b02_q25_claims" \
+              --paid-once > /tmp/lumi-p429-real-b02-q25.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('/tmp/lumi-p429-real-b02-q25.json').read_text())
+          assert x['case_id']=='B02'
+          assert x['state_committed'] is False and x['production_state_write_authorized'] is False
+          print('P429_GENUINE_B02_Q25_EVIDENCE_GREEN')
+          print('P429_B02_Q25_STORY_SHA='+x['story_sha256'])
+          print('P429_B02_Q25_FINAL_LOCATION='+x['proposed_final_location'])
+          print('P429_B02_Q25_OBJECTS='+str(x['object_mentions']))
+          print('P429_B02_Q25_REPORTED_USD='+x['provider_reported_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p429-b02-original-q25-evidence-once
+          path: ${{ runner.workspace }}/_lumi_p429_b02_q25_claims/p429-b02-r06-q25-evidence-v01/
+          if-no-files-found: warn
+          retention-days: 30
