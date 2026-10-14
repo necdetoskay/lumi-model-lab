@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 16
 title_original: "The Brotherhood"
-status: draft
-word_count: 246
+status: complete
+word_count: 276
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Araştırmanın ortasında Genii komutanı Kolya yeniden ortaya çıkar. Önceki
 Sheppard gizlediği sersemletici bombayı patlatıp Kolya'nın askerlerinden kurtulur. Ancak mağaradan çıktıklarında Daganlı silahlı kişiler tarafından karşılanırlar. Allina aslında Kadimlerin bıraktığı görevi sürdüren yeni kardeşliğin üyesidir; yabancıların Dünya'dan geldiğini bildiği için ZPM'yi onlara vermez. Ekip enerji kaynağına ulaşmasına rağmen onu alamadan Atlantis'e dönmek zorunda kalır.
 
 Aynı sırada şehirde Zelenka, daha önce fark edilmemiş uzun menzilli sensörleri bulmuştur. Yaklaşan bir Wraith keşif aracı düşürülse de Atlantis'e ilişkin bilgileri uzaya göndermeyi başarır. Sensörler üç büyük kovan gemisinin yaklaşık iki hafta içinde şehre varacağını gösterir. ZPM kaybı artık yalnız bilimsel değil, yaklaşan kuşatmanın kaderini değiştirebilecek kritik bir başarısızlıktır.
+
+Allina'nın verdiği yanıt, kardeşliğin görevini kendi yorumuna göre sürdürdüğünü gösterir. Atlantis sakinlerinin Kadimlerden türediğine veya onların mirasını hak ettiğine inanmaz. Bu yüzden ekibin teknik başarısı enerji kaynağını elde etmeye yetmez.
 
 ## Kaynaklar
 

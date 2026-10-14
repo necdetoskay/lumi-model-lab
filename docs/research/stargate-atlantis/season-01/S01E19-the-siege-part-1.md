@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 19
 title_original: "The Siege, Part 1"
-status: draft
-word_count: 242
+status: complete
+word_count: 275
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Yeni dünyadan dönüşte Sheppard'ın ekibi beklenmedik şekilde tehlike içind
 Savunma uydusunda McKay hasarlı bağlantıyı dışarıdan onarır. Silahı çalıştırırlar, ancak enerji yönlendirmesi hava kilidini devre dışı bırakır. Grodin uyduda mahsur kalır, diğer iki kişi Jumper'a döner. Wraith filosu yaklaşınca Grodin arkadaşlarının önce güvenli uzaklığa gitmesini ister. Uydu ateş açıp bir kovan gemisini yok eder. Ne var ki aşırı yük nedeniyle kısa sürede patlar ve Grodin ölür.
 
 McKay ile Miller Atlantis'e döndüğünde geriye iki Wraith kovan gemisi kalmıştır. Geçici başarı daha büyük saldırıyı durduramaz. Weir şehrin boşaltılmasını ve kendi kendini imha hazırlığının başlatılmasını emreder. Atlantis'in hem savunma teknolojisi hem de yıllardır biriktirdiği bilgi, düşmana bırakılmamak üzere yok edilmek üzeredir.
+
+Yeniden çalıştırılan savunma uydusunun bir tek gemiyi yok edebilmesi büyük başarıdır, ancak sayıca üstün düşman kuvvetlerini durduramaz. Grodin'in kendini geride bırakması, Atlantis ekibinin yaklaşan saldırıya karşı zaman kazanabilmek için ödediği ağır kayıplardan biridir.
 
 ## Kaynaklar
 

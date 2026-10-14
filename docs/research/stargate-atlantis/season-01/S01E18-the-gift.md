@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 18
 title_original: "The Gift"
-status: draft
-word_count: 238
+status: complete
+word_count: 275
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Teyla geçmişteki bu olayların geçtiği gezegene Sheppard ve Ford'la gider. B
 Weir, bu yeteneğin yaklaşan saldırı hakkında değerli bilgiler sağlayabileceğini düşünür. Heightmeyer'ın hipnoz çalışmasıyla Teyla'nın Wraith bilincine odaklanması denenir. İlk deneylerde Teyla düşman gözünden insan beslenmesini hisseder; ikinci girişimde kendisi dışındaki güçlü bir bilinç konuşur ve ekibi tehdit eder. İletişim iki yönlü olabilir. Kısa süre sonra alternatif tahliye üssünün Wraithlerce bulunduğu haberi gelir. Teyla, kendi zihinsel bağlantısının istemeden adresi açığa çıkardığını düşünür.
 
 Bir kez daha hipnoza girdiğinde Wraith bilinci bedeni üzerinde denetim kurup çevresindekilere saldırır. Bates sersemletici silahla onu durdurur. Teyla yine de önemli sırrı öğrenmiştir: Wraithler yalnız Atlantis'i ele geçirmek istememektedir. İlk karşılaşmada Sumner'dan öğrendikleri milyonlarca insanın yaşadığı Dünya'ya ulaşmayı da planlamaktadırlar. Şehir, artık başka bir galaksinin güvenliğini korumakla da sorumludur.
+
+Teyla'nın Wraith zihnine her girişinde artan risk, yeteneğin basit bir izleme yöntemi olmadığını gösterir. Atlantis ekibinin onun deneyimine ihtiyaç duymasıyla arkadaşını koruma sorumluluğu arasındaki denge giderek zorlaşır. Wraithlerin asıl hedefinin Dünya olduğunu öğrenmeleri, savunma planlarını değiştirecek bilgidir.
 
 ## Kaynaklar
 

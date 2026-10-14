@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 17
 title_original: "Letters From Pegasus"
-status: draft
-word_count: 225
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ spoilers: true
 Zelenka, düşman filosunun hiperuzaydan nerede çıkacağını öngörür. Sheppard ile Teyla, filonun büyüklüğünü görmek üzere Teyla'nın tanıdığı insanların yaşadığı gezegene gider. Teyla burada babasının dostu Orin'i uyarır. Orin ile ailesini tehlike başlarsa Jumper'a alacağını söyler. Sheppard, bütün köylüleri kurtarmaya yetecek yer olmadığını bilmektedir. Kısa süre sonra gökyüzünde yalnız üç kovan gemisi değil, kruvazörler ve yüzlerce Wraith savaş aracı belirir. Gezegenin insanları avlanmaya başlanır.
 
 Wraithler kaçışı önlemek için gezegenin kapısını dışarıdan etkinleştirir. Sheppard ve Teyla Jumper'ın görünmezlik sistemini açıp beklemek zorunda kalır. Teyla kaçan sivilleri araca alır, Orin'in ailesini de son ana kadar bekler. Sheppard, Wraithlerin insanları toplamasına ve şehirleri yok etmesine çaresizce tanık olur. Bağlantı sonunda kesilince bütün sığınmacılarla birlikte Atlantis'e dönerler. Sheppard filonun gerçekten ne kadar büyük olduğunu bildirir. Atlantis hazırlanan verileri Dünya'ya gönderir. Cheyenne Mountain'da Carter bilinmeyen bir bağlantı sinyalini fark eder: Pegasus'tan gelen bu mesaj, Dünya'nın Atlantis'in hâlâ hayatta olduğunu öğrenmesini sağlar.
+
+Mesajların hazırlanması, ekibin yaklaşan ölüm ihtimaliyle yüzleşmesine neden olur. Kişisel kayıtlar bilimsel raporlardan farklı olarak ailelere kayıplarının anlamını anlatmayı amaçlar. Sheppard ve Teyla'nın kurtardığı siviller de kapıya erişim için verilen mücadelenin yalnız askerî olmadığını hatırlatır. Dünya'nın uyarılması Wraithlerin milyonlarca yeni av bulma planına karşı hayati önem taşır.
 
 ## Kaynaklar
 
