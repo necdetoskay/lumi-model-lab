@@ -49,7 +49,7 @@ class P430Tests(unittest.TestCase):
         self.assertEqual(r["original_q25_reported_cost_usd"],"0.021746")
 
     def test_original_protected_receipt_matches_bit_for_bit_frozen_GitHub(self):
-        from src.story_harness_p429_b02_q25 import Q25_RUN_NAME
+        from src.story_harness_p429_b02_q25 import RUN_NAME as Q25_RUN_NAME
         with TemporaryDirectory() as td:
             p=Path(td)/Q25_RUN_NAME
             p.mkdir()
