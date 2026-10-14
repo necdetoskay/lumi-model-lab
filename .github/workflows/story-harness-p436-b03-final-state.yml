@@ -1,0 +1,90 @@
+name: Story Harness P4.36 B03 Final State Read Only
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p436-b03-final-state.yml
+      - src/story_harness_p436_b03_final_state.py
+      - tests/test_story_harness_p436_b03_final_state.py
+      - evidence/story_harness_p435/b03-r06-original-q25-evidence.json
+      - docs/canonical/STORY_HARNESS_P436_B03_REAL_STATE.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p436-b03-state-projection-no-inference
+  cancel-in-progress: false
+
+jobs:
+  original-b03-read-only-final-state:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: p436-b03-final-state-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: p436-b03-final-state-isolated
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Revalidate B03 original Q25 positive and tamper-negative tests (NO provider)
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p434_b03_master.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p435_b03_q25.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p436_b03_final_state.py' -v
+          python -m src.story_harness_p436_b03_final_state > /tmp/lumi-p436-offline.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/lumi-p436-offline.json'))
+          assert x['case_id']=='B03' and x['provider_calls']==0
+          assert x['final_story_state_committed'] is False
+          assert x['production_state_write_authorized'] is False
+          print('P436_B03_READ_ONLY_STATE_OFFLINE_GREEN')
+          PY
+      - name: Freeze original real B03 Q25 state evidence only, no Canon writes
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p436_b03_final_state_claims"
+          chmod 700 "$root/_lumi_p436_b03_final_state_claims"
+          python -m src.story_harness_p436_b03_final_state \
+            --repo-root . \
+            --producer-root "$root/_lumi_p431_b03_story_claims" \
+            --quality-root "$root/_lumi_p433_b03_quality_claims" \
+            --master-root "$root/_lumi_p434_b03_master_claims" \
+            --q25-root "$root/_lumi_p435_b03_q25_claims" \
+            --final-root "$root/_lumi_p436_b03_final_state_claims" \
+            --freeze-once > /tmp/lumi-p436-b03-state-projection.json
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          from src.story_harness_p436_b03_final_state import OUTPUT_DIR
+          r=json.load(open('/tmp/lumi-p436-b03-state-projection.json'))
+          p=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p436_b03_final_state_claims'/OUTPUT_DIR/'final-state-draft.json'
+          frozen=json.loads(p.read_bytes())
+          assert r['source_story_sha256']=='80fa8224c78c494b13bc347ecabdfff75fd5c9e1638ad88ee9ba47c6986643f9'
+          assert r['final_location_proposal']=='VILLAGE'
+          assert r['open_obligation_outcomes']==['OPEN','SATISFIED']
+          assert r['objects']==3 and r['provider_calls']==0
+          assert frozen['canon_commit_authorized'] is False
+          assert frozen['original_full_frozen_v21_4_final_quality_verified'] is False
+          assert frozen['world_time_final'] is None
+          assert frozen['unknown_facts_retained']==['unobserved_owners','unobserved_locations']
+          print('P436_B03_ORIGINAL_Q25_READ_ONLY_FINAL_STATE_GREEN')
+          print('P436_B03_FINAL_STATE_SHA256='+hashlib.sha256(p.read_bytes()).hexdigest())
+          print('P436_B03_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p436-b03-read-only-final-state
+          path: ${{ runner.workspace }}/_lumi_p436_b03_final_state_claims/p436-b03-r06-80fa8224c78c/
+          if-no-files-found: warn
+          retention-days: 30
