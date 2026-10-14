@@ -38,3 +38,7 @@ The user approved an increase of the **aggregate** LUMI Story Harness test ceili
 ## Previously consumed grant hygiene
 
 The original B07 P4.58 genuine quality call already returned ACCEPT in CI #38613825422. Its old PR-synchronize workflow was archived as `workflow_dispatch` with `if: ${{ false }}`, since GitHub PR path matching can retrigger old consumed grants when later commits modify unrelated files. The follow-on run #38617164730 failed **at the exact-file grant gate**; all quality/provider POST steps were skipped and this run did not create a second model call. Future cohort workflows must never inherit one-shot grants from historical branches.
+
+## Unified producer/admission adapter (offline integration)
+
+`src/story_harness_cohort_source_v1.py` provides **one source-verification path for B01–B10**, independent of the B07-specific historical admission code. It requires all four producer artifact byte hashes from a separately sealed registry, checks canonical input/Spine/Writer identity, original provider generation IDs and token/cost records, and explicitly refuses to grant initial quality, English Master or Q25 acceptance. The suite checks the same shared SpineForge input/compiler for all ten cases and replays authentic B07 archived model outputs through the generic reader and original independent audit request construction without a provider call. Quality, Master, Q25 and read-only State are **not yet generalized as a complete batch executor**; a full cohort freeze is still blocked.
