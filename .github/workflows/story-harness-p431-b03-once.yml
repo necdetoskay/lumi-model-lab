@@ -1,0 +1,125 @@
+name: Story Harness P4.31 Real Age-10 B03 Story Once
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p431_b03_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p431-real-b03-age10-once
+  cancel-in-progress: false
+
+jobs:
+  genuine-age10-third-story:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: p431-b03-isolated-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p431-b03-isolated-source
+      - name: Deny normal changes or repeats before key access
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          paths=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert paths==['configs/story_harness_p431_b03_trigger.json']
+          print('P431_EXACT_B03_ONE_SHOT_MANIFEST_COMMIT_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm genuine distinct age-10 source, two-stage budget and strict Word targets
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p431_b03_age10.py' -q
+          python - <<'PY'
+          import json
+          from decimal import Decimal
+          from pathlib import Path
+          from src.story_harness_p431_b03_age10 import source_case,SOURCE_SHA
+          from src.story_harness_p417_live_pilot import OUTPUT_CAPS
+          grant=json.loads(Path('configs/story_harness_p431_b03_trigger.json').read_text())
+          _,pack=source_case('.')
+          assert grant=={
+              'schema':'lumi.story-harness-p431-one-age10-B03.v1',
+              'case_id':'B03',
+              'run_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'reader_age':10,
+              'minimum_words':800,
+              'maximum_words':1400,
+              'max_model_posts':2,
+              'maximum_new_cost_usd':'0.35',
+              'previous_conservative_budget_reserved_usd':'1.381838',
+              'user_aggregate_approved_usd':'10.00',
+              'model':'anthropic/claude-sonnet-5.5',
+              'automatic_retries':False,
+              'production_write':False,
+          }
+          assert Decimal(grant['previous_conservative_budget_reserved_usd'])+Decimal('.35')<=Decimal('10')
+          assert OUTPUT_CAPS['SPINEFORGE']==5500 and OUTPUT_CAPS['WRITER']==6500
+          assert pack['reader_age']==10 and pack['word_targets']=={'min':800,'max':1400}
+          print('P431_B03_AGE10_SOURCE_AND_TOKENS_VERIFIED')
+          PY
+      - name: Check current inference key only, no story POST
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.35')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P431_EXISTING_INFERENCE_KEY_READ_ONLY_PRECHECK_GREEN')
+          PY
+      - name: Real B03 SpineForge and Writer age10 source-bound at most once per stage
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P431_ENABLE_B03: ONE_REAL_AGE10_CANON_GENERATION
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p431_b03_story_claims"
+          mkdir -p "$root"
+          chmod 700 "$root"
+          python -m src.story_harness_p431_b03_age10 \
+             --repo-root . --claim-root "$root" --paid-b03-once \
+             > /tmp/lumi-p431-b03-real-story.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p431-b03-real-story.json').read_text())
+          assert r['case_id']=='B03' and r['reader_age']==10
+          assert 800<=r['original_word_count']<=1400
+          assert r['quality_initial_verdict']=='NOT_YET_AUDITED'
+          assert r['english_master_authorized'] is False
+          assert r['q25_authorized'] is False
+          assert r['production_state_write_authorized'] is False
+          print('P431_GENUINE_B03_AGE10_SPINE_WRITER_GREEN')
+          print('P431_B03_WORD_COUNT='+str(r['original_word_count']))
+          print('P431_B03_SPINE_SHA='+r['original_spine_sha256'])
+          print('P431_B03_STORY_SHA='+r['original_story_sha256'])
+          print('P431_B03_REPORTED_USD='+r['actual_generation_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p431-b03-age10-original-spine-writer-once
+          path: ${{ runner.workspace }}/_lumi_p431_b03_story_claims/b03-*-r06/
+          if-no-files-found: warn
+          retention-days: 30
