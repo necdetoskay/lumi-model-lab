@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 15
 title_original: "Outcast"
-status: draft
-word_count: 235
+status: complete
+word_count: 271
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard ve Ronon, Poole'u yakalayıp yaratığın saklandığı sanayi bölgesi
 Kaçan Replicator hasarını onarmak için nötronyum aramak zorundadır. Sheppard ve Ronon bu elementi taşıyan depoya tuzak kurar. Replicator saldırdığında ikisini de kolayca alt eder. Ava ortaya çıkarak Sheppard'ı korumak için onunla dövüşür. Replicator Ronon'u boğmaya hazırlanırken Sheppard'ın yerleştirdiği işaretleyici etkinleşir; Asgard ışınlama sistemi düşmanı alçak Dünya yörüngesine gönderir. Atmosfere düşerken yok olur.
 
 Ava'nın kimliği kesinleşir; kendisinin insani duygu taşımasına rağmen tehlikeli yapay varlık olduğu açıklanır. Sheppard ona kendi seçimlerinin başkalarının yaşamını koruduğunu söyler. Babasının cenazesinden sonra ailesiyle ilişkisini tümüyle onaramasa da geçmişindeki kırgınlıkları yeniden düşünerek Atlantis'e döner.
+
+Sheppard'ın baba evindeki ilişkileri kurtarma görevinin gölgesinde kalır. Nancy'nin güvenlik yetkisi, onu eski eşinin gizli işiyle kısa süreliğine yeniden karşı karşıya getirir. Ava'nın fedakârlığı ise programlanmış bir varlığın da başkaları için tehlikeyi göze alabileceğine işaret eder.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 13
 title_original: "Quarantine"
-status: draft
-word_count: 243
+status: complete
+word_count: 279
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Rodney McKay, Katie Brown'a evlenme teklif etmeye karar verip botanik laboratuva
 Sheppard dış duvara tırmanıp kontrol merkezi penceresini kırarak içeri girer. Acil sinyali kapatmayı başarır ama otomatik sistem kırılan camı karantinanın ihlali sayar. Şehrin kendini imha sistemi etkinleşir. Carter, Lorne ve diğerleri güç odasına ulaşmak için kapıları patlatmaya uğraşır. Kalan patlayıcılar bitince Zelenka cihazların başka bağlantılarından yardım almak zorunda kalır. Herkes kendi bölümünde zamanla yarışırken birbirine ulaşamamaktadır.
 
 Ekip sonunda sistem gücünü keserek kendini imhayı durdurur. Kapılar açılır ve şehir normale döner. McKay daha sonra Katie'yle konuşarak evlilik için henüz hazır olmadığını itiraf eder. Katie de aynı düşüncededir. Birbirlerini sevmelerine rağmen teklif geri çekilir; ilişkileri belirsizleşir. Bölümdeki asıl tehlike hastalık değil, hiçbir zaman yaşanmamış bir felakete göre hareket eden bilgisayar sistemi olmuştur.
+
+Keller ile Ronon kapalı revirde birlikte çözüm ararken aralarındaki güven artar. Carter ve Zelenka'nın soğukkanlı çalışması da şehrin kontrolüne yeniden erişim sağlar. McKay'in teklifini ertelemesi yalnız panikten değil, kendi kusurlarının ortak hayatlarını nasıl etkileyebileceğini düşünmesinden kaynaklanır.
 
 ## Kaynaklar
 

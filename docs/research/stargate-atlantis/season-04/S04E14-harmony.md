@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 14
 title_original: "Harmony"
-status: draft
-word_count: 242
+status: complete
+word_count: 278
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Yolda Genii askerleri tuzak kurar. Sheppard birkaçını öldürür; geriye çok
 Laros Tapınağı'nın aslında Kadim araştırma tesisi olduğu anlaşılır. Köylülerin canavar sandığı şey, Kadim geni taşımayanlara saldıran minyatür dron sürüsüdür. Harmony'nin boynundaki kolye bu dronları denetlemeyi sağlayan anahtar niteliğindedir. Ancak Genii cihazı bozmuştur; kolye çalışmayınca Harmony kraliçeliğe layık olmadığını sanır. Sheppard tehlikeyi durdurmak için Kadim geniyle sistemi yeniden çalıştırmayı dener.
 
 Genii saldırdığında McKay prensesi korumak için onun üzerine atlar, Sheppard kolyeyi alıp dronları etkinleştirir. Sürü saldırganları etkisiz hâle getirir. Harmony kolyeyi yeniden taktığında aygıt ışıldar; böylece geleneksel sınavı başarıyla tamamlar. Saraya dönünce ihanet eden kız kardeşi belirlenip tutuklanır. Harmony tahta çıkar. Anısına yaptırdığı resimde kendisini ve McKay'i kahraman, Sheppard'ı korkuyla saklanan biri gibi gösterir. McKay bundan çok memnun olur; Sheppard ise bu hikâyenin böyle anlatılmasına inanamaz.
+
+Harmony'nin taç giyme töreninde McKay'e özel teşekkür etmesi, yaptığı istemsiz koruma hareketini kahramanlık olarak gördüğünü gösterir. Sheppard'ın dronları çalıştırma çabası ise onun gözünde daha az önemli kalmıştır. Resim bu yanlış fakat komik hatırayı kalıcı hâle getirir.
 
 ## Kaynaklar
 

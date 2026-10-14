@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 4
 episode: 12
 title_original: "Spoils of War"
-status: draft
-word_count: 233
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Gezegende büyük yeraltı tesisi bulunur. İçeride Wraith kraliçesinin bırak
 Sheppard, McKay ve Ronon tesisten ZPM'leri almak isterken yakalanır ve kraliçenin önüne götürülür. Todd ise başka yoldan kaçıp kovan gemisine döner. Teyla'ya tehlikeyi anlatır. Teyla zihinsel yeteneğiyle kraliçenin bedenini geçici olarak kontrol etmeyi dener. Kraliçe kendisini kaybederek esirleri serbest bırakır, fakat kısa sürede karşı saldırıya geçer. Kraliçe, Teyla'nın henüz doğmamış bebeğini hedef alarak onu durdurmak ister.
 
 Teyla bebeğinin yaşamı uğruna zihinsel savaşı sürdürür. Diğerleri kraliçeyi etkisizleştirip ZPM'leri geri alır, tesisteki klonlama üretimini durdurur. Atlantis'e dönen ekip önemli enerji kaynaklarını korumuş ve büyüyebilecek Wraith ordusunun önüne geçmiştir. Todd yine müttefik görünse de kendisinin de aynı orduyu kurmayı istemiş olması, aralarındaki ilişkinin yalnız geçici çıkar ortaklığı olduğunu hatırlatır.
+
+Teyla'nın zihinsel bağlantısı artık hamileliği sırasında daha güçlü görünmektedir. Bu güç, arkadaşlarının kurtulmasına yardım ederken bebeğinin yaşamını da doğrudan tehlikeye atar. Todd'un güvenilirliği ise hiçbir zaman kesinleşmez: kendi amaçları için düşmanına bile yardım edebilir.
 
 ## Kaynaklar
 
