@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 13
 title_original: "Critical Mass"
-status: draft
-word_count: 239
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Dünya'daki istihbarat kaynakları Trust örgütünün Goa'uldlar tarafından y�
 Bu sırada Teyla için daha kişisel bir kriz yaşanmaktadır. Sevdiği yaşlı Athoslu Charin ölmek üzeredir. Beckett kalp pili takarak yaşamını uzatabileceğini söyler, fakat Charin doğanın akışını kabul ederek bu öneriyi reddeder. Teyla üzülse de kararına saygı gösterir. Charin öldüğünde Athos halkı anma töreni düzenler.
 
 Cadman teknik erişim kayıtlarını incelediğinde sabotajın Daedalus komutanı Caldwell'la bağlantısını bulur. Hermiod onu Atlantis'e ışınlar. Caldwell'ın içinde bir Goa'uld bulunduğu ortaya çıkar. Sheppard elektrik şokuyla simbiyotu bastırır; gerçek Caldwell kontrolü kısa süreliğine ele geçirip imha kodunu açıklar. ZPM kurtarılır, Wraithler Atlantis'i fark etmeden ayrılır. Asgard teknolojisiyle simbiyot çıkarılır. Weir hem hainin kimliğini yanlış değerlendirmiş olmanın hem Kavanagh'a uygulanan baskının sorumluluğuyla yüzleşir.
+
+Hainin üst düzey bir subay çıkması, herkesin birbirinden şüphelendiği süreçte neden gerçek kanıtlara ihtiyaç duyulduğunu açıkça gösterir. Charin'in ölümü ve anma töreni de şehir kurtarılırken Athoslu topluluğun kendi seçimlerini korumaya devam ettiğini hatırlatır.
 
 ## Kaynaklar
 

@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 11
 title_original: "The Hive"
-status: draft
-word_count: 225
+status: complete
+word_count: 259
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ford'un saklandığı gezegende tutulan McKay ise enzime bağımlı muhafızlar�
 Sheppard'ın Neera'yla görüşmeleri sırasında kadının sıradan bir esir olmadığı belirginleşir. Wraithlerin kendi aralarındaki rekabeti öğrenen Sheppard, yaklaşan iki kovanın birbirine güvenmediğini kullanmaya karar verir. Gemiler çatışmaya sürüklenir. Daedalus uzayda muazzam bir patlama saptar ve Atlantis ekibinin öldüğünü düşünür. Fakat Sheppard, Teyla ve Ronon bir Wraith Dart'ıyla uzaklaşmıştır. Bir uzay geçidinden başka gezegene yönelip orada insan hâllerine geri dönerek Atlantis'e ulaşırlar.
 
 Ford en son patlayan geminin içindeyken görülmüştür. Sheppard onun kesin öldüğünü kabul etmez. Hayatta kalanların dönüşü sevinç yaratırken düşman kovanlarının da birbirlerine saldırabileceği anlaşılır. Bu keşif, Pegasus'taki büyük savaş için yeni bir stratejik fırsattır.
+
+Ford'un Wraith enzimi kullanımını bırakmayı reddetmesi, eski dostuyla arasındaki uçurumu genişletir. Kovan gemileri arasındaki çekişme sayesinde kurtulan takım, düşmanın birleşik ve tek merkezden yönetilen bir güç olmadığını anlar. Ford içinse kesin sonuç henüz yoktur.
 
 ## Kaynaklar
 

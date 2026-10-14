@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 15
 title_original: "The Tower"
-status: draft
-word_count: 245
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Mara, Sheppard'la evlenirse ailesinin giderek zayıflayan Kadim genini yeni nesl
 Köyde Ronon, bir kadına kötü davranan hükümdarlık askerini öldürür. Köylüler böylece baskıya karşı ayaklanmaya cesaret eder. Lord Protector'ın ölmesi sarayda iktidar krizine yol açar. Gerçekte hükümdarı zehirleyen Otho, kazandığı yeni Kadim gen yeteneğiyle savunma koltuğuna oturur ve köyü yok etmeye hazırlanır. Sheppard, Teyla ve Mara ona karşı koyarken McKay uzaktan şehir gemisinin yıldız tahrik sistemini çalıştırıp ZPM'yi hızla boşaltır.
 
 Dronlar köye ulaşmadan güçsüz kalır. Enerji çekilişi deprem yaratır. Sheppard Otho'yla dövüşür; adam kendi zehirlediği bıçakla yaralanıp ölür. Köy özgürleşme yoluna girer. Atlantis ekibi ilaç ve yardım karşılığında eski şehirden Jumper araçlarıyla dronlar alır. Bu keşif, Kadim teknolojisinin halkı korumak kadar sömürmek için de kullanılabileceğini göstermiştir.
+
+Atlantis teknolojisinin denetiminin yalnız soylulara ait olabileceği inancı, Beckett'in gen tedavisiyle sarsılır. Köylülerin kendi yönetimlerini kurma ihtimali ortaya çıkarken ekip enerji kaynağını almadan da savunma araçları kazanmıştır.
 
 ## Kaynaklar
 

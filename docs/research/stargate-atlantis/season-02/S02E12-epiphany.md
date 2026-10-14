@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 12
 title_original: "Epiphany"
-status: draft
-word_count: 235
+status: complete
+word_count: 270
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard için günler, ardından haftalar geçer. Çıkışı bulamadığı ma�
 Dışarıda McKay ve arkadaşları Kadim aygıtının hız farkını çözmek ve bir Jumper kullanarak giriş yapmak için çalışır. Geri geldiklerinde Sheppard içeride aylar yaşamış gibidir. Teer onların gelmekte olduğunu önceden hissetmiş, Sheppard'ın yaratığın korkusuyla yüzleşip köylülere yardımcı olacağına inanmıştır. Dostlarını kurtarmaya çıkan Sheppard yaratıkla karşılaşır. Köylüler de sonunda saklanmak yerine yardım etmeye karar verir. Canavarın onların ortak korkularının bir yansıması olduğu anlaşılır. Korku yenilince köy halkı topluca yükselir.
 
 Teer, Sheppard'a kendileriyle yükselme fırsatı sunar. O ise arkadaşlarıyla normal insan yaşamını sürdürmeyi seçer. Yol açılır ve geri dönerler. Geçit, gelecekte aynı arayışı sürdürecek insanlar için yerinde kalır.
+
+Sheppard'ın vadi insanlarıyla yaşadığı aylar, Atlantis'teki arkadaşları için çok daha kısa sürede geçmiştir. Onun geri dönüşte dostlarını yeniden görebilmesi, zaman farkının kişisel sonuçlarını ortadan kaldırmaz. Yükselmeyi reddetmesi ise yaşadığı tehlikelere rağmen insan yaşamına bağlılığını gösterir.
 
 ## Kaynaklar
 
