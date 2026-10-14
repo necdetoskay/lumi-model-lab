@@ -33,6 +33,17 @@ def fixture(td):
     return root,bundle,q25,mr,final
 
 class P442Tests(unittest.TestCase):
+    def test_frozen_real_final_state_byte_replay_without_inference(self):
+        original=Path("evidence/story_harness_p442/b04-r06-real-read-only-final-state-draft.json")
+        raw=original.read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                         "e85296ebc76b1278a6ee05a12015cc2516ec3ef03a247f9fd14ede0ab12ab978")
+        with TemporaryDirectory() as td:
+            _,bundle,q25,master,_=fixture(td)
+            record=original_b04_q25(".",q25)
+            calculated=project_b04_final_state(bundle,record)
+            self.assertEqual(json.loads(raw),calculated)
+
     def test_actual_q25_and_master_hashes(self):
         a=Path(Q25_REFERENCE).read_bytes()
         m=Path(MASTER_REFERENCE).read_bytes()
