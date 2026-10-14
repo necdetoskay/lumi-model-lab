@@ -79,8 +79,11 @@ class FrozenTenExecutionTests(unittest.TestCase):
             return row
         with tempfile.TemporaryDirectory() as td:
             r = run_frozen_ten_offline(".", td, fraud)
-            self.assertTrue(r["complete"])
-            self.assertTrue(all(x["status"] == "OPERATIONAL_STOP" for x in r["attempts"]))
+            # Invalid claim of a paid model call must fail closed globally.
+            self.assertFalse(r["complete"])
+            self.assertEqual(r["attempt_count"], 1)
+            self.assertEqual(r["attempts"][0]["status"], "STOP_UNKNOWN_OR_INVALID")
+            self.assertEqual(r["attempts"][0]["safe_reason"], "GLOBAL_SAFETY_STOP")
             self.assertFalse(r["independent_accepts_certified"])
             self.assertEqual(r["provider_calls"], 0)
 
