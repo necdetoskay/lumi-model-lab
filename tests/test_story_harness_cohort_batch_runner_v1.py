@@ -47,6 +47,23 @@ class TenBatchTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 run_ten(".",td,paid=False)
 
+    def test_all_ten_quality_rejections_still_finish_without_a_fix(self):
+        with tempfile.TemporaryDirectory() as td:
+            b=Batch(".",td,offline=True,historical_hold="3.249558")
+            result=b.run(lambda case:MockProvider(case,reject=True),
+                         lambda _:fake_receipt)
+            self.assertEqual(result["status"],"TEN_ATTEMPTS_RECORDED")
+            self.assertEqual(len(result["case_ids"]),10)
+            self.assertEqual(
+                [v["status"] for v in result["case_results"]],["REJECT"]*10)
+            self.assertEqual(result["provider_reported_cost_usd"],"0.30")
+            self.assertEqual(result["harness_mid_cohort_edits"],0)
+            self.assertEqual(result["retry_count"],0)
+            self.assertEqual(
+                len(list((Path(td)/RUN_ID/"stage-events").glob("*-intent.json"))),30)
+            self.assertEqual(
+                len(list((Path(td)/RUN_ID/"stage-events").glob("*-settled.json"))),30)
+
     def test_safe_story_stage_failure_does_not_stop_next_nine(self):
         with tempfile.TemporaryDirectory() as td:
             b=Batch(".",td,offline=True,historical_hold="3.249558")
