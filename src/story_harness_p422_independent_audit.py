@@ -41,18 +41,24 @@ def _path(path):
     return json.loads(path.read_bytes())
 
 
-def load_source(repo_root, producer_claim_root):
+def load_source(repo_root, producer_claim_root, *, case_id=DEFAULT_CASE,
+                run_variant="r06"):
     plan=load_plan(repo_root)
-    case=next(c for c in plan["cases"] if c["id"]==DEFAULT_CASE)
+    must(type(case_id) is str and case_id in {"B01","B02"},
+         "Unreviewed case not eligible for audited pilot")
+    must(run_variant=="r06", "Unreviewed model run variant")
+    case=next((c for c in plan["cases"] if c["id"]==case_id),None)
+    must(case is not None and case.get("split")=="pilot",
+         "Missing approved pilot case")
     pack=compile_case(case)
     root=Path(producer_claim_root)
     must(root.is_dir() and not root.is_symlink(),"Missing original model claim root")
-    options=list(root.glob("b01-*-r06"))
+    name=case_id.lower()+"-"+pack["pack_sha256"][:16]+"-"+run_variant
+    options=list(root.glob(case_id.lower()+"-*-"+run_variant))
     must(len(options)==1 and options[0].is_dir() and not options[0].is_symlink(),
-         "Original r06 claim not unique or not present")
+         "Original case claim not unique or not present")
     claim=options[0]
-    must(claim.name=="b01-"+pack["pack_sha256"][:16]+ALLOWED_RUN_SUFFIX,
-         "Another story claim cannot enter independent audit")
+    must(claim.name==name,"Another story claim cannot enter independent audit")
     spine=_path(claim/"spine-plan.json")
     story=_path(claim/"story-draft.json")
     first=_path(claim/"01-spineforge-receipt.json")
@@ -91,6 +97,7 @@ def load_source(repo_root, producer_claim_root):
     must(spine.get("provider_generation_id")==first["provider_generation_id"],
          "Spine artifact not from the accounted SpineForge request")
     return {"pack":pack,"spine":spine,"story":story,
+            "case_id":case_id,"run_variant":run_variant,
             "generation_cost_usd":format(sum(costs),"f"),
             "original_claim_id":claim.name}
 
@@ -99,7 +106,8 @@ def audit_wire(source):
     pack,story,spine=source["pack"],source["story"],source["spine"]
     system=(
         "You are a SEPARATE adversarial literary and Canon auditor, not the "
-        "author of the story. The target reader is four years old. Validate "
+        "author of the story. The target reader is "+
+        str(pack["reader_age"])+" years old. Validate "
         "every original approved Spine beat, physical causation, chronology, "
         "known vs unknown ownership, character action and response, ending "
         "obligations, age appropriateness and imaginative literary engagement. "
@@ -118,7 +126,7 @@ def audit_wire(source):
         "fidelity, closure appropriate to the given state and score >=4."
     )
     payload={
-        "case_id":DEFAULT_CASE,
+        "case_id":source.get("case_id",DEFAULT_CASE),
         "source_pack_sha256":pack["pack_sha256"],
         "approved_spine_sha256":spine["spine_sha256"],
         "story_sha256":story["story_sha256"],
@@ -154,7 +162,8 @@ def audit_wire(source):
                     "require_parameters":True,
                     "max_price":{"prompt":2,"completion":10}},
         "response_format":{"type":"json_schema","json_schema":{
-            "name":"lumi_b01_independent_initial_audit_v1",
+            "name":"lumi_"+source.get("case_id",DEFAULT_CASE).lower()+
+                   "_independent_initial_audit_v1",
             "strict":True,"schema":schema}},
     }
     must(len(canonical_json(body))<20000,"Unbounded quality request")
@@ -221,6 +230,7 @@ def verify_auditor_reply(source,response):
          "Missing authoritative auditor generation ID")
     return {
         "schema":SCHEMA,
+        "case_id":source.get("case_id",DEFAULT_CASE),
         "source_pack_sha256":source["pack"]["pack_sha256"],
         "spine_sha256":source["spine"]["spine_sha256"],
         "story_sha256":source["story"]["story_sha256"],
@@ -253,15 +263,20 @@ def _write(path,data):
         os.fsync(f.fileno())
 
 
-def audit_once(source, audit_root, *,transport):
+def audit_once(source, audit_root, *,transport, audit_prefix="p422"):
     root=Path(audit_root)
     must(root.is_dir() and not root.is_symlink(),
          "No durable independent quality claim root")
-    run=root/("p422-b01-r06-"+source["story"]["story_sha256"][:12])
+    must(audit_prefix in ("p422","p427"),"Unreviewed audit prefix")
+    case_id=source.get("case_id",DEFAULT_CASE)
+    must(case_id in ("B01","B02"),"Invalid source case for paid audit")
+    run=root/(audit_prefix+"-"+case_id.lower()+"-r06-"+
+              source["story"]["story_sha256"][:12])
     run.mkdir(mode=0o700,exist_ok=False)
     body=audit_wire(source)
     _write(run/"00-intent.json",{
-        "schema":SCHEMA,"source_story_sha256":source["story"]["story_sha256"],
+        "schema":SCHEMA,"case_id":case_id,
+                "source_story_sha256":source["story"]["story_sha256"],
         "spine_sha256":source["spine"]["spine_sha256"],
         "exact_request_sha256":hashlib.sha256(canonical_json(body)).hexdigest(),
         "maximum_quality_model_posts":1,
