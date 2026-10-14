@@ -44,7 +44,7 @@ def _path(path):
 def load_source(repo_root, producer_claim_root, *, case_id=DEFAULT_CASE,
                 run_variant="r06"):
     plan=load_plan(repo_root)
-    must(type(case_id) is str and case_id in {"B01","B02"},
+    must(type(case_id) is str and case_id in {"B01","B02","B03"},
          "Unreviewed case not eligible for audited pilot")
     must(run_variant=="r06", "Unreviewed model run variant")
     case=next((c for c in plan["cases"] if c["id"]==case_id),None)
@@ -267,9 +267,9 @@ def audit_once(source, audit_root, *,transport, audit_prefix="p422"):
     root=Path(audit_root)
     must(root.is_dir() and not root.is_symlink(),
          "No durable independent quality claim root")
-    must(audit_prefix in ("p422","p427"),"Unreviewed audit prefix")
+    must(audit_prefix in ("p422","p427","p432"),"Unreviewed audit prefix")
     case_id=source.get("case_id",DEFAULT_CASE)
-    must(case_id in ("B01","B02"),"Invalid source case for paid audit")
+    must(case_id in ("B01","B02","B03"),"Invalid source case for paid audit")
     run=root/(audit_prefix+"-"+case_id.lower()+"-r06-"+
               source["story"]["story_sha256"][:12])
     run.mkdir(mode=0o700,exist_ok=False)
