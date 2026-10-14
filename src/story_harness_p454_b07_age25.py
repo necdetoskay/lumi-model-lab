@@ -23,6 +23,9 @@ CASE_ID="B07"
 VARIANT="r06"
 SOURCE_SHA="dbe62430a4a06fe82c3216275b04fdee7f340a7bd4718458d47097fa98fde476"
 PRIOR_CONSERVATIVE=Decimal("2.859558")
+PAID_GRANT_ENV = "LUMI_P455_B07"
+PAID_GRANT_VALUE = "ONE_ORIGINAL_B07_AGE25_GENERATION"
+
 
 def must(condition,reason):
     if not condition: raise HarnessStop(reason)
@@ -115,7 +118,7 @@ def main():
     if not a.paid_once:
         print(json.dumps(status(a.repo_root),sort_keys=True))
         return
-    must(os.getenv("LUMI_P446_B07")=="ONE_ORIGINAL_B07_AGE25_GENERATION",
+    must(os.getenv(PAID_GRANT_ENV)==PAID_GRANT_VALUE,
          "B07 original real provider grant missing")
     must(a.claim_root,"B07 paid source claim root required")
     key=os.getenv("OPENROUTER_API_KEY","")
