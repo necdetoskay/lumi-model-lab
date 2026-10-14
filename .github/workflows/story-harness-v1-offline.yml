@@ -41,6 +41,8 @@ on:
       - src/story_harness_p425_final_state_draft.py
       - src/story_harness_p426_second_case.py
       - src/story_harness_p427_b02_quality.py
+      - src/story_harness_p428_b02_master.py
+      - src/story_harness_p429_b02_q25.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -76,6 +78,8 @@ on:
       - tests/test_story_harness_p425_final_state_draft.py
       - tests/test_story_harness_p426_second_case.py
       - tests/test_story_harness_p427_b02_quality.py
+      - tests/test_story_harness_p428_b02_master.py
+      - tests/test_story_harness_p429_b02_q25.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -119,6 +123,9 @@ on:
       - docs/canonical/STORY_HARNESS_P425_REAL_Q25_READ_ONLY_STATE.md
       - docs/canonical/STORY_HARNESS_P426_SECOND_DISTINCT_INPUT.md
       - docs/canonical/STORY_HARNESS_P427_B02_INDEPENDENT_QUALITY.md
+      - docs/canonical/STORY_HARNESS_P429_B02_Q25.md
+      - evidence/story_harness_p427/**
+      - evidence/story_harness_p428/**
       - evidence/story_harness_p426/**
       - evidence/story_harness_p421/**
       - evidence/story_harness_p422/**
@@ -1010,3 +1017,23 @@ jobs:
           assert row['production_state_write_authorized'] is False
           print('P427_B02_SOURCE_SEALED_INDEPENDENT_QUALITY_OFFLINE_GREEN')
           PY30
+
+      - name: Verify actual B02-only immutable Master and location-correct Q25 proposal guard
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p428_b02_master.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p429_b02_q25.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -q
+          python -m src.story_harness_p428_b02_master > /tmp/story-harness-p428.json
+          python -m src.story_harness_p429_b02_q25 > /tmp/story-harness-p429.json
+          python - <<'PY31'
+          import json
+          master=json.load(open('/tmp/story-harness-p428.json'))
+          q25=json.load(open('/tmp/story-harness-p429.json'))
+          assert master['case_id']=='B02' and master['model_posts']==0
+          assert master['english_master_sealed'] is False
+          assert q25['case_id']=='B02' and q25['model_posts']==0
+          assert q25['new_stage_cap_usd']=='0.050'
+          assert q25['quality_reused_from_B01'] is False
+          assert q25['production_state_write_authorized'] is False
+          print('P429_B02_Q25_FROM_TRUE_561_WORD_MASTER_OFFLINE_GREEN')
+          PY31
