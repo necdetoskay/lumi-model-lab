@@ -51,7 +51,8 @@ class ProviderCostUnknown(HarnessStop):
 
 class TrialLedger:
     """Charges from actual response envelopes; cannot assume missing cost is $0."""
-    def __init__(self, transport, harness, generation_receipt_checker=None):
+    def __init__(self, transport, harness, generation_receipt_checker=None,
+                 stage_event=None):
         must(callable(transport), "MISSING_TRANSPORT")
         must(isinstance(harness, RuntimeHarness), "HARNESS_INSTANCE_REQUIRED")
         self.harness = harness
@@ -59,6 +60,8 @@ class TrialLedger:
         must(generation_receipt_checker is None or callable(generation_receipt_checker),
              "INVALID_PROVIDER_GENERATION_CHECKER")
         self.generation_receipt_checker = generation_receipt_checker
+        must(stage_event is None or callable(stage_event), "INVALID_STAGE_EVENT")
+        self.stage_event = stage_event
         self.verified_generation_stages = []
         self.total = Decimal("0")
         self.count = 0
@@ -74,6 +77,16 @@ class TrialLedger:
              "UNSAFE_PROVIDER_ROUTE")
         self.harness.authorize_stage(stage, body)
         self.count += 1  # consumed before potentially ambiguous provider POST
+        if self.stage_event is not None:
+            # Caller must fsync an exclusive receipt BEFORE the network POST.
+            # If this fails, no provider request is issued.
+            self.stage_event("intent", stage, {
+                "case_id": self.harness.case_id,
+                "request_sha256": hashlib.sha256(canonical_json(body)).hexdigest(),
+                "max_stage_usd": format(STAGE_MAX[stage], "f"),
+                "post_attempt_index": self.count,
+                "retry_authorized": False,
+            })
         try:
             response = self.transport(body)
         except Exception:
@@ -117,11 +130,28 @@ class TrialLedger:
                 raise ProviderCostUnknown(
                     "Provider generation charge could not be independently reconciled"
                 ) from None
+        if self.stage_event is not None:
+            try:
+                self.stage_event("settled", stage, {
+                    "case_id": self.harness.case_id,
+                    "response_sha256": hashlib.sha256(canonical_json(response)).hexdigest(),
+                    "generation_id": response.get("id"),
+                    "provider_reported_cost_usd": format(cost, "f"),
+                    "cumulative_case_reported_usd": format(self.total, "f"),
+                    "generation_metadata_checked": (
+                        stage in self.verified_generation_stages),
+                    "retry_authorized": False,
+                })
+            except Exception:
+                self.unknown_cost = True
+                raise ProviderCostUnknown(
+                    "Durable provider stage cost receipt unavailable") from None
         return response
 
 def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *,
                                          transport, harness,
-                                         generation_receipt_checker=None):
+                                         generation_receipt_checker=None,
+                                         stage_event=None):
     """One new non-retryable attempt, all original artifacts written once.
 
     The caller must independently seal a versioned cohort lock and reconcile
@@ -139,7 +169,8 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *,
     producer = folder / "producer"
     producer.mkdir(mode=0o700)
     plan = load_plan(repo_root)
-    ledger = TrialLedger(transport, harness, generation_receipt_checker)
+    ledger = TrialLedger(transport, harness, generation_receipt_checker,
+                         stage_event)
     exclusive(folder / "00-harness-receipt.json", harness.receipt())
     pilot = BoundedOncePilot(str(producer), case_id=case_id, plan=plan, run_variant="r06")
     try:

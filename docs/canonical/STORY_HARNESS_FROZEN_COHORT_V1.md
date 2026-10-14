@@ -185,3 +185,32 @@ follow-up branch-only metadata GET will classify the *limit* issue into
 presence/range/reset and the historical used-amount feasibility of a
 $20 total key cap, using Boolean evidence ONLY. **No limit is being
 changed and no secret/account usage amount is printed.**
+
+## Complete ten-case runner implementation (before B01)
+
+A single driver, src/story_harness_cohort_batch_runner_v1.py, now
+orchestrates all B01 through B10 with the **unchanged common** Memory,
+Tools, Models, Prompts, QA, English Master, Q25 and state read-only adapter.
+Every stage performs exclusive fsynced intent before transport and exclusive
+stage cost settlement, and the next case cannot begin if any stage's charge
+is unknown or unrecorded. The driver rejects duplicate frozen baseline
+claim directories, altered component bytes, unreserved costs, altered inputs,
+missing release source pins and retries. Known literary or contract failure
+is reported as REJECT / OPERATIONAL_STOP without mid-cohort source edits,
+and the next case is attempted. Safety/unknown charge globally stops.
+
+An entire ten-case mock rehearsal has run locally: 10 of 10 recorded,
+B04 deliberate mock QA REJECT while B05-B10 continued, 39 of 39 fake
+stage intents and receipts matched, and exact 0 retries. The reported
+simulation charge 0.39 USD is synthetic -- NOT new provider spend, and
+none of the mock ACCEPT_CLAIMED outcomes certifies literary quality.
+
+The CLI has a guarded paid-adapter implementation using the operator's
+existing shared OpenRouter secret with authenticated key GET and
+generation-specific read-only cost verification. The preregistered
+GitHub owner-dispatch runner job is NOT yet enabled here. No real B01
+has started, no new billable POST was made and no production write is
+authorized. The shared key's other consumers remain outside the
+per-study cost journal; this does not independently attest all-provider
+account spending. The experiment PR stays Draft until the real runner
+has independently qualified and freeze authority is complete.
