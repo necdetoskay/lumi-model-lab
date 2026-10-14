@@ -5,7 +5,7 @@ import copy
 import unittest
 
 from src.story_harness_cohort_provider_observe_v1 import (
-    analyze_isolated_key, analyze_cohort_catalog, observe_provider_read_only, offline_status, KEY_ENV
+    analyze_isolated_key, analyze_existing_key, analyze_cohort_catalog, observe_provider_read_only, offline_status, KEY_ENV, EXISTING_KEY_ENV
 )
 from src.story_harness_v1 import HarnessStop
 
@@ -83,10 +83,50 @@ class IsolatedReadOnlyKeyTests(unittest.TestCase):
                     key_fetch=fake_get,catalog_fetch=lambda:x,now=NOW)
     def test_script_default_does_not_read_credentials(self):
         r=offline_status()
-        self.assertEqual(r["required_secret_name"],KEY_ENV)
+        self.assertEqual(r["required_secret_name"],EXISTING_KEY_ENV)
+        self.assertEqual(offline_status(key_mode="isolated")["required_secret_name"],KEY_ENV)
+        self.assertFalse(r["shared_key_exclusivity_verified"])
         self.assertEqual(r["paid_model_calls"],0)
         self.assertFalse(r["live_key_observed"])
 
+
+    def test_existing_key_reuses_used_key_but_never_authorizes_spend(self):
+        row=key(limit=10.0,limit_remaining=8.0,usage=2.0)
+        safe=analyze_existing_key(row,now=NOW)
+        self.assertTrue(safe["existing_shared_key_read_only"])
+        self.assertEqual(safe["remaining_limit_usd"],"8.0")
+        self.assertFalse(safe["external_concurrent_consumers_disproved"])
+        self.assertFalse(safe["provider_dispatch_authorized"])
+        self.assertNotIn("NEVER_LOG_PRIVATE_KEY_LABEL",str(safe))
+        self.assertNotIn("NEVER_LOG_PRIVATE_KEY_IDENTIFIER",str(safe))
+
+    def test_existing_key_refuses_unsafe_finance_or_key_types(self):
+        for change in [
+            {"limit":None}, {"limit":30},
+            {"limit_remaining":3.5}, {"limit_reset":"daily"},
+            {"is_management_key":True},
+            {"include_byok_in_limit":False},
+        ]:
+            with self.subTest(change=change),self.assertRaises(HarnessStop):
+                analyze_existing_key(key(**change),now=NOW)
+
+    def test_existing_key_mode_gets_only_and_does_not_allow_post(self):
+        calls={"key":0,"catalog":0}
+        def fake_get(*,api_key):
+            calls["key"]+=1
+            self.assertEqual(api_key,"sk-or-test-existing-secret")
+            return key(limit=9.0,limit_remaining=5.0,usage=4.0)
+        def fake_catalog():
+            calls["catalog"]+=1
+            return catalog()
+        result=observe_provider_read_only(
+            api_key="sk-or-test-existing-secret",key_mode="existing",
+            now=NOW,key_fetch=fake_get,catalog_fetch=fake_catalog)
+        self.assertEqual(calls,{"key":1,"catalog":1})
+        self.assertTrue(result["existing_shared_key_read_only"])
+        self.assertFalse(result["real_live_key_provenance"])
+        self.assertFalse(result["provider_dispatch_authorized"])
+        self.assertEqual(EXISTING_KEY_ENV,"OPENROUTER_API_KEY")
 
     def test_current_sonnet_provider_route_does_not_require_temperature(self):
         metadata=catalog()
