@@ -45,6 +45,7 @@ on:
       - src/story_harness_p429_b02_q25.py
       - src/story_harness_p430_b02_final_state.py
       - src/story_harness_p431_b03_age10.py
+      - src/story_harness_p432_b03_quality.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -84,6 +85,7 @@ on:
       - tests/test_story_harness_p429_b02_q25.py
       - tests/test_story_harness_p430_b02_final_state.py
       - tests/test_story_harness_p431_b03_age10.py
+      - tests/test_story_harness_p432_b03_quality.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -130,6 +132,8 @@ on:
       - docs/canonical/STORY_HARNESS_P429_B02_Q25.md
       - docs/canonical/STORY_HARNESS_P430_B02_STATE_DRAFT.md
       - docs/canonical/STORY_HARNESS_P431_AGE10_B03.md
+      - docs/canonical/STORY_HARNESS_P432_B03_AGE10_QUALITY.md
+      - evidence/story_harness_p431/**
       - evidence/story_harness_p429/**
       - evidence/story_harness_p430/**
       - evidence/story_harness_p427/**
@@ -1076,3 +1080,20 @@ jobs:
           assert a['production_state_write_authorized'] is False
           print('P431_B03_AGE10_CANON_GENERATION_OFFLINE_GREEN')
           PY33
+
+      - name: Verify independently audited source requirements of actual age10 B03 story
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p432_b03_quality.py' -v
+          python -m src.story_harness_p432_b03_quality > /tmp/story-harness-p432.json
+          python - <<'PY34'
+          import json
+          a=json.load(open('/tmp/story-harness-p432.json'))
+          assert a['schema']=='lumi.story-harness-p432-b03-independent-age10-quality.v1'
+          assert a['case_id']=='B03' and a['reader_age']==10
+          assert a['model_calls']==0
+          assert a['max_new_quality_stage_usd']=='0.040'
+          assert a['prior_budget_reserved_usd']=='1.449558'
+          assert a['initial_quality_accepted'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P432_B03_REAL_AGE10_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY34
