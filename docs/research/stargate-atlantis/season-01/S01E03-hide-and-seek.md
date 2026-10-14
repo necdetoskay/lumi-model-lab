@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 3
 title_original: "Hide and Seek"
-status: draft
-word_count: 233
+status: complete
+word_count: 265
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Atlantis'te yerleşme süreci devam ederken Beckett, Kadim genini taşımayan in
 Şehirde yaşayan iki Athoslu çocuk Jinto ve Wex yasak bir depoya girerek saklambaç oynamaya başlar. Jinto ortadan kaybolunca ışıklar, yaşam sensörleri ve kapı sistemi anormal davranır. Athoslular karanlık bir gölge gördüklerini söyler. Sheppard arama yaparken enerjiyle beslenen gerçek bir varlıkla karşılaşır. Jinto'nun sesi iletişim sisteminden duyulur; gizli şehir içi taşıma bölmesi sayesinde çocukların Kadimlerin eski araştırma laboratuvarına ulaştığı bulunur. Jinto burada bilinmeden bir muhafaza aygıtı açmış, gölge biçimli yaşamı serbest bırakmıştır.
 
 Gölge Ford'a saldırıp onu yaralar. McKay eski araştırma aygıtının yaratığı yeniden yakalayabileceğini söyler, ancak tuzağı çalıştıracak kişinin tehlikeye yaklaşması gerekmektedir. Kalkanının kendisini koruyacağını bilen McKay bile korkuya kapılır; tam bu sırada bilinçaltındaki engel kalkınca cihaz vücudundan düşer. Teyla, yaratığın tekrar hapsedilmektense özgür bir dünyaya gitmeyi isteyebileceğini önerir. Boş gezegene açılan geçide enerji kaynağı taşıyan robot gönderilir. Varlık robotun enerjisini tüketince McKay kalkanı yeniden takar, enerji kaynağını geçitten atar; gölge onun peşinden gider. McKay baygın fakat sağ olarak bulunur. Atlantis büyük kayıptan kurtulurken Teyla'nın sezgileri ekibin önemli bir parçası olduğunu kanıtlar.
+
+Gölgenin şehir dışına yönlendirilmesi, Kadim araştırmalarının kalıntılarının da istilacılar kadar tehlikeli olabileceğini gösterir. Personel artık keşfettiği her odanın güvenli olduğunu varsayamaz; Athoslu çocukların bulduğu taşıma düzeni de gelecekte yararlı bir keşif olacaktır.
 
 ## Kaynaklar
 

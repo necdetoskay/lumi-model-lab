@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 1
 title_original: "Rising, Part 1"
-status: draft
-word_count: 238
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Antarktika'daki Kadim karakolunu araştıran Dr. Elizabeth Weir, Rodney McKay ve
 Weir'in yönettiği uluslararası keşif ekibi, askerî komutan Albay Marshall Sumner ile birlikte kapıdan geçerek Atlantis'e ulaşır. Şehir son derece gelişmiş, fakat terk edilmiş ve okyanusun dibindedir. Araştırmacılar kalkanın son enerji rezervleriyle çalıştığını, tüm sistemlerin otomatik açılması yüzünden ZPM'nin hızla tükendiğini öğrenir. Eski hologram kayıtları, Kadimlerin Pegasus'taki insan toplumlarını yerleştirdiğini ve Wraith adı verilen yaşam emici türün saldırıları karşısında şehri batırdığını anlatır. Dünya'ya geri dönemeyen ekip, güvenli sığınak bulmak için yakındaki Athos gezegenine keşif yapar.
 
 Sheppard burada Athos halkının lideri Teyla Emmagan'la tanışır. Teyla, Wraithlerin yüzyıllarca bekleyip insanları topladığını anlatır ve atalarının terk edilmiş kentini gösterir. Kentteki keşif Wraith gemilerinin saldırısını tetikler. Sumner, bazı askerler, Teyla ve siviller kaçırılır. Sheppard kurtulanları ve Athoslu aileleri Atlantis'e getirir. Weir, zaten çökmek üzere olan şehre yeni insanların getirilmesine öfkelenir. Son enerji tükendiğinde okyanus Atlantis'i yutacak gibi olur; ancak şehir beklenmedik biçimde suyun yüzeyine yükselir. İlk bölüm, yeni evin kurtulması fakat esirlerin düşmanın elinde kalmasıyla sona erer.
+
+Bu noktada keşif ekibinin galaksiyle bağlantısı yalnızca Pegasus geçitleriyle sınırlıdır. Şehrin kurtulması kalıcı enerji sıkıntısını gidermemiştir; üstelik kaçırılanların peşinden gitmek düşmanın nerede yaşadığını ve nasıl savaştığını öğrenmeyi gerektirecektir.
 
 ## Kaynaklar
 

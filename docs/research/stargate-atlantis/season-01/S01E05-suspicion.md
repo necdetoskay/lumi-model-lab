@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 5
 title_original: "Suspicion"
-status: draft
-word_count: 238
+status: complete
+word_count: 268
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ McKay yeni bir Jumper alt sistemini incelerken Atlantis'in hangar çatısının 
 Bates gizlice McKay'den Teyla'nın eşyalarını incelemesini ister. İnceleme asıl sorunu açığa çıkarır: babasının yıllar önce Teyla'ya verdiği kolye, Wraithlerin Kadim genine tepki veren bir takip aygıtıdır. Sheppard kolyeye dokunduğu ilk gün sinyal etkinleşmiştir. Teyla hiçbir bilgi sızdırmamıştır; düşman sinyali izleyerek aynı gezegenlere gelmektedir.
 
 Sheppard bu bilgiyi tuzağa dönüştürür. Ekip kolyeyle düşmanı kasıtlı olarak çağırır, gelen dört Wraith'ten ikisini öldürür; üçüncüsü kendini imha eder. Sonuncusu Teyla'nın enerjisini çekmek üzereyken Sheppard onu sersemletip canlı yakalar. Atlantis ilk kez sorgulayabileceği bir Wraith esirine sahiptir. Weir ve Teyla kırılan güveni onarmaya çalışırken Sheppard yeni tutsağından düşman toplumunu öğrenmeye hazırlanır.
+
+Yıllardır ailesinin armağanı olarak taşıdığı kolyenin aslında takip aracı olması Teyla için ayrıca sarsıcıdır. Yine de düşmana dönüştürülen bu bilgiyle ele geçirilen esir, Wraithler hakkında içeriden bilgi edinme fırsatını sağlar.
 
 ## Kaynaklar
 

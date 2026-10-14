@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 1
 episode: 4
 title_original: "Thirty Eight Minutes"
-status: draft
-word_count: 228
+status: complete
+word_count: 259
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Weir Atlantis'teki mühendisleri ve sağlık personelini seferber eder. Zelenka,
 Parazite uygulanan ilaçlar, su ve diğer yöntemler işe yaramaz. Sheppard kendi kalbinin kısa süreliğine durdurulmasını önerir: beslenebileceği hayat belirtisi kalmazsa yaratık ayrılacaktır. Defibrilatör yardımıyla kalbi durdurulur ve parazit düşer. Ancak ekip Sheppard'ı yeniden canlandıramaz. Onu geçidin olay ufkuna geçirerek geçici olarak korunmasını sağlarlar. Zelenka'nın yönlendirmesiyle motor bölmeleri kapanır, ama araç hâlâ ilerlemez; ana itiş sistemi devre dışıdır.
 
 Son dakikada arka kapının açılmasıyla oluşacak ani hava boşalmasının Jumper'ı ileri itebileceği anlaşılır. Ford düzenlemeyi yapıp tutunur; yeniden hareketlenen parazit de uzaya savrulur. Araç geçitten tam zamanında Atlantis'e ulaşır. Hazır bekleyen sağlık ekibi Sheppard'ın kalbini yeniden çalıştırır. Böylece bir fizik sorunu, tıbbi kriz ve kurumsal karar baskısı aynı kurtarma operasyonunda çözüme kavuşur.
+
+Weir'in kalkanı erken kapatmayı reddetmesi, bütün Atlantis'i riske atmakla ekibinin hayatına değer vermek arasında verdiği zor karardır. Kavanagh'ın uyarısı anlaşılır olsa da hesaplanan patlama olasılığı bu fedakârlığı gerektirecek kadar yüksek değildir.
 
 ## Kaynaklar
 
