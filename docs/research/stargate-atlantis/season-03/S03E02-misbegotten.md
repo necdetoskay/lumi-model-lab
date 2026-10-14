@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 2
 title_original: "Misbegotten"
-status: draft
-word_count: 238
+status: complete
+word_count: 271
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Michael diğer Wraithlerden farklıdır; gerçek kimliğini bilmektedir. Teyla o
 Michael ve birkaç eski Wraith tedaviyi gizlice bırakır. Zihinleri ve eski içgüdüleri geri geldiğinde korumaları öldürüp Beckett'i esir alırlar. Yakın kovan gemisine haber gönderirler. Atlantis'in sensörleri gemiyi fark edince Sheppard ile arkadaşları ele geçirilmiş kovanı kullanarak kurtarma görevine çıkar. Geminin silahlarını tam kontrol edememeleri ciddi sorun oluşturur. Düşman takviyesi gelmeden Beckett'a ulaşmak için acil operasyon yürütürler.
 
 Sheppard, tutsakların kurtarılması sırasında eski Wraithlerin başka gemiye kaçabileceğini görür. Ekibin güvenliğinin tehlikeye girmesi üzerine uzak bölgedeki Wraith kovanını ve kampı ortadan kaldıracak saldırı gerçekleştirilir. Takım Jumper'la kaçar; kurtarmaya gelen Daedalus onların hayatta kaldığını öğrenir. Atlantis'e dönüldüğünde Woolsey, Weir'in bütün kararları kusursuz olmasa da zor koşullarda liderlik yaptığını rapor eder. Onu görevde tutmayı önerir. Michael'ın kesin olarak ortadan kaldırıldığı ise doğrulanmaz.
+
+Woolsey'nin raporunda Weir'in liderliğini desteklemesi, uluslararası denetim kurumlarının bile her olayı yalnız kurallarla değerlendiremeyeceğini gösterir. Eski Wraithlerin insan olarak yaşama hakkı tartışması ise kesin biçimde kapanmamıştır; Michael'ın kaçma ihtimali gelecekte ağır sonuç doğurabilir.
 
 ## Kaynaklar
 

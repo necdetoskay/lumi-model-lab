@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 5
 title_original: "Progeny"
-status: draft
-word_count: 248
+status: complete
+word_count: 277
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Niam, Kadimlerin Wraithlerle savaşmak için saldırgan programlanmış mekanik 
 Niam, insanlara şiddet yerine manevi gelişim seçmek istediğini anlatır. Ancak saldırganlığı zorunlu kılan temel kodu değiştiremiyordur. McKay kendisini yeniden programlamasına yardım ederse saldırıyı durdurabileceğini söyler. Ekip zamanla yarışarak nanomakine kodlarını değiştirir. Oberoth bu girişime karşı koysa da Asuralıların geçici zayıflığı kaçış fırsatı verir. McKay, onların şehrini yok edecek hesaplamayı gerçekleştirir; ekip Jumper'la kaçarken Asuran yıldız gemisi patlar.
 
 Niam gönüllü olarak birlikte ayrılır. Ancak Asuras'taki diğer nanomakineler uzaktan onun kodunu yeniden düzenler. Niam aniden saldırganlaşıp Weir'i boğmaya çalışır. Sheppard onu Jumper'ın arka bölümüne kapatıp uzay boşluğuna atar. Atlantis'e dönen ekip Kadim veritabanında Replicatorlarla ilgili kayıt bulamaz. Asuranların gerçekten tamamen yok olup olmadığı belirsizdir. Niam ise uzayda hâlâ aktif hâlde bulunmaktadır. Kadimlerin geçmişte gizlediği başarısız deney yeni ve çok tehlikeli düşman yaratmıştır.
+
+Kadimlerin deneylerini tümüyle yok ettiklerini düşünmeleri, geçmişte yapılan yıkıcı bir hatanın izlerini saklamanın daha büyük sorunlar yaratabileceğini gösterir. Niam'ın uzayda hayatta kalması, saldırganlığın gerçekten silinip silinemeyeceği sorusunu açık bırakır.
 
 ## Kaynaklar
 

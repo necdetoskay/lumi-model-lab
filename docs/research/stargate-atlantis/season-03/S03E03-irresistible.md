@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 3
 title_original: "Irresistible"
-status: draft
-word_count: 233
+status: complete
+word_count: 269
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard ile McKay durumun olağan olmadığını anlar. Lucius her isteğini ye
 Sheppard, Beckett'ı zorla ana karaya götürüp etkiden uzak tutar. Bir süre sonra doktor eski hâline döner ve Lucius'un sırrını açıklar. İksir, bedeninin çevresindeki insanların beynini etkileyen güçlü feromon salgılamasını sağlamaktadır. Böylece mutluluk duygusu ve aşırı itaat yaratmaktadır. Beckett, bu maddeyi etkisiz kılacak serum geliştirir. Sheppard Lucius'u şehirden uzaklaştırırken diğer personel tedavi edilir.
 
 Lucius serumu kullanmış insanlarda artık aynı bağlılığı oluşturamaz. Kendi köyüne geri götürülür. Oradaki insanların da zamanla bağımlılıktan kurtulması beklenmektedir; Lucius'un ilişkilerinin sürüp sürmeyeceği bilinmez. Atlantis ekibi hem güvenlik açıklarını hem insanların biyolojik yolla kolayca etkilenebildiğini acı biçimde öğrenir.
+
+Lucius'un görünüşte masum, sempatik bir insan olması herkesin onun tehlikesini çok geç fark etmesine neden olur. Kısa sürede bütün personelin karar gücünü ele geçirmesi, Atlantis'in yalnız silahla değil psikolojik ve biyolojik manipülasyonla da savunmasız bırakılabileceğini kanıtlar.
 
 ## Kaynaklar
 

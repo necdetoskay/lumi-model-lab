@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 1
 title_original: "No Man's Land"
-status: draft
-word_count: 232
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Wraith gemileri hiperuzaydan çıktığında Sheppard alttan saldırı yapıp bi
 Daedalus ile Orion aynı anda bölgeye ulaşır. Kadim gemisinin dron saldırısı ikinci Wraith kovanını yok eder. Orion ağır hasar alınca personel Daedalus'a ışınlanır. Sheppard, McKay ve Ronon yeniden buluşup Michael'ın yardımıyla düşman gemisinden ayrılır. Kurtarılan ekip Daedalus'a geçer. Ancak savaş gemisinin yaşam destek sistemleri ciddi biçimde hasarlanmıştır. Büyük çatışmanın sonunda Daedalus'un kendisi de derin uzayda havasız kalma tehlikesi yaşamaktadır.
 
 Dünya'ya ulaşacak iki Wraith kovanının durdurulması önemli başarıdır; buna karşılık müttefikler ağır bedel ödemiştir. Bölüm uzayda mahsur kalan insanların hayatta kalıp kalamayacağı sorusuyla sona erer. Michael'ın beklenmedik yardımı onun düşmanla insan arasında kalmış kişiliğini de yeniden gündeme getirir.
+
+Weir'in verdiği karar, Dünya ile Pegasus arasındaki boşlukta yürütülen ve kurtarma gemilerinin de kaybedilebileceği son derece riskli bir operasyondur. Orion'un feda edilmesi, Atlantis'in eline yeni geçmiş Kadim savaş teknolojisinin ne kadar kırılgan olduğunu gösterir.
 
 ## Kaynaklar
 
