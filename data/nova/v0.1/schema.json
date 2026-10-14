@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NOVA Vault v0.1.0 logical contract",
+  "description": "Logical view across works, episodes, analyses, mechanics, mechanic_evidence, evaluations, usage_history; actual JSONL rows are validated offline by tools/nova/validate.py.",
+  "version": "0.1.0",
+  "entities": {
+    "works": [
+      "work_id",
+      "work_type",
+      "title",
+      "season_count",
+      "episode_count",
+      "lumi_canon"
+    ],
+    "episodes": [
+      "episode_id",
+      "work_id",
+      "season",
+      "episode",
+      "title_original",
+      "archive_source",
+      "reference_url",
+      "source_status"
+    ],
+    "analyses": [
+      "analysis_id",
+      "episode_id",
+      "schema_version",
+      "analysis_status",
+      "source_url",
+      "observed_trigger",
+      "observed_turn",
+      "observed_decision",
+      "observed_cost",
+      "observed_resolution",
+      "mechanic_ids",
+      "not_lumi_canon"
+    ],
+    "mechanics": [
+      "mechanic_id",
+      "label_tr",
+      "abstract_mechanism_tr",
+      "application_guardrail_tr",
+      "maturity",
+      "evidence_count",
+      "quality_effect"
+    ],
+    "mechanic_evidence": [
+      "evidence_id",
+      "mechanic_id",
+      "episode_id",
+      "analysis_id",
+      "source_url",
+      "observed_fact_paraphrase_tr",
+      "classification_is_interpretive"
+    ],
+    "evaluations": [
+      "evaluation_id",
+      "scenario_id",
+      "outcome",
+      "human_or_model_judge",
+      "comparison_baseline"
+    ],
+    "usage_history": [
+      "usage_id",
+      "story_id",
+      "mechanic_id",
+      "applied",
+      "stage"
+    ]
+  },
+  "guarantees": [
+    "Episode source is separate from abstract reusable pattern",
+    "Every mechanic claim has episode-linked observation",
+    "Candidate maturity is evidence frequency, not demonstrated story improvement",
+    "No mutation of LUMI canon",
+    "No production integration"
+  ]
+}
