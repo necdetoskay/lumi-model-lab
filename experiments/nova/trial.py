@@ -66,6 +66,9 @@ def import_stories(directory, bundle):
         if set(story) != {"sample_id", "text"} or not all(isinstance(v, str) for v in story.values()):
             raise nml.Invalid("STORY_SCHEMA")
     packet = ev.blind_packet(bundle["stories"], allocation)
+    known_fixtures = {nml.sha(ev.fixture_story(request).encode("utf-8")) for request in requests}
+    if any(sample["story_sha256"] in known_fixtures for sample in packet):
+        raise nml.Invalid("KNOWN_FIXTURE_NOT_REAL_STORY")
     limits = {r["sample_id"]: r["common"]["max_words"] for r in requests}
     archive = [p.read_text(encoding="utf-8") for a in nml.ARCHIVES for p in (nml.ROOT / a).rglob("S*.md")]
     for sample in packet:
@@ -83,7 +86,8 @@ def import_stories(directory, bundle):
     ev.write_new(destination / "context.json", context)
     ev.write_new(Path(directory) / "private/imported-bundle.json", bundle)
     ev.write_new(Path(directory) / "private/import-receipt.json",
-                 {"bundle_sha256": nml.fingerprint(bundle), "packet_sha256": nml.fingerprint(packet)})
+                 {"bundle_sha256": nml.fingerprint(bundle), "packet_sha256": nml.fingerprint(packet),
+                  "review_context_sha256": nml.fingerprint(context)})
     return {"status": "IMPORTED_FOR_BLIND_REVIEW", "stories": len(packet), "semantic_gates": "HUMAN_REVIEW_REQUIRED",
             "provider_calls_by_nova": 0, "external_cost_microusd_attested": bundle["actual_cost_microusd"]}
 
@@ -94,7 +98,9 @@ def score_trial(directory, ballots):
     bundle = nml.read_json(directory / "private/imported-bundle.json")
     packet = nml.read_json(directory / "review/blind-packet.json")
     receipt = nml.read_json(directory / "private/import-receipt.json")
-    if receipt != {"bundle_sha256": nml.fingerprint(bundle), "packet_sha256": nml.fingerprint(packet)}:
+    context = nml.read_json(directory / "review/context.json")
+    if receipt != {"bundle_sha256": nml.fingerprint(bundle), "packet_sha256": nml.fingerprint(packet),
+                   "review_context_sha256": nml.fingerprint(context)}:
         raise nml.Invalid("IMPORT_RECEIPT_CHANGED")
     if packet != ev.blind_packet(bundle["stories"], allocation):
         raise nml.Invalid("IMPORTED_STORY_CHANGED")
@@ -104,6 +110,7 @@ def score_trial(directory, ballots):
     report.update({"provider_calls_by_nova": 0, "actual_cost_microusd_attested": bundle["actual_cost_microusd"],
                    "ballots_sha256": nml.fingerprint(ballots), "packet_sha256": nml.fingerprint(packet),
                    "allocation_sha256": nml.fingerprint(allocation),
+                   "review_context_sha256": nml.fingerprint(context),
                    "authenticity": "OPERATOR_ATTESTED_NOT_CRYPTOGRAPHICALLY_VERIFIED",
                    "source_review": "PENDING", "overall_maturity": "NOT_ESTABLISHED"})
     nml.freeze(directory / "private/ballots", "ballots", ballots)

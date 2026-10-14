@@ -68,6 +68,7 @@ python docs/research/stargate-atlantis/validate_atlantis.py
 python -m experiments.nova dry-run --output runs/tmp/nova-new-run
 python -m experiments.nova index --output runs/tmp/nova-new-index.sqlite
 python -m experiments.nova analyze --mechanic-id NOVA-011
+python -m experiments.nova review-sources --output runs/tmp/nova-source-review
 python -m experiments.nova match --brief-id B04-mystery --audit-dir runs/tmp/nova-usage
 python -m experiments.nova match --brief-id B04-crisis --history runs/tmp/nova-usage --audit-dir runs/tmp/nova-usage
 ```

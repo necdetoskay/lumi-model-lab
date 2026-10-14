@@ -73,3 +73,15 @@ No integration proceeds while these are unresolved. This report grants no budget
 CI is defined by `NOVA Independent Offline`, on self-hosted runners only, with
 no provider secrets or network/model steps. The Draft PR and its exact-head check
 URLs are the live authority for CI status; local PASS alone is not called CI PASS.
+
+## Follow-up validation
+
+The continuation adds known-fixture relabel rejection, reviewer-context hash
+binding and a research-only source precision audit. The combined suite now has
+**98 passing tests** (54 inherited + 44 NOVA); local full run: 36.951 seconds.
+Isolation lint and diff whitespace checks pass. Source review audits all 18
+mechanics and records nine narrow annotations across three mechanics. The source
+quality result remains NOT_CERTIFIED; no record or age profile is promoted.
+
+The original vault, release, corpus and fixture evidence remain unchanged. No
+model call, paid experiment, production edit or integration was introduced.

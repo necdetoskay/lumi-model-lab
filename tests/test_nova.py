@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 from experiments.narrative_mechanics import core as nml
-from experiments.nova import evaluate as ev, trial, vault
+from experiments.nova import evaluate as ev, source_review, trial, vault
 from experiments.nova.match import match
 from experiments.nova.__main__ import main
 
@@ -301,7 +301,7 @@ class NovaTests(unittest.TestCase):
     def bundle(self):
         return {"schema": "nova.story-bundle.v1", "mode": "HUMAN_MANUAL", "generator": "manual-author",
                 "authorization_reference": "", "approved_budget_microusd": 0, "actual_cost_microusd": 0,
-                "stories": [{"sample_id": r["sample_id"], "text": ev.fixture_story(r)} for r in self.requests]}
+                "stories": [{"sample_id": r["sample_id"], "text": ev.fixture_story(r) + " Bu metin yalnız ithalat testinin sentetik verisidir."} for r in self.requests]}
 
     def test_external_metadata_costs_and_modes_fail_closed(self):
         for kind in ("fixture", "overbudget", "negative", "boolean", "missing_auth", "manual_cost", "empty_author", "extra"):
@@ -341,15 +341,56 @@ class NovaTests(unittest.TestCase):
                 result = trial.import_stories(td, self.bundle())
                 self.assertEqual(result["stories"], 32)
                 self.assertFalse((Path(td)/"review/allocation.json").exists())
-                report = trial.score_trial(td, self.ballots(human=True))
+                packet = nml.read_json(Path(td)/"review/blind-packet.json")
+                report = trial.score_trial(td, self.ballots(packet, human=True))
                 self.assertEqual(report["overall_maturity"], "NOT_ESTABLISHED")
-                ballots = self.ballots(human=True)
+                ballots = self.ballots(packet, human=True)
                 ballots[0]["reviewer"] = "manual-author"
                 with self.assertRaisesRegex(nml.Invalid, "GENERATOR_CANNOT_SCORE"):
                     trial.score_trial(td, ballots)
                 (Path(td)/"private/import-receipt.json").write_text("{}")
                 with self.assertRaisesRegex(nml.Invalid, "IMPORT_RECEIPT_CHANGED"):
+                    trial.score_trial(td, self.ballots(packet, human=True))
+
+    def test_known_fixture_relabeling_is_rejected(self):
+        bundle = self.bundle()
+        bundle["stories"][0]["text"] = ev.fixture_story(self.requests[0])
+        with patch.object(trial, "load_trial", return_value=(self.requests, self.allocation, self.state)):
+            with self.assertRaisesRegex(nml.Invalid, "KNOWN_FIXTURE_NOT_REAL"):
+                trial.import_stories("unused", bundle)
+
+    def test_reviewer_context_change_invalidates_ratings(self):
+        with tempfile.TemporaryDirectory() as td:
+            with patch.object(trial, "load_trial", return_value=(self.requests, self.allocation, self.state)):
+                trial.import_stories(td, self.bundle())
+                context_path = Path(td)/"review/context.json"
+                context = nml.read_json(context_path)
+                context["briefs"][0]["age"] = 40
+                context_path.write_bytes(nml.canonical(context))
+                with self.assertRaisesRegex(nml.Invalid, "IMPORT_RECEIPT_CHANGED"):
                     trial.score_trial(td, self.ballots(human=True))
+
+    def test_source_review_unique_utf8_anchor(self):
+        data = "Önce. Gözlem açık. Sonra.".encode()
+        span = source_review.anchor(data, "Gözlem açık.")
+        self.assertEqual(data[span["start_byte"]:span["end_byte"]].decode(), "Gözlem açık.")
+        for data, quote in ((b"twice twice", "twice"), (b"absent", "missing"), (b"value", "")):
+            with self.assertRaisesRegex(nml.Invalid, "ANCHOR_NOT_UNIQUE"):
+                source_review.anchor(data, quote)
+
+    def test_source_review_keeps_adaptation_distinct_and_no_promotion(self):
+        upstream = nml.load_release()
+        before = nml.fingerprint(self.rows)
+        report = source_review.audit(self.rows, upstream)
+        self.assertEqual(report["mechanics_audited"], 18)
+        self.assertEqual(report["narrowed_mechanics"], 3)
+        self.assertEqual(len(report["narrow_proposals"]), 9)
+        self.assertEqual(nml.fingerprint(self.rows), before)
+        self.assertFalse(report["semantic_support_certified"])
+        self.assertFalse(report["active_vault_changed"])
+        decision = next(p for p in report["narrow_proposals"] if p["mechanic_id"] == "NOVA-018" and p["axis"] == "decision")
+        self.assertEqual(decision["relation"], "ADAPTATION_NOT_OBSERVED_CHOICE")
+        self.assertTrue(all(p["evidence"]["end_byte"]-p["evidence"]["start_byte"] < 800 for p in report["narrow_proposals"]))
 
     def test_end_to_end_fixture_replay(self):
         with tempfile.TemporaryDirectory() as td:

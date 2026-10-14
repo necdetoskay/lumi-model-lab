@@ -126,3 +126,19 @@ per reviewer, bound to the exact story hash. `kind=HUMAN`, `independent=true`,
 are mandatory. A reviewer ID equal to generator ID is rejected. Changing the
 story after rating invalidates its ballot. Reports preserve ballot, packet and
 allocation hashes plus immutable ballot artifacts.
+
+## Import hardening follow-up
+
+Exact story hashes produced by the shipped fixture renderer are rejected even
+when a bundle relabels them HUMAN_MANUAL or EXTERNAL_AUTHORIZED_MODEL. This only
+detects known exact fixture text; edited or unrelated synthetic prose cannot be
+reliably classified by this check. Honest provenance and independent reviewers
+are still required. Tests using modified synthetic prose exercise plumbing only
+and do not create quality evidence.
+
+The import receipt now also binds `review/context.json`. Changing a reviewer's
+state or age brief after import invalidates scoring, just as changing story text
+does. Reports include the review-context hash. Old external import receipts that
+lack this field fail closed and require a fresh import in a new trial directory;
+they are never silently upgraded or overwritten. The checked-in fixture pilot
+does not use the external importer and remains an unchanged historical artifact.

@@ -4,7 +4,7 @@ import json
 import sys
 
 from experiments.narrative_mechanics import core as nml
-from . import evaluate, trial, vault
+from . import evaluate, source_review, trial, vault
 from .match import match
 
 
@@ -33,11 +33,15 @@ def main(argv=None):
     selection.add_argument("--audit-dir", required=True)
     analysis = sub.add_parser("analyze")
     analysis.add_argument("--mechanic-id", required=True)
+    review = sub.add_parser("review-sources")
+    review.add_argument("--output", required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "generate":
             raise nml.Invalid("PAID_DISPATCH_BLOCKED_NO_BUDGET_OR_AUTHORIZATION")
-        if args.command == "prepare-trial":
+        if args.command == "review-sources":
+            result = source_review.run(args.output)
+        elif args.command == "prepare-trial":
             result = trial.prepare_trial(args.output, args.seed, args.repeats)
         elif args.command == "import-stories":
             result = trial.import_stories(args.trial, nml.read_json(args.bundle))
