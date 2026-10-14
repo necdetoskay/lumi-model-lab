@@ -56,6 +56,7 @@ class TrialLedger:
         self.total = Decimal("0")
         self.count = 0
         self.by_stage = {}
+        self.unknown_cost = False
         self.generation_ids = {}
     def post(self, stage, body):
         must(stage in STAGE_MAX and stage not in self.by_stage and
@@ -68,11 +69,13 @@ class TrialLedger:
         try:
             response = self.transport(body)
         except Exception:
+            self.unknown_cost = True
             raise ProviderCostUnknown("Transport may already have been billed") from None
         usage = response.get("usage") if type(response) is dict else None
         try:
             cost = money(usage.get("cost") if type(usage) is dict else None)
         except Exception:
+            self.unknown_cost = True
             raise ProviderCostUnknown("Provider response cost missing/invalid") from None
         # The supplied data can be a mocked response; this ledger is NOT
         # provider-independent authentication, just arithmetic+contract.
@@ -82,6 +85,7 @@ class TrialLedger:
         if (cost <= 0 or cost > STAGE_MAX[stage] or
                 self.total > TRIAL_CAP or
                 self.total > CAP):
+            self.unknown_cost = True
             raise ProviderCostUnknown("Provider cost exceeded bounded stage limit")
         return response
 
@@ -101,7 +105,7 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
     producer.mkdir(mode=0o700)
     plan = load_plan(repo_root)
     ledger = TrialLedger(transport)
-    pilot = BoundedOncePilot(producer, case_id=case_id, plan=plan, run_variant="r06")
+    pilot = BoundedOncePilot(str(producer), case_id=case_id, plan=plan, run_variant="r06")
     try:
         pilot.execute(transport=lambda body: ledger.post(
             "SPINEFORGE" if ledger.count == 0 else "WRITER", body))
@@ -152,6 +156,10 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
         # NO retry and NO next paid case unless the unknown charge is reconciled.
         raise
     except Exception:
+        # P4.17 may sanitize/re-wrap a transport error; never lose unknown
+        # provider charge state just because the nested generator caught it.
+        if ledger.unknown_cost:
+            raise ProviderCostUnknown("Unknown billed charge: global STOP") from None
         # If cost was safely reported, a localized stage failure is a FAILURE,
         # not permission to modify Harness or run a second attempt.
         return report(case_id, folder, ledger, "OPERATIONAL_STOP")
