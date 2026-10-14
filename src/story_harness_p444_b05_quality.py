@@ -22,6 +22,7 @@ from src.story_harness_p422_independent_audit import (
 )
 from src.story_harness_p443_b05_age12 import source_case, SOURCE_SHA
 from src.story_harness_v1 import HarnessStop
+from src.story_harness_p447_quality_diagnostics import sanitized_failure_receipt
 
 SCHEMA = "lumi.story-harness-p444-b05-independent-age12-quality.v1"
 SPINE_SHA = "9c5c1915680ac4d9b91e641527f2b69bb3e045413031973bdba8da8747ec9e24"
@@ -177,8 +178,10 @@ def audit_B05_once(source, quality_root, *, transport):
         "aggregate_user_approved_usd": format(USER_CAP, "f"),
         "automatic_retry": False, "production_state_write_authorized": False,
     })
+    response = None
     try:
-        record = verify_auditor_reply(source, transport(body))
+        response = transport(body)
+        record = verify_auditor_reply(source, response)
         must(record["case_id"] == "B05"
              and record["source_pack_sha256"] == SOURCE_SHA
              and record["story_sha256"] == STORY_SHA
@@ -191,17 +194,13 @@ def audit_B05_once(source, quality_root, *, transport):
              "B05 initial QA must never authorize downstream writes")
         _write_once(claim / "01-audit-outcome.json", record)
         return record
-    except Exception:
+    except Exception as exc:
         if not (claim / "01-audit-outcome.json").exists():
-            _write_once(claim / "01-audit-outcome.json", {
-                "schema": AUDIT_SCHEMA, "case_id": "B05",
-                "source_story_sha256": STORY_SHA,
-                "quality_initial_verdict": "STOP_UNKNOWN_OR_INVALID",
-                "auditor_reported_cost_usd": None,
-                "english_master_authorized": False,
-                "retry_allowed": False,
-                "production_state_write_authorized": False,
-            })
+            outcome = sanitized_failure_receipt(
+                exc, response, case_id="B05", story_sha256=STORY_SHA
+            )
+            outcome["schema"] = AUDIT_SCHEMA
+            _write_once(claim / "01-audit-outcome.json", outcome)
         raise HarnessStop("B05 quality audit consumed without retries") from None
 
 def status():
