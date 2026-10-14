@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from src.story_harness_runtime_v1 import create_harness
 from src.story_harness_p415_benchmark import load_plan
 from src.story_harness_p416_input_bridge import compile_case, sha
 from src.story_harness_p417_live_pilot import MODEL
@@ -108,7 +109,7 @@ class UnifiedPipelineTests(unittest.TestCase):
                 case = f"B{i:02d}"
                 mock = MockProvider(case)
                 r = run_one_case_with_injected_transport(".", case, td,
-                                                         transport=mock)
+                                                         transport=mock, harness=create_harness(".", case))
                 self.assertEqual(r["case_id"], case)
                 self.assertEqual(r["status"], "ACCEPT_CLAIMED",
                                  "Mock only; no certified acceptance")
@@ -139,7 +140,7 @@ class UnifiedPipelineTests(unittest.TestCase):
                 raise TimeoutError("Transport may already be billed")
             with self.assertRaises(ProviderCostUnknown):
                 run_one_case_with_injected_transport(".", "B02", td,
-                                                     transport=fail)
+                                                     transport=fail, harness=create_harness(".", "B02"))
 
     def test_bad_writer_is_recorded_without_a_second_attempt(self):
         with tempfile.TemporaryDirectory() as td:
@@ -150,7 +151,7 @@ class UnifiedPipelineTests(unittest.TestCase):
                     reply["choices"][0]["message"]["content"] = "{}"
                 return reply
             r = run_one_case_with_injected_transport(".", "B01", td,
-                                                     transport=broken_writer)
+                                                     transport=broken_writer, harness=create_harness(".", "B01"))
             self.assertEqual(r["status"], "OPERATIONAL_STOP")
             self.assertEqual(len(mock.calls), 2)
             self.assertEqual(r["automatic_retries"], 0)

@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 
+from src.story_harness_runtime_v1 import RuntimeHarness
 from src.story_harness_p415_benchmark import load_plan
 from src.story_harness_p417_live_pilot import (
     BoundedOncePilot, MODEL, money, STAGE_MAX_USD, USD_CAP
@@ -50,8 +51,10 @@ class ProviderCostUnknown(HarnessStop):
 
 class TrialLedger:
     """Charges from actual response envelopes; cannot assume missing cost is $0."""
-    def __init__(self, transport):
+    def __init__(self, transport, harness):
         must(callable(transport), "MISSING_TRANSPORT")
+        must(isinstance(harness, RuntimeHarness), "HARNESS_INSTANCE_REQUIRED")
+        self.harness = harness
         self.transport = transport
         self.total = Decimal("0")
         self.count = 0
@@ -65,6 +68,7 @@ class TrialLedger:
              body.get("provider", {}).get("allow_fallbacks") is False and
              body.get("usage") == {"include": True},
              "UNSAFE_PROVIDER_ROUTE")
+        self.harness.authorize_stage(stage, body)
         self.count += 1  # consumed before potentially ambiguous provider POST
         try:
             response = self.transport(body)
@@ -89,7 +93,7 @@ class TrialLedger:
             raise ProviderCostUnknown("Provider cost exceeded bounded stage limit")
         return response
 
-def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, transport):
+def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, transport, harness):
     """One new non-retryable attempt, all original artifacts written once.
 
     The caller must independently seal a versioned cohort lock and reconcile
@@ -97,6 +101,9 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
     This function itself neither grants payment nor certifies real ACCEPT.
     """
     must(case_id in IDS, "UNKNOWN_CASE")
+    must(isinstance(harness, RuntimeHarness) and
+         harness.case_id == case_id, "HARNESS_NOT_BOUND_TO_CASE")
+    harness.verify_immutable()
     root = Path(claim_root)
     must(root.is_dir() and not root.is_symlink(), "BAD_CLAIM_ROOT")
     folder = root / case_id
@@ -104,7 +111,8 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
     producer = folder / "producer"
     producer.mkdir(mode=0o700)
     plan = load_plan(repo_root)
-    ledger = TrialLedger(transport)
+    ledger = TrialLedger(transport, harness)
+    exclusive(folder / "00-harness-receipt.json", harness.receipt())
     pilot = BoundedOncePilot(str(producer), case_id=case_id, plan=plan, run_variant="r06")
     try:
         pilot.execute(transport=lambda body: ledger.post(
@@ -120,6 +128,7 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
         })
         source = load_original_case(repo_root, producer, case_id=case_id,
                                     trusted_file_sha256=trust)
+        harness.bind_story(source)
         request = prepare_quality_request(source)
         exclusive(folder / "02-quality-intent.json", {
             "case_id": case_id,
@@ -151,6 +160,7 @@ def run_one_case_with_injected_transport(repo_root, case_id, claim_root, *, tran
         must(final["story_sha256"] == source["story"]["story_sha256"] and
              final["production_state_write_authorized"] is False,
              "FINAL_STATE_NOT_SAME_STORY")
+        harness.verify_immutable()
         return report(case_id, folder, ledger, "ACCEPT_CLAIMED", source=source)
     except ProviderCostUnknown:
         # NO retry and NO next paid case unless the unknown charge is reconciled.
@@ -178,6 +188,9 @@ def report(case_id, folder, ledger, status, *, source=None):
         },
         "provider_reported_total_usd": format(ledger.total, "f"),
         "run_once_root": folder.name,
+        "harness_manifest_sha256": ledger.harness.manifest_sha256,
+        "harness_memory_sha256": ledger.harness.memory_snapshot_sha256,
+        "harness_tools_invoked": list(ledger.harness.invoked),
         "manual_story_edits": 0, "automatic_retries": 0,
         "production_change": False,
     }

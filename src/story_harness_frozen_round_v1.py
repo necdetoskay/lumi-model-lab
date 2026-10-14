@@ -19,6 +19,7 @@ SCHEMA = "lumi.story-harness-frozen-round-offline.v1"
 FILES = (
     "configs/story_harness_p415_benchmark.json",
     "configs/story_harness_frozen_cohort_v1.json",
+    "configs/story_harness_runtime_v1.json",
     "src/story_harness_p415_benchmark.py",
     "src/story_harness_p416_input_bridge.py",
     "src/story_harness_p417_live_pilot.py",
@@ -32,6 +33,7 @@ FILES = (
     "src/story_harness_cohort_analysis_v1.py",
     "src/story_harness_frozen_cohort_v1.py",
     "src/story_harness_frozen_round_v1.py",
+    "src/story_harness_runtime_v1.py",
 )
 STATUSES = {"REJECT", "ACCEPT_CLAIMED", "STOP_UNKNOWN_OR_INVALID",
             "OPERATIONAL_STOP"}

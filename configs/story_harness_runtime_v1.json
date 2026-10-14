@@ -1,0 +1,195 @@
+{
+  "schema": "lumi.story-harness-complete-runtime-manifest.v1",
+  "status": "PREPARED_NOT_FROZEN",
+  "strict_harness_required": true,
+  "memory": {
+    "kind": "READ_ONLY_CANONICAL_PER_CASE",
+    "source": "configs/story_harness_p415_benchmark.json",
+    "input_compiler": "src/story_harness_p416_input_bridge.py",
+    "snapshot_fields": [
+      "canonical_state",
+      "topic",
+      "reader_age",
+      "word_targets",
+      "open_obligations",
+      "unknown_facts",
+      "forbidden_state_invention"
+    ],
+    "cross_story_retrieval": false,
+    "dynamic_memory_injection": false,
+    "allow_external_vector_db": false,
+    "working_memory": "CASE_SCOPED_EVIDENCE_ONLY",
+    "allow_previous_case_manuscript": false,
+    "persistent_memory_changes": false,
+    "end_state": "READ_ONLY_PROPOSED_NOT_CANON"
+  },
+  "tools": {
+    "mode": "ALLOWLIST_ONLY",
+    "dynamic_tool_invocation": false,
+    "external_browser": false,
+    "external_shell": false,
+    "filesystem_write": "APPEND_ONLY_CLAIM_ROOT",
+    "tool_result_schema": "STRICT_SOURCE_BOUND",
+    "provider_transport": "INJECTED_ONLY_NOT_AUTHORIZED",
+    "registry": [
+      {
+        "name": "compile_context",
+        "kind": "DETERMINISTIC",
+        "module": "src/story_harness_p416_input_bridge.py"
+      },
+      {
+        "name": "spineforge",
+        "kind": "MODEL_STAGE",
+        "module": "src/story_harness_p417_live_pilot.py"
+      },
+      {
+        "name": "writer",
+        "kind": "MODEL_STAGE",
+        "module": "src/story_harness_p417_live_pilot.py"
+      },
+      {
+        "name": "independent_quality",
+        "kind": "MODEL_STAGE",
+        "module": "src/story_harness_p422_independent_audit.py"
+      },
+      {
+        "name": "seal_master",
+        "kind": "DETERMINISTIC",
+        "module": "src/story_harness_cohort_stages_v1.py"
+      },
+      {
+        "name": "q25_extract",
+        "kind": "MODEL_STAGE",
+        "module": "src/story_harness_p424_q25_evidence.py"
+      },
+      {
+        "name": "final_state_read_only",
+        "kind": "DETERMINISTIC",
+        "module": "src/story_harness_cohort_stages_v1.py"
+      },
+      {
+        "name": "ledger",
+        "kind": "DETERMINISTIC",
+        "module": "src/story_harness_cohort_pipeline_v1.py"
+      },
+      {
+        "name": "evidence",
+        "kind": "DETERMINISTIC",
+        "module": "src/story_harness_cohort_pipeline_v1.py"
+      }
+    ]
+  },
+  "models": {
+    "provider": "openrouter",
+    "exact_model_id": "anthropic/claude-sonnet-5.5",
+    "pinned_upstream": "Anthropic",
+    "dynamic_model_selection": false,
+    "allow_fallbacks": false,
+    "allow_temperature_override": false,
+    "offline_behavior": "SIMULATED_UNVERIFIED",
+    "profile_origin": "DEDICATED_EXACT_HARNESS_PROFILE_NOT_GENERIC_FALLBACK",
+    "stage_roles": [
+      {
+        "stage": "SPINEFORGE",
+        "tool": "spineforge",
+        "model": "anthropic/claude-sonnet-5.5",
+        "max_tokens": 5500,
+        "max_stage_usd": "0.075"
+      },
+      {
+        "stage": "WRITER",
+        "tool": "writer",
+        "model": "anthropic/claude-sonnet-5.5",
+        "max_tokens": 6500,
+        "max_stage_usd": "0.140"
+      },
+      {
+        "stage": "QUALITY",
+        "tool": "independent_quality",
+        "model": "anthropic/claude-sonnet-5.5",
+        "max_tokens": 3200,
+        "max_stage_usd": "0.040"
+      },
+      {
+        "stage": "Q25",
+        "tool": "q25_extract",
+        "model": "anthropic/claude-sonnet-5.5",
+        "max_tokens": 3500,
+        "max_stage_usd": "0.050"
+      }
+    ],
+    "strict_json_schema": true,
+    "require_usage": true,
+    "require_source_hashes": true
+  },
+  "prompts": {
+    "mode": "IMMUTABLE_VERSIONED_SOURCE",
+    "per_case_override": false,
+    "mid_cohort_hotfix": false,
+    "generation_source": "src/story_harness_p416_input_bridge.py",
+    "audit_source": "src/story_harness_p422_independent_audit.py",
+    "q25_source": "src/story_harness_p424_q25_evidence.py",
+    "source_text_truncation": false
+  },
+  "quality": {
+    "independent_call": true,
+    "author_cannot_self_accept": true,
+    "minimum_reader_score": 4,
+    "maximum_blockers": 0,
+    "no_final_full_story_reaudit": true,
+    "scene_repair_count": 0,
+    "model_retry_count": 0,
+    "quality_denied_means_continue_next_case": true,
+    "quality_success_needs_real_external_provenance": true
+  },
+  "state": {
+    "initial_canon_immutable": true,
+    "final_state_mode": "READ_ONLY",
+    "no_live_canon_write": true,
+    "provenance_required": true,
+    "unknown_ownership_preserved": true,
+    "unobserved_time_not_invented": true,
+    "finalization_requires_master_and_q25": true
+  },
+  "finance": {
+    "aggregate_limit_usd": "20.00",
+    "full_trial_reserve_usd": "0.440",
+    "max_provider_post_attempts_per_case": 4,
+    "historical_ledger_reconciliation_required": true,
+    "unknown_charge_must_stop_global_batch": true,
+    "per_story_model_retry": false,
+    "payment_authorized": false
+  },
+  "evidence": {
+    "hash_algo": "sha256",
+    "durable_intent_before_post": true,
+    "exclusive_files": true,
+    "full_trace_per_story": true,
+    "source_lineage_strict": true,
+    "reported_accept_is_not_certified": true,
+    "no_secret_logging": true,
+    "posthoc_root_cause_only_after_all_ten": true
+  },
+  "lifecycle": {
+    "cases": [
+      "B01",
+      "B02",
+      "B03",
+      "B04",
+      "B05",
+      "B06",
+      "B07",
+      "B08",
+      "B09",
+      "B10"
+    ],
+    "freeze_before_first": true,
+    "zero_change_during_round": true,
+    "changes_allowed_only_after_all_ten_attempts": true,
+    "shared_harness_for_all_cases": true,
+    "postcohort_same_inputs": true,
+    "holdout_independent": true,
+    "global_safety_stop_incomplete": true,
+    "real_batch_started": false
+  }
+}
