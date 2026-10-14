@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 18
 title_original: "Michael"
-status: draft
-word_count: 239
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Giderek kendisine yalan söylendiğine inanır. Beckett'in bilgisayarındaki giz
 Weir ve bilim ekibi gerçeği açıklamak zorunda kalır. Tedavinin kalıcı olmadığını, Michael'ın her gün ilaç alması gerektiğini söylerler. Ronon onu hemen öldürmeyi savunurken Teyla daha insan tarafının korunabileceğini düşünür. Güvenlik eşliğinde tedaviye götürülürken Michael kaçmaya çalışıp bir askeri öldürür. Şehirde güvenliği sağlamak amacıyla Alfa Üssü'ne sevk edilir.
 
 Teyla yeni üsteki Michael'la konuşmayı sürdürür, ancak Michael zihinsel Wraith yetenekleriyle onu etki altına alır. Teyla'yı rehin alıp yakınında Wraith kovanı olan gezegene kaçar. İlacın etkisi azaldıkça bedeni eski Wraith hâline dönmeye başlar. Teyla onun içinde kalan insani şefkate seslenir. Fakat Michael onu beslenmek için yakaladığında Sheppard son anda yetişir ve ateş açar. Wraithler ağır yaralı Michael'ı alıp götürür. Atlantis, kendi deneyinin sonuçlarını kontrol edememiştir; Michael artık düşmanlarına şehrin yaşadığını anlatabilecek durumdadır.
+
+Teyla'nın Michael'a duyduğu merhamet, kendisinin geçmişte Wraithlerle yaşadığı acılar düşünüldüğünde ayrıca önemlidir. Ancak Michael'ın kaçıp kendi halkına dönmesi, iyi niyetli tedavi denemesinin Atlantis'i askerî tehlikeye attığı gerçeğini değiştirmez.
 
 ## Kaynaklar
 

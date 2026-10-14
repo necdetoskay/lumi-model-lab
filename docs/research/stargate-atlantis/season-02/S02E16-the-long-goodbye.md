@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 16
 title_original: "The Long Goodbye"
-status: draft
-word_count: 247
+status: complete
+word_count: 274
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ancak iki yabancı bilinç birleşmek yerine birbirine ateş açar. Phoebus ve T
 Caldwell komutayı devralır. Teyla, Thalan'ın taşıdığı Sheppard'ı sersemletmeyi başarır, ancak Phoebus Weir'in erişim yetkileriyle şehrin kapılarını kilitler. Ardından yangın söndürme gazını yaşam alanlarına verip binlerce insanı öldürmekle tehdit eder. Teyla'dan Sheppard'ın bedenini öldürmesini ister. Caldwell sorumluluğu Teyla'nın vicdanına bırakır; McKay güvenlik sistemini geri kazanmaya çalışır. Teyla, silahla infaz etmeyi geciktirerek zaman kazanır.
 
 McKay kontrolü kırdığında Phoebus kendi saldırısı için olay yerine gelir. Teyla sersemleticiyi Sheppard'ın eline verir; Thalan bu silahla Weir'i etkisizleştirir. Kısa süre sonra iki yabancı bilinç de silinir ve liderler kurtulur. Caldwell, kendi deneyimlediği Goa'uld esaretinden sonra onlara empati gösterir. Atlantis'te bir başka düşmanın binlerce yıllık intikamının masum insanları öldürmesi engellenmiştir.
+
+Weir ile Sheppard iki yabancının silahı hâline gelmiş olsalar da bilinçlerinin tümüyle yok olmadığı anlaşılır. Yabancı kişilikler kaybolduğunda hiçbirinin taşıdığı eski düşmanlığın Atlantis'te devam etmesine izin verilmez.
 
 ## Kaynaklar
 
