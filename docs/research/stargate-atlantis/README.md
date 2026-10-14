@@ -13,5 +13,5 @@
 ## İlerleme
 
 - Katalog: **100/100**
-- Tamamlanmış özet: **35/100**
+- Tamamlanmış özet: **38/100**
 - Kontrol raporu: Araştırma ilerledikçe güncellenecek.
