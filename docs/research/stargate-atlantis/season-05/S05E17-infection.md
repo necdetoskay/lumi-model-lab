@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 17
 title_original: "Infection"
-status: draft
-word_count: 234
+status: complete
+word_count: 274
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Atlantis yörüngesine yaklaşan Wraith kovan gemisi acil yardım mesajı gönde
 Todd uyandırıldığında hastalığın tedavi edilmediğini anlar. Eskiden bir Iratus kraliçe böceğinin hasta Wraithleri iyileştirebildiğini söyler. Fakat böyle bir canlıya ulaşmak günler sürecektir, gemi ise birkaç saat içinde parçalanacak durumdadır. Keller tedavi araştırmasını sürdürürken McKay kovanın denetimini geri kazanmaya çalışır. Güç sistemleri dağılır, gövde ortadan ikiye ayrılma tehlikesi yaşar. Sheppard kalan saldırgan Wraithleri etkisizleştirir.
 
 Todd son gücünü toplayarak gemiyi Atlantis'in bulunduğu okyanusa kontrollü biçimde düşürür. Kurtarma Jumperları mürettebatı çıkarır; biyolojik gemi kısa süre sonra batar. Todd ağır hasta kalır. Sheppard onun kendilerini kurtardığını hatırlatarak Woolsey'den serbest bırakılmasını ister. Todd geçitten Iratus kraliçesini aramak üzere ayrılır. Tedavi başarısız olsa da iki tarafın işbirliği tamamen sona ermemiştir.
+
+Todd'un kaçışı bir zafer anlamına gelmez; kendisine uygulanmış gen tedavisini düzeltmek için uzak bir gezegene gitmektedir. Sheppard ve Woolsey bu kararla ileride Wraithlerle kurulacak olası barış görüşmelerini de açık tutar. Hastalığın gemiye geçmesi organik Wraith teknolojisinin beklenmeyen zayıflığını ortaya koyar.
 
 ## Kaynaklar
 

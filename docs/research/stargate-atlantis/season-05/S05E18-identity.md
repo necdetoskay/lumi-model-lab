@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 18
 title_original: "Identity"
-status: draft
-word_count: 248
+status: complete
+word_count: 279
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Neeva'nın suç ortakları Jannik ve Bordal, Keller'ın içinde bulunduğu Neeva
 Sheppard, Teyla, Ronon, McKay ve Beckett gerçek Keller'ı bulmak için gezegene gelir. Yanlarına Neeva'yı da alırlar; çünkü iletişim aygıtını kapatacak yerin nerede olduğunu bilmektedir. Neeva kaçıp eski suç ortaklarına ulaşır. İki farklı bedende aynı kadının bulunması onları şaşırtır, şüpheleri büyütür. Yerel muhafızlarla çatışmada Bordal ölür, Neeva'nın bulunduğu Keller bedeni vurulur. Beckett acil müdahaleyle bu bedeni kurtarır. Bir yandan gerçek Keller da ölüm tehlikesiyle karşı karşıyadır.
 
 McKay, Kadim iletişim aygıtının ana vericisini kapattığında zihinler kendi bedenlerine geri döner. Keller Atlantis'te yaralı hâlde uyanır ama güvendedir. Neeva'nın hayatta kalıp kalmadığı kesinleşmez. Rodney Jennifer'a çiçek ve çikolata getirip onu Jumper'la romantik geziye davet eder. Yaşananlar, ilişkinin ikisinin de hayatında önemli yere sahip olduğunu daha görünür hâle getirmiştir.
+
+Keller'ın yabancı bedenin içinde tutulması, tıbbi yeteneğini kullanmasını da çok zorlaştırır. McKay için asıl tehlike kendi tanıdığı yüzle konuşan kişinin Jennifer olmamasıdır. Bu nedenle bilimsel doğrulama yapılmadan sevgilisine duyduğu güvene yaslanamaz.
 
 ## Kaynaklar
 

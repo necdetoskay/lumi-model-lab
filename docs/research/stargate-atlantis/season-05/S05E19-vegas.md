@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 5
 episode: 19
 title_original: "Vegas"
-status: draft
-word_count: 228
+status: complete
+word_count: 263
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Alternatif Dünya'nın gizli Stargate Programı bu tehdidin farkındadır. McKay
 Sheppard yalnız başına karavana yaklaştığında Wraith silahla ateş açar. Sheppard vurulur ve arabasının arkasına sığınır; mermileri yaratığı durdurmaya yetmez. Bu sırada Amerikan savaş uçakları hedefe yaklaşır. Wraith aygıtın gücünü artırarak son bir mesaj göndermeye çalışır. Hava saldırısında karavan patlayıp Wraith ölür. Sheppard ağır yaralı hâlde çölden uzaklaşmaya çalışır ama yere düşer; kaderi ölümcül biçimde belirsiz bırakılır.
 
 Alternatif Atlantis bilim insanları gönderimin Pegasus'a tam ulaşmadığını düşünür. Ancak enerji düzeneği uzay-zamanda küçük yırtık açmıştır. Mesajın önemli bölümü başka paralel gerçekliklere akmıştır. Bu evrendeki Dünya kurtulmuş görünse de koordinatları taşıyan sinyal asıl dizinin evrenindeki Wraithlere ulaşabilecek durumdadır. Böylece bu bağımsız görünen dedektiflik hikâyesi final bölümünün doğrudan nedenine dönüşür.
+
+Alternatif Sheppard'ın bu yolculuktaki kişisel kayıpları da olay örgüsünün önemli parçasıdır. Yıllardır kendi hayatına yön verememiş olmasına rağmen cinayetin peşinden gitmeyi sürdürür. Yaptığı son tercih yalnız kendi Dünya'sını değil başka evrenlerdeki insanların geleceğini de etkilemiştir.
 
 ## Kaynaklar
 
