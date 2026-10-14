@@ -1,0 +1,58 @@
+name: Story Harness P4.37 Ten Case Thirty Trial Budget Matrix
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p437-pilot-matrix.yml
+      - src/story_harness_p437_pilot_matrix.py
+      - tests/test_story_harness_p437_pilot_matrix.py
+      - configs/story_harness_p415_benchmark.json
+      - evidence/story_harness_p436/**
+      - evidence/story_harness_p435/**
+      - evidence/story_harness_p434/**
+      - docs/canonical/STORY_HARNESS_P437_PILOT_BUDGET.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p437-offline-pilot-budget
+  cancel-in-progress: true
+
+jobs:
+  frozen-ten-by-three-budget-read-only:
+    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify actual 3 historical receipts and plan 10x3 without inference
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p437_pilot_matrix.py' -v
+          python -m src.story_harness_p437_pilot_matrix > /tmp/lumi-p437-plan.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/lumi-p437-plan.json'))
+          assert r['historical_initial_pipeline_evidence_cases']==3
+          assert r['release_certified_cases']==0
+          assert r['holdout_real_independent_trials']==0
+          assert r['holdout_required_trials']==30
+          assert r['remaining_conservative_budget_usd']=='8.460442'
+          assert r['pilot_missing_generations']==7
+          assert r['max_new_full_trials_current_budget']==19
+          assert r['new_model_calls']==0
+          assert r['paid_execution_authorized_by_this_report'] is False
+          print('P437_TEN_CASE_THIRTY_TRIAL_BUDGET_OFFLINE_GREEN')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: lumi-p437-ten-case-thirty-trial-budget-matrix-offline
+          path: /tmp/lumi-p437-plan.json
+          retention-days: 30
