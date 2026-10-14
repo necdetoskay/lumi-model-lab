@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 2
 title_original: "The Intruder"
-status: draft
-word_count: 226
+status: complete
+word_count: 267
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ McKay ile gemideki Asgard danışmanı Hermiod, sorunun bir insan sabotajcı olm
 Bütün bilgisayarları sıfırlama girişimi virüsü durduramaz. Gemi en yakın yıldızın ölümcül radyasyonuna doğru ilerler; amaç insanların ölmesi, sistemlerinse Wraithlere sağlam kalmasıdır. McKay ile Sheppard, virüsün saklandığı donanım bileşenini belirlemek için gemi dışında yeni bir girişim yapar. Kritik bileşen uzaktan imha edildiğinde yazılımın geri dönmesi engellenir. Caldwell sistemleri yeniden çalıştırıp tehlikeden uzaklaşır.
 
 Daedalus Atlantis'e ulaşınca Teyla onları karşılar. Ford'dan hâlâ haber yoktur. Weir eski komuta sorunlarının ortadan kalkmadığını bilse de şehirdeki işine dönmeyi seçer. Bölüm, Wraithlerin bilgisayar ağlarına sızarak teknolojik üstünlüğü bile ölümcül tehdide çevirebildiğini gösterir.
+
+Sheppard'ın terfisinden hoşnut olmayan Caldwell ile Weir'in yetki ilişkisi, gemideki kriz boyunca zorlu sınavlardan geçer. Virüs Wraithlere ulaştığında yalnız Daedalus değil, Dünya'nın adresi ve Asgard teknolojisi de tehlikeye girecektir. Bu nedenle mürettebat sistemlerin tamamen sıfırlanmasını sıradan bir yazılım onarımı olarak göremez.
 
 ## Kaynaklar
 

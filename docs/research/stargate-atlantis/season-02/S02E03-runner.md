@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 3
 title_original: "Runner"
-status: draft
-word_count: 243
+status: complete
+word_count: 282
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Bu sırada Ford, McKay'i ele geçirir. Wraith enzimi yüzünden güçlü ve para
 Ormanda Ford, McKay'i avcı gibi kovalamaya devam eder. McKay bir fırsatta onu omzundan vurur, Ronon da yakalamaya çalışır. Wraith savaş araçları gezegene indiğinde herkes yeniden tehlikeye girer. Sheppard eski takım arkadaşını durdurmaya çalışır, ancak Ford onu dinlemez; yakalanmamak için Wraith toplama ışınına bilerek atlar ve ortadan kaybolur.
 
 Sheppard Ronon'u Atlantis'e getirir. Kendi gezegeni Sateda'ya gönderilen robot sondanın görüntüleri şehrin yıkılmış, halkın kaybolmuş olduğunu gösterir. Ronon artık döneceği bir yuvaya sahip değildir. Ekip ona Atlantis'te kalma fırsatı sunar. Ford hâlâ hayattadır fakat Wraithlerin eline düşerek kaybolmuştur; Sheppard hem eski arkadaşını aramaya hem de yeni müttefikini tanımaya devam edecektir.
+
+Ronon'un av olarak serbest bırakılması Wraithlerin bütün insanları hemen tüketmediğini, bazılarını sürekli korku altında yaşatarak eğlence amacıyla kovaladığını gösterir. İzleme cihazının çıkarılması onun özgürce yerleşebileceği ilk fırsattır. Ford ise aynı düşmana karşı savaşsa bile bağımlılık yüzünden eski ekibine güvenememektedir.
 
 ## Kaynaklar
 

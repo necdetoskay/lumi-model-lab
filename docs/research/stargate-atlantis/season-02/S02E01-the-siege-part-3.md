@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 2
 episode: 1
 title_original: "The Siege, Part 3"
-status: draft
-word_count: 225
+status: complete
+word_count: 262
 source_verified: true
 spoilers: true
 ---
@@ -18,6 +18,8 @@ Atlantis üzerindeki Wraith kuşatması Sheppard'ın nükleer bombalı Jumper'ı
 Atlantis'in uzun menzilli sensörleri daha büyük tehlikeyi gösterir: on iki kovan gemisi kısa süre içinde ulaşacaktır. Caldwell, Daedalus ile hiperuzaydan çıkan düşmanları pusuya düşürür; birkaç gemi yok edilir, fakat Wraithler Asgard ışınlama saldırısına karşı önlem geliştirir. Geri kalan filo Atlantis'e ilerler. McKay, şehri düşman gözünde yok olmuş gibi gösterecek kamuflaj planı hazırlamaktadır. Bu arada Ford'un davranışları değişir; enzim bağımlılığı onu saldırganlaştırır ve kendisini eskisinden güçlü görmesine yol açar. Beckett'in tedavi isteğini reddeder.
 
 Şehirden kaçan Ford arkadaşlarının onu zorla iyileştireceğini düşünür. Sheppard onu yakalamak için peşine düşse de Ford Jumper'ı ele geçirip Yıldız Geçidi'nden ayrılır. Tam bu sırada Atlantis'in gizlenme sistemi devreye girer; yaklaşan Wraith kuvvetleri şehrin yok olduğuna inanarak bölgeden çekilir. Kuşatma sona ermiş ve Dünya'yla bağ yeniden kurulmuştur. Fakat keşif ekibi Ford'u kaybetmiş, Wraithlerin devasa savaş gücünün yalnız bir bölümünü durdurabilmiştir. Caldwell ve Weir'in komuta ilişkisi ise sonraki dönemde yeni gerilimler yaratacaktır.
+
+Kurtarılan Ford'un yüksek doz Wraith enzimine bağımlı hâle gelmesi, dışarıdan iyileşmiş görünmesinin gerçekte yeni bir kriz yarattığını gösterir. Savaşın sona ermesi personelin güvenlik kaygılarını gidermez; şehir hâlâ sınırlı enerjiyle korunmaktadır ve düşmanın son gerçeği öğrenmesi ihtimali sürmektedir.
 
 ## Kaynaklar
 
