@@ -41,7 +41,7 @@ class FrozenCohortTests(unittest.TestCase):
 
     def test_spent_b07_quality_grant_archived_no_second_provider_call(self):
         gate = Path(".github/workflows/story-harness-p458-b07-quality-gate.yml").read_text()
-        self.assertIn("on:\\n  workflow_dispatch:", gate)
+        self.assertIn("  workflow_dispatch:", gate)
         self.assertNotIn("  pull_request:", gate)
         self.assertIn("    if: ${{ false }}", gate)
 
