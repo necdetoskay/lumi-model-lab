@@ -36,29 +36,26 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_story_harness_p434_b03_master.py' -v
           python -m src.story_harness_p434_b03_master
-      - name: Seal B03 accepted original Writer exactly once (NO inference)
+      - name: Reverify already-sealed original B03 English Master read-only (NO inference)
         run: |
           set -euo pipefail
-          root="${RUNNER_WORKSPACE}"
-          mkdir -p "$root/_lumi_p434_b03_master_claims"
-          chmod 700 "$root/_lumi_p434_b03_master_claims"
-          python -m src.story_harness_p434_b03_master \
-            --repo-root . \
-            --producer-root "$root/_lumi_p431_b03_story_claims" \
-            --quality-root "$root/_lumi_p433_b03_quality_claims" \
-            --master-root "$root/_lumi_p434_b03_master_claims" \
-            --seal-pilot-once > /tmp/lumi-p434-original-master.json
           python - <<'PY'
-          import json,hashlib
+          import hashlib,os
           from pathlib import Path
+          from src.story_harness_p435_b03_q25 import load_b03_bundle
           from src.story_harness_p434_b03_master import MASTER_DIR
-          r=json.loads(Path('/tmp/lumi-p434-original-master.json').read_text())
-          f=Path(__import__('os').environ['RUNNER_WORKSPACE'])/'_lumi_p434_b03_master_claims'/MASTER_DIR
+          root=Path(os.environ['RUNNER_WORKSPACE'])
+          bundle=load_b03_bundle('.',
+              root/'_lumi_p431_b03_story_claims',
+              root/'_lumi_p433_b03_quality_claims',
+              root/'_lumi_p434_b03_master_claims')
+          f=root/'_lumi_p434_b03_master_claims'/MASTER_DIR
           raw=(f/'ENGLISH_MASTER.txt').read_bytes()
-          manifest=json.loads((f/'master-manifest.json').read_bytes())
-          assert r['new_model_posts']==0 and r['case_id']=='B03'
+          manifest=bundle['master']
           assert hashlib.sha256(raw).hexdigest()=='80fa8224c78c494b13bc347ecabdfff75fd5c9e1638ad88ee9ba47c6986643f9'
-          assert manifest['source_story_sha256']==r['story_sha256']
+          assert manifest['source_story_sha256']==bundle['source']['story']['story_sha256']
+          assert manifest['independent_initial_audit_verdict']=='ACCEPT'
+          assert manifest['reader_score']==4
           assert manifest['production_state_write_authorized'] is False
           print('P434_B03_ENGLISH_MASTER_ORIGINAL_BYTES_GREEN')
           print('P434_B03_MASTER_SHA='+manifest['accepted_story_sha256'])
