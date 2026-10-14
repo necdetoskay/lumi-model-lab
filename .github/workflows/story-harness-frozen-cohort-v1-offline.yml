@@ -19,6 +19,8 @@ on:
       - 'configs/story_harness_runtime_v1.json'
       - 'src/story_harness_runtime_v1.py'
       - 'tests/test_story_harness_runtime_v1.py'
+      - 'src/story_harness_readiness_v1.py'
+      - 'tests/test_story_harness_readiness_v1.py'
       - 'src/story_harness_p422_independent_audit.py'
       - 'src/story_harness_p424_q25_evidence.py'
       - 'docs/canonical/STORY_HARNESS_FROZEN_COHORT_V1.md'
@@ -59,9 +61,11 @@ jobs:
           python -m unittest discover -s tests -p 'test_story_harness_cohort_stages_v1.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_cohort_pipeline_v1.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_runtime_v1.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_readiness_v1.py' -v
           python -m unittest discover -s tests -p 'test_story_harness_p415_benchmark.py' -q
           python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -q
           python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -q
+          python -m src.story_harness_readiness_v1 > "$RUNNER_TEMP/lumi-harness-readiness-v1.json"
           python -m src.story_harness_frozen_cohort_v1 > "$RUNNER_TEMP/lumi-cohort-v1-offline-report.json"
           python - <<'PY'
           import json, os
@@ -73,5 +77,10 @@ jobs:
           assert result["paid_calls_authorized"]==0
           assert result["cohort_frozen"] is False
           assert result["production_write_authorized"] is False
+          from src.story_harness_readiness_v1 import offline_readiness
+          ready=offline_readiness()
+          assert ready["input_count"]==10
+          assert ready["real_paid_cohort_status"]=="BLOCKED_NOT_SEALED"
+          assert ready["paid_calls_authorized"]==0
           print("LUMI_FROZEN_COHORT_V1_OFFLINE_GREEN_ZERO_PROVIDER_CALLS")
           PY

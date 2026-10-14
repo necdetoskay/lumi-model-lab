@@ -157,3 +157,77 @@ class UnifiedPipelineTests(unittest.TestCase):
             self.assertEqual(r["status"], "OPERATIONAL_STOP")
             self.assertEqual(len(mock.calls), 2)
             self.assertEqual(r["automatic_retries"], 0)
+
+
+    def test_whole_ten_case_round_uses_the_real_shared_harness_with_mock_provider(self):
+        from src.story_harness_frozen_round_v1 import run_frozen_ten_offline
+        with tempfile.TemporaryDirectory() as td:
+            rounds = Path(td) / "rounds"
+            claims = Path(td) / "claims"
+            rounds.mkdir()
+            claims.mkdir()
+            calls = {}
+            manifests = set()
+            hashes = set()
+            def callback(case, intent):
+                provider = MockProvider(case, reject=(case == "B04"))
+                harness = create_harness(".", case)
+                result = run_one_case_with_injected_transport(
+                    ".", case, claims, transport=provider, harness=harness)
+                calls[case] = len(provider.calls)
+                manifests.add(harness.manifest_sha256)
+                hashes.add(intent["harness_commit"])
+                self.assertEqual(result["harness_memory_sha256"], harness.memory_snapshot_sha256)
+                self.assertEqual(result["harness_tools_invoked"][:2], ["SPINEFORGE", "WRITER"])
+                self.assertFalse(result["transport_origin_independently_attested"])
+                self.assertFalse(result["independent_quality_certified_for_release"])
+                return {"case_id": case, "status": result["status"],
+                        "safe_reason": ("SIMULATED_REJECT" if result["status"] == "REJECT"
+                                        else "SIMULATED_ACCEPT"),
+                        "model_calls": 0, "manual_prose_edits": 0}
+            result = run_frozen_ten_offline(".", rounds, callback)
+            self.assertTrue(result["complete"])
+            self.assertEqual(result["attempt_count"], 10)
+            self.assertTrue(result["analysis_allowed"])
+            self.assertEqual(result["fix_count"], 0)
+            self.assertEqual(result["retry_count"], 0)
+            self.assertEqual(result["provider_calls"], 0)
+            self.assertFalse(result["independent_accepts_certified"])
+            self.assertEqual(len(manifests), 1)
+            self.assertEqual(len(hashes), 1)
+            self.assertEqual(calls["B04"], 3)
+            self.assertTrue(all(calls[k] == 4 for k in calls if k != "B04"))
+            self.assertFalse((claims / "B04" / "ENGLISH_MASTER.txt").exists())
+            # Replaying the same frozen round cannot rerun any failed case.
+            run_frozen_ten_offline(".", rounds, callback)
+            self.assertEqual(len(calls), 10)
+
+    def test_tiny_stage_failure_does_not_modify_harness_or_skip_remaining_nine(self):
+        from src.story_harness_frozen_round_v1 import run_frozen_ten_offline
+        with tempfile.TemporaryDirectory() as td:
+            rounds, claims = Path(td) / "rounds", Path(td) / "claims"
+            rounds.mkdir()
+            claims.mkdir()
+            invoked = []
+            def callback(case, intent):
+                mock = MockProvider(case)
+                def transport(body):
+                    response = mock(body)
+                    if case == "B01" and "writer_flat" in mock.calls[-1]:
+                        response["choices"][0]["message"]["content"] = "{}"
+                    return response
+                response = run_one_case_with_injected_transport(
+                    ".", case, claims, transport=transport,
+                    harness=create_harness(".", case))
+                invoked.append(case)
+                return {"case_id": case, "status": response["status"],
+                        "safe_reason": ("NO_RETRY_EXCEPTION" if
+                                        response["status"] == "OPERATIONAL_STOP"
+                                        else "SIMULATED_ACCEPT"),
+                        "model_calls": 0, "manual_prose_edits": 0}
+            receipt = run_frozen_ten_offline(".", rounds, callback)
+            self.assertEqual(receipt["attempt_count"], 10)
+            self.assertEqual(invoked, [f"B{i:02d}" for i in range(1, 11)])
+            self.assertEqual(receipt["attempts"][0]["status"], "OPERATIONAL_STOP")
+            self.assertEqual(receipt["fix_count"], 0)
+            self.assertEqual(receipt["retry_count"], 0)

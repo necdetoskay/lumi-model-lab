@@ -14,6 +14,7 @@ from src.story_harness_frozen_cohort_v1 import (
     IDS, COMPONENTS, preflight, verify_attempt_seal, round_coverage, must
 )
 from src.story_harness_p410 import canonical_json
+from src.story_harness_v1 import HarnessStop
 
 SCHEMA = "lumi.story-harness-frozen-round-offline.v1"
 FILES = (
@@ -33,6 +34,7 @@ FILES = (
     "src/story_harness_cohort_analysis_v1.py",
     "src/story_harness_frozen_cohort_v1.py",
     "src/story_harness_frozen_round_v1.py",
+    "src/story_harness_readiness_v1.py",
     "src/story_harness_runtime_v1.py",
 )
 STATUSES = {"REJECT", "ACCEPT_CLAIMED", "STOP_UNKNOWN_OR_INVALID",
@@ -157,7 +159,11 @@ def run_frozen_ten_offline(repo, work, callback, *, seal=None):
             _exclusive(intent, attempt)
             try:
                 result = _row(callback(case, deepcopy(attempt)), case)
-            except GlobalSafetyStop:
+            except (GlobalSafetyStop, HarnessStop):
+                # Escaped integrity errors and ambiguous provider charges
+                # are GLOBAL safety stops, never "minor story formatting".
+                # Lower-level per-story validation errors are already
+                # classified as OPERATIONAL_STOP within the stage adapter.
                 result = dict(case_id=case, status="STOP_UNKNOWN_OR_INVALID",
                               safe_reason="GLOBAL_SAFETY_STOP", model_calls=0,
                               manual_prose_edits=0)

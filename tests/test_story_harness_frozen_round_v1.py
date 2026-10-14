@@ -83,3 +83,34 @@ class FrozenTenExecutionTests(unittest.TestCase):
             self.assertTrue(all(x["status"] == "OPERATIONAL_STOP" for x in r["attempts"]))
             self.assertFalse(r["independent_accepts_certified"])
             self.assertEqual(r["provider_calls"], 0)
+
+
+    def test_provider_cost_unknown_and_runtime_drift_fail_closed(self):
+        from src.story_harness_cohort_pipeline_v1 import ProviderCostUnknown
+        from src.story_harness_runtime_v1 import create_harness
+        attempts = []
+        def callback(case, intent):
+            attempts.append(case)
+            if case == "B04":
+                raise ProviderCostUnknown("simulated provider already charged")
+            return rejected(case, intent)
+        with tempfile.TemporaryDirectory() as td:
+            r = run_frozen_ten_offline(".", td, callback)
+            self.assertFalse(r["complete"])
+            self.assertEqual(r["attempt_count"], 4)
+            self.assertEqual(r["attempts"][-1]["safe_reason"], "GLOBAL_SAFETY_STOP")
+            self.assertEqual(attempts, ["B01", "B02", "B03", "B04"])
+            # Genuine unknown charge cannot be auto-resumed to case B05.
+            run_frozen_ten_offline(".", td, callback)
+            self.assertEqual(len(attempts), 4)
+
+    def test_escaped_harness_integrity_violation_is_never_a_minor_error(self):
+        def callback(case, intent):
+            if case == "B01":
+                raise HarnessStop("STORY_HARNESS_RUNTIME_STOP_UNPINNED_MODEL")
+            return rejected(case, intent)
+        with tempfile.TemporaryDirectory() as td:
+            result = run_frozen_ten_offline(".", td, callback)
+            self.assertFalse(result["complete"])
+            self.assertEqual(result["attempt_count"], 1)
+            self.assertEqual(result["attempts"][0]["safe_reason"], "GLOBAL_SAFETY_STOP")
