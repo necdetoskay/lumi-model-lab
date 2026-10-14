@@ -144,7 +144,6 @@ on:
       - evidence/story_harness_p423/**
       - evidence/story_harness_p424/**
       - evidence/story_harness_p425/**
-      - .github/workflows/story-harness-p418-tiny-once.yml
       - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
       - docs/canonical/STORY_HARNESS_V1.md
       - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
@@ -167,7 +166,6 @@ on:
       - docs/canonical/STORY_HARNESS_P410_PROVIDER_ROUTING_OFFLINE.md
       - docs/canonical/STORY_HARNESS_P411_SIGNED_GRANT_TRANSPORT.md
       - README.md
-      - .github/workflows/story-harness-v1-offline.yml
   workflow_dispatch:
 
 permissions:
@@ -184,13 +182,13 @@ jobs:
     timeout-minutes: 5
     defaults:
       run:
-        working-directory: story-harness-main-offline-isolated
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: story-harness-main-offline-isolated
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

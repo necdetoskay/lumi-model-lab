@@ -3,7 +3,6 @@ name: Story Harness P4.34 B03 Sealed Pilot English Master
 on:
   pull_request:
     paths:
-      - .github/workflows/story-harness-p434-b03-master.yml
       - src/story_harness_p434_b03_master.py
       - tests/test_story_harness_p434_b03_master.py
       - evidence/story_harness_p433/b03-r06-original-independent-quality-accept.json
@@ -22,13 +21,13 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: p434-b03-master-isolated
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
-          path: p434-b03-master-isolated
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

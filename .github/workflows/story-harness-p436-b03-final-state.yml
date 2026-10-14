@@ -3,7 +3,6 @@ name: Story Harness P4.36 B03 Final State Read Only
 on:
   pull_request:
     paths:
-      - .github/workflows/story-harness-p436-b03-final-state.yml
       - src/story_harness_p436_b03_final_state.py
       - tests/test_story_harness_p436_b03_final_state.py
       - evidence/story_harness_p435/b03-r06-original-q25-evidence.json
@@ -24,13 +23,13 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: p436-b03-final-state-isolated
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
-          path: p436-b03-final-state-isolated
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

@@ -3,7 +3,6 @@ name: Story Harness P4.54 B07 Age25 Generation Offline
 on:
   pull_request:
     paths:
-      - .github/workflows/story-harness-p454-b07-offline.yml
       - src/story_harness_p454_b07_age25.py
       - tests/test_story_harness_p454_b07_age25.py
 
@@ -21,13 +20,13 @@ jobs:
     timeout-minutes: 8
     defaults:
       run:
-        working-directory: p454-b07-offline-isolated
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
-          path: p454-b07-offline-isolated
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

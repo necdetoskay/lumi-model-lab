@@ -1,10 +1,9 @@
 name: Story Harness P4.35 B03 Real Q25 Once
 
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
 on:
-  pull_request:
-    paths:
-      - .github/workflows/story-harness-p435-b03-q25-once.yml
-      - configs/story_harness_p435_b03_q25_trigger.json
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,7 +14,7 @@ concurrency:
 
 jobs:
   actual-b03-q25:
-    if: ${{ github.run_attempt == 1 && github.event.action == 'synchronize' && github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' && github.event.pull_request.head.sha == '751b5d93804ecf05ab2485e5c8df58b879861cd5' }}
+    if: ${{ false }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 12
     defaults:

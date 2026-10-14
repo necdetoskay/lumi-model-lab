@@ -3,7 +3,6 @@ name: Story Harness P4.50 B06 Original English Master
 on:
   pull_request:
     paths:
-      - .github/workflows/story-harness-p450-b06-master.yml
       - src/story_harness_p450_b06_master.py
       - tests/test_story_harness_p450_b06_master.py
       - evidence/story_harness_p448/**
@@ -21,9 +20,13 @@ jobs:
     if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:

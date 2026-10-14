@@ -1,9 +1,9 @@
 name: Story Harness P4.31 Real Age-10 B03 Story Once
 
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
 on:
-  pull_request:
-    paths:
-      - configs/story_harness_p431_b03_trigger.json
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   genuine-age10-third-story:
-    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    if: ${{ false }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 18
     defaults:

@@ -3,7 +3,6 @@ name: Story Harness P4.39 B04 Original Independent Quality Offline
 on:
   pull_request:
     paths:
-      - .github/workflows/story-harness-p439-b04-quality-offline.yml
       - src/story_harness_p439_b04_quality.py
       - tests/test_story_harness_p439_b04_quality.py
       - docs/canonical/STORY_HARNESS_P439_B04_QUALITY.md
@@ -20,9 +19,13 @@ jobs:
     if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
     runs-on: [self-hosted, Linux, X64, q25-offline]
     timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
