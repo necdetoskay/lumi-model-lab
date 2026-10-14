@@ -61,6 +61,20 @@ class FrozenTenExecutionTests(unittest.TestCase):
             self.assertFalse(again["complete"])
             self.assertEqual(called, ["B01", "B02", "B03"])
 
+    def test_each_logical_component_digest_binds_real_file_hashes(self):
+        from src.story_harness_frozen_round_v1 import (
+            COMPONENT_FILES, _actual_component_sha256
+        )
+        seal = simulate_seal(".")
+        self.assertEqual(len(COMPONENT_FILES), 11)
+        self.assertEqual(seal["component_sha256"],
+                         _actual_component_sha256(seal["files_sha256"]))
+        self.assertEqual(len(set(seal["component_sha256"].values())), 11)
+        tampered = copy.deepcopy(seal)
+        tampered["component_sha256"]["model_runtime_profile"] = "f" * 64
+        with self.assertRaises(HarnessStop):
+            check_lock(".", tampered)
+
     def test_code_or_prompt_hash_change_is_forbidden(self):
         seal = simulate_seal(".")
         broken = copy.deepcopy(seal)

@@ -37,6 +37,76 @@ FILES = (
     "src/story_harness_readiness_v1.py",
     "src/story_harness_runtime_v1.py",
 )
+# Hash actual immutable bytes for each logical Harness component.
+# Unlike SHA(label + commit), this detects any source/config modification.
+COMPONENT_FILES = {
+    "input_contract": (
+        "configs/story_harness_p415_benchmark.json",
+        "src/story_harness_p416_input_bridge.py",
+    ),
+    "spineforge": (
+        "src/story_harness_p416_input_bridge.py",
+        "src/story_harness_p417_live_pilot.py",
+    ),
+    "writer": (
+        "src/story_harness_p416_input_bridge.py",
+        "src/story_harness_p417_live_pilot.py",
+    ),
+    "independent_quality": (
+        "src/story_harness_p422_independent_audit.py",
+        "src/story_harness_cohort_stages_v1.py",
+    ),
+    "english_master": (
+        "src/story_harness_p423_master.py",
+        "src/story_harness_cohort_stages_v1.py",
+    ),
+    "real_q25": (
+        "src/story_harness_p424_q25_evidence.py",
+        "src/story_harness_cohort_stages_v1.py",
+    ),
+    "final_read_only_state": (
+        "src/story_harness_p425_final_state_draft.py",
+        "src/story_harness_cohort_stages_v1.py",
+    ),
+    "prompt_bundle": (
+        "src/story_harness_p416_input_bridge.py",
+        "src/story_harness_p417_live_pilot.py",
+        "src/story_harness_p422_independent_audit.py",
+        "src/story_harness_p424_q25_evidence.py",
+    ),
+    "model_runtime_profile": (
+        "configs/story_harness_runtime_v1.json",
+        "src/story_harness_runtime_v1.py",
+    ),
+    "quality_policy": (
+        "configs/story_harness_runtime_v1.json",
+        "src/story_harness_p422_independent_audit.py",
+        "src/story_harness_cohort_analysis_v1.py",
+    ),
+    "cost_and_retry_policy": (
+        "configs/story_harness_frozen_cohort_v1.json",
+        "src/story_harness_frozen_cohort_v1.py",
+        "src/story_harness_frozen_round_v1.py",
+        "src/story_harness_cohort_pipeline_v1.py",
+    ),
+}
+
+def _actual_component_sha256(source_hashes):
+    must(set(COMPONENT_FILES) == COMPONENTS,
+         "MISSING_OR_UNREGISTERED_HARNESS_COMPONENT")
+    values = {}
+    for component, paths in COMPONENT_FILES.items():
+        must(all(name in source_hashes for name in paths),
+             "COMPONENT_HAS_UNPINNED_SOURCE")
+        evidence = {
+            "component": component,
+            "source_file_sha256": {
+                name: source_hashes[name] for name in sorted(paths)
+            }
+        }
+        values[component] = hashlib.sha256(canonical_json(evidence)).hexdigest()
+    return values
+
 STATUSES = {"REJECT", "ACCEPT_CLAIMED", "STOP_UNKNOWN_OR_INVALID",
             "OPERATIONAL_STOP"}
 
@@ -68,9 +138,7 @@ def simulate_seal(repo):
         "status": "SEALED", "schema": SCHEMA, "round": "BASELINE",
         "harness_commit": head, "input_sha256": p["case_input_sha256"],
         "policy_sha256": p["policy_sha256"],
-        "component_sha256": {
-            key: hashlib.sha256((key + ":" + head).encode()).hexdigest()
-            for key in sorted(COMPONENTS)},
+        "component_sha256": _actual_component_sha256(_hashes(repo)),
         "files_sha256": _hashes(repo),
         "case_ids": list(IDS), "offline_only": True, "provider_grant": False,
     }
@@ -85,8 +153,11 @@ def check_lock(repo, lock):
          lock.get("policy_sha256") == p["policy_sha256"] and
          type(lock.get("files_sha256")) is dict and
          set(lock["files_sha256"]) == set(FILES), "CHANGED_COHORT_INPUT")
+    current = _hashes(repo)
     must(lock.get("harness_commit") == _head(repo) and
-         lock["files_sha256"] == _hashes(repo), "MID_COHORT_CODE_CHANGE")
+         lock["files_sha256"] == current, "MID_COHORT_CODE_CHANGE")
+    must(lock.get("component_sha256") == _actual_component_sha256(current),
+         "MID_COHORT_COMPONENT_CHANGE")
     return p
 
 def _exclusive(path, data):

@@ -24,3 +24,18 @@ class StoryHarnessReadinessTests(unittest.TestCase):
         self.assertEqual(len(set(v["input_sha256"] for v in result["inputs"].values())),10)
         self.assertEqual(len(set(v["memory_snapshot_sha256"]
                                  for v in result["inputs"].values())),10)
+
+    def test_component_freeze_is_actual_file_content_not_name_and_commit(self):
+        from src.story_harness_frozen_round_v1 import (
+            simulate_seal, _actual_component_sha256, COMPONENT_FILES
+        )
+        import hashlib
+        result = offline_readiness(".")
+        seal = simulate_seal(".")
+        self.assertEqual(seal["component_sha256"],
+                         _actual_component_sha256(seal["files_sha256"]))
+        self.assertEqual(set(COMPONENT_FILES), set(seal["component_sha256"]))
+        self.assertNotEqual(
+            seal["component_sha256"]["model_runtime_profile"],
+            hashlib.sha256(("model_runtime_profile:" +
+                            result["run_commit"]).encode()).hexdigest())
