@@ -1,0 +1,73 @@
+name: Story Harness P4.40 B04 Original English Master
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/story-harness-p440-b04-master.yml
+      - src/story_harness_p440_b04_master.py
+      - tests/test_story_harness_p440_b04_master.py
+      - evidence/story_harness_p438/**
+      - evidence/story_harness_p439/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p440-b04-original-english-master
+  cancel-in-progress: true
+
+jobs:
+  seal-verify-b04-original-master:
+    if: ${{ github.event.pull_request.number == 275 && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline original B04 source, independent audit, immutable Master and negative tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p440_b04_master.py' -v
+          python -m src.story_harness_p440_b04_master >/tmp/lumi-p440-offline.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/lumi-p440-offline.json'))
+          assert p['case_id']=='B04' and p['model_calls']==0
+          assert p['production_state_write_authorized'] is False
+          print('P440_B04_MASTER_OFFLINE_PROVENANCE_GREEN')
+          PY
+      - name: Seal or verify exact original accepted B04 once without provider call
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p440_b04_master_claims"
+          chmod 700 "$root/_lumi_p440_b04_master_claims"
+          python -m src.story_harness_p440_b04_master \
+            --repo-root . \
+            --producer-root "$root/_lumi_p438_b04_story_claims" \
+            --quality-root "$root/_lumi_p439_b04_quality_claims" \
+            --master-root "$root/_lumi_p440_b04_master_claims" \
+            --seal-or-verify > /tmp/lumi-p440-original-master.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.load(open('/tmp/lumi-p440-original-master.json'))
+          assert data['case_id']=='B04' and data['master_sealed'] is True
+          assert data['word_count']==1277 and data['model_calls']==0
+          assert data['story_sha256']=='1648b29b47a830cb7c524e3264f6171ac750a390665207e8453f434d36413557'
+          assert data['production_state_write_authorized'] is False
+          print('P440_B04_GENUINE_ACCEPT_IMMUTABLE_ENGLISH_MASTER_GREEN')
+          print('P440_B04_MASTER_SHA256='+data['story_sha256'])
+          print('P440_B04_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p440-b04-original-accepted-english-master
+          path: ${{ runner.workspace }}/_lumi_p440_b04_master_claims/b04-1648b29b47a830cb/
+          if-no-files-found: warn
+          retention-days: 30
