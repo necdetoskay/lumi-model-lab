@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NOVA v0.2 cross-media research contract",
+  "version": "0.2.0",
+  "entities": {
+    "works": [
+      "work_id",
+      "title",
+      "medium",
+      "scope",
+      "nonlinear",
+      "lumi_canon"
+    ],
+    "story_beats": [
+      "work_id",
+      "beat_id",
+      "title",
+      "description",
+      "source_ids"
+    ],
+    "decisions": [
+      "work_id",
+      "decision_id",
+      "decision_kind",
+      "precondition",
+      "action",
+      "effect",
+      "scope_note",
+      "source_ids"
+    ],
+    "mechanisms": [
+      "work_id",
+      "mechanic_id",
+      "label",
+      "observed",
+      "abstraction",
+      "lumi_example",
+      "guardrail",
+      "beat_ids",
+      "source_ids",
+      "quality_effect",
+      "lumi_canon"
+    ],
+    "mechanic_evidence": [
+      "evidence_id",
+      "work_id",
+      "mechanic_id",
+      "beat_id",
+      "source_ids",
+      "inference",
+      "causal_quality_effect"
+    ],
+    "sources": [
+      "work_id",
+      "source_id",
+      "publisher",
+      "url",
+      "claim_scope",
+      "verification"
+    ],
+    "cross_media_links": [
+      "link_id",
+      "left",
+      "right",
+      "relationship",
+      "shared_question",
+      "difference",
+      "lumi_guardrail",
+      "quality_effect"
+    ]
+  },
+  "constraints": {
+    "unique_work_ids": true,
+    "no_orphan_links": true,
+    "story_over_600_turkish_words_per_work": true,
+    "film_decision_kind_prefix": "diegetic_",
+    "game_decision_kind": "player_or_system_progression",
+    "quality_effect": "not_evaluated",
+    "lumi_canon": false,
+    "live_api_cost": 0,
+    "current_story_quality_trials": 0
+  },
+  "canonical_inputs": "data/nova/v0.2/source_records/*.json",
+  "generated_by": "tools/nova/build_cross_media.py",
+  "verified_by": "tools/nova/validate_cross_media.py"
+}
