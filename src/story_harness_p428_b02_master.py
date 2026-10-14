@@ -50,8 +50,9 @@ def seal_b02_once(source,audit,master_root):
          and source["pack"]["pack_sha256"]==SOURCE_SHA
          and source["story"]["story_sha256"]==STORY_SHA
          and source["spine"]["spine_sha256"]==SPINE_SHA
-         and audit.get("case_id")=="B02",
-         "B01/other-case English Master promotion refused")
+         and audit.get("case_id")=="B02"
+         and audit.get("production_state_write_authorized") in (None,False),
+         "B01/other-case or self-authorizing English Master promotion refused")
     approved=qualify_master(source,audit)
     root=Path(master_root)
     must(root.is_dir() and not root.is_symlink(),
