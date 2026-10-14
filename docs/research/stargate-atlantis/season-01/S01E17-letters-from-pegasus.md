@@ -3,9 +3,9 @@ series: "Stargate Atlantis"
 season: 1
 episode: 17
 title_original: "Letters From Pegasus"
-status: pending_research
-word_count: 0
-source_verified: false
+status: draft
+word_count: 225
+source_verified: true
 spoilers: true
 ---
 
@@ -13,9 +13,13 @@ spoilers: true
 
 ## Türkçe olay özeti
 
-_Bölüm bazlı kaynak araştırması ve özgün 250–400 kelimelik özet henüz tamamlanmadı._
+Üç Wraith kovan gemisinin Atlantis'e yaklaşmasına iki haftadan az süre kalmıştır. McKay, Dünya'yla normal konuşmaya yetecek güç bulunmasa da Atlantis'in jeneratörlerini birleştirerek bir saniyeyi biraz aşan kapı bağlantısı kurulabileceğini hesaplar. Bu kadar kısa sürede insanlar geçemez, fakat sıkıştırılmış bilimsel veriler ve tehlike uyarısı gönderilebilir. Weir öneriyi kabul eder; önemli kayıtların yanında kayıp personelin ailelerine kişisel görüntülü mesajlar hazırlanmasını ister. Ford kamerayla üyeleri tek tek dolaşır. Bazıları sevdiklerine özlemini anlatır, bazılarıysa ne söyleyeceğini bilemez. Weir ölen keşif üyelerinin ailelerine başsağlığı mesajı kaydeder.
+
+Zelenka, düşman filosunun hiperuzaydan nerede çıkacağını öngörür. Sheppard ile Teyla, filonun büyüklüğünü görmek üzere Teyla'nın tanıdığı insanların yaşadığı gezegene gider. Teyla burada babasının dostu Orin'i uyarır. Orin ile ailesini tehlike başlarsa Jumper'a alacağını söyler. Sheppard, bütün köylüleri kurtarmaya yetecek yer olmadığını bilmektedir. Kısa süre sonra gökyüzünde yalnız üç kovan gemisi değil, kruvazörler ve yüzlerce Wraith savaş aracı belirir. Gezegenin insanları avlanmaya başlanır.
+
+Wraithler kaçışı önlemek için gezegenin kapısını dışarıdan etkinleştirir. Sheppard ve Teyla Jumper'ın görünmezlik sistemini açıp beklemek zorunda kalır. Teyla kaçan sivilleri araca alır, Orin'in ailesini de son ana kadar bekler. Sheppard, Wraithlerin insanları toplamasına ve şehirleri yok etmesine çaresizce tanık olur. Bağlantı sonunda kesilince bütün sığınmacılarla birlikte Atlantis'e dönerler. Sheppard filonun gerçekten ne kadar büyük olduğunu bildirir. Atlantis hazırlanan verileri Dünya'ya gönderir. Cheyenne Mountain'da Carter bilinmeyen bir bağlantı sinyalini fark eder: Pegasus'tan gelen bu mesaj, Dünya'nın Atlantis'in hâlâ hayatta olduğunu öğrenmesini sağlar.
 
 ## Kaynaklar
 
 - [GateWorld — Letters From Pegasus](https://www.gateworld.net/atlantis/s1/letters-from-pegasus/)
-- [GateWorld Atlantis — 1. sezon](https://www.gateworld.net/atlantis/s1/)
+- [StargateWiki — Ayrıntılı rehber](https://stargate-sg1-solutions.com/wiki/SGA_1.17_%22Letters_From_Pegasus%22_Episode_Guide)
