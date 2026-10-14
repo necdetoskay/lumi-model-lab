@@ -64,6 +64,13 @@ def seal_b03_once(source, audit, master_root):
          and source["story"]["story_sha256"] == STORY_SHA
          and source["spine"]["spine_sha256"] == SPINE_SHA,
          "B03 Master source Canon/Spine/Writer mismatch")
+    must(audit.get("auditor_generation_id") == "gen-1791956689-z15grh3ISk5XKZQt7NlY"
+         and audit.get("case_id") == "B03"
+         and audit.get("source_pack_sha256") == SOURCE_SHA
+         and audit.get("story_sha256") == STORY_SHA
+         and audit.get("spine_sha256") == SPINE_SHA
+         and audit.get("full_original_v21_final_audit_completed") is False,
+         "Unpinned or cross-story B03 auditor identity denied")
     approved = qualify_master(source, audit)
     root = Path(master_root)
     must(root.is_dir() and not root.is_symlink(),
