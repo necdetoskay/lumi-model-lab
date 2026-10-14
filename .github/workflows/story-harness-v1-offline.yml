@@ -40,6 +40,7 @@ on:
       - src/story_harness_p424_q25_evidence.py
       - src/story_harness_p425_final_state_draft.py
       - src/story_harness_p426_second_case.py
+      - src/story_harness_p427_b02_quality.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -74,6 +75,7 @@ on:
       - tests/test_story_harness_p424_q25_evidence.py
       - tests/test_story_harness_p425_final_state_draft.py
       - tests/test_story_harness_p426_second_case.py
+      - tests/test_story_harness_p427_b02_quality.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -116,6 +118,8 @@ on:
       - docs/canonical/STORY_HARNESS_P424_B01_Q25_EVIDENCE.md
       - docs/canonical/STORY_HARNESS_P425_REAL_Q25_READ_ONLY_STATE.md
       - docs/canonical/STORY_HARNESS_P426_SECOND_DISTINCT_INPUT.md
+      - docs/canonical/STORY_HARNESS_P427_B02_INDEPENDENT_QUALITY.md
+      - evidence/story_harness_p426/**
       - evidence/story_harness_p421/**
       - evidence/story_harness_p422/**
       - evidence/story_harness_p423/**
@@ -986,3 +990,23 @@ jobs:
           assert x['conservative_prior_spend_reserved_usd']=='1.294372'
           print('P426_B02_DISTINCT_CANON_TOPIC_GENERATION_OFFLINE_GREEN')
           PY29
+
+      - name: Verify independent B02 age-sensitive initial quality on original Sonnet artifacts
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p427_b02_quality.py' -v
+          python -m src.story_harness_p427_b02_quality > /tmp/story-harness-p427.json
+          python - <<'PY30'
+          import json
+          row=json.load(open('/tmp/story-harness-p427.json'))
+          assert row['schema']=='lumi.story-harness-p427-b02-independent-initial-audit.v1'
+          assert row['case_id']=='B02'
+          assert row['provider_calls']==0
+          assert row['source_generation_cost_usd']=='0.04503'
+          assert row['maximum_new_quality_usd']=='0.040'
+          assert row['previous_budget_reserved_usd']=='1.339402'
+          assert row['quality_accepted'] is False
+          assert row['english_master_authorized'] is False
+          assert row['q25_authorized'] is False
+          assert row['production_state_write_authorized'] is False
+          print('P427_B02_SOURCE_SEALED_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY30
