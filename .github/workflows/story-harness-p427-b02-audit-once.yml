@@ -1,0 +1,127 @@
+name: Story Harness P4.27 Independent B02 Quality Once
+
+on:
+  pull_request:
+    paths:
+      - configs/story_harness_p427_b02_quality_trigger.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p427-independent-b02-quality-once
+  cancel-in-progress: false
+
+jobs:
+  independent-b02-initial-quality:
+    if: ${{ github.event.pull_request.number == 275 && github.event.pull_request.head.repo.full_name == 'necdetoskay/lumi-model-lab' && github.head_ref == 'experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p427-b02-audit-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p427-b02-audit-isolated
+      - name: Reject any commit that is not the exact B02 quality grant
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert changed==['configs/story_harness_p427_b02_quality_trigger.json']
+          print('P427_ONLY_EXACT_REVIEWED_B02_AUDIT_TRIGGER_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Independently verify B02 source, actual provider receipts and $10 reserve
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p427_b02_quality.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -q
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p427_b02_quality import (
+              SOURCE_SHA,SPINE_SHA,STORY_SHA,get_b02_original,
+              inspect_b02_initial,QUALITY_CAP,PRIOR_BUDGET_RESERVED)
+          grant=json.loads(Path('configs/story_harness_p427_b02_quality_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p427-one-b02-initial-quality.v1',
+              'case_id':'B02',
+              'generation_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'spine_sha256':SPINE_SHA,
+              'writer_story_sha256':STORY_SHA,
+              'max_quality_model_posts':1,
+              'stage_maximum_usd':'0.040',
+              'prior_conservative_budget_reserved_usd':'1.339402',
+              'aggregate_user_approved_budget_usd':'10.00',
+              'automatic_retries':False,
+              'production_writes':False,
+          }, 'Invalid scoped paid B02 audit manifest'
+          assert Decimal(grant['prior_conservative_budget_reserved_usd']) + QUALITY_CAP <= Decimal('10')
+          original=get_b02_original('.',Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p426_second_case_claims')
+          body=inspect_b02_initial(original)
+          assert len(body['messages'])==2
+          assert body['model']=='anthropic/claude-sonnet-5.5'
+          assert body['provider']['allow_fallbacks'] is False
+          print('P427_ORIGINAL_DISTINCT_B02_MODEL_SPINE_WRITER_AND_BUDGET_GREEN')
+          PY
+      - name: Confirm existing inference key preflight without model generation
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.040')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P427_EXISTING_KEY_READ_ONLY_GREEN')
+          PY
+      - name: Execute exactly one real Sonnet B02 independent initial quality audit
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P427_QA_B02: B02_INDEPENDENT_QA_SINGLE_CALL
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p427_b02_quality_claims"
+          chmod 700 "$root/_lumi_p427_b02_quality_claims"
+          python -m src.story_harness_p427_b02_quality \
+            --repo-root . \
+            --b02-producer-claims "$root/_lumi_p426_second_case_claims" \
+            --b02-quality-claims "$root/_lumi_p427_b02_quality_claims" \
+            --paid-once > /tmp/lumi-p427-real-b02-audit.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q=json.loads(Path('/tmp/lumi-p427-real-b02-audit.json').read_text())
+          assert q['case_id']=='B02'
+          assert q['english_master_authorized'] is False
+          assert q['q25_authorized'] is False
+          assert q['production_state_write_authorized'] is False
+          print('P427_B02_REAL_INDEPENDENT_INITIAL_VERDICT='+q['initial_quality_verdict'])
+          print('P427_B02_READER_SCORE='+str(q['reader_score']))
+          print('P427_B02_BLOCKING_FINDINGS='+str(q['blocking_findings']))
+          print('P427_B02_AUDIT_GENERATION_ID='+q['auditor_generation_id'])
+          print('P427_B02_REPORTED_USD='+q['provider_reported_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p427-b02-real-independent-quality-original-story
+          path: ${{ runner.workspace }}/_lumi_p427_b02_quality_claims/p427-b02-r06-*/
+          if-no-files-found: warn
+          retention-days: 30
