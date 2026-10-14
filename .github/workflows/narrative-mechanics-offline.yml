@@ -1,0 +1,47 @@
+name: Narrative Mechanics Offline
+
+on:
+  push:
+    branches: [research/stargate-narrative-mechanics-v1]
+    paths:
+      - 'experiments/narrative_mechanics/**'
+      - 'tests/test_narrative_mechanics.py'
+      - 'docs/research/narrative-mechanics/**'
+      - 'docs/research/stargate-sg1/**'
+      - 'docs/research/stargate-atlantis/**'
+      - '.github/workflows/narrative-mechanics-offline.yml'
+  pull_request:
+    branches: [research/stargate-atlantis-episode-archive]
+    paths:
+      - 'experiments/narrative_mechanics/**'
+      - 'tests/test_narrative_mechanics.py'
+      - 'docs/research/narrative-mechanics/**'
+      - 'docs/research/stargate-sg1/**'
+      - 'docs/research/stargate-atlantis/**'
+      - '.github/workflows/narrative-mechanics-offline.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: narrative-mechanics-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline:
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen archive and private release
+        run: python -m experiments.narrative_mechanics verify
+      - name: Run standalone offline boundary tests
+        run: python -m unittest tests.test_narrative_mechanics -v
+      - name: Preserve original Atlantis completeness gate
+        run: python docs/research/stargate-atlantis/validate_atlantis.py

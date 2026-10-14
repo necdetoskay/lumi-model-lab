@@ -8,6 +8,26 @@ This README is the human entry point and current-state document for the reposito
 
 ## Current milestone
 
+### Standalone Narrative Mechanics Library — LAB ONLY
+
+The research branch `research/stargate-narrative-mechanics-v1` adds an isolated,
+offline library over the frozen SG-1 (214) and Atlantis (100) summary archive.
+It includes byte-level SHA-256 provenance, an eight-axis extraction rubric,
+18 manually proposed abstract mechanics (17 selectable; one withheld), strict
+age/canon-permission/reveal/diversity selection, and source-free writer previews.
+These are assistant-authored hypotheses awaiting human review, not validated
+episode facts, story quality evidence, or accepted StoryState.
+
+```bash
+python -m experiments.narrative_mechanics verify
+python -m unittest tests.test_narrative_mechanics -v
+python -m experiments.narrative_mechanics select --request experiments/narrative_mechanics/examples/request.v1.json
+```
+
+[Research guide, rubric, cards and maturity gates](docs/research/narrative-mechanics/README.md).
+No production/Story Harness connection, writer invocation, model credentials,
+provider calls, training ingestion or state commits are implemented.
+
 Milestone 1 validates the complete learning loop with a deliberately small but reproducible dataset before scaling data volume or training cost.
 
 The current roadmap now separates three model-lab tracks:
