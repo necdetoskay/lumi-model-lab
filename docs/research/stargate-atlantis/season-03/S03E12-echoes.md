@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 12
 title_original: "Echoes"
-status: draft
-word_count: 240
+status: complete
+word_count: 272
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Sheppard ile McKay eski Kadim araştırma merkezini bulur. Balinaların zihinler
 Balineler şimdi aynı felaketin yaklaşmakta olduğunu hissetmektedir. Atalarının hafızasından taşıdıkları uyarıyı insanlara iletmeye çalışmışlardır. Fakat Atlantis'te yeterli ZPM olmadığı için eski koruma yöntemi uygulanamaz. McKay, Daedalus ve kalkan teknolojisini birlikte kullanarak yeni savunma planı oluşturur. Enerji patlaması yaklaşırken insanlar mümkün olduğu kadar korunaklı alanlara çekilir; balinaların doğal davranışlarından elde edilen bilgi kritik zamanlamayı sağlar.
 
 Ekip, yeni yöntemle ölümcül enerji akımının etkisini azaltıp gezegeni kurtarır. Görev tamamlandığında balina sürüsü yeniden dağılır, hayalet görüntüler sona erer. Sheppard ile McKay kulaklarının iyileşmesini beklemek zorundadır. Bölüm, Pegasus'taki bilinçli deniz yaşamının Kadimlerle eski bir bağı bulunduğunu ve yaklaşan tehlikeyi anlatmak için kendi iletişim dilini kullanabildiğini gösterir.
+
+Daedalus ZPM desteğiyle güneşe çok yakın yaklaşarak ölümcül plazma dalgasını kalkanıyla başka yöne saptırır. Şehrin eski kayıtlarından öğrenilen bu olay, balinaların anlamsız görünen seslerinin aslında geçmişten aktarılan hayatta kalma bilgisini taşıdığını gösterir.
 
 ## Kaynaklar
 

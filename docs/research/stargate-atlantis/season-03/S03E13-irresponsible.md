@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 13
 title_original: "Irresponsible"
-status: draft
-word_count: 238
+status: complete
+word_count: 277
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Tam ekip köyü terk etmeyi düşünürken gerçek Genii askerleri gelir. Başla
 Lucius kaçmak için geçide yönelir; Sheppard'la karşılaşınca kendi korkaklığıyla yüzleşir. İkili köylüleri gerçek savunmayı kendi ellerine almaya ikna etmeye çalışır. Sheppard, Kolya'nın karşısına çıkarak teslim olur görünür. Genii askerleri ateş açtığında Lucius'un kalkanı onu korur, ancak bataryası son anda biter. Sheppard savunmasız kalır. Tam Genii yeniden ateş edecekken Lucius köylülerle gelir; silahlı halk düşmanı kuşatır.
 
 Kolya teslim olmayı reddeder. Sheppard'la teke tek düelloya girer ve Sheppard tarafından vurularak öldürülür. Diğer Genii askerleri teslim olur, köy özgürleşir. Sheppard kişisel kalkanı Lucius'a geri verir ama gücünün tükendiğini söylemez. Böylece sahte kahramanın korumasız kaldığı yeni hayatı başlar. Kolya'nın ölümü ise Atlantis'e yönelik uzun süredir devam eden kişisel düşmanlığı sona erdirir.
+
+Köylülerin gerçek tehlike karşısında cesaret göstermesi, Lucius'un sahnelediği oyunlardan çok daha önemlidir. Sheppard'ın Kolya'yı vurması yalnız kaçış değil, uzun süredir süren Genii tehdidine de kesin bir son verir. Lucius ise kahramanlığın görünmez kalkanla değil sorumlulukla ilgili olduğunu öğrenmek zorundadır.
 
 ## Kaynaklar
 

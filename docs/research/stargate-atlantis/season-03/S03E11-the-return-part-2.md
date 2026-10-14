@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 11
 title_original: "The Return, Part 2"
-status: draft
-word_count: 228
+status: complete
+word_count: 261
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ekip, daha önce uzaya bırakılmış Niam'ı bulup getirir. McKay onu yeniden p
 McKay başka yöntem düşünür. Şehrin kalkan üreteçlerine patlayıcı konulup Daedalus saldırısına açık bırakılacağını söyler. Sheppard ve McKay bu planı O'Neill ile Woolsey'ye de aktarır, böylece düşmanın düşüncelerini okuması hâlinde de aynı bilgi elde edilir. Ekip üreteçlere giderken yakalanır; Replicatorlar patlayıcıları bularak zafer kazandıklarını sanır. Daedalus yaklaştığında kendi güvenlikleri için kalkanı açarlar.
 
 Gerçek plan o anda çalışır. McKay, kalkan üreteçlerini Replicatorları parçalayacak enerji alanına dönüştürmüştür. Aktif kalkan bütün Asuranları bir anda yok eder. Daedalus'a son saniyede nükleer saldırıyı durdurma mesajı gönderilir. Atlantis kurtarılır, Weir yönetimine geri döner. Replicator tehdidi tamamen yok edilmemiştir ama şehir yeniden gerçek sakinlerinin elindedir. Woolsey kandırıldığını sonradan anlasa da sonucu kabul etmek zorundadır.
+
+İlk bakışta başarısız sayılan patlayıcı planının asıl amacı düşmanı aldatmaktır. McKay, O'Neill ile Woolsey'nin zihinlerinin sorgulanacağını hesaplayarak gerçek stratejiyi onlardan da gizlemiştir. Böylece Replicatorlar kalkanı kendi güvenlikleri için açarken yok oluşlarını hazırlamış olur.
 
 ## Kaynaklar
 

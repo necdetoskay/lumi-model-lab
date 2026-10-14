@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 14
 title_original: "Tao of Rodney"
-status: draft
-word_count: 233
+status: complete
+word_count: 266
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ Ancak biyolojik değişim tek başına yeterli değildir. Gerçek yükselme içi
 Sheppard, daha önce yükselmeye hazırlanan insanlarla birlikte yaşadığından ona meditasyon öğretmeye çalışır. McKay sakinleşmek yerine yeni fikirler yazmakla meşguldür. Sonunda ölüm ihtimaliyle yüzleşince davranışları değişir. Teyla'yla çay törenine katılır, Weir'e övgü dolu yazılar hazırlar, Ronon'un eski yarasını iyileştirir. Bilimsel kibriyle hareket etmektense arkadaşlarının hayatına katkıda bulunmaya çalışır. Ancak yetenekleri bedenini tüketmeye devam eder.
 
 McKay son bir kez yükselmeyi deneyip bilincini odaklar; vücudu dayanamayarak çöker. Arkadaşları onu kaybetmek üzereyken durum değişir. Kendini kurtaracak işlemi anlamak için eskiden geliştirdiği hesapları yeniden kullanır; Kadim aygıtın etkisini tersine çevirebilecek yöntem devreye sokulur. McKay hayatta kalır fakat olağanüstü güçlerini kaybeder. Geriye arkadaşlarının değerini, ölüm korkusunun insan davranışını nasıl değiştirebildiğini ve kendi kibriyle yüzleşme deneyimini taşıyarak döner.
+
+McKay bayılmadan hemen önce Beckett'a çözümün bilgisini zihinsel olarak aktarır. Eski DNA örnekleri aygıta girilerek genetik değişim geriye çevrilir. Tedaviden sonra McKay kendi yazdığı ileri fizik denklemlerini bile anlayamaz; olağanüstü yetenekleri tamamen kaybolmuştur.
 
 ## Kaynaklar
 

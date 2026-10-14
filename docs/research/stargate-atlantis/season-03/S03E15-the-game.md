@@ -3,8 +3,8 @@ series: "Stargate Atlantis"
 season: 3
 episode: 15
 title_original: "The Game"
-status: draft
-word_count: 245
+status: complete
+word_count: 281
 source_verified: true
 spoilers: true
 ---
@@ -20,6 +20,8 @@ McKay halkına aydınlatma ve ulaşım yenilikleri öğretmiş, Sheppard ise ask
 Geldar halkı sınır yakınında kömür madeni inşa edince Hallona bunu işgal girişimi sayar. Baden savaş ordusunu gönderir; Nola bombalarla donatılmış hava gemileriyle karşılık vermeye hazırlanır. McKay ve Sheppard birbirine danışarak durumu düzeltmeye çalışır, fakat kendi eski kararları sürekli önlerine çıkar. Weir de diplomatik çözüm sunar. İki toplumun yıkıcı savaşa sürüklenmesini önlemek için daha büyük tehlike algısını ortadan kaldıracak güven anlaşması hazırlanır.
 
 Sonunda her iki lider geri adım atmayı kabul eder ve savaş durdurulur. Oyunun insan yaşamına etkisi öğrendikleri bir deney haline gelir. McKay ile Sheppard artık bu sistemle rekabet etmeye devam etmeme kararı verir. Eski oyuncuların kurduğu yapay düşmanlık ancak gerçek toplumların kendi kararlarını verebilmesiyle azalmaya başlar.
+
+Her iki toplumun savaş eşiğine gelmesi, oyunda seçilen küçük kararların gerçek dünyada çok ağır sonuçlar doğurabildiğini gösterir. Toplulukların barışı bir emirle değil kendi aralarında kurması gerektiği anlaşılır. McKay ve Sheppard kendi rekabetlerinin sorumluluğunu kabul etmek zorundadır.
 
 ## Kaynaklar
 
