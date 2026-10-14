@@ -7,6 +7,7 @@ on:
       - src/story_harness_p436_b03_final_state.py
       - tests/test_story_harness_p436_b03_final_state.py
       - evidence/story_harness_p435/b03-r06-original-q25-evidence.json
+      - evidence/story_harness_p436/b03-r06-real-read-only-final-state-draft.json
       - docs/canonical/STORY_HARNESS_P436_B03_REAL_STATE.md
 
 permissions:
@@ -48,37 +49,35 @@ jobs:
           assert x['production_state_write_authorized'] is False
           print('P436_B03_READ_ONLY_STATE_OFFLINE_GREEN')
           PY
-      - name: Freeze original real B03 Q25 state evidence only, no Canon writes
+      - name: Verify already-frozen original B03 state against GitHub, replay read-only
         run: |
           set -euo pipefail
-          root="${RUNNER_WORKSPACE}"
-          mkdir -p "$root/_lumi_p436_b03_final_state_claims"
-          chmod 700 "$root/_lumi_p436_b03_final_state_claims"
-          python -m src.story_harness_p436_b03_final_state \
-            --repo-root . \
-            --producer-root "$root/_lumi_p431_b03_story_claims" \
-            --quality-root "$root/_lumi_p433_b03_quality_claims" \
-            --master-root "$root/_lumi_p434_b03_master_claims" \
-            --q25-root "$root/_lumi_p435_b03_q25_claims" \
-            --final-root "$root/_lumi_p436_b03_final_state_claims" \
-            --freeze-once > /tmp/lumi-p436-b03-state-projection.json
           python - <<'PY'
           import hashlib,json,os
           from pathlib import Path
-          from src.story_harness_p436_b03_final_state import OUTPUT_DIR
-          r=json.load(open('/tmp/lumi-p436-b03-state-projection.json'))
-          p=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p436_b03_final_state_claims'/OUTPUT_DIR/'final-state-draft.json'
-          frozen=json.loads(p.read_bytes())
-          assert r['source_story_sha256']=='80fa8224c78c494b13bc347ecabdfff75fd5c9e1638ad88ee9ba47c6986643f9'
-          assert r['final_location_proposal']=='VILLAGE'
-          assert r['open_obligation_outcomes']==['OPEN','SATISFIED']
-          assert r['objects']==3 and r['provider_calls']==0
-          assert frozen['canon_commit_authorized'] is False
-          assert frozen['original_full_frozen_v21_4_final_quality_verified'] is False
-          assert frozen['world_time_final'] is None
-          assert frozen['unknown_facts_retained']==['unobserved_owners','unobserved_locations']
+          from src.story_harness_p435_b03_q25 import load_b03_bundle
+          from src.story_harness_p436_b03_final_state import (
+              load_original_q25,project_b03_final_state,OUTPUT_DIR)
+          root=Path(os.environ['RUNNER_WORKSPACE'])
+          bundle=load_b03_bundle('.',
+              root/'_lumi_p431_b03_story_claims',
+              root/'_lumi_p433_b03_quality_claims',
+              root/'_lumi_p434_b03_master_claims')
+          original_q25=load_original_q25('.',root/'_lumi_p435_b03_q25_claims')
+          expected=project_b03_final_state(bundle,original_q25)
+          protected=root/'_lumi_p436_b03_final_state_claims'/OUTPUT_DIR/'final-state-draft.json'
+          archived=Path('evidence/story_harness_p436/b03-r06-real-read-only-final-state-draft.json')
+          assert protected.is_file() and archived.is_file()
+          assert not protected.is_symlink() and not archived.is_symlink()
+          raw=protected.read_bytes()
+          assert raw==archived.read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='32deb6cd448d8d8f301298436ee22fd115e545c554aabce893f853caad56b55a'
+          assert json.loads(raw)==expected
+          assert expected['original_full_frozen_v21_4_final_quality_verified'] is False
+          assert expected['canon_commit_authorized'] is False
+          assert expected['production_change'] is False
           print('P436_B03_ORIGINAL_Q25_READ_ONLY_FINAL_STATE_GREEN')
-          print('P436_B03_FINAL_STATE_SHA256='+hashlib.sha256(p.read_bytes()).hexdigest())
+          print('P436_B03_FINAL_STATE_SHA256='+hashlib.sha256(raw).hexdigest())
           print('P436_B03_NEW_MODEL_CALLS=0')
           PY
       - uses: actions/upload-artifact@v4
