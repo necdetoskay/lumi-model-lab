@@ -43,6 +43,7 @@ on:
       - src/story_harness_p427_b02_quality.py
       - src/story_harness_p428_b02_master.py
       - src/story_harness_p429_b02_q25.py
+      - src/story_harness_p430_b02_final_state.py
       - tests/test_story_harness_v1.py
       - tests/test_story_harness_p1.py
       - tests/test_story_harness_p2.py
@@ -80,6 +81,7 @@ on:
       - tests/test_story_harness_p427_b02_quality.py
       - tests/test_story_harness_p428_b02_master.py
       - tests/test_story_harness_p429_b02_q25.py
+      - tests/test_story_harness_p430_b02_final_state.py
       - tests/test_story_harness_p420_flat_envelope.py
       - tests/fixtures/story_harness_v1/**
       - configs/story_harness_v1_fixture.json
@@ -124,6 +126,9 @@ on:
       - docs/canonical/STORY_HARNESS_P426_SECOND_DISTINCT_INPUT.md
       - docs/canonical/STORY_HARNESS_P427_B02_INDEPENDENT_QUALITY.md
       - docs/canonical/STORY_HARNESS_P429_B02_Q25.md
+      - docs/canonical/STORY_HARNESS_P430_B02_STATE_DRAFT.md
+      - evidence/story_harness_p429/**
+      - evidence/story_harness_p430/**
       - evidence/story_harness_p427/**
       - evidence/story_harness_p428/**
       - evidence/story_harness_p426/**
@@ -1037,3 +1042,17 @@ jobs:
           assert q25['production_state_write_authorized'] is False
           print('P429_B02_Q25_FROM_TRUE_561_WORD_MASTER_OFFLINE_GREEN')
           PY31
+
+      - name: Verify real B02 Q25 final story state draft without Canon writes
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p430_b02_final_state.py' -v
+          python -m src.story_harness_p430_b02_final_state > /tmp/story-harness-p430.json
+          python - <<'PY32'
+          import json
+          p=json.load(open('/tmp/story-harness-p430.json'))
+          assert p['schema']=='lumi.story-harness-p430-b02-read-only-final-state-draft.v1'
+          assert p['case_id']=='B02' and p['provider_calls']==0
+          assert p['final_story_state_committed'] is False
+          assert p['production_state_write_authorized'] is False
+          print('P430_B02_GENUINE_Q25_FINAL_STATE_DRAFT_OFFLINE_GREEN')
+          PY32
