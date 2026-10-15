@@ -42,7 +42,8 @@ def _event_claim(event: dict) -> dict:
 
 def build_atomic_questions(*, prose: str, scene_key: str, entry_revision: int,
                            coverage: dict, registry: dict,
-                           writer: dict, independent: dict) -> dict:
+                           writer: dict, independent: dict,
+                           candidate_lexicon: dict[str, list[str]] | None = None) -> dict:
     """Compile atomic candidate claims with evidence; scrub producer identity.
 
     Passing BOTH candidate reports is intentional: unlike the blind extractor,
@@ -57,6 +58,7 @@ def build_atomic_questions(*, prose: str, scene_key: str, entry_revision: int,
     recomputed_coverage = reconcile(
         prose=prose, scene_key=scene_key, entry_revision=entry_revision,
         registry=registry, writer=writer, independent=independent,
+        candidate_lexicon=candidate_lexicon,
     )
     if recomputed_coverage != coverage:
         raise CoverageError("JEV_COVERAGE_RECOMPUTE_MISMATCH")
@@ -90,6 +92,24 @@ def build_atomic_questions(*, prose: str, scene_key: str, entry_revision: int,
             if source not in existing["evidence"]:
                 existing["evidence"].append(source)
 
+    # The deterministic lexicon may discover physical object mentions both
+    # extractors omitted. These are new SEMANTIC QUESTIONS, never entities.
+    for finding in coverage["findings"]:
+        if finding["code"] != "UNREPORTED_OBJECT_CANDIDATE":
+            continue
+        claim = {
+            "entity_ref": "new:" + finding["candidate_ref"].split(":", 1)[1],
+            "role": "PRESENT",
+        }
+        qid = _id("MENTION", claim)
+        item = claims.setdefault(qid, {
+            "kind": "MENTION", "claim": claim, "evidence": [],
+        })
+        item["evidence"].append({
+            "start": finding["start"],
+            "end": finding["end"],
+            "quote": finding["evidence_quote"],
+        })
     for claim in claims.values():
         claim["evidence"].sort(key=lambda x: (x["start"], x["end"]))
 
