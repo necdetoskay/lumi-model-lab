@@ -108,6 +108,13 @@ def _validate_source(approved: dict[str, Any]) -> None:
             or review.get("automated") is not True
             or not isinstance(review.get("source_spine_sha256"),str)):
         raise RuntimeError("V4 independent creative approval evidence missing.")
+    spine=approved.get("episode_spine")
+    if not isinstance(spine,dict):
+        raise RuntimeError("V4 model-reviewed artifact requires an Episode Spine.")
+    import hashlib
+    actual=hashlib.sha256(json.dumps(spine,sort_keys=True,ensure_ascii=False).encode("utf-8")).hexdigest()
+    if actual!=review["source_spine_sha256"]:
+        raise RuntimeError("V4 model creative review source hash mismatch.")
     if (approved.get("human_review") or {}).get("verdict") == "APPROVE":
         raise RuntimeError("Never forge human review for automated V4.")
     if (approved.get("gate") or {}).get("decision") != "ACCEPT":
