@@ -1,0 +1,121 @@
+# Laboratory-only, branch-scoped; install does not itself trigger a paid run.
+name: Final V3 Four-Genre Spine Once
+
+on:
+  push:
+    branches:
+      - experiment/v3-four-story-real-inputs-20261015
+    paths:
+      - experiments/triggers/v3-four-spine-once-20261015.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lumi-v3-four-spine-one-user-grant-20261015
+  cancel-in-progress: false
+
+jobs:
+  four-spines-only:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-four-story-real-inputs-20261015' &&
+      contains(github.event.head_commit.message, '[V3-FOUR-SPINE-PAID-ONCE]')
+    runs-on: [self-hosted, local-runner-pool]
+    timeout-minutes: 25
+    steps:
+      - name: Checkout trigger
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate exact grant, copy out of source, pin approved code
+        shell: bash
+        env:
+          TRIGGER: experiments/triggers/v3-four-spine-once-20261015.json
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lumi-v3-four-grant"
+          export GRANT_COPY="$RUNNER_TEMP/lumi-v3-four-grant/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          source=pathlib.Path(os.environ["TRIGGER"])
+          grant=json.loads(source.read_text(encoding="utf-8"))
+          expected={
+              "schema":"lumi.v3-four-spine-paid-once.v1",
+              "authorized":True,
+              "stage":"SPINE_ONLY",
+              "case_order":["closed_platform","orbit_rescue","council_seal","mirror_marsh"],
+              "models":["anthropic/claude-sonnet-5.5","openai/gpt-5.6-luna"],
+              "frozen_v3_sha":"63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+              "total_ceiling_usd":"2.00",
+              "per_case_ceiling_usd":"0.50",
+              "maximum_provider_posts":8,
+              "no_auto_retry":True,
+              "writer_authorized":False,
+              "human_spine_approval":False,
+              "reference":"user explicit approval 2026-10-15: four Spine attempts, total 2 USD",
+          }
+          if any(grant.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("GRANT_SCOPE_INVALID_NO_PROVIDER_CALL")
+          sha=grant.get("approved_run_commit_sha")
+          if not isinstance(sha,str) or re.fullmatch("[0-9a-f]{40}",sha) is None:
+              raise SystemExit("APPROVED_SHA_INVALID_NO_PROVIDER_CALL")
+          gid=grant.get("grant_id")
+          if not isinstance(gid,str) or re.fullmatch("[A-Za-z0-9][A-Za-z0-9_-]{7,79}",gid) is None:
+              raise SystemExit("GRANT_ID_INVALID_NO_PROVIDER_CALL")
+          shutil.copyfile(source,os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as f:
+              f.write("V3_APPROVED_SHA="+sha+"\n")
+          print("GRANT_INPUT_SCOPE_PASS_NO_PROVIDER_CALL")
+          PY
+          git cat-file -e "${V3_APPROVED_SHA:-$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["approved_run_commit_sha"])')}^{commit}"
+          git checkout --detach "$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["approved_run_commit_sha"])')"
+          test -z "$(git status --porcelain)"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Offline canonical qualification before grant consumption
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_four_spines_single_grant.py tests/test_v3_four_genre_autonomy_router.py tests/test_age18_frozen_lane_v1.py
+      - name: Atomic GitHub one-use claim (before any provider calls)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v3-four-grant/grant.json
+        run: |
+          set -euo pipefail
+          grant_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["grant_id"])' "$GRANT_COPY")"
+          ref="refs/heads/evidence/v3-four-paid-claim-${grant_id}"
+          if ! gh api -X POST "repos/${GITHUB_REPOSITORY}/git/refs" -f ref="$ref" -f sha="$GITHUB_SHA" >/dev/null; then
+            echo "::error::Global once-only grant was used or claim rejected; provider calls blocked."
+            exit 1
+          fi
+          echo "GLOBAL_ONCE_CLAIM_CREATED"
+      - name: Execute frozen Final V3 four-case Spine stages only
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v3-four-grant/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::Provider key missing"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v3_four_spines_single_grant \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_v3_four_claims" \
+            --evidence-dir "$RUNNER_TEMP/lumi-v3-four-grant/evidence"
+          echo "NO_WRITER_OR_REPAIR_DISPATCHED"
+      - name: Archive outputs including any STOP evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-four-spines-source-bound-${{ github.run_id }}
+          path: ${{ runner.temp }}/lumi-v3-four-grant/evidence/
+          if-no-files-found: warn
+          retention-days: 90
