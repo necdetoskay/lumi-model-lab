@@ -43,6 +43,14 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
           PYTHONPATH=. python -B -m pytest -q             tests/test_v3_single_attempt_guard.py             tests/test_age18_frozen_lane_v1.py             tests/test_frozen_lane_generic_spine_runtime.py             tests/test_age18_lane_stabilization_matrix.py             tests/test_sonnet55_cross_age_matrix.py             tests/test_story_lane_qualification_policy.py             tests/test_frozen_lane_authority_gate.py             tests/test_frozen_lane_repair_runtime.py             tests/test_frozen_lane_translation_runtime.py
+      - name: Verify read-only GitHub repository claim access
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/contents/experiments/v3_single_attempt_spine_probe.py?ref=experiment/v3-spine-gate-stop-20261015" --jq .sha >/dev/null
+          echo "GITHUB_READONLY_CLAIM_ENDPOINT_PASS"
   single-spine:
     if: >-
       github.ref == 'refs/heads/experiment/v3-spine-gate-stop-20261015' &&
