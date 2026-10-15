@@ -1,0 +1,314 @@
+{
+  "schema": "episode-spine.v2",
+  "premise_key": "closed_platform_first_inquiry",
+  "title": "The Platform That Arrived Empty",
+  "exact_age": 18,
+  "session": "STANDARD",
+  "target_words_min": 1600,
+  "target_words_max": 2500,
+  "episode_role": "MAIN_SAGA_ENTRY",
+  "story_promise": "A young investigator tests a train record against a platform clock and a witness's watch, and must decide what can responsibly be reported without naming a culprit.",
+  "protagonist_role": "Eighteen-year-old apprentice rail investigator",
+  "immediate_objective": "create a bounded evidence record without inventing a culprit",
+  "central_question": "What happened between the signal log and the platform witness statement?",
+  "stakes": "An unearned accusation could destroy a worker's career; a false closure could allow future safety incidents.",
+  "constraints": [
+    "A witness cannot know a sealed dispatch record before its lawful disclosure.",
+    "A stopped pocket watch is not proof that the train stopped in time.",
+    "A published manifest is not automatically evidence of physical arrival.",
+    "No unverified culprit, sabotage mechanism or secret tunnel becomes canon.",
+    "The sealed dispatch office is mention-only and is never entered or opened.",
+    "All anomalies must admit natural, evidence-based interpretation."
+  ],
+  "opening_hook": "At 02:10 the archive lists train 41 as arriving, but the platform clock never marked its presence.",
+  "logistics_plan": {
+    "time_window": "Roughly 02:15 to 05:15 on one night. The evidence window closes at 05:30, when the morning timetable is issued and the provisional log must be sealed or the signal audit requested. Morning services begin after 05:30.",
+    "location_sequence": [
+      "north_quay_station",
+      "signal_archive",
+      "rail_yard",
+      "north_quay_station",
+      "signal_archive",
+      "north_quay_station"
+    ],
+    "movement_constraints": [
+      "North Quay Station to Signal Archive is about 10 minutes on foot.",
+      "Signal Archive to Rail Yard is about 15 minutes on foot along the service way.",
+      "Rail Yard to North Quay Station is about 15 minutes.",
+      "Station telegraph can reach the archive clerk and the yard foreman without travel, but only the station telegraph operator transmits, and replies take about 10 minutes.",
+      "Mara never enters the sealed dispatch office; formal release requires an inquiry officer's signature and cannot arrive before 05:30.",
+      "Every location transition in the sequence is counted in the beat timings: station to archive, archive to yard, yard to station, station to archive for the decision branch work, archive to station for the final report."
+    ],
+    "feasibility_rationale": "Beat timings: 02:15 station hook; 02:45 archive after the walk; 03:35 yard after the 15 minute walk and a short wait; 04:15 back at the station after the 15 minute walk and a stop at the platform; 04:25 decision; 04:25 to 04:35 walk to archive; 04:35 to 05:00 climax work at the archive; 05:00 to 05:10 walk back; 05:10 to 05:20 payoff at the station, before the 05:30 close. Every needed party is established by telegraph or presence before it is needed: the archive clerk is physically present at the archive, the yard foreman is reached at the yard, and the witness remains at the station until 05:20. No branch needs a person who has not already been established at its location."
+  },
+  "beats": [
+    {
+      "key": "hook_empty_platform",
+      "phase": "HOOK",
+      "purpose": "Present the discrepancy and fix the question.",
+      "location_ref": "north_quay_station",
+      "character_action": "Mara compares the mechanical platform clock's strike record with the archive telegram listing train 41 at 02:10, then notes the gap in her notebook.",
+      "external_event": "Night porter Teodor Vane says he waited on the platform and saw no train at 02:10, though his own pocket watch stopped at 02:07.",
+      "new_information": "The archive lists an arrival, the platform clock has no mark, and the witness's stopped watch only bounds what he could time.",
+      "causal_dependency_keys": [],
+      "escalation_delta": "Initial discrepancy between a record and a witness.",
+      "state_change": "Mara holds a documented discrepancy but no explanation.",
+      "payoff_contribution": "Establishes the observation that the final report must bound."
+    },
+    {
+      "key": "orient_rules_of_record",
+      "phase": "ORIENT",
+      "purpose": "Establish what each source can and cannot prove.",
+      "location_ref": "north_quay_station",
+      "character_action": "Mara asks Vane exactly what he saw and heard, and separates his direct observations from his guesses.",
+      "external_event": "Vane mentions he overheard that the dispatch register was sealed that night. Mara notes that he could not know its contents, and the dispatch office stays locked.",
+      "new_information": "Vane directly observed an empty platform from about 02:00 to 02:07 and nothing after his watch stopped. Only an official release would open the dispatch register.",
+      "causal_dependency_keys": [
+        "hook_empty_platform"
+      ],
+      "escalation_delta": "Evidence boundaries become explicit, and a shortcut through sealed records is closed.",
+      "state_change": "Mara has a bounded witness statement and a lawful limit on access.",
+      "payoff_contribution": "Sets the evidence categories used in the report."
+    },
+    {
+      "key": "archive_log_check",
+      "phase": "INVESTIGATION",
+      "purpose": "Inspect the signal record behind the manifest.",
+      "location_ref": "signal_archive",
+      "character_action": "Mara reads the signal log with the archive clerk, Ines Corde, and compares entry sequence, ink and signer initials.",
+      "external_event": "The log shows train 41's entry signal cleared at 02:04 and a manifest line signed 02:10, but no exit-block clearing entry.",
+      "new_information": "The entry signal was cleared and the manifest was signed, but a signed manifest is not proof of arrival. The missing exit entry could be a log omission or a train that never cleared the block.",
+      "causal_dependency_keys": [
+        "orient_rules_of_record"
+      ],
+      "escalation_delta": "The record is internally incomplete, which widens the possible explanations.",
+      "state_change": "Mara has two competing working models: a late or never-arrived train, or an arrival that went unobserved.",
+      "payoff_contribution": "Supplies the documented side of the discrepancy."
+    },
+    {
+      "key": "complication_clock_drift",
+      "phase": "COMPLICATION",
+      "purpose": "Show the platform clock may itself be unreliable.",
+      "location_ref": "signal_archive",
+      "character_action": "Mara asks Corde for the clock maintenance sheet and compares the platform clock's last winding with the signal room's master time.",
+      "external_event": "The sheet shows the platform clock was last wound the previous evening and logged as running slow by an uncertain amount.",
+      "new_information": "A missing clock mark could reflect a clock error, so the clock's silence is weaker than it first looked.",
+      "causal_dependency_keys": [
+        "archive_log_check"
+      ],
+      "escalation_delta": "The anchor evidence is weakened, and Mara's first model needs revision.",
+      "state_change": "Mara cannot rely on any single timekeeper and needs a physical check.",
+      "payoff_contribution": "Adds a confound that the report must carry."
+    },
+    {
+      "key": "yard_physical_check",
+      "phase": "ESCALATION",
+      "purpose": "Seek physical evidence of whether train 41 was present.",
+      "location_ref": "rail_yard",
+      "character_action": "Mara walks the yard with foreman Brannoch Hale, inspecting the siding the train would use and Hale's own shift tally.",
+      "external_event": "Hale's tally lists a train 41 consist leaving the yard at 23:50 the evening before. A cold engine of a matching number stands on the siding, and its coal bunker is full.",
+      "new_information": "A consist of that number was recorded in the yard at 23:50 and a matching engine is present now. Whether it ran or arrived at 02:10 is unknown, and coal and engine temperature do not settle that.",
+      "causal_dependency_keys": [
+        "complication_clock_drift"
+      ],
+      "escalation_delta": "A physical object now exists that could fit either explanation, and the time to decide shortens.",
+      "state_change": "The case is no longer only paper, but the physical evidence is ambiguous.",
+      "payoff_contribution": "Adds an observed physical fact to the bounded record."
+    },
+    {
+      "key": "reversal_clock_vs_record",
+      "phase": "REVERSAL",
+      "purpose": "Revise the working model that the clock's silence meant no train.",
+      "location_ref": "north_quay_station",
+      "character_action": "Back on the platform, Mara tests the clock against the station master time and re-reads the clock strike dial with Vane present.",
+      "external_event": "The clock is found to run about 6 minutes slow. A mark for 02:10 by master time would have fallen around 02:04 on the clock face, when Vane's watch was still running, but the clock strikes only when a train trips the track plate, and no strike is recorded at either time.",
+      "new_information": "The slow clock does not explain the missing strike, because the strike depends on the track plate, not the face. The empty platform and absent strike agree, but the record and the manifest signature still conflict.",
+      "causal_dependency_keys": [
+        "yard_physical_check",
+        "complication_clock_drift"
+      ],
+      "escalation_delta": "The clock-error explanation is partly removed, so the discrepancy is real but its cause is still open.",
+      "state_change": "Mara holds a firmer observation that no strike occurred, while the cause remains unresolved.",
+      "payoff_contribution": "Gives the report a stronger, still bounded finding."
+    },
+    {
+      "key": "decision_seal_or_audit",
+      "phase": "DECISION",
+      "purpose": "Force a choice before the 05:30 window closes.",
+      "location_ref": "north_quay_station",
+      "character_action": "At 04:25 Mara weighs the two options with the station master's deadline on the telegraph.",
+      "external_event": "The station master wires that morning services need a provisional log by 05:30, and the audit can be requested only through the archive.",
+      "new_information": "Sealing gives a usable record now but leaves the signal cause unexamined, while requesting the audit may delay the morning decision.",
+      "causal_dependency_keys": [
+        "reversal_clock_vs_record"
+      ],
+      "escalation_delta": "Both options now carry a cost, and neither is risk-free.",
+      "state_change": "The choice stays uncommitted until Mara acts.",
+      "payoff_contribution": "Makes the final report a product of Mara's own judgment."
+    },
+    {
+      "key": "climax_bounded_record",
+      "phase": "CLIMAX",
+      "purpose": "Execute the chosen branch using only established evidence.",
+      "location_ref": "signal_archive",
+      "character_action": "Mara carries out the branch she chose, with Corde present, and drafts the record using only observed items.",
+      "external_event": "The branch plays out as defined in the decision point, using the log, clock sheet, yard tally and Vane's statement already gathered.",
+      "new_information": "No new decisive evidence appears. The result is the branch-defined state of the record.",
+      "causal_dependency_keys": [
+        "decision_seal_or_audit"
+      ],
+      "escalation_delta": "The record becomes irreversible for this night.",
+      "state_change": "A bounded record exists in the form the chosen branch defines.",
+      "payoff_contribution": "Delivers the core resolution."
+    },
+    {
+      "key": "payoff_report_filed",
+      "phase": "PAYOFF",
+      "purpose": "Deliver the report and its local closure.",
+      "location_ref": "north_quay_station",
+      "character_action": "Mara returns to the station by 05:10 and gives the station master and Vane the report as it stands.",
+      "external_event": "The station master accepts the record as a provisional safety basis for morning services.",
+      "new_information": "The report states what was observed and what remains unknown, and names no culprit.",
+      "causal_dependency_keys": [
+        "climax_bounded_record"
+      ],
+      "escalation_delta": "Pressure releases while questions remain open.",
+      "state_change": "The discrepancy stands as a recorded fact, and no one is accused.",
+      "payoff_contribution": "Closes the local episode."
+    }
+  ],
+  "escalation_ladder": [
+    "A manifest entry conflicts with a platform witness and a clock that recorded nothing.",
+    "The clock turns out to be slow, which weakens the key evidence.",
+    "A matching engine in the yard makes the case physical but ambiguous.",
+    "The slow clock fails to explain the missing strike, so the discrepancy is real and the cause remains open.",
+    "The 05:30 deadline forces a choice between sealing a provisional log and reopening the signal audit."
+  ],
+  "reversal": {
+    "prior_belief": "The clock's silence plus Vane's statement meant train 41 never arrived, or the clock was simply wrong.",
+    "evidence": [
+      {
+        "claim": "The platform clock has no strike for train 41.",
+        "supporting_beat_keys": [
+          "hook_empty_platform"
+        ],
+        "certainty": "OBSERVED"
+      },
+      {
+        "claim": "The clock was logged as running slow by an uncertain amount.",
+        "supporting_beat_keys": [
+          "complication_clock_drift"
+        ],
+        "certainty": "OBSERVED"
+      },
+      {
+        "claim": "The log shows an entry signal clearance and a manifest signature but no exit entry.",
+        "supporting_beat_keys": [
+          "archive_log_check"
+        ],
+        "certainty": "OBSERVED"
+      },
+      {
+        "claim": "A matching engine stood in the yard and the tally recorded a consist, but neither shows it ran.",
+        "supporting_beat_keys": [
+          "yard_physical_check"
+        ],
+        "certainty": "OBSERVED"
+      },
+      {
+        "claim": "The slow clock face does not by itself explain the missing strike, which depends on the track plate.",
+        "supporting_beat_keys": [
+          "complication_clock_drift",
+          "yard_physical_check"
+        ],
+        "certainty": "INFERRED"
+      },
+      {
+        "claim": "The train may have been delayed, rerouted or never run, and the log omission may be clerical.",
+        "supporting_beat_keys": [
+          "archive_log_check",
+          "yard_physical_check"
+        ],
+        "certainty": "HYPOTHESIS"
+      }
+    ],
+    "reinterpretation": "The missing mark cannot be dismissed as clock error, so the record and the platform genuinely disagree. The cause stays unknown.",
+    "inference_ceiling": "The evidence supports that no strike was recorded and no witness saw a train, while a manifest signature and entry signal exist. It does not support any claim about why, who, or how.",
+    "unresolved_after_reversal": "Whether train 41 moved at all, why the manifest was signed at 02:10, why the exit entry is absent, and whether the sealed dispatch register explains it."
+  },
+  "decision_point": {
+    "pressure": "The provisional log must be sealed or the signal audit requested before 05:30, and either action has a cost.",
+    "branches": [
+      {
+        "key": "seal_provisional_log",
+        "option": "seal_provisional_log",
+        "immediate_action": "Mara walks to the archive and, with Corde, seals a provisional log listing the discrepancy and its observed elements.",
+        "evidence_state_after_choice": "The record contains the manifest, entry signal, clock sheet, yard tally, Vane's statement and the strike absence, each labeled by certainty. No audit has been requested.",
+        "cost_or_risk": "The signal cause is not examined, so a real fault could persist unexamined into later services.",
+        "relationship_or_access_effect": "The station master gains a usable record on time and Vane is left unaccused. Corde is a witness to the sealing, but no audit access is granted and the inquiry officer has received no request.",
+        "climax_requirement": "Mara drafts and seals the log with Corde present at the archive, using only items already gathered, and states unknowns explicitly in the log.",
+        "local_payoff_if_earned": "A sealed provisional log exists as a bounded record of the discrepancy, with cause, motive and audit outcome open."
+      },
+      {
+        "key": "reopen_signal_audit",
+        "option": "reopen_signal_audit",
+        "immediate_action": "Mara walks to the archive and, with Corde, files a written audit request listing the specific missing exit entry and the clock strike gap.",
+        "evidence_state_after_choice": "The record contains the same labeled items plus a filed audit request. No audit result exists and none arrives that night.",
+        "cost_or_risk": "The request does not finish before 05:30, so morning services run on an unsealed, explicitly cautious notice, and the delay may irritate the station master.",
+        "relationship_or_access_effect": "The inquiry officer receives the request, which is not yet authorized. The station master gains a cautious notice rather than a sealed log, and Vane remains unaccused. Corde acknowledges the request in writing.",
+        "climax_requirement": "Mara drafts the request with Corde present at the archive, tied only to gathered evidence, and attaches a cautious service notice for the station master.",
+        "local_payoff_if_earned": "A filed audit request and a cautious notice exist as a bounded record, with the audit outcome and cause still open and no sealed log."
+      }
+    ],
+    "what_is_unknown": "Whether train 41 moved at all, and whether either choice leaves a real fault unexamined.",
+    "outcome_uncommitted": true
+  },
+  "climax": "At the archive, with Corde present, Mara executes whichever branch she chose using only the gathered log, clock sheet, yard tally and Vane's statement, and writes the record so each item carries its certainty label and the unknowns are stated.",
+  "local_payoff": "Mara delivers a report listing exactly what was observed: the absent strike, the entry signal and manifest signature, the slow clock, the matching engine and Vane's account. It names no culprit and states that cause, motive and the sealed register remain unknown. Whether the record is a sealed provisional log or a filed audit request with a cautious notice depends on the branch.",
+  "forward_hook": "The sealed dispatch register still holds a record neither the clock nor the witness could reach, and whether it is ever released has not been decided.",
+  "persistent_outcome_candidates": [
+    {
+      "type": "KNOWLEDGE",
+      "description": "A documented discrepancy between the train 41 manifest and the absent platform strike is recorded as fact, with no cause claimed.",
+      "commit_condition": "Commit only if the delivered prose shows Mara producing the labeled record."
+    },
+    {
+      "type": "REPUTATION",
+      "description": "The station master or Vane may view Mara as careful about accusations.",
+      "commit_condition": "Commit only if the prose shows a concrete reaction to her bounded report."
+    },
+    {
+      "type": "OPPORTUNITY",
+      "description": "A follow-up inquiry or audit may become eligible.",
+      "commit_condition": "Commit only if the prose shows the audit request filed; in the seal branch, treat it as merely possible and not authorized."
+    }
+  ],
+  "saga_progression": {
+    "intended_milestone_keys": [
+      "closed_platform_observed"
+    ],
+    "commit_only_if_earned": true,
+    "completion_evidence": [
+      "The manifest or log entry for train 41 and the absent platform strike are both shown and compared.",
+      "The discrepancy is written into the record as fact without a claimed cause."
+    ]
+  },
+  "anti_repetition_signature": {
+    "core_problem_shape": "A record and a witness disagree, and the investigator must bound what can be claimed.",
+    "primary_activity": "Cross-checking logs, instruments and testimony across three locations.",
+    "main_location_pattern": "Station, archive, yard, station, archive, station.",
+    "climax_shape": "Executing a chosen evidence-bounded record with the cost of the other option left real.",
+    "distinct_from_recent_episodes_because": "No recent episodes exist; this is a first entry and its resolution is a restrained report rather than a solved case."
+  },
+  "writer_rules": [
+    "Do not name a culprit, sabotage mechanism or secret tunnel.",
+    "Do not enter or open the sealed dispatch office.",
+    "Keep Vane's watch as a limit on his timing, not proof about the train.",
+    "State the branch-specific record accurately: only the seal branch produces a sealed log, and only the audit branch produces a filed request.",
+    "Do not imply the audit was authorized or completed.",
+    "Introduce Corde at the archive and Hale at the yard on first appearance, and keep Vane at the station until the payoff.",
+    "Count walking time between locations when giving clock times.",
+    "Keep all anomalies open to natural interpretation.",
+    "Do not mark the milestone complete in prose; show only the earned evidence."
+  ]
+}
