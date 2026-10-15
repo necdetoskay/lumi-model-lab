@@ -22,7 +22,7 @@ CASE_PATH="data/specifications/story_lab/four_genre_v3_inputs/closed_platform_ca
 REFERENCE="new explicit V4.1 semantic-repair live budget authorization required"
 STAGE="FULL_EN_TR"
 OBSERVED_SPEND_LIMIT="2.00"
-MAX_POSTS=12
+MAX_POSTS=16
 
 
 def validate(grant:dict)->None:
