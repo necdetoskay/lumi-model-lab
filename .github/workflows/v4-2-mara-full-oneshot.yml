@@ -1,0 +1,143 @@
+# Experimental V4 one-shot full EN->TR run. File install does NOT pay.
+name: V4.2 Mara End-To-End Iterative Quality One Shot
+on:
+  push:
+    branches:
+      - feature/story-pipeline-v4-2-iterative-quality-20261015
+    paths:
+      - experiments/triggers/v4-2-mara-full-once-20261015.json
+permissions:
+  contents: read
+concurrency:
+  group: lumi-v4-2-mara-full-oneuse-20261015
+  cancel-in-progress: false
+jobs:
+  v4-mara-full:
+    if: >-
+      github.ref == 'refs/heads/feature/story-pipeline-v4-2-iterative-quality-20261015' &&
+      contains(github.event.head_commit.message, '[V4-2-MARA-FULL-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout trigger
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate one-use V4 scope and pin exact source
+        shell: bash
+        env:
+          TRIGGER: experiments/triggers/v4-2-mara-full-once-20261015.json
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lumi-v4-mara"
+          export GRANT_COPY="$RUNNER_TEMP/lumi-v4-mara/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          grant=json.loads(pathlib.Path(os.environ["TRIGGER"]).read_text())
+          expected={
+            "schema":"lumi.v4-2.one-case-full-en-tr-once.v1",
+            "authorized":True,
+            "stage":"FULL_EN_TR",
+            "case_id":"age18.closed-platform.mystery.stress-01",
+            "case_manifest":"data/specifications/story_lab/four_genre_v3_inputs/closed_platform_case_manifest_v4_2.json",
+            "runtime_revision":"AGE18-V4-ITERATIVE-QUALITY-REPAIR-v1",
+            "observed_spend_stop_usd":"2.00",
+            "maximum_provider_posts":24,
+            "client_output_token_limit":None,
+            "human_review_fabrication":False,
+            "no_manual_repairs":True,
+            "no_world_commit":True,
+            "no_publication":True,
+            "reference":"user 2026-10-15 continue: V4.2 full Mara story with three bounded English repair rounds, observed 2 USD stop",
+          }
+          if any(grant.get(k)!=v for k,v in expected.items()):
+            raise SystemExit("INVALID_V4_GRANT_SCOPE_NO_PROVIDER_CALL")
+          if not isinstance(grant.get("approved_code_sha"),str) or re.fullmatch("[0-9a-f]{40}",grant["approved_code_sha"]) is None:
+            raise SystemExit("INVALID_V4_CODE_PIN_NO_PROVIDER_CALL")
+          if not isinstance(grant.get("grant_id"),str) or re.fullmatch("[A-Za-z0-9_-]{12,80}",grant["grant_id"]) is None:
+            raise SystemExit("INVALID_V4_GRANT_ID_NO_PROVIDER_CALL")
+          shutil.copyfile(os.environ["TRIGGER"],os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          print("GRANT_SCOPE_PASS_NO_PROVIDER_CALL")
+          PY
+          sha="$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["approved_code_sha"])')"
+          git cat-file -e "$sha^{commit}"
+          git checkout --detach "$sha"
+          test -z "$(git status --porcelain)"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned requirements
+        run: python -m pip install -r requirements.txt pytest
+      - name: Offline V4 integrity and safety tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v4_2.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v4_derived_logistics.py tests/test_v4_full_pipeline.py tests/test_v4_1_semantic_repair.py tests/test_v4_2_iterative_quality.py
+      - name: Check owner-created exact run-bound paid claim
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v4-mara/grant.json
+        run: |
+          set -euo pipefail
+          if test "${GITHUB_RUN_ATTEMPT}" != "1"; then
+            echo "::error::No reruns for paid V4 grant"
+            exit 1
+          fi
+          gid="$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["grant_id"])')"
+          claimref="evidence/v4-2-mara-paid-claim-${gid}"
+          claimfile="experiments/claims/v4-2-mara-full-once.json"
+          dest="$RUNNER_TEMP/lumi-v4-mara/run-bound-claim.json"
+          found=0
+          for i in $(seq 1 30); do
+            if gh api "repos/${GITHUB_REPOSITORY}/contents/${claimfile}?ref=${claimref}" --jq '.content' 2>/dev/null | base64 --decode > "$dest" && test -s "$dest"; then
+              found=1
+              break
+            fi
+            sleep 3
+          done
+          test "$found" = 1 || { echo "NO_OWNER_CLAIM_NO_PROVIDER_CALL"; exit 1; }
+          export V4_CLAIM_FILE="$dest"
+          python3 - <<'PY'
+          import os,json
+          claim=json.load(open(os.environ["V4_CLAIM_FILE"]))
+          grant=json.load(open(os.environ["GRANT_COPY"]))
+          expected={
+            "schema":"lumi.v4-2-mara-full-claim.v1",
+            "authorized":True,
+            "grant_id":grant["grant_id"],
+            "run_id":os.environ["GITHUB_RUN_ID"],
+            "trigger_sha":os.environ["GITHUB_SHA"],
+            "approved_code_sha":grant["approved_code_sha"],
+            "observed_spend_stop_usd":"2.00",
+            "runtime_revision":"AGE18-V4-ITERATIVE-QUALITY-REPAIR-v1",
+            "run_attempt":1,
+          }
+          if any(claim.get(k)!=v for k,v in expected.items()):
+            raise SystemExit("OWNER_CLAIM_MISMATCH_NO_PROVIDER_CALL")
+          print("V4_OWNER_EXACT_RUN_CLAIM_PASS")
+          PY
+      - name: Execute exactly one V4 Mara full pipeline
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v4-mara/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::Missing provider key"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v4_2_one_case_full_run \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_v4_mara_once_claim" \
+            --evidence-dir "$RUNNER_TEMP/lumi-v4-mara/evidence"
+      - name: Archive result and STOP evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-2-mara-full-source-bound-${{ github.run_id }}
+          path: ${{ runner.temp }}/lumi-v4-mara/evidence/
+          if-no-files-found: warn
+          retention-days: 90
