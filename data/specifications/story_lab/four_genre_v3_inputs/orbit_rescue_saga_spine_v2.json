@@ -161,7 +161,7 @@
         "purpose": "Record one anomalous distress packet and test immediate battery and clock constraints.",
         "target_state": "A bounded timestamp discrepancy exists without proof of time travel.",
         "milestone_keys": [
-          "future_timestamp_observed",
+          "orbit_rescue_observed",
           "battery_start_logged",
           "packet_integrity_checked"
         ],
@@ -218,7 +218,7 @@
     ],
     "milestones": [
       {
-        "key": "future_timestamp_observed",
+        "key": "orbit_rescue_observed",
         "anchor_key": "first_relay",
         "type": "EVIDENCE",
         "summary": "The buoy emits a packet stamped six minutes after local reception.",
@@ -491,12 +491,12 @@
     "edges": [
       {
         "from_node": "first_relay",
-        "to_node": "future_timestamp_observed",
+        "to_node": "orbit_rescue_observed",
         "relationship": "MAY_ENABLE",
         "rationale": "A supported observation can enable bounded follow-up evidence."
       },
       {
-        "from_node": "future_timestamp_observed",
+        "from_node": "orbit_rescue_observed",
         "to_node": "battery_start_logged",
         "relationship": "MAY_ENABLE",
         "rationale": "A supported observation can enable bounded follow-up evidence."
@@ -631,7 +631,7 @@
           "must_not": []
         },
         "milestone_keys": [
-          "future_timestamp_observed"
+          "orbit_rescue_observed"
         ],
         "reveal_ceiling": "Only the immediate observation and independently evidenced limits; not motive, ultimate mechanism or future outcome."
       }
