@@ -46,7 +46,7 @@ def test_paid_guard_observes_cost_before_downstream_parser(tmp_path):
 def test_v4_full_pipeline_offline_synthetic_routing_only(tmp_path,monkeypatch):
     f2=json.loads(F2.read_text(encoding="utf-8"))
     spine_result={
-        "status":"awaiting_human_review","v4_version":"V4",
+        "status":"v4_gate_accept_model_reviewed","v4_version":"V4",
         "gate":f2["gate"],"episode_spine":f2["episode_spine"],
         "approved_premise":f2["approved_premise"],
         "projection":f2["projection"],
