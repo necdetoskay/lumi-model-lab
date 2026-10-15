@@ -434,6 +434,47 @@ class EventGraphTests(unittest.TestCase):
             self.assertEqual(watch[0]["before"],watch[0]["after"])
             self.assertEqual(len(g.history("mara","vane_watch")),2)
 
+    def test_rejected_proposal_is_append_only_but_does_not_change_world(self):
+        with EventGraphStore() as g:
+            g.create("mara", base())
+            p=look()
+            first=g.reject(
+                stream_id="mara", proposal=p,
+                reason="External semantic evidence still ambiguous",
+            )
+            self.assertEqual(first["status"], "REJECTED")
+            self.assertFalse(first["idempotent"])
+            repeated=g.reject(
+                stream_id="mara", proposal=p,
+                reason="External semantic evidence still ambiguous",
+            )
+            self.assertTrue(repeated["idempotent"])
+            self.assertEqual(
+                g.lifecycle("mara",p["event_id"])[0]["status"],"REJECTED",
+            )
+            self.assertIsNone(g.get("mara",p["event_id"]))
+            self.assertEqual(g.head("mara")["revision"],0)
+            self.fail("NARRATIVE_REJECTED_ID_CANNOT_COMMIT",
+                      lambda: commit(g,p))
+            with self.assertRaises(sqlite3.DatabaseError):
+                g.db.execute("DELETE FROM narrative_rejections")
+            self.assertTrue(g.verify("mara"))
+
+    def test_rejected_event_identity_cannot_be_recycled(self):
+        with EventGraphStore() as g:
+            g.create("mara",base())
+            p=look()
+            g.reject(stream_id="mara",proposal=p,reason="Incomplete")
+            changed=deepcopy(p)
+            changed["event_type"]="DISCOVERY"
+            self.fail(
+                "NARRATIVE_REJECTION_ID_CONFLICT",
+                lambda: g.reject(
+                    stream_id="mara",proposal=changed,reason="Incomplete",
+                ),
+            )
+            self.assertEqual(g.head("mara")["revision"],0)
+
     def test_graph_atomicity_when_sqlite_insert_is_rejected(self):
         with EventGraphStore() as g:
             g.create("mara",base())
