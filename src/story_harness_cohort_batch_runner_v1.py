@@ -139,7 +139,8 @@ class Batch:
 
     def event(self, case_id, phase, stage, payload):
         check_lock(self.repo,self.lock)
-        require(stage in STAGE_MAX and phase in ("intent","settled")
+        require(stage in STAGE_MAX and
+                phase in ("intent","provider-observed","provider-fault","settled")
                 and case_id in IDS, "UNREGISTERED_EVENT")
         code = ORDER.index(stage)+1
         file = self.events/f"{case_id}-{code:02d}-{stage.lower()}-{phase}.json"
@@ -154,9 +155,12 @@ class Batch:
                     "CUMULATIVE_20_RESERVATION")
         else:
             require((self.events/f"{case_id}-{code:02d}-{stage.lower()}-intent.json").exists(),
-                    "STAGE_SETTLEMENT_WITHOUT_INTENT")
-            price=usd(payload["provider_reported_cost_usd"])
-            require(price <= STAGE_MAX[stage],"STAGE_CHARGE_CAP")
+                    "STAGE_EVENT_WITHOUT_INTENT")
+            if phase=="settled":
+                require((self.events/f"{case_id}-{code:02d}-{stage.lower()}-provider-observed.json").exists(),
+                        "SETTLEMENT_WITHOUT_PROVIDER_OBSERVATION")
+                price=usd(payload["provider_reported_cost_usd"])
+                require(price <= STAGE_MAX[stage],"STAGE_CHARGE_CAP")
         write_new(file,{
             "schema":SCHEMA,"case_id":case_id,
             "phase":phase,"stage":stage,

@@ -7,6 +7,7 @@ STRUCTURAL/UNVERIFIED and never a genuine paid model or release ACCEPT.
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
+import re
 import hashlib
 import json
 from pathlib import Path
@@ -45,6 +46,16 @@ def must(ok, reason):
 def exclusive(path, data):
     from src.story_harness_p423_master import write_exclusive
     write_exclusive(path, canonical_json(data) + b"\n")
+
+def safe_provider_cost(value):
+    # Cost comes from untrusted provider JSON: never journal an arbitrary
+    # string masquerading as a price (or a malformed secret-bearing value).
+    if type(value) not in (str, int, float, Decimal) or len(str(value)) > 28:
+        return None
+    try:
+        return format(money(value), "f")
+    except Exception:
+        return None
 
 class ProviderCostUnknown(HarnessStop):
     """Provider transport or charge unaccounted; global paid batch MUST STOP."""
@@ -89,14 +100,74 @@ class TrialLedger:
             })
         try:
             response = self.transport(body)
-        except Exception:
+        except Exception as exc:
+            # V1 lost the underlying safe HTTP status/hint here, reporting
+            # every transport error as OTHER_CONTRACT_VALIDATION. Never log
+            # exception text, provider error body or authentication secrets.
+            from src.story_harness_p417_live_pilot import ProviderTransportFault
             self.unknown_cost = True
+            category = (exc.category if isinstance(exc, ProviderTransportFault)
+                        else "UNCLASSIFIED_TRANSPORT_OR_INTERNAL_ERROR")
+            hint = (exc.hint if isinstance(exc, ProviderTransportFault)
+                    else "UNCLASSIFIED")
+            if self.stage_event is not None:
+                try:
+                    self.stage_event("provider-fault", stage, {
+                        "reason_code": category, "provider_hint_code": hint,
+                        "provider_response_available": False,
+                        "cost_reconciled": False, "no_retry": True
+                    })
+                except Exception:
+                    pass
             raise ProviderCostUnknown("Transport may already have been billed") from None
         usage = response.get("usage") if type(response) is dict else None
+        if self.stage_event is not None:
+            try:
+                # This receipt is persisted BEFORE validating upstream cost or
+                # fetching the independent generation record. Hash only the
+                # completion; NEVER save prompts, messages or prose here.
+                candidate_id = response.get("id") if type(response) is dict else None
+                self.stage_event("provider-observed", stage, {
+                    "provider_generation_id": (
+                        candidate_id if type(candidate_id) is str and
+                        re.fullmatch(r"gen-[A-Za-z0-9_-]{6,120}",
+                                     candidate_id) else None
+                    ),
+                    "provider_response_sha256": hashlib.sha256(
+                        canonical_json(response)).hexdigest(),
+                    "usage_available": type(usage) is dict,
+                    "provider_reported_cost_usd": (
+                        safe_provider_cost(usage.get("cost"))
+                        if type(usage) is dict else None),
+                    "prompt_tokens": (usage.get("prompt_tokens")
+                                     if type(usage) is dict and
+                                     type(usage.get("prompt_tokens")) is int
+                                     else None),
+                    "completion_tokens": (usage.get("completion_tokens")
+                                         if type(usage) is dict and
+                                         type(usage.get("completion_tokens")) is int
+                                         else None),
+                    "independently_reconciled": False,
+                    "no_retry": True,
+                })
+            except Exception:
+                self.unknown_cost = True
+                raise ProviderCostUnknown(
+                    "Provider completion arrived but could not be safely journaled") from None
         try:
             cost = money(usage.get("cost") if type(usage) is dict else None)
         except Exception:
             self.unknown_cost = True
+            if self.stage_event is not None:
+                try:
+                    self.stage_event("provider-fault", stage, {
+                        "reason_code": "PROVIDER_USAGE_COST_MISSING_OR_INVALID",
+                        "provider_hint_code": "UNCLASSIFIED",
+                        "provider_response_available": True,
+                        "cost_reconciled": False, "no_retry": True
+                    })
+                except Exception:
+                    pass
             raise ProviderCostUnknown("Provider response cost missing/invalid") from None
         # The supplied data can be a mocked response; this ledger is NOT
         # provider-independent authentication, just arithmetic+contract.
@@ -127,6 +198,16 @@ class TrialLedger:
                 self.verified_generation_stages.append(stage)
             except Exception:
                 self.unknown_cost = True
+                if self.stage_event is not None:
+                    try:
+                        self.stage_event("provider-fault", stage, {
+                            "reason_code": "GENERATION_RECEIPT_UNKNOWN_OR_MISMATCH",
+                            "provider_hint_code": "UNCLASSIFIED",
+                            "provider_response_available": True,
+                            "cost_reconciled": False, "no_retry": True
+                        })
+                    except Exception:
+                        pass
                 raise ProviderCostUnknown(
                     "Provider generation charge could not be independently reconciled"
                 ) from None
