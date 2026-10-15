@@ -81,7 +81,7 @@ def run(
         },
         seed=2026093007,
         request_class="defect_locator",
-        max_tokens=2200,
+        max_tokens=None,
     )
     latency=round(time.perf_counter()-started,3)
     findings=_blocking(fidelity)

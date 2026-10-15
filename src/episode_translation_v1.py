@@ -50,7 +50,7 @@ def run(
             "accepted_english_master":english,
         },ensure_ascii=False),
         temperature=0.2,
-        max_tokens=8000,
+        max_tokens=None,
         seed=2026093005,
         request_class="translation",
         structured_output=False,

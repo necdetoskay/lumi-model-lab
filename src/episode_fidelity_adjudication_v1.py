@@ -53,7 +53,7 @@ def run(
         },
         seed=2026093008,
         request_class="editorial_audit",
-        max_tokens=1800,
+        max_tokens=None,
     )
     latency=round(time.perf_counter()-started,3)
 

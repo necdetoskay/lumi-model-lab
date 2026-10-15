@@ -74,6 +74,11 @@ class SingleAttemptSpineGuard:
             self.event("POLICY_STOP", reason="NON_JSON_PROVIDER_POST")
             raise SafetyStop("NON_JSON_PROVIDER_POST")
         model = payload.get("model")
+        # Fail before the charged POST if any client-side output ceiling
+        # is reintroduced by a call site or by model-request normalization.
+        if any(key in payload for key in ("max_tokens", "max_completion_tokens", "max_output_tokens")):
+            self.event("POLICY_STOP", reason="EXPLICIT_OUTPUT_TOKEN_CEILING_FORBIDDEN")
+            raise SafetyStop("EXPLICIT_OUTPUT_TOKEN_CEILING_FORBIDDEN")
         if self.calls >= len(SPINE_MODELS):
             self.event("POLICY_STOP", reason="EXTRA_PROVIDER_POST_BLOCKED")
             raise SafetyStop("EXTRA_PROVIDER_POST_BLOCKED")
