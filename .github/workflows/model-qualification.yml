@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   qualify:
-    if: ${{ inputs.qualification_config != 'LUMI_EXISTING_KEY_READONLY_V1' }}
+    if: ${{ inputs.qualification_config != 'LUMI_EXISTING_KEY_READONLY_V1' && inputs.qualification_config != 'LUMI_COHORT_BASELINE_PAID_V1' }}
     runs-on: self-hosted
     timeout-minutes: 60
     env:
@@ -180,3 +180,41 @@ jobs:
               raise SystemExit("EXISTING_KEY_POLICY_STOP_NO_PROVIDER_POST")
           print("EXISTING_KEY_METADATA_PREFLIGHT_GREEN_NOT_PAID_AUTHORIZATION")
           PY
+
+  lumi-cohort-ten-real-baseline:
+    name: Frozen B01-B10 existing-key baseline
+    if: ${{ github.event_name == 'workflow_dispatch' && github.actor == 'necdetoskay' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' && github.sha == inputs.model && inputs.qualification_config == 'LUMI_COHORT_BASELINE_PAID_V1' && inputs.screen_only == true && inputs.rerun == false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 110
+    permissions:
+      contents: read
+    concurrency:
+      group: lumi-cohort-one-frozen-real-baseline
+      cancel-in-progress: false
+    steps:
+      - name: Checkout exact expected immutable SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Execute ten original inputs with no retries
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_TEN_PAID_CONFIRMATION: AUTHORIZE_LUMI_TEN_NO_RETRY_4_40_RESERVE_20_TOTAL
+        run: |
+          set -euo pipefail
+          repo="$(pwd)"
+          evidence="$RUNNER_WORKSPACE/_lumi_story_frozen_ten_v1"
+          test ! -L "$evidence"
+          mkdir -p "$evidence"
+          chmod 700 "$evidence"
+          python3 -m src.story_harness_cohort_batch_runner_v1 --paid-ten --repo-root "$repo" --claims-parent "$evidence" --historic-hold-usd 3.249558
+      - name: Preserve complete evidence even on an incomplete batch
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-frozen-ten-inference-evidence
+          path: ${{ runner.workspace }}/_lumi_story_frozen_ten_v1/baseline-v1
+          if-no-files-found: warn
+          retention-days: 90
