@@ -193,6 +193,9 @@ def reconcile(*, prose: str, scene_key: str, entry_revision: int,
         if entity_ref.startswith("new:"):
             findings.append({"code": "NEW_ENTITY_REQUIRES_AUTHORITY",
                              "entity_ref": entity_ref, "role": role})
+        elif entity_ref not in registry:
+            findings.append({"code": "UNREGISTERED_ENTITY_REF",
+                             "entity_ref": entity_ref, "role": role})
 
     we = Counter(_event_key(x) for x in w["events"])
     ie = Counter(_event_key(x) for x in i["events"])
