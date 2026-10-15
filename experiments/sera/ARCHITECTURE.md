@@ -152,6 +152,28 @@ The independent transport is opt-in only, one billable OpenRouter request
 when explicitly launched with `--live`; the CI always uses mocked transport.
 No model quality claim follows from these synthetic tests.
 
+## 9.2 M3 preliminary JEV atomic-contract implementation
+
+`jev_verifier.py` compiles M2 candidate entity/presence and typed-event claims
+into versioned `choice` questions for the pinned
+`typesafe/jev-1.13` Decisions API. The bundle carries source-prose SHA-256,
+entry revision, registry and exact evidence spans, but strips producer identity
+to reduce evaluation bias. M2 coverage is recomputed before the questions are
+issued to prevent a forged clean coverage status.
+
+Each claim has three evidence outcomes:
+`SUPPORTED`, `CONTRADICTED`, and `INSUFFICIENT_EVIDENCE`.
+The latter is an explicit escalation path. Contradiction routes to local repair;
+a clean JEV answer cannot override an unresolved M2 discrepancy. Even all
+SUPPORTED outcomes yield only
+`PENDING_DETERMINISTIC_AND_COMPLETENESS_REVIEW`, never commit authorization.
+
+JEV response and confidence remain probabilistic, uncalibrated evidence.
+Separate labeled calibration, provider timing/cost observations, error
+adjudication, and independent holdout are REQUIRED before qualification.
+The transport is lazy and opt-in; no paid API call belongs in offline CI.
+No answer grants world/character/database mutation authority.
+
 ## 10. Initial spine integrity notes
 
 The first two beats distinguish Vane's initial statement about 02:10 from his bounded direct observation through ~02:07. The validator must not confuse a reported claim with observed truth. The reversal beat similarly distinguishes a slow clock's face from a track-plate-triggered missing strike. The two decision branches must remain uncommitted until an actual choice, and audit authorization must never be inferred from filing a request.
