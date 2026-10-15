@@ -66,7 +66,7 @@ def test_unverified_location_disallowed():
 def test_v4_model_approval_cannot_be_forged_as_human_review():
     approved=exemplar()
     source={
-        "status":"awaiting_human_review",
+        "status":"v4_gate_accept_model_reviewed",
         "v4_version":"V4",
         "gate":approved["gate"],
         "episode_spine":approved["episode_spine"],
