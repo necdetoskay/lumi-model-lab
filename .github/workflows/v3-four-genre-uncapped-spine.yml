@@ -1,0 +1,158 @@
+# Laboratory-only, branch-scoped; install does not itself trigger a paid run.
+name: Final V3 Four-Genre Uncapped Spine Once
+
+on:
+  push:
+    branches:
+      - experiment/v3-four-genre-uncapped-spine-run-20261015
+    paths:
+      - experiments/triggers/v3-four-uncapped-spine-once-20261015.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-v3-four-spine-uncapped-user-grant-20261015
+  cancel-in-progress: false
+
+jobs:
+  four-spines-only:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-four-genre-uncapped-spine-run-20261015' &&
+      contains(github.event.head_commit.message, '[V3-FOUR-SPINE-UNCAPPED-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout trigger
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate exact grant, copy out of source, pin approved code
+        shell: bash
+        env:
+          TRIGGER: experiments/triggers/v3-four-uncapped-spine-once-20261015.json
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/lumi-v3-four-grant"
+          export GRANT_COPY="$RUNNER_TEMP/lumi-v3-four-grant/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          source=pathlib.Path(os.environ["TRIGGER"])
+          grant=json.loads(source.read_text(encoding="utf-8"))
+          expected={
+              "schema":"lumi.v3-four-spine-uncapped-paid-once.v1",
+              "authorized":True,
+              "stage":"SPINE_ONLY",
+              "case_order":["closed_platform","orbit_rescue","council_seal","mirror_marsh"],
+              "models":["anthropic/claude-sonnet-5.5","openai/gpt-5.6-luna"],
+              "frozen_v3_sha":"63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+              "total_ceiling_usd":"2.00",
+              "runtime_revision":"AGE18-V3-UNCAPPED-v1",
+              "per_case_ceiling_usd":"0.50",
+              "maximum_provider_posts":8,
+              "no_auto_retry":True,
+              "writer_authorized":False,
+              "human_spine_approval":False,
+              "reference":"user 2026-10-15 continue four Spine trials on uncapped V3 under prior 2 USD envelope",
+          }
+          if any(grant.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("GRANT_SCOPE_INVALID_NO_PROVIDER_CALL")
+          sha=grant.get("approved_run_commit_sha")
+          if not isinstance(sha,str) or re.fullmatch("[0-9a-f]{40}",sha) is None:
+              raise SystemExit("APPROVED_SHA_INVALID_NO_PROVIDER_CALL")
+          gid=grant.get("grant_id")
+          if not isinstance(gid,str) or re.fullmatch("[A-Za-z0-9][A-Za-z0-9_-]{7,79}",gid) is None:
+              raise SystemExit("GRANT_ID_INVALID_NO_PROVIDER_CALL")
+          shutil.copyfile(source,os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as f:
+              f.write("V3_APPROVED_SHA="+sha+"\n")
+          print("GRANT_INPUT_SCOPE_PASS_NO_PROVIDER_CALL")
+          PY
+          git cat-file -e "${V3_APPROVED_SHA:-$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["approved_run_commit_sha"])')}^{commit}"
+          git checkout --detach "$(python3 -c 'import json,os; print(json.load(open(os.environ["GRANT_COPY"]))["approved_run_commit_sha"])')"
+          test -z "$(git status --porcelain)"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Offline canonical qualification before grant consumption
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v3_uncapped.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_four_spines_uncapped_single_grant.py tests/test_v3_uncapped_output_tokens.py tests/test_v3_four_genre_autonomy_router.py
+      - name: Verify owner-created run-bound grant claim (read-only)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v3-four-grant/grant.json
+        run: |
+          set -euo pipefail
+          if test "${GITHUB_RUN_ATTEMPT}" != "1"; then
+            echo "::error::Rerun forbidden for paid model workflow"
+            exit 1
+          fi
+          grant_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["grant_id"])' "$GRANT_COPY")"
+          ref="evidence/v3-four-uncapped-paid-claim-${grant_id}"
+          path="experiments/claims/v3-four-uncapped-spine-once.json"
+          dest="$RUNNER_TEMP/lumi-v3-four-grant/run-bound-claim.json"
+          # Owner connector creates a one-time run-ID-bound claim. Actions only reads it.
+          found=0
+          for i in $(seq 1 30); do
+            if gh api "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=${ref}" --jq '.content' 2>/dev/null | base64 --decode > "$dest" && test -s "$dest"; then
+              found=1
+              break
+            fi
+            sleep 3
+          done
+          if test "$found" != "1"; then
+            echo "::error::Owner-created claim unavailable; no provider call"
+            exit 1
+          fi
+          export GRANT_ID="$grant_id"
+          export CLAIM_FILE="$dest"
+          python3 - <<'PY'
+          import json,os
+          claim=json.load(open(os.environ["CLAIM_FILE"]))
+          grant=json.load(open(os.environ["GRANT_COPY"]))
+          expected={
+              "schema":"lumi.v3-four-spine-uncapped-claim.v1",
+              "authorized":True,
+              "grant_id":os.environ["GRANT_ID"],
+              "run_id":os.environ["GITHUB_RUN_ID"],
+              "trigger_sha":os.environ["GITHUB_SHA"],
+              "approved_run_commit_sha":grant["approved_run_commit_sha"],
+              "total_ceiling_usd":"2.00",
+              "runtime_revision":"AGE18-V3-UNCAPPED-v1",
+              "per_case_ceiling_usd":"0.50",
+              "run_attempt":1,
+          }
+          if any(claim.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("RUN_BOUND_CLAIM_MISMATCH_NO_PROVIDER_CALL")
+          print("OWNER_GRANTED_ONE_TIME_RUN_BOUND_CLAIM_PASS")
+          PY
+      - name: Execute frozen Final V3 four-case Spine stages only
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GRANT_COPY: ${{ runner.temp }}/lumi-v3-four-grant/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::Provider key missing"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v3_four_spines_uncapped_single_grant \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_v3_four_claims" \
+            --evidence-dir "$RUNNER_TEMP/lumi-v3-four-grant/evidence"
+          echo "NO_WRITER_OR_REPAIR_DISPATCHED"
+      - name: Archive outputs including any STOP evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-four-spines-uncapped-source-bound-${{ github.run_id }}
+          path: ${{ runner.temp }}/lumi-v3-four-grant/evidence/
+          if-no-files-found: warn
+          retention-days: 90
