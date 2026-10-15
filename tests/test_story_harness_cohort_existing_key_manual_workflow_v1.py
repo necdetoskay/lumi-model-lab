@@ -15,7 +15,8 @@ class ManualExistingKeyWorkflow(unittest.TestCase):
         self.assertIn("github.sha == inputs.model",y)
 
     def test_secret_job_never_executes_pr_source_or_provider_post(self):
-        y=FILE.read_text().split("  lumi-cohort-existing-key-readonly:",1)[1]
+        y=(FILE.read_text().split("  lumi-cohort-existing-key-readonly:",1)[1]
+           .split("  lumi-cohort-ten-real-baseline:",1)[0])
         self.assertIn("runs-on: [self-hosted, Linux, X64, q25-offline]",y)
         self.assertNotIn("actions/checkout@",y)
         self.assertNotIn("pip install",y)
@@ -29,3 +30,12 @@ class ManualExistingKeyWorkflow(unittest.TestCase):
         self.assertIn("KEY_LIMIT_NEVER_RESETS=",y)
         self.assertIn("NoRedirect",y)
         self.assertIn("KEY_RAW_SECRET_OR_PROVIDER_LABEL_RECORDED=FALSE",y)
+
+    def test_paid_workflow_is_nonautomatic_and_checkout_isolated(self):
+        y=FILE.read_text().split("  lumi-cohort-ten-real-baseline:",1)[1]
+        self.assertIn("github.event_name == 'workflow_dispatch'",y)
+        self.assertIn("github.sha == inputs.model",y)
+        self.assertIn("inputs.rerun == false",y)
+        self.assertIn("path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}",y)
+        self.assertIn("working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}",y)
+        self.assertIn("lumi-cohort-one-frozen-real-baseline",y)

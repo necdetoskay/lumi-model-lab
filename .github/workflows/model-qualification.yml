@@ -191,11 +191,15 @@ jobs:
     concurrency:
       group: lumi-cohort-one-frozen-real-baseline
       cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Checkout exact expected immutable SHA
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
           persist-credentials: false
           fetch-depth: 1
       - name: Execute ten original inputs with no retries
