@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import unittest
 
+from experiments.sera.gold_calibration import score_fixture
 from experiments.sera.coverage import (
     EXTRACTION_SCHEMA, CoverageError, extraction_metrics, prose_hash,
     reconcile, report_signatures, validate_report,
@@ -170,6 +171,31 @@ class CoverageGoldTests(unittest.TestCase):
             expected_events=gold["events"], found_events=writer["events"],
         )["entity_role_mentions"]
         self.assertEqual((result["tp"], result["fp"], result["fn"]), (2, 1, 1))
+
+    def test_unregistered_canonical_entity_ref_is_flagged(self):
+        case = deepcopy(GOLD["cases"][0])
+        case["writer"]["mentions"][0][0] = "invented_character_id"
+        case["independent"]["mentions"][0][0] = "invented_character_id"
+        coverage, _, _ = check_case(case)
+        self.assertIn("UNREGISTERED_ENTITY_REF",
+                      [f["code"] for f in coverage["findings"]])
+        self.assertEqual(coverage["status"], "HOLD")
+
+    def test_synthetic_gold_calibration_exposes_shared_omission(self):
+        score = score_fixture()
+        self.assertEqual(score["case_count"], 6)
+        self.assertFalse(score["can_infer_live_model_quality"])
+        bad = next(x for x in score["rows"]
+                   if x["case_id"] == "two_extractors_miss_new_item")
+        self.assertEqual(bad["status"], "RECONCILED_PENDING_SEMANTIC")
+        self.assertEqual(
+            bad["gold_scores"]["INDEPENDENT"]["entity_role_mentions"]["recall"],
+            0.0,
+        )
+        self.assertGreater(
+            score["aggregate"]["INDEPENDENT"]["entity_role_mentions"]["recall"],
+            score["aggregate"]["WRITER"]["entity_role_mentions"]["recall"],
+        )
 
     def test_stale_fingerprint_rejected_before_reconciliation(self):
         case = GOLD["cases"][0]
