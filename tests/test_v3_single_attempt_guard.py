@@ -184,6 +184,8 @@ def test_valid_grant_is_consumed_once_even_if_evidence_dir_changes(tmp_path, mon
     def mock_check_output(args, **kwargs):
         if args[:2] == ["git", "status"]:
             return ""
+        if args[:2] == ["git", "diff"]:
+            return "src/v3_single_attempt_guard.py\n"
         return check_output(args, **kwargs)
     monkeypatch.setattr(probe.subprocess, "check_output", mock_check_output)
     monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
@@ -223,6 +225,8 @@ def test_dirty_checkout_rejected_prior_to_claim(tmp_path, monkeypatch):
     def fake_command(args, **kwargs):
         if args[:2] == ["git", "status"]:
             return " M src/episode_spine_v2_generate.py\\n"
+        if args[:2] == ["git", "diff"]:
+            return "src/v3_single_attempt_guard.py\n"
         return old(args, **kwargs)
     monkeypatch.setattr(probe.subprocess, "check_output", fake_command)
     monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
@@ -239,9 +243,37 @@ def test_valid_paid_grant_requires_persistent_claim_root(tmp_path, monkeypatch):
     def fake_command(args, **kwargs):
         if args[:2] == ["git", "status"]:
             return ""
+        if args[:2] == ["git", "diff"]:
+            return "src/v3_single_attempt_guard.py\n"
         return old(args, **kwargs)
     monkeypatch.setattr(probe.subprocess, "check_output", fake_command)
     monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
     with pytest.raises(SafetyStop, match="PERSISTENT_CLAIM_DIRECTORY_REQUIRED"):
         run(grant_file=grant, evidence_dir=tmp_path / "one")
     assert not (tmp_path / "one").exists()
+
+
+
+def test_unapproved_template_addition_blocks_pinned_spine_runner(
+    tmp_path: Path, monkeypatch,
+):
+    """A changed branch tip must fail closed, not widen the allowed source."""
+    from experiments import v3_single_attempt_spine_probe as probe
+    import subprocess
+    grant = _authorized_mock_grant(tmp_path)
+    old = subprocess.check_output
+
+    def fake_clean_checkout(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return ""
+        return old(args, **kwargs)
+
+    monkeypatch.setattr(probe.subprocess, "check_output", fake_clean_checkout)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_ONLY")
+    with pytest.raises(SafetyStop, match="NON_GUARD_SOURCE_CHANGE_DETECTED"):
+        run(
+            grant_file=grant,
+            evidence_dir=tmp_path / "output",
+            claim_dir=tmp_path / "claims",
+        )
+    assert not (tmp_path / "claims").exists()
