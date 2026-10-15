@@ -1,0 +1,397 @@
+{
+  "schema_version": "story-lane-profile.v2",
+  "lane_id": "age18.v4-1.derived-route.epistemic-model-repair.v1",
+  "status": "V4_1_OFFLINE_QUALIFICATION_NO_PAID_AUTHORIZATION",
+  "scope": {
+    "exact_age": 18,
+    "reader_profile": "data/specifications/reader_profiles/age18_adventure_v2.json",
+    "language_flow": "EN_MASTER_TO_TR_DELIVERY",
+    "standard_words_min": 1600,
+    "standard_words_max": 2500,
+    "currently_qualified_narrative_families": [
+      "ADVENTURE"
+    ],
+    "qualification_targets": [
+      "HIGH_FANTASY_MYSTERY"
+    ],
+    "revision_note": "Independent V4 revision; source V3 and all historical receipts unchanged. General beat-derived route, Haiku bounded narrative logistics repair, Luna creative gate, no fake human approvals."
+  },
+  "runtime": {
+    "spine": {
+      "architect_model": "anthropic/claude-sonnet-5.5",
+      "gate_model": "openai/gpt-5.6-luna",
+      "architect_prompt": "prompts/episode_spine_architect_v4_generic.md",
+      "gate_prompt": "prompts/episode_spine_gate_v3_generic.md",
+      "safe_normalization": "episode_spine_safe_normalize_v2",
+      "generator": "src/episode_spine_v4_1_generate.py",
+      "logistics_derivation": "src/v4_logistics.py",
+      "repair_model": "anthropic/claude-haiku-4.5",
+      "repair_prompt": "prompts/v4_logistics_repair_haiku.md",
+      "semantic_repair_model": "anthropic/claude-haiku-4.5",
+      "semantic_repair_prompt": "prompts/v4_epistemic_repair_haiku.md",
+      "max_epistemic_model_patch_attempts": 1,
+      "max_post_repair_luna_rechecks": 1
+    },
+    "writer": {
+      "model": "aion-labs/aion-3.5-mini",
+      "prompt": "prompts/episode_writer_v4_generic.md",
+      "authority_packet_version": "v2",
+      "max_paid_attempts": 1,
+      "generator": "src/episode_writer_v4_generate.py"
+    },
+    "authority": {
+      "hard_guard": "deterministic_story_authority_guards",
+      "semantic_gate_model": "openai/gpt-5.6-luna",
+      "semantic_gate_prompt": "prompts/story_compact_authority_gate_v4_generic.md",
+      "adjudicator_model": "openai/gpt-5.6-sol",
+      "adjudicator_prompt": "prompts/story_authority_adjudicator_v1_generic.md",
+      "policy": "hard-guards-first; Luna only when hard-clean; Sol only for Luna findings"
+    },
+    "repair": {
+      "model": "openai/gpt-5.6-sol",
+      "max_paid_attempts": 1,
+      "policy": "confirmed local findings only; exact bounded replacements; authority recheck required"
+    },
+    "translation": {
+      "model": "google/gemini-3.8-flash",
+      "prompt": "prompts/translation_en_tr_v2_generic.md",
+      "semantic_guard": "deterministic_translation_semantic_guards",
+      "repair_prompt": "prompts/translation_local_repair_v1_generic.md",
+      "max_paid_repair_attempts": 1
+    },
+    "fidelity": {
+      "model": "openai/gpt-5.6-luna",
+      "prompt": "prompts/translation_fidelity_gate_v2_generic.md",
+      "adjudicator_model": "openai/gpt-5.6-sol",
+      "adjudicator_prompt": "prompts/translation_fidelity_adjudicator_v1_generic.md",
+      "policy": "deterministic semantic guards first; Luna only when deterministic-clean; Sol only for Luna findings"
+    }
+  },
+  "paid_boundary_policy": {
+    "explicit_authorization_required_per_stage": true,
+    "no_automatic_paid_retry": true,
+    "independent_luna_gate_required_before_writer": true,
+    "human_spine_approval_required_before_writer": false,
+    "nonhuman_verdict_must_be_explicit": true,
+    "max_spine_logistics_repair_calls": 1,
+    "max_english_repair_attempts": 1,
+    "max_translation_repair_attempts": 1,
+    "world_commit_forbidden": true,
+    "publication_action_forbidden": true,
+    "max_epistemic_model_patch_attempts": 1,
+    "one_independent_luna_recheck_after_semantic_repair": true
+  },
+  "no_code_change_qualification_rule": {
+    "enabled": true,
+    "case_variation_must_be_data_only": true,
+    "runtime_hash_mismatch_invalidates_active_qualification_attempt": true,
+    "runtime_change_requires_new_lane_revision_and_fresh_case_restart": true,
+    "scenario_specific_runtime_patch_counts_as_case_failure": true
+  },
+  "runtime_freeze": {
+    "enabled": true,
+    "runtime_revision": "AGE18-V4-SEMANTIC-REPLAN-REPAIR-v1",
+    "runtime_source_commit": "V4_1_APPROVED_PIN_PENDING",
+    "files": [
+      {
+        "path": ".github/workflows/age18-frozen-lane-stage.yml",
+        "sha256": "269fefbfb8c1dbc53dd0b12a1070ad11681949b44de00aacd4073a907cd0fd07"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "ce5e252122e139330e13f38b25b748a0bb86d36efe50e646353dd2ab7c77675d"
+      },
+      {
+        "path": "configs/model_runtime_profiles.yaml",
+        "sha256": "b4710c3ee3069604b8b0b84ca69a864ced86b3d38543b139f78c5dd6a5a72911"
+      },
+      {
+        "path": "src/frozen_lane_stage.py",
+        "sha256": "34178e12cf84eeead64b1a6d66a6ca3f5c9a130191d6194ec4a9977672964640"
+      },
+      {
+        "path": "src/frozen_lane_verify.py",
+        "sha256": "fcb2c82e4c203dab27338270f8aae87e6188726f55202b2defae9b9a38fe90d2"
+      },
+      {
+        "path": "src/story_lane_case_manifest.py",
+        "sha256": "36dd8d742cb08b36aa98ad04d79a62734ca00f1e2bce88663a850dcbaaa2cfb5"
+      },
+      {
+        "path": "src/episode_spine_v2_generate.py",
+        "sha256": "9448f34c383182ba580cbc7f672597b1d27f0700cd30394cc6b5fadd630a29a7"
+      },
+      {
+        "path": "src/episode_spine_safe_normalize_v2.py",
+        "sha256": "952f6e2959d86678b30ae25dd3886303a57656fab82d2a9c8976b7774330c24d"
+      },
+      {
+        "path": "src/episode_spine_v2_contract.py",
+        "sha256": "e67ee25220e1cbf2153837c426ce4f9d19189e88ca8b6db4c8f25dc44be73002"
+      },
+      {
+        "path": "prompts/episode_spine_architect_v3_generic.md",
+        "sha256": "0104f72cd1892a90205908794ffb1013248380bb5fbf2473dc94fe0f70ed43ad"
+      },
+      {
+        "path": "prompts/episode_spine_gate_v3_generic.md",
+        "sha256": "ec522720187437390fceb8a6704049e9d28a4f5dccee59d207c8a4cfe1012555"
+      },
+      {
+        "path": "src/episode_writer_v2_generate.py",
+        "sha256": "062b535f2be4ed13738387e442a8a168276b2b9ae8b6e0d9ba4b1d4884bbeda0"
+      },
+      {
+        "path": "prompts/episode_writer_v3_generic.md",
+        "sha256": "8542e4e643a6c8ca8d276bfbbd45ecc62aaeac1f6f5bc84a3880801347923c36"
+      },
+      {
+        "path": "src/story_authority_packet.py",
+        "sha256": "816fe21913aca0f4b19bffc7a22f9dd6bbeb35d5413ced806e4d2c3b039e7c05"
+      },
+      {
+        "path": "src/story_authority_packet_v2.py",
+        "sha256": "ac9f36ec31dbc80e062b9b6b030c624c204dcaba21cccc5b1a90fa08cb602c7a"
+      },
+      {
+        "path": "src/deterministic_story_authority_guards.py",
+        "sha256": "6aa13e33674c698280568ef5d065c51b3430e2e8265c3a4b49fea217e1950d6a"
+      },
+      {
+        "path": "src/story_authority_findings.py",
+        "sha256": "13c6b677a6a86d7ffa33c69873bf6f777c88f7e0a4e98b5c237b0915da9fb0ab"
+      },
+      {
+        "path": "src/story_stage_common.py",
+        "sha256": "809deb1d6410b87a0a64a76b3c0a515581276d0995cd6ace905ab3b2049aacf8"
+      },
+      {
+        "path": "src/episode_authority_gate_v1.py",
+        "sha256": "ffd3e8bc2b0d70b5f0ad88781b9ae782409595edc372046565eda2a6c073bffc"
+      },
+      {
+        "path": "prompts/story_compact_authority_gate_v4_generic.md",
+        "sha256": "1fe19163d4ebd2af0086dd5d73e28f349ae273ef15517c5753a1b21e2f732ce3"
+      },
+      {
+        "path": "src/episode_authority_adjudication_v1.py",
+        "sha256": "fcc8d7efbfba9984e7bb3d8959d42d4a4265674d67dc778f8148043789a2ecad"
+      },
+      {
+        "path": "prompts/story_authority_adjudicator_v1_generic.md",
+        "sha256": "23503198b3aaea99e45861194d0e096ed11ea39080fa61242122c93db7e886c2"
+      },
+      {
+        "path": "src/episode_bounded_repair_v1.py",
+        "sha256": "71b21d14587418be55047cd39ac0da306febcdc5cd10cd5d8b7d12b171fc867f"
+      },
+      {
+        "path": "src/episode_translation_v1.py",
+        "sha256": "e0fd79643fb62a92d6fe0874b25240381ff2fd5fa2f5cfcba8bed076314c08f5"
+      },
+      {
+        "path": "prompts/translation_en_tr_v2_generic.md",
+        "sha256": "cb6318ba7131f6696d92f4ff95adb35a78c499f1776af71a6e27c1ad0b5d9172"
+      },
+      {
+        "path": "src/deterministic_translation_semantic_guards.py",
+        "sha256": "0dbbf80d02b9646840d9038e1e3bd84c70ac35e198bfcfc08edfd95a003c3543"
+      },
+      {
+        "path": "src/episode_translation_repair_v1.py",
+        "sha256": "507048aca570086c9121085c60f62dfd33b182432f57a43bbf0eb4ee32f832a9"
+      },
+      {
+        "path": "prompts/translation_local_repair_v1_generic.md",
+        "sha256": "a310ec676cab79c5b1269f4270ab4dfb7c3bc76f2b0c08f8deeb6c15a4bb0168"
+      },
+      {
+        "path": "src/episode_fidelity_v1.py",
+        "sha256": "69d396be6a8b314ff24f37adbdb42ff44141a485f14bf41bb5ade85f24ee5798"
+      },
+      {
+        "path": "prompts/translation_fidelity_gate_v2_generic.md",
+        "sha256": "7c8b435cabf95415eb47511f44adc56ef15370ee5f3dc2dc988fcbcfe621bc7d"
+      },
+      {
+        "path": "src/episode_fidelity_adjudication_v1.py",
+        "sha256": "8347ec818240cc948f805ec8b88ed0b153d72bca278e07e44e118074215cd4a8"
+      },
+      {
+        "path": "prompts/translation_fidelity_adjudicator_v1_generic.md",
+        "sha256": "14b3be6e282e860d1036aa725a22b2732a943169ba10af58ec15073156cdd471"
+      },
+      {
+        "path": "src/episode_final_delivery_v1.py",
+        "sha256": "13ffaea5a678bab1430a30c410639d39be201b67cfa8f90aad6b42fab475949e"
+      },
+      {
+        "path": "src/storyforge/runtime.py",
+        "sha256": "697c9151fba3a1f79fcbbb42e6e46b09645cbe92b226b1afd7135b3cebcf9fe8"
+      },
+      {
+        "path": "src/english_story_pipeline.py",
+        "sha256": "4fd9a1c63dda161ef614b7aa5403a26e80be84335f2721b6b4518ce4203c4c4c"
+      },
+      {
+        "path": "src/generate.py",
+        "sha256": "c3076ba9271f5dd9b19ee6059a7dda241e2c7d0ea866c06176f9d31848317496"
+      },
+      {
+        "path": "src/model_registry.py",
+        "sha256": "1ffd711f3ff3c565facfe83dfb622eadbcdd9109784479b0f315fc8d66a1bb28"
+      },
+      {
+        "path": "src/model_usage_rollup.py",
+        "sha256": "4f9fe2318e0e23ecb3c43f2c0481648b1db76f01edea7c538b5c6d1aa007cf57"
+      },
+      {
+        "path": "src/story_defect_detection.py",
+        "sha256": "ddac2ca26a7546818c39a2d66114b7b49326bbaebb011ef02f98317edf5a70c2"
+      },
+      {
+        "path": "src/premise_architect_v2_contract.py",
+        "sha256": "5b9bf657b39ad81525b58ad7c932f5cce4a05353a0fb99165e3392b4dd079cdf"
+      },
+      {
+        "path": "src/reader_profile_v2.py",
+        "sha256": "dd6fec703b113e72f16a333f985ff042f96b6bc6926b0e02bc8f212ca0a7e90b"
+      },
+      {
+        "path": "src/saga_blueprint_contract.py",
+        "sha256": "cf435a1edf924bf0001cf6007e5b1558bbdfd5e1dc89b5bd7a1c4fec99c984b0"
+      },
+      {
+        "path": "src/saga_spine_v2_contract.py",
+        "sha256": "3f13e6c14faaf451e1f746893071ac3b25331e999158322c83b68e6e373b9364"
+      },
+      {
+        "path": "src/v4_logistics.py",
+        "sha256": "477c60468ab2a592d97b71c60eeddb6778409d95d1cec9d9ede5bb8e385fa3c6"
+      },
+      {
+        "path": "src/episode_spine_v4_generate.py",
+        "sha256": "adfad43e23e1216d07023c6c478a3e99ac8f8fef89d86c7ea1c0302ac6c2f425"
+      },
+      {
+        "path": "src/episode_writer_v4_generate.py",
+        "sha256": "48eef8fb484fbd77dd4d7b0c04fd3aed2eb19eef2c2f1a93204116003574f7d4"
+      },
+      {
+        "path": "src/v4_lane_stage.py",
+        "sha256": "085122b3caffa0cc9686e66a29c2677595515a090d893b8c2a4eb4a0c98a8eed"
+      },
+      {
+        "path": "prompts/episode_spine_architect_v4_generic.md",
+        "sha256": "7d408ccda2002bc24ac234d4b32e9fce7d3192455854f4a930f217b5acbe1626"
+      },
+      {
+        "path": "prompts/episode_writer_v4_generic.md",
+        "sha256": "3a030ce418bf3d5a46dcb0cfa6fce86b4cb8cf3333d6b7aedea4ebfe9d6bfb29"
+      },
+      {
+        "path": "prompts/v4_logistics_repair_haiku.md",
+        "sha256": "f0baf5a8e9b1007009539c882b24fc10ad389f253250b639983e65c2f1b675ac"
+      },
+      {
+        "path": "src/v4_full_pipeline.py",
+        "sha256": "5627b8d8d2acafd79d32fe9d10617b0a34ddd6532cb47609f3a949a1251e32bd"
+      },
+      {
+        "path": "src/v4_paid_guard.py",
+        "sha256": "f78b989a927b307ac83b311290671eb75a4d7869fdba928dfb922b7ed7465edf"
+      },
+      {
+        "path": "experiments/v4_one_case_full_run.py",
+        "sha256": "93da654d32929a67eda3b48a9595bfe2d2baa5dc0d5f16a97c119efe3e81ab98"
+      },
+      {
+        "path": ".github/workflows/v4-mara-full-oneshot.yml",
+        "sha256": "43617b1dd2b46c72b51bf2aa382cb3516046a6e2e71669bc0f61ef373b443c05"
+      },
+      {
+        "path": "src/v4_epistemic_repair.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "prompts/v4_epistemic_repair_haiku.md",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "src/episode_spine_v4_1_generate.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "src/v4_1_lane_stage.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "src/v4_1_full_pipeline.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "src/v4_1_paid_guard.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": "experiments/v4_1_one_case_full_run.py",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      },
+      {
+        "path": ".github/workflows/v4-1-mara-full-oneshot.yml",
+        "sha256": "SHA256_PENDING_OFFLINE_CI"
+      }
+    ]
+  },
+  "bounded_failure_policy": {
+    "spine_replan_allowed": true,
+    "spine_revision_is_data_feedback_not_code_change": true,
+    "max_english_repair_attempts": 1,
+    "max_translation_repair_attempts": 1,
+    "remaining_blocker_after_bound": "STOP_AND_MARK_CASE_FAIL",
+    "never_patch_runtime_during_active_case": true
+  },
+  "qualification_evidence": {
+    "baseline_publication_ready_artifact": "data/specifications/story_lab/age18_cross_age_final_delivery_v1.json",
+    "baseline_status": "SINGLE_CASE_QUALIFIED",
+    "frozen_runtime_has_not_yet_passed_a_fresh_case": true
+  },
+  "uncapped_output_policy": {
+    "client_output_token_ceiling": null,
+    "send_max_tokens_in_v3_api_requests": false,
+    "provider_model_limits_still_apply": true,
+    "retry_policy_unchanged": true,
+    "previous_paid_claim_invalid_for_this_revision": true
+  },
+  "v4_workflow": {
+    "derived_route_single_source": "beats[].location_ref",
+    "repair_scope": [
+      "logistics_plan.feasibility_rationale",
+      "logistics_plan.movement_constraints",
+      "logistics_plan.time_window"
+    ],
+    "repair_model": "anthropic/claude-haiku-4.5",
+    "mechanical_field_only": "logistics_plan.location_sequence",
+    "repair_requires_independent_luna_gate": true,
+    "writer_review_authority": "LUNA_ACCEPT_NOT_HUMAN",
+    "manual_story_edits_forbidden": true,
+    "repair_budget_status": "PENDING_EXPLICIT_PAID_APPROVAL",
+    "semantic_luna_replan_repair": {
+      "model": "anthropic/claude-haiku-4.5",
+      "stage": "REPLAN_SOURCE_BOUND_REVERSAL_CLAIM_NARROWING",
+      "permitted_fields": [
+        "reversal.evidence[N].claim",
+        "reversal.evidence[N].certainty",
+        "reversal.reinterpretation",
+        "reversal.inference_ceiling",
+        "reversal.unresolved_after_reversal"
+      ],
+      "certainty_strengthening_prohibited": true,
+      "no_beat_or_branch_edit": true,
+      "full_contract_recheck_required": true,
+      "independent_luna_reaudit_required": true,
+      "max_patch_fields": 6,
+      "no_automatic_paid_retry": true
+    }
+  }
+}
