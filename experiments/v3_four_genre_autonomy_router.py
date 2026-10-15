@@ -22,7 +22,7 @@ from src.saga_spine_v2_contract import CharacterSagaSpineV2
 from src.premise_architect_v2_contract import PremiseLabStateV1, PremiseCandidateV2
 
 MATRIX=Path("data/specifications/story_lab/v3_four_genre_stress_matrix_20261015.json")
-PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json")
+PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v3_uncapped.json")
 FROZEN_SHA="63e1e3ce82c244bc5bb02b0463a9a1a6715c941b"
 STAGES=(
     "SPINE_ARCHITECT","SPINE_GATE","SPINE_HUMAN_APPROVAL",
