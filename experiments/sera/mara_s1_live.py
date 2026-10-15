@@ -212,12 +212,13 @@ def run(*, key: str, outpath: Path, launch_id: str) -> dict:
         "commit_authorized": False, "production_db_writes": 0,
     }
 
+    if outpath.exists():
+        raise ValueError("SERA_EVIDENCE_IMMUTABLE_PATH_EXISTS")
+
     def persist():
         outpath.parent.mkdir(parents=True, exist_ok=True)
-        if outpath.exists():
-            raise ValueError("SERA_EVIDENCE_IMMUTABLE_PATH_EXISTS")
-        # Atomic-safe relative to interruptions: write stage evidence then
-        # replace a single owned file; never overwrite a prior run artifact.
+        # Update only THIS run's evidence while in progress. The workflow
+        # archives the finished file and never reuses the launch id/path.
         stage_path = outpath.with_suffix(".stage")
         stage_path.write_text(json.dumps(result, ensure_ascii=False,
                                          indent=2, default=str) + "\n")
