@@ -23,7 +23,7 @@ PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v4.json")
 
 
 def build_model_reviewed_spine(spine_result:dict[str,Any], *, case_id:str)->dict[str,Any]:
-    if spine_result.get("status")!="awaiting_human_review":
+    if spine_result.get("status")!="v4_gate_accept_model_reviewed":
         raise RuntimeError("V4_SPINE_NOT_FROZEN_VALIDATED")
     gate=EpisodeSpineGateV2.model_validate(spine_result.get("gate"))
     if gate.decision!="ACCEPT":
