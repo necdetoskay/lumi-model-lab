@@ -17,6 +17,8 @@ from dataclasses import dataclass,field
 from pathlib import Path
 
 from src.frozen_lane_verify import verify_frozen_lane
+from src.saga_blueprint_contract import NarrativeFixture
+from src.premise_architect_v2_contract import PremiseLabStateV1, PremiseCandidateV2
 
 MATRIX=Path("data/specifications/story_lab/v3_four_genre_stress_matrix_20261015.json")
 PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json")
@@ -126,6 +128,31 @@ def load_matrix()->dict:
                and len(row.get("required_continuity",[]))==3
                and row.get("choice_a")!=row.get("choice_b"),
                "STRESS_CASE_UNDERDEFINED")
+        source_files=row.get("input_files") or {}
+        _check(set(source_files)=={"fixture","initial_state","controlled_premise"}
+               and row.get("saga_input_status")=="NOT_CREATED"
+               and row.get("real_spine_eligible") is False,
+               "CASE_INPUTS_UNDERDEFINED_OR_SPINE_ELIGIBILITY_FAKED")
+        for source in source_files.values():
+            _check(isinstance(source,str) and
+                   source.startswith("data/specifications/story_lab/four_genre_v3_inputs/")
+                   and ".." not in source and Path(source).is_file(),
+                   "CASE_INPUT_PATH_INVALID")
+        fixture=NarrativeFixture.model_validate(json.loads(
+            Path(source_files["fixture"]).read_text(encoding="utf-8")))
+        state=PremiseLabStateV1.model_validate(json.loads(
+            Path(source_files["initial_state"]).read_text(encoding="utf-8")))
+        wrapper=json.loads(Path(source_files["controlled_premise"]).read_text(encoding="utf-8"))
+        premise=PremiseCandidateV2.model_validate(wrapper["premise"])
+        _check(fixture.character.name==row["protagonist"]
+               and fixture.character.age==18
+               and premise.title==row["title"]
+               and premise.logline==row["logline"]
+               and premise.constraints==row["rules"]
+               and set(premise.location_refs).issubset(
+                   {e.key for e in state.world_access})
+               and wrapper.get("human_creative_approval_required_before_writer") is True,
+               "CASE_AUTHORITY_INPUT_MISMATCH")
         ids.add(row["case_id"]);genres.add(row["genre"])
     _check(len(ids)==4 and genres=={
         "DETECTIVE_MYSTERY","SCIENCE_FICTION","POLITICAL_INTRIGUE","FANTASY_ADVENTURE"
@@ -302,6 +329,10 @@ def plan()->dict:
             "genre":c["genre"],
             "title":c["title"],
             "next_stage":RepairRouter.for_case(c["case_id"]).stage,
+            "validated_input_files":c["input_files"],
+            "fixture_initial_state_premise_schema_valid":True,
+            "saga_spine_input_created":False,
+            "real_spine_eligible":False,
             "actual_story_generated":False,
             "actual_spine_approved":False,
             "actual_model_repair_performed":False,

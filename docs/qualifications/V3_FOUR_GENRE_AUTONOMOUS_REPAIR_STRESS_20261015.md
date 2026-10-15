@@ -50,6 +50,15 @@ Plan evidence:
 
 The resulting status is `DATA_READY_OFFLINE_NO_PROVIDER_RUNS`, meaning scenarios/guards ready, NOT four new stories generated. The F2 success remains the read-only regression anchor; neither accepted bilingual story nor world records change.
 
+
+## Input schema qualification — separate from actual Spine or Writer generation
+
+Each of the four new cases now has three real schema-valid input documents: an age-18 NarrativeFixture (character/world), a PremiseLabStateV1 (known facts and allowed locations), and a controlled PremiseCandidateV2. The twelve JSON documents live in data/specifications/story_lab/four_genre_v3_inputs/. They are validated against the repository's Pydantic schemas; the premise title, character, constraints, and location references are checked across documents. These are upfront case inputs, NOT manual story repairs.
+
+A matching independent CharacterSagaSpineV2 has NOT yet been created and validated for each world. Therefore the preflight correctly records saga_spine_input_created=false and real_spine_eligible=false for all four cases. The next task is to prepare/validate independent Saga inputs before any paid Spine/Writer run can legitimately start. This stage must never invent human APPROVE or claim that a simulated model answer was a live story.
+
+Four extra case schema tests bring the combined regression target to 245 tests while all 43 frozen V3 source files remain untouched.
+
 ## Required real-world qualification metrics
 
 For EACH new actual story, record:

@@ -73,6 +73,28 @@ def test_four_fixtures_are_distinct_data_without_frozen_runtime_edits():
     assert data["policy"]["human_spine_approval_required_before_writer"] is True
 
 
+@pytest.mark.parametrize("case_index",range(4))
+def test_each_new_case_has_real_validated_world_character_state_and_premise(case_index):
+    import json
+    from pathlib import Path
+    from src.saga_blueprint_contract import NarrativeFixture
+    from src.premise_architect_v2_contract import PremiseLabStateV1,PremiseCandidateV2
+    case=r.load_matrix()["cases"][case_index]
+    inp=case["input_files"]
+    fixture=NarrativeFixture.model_validate(json.loads(Path(inp["fixture"]).read_text()))
+    state=PremiseLabStateV1.model_validate(json.loads(Path(inp["initial_state"]).read_text()))
+    p=json.loads(Path(inp["controlled_premise"]).read_text())
+    premise=PremiseCandidateV2.model_validate(p["premise"])
+    assert fixture.character.age==18
+    assert fixture.character.name==case["protagonist"]
+    assert premise.title==case["title"]
+    assert len(state.world_access)>=3
+    assert premise.constraints==case["rules"]
+    assert p["human_creative_approval_required_before_writer"] is True
+    assert case["saga_input_status"]=="NOT_CREATED"
+    assert case["real_spine_eligible"] is False
+
+
 def test_offline_plan_does_not_claim_real_model_generation(tmp_path):
     a=r.write_plan(tmp_path/"one")
     assert a["case_count"]==4 and a["new_paid_provider_posts"]==0
