@@ -18,6 +18,7 @@ from pathlib import Path
 
 from src.frozen_lane_verify import verify_frozen_lane
 from src.saga_blueprint_contract import NarrativeFixture
+from src.saga_spine_v2_contract import CharacterSagaSpineV2
 from src.premise_architect_v2_contract import PremiseLabStateV1, PremiseCandidateV2
 
 MATRIX=Path("data/specifications/story_lab/v3_four_genre_stress_matrix_20261015.json")
@@ -129,15 +130,21 @@ def load_matrix()->dict:
                and row.get("choice_a")!=row.get("choice_b"),
                "STRESS_CASE_UNDERDEFINED")
         source_files=row.get("input_files") or {}
-        _check(set(source_files)=={"fixture","initial_state","controlled_premise"}
-               and row.get("saga_input_status")=="NOT_CREATED"
-               and row.get("real_spine_eligible") is False,
+        _check(set(source_files)=={"fixture","initial_state","controlled_premise","saga_spine"}
+               and row.get("saga_input_status") in {
+                   "CREATED_PENDING_SCHEMA_VERIFICATION","CREATED_SCHEMA_VALID"
+               }
+               and row.get("real_spine_eligible") is (
+                   row.get("saga_input_status")=="CREATED_SCHEMA_VALID"
+               ),
                "CASE_INPUTS_UNDERDEFINED_OR_SPINE_ELIGIBILITY_FAKED")
         for source in source_files.values():
             _check(isinstance(source,str) and
                    source.startswith("data/specifications/story_lab/four_genre_v3_inputs/")
                    and ".." not in source and Path(source).is_file(),
                    "CASE_INPUT_PATH_INVALID")
+        saga=CharacterSagaSpineV2.model_validate(json.loads(
+            Path(source_files["saga_spine"]).read_text(encoding="utf-8")))
         fixture=NarrativeFixture.model_validate(json.loads(
             Path(source_files["fixture"]).read_text(encoding="utf-8")))
         state=PremiseLabStateV1.model_validate(json.loads(
@@ -145,6 +152,10 @@ def load_matrix()->dict:
         wrapper=json.loads(Path(source_files["controlled_premise"]).read_text(encoding="utf-8"))
         premise=PremiseCandidateV2.model_validate(wrapper["premise"])
         _check(fixture.character.name==row["protagonist"]
+               and row["protagonist"] in saga.origin.summary
+               and saga.main_saga.milestones[0].key in premise.target_refs
+               and all(truth.mode=="UNRESOLVED_BY_DESIGN"
+                       for truth in saga.main_saga.hidden_truths)
                and fixture.character.age==18
                and premise.title==row["title"]
                and premise.logline==row["logline"]
@@ -322,7 +333,7 @@ def plan()->dict:
     matrix=load_matrix()
     return {
         "schema":"lumi.v3.four-genre-stress-preflight.v1",
-        "status":"DATA_READY_OFFLINE_NO_PROVIDER_RUNS",
+        "status":"FOUR_SAGA_INPUTS_CREATED_NO_PROVIDER_RUNS",
         "frozen_v3_sha":FROZEN_SHA,
         "cases":[{
             "case_id":c["case_id"],
@@ -331,8 +342,9 @@ def plan()->dict:
             "next_stage":RepairRouter.for_case(c["case_id"]).stage,
             "validated_input_files":c["input_files"],
             "fixture_initial_state_premise_schema_valid":True,
-            "saga_spine_input_created":False,
-            "real_spine_eligible":False,
+            "saga_spine_input_created":True,
+            "saga_spine_schema_valid":True,
+            "real_spine_eligible":c["real_spine_eligible"],
             "actual_story_generated":False,
             "actual_spine_approved":False,
             "actual_model_repair_performed":False,
