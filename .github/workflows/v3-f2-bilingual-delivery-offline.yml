@@ -1,0 +1,88 @@
+name: Final V3 F2 Bilingual Delivery Read-Only Gate
+on:
+  push:
+    branches: [experiment/v3-f2-final-delivery-staging-20261015]
+    paths: [experiments/triggers/v3-f2-final-delivery-offline-20261015.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-v3-f2-delivery-staging-offline-20261015
+  cancel-in-progress: false
+
+jobs:
+  stage-without-publication:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-final-delivery-staging-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-DELIVERY-OFFLINE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 7241aa962ab4068de7984a0c7ab32af570042388
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Prove 43 frozen V3 hashes and 152 integration tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q \
+            tests/test_v3_f2_final_delivery_stage.py \
+            tests/test_v3_f2_turkish_sol_adjudication_once.py \
+            tests/test_v3_f2_turkish_translation_and_fidelity_once.py \
+            tests/test_v3_f2_quality_luna_recheck_probe.py \
+            tests/test_v3_real_model_repair_evidence.py \
+            tests/test_v3_f2_autonomous_quality_probe.py \
+            tests/test_v3_unattended_quality_model_adapter.py \
+            tests/test_v3_unattended_story_quality.py \
+            tests/test_v3_aion_f2_writer_single_attempt_probe.py \
+            tests/test_v3_single_attempt_aion_writer_guard.py \
+            tests/test_v3_single_attempt_guard.py \
+            tests/test_age18_frozen_lane_v1.py \
+            tests/test_frozen_lane_generic_spine_runtime.py \
+            tests/test_age18_lane_stabilization_matrix.py \
+            tests/test_sonnet55_cross_age_matrix.py \
+            tests/test_story_lane_qualification_policy.py \
+            tests/test_frozen_lane_authority_gate.py \
+            tests/test_frozen_lane_repair_runtime.py \
+            tests/test_frozen_lane_translation_runtime.py \
+            tests/test_deterministic_translation_semantic_guards.py
+      - name: Independently regenerate and compare read-only staged artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.
+          python -B -m experiments.v3_f2_final_delivery_stage --out-dir "$RUNNER_TEMP/f2-staged-unpublished"
+          cmp "$RUNNER_TEMP/f2-staged-unpublished/story.en.txt" evidence/v3-f2-final-delivery-staging-20261015/story.en.txt
+          cmp "$RUNNER_TEMP/f2-staged-unpublished/story.tr.txt" evidence/v3-f2-final-delivery-staging-20261015/story.tr.txt
+          cmp "$RUNNER_TEMP/f2-staged-unpublished/state-proposals.json" evidence/v3-f2-final-delivery-staging-20261015/state-proposals.json
+          cmp "$RUNNER_TEMP/f2-staged-unpublished/delivery-manifest.json" evidence/v3-f2-final-delivery-staging-20261015/delivery-manifest.json
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"f2-staged-unpublished"
+          d=json.loads((p/"delivery-manifest.json").read_text())
+          s=json.loads((p/"state-proposals.json").read_text())
+          assert d["status"]=="DELIVERY_STAGED_UNPUBLISHED"
+          assert d["published"] is False
+          assert d["world_state_committed"] is False
+          assert d["stage_new_provider_posts"]==0
+          assert not s["applied_operations"]
+          assert len(s["candidate_operations"])==5
+          print("ZERO_PAID_POSTS_NO_PUBLISH_NO_STATE_COMMIT_STAGE_EQUALS_GIT")
+          PY
+      - name: Save independent bilingual delivery staging proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-final-v3-f2-delivery-offline-${{ github.run_id }}
+          path: ${{ runner.temp }}/f2-staged-unpublished/
+          if-no-files-found: error
+          retention-days: 90
