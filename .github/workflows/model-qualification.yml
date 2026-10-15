@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   qualify:
-    if: ${{ inputs.qualification_config != 'LUMI_EXISTING_KEY_READONLY_V1' && inputs.qualification_config != 'LUMI_COHORT_BASELINE_PAID_V1' }}
+    if: ${{ inputs.qualification_config != 'LUMI_EXISTING_KEY_READONLY_V1' && inputs.qualification_config != 'LUMI_COHORT_BASELINE_PAID_V1' && inputs.qualification_config != 'LUMI_B01_SPEND_DIAGNOSTIC_GET_ONLY_V1' }}
     runs-on: self-hosted
     timeout-minutes: 60
     env:
@@ -222,3 +222,67 @@ jobs:
           path: ${{ runner.workspace }}/_lumi_story_frozen_ten_v1/baseline-v1
           if-no-files-found: warn
           retention-days: 90
+
+  lumi-b01-provider-usage-readonly:
+    name: B01 diagnostic - authenticated shared-key usage GET only
+    if: ${{ github.event_name == 'workflow_dispatch' && github.actor == 'necdetoskay' && github.ref == 'refs/heads/investigation/b01-provider-cost-readonly-v1' && github.sha == inputs.model && inputs.qualification_config == 'LUMI_B01_SPEND_DIAGNOSTIC_GET_ONLY_V1' && inputs.screen_only == true && inputs.rerun == false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 4
+    permissions:
+      contents: read
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - name: Print numeric charge snapshot without exposing key or identity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os,urllib.request
+          from decimal import Decimal,InvalidOperation
+          from datetime import datetime,timezone
+          url="https://openrouter.ai/api/v1/key"
+          token=os.environ.get("OPENROUTER_API_KEY","")
+          if not (token.startswith("sk-or-") and 10<=len(token)<=256
+                  and not any(c.isspace() for c in token)):
+              raise SystemExit("GET_ONLY_KEY_UNAVAILABLE")
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self,*args):raise ValueError("redirect denied")
+          request=urllib.request.Request(url,method="GET",
+              headers={"Authorization":"Bearer "+token,"Accept":"application/json"})
+          try:
+              with urllib.request.build_opener(NoRedirect()).open(request,timeout=12) as resp:
+                  if resp.status != 200 or resp.geturl()!=url:raise ValueError("GET response")
+                  raw=resp.read(32769)
+              if len(raw)>32768:raise ValueError("GET oversize")
+              row=json.loads(raw)["data"]
+              if not isinstance(row,dict):raise ValueError("GET shape")
+          except Exception:
+              raise SystemExit("GET_ONLY_PROVIDER_METADATA_UNAVAILABLE") from None
+          def safe_amount(field):
+              raw=row.get(field)
+              if type(raw) not in (str,float,int):return "UNAVAILABLE"
+              try:
+                  n=Decimal(str(raw))
+                  if not n.is_finite() or n<0:return "UNAVAILABLE"
+                  return format(n,"f")
+              except (ValueError,InvalidOperation,TypeError):
+                  return "UNAVAILABLE"
+          evidence={
+              "schema":"lumi.b01-provider-key-usage-readonly.v1",
+              "snapshot_utc":datetime.now(timezone.utc).isoformat(),
+              "existing_inference_key_used":True,
+              "usage_total_usd":safe_amount("usage"),
+              "usage_daily_usd":safe_amount("usage_daily"),
+              "usage_weekly_usd":safe_amount("usage_weekly"),
+              "usage_monthly_usd":safe_amount("usage_monthly"),
+              "remaining_key_limit_usd":safe_amount("limit_remaining"),
+              "key_limit_usd":safe_amount("limit"),
+              "byok_usage_total_usd":safe_amount("byok_usage"),
+              "model_posts":0,
+              "provider_get_count":1,
+              "per_generation_charge_attributable":False,
+              "provider_management_activity_authorized":False,
+              "account_wide_spending_isolation_proven":False,
+          }
+          print("B01_PROVIDER_READ_ONLY_SPEND_SNAPSHOT="+json.dumps(evidence,sort_keys=True))
+          PY
