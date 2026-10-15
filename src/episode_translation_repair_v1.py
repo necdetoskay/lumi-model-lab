@@ -81,7 +81,7 @@ def run(
         },
         seed=2026093006,
         request_class="translation",
-        max_tokens=2000,
+        max_tokens=None,
     )
     latency=round(time.perf_counter()-started,3)
     repaired,applied=_apply(turkish,payload)
