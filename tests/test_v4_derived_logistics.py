@@ -90,6 +90,10 @@ def test_v4_model_approval_cannot_be_forged_as_human_review():
     other["model_creative_review"]["verdict"]="REPLAN"
     with pytest.raises(RuntimeError,match="evidence"):
         _validate_source(other)
+    tampered=copy.deepcopy(newer)
+    tampered["episode_spine"]["title"]="Injected and unreviewed"
+    with pytest.raises(RuntimeError,match="source hash mismatch"):
+        _validate_source(tampered)
 
 def test_v4_full_runner_no_grant_does_not_dispatch(tmp_path):
     from src.v4_full_pipeline import run
