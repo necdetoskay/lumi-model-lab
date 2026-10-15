@@ -75,7 +75,7 @@ def test_post_observes_charged_cost_before_json_validation(tmp_path):
     g.post(URL,json={"model":MODEL,"messages":[]})
     assert g.spent==Decimal("0.08125")
     assert g.posts==1
-    assert (tmp_path/"guard"/"004-provider_observed.json").exists()
+    assert (tmp_path/"guard"/"003-provider_observed.json").exists()
 
 
 def test_observed_overspend_blocks_further_posts(tmp_path):
