@@ -1,0 +1,203 @@
+name: Final V3 F2 World Outcome Evidence One Attempt
+on:
+  push:
+    branches:
+      - experiment/v3-f2-world-outcome-once-20261015
+    paths:
+      - experiments/triggers/v3-f2-world-judge-offline-20261015.json
+      - experiments/triggers/v3-f2-world-judge-once-20261015.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-v3-f2-world-judge-one-20261015
+  cancel-in-progress: false
+
+jobs:
+  offline:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-world-outcome-once-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-WORLD-OFFLINE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: b24026db2addbdf7f68ff9a70737e60e06e64d9c
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Verify original frozen V3 and world outcome safety tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q \
+            tests/test_v3_f2_world_outcome_one_judge.py \
+            tests/test_v3_f2_world_outcome_evidence_gate.py \
+            tests/test_v3_f2_final_delivery_stage.py \
+            tests/test_v3_f2_turkish_sol_adjudication_once.py \
+            tests/test_v3_f2_turkish_translation_and_fidelity_once.py \
+            tests/test_v3_f2_quality_luna_recheck_probe.py \
+            tests/test_v3_real_model_repair_evidence.py \
+            tests/test_v3_f2_autonomous_quality_probe.py \
+            tests/test_v3_unattended_quality_model_adapter.py \
+            tests/test_v3_unattended_story_quality.py \
+            tests/test_v3_aion_f2_writer_single_attempt_probe.py \
+            tests/test_v3_single_attempt_aion_writer_guard.py \
+            tests/test_v3_single_attempt_guard.py \
+            tests/test_age18_frozen_lane_v1.py \
+            tests/test_frozen_lane_generic_spine_runtime.py \
+            tests/test_age18_lane_stabilization_matrix.py \
+            tests/test_sonnet55_cross_age_matrix.py \
+            tests/test_story_lane_qualification_policy.py \
+            tests/test_frozen_lane_authority_gate.py \
+            tests/test_frozen_lane_repair_runtime.py \
+            tests/test_frozen_lane_translation_runtime.py \
+            tests/test_deterministic_translation_semantic_guards.py
+      - name: Prove read-only claim lookup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/contents/experiments/v3_f2_world_outcome_one_judge.py?ref=experiment/v3-f2-world-outcome-once-20261015" --jq .sha >/dev/null
+          echo WORLD_CLAIM_READONLY_PASS
+
+  one-world-evidence-judge:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-world-outcome-once-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-WORLD-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify narrow one-Luna evidence-only grant before secrets
+        shell: bash
+        env:
+          GRANT_PATH: experiments/triggers/v3-f2-world-judge-once-20261015.json
+          GUARD_SHA: b24026db2addbdf7f68ff9a70737e60e06e64d9c
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f2-world-judge"
+          export GRANT_COPY="$RUNNER_TEMP/f2-world-judge/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          from decimal import Decimal
+          grant=json.loads(pathlib.Path(os.environ["GRANT_PATH"]).read_text(encoding="utf-8"))
+          expected={
+              "schema":"lumi.v3-f2-world-outcome-judge-grant.v1",
+              "authorized":True,
+              "stage":"WORLD_OUTCOME_EVIDENCE_ONLY",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "english_story_sha256":"990e6a009aea84aeadd74f9734ae8663ae495bf8d9800d20e4281f248064c5a8",
+              "turkish_story_sha256":"a163d9cbde430bd2023bb9e673d0e8ff4b380c7567aa84c4b476252dd2ddca19",
+              "model":"openai/gpt-5.6-luna",
+              "frozen_runtime_sha":"63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+              "source_delivery_commit":"3aa9af4f02154f7652d3f9844e194202efc8a936",
+              "guard_commit_sha":os.environ["GUARD_SHA"],
+          }
+          if any(grant.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("WORLD_GRANT_SCOPE_INVALID")
+          gid=grant.get("grant_id")
+          if not isinstance(gid,str) or not re.fullmatch("[A-Za-z0-9][A-Za-z0-9_-]{7,79}",gid):
+              raise SystemExit("WORLD_GRANT_ID_INVALID")
+          ref=grant.get("human_paid_authorization_reference")
+          if not isinstance(ref,str) or not ref.strip():
+              raise SystemExit("WORLD_SEPARATE_STAGE_APPROVAL_REQUIRED")
+          try: cap=Decimal(str(grant["max_total_usd"]))
+          except Exception as exc: raise SystemExit("WORLD_GRANT_BUDGET_INVALID") from exc
+          if not cap.is_finite() or not Decimal("0") < cap <= Decimal("0.03"):
+              raise SystemExit("WORLD_GRANT_BUDGET_INVALID")
+          shutil.copyfile(os.environ["GRANT_PATH"],os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          print("WORLD_GRANT_PREFLIGHT_PASS")
+          PY
+          git cat-file -e "${GUARD_SHA}^{commit}"
+          git checkout --detach "$GUARD_SHA"
+          test "$(git rev-parse HEAD)" = "$GUARD_SHA"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Offline source and guard checks with no provider access
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_f2_world_outcome_one_judge.py tests/test_v3_f2_world_outcome_evidence_gate.py
+      - name: Verify globally unique single-run external claim
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/f2-world-judge/grant.json
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1" || { echo "::error::WORLD_REPLAY_BLOCKED"; exit 1; }
+          python3 - <<'PY'
+          import base64,json,os,subprocess,time
+          grant=json.load(open(os.environ["GRANT_COPY"],encoding="utf-8"))
+          gid=grant["grant_id"]
+          branch="evidence/v3-f2-world-judge-claim-"+gid
+          url="repos/"+os.environ["GITHUB_REPOSITORY"]+"/contents/claims/"+gid+".json?ref="+branch
+          expected={
+              "schema":"lumi.v3-f2-world-judge-global-claim.v1",
+              "authorized":True,
+              "stage":"WORLD_OUTCOME_EVIDENCE_ONLY",
+              "grant_id":gid,
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "model":"openai/gpt-5.6-luna",
+              "english_story_sha256":"990e6a009aea84aeadd74f9734ae8663ae495bf8d9800d20e4281f248064c5a8",
+              "source_commit":os.environ["GITHUB_SHA"],
+              "run_id":int(os.environ["GITHUB_RUN_ID"]),
+              "guard_commit_sha":"b24026db2addbdf7f68ff9a70737e60e06e64d9c",
+              "max_total_usd":grant["max_total_usd"],
+          }
+          for _ in range(30):
+              response=subprocess.run(["gh","api",url],capture_output=True,text=True)
+              if response.returncode:
+                  if "HTTP 404" in response.stderr:
+                      time.sleep(2)
+                      continue
+                  raise SystemExit("WORLD_CLAIM_LOOKUP_DENIED")
+              try:
+                  claim=json.loads(base64.b64decode(json.loads(response.stdout)["content"]))
+              except (ValueError,KeyError,TypeError) as exc:
+                  raise SystemExit("WORLD_CLAIM_FORMAT_INVALID") from exc
+              if any(claim.get(k)!=v for k,v in expected.items()):
+                  raise SystemExit("WORLD_CLAIM_RUN_BINDING_MISMATCH")
+              print("WORLD_GLOBAL_RUN_CLAIM_VERIFIED")
+              break
+          else:
+              raise SystemExit("WORLD_GLOBAL_RUN_CLAIM_MISSING")
+          PY
+      - name: One Luna evidence-only world outcome review
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_WORLD_JUDGE_GLOBAL_CLAIM_VERIFIED: "YES"
+          GRANT_COPY: ${{ runner.temp }}/f2-world-judge/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::OPENROUTER_SECRET_NOT_AVAILABLE"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v3_f2_world_outcome_one_judge \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_f2_world_judge_claims" \
+            --evidence-dir "$RUNNER_TEMP/f2-world-judge/evidence"
+          echo "WORLD_EVIDENCE_ONLY_NO_STATE_COMMIT_NO_PUBLICATION"
+      - name: Archive raw model finding or STOP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-f2-world-outcome-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/f2-world-judge/evidence/
+          if-no-files-found: warn
+          retention-days: 90
