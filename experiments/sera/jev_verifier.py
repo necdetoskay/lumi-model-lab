@@ -12,7 +12,7 @@ import math
 from typing import Any
 
 from experiments.sera.coverage import (
-    CoverageError, prose_hash, validate_report,
+    CoverageError, prose_hash, reconcile, validate_report,
 )
 
 CHOICES = {
@@ -54,6 +54,12 @@ def build_atomic_questions(*, prose: str, scene_key: str, entry_revision: int,
         or coverage.get("entry_revision") != entry_revision
     ):
         raise CoverageError("JEV_COVERAGE_BINDING_INVALID")
+    recomputed_coverage = reconcile(
+        prose=prose, scene_key=scene_key, entry_revision=entry_revision,
+        registry=registry, writer=writer, independent=independent,
+    )
+    if recomputed_coverage != coverage:
+        raise CoverageError("JEV_COVERAGE_RECOMPUTE_MISMATCH")
     claims = {}
     for role, report in (("WRITER", writer), ("INDEPENDENT", independent)):
         validated = validate_report(report, role=role, prose=prose,
