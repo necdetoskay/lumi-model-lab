@@ -90,6 +90,7 @@ The first deterministic engine supports:
 - `LEARN_FACT` (registered fact + explicit application-owned `(character_id, fact_id)` observation grant; a prose quote alone cannot grant access) and `TELL_FACT` (sender knows fact, recipient co-located);
 - `RECORD_FACT` (holder of a document logs known information);
 - `OPEN_THREAD` / `RESOLVE_THREAD` (well-formed thread transition).
+- `INTERACT_OBJECT` (records a non-mutating observation or interaction in the append-only ledger; the object remains unchanged).
 
 Other actions fail closed until implemented. Evidence strings are checked for literal occurrence in prose (a necessary condition, not a sufficient semantic proof). Every accepted event is recorded; no entity may disappear during a scene.
 
@@ -122,6 +123,34 @@ No teleporter path to sealed dispatch office exists; visits are prohibited. Cons
 **M4:** a live, isolated nine-scene Mara run; compare with V4.2 on structural validity, false PASS, repair locality, quality, latency and per-call USD. Do not promote without cross-case repeat evidence.
 
 **M1 success does not imply full extraction completeness.** No JEV/live-model result is claimed until M3/M4 actually runs.
+
+## 9.1 M2 reconciliation implementation (2026-10-15)
+
+M2 implements `sera.extraction.v0.1` reports for a writer and a separately
+prompted, blinded independent extractor. Both are bound to the same prose
+SHA-256 and entry revision. Each item carries an exact textual evidence quote.
+Rather than trusting the LLM's character offsets, the `extractor_adapter`
+maps the exact quote and occurrence index to string offsets deterministically.
+Unknown exact quote, stale revision, fabricated source role or malformed schema
+fail closed.
+
+Known-entity aliases offer a supplementary lexical scan. Reports are compared
+by canonical entity ID + qualified presence role, and typed event signature
+(operation, arguments, event time, modality). A mismatch, an unsupported reducer
+operation, an unknown event time, a non-asserted event, a provisional new entity,
+or an unknown canonical ID yields `HOLD`. Agreement without a flagged
+mismatch yields **`RECONCILED_PENDING_SEMANTIC`**, never production PASS.
+
+M2 preserves quote-span evidence but quote existence alone does not prove
+semantic entailment; JEV is a potential M3 atomic semantic gate. JEV itself
+cannot prove that no unmentioned object was missed. The six synthetic,
+manually adjudicated cases include an intentionally shared object omission
+in which both extractors agree yet have 0% recall for that case; this
+demonstrates why calibration must use external gold annotations.
+
+The independent transport is opt-in only, one billable OpenRouter request
+when explicitly launched with `--live`; the CI always uses mocked transport.
+No model quality claim follows from these synthetic tests.
 
 ## 10. Initial spine integrity notes
 
