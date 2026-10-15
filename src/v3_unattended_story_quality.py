@@ -77,6 +77,54 @@ def _semantic_audit(story, packet, audit):
         raise QualityStop("INVALID_AUDIT_CONTRACT") from exc
 
 
+def _model_patch_is_within_reported_quote(*, story, row, findings, segments):
+    """Permit wider exact old/new context ONLY if every changed byte is within
+    a source-located model-auditor finding. Untouched surrounding sentences
+    are literal identity context and cannot be changed.
+    """
+    old, new = row.get("old"), row.get("new")
+    if not isinstance(old,str) or not isinstance(new,str) or story.count(old)!=1:
+        return False
+    old_offset=story.find(old)
+    by_id={s["id"]:s["text"] for s in segments}
+    for finding in findings:
+        quote=finding.get("exact_quote")
+        if not isinstance(quote,str) or not quote or old.count(quote)!=1:
+            continue
+        quote_offset=old.find(quote)
+        locator=finding.get("source_locator")
+        if isinstance(locator,dict) and isinstance(locator.get("char_start"),int):
+            if locator["char_start"]!=old_offset+quote_offset:
+                continue
+        elif not any(quote in by_id.get(span,"")
+                     for span in finding.get("span_ids") or []):
+            continue
+        left=old[:quote_offset]
+        right=old[quote_offset+len(quote):]
+        if not new.startswith(left) or not new.endswith(right):
+            continue
+        modified=new[len(left):len(new)-len(right) if right else None]
+        if not modified.strip() or modified==quote:
+            continue
+        # Extra text within the flagged quote must still be minimal.
+        # Reject invented narration/sentences even if the unchanged
+        # surrounding context is byte-for-byte identical.
+        if (
+            len(modified) - len(quote) > 12
+            or abs(count_words(modified)-count_words(quote)) > 2
+            or (
+                quote.rstrip().endswith((".", "!", "?"))
+                and (
+                    not modified.rstrip().endswith(quote.rstrip()[-1])
+                    or modified.count(quote.rstrip()[-1]) != quote.count(quote.rstrip()[-1])
+                )
+            )
+        ):
+            continue
+        return True
+    return False
+
+
 def qualify(*, story: str, writer_result: dict, approved: dict,
             audit: Callable, repair: Callable) -> dict:
     if not story.strip() or writer_result.get("story", "").strip() != story.strip():
@@ -120,15 +168,16 @@ def qualify(*, story: str, writer_result: dict, approved: dict,
         rows = proposal.get("repairs") if isinstance(proposal, dict) else None
         if not isinstance(rows, list) or not 1 <= len(rows) <= MAX_REPAIRS:
             raise QualityStop("INVALID_REPAIR_MODEL_OUTPUT")
-        by_id = {s["id"]:s["text"] for s in segment_story(story)}
         for row in rows:
             old, new = row.get("old"), row.get("new")
             if not isinstance(old,str) or not isinstance(new,str):
                 raise QualityStop("BAD_MODEL_REPLACEMENT")
             if max(len(old), len(new)) > 250 or abs(count_words(new)-count_words(old)) > 25:
                 raise QualityStop("MODEL_REPAIR_EXCEEDS_BOUNDS")
-            if not any(old in by_id.get(sid, "")
-                       for f in findings for sid in f.get("span_ids", [])):
+            if not _model_patch_is_within_reported_quote(
+                story=story,row=row,findings=findings,
+                segments=segment_story(story),
+            ):
                 raise QualityStop("MODEL_REPAIR_NOT_IN_FLAGGED_SPAN")
         try:
             accepted, patches = _apply_local_repairs(story, proposal)
