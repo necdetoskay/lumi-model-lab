@@ -63,7 +63,7 @@ def run(*,case_manifest:Path,out_dir:Path, paid_authorized:bool=False,
     if case["lane_profile"]!=str(PROFILE) or case["case_id"]!="age18.closed-platform.mystery.stress-01":
         raise RuntimeError("V4_CASE_IS_NOT_FRESH_APPROVED_TARGET")
     verification=verify_frozen_lane(PROFILE)
-    if verification["runtime_revision"]!="AGE18-V4-SEMANTIC-REPLAN-REPAIR-v1":
+    if verification["runtime_revision"]!="AGE18-V4-ITERATIVE-QUALITY-REPAIR-v1":
         raise RuntimeError("V4_SOURCE_REVISION_MISMATCH")
     if out_dir.exists():
         raise RuntimeError("V4_EVIDENCE_DIRECTORY_MUST_BE_NEW")
