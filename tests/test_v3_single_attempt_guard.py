@@ -151,3 +151,97 @@ def test_frozen_inputs_unchanged(tmp_path):
             assert call_json(SPINE_MODELS[0])[0]=={"ok": True}
     assert verify_frozen_lane(profile)["verified_files"]==verified["verified_files"]==43
     assert profile.read_bytes()==before
+
+
+def _authorized_mock_grant(tmp_path):
+    import subprocess
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    grant = tmp_path / "grant.json"
+    grant.write_text(json.dumps({
+        "schema": "lumi.v3-single-attempt-paid-grant.v1",
+        "authorized": True,
+        "stage": "SPINE",
+        "case_id": "age18.forbidden-cartographer.fantasy.frozen-01",
+        "frozen_runtime_sha": "63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+        "models": list(SPINE_MODELS),
+        "guard_commit_sha": head,
+        "max_total_usd": "0.50",
+        "grant_id": "V3-F1-TEST-ONE-20261015",
+        "human_approval_reference": "OFFLINE_TEST_APPROVAL_ONLY",
+    }))
+    return grant
+
+
+def test_valid_grant_is_consumed_once_even_if_evidence_dir_changes(tmp_path, monkeypatch):
+    import os
+    import subprocess
+    from experiments import v3_single_attempt_spine_probe as probe
+    grant = _authorized_mock_grant(tmp_path)
+    claim_dir = tmp_path / "claims"
+    # During local development the checkout is dirty; simulate only the status
+    # command, while the actual ancestry/diff calculations stay real.
+    check_output = subprocess.check_output
+    def mock_check_output(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return ""
+        return check_output(args, **kwargs)
+    monkeypatch.setattr(probe.subprocess, "check_output", mock_check_output)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
+    observed = []
+    def zero_network_stage(*, trigger_path, out_dir):
+        observed.append(trigger_path)
+        return {"stage": "SPINE", "result_status": "MOCK_SPINE_COMPLETE"}
+    monkeypatch.setattr(probe, "frozen_stage_run", zero_network_stage)
+    got = run(grant_file=grant, evidence_dir=tmp_path / "one", claim_dir=claim_dir)
+    assert got["result_status"] == "MOCK_SPINE_COMPLETE"
+    assert len(observed) == 1
+    with pytest.raises(SafetyStop, match="PAID_GRANT_ALREADY_CLAIMED"):
+        run(grant_file=grant, evidence_dir=tmp_path / "two", claim_dir=claim_dir)
+    assert len(observed) == 1
+    assert not (tmp_path / "two").exists()
+    claims=list(claim_dir.glob("*.json"))
+    assert len(claims) == 1
+    assert json.loads(claims[0].read_text())["schema"] == "v3-single-attempt-claim.v1"
+
+
+def test_wrong_guard_sha_rejected_before_any_claim(tmp_path, monkeypatch):
+    grant = _authorized_mock_grant(tmp_path)
+    obj = json.loads(grant.read_text())
+    obj["guard_commit_sha"] = "0" * 40
+    grant.write_text(json.dumps(obj))
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
+    with pytest.raises(SafetyStop, match="GUARD_COMMIT_NOT_EXACTLY_APPROVED"):
+        run(grant_file=grant, evidence_dir=tmp_path / "one", claim_dir=tmp_path / "claims")
+    assert not (tmp_path / "claims").exists()
+
+
+def test_dirty_checkout_rejected_prior_to_claim(tmp_path, monkeypatch):
+    from experiments import v3_single_attempt_spine_probe as probe
+    import subprocess
+    grant = _authorized_mock_grant(tmp_path)
+    old = subprocess.check_output
+    def fake_command(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return " M src/episode_spine_v2_generate.py\\n"
+        return old(args, **kwargs)
+    monkeypatch.setattr(probe.subprocess, "check_output", fake_command)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
+    with pytest.raises(SafetyStop, match="DIRTY_CHECKOUT_BLOCKED"):
+        run(grant_file=grant, evidence_dir=tmp_path / "one", claim_dir=tmp_path / "claims")
+    assert not (tmp_path / "claims").exists()
+
+
+def test_valid_paid_grant_requires_persistent_claim_root(tmp_path, monkeypatch):
+    from experiments import v3_single_attempt_spine_probe as probe
+    import subprocess
+    grant = _authorized_mock_grant(tmp_path)
+    old = subprocess.check_output
+    def fake_command(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return ""
+        return old(args, **kwargs)
+    monkeypatch.setattr(probe.subprocess, "check_output", fake_command)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
+    with pytest.raises(SafetyStop, match="PERSISTENT_CLAIM_DIRECTORY_REQUIRED"):
+        run(grant_file=grant, evidence_dir=tmp_path / "one")
+    assert not (tmp_path / "one").exists()

@@ -24,3 +24,10 @@ The intended first live stage is the previously frozen age-18 fantasy case `age1
 - Run offline regression in isolated CI / runner on this exact code SHA.
 - Review explicit authorization and conservative budget ledger reconciliation separately.
 - Never merge to main or deploy LUMI production from this draft.
+
+## Extra live preflight hardening (2026-10-15, zero-cost)
+- Require an explicitly approved **exact wrapper HEAD SHA**, not merely its parent.
+- Compare all additions since frozen V3 against a four-file allowlist; reject dirty checkout.
+- Require a persistent, absolute one-use **grant claim directory**, independent of the chosen evidence directory; exclusive creation before any possible provider POST. A failed attempt still consumes its grant.
+- Reject an absent or invalid grant ID, wrong wrapper SHA, wrong source ancestry, a modified runtime, or an already-claimed grant.
+- This is guard-only hardening. No user-approved paid request has been sent.

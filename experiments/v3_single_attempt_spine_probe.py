@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -21,7 +22,7 @@ PROFILE = Path("data/specifications/story_lab/age18_story_lane_profile_v2_frozen
 CASE = Path("data/specifications/story_lab/age18_forbidden_cartographer_frozen_case_v1.json")
 
 
-def run(*, grant_file: Path, evidence_dir: Path):
+def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
     # An unapproved call is refused without touching provider or output state.
     grant = json.loads(grant_file.read_text(encoding="utf-8"))
     required = {
@@ -42,12 +43,39 @@ def run(*, grant_file: Path, evidence_dir: Path):
         raise SafetyStop("GRANT_COST_CEILING_MISSING_OR_INVALID")
     if not ceiling.is_finite() or ceiling <= 0 or ceiling > Decimal("0.50"):
         raise SafetyStop("GRANT_CEILING_OUTSIDE_PROBE_LIMIT")
-    if subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() != FROZEN_V3_SHA:
-        # On a new non-frozen wrapper branch, the original parent must equal
-        # exactly the authoritative V3 source, with no change to frozen files.
-        parent = subprocess.check_output(["git", "rev-parse", "HEAD^"], text=True).strip()
-        if parent != FROZEN_V3_SHA:
-            raise SafetyStop("V3_RUNTIME_BASE_CHANGED")
+    # Compare an exact, user-approved wrapper HEAD, not HEAD^ (which breaks
+    # when a safe follow-up commit is added to the isolated test branch).
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    if grant.get("guard_commit_sha") != head:
+        raise SafetyStop("GUARD_COMMIT_NOT_EXACTLY_APPROVED")
+    if subprocess.run(["git", "merge-base", "--is-ancestor", FROZEN_V3_SHA, head],
+                      check=False).returncode != 0:
+        raise SafetyStop("FROZEN_V3_NOT_ANCESTOR")
+    # No runtime edits even outside the 43 SHA-locked files. The only allowed
+    # additions are the small qualification guard itself and its evidence.
+    changes = set(subprocess.check_output(
+        ["git", "diff", "--name-only", FROZEN_V3_SHA, head],
+        text=True).splitlines())
+    permitted = {
+        "src/v3_single_attempt_guard.py",
+        "experiments/v3_single_attempt_spine_probe.py",
+        "tests/test_v3_single_attempt_guard.py",
+        "docs/qualifications/V3_SINGLE_ATTEMPT_SPINE_GUARD_V1.md",
+    }
+    if not changes or not changes.issubset(permitted):
+        raise SafetyStop("NON_GUARD_SOURCE_CHANGE_DETECTED")
+    if subprocess.check_output(
+        ["git", "status", "--porcelain", "--untracked-files=normal"],
+        text=True).strip():
+        raise SafetyStop("DIRTY_CHECKOUT_BLOCKED")
+    if claim_dir is None:
+        raise SafetyStop("PERSISTENT_CLAIM_DIRECTORY_REQUIRED")
+    if not claim_dir.is_absolute():
+        raise SafetyStop("CLAIM_DIRECTORY_MUST_BE_ABSOLUTE")
+    claim_identifier = grant.get("grant_id")
+    if not isinstance(claim_identifier, str) or not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9_-]{7,79}", claim_identifier):
+        raise SafetyStop("UNIQUE_GRANT_ID_REQUIRED")
     verified = verify_frozen_lane(PROFILE)
     case = load_case_manifest(CASE)
     if case["case_id"] != required["case_id"]:
@@ -56,6 +84,28 @@ def run(*, grant_file: Path, evidence_dir: Path):
         raise SafetyStop("API_KEY_MISSING")
     if evidence_dir.exists():
         raise SafetyStop("EVIDENCE_DIR_ALREADY_EXISTS_NO_REUSE")
+    if not evidence_dir.is_absolute():
+        raise SafetyStop("EVIDENCE_DIRECTORY_MUST_BE_ABSOLUTE")
+    # Each grant is consumed atomically across all trial output locations.
+    # A crash, timeout, invalid response or failed evidence write also consumes
+    # it: fail-closed, with no implicit request replay after an uncertain charge.
+    claim_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    grant_digest = hashlib.sha256(claim_identifier.encode("utf-8")).hexdigest()
+    claim_path = claim_dir / (grant_digest + ".json")
+    claim_data = json.dumps({
+        "schema": "v3-single-attempt-claim.v1",
+        "grant_sha256": grant_digest,
+        "source_sha": head,
+        "case_id": case["case_id"],
+    }, sort_keys=True).encode("utf-8") + b"\n"
+    try:
+        fd = os.open(claim_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError as exc:
+        raise SafetyStop("PAID_GRANT_ALREADY_CLAIMED") from exc
+    with os.fdopen(fd, "wb") as stream:
+        stream.write(claim_data)
+        stream.flush()
+        os.fsync(stream.fileno())
     evidence_dir.mkdir(parents=True, mode=0o700)
     guard = SingleAttemptSpineGuard(evidence_dir, ceiling)
     trigger = evidence_dir / "stage-trigger.json"
@@ -93,8 +143,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--grant", type=Path, required=True)
     p.add_argument("--evidence-dir", type=Path, required=True)
+    p.add_argument("--claim-dir", type=Path, required=True)
     a = p.parse_args()
-    result = run(grant_file=a.grant, evidence_dir=a.evidence_dir)
+    result = run(grant_file=a.grant, evidence_dir=a.evidence_dir, claim_dir=a.claim_dir)
     print(json.dumps({"stage": result.get("stage"), "status": result.get("result_status"),
                       "human_approval_required": True}, sort_keys=True))
 
