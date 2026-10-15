@@ -525,6 +525,16 @@ class EventGraphStore:
     def verify(self, stream_id):
         """Replay underlying world and verify each graph effect against it."""
         check(self.world.verify_replay(stream_id), "NARRATIVE_WORLD_REPLAY_FAILED")
+        world_ids = self.db.execute(
+            "SELECT revision,event_id FROM world_events WHERE stream_id=? "
+            "ORDER BY revision", (stream_id,),
+        ).fetchall()
+        narrative_ids = self.db.execute(
+            "SELECT revision,event_id FROM narrative_events WHERE stream_id=? "
+            "ORDER BY revision", (stream_id,),
+        ).fetchall()
+        check(world_ids == narrative_ids,
+              "NARRATIVE_WORLD_EVENT_COVERAGE_MISMATCH")
         for event_id, revision, serialized, sha in self.db.execute(
             "SELECT event_id,revision,proposal_json,proposal_sha "
             "FROM narrative_events WHERE stream_id=? ORDER BY revision",
