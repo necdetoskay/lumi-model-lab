@@ -13,6 +13,7 @@ STATE_SCHEMA = "sera.scene-state.v0.1"
 EVENT_TYPES = frozenset({
     "CREATE_ENTITY", "MOVE_CHARACTER", "TRANSFER_OBJECT", "UPDATE_OBJECT",
     "LEARN_FACT", "TELL_FACT", "RECORD_FACT", "OPEN_THREAD", "RESOLVE_THREAD",
+    "INTERACT_OBJECT",
 })
 FACT_CERTAINTY = frozenset({"OBSERVED", "INFERRED", "HYPOTHESIS", "UNKNOWN"})
 
@@ -215,6 +216,24 @@ def apply_scene(
             obj["location"] = recipient["location"]
             sender["last_action_minute"] = at
             recipient["last_action_minute"] = at
+
+        elif kind == "INTERACT_OBJECT":
+            # Preserve a non-mutating interaction in the append-only event ledger.
+            obj = _object(state, event.get("object_id"))
+            actor_id = event.get("actor_id")
+            actor = _character(state, actor_id)
+            interaction = event.get("interaction")
+            need(isinstance(interaction, str) and interaction.strip(),
+                 f"INTERACTION_KIND_MISSING:{eid}")
+            _actor_available(actor, at, actor_id)
+            need(actor["location"] == obj["location"],
+                 f"INTERACTION_OUT_OF_REACH:{eid}")
+            # An object held by someone else may be observed but not physically
+            # manipulated without an explicit authorized handoff.
+            if interaction not in ("LOOK_AT", "OBSERVE", "LISTEN_TO"):
+                need(obj.get("holder") in (None, actor_id),
+                     f"INTERACTION_HELD_BY_OTHER:{eid}")
+            actor["last_action_minute"] = at
 
         elif kind == "UPDATE_OBJECT":
             obj = _object(state, event.get("object_id"))
