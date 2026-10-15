@@ -188,3 +188,7 @@ python -m experiments.sera.spine_contracts evidence/v4-2-mara-run-38794774463/so
 ```
 
 No external packages or API keys required for M0/M1.
+
+## 12. Typed object/weather history extension (v0.2)
+
+See [WORLD_STATE_V02_ARCHITECTURE.md](./WORLD_STATE_V02_ARCHITECTURE.md) and [Issue #303](https://github.com/necdetoskay/lumi-model-lab/issues/303). A standalone standard-library typed world reducer, character equipment graph, environment state, SQLite append-only event history and versioned snapshots are now implemented as **parallel experimental modules**. Existing v0.1 pipelines are not automatically rewritten. A live-model evidence/JEV-to-event approval bridge, relative-time resolution, and production PostgreSQL mapping are not yet complete. Unapproved model text cannot mutate SQLite state.
