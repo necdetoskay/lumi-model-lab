@@ -299,6 +299,12 @@ class EventGraphStore:
           FOREIGN KEY(stream_id,event_id)
             REFERENCES narrative_events(stream_id,event_id)
         );
+        CREATE TABLE IF NOT EXISTS narrative_rejections (
+          stream_id TEXT NOT NULL, event_id TEXT NOT NULL,
+          proposal_sha TEXT NOT NULL, proposal_json TEXT NOT NULL,
+          reason TEXT NOT NULL, PRIMARY KEY(stream_id,event_id),
+          FOREIGN KEY(stream_id) REFERENCES world_streams(stream_id)
+        );
         CREATE INDEX IF NOT EXISTS narrative_entity_object_index
           ON narrative_objects(stream_id,entity_id);
         CREATE INDEX IF NOT EXISTS narrative_entity_person_index
@@ -309,7 +315,7 @@ class EventGraphStore:
         for name in (
             "narrative_events", "narrative_participants", "narrative_objects",
             "narrative_dependencies", "narrative_effects",
-            "narrative_lifecycle"
+            "narrative_lifecycle", "narrative_rejections"
         ):
             for action in ("UPDATE", "DELETE"):
                 self.db.execute(
@@ -360,6 +366,10 @@ class EventGraphStore:
                     "effects": self.effects(stream_id, proposal["event_id"])}
         check(state["revision"] == expected_revision,
               "NARRATIVE_REVISION_CONFLICT")
+        check(self.db.execute(
+            "SELECT 1 FROM narrative_rejections WHERE stream_id=? AND event_id=?",
+            (stream_id, proposal["event_id"]),
+        ).fetchone() is None, "NARRATIVE_REJECTED_ID_CANNOT_COMMIT")
         validate_proposal(proposal, prose=prose, state=state)
         # Strict only-prior causal references => no self-loops or forward edges,
         # thus acyclic within one stream.
@@ -513,14 +523,53 @@ class EventGraphStore:
         ).fetchall()
         return [self.get(stream_id, row[0]) for row in rows]
 
+    def reject(self, *, stream_id: str, proposal: dict,
+               reason: str) -> dict:
+        """Append-only rejection audit, never a state mutation.
+
+        Stores even structurally invalid proposals for diagnosis; a rejected
+        event ID can never later be committed under the same identity.
+        """
+        check(isinstance(proposal, dict) and
+              isinstance(proposal.get("event_id"), str) and
+              proposal["event_id"], "NARRATIVE_REJECTION_ID_INVALID")
+        check(isinstance(reason, str) and reason.strip(),
+              "NARRATIVE_REJECTION_REASON_MISSING")
+        self.world.head(stream_id)
+        event_id = proposal["event_id"]
+        check(self._prior(stream_id, event_id) is None,
+              "NARRATIVE_COMMITTED_CANNOT_REJECT")
+        frozen = canonical(proposal)
+        existing = self.db.execute(
+            "SELECT proposal_json,reason FROM narrative_rejections "
+            "WHERE stream_id=? AND event_id=?", (stream_id, event_id),
+        ).fetchone()
+        if existing:
+            check(existing == (frozen, reason), "NARRATIVE_REJECTION_ID_CONFLICT")
+            return {"status": "REJECTED", "event_id": event_id,
+                    "idempotent": True}
+        self.db.execute(
+            "INSERT INTO narrative_rejections VALUES (?,?,?,?,?)",
+            (stream_id, event_id, digest_obj(proposal), frozen, reason),
+        )
+        return {"status": "REJECTED", "event_id": event_id,
+                "idempotent": False}
+
     def lifecycle(self, stream_id, event_id):
-        return [{
+        accepted = [{
             "status": status, "rationale": rationale,
         } for status, rationale in self.db.execute(
             "SELECT status,rationale FROM narrative_lifecycle "
             "WHERE stream_id=? AND event_id=? ORDER BY sequence",
             (stream_id, event_id),
         )]
+        if accepted:
+            return accepted
+        rejected = self.db.execute(
+            "SELECT reason FROM narrative_rejections "
+            "WHERE stream_id=? AND event_id=?", (stream_id, event_id),
+        ).fetchone()
+        return [{"status": "REJECTED", "rationale": rejected[0]}] if rejected else []
 
     def verify(self, stream_id):
         """Replay underlying world and verify each graph effect against it."""
