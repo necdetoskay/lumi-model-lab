@@ -1,0 +1,197 @@
+name: Final V3 F2 Turkish Sol Fidelity Adjudication One Attempt
+on:
+  push:
+    branches:
+      - experiment/v3-f2-tr-auto-fidelity-repair-20261015
+    paths:
+      - experiments/triggers/v3-f2-tr-sol-offline-20261015.json
+      - experiments/triggers/v3-f2-tr-sol-once-20261015.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-v3-f2-tr-sol-one-20261015
+  cancel-in-progress: false
+
+jobs:
+  offline:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-tr-auto-fidelity-repair-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-TR-SOL-OFFLINE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: a6363fee28f54c6d3a29ac589aa309dd7d1e516e
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Test frozen source and Sol one-call adjudicator
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q \
+            tests/test_v3_f2_turkish_sol_adjudication_once.py \
+            tests/test_v3_f2_turkish_translation_and_fidelity_once.py \
+            tests/test_v3_f2_quality_luna_recheck_probe.py \
+            tests/test_v3_real_model_repair_evidence.py \
+            tests/test_v3_f2_autonomous_quality_probe.py \
+            tests/test_v3_unattended_quality_model_adapter.py \
+            tests/test_v3_unattended_story_quality.py \
+            tests/test_v3_aion_f2_writer_single_attempt_probe.py \
+            tests/test_v3_single_attempt_aion_writer_guard.py \
+            tests/test_v3_single_attempt_guard.py \
+            tests/test_age18_frozen_lane_v1.py \
+            tests/test_frozen_lane_generic_spine_runtime.py \
+            tests/test_age18_lane_stabilization_matrix.py \
+            tests/test_sonnet55_cross_age_matrix.py \
+            tests/test_story_lane_qualification_policy.py \
+            tests/test_frozen_lane_authority_gate.py \
+            tests/test_frozen_lane_repair_runtime.py \
+            tests/test_frozen_lane_translation_runtime.py \
+            tests/test_deterministic_translation_semantic_guards.py
+      - name: Read-only claim endpoint reachable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/contents/experiments/v3_f2_turkish_sol_adjudication_once.py?ref=experiment/v3-f2-tr-auto-fidelity-repair-20261015" --jq .sha >/dev/null
+          echo "SOL_READONLY_CLAIM_ENDPOINT_PASS"
+
+  one-sol:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-tr-auto-fidelity-repair-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-TR-SOL-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate one-use separate Sol adjudication grant
+        shell: bash
+        env:
+          GRANT_PATH: experiments/triggers/v3-f2-tr-sol-once-20261015.json
+          GUARD_SHA: a6363fee28f54c6d3a29ac589aa309dd7d1e516e
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/f2-tr-sol"
+          export GRANT_COPY="$RUNNER_TEMP/f2-tr-sol/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          from decimal import Decimal
+          grant=json.loads(pathlib.Path(os.environ["GRANT_PATH"]).read_text())
+          expected={
+              "schema":"lumi.v3-f2-tr-sol-adjudication-grant.v1",
+              "authorized":True,
+              "stage":"TR_FIDELITY_ADJUDICATION",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "source_run_id":38713969969,
+              "source_luna_sha256":"40cf924ce239050fd9ed046f3d9199af0f262c57d0296cf44cc4a8ab918be591",
+              "source_turkish_sha256":"a163d9cbde430bd2023bb9e673d0e8ff4b380c7567aa84c4b476252dd2ddca19",
+              "model":"openai/gpt-5.6-sol",
+              "frozen_runtime_sha":"63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+              "guard_commit_sha":os.environ["GUARD_SHA"],
+          }
+          if any(grant.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("SOL_GRANT_SCOPE_INVALID")
+          gid=grant.get("grant_id")
+          if not isinstance(gid,str) or re.fullmatch("[A-Za-z0-9][A-Za-z0-9_-]{7,79}",gid) is None:
+              raise SystemExit("SOL_GRANT_ID_INVALID")
+          if not isinstance(grant.get("human_paid_authorization_reference"),str) or not grant["human_paid_authorization_reference"].strip():
+              raise SystemExit("SOL_PAID_AUTHORIZATION_MISSING")
+          try:cap=Decimal(str(grant["max_total_usd"]))
+          except Exception as exc:raise SystemExit("SOL_BUDGET_INVALID") from exc
+          if not cap.is_finite() or not Decimal("0")<cap<=Decimal("0.12"):
+              raise SystemExit("SOL_BUDGET_INVALID")
+          shutil.copyfile(os.environ["GRANT_PATH"],os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          print("SOL_GRANT_PREFLIGHT_PASS")
+          PY
+          git cat-file -e "${GUARD_SHA}^{commit}"
+          git checkout --detach "$GUARD_SHA"
+          test "$(git rev-parse HEAD)" = "$GUARD_SHA"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Prove one-call guard before spending
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_f2_turkish_sol_adjudication_once.py
+      - name: Verify global one-use Sol grant bound to run ID
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/f2-tr-sol/grant.json
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1" || { echo "::error::SOL_REPLAY_BLOCKED"; exit 1; }
+          python3 - <<'PY'
+          import base64,json,os,subprocess,time
+          grant=json.load(open(os.environ["GRANT_COPY"],encoding="utf-8"))
+          gid=grant["grant_id"]
+          branch="evidence/v3-f2-tr-sol-claim-"+gid
+          endpoint="repos/"+os.environ["GITHUB_REPOSITORY"]+"/contents/claims/"+gid+".json?ref="+branch
+          expected={
+              "schema":"lumi.v3-f2-tr-sol-global-claim.v1",
+              "authorized":True,
+              "stage":"TR_FIDELITY_ADJUDICATION",
+              "grant_id":gid,
+              "model":"openai/gpt-5.6-sol",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "source_run_id":38713969969,
+              "source_commit":os.environ["GITHUB_SHA"],
+              "run_id":int(os.environ["GITHUB_RUN_ID"]),
+              "guard_commit_sha":"a6363fee28f54c6d3a29ac589aa309dd7d1e516e",
+              "max_total_usd":grant["max_total_usd"],
+          }
+          for _ in range(30):
+              response=subprocess.run(["gh","api",endpoint],capture_output=True,text=True)
+              if response.returncode:
+                  if "HTTP 404" in response.stderr:
+                      time.sleep(2)
+                      continue
+                  raise SystemExit("SOL_GLOBAL_CLAIM_READ_FAILED")
+              try:claim=json.loads(base64.b64decode(json.loads(response.stdout)["content"]))
+              except (ValueError,KeyError,TypeError) as exc:
+                  raise SystemExit("SOL_GLOBAL_CLAIM_MALFORMED") from exc
+              if any(claim.get(k)!=v for k,v in expected.items()):
+                  raise SystemExit("SOL_GLOBAL_CLAIM_WRONG_RUN")
+              print("SOL_GLOBAL_CLAIM_VERIFIED")
+              break
+          else:
+              raise SystemExit("SOL_GLOBAL_CLAIM_NOT_FOUND")
+          PY
+      - name: One GPT-5.6 Sol adjudication of archived Luna findings
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_TR_SOL_GLOBAL_CLAIM_VERIFIED: "YES"
+          GRANT_COPY: ${{ runner.temp }}/f2-tr-sol/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::OPENROUTER_SECRET_NOT_INJECTED"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v3_f2_turkish_sol_adjudication_once \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_v3_tr_sol_claims" \
+            --evidence-dir "$RUNNER_TEMP/f2-tr-sol/evidence"
+          echo "NO_UNAUTHORIZED_TRANSLATION_REPAIR_NO_WORLD_COMMIT"
+      - name: Preserve Sol verdict and any STOP evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-v3-f2-turkish-sol-adjudication-${{ github.run_id }}
+          path: ${{ runner.temp }}/f2-tr-sol/evidence/
+          if-no-files-found: warn
+          retention-days: 90
