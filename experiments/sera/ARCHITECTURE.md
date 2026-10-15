@@ -86,8 +86,8 @@ The first deterministic engine supports:
 - `CREATE_ENTITY` (explicitly authorized introduction; never implicit);
 - `MOVE_CHARACTER` (known travel route and sufficient elapsed time; held objects follow);
 - `TRANSFER_OBJECT` (current holder and recipient co-located);
-- `UPDATE_OBJECT` (allowed property change, actor in reach);
-- `LEARN_FACT` and `TELL_FACT` (fact ID registered, no unsupported knowledge transfer);
+- `UPDATE_OBJECT` (allowed property change, actor in reach, and object not held by another person);
+- `LEARN_FACT` (registered fact + explicit application-owned `(character_id, fact_id)` observation grant; a prose quote alone cannot grant access) and `TELL_FACT` (sender knows fact, recipient co-located);
 - `RECORD_FACT` (holder of a document logs known information);
 - `OPEN_THREAD` / `RESOLVE_THREAD` (well-formed thread transition).
 
