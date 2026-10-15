@@ -54,11 +54,45 @@ def enforce_spine_gate(*, envelope: dict, evidence_dir: Path,
     return "ACCEPT_AWAITING_HUMAN_APPROVAL"
 
 
+# Case-specific, data-only revision of a failed Architect output.
+REVISION_SOURCE_RUN_ID = 38697673557
+ROUTE_RECONCILIATION = [
+    "vellum_hall", "greyfen", "ashen_gate", "greyfen", "vellum_hall",
+]
+
+
+def validate_revision_feedback(grant):
+    feedback = grant.get("revision_feedback")
+    if not isinstance(feedback, dict):
+        raise SafetyStop("REPLAN_FEEDBACK_MISSING")
+    if feedback.get("schema_version") != "episode-spine-revision-feedback.v1":
+        raise SafetyStop("REPLAN_FEEDBACK_SCHEMA_INVALID")
+    if feedback.get("source_architect_run_id") != REVISION_SOURCE_RUN_ID:
+        raise SafetyStop("REPLAN_SOURCE_RUN_MISMATCH")
+    if feedback.get("decision") != "REPLAN":
+        raise SafetyStop("REPLAN_DECISION_MISSING")
+    if feedback.get("paid_next_stage_authorized") is not False:
+        raise SafetyStop("REPLAN_UNAUTHORIZED_NEXT_STAGE")
+    if feedback.get("required_chronological_route") != ROUTE_RECONCILIATION:
+        raise SafetyStop("REPLAN_REQUIRED_ROUTE_MISMATCH")
+    issues = feedback.get("blocking_reasons")
+    if not isinstance(issues, list) or not any(
+        isinstance(row, dict)
+        and row.get("id") == "logistics_location_sequence_beat_mismatch"
+        and row.get("required_revision")
+        for row in issues
+    ):
+        raise SafetyStop("REPLAN_SPATIAL_CORRECTION_INSTRUCTIONS_MISSING")
+    if feedback.get("must_not_autocorrect_past_output") is not True:
+        raise SafetyStop("REPLAN_SILENT_REWRITE_PROHIBITION_MISSING")
+    return feedback
+
+
 def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
     # An unapproved call is refused without touching provider or output state.
     grant = json.loads(grant_file.read_text(encoding="utf-8"))
     required = {
-        "schema": "lumi.v3-single-attempt-paid-grant.v1",
+        "schema": "lumi.v3-single-attempt-paid-grant.v2",
         "authorized": True,
         "stage": "SPINE",
         "case_id": "age18.forbidden-cartographer.fantasy.frozen-01",
@@ -67,6 +101,7 @@ def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
     }
     if any(grant.get(k) != v for k, v in required.items()):
         raise SafetyStop("PAID_GRANT_SCOPE_MISMATCH")
+    feedback = validate_revision_feedback(grant)
     if not isinstance(grant.get("human_approval_reference"), str) or not grant["human_approval_reference"].strip():
         raise SafetyStop("EXPLICIT_HUMAN_APPROVAL_REFERENCE_MISSING")
     try:
@@ -140,13 +175,26 @@ def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
         os.fsync(stream.fileno())
     evidence_dir.mkdir(parents=True, mode=0o700)
     guard = SingleAttemptSpineGuard(evidence_dir, ceiling)
+    feedback_path = evidence_dir / "revision-feedback.json"
+    feedback_bytes = (json.dumps(feedback, ensure_ascii=False,
+                                 sort_keys=True, indent=2) + "\n").encode("utf-8")
+    with feedback_path.open("xb") as stream:
+        stream.write(feedback_bytes)
+        stream.flush()
+        os.fsync(stream.fileno())
+    feedback_sha = hashlib.sha256(feedback_bytes).hexdigest()
     trigger = evidence_dir / "stage-trigger.json"
-    # A local data-only trigger, not a change to the frozen stage runner.
+    # Data-only revision is passed through the original frozen V3 trigger.
     trigger.write_text(json.dumps({
         "schema_version": "frozen-lane-stage-trigger.v1",
         "stage": "SPINE", "paid_authorized": True,
-        "case_manifest": str(CASE)
+        "case_manifest": str(CASE),
+        "revision_feedback": str(feedback_path),
     }, indent=2) + "\n")
+    guard.event("REVISION_FEEDBACK_LOCKED", feedback_sha256=feedback_sha,
+                failed_run_id=REVISION_SOURCE_RUN_ID,
+                expected_route=ROUTE_RECONCILIATION,
+                original_story_rewritten=False)
     guard.event("GRANT_VERIFIED", case_id=case["case_id"], max_cost_usd=str(ceiling),
                 frozen_files=verified["verified_files"],
                 approval_reference_sha256=hashlib.sha256(grant["human_approval_reference"].encode()).hexdigest())

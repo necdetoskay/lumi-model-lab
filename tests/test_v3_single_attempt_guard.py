@@ -153,12 +153,63 @@ def test_frozen_inputs_unchanged(tmp_path):
     assert profile.read_bytes()==before
 
 
+def _spatial_revision_feedback():
+    return {
+        "schema_version": "episode-spine-revision-feedback.v1",
+        "qualification_id": "age18_forbidden_cartographer_fantasy_f2",
+        "source_architect_run_id": 38697673557,
+        "source_generation_id": "gen-1792048631-jveGGZsYYq0vOOh4qLHw",
+        "decision": "REPLAN",
+        "required_chronological_route": [
+            "vellum_hall", "greyfen", "ashen_gate", "greyfen", "vellum_hall",
+        ],
+        "must_not_autocorrect_past_output": True,
+        "blocking_reasons": [{
+            "id": "logistics_location_sequence_beat_mismatch",
+            "problem": (
+                "The rejected Architect's first beat takes place at Ashen Gate, "
+                "but the chronology and route both start at Vellum Hall. "
+                "This violates the equality of the deduplicated beats' "
+                "location_ref sequence and logistics_plan.location_sequence."
+            ),
+            "required_revision": (
+                "Generate a new fully chronological Spine: start Beat 1 at "
+                "Vellum Hall with a credible map/ward anomaly hook; progress "
+                "through Greyfen, Ashen Gate, Greyfen, then Vellum Hall. "
+                "Set logistics_plan.location_sequence to the exact route, "
+                "collapsing consecutive beat-location duplicates. Do not "
+                "put an Ashen Gate flash-forward as a physically placed "
+                "opening beat. If memory occurs within a present-time scene, "
+                "the beat's location_ref must identify the physical scene, "
+                "not a remembered location. No unexplained travel or "
+                "instant communication. Replan rather than silently rewrite."
+            ),
+            "must_preserve": [
+                "Leyra's high-fantasy cartographic magic",
+                "Ashen Gate exterior measurements; no sealed boundary crossing",
+                "Age 18 professional autonomy and ethical agency",
+                "Nameless Vale only foreshadowed; cause remains unresolved",
+                "Meaningful branch-specific Greyfen and mentor consequences",
+            ],
+        }],
+        "hard_freezes": [
+            "exact_age=18",
+            "STANDARD 1600-2500 words",
+            "Leyra does not cross Ashen Gate",
+            "Nameless Vale remains foreshadow-only",
+            "Only forbidden_passage_observed Main Saga milestone",
+            "No automatic or case-specific runtime code change",
+        ],
+        "paid_next_stage_authorized": False,
+    }
+
+
 def _authorized_mock_grant(tmp_path):
     import subprocess
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     grant = tmp_path / "grant.json"
     grant.write_text(json.dumps({
-        "schema": "lumi.v3-single-attempt-paid-grant.v1",
+        "schema": "lumi.v3-single-attempt-paid-grant.v2",
         "authorized": True,
         "stage": "SPINE",
         "case_id": "age18.forbidden-cartographer.fantasy.frozen-01",
@@ -168,6 +219,7 @@ def _authorized_mock_grant(tmp_path):
         "max_total_usd": "0.50",
         "grant_id": "V3-F1-TEST-ONE-20261015",
         "human_approval_reference": "OFFLINE_TEST_APPROVAL_ONLY",
+        "revision_feedback": _spatial_revision_feedback(),
     }))
     return grant
 
@@ -353,3 +405,86 @@ def test_gate_invalid_decision_and_spoofed_result_path_stop(tmp_path):
         enforce_spine_gate(envelope={**envelope, "result_path": str(tmp_path / "evil")},
                            evidence_dir=tmp_path,
                            post_count=2, event=lambda *a, **k: None)
+
+def test_replan_feedback_is_mandatory_and_fail_closed_before_any_claim(tmp_path):
+    from experiments.v3_single_attempt_spine_probe import run
+    grant = _authorized_mock_grant(tmp_path)
+    obj = json.loads(grant.read_text())
+    obj.pop("revision_feedback")
+    grant.write_text(json.dumps(obj))
+    with pytest.raises(SafetyStop, match="REPLAN_FEEDBACK_MISSING"):
+        run(grant_file=grant, evidence_dir=tmp_path / "output",
+            claim_dir=tmp_path / "claims")
+    assert not (tmp_path / "claims").exists()
+
+
+def test_replan_route_tampering_is_rejected_before_network(tmp_path):
+    from experiments.v3_single_attempt_spine_probe import run
+    grant = _authorized_mock_grant(tmp_path)
+    obj = json.loads(grant.read_text())
+    obj["revision_feedback"]["required_chronological_route"][0] = "ashen_gate"
+    grant.write_text(json.dumps(obj))
+    with pytest.raises(SafetyStop, match="REPLAN_REQUIRED_ROUTE_MISMATCH"):
+        run(grant_file=grant, evidence_dir=tmp_path / "output",
+            claim_dir=tmp_path / "claims")
+    assert not (tmp_path / "claims").exists()
+
+
+def test_replan_is_present_in_real_frozen_architect_prompt_context(
+    tmp_path, monkeypatch,
+):
+    from experiments import v3_single_attempt_spine_probe as probe
+    import subprocess
+    grant = _authorized_mock_grant(tmp_path)
+    old = subprocess.check_output
+
+    def fake_clean(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return ""
+        return old(args, **kwargs)
+
+    monkeypatch.setattr(probe.subprocess, "check_output", fake_clean)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_TEST_ONLY")
+    # Test actual frozen Architect JSON input, not paid provider behavior.
+    original = json.loads(Path(
+        "data/specifications/story_lab/"
+        "age18_forbidden_cartographer_f1_result_36657233678.json"
+    ).read_text())
+    captured = []
+    class FakeResponse:
+        ok = True
+        status_code = 200
+        headers = {}
+        def __init__(self, model):
+            self.model = model
+        def json(self):
+            item = (original["episode_spine"] if self.model == SPINE_MODELS[0]
+                    else original["gate"])
+            return {
+                "id": "gen-offline-model-archived",
+                "choices": [{"message": {"content": json.dumps(item)},
+                             "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 1000, "completion_tokens": 700,
+                          "total_tokens": 1700, "cost": 0.02},
+            }
+    def fake_post(url, **kwargs):
+        payload = kwargs["json"]
+        if payload["model"] == SPINE_MODELS[0]:
+            user_message = payload["messages"][1]["content"]
+            architect_input = json.loads(user_message)
+            feedback = architect_input["revision_feedback"]
+            assert feedback["required_chronological_route"] == [
+                "vellum_hall", "greyfen", "ashen_gate", "greyfen", "vellum_hall",
+            ]
+            captured.append(True)
+        return FakeResponse(payload["model"])
+    with patch("requests.post", side_effect=fake_post):
+        with pytest.raises(SafetyStop, match="SPINE_GATE_REPLAN_STOP"):
+            run(grant_file=grant, evidence_dir=tmp_path / "output",
+                claim_dir=tmp_path / "claims")
+    assert captured == [True]
+    ev = [json.loads(f.read_text()) for f in
+          (tmp_path / "output").glob("[0-9][0-9][0-9]-*.json")]
+    assert any(e["kind"] == "REVISION_FEEDBACK_LOCKED" for e in ev)
+    assert any(e["kind"] == "GATE_VERDICT_OBSERVED" and
+               e["decision"] == "REPLAN" for e in ev)
