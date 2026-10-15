@@ -192,6 +192,10 @@ def test_valid_grant_is_consumed_once_even_if_evidence_dir_changes(tmp_path, mon
         observed.append(trigger_path)
         return {"stage": "SPINE", "result_status": "MOCK_SPINE_COMPLETE"}
     monkeypatch.setattr(probe, "frozen_stage_run", zero_network_stage)
+    # This unit test exercises one-use claiming, not model/gate validation.
+    # Gate validation is independently tested with the real stage below.
+    monkeypatch.setattr(probe, "enforce_spine_gate",
+                        lambda **kwargs: "ACCEPT_AWAITING_HUMAN_APPROVAL")
     got = run(grant_file=grant, evidence_dir=tmp_path / "one", claim_dir=claim_dir)
     assert got["result_status"] == "MOCK_SPINE_COMPLETE"
     assert len(observed) == 1
@@ -245,3 +249,107 @@ def test_valid_paid_grant_requires_persistent_claim_root(tmp_path, monkeypatch):
     with pytest.raises(SafetyStop, match="PERSISTENT_CLAIM_DIRECTORY_REQUIRED"):
         run(grant_file=grant, evidence_dir=tmp_path / "one")
     assert not (tmp_path / "one").exists()
+
+def test_replay_archived_f1_replan_is_stopped_after_exactly_two_fake_posts(
+    tmp_path, monkeypatch
+):
+    """Real frozen stage is run; only previously archived provider replies mocked."""
+    import subprocess
+    from experiments import v3_single_attempt_spine_probe as probe
+    historical = json.loads(Path(
+        "data/specifications/story_lab/"
+        "age18_forbidden_cartographer_f1_result_36657233678.json"
+    ).read_text())
+    replies = {
+        SPINE_MODELS[0]: historical["episode_spine"],
+        SPINE_MODELS[1]: historical["gate"],
+    }
+    class ReplayResponse:
+        ok = True
+        status_code = 200
+        headers = {}
+        def __init__(self, model):
+            self.model = model
+        def json(self):
+            return {
+                "id": "gen-v3-f1-archive-replay",
+                "choices": [{"message": {
+                    "content": json.dumps(replies[self.model], ensure_ascii=False),
+                }, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 1000, "completion_tokens": 800,
+                          "total_tokens": 1800, "cost": 0.025},
+            }
+    posts = []
+    def fake_post(url, **kwargs):
+        model = kwargs["json"]["model"]
+        posts.append(model)
+        return ReplayResponse(model)
+
+    grant = _authorized_mock_grant(tmp_path)
+    real_check_output = subprocess.check_output
+    def clean_status(args, **kwargs):
+        if args[:2] == ["git", "status"]:
+            return ""
+        return real_check_output(args, **kwargs)
+    monkeypatch.setattr(probe.subprocess, "check_output", clean_status)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "OFFLINE_REPLAY_NO_NETWORK")
+    with patch("requests.post", side_effect=fake_post):
+        with pytest.raises(SafetyStop, match="SPINE_GATE_REPLAN_STOP"):
+            run(grant_file=grant, evidence_dir=tmp_path / "evidence",
+                claim_dir=tmp_path / "claims")
+    assert posts == list(SPINE_MODELS)
+    stage = json.loads((tmp_path / "evidence" / "stage-output" / "result.json").read_text())
+    assert stage["gate"]["decision"] == "REPLAN"
+    assert stage["human_review"]["episode_writer_authorized"] is False
+    ev = [json.loads(f.read_text())
+          for f in (tmp_path / "evidence").glob("[0-9][0-9][0-9]-*.json")]
+    assert any(x["kind"] == "GATE_VERDICT_OBSERVED"
+               and x["decision"] == "REPLAN" for x in ev)
+    assert any(x["kind"] == "STAGE_STOP" and x["post_count"] == 2 for x in ev)
+    assert not any(x["kind"] == "STAGE_FINISHED" for x in ev)
+    assert len(list((tmp_path / "claims").glob("*.json"))) == 1
+
+
+def test_gate_accept_is_pending_human_approval_only(tmp_path):
+    from experiments.v3_single_attempt_spine_probe import enforce_spine_gate
+    out = tmp_path / "stage-output"
+    out.mkdir()
+    result_path = out / "result.json"
+    result_path.write_text(json.dumps({
+        "status": "awaiting_human_review",
+        "gate": {"decision": "ACCEPT"},
+        "episode_writer_authorized": False,
+        "human_review": {"verdict": None, "episode_writer_authorized": False},
+    }))
+    reports = []
+    envelope = {
+        "stage": "SPINE", "result_status": "awaiting_human_review",
+        "result_path": str(result_path),
+    }
+    got = enforce_spine_gate(envelope=envelope, evidence_dir=tmp_path,
+                             post_count=2,
+                             event=lambda kind, **kw: reports.append((kind, kw)))
+    assert got == "ACCEPT_AWAITING_HUMAN_APPROVAL"
+    assert reports[0][1]["decision"] == "ACCEPT"
+
+
+def test_gate_invalid_decision_and_spoofed_result_path_stop(tmp_path):
+    from experiments.v3_single_attempt_spine_probe import enforce_spine_gate
+    out = tmp_path / "stage-output"
+    out.mkdir()
+    result_path = out / "result.json"
+    result_path.write_text(json.dumps({
+        "status": "awaiting_human_review", "gate": {"decision": "MAYBE"},
+        "episode_writer_authorized": False,
+        "human_review": {"verdict": None, "episode_writer_authorized": False},
+    }))
+    envelope = {"stage": "SPINE",
+                "result_status": "awaiting_human_review",
+                "result_path": str(result_path)}
+    with pytest.raises(SafetyStop, match="SPINE_GATE_DECISION_INVALID"):
+        enforce_spine_gate(envelope=envelope, evidence_dir=tmp_path,
+                           post_count=2, event=lambda *a, **k: None)
+    with pytest.raises(SafetyStop, match="SPINE_STAGE_EVIDENCE_PATH_INVALID"):
+        enforce_spine_gate(envelope={**envelope, "result_path": str(tmp_path / "evil")},
+                           evidence_dir=tmp_path,
+                           post_count=2, event=lambda *a, **k: None)

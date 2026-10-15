@@ -31,3 +31,19 @@ The intended first live stage is the previously frozen age-18 fantasy case `age1
 - Require a persistent, absolute one-use **grant claim directory**, independent of the chosen evidence directory; exclusive creation before any possible provider POST. A failed attempt still consumes its grant.
 - Reject an absent or invalid grant ID, wrong wrapper SHA, wrong source ancestry, a modified runtime, or an already-claimed grant.
 - This is guard-only hardening. No user-approved paid request has been sent.
+
+## Frozen gate decision fail-closed (2026-10-15)
+
+The original frozen episode_spine_v2_generate.generate writes outer
+status awaiting_human_review for both ACCEPT and REPLAN outcomes.
+Therefore the external guard must not call it a success based on the
+stage status alone. The wrapper now inspects the frozen stage envelope
+and its exact local result artifact, requires exactly two model POSTs,
+reads gate.decision, and stops with SPINE_GATE_REPLAN_STOP on REPLAN.
+Other missing/malformed outcome or approval markers STOP. Only Gate ACCEPT
+with episode_writer_authorized=false and human verdict pending is
+reported as ACCEPT_AWAITING_HUMAN_APPROVAL; never schedules Writer.
+
+This is an external qualification rule. All 43 frozen V3 runtime files
+remain intact. Replay uses recorded 2026-09 Forbidden Cartographer F1
+responses, not a newly charged model output. No paid retries are allowed.

@@ -22,6 +22,38 @@ PROFILE = Path("data/specifications/story_lab/age18_story_lane_profile_v2_frozen
 CASE = Path("data/specifications/story_lab/age18_forbidden_cartographer_frozen_case_v1.json")
 
 
+def enforce_spine_gate(*, envelope: dict, evidence_dir: Path,
+                       post_count: int, event):
+    """Interpret a real frozen Spine result without changing V3 semantics."""
+    if not isinstance(envelope, dict) or envelope.get("stage") != "SPINE":
+        raise SafetyStop("SPINE_STAGE_ENVELOPE_INVALID")
+    if envelope.get("result_status") != "awaiting_human_review":
+        raise SafetyStop("SPINE_STAGE_NOT_READY_FOR_REVIEW")
+    expected = (evidence_dir / "stage-output" / "result.json").resolve()
+    given = Path(str(envelope.get("result_path") or "")).resolve()
+    if given != expected or not expected.is_file():
+        raise SafetyStop("SPINE_STAGE_EVIDENCE_PATH_INVALID")
+    if post_count != 2:
+        raise SafetyStop("SPINE_TWO_MODEL_POSTS_NOT_OBSERVED")
+    payload = json.loads(expected.read_text(encoding="utf-8"))
+    if payload.get("status") != "awaiting_human_review":
+        raise SafetyStop("SPINE_RESULT_STATUS_INVALID")
+    gate = payload.get("gate") or {}
+    decision = gate.get("decision")
+    event("GATE_VERDICT_OBSERVED", decision=decision,
+          architect_post_count=1, gate_post_count=1)
+    if decision == "REPLAN":
+        raise SafetyStop("SPINE_GATE_REPLAN_STOP")
+    if decision != "ACCEPT":
+        raise SafetyStop("SPINE_GATE_DECISION_INVALID")
+    review = payload.get("human_review") or {}
+    if payload.get("episode_writer_authorized") is not False:
+        raise SafetyStop("SPINE_WRITER_AUTHORITY_LEAK")
+    if review.get("verdict") is not None or review.get("episode_writer_authorized") is not False:
+        raise SafetyStop("SPINE_HUMAN_APPROVAL_NOT_PENDING")
+    return "ACCEPT_AWAITING_HUMAN_APPROVAL"
+
+
 def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
     # An unapproved call is refused without touching provider or output state.
     grant = json.loads(grant_file.read_text(encoding="utf-8"))
@@ -122,10 +154,16 @@ def run(*, grant_file: Path, evidence_dir: Path, claim_dir: Path | None = None):
         with guard.installed():
             result = frozen_stage_run(trigger_path=trigger,
                                       out_dir=evidence_dir / "stage-output")
-        guard.event("STAGE_FINISHED", result_status=result.get("result_status"),
+        gate_status = enforce_spine_gate(
+            envelope=result, evidence_dir=evidence_dir,
+            post_count=guard.calls, event=guard.event,
+        )
+        guard.event("STAGE_FINISHED", result_status=gate_status,
                     post_count=guard.calls, accounted_cost_usd=str(guard.spent),
-                    human_approval_still_required=True)
-        return result
+                    human_approval_still_required=True,
+                    writer_authorized=False)
+        return {**result, "qualification_verdict": gate_status,
+                "writer_authorized": False}
     except BaseException as exc:
         try:
             trace = getattr(exc, "trace", None)
