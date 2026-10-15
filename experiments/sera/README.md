@@ -17,6 +17,7 @@ It is read-only. The compiler creates nine derived scene contracts without rewri
 - `extractor_adapter.py` — independent/blind prompt, exact-quote span binding and opt-in one-call OpenRouter client.
 - `fixtures/gold_mara_m2_v0.1.json` — six **hand-authored synthetic** adversarial scenes with expected event/entity labels (not model results).
 - `gold_calibration.py` — offline precision/recall metrics against manual synthetic labels.
+- `jev_verifier.py` — per-claim JEV choice-question builder and advisory-only verdict routing; a billable live call requires an explicit opt-in.
 - `tests/` — deterministic unit tests; all external responses mocked.
 
 ## Offline checks (no provider cost)
@@ -60,8 +61,29 @@ OPENROUTER_API_KEY=... python -m experiments.sera.extractor_adapter path/to/inpu
 
 The adapter makes exactly one request, with no provider fallback. Unknown/incomplete outputs fail closed. It records requested model, observed model, usage, provider cost if returned, raw extraction, hashes and typed extraction report. A quoted phrase is resolved to codepoint offsets in Python; the model is not trusted to count indices.
 
-The independent model must never see the writer report in its input. The output alone does not establish complete extraction: both models can miss the same object. A structurally reconciled report is `RECONCILED_PENDING_SEMANTIC`, **not PASS**. Semantic JEV/LLM verification and production authorization are outside M2.
+The independent model must never see the writer report in its input. The output alone does not establish complete extraction: both models can miss the same object. A structurally reconciled report is `RECONCILED_PENDING_SEMANTIC`, **not PASS**.
+
+## Atomic JEV prototype (M3 groundwork)
+
+`jev_verifier.build_atomic_questions(...)` takes the M2 coverage, source
+reports, scene prose and registry, re-checks the coverage binding, and builds
+one `choice` decision per entity/presence claim and typed event. The JEV
+request sees an anonymized union of candidate claims, not source-model labels.
+The supported decisions are `SUPPORTED`, `CONTRADICTED` and
+`INSUFFICIENT_EVIDENCE`.
+
+`adjudicate(...)` routes contradictions to local repair, ambiguous claims to
+escalation, and remaining extractor mismatches to reconciliation. Even full
+semantic agreement leaves `commit_authorized=false`. Empty claim sets are
+escalated; agreement on nothing is not a success.
+
+`call_live_jev(..., allow_billable=True)` uses the existing repository-pinned
+`typesafe/jev-1.13` Decisions API adapter. M3 tests only simulate answers;
+**no real JEV model qualification or runtime cost is claimed.**
+
+Full production acceptance, gold holdout calibration, state commit and the
+nine-scene live Mara demonstration are future separate milestones.
 
 ## Current evidence and status
 
-M0/M1 completed. M2 offline harness implemented and exercised; **no live independent-model benchmark or JEV qualification yet**. The gold cases are synthetic and must not be counted as evidence of real extraction accuracy. No Project LUMI database writes, provider calls, or production V4/V4.1/V4.2 modifications occur in offline tests.
+M0/M1 completed. M2 offline harness and preliminary M3 JEV question/decision contract implemented; **no live independent-model benchmark or JEV qualification yet**. The gold cases are synthetic and must not be counted as evidence of real extraction accuracy. No Project LUMI database writes, provider calls, or production V4/V4.1/V4.2 modifications occur in offline tests.
