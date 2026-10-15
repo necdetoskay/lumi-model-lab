@@ -131,3 +131,31 @@ M3's actual Mara first-scene extraction is still held by typed-event/time
 problems ([#304](https://github.com/necdetoskay/lumi-model-lab/issues/304)).
 **No provider model or JEV response is allowed to commit the new v0.2 state
 without a separately qualified evidence-to-authority adapter.**
+
+## EventGraph v0.3 — Structural history and causal dependency graph
+
+[Experimental architecture](./EVENTGRAPH_V03_ARCHITECTURE.md) ·
+[Issue #305](https://github.com/necdetoskay/lumi-model-lab/issues/305) ·
+[Real Mara S1 candidate evidence](./fixtures/mara_s1_real_eventgraph_candidates_v03.json)
+
+- `event_graph_v03.py` now implements independent narrative event IDs,
+  participant/object role relations, causal prior-event links, typed
+  preconditions, prose-SHA+exact-span binding and advisory epistemic classes.
+- **Only the Python world reducer** calculates the before/after entity and
+  region diffs. Language-model-proposed before/after snapshots are rejected.
+- `EventGraphStore` writes event relationships/effects and the v0.2 world
+  transition in **the same SQLite transaction**. If an affected coat/notebook
+  is missing from a movement event's related objects, both ledgers roll back.
+- Append-only graph lifecycle supports accepted
+  PROPOSED→VERIFIED→COMMITTED and independent REJECTED proposal records.
+  A graph query can retrieve object/character history, scene timeline,
+  event descendants and reducer-derived effects. Replay requires a one-to-one
+  mapping of all world events to narrative events.
+- The original **243-word live Mara S1 scene** is frozen as an isolated,
+  read-only candidate set of nine event proposals. **All remain HOLD** and
+  no world/production canon is modified: JEV had previously returned ESCALATE
+  and the event-time/extractor schema is still incomplete.
+- Test suite is fully offline; no model requests and no LUMI production DB
+  writes. The status string `APPLICATION` and SHA equality bindings are
+  NOT authentication; a trusted server-side review/capability adapter remains
+  necessary before deployment.
