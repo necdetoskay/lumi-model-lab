@@ -1,0 +1,90 @@
+name: Final V3 F2 Archived World Outcome Evidence Replay
+on:
+  push:
+    branches: [experiment/v3-f2-world-outcome-replay-20261015]
+    paths: [experiments/triggers/v3-f2-world-outcome-replay-offline-20261015.json]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-f2-world-replay-zero-spend-20261015
+  cancel-in-progress: false
+
+jobs:
+  verify-real-luna-evidence-no-post:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-world-outcome-replay-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-WORLD-REPLAY-OFFLINE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6b1dfc2ec6359cfab580baa0fac5c63a4d583c75
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt pytest
+      - name: Verify all 187 replay and frozen V3 regression tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q \
+            tests/test_v3_f2_world_outcome_offline_replay.py \
+            tests/test_v3_f2_world_outcome_one_judge.py \
+            tests/test_v3_f2_world_outcome_evidence_gate.py \
+            tests/test_v3_f2_final_delivery_stage.py \
+            tests/test_v3_f2_turkish_sol_adjudication_once.py \
+            tests/test_v3_f2_turkish_translation_and_fidelity_once.py \
+            tests/test_v3_f2_quality_luna_recheck_probe.py \
+            tests/test_v3_real_model_repair_evidence.py \
+            tests/test_v3_f2_autonomous_quality_probe.py \
+            tests/test_v3_unattended_quality_model_adapter.py \
+            tests/test_v3_unattended_story_quality.py \
+            tests/test_v3_aion_f2_writer_single_attempt_probe.py \
+            tests/test_v3_single_attempt_aion_writer_guard.py \
+            tests/test_v3_single_attempt_guard.py \
+            tests/test_age18_frozen_lane_v1.py \
+            tests/test_frozen_lane_generic_spine_runtime.py \
+            tests/test_age18_lane_stabilization_matrix.py \
+            tests/test_sonnet55_cross_age_matrix.py \
+            tests/test_story_lane_qualification_policy.py \
+            tests/test_frozen_lane_authority_gate.py \
+            tests/test_frozen_lane_repair_runtime.py \
+            tests/test_frozen_lane_translation_runtime.py \
+            tests/test_deterministic_translation_semantic_guards.py
+      - name: Replay genuine archived Luna reply without a provider API key
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=. PYTHONDONTWRITEBYTECODE=1
+          python -B -m experiments.v3_f2_world_outcome_offline_replay --out-dir "$RUNNER_TEMP/world-replay"
+          cmp "$RUNNER_TEMP/world-replay/world-outcome-proposal.json" evidence/v3-f2-world-outcome-verified-replay-20261015/world-outcome-proposal.json
+          cmp "$RUNNER_TEMP/world-replay/offline-replay-manifest.json" evidence/v3-f2-world-outcome-verified-replay-20261015/offline-replay-manifest.json
+          export REPLAY_DIR="$RUNNER_TEMP/world-replay"
+          python -B - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["REPLAY_DIR"])
+          d=json.loads((p/"offline-replay-manifest.json").read_text())
+          s=json.loads((p/"world-outcome-proposal.json").read_text())
+          assert d["additional_provider_posts"]==0
+          assert d["additional_provider_cost_usd"]=="0"
+          assert d["model_earned_outcome_candidates"]==5
+          assert d["model_selected_branch"]=="seal_bounded_report"
+          assert d["world_state_committed"] is False
+          assert s["applied_operations"]==[]
+          assert s["world_state_transaction"] is None
+          print("REAL_LUNA_REPLAY_BYTE_IDENTICAL_ZERO_PROVIDER_POSTS")
+          PY
+      - name: Preserve independent offline replay proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-f2-world-outcome-real-luna-replay-${{ github.run_id }}
+          path: ${{ runner.temp }}/world-replay/
+          if-no-files-found: error
+          retention-days: 90
