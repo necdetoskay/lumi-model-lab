@@ -112,3 +112,17 @@ def test_old_paid_grant_cannot_be_reused_for_new_revision():
     new=json.loads(PROFILE.read_text())
     assert old["frozen_v3_sha"] != "NEW_UNCAPPED_REVISION"
     assert new["uncapped_output_policy"]["previous_paid_claim_invalid_for_this_revision"] is True
+
+
+@pytest.mark.parametrize("ceiling_key",["max_tokens","max_completion_tokens","max_output_tokens"])
+def test_paid_guard_blocks_reintroduced_ceiling_before_provider_post(tmp_path,ceiling_key):
+    from decimal import Decimal
+    from src.v3_single_attempt_guard import SafetyStop,SingleAttemptSpineGuard
+    guard=SingleAttemptSpineGuard(tmp_path,Decimal("0.50"))
+    actual=[]
+    guard._post=lambda *args,**kwargs: actual.append(kwargs)
+    payload={"model":"anthropic/claude-sonnet-5.5",ceiling_key:12000}
+    with pytest.raises(SafetyStop,match="EXPLICIT_OUTPUT_TOKEN_CEILING_FORBIDDEN"):
+        guard._one_post(generate.OPENROUTER_URL,json=payload)
+    assert guard.calls==0
+    assert actual==[]
