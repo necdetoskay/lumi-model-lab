@@ -192,6 +192,28 @@ class SeraStateTests(unittest.TestCase):
         self.assert_code("UNAUTHORIZED_KNOWLEDGE_SOURCE",
                          lambda: run_scene(fixture(), [event], QUOTE_TELL))
 
+    def test_non_mutating_object_interaction_preserves_object(self):
+        quote = "Vane inspected his pocket watch."
+        event = evt("examine", "INTERACT_OBJECT", 140, quote,
+                    actor_id="vane", object_id="vane_watch",
+                    interaction="LOOK_AT")
+        before = fixture()
+        exit_state = run_scene(before, [event], quote)
+        self.assertEqual(exit_state["entities"]["vane_watch"],
+                         before["entities"]["vane_watch"])
+        self.assertEqual(exit_state["event_log"][-1]["type"], "INTERACT_OBJECT")
+        self.assertEqual(exit_state["entities"]["vane"]["last_action_minute"], 140)
+
+    def test_non_mutating_interaction_must_respect_location(self):
+        quote = "Corde tried to touch Vane's pocket watch."
+        event = evt("touch", "INTERACT_OBJECT", 140, quote,
+                    actor_id="corde", object_id="vane_watch",
+                    interaction="TOUCH")
+        self.assert_code(
+            "INTERACTION_OUT_OF_REACH",
+            lambda: run_scene(fixture(), [event], quote),
+        )
+
     def test_object_update_requires_actor_same_location(self):
         event = evt("e1", "UPDATE_OBJECT", 140, QUOTE_OBJECT,
                     actor_id="corde", object_id="vane_watch",
