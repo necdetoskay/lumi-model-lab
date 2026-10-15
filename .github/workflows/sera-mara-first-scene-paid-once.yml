@@ -1,0 +1,108 @@
+name: SERA Mara First Scene Paid One-Shot
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/first-scene-20261016.json
+permissions:
+  contents: read
+concurrency:
+  group: sera-mara-s1-paid-oneuse-20261016
+  cancel-in-progress: false
+jobs:
+  first-scene:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-MARA-S1-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fail-closed one-use trigger verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          trigger=pathlib.Path('experiments/sera/launch/first-scene-20261016.json')
+          obj=json.loads(trigger.read_text(encoding='utf-8'))
+          expected={
+              "schema":"sera.mara-first-scene-paid-once.v0.1",
+              "authorized":True,
+              "scope":"MARA_S1_ONLY",
+              "source_blob_sha":"fe1dda0047000438bbfaac69022e835bf7e0a1f8",
+              "writer_model":"openai/gpt-5.6-luna",
+              "independent_model":"anthropic/claude-haiku-4.5",
+              "jev_model":"typesafe/jev-1.13",
+              "max_logical_model_operations":3,
+              "observed_spend_stop_usd":"0.35",
+              "no_canonical_commit":True,
+              "no_project_lumi_db_write":True,
+              "no_reruns":True,
+              "launch_id":"sera-mara-s1-20261016-oneuse",
+          }
+          if set(obj)!=set(expected)|{"approved_code_sha"}:
+              raise SystemExit("SERA_TRIGGER_SCHEMA_INVALID_NO_PAID_CALL")
+          if any(obj.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("SERA_TRIGGER_VALUES_INVALID_NO_PAID_CALL")
+          parent=subprocess.check_output(
+              ["git","rev-parse","HEAD^"],text=True).strip()
+          if obj["approved_code_sha"]!=parent:
+              raise SystemExit("SERA_CODE_PIN_INVALID_NO_PAID_CALL")
+          changed=subprocess.check_output(
+              ["git","diff-tree","--no-commit-id","--name-only","-r","HEAD"],
+              text=True).splitlines()
+          if changed!=[str(trigger)]:
+              raise SystemExit("SERA_NOT_ISOLATED_TRIGGER_NO_PAID_CALL")
+          print("ONE_USE_SOURCE_AND_CODE_PIN_PASS")
+          PY
+          python3 -m compileall -q experiments/sera
+          python3 -m unittest discover -s experiments/sera/tests -q
+          python3 -m experiments.sera.spine_contracts \
+            evidence/v4-2-mara-run-38794774463/sonnet-original-spine-pre-haiku.json \
+            > /dev/null
+      - name: Install minimal provider dependencies
+        run: python -m pip install requests pyyaml
+      - name: Launch three-operation diagnostic max; no state commits
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+            echo "SERA_PROVIDER_KEY_ABSENT_NO_PAID_CALL"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera"
+          python3 -m experiments.sera.mara_s1_live \
+            --live \
+            --launch-id "sera-mara-s1-20261016-oneuse-${GITHUB_RUN_ID}" \
+            --output "$RUNNER_TEMP/sera/result.json"
+          python3 - <<'PY'
+          import json,os
+          d=json.load(open(os.environ["RUNNER_TEMP"]+"/sera/result.json"))
+          assert d["commit_authorized"] is False
+          assert d["production_db_writes"] == 0
+          print("SERA_RUN_STATUS",d["status"])
+          print("SERA_M2_STATUS",(d.get("coverage") or {}).get("status"))
+          print("SERA_M3_ACTION",(d.get("jev_verdict") or {}).get("next_action"))
+          print("SERA_SHADOW_STATUS",(d.get("shadow") or {}).get("status"))
+          print("SERA_PAID_LOGICAL_OPERATIONS",len(d["calls"]))
+          if len(d["calls"])>3:
+              raise SystemExit("SERA_CALL_LIMIT_BREACH")
+          PY
+      - name: Archive run-scoped diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-s1-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera/
+          retention-days: 90
+          if-no-files-found: warn
