@@ -157,7 +157,9 @@ def adjudicate(*, bundle: dict, answers: dict[str, dict]) -> dict:
         })
 
     choices = {j["choice"] for j in judgments}
-    if "CONTRADICTED" in choices:
+    if not judgments:
+        next_action = "ESCALATE_NO_CLAIMS"
+    elif "CONTRADICTED" in choices:
         next_action = "LOCAL_REPAIR_REQUIRED"
     elif "INSUFFICIENT_EVIDENCE" in choices:
         next_action = "ESCALATE"
