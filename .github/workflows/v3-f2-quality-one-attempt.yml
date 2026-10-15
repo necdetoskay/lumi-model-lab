@@ -1,0 +1,186 @@
+name: Final V3 F2 Autonomous Quality One-Attempt
+on:
+  push:
+    branches:
+      - experiment/v3-f2-aion-coherence-acceptance-20261015
+    paths:
+      - experiments/triggers/v3-f2-quality-offline-20261015.json
+      - experiments/triggers/v3-f2-quality-once-20261015.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-v3-f2-autonomous-quality-20261015
+  cancel-in-progress: false
+
+jobs:
+  offline-qualification:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-aion-coherence-acceptance-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-QUALITY-OFFLINE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 02ef9a85dc460567e7562235216567f0dca78b70
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Verify original frozen V3 and entire quality integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_f2_autonomous_quality_probe.py tests/test_v3_unattended_quality_model_adapter.py tests/test_v3_unattended_story_quality.py tests/test_v3_aion_f2_writer_single_attempt_probe.py tests/test_v3_single_attempt_aion_writer_guard.py tests/test_v3_single_attempt_guard.py tests/test_age18_frozen_lane_v1.py tests/test_frozen_lane_generic_spine_runtime.py tests/test_age18_lane_stabilization_matrix.py tests/test_sonnet55_cross_age_matrix.py tests/test_story_lane_qualification_policy.py tests/test_frozen_lane_authority_gate.py tests/test_frozen_lane_repair_runtime.py tests/test_frozen_lane_translation_runtime.py
+      - name: Verify read-only global claim lookup interface
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/contents/experiments/v3_f2_autonomous_quality_probe.py?ref=experiment/v3-f2-aion-coherence-acceptance-20261015" --jq .sha >/dev/null
+          echo "QUALITY_CLAIM_READONLY_INTERFACE_PASS"
+
+  single-quality:
+    if: >-
+      github.ref == 'refs/heads/experiment/v3-f2-aion-coherence-acceptance-20261015' &&
+      contains(github.event.head_commit.message, '[V3-F2-QUALITY-PAID-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate separate exact F2 quality grant before any provider access
+        shell: bash
+        env:
+          GUARD_SHA: 02ef9a85dc460567e7562235216567f0dca78b70
+          GRANT_PATH: experiments/triggers/v3-f2-quality-once-20261015.json
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v3-f2-quality-once"
+          export GRANT_COPY="$RUNNER_TEMP/v3-f2-quality-once/grant.json"
+          python3 - <<'PY'
+          import json,os,pathlib,re,shutil
+          from decimal import Decimal
+          grant=json.loads(pathlib.Path(os.environ["GRANT_PATH"]).read_text())
+          exact={
+              "schema":"lumi.v3-f2-autonomous-quality-grant.v1",
+              "authorized":True,
+              "stage":"ENGLISH_QUALITY",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "writer_run_id":38703469212,
+              "spine_run_id":38700326961,
+              "story_sha256":"eb38aea3c43a9e59d748ee0cf6f53475bfaf1d4c412c46e0893c78ccc3874eeb",
+              "approved_spine_sha256":"21f1e4e0c9f25cd1c970cccc2df8d09a0f236c9102321df7da086f85a3dac1a0",
+              "frozen_runtime_sha":"63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+              "models":["openai/gpt-5.6-luna","openai/gpt-5.6-sol","openai/gpt-5.6-luna"],
+              "guard_commit_sha":os.environ["GUARD_SHA"],
+          }
+          if any(grant.get(k)!=v for k,v in exact.items()):
+              raise SystemExit("UNAUTHORIZED_OR_INVALID_QUALITY_SCOPE")
+          gid=grant.get("grant_id")
+          if not isinstance(gid,str) or not re.fullmatch("[A-Za-z0-9][A-Za-z0-9_-]{7,79}",gid):
+              raise SystemExit("QUALITY_GRANT_ID_INVALID")
+          ref=grant.get("human_paid_authorization_reference")
+          if not isinstance(ref,str) or not ref.strip():
+              raise SystemExit("NEW_PAID_QUALITY_APPROVAL_MISSING")
+          try:
+              ceiling=Decimal(str(grant["max_total_usd"]))
+          except Exception as exc:
+              raise SystemExit("QUALITY_CEILING_INVALID") from exc
+          if not ceiling.is_finite() or not Decimal("0") < ceiling <= Decimal("0.20"):
+              raise SystemExit("QUALITY_CEILING_INVALID")
+          shutil.copyfile(os.environ["GRANT_PATH"],os.environ["GRANT_COPY"])
+          os.chmod(os.environ["GRANT_COPY"],0o600)
+          print("QUALITY_GRANT_SCOPE_VALID")
+          PY
+          git cat-file -e "${GUARD_SHA}^{commit}"
+          git checkout --detach "$GUARD_SHA"
+          test "$(git rev-parse HEAD)" = "$GUARD_SHA"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt pytest
+      - name: Zero-provider safety verification before spending
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -B -m src.frozen_lane_verify --profile data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json
+          PYTHONPATH=. python -B -m pytest -q tests/test_v3_f2_autonomous_quality_probe.py tests/test_v3_unattended_quality_model_adapter.py tests/test_v3_unattended_story_quality.py
+      - name: Verify globally unique grant bound to exact run and attempt
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GRANT_COPY: ${{ runner.temp }}/v3-f2-quality-once/grant.json
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1" || { echo "::error::QUALITY_REPLAY_FORBIDDEN"; exit 1; }
+          python3 - <<'PY'
+          import base64,json,os,subprocess,time
+          grant=json.load(open(os.environ["GRANT_COPY"],encoding="utf-8"))
+          gid=grant["grant_id"]
+          branch="evidence/v3-quality-claim-"+gid
+          url="repos/"+os.environ["GITHUB_REPOSITORY"]+"/contents/claims/"+gid+".json?ref="+branch
+          exact={
+              "schema":"lumi.v3-global-quality-claim.v1",
+              "authorized":True,
+              "grant_id":gid,
+              "stage":"ENGLISH_QUALITY",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "models":["openai/gpt-5.6-luna","openai/gpt-5.6-sol","openai/gpt-5.6-luna"],
+              "story_sha256":"eb38aea3c43a9e59d748ee0cf6f53475bfaf1d4c412c46e0893c78ccc3874eeb",
+              "source_commit":os.environ["GITHUB_SHA"],
+              "run_id":int(os.environ["GITHUB_RUN_ID"]),
+              "guard_commit_sha":"02ef9a85dc460567e7562235216567f0dca78b70",
+              "max_total_usd":grant["max_total_usd"],
+          }
+          for _ in range(30):
+              response=subprocess.run(["gh","api",url],capture_output=True,text=True)
+              if response.returncode:
+                  if "HTTP 404" in response.stderr:
+                      time.sleep(2)
+                      continue
+                  raise SystemExit("QUALITY_CLAIM_READ_DENIED_NO_PROVIDER_CALL")
+              try:
+                  claim=json.loads(base64.b64decode(json.loads(response.stdout)["content"]))
+              except (ValueError,KeyError,TypeError) as exc:
+                  raise SystemExit("QUALITY_CLAIM_DECODE_INVALID") from exc
+              if any(claim.get(k)!=v for k,v in exact.items()):
+                  raise SystemExit("QUALITY_CLAIM_RUN_BINDING_MISMATCH")
+              print("QUALITY_GLOBAL_SINGLE_RUN_CLAIM_VERIFIED")
+              break
+          else:
+              raise SystemExit("QUALITY_RUN_BOUND_CLAIM_MISSING")
+          PY
+      - name: One authorized Luna - conditional Sol - Luna quality trial
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_QUALITY_GLOBAL_CLAIM_VERIFIED: "YES"
+          GRANT_COPY: ${{ runner.temp }}/v3-f2-quality-once/grant.json
+        run: |
+          set -euo pipefail
+          test -n "${OPENROUTER_API_KEY:-}" || { echo "::error::OPENROUTER_SECRET_MISSING"; exit 1; }
+          PYTHONPATH=. python -B -m experiments.v3_f2_autonomous_quality_probe \
+            --grant "$GRANT_COPY" \
+            --claim-dir "$RUNNER_WORKSPACE/../_lumi_v3_quality_claims" \
+            --evidence-dir "$RUNNER_TEMP/v3-f2-quality-once/evidence"
+          echo "QUALITY_ONLY_NO_TRANSLATION_OR_WORLD_STATE"
+      - name: Save evidence whether pass or STOP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lumi-final-v3-f2-autonomous-quality-${{ github.run_id }}
+          path: ${{ runner.temp }}/v3-f2-quality-once/evidence/
+          if-no-files-found: warn
+          retention-days: 90
