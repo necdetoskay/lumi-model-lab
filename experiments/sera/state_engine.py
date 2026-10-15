@@ -138,12 +138,14 @@ def apply_scene(
     travel_minutes: dict[str, int],
     forbidden_locations: tuple[str, ...] = ("sealed_dispatch_office",),
     allowed_new_entity_ids: tuple[str, ...] = (),
+    allowed_observations: tuple[tuple[str, str], ...] = (),
 ) -> dict[str, Any]:
     """Compute exit state from entry + validated ordered events; never mutate entry.
 
     Event time represents action completion; movement time represents arrival.
-    New entity IDs require explicit authorization. All events need literal evidence
-    spans from current prose; semantic entailment is a separate judge task.
+    New entity IDs and direct (character, fact) observations require explicit
+    application authorization. All events need literal evidence spans from
+    current prose; semantic entailment is a separate judge task.
     """
     validate_snapshot(entry_state, forbidden_locations)
     need(isinstance(scene_key, str) and scene_key, "SCENE_KEY_REQUIRED")
@@ -220,6 +222,8 @@ def apply_scene(
             actor = _character(state, actor_id)
             _actor_available(actor, at, actor_id)
             need(actor["location"] == obj["location"], f"OBJECT_OUT_OF_REACH:{eid}")
+            need(obj.get("holder") in (None, actor_id),
+                 f"OBJECT_HELD_BY_OTHER:{eid}")
             field = event.get("property")
             need(isinstance(field, str) and field, f"OBJECT_FIELD_INVALID:{eid}")
             # Only object properties can be changed this way; identity/holder/location
@@ -233,6 +237,8 @@ def apply_scene(
             char_id, fact_id = event.get("character_id"), event.get("fact_id")
             char = _character(state, char_id)
             _fact(state, fact_id)
+            need((char_id, fact_id) in allowed_observations,
+                 f"FACT_OBSERVATION_NOT_AUTHORIZED:{eid}")
             _actor_available(char, at, char_id)
             if fact_id not in char["knowledge"]:
                 char["knowledge"].append(fact_id)
