@@ -18,7 +18,7 @@ from src.story_lane_case_manifest import load_case_manifest
 from src.story_stage_common import read_json, write_json
 from src.v4_lane_stage import run as v4_stage_run
 
-STAGE_LIMIT=12
+STAGE_LIMIT=16
 PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v4.json")
 
 
