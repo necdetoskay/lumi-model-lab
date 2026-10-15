@@ -14,7 +14,7 @@ on:
       - experiments/triggers/v3-spine-offline-check-20261015.json
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: lumi-final-v3-single-spine-paid-20261015
@@ -115,21 +115,53 @@ jobs:
             tests/test_age18_frozen_lane_v1.py \
             tests/test_frozen_lane_generic_spine_runtime.py
 
-      - name: Consume one-use authorization in GitHub atomically
+      - name: Verify operator-bound global one-use claim (read only)
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           GRANT_COPY: ${{ runner.temp }}/v3-spine-one/grant.json
         run: |
           set -euo pipefail
-          grant_id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["grant_id"])' "$GRANT_COPY")"
-          ref="refs/heads/evidence/v3-paid-claim-${grant_id}"
-          if ! gh api -X POST "repos/${GITHUB_REPOSITORY}/git/refs" \
-            -f ref="$ref" -f sha="$GITHUB_SHA" >/dev/null; then
-            echo "::error::Authorization already consumed or claim operation denied. No provider call."
+          if [ "${GITHUB_RUN_ATTEMPT}" != "1" ]; then
+            echo "::error::REPLAY_BLOCKED_RUN_ATTEMPT_NOT_ONE"
             exit 1
           fi
-          echo "GLOBAL_ONCE_CLAIM_CREATED"
+          python3 - <<'PY'
+          import base64, json, os, subprocess, time
+          grant=json.load(open(os.environ["GRANT_COPY"], encoding="utf-8"))
+          gid=grant["grant_id"]
+          ref="evidence/v3-paid-claim-"+gid
+          api_path="repos/"+os.environ["GITHUB_REPOSITORY"]+"/contents/claims/"+gid+".json?ref="+ref
+          expected={
+              "schema":"lumi.v3-global-run-claim.v1",
+              "grant_id":gid,
+              "stage":"SPINE",
+              "case_id":"age18.forbidden-cartographer.fantasy.frozen-01",
+              "source_commit":os.environ["GITHUB_SHA"],
+              "run_id":int(os.environ["GITHUB_RUN_ID"]),
+              "guard_commit_sha":"8de824cede7dcb6be1a8a144ec051691bed6538c",
+              "authorized":True,
+          }
+          for check in range(30):
+              result=subprocess.run(["gh","api",api_path], capture_output=True,text=True)
+              if result.returncode:
+                  if "HTTP 404" in result.stderr:
+                      time.sleep(2)
+                      continue
+                  raise SystemExit("GLOBAL_CLAIM_READ_DENIED_NO_PROVIDER_CALL")
+              try:
+                  response=json.loads(result.stdout)
+                  decoded=base64.b64decode(response["content"])
+                  claim=json.loads(decoded)
+              except (KeyError,ValueError,TypeError) as exc:
+                  raise SystemExit("GLOBAL_CLAIM_FORMAT_INVALID_NO_PROVIDER_CALL") from exc
+              if any(claim.get(key)!=value for key,value in expected.items()):
+                  raise SystemExit("GLOBAL_CLAIM_RUN_OR_SOURCE_MISMATCH_NO_PROVIDER_CALL")
+              print("GLOBAL_CLAIM_EXACT_RUN_BOUND_AND_VERIFIED")
+              break
+          else:
+              raise SystemExit("GLOBAL_CLAIM_NOT_AUTHORIZED_NO_PROVIDER_CALL")
+          PY
 
       - name: Execute one authorized Spine (Sonnet, then Luna only if eligible)
         shell: bash
