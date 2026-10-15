@@ -25,7 +25,7 @@ PROVIDER_MODELS=frozenset({
 })
 PROFILE=Path("data/specifications/story_lab/age18_story_lane_profile_v4_1.json")
 SPEND_SOFT_STOP_USD=Decimal("2.00")
-MAX_PROVIDER_CALLS=12
+MAX_PROVIDER_CALLS=16
 
 
 class V4PaidStop(RuntimeError):
@@ -80,7 +80,7 @@ class V4ProviderLedger:
         if payload.get("model") not in PROVIDER_MODELS:
             raise V4PaidStop("UNQUALIFIED_PROVIDER_MODEL")
         if self.posts>=MAX_PROVIDER_CALLS:
-            raise V4PaidStop("MORE_THAN_12_MODEL_CALLS")
+            raise V4PaidStop("MORE_THAN_16_MODEL_CALLS")
         if self.spent>=self.limit:
             raise V4PaidStop("CUMULATIVE_OBSERVED_SPEND_LIMIT_REACHED")
         self.posts+=1
