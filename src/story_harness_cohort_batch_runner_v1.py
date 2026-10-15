@@ -29,7 +29,7 @@ from src.story_harness_frozen_cohort_v1 import (
 from src.story_harness_frozen_round_v1 import simulate_seal, check_lock
 from src.story_harness_runtime_v1 import create_harness
 from src.story_harness_p417_live_pilot import https_post_once
-from src.story_harness_p414 import read_current_key
+from src.story_harness_p414 import read_current_key, money as provider_key_money
 from src.story_harness_p410 import canonical_json
 from src.story_harness_v1 import HarnessStop
 
@@ -90,7 +90,7 @@ def authorize_paid(repo):
     # study's $20 budget. Per-study accounting is enforced in stage intent.
     data = read_current_key(api_key=key)["data"]
     try:
-        remaining = usd(str(data.get("limit_remaining")))
+        remaining = provider_key_money(data.get("limit_remaining"), "limit_remaining")
     except HarnessStop:
         raise HarnessStop("COHORT_BATCH_STOP_UNKNOWN_PROVIDER_REMAINING") from None
     require(remaining >= Decimal("4.40") and

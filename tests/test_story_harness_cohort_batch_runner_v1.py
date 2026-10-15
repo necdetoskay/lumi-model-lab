@@ -118,6 +118,44 @@ class TenBatchTests(unittest.TestCase):
                     Batch(".",td,offline=True,historical_hold=amount)
             self.assertFalse((Path(td)/RUN_ID).exists())
 
+    def test_paid_key_remaining_accepts_exact_submicrocent_precision(self):
+        # OpenRouter key remaining may have >6 decimal places; the six-
+        # decimal constraint is for our study ledger, not the provider key.
+        with patch.dict(os.environ,{
+            "GITHUB_ACTIONS":"true","GITHUB_EVENT_NAME":"workflow_dispatch",
+            "GITHUB_REF":"refs/heads/experiment/story-harness-control-plane-v1",
+            "GITHUB_ACTOR":"necdetoskay","GITHUB_SHA":"a"*40,
+            "GITHUB_RUN_ATTEMPT":"1","GITHUB_RUN_ID":"12345",
+            "LUMI_TEN_PAID_CONFIRMATION":
+                "AUTHORIZE_LUMI_TEN_NO_RETRY_4_40_RESERVE_20_TOTAL",
+            "OPENROUTER_API_KEY":"sk-or-test-not-real"},clear=True):
+            with patch("src.story_harness_cohort_batch_runner_v1.head",
+                       return_value="a"*40), patch(
+                "src.story_harness_cohort_batch_runner_v1.read_current_key",
+                return_value={"data":{
+                    "limit_remaining":4.4000001234567,
+                    "is_management_key":False,"is_free_tier":False}
+                }) as fetch:
+                self.assertEqual(authorize_paid("."),"sk-or-test-not-real")
+                fetch.assert_called_once()
+
+    def test_paid_key_missing_remaining_stops_before_any_model_post(self):
+        with patch.dict(os.environ,{
+            "GITHUB_ACTIONS":"true","GITHUB_EVENT_NAME":"workflow_dispatch",
+            "GITHUB_REF":"refs/heads/experiment/story-harness-control-plane-v1",
+            "GITHUB_ACTOR":"necdetoskay","GITHUB_SHA":"a"*40,
+            "GITHUB_RUN_ATTEMPT":"1","GITHUB_RUN_ID":"12345",
+            "LUMI_TEN_PAID_CONFIRMATION":
+                "AUTHORIZE_LUMI_TEN_NO_RETRY_4_40_RESERVE_20_TOTAL",
+            "OPENROUTER_API_KEY":"sk-or-test-not-real"},clear=True):
+            with patch("src.story_harness_cohort_batch_runner_v1.head",
+                       return_value="a"*40), patch(
+                "src.story_harness_cohort_batch_runner_v1.read_current_key",
+                return_value={"data":{"limit_remaining":None}}):
+                with self.assertRaisesRegex(HarnessStop,
+                        "UNKNOWN_PROVIDER_REMAINING"):
+                    authorize_paid(".")
+
     def test_paid_mode_without_explicit_trusted_dispatch_never_gets_key(self):
         with tempfile.TemporaryDirectory() as td:
             with patch.dict(os.environ,{},clear=True):
