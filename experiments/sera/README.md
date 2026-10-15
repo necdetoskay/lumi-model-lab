@@ -100,3 +100,34 @@ The first real one-scene model experiment ran, and subsequent independent Gemini
 - Unresolved schema/time/epistemic hardening is tracked in [#304](https://github.com/necdetoskay/lumi-model-lab/issues/304); persistent object history and weather is separate [#303](https://github.com/necdetoskay/lumi-model-lab/issues/303).
 
 **Important:** A successful GitHub workflow run here means the diagnostic executed, not that the narrative or extracted state passed acceptance. A lexicon is supplementary, not proof of exhaustive entity identification.
+
+
+## Object State v0.2 — Active Experimental Prototype (Issue #303)
+
+Per the object-history backlog, SERA now includes a second, isolated, strictly typed
+state/event system. **Existing v0.1 scene/extractor/JEV code and the immutable
+Sonnet source remain untouched.** This is NOT a production database migration.
+
+- [Full v0.2 architecture](./WORLD_STATE_V02_ARCHITECTURE.md).
+- `world_state_v02.py`: entity identity, object color/material/dimensions,
+  condition/age, ownership vs holding/wearing, character traits/knowledge,
+  and environmental weather/temperature/wind/wet ground. Verified changes
+  require application-owned event-fingerprint grants and explicit causes.
+- `world_store_v02.py`: standard-library SQLite atomic/idempotent events,
+  append-only histories, revisional/historical entity lookups, snapshot replay
+  and hash-chain consistency checks.
+- `tests/test_world_state_v02.py`: demonstrates **10 scenes without silent
+  object/color/clothing/weather changes**, authorized repairs, ownership and
+  dimension constraints, temperature jumps, SQLite historical retrieval,
+  rollback, idempotency and closed-form append-only records.
+
+Run from the repository root:
+
+```bash
+python -m unittest discover -s experiments/sera/tests -v
+```
+
+M3's actual Mara first-scene extraction is still held by typed-event/time
+problems ([#304](https://github.com/necdetoskay/lumi-model-lab/issues/304)).
+**No provider model or JEV response is allowed to commit the new v0.2 state
+without a separately qualified evidence-to-authority adapter.**
