@@ -333,7 +333,7 @@ def plan()->dict:
     matrix=load_matrix()
     return {
         "schema":"lumi.v3.four-genre-stress-preflight.v1",
-        "status":"FOUR_SAGA_INPUTS_CREATED_NO_PROVIDER_RUNS",
+        "status":"FOUR_SAGA_INPUTS_SCHEMA_VALID_NO_PROVIDER_RUNS",
         "frozen_v3_sha":FROZEN_SHA,
         "cases":[{
             "case_id":c["case_id"],
