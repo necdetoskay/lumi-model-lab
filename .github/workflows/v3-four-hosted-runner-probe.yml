@@ -1,0 +1,15 @@
+name: V3 Paid Runner Availability Probe
+on:
+  push:
+    branches:
+      - experiment/v3-four-story-real-inputs-20261015
+    paths:
+      - experiments/triggers/v3-hosted-runner-probe-20261015.txt
+permissions:
+  contents: read
+jobs:
+  no-model-no-secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: echo "HOSTED_RUNNER_AVAILABLE_NO_MODEL_NO_SECRETS"
