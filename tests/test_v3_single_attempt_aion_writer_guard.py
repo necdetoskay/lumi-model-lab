@@ -291,3 +291,81 @@ def test_writer_proof_entrypoint_is_one_use_and_no_network(tmp_path, monkeypatch
     assert post_calls == [WRITER_MODEL]
     assert not (tmp_path / "evidence2").exists()
     assert len(list((tmp_path / "claims").glob("*.json"))) == 1
+
+
+
+def test_historical_real_aion_mini_writer_baseline_five_authority_findings():
+    """Check the actual stored Aion response, not a mock story."""
+    from src.story_authority_packet_v2 import build_story_authority_packet_v2
+    from src.deterministic_story_authority_guards import run_deterministic_authority_guards
+    root = Path("data/specifications/story_lab")
+    approved = json.loads((root / "age18_cross_age_c11_approved.json").read_text())
+    original = json.loads(
+        (root / "age18_cross_age_c2_writer_run_36612862926.json").read_text()
+    )
+    assert original["writer_model"] == "aion-labs/aion-3.5-mini"
+    assert original["writer_cost_usd"] == 0.0316043
+    assert len(original["story"].split()) == 2172
+    findings = run_deterministic_authority_guards(
+        original["story"], build_story_authority_packet_v2(approved),
+    )
+    assert len(findings) == 5
+    assert {f["guard_id"] for f in findings} == {
+        "formal_record_ordering",
+        "raw_observation_erasure",
+        "unresolved_setup_overclaim",
+    }
+
+
+def test_historical_repaired_aion_master_has_zero_authority_findings():
+    from src.story_authority_packet_v2 import build_story_authority_packet_v2
+    from src.deterministic_story_authority_guards import run_deterministic_authority_guards
+    root = Path("data/specifications/story_lab")
+    approved = json.loads((root / "age18_cross_age_c11_approved.json").read_text())
+    original = json.loads(
+        (root / "age18_cross_age_c2_writer_run_36612862926.json").read_text()
+    )
+    final = json.loads((root / "age18_cross_age_final_delivery_v1.json").read_text())
+    assert final["publication_ready"] is True
+    assert final["accepted_english_master"] != original["story"]
+    assert len(final["accepted_english_master"].split()) == 2176
+    assert run_deterministic_authority_guards(
+        final["accepted_english_master"],
+        build_story_authority_packet_v2(approved),
+    ) == []
+
+
+def test_historical_turkish_delivery_preserves_deterministic_fidelity():
+    from src.deterministic_translation_semantic_guards import (
+        run_translation_semantic_guards,
+    )
+    root = Path("data/specifications/story_lab")
+    final = json.loads((root / "age18_cross_age_final_delivery_v1.json").read_text())
+    assert len(final["turkish_delivery"].split()) == 1817
+    assert run_translation_semantic_guards(
+        final["accepted_english_master"], final["turkish_delivery"]
+    ) == []
+    assert final["api_calls"] == 6
+    assert final["product_path_cost_usd"] == 0.17766185
+    reconciliation = final["pipeline_usage_rollup"]["reconciled"]
+    assert reconciliation["cost_matches_call_sum"] is True
+    assert reconciliation["token_matches_call_sum"] is True
+
+
+def test_replan_fantasy_spine_must_not_be_used_for_aion_writer():
+    root = Path("data/specifications/story_lab")
+    old_f1 = json.loads(
+        (root / "age18_forbidden_cartographer_f1_result_36657233678.json").read_text()
+    )
+    frozen_case = json.loads(
+        (root / "age18_forbidden_cartographer_frozen_case_v1.json").read_text()
+    )
+    assert old_f1["gate"]["decision"] == "REPLAN"
+    assert old_f1["human_review"]["verdict"] is None
+    assert old_f1["human_review"]["episode_writer_authorized"] is False
+    assert len([
+        dimension for dimension in old_f1["gate"]["dimensions"]
+        if dimension["blocking_failure"]
+    ]) == 6
+    assert frozen_case["status"] == "READY_FOR_FROZEN_SPINE_F1"
+    assert frozen_case["case_id"] == "age18.forbidden-cartographer.fantasy.frozen-01"

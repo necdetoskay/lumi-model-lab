@@ -20,3 +20,28 @@ That run used the v2 Writer prompt; this guarded run uses the v3 generic prompt.
 
 No user-approved new Writer POST has been sent, and no existing
 production / main / frozen V3 source is changed.
+
+## Actual Aion story audit (existing paid artifacts; no new provider calls)
+
+The original historical C2 Aion 3.5 Mini output was 2,172 English
+words, $0.0316043 for its Writer call. Applying the frozen V3
+deterministic authority rules to this **real stored** output with
+authority packet v2 produces **five findings**: premature formal record,
+two raw-observation erasures, and two setup-overclaim statements.
+The repaired/accepted English master is 2,176 words with **zero**
+such deterministic findings. The accepted Turkish delivery is 1,817
+words and triggers **zero** deterministic translation semantic findings.
+Historical final path: 6 total paid calls, $0.17766185, 426.802 seconds,
+with reconciled call-summed token and cost evidence.
+
+These are deterministic replay results on stored artifacts, not a new
+provider run, semantic judge verdict, or a claim of perfect literary quality.
+
+An earlier Forbidden Cartographer F1 Gate returned **REPLAN** with six
+blocking dimensions and no human Writer authorization. The frozen new
+fantasy case remains **READY_FOR_FROZEN_SPINE_F1**; never repurpose the
+older unapproved F1 as an approved input to Aion Mini.
+
+Result: Writer-only mock PASS is necessary but insufficient. Actual product
+qualification requires controlled Spine -> explicit approval -> Aion Writer
+-> authority -> bounded repair if needed -> translation -> fidelity.
