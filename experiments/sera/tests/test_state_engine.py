@@ -199,6 +199,30 @@ class SeraStateTests(unittest.TestCase):
         self.assert_code("OBJECT_OUT_OF_REACH",
                          lambda: run_scene(fixture(), [event], QUOTE_OBJECT))
 
+    def test_object_held_by_other_actor_cannot_be_modified(self):
+        event = evt("e1", "UPDATE_OBJECT", 140, QUOTE_OBJECT,
+                    actor_id="mara", object_id="vane_watch",
+                    property="status", value="running")
+        self.assert_code(
+            "OBJECT_HELD_BY_OTHER",
+            lambda: run_scene(fixture(), [event], QUOTE_OBJECT),
+        )
+
+    def test_direct_fact_learning_requires_application_grant(self):
+        quote = "Mara independently observed the watch reading 02:07."
+        event = evt("e1", "LEARN_FACT", 140, quote,
+                    character_id="mara", fact_id="watch_stopped_0207")
+        self.assert_code(
+            "FACT_OBSERVATION_NOT_AUTHORIZED",
+            lambda: run_scene(fixture(), [event], quote),
+        )
+        result = run_scene(
+            fixture(), [event], quote,
+            allowed_observations=(("mara", "watch_stopped_0207"),),
+        )
+        self.assertIn("watch_stopped_0207",
+                      result["entities"]["mara"]["knowledge"])
+
     def test_object_identity_fields_protected(self):
         event = evt("e1", "UPDATE_OBJECT", 140, QUOTE_OBJECT,
                     actor_id="vane", object_id="vane_watch",
