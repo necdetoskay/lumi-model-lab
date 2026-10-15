@@ -1,0 +1,31 @@
+name: SERA State Engine Offline Tests
+
+on:
+  push:
+    branches:
+      - "experiment/sera-*"
+    paths:
+      - "experiments/sera/**"
+      - ".github/workflows/sera-state-engine-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sera-m1-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check Python syntax
+        run: python -m compileall -q experiments/sera
+      - name: Run deterministic SERA unit tests
+        run: python -m unittest discover -s experiments/sera/tests -v
+      - name: Verify immutable source Spine compilation
+        run: >-
+          python -m experiments.sera.spine_contracts
+          evidence/v4-2-mara-run-38794774463/sonnet-original-spine-pre-haiku.json
