@@ -264,7 +264,7 @@ def generate(
             else "writer_generated_deterministic_check_failed"
         ),
         "source_spine_run_id": approved["source_run_id"],
-        "human_review": approved["human_review"],
+        "model_creative_review": approved["model_creative_review"],
         "writer_model": writer_model,
         "writer_runtime_identity": runtime_profile_identity(writer_model),
         "started_at": started_at,
