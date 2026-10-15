@@ -1,0 +1,133 @@
+name: Story Harness P4.43 B05 Real Spine Writer Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p443-b05-real-generation-single-grant
+  cancel-in-progress: false
+
+jobs:
+  b05-original-age12-source-generation:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: p443-b05-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: p443-b05-isolated
+      - name: Reject all paid requests unless HEAD changed only the B05 grant
+        id: scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          files=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],text=True).splitlines()
+          eligible=files==['configs/story_harness_p443_b05_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if eligible else 'false')+'\n')
+          print('P443_B05_REAL_GRANT_SCOPE='+('ELIGIBLE' if eligible else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Recheck B05 source, original model, fresh budget and exact grant OFFLINE
+        if: steps.scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p443_b05_age12.py' -q
+          python - <<'PY'
+          import json
+          from decimal import Decimal
+          from pathlib import Path
+          from src.story_harness_p443_b05_age12 import SOURCE_SHA,source_case,PRIOR_CONSERVATIVE
+          from src.story_harness_p417_live_pilot import MODEL,USD_CAP,GLOBAL_USER_CAP,OUTPUT_CAPS,STAGE_MAX_USD
+          expected={
+             'schema':'lumi.story-harness-p443-one-age12-B05.v1',
+             'case_id':'B05',
+             'run_variant':'r06',
+             'source_pack_sha256':SOURCE_SHA,
+             'reader_age':12,
+             'minimum_words':1600,
+             'maximum_words':2500,
+             'model':MODEL,
+             'max_model_posts':2,
+             'maximum_new_cost_usd':'0.35',
+             'previous_conservative_budget_reserved_usd':'1.979558',
+             'user_aggregate_approved_usd':'10.00',
+             'automatic_retries':False,
+             'production_write':False,
+          }
+          assert json.loads(Path('configs/story_harness_p443_b05_trigger.json').read_text())==expected,'B05 paid scope changed'
+          _,pack=source_case('.')
+          assert pack['pack_sha256']==SOURCE_SHA
+          assert pack['reader_age']==12 and pack['word_targets']=={'min':1600,'max':2500}
+          assert PRIOR_CONSERVATIVE==Decimal(expected['previous_conservative_budget_reserved_usd'])
+          assert GLOBAL_USER_CAP==Decimal(expected['user_aggregate_approved_usd'])
+          assert USD_CAP==Decimal(expected['maximum_new_cost_usd'])
+          assert PRIOR_CONSERVATIVE+USD_CAP <= GLOBAL_USER_CAP
+          assert OUTPUT_CAPS=={'SPINEFORGE':5500,'WRITER':6500}
+          assert sum(STAGE_MAX_USD.values())<=USD_CAP
+          print('P443_B05_ORIGINAL_AGE12_SOURCE_AND_BUDGET_GREEN')
+          PY
+      - name: Read-only OpenRouter inference balance; no model POST
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remain=d.get('limit_remaining')
+          if remain is not None:
+              assert Decimal(str(remain))>=Decimal('0.35')
+          assert d.get('is_management_key') is not True and d.get('is_free_tier') is not True
+          print('P443_B05_OPENROUTER_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: Produce genuine B05 SpineForge and Writer, exactly one POST each, no retry
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P443_B05: ONE_ORIGINAL_B05_AGE12_GENERATION
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p443_b05_story_claims"
+          mkdir -p "$root"
+          chmod 700 "$root"
+          python -m src.story_harness_p443_b05_age12 \
+            --repo-root . --claim-root "$root" --paid-once > /tmp/lumi-p443-b05-story.json
+          python - <<'PY'
+          import json
+          a=json.load(open('/tmp/lumi-p443-b05-story.json'))
+          assert a['case_id']=='B05' and a['reader_age']==12
+          assert a['source_pack_sha256']=='161089f1f94c0c833bc9bbfcce70d5632d7de3c637b2903af8c8b992f9d41cfb'
+          assert 1600<=a['english_word_count']<=2500
+          assert a['initial_quality_verdict']=='NOT_YET_AUDITED'
+          assert a['english_master_authorized'] is False and a['q25_authorized'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P443_B05_REAL_SPINE_WRITER_GREEN')
+          print('P443_B05_WORDS='+str(a['english_word_count']))
+          print('P443_B05_SPINE_SHA='+a['spine_sha256'])
+          print('P443_B05_STORY_SHA='+a['story_sha256'])
+          print('P443_B05_PROVIDER_USD='+a['actual_generation_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p443-b05-original-spine-writer-once
+          path: ${{ runner.workspace }}/_lumi_p443_b05_story_claims/b05-*-r06/
+          if-no-files-found: warn
+          retention-days: 30

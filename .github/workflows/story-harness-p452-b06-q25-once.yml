@@ -1,0 +1,145 @@
+name: Story Harness P4.52 B06 Real Q25 Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p452-b06-real-q25-one-grant
+  cancel-in-progress: false
+
+jobs:
+  b06-original-master-real-q25:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p452-b06-q25-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: p452-b06-q25-isolated
+      - name: Reject unless exactly B06 Q25 manifest-only HEAD change
+        id: scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          paths=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],text=True).splitlines()
+          eligible=paths==['configs/story_harness_p452_b06_q25_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if eligible else 'false')+'\n')
+          print('P452_B06_Q25_GRANT_SCOPE='+('ELIGIBLE' if eligible else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Verify original protected B06 English Master, QA, source and strict cap OFFLINE
+        if: steps.scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p452_b06_q25.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python - <<'PY'
+          import json,os
+          from decimal import Decimal
+          from pathlib import Path
+          from src.story_harness_p449_b06_quality import SOURCE_SHA,SPINE_SHA,STORY_SHA
+          from src.story_harness_p450_b06_master import AUDITOR_ID,AUDIT_SHA
+          from src.story_harness_p452_b06_q25 import (
+              MODEL,PRIOR_RESERVED,USER_CAP,COST_CAP,
+              load_b06_bundle,b06_q25_wire,verify_original_v01_stop,
+          )
+          grant=json.loads(Path('configs/story_harness_p452_b06_q25_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p452-b06-original-q25-once.v2',
+              'case_id':'B06','variant':'v02',
+              'source_pack_sha256':SOURCE_SHA,
+              'original_spine_sha256':SPINE_SHA,
+              'accepted_master_sha256':STORY_SHA,
+              'original_auditor_generation_id':AUDITOR_ID,
+              'original_audit_receipt_sha256':AUDIT_SHA,
+              'model':MODEL,'maximum_model_posts':1,
+              'stage_cost_cap_usd':'0.050',
+              'prior_conservative_budget_reserved_usd':'2.809558',
+              'user_total_cap_usd':'10.00',
+              'automatic_retries':False,'production_writes':False,
+          },'B06 Q25 grant differs from exact source audited Master'
+          assert PRIOR_RESERVED==Decimal(grant['prior_conservative_budget_reserved_usd'])
+          assert COST_CAP==Decimal(grant['stage_cost_cap_usd'])
+          assert USER_CAP==Decimal(grant['user_total_cap_usd'])
+          assert PRIOR_RESERVED+COST_CAP<=USER_CAP
+          root=Path(os.environ['RUNNER_WORKSPACE'])
+          bundle=load_b06_bundle('.',
+              root/'_lumi_p448_b06_story_claims',
+              root/'_lumi_p449_b06_quality_claims',
+              root/'_lumi_p450_b06_master_claims')
+          assert bundle['master']['independent_auditor_generation_id']==AUDITOR_ID
+          verify_original_v01_stop('.')
+          body=b06_q25_wire(bundle)
+          assert body['model']==MODEL
+          assert body['provider']['allow_fallbacks'] is False
+          assert body['stream'] is False
+          print('P452_B06_SOURCE_MASTER_COST_PREFLIGHT_GREEN')
+          PY
+      - name: Read-only authorized OpenRouter inference key remaining balance
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.050')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P452_B06_OPENROUTER_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: One real source-locked B06 Q25 Sonnet POST; no retries, no Canon writes
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P452_B06_Q25: ONE_REAL_B06_MASTER_Q25
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p452_b06_q25_claims"
+          chmod 700 "$root/_lumi_p452_b06_q25_claims"
+          python -m src.story_harness_p452_b06_q25 \
+            --repo-root . \
+            --producer-root "$root/_lumi_p448_b06_story_claims" \
+            --quality-root "$root/_lumi_p449_b06_quality_claims" \
+            --master-root "$root/_lumi_p450_b06_master_claims" \
+            --q25-root "$root/_lumi_p452_b06_q25_claims" \
+            --paid-once > /tmp/lumi-p452-b06-q25.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/lumi-p452-b06-q25.json'))
+          assert d['case_id']=='B06'
+          assert d['final_location_proposal']=='LIBRARY'
+          assert d['state_committed'] is False
+          assert d['production_state_write_authorized'] is False
+          print('P452_REAL_B06_Q25_EVIDENCE_GREEN')
+          print('P452_B06_Q25_GENERATION_ID='+d['q25_generation_id'])
+          print('P452_B06_Q25_PROVIDER_USD='+d['provider_reported_cost_usd'])
+          print('P452_B06_Q25_FINAL_LOCATION='+d['final_location_proposal'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p452-b06-original-q25-evidence-once
+          path: ${{ runner.workspace }}/_lumi_p452_b06_q25_claims/p452-b06-r06-q25-evidence-v02/
+          if-no-files-found: warn
+          retention-days: 30

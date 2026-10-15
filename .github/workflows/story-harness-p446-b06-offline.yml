@@ -1,0 +1,49 @@
+name: Story Harness P4.46 B06 Age12 Generation Offline
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p446_b06_age12.py
+      - tests/test_story_harness_p446_b06_age12.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p446-b06-source-generation-offline
+  cancel-in-progress: true
+
+jobs:
+  b06-real-source-mock-only:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove original B06 12-year Canon and bounded no-retry Spine/Writer OFFLINE
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p446_b06_age12.py' -v
+          python -m src.story_harness_p446_b06_age12 > /tmp/lumi-p446-b06-offline.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/lumi-p446-b06-offline.json'))
+          assert r['case_id']=='B06' and r['reader_age']==12
+          assert r['source_pack_sha256']=='cc68b39084f270df88357dc6fa29acdb7eeb5a645d23de7e592c3c486e04277e'
+          assert r['word_targets']=={'min':1600,'max':2500}
+          assert r['generation_cost_cap_usd']=='0.35'
+          assert r['provider_calls']==0 and r['paid_execution_enabled'] is False
+          assert r['production_state_write_authorized'] is False
+          print('P446_B06_AGE12_ORIGINAL_CANON_OFFLINE_GREEN')
+          PY

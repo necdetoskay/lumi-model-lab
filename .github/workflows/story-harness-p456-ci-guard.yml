@@ -1,0 +1,51 @@
+name: Story Harness P4.56 CI Isolation and No-Rerun Contract
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/story-harness-*.yml'
+      - 'tests/test_story_harness_p456_ci_contract.py'
+      - 'docs/canonical/STORY_HARNESS_P456_CI_ISOLATION.md'
+      - 'src/story_harness_p457_b07_gate.py'
+      - 'tests/test_story_harness_p457_b07_gate.py'
+      - 'src/story_harness_p458_b07_quality.py'
+      - 'tests/test_story_harness_p458_b07_quality.py'
+      - 'src/story_harness_p422_independent_audit.py'
+      - 'evidence/story_harness_p457/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p456-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-contract:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 275 }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove offline CI isolation and evidence; no model requests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p456_ci_contract.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p447_quality_diagnostics.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p453_b06_final_state.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p454_b07_age25.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p457_b07_gate.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p458_b07_quality.py' -q
+          echo P456_OFFLINE_CHECKOUT_AND_BUDGET_GUARD_GREEN

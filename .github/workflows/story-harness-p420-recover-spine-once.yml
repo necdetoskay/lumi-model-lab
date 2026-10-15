@@ -1,0 +1,91 @@
+name: Story Harness P4.20 Recover Existing Spine Read Only
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p420-r05-spine-read-only-once
+  cancel-in-progress: false
+
+jobs:
+  recover-spine:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Deny ordinary PR changes from triggering content retrieval
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          names=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert names==['configs/story_harness_p420_recovery_trigger.json']
+          print('P420_EXACT_READ_ONLY_TRIGGER_CONFIRMED')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact approved read-only scope and offline negative tests
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p420_recover_spine.py' -q
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          row=json.loads(Path('configs/story_harness_p420_recovery_trigger.json').read_text())
+          assert row=={
+              'schema':'lumi.story-harness-p420-retrieve-one-original-spine.v1',
+              'r05_spine_generation_id':'gen-1791912726-aHBjPEj5p3CU0qvEv6im',
+              'expected_spine_sha256':'4931ea2bf744d001137d4cdcd7bb6d2d39f19e52b82f05c4972941a8b64a9054',
+              'source_pack_sha256':'91854710f46db13ee2599d567ca2fcbbcd945af50515a779ddee58211ee050dc',
+              'provider_model_posts_authorized':0,
+              'retrieval_http_method':'GET',
+              'new_model_inference_cost_usd':'0',
+              'production_change':False,
+              'automatic_retry':False
+          }
+          print('P420_READ_ONLY_SCOPE_GREEN')
+          PY
+      - name: Retrieve original r05 content by generation ID via authenticated GET
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P420_READ_ONLY: SINGLE_GENERATION_CONTENT_LOOKUP
+        run: |
+          set -euo pipefail
+          CLAIMS="${RUNNER_WORKSPACE}/_lumi_p420_recovery"
+          mkdir -p "$CLAIMS"
+          chmod 700 "$CLAIMS"
+          python -m src.story_harness_p420_recover_spine \
+             --repo-root . --run-root "$CLAIMS" --recover-once \
+             > /tmp/lumi-p420-result.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.loads(Path('/tmp/lumi-p420-result.json').read_text())
+          assert receipt['model_posts']==0
+          assert receipt['new_model_spend_usd']=='0'
+          assert receipt['quality_accepted'] is False
+          print('P420_SPINE_RECOVERY_STATUS='+receipt['status'])
+          print('P420_SPINE_RECOVERED='+str(receipt['spine_recovered']))
+          if not receipt['spine_recovered']:
+              print('P420_PROVIDER_DID_NOT_PRESERVE_RECOVERABLE_SPINE')
+          else:
+              print('P420_ORIGINAL_SPINE_SHA256='+receipt['spine_sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p420-r05-original-spine-read-only
+          path: ${{ runner.workspace }}/_lumi_p420_recovery/p420-r05-spine-recovery-v01/
+          if-no-files-found: warn
+          retention-days: 30

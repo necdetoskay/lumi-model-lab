@@ -1,0 +1,120 @@
+name: Story Harness P4.17 Paid B01 One-Shot
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p417-b01-one-shot
+  cancel-in-progress: false
+
+jobs:
+  first-real-story:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Reject PR updates not exclusively modifying the paid run trigger
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          files=subprocess.check_output(
+             ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+             text=True).splitlines()
+          assert files == ['configs/story_harness_p417_paid_trigger.json'], (
+             'Not an explicit new operator-approved paid trigger commit; '
+             'no secrets consumed and no model POST')
+          print('PAID_TRIGGER_COMMIT_ONLY_CONFIRMED')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate exact reviewed paid run manifest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('configs/story_harness_p417_paid_trigger.json').read_text())
+          assert p == {
+            'schema': 'lumi.story-harness-p417-paid-single-trigger.v1',
+            'case_id': 'B01',
+            'run_variant': 'r06',
+            'dispatch_id': 'r06-after-queue-cancel-v02',
+            'previous_ambiguous_reserve_usd': '1.08',
+            'previous_known_provider_charges_usd': '0.067008',
+            'remaining_aggregate_budget_before_usd': '8.852992',
+            'maximum_model_posts': 2,
+            'maximum_pilot_usd': '0.35',
+            'aggregate_user_approved_budget_usd': '10.00',
+            'user_approved_aggregate_budget': True,
+            'automatic_retries': False,
+            'production_write': False
+          }, 'Changed authorization scope: paid pilot STOP'
+          print('ONE_SHOT_REVIEWED_SCOPE_OK')
+          PY
+      - name: Authenticate existing GitHub OpenRouter secret with READ ONLY metadata
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal, InvalidOperation
+          from src.story_harness_p414 import read_current_key
+          from src.story_harness_v1 import HarnessStop
+          data=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          limit_remaining=data.get('limit_remaining')
+          if limit_remaining is not None:
+              try:
+                  n=Decimal(str(limit_remaining))
+              except (InvalidOperation, ValueError):
+                  raise HarnessStop('Invalid provider remaining credit')
+              if not n.is_finite() or n < Decimal('0.35'):
+                  raise HarnessStop('Not enough spendable OpenRouter credit for bounded pilot')
+          if data.get('is_free_tier') is True or data.get('is_management_key') is True:
+              raise HarnessStop('Not a paid inference key')
+          print('EXISTING_OPENROUTER_SECRET_READ_ONLY_PRECHECK_GREEN')
+          PY
+      - name: Execute exactly one actual B01 SpineForge to Writer attempt
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P417_ENABLE_PAID: ONE_SHOT_APPROVED_10_USD_USER_LIMIT
+        run: |
+          set -euo pipefail
+          # Adjacent to checkout; survives normal actions/checkout workspace cleaning
+          # on the dedicated offline self-hosted runner. EXCLUSIVE mkdir is the claim.
+          export P417_LEDGER_ROOT="${RUNNER_WORKSPACE}/_lumi_p417_durable_claims"
+          mkdir -p "$P417_LEDGER_ROOT"
+          chmod 700 "$P417_LEDGER_ROOT"
+          python -m src.story_harness_p417_live_pilot \
+            --repo-root . --paid-one-shot --case-id B01 --run-variant r06 \
+            --run-root "$P417_LEDGER_ROOT" > /tmp/lumi-p417-paid-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p417-paid-summary.json').read_text())
+          assert r['quality_accepted'] is False
+          assert r['english_master_authorized'] is False
+          assert r['q25_authorized'] is False
+          assert r['state_write_authorized'] is False
+          assert r['two_stage_cost_usd']
+          print('REAL_B01_STORY_DRAFT_CREATED_NOT_QUALITY_ACCEPTED')
+          print('B01_WRITER_WORD_COUNT=' + str(r['story_words']))
+          print('B01_ACTUAL_MODEL_COST_USD=' + r['two_stage_cost_usd'])
+          print('B01_WRITER_SHA256=' + r['story_sha256'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p417-b01-r06-provider-result
+          path: ${{ runner.workspace }}/_lumi_p417_durable_claims/b01-*-r06/ 
+          if-no-files-found: warn
+          retention-days: 30

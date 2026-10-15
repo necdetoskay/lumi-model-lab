@@ -1,0 +1,141 @@
+name: Story Harness P4.39 B04 Real Independent Quality Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p439-b04-real-quality-one-grant
+  cancel-in-progress: false
+
+jobs:
+  b04-original-independent-quality:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p439-b04-independent-quality-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p439-b04-independent-quality-isolated
+      - name: Deny paid POST without a B04-only exact manifest HEAD
+        id: scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          changes=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          valid=changes==['configs/story_harness_p439_b04_quality_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if valid else 'false')+'\n')
+          print('P439_B04_PAID_GRANT_SCOPE='+('ELIGIBLE' if valid else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Prove B04 original provider bytes, 12-family Sonnet contract and cumulative $10 budget
+        if: steps.scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p439_b04_quality.py' -q
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p439_b04_quality import (
+              get_original_B04, inspect_B04_audit,
+              SOURCE_SHA,SPINE_SHA,STORY_SHA,SPINE_ID,
+              PRIOR_RESERVED, STAGE_COST_CAP, USER_CAP, MODEL)
+          grant=json.loads(Path('configs/story_harness_p439_b04_quality_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p439-b04-one-independent-quality.v1',
+              'case_id':'B04',
+              'run_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'original_spine_sha256':SPINE_SHA,
+              'original_story_sha256':STORY_SHA,
+              'original_spine_generation_id':SPINE_ID,
+              'reader_age':10,
+              'model':MODEL,
+              'maximum_quality_model_posts':1,
+              'max_new_quality_stage_usd':'0.040',
+              'previous_conservative_budget_reserved_usd':'1.889558',
+              'user_aggregate_approved_usd':'10.00',
+              'automatic_retries':False,
+              'production_write':False,
+          },'B04 quality grant changed from original source-approved manifest'
+          assert PRIOR_RESERVED==Decimal(grant['previous_conservative_budget_reserved_usd'])
+          assert STAGE_COST_CAP==Decimal(grant['max_new_quality_stage_usd'])
+          assert USER_CAP==Decimal(grant['user_aggregate_approved_usd'])
+          assert PRIOR_RESERVED+STAGE_COST_CAP <= USER_CAP
+          root=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p438_b04_story_claims'
+          source=get_original_B04('.',root)
+          wire=inspect_B04_audit(source)
+          assert wire['provider']['allow_fallbacks'] is False
+          assert wire['stream'] is False
+          print('P439_B04_ORIGINAL_SOURCE_AND_BUDGET_PREFLIGHT_GREEN')
+          PY
+      - name: Read-only OpenRouter key balance for one quality POST
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.040')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P439_B04_APPROVED_INF_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: Send one real B04 adversarial Sonnet initial audit; no retry or state writes
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P439_B04_QA: ONE_REAL_INDEPENDENT_B04_SONNET_QUALITY
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p439_b04_quality_claims"
+          chmod 700 "$root/_lumi_p439_b04_quality_claims"
+          python -m src.story_harness_p439_b04_quality \
+            --repo-root . \
+            --producer-root "$root/_lumi_p438_b04_story_claims" \
+            --quality-root "$root/_lumi_p439_b04_quality_claims" \
+            --paid-audit-once > /tmp/lumi-p439-b04-original-quality.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/lumi-p439-b04-original-quality.json'))
+          assert r['case_id']=='B04'
+          assert r['initial_quality_verdict'] in ('ACCEPT','REJECT')
+          assert r['english_master_authorized'] is False
+          assert r['q25_authorized'] is False
+          assert r['production_state_write_authorized'] is False
+          print('P439_B04_REAL_QUALITY_VERDICT='+r['initial_quality_verdict'])
+          print('P439_B04_READER_SCORE='+str(r['reader_score']))
+          print('P439_B04_BLOCKERS='+str(r['blockers']))
+          print('P439_B04_AUDITOR_GENERATION_ID='+r['auditor_generation_id'])
+          print('P439_B04_PROVIDER_USD='+r['provider_quality_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p439-b04-independent-quality-original
+          path: ${{ runner.workspace }}/_lumi_p439_b04_quality_claims/p439-b04-r06-1648b29b47a8/
+          if-no-files-found: warn
+          retention-days: 30

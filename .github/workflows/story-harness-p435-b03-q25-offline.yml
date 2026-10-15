@@ -1,0 +1,48 @@
+name: Story Harness P4.35 B03 Q25 Offline Readiness
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p435_b03_q25.py
+      - tests/test_story_harness_p435_b03_q25.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p435-b03-q25-offline
+  cancel-in-progress: true
+
+jobs:
+  q25-offline-contract:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prove B03 Q25 original-source contract; mock-only, zero paid inference
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p434_b03_master.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p435_b03_q25.py' -v
+          python -m src.story_harness_p435_b03_q25 > /tmp/lumi-p435-offline.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          x=json.loads(Path('/tmp/lumi-p435-offline.json').read_text())
+          assert x['case_id']=='B03' and x['model_calls']==0
+          assert x['stage_cap_usd']=='0.050'
+          assert x['production_state_write_authorized'] is False
+          print('P435_B03_Q25_OFFLINE_READINESS_GREEN')
+          PY

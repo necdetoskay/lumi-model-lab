@@ -1,0 +1,88 @@
+name: Story Harness P4.42 B04 Real Q25 Final State Read Only
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p442_b04_final_state.py
+      - tests/test_story_harness_p442_b04_final_state.py
+      - evidence/story_harness_p441/**
+      - evidence/story_harness_p440/**
+      - evidence/story_harness_p442/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p442-b04-original-state-read-only
+  cancel-in-progress: true
+
+jobs:
+  genuine-q25-to-read-only-final-state:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify original Sonnet Q25 and deterministic final-state negative gates (no provider)
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p442_b04_final_state.py' -v
+          python -m src.story_harness_p442_b04_final_state > /tmp/lumi-p442-offline.json
+          python - <<'PY'
+          import json
+          a=json.load(open('/tmp/lumi-p442-offline.json'))
+          assert a['case_id']=='B04' and a['model_calls']==0
+          assert a['final_story_state_committed'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P442_B04_READ_ONLY_PROJECTION_OFFLINE_GREEN')
+          PY
+      - name: Freeze or reverify original protected B04 Q25 final-state draft, no Canon
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p442_b04_state_claims"
+          chmod 700 "$root/_lumi_p442_b04_state_claims"
+          python -m src.story_harness_p442_b04_final_state \
+            --repo-root . \
+            --producer-root "$root/_lumi_p438_b04_story_claims" \
+            --quality-root "$root/_lumi_p439_b04_quality_claims" \
+            --master-root "$root/_lumi_p440_b04_master_claims" \
+            --q25-root "$root/_lumi_p441_b04_q25_claims" \
+            --state-root "$root/_lumi_p442_b04_state_claims" \
+            --freeze-or-verify > /tmp/lumi-p442-real-b04-state.json
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          from src.story_harness_p442_b04_final_state import OUTPUT_DIR
+          x=json.load(open('/tmp/lumi-p442-real-b04-state.json'))
+          original=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p442_b04_state_claims'/OUTPUT_DIR/'final-state-draft.json'
+          state=json.loads(original.read_bytes())
+          assert x['case_id']=='B04' and x['model_calls']==0
+          assert x['final_location_proposal']=='STUDIO'
+          assert x['open_obligation_statuses']==['OPEN','OPEN']
+          assert x['observed_objects']==4 and x['discovered_locations']==1
+          assert x['production_state_write_authorized'] is False
+          assert state['canon_commit_authorized'] is False
+          assert state['world_time_final'] is None
+          print('P442_B04_REAL_Q25_READ_ONLY_FINAL_STORYSTATE_GREEN')
+          print('P442_B04_FINAL_STATE_SHA256='+hashlib.sha256(original.read_bytes()).hexdigest())
+          print('P442_B04_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p442-b04-real-read-only-final-state
+          path: ${{ runner.workspace }}/_lumi_p442_b04_state_claims/p442-b04-r06-1648b29b47a8/
+          if-no-files-found: warn
+          retention-days: 30

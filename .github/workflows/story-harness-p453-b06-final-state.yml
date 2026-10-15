@@ -1,0 +1,95 @@
+name: Story Harness P4.53 B06 Real Q25 Final State Read Only
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p453_b06_final_state.py
+      - tests/test_story_harness_p453_b06_final_state.py
+      - evidence/story_harness_p452/**
+      - evidence/story_harness_p450/**
+      - evidence/story_harness_p453/**
+      - evidence/story_harness_p451/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p453-b06-original-state-read-only
+  cancel-in-progress: true
+
+jobs:
+  genuine-q25-to-read-only-final-state:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify original Sonnet Q25 and deterministic final-state negative gates (no provider)
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p453_b06_final_state.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python -m src.story_harness_p453_b06_final_state > /tmp/lumi-p453-offline.json
+          python - <<'PY'
+          import json
+          a=json.load(open('/tmp/lumi-p453-offline.json'))
+          assert a['case_id']=='B06' and a['model_calls']==0
+          assert a['final_story_state_committed'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P453_B06_READ_ONLY_PROJECTION_OFFLINE_GREEN')
+          PY
+      - name: Freeze or reverify original protected B06 Q25 final-state draft, no Canon
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p453_b06_state_claims"
+          chmod 700 "$root/_lumi_p453_b06_state_claims"
+          python -m src.story_harness_p453_b06_final_state \
+            --repo-root . \
+            --producer-root "$root/_lumi_p448_b06_story_claims" \
+            --quality-root "$root/_lumi_p449_b06_quality_claims" \
+            --master-root "$root/_lumi_p450_b06_master_claims" \
+            --q25-root "$root/_lumi_p452_b06_q25_claims" \
+            --state-root "$root/_lumi_p453_b06_state_claims" \
+            --freeze-or-verify > /tmp/lumi-p453-real-b06-state.json
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          from src.story_harness_p453_b06_final_state import OUTPUT_DIR
+          x=json.load(open('/tmp/lumi-p453-real-b06-state.json'))
+          original=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p453_b06_state_claims'/OUTPUT_DIR/'final-state-draft.json'
+          state=json.loads(original.read_bytes())
+          assert x['case_id']=='B06' and x['model_calls']==0
+          assert x['final_location_proposal']=='LIBRARY'
+          assert x['open_obligation_statuses']==['OPEN','OPEN']
+          assert x['objects_admitted_to_canon']==0 and x['discovered_locations']==1
+          assert x['production_state_write_authorized'] is False
+          assert state['known_locations_proposal']==['LIBRARY','TOWER']
+          assert state['original_v01_terminal_q25_stop_preserved'] is True
+          assert state['canon_commit_authorized'] is False
+          assert state['world_time_final'] is None
+          expected=Path('evidence/story_harness_p453/b06-r06-real-read-only-final-state-draft.json')
+          assert original.read_bytes()==expected.read_bytes()
+          assert hashlib.sha256(original.read_bytes()).hexdigest()=='6ee245227938bfe8062e383a437973dc335e77a72284df0e9a2a7038639497da'
+          print('P453_B06_REAL_Q25_READ_ONLY_FINAL_STORYSTATE_GREEN')
+          print('P453_B06_FINAL_STATE_SHA256='+hashlib.sha256(original.read_bytes()).hexdigest())
+          print('P453_B06_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p453-b06-real-read-only-final-state
+          path: ${{ runner.workspace }}/_lumi_p453_b06_state_claims/p453-b06-r06-d7f1fa3158d2/
+          if-no-files-found: error
+          retention-days: 30

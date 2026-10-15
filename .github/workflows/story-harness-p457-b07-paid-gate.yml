@@ -1,0 +1,106 @@
+name: Story Harness P4.57 B07 Original Bounded Paid Grant
+
+# P4.58 archive: P4.57 original generation succeeded in CI #38611801159;
+# The grant was consumed and may never be re-used.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-b07-original-r06-single-grant
+  cancel-in-progress: false
+
+jobs:
+  b07-paid-source-once:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Fail unless exactly one explicit B07 grant file was committed
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+          files=subprocess.check_output(["git","diff-tree","--no-commit-id","--name-only","-r","HEAD"],text=True).splitlines()
+          if files!=["configs/story_harness_p457_b07_trigger.json"]:
+              raise SystemExit("P457_STOP_NOT_EXACT_ONE_B07_GRANT_COMMIT")
+          print("P457_B07_GRANT_ONLY_COMMIT_CONFIRMED")
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run B07 and B05/B06 immutable-evidence offline tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p457_b07_gate.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p454_b07_age25.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p453_b06_final_state.py' -q
+      - name: Exact grant, protected previous claims, and $10 budget PREPOST; no model POST
+        run: |
+          set -euo pipefail
+          python -m src.story_harness_p457_b07_gate --repo-root . --workspace "$RUNNER_WORKSPACE" --grant configs/story_harness_p457_b07_trigger.json
+          echo P457_B07_READY_NO_POST
+      - name: Read-only OpenRouter credit check; no inference
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          from decimal import Decimal
+          import os
+          from src.story_harness_p414 import read_current_key
+          from src.story_harness_v1 import HarnessStop
+          d=read_current_key(api_key=os.getenv("OPENROUTER_API_KEY",""))["data"]
+          val=d.get("limit_remaining")
+          if val is None: raise HarnessStop("P457_STOP_PROVIDER_CREDIT_UNKNOWN")
+          amount=Decimal(str(val))
+          if not amount.is_finite() or amount<Decimal("0.35"):
+              raise HarnessStop("P457_STOP_PROVIDER_CREDIT_INSUFFICIENT")
+          if d.get("is_management_key") is True or d.get("is_free_tier") is True:
+              raise HarnessStop("P457_STOP_NOT_INFERENCE_KEY")
+          print("P457_B07_PROVIDER_CREDIT_READ_ONLY_GREEN")
+          PY
+      - name: At most two original B07 Sonnet POSTs, no retries, no production write
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P455_B07: ONE_ORIGINAL_B07_AGE25_GENERATION
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p455_b07_story_claims"
+          if [ -L "$root" ]; then echo P457_STOP_CLAIM_ROOT_SYMLINK; exit 1; fi
+          mkdir -p "$root"
+          chmod 700 "$root"
+          output="${RUNNER_TEMP}/lumi-p457-b07-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+          python -m src.story_harness_p454_b07_age25 --repo-root . --claim-root "$root" --paid-once > "$output"
+          python - "$output" <<'PY'
+          import json,sys
+          a=json.load(open(sys.argv[1]))
+          assert a["case_id"]=="B07" and a["reader_age"]==25
+          assert 1800 <= a["english_word_count"] <= 2800
+          assert a["initial_quality_verdict"]=="NOT_YET_AUDITED"
+          assert a["english_master_authorized"] is False
+          assert a["q25_authorized"] is False
+          assert a["production_state_write_authorized"] is False
+          print("P457_B07_REAL_SPINE_WRITER_CREATED_NOT_AUDITED")
+          print("P457_B07_STORY_SHA256="+a["story_sha256"])
+          print("P457_B07_SPINE_SHA256="+a["spine_sha256"])
+          print("P457_B07_PROVIDER_REPORTED_USD="+a["actual_generation_cost_usd"])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p457-b07-real-original-spine-writer
+          path: ${{ runner.workspace }}/_lumi_p455_b07_story_claims/b07-*-r06/
+          if-no-files-found: warn
+          retention-days: 30

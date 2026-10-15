@@ -1,0 +1,131 @@
+name: Story Harness P4.33 B03 Independent Quality Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p433-independent-b03-quality-once
+  cancel-in-progress: false
+
+jobs:
+  original-b03-independent-quality:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: p433-b03-audit-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p433-b03-audit-isolated
+      - name: Fail closed unless this commit contains only the B03 audit grant
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          paths=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],text=True).splitlines()
+          assert paths==['configs/story_harness_p433_b03_quality_trigger.json'], 'Paid audit requires a manifest-only grant commit'
+          print('P433_SINGLE_MANIFEST_ONLY_GATE_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify frozen original B03, Sonnet wire, strict budget and quality tests OFFLINE
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p432_b03_quality.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -q
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p432_b03_quality import SOURCE_SHA,SPINE_SHA,STORY_SHA,PRIOR_RESERVED,USER_CAP,get_original_B03,inspect_B03_audit
+          from src.story_harness_p422_independent_audit import STAGE_COST_CAP
+          from src.story_harness_p417_live_pilot import MODEL
+          grant=json.loads(Path('configs/story_harness_p433_b03_quality_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p433-b03-one-independent-quality.v1',
+              'case_id':'B03',
+              'run_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'original_spine_sha256':SPINE_SHA,
+              'original_story_sha256':STORY_SHA,
+              'reader_age':10,
+              'model':MODEL,
+              'max_quality_model_posts':1,
+              'max_new_quality_stage_usd':'0.040',
+              'prior_conservative_budget_reserved_usd':'1.449558',
+              'aggregate_user_approved_budget_usd':'10.00',
+              'automatic_retries':False,
+              'production_writes':False,
+          }, 'B03 exact-scoped quality grant differs'
+          assert PRIOR_RESERVED==Decimal(grant['prior_conservative_budget_reserved_usd'])
+          assert STAGE_COST_CAP==Decimal(grant['max_new_quality_stage_usd'])
+          assert USER_CAP==Decimal(grant['aggregate_user_approved_budget_usd'])
+          assert PRIOR_RESERVED+STAGE_COST_CAP<=USER_CAP
+          claims=Path(os.environ['RUNNER_WORKSPACE'])/'_lumi_p431_b03_story_claims'
+          source=get_original_B03('.',claims)
+          wire=inspect_B03_audit(source)
+          assert wire['model']==MODEL
+          assert wire['provider']['allow_fallbacks'] is False
+          assert wire['stream'] is False
+          print('P433_ORIGINAL_B03_PROVENANCE_AND_RESERVATION_GREEN')
+          PY
+      - name: Read-only OpenRouter inference key preflight
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.040')
+          assert d.get('is_management_key') is not True
+          assert d.get('is_free_tier') is not True
+          print('P433_OPENROUTER_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: Execute at most one genuine Sonnet B03 initial audit; no retry
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P432_AGE10_QA: B03_ONE_INDEPENDENT_SONNET_QUALITY
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p433_b03_quality_claims"
+          chmod 700 "$root/_lumi_p433_b03_quality_claims"
+          python -m src.story_harness_p432_b03_quality \
+            --repo-root . \
+            --producer-root "$root/_lumi_p431_b03_story_claims" \
+            --quality-root "$root/_lumi_p433_b03_quality_claims" \
+            --paid-audit-once > /tmp/lumi-p433-real-b03-quality.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/lumi-p433-real-b03-quality.json').read_text())
+          assert data['case_id']=='B03'
+          assert data['english_master_authorized'] is False
+          assert data['q25_authorized'] is False
+          assert data['production_state_write_authorized'] is False
+          print('P433_REAL_B03_VERDICT='+data['initial_quality_verdict'])
+          print('P433_B03_READER_SCORE='+str(data['reader_score']))
+          print('P433_B03_BLOCKERS='+str(data['blockers']))
+          print('P433_B03_AUDITOR_ID='+data['audit_model_generation'])
+          print('P433_B03_PROVIDER_USD='+data['actual_provider_quality_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p433-b03-independent-quality-original-story
+          path: ${{ runner.workspace }}/_lumi_p433_b03_quality_claims/p432-b03-r06-*/
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,51 @@
+name: Story Harness P4.44 B05 Original Independent Quality Offline
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p444_b05_quality.py
+      - tests/test_story_harness_p444_b05_quality.py
+      - docs/canonical/STORY_HARNESS_P444_B05_QUALITY.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p444-b05-independent-quality-offline
+  cancel-in-progress: true
+
+jobs:
+  original-b05-audit-preflight:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify exact B05 provider receipts + real audit source and reject negative cases OFFLINE
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p444_b05_quality.py' -v
+          python -m src.story_harness_p444_b05_quality > /tmp/lumi-p444-b05-offline.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/lumi-p444-b05-offline.json'))
+          assert d['case_id']=='B05' and d['provider_calls']==0
+          assert d['story_sha256']=='342dff8084787c0f42f036ab34d973741aed55cecaef40a4e734ca242f9465c0'
+          assert d['real_generation_cost_usd']=='0.086074'
+          assert d['prior_conservative_budget_reserved_usd']=='2.329558'
+          assert d['new_quality_maximum_usd']=='0.040'
+          assert d['initial_quality_accepted'] is False
+          assert d['production_state_write_authorized'] is False
+          print('P444_B05_TRUE_SOURCE_INDEPENDENT_QA_OFFLINE_GREEN')
+          PY

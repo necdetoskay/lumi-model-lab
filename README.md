@@ -6,6 +6,225 @@ Hands-on experimentation repository for learning synthetic data generation, teac
 
 This README is the human entry point and current-state document for the repository. Any PR that materially changes the experiment pipeline, primary commands, dataset policy, model-selection protocol, or current milestone must update this README in the same PR.
 
+## Story Harness V1 — offline control-plane experiment
+
+**P4.12 (Draft PR #275 / open #291):** read-only provider preflight now checks
+the actual Sonnet 5.5 endpoint catalog. The 2026-10-13 HTTPS observation lists
+Anthropic at $2/M input and $10/M output, but omits `temperature` support while
+the existing request requires it. Exact billed input-token exposure remains
+unverified. Run `python -m src.story_harness_p412 --refresh-provider` for one
+free public metadata GET (expected exit 2 / BLOCKED); omit the flag for offline
+inspection. No model POST is implemented or enabled by this command.
+The existing P4.11 ledger now persists redacted usage outcomes and cumulative
+cost, blocks continuation after uncertain/over-limit results, and binds the
+actual request including `max_price`. The store is still a local simulation,
+not externally trusted live accounting. No real user grant/key is provisioned;
+$0.25 remains unapproved. Frozen v21.4 and max-40 repair stay unchanged;
+S167–S203 remains provisional. See [P4.12 facts and blockers](docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md).
+
+A separate **Story Harness** experiment now explores deterministic orchestration
+of the LUMI story stages (Context, SpineForge, Writer, Q25 and quality gates).
+This is **different** from the existing Decision Engine/JEV harness and does
+not replace any stage's authoritative validator.
+
+V1 can **only replay demo stage-artifact lineage**: pinned SHA-256 inputs,
+ordered dependencies, stop-on-reported-reject/review, no automatic model
+calls and no semantic or canonical state approval. The example is **not**
+a real generated story, and a green harness test **does not qualify** Q25.
+
+```bash
+python -m unittest discover -s tests -p 'test_story_harness_v1.py' -q
+python -m src.story_harness_v1 --plan configs/story_harness_v1_fixture.json --repo-root .
+```
+
+- Canonical architecture: [Story Harness V1](docs/canonical/STORY_HARNESS_V1.md).
+- Source: `src/story_harness_v1.py` (stdlib only).
+- Branch: `experiment/story-harness-control-plane-v1`; no integration or
+  modification of frozen production LUMI/SpineForge/Q25 code is authorized.
+- **P1 real-evidence inspection:** six **byte-identical** frozen historical
+  SpineForge/Q25 JSON artifacts from experiment Q25 PR #273 are recorded in
+  `configs/story_harness_p1_frozen_import.json`. These represent **four
+  independent historical cases**, not a fabricated end-to-end story.
+  A historically approved spine, a failed SpineForge audit, a provisional
+  KITE-01 Q25 extraction and a historically rejected GREENHOUSE-01 attempt
+  preserve their original decisions; no automatic state promotion occurs.
+- Run actual saved evidence replay, **free and read-only**:
+
+  ```bash
+  python -m unittest discover -s tests -p 'test_story_harness*.py' -q
+  python -m src.story_harness_p1 --manifest configs/story_harness_p1_frozen_import.json --repo-root .
+  ```
+
+- Historical Q25 provider-billed subtotal on these two saved records is
+  `$0.085152`; **new harness cost is $0**.
+- Provenance, limitations and trust boundary: [P1 frozen real evidence](docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md).
+- **P2 typed local-gate evidence:** `StageInput.v1`, `GateReceipt.v1`
+  and `StageResult.v1` now bind four actual archived cases to a freshly
+  executed **local integrity/schema check**. Submitted receipts are verified
+  by deterministic full recomputation; all four original historical outcomes
+  stay unchanged. This check is **not** an authenticated original human/model
+  quality gate, and cannot authorize downstream production or payment.
+- Run the P2 gate receipt qualification (stdlib, $0):
+
+  ```bash
+  python -m src.story_harness_p2 --repo-root .
+  ```
+
+- [P2 StageResult and integrity-receipt scope](docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md).
+- **P2.1 real Q25 offline gate execution:** On a *second, exactly pinned
+  experiment checkout* the Harness now executes the genuine Q25
+  `offline_replay()` source/structural validator for the original KITE-01
+  and GREENHOUSE-01 raw model outputs. KITE remains source-bound candidates,
+  GREENHOUSE's **original paid rejection remains RED** despite a later
+  no-cost offline structural replay with citation-order normalization.
+  Neither is full StoryState or semantic acceptance.
+- Reproduce the two source-bound checks (requires a local checkout at
+  `2eb3d825b5baf8f0f16ccb23805f619d433c7236` and Pydantic V2):
+
+  ```bash
+  python -m src.story_harness_p21 --repo-root . \\
+    --pinned-q25-root /path/to/strictly-pinned-q25-checkout \\
+    --verify-report evidence/story_harness_p21/pinned-real-q25-offline-replay.json
+  ```
+
+- [P2.1 real Q25 version-pinned gate and recorded boundaries](docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md).
+- **P2.2 genuine SpineForge offline deterministic gate:** real frozen
+  `validate_narrative_spine()` executed on the original approved island
+  Spine, exact ContextPack and obligations. Authority/structure PASS with
+  8 discovery turns and two choices, but **no human or LLM product gate
+  authentication** and no Writer/Q25 execution authority.
+  [P2.2 boundary](docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md).
+- **P3.0 same-story source lineage:** the original frozen Writer #3 manifest,
+  result, envelope and story are now checked by the real pinned
+  `load_verified_writer_story_artifact()` alongside P2.2 SpineForge.
+  Spine hash, approval ID, context ID/fingerprint and exact story bytes
+  all match one historical island story. Its original failed Story Audit
+  qualification **remains RED** (`FAIL_KNOWN_DEFECT_MISSED`). The stored
+  KITE/GREENHOUSE Q25 records are unrelated; the harness explicitly stops
+  with `MISSING_SAME_STORY_Q25_ARTIFACT`. No Final StoryState, semantic
+  certification, new paid call or automatic handoff is possible.
+  [P3.0 same-story receipt](docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md)
+  and [tracking issue #281](https://github.com/necdetoskay/lumi-model-lab/issues/281).
+- **P3.1 real historical Story Audit + repair/reaudit evidence:** the
+  frozen Writer #3 story now has a pinned Stage 6/7/8 ancestry and
+  continuous cycles 3–10 audit/repair artifact hashes. The later Story
+  Audit #8 *qualification* is `PASS` but its **story quality decision**
+  remains `LOCAL_REPAIR_REQUIRED`; all seven completed cycle 3–9
+  reaudits likewise require local repair, and cycle 10 has no successful
+  reaudit. Offline result: `STORY_QUALITY_NOT_ACCEPTED`, no English
+  Master, Q25 or Final StoryState admission. Source integrity/lineage
+  GREEN **does not certify a successful story**. [P3.1 frozen scope](docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md)
+  · [P3.1 tracking issue #282](https://github.com/necdetoskay/lumi-model-lab/issues/282).
+- **P3.2 English Master admission (original island story):** the original
+  quality pipeline's `ACCEPT → ENGLISH_MASTER_SEAL` policy is verified
+  as a **conditional rule**, not a historical success. Cycle 10 is only
+  `REAUDIT` pending; no exact same-story English Master seal exists in
+  the 152-file pinned island source cohort. An unrelated Lighthouse
+  `ACCEPT` must never be reused. Frozen result:
+  `ENGLISH_MASTER_NOT_ADMISSIBLE`; no Q25, StoryState commit, new model
+  call, or production write. [P3.2 source/acceptance boundary](docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md)
+  and [issue #283](https://github.com/necdetoskay/lumi-model-lab/issues/283).
+- **P4.0 genuine v21 bounded-quality offline producer preflight:** the
+  already-frozen v21 runtime and its original simulation adapter are now
+  actually executed with offline synthetic provider responses. Six routing,
+  retry, quality and budget cases pass; `ACCEPT` in these fixtures is
+  **not** an accepted story. Historical paid run `37230896244`
+  remains `REJECT_PROVIDER_FAILURE` (3 paid calls, historical $0.057988).
+  Real English Master sealing and Q25 stay **DENIED** until a separate
+  source-pinned real semantic-quality acceptance. [P4.0 preflight](docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md)
+  · [issue #284](https://github.com/necdetoskay/lumi-model-lab/issues/284).
+- **P4.1 English Master seal evidence contract (mechanical simulation only):**
+  the real frozen v21 runtime is replayed with isolated mocked model replies
+  for the 1-call clean and 3-call single-repair positive paths. Strict typed
+  seal candidate and read-only Q25 request *preview* contracts now validate
+  same-story IDs/hashes, bounded usage/ledger, audit scope and immutable
+  identities. Neither the synthetic `ACCEPT` nor an unreviewed candidate
+  can produce a real seal or Q25 admission; all real trust registries remain
+  empty. Result: `REAL_ENGLISH_MASTER_EVIDENCE_UNAVAILABLE`, **no provider
+  spend, English Master, Q25 or state commit**.
+  [P4.1 scope](docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md)
+  · [issue #285](https://github.com/necdetoskay/lumi-model-lab/issues/285).
+- **P4.2 redacted final-audit error diagnostics (experimental):** original
+  frozen v21.4 runtime + adapter are exercised with seven deliberately bad
+  **offline** targeted-final-audit responses. A separately versioned wrapper
+  persists only raw-response hashes, safe schema/type/field-count summaries,
+  validation path, and real-or-missing usage; injected secrets and raw prompt
+  content are **not** persisted. Atomic O_EXCL/0600 receipt, no retry, no
+  historical rewrite. Old v21.3 paid error details remain unrecoverable.
+  Result `REAL_QUALITY_NOT_ACCEPTED_DIAGNOSTIC_READY`; no English Master,
+  Q25, state writes or paid calls. [P4.2 diagnostics](docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md)
+  · [issue #286](https://github.com/necdetoskay/lumi-model-lab/issues/286).
+- **P4.3 v21.5 offline-only runner / paid kill switch:** the *original*
+  frozen v21.4 audit, repair and final adapter callbacks now run behind a
+  separately SHA-pinned, fake-transport-only, one-shot runner. Four callback
+  cases qualify (one synthetic ACCEPT, three fail-closed final-audit errors),
+  and pre-dispatch checks reject paid mode, invented grant/price/route,
+  retries and unverified provider token budgets. Request sizes and output
+  token allowances are recorded **only as exposure data, not cost guarantees**.
+  English Master, Q25, paid model dispatch and production state remain OFF.
+  [P4.3 runner](docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md)
+  · [issue #287](https://github.com/necdetoskay/lumi-model-lab/issues/287).
+- **P4.4 original age-12 island story review and controlled budget exception:**
+  full original 2,407-word prose and the real paid v21 failed repair were
+  compared, yielding five **source-quoted preliminary blocking issues**
+  and two continuity/narrative advisories. Verified old paid run had
+  3 calls/$0.057988 and ended `REJECT_PROVIDER_FAILURE`. Public Sonnet 5.5
+  prices ($2/M in, $10/M out) imply a **conditional** $0.123178 exposure
+  if original input tokens remain unchanged and frozen output caps are hit.
+  User allowed exceeding the $0.10 target, **not unlimited spending**;
+  a finite authorized total and real provider preflight remain mandatory.
+  Zero API calls, English Master and Q25 still denied.
+  [P4.4 source-bound review](docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md)
+  · [issue #288](https://github.com/necdetoskay/lumi-model-lab/issues/288).
+- **P4.5 real offline manuscript improvement (NOT an accepted model story):**
+  the actual source-island bridge scene S159–S177 has been rewritten as
+  **370 words**, making character banks, the belayed Nisa swing, the line
+  snag, why Arda cuts it and his trust in Nisa explicit. The original
+  frozen v21.4 `apply_scene_rewrite` creates a fresh **2,494-word**
+  complete adventure from the immutable Writer source without changing
+  anything outside the exact scene cluster; both English files and all
+  SHA-256 provenance are locally prepared (GitHub publication pending). This is an **offline assistant-edited,
+  unreviewed** candidate, not real model ACCEPT, English Master, Q25 or paid
+  run. [P4.5 architecture](docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md)
+  · [candidate scene](evidence/story_harness_p45/offline-editorial-bridge-scene.txt)
+  · [full edited story](evidence/story_harness_p45/offline-editorial-full-story.txt).
+- **P4.6 full-story editorial cleanup:** a separately sourced 2,482-word
+  authorial Writer revision secures both gliders with independent landing
+  tethers before Arda removes the expedition line and makes the return-trail
+  camp/journal interruption shorter after their turnaround promise. All four
+  changes are source-anchored and replayed against P4.5; the 370-word bridge
+  fix stays identical. This is **UNREVIEWED** prose, not a new model run,
+  signed semantic ACCEPT, English Master or Q25 source.
+  [P4.6 details](docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md)
+  · [new full draft](evidence/story_harness_p46/offline-full-story-writer-revision.txt)
+  · [issue #289](https://github.com/necdetoskay/lumi-model-lab/issues/289).
+- **P4.7 exact route-truth Writer correction:** a new source-anchored
+  **2,491-word** English candidate now correctly distinguishes the original
+  explorers' knot navigation from Arda's carried expedition rope (one exact
+  full-text substitution). Preserves all P4.6 evidence; editorial review
+  leaves five open questions, not independent semantic quality ACCEPT.
+  The old frozen v21.4 paid profile is pinned to a **different** story
+  SHA, so P4.7 **fails closed** until a separately versioned new-story
+  quality profile can be qualified. New paid model calls $0/0; English Master,
+  Q25 and state writes remain denied.
+  [P4.7 rationale](docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md)
+  · [full manuscript](evidence/story_harness_p47/offline-full-story-route-truth-revision.txt)
+  · [issue #290](https://github.com/necdetoskay/lumi-model-lab/issues/290).
+- **P4.8 actual Writer candidate through frozen original v21 model adapters,
+  offline only:** a fresh immutable 2491-word English source and 228
+  source-derived spans are bound to the approved Spine with a new provisional
+  profile. The original frozen quality core and real model-adapter callback
+  functions execute **five fake provider scenarios** against the actual NEW
+  full story. The bridge now spans 45 segments, above the 40-span maximum
+  repair scope; only a 37-span subset can be bounded, with out-of-scope
+  issues rejected. **No actual API calls/quality ACCEPT** and no approved
+  new scene scope or paid user grant. The old frozen profile is unchanged.
+  [P4.8 qualification](docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md)
+  · [new Writer artifact](evidence/story_harness_p48/new-story-writer-candidate.json)
+  · [issue #291](https://github.com/necdetoskay/lumi-model-lab/issues/291).
+- Future work: independently authenticated real gate receipts, then bounded
+  model registry and executable stage adapters, each on new qualified versions.
+
 ## Current milestone
 
 Milestone 1 validates the complete learning loop with a deliberately small but reproducible dataset before scaling data volume or training cost.

@@ -1,0 +1,103 @@
+name: Story Harness P4.19 Rich Schema Diagnostic Once
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: lumi-p419-rich-schema-diagnostic-once
+  cancel-in-progress: false
+jobs:
+  schema-probe:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+      - name: Confirm single file reviewed trigger only
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          changed=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          assert changed==['configs/story_harness_p419_probe_trigger.json']
+          print('P419_EXACT_TRIGGER_ONLY_GREEN')
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline preflight and fixed total-cost manifest
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p419_rich_schema_probe.py' -q
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('configs/story_harness_p419_probe_trigger.json').read_text())
+          assert r=={
+            'schema':'lumi.story-harness-p419-probe-grant.v1',
+            'probe_id':'p419-rich-spine-schema-v01',
+            'only_public_synthetic_messages':True,
+            'maximum_provider_posts':1,
+            'maximum_new_exposure_usd':'0.03',
+            'prior_uncertain_story_exposure_usd':'1.05',
+            'prior_known_compatibility_cost_usd':'0.000714',
+            'total_approved_user_budget_usd':'10.00',
+            'no_auto_retry':True,
+            'production_mutations':False,
+          }
+          print('P419_SIGNED_SCOPE_EQUIVALENT_MANIFEST_GREEN')
+          PY
+      - name: Read-only provider key preflight
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+            assert Decimal(str(remaining))>=Decimal('0.03')
+          assert d.get('is_management_key') is False
+          print('P419_PROVIDER_KEY_GET_OK')
+          PY
+      - name: Submit exactly one source-schema public synthetic probe
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P419_ENABLE: AGGREGATE_10_USD_APPROVED
+        run: |
+          set -euo pipefail
+          export P419_CLAIMS="${RUNNER_WORKSPACE}/_lumi_p419_claims"
+          mkdir -p "$P419_CLAIMS"
+          chmod 700 "$P419_CLAIMS"
+          python -m src.story_harness_p419_rich_schema_probe \
+            --repo-root . --run-root "$P419_CLAIMS" --paid-one-shot \
+            > /tmp/lumi-p419-summary.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('/tmp/lumi-p419-summary.json').read_text())
+          assert r['quality_accepted'] is False and r['real_story_generated'] is False
+          print('P419_RICH_SCHEMA_HTTP='+str(r['http_status']))
+          print('P419_RICH_SCHEMA_COST_USD='+str(r['known_cost_usd']))
+          if r['safe_provider_error'] is not None:
+            print('P419_PROVIDER_SAFE_ERROR='+str(r['safe_provider_error']))
+          if not r['successful_http']:
+            raise SystemExit('P419_PROVIDER_RICH_SCHEMA_REJECTED_NO_RETRY')
+          print('P419_NESTED_SCHEMA_PROVIDER_HTTP_GREEN')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p419-richer-schema-public-one-shot
+          path: ${{ runner.workspace }}/_lumi_p419_claims/p419-rich-spine-schema-v01/
+          if-no-files-found: warn
+          retention-days: 30

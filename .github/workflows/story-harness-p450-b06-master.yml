@@ -1,0 +1,78 @@
+name: Story Harness P4.50 B06 Original English Master
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_p450_b06_master.py
+      - tests/test_story_harness_p450_b06_master.py
+      - evidence/story_harness_p448/**
+      - evidence/story_harness_p449/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p450-b06-original-english-master
+  cancel-in-progress: true
+
+jobs:
+  seal-verify-b06-original-master:
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/experiment/story-harness-control-plane-v1' }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline original B06 source, independent audit, immutable Master and negative tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p450_b06_master.py' -v
+          python -m src.story_harness_p450_b06_master >/tmp/lumi-p450-offline.json
+          python - <<'PY'
+          import json
+          p=json.load(open('/tmp/lumi-p450-offline.json'))
+          assert p['case_id']=='B06' and p['model_calls']==0
+          assert p['production_state_write_authorized'] is False
+          print('P450_B06_MASTER_OFFLINE_PROVENANCE_GREEN')
+          PY
+      - name: Seal or verify exact original accepted B06 once without provider call
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}"
+          mkdir -p "$root/_lumi_p450_b06_master_claims"
+          chmod 700 "$root/_lumi_p450_b06_master_claims"
+          python -m src.story_harness_p450_b06_master \
+            --repo-root . \
+            --producer-root "$root/_lumi_p448_b06_story_claims" \
+            --quality-root "$root/_lumi_p449_b06_quality_claims" \
+            --master-root "$root/_lumi_p450_b06_master_claims" \
+            --seal-or-verify > /tmp/lumi-p450-original-master.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.load(open('/tmp/lumi-p450-original-master.json'))
+          assert data['case_id']=='B06' and data['master_sealed'] is True
+          assert data['word_count']==2285 and data['model_calls']==0
+          assert data['story_sha256']=='d7f1fa3158d2de18f0209bb545f3cb11bfb94e91736e34afd77d1b4859141870'
+          assert data['production_state_write_authorized'] is False
+          print('P450_B06_GENUINE_ACCEPT_IMMUTABLE_ENGLISH_MASTER_GREEN')
+          print('P450_B06_MASTER_SHA256='+data['story_sha256'])
+          print('P450_B06_NEW_MODEL_CALLS=0')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lumi-p450-b06-original-accepted-english-master
+          path: ${{ runner.workspace }}/_lumi_p450_b06_master_claims/b06-1648b29b47a830cb/
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,1104 @@
+name: Story Harness V1 Offline
+
+on:
+  push:
+    branches:
+      - experiment/story-harness-control-plane-v1
+    paths:
+      - src/story_harness_v1.py
+      - src/story_harness_p1.py
+      - src/story_harness_p2.py
+      - src/story_harness_p21.py
+      - src/story_harness_p22.py
+      - src/story_harness_p30.py
+      - src/story_harness_p31.py
+      - src/story_harness_p32.py
+      - src/story_harness_p40.py
+      - src/story_harness_p41.py
+      - src/story_harness_p42.py
+      - src/story_harness_p42_diagnostics.py
+      - src/story_harness_p43.py
+      - src/story_harness_p43_runner.py
+      - src/story_harness_p44.py
+      - src/story_harness_p45.py
+      - src/story_harness_p46.py
+      - src/story_harness_p47.py
+      - src/story_harness_p48.py
+      - src/story_harness_p48_offline_runner.py
+      - src/story_harness_p49.py
+      - src/story_harness_p410.py
+      - src/story_harness_p411.py
+      - src/story_harness_p412.py
+      - src/story_harness_p413.py
+      - src/story_harness_p414.py
+      - src/story_harness_p415_benchmark.py
+      - src/story_harness_p416_input_bridge.py
+      - src/story_harness_p417_live_pilot.py
+      - src/story_harness_p418_compat_probe.py
+      - src/story_harness_p419_rich_schema_probe.py
+      - src/story_harness_p420_recover_spine.py
+      - src/story_harness_p422_independent_audit.py
+      - src/story_harness_p423_master.py
+      - src/story_harness_p424_q25_evidence.py
+      - src/story_harness_p425_final_state_draft.py
+      - src/story_harness_p426_second_case.py
+      - src/story_harness_p427_b02_quality.py
+      - src/story_harness_p428_b02_master.py
+      - src/story_harness_p429_b02_q25.py
+      - src/story_harness_p430_b02_final_state.py
+      - src/story_harness_p431_b03_age10.py
+      - src/story_harness_p432_b03_quality.py
+      - tests/test_story_harness_v1.py
+      - tests/test_story_harness_p1.py
+      - tests/test_story_harness_p2.py
+      - tests/test_story_harness_p21.py
+      - tests/test_story_harness_p22.py
+      - tests/test_story_harness_p30.py
+      - tests/test_story_harness_p31.py
+      - tests/test_story_harness_p32.py
+      - tests/test_story_harness_p40.py
+      - tests/test_story_harness_p41.py
+      - tests/test_story_harness_p42.py
+      - tests/test_story_harness_p43.py
+      - tests/test_story_harness_p44.py
+      - tests/test_story_harness_p45.py
+      - tests/test_story_harness_p46.py
+      - tests/test_story_harness_p47.py
+      - tests/test_story_harness_p48.py
+      - tests/test_story_harness_p49.py
+      - tests/test_story_harness_p410.py
+      - tests/test_story_harness_p411.py
+      - tests/test_story_harness_p412.py
+      - tests/test_story_harness_p413.py
+      - tests/test_story_harness_p414.py
+      - tests/test_story_harness_p415_benchmark.py
+      - tests/test_story_harness_p416_input_bridge.py
+      - tests/test_story_harness_p417_live_pilot.py
+      - tests/test_story_harness_p418_compat_probe.py
+      - tests/test_story_harness_p419_rich_schema_probe.py
+      - tests/test_story_harness_p420_recover_spine.py
+      - tests/test_story_harness_p422_independent_audit.py
+      - tests/test_story_harness_p423_master.py
+      - tests/test_story_harness_p424_q25_evidence.py
+      - tests/test_story_harness_p425_final_state_draft.py
+      - tests/test_story_harness_p426_second_case.py
+      - tests/test_story_harness_p427_b02_quality.py
+      - tests/test_story_harness_p428_b02_master.py
+      - tests/test_story_harness_p429_b02_q25.py
+      - tests/test_story_harness_p430_b02_final_state.py
+      - tests/test_story_harness_p431_b03_age10.py
+      - tests/test_story_harness_p432_b03_quality.py
+      - tests/test_story_harness_p420_flat_envelope.py
+      - tests/fixtures/story_harness_v1/**
+      - configs/story_harness_v1_fixture.json
+      - configs/story_harness_p1_frozen_import.json
+      - configs/story_harness_p31_pinned_quality_cohort.json
+      - configs/story_harness_p32_english_master_admission.json
+      - configs/story_harness_p40_v21_producer_preflight.json
+      - configs/story_harness_p41_seal_trust_registry.json
+      - configs/story_harness_p43_offline_runner.json
+      - configs/story_harness_p44_story_quality_preflight.json
+      - configs/story_harness_p45_editorial_bridge_candidate.json
+      - configs/story_harness_p46_full_story_editorial.json
+      - configs/story_harness_p47_route_truth_revision.json
+      - configs/story_harness_p48_source_profile.json
+      - configs/story_harness_p48_remapped_scene_selection.json
+      - configs/story_harness_p415_benchmark.json
+      - evidence/story_harness_p1/**
+      - evidence/story_harness_p2/**
+      - evidence/story_harness_p21/**
+      - evidence/story_harness_p22/**
+      - evidence/story_harness_p30/**
+      - evidence/story_harness_p31/**
+      - evidence/story_harness_p32/**
+      - evidence/story_harness_p40/**
+      - evidence/story_harness_p41/**
+      - evidence/story_harness_p42/**
+      - evidence/story_harness_p43/**
+      - evidence/story_harness_p44/**
+      - evidence/story_harness_p45/**
+      - evidence/story_harness_p46/**
+      - evidence/story_harness_p47/**
+      - evidence/story_harness_p48/**
+      - evidence/story_harness_p412/**
+      - docs/canonical/STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING.md
+      - docs/canonical/STORY_HARNESS_P413_TEMPERATURE_COMPATIBILITY.md
+      - docs/canonical/STORY_HARNESS_P414_KEY_LIMIT_PREFLIGHT.md
+      - docs/canonical/STORY_HARNESS_P415_NINETY_PERCENT_BENCHMARK.md
+      - docs/canonical/STORY_HARNESS_P416_STATE_TOPIC_GENERATION_INPUT.md
+      - docs/canonical/STORY_HARNESS_P417_REAL_SPINE_WRITER_PILOT.md
+      - docs/canonical/STORY_HARNESS_P424_B01_Q25_EVIDENCE.md
+      - docs/canonical/STORY_HARNESS_P425_REAL_Q25_READ_ONLY_STATE.md
+      - docs/canonical/STORY_HARNESS_P426_SECOND_DISTINCT_INPUT.md
+      - docs/canonical/STORY_HARNESS_P427_B02_INDEPENDENT_QUALITY.md
+      - docs/canonical/STORY_HARNESS_P429_B02_Q25.md
+      - docs/canonical/STORY_HARNESS_P430_B02_STATE_DRAFT.md
+      - docs/canonical/STORY_HARNESS_P431_AGE10_B03.md
+      - docs/canonical/STORY_HARNESS_P432_B03_AGE10_QUALITY.md
+      - evidence/story_harness_p431/**
+      - evidence/story_harness_p429/**
+      - evidence/story_harness_p430/**
+      - evidence/story_harness_p427/**
+      - evidence/story_harness_p428/**
+      - evidence/story_harness_p426/**
+      - evidence/story_harness_p421/**
+      - evidence/story_harness_p422/**
+      - evidence/story_harness_p423/**
+      - evidence/story_harness_p424/**
+      - evidence/story_harness_p425/**
+      - docs/canonical/STORY_HARNESS_E2E_COMPLETION_EXECUTION_PLAN.md
+      - docs/canonical/STORY_HARNESS_V1.md
+      - docs/canonical/STORY_HARNESS_P1_REAL_EVIDENCE.md
+      - docs/canonical/STORY_HARNESS_P2_GATE_RECEIPTS.md
+      - docs/canonical/STORY_HARNESS_P21_REAL_Q25_GATE.md
+      - docs/canonical/STORY_HARNESS_P22_REAL_SPINE_GATE.md
+      - docs/canonical/STORY_HARNESS_P30_SAME_STORY_LINEAGE.md
+      - docs/canonical/STORY_HARNESS_P31_FROZEN_QUALITY_LINEAGE.md
+      - docs/canonical/STORY_HARNESS_P32_ENGLISH_MASTER_ADMISSION.md
+      - docs/canonical/STORY_HARNESS_P40_V21_BOUNDED_PRODUCER.md
+      - docs/canonical/STORY_HARNESS_P41_ENGLISH_MASTER_SEAL_TRUST.md
+      - docs/canonical/STORY_HARNESS_P42_REDACTED_FINAL_AUDIT_DIAGNOSTICS.md
+      - docs/canonical/STORY_HARNESS_P43_OFFLINE_V21_5_RUNNER.md
+      - docs/canonical/STORY_HARNESS_P44_STORY_FORENSIC_AND_BUDGET.md
+      - docs/canonical/STORY_HARNESS_P45_ACTUAL_SCENE_EDITORIAL_REWRITE.md
+      - docs/canonical/STORY_HARNESS_P46_FULL_STORY_EDITORIAL.md
+      - docs/canonical/STORY_HARNESS_P47_ROUTE_TRUTH_AND_QUALITY_HANDOFF.md
+      - docs/canonical/STORY_HARNESS_P48_NEW_STORY_OFFLINE_ADAPTER.md
+      - docs/canonical/STORY_HARNESS_P49_PAID_READINESS_PACKET.md
+      - docs/canonical/STORY_HARNESS_P410_PROVIDER_ROUTING_OFFLINE.md
+      - docs/canonical/STORY_HARNESS_P411_SIGNED_GRANT_TRANSPORT.md
+      - README.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: story-harness-v1-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  offline:
+    # Reuse dedicated offline-only LUMI runner. No provider secrets or model calls.
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+          path: ${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline signature-verification dependency
+        run: python -m pip install "cryptography>=44,<48"
+      - name: Verify pre-existing GitHub OpenRouter secret presence without revealing it
+        env:
+          EXISTING_OPENROUTER_SECRET: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          if [ -n "$EXISTING_OPENROUTER_SECRET" ]; then
+            echo 'REPO_OPENROUTER_SECRET_AVAILABLE=YES'
+          else
+            echo 'REPO_OPENROUTER_SECRET_AVAILABLE=NO'
+          fi
+          echo 'NO_PROVIDER_REQUESTS_IN_THIS_STEP'
+      - name: Run fail-closed harness tests (stdlib, no pip install)
+        run: python -m unittest discover -s tests -p 'test_story_harness*.py' -q
+      - name: Deterministic zero-cost four-stage replay
+        run: |
+          python -m src.story_harness_v1 \
+            --plan configs/story_harness_v1_fixture.json \
+            --repo-root . > /tmp/story-harness-fixture-first.json
+          python -m src.story_harness_v1 \
+            --plan configs/story_harness_v1_fixture.json \
+            --repo-root . > /tmp/story-harness-fixture-second.json
+          cmp /tmp/story-harness-fixture-first.json /tmp/story-harness-fixture-second.json
+          python - <<'PY'
+          import json
+          result = json.load(open('/tmp/story-harness-fixture-first.json'))
+          assert result['stage_count_inspected'] == 4
+          assert result['status'] == 'REPLAYED_REPORTED_CHAIN_ONLY'
+          for name in ('state_commit_authorized', 'semantic_support_certified',
+                       'production_write_performed', 'model_execution_performed'):
+              assert result[name] is False
+          assert result['provider_calls'] == 0
+          assert result['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_V1_OFFLINE_GREEN')
+          PY
+
+      - name: Re-evaluate frozen real SpineForge and Q25 historical evidence (no providers)
+        run: |
+          python -m src.story_harness_p1 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p1-a.json
+          python -m src.story_harness_p1 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p1-b.json
+          cmp /tmp/story-harness-p1-a.json /tmp/story-harness-p1-b.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p1-a.json'))
+          assert x['case_count'] == 4
+          assert x['sum_historical_provider_reported_cost_usd_for_q25_subset'] == '0.085152'
+          assert x['new_provider_calls'] == 0
+          assert x['state_commit_authorized'] is False
+          assert x['historical_verdicts_rewritten'] is False
+          assert x['spine_and_q25_story_chain_claimed'] is False
+          assert [c['inspection']['historical_original_outcome'] for c in x['historical_cases']] == [
+            'ACCEPT', 'FAIL_KNOWN_DEFECT_MISSED',
+            'SOURCE_BOUND_CANDIDATES_ONLY', 'REJECTED_BY_OFFLINE_GATE']
+          print('STORY_HARNESS_P1_HISTORICAL_GREEN')
+          PY
+
+      - name: Verify typed StageResults and actual local integrity-gate receipts
+        run: |
+          python -m src.story_harness_p2 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p2-first.json
+          python -m src.story_harness_p2 \
+            --manifest configs/story_harness_p1_frozen_import.json \
+            --repo-root . > /tmp/story-harness-p2-second.json
+          cmp /tmp/story-harness-p2-first.json /tmp/story-harness-p2-second.json
+          python -m src.story_harness_p2 --repo-root . --verify-report evidence/story_harness_p2/pinned-local-integrity-receipts.json > /tmp/story-harness-p2-verified.json
+          cmp /tmp/story-harness-p2-first.json /tmp/story-harness-p2-verified.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p2-first.json'))
+          assert x['case_count'] == 4
+          assert x['actual_local_integrity_checks_executed'] == 4
+          assert all(r['local_integrity_result'] == 'PASS' for r in x['gate_receipts'])
+          assert x['original_spine_or_q25_gates_reexecuted'] is False
+          assert x['original_human_review_authenticated'] is False
+          assert x['semantic_support_certified'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['downstream_stage_executions_authorized'] == 0
+          assert x['model_execution_performed'] is False
+          assert x['provider_calls'] == 0
+          assert x['provider_cost_usd'] == '0'
+          assert [r['original_historical_outcome'] for r in x['stage_results']] == [
+             'ACCEPT','FAIL_KNOWN_DEFECT_MISSED',
+             'SOURCE_BOUND_CANDIDATES_ONLY','REJECTED_BY_OFFLINE_GATE']
+          print('STORY_HARNESS_P2_LOCAL_GATE_GREEN')
+          PY
+
+      - name: Checkout exact frozen Q25 validator code (no historical edits)
+        uses: actions/checkout@v4
+        with:
+          ref: 2eb3d825b5baf8f0f16ccb23805f619d433c7236
+          path: _pinned_q25_source
+          persist-credentials: false
+      - name: Install pinned offline validator dependencies
+        run: python -m pip install "pydantic>=2.8,<3" "PyYAML>=6,<7" "requests>=2.31,<3" "python-dotenv>=1.0,<2" "rich>=13,<15" "httpx>=0.27,<1" "cryptography>=44,<48"
+      - name: Execute real frozen Q25 source-bound validators and negative tests
+        env:
+          STORY_HARNESS_PINNED_Q25_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          test -d "$STORY_HARNESS_PINNED_Q25_ROOT/.git"
+          python -m unittest discover -s tests -p 'test_story_harness_p21.py' -v
+          python -m src.story_harness_p21 \
+            --repo-root . --pinned-q25-root "$STORY_HARNESS_PINNED_Q25_ROOT" > /tmp/story-harness-p21-gates.json
+          python -m src.story_harness_p21 \
+            --repo-root . --pinned-q25-root "$STORY_HARNESS_PINNED_Q25_ROOT" \
+            --verify-report evidence/story_harness_p21/pinned-real-q25-offline-replay.json > /tmp/story-harness-p21-verified.json
+          cmp /tmp/story-harness-p21-gates.json /tmp/story-harness-p21-verified.json
+          python - <<'PY'
+          import json
+          x = json.load(open('/tmp/story-harness-p21-gates.json'))
+          assert x['actual_q25_offline_gate_invocations'] == 2
+          assert x['cases'][0]['replay_status'] == 'SOURCE_BOUND_CANDIDATES_ONLY'
+          assert x['cases'][1]['original_paid_outcome_immutable'] == 'REJECTED_BY_OFFLINE_GATE'
+          assert x['cases'][1]['replay_status'] == 'SOURCE_BOUND_CANDIDATES_ONLY'
+          assert x['spineforge_gate_invocations'] == 0
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0
+          print('STORY_HARNESS_P21_ACTUAL_Q25_OFFLINE_GATE_GREEN')
+          PY
+
+      - name: Execute genuine pinned SpineForge deterministic validator and negative tests
+        env:
+          STORY_HARNESS_PINNED_SPINE_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p22.py' -v
+          python -m src.story_harness_p22 \
+            --repo-root . --pinned-spine-root "$STORY_HARNESS_PINNED_SPINE_ROOT" > /tmp/story-harness-p22-replay.json
+          python -m src.story_harness_p22 \
+            --repo-root . --pinned-spine-root "$STORY_HARNESS_PINNED_SPINE_ROOT" \
+            --verify-report evidence/story_harness_p22/pinned-real-spine-offline-replay.json > /tmp/story-harness-p22-verified.json
+          cmp /tmp/story-harness-p22-replay.json /tmp/story-harness-p22-verified.json
+          python - <<'PY2'
+          import json
+          x = json.load(open('/tmp/story-harness-p22-replay.json'))
+          assert x['actual_spine_deterministic_validator_invocations'] == 1
+          assert x['original_historical_gate_claim_immutable'] == 'ACCEPT'
+          assert x['real_validator_report']['discovery_turns'] == 8
+          assert x['real_validator_report']['real_choice_count'] == 2
+          assert x['original_human_review_authenticated'] is False
+          assert x['original_model_product_gate_reexecuted'] is False
+          assert x['spine_writer_q25_same_story_handoff_verified'] is False
+          assert x['downstream_execution_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P22_ACTUAL_SPINEFORGE_OFFLINE_GATE_GREEN')
+          PY2
+
+      - name: Verify frozen same-story SpineForge to Writer lineage and missing-Q25 STOP
+        env:
+          STORY_HARNESS_PINNED_P3_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p30.py' -v
+          python -m src.story_harness_p30 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P3_ROOT" > /tmp/story-harness-p30-lineage.json
+          python -m src.story_harness_p30 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P3_ROOT" \
+            --verify-report evidence/story_harness_p30/pinned-same-story-lineage-receipt.json > /tmp/story-harness-p30-verified.json
+          cmp /tmp/story-harness-p30-lineage.json /tmp/story-harness-p30-verified.json
+          python - <<'PY3'
+          import json
+          x = json.load(open('/tmp/story-harness-p30-lineage.json'))
+          assert x['same_story_spine_to_writer_confirmed'] is True
+          assert x['writer_original_validator_executed'] is True
+          assert x['writer_word_count'] == 2324
+          assert x['original_story_audit_qualification'] == 'FAIL_KNOWN_DEFECT_MISSED'
+          assert x['original_story_audit_qualification_pass'] is False
+          assert x['stop_reason'] == 'MISSING_SAME_STORY_Q25_ARTIFACT'
+          assert x['same_story_q25_handoff_verified'] is False
+          assert x['q25_execution_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P30_SAME_STORY_GREEN')
+          PY3
+
+      - name: Verify immutable same-story quality lineage and fail-closed quality STOP
+        env:
+          STORY_HARNESS_PINNED_P31_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p31.py' -v
+          python -m src.story_harness_p31 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P31_ROOT" > /tmp/story-harness-p31-quality.json
+          python -m src.story_harness_p31 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P31_ROOT" \
+            --verify-report evidence/story_harness_p31/pinned-quality-chain-receipt.json > /tmp/story-harness-p31-verified.json
+          cmp /tmp/story-harness-p31-quality.json /tmp/story-harness-p31-verified.json
+          python - <<'PY4'
+          import json
+          x = json.load(open('/tmp/story-harness-p31-quality.json'))
+          assert x['original_audit_records'][0]['qualification'] == 'FAIL_KNOWN_DEFECT_MISSED'
+          assert x['original_audit_records'][1]['qualification'] == 'PASS'
+          assert x['original_audit_records'][1]['story_audit_decision'] == 'LOCAL_REPAIR_REQUIRED'
+          assert x['full_cycle3_to_cycle10_lineage_ids_and_hashes_verified'] is True
+          assert x['last_completed_reaudit_cycle'] == 9
+          assert x['unreviewed_cycle10_story_pending_reaudit'] is True
+          assert x['stop_reason'] == 'STORY_QUALITY_NOT_ACCEPTED'
+          assert x['q25_execution_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P31_HISTORICAL_QUALITY_GREEN')
+          PY4
+
+      - name: Verify frozen English Master admission denial and cross-story isolation
+        env:
+          STORY_HARNESS_PINNED_P32_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p32.py' -v
+          python -m src.story_harness_p32 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P32_ROOT" > /tmp/story-harness-p32-denied.json
+          python -m src.story_harness_p32 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P32_ROOT" \
+            --verify-report evidence/story_harness_p32/pinned-english-master-denial-receipt.json > /tmp/story-harness-p32-verified.json
+          cmp /tmp/story-harness-p32-denied.json /tmp/story-harness-p32-verified.json
+          python - <<'PY5'
+          import json
+          x = json.load(open('/tmp/story-harness-p32-denied.json'))
+          assert x['stop_reason'] == 'ENGLISH_MASTER_NOT_ADMISSIBLE'
+          assert x['state'] == 'STOPPED_UNSEALED_UNACCEPTED_STORY'
+          assert x['historical_island_tracked_source_file_count'] == 152
+          assert x['historical_english_master_artifact_found'] is False
+          assert x['historical_policy']['accept_branch_is_actual_history'] is False
+          assert x['terminal_candidate']['next_state_action'] == 'REAUDIT'
+          assert x['terminal_candidate']['last_qualified_cycle'] == 9
+          assert x['unrelated_accepted_story_reference']['accepted_as_island_english_master'] is False
+          assert x['english_master_story_accepted'] is False
+          assert x['english_master_seal_execution_authorized'] is False
+          assert x['q25_extraction_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P32_ENGLISH_MASTER_FAIL_CLOSED_GREEN')
+          PY5
+
+      - name: Run authentic frozen v21 quality producer simulations, seal stays denied
+        env:
+          STORY_HARNESS_PINNED_P40_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p40.py' -v
+          python -m src.story_harness_p40 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P40_ROOT" > /tmp/story-harness-p40.json
+          python -m src.story_harness_p40 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P40_ROOT" \
+            --verify-report evidence/story_harness_p40/pinned-v21-producer-preflight.json > /tmp/story-harness-p40-verified.json
+          cmp /tmp/story-harness-p40.json /tmp/story-harness-p40-verified.json
+          python - <<'PY6'
+          import json
+          x = json.load(open('/tmp/story-harness-p40.json'))
+          assert x['real_frozen_v21_engine_executed_with_mock_transport'] is True
+          assert x['real_frozen_v21_profile_verified'] is True
+          assert x['simulated_case_count'] == 6
+          assert x['historical_paid_quality_failure']['historical_quality_status'] == 'REJECT_PROVIDER_FAILURE'
+          assert x['historical_paid_quality_failure']['historical_calls'] == 3
+          assert x['stop_reason'] == 'REAL_BOUNDED_QUALITY_ACCEPT_MISSING'
+          assert x['synthetic_ACCEPT_is_genuine_story_quality'] is False
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_handoff_emitted'] is False
+          assert x['bounded_paid_attempt_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P40_BOUNDED_PRODUCER_PRECHECK_GREEN')
+          PY6
+
+      - name: Verify English Master positive mechanics and deny untrusted Q25 admission
+        env:
+          STORY_HARNESS_PINNED_P41_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p41.py' -v
+          python -m src.story_harness_p41 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P41_ROOT" > /tmp/story-harness-p41-proof.json
+          python -m src.story_harness_p41 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P41_ROOT" \
+            --verify-report evidence/story_harness_p41/pinned-synthetic-seal-contract-receipt.json > /tmp/story-harness-p41-verified.json
+          cmp /tmp/story-harness-p41-proof.json /tmp/story-harness-p41-verified.json
+          python - <<'PY7'
+          import json
+          x=json.load(open('/tmp/story-harness-p41-proof.json'))
+          assert x['synthetic_positive_case_count'] == 2
+          assert x['synthetic_previews'][0]['validation']['synthetic_quality_call_count'] == 1
+          assert x['synthetic_previews'][1]['validation']['synthetic_quality_call_count'] == 3
+          assert all(t['q25_denial_request_preview_verified'] for t in x['synthetic_previews'])
+          assert x['stop_reason'] == 'REAL_ENGLISH_MASTER_EVIDENCE_UNAVAILABLE'
+          assert x['real_english_master_seal_emitted'] is False
+          assert x['q25_source_request_produced'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P41_SEAL_TRUST_BOUNDARY_GREEN')
+          PY7
+
+      - name: Capture sanitized immutable final-audit failure receipts with original frozen v21
+        env:
+          STORY_HARNESS_PINNED_P42_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p42.py' -v
+          python -m src.story_harness_p42 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P42_ROOT" > /tmp/story-harness-p42.json
+          python -m src.story_harness_p42 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P42_ROOT" \
+            --verify-report evidence/story_harness_p42/pinned-targeted-audit-diagnostics.json > /tmp/story-harness-p42-verified.json
+          cmp /tmp/story-harness-p42.json /tmp/story-harness-p42-verified.json
+          python - <<'PY8'
+          import json
+          x=json.load(open('/tmp/story-harness-p42.json'))
+          assert x['diagnostic_case_count'] == 7
+          assert x['original_v21_4_adapter_and_runtime_exercised'] is True
+          assert x['frozen_v21_4_source_modified'] is False
+          assert x['all_failure_receipts_immutable_redacted'] is True
+          assert x['raw_provider_payload_or_secret_persisted'] is False
+          assert x['real_story_quality_accepted'] is False
+          assert x['stop_reason'] == 'REAL_QUALITY_NOT_ACCEPTED_DIAGNOSTIC_READY'
+          assert x['q25_extraction_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P42_FINAL_DIAGNOSTIC_GREEN')
+          PY8
+
+      - name: Verify v21.5 offline single-attempt callback runner and paid kill switch
+        env:
+          STORY_HARNESS_PINNED_P43_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p43.py' -v
+          python -m src.story_harness_p43 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P43_ROOT" > /tmp/story-harness-p43-proof.json
+          python -m src.story_harness_p43 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P43_ROOT" \
+            --verify-report evidence/story_harness_p43/pinned-v21-5-offline-runner-receipt.json > /tmp/story-harness-p43-verified.json
+          cmp /tmp/story-harness-p43-proof.json /tmp/story-harness-p43-verified.json
+          python - <<'PY9'
+          import json
+          x=json.load(open('/tmp/story-harness-p43-proof.json'))
+          assert x['stop_reason'] == 'REAL_PAID_DISPATCH_DISABLED_OFFLINE_RUNNER_QUALIFIED'
+          assert x['original_provider_callback_shape_injected'] is True
+          assert x['offline_qualification_once_claim_consumed'] is True
+          assert x['kill_switch_premode_negative_case_count'] >= 13
+          assert len(x['offline_provider_callback_cases']) == 4
+          assert all(v['model_call_attempts'] == 3 for v in x['offline_provider_callback_cases'])
+          assert all(v['provider_network_requests'] == 0 for v in x['offline_provider_callback_cases'])
+          assert x['real_paid_user_authorization_granted'] is False
+          assert x['actual_english_master_accepted'] is False
+          assert x['q25_handoff_emitted'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P43_PAID_KILL_SWITCH_GREEN')
+          PY9
+
+      - name: Verify actual story source-anchored blocking defects and paid cost-overrun permission
+        env:
+          STORY_HARNESS_PINNED_P44_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p44.py' -v
+          python -m src.story_harness_p44 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P44_ROOT" > /tmp/story-harness-p44.json
+          python -m src.story_harness_p44 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P44_ROOT" \
+            --verify-report evidence/story_harness_p44/pinned-story-review-budget-receipt.json > /tmp/story-harness-p44-verified.json
+          cmp /tmp/story-harness-p44.json /tmp/story-harness-p44-verified.json
+          python - <<'PY10'
+          import json
+          x=json.load(open('/tmp/story-harness-p44.json'))
+          assert x['stop_reason'] == 'NOT_READY_FOR_REAL_BOUNDED_QUALITY_ATTEMPT'
+          assert x['actual_story_word_count'] == 2407
+          assert x['confirmed_preliminary_blockers'] == 5
+          assert x['preliminary_advisories'] == 2
+          assert x['quality_target_overrun_user_permitted'] is True
+          assert x['authorized_paid_spend_ceiling_usd'] is None
+          assert x['current_public_price_and_budget_exposure']['historical_paid_cost_usd'] == 0.057988
+          assert x['current_public_price_and_budget_exposure']['conditional_exposure_original_output_caps_usd'] == 0.123178
+          assert x['real_final_quality_accept_present'] is False
+          assert x['paid_execution_authorized'] is False
+          assert x['q25_request_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P44_REAL_STORY_EDITORIAL_PREFLIGHT_GREEN')
+          PY10
+
+      - name: Verify actual offline new bridge scene and real v21 source-bounded edit
+        env:
+          STORY_HARNESS_PINNED_P45_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p45.py' -v
+          python -m src.story_harness_p45 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P45_ROOT" > /tmp/story-harness-p45.json
+          python -m src.story_harness_p45 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P45_ROOT" \
+            --verify-report evidence/story_harness_p45/pinned-editorial-rewrite-receipt.json > /tmp/story-harness-p45-verified.json
+          cmp /tmp/story-harness-p45.json /tmp/story-harness-p45-verified.json
+          python - <<'PY11'
+          import json
+          x=json.load(open('/tmp/story-harness-p45.json'))
+          assert x['new_full_story_words'] == 2494
+          assert x['status'] == 'EDITORIAL_TEXT_CREATED_BUT_UNREVIEWED'
+          assert x['original_v21_rewrite_verified'] is True
+          assert x['outside_cluster_unchanged'] is True
+          assert x['real_independent_semantic_audit_passed'] is False
+          assert x['real_provider_quality_accept'] is False
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_extraction_authorized'] is False
+          assert x['real_paid_execution_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          assert x['stop_reason'] == 'EDITORIAL_REWRITE_READY_FOR_INDEPENDENT_QUALITY_REVIEW'
+          print('STORY_HARNESS_P45_REAL_EDITORIAL_SCENE_REWRITE_GREEN')
+          PY11
+
+      - name: Verify full-manuscript revised English writer candidate remains unreviewed
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p46.py' -v
+          python -m src.story_harness_p46 --repo-root . \
+            --verify-receipt evidence/story_harness_p46/writer-revision-proof.json > /tmp/story-harness-p46.json
+          python - <<'PY12'
+          import json
+          x=json.load(open('/tmp/story-harness-p46.json'))
+          assert x['revised_story_words'] == 2482
+          assert x['status'] == 'UNREVIEWED_AUTHORIAL_FULL_STORY_REVISION'
+          assert len(x['editorial_changes_verified']) == 4
+          assert x['other_source_content_unchanged'] is True
+          assert x['independent_semantic_quality_accept'] is False
+          assert x['english_master_seal_issued'] is False
+          assert x['q25_source_admitted'] is False
+          assert x['paid_execution_authorized'] is False
+          assert x['provider_calls'] == 0 and x['provider_cost_usd'] == '0'
+          print('STORY_HARNESS_P46_FULL_WRITER_REVISION_GREEN')
+          PY12
+
+      - name: Verify genuine new manuscript lineage and reject old paid model-profile substitution
+        env:
+          STORY_HARNESS_PINNED_P47_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p47.py' -v
+          python -m src.story_harness_p47 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P47_ROOT" > /tmp/story-harness-p47.json
+          python -m src.story_harness_p47 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P47_ROOT" \
+            --verify-report evidence/story_harness_p47/pinned-route-truth-preflight.json > /tmp/story-harness-p47-verified.json
+          cmp /tmp/story-harness-p47.json /tmp/story-harness-p47-verified.json
+          python - <<'PY13'
+          import json
+          x=json.load(open('/tmp/story-harness-p47.json'))
+          assert x['story_word_count'] == 2491
+          assert x['other_prose_bytes_unchanged'] is True
+          assert x['original_frozen_model_runner_reusable_for_new_story'] is False
+          assert x['editorial_open_semantic_risk_count'] == 5
+          assert x['new_quality_model_profile_required'] is True
+          assert x['independent_semantic_quality_accept'] is False
+          assert x['real_paid_attempt_authorized'] is False
+          assert x['new_model_quality_calls'] == 0 and x['provider_cost_usd'] == '0'
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_admission_authorized'] is False
+          assert x['state_commit_authorized'] is False
+          assert x['stop_reason'] == 'NEW_STORY_SHA_REQUIRES_SEPARATE_QUALITY_RUNNER_QUALIFICATION'
+          print('STORY_HARNESS_P47_SOURCE_BOUND_ROUTE_TRUTH_GREEN')
+          PY13
+
+      - name: Verify actual new 2491-word Writer artifact through original v21 adapters OFFLINE
+        env:
+          STORY_HARNESS_PINNED_P48_ROOT: ${{ github.workspace }}/_pinned_q25_source
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p48.py' -v
+          python -m src.story_harness_p48 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P48_ROOT" > /tmp/story-harness-p48.json
+          python -m src.story_harness_p48 \
+            --repo-root . --pinned-source-root "$STORY_HARNESS_PINNED_P48_ROOT" \
+            --verify-report evidence/story_harness_p48/new-story-adapter-preflight.json > /tmp/story-harness-p48-verified.json
+          cmp /tmp/story-harness-p48.json /tmp/story-harness-p48-verified.json
+          python - <<'PY14'
+          import json
+          x=json.load(open('/tmp/story-harness-p48.json'))
+          assert x['actual_english_story_words'] == 2491
+          assert x['new_writer_segment_count'] == 228
+          assert x['real_v21_4_code_and_adapters_executed_offline'] is True
+          assert x['bridge_scene_exceeds_bounded_repair_scope'] is True
+          assert x['strict_out_of_scope_repair_rejection_observed'] is True
+          assert len(x['synthetic_adapter_scenarios']) == 5
+          assert x['independent_semantic_quality_accepted'] is False
+          assert x['actual_new_paid_provider_calls'] == 0
+          assert x['actual_new_paid_cost_usd'] == '0'
+          assert x['english_master_seal_emitted'] is False
+          assert x['q25_admission_authorized'] is False
+          assert x['finite_explicit_paid_authorization_issued'] is False
+          assert x['stop_reason'] == 'P48_OFFLINE_NEW_STORY_ADAPTER_BOUND_PAID_DISABLED'
+          print('STORY_HARNESS_P48_NEW_STORY_ADAPTER_QUALIFIED_GREEN')
+          PY14
+
+      - name: Verify source-bound real paid readiness remains blocked
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p49.py' -v
+          python -m src.story_harness_p49 --repo-root . > /tmp/story-harness-p49-a.json
+          python -m src.story_harness_p49 --repo-root . > /tmp/story-harness-p49-b.json
+          cmp /tmp/story-harness-p49-a.json /tmp/story-harness-p49-b.json
+          python - <<'PY15'
+          import json
+          x=json.load(open('/tmp/story-harness-p49-a.json'))
+          assert x['full_story_word_count'] == 2491
+          assert x['full_bridge_scene']['count'] == 45
+          assert x['provisional_scene_repair']['count'] == 37
+          assert x['provisional_scene_repair']['human_reapproved'] is False
+          assert x['conditional_old_input_plus_max_output_cost_usd'] == '0.123178'
+          assert x['proposed_limit_is_approved_grant'] is False
+          assert len(x['blockers']) == 5
+          assert x['paid_dispatch_possible'] is False
+          assert x['independent_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['new_provider_calls'] == 0 and x['new_provider_cost_usd'] == '0'
+          assert x['stop_reason'] == 'P49_SOURCE_VERIFIED_LIVE_PAID_ATTEMPT_NOT_READY'
+          print('STORY_HARNESS_P49_PAID_READINESS_FAIL_CLOSED_GREEN')
+          PY15
+
+      - name: Prove pinned new Writer request previews and once-only OFFLINE budgets
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p410.py' -v
+          python -m src.story_harness_p410 --repo-root . > /tmp/story-harness-p410-a.json
+          python -m src.story_harness_p410 --repo-root . > /tmp/story-harness-p410-b.json
+          cmp /tmp/story-harness-p410-a.json /tmp/story-harness-p410-b.json
+          python - <<'PY16'
+          import json
+          x = json.load(open('/tmp/story-harness-p410-a.json'))
+          assert x['writer_segments'] == 228
+          assert x['model'] == 'anthropic/claude-sonnet-5.5'
+          assert x['only_provider'] == 'Anthropic'
+          assert x['provider_fallbacks_in_preview'] is False
+          assert x['strict_json_schema'] is True
+          assert x['max_stage_output_tokens'] == [3000, 3500, 1800]
+          assert x['live_routing_provider_authenticated'] is False
+          assert x['provider_token_ceiling_authenticated'] is False
+          assert x['authenticated_user_grant_consumed'] is False
+          assert x['single_run_offline_reservation_simulation_available'] is True
+          assert x['new_provider_calls'] == 0 and x['new_cost_usd'] == '0'
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P410_OFFLINE_ROUTING_AND_LEDGER_QUALIFIED_LIVE_DISABLED'
+          print('STORY_HARNESS_P410_ROUTING_AND_RESERVATION_OFFLINE_GREEN')
+          PY16
+
+      - name: Verify externally signed one-attempt grant and mock-only provider transport
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p411.py' -v
+          python -m src.story_harness_p411 --repo-root . > /tmp/story-harness-p411-a.json
+          python -m src.story_harness_p411 --repo-root . > /tmp/story-harness-p411-b.json
+          cmp /tmp/story-harness-p411-a.json /tmp/story-harness-p411-b.json
+          python - <<'PY17'
+          import json
+          x = json.load(open('/tmp/story-harness-p411-a.json'))
+          assert x['writer_segments'] == 228
+          assert x['signed_grant_verifier_available'] is True
+          assert x['external_trusted_human_key_configured'] is False
+          assert x['provider_price_cap_shape'] == {'prompt':2,'completion':10}
+          assert x['provider_token_count_verified'] is False
+          assert x['authentic_live_provider_route_verified'] is False
+          assert x['real_paid_dispatch_possible'] is False
+          assert x['fake_post_contract_available'] is True
+          assert x['new_api_calls'] == 0 and x['new_api_cost_usd'] == '0'
+          assert x['story_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P411_SIGNED_GRANT_OFFLINE_TRANSPORT_ONLY_LIVE_STOP'
+          print('STORY_HARNESS_P411_SIGNED_GRANT_FAKE_TRANSPORT_GREEN')
+          PY17
+
+      - name: Verify P4.12 preflight and durable failure accounting without network
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p412.py' -v
+          set +e
+          python -m src.story_harness_p412 --repo-root . > /tmp/story-harness-p412.json
+          result=$?
+          set -e
+          test "$result" -eq 2
+          python - <<'PY18'
+          import json
+          x = json.load(open('/tmp/story-harness-p412.json'))
+          assert x['status'] == 'BLOCKED'
+          assert x['provider_dispatch_authorized'] is False
+          assert x['authorized_budget_usd'] is None
+          assert x['grant_consumed'] is False
+          assert x['request_token_quote_verified'] is False
+          assert x['catalog'] is None
+          print('STORY_HARNESS_P412_PREFLIGHT_ACCOUNTING_OFFLINE_GREEN')
+          PY18
+
+      - name: Prove non-equivalent Sonnet wire compatibility is OFFLINE and explicit
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p413.py' -v
+          python -m src.story_harness_p413 > /tmp/story-harness-p413-a.json
+          python -m src.story_harness_p413 > /tmp/story-harness-p413-b.json
+          cmp /tmp/story-harness-p413-a.json /tmp/story-harness-p413-b.json
+          python - <<'PY18'
+          import json
+          x = json.load(open('/tmp/story-harness-p413-a.json'))
+          assert x['temperature_zero_preserved_on_original_v21_adapter'] is True
+          assert x['proposed_provider_wire_temperature'] == 'OMITTED_ONLY_AFTER_ACK'
+          assert x['sampling_semantics_equivalent'] is False
+          assert x['strict_schema_and_no_fallback_preserved'] is True
+          assert x['provider_calls'] == 0 and x['cost_usd'] == '0'
+          assert x['live_dispatch_allowed'] is False
+          assert x['quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P413_ROUTING_COMPATIBILITY_OFFLINE_QUALITY_STILL_BLOCKED'
+          print('STORY_HARNESS_P413_EXPLICIT_NON_EQUIVALENT_ROUTE_OFFLINE_GREEN')
+          PY18
+
+      - name: Verify signed user consent precedes mock current-key HTTPS GET and no inference
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p414.py' -v
+          python -m src.story_harness_p414 --repo-root . > /tmp/story-harness-p414-a.json
+          python -m src.story_harness_p414 --repo-root . > /tmp/story-harness-p414-b.json
+          cmp /tmp/story-harness-p414-a.json /tmp/story-harness-p414-b.json
+          python - <<'PY19'
+          import json
+          x = json.load(open('/tmp/story-harness-p414-a.json'))
+          assert x['current_key_endpoint'] == 'https://openrouter.ai/api/v1/key'
+          assert x['key_management_mutations_supported'] is False
+          assert x['read_only_key_metadata_verifier_implemented'] is True
+          assert x['key_provisioned'] is False
+          assert x['key_limit_verified_on_user_account'] is False
+          assert x['external_trust_anchor_provisioned'] is False
+          assert x['authenticated_signed_user_grant_consumed'] is False
+          assert x['non_equivalent_temperature_change_user_approved'] is False
+          assert x['authoritative_request_token_ceiling_verified'] is False
+          assert x['independent_live_spending_lock_provisioned'] is False
+          assert x['live_dispatch_allowed'] is False
+          assert x['model_calls'] == 0 and x['api_cost_usd'] == '0'
+          assert x['story_quality_accepted'] is False
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['state_write_authorized'] is False
+          assert x['stop_reason'] == 'P414_USER_KEY_LIMIT_AND_GRANT_NOT_PROVISIONED_LIVE_STOP'
+          print('STORY_HARNESS_P414_CREDENTIAL_KEY_LIMIT_OFFLINE_GREEN')
+          PY19
+
+      - name: Qualify 90 percent diverse state topic benchmark without fake success
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p415_benchmark.py' -v
+          python -m src.story_harness_p415_benchmark --repo-root . > /tmp/story-harness-p415-a.json
+          python -m src.story_harness_p415_benchmark --repo-root . > /tmp/story-harness-p415-b.json
+          cmp /tmp/story-harness-p415-a.json /tmp/story-harness-p415-b.json
+          python - <<'PY20'
+          import json
+          x = json.load(open('/tmp/story-harness-p415-a.json'))
+          assert x['pilot_sample_size'] == 10
+          assert x['required_pilot_successes'] == 9
+          assert x['release_holdout_sample_size'] == 30
+          assert x['required_holdout_successes'] == 27
+          assert x['frozen_budget_ceiling_usd'] == '10.00'
+          assert x['max_corrective_fixes_per_failure'] == 3
+          assert len(x['case_ids']) == len(x['input_fingerprints']) == 10
+          assert x['status'] == 'NOT_YET_INDEPENDENTLY_ATTESTED'
+          assert x['ninety_percent_achieved'] is False
+          assert x['externally_verified_genuine_success_count'] is None
+          assert x['verified_observed_success_rate'] is None
+          assert x['actual_model_cost_verified'] is False
+          assert x['production_admission_authorized'] is False
+          assert x['live_model_calls'] == 0
+          assert x['claimed_model_cost_usd'] == '0'
+          print('STORY_HARNESS_P415_DIVERSE_90_PERCENT_BENCHMARK_OFFLINE_GREEN')
+          PY20
+
+      - name: Qualify ten genuine variable state topic input contracts and bounded provenance
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p416_input_bridge.py' -v
+          python -m src.story_harness_p416_input_bridge --repo-root . > /tmp/story-harness-p416-a.json
+          python -m src.story_harness_p416_input_bridge --repo-root . > /tmp/story-harness-p416-b.json
+          cmp /tmp/story-harness-p416-a.json /tmp/story-harness-p416-b.json
+          python - <<'PY21'
+          import json
+          x = json.load(open('/tmp/story-harness-p416-a.json'))
+          assert x['distinct_state_topic_inputs'] == 10
+          assert len(x['inputs']) == 10
+          assert len({z['pack_sha256'] for z in x['inputs']}) == 10
+          assert x['spine_writer_prompt_compilation_available'] is True
+          assert x['live_spineforge_connected'] is False
+          assert x['live_writer_connected'] is False
+          assert x['independent_quality_accepted'] is False
+          assert x['full_state_topic_pipeline_completed'] is False
+          assert x['new_model_calls'] == 0 and x['new_model_cost_usd'] == '0'
+          assert x['budget_total_cap_usd'] == '10.00'
+          assert x['stop_reason'] == 'P416_DYNAMIC_INPUT_COMPILED_MODEL_TRANSPORT_MISSING'
+          print('STORY_HARNESS_P416_DYNAMIC_STATE_TOPIC_INPUT_OFFLINE_GREEN')
+          PY21
+
+      - name: Validate one-shot real-capable SpineForge Writer pilot stays OFF by default
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p417_live_pilot.py' -v
+          python -m src.story_harness_p417_live_pilot --repo-root . > /tmp/story-harness-p417-a.json
+          python -m src.story_harness_p417_live_pilot --repo-root . > /tmp/story-harness-p417-b.json
+          cmp /tmp/story-harness-p417-a.json /tmp/story-harness-p417-b.json
+          python - <<'PY22'
+          import json
+          x = json.load(open('/tmp/story-harness-p417-a.json'))
+          assert x['case_count'] == 10
+          assert x['first_real_pilot_case'] == 'B01'
+          assert x['max_provider_post_calls_per_attempt'] == 2
+          assert x['aggregate_user_budget_usd'] == '10'
+          assert x['per_pilot_maximum_usd'] == '0.35'
+          assert x['has_automatic_retry'] is False
+          assert x['provider_model'] == 'anthropic/claude-sonnet-5.5'
+          assert x['real_provider_calls'] == 0
+          assert x['real_model_cost_usd'] == '0'
+          assert x['genuine_independent_story_quality_accepted'] is False
+          assert x['master_q25_state_authorized'] is False
+          assert x['stop_reason'] == 'P417_OFFLINE_UNTIL_OPERATOR_CONTROLLED_PAID_ONE_SHOT_EXEC'
+          print('STORY_HARNESS_P417_REAL_CAPABLE_GENERATION_MOCK_ONLY_GREEN')
+          PY22
+
+      - name: Verify P4.18 public prompt strict schema comparison with no paid calls
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p418_compat_probe.py' -v
+          python -m src.story_harness_p418_compat_probe > /tmp/story-harness-p418-a.json
+          python -m src.story_harness_p418_compat_probe > /tmp/story-harness-p418-b.json
+          cmp /tmp/story-harness-p418-a.json /tmp/story-harness-p418-b.json
+          python - <<'PY23'
+          import json
+          r=json.load(open('/tmp/story-harness-p418-a.json'))
+          assert r['model']=='anthropic/claude-sonnet-5.5'
+          assert r['provider_calls']==0
+          assert r['max_posts']==2
+          assert r['microprobe_exposure_cap_usd']=='0.06'
+          assert r['paid_run_disabled_by_default'] is True
+          assert r['real_story_generated'] is False
+          print('P418_TINY_COMPATIBILITY_MOCK_ONLY_GREEN')
+          PY23
+
+      - name: Verify P4.19 exact original nested Spine schema probe without inference
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p419_rich_schema_probe.py' -v
+          python -m src.story_harness_p419_rich_schema_probe > /tmp/story-harness-p419.json
+          python - <<'PY24'
+          import json
+          r=json.load(open('/tmp/story-harness-p419.json'))
+          assert r['schema']=='lumi.story-harness-p419-rich-schema-differential.v1'
+          assert r['provider_post_calls']==0
+          assert r['max_billed_exposure_usd']=='0.03'
+          assert r['status']=='PAID_DISABLED_DEFAULT'
+          print('P419_EXACT_NESTED_SCHEMA_DIAGNOSTIC_OFFLINE_GREEN')
+          PY24
+
+      - name: Validate P4.20 flat outer structured output, original local continuity gates retained
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p420_flat_envelope.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p417_live_pilot.py' -v
+          echo 'P420_FLAT_ENVELOPE_WITH_STRICT_LOCAL_VALIDATOR_GREEN'
+
+      - name: Verify zero-paid P4.20 exact original Spine recovery contract
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p420_recover_spine.py' -v
+          python -m src.story_harness_p420_recover_spine > /tmp/story-harness-p420.json
+          python - <<'PY25'
+          import json
+          x=json.load(open('/tmp/story-harness-p420.json'))
+          assert x['schema']=='lumi.story-harness-p420-generation-content-recovery.v1'
+          assert x['model_posts']==0
+          assert x['live_read_only_GET'] is False
+          assert x['spine_recovered'] is False
+          print('P420_PROVIDER_CONTENT_RECOVERY_OFFLINE_GREEN')
+          PY25
+
+      - name: Verify genuine r06-only immutable story and original Spine quality source contract
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p422_independent_audit.py' -v
+          python -m src.story_harness_p422_independent_audit > /tmp/story-harness-p422.json
+          python - <<'PY26'
+          import json
+          row=json.load(open('/tmp/story-harness-p422.json'))
+          assert row['schema']=='lumi.story-harness-p422-independent-initial-audit.v1'
+          assert row['provider_model_calls']==0
+          assert row['stage_cap_usd']=='0.040'
+          assert row['strict_spine_source_required'] is True
+          assert row['english_master_authorized'] is False
+          print('P422_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY26
+
+      - name: Verify actual same-source pilot Master admission and Q25 quote evidence contracts
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p423_master.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -v
+          python -m src.story_harness_p423_master > /tmp/story-harness-p423.json
+          python -m src.story_harness_p424_q25_evidence > /tmp/story-harness-p424.json
+          python - <<'PY27'
+          import json
+          a=json.load(open('/tmp/story-harness-p423.json'))
+          b=json.load(open('/tmp/story-harness-p424.json'))
+          assert a['model_calls']==0 and a['sealed_master'] is False
+          assert a['production_state_write_authorized'] is False
+          assert b['schema']=='lumi.story-harness-p424-q25-evidence-proposal.v1'
+          assert b['model_calls']==0 and b['q25_candidate_authorized'] is False
+          assert b['production_state_write_authorized'] is False
+          assert b['stage_cap_usd']=='0.050'
+          print('P423_PILOT_MASTER_AND_P424_Q25_OFFLINE_GREEN')
+          PY27
+
+      - name: Verify actual original Q25 receipt projects only read-only evidence state
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p425_final_state_draft.py' -v
+          python -m src.story_harness_p425_final_state_draft > /tmp/story-harness-p425.json
+          python - <<'PY28'
+          import json
+          r=json.load(open('/tmp/story-harness-p425.json'))
+          assert r['schema']=='lumi.story-harness-p425-read-only-final-story-state-draft.v1'
+          assert r['provider_calls']==0 and r['state_commit_authorized'] is False
+          assert r['original_q25_source_checked'] is False
+          print('P425_REAL_Q25_READ_ONLY_STATE_DRAFT_OFFLINE_GREEN')
+          PY28
+
+      - name: Verify second genuinely variable B02 Canon/topic uses existing source-sealed generation
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p426_second_case.py' -v
+          python -m src.story_harness_p426_second_case > /tmp/story-harness-p426.json
+          python - <<'PY29'
+          import json
+          x=json.load(open('/tmp/story-harness-p426.json'))
+          assert x['schema']=='lumi.story-harness-p426-b02-second-variable-story-pilot.v1'
+          assert x['case_id']=='B02' and x['reader_age']==4
+          assert x['provider_calls']==0 and x['default_paid_dispatch_enabled'] is False
+          assert x['quality_accepted'] is False
+          assert x['one_story_exposure_cap_usd']=='0.35'
+          assert x['conservative_prior_spend_reserved_usd']=='1.294372'
+          print('P426_B02_DISTINCT_CANON_TOPIC_GENERATION_OFFLINE_GREEN')
+          PY29
+
+      - name: Verify independent B02 age-sensitive initial quality on original Sonnet artifacts
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p427_b02_quality.py' -v
+          python -m src.story_harness_p427_b02_quality > /tmp/story-harness-p427.json
+          python - <<'PY30'
+          import json
+          row=json.load(open('/tmp/story-harness-p427.json'))
+          assert row['schema']=='lumi.story-harness-p427-b02-independent-initial-audit.v1'
+          assert row['case_id']=='B02'
+          assert row['provider_calls']==0
+          assert row['source_generation_cost_usd']=='0.04503'
+          assert row['maximum_new_quality_usd']=='0.040'
+          assert row['previous_budget_reserved_usd']=='1.339402'
+          assert row['quality_accepted'] is False
+          assert row['english_master_authorized'] is False
+          assert row['q25_authorized'] is False
+          assert row['production_state_write_authorized'] is False
+          print('P427_B02_SOURCE_SEALED_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY30
+
+      - name: Verify actual B02-only immutable Master and location-correct Q25 proposal guard
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p428_b02_master.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p429_b02_q25.py' -v
+          python -m unittest discover -s tests -p 'test_story_harness_p424_q25_evidence.py' -q
+          python -m src.story_harness_p428_b02_master > /tmp/story-harness-p428.json
+          python -m src.story_harness_p429_b02_q25 > /tmp/story-harness-p429.json
+          python - <<'PY31'
+          import json
+          master=json.load(open('/tmp/story-harness-p428.json'))
+          q25=json.load(open('/tmp/story-harness-p429.json'))
+          assert master['case_id']=='B02' and master['model_posts']==0
+          assert master['english_master_sealed'] is False
+          assert q25['case_id']=='B02' and q25['model_posts']==0
+          assert q25['new_stage_cap_usd']=='0.050'
+          assert q25['quality_reused_from_B01'] is False
+          assert q25['production_state_write_authorized'] is False
+          print('P429_B02_Q25_FROM_TRUE_561_WORD_MASTER_OFFLINE_GREEN')
+          PY31
+
+      - name: Verify real B02 Q25 final story state draft without Canon writes
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p430_b02_final_state.py' -v
+          python -m src.story_harness_p430_b02_final_state > /tmp/story-harness-p430.json
+          python - <<'PY32'
+          import json
+          p=json.load(open('/tmp/story-harness-p430.json'))
+          assert p['schema']=='lumi.story-harness-p430-b02-read-only-final-state-draft.v1'
+          assert p['case_id']=='B02' and p['provider_calls']==0
+          assert p['final_story_state_committed'] is False
+          assert p['production_state_write_authorized'] is False
+          print('P430_B02_GENUINE_Q25_FINAL_STATE_DRAFT_OFFLINE_GREEN')
+          PY32
+
+      - name: Verify distinct age-10 B03 word targets and original river Canon state
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p431_b03_age10.py' -v
+          python -m src.story_harness_p431_b03_age10 > /tmp/story-harness-p431.json
+          python - <<'PY33'
+          import json
+          a=json.load(open('/tmp/story-harness-p431.json'))
+          assert a['schema']=='lumi.story-harness-p431-age10-third-distinct-story.v1'
+          assert a['case_id']=='B03' and a['reader_age']==10
+          assert a['word_targets']=={'min':800,'max':1400}
+          assert a['provider_calls']==0 and a['paid_execution_default'] is False
+          assert a['cost_cap_usd']=='0.35'
+          assert a['quality_accepted'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P431_B03_AGE10_CANON_GENERATION_OFFLINE_GREEN')
+          PY33
+
+      - name: Verify independently audited source requirements of actual age10 B03 story
+        run: |
+          python -m unittest discover -s tests -p 'test_story_harness_p432_b03_quality.py' -v
+          python -m src.story_harness_p432_b03_quality > /tmp/story-harness-p432.json
+          python - <<'PY34'
+          import json
+          a=json.load(open('/tmp/story-harness-p432.json'))
+          assert a['schema']=='lumi.story-harness-p432-b03-independent-age10-quality.v1'
+          assert a['case_id']=='B03' and a['reader_age']==10
+          assert a['model_calls']==0
+          assert a['max_new_quality_stage_usd']=='0.040'
+          assert a['prior_budget_reserved_usd']=='1.449558'
+          assert a['initial_quality_accepted'] is False
+          assert a['production_state_write_authorized'] is False
+          print('P432_B03_REAL_AGE10_INDEPENDENT_QUALITY_OFFLINE_GREEN')
+          PY34

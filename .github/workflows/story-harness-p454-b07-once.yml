@@ -1,0 +1,144 @@
+name: Story Harness P4.54 B07 Real Spine Writer Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p454-b07-real-generation-once
+  cancel-in-progress: false
+
+jobs:
+  original-b07-age25-one-shot:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: p454-b07-source-isolated
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: p454-b07-source-isolated
+      - name: Reject any paid request unless HEAD modifies only B07 grant
+        id: scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          changed=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],text=True).splitlines()
+          allowed=changed==['configs/story_harness_p454_b07_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if allowed else 'false')+'\n')
+          print('P454_B07_REAL_PAID_SCOPE='+('ELIGIBLE' if allowed else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Verify frozen B07 Canon, untouched B05 and B06 STOP receipts, $10 cap (OFFLINE)
+        if: steps.scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p454_b07_age25.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p445_b05_stop.py' -q
+          python -m unittest discover -s tests -p 'test_story_harness_p452_b06_q25.py' -q
+          python - <<'PY'
+          import hashlib,json
+          from decimal import Decimal
+          from pathlib import Path
+          from src.story_harness_p454_b07_age25 import SOURCE_SHA,PRIOR_CONSERVATIVE,source_case
+          from src.story_harness_p417_live_pilot import (
+              MODEL,USD_CAP,GLOBAL_USER_CAP,OUTPUT_CAPS,STAGE_MAX_USD)
+          from src.story_harness_p452_b06_q25 import verify_original_v01_stop
+          verify_original_v01_stop('.')
+          stop=Path('evidence/story_harness_p444/b05-r06-original-quality-stop.json')
+          assert hashlib.sha256(stop.read_bytes()).hexdigest()=='c1532871bdea9b114aa5c09c2d25a5014ff2f97d3e8f980683369213c6331309'
+          actual=json.loads(stop.read_bytes())
+          assert actual['case_id']=='B05' and actual['quality_initial_verdict']=='STOP_UNKNOWN_OR_INVALID'
+          assert actual['retry_allowed'] is False and actual['english_master_authorized'] is False
+          expected={
+              'schema':'lumi.story-harness-p454-one-age25-B07.v1',
+              'case_id':'B07',
+              'run_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'reader_age':25,
+              'minimum_words':1800,
+              'maximum_words':2800,
+              'model':MODEL,
+              'max_model_posts':2,
+              'maximum_new_cost_usd':'0.35',
+              'previous_conservative_budget_reserved_usd':'2.859558',
+              'user_aggregate_approved_usd':'10.00',
+              'automatic_retries':False,
+              'production_write':False,
+          }
+          assert json.loads(Path('configs/story_harness_p454_b07_trigger.json').read_text())==expected
+          _,pack=source_case('.')
+          assert pack['pack_sha256']==SOURCE_SHA
+          assert pack['reader_age']==25 and pack['word_targets']=={'min':1800,'max':2800}
+          assert PRIOR_CONSERVATIVE==Decimal(expected['previous_conservative_budget_reserved_usd'])
+          assert USD_CAP==Decimal(expected['maximum_new_cost_usd'])
+          assert GLOBAL_USER_CAP==Decimal(expected['user_aggregate_approved_usd'])
+          assert PRIOR_CONSERVATIVE+USD_CAP<=GLOBAL_USER_CAP
+          assert OUTPUT_CAPS=={'SPINEFORGE':5500,'WRITER':6500}
+          assert sum(STAGE_MAX_USD.values())<=USD_CAP
+          print('P454_B07_ORIGINAL_AGE25_AND_BUDGET_GREEN')
+          PY
+      - name: Read-only inference balance precheck; no inference
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          d=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=d.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.350')
+          assert d.get('is_management_key') is not True and d.get('is_free_tier') is not True
+          print('P454_B07_OPENROUTER_INFERENCE_KEY_GREEN')
+          PY
+      - name: Original B07 Sonnet SpineForge and Writer, at most 2 POSTs, no retry
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P454_B07: ONE_ORIGINAL_B07_AGE25_GENERATION
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p454_b07_story_claims"
+          mkdir -p "$root"
+          chmod 700 "$root"
+          python -m src.story_harness_p454_b07_age25 --repo-root . --claim-root "$root" --paid-once \
+              > /tmp/lumi-p454-b07-real-story.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/lumi-p454-b07-real-story.json'))
+          assert x['case_id']=='B07' and x['reader_age']==25
+          assert x['source_pack_sha256']=='dbe62430a4a06fe82c3216275b04fdee7f340a7bd4718458d47097fa98fde476'
+          assert 1800<=x['english_word_count']<=2800
+          assert x['initial_quality_verdict']=='NOT_YET_AUDITED'
+          assert x['english_master_authorized'] is False
+          assert x['q25_authorized'] is False
+          assert x['production_state_write_authorized'] is False
+          print('P454_B07_REAL_SPINE_WRITER_GREEN')
+          print('P454_B07_WORDS='+str(x['english_word_count']))
+          print('P454_B07_SPINE_SHA='+x['spine_sha256'])
+          print('P454_B07_STORY_SHA='+x['story_sha256'])
+          print('P454_B07_PROVIDER_USD='+x['actual_generation_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p454-b07-original-spine-writer-once
+          path: ${{ runner.workspace }}/_lumi_p454_b07_story_claims/b07-*-r06/
+          if-no-files-found: warn
+          retention-days: 30

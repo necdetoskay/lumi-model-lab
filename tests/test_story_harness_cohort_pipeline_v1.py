@@ -1,0 +1,275 @@
+"""Mock-only full Story Harness pipeline, all ten registered ages/cases.
+
+Mocks deliberately do not establish real story quality or provider billing.
+"""
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from src.story_harness_runtime_v1 import create_harness
+from src.story_harness_p415_benchmark import load_plan
+from src.story_harness_p416_input_bridge import compile_case, sha
+from src.story_harness_p417_live_pilot import MODEL
+from src.story_harness_cohort_pipeline_v1 import (
+    run_one_case_with_injected_transport, ProviderCostUnknown
+)
+
+class MockProvider:
+    def __init__(self, case_id, *, reject=False):
+        self.case = next(c for c in load_plan()["cases"] if c["id"] == case_id)
+        self.pack = compile_case(self.case)
+        self.beats = []
+        self.spine = {}
+        self.rejected = reject
+        self.calls = []
+    def __call__(self, body):
+        self.calls.append(body["response_format"]["json_schema"]["name"])
+        kind = self.calls[-1]
+        if "spineforge_flat" in kind:
+            locs = self.pack["canonical_state"]["locations"]
+            beats = [
+                {"id": f"BEAT_{i+1:02d}",
+                 "location": locs[0] if i < 2 else locs[1],
+                 "goal": f"The protagonist advances the quest at moment {i}.",
+                 "choice": f"The protagonist makes a courageous new choice {i}.",
+                 "consequence": f"That choice produces a significant consequence {i}.",
+                 "obligation_reference": self.pack["open_obligations"][0] if i == 3 else None}
+                for i in range(4)
+            ]
+            self.spine = {
+                "source_pack_sha256": self.pack["pack_sha256"],
+                "spine_summary": "An original story with emotional growth and choices.",
+                "beats": beats
+            }
+            content = {"source_pack_sha256": self.pack["pack_sha256"],
+                       "spine_summary": self.spine["spine_summary"],
+                       "beats_json": json.dumps(beats)}
+        elif "writer_flat" in kind:
+            n = self.pack["word_targets"]["min"] + 8
+            story = " ".join(["The"] * n)
+            self.story = story
+            content = {"source_pack_sha256": self.pack["pack_sha256"],
+                       "spine_sha256": sha(self.spine),
+                       "story_text": story,
+                       "beat_ids_json": json.dumps([b["id"] for b in self.spine["beats"]])}
+        elif "initial_audit" in kind:
+            payload = json.loads(body["messages"][1]["content"])
+            content = {
+                "story_sha256": payload["story_sha256"],
+                "spine_sha256": payload["approved_spine_sha256"],
+                "verdict": "REJECT" if self.rejected else "ACCEPT",
+                "reader_score": 3 if self.rejected else 5,
+                "blocking_findings_json": json.dumps([{
+                    "family": "narrative", "quote": "The The",
+                    "reason": "Mock prose does not contain real literary scenes."
+                }] if self.rejected else []),
+                "advisories_json": "[]",
+                "rationale": "Synthetic shape test only, not independent literary evaluation."
+            }
+        elif "q25_evidence" in kind:
+            payload = json.loads(body["messages"][1]["content"])
+            canon = self.pack["canonical_state"]
+            story = payload["English_Master_Text"]
+            observations = {
+                "final_location": {
+                    "location_id": canon["protagonist"]["location"],
+                    "quote": story[-50:]
+                },
+                "discovered_locations": [],
+                "object_observations": [],
+                "open_obligation_outcomes": [
+                    {"obligation": x, "status": "UNPROVEN",
+                     "quote": story[:50]} for x in canon["open_obligations"]
+                ],
+                "unknown_facts_retained": canon["unknown_facts"],
+                "world_time_delta": None
+            }
+            content = {
+                "source_pack_sha256": payload["source_pack_sha256"],
+                "spine_sha256": payload["spine_sha256"],
+                "story_sha256": payload["story_sha256"],
+                "evidence_json": json.dumps(observations),
+                "explanation": "Synthetic read-only evidence, not a real model result."
+            }
+        else:
+            raise AssertionError("Unexpected mock model stage " + kind)
+        return {
+            "id": "gen-MockOnlyNoProvider123",
+            "model": MODEL, "usage": {
+                "prompt_tokens": 100, "completion_tokens": 100, "cost": 0.01},
+            "choices": [{"finish_reason": "stop", "message": {
+                "content": json.dumps(content)}}]
+        }
+
+class UnifiedPipelineTests(unittest.TestCase):
+    def test_all_ten_use_one_common_adapter_without_real_provider(self):
+        with tempfile.TemporaryDirectory() as td:
+            for i in range(1, 11):
+                case = f"B{i:02d}"
+                mock = MockProvider(case)
+                r = run_one_case_with_injected_transport(".", case, td,
+                                                         transport=mock, harness=create_harness(".", case))
+                self.assertEqual(r["case_id"], case)
+                self.assertEqual(r["status"], "ACCEPT_CLAIMED",
+                                 "Mock only; no certified acceptance")
+                self.assertEqual(r["model_call_envelopes_observed"], 4)
+                self.assertFalse(r["independent_quality_certified_for_release"])
+                self.assertFalse(r["transport_origin_independently_attested"])
+                self.assertFalse(r["production_change"])
+                folder = Path(td)/case
+                self.assertTrue((folder/"ENGLISH_MASTER.txt").exists())
+                self.assertTrue((folder/"07-final-state-draft.json").exists())
+                with self.assertRaises(FileExistsError):
+                    run_one_case_with_injected_transport(".", case, td,
+                                                         transport=mock,
+                                                         harness=create_harness(".", case))
+                self.assertEqual(len(mock.calls), 4)
+
+    def test_reject_does_not_call_q25_and_does_not_retry(self):
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01", reject=True)
+            r = run_one_case_with_injected_transport(".", "B01", td,
+                                                     transport=mock,
+                                                     harness=create_harness(".", "B01"))
+            self.assertEqual(r["status"], "REJECT")
+            self.assertEqual(len(mock.calls), 3)
+            self.assertFalse((Path(td)/"B01"/"05-q25-intent.json").exists())
+
+    def test_every_stage_can_be_receipt_bound_before_next_model_call(self):
+        from src.story_harness_cohort_generation_receipt_v1 import (
+            validate_generation)
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01")
+            seen = []
+            def checker(**req):
+                seen.append(req["stage"])
+                reply = {"data":{
+                    "id":req["generation_id"], "model":MODEL,
+                    "provider_name":"Anthropic", "cancelled":False,
+                    "finish_reason":"stop", "is_byok":False,
+                    "tokens_prompt":req["prompt_tokens"],
+                    "tokens_completion":req["completion_tokens"],
+                    "total_cost":req["reported_cost_usd"]}}
+                return validate_generation(
+                    reply, generation_id=req["generation_id"],
+                    stage=req["stage"],
+                    reported_cost_usd=req["reported_cost_usd"],
+                    prompt_tokens=req["prompt_tokens"],
+                    completion_tokens=req["completion_tokens"])
+            receipt = run_one_case_with_injected_transport(
+                ".", "B01", td, transport=mock,
+                harness=create_harness(".","B01"),
+                generation_receipt_checker=checker)
+            self.assertEqual(seen,["SPINEFORGE","WRITER","QUALITY","Q25"])
+            self.assertEqual(receipt["generation_metadata_checked_stages"],seen)
+            self.assertFalse(receipt["provider_generation_metadata_authenticated_for_release"])
+            self.assertFalse(receipt["independent_quality_certified_for_release"])
+
+    def test_provider_generation_cost_disagreement_is_global_stop(self):
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01")
+            def checker(**request):
+                return {"schema":"wrong", "stage":"SPINEFORGE"}
+            with self.assertRaises(ProviderCostUnknown):
+                run_one_case_with_injected_transport(
+                    ".", "B01", td, transport=mock,
+                    harness=create_harness(".","B01"),
+                    generation_receipt_checker=checker)
+            self.assertEqual(len(mock.calls),1)
+
+    def test_provider_unknown_billing_is_global_stop(self):
+        with tempfile.TemporaryDirectory() as td:
+            def fail(body):
+                raise TimeoutError("Transport may already be billed")
+            with self.assertRaises(ProviderCostUnknown):
+                run_one_case_with_injected_transport(".", "B02", td,
+                                                     transport=fail, harness=create_harness(".", "B02"))
+
+    def test_bad_writer_is_recorded_without_a_second_attempt(self):
+        with tempfile.TemporaryDirectory() as td:
+            mock = MockProvider("B01")
+            def broken_writer(body):
+                reply = mock(body)
+                if "writer_flat" in mock.calls[-1]:
+                    reply["choices"][0]["message"]["content"] = "{}"
+                return reply
+            r = run_one_case_with_injected_transport(".", "B01", td,
+                                                     transport=broken_writer, harness=create_harness(".", "B01"))
+            self.assertEqual(r["status"], "OPERATIONAL_STOP")
+            self.assertEqual(len(mock.calls), 2)
+            self.assertEqual(r["automatic_retries"], 0)
+
+
+    def test_whole_ten_case_round_uses_the_real_shared_harness_with_mock_provider(self):
+        from src.story_harness_frozen_round_v1 import run_frozen_ten_offline
+        with tempfile.TemporaryDirectory() as td:
+            rounds = Path(td) / "rounds"
+            claims = Path(td) / "claims"
+            rounds.mkdir()
+            claims.mkdir()
+            calls = {}
+            manifests = set()
+            hashes = set()
+            def callback(case, intent):
+                provider = MockProvider(case, reject=(case == "B04"))
+                harness = create_harness(".", case)
+                result = run_one_case_with_injected_transport(
+                    ".", case, claims, transport=provider, harness=harness)
+                calls[case] = len(provider.calls)
+                manifests.add(harness.manifest_sha256)
+                hashes.add(intent["harness_commit"])
+                self.assertEqual(result["harness_memory_sha256"], harness.memory_snapshot_sha256)
+                self.assertEqual(result["harness_tools_invoked"][:2], ["SPINEFORGE", "WRITER"])
+                self.assertFalse(result["transport_origin_independently_attested"])
+                self.assertFalse(result["independent_quality_certified_for_release"])
+                return {"case_id": case, "status": result["status"],
+                        "safe_reason": ("SIMULATED_REJECT" if result["status"] == "REJECT"
+                                        else "SIMULATED_ACCEPT"),
+                        "model_calls": 0, "manual_prose_edits": 0}
+            result = run_frozen_ten_offline(".", rounds, callback)
+            self.assertTrue(result["complete"])
+            self.assertEqual(result["attempt_count"], 10)
+            self.assertTrue(result["analysis_allowed"])
+            self.assertEqual(result["fix_count"], 0)
+            self.assertEqual(result["retry_count"], 0)
+            self.assertEqual(result["provider_calls"], 0)
+            self.assertFalse(result["independent_accepts_certified"])
+            self.assertEqual(len(manifests), 1)
+            self.assertEqual(len(hashes), 1)
+            self.assertEqual(calls["B04"], 3)
+            self.assertTrue(all(calls[k] == 4 for k in calls if k != "B04"))
+            self.assertFalse((claims / "B04" / "ENGLISH_MASTER.txt").exists())
+            # Replaying the same frozen round cannot rerun any failed case.
+            run_frozen_ten_offline(".", rounds, callback)
+            self.assertEqual(len(calls), 10)
+
+    def test_tiny_stage_failure_does_not_modify_harness_or_skip_remaining_nine(self):
+        from src.story_harness_frozen_round_v1 import run_frozen_ten_offline
+        with tempfile.TemporaryDirectory() as td:
+            rounds, claims = Path(td) / "rounds", Path(td) / "claims"
+            rounds.mkdir()
+            claims.mkdir()
+            invoked = []
+            def callback(case, intent):
+                mock = MockProvider(case)
+                def transport(body):
+                    response = mock(body)
+                    if case == "B01" and "writer_flat" in mock.calls[-1]:
+                        response["choices"][0]["message"]["content"] = "{}"
+                    return response
+                response = run_one_case_with_injected_transport(
+                    ".", case, claims, transport=transport,
+                    harness=create_harness(".", case))
+                invoked.append(case)
+                return {"case_id": case, "status": response["status"],
+                        "safe_reason": ("NO_RETRY_EXCEPTION" if
+                                        response["status"] == "OPERATIONAL_STOP"
+                                        else "SIMULATED_ACCEPT"),
+                        "model_calls": 0, "manual_prose_edits": 0}
+            receipt = run_frozen_ten_offline(".", rounds, callback)
+            self.assertEqual(receipt["attempt_count"], 10)
+            self.assertEqual(invoked, [f"B{i:02d}" for i in range(1, 11)])
+            self.assertEqual(receipt["attempts"][0]["status"], "OPERATIONAL_STOP")
+            self.assertEqual(receipt["fix_count"], 0)
+            self.assertEqual(receipt["retry_count"], 0)

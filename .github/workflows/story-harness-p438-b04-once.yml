@@ -1,0 +1,139 @@
+name: Story Harness P4.38 B04 Real Spine Writer Once
+
+# P4.56: retired immutable paid/one-shot workflow; retained for provenance.
+# Intentionally disabled: re-authorization requires a new, reviewed workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lumi-p438-b04-real-generation-one-grant
+  cancel-in-progress: false
+
+jobs:
+  b04-original-market-studio-generation:
+    if: ${{ false }}
+    runs-on: [self-hosted, Linux, X64, q25-offline]
+    timeout-minutes: 18
+    defaults:
+      run:
+        working-directory: p438-b04-isolated-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
+          path: p438-b04-isolated-source
+      - name: Reject all paid execution unless this HEAD is only the B04 grant
+        id: scope
+        run: |
+          python3 - <<'PY'
+          import os,subprocess
+          files=subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],
+              text=True).splitlines()
+          eligible=files==['configs/story_harness_p438_b04_trigger.json']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('eligible='+('true' if eligible else 'false')+'\n')
+          print('P438_B04_REAL_GRANT_SCOPE='+('ELIGIBLE' if eligible else 'DENIED_NO_CALL'))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.scope.outputs.eligible == 'true'
+        with:
+          python-version: '3.11'
+      - name: Prove exact B04 Canon, model, original source, immutable ledger and $10 exposure OFFLINE
+        if: steps.scope.outputs.eligible == 'true'
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_story_harness_p438_b04_age10.py' -q
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from decimal import Decimal
+          from src.story_harness_p438_b04_age10 import source_case,SOURCE_SHA,PRIOR_CONSERVATIVE_USD
+          from src.story_harness_p417_live_pilot import (
+              MODEL,USD_CAP,GLOBAL_USER_CAP,OUTPUT_CAPS,STAGE_MAX_USD)
+          grant=json.loads(Path('configs/story_harness_p438_b04_trigger.json').read_text())
+          assert grant=={
+              'schema':'lumi.story-harness-p438-one-age10-B04.v1',
+              'case_id':'B04',
+              'run_variant':'r06',
+              'source_pack_sha256':SOURCE_SHA,
+              'reader_age':10,
+              'minimum_words':800,
+              'maximum_words':1400,
+              'model':MODEL,
+              'max_model_posts':2,
+              'maximum_new_cost_usd':'0.35',
+              'previous_conservative_budget_reserved_usd':'1.539558',
+              'user_aggregate_approved_usd':'10.00',
+              'automatic_retries':False,
+              'production_write':False,
+          },'B04 manifest not exactly original frozen scope'
+          _,pack=source_case('.')
+          assert pack['pack_sha256']==SOURCE_SHA
+          assert pack['reader_age']==10 and pack['word_targets']=={'min':800,'max':1400}
+          assert PRIOR_CONSERVATIVE_USD==Decimal(grant['previous_conservative_budget_reserved_usd'])
+          assert USD_CAP==Decimal(grant['maximum_new_cost_usd'])
+          assert GLOBAL_USER_CAP==Decimal(grant['user_aggregate_approved_usd'])
+          assert PRIOR_CONSERVATIVE_USD+USD_CAP<=GLOBAL_USER_CAP
+          assert OUTPUT_CAPS['SPINEFORGE']==5500 and OUTPUT_CAPS['WRITER']==6500
+          assert sum(STAGE_MAX_USD.values())<=USD_CAP
+          print('P438_B04_SOURCE_MODEL_BUDGET_OFFLINE_GREEN')
+          PY
+      - name: Read-only OpenRouter inference-key balance check; no model POST
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from decimal import Decimal
+          from src.story_harness_p414 import read_current_key
+          info=read_current_key(api_key=os.getenv('OPENROUTER_API_KEY',''))['data']
+          remaining=info.get('limit_remaining')
+          if remaining is not None:
+              assert Decimal(str(remaining))>=Decimal('0.35')
+          assert info.get('is_management_key') is not True
+          assert info.get('is_free_tier') is not True
+          print('P438_B04_OPENROUTER_INFERENCE_KEY_PREFLIGHT_GREEN')
+          PY
+      - name: Original B04 Sonnet SpineForge and Writer at most one POST each, no retry
+        if: steps.scope.outputs.eligible == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LUMI_P438_ENABLE_B04: ONE_REAL_AGE10_B04_CANON_GENERATION
+        run: |
+          set -euo pipefail
+          root="${RUNNER_WORKSPACE}/_lumi_p438_b04_story_claims"
+          mkdir -p "$root"
+          chmod 700 "$root"
+          python -m src.story_harness_p438_b04_age10 \
+             --repo-root . --claim-root "$root" --paid-b04-once \
+             > /tmp/lumi-p438-b04-real-story.json
+          python - <<'PY'
+          import json
+          result=json.load(open('/tmp/lumi-p438-b04-real-story.json'))
+          assert result['case_id']=='B04' and result['reader_age']==10
+          assert result['source_pack_sha256']=='f6edbf321afab965b1a0166ff0a4feb267935f6be556996c4168572477fa1c47'
+          assert 800<=result['original_word_count']<=1400
+          assert result['quality_initial_verdict']=='NOT_YET_AUDITED'
+          assert result['english_master_authorized'] is False
+          assert result['q25_authorized'] is False
+          assert result['production_state_write_authorized'] is False
+          print('P438_B04_REAL_SPINE_WRITER_GREEN')
+          print('P438_B04_WORD_COUNT='+str(result['original_word_count']))
+          print('P438_B04_SPINE_SHA='+result['original_spine_sha256'])
+          print('P438_B04_STORY_SHA='+result['original_story_sha256'])
+          print('P438_B04_PROVIDER_USD='+result['actual_generation_cost_usd'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.scope.outputs.eligible == 'true'
+        with:
+          name: lumi-p438-b04-original-spine-writer-once
+          path: ${{ runner.workspace }}/_lumi_p438_b04_story_claims/b04-*-r06/
+          if-no-files-found: warn
+          retention-days: 30
