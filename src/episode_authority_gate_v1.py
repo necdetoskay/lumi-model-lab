@@ -76,7 +76,7 @@ def run(
         },
         seed=2026093002,
         request_class="defect_locator",
-        max_tokens=1800,
+        max_tokens=None,
     )
     latency = round(time.perf_counter() - started, 3)
     findings = normalize_authority_findings(payload, story)
