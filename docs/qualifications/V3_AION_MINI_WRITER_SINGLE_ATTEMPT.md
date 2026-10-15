@@ -45,3 +45,23 @@ older unapproved F1 as an approved input to Aion Mini.
 Result: Writer-only mock PASS is necessary but insufficient. Actual product
 qualification requires controlled Spine -> explicit approval -> Aion Writer
 -> authority -> bounded repair if needed -> translation -> fidelity.
+
+## Existing OpenRouter secret verified through real GitHub Actions (no paid POST)
+
+On 2026-10-15 an already-installed diagnostic workflow was dispatched,
+run ID 38694937823, branch experiment/story-v5-whole-draft-prototype-20260924.
+GitHub Actions job completed SUCCESS, and authenticated OpenRouter
+GET /api/v1/key returned HTTP 200 with the existing repository secret.
+No Chat Completions POST or charge was made by this diagnostic.
+
+The auxiliary GET /api/v1/activity?date=2026-09-29 returned HTTP 403
+with error 'Only management keys can fetch activity for an account'.
+That is an endpoint authorization distinction, NOT absence or
+invalidity of OPENROUTER_API_KEY. No management key is requested,
+replaced, or copied into an independent shell process.
+
+This confirms the usable provider credential is available within the
+existing GitHub Actions execution boundary. It does NOT itself enable
+safe paid dispatch of the new single-attempt Writer/Spine guard:
+a suitably authorized guarded workflow remains required. Never run
+the older auto-retrying Story stage in its place.
