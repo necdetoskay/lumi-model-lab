@@ -141,5 +141,5 @@ def verify_v4_source_pin(approved_commit:str)->None:
     if subprocess.check_output(["git","status","--porcelain"],text=True).strip():
         raise V4PaidStop("DIRTY_CODE_CHECKOUT")
     verification=verify_frozen_lane(PROFILE)
-    if verification["runtime_revision"]!="AGE18-V4-DERIVED-LOGISTICS-v1" or verification["verified_files"]!=51:
-        raise V4PaidStop("V4_51_FILE_REVISION_NOT_VALID")
+    if verification["runtime_revision"]!="AGE18-V4-DERIVED-LOGISTICS-v1" or verification["verified_files"]!=54:
+        raise V4PaidStop("V4_54_FILE_REVISION_NOT_VALID")
