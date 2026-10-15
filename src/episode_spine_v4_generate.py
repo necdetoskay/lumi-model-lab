@@ -247,7 +247,8 @@ def generate(
             "future_choice_precommitment_forbidden": True,
             "milestone_commit_forbidden": True,
             "hidden_truth_inference_forbidden": True,
-            "human_review_required": True,
+            "independent_model_review_required": True,
+            "human_review_required": False,
         },
     }
 
@@ -302,7 +303,8 @@ def generate(
         "schema_version": "episode-spine-v2-evidence.v1",
         "status": "architect_generated",
         "episode_writer_authorized": False,
-        "human_creative_review_required": True,
+        "human_creative_review_required": False,
+        "independent_luna_creative_review_required": True,
         "started_at": started_at,
         "architect_model": architect_model,
         "gate_model": gate_model,
@@ -511,7 +513,7 @@ def generate(
         _write_json(out_path, evidence)
         raise RuntimeError("Episode Spine Gate failed contract validation.") from exc
 
-    evidence["status"] = "awaiting_human_review"
+    evidence["status"] = "v4_gate_accept_model_reviewed" if gate.decision=="ACCEPT" else "v4_gate_replan"
     evidence["episode_spine"] = episode_spine.model_dump(
         mode="json", by_alias=True
     )
@@ -521,8 +523,8 @@ def generate(
     evidence["completed_at"] = _now_iso()
     evidence["latency_seconds"] = round(time.perf_counter() - started, 3)
     evidence["human_review"] = {
-        "verdict": None,
-        "allowed_values": ["APPROVE", "REVISE", "REJECT"],
+        "verdict": "NOT_REQUESTED_FOR_V4_AUTONOMOUS_QUALIFICATION",
+        "allowed_values": ["NOT_REQUESTED_FOR_V4"],
         "assistant_independent_assessment": None,
         "episode_writer_authorized": False,
     }
