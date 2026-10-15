@@ -7,6 +7,7 @@ Frozen V3 is untouched. No automatic retry or alternate model is allowed.
 from __future__ import annotations
 
 import json
+import os
 from contextlib import contextmanager
 from pathlib import Path
 from unittest.mock import patch
@@ -38,7 +39,7 @@ class CoherenceSequenceGuard(SingleAttemptSpineGuard):
 
 
 class CoherenceModelCallbacks:
-    def __init__(self, *, api_key: str, approved: dict):
+    def __init__(self, *, api_key: str, approved: dict, evidence_dir: Path | None = None):
         if not api_key:
             raise SafetyStop("OPENROUTER_API_KEY_REQUIRED")
         if (approved.get("human_review") or {}).get("verdict") != "APPROVE":
@@ -47,6 +48,7 @@ class CoherenceModelCallbacks:
         self.approved=approved
         self.stage_index=0
         self.events=[]
+        self.evidence_dir=evidence_dir
 
     def _model_call(self, *, stage: str, model: str, system: str,
                     payload: dict, max_tokens: int) -> dict:
@@ -62,13 +64,26 @@ class CoherenceModelCallbacks:
             temperature=0.0,max_tokens=max_tokens,seed=2026101501+self.stage_index,
             request_class="editorial_audit",max_parse_attempts=1,
         )
-        self.events.append({
+        record = {
+            "schema":"lumi.v3.quality.model-stage-evidence.v1",
             "stage":stage,"model":model,
+            "call_number":self.stage_index,
             "generation_id":body.get("id"),
             "prompt_tokens":(body.get("usage") or {}).get("prompt_tokens"),
             "completion_tokens":(body.get("usage") or {}).get("completion_tokens"),
             "reported_cost_usd":(body.get("usage") or {}).get("cost"),
-        })
+            "model_json":parsed,
+        }
+        if self.evidence_dir is not None:
+            if not self.evidence_dir.is_dir():
+                raise SafetyStop("MODEL_EVIDENCE_DIR_MISSING")
+            path=self.evidence_dir / (f"model-{self.stage_index:02d}-{stage}.json")
+            fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+            with os.fdopen(fd,"wb") as stream:
+                stream.write((json.dumps(record,ensure_ascii=False,indent=2)+"\n").encode())
+                stream.flush()
+                os.fsync(stream.fileno())
+        self.events.append({k:v for k,v in record.items() if k!="model_json"})
         return parsed
 
     def audit(self, *, story: str, authority_packet: dict,

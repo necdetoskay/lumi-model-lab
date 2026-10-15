@@ -63,3 +63,43 @@ for the paid audit and conditional repair/recheck sequence.
 
 Original frozen Final V3 branch and 43 SHA-locked runtime files remain
 unchanged. No production/main mutation.
+
+## 2026-10-15: Real-model runner prepared, NOT dispatched
+
+The independent live entrypoint is
+experiments/v3_f2_autonomous_quality_probe.py.
+It binds immutable, SHA-256 pinned F2 approved Spine (run 38700326961),
+the ORIGINAL Aion Mini Writer result (run 38703469212), and the
+untouched 2,767-word source story. It validates 43 frozen V3 SHA locks,
+an exact reviewed guard commit, a clean checkout and a strict allowlist
+of external experiment/evidence files BEFORE any new billable POST.
+
+A new grant schema lumi.v3-f2-autonomous-quality-grant.v1
+must specifically authorize ENGLISH_QUALITY, bind the story hash
+and pinned commit, and have its own grant ID and human authorization
+reference. The runner also requires an absolute persistent claim root,
+an exclusive local one-use claim and a preverified GitHub run-bound
+global claim. The separate externally managed GitHub Actions workflow
+is responsible for verifying the global claim read-only and rejecting
+run attempts beyond the first. NO previous Writer or Spine token grants
+can authorize this stage. Provider secret must come from the existing
+GitHub Actions repository Secret.
+
+The model adapter records EACH provider-authored JSON audit/repair
+or post-repair recheck under a distinct fsynced evidence file, with
+generation ID and provider-reported cost. If the model cannot validate
+or repair the story, the stage stops and produces NO accepted English
+story file. Only the automated fully clean verdict emits
+english-quality-accepted.txt plus qualification.json as new
+evidence, leaving original Writer output unchanged. Publication,
+translation and world-state authority remain false.
+
+A $0.20 code-level maximum grant admission exists as a safety ceiling,
+NOT a granted or approved spending budget. The user has not yet
+given a separately scoped budget for the new Luna/Sol quality calls.
+The provider-reported cumulative cost is checked after each completion,
+and is not a hard remote billing cap.
+
+Full local offline suite: 99/99 PASS and frozen file verification
+43/43 PASS. Test replies were MOCKED; no real model quality decision
+or Sol repair has occurred. No live paid quality trigger is created.
