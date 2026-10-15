@@ -25,7 +25,6 @@ from experiments.sera.spine_contracts import (
 from experiments.sera.state_engine import (
     StateError, apply_scene, base_snapshot,
 )
-from src.openrouter_preflight import enforce_key_access, fetch_key_status
 
 PROTOCOL = "sera.mara-first-scene-live.v0.1"
 WRITER_MODEL = "openai/gpt-5.6-luna"
@@ -195,6 +194,8 @@ def deterministic_shadow(*, entry, prose, coverage, verdict, writer):
 
 
 def run(*, key: str, outpath: Path, launch_id: str) -> dict:
+    # Provider dependencies imported only for a deliberately launched live run.
+    from src.openrouter_preflight import enforce_key_access, fetch_key_status
     spine_path = Path(SOURCE_RELATIVE_PATH)
     spine = load_frozen_spine(spine_path)
     contracts = compile_scene_contracts(spine)
