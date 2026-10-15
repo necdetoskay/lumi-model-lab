@@ -37,10 +37,13 @@ def _safe_cost(body):
 
 
 class SingleAttemptSpineGuard:
-    def __init__(self, evidence_dir: Path, max_cost_usd: Decimal):
+    def __init__(self, evidence_dir: Path, max_cost_usd: Decimal, *, permitted_models: tuple[str, ...] = SPINE_MODELS):
         if not max_cost_usd.is_finite() or max_cost_usd <= 0:
             raise ValueError("Invalid grant ceiling")
         self.evidence_dir = evidence_dir
+        if not permitted_models or any(not isinstance(x, str) or not x for x in permitted_models):
+            raise ValueError("Invalid permitted provider-model sequence")
+        self.permitted_models = tuple(permitted_models)
         self.max_cost = max_cost_usd
         self.spent = Decimal("0")
         self.calls = 0
@@ -79,10 +82,10 @@ class SingleAttemptSpineGuard:
         if any(key in payload for key in ("max_tokens", "max_completion_tokens", "max_output_tokens")):
             self.event("POLICY_STOP", reason="EXPLICIT_OUTPUT_TOKEN_CEILING_FORBIDDEN")
             raise SafetyStop("EXPLICIT_OUTPUT_TOKEN_CEILING_FORBIDDEN")
-        if self.calls >= len(SPINE_MODELS):
+        if self.calls >= len(self.permitted_models):
             self.event("POLICY_STOP", reason="EXTRA_PROVIDER_POST_BLOCKED")
             raise SafetyStop("EXTRA_PROVIDER_POST_BLOCKED")
-        if model != SPINE_MODELS[self.calls]:
+        if model != self.permitted_models[self.calls]:
             self.event("POLICY_STOP", reason="WRONG_MODEL_OR_UNEXPECTED_RETRY")
             raise SafetyStop("WRONG_MODEL_OR_UNEXPECTED_RETRY")
         self.calls += 1
@@ -147,6 +150,6 @@ class SingleAttemptSpineGuard:
                                             lambda *args, **kwargs: None))
             stack.enter_context(patch.object(p, "call_openrouter", self._observed_call))
             stack.enter_context(patch.object(s, "call_structured_json_with_retry", self._no_parse_retry))
-            self.event("GUARD_INSTALLED", permitted_models=list(SPINE_MODELS),
+            self.event("GUARD_INSTALLED", permitted_models=list(self.permitted_models),
                        provider_post_limit=2, attempts_per_model=1)
             yield self
