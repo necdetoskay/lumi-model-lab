@@ -221,7 +221,8 @@ class WorldStore:
         ]
 
     def commit(self, stream_id, *, expected_revision: int,
-               events: list[dict], approvals: dict[str, str]):
+               events: list[dict], approvals: dict[str, str],
+               on_event_committed=None):
         """One transactional batch; optimistic concurrency and idempotency.
 
         All events are validated before any persistent commit. An exact
@@ -304,6 +305,15 @@ class WorldStore:
                     "INSERT INTO world_snapshots VALUES (?,?,?,?)",
                     (stream_id, rev, snapshot_json, digest(snapshot_json)),
                 )
+                # Optional trusted integration callback executes within the
+                # SAME SQLite transaction, after each validated world mutation.
+                # It must not COMMIT/ROLLBACK or modify existing ledger rows.
+                # Any exception fails closed and rolls back both ledgers.
+                if on_event_committed is not None:
+                    on_event_committed(
+                        self.db, deepcopy(before), deepcopy(state),
+                        deepcopy(event), rev,
+                    )
                 previous = event_sha
             final_json = canonical(state)
             self.db.execute(
