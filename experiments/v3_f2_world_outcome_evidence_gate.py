@@ -31,6 +31,38 @@ def _check(condition:bool,reason:str):
         raise OutcomeStop(reason)
 
 
+def _quote_provenance(quote:str,story:str)->str | None:
+    """Verify exact prose, permitting ONLY a misplaced terminal italic marker.
+
+    For an italicized paragraph such as "*Sentence one. Sentence two.*",
+    a judge may quote just "*Sentence one.*" while the source italic
+    span continues. The words are exact and the extra final '*' is
+    formatting markup only, NOT an invented literary fact.
+    """
+    if not isinstance(quote,str) or len(quote.strip())<12:
+        return None
+    if quote in story:
+        return "EXACT"
+    if (len(quote)<30 or not quote.startswith("*") or not quote.endswith("*")
+        or quote.count("*")!=2):
+        return None
+    # Accept only the ONE terminal markdown marker moved earlier. No
+    # deleted/replaced/rewritten content is permitted.
+    source_prefix=quote[:-1]
+    if story.count(source_prefix)!=1:
+        return None
+    start=story.find(source_prefix)
+    end=start+len(source_prefix)
+    # The italic passage must continue after the cited words and end
+    # later within the same source paragraph, not a different section.
+    if story[end:end+1]!=" ":
+        return None
+    rest=story[end:].split("\n",1)[0]
+    if not rest.endswith("*") or rest.count("*")!=1:
+        return None
+    return "ITALIC_CLOSER_BOUNDARY_ONLY"
+
+
 def validate_judge_output(payload:dict,*,stage_dir:Path=STAGED)->dict:
     """Inspect model evidence only; NEVER assert commit-ready authority."""
     d=json.loads((stage_dir/"delivery-manifest.json").read_text(encoding="utf-8"))
@@ -65,9 +97,11 @@ def validate_judge_output(payload:dict,*,stage_dir:Path=STAGED)->dict:
     _check(isinstance(payload.get("branch_evidence_quotes"),list)
            and len(payload["branch_evidence_quotes"])>=1,
            "WORLD_JUDGE_BRANCH_EVIDENCE_MISSING")
+    branch_provenance=[]
     for quote in payload["branch_evidence_quotes"]:
-        _check(isinstance(quote,str) and len(quote.strip())>=12 and quote in story,
-               "WORLD_JUDGE_BRANCH_QUOTE_FABRICATED")
+        proof=_quote_provenance(quote,story)
+        _check(proof is not None,"WORLD_JUDGE_BRANCH_QUOTE_FABRICATED")
+        branch_provenance.append(proof)
     reviews=payload.get("candidate_reviews")
     source=original["candidate_operations"]
     _check(isinstance(reviews,list) and len(reviews)==len(source),
@@ -92,9 +126,11 @@ def validate_judge_output(payload:dict,*,stage_dir:Path=STAGED)->dict:
         _check(isinstance(quotes,list),"WORLD_JUDGE_EVIDENCE_LIST_REQUIRED")
         if verdict=="EARNED":
             _check(len(quotes)>=1,"WORLD_JUDGE_EARNED_WITHOUT_QUOTE")
+        quote_provenance=[]
         for quote in quotes:
-            _check(isinstance(quote,str) and len(quote.strip())>=12 and quote in story,
-                   "WORLD_JUDGE_INVENTED_EVIDENCE_QUOTE")
+            proof=_quote_provenance(quote,story)
+            _check(proof is not None,"WORLD_JUDGE_INVENTED_EVIDENCE_QUOTE")
+            quote_provenance.append(proof)
         # The sealed-field-record knowledge milestone cannot be earned
         # on the branch where the formal report was never signed.
         if branch=="extend_testing" and cid=="f2-outcome-01" and verdict=="EARNED":
@@ -106,6 +142,7 @@ def validate_judge_output(payload:dict,*,stage_dir:Path=STAGED)->dict:
             "source_commit_condition":expected["source_commit_condition"],
             "model_condition_verdict":verdict,
             "evidence_quotes":quotes,
+            "quote_provenance":quote_provenance,
             "model_explanation":explanation,
             "candidate_state":"EVALUATED_BUT_UNCOMMITTED",
             "commit_authorized":False,
@@ -125,6 +162,7 @@ def validate_judge_output(payload:dict,*,stage_dir:Path=STAGED)->dict:
         "status":"MODEL_EVALUATED_WORLD_DELTA_UNCOMMITTED",
         "model_selected_branch":branch,
         "branch_evidence_quotes":payload["branch_evidence_quotes"],
+        "branch_quote_provenance":branch_provenance,
         "approved_persistent_candidates":evaluated,
         "proposed_saga_milestone":{
             "key":"forbidden_passage_observed",
