@@ -167,9 +167,61 @@ def _find_lexical_refs(prose: str, registry: dict[str, list[str]]) -> set[str]:
     return found
 
 
+def _find_object_candidate_spans(
+    prose: str, registry: dict[str, list[str]],
+    candidate_lexicon: dict[str, list[str]],
+    reported_entity_refs: set[str],
+) -> list[dict]:
+    """Conservative noun candidate scan; never promotes text into state.
+
+    Matches known registry aliases first so a 'clock' inside 'platform clock'
+    is not falsely treated as an additional object. A lexicon is an advisory
+    coverage aid, not a guarantee of open-world entity completeness.
+    """
+    protected: list[tuple[int, int]] = []
+    for aliases in registry.values():
+        for alias in aliases:
+            for match in re.finditer(
+                r"(?<!\w)" + re.escape(alias) + r"(?!\w)", prose, re.IGNORECASE
+            ):
+                protected.append(match.span())
+    findings = []
+    for candidate_id, aliases in candidate_lexicon.items():
+        require(isinstance(candidate_id, str) and candidate_id.startswith("candidate:"),
+                "OBJECT_CANDIDATE_ID_INVALID")
+        require(isinstance(aliases, list) and bool(aliases) and
+                all(isinstance(alias, str) and alias.strip() for alias in aliases),
+                f"OBJECT_CANDIDATE_ALIASES_INVALID:{candidate_id}")
+        # If a model discovered the new entity, it enters the ordinary
+        # authority-controlled new-entity reconciliation path instead.
+        promoted_proposal_id = "new:" + candidate_id.split(":", 1)[1]
+        if promoted_proposal_id in reported_entity_refs:
+            continue
+        seen_positions = set()
+        for alias in aliases:
+            for match in re.finditer(
+                r"(?<!\w)" + re.escape(alias) + r"(?!\w)", prose, re.IGNORECASE
+            ):
+                start, end = match.span()
+                if any(pstart <= start and end <= pend
+                       for pstart, pend in protected):
+                    continue
+                if (start, end) in seen_positions:
+                    continue
+                seen_positions.add((start, end))
+                findings.append({
+                    "code": "UNREPORTED_OBJECT_CANDIDATE",
+                    "candidate_ref": candidate_id,
+                    "start": start, "end": end,
+                    "evidence_quote": prose[start:end],
+                })
+    return sorted(findings, key=lambda x: (x["start"], x["end"]))
+
+
 def reconcile(*, prose: str, scene_key: str, entry_revision: int,
               registry: dict[str, list[str]],
-              writer: dict, independent: dict) -> dict:
+              writer: dict, independent: dict,
+              candidate_lexicon: dict[str, list[str]] | None = None) -> dict:
     """Compare reports; fail closed without ever mutating canonical state."""
     require(isinstance(prose, str) and prose.strip(), "PROSE_REQUIRED")
     w = validate_report(writer, role="WRITER", prose=prose,
@@ -182,6 +234,10 @@ def reconcile(*, prose: str, scene_key: str, entry_revision: int,
     wm = {_mention_key(x) for x in w["mentions"]}
     im = {_mention_key(x) for x in i["mentions"]}
     registered_mentions = {key[0] for key in wm | im}
+    if candidate_lexicon:
+        findings.extend(_find_object_candidate_spans(
+            prose, registry, candidate_lexicon, registered_mentions,
+        ))
     for entity_ref in sorted(lexical - registered_mentions):
         findings.append({"code": "UNREPORTED_KNOWN_ENTITY",
                          "entity_ref": entity_ref})
