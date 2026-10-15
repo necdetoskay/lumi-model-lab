@@ -91,7 +91,12 @@ def test_each_new_case_has_real_validated_world_character_state_and_premise(case
     assert len(state.world_access)>=3
     assert premise.constraints==case["rules"]
     assert p["human_creative_approval_required_before_writer"] is True
-    assert case["saga_input_status"]=="NOT_CREATED"
+    from src.saga_spine_v2_contract import CharacterSagaSpineV2
+    saga=CharacterSagaSpineV2.model_validate(json.loads(
+        Path(inp["saga_spine"]).read_text()))
+    assert case["protagonist"] in saga.origin.summary
+    assert saga.main_saga.milestones[0].key in premise.target_refs
+    assert case["saga_input_status"]=="CREATED_PENDING_SCHEMA_VERIFICATION"
     assert case["real_spine_eligible"] is False
 
 
