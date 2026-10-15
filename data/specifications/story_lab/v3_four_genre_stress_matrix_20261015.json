@@ -1,0 +1,145 @@
+{
+  "schema": "lumi.v3.four-genre-stress-matrix.v1",
+  "status": "PLANNED_DATA_ONLY_NOT_GENERATED",
+  "baseline_proven_success": "age18.forbidden-cartographer.fantasy.frozen-01",
+  "frozen_v3_profile": "data/specifications/story_lab/age18_story_lane_profile_v2_frozen.json",
+  "frozen_sha": "63e1e3ce82c244bc5bb02b0463a9a1a6715c941b",
+  "model_roles": {
+    "spine_architect": "anthropic/claude-sonnet-5.5",
+    "spine_gate": "openai/gpt-5.6-luna",
+    "writer": "aion-labs/aion-3.5-mini",
+    "english_quality": "openai/gpt-5.6-luna",
+    "english_repair": "openai/gpt-5.6-sol",
+    "translation": "google/gemini-3.8-flash",
+    "translation_fidelity": "openai/gpt-5.6-luna",
+    "fidelity_adjudication": "openai/gpt-5.6-sol",
+    "translation_repair": "google/gemini-3.8-flash",
+    "world_outcome": "openai/gpt-5.6-luna"
+  },
+  "policy": {
+    "story_text_manual_edits": 0,
+    "repair_authorship": "MODEL_ONLY",
+    "model_repair_application": "DETERMINISTIC_EXACT_SOURCE_BOUNDED",
+    "length_is_hard_failure": false,
+    "length_is_advisory": true,
+    "human_spine_approval_required_before_writer": true,
+    "false_human_APPROVE_prohibited": true,
+    "repeat_paid_call_on_error": false,
+    "fallback_model_on_error": false,
+    "same_case_prompt_hotfix": false,
+    "paid_stage_requires_separate_grant": true,
+    "no_world_state_commit": true,
+    "no_publication": true,
+    "unresolved_structural_defect": "STOP_AND_REPORT",
+    "max_english_model_repair_attempts": 1,
+    "max_translation_model_repair_attempts": 1,
+    "post_repair_independent_reaudit_required": true,
+    "model_output_hash_and_source_chain_required": true
+  },
+  "cases": [
+    {
+      "case_id": "age18.closed-platform.mystery.stress-01",
+      "genre": "DETECTIVE_MYSTERY",
+      "title": "The Platform That Arrived Empty",
+      "protagonist": "Mara",
+      "protagonist_age": 18,
+      "logline": "An apprentice station investigator must decide whether a missing night train is a scheduling failure or evidence tampering, when the official manifest and a witness's pocket watch disagree.",
+      "inciting_incident": "At 02:10 the archive lists train 41 as arriving, but the platform clock never marked its presence.",
+      "core_question": "What happened between the signal log and the platform witness statement?",
+      "choice_a": "seal_provisional_log",
+      "choice_b": "reopen_signal_audit",
+      "stakes": "An unearned accusation could destroy a worker's career; a false closure could allow future safety incidents.",
+      "rules": [
+        "A witness cannot know a sealed dispatch record before its lawful disclosure.",
+        "A stopped pocket watch is not proof that the train stopped in time.",
+        "A published manifest is not automatically evidence of physical arrival.",
+        "No unverified culprit, sabotage mechanism or secret tunnel becomes canon."
+      ],
+      "required_continuity": [
+        "Time-stamped sequence of signal, platform and interview evidence",
+        "Distinguish observed arrival from recorded arrival",
+        "Final decision must track which testimony was actually checked"
+      ],
+      "adversarial_seed": "The third interview claims to quote a sealed log that was not shown until the fourth scene.",
+      "repair_expectation": "epistemic_order local only if exact quote and scope permit; otherwise structural STOP"
+    },
+    {
+      "case_id": "age18.orbit-rescue.scifi.stress-02",
+      "genre": "SCIENCE_FICTION",
+      "title": "The Last Relay Above Aster",
+      "protagonist": "Tavi",
+      "protagonist_age": 18,
+      "logline": "A junior orbital relay technician must choose which emergency message to forward with only enough battery for one verified transmission.",
+      "inciting_incident": "A damaged communications buoy emits a distress packet apparently dated six minutes in the future.",
+      "core_question": "Is the timing discrepancy clock drift or a real fault in the relay network?",
+      "choice_a": "forward_verified_payload",
+      "choice_b": "attempt_second_measurement",
+      "stakes": "A mistaken transmission could divert rescue vessels; waiting could strand a crew.",
+      "rules": [
+        "A six-minute timestamp anomaly does not establish time travel.",
+        "Power reserve, signal delay and battery drain must remain consistent.",
+        "The technician cannot instantaneously communicate across light-minutes.",
+        "An unread packet cannot be used as known evidence."
+      ],
+      "required_continuity": [
+        "Conserve a finite battery across all attempts",
+        "Respect causal ordering of received messages and response times",
+        "Resolution makes only supported claims about the clock discrepancy"
+      ],
+      "adversarial_seed": "The battery is declared depleted and a later scene sends one more powered message without recharge.",
+      "repair_expectation": "state_continuity repair if local, no invented recharge"
+    },
+    {
+      "case_id": "age18.council-seal.intrigue.stress-03",
+      "genre": "POLITICAL_INTRIGUE",
+      "title": "The Seal Beneath the Ledger",
+      "protagonist": "Sera",
+      "protagonist_age": 18,
+      "logline": "A novice civic registrar must document a disputed water-allocation decree without disclosing a protected informant or assigning motives without proof.",
+      "inciting_incident": "Two signed copies of the city's allocation decree disagree about a single canal gate.",
+      "core_question": "Is the discrepancy clerical or a deliberately concealed council amendment?",
+      "choice_a": "file_bounded_discrepancy",
+      "choice_b": "request_authorized_reconciliation",
+      "stakes": "An unsupported public allegation could provoke unrest; silence could preserve a corrupt policy.",
+      "rules": [
+        "A different seal cannot alone prove bribery or conspiracy.",
+        "A protected source must not be named unless the story establishes authorized release.",
+        "NPC political motives remain unproven absent independently earned evidence.",
+        "The protagonist may not alter the official archive without review."
+      ],
+      "required_continuity": [
+        "Track who knows which version of the decree and at what time",
+        "Maintain distinct public, private and legally sealed records",
+        "A bounded report does not equal a verdict of corruption"
+      ],
+      "adversarial_seed": "A councilor cites secret evidence they have not yet received.",
+      "repair_expectation": "epistemic_order/canon_integrity with only model-proposed bounded patches"
+    },
+    {
+      "case_id": "age18.mirror-marsh.fantasy.stress-04",
+      "genre": "FANTASY_ADVENTURE",
+      "title": "The Lantern Beneath Mirror Marsh",
+      "protagonist": "Elen",
+      "protagonist_age": 18,
+      "logline": "An apprentice marsh guide discovers a lantern that records footsteps from a closed causeway and must decide whether to preserve or investigate the signal.",
+      "inciting_incident": "The sealed causeway's lantern lights although no permitted walker has crossed.",
+      "core_question": "Whose earlier path is reflected by the lantern and is the route presently stable?",
+      "choice_a": "mark_boundary_unverified",
+      "choice_b": "request_escort_and_retest",
+      "stakes": "Declaring the path safe could lure travelers into a collapsing marsh; concealing observations could leave a village unprepared.",
+      "rules": [
+        "Seeing reflected footsteps does not prove a person is currently on the causeway.",
+        "The guide cannot cross a sealed causeway without authorized escort.",
+        "Item inventory and lamp charges cannot reset between scenes.",
+        "One strange observation cannot settle the cause, future safety or a mentor's intent."
+      ],
+      "required_continuity": [
+        "Track lantern ownership, charges and position across scenes",
+        "Document whether a crossing permit was actually issued",
+        "Separate observed phenomena from causal claims"
+      ],
+      "adversarial_seed": "The guide gives away the lantern and then uses it in the following scene without receiving it back.",
+      "repair_expectation": "state_continuity for item ownership only; no fabricated gift-back unless earned"
+    }
+  ]
+}
