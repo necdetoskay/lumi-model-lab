@@ -215,6 +215,23 @@ class FreshEvidenceWorkerV022Tests(unittest.TestCase):
         self.assertEqual(first,second)
         self.assertGreater(count,0)
 
+    def test_missing_export_rebuilt_from_original_paid_model_receipts(self):
+        calls = []
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            job = preparer(root, fake_model(calls))
+            original = job(prose=SOURCE_2, world=entry())
+            before_calls = len(calls)
+            (root/"evidence"/(prose_hash(SOURCE_2)+".json")).unlink()
+            restored = preparer(
+                root,
+                lambda **kwargs: self.fail("must use paid archived responses"),
+            )(prose=SOURCE_2, world=entry())
+            self.assertTrue((root/"evidence"/
+                             (prose_hash(SOURCE_2)+".json")).exists())
+        self.assertEqual(restored, original)
+        self.assertEqual(len(calls), before_calls)
+
     def test_unreceived_provider_charge_blocks_a_second_request(self):
         calls=[]
         with TemporaryDirectory() as d:
