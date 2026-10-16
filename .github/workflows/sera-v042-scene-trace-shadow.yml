@@ -1,0 +1,88 @@
+name: SERA v0.42 SceneTrace Real Mara Timeline Shadow No Billing
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_trace_shadow_v042.py
+      - experiments/sera/scene_trace_real_mara_smoke_v042.py
+      - experiments/sera/tests/test_scene_trace_shadow_v042.py
+      - .github/workflows/sera-v042-scene-trace-shadow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-mara-shadow-timeline:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v042-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v042-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate core SERA policy and SceneTrace negative tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Fetch already-paid immutable Mara pencil model evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v042/receipts"
+          gh run download 38938438488 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v041-real-pencil-once-38938438488 \
+            --dir "$RUNNER_TEMP/sera-v042/receipts"
+          test -s "$RUNNER_TEMP/sera-v042/receipts/result.json"
+          test -s "$RUNNER_TEMP/sera-v042/receipts/provider_reply_1.json"
+          test -s "$RUNNER_TEMP/sera-v042/receipts/provider_reply_2.json"
+      - name: Build real Mara source-order SceneTrace with quarantined rows
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.scene_trace_real_mara_smoke_v042 \
+            --receipt-dir "$RUNNER_TEMP/sera-v042/receipts" \
+            --json-output "$RUNNER_TEMP/sera-v042/scene-trace-v042.json" \
+            --markdown-output "$RUNNER_TEMP/sera-v042/scene-trace-v042.md"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"sera-v042"
+          proof=json.loads((root/"scene-trace-v042.json").read_text(encoding="utf-8"))
+          t=proof["trace"]
+          b=proof["baseline_comparison"]
+          assert proof["status"]=="REAL_MARA_SOURCE_TRACE_DIAGNOSTIC_ONLY"
+          assert proof["real_model_source_run"]==38938438488
+          assert t["source_sentence_count"]==28
+          assert t["source_bound_model_sentence_count"]==2
+          assert t["quarantined_model_sentence_count"]==2
+          assert t["source_only_model_unassessed_sentence_count"]==24
+          assert len(proof["three_focus_sentences"])==3
+          assert all(x["exact_story_second"] is None
+                     for x in proof["three_focus_sentences"])
+          assert b["extraction_recall_improvement_proven"] is False
+          assert b["recommendation"]==              "KEEP_SHADOW_ONLY_PENDING_INDEPENDENT_RECALL_MEASUREMENT"
+          assert proof["new_provider_calls"]==0
+          assert proof["project_lumi_db_writes"]==0
+          assert proof["simulated_world_writes"]==0
+          assert t["canonical_commit_authorized"] is False
+          print("SERA_V042_REAL_MARA_SCENETRACE_SHADOW_REPLAY_PASS")
+          PY
+      - name: Archive read-only graph-source JSON and source-order timeline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v042-real-mara-scene-trace-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/sera-v042/scene-trace-v042.json
+            ${{ runner.temp }}/sera-v042/scene-trace-v042.md
+          retention-days: 90
+          if-no-files-found: warn
