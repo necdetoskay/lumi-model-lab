@@ -1,0 +1,82 @@
+name: SERA v0.15 Blind Model vs Historical Mara Identity Hypotheses
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_blind_identity_disagreement_cli_v015.py
+      - .github/workflows/sera-mara-v015-identity-disagreement.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  original-evidence-disagreement:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 8
+    defaults:
+      run:
+        working-directory: sera-v015-identity-compare-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v015-identity-compare-source
+          persist-credentials: false
+          clean: false
+          set-safe-directory: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Offline unit suite and no output-token ceilings
+        run: |
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Load only historical archived model and prior diagnostic artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v015-compare"
+          gh run download 38873775587 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v015-paid-identity-forensics-38873775587 \
+            --dir "$RUNNER_TEMP/v015-compare"
+          gh run download 38870235664 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v014-identity-proposals-38870235664 \
+            --dir "$RUNNER_TEMP/v015-compare"
+          test -s "$RUNNER_TEMP/v015-compare/forensic-result.json"
+          test -s "$RUNNER_TEMP/v015-compare/identity-proposals.json"
+      - name: Compare two UNTRUSTED interpretations without gold or commits
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_blind_identity_disagreement_cli_v015 \
+            --blind-forensic "$RUNNER_TEMP/v015-compare/forensic-result.json" \
+            --prior-hypotheses "$RUNNER_TEMP/v015-compare/identity-proposals.json" \
+            --output "$RUNNER_TEMP/v015-compare/disagreements.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          f=Path(os.environ["RUNNER_TEMP"])/"v015-compare"/"disagreements.json"
+          d=json.loads(f.read_text(encoding="utf-8"))
+          assert d["original_model_mentioned_refs"]==16
+          assert d["blind_source_bound_proposal_count"]==12
+          assert d["blind_quarantined_count"]==4
+          assert d["category_agreement_count_NOT_SEMANTIC_ACCURACY"]==15
+          assert d["relation_agreement_count_NOT_SEMANTIC_ACCURACY"]==11
+          assert d["parent_agreement_count_NOT_SEMANTIC_ACCURACY"]==11
+          assert d["full_tuple_agreement_count_NOT_GOLD"]==9
+          assert d["model_calls_during_comparison"]==0
+          assert d["world_db_writes"]==0
+          assert d["entity_creations"]==0
+          assert d["attached_relations"]==0
+          assert d["human_gold_adjudicated"] is False
+          assert d["canonical_commit_authorized"] is False
+          print("SERA_V015_REAL_MARA_BLIND_VS_OLD_HYPOTHESIS_HOLD_GREEN")
+          PY
+      - name: Archive measured difference but not gold or canonical state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v015-mara-blind-disagreement-${{ github.run_id }}
+          path: ${{ runner.temp }}/v015-compare/disagreements.json
+          retention-days: 90
+          if-no-files-found: warn
