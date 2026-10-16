@@ -15,9 +15,17 @@ permissions:
 jobs:
   sera-m1-offline:
     runs-on: [self-hosted, linux]
-    timeout-minutes: 5
+    timeout-minutes: 7
+    defaults:
+      run:
+        working-directory: sera-v021-offline-source
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: sera-v021-offline-source
+          clean: false
+          persist-credentials: false
+          set-safe-directory: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -161,11 +169,19 @@ jobs:
   sera-browser-e2e:
     needs: sera-m1-offline
     runs-on: [self-hosted, linux]
-    timeout-minutes: 14
+    timeout-minutes: 16
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: sera-v021-browser-source
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: sera-v021-browser-source
+          clean: false
+          persist-credentials: false
+          set-safe-directory: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
