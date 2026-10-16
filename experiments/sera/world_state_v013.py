@@ -65,7 +65,7 @@ def create(*,base_world:dict,prose:str,
     validate_v02(base_world)
     need(isinstance(prose,str) and prose.strip() and
          isinstance(openables,list) and isinstance(documents,list) and
-         len(openables)>0 and len(documents)>0 and
+         bool(openables or documents) and
          all(isinstance(x,str) and bool(x) for x in openables+documents) and
          len(set(openables+documents))==len(openables+documents),
          "V013_OBJECT_ROLE_REGISTRY_INVALID")
