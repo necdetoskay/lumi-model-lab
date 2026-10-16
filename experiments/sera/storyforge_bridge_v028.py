@@ -222,7 +222,8 @@ def run(*, request, result, world, trusted_scope,
         registry, candidate_lexicon, typed_registry,
         trusted_temporal_builder=None, temporal_policy_id=None,
         trusted_relation_builder=None, relation_policy_id=None,
-        paid_authorized=False, api_key=None, provider_call=None,
+        paid_authorized=False, paid_grant=None, verify_paid_grant=None,
+        api_key=None, provider_call=None,
         max_rewrites=2):
     """Make dry-run default; run SERA only on explicit paid authorization.
 
@@ -273,6 +274,29 @@ def run(*, request, result, world, trusted_scope,
             "canonical_commit_authorized": False, "world_db_writes": 0,
             "next_automatic_action": "AWAIT_EXPLICIT_BILLING_AUTHORIZATION",
         }
+    # Billing is granted by an independent authenticated application
+    # authority, not by an untrusted caller flipping a boolean or by
+    # StoryForge's publication_ready. This is a signed-job policy seam,
+    # not an interactive human approval step for normal production.
+    need(isinstance(paid_grant, dict) and
+         paid_grant.get("approved") is True and
+         paid_grant.get("job_id") == job_id and
+         paid_grant.get("scene_key") == scene_key and
+         paid_grant.get("request_sha256") == contract["request_sha256"] and
+         paid_grant.get("result_sha256") == contract["result_sha256"] and
+         paid_grant.get("world_sha256") == contract["world_sha256"] and
+         paid_grant.get("model_profile_sha256") ==
+             contract["model_profile_sha256"] and
+         isinstance(paid_grant.get("budget_policy_id"), str) and
+         bool(paid_grant["budget_policy_id"].strip()) and
+         callable(verify_paid_grant) and
+         verify_paid_grant(deepcopy(paid_grant)) is True,
+         "V028_PAID_GRANT_NOT_AUTHENTICATED_OR_SCOPE_MISMATCH")
+    _persist_if_absent(root / "v028_verified_paid_grant_digest.json", {
+        "schema": "sera.verified-paid-grant-digest.v0.28",
+        "contract_sha256": sha(contract),
+        "billing_grant_sha256": sha(paid_grant),
+    })
     need(isinstance(api_key, str) and api_key.strip() and
          callable(provider_call),
          "V028_PAID_PROVIDER_NOT_CONFIGURED")
