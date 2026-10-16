@@ -65,6 +65,9 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             root=Path(d)
             first=stage(root,lost)
             self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
+            first_evidence_finals = [
+                fp.read_text() for fp in (root/"jobs").rglob("final.json")
+            ]
             def recon(*,model,request,request_sha256):
                 recovered.append((model,request_sha256))
                 # Simulates a fully authenticated, read-only generation
@@ -88,6 +91,9 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             prior=root/"controller"/"pre_reconciliation_safe_stop.json"
             debug = {
                 "first": first, "second": second,
+                "first_evidence_finals": first_evidence_finals,
+                "reconciler_calls": recovered,
+                "provider_stage_count": len(all_calls),
                 "controller_final": (root/"controller"/"final.json").read_text(),
                 "evidence_finals": [
                     fp.read_text() for fp in (root/"jobs").rglob("final.json")
@@ -119,7 +125,8 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             )
         self.assertEqual(outcome,recovered)
         self.assertEqual(len(calls),1,
-                         {"first":outcome, "second":recovered})
+                         {"first":outcome, "second":recovered,
+                          "journals": list(Path(d).rglob("*"))})
         self.assertFalse(recovered["canonical_commit_authorized"])
 
 
