@@ -74,6 +74,34 @@ jobs:
           path: ${{ runner.temp }}/sera-mara-review/mara-s1-28-sentence-unreviewed.json
           retention-days: 90
           if-no-files-found: error
+      - name: Export two blinded Mara S1 review forms
+        run: |
+          python -m experiments.sera.review_forms_cli_v08 export \
+            --output-dir "$RUNNER_TEMP/sera-mara-blind-review"
+          python - <<'PY'
+          from pathlib import Path
+          from experiments.sera.review_forms_cli_v08 import compare_files
+          import os
+          p = Path(os.environ["RUNNER_TEMP"]) / "sera-mara-blind-review"
+          result = compare_files(
+              review_a=p / "reviewer_A_unverified.json",
+              review_b=p / "reviewer_B_unverified.json",
+          )
+          assert len(result["disagreements"]) == 28
+          assert result["agreed_sentence_ids"] == []
+          assert result["status"] == "NOT_GOLD_HUMAN_ADJUDICATION_REQUIRED"
+          assert result["production_db_writes"] == 0
+          print("MARA_BLIND_REVIEW_FORMS", 2)
+          print("MARA_UNREVIEWED_SENTENCES", len(result["disagreements"]))
+          print("MARA_HUMAN_GOLD_QUALIFIED", False)
+          PY
+      - name: Archive blinded reviewer forms and instructions
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-s1-blind-review-forms-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-mara-blind-review/
+          retention-days: 90
+          if-no-files-found: error
       - name: Audit real Mara first-scene HOLD without state writes
         run: |
           python - <<'PY'
