@@ -241,6 +241,7 @@ def apply_simulated(*,state:dict,event:dict,prose:str,
                     approvals:dict[str,str],mode:str)->dict:
     """Explicitly simulation-only. An LLM cannot authorize a real commit."""
     validate(state,prose=prose)
+    verify_replay(state=state,prose=prose)
     need(mode==MODE,"V013_REAL_COMMIT_API_NOT_AVAILABLE")
     need(isinstance(approvals,dict) and
          approvals.get(event.get("event_id"))==digest(event),
