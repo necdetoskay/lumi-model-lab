@@ -16,6 +16,7 @@ from decimal import Decimal
 from hashlib import sha256
 import json
 import os
+import time
 from pathlib import Path
 
 from experiments.sera.coverage import CoverageError, prose_hash
@@ -290,16 +291,22 @@ def live(*,output,launch_id,key,grant):
             summary["inflight_batch_id"]=batch["batch_id"]
             summary["inflight_model"]=model
             _save(output,summary)
+            started_monotonic=time.perf_counter()
             try:
                 reply=one_provider_call(key=key,model=model,
                                          prepared={"request":request})
             except Exception as exc:
                 summary["status"]="UNKNOWN_PROVIDER_RESULT_NO_RESEND"
                 summary["provider_failure_class"]=type(exc).__name__
+                summary["unknown_attempt_elapsed_seconds"]=round(
+                    time.perf_counter()-started_monotonic,3,
+                )
                 _save(output,summary)
                 break
+            elapsed_seconds=round(time.perf_counter()-started_monotonic,3)
             receipt={
                 "model":model,"batch_id":batch["batch_id"],
+                "client_roundtrip_seconds":elapsed_seconds,
                 "request_sha256":batch["request_sha256"],
                 "provider_envelope":reply,
             }
@@ -324,6 +331,7 @@ def live(*,output,launch_id,key,grant):
                 "model":model,"batch_id":batch["batch_id"],
                 "receipt_file":receipt_path.name,
                 "receipt_sha256":sha256(receipt_path.read_bytes()).hexdigest(),
+                "client_roundtrip_seconds":elapsed_seconds,
                 "assessment":evaluation,
             })
             _save(output,summary)
