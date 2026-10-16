@@ -16,6 +16,7 @@ from urllib.error import HTTPError, URLError
 from experiments.sera.coverage import reconcile, prose_hash, validate_report
 from experiments.sera.extractor_adapter import bind_raw_extraction, make_messages
 from experiments.sera.jev_verifier import build_atomic_questions, call_live_jev
+from experiments.sera.request_policy import enforce_no_output_token_limit
 from experiments.sera.mara_s1_live import (
     REGISTRY, ROUTES, SCENE_KEY, deterministic_shadow, make_entry,
 )
@@ -106,6 +107,7 @@ def call_structured_gemini(*, key: str, messages: list) -> dict:
         "reasoning": {"enabled": True, "effort": "low", "exclude": True},
         "stream": False,
     }
+    enforce_no_output_token_limit(payload)
     req = Request(
         "https://openrouter.ai/api/v1/chat/completions",
         method="POST",
