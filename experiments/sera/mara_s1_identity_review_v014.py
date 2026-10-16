@@ -9,7 +9,8 @@ from __future__ import annotations
 from collections import Counter
 from copy import deepcopy
 
-from experiments.sera.coverage import CoverageError
+from experiments.sera.coverage import CoverageError,prose_hash
+from experiments.sera.sentence_ledger_v06 import sentences
 from experiments.sera.identity_resolution_v014 import resolve
 from experiments.sera.mara_s1_identity_rules_v014 import MARA_RULES
 from experiments.sera.mara_s1_v04_audit import EXPECTED_SHA
@@ -24,7 +25,8 @@ def qualify(*,prose:str,mentions:dict,events:dict)->dict:
         prose=prose,world=entry_state(),mention_census=mentions,
         rules=MARA_RULES,
     )
-    require(identities["source_prose_sha256"]==EXPECTED_SHA and
+    require(prose_hash(prose)==EXPECTED_SHA and
+            identities["source_prose_sha256"]==EXPECTED_SHA and
             identities["all_unregistered_refs_accounted_for"]==16 and
             identities["automatic_entity_creations"]==0 and
             identities["automatic_relation_links"]==0 and
@@ -41,14 +43,31 @@ def qualify(*,prose:str,mentions:dict,events:dict)->dict:
             "V014_EVENT_CENSUS_NOT_SOURCE_BOUND")
     proposals={x["source_entity_ref"]:x for x in identities["proposals"]}
     rows=[]
-    all_model_refs=set(
-        x["entity_ref"] for x in mentions["items"]
-    )
+    source_sentences={s["id"]:s for s in sentences(prose)}
+    mention_sids={
+        item["entity_ref"]:{
+            h["sentence_id"] for h in item["source_evidence"]
+        } for item in mentions["items"]
+    }
+    event_ids=set()
     for event in events["rows"]:
+        eid=event.get("source_event_id")
+        sentence=source_sentences.get(event.get("sentence_id"))
+        ev=event.get("source_evidence")
+        require(isinstance(eid,str) and eid and eid not in event_ids and
+                sentence is not None and isinstance(ev,dict) and
+                type(ev.get("start")) is int and
+                type(ev.get("end")) is int and
+                sentence["start"]<=ev["start"]<ev["end"]<=sentence["end"] and
+                prose[ev["start"]:ev["end"]]==ev.get("quote"),
+                "V014_EVENT_SOURCE_SPAN_OR_ID_TAMPERED")
+        event_ids.add(eid)
         missing=event["registry_unresolved_refs"]
         require(isinstance(missing,list) and
                 all(isinstance(x,str) for x in missing) and
                 set(missing).issubset(proposals) and
+                all(event["sentence_id"] in mention_sids.get(ref,set())
+                    for ref in missing) and
                 event.get("status")=="HOLD_NOT_CANONICAL" and
                 event.get("canonical_commit_authorized") is False,
                 "V014_EVENT_UNMAPPED_OR_PROMOTED_ENTITY")
