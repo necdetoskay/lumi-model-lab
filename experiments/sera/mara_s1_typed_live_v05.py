@@ -95,9 +95,8 @@ def one_provider_call(*, key: str, prepared: dict) -> dict:
         "model": MODEL, "messages": req["messages"],
         "response_format": req["response_format"],
         "temperature": 0, "max_tokens": MAX_TOKENS,
-        # Prior Gemini response consumed 4082 completion tokens and was
-        # truncated. Disable optional reasoning for this *bounded* retry.
-        "reasoning": {"enabled": False},
+        # Do not send unqualified model-specific reasoning flags.
+        # One attempted no-reasoning call returned HTTP 400 (diagnostic HOLD).
         "stream": False,
     }
     http = Request(
