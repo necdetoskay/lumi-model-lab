@@ -1,0 +1,68 @@
+name: SERA v0.47 Full Scene Fallback and Rewrite Shadow Lab
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_trace_full_fallback_v047.py
+      - experiments/sera/scene_trace_full_fallback_smoke_v047.py
+      - experiments/sera/tests/test_scene_trace_full_fallback_v047.py
+      - .github/workflows/sera-v047-full-fallback-shadow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  full-path-autonomous-shadow:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v047-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v047-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce SERA model output rules and complete offline regression suite
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Run four durable offline v0.47 full-path recovery scenarios
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v047"
+          python -m experiments.sera.scene_trace_full_fallback_smoke_v047 \
+            --output-dir "$RUNNER_TEMP/sera-v047"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          f=Path(os.environ['RUNNER_TEMP'])/'sera-v047'/'proof.json'
+          d=json.loads(f.read_text(encoding='utf-8'))
+          assert d['status']=='OFFLINE_AUTOMATIC_RECOVERY_AND_SAFE_STOP_VERIFIED_NONCANONICAL'
+          assert d['new_real_provider_calls']==0
+          assert d['new_real_provider_spend_usd']=='0'
+          assert d['canonical_commit_authorized'] is False
+          assert d['production_db_writes']==0
+          assert d['full_mara_independent_semantic_recall_proven'] is False
+          s=d['scenarios']
+          assert s['complete_rewritten_scene']['initial']['status']=='SCENE_CANDIDATE_READY_NONCANONICAL'
+          assert s['complete_rewritten_scene']['initial']['scripted_writer_calls_current_run']==1
+          assert s['ready_scene_after_model_fallback']['initial']['status']=='SCENE_CANDIDATE_READY_NONCANONICAL'
+          assert s['both_receipted_models_invalid']['initial']['status']=='FAILED_SAFE_FINAL'
+          assert s['unknown_inflight_model_attempt']['initial']['status']=='FAILED_SAFE_FINAL'
+          assert all(x['replay']['total_scripted_provider_calls_current_run']==0 for x in s.values())
+          print('SERA_V047_REAL_V022_V020_FULL_AUTONOMOUS_SCRIPTED_RECOVERY_GREEN')
+          PY
+      - name: Preserve fully audited synthetic contracts and trial proofs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v047-recovery-shadow-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v047/proof.json
+          retention-days: 90
+          if-no-files-found: warn
