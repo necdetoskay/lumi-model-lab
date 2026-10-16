@@ -165,7 +165,7 @@ def inspect_scene(*, prose: str, scene_key: str, entry: dict,
     w_signatures = Counter(event_fingerprint(row) for row in w)
     i_signatures = Counter(event_fingerprint(row) for row in independent_rows)
     disagreements = []
-    for signature in sorted(set(w_signatures) | set(i_signatures)):
+    for signature in sorted(set(w_signatures) | set(i_signatures), key=canonical):
         if w_signatures[signature] != i_signatures[signature]:
             disagreements.append({
                 "signature": list(signature),
