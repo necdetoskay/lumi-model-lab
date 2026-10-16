@@ -1,0 +1,97 @@
+name: SERA v0.41 Real Mara Pencil Ambiguity — One Use
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/sera-v041-real-pencil-one-shot.json
+permissions:
+  contents: read
+concurrency:
+  group: sera-v041-frozen-mara-pencil-once-20261016
+  cancel-in-progress: false
+jobs:
+  source-blind-real-pencil:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V041-PAID-ONCE]')
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v041-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v041-source
+          fetch-depth: 2
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce single-file paid grant and frozen source policy
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          from experiments.sera.real_pencil_benchmark_v041 import prepare, verify_grant, GRANT
+          grant=json.loads(GRANT.read_text(encoding="utf-8"))
+          source=prepare()
+          verify_grant(source,grant)
+          parent=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert parent==grant["approved_code_sha"],"V041_CODE_PIN_INVALID"
+          changed=subprocess.check_output([
+              "git","diff-tree","--no-commit-id","--name-only","-r","HEAD",
+          ],text=True).splitlines()
+          assert changed==[str(GRANT.relative_to(Path.cwd()))],              "V041_LAUNCH_IS_NOT_ONE_FILE"
+          assert source["batch"]["response_format"]=={"type":"json_object"}
+          print("SERA_V041_FROZEN_PENCIL_ONE_USE_SOURCE_PIN_PASS")
+          PY
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+          python -m experiments.sera.real_pencil_benchmark_v041
+      - name: Provider preflight dependencies
+        run: python3 -m pip install requests
+      - name: Two independent real pencil-model diagnostic requests (no retry)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+            echo "V041_PROVIDER_SECRET_MISSING_NO_CALL"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera-v041"
+          python3 -m experiments.sera.real_pencil_benchmark_v041 \
+            --live \
+            --launch-id "sera-v041-pencil-once-${GITHUB_RUN_ID}" \
+            --output "$RUNNER_TEMP/sera-v041/result.json"
+          python3 - <<'PY'
+          import os,json
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v041"/"result.json"
+          d=json.loads(p.read_text(encoding="utf-8"))
+          assert d["provider_attempts"]<=2
+          assert d["model_output_token_limit_set"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["production_db_writes"]==0
+          assert d["independent_semantic_qualification"] is False
+          assert all(x["physical_pencil_move_committable"] is False
+                     for x in d["results"])
+          print("SERA_V041_REAL_PENCIL_NONCANONICAL",d["status"])
+          print("SERA_V041_REAL_SPEND_USD",d["observed_spend_usd"])
+          print("SERA_V041_REAL_SOURCE_BOUND",[
+              (m["requested_model"],m["source_bound"],m["target_pencil_mentioned"])
+              for m in d["results"]
+          ])
+          PY
+      - name: Preserve immutable real pencil receipt evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v041-real-pencil-once-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v041/
+          retention-days: 90
+          if-no-files-found: warn
