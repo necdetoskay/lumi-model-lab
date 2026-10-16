@@ -1,0 +1,81 @@
+name: SERA v0.16 Automatic Identity Repair — Real Archived Evidence
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_identity_auto_repair_cli_v016.py
+      - .github/workflows/sera-mara-v016-auto-repair-real.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  automatic-repair-no-manual:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v016-repair-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v016-repair-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify model token ceilings forbidden and all offline tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve immutable paid original and 60 entity mentions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v016-actual"
+          gh run download 38872615837 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v015c-blind-identity-38872615837 \
+            --dir "$RUNNER_TEMP/sera-v016-actual"
+          gh run download 38868633198 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v013-mara-all-mentions-38868633198 \
+            --dir "$RUNNER_TEMP/sera-v016-actual"
+          test -s "$RUNNER_TEMP/sera-v016-actual/identity-provider-response.json"
+          test -s "$RUNNER_TEMP/sera-v016-actual/full-mentions.json"
+      - name: Automatically repair all reparable model rows, isolate ambiguity
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_identity_auto_repair_cli_v016 \
+            --paid "$RUNNER_TEMP/sera-v016-actual/identity-provider-response.json" \
+            --mentions "$RUNNER_TEMP/sera-v016-actual/full-mentions.json" \
+            --output "$RUNNER_TEMP/sera-v016-actual/auto-repair-result.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v016-actual"/"auto-repair-result.json"
+          r=json.loads(p.read_text(encoding="utf-8"))
+          assert r["schema"]=="sera.identity-auto-repair.v0.16"
+          assert r["accepted_source_bound_count"]==15
+          assert r["automatic_abstain_count"]==1
+          assert r["deterministically_repaired_count"]>=3
+          assert r["quarantined_proposals"][0]["entity_ref"]=="new:strike_record"
+          assert r["requested_entity_count"]==16
+          assert r["all_reference_slots_accounted_for"] is True
+          assert r["new_provider_calls_during_replay"]==0
+          assert r["auto_entity_creations"]==0
+          assert r["auto_relation_attachments"]==0
+          assert r["canonical_commit_authorized"] is False
+          assert r["world_db_writes"]==0
+          print("SERA_V016_REAL_PAID_MODEL_AUTOMATIC_REPAIR_15_ACCEPT_1_ABSTAIN_GREEN")
+          PY
+      - name: Store all automatically repaired and quarantined records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v016-real-paid-auto-repair-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v016-actual/auto-repair-result.json
+          retention-days: 90
+          if-no-files-found: warn
