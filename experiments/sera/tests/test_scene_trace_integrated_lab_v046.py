@@ -179,6 +179,81 @@ class IntegratedSceneTraceV046Tests(TestCase):
         self.assertEqual(COUNTER["semantic"],0)
         self.assertEqual(COUNTER["full"],0)
 
+    def test_unknown_v022_provider_result_never_repeated_after_restart(self):
+        source,proof=historical_risks()
+        observed=[]
+        def unknown_full(*,key,model,prepared):
+            observed.append(model)
+            return {"error":"HTTP_502","raw":None}
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp)/"integration"
+            with patch(
+                "experiments.sera.scene_trace_integrated_lab_v046.compare_receipts",
+                return_value=proof,
+            ):
+                first=orchestrate(
+                    bench_dir="/not-used",pencil_dir="/not-used",
+                    work_root=root,
+                    synthetic_repair_reply=synthetic_source_only_double,
+                    synthetic_semantic_reply=synthetic_v018_semantic,
+                    synthetic_full_extraction_reply=unknown_full,
+                )
+                second=orchestrate(
+                    bench_dir="/not-used",pencil_dir="/not-used",
+                    work_root=root,
+                    synthetic_repair_reply=lambda **kw:self.fail("no repair redo"),
+                    synthetic_semantic_reply=lambda **kw:self.fail("no judge redo"),
+                    synthetic_full_extraction_reply=lambda **kw:self.fail(
+                        "no full worker provider resend"),
+                )
+        self.assertEqual(observed,[
+            "synthetic/fail-incomplete-sweep-v046",
+        ])
+        self.assertEqual(first,second)
+        self.assertEqual(first["full_fresh_v022_stage_status"],
+                         "FAILED_SAFE_FINAL")
+        self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
+        self.assertFalse(first["canonical_commit_authorized"])
+        self.assertEqual(first["paid_provider_calls_new"],0)
+        self.assertEqual(first["production_db_writes"],0)
+
+    def test_unknown_v018_provider_result_blocks_full_evidence_worker(self):
+        source,proof=historical_risks()
+        invokes=[]
+        def lost(*,prepared,task_id):
+            invokes.append(task_id)
+            raise ConnectionError("synthetic missing provider receipt")
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp)/"integration"
+            with patch(
+                "experiments.sera.scene_trace_integrated_lab_v046.compare_receipts",
+                return_value=proof,
+            ):
+                first=orchestrate(
+                    bench_dir="/not-used",pencil_dir="/not-used",
+                    work_root=root,
+                    synthetic_repair_reply=synthetic_source_only_double,
+                    synthetic_semantic_reply=lost,
+                    synthetic_full_extraction_reply=lambda **kw:self.fail(
+                        "must stop at unknown semantic reply"),
+                )
+                second=orchestrate(
+                    bench_dir="/not-used",pencil_dir="/not-used",
+                    work_root=root,
+                    synthetic_repair_reply=lambda **kw:self.fail("no repair redo"),
+                    synthetic_semantic_reply=lost,
+                    synthetic_full_extraction_reply=lambda **kw:self.fail(
+                        "must not enter full scene with unknown receipt"),
+                )
+        self.assertEqual(invokes,["task_001"])
+        self.assertEqual(first,second)
+        self.assertEqual(first["full_fresh_v022_stage_status"],
+                         "NOT_STARTED")
+        self.assertEqual(first["targeted_semantic_stage_status"],
+                         "FAILED_SAFE_FINAL")
+        self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
+        self.assertFalse(first["canonical_commit_authorized"])
+
     def test_tampered_source_input_denied_before_any_provider_callback(self):
         prose,proof=historical_risks()
         proof["challenges"][0]["source_evidence_span"]["quote"]="tampered"
