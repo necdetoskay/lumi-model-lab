@@ -224,7 +224,8 @@ def run(*, request, result, world, trusted_scope,
         trusted_relation_builder=None, relation_policy_id=None,
         paid_authorized=False, paid_grant=None, verify_paid_grant=None,
         api_key=None, provider_call=None,
-        max_rewrites=2):
+        max_rewrites=2, reconciler=None,
+        reconciliation_policy_id=None):
     """Make dry-run default; run SERA only on explicit paid authorization.
 
     For production the app MUST inject a real authenticated verify_scope,
@@ -241,6 +242,11 @@ def run(*, request, result, world, trusted_scope,
     need(isinstance(work_root, (str, Path)) and
          type(paid_authorized) is bool,
          "V028_JOB_ROOT_OR_BILLING_POLICY_INVALID")
+    need((reconciler is None and reconciliation_policy_id is None) or
+         (callable(reconciler) and
+          isinstance(reconciliation_policy_id, str) and
+          bool(reconciliation_policy_id.strip())),
+         "V030_STORYFORGE_RECONCILIATION_POLICY_INVALID")
     root = Path(work_root) / job_id
     # Application, not the provider, owns these registered facts/routes.
     for mapping in (registry, candidate_lexicon, typed_registry):
@@ -255,6 +261,7 @@ def run(*, request, result, world, trusted_scope,
         **contract,
         "trusted_temporal_policy_id": temporal_policy_id,
         "trusted_relation_policy_id": relation_policy_id,
+        "reconciliation_policy_id": reconciliation_policy_id,
         "registered_entities_sha256": sha(registry),
         "candidate_lexicon_sha256": sha(candidate_lexicon),
         "typed_registry_sha256": sha(typed_registry),
@@ -315,6 +322,8 @@ def run(*, request, result, world, trusted_scope,
         temporal_policy_id=temporal_policy_id,
         trusted_relation_builder=trusted_relation_builder,
         relation_policy_id=relation_policy_id,
+        reconciler=reconciler,
+        reconciliation_policy_id=reconciliation_policy_id,
         provider_call=provider_call,
         max_rewrites=max_rewrites,
     )
