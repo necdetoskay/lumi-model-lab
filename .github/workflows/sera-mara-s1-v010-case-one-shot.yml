@@ -1,0 +1,115 @@
+name: SERA v0.10 Single Mara Case-Sweep Pilot
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-v010-case-once-20261016.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sera-v010-mara-case-single-once-20261016
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V010-CASE-PILOT-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify grant is one-use, exact code SHA, no token caps
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, subprocess
+          from experiments.sera.mara_s1_sweep_pilot_v010 import prepare
+          from experiments.sera.request_policy import verify_current_sera_clients
+          path=Path('experiments/sera/launch/mara-s1-v010-case-once-20261016.json')
+          grant=json.loads(path.read_text(encoding='utf-8'))
+          expected={
+              "schema":"sera.single-mara-case-sweep-grant.v0.10",
+              "authorized":True,
+              "scope":"FROZEN_MARA_S1_CASE_SENTENCE_GROUP_ONLY",
+              "source_prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+              "model":"google/gemini-3.7-flash",
+              "max_provider_attempts":1,
+              "output_token_cap_set":False,
+              "no_writer_replan":True,
+              "no_jev_call":True,
+              "no_canonical_commit":True,
+              "no_production_db_write":True,
+              "no_reruns":True,
+              "launch_id":"sera-mara-case-v010-20261016-one-shot",
+          }
+          assert set(grant)==set(expected)|{"approved_code_sha"},'GRANT_FIELDS_INVALID'
+          assert all(grant[k]==v for k,v in expected.items()),'GRANT_VALUES_INVALID'
+          parent=subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
+          assert parent==grant['approved_code_sha'],'GRANT_PINNED_CODE_SHA_MISMATCH'
+          changed=subprocess.check_output([
+              'git','diff-tree','--no-commit-id','--name-only','-r','HEAD'
+          ],text=True).splitlines()
+          assert changed==[str(path)],'GRANT_NOT_ISOLATED_SINGLE_FILE'
+          verify_current_sera_clients()
+          plan=prepare()
+          assert plan['plan']['sentence_count']==28
+          assert len(plan['plan']['batches'])==7
+          assert len(plan['batch']['sentence_ids'])==4
+          assert plan['plan']['model_output_token_limit']=='NOT_SET_BY_APPLICATION'
+          assert plan['plan']['canonical_commit_authorized'] is False
+          print('SERA_V010_ONE_USE_GRANT_PINNED_GREEN')
+          PY
+          python3 -m unittest discover -s experiments/sera/tests -q
+          python3 -m experiments.sera.mara_s1_sweep_pilot_v010
+      - name: Install preflight dependency
+        run: python -m pip install requests
+      - name: Exactly one billable, no-output-token-cap Mara pilot
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$OPENROUTER_API_KEY" ]]; then
+            echo "SERA_V010_PROVIDER_KEY_ABSENT_NO_CALL"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera-v010"
+          python3 -m experiments.sera.mara_s1_sweep_pilot_v010 \
+            --live --launch-id "sera-mara-v010-once-$GITHUB_RUN_ID" \
+            --output "$RUNNER_TEMP/sera-v010/result.json"
+          python3 - <<'PY'
+          import json, os
+          p=os.path.join(os.environ['RUNNER_TEMP'],'sera-v010','result.json')
+          result=json.load(open(p,encoding='utf-8'))
+          assert result['provider_attempts'] <= 1
+          assert result['max_model_output_tokens_configured'] is False
+          assert result['world_db_writes'] == 0
+          assert result['canonical_commit_authorized'] is False
+          print('SERA_V010_PILOT_STATUS',result['status'])
+          print('SERA_V010_PROVIDER_COST',result.get('provider_reported_cost'))
+          print('SERA_V010_EVENT_CANDIDATES',
+                sum(len(x['events']) for x in
+                    (result.get('bound_batch') or {}).get('rows',[])))
+          print('SERA_V010_PROVIDER_ERROR',result.get('error_code'))
+          PY
+      - name: Preserve immutable pilot diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v010-case-pilot-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v010/
+          retention-days: 90
+          if-no-files-found: warn
