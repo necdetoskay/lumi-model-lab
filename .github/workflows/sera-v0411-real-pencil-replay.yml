@@ -1,0 +1,76 @@
+name: SERA v0.41.1 Replay Real Pencil Model Receipts No Billing
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/real_pencil_receipt_replay_v0411.py
+      - experiments/sera/tests/test_real_pencil_receipt_replay_v0411.py
+      - .github/workflows/sera-v0411-real-pencil-replay.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-pencil-receipt-only:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v0411-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v0411-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline regression and model output ceiling protection
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve exact already-paid provider receipts, no key or model POST
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v0411"
+          gh run download 38938438488 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v041-real-pencil-once-38938438488 \
+            --dir "$RUNNER_TEMP/sera-v0411"
+          test -s "$RUNNER_TEMP/sera-v0411/result.json"
+          test -s "$RUNNER_TEMP/sera-v0411/provider_reply_1.json"
+          test -s "$RUNNER_TEMP/sera-v0411/provider_reply_2.json"
+      - name: Rebind with only approved nonsemantic field correction
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.real_pencil_receipt_replay_v0411 \
+            --receipt-dir "$RUNNER_TEMP/sera-v0411" \
+            --output "$RUNNER_TEMP/sera-v0411/replay-proof.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          proof=json.loads((Path(os.environ["RUNNER_TEMP"])/
+                            "sera-v0411/replay-proof.json").read_text(encoding="utf-8"))
+          assert proof["source_run_id"]==38938438488
+          assert proof["status"]=="REAL_PENCIL_RECEIPTS_REBOUND_NONCANONICAL"
+          assert proof["additional_provider_calls"]==0
+          assert proof["canonical_commit_authorized"] is False
+          assert proof["production_db_writes"]==0
+          assert proof["semantic_completeness_proven"] is False
+          assert len(proof["models"])==2
+          assert proof["models"][1]["json_envelope"]=="FULL_JSON_CODE_FENCE"
+          assert len(proof["models"][1]["structural_repairs"])==2
+          print("SERA_V0411_REAL_PENCIL_NONSEMANTIC_REPAIR_REBOUND_NONCANONICAL")
+          PY
+      - name: Archive immutable real pencil replay proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v0411-real-pencil-replay-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v0411/replay-proof.json
+          retention-days: 90
+          if-no-files-found: warn
