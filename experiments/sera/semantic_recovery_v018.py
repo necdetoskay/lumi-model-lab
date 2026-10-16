@@ -97,8 +97,11 @@ def _bind(*, audit, request, response):
 def execute(*, prose, extraction_report, call_model, output_dir,
             primary_model="anthropic/claude-haiku-4.5",
             fallback_model="anthropic/claude-haiku-4.5",
-            max_provider_calls=12, observed_spend_guard_usd="0.10"):
+            max_provider_calls=12, observed_spend_guard_usd="0.10",
+            reconciler=None):
     """call_model(model=..., prepared={'request': ...}) -> provider envelope."""
+    if reconciler is not None and not callable(reconciler):
+        raise CoverageError("V030_SEMANTIC_RECONCILER_INVALID")
     if type(max_provider_calls) is not int or not 0 <= max_provider_calls <= 20:
         raise CoverageError("V018_CALL_POLICY_INVALID")
     try:
@@ -194,9 +197,28 @@ def execute(*, prose, extraction_report, call_model, output_dir,
                 spent += _cost(body)
             elif started_path.exists():
                 calls += 1
-                # Provider might already have charged a lost response.
-                reason = "V018_UNCONFIRMED_IN_FLIGHT_CALL"
-                break
+                # Zero replayed POSTs: only independently attested OpenRouter
+                # known-generation GETs can recover charged model text.
+                if reconciler is None:
+                    reason = "V018_UNCONFIRMED_IN_FLIGHT_CALL"
+                    break
+                from experiments.sera.openrouter_reconciliation_v030 import fingerprint
+                try:
+                    envelope = reconciler(
+                        model=model, request=payload,
+                        request_sha256=fingerprint(model=model, request=payload),
+                    )
+                    body = envelope.get("raw") if isinstance(envelope, dict) else None
+                    if not isinstance(body, dict):
+                        raise CoverageError("V030_SEMANTIC_RECOVERY_BODY_INVALID")
+                    _save(receipt_path, {
+                        "model_requested": model,
+                        "request_sha256": digest, "response": body,
+                    })
+                    spent += _cost(body)
+                except CoverageError as exc:
+                    reason = str(exc)
+                    break
             else:
                 if calls >= max_provider_calls or spent >= limit:
                     reason = "V018_CALL_OR_SPEND_GUARD"
