@@ -80,6 +80,34 @@ class FullSceneRelationGateV025Tests(unittest.TestCase):
         self.assertEqual(w, original)
         self.assertFalse(output["canonical_commit_authorized"])
 
+    def test_mixed_typed_and_handoff_requires_one_ordered_reducer(self):
+        w,b,p,t = evidence()
+        at = SOURCE.index("watch")
+        sid = sentences(SOURCE)[0]["id"]
+        b["extraction_report"]["candidate_events"].append({
+            "event_id": "watch-observation", "kind": "OBSERVE",
+            "sentence_id": sid, "start": at, "end": at + 5,
+            "quote": "watch", "epistemic": "OBSERVED_ACTION",
+            "effect": "NONE", "entity_refs": ["vane_watch"],
+        })
+        b["typed_candidates"] = [{
+            "event_id": "observe-case", "type": "OBSERVE_OPENABLE",
+            "actor_id": "vane", "object_id": "vane_watch",
+            "sentence_id": sid,
+            "evidence": {"start": at, "end": at + 5, "quote": "watch"},
+            "payload": {"expected": "UNKNOWN", "observed": "OPEN"},
+        }]
+        b["typed_registry"] = {
+            "openables": ["vane_watch"], "documents": [],
+        }
+        p["original_report_sha256"] = digest(b["extraction_report"])
+        t["original_candidates_sha256"] = digest(b["typed_candidates"])
+        t["status"] = "TYPED_FACETS_SIMULATED_NONCANONICAL"
+        out = check(w,b,p,t)
+        self.assertIn("CROSS_FAMILY_STATE_ORDER_UNQUALIFIED",
+                      [e["code"] for e in out["defects"]])
+        self.assertFalse(out["canonical_commit_authorized"])
+
     def test_missing_trusted_policy_cannot_silently_accept_deed_or_fact(self):
         w,b,p,t = evidence()
         b["relation_case"] = None
