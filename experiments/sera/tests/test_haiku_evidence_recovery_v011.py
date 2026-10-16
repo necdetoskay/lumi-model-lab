@@ -44,13 +44,21 @@ class HistoricalHaikuRecoveryTests(unittest.TestCase):
         for quote in ("Mara's watch was closed.","The clock was open.",
                       "Mara's watch said the train arrived"):
             with self.assertRaisesRegex(CoverageError,
-                                        "PROBE_APOSTROPHE_MATCH_NOT_UNIQUE"):
+                                        "PROBE_TYPOGRAPHIC_MATCH_NOT_UNIQUE"):
                 source_quote_repair(task=task,proposed_quote=quote)
+
+    def test_curly_double_quotes_bind_only_exact_source_punctuation(self):
+        task={"exact_source_context":[{"quote":
+            "She paused, then added, “Discrepancy documented; explanation unknown.”"}]}
+        proposed='She paused, then added, "Discrepancy documented; explanation unknown."'
+        actual,method=source_quote_repair(task=task,proposed_quote=proposed)
+        self.assertEqual(actual,task["exact_source_context"][0]["quote"])
+        self.assertEqual(method,"TYPOGRAPHIC_DOUBLE_QUOTES_EQUIVALENCE_UNVERIFIED")
 
     def test_ambiguous_apostrophe_equivalence_stays_hold(self):
         task={"exact_source_context":[{"quote":"Mara’s watch. Mara’s watch."}]}
         with self.assertRaisesRegex(CoverageError,
-                                    "PROBE_APOSTROPHE_MATCH_NOT_UNIQUE"):
+                                    "PROBE_TYPOGRAPHIC_MATCH_NOT_UNIQUE"):
             source_quote_repair(task=task,proposed_quote="Mara's watch")
 
     def test_recovered_advisory_cannot_authorize_truth_or_rewrite_semantics(self):
