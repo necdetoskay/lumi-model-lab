@@ -430,3 +430,40 @@ Real provider evidence qualification:
 **320/320 offline tests PASS** and shadow World State hash unchanged.
 Mara S1 remains **HOLD**, awaiting proper canonical facet contracts,
 wider event/identity qualification and authority gating.
+
+## SERA v0.13 — typed reducer contracts and all-source Mara gate inventory
+
+[Complete v0.13 architecture, safety boundaries and actual results](./SERA_V013_VERSIONED_WORLD_FACETS.md).
+
+A NEW experimental versioned WorldState snapshot
+(`world_state_v013.py`) adds `OBSERVE_OPENABLE`, `SET_OPENABLE`,
+and `APPEND_DOCUMENT_ENTRY` with typed CAS, exact source sentences,
+strict monotonic prose offsets, simulated-only separate approval
+interface, immutable snapshot updates, deterministic hashed event history
+and detached revision restore. It does **not** alter the v0.2 WorldStore
+schema, active worlds, SQL database or original Spine. No real canonical
+authority is provided.
+
+[Actual Mara typed reducer run 38867777726](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38867777726):
+**337/337 tests PASS** and three source-verified offline facet events
+simulate the watch case `UNKNOWN → OPEN → CLOSED` plus the notebook
+verbatim append. Earlier notebook text stays `UNKNOWN`, no action
+times are guessed, and replay reconstructs the original snapshot.
+
+[Actual Mara event census run 38868197633](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38868197633):
+all **25 Gemini event candidates** checked with per-event blockers,
+two proposed reclassifications retained, **0 authorized for commit**.
+
+[Actual Mara mention census run 38868633198](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38868633198):
+all seven original paid batches yield **60 source-bound model mentions,
+22 unique entity refs, 16 provisional/unregistered refs**.
+`new:bench` and `new:pencil` are now visible even when no physical
+state event involves them; train arrival topics and anatomical thumb
+remain nonphysical/not independent inventory items. **0 automatic
+new entity creations**.
+
+Latest qualification: **345/345 offline Python tests PASS**.
+First real Mara S1 canonical exit state is still **HOLD**. Next steps
+are provisional identity/part-of resolution, independent semantic
+event qualification, real trusted authority and transactional
+production migration tests.
