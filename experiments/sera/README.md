@@ -1288,3 +1288,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Self-hosted [preflight run 38955555493](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38955555493) succeeded **726/726 Python tests**, no provider secret, no billable call, no DB/SQLite writes. Other follow-up preflights independently confirm the revised manifest and latency/contrast logic.
 - IMPORTANT: `launch/sera-v048-fullscene-paid-once.json` intentionally does **not exist** yet. The paid workflow is blocked until an **explicit separate user-authorized, code-SHA-pinned, grant-only commit**, with `[SERA-V048-PAID-ONCE]` and run_attempt=1. Maximum **14** one-shot attempts, observed-spend stop **$0.25** (not a guaranteed total invoice), no blind retries and no automatic paid model repair.
 - **Original real Mara S1 HOLD; SceneTrace shadow-only, no main merge.** The next paid test requires the user's specific authorization.
+
+
+## v0.48 ACTUAL REAL full 28-sentence Mara S1 blind pilot — SUCCESS/NONCANONICAL HOLD
+
+[Real experimental results and all caveats](./SERA_V048_REAL_MARA_28_SENTENCE_RESULTS.md).
+
+- After the prelaunch-only dry run, one-use user-authorized, code-SHA-pinned workflow [#38957808652](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38957808652) **succeeded with 726/726 tests and 14/14 actual Gemini/Haiku OpenRouter receipts**, $0.10590625 cumulative observed spend, 149.891 s accumulated request/response elapsed time.
+- Actual source-bound coverage: **Gemini 28/28**, **Haiku 23/28**, Haiku **5 quarantines** (s006,s014,s018,s021,s024); 21 candidate event-signature disagreements among 23 comparable sentences; known physical epistemic risk on Haiku s004 open watch and Gemini s022 observed pencil. Source-bound candidate ≠ independently verified semantic event truth.
+- First code-pinned grant job [#38957407736](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38957407736) failed in a **grant-presence test before any provider request**. A corrected, separate grant-only run succeeded; no existing unknown possibly billable request was resent. All 14 final original provider envelope SHA matches checked.
+- No automatic paid retry, no real targeted semantic repair, no output-token ceiling, no world or DB write, no main merge. Real Mara S1 **HOLD**; SceneTrace **SHADOW ONLY**. Next is machine-generated source-only tasks for 5 unsafe spans + 21 divergent candidate signatures, with independent verification and explicit subsequent provider authorization if needed.
