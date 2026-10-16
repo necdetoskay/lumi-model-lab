@@ -1,0 +1,84 @@
+name: SERA v0.19 Real Mara Archived Semantic Replay (No LLM Calls)
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_archived_semantic_replay_v019.py
+      - .github/workflows/sera-v019-real-mara-archived-replay.yml
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: sera-v019-real-mara-archived-replay
+  cancel-in-progress: false
+
+jobs:
+  archived-provider-proof:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v019-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v019-source
+          persist-credentials: false
+          clean: false
+          set-safe-directory: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify no application model output token limits
+        run: python -m experiments.sera.request_policy
+      - name: Retrieve historical provider artifacts (read-only, no model calls)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v019/gemini" "$RUNNER_TEMP/sera-v019/haiku"
+          gh run download 38861828582 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-six-remaining-38861828582 \
+            --dir "$RUNNER_TEMP/sera-v019/gemini"
+          gh run download 38865604842 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v0112-final-haiku-38865604842 \
+            --dir "$RUNNER_TEMP/sera-v019/haiku"
+          test -s "$RUNNER_TEMP/sera-v019/gemini/full_scene_assurance.json"
+          test -s "$RUNNER_TEMP/sera-v019/haiku/reused-task-001.json"
+          test -s "$RUNNER_TEMP/sera-v019/haiku/reused-task-002.json"
+          test -s "$RUNNER_TEMP/sera-v019/haiku/task_003.json"
+          test -s "$RUNNER_TEMP/sera-v019/haiku/manifest.json"
+      - name: Real Mara semantics on already-paid Gemini + Haiku evidence
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_archived_semantic_replay_v019 \
+            --full-report "$RUNNER_TEMP/sera-v019/gemini/full_scene_assurance.json" \
+            --haiku-directory "$RUNNER_TEMP/sera-v019/haiku" \
+            --output "$RUNNER_TEMP/sera-v019/qualification.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v019"/"qualification.json"
+          d=json.loads(p.read_text(encoding="utf-8"))
+          assert d["original_event_count"]==25
+          assert d["actual_haiku_task_count"]==3
+          assert d["new_provider_calls"]==0
+          assert d["new_provider_spend_usd"]=="0"
+          assert len(d["event_reclassifications"])==2
+          assert d["human_gold_qualified"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["world_db_writes"]==0
+          assert d["requires_manual_intervention"] is False
+          print("SERA_V019_REAL_PAID_EVIDENCE_ZERO_NEW_CALLS_PASS")
+          PY
+      - name: Archive noncanonical evidence and typed remaining blockers
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v019-archived-mara-no-provider-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v019/qualification.json
+          retention-days: 30
+          if-no-files-found: error
