@@ -142,6 +142,7 @@ def execute(*, prose, extraction_report, call_model, output_dir,
             "provider_calls": calls,
             "observed_spend_usd": str(spent),
             "independent_advisories": deepcopy(entries),
+            "advisory_sha256": _digest(entries),
             "unresolved_tasks": task_ids[len(entries):],
             "next_automatic_action": (
                 "AUTO_EVENT_REEXTRACTION_OR_SCENE_REPLAN"
