@@ -192,6 +192,17 @@ class BlindAnnotationV08Tests(unittest.TestCase):
                 CoverageError,"ANNOTATION_CROSS_SENTENCE_EVENT_CONFLICT"):
             validate_annotation(packet=packet, annotation=form)
 
+    def test_unscanned_entity_in_event_is_flagged_not_canonized(self):
+        packet, form = reviewed()
+        form["rows"][0]["events"][0]["entity_refs"].append("new:imaginary_watch")
+        result = validate_annotation(packet=packet, annotation=form)
+        self.assertIn(
+            "ANNOTATION_UNGROUNDED_ENTITY_REF:s001:new:imaginary_watch",
+            result["risk_findings"],
+        )
+        self.assertFalse(result["gold_qualified"])
+        self.assertFalse(result["canonical_commit_authorized"])
+
     def test_evidence_reference_fingerprint_prevents_source_drift(self):
         packet, form = reviewed()
         form["source_packet_sha256"] = "a" * 64
