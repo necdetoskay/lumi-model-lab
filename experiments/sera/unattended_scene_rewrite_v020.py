@@ -146,7 +146,8 @@ def _assess(result, prose, world):
 def execute(*, prose, world, check_scene, rewrite_scene,
             output_dir, max_rewrites=2,
             observed_spend_guard_usd="0.15",
-            prepare_evidence=None, evidence_policy_id=None):
+            prepare_evidence=None, evidence_policy_id=None,
+            resume_reconciled_evidence=False):
     """Automatically rewrite affected scene until source-bound gates pass.
 
     check_scene MUST be deterministic and without a new billed provider
@@ -174,6 +175,9 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         raise CoverageError("V022_EVIDENCE_POLICY_ID_REQUIRED")
     if prepare_evidence is None and evidence_policy_id is not None:
         raise CoverageError("V022_UNUSED_EVIDENCE_POLICY_ID")
+    if (type(resume_reconciled_evidence) is not bool or
+        (resume_reconciled_evidence and prepare_evidence is None)):
+        raise CoverageError("V030_SCENE_RECONCILIATION_POLICY_INVALID")
     output_dir = Path(output_dir)
     contract = {
         "schema": SCHEMA, "original_prose_sha256": prose_hash(prose),
@@ -191,7 +195,37 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         _write(output_dir / "contract.json", contract)
     final = output_dir / "final.json"
     if final.exists():
-        return _read(final)
+        previous = _read(final)
+        if (not resume_reconciled_evidence or
+            not isinstance(previous, dict) or
+            previous.get("status") != "FAILED_SAFE_FINAL" or
+            previous.get("reason_code") !=
+                "V022_EVIDENCE_GENERATION_FAILED_SAFE"):
+            return previous
+        # One noncanonical evidence replay may verify an orphaned
+        # generation via authenticated GET; the v0.22 journal ensures
+        # existing STARTED signatures are NEVER billed a second time.
+        # If recovery cannot complete, preserve the prior terminal result.
+        try:
+            recovered = prepare_evidence(
+                prose=prose, world=deepcopy(world),
+            )
+        except Exception:
+            return previous
+        if (not isinstance(recovered, dict) or
+            recovered.get("status") != "EVIDENCE_READY_NONCANONICAL" or
+            recovered.get("prose_sha256") != prose_hash(prose) or
+            recovered.get("world_sha256") != _digest(world) or
+            recovered.get("canonical_commit_authorized") is not False or
+            recovered.get("world_db_writes") != 0):
+            return previous
+        prior = output_dir / "pre_reconciliation_safe_stop.json"
+        if prior.exists():
+            if _read(prior) != previous:
+                raise CoverageError("V030_SCENE_PRIOR_FAILURE_DRIFT")
+        else:
+            _write(prior, previous)
+        final.unlink()
 
     original_world = _digest(world)
     current = prose
