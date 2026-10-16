@@ -1,0 +1,85 @@
+name: SERA v0.44 SceneTrace Machine Evidence Challenges — No Billing
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_trace_evidence_challenge_v044.py
+      - experiments/sera/tests/test_scene_trace_evidence_challenge_v044.py
+      - experiments/sera/fixtures/scene_trace_policy_contrasts_v044.json
+      - .github/workflows/sera-v044-evidence-challenges.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-source-risk-evidence:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v044-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v044-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce application output-token rule and run all SERA tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Download two earlier paid runs via GitHub (no API provider key)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v044/bench" "$RUNNER_TEMP/sera-v044/pencil"
+          gh run download 38936451931 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v040-real-blind-once-38936451931 \
+            --dir "$RUNNER_TEMP/sera-v044/bench"
+          gh run download 38938438488 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v041-real-pencil-once-38938438488 \
+            --dir "$RUNNER_TEMP/sera-v044/pencil"
+      - name: Inspect source-verified risk without allowing any mutation
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.scene_trace_evidence_challenge_v044 \
+            --bench-receipt-dir "$RUNNER_TEMP/sera-v044/bench" \
+            --pencil-receipt-dir "$RUNNER_TEMP/sera-v044/pencil" \
+            --output "$RUNNER_TEMP/sera-v044/real-model-physical-risk-cards.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v044/real-model-physical-risk-cards.json"
+          q=json.loads(p.read_text(encoding="utf-8"))
+          assert q["status"]=="REAL_SOURCE_EVIDENCE_CHALLENGED_SHADOW_ONLY"
+          assert q["source_sentences_sampled_by_any_real_model"]==8
+          assert q["source_sentences_not_sampled"]==20
+          assert q["real_model_event_disagreements"]==6
+          assert q["model_response_challenge_count"]==2
+          assert q["contrast_policy"]["pass_count"]==8
+          assert q["contrast_policy"]["case_count"]==8
+          assert q["independent_semantic_event_recall_proven"] is False
+          assert q["repair_automatic_execution_qualified"] is False
+          assert q["mutation_proposals_previously_committed"]==0
+          assert all(x["world_state_transition_authorized"] is False for x in
+                     q["challenges"])
+          assert q["canonical_commit_authorized"] is False
+          assert q["additional_paid_model_requests"]==0
+          assert q["production_db_writes"]==0
+          assert q["sqlite_lab_writes"]==0
+          print("SERA_V044_REAL_MODEL_PHYSICAL_CHALLENGES_SHADOW_PASS")
+          PY
+      - name: Archive real paid source challenge cards and contrast metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v044-real-mara-risk-cards-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v044/real-model-physical-risk-cards.json
+          retention-days: 90
+          if-no-files-found: warn
