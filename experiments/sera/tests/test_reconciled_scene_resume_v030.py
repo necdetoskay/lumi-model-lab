@@ -86,7 +86,14 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             third=stage(root,lambda **kw:self.fail("finished replay billed"),
                         reconciler=recon)
             prior=root/"controller"/"pre_reconciliation_safe_stop.json"
-            self.assertTrue(prior.is_file())
+            debug = {
+                "first": first, "second": second,
+                "controller_final": (root/"controller"/"final.json").read_text(),
+                "evidence_finals": [
+                    fp.read_text() for fp in (root/"jobs").rglob("final.json")
+                ],
+            }
+            self.assertTrue(prior.is_file(), debug)
         self.assertEqual(second["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
         self.assertEqual(second,third)
         self.assertEqual(len(charged),1)
@@ -111,7 +118,8 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
                 ),
             )
         self.assertEqual(outcome,recovered)
-        self.assertEqual(len(calls),1)
+        self.assertEqual(len(calls),1,
+                         {"first":outcome, "second":recovered})
         self.assertFalse(recovered["canonical_commit_authorized"])
 
 
