@@ -179,9 +179,9 @@ class PinnedEd25519V035Tests(unittest.TestCase):
         pem, pin, transport, _ = service(mutate_unsigned=alter)
         getter, verifier = reader(pub_pem=pem, pin=pin, transport=transport)
         with self.assertRaisesRegex(
-            CoverageError, "V033_SIGNED_SCOPE_FRESHNESS_OR_PERMISSION_INVALID"
+            CoverageError, "V032_G2_SOURCE_NOT_AUTHENTICATED"
         ):
-            # Rows SHA mismatch is detected before Ed25519 verification.
+            # The scope bridge independently catches a post-signature row digest mismatch.
             resolve_once(getter, verifier)
 
     def test_signed_wrong_scope_or_issuer_denied_before_structure(self):
