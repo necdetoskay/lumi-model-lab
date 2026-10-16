@@ -91,9 +91,15 @@ def _assess(result, prose, world):
         "CONTINUE_FULL_SCENE_GATES" and
         projection.get("status") ==
         "CANDIDATES_STRUCTURALLY_CLEAN_NONCANONICAL" and
-        typed.get("status") == "TYPED_FACETS_SIMULATED_NONCANONICAL" and
-        typed.get("next_automatic_action") ==
-        "CONTINUE_INDEPENDENT_SCENE_QUALIFICATION"
+        (
+            (typed.get("status") == "TYPED_FACETS_SIMULATED_NONCANONICAL"
+             and typed.get("next_automatic_action") ==
+                "CONTINUE_INDEPENDENT_SCENE_QUALIFICATION")
+            or (typed.get("status") ==
+                "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL" and
+                "qualification" in result and
+                typed.get("empty_facet_scope_requires_full_gate") is True)
+        )
     )
     failures = (projection.get("remaining_semantic_task_codes", []) +
                 projection.get("unsupported_semantic_tasks", []) +
