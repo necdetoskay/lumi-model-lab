@@ -871,3 +871,39 @@ billable-response reconciliation, production LUMI worker binding and
 transactional authenticated WorldState/EventGraph commits/rollback
 are still required. Mara S1 remains HOLD. Zero mandatory manual
 intervention, zero application-defined LLM output token ceilings.
+
+
+## v0.27 — One source-ordered world PLUS watch/document facet CAS chain
+
+[Architecture, exact safety boundaries and proof scope](./SERA_V027_ORDERED_FACETS.md).
+
+- [New v0.27 ordered facet preview](./ordered_facet_preview_v027.py)
+  evaluates movement, custody, verified character knowledge, openable
+  observations/changes, and document appends in a SINGLE causal
+  source-order simulation. Every action uses the CURRENT detached
+  WorldState and evolving facet map; v0.13-compatible source evidence,
+  registered roles, co-location and compare-and-swap rules remain
+  mandatory. Each world and facet transition records a deterministic
+  before/after SHA chain, but never grants canonical authority.
+- [v0.21 archive checker](./artifact_scene_checker_v021.py) defers
+  the old entry-world-only facet check for this exact mixed scope.
+  [v0.23 all-event qualification](./full_scene_qualification_v023.py)
+  actually invokes v0.27 and refuses unmatched model proposals,
+  duplicate physical/document state event IDs or missing trusted
+  application policies. [Unattended scene controller](./unattended_scene_rewrite_v020.py)
+  marks candidate READY only with complete noncanonical v0.27
+  proof and no unresolved source defects.
+- [Deterministic adversarial tests](./tests/test_ordered_facets_v027.py)
+  and [fully staged synthetic provider integration](./tests/test_composed_ordered_facets_v027.py)
+  cover the seven-event story, wrong world/actor, unsupported route,
+  forged document text, wrong expected watch state, duplicate facet
+  evidence, fake physical effect, rumor not treated as objective fact,
+  archive replay without new model charges, and fail-safe boundaries.
+
+**Scope deliberately remains NONCANONICAL:** auth-backed LUMI worker
+and policy registries, arbitrary state families or nested-object
+graphs, publisher authority, provider-side idempotent charged-request
+reconciliation, transactional WorldState/EventGraph commits and unseen
+paid full-story qualification remain unimplemented. No production
+DB writes, human manual patch/approval/restart or LLM output-token caps.
+Mara S1 remains HOLD.
