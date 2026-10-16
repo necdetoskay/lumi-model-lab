@@ -1298,3 +1298,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Actual source-bound coverage: **Gemini 28/28**, **Haiku 23/28**, Haiku **5 quarantines** (s006,s014,s018,s021,s024); 21 candidate event-signature disagreements among 23 comparable sentences; known physical epistemic risk on Haiku s004 open watch and Gemini s022 observed pencil. Source-bound candidate ≠ independently verified semantic event truth.
 - First code-pinned grant job [#38957407736](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38957407736) failed in a **grant-presence test before any provider request**. A corrected, separate grant-only run succeeded; no existing unknown possibly billable request was resent. All 14 final original provider envelope SHA matches checked.
 - No automatic paid retry, no real targeted semantic repair, no output-token ceiling, no world or DB write, no main merge. Real Mara S1 **HOLD**; SceneTrace **SHADOW ONLY**. Next is machine-generated source-only tasks for 5 unsafe spans + 21 divergent candidate signatures, with independent verification and explicit subsequent provider authorization if needed.
+
+
+## v0.49 — 14 genuine Mara receipts → 26 independent blind recovery tasks (NO BILLING)
+
+[Detailed architecture, CI evidence, safety limitations](./SERA_V049_REAL_MARA_AUTOMATED_RECOVERY_QUEUE.md).
+
+- Revalidate exact v0.48 `result.json` SHA, **14 provider receipt SHA256 envelopes**, original frozen Mara SHA, model/batch IDs, source-bound spans and real observed charge using existing `assess_received`. Never replace actual responses with invented/human "gold" rows.
+- Automatically create **26 unique source-only tasks**: Haiku 5 source quote quarantines s006/s014/s018/s021/s024 and 21 Gemini/Haiku event-signature disagreements. Two historical watch/pencil physical-causality risk flags are preserved within the relevant tasks.
+- Reuse v0.11 `make_task_request` and actual v0.18 source-binder to exercise **26 synthetic offline reviewer replies**, with previously proposed events and prior model answers omitted from independent requests. Unknown started-but-unreceipted replies `FAILED_SAFE_FINAL`; restart of all 26 complete tasks **0 extra callback**. This is **not** actual new real-LLM repair.
+- Self-hosted [v0.49 CI #38959739074](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38959739074) **733/733 Python PASS**, artifact `sera-v049-real-mara-26-blind-recovery-tasks-38959739074` ID `12071663511`. **0 new paid calls/charges, 0 world writes, 0 model output ceilings, no `main` merge**. Real Mara S1 remains HOLD, SceneTrace SHADOW ONLY.
