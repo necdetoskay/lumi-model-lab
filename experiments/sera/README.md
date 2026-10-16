@@ -1065,3 +1065,34 @@ local simulation-to-native world mapping, production worker/real paid
 model gates and independent transactional publish authority. Project_LUMI
 main, production database and frozen Mara S1 remain unchanged. No
 application output-token caps or manually repaired stories.
+
+
+## v0.33 — Signed HTTPS G2 reader and conservative native-world mapping
+
+[Architecture and explicit future Project_LUMI read-only endpoint contract](./SERA_V033_G2_AUTHENTICATED_SOURCE_AND_PROJECTION.md).
+
+- [Hardened HTTPS GET reader](./g2_authenticated_http_reader_v033.py)
+  supplies v0.32's independent `readonly_lookup` and
+  `verify_source` bindings. Only the operator-pinned proposed internal
+  G2 authority endpoint is permitted, with single-use nonce,
+  fresh issuer/audience/permission/5-scope attestation and
+  independently verified signed source. No redirects, production DB
+  queries, generation POST, model spending or canonical write.
+- [Native G2 physical projector](./g2_physical_projection_v033.py)
+  refuses to infer custody, physical location, travel routes or verified
+  knowledge from character prose/facts alone. A separate app-authenticated
+  physical snapshot must match the same native G2 world revision and
+  primary-character state. Output is a detached SERA simulation only,
+  not the native G2 world fingerprint or commit authority.
+- [HTTP/identity adversarial suite](./tests/test_g2_authenticated_http_reader_v033.py)
+  and [physical-registry adversarial suite](./tests/test_g2_physical_projection_v033.py)
+  test signed provenance, stale heads, wrong profiles, unregistered
+  locations, rumors, forged routes, replayed challenges and no writes.
+  All tests use synthetic identities/signatures and no live network.
+
+**Important:** `Project_LUMI` currently has NO proven, deployed
+GET endpoint returning the complete G2 authority+physical snapshots.
+The existing latest-story GET is insufficient, while production POST
+must never be used as a reader. The server-side endpoint, access policy,
+read-only DB role, signed repeatable-read snapshot and live proof remain
+separate work. Production code/main, data and frozen Mara S1 untouched.
