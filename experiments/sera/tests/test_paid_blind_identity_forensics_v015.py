@@ -23,11 +23,11 @@ def evidence(raw):
 class PaidIdentityForensicsV015Tests(unittest.TestCase):
     def test_three_literal_unescaped_dialogue_quote_lines_repair_only_support_field(self):
         source=(
-            '"rows": [\n {"support_quote": ""I waited on the platform," he said.",\n '
+            '"rows": [\n {"entity_ref":"synthetic",\n "support_quote": ""I waited on the platform," he said.",\n '
             '"reason":"quoted sentence"},\n '
-            '{"support_quote": ""I saw no train at 02:10."",\n '
+            '{"entity_ref":"synthetic",\n "support_quote": ""I saw no train at 02:10."",\n '
             '"reason":"reported topic"},\n '
-            '{"support_quote": ""What the sources say," she replied.",\n '
+            '{"entity_ref":"synthetic",\n "support_quote": ""What the sources say," she replied.",\n '
             '"reason":"a statement"}\n ]'
         )
         bad=chr(96)*3+"json\n{\n "+source+"\n}\n"+chr(96)*3
