@@ -102,6 +102,48 @@ jobs:
           path: ${{ runner.temp }}/sera-mara-blind-review/
           retention-days: 90
           if-no-files-found: error
+      - name: Generate independent offline browser review pages
+        run: |
+          python -m experiments.sera.reviewer_ui_v09 \
+            --output-dir "$RUNNER_TEMP/sera-mara-blind-review-ui"
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from experiments.sera.review_forms_cli_v08 import emit_forms, validate_file
+          target = Path(os.environ["RUNNER_TEMP"]) / "sera-mara-blind-review-ui"
+          emit_forms(target)
+          for alias in ("reviewer_A_unverified", "reviewer_B_unverified"):
+              report = validate_file(review=target / (alias + ".json"))
+              assert report["reviewed_sentence_count"] == 0
+              assert report["gold_qualified"] is False
+              assert report["canonical_commit_authorized"] is False
+          print("MARA_OFFLINE_BROWSER_PAGES", 2)
+          print("MARA_REVIEW_SOURCE_STATUS", "NOT_GOLD")
+          PY
+      - name: JavaScript syntax gate for offline review UI
+        run: |
+          python - <<'PY'
+          import os, re
+          from pathlib import Path
+          base = Path(os.environ["RUNNER_TEMP"]) / "sera-mara-blind-review-ui"
+          html = (base / "reviewer_A_unverified.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, flags=re.S)
+          assert len(scripts) == 1
+          (base / "reviewer-ui-validated.js").write_text(
+              scripts[0], encoding="utf-8"
+          )
+          PY
+          node --check "$RUNNER_TEMP/sera-mara-blind-review-ui/reviewer-ui-validated.js"
+      - name: Archive browser review pages and blinded JSON
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-s1-browser-review-v09-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/sera-mara-blind-review-ui/*.html
+            ${{ runner.temp }}/sera-mara-blind-review-ui/*.json
+            ${{ runner.temp }}/sera-mara-blind-review-ui/REVIEW_INSTRUCTIONS.md
+          retention-days: 90
+          if-no-files-found: error
       - name: Audit real Mara first-scene HOLD without state writes
         run: |
           python - <<'PY'
