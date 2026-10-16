@@ -40,6 +40,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json,subprocess
+          from pathlib import Path
           from experiments.sera.real_blind_benchmark_v040 import prepare,verified_grant,GRANT
           grant=json.loads(GRANT.read_text(encoding="utf-8"))
           source=prepare()
@@ -49,7 +50,7 @@ jobs:
           changed=subprocess.check_output([
               'git','diff-tree','--no-commit-id','--name-only','-r','HEAD'
           ],text=True).splitlines()
-          assert changed==[str(GRANT)], 'V040_LAUNCH_COMMIT_NOT_SINGLE_GRANT_FILE'
+          assert changed==[str(GRANT.relative_to(Path.cwd()))], 'V040_LAUNCH_COMMIT_NOT_SINGLE_GRANT_FILE'
           assert len(source["batch"]["sentence_ids"])<=4
           assert source["batch"]["response_format"]=={"type":"json_object"}
           print('V040_ONE_USE_SCOPE_CODE_BLIND_PROMPT_PIN_PASS')
