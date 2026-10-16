@@ -1004,3 +1004,34 @@ capture is still required. Full v0.20 writer-REWRITE in-flight recovery,
 real app-world auth, actual paid unseen-story testing, transactional
 WorldState/EventGraph commit/rollback and frozen Mara S1 canon release
 are NOT yet implemented. Production main/DB/Spine untouched.
+
+
+## v0.31 — Recovery-only, already-paid scene rewrite after worker restart
+
+[Architecture, official provider research and hard unknown-ID limitation](./SERA_V031_WRITER_RECOVERY.md).
+
+- [Source-bound writer](./openrouter_scene_writer_v021.py) now exposes
+  `recover_existing`, which **never creates a fresh completion POST**.
+  Recovery accepts an existing exact paid envelope or an authenticated
+  GET-only generation response for an already-STARTED identical
+  model/request. Without a trusted ID, or without proof the provider
+  request started, the existing safe-stop stays intact.
+- [Scene controller](./unattended_scene_rewrite_v020.py) verifies prior
+  chronological source/defect hashes, checkpoints and receipts, persists
+  any recovered result before reopening the scene, preserves the
+  old final failure and runs all independent state/source gates again.
+- [Composed runner](./composed_scene_runner_v023.py) wires this only
+  from an opt-in versioned reconciler; v0.28 StoryForge freezes the
+  policy to its authorized job contract.
+- [Crash and double-billing adversarial tests](./tests/test_writer_reconciliation_v031.py)
+  prove recovery from an existing provider archive, recovery with a
+  trusted known-generation reader, unknown-ID terminal failure and
+  zero duplicate billable model dispatches. Fixtures are synthetic.
+
+**Unresolved:** OpenRouter's documented chat completion and
+generation GET endpoints do not establish a general chat idempotency
+key or lookup of a generation ID from arbitrary local request SHA.
+A completely lost ID cannot be safely recovered by v0.31. A real
+app-authenticated provider trace/id capture or supported idempotent
+contract remains necessary. No real paid calls, LUMI production
+WorldState/EventGraph writes or Mara S1 canonical exit are claimed.
