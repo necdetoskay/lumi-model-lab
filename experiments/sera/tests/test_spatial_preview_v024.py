@@ -5,6 +5,7 @@ import unittest
 from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.spatial_preview_v024 import preview
 from experiments.sera.tests.test_world_state_v02 import base
+from experiments.sera.world_state_v02 import entity_template, validate
 from experiments.sera.temporal_domains_v05 import KEYS
 
 TEXT = "Mara walked to archive. Mara returned to station."
@@ -112,6 +113,20 @@ class SpatialSourcePreviewV024Tests(unittest.TestCase):
             CoverageError, "TIME_EVENT_INFEASIBLE:m1"
         ):
             compute(world=world, temporal=temporal)
+
+    def test_nested_belongings_must_not_be_left_behind_by_partial_reducer(self):
+        world = base()
+        world["entities"]["sealed_letter"] = entity_template(
+            "sealed_letter", "OBJECT", "station",
+            parent_id="mara_notebook",
+        )
+        validate(world)
+        original = deepcopy(world)
+        with self.assertRaisesRegex(
+            CoverageError, "V024_NESTED_CARRIED_GRAPH_UNQUALIFIED"
+        ):
+            compute(world=world)
+        self.assertEqual(world, original)
 
     def test_missing_unknown_route_rejected(self):
         world = base()
