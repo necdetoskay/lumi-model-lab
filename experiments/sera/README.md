@@ -628,3 +628,34 @@ its structured artifact attached to the successful run. This is the next
 integration target for generic type-safe aspect proposals and automatic
 story-rewriter/replanner consumption, without per-story hardcoded rules or
 required human approvals.
+
+
+## v0.20 — Generic typed-object facets + unattended rewrite/recheck seam
+
+[Full architecture and boundaries](./SERA_V020_AUTONOMOUS_SCENE_LOOP.md).
+
+- `typed_aspect_recovery_v020.py` converts registered, source-supported
+  openable/document aspect candidates into immutable, typed, **noncanonical**
+  v0.13 CAS/replay simulations. Closing a watch case without a prior open
+  baseline, writing imaginary notebook text, object/actor co-location mistakes,
+  unknown object identities and fabricated action clocks do **not** mutate
+  world state. Upstream v0.19 semantic HOLD still prevents scene readiness.
+  The v0.13 role registry currently requires both openable and document
+  objects; scenes with just one role safely block pending schema refinement.
+- `unattended_scene_rewrite_v020.py` is the new automatic, restart-aware
+  scene rewrite/check **integration seam**: a deterministic offline scene
+  validator delivers typed defects to an injected writer; every returned prose
+  version is revalidated, a paid response must have a receipt and original
+  source digest, completed replies are not re-billed during replay, uncertain
+  in-flight replies are not blindly retried, and there is a bounded attempt/
+  observed-USD guard (never an LLM output-token limit). No review queue,
+  human button, JSON patch or manual stage rerun.
+- **Crucial boundary**: production LUMI's real model resolver, event extraction,
+  comprehensive semantic/causal/scene checks, idempotent provider recovery and
+  authenticated canonical DB commit are **not integrated**. The writer/checker
+  callbacks are synthetic in the current tests. A lab
+  `SCENE_CANDIDATE_READY_NONCANONICAL` is **NOT** story-release approval.
+
+Mara S1 first canon exit state remains **HOLD**. WorldState and original
+Sonnet Spine were not modified. See [open Epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306)
+for proof and remaining production integration gates.
