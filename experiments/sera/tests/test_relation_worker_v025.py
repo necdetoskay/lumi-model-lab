@@ -64,14 +64,16 @@ def provider_fixture(log):
                         {"entity_ref": "vane_watch", "role": "PRESENT",
                          "evidence_quote": "watch", "occurrence": 0},
                     ]
-                    kind,effect,quote = "TRANSFER","OBJECT","handed the watch"
+                    kind,effect,quote = (
+                        "TRANSFER", "OBJECT", "Vane handed the watch to Mara"
+                    )
                     refs=["vane","vane_watch","mara"]
                 else:
                     mentions = [{"entity_ref":"mara","role":"PRESENT",
                                  "evidence_quote":"Mara","occurrence":0}]
                     kind,effect,quote = (
                         "KNOWLEDGE_UPDATE","CHARACTER_KNOWLEDGE",
-                        "learned the station clock stopped",
+                        "Mara learned the station clock stopped",
                     )
                     refs=["mara"]
                 rows.append({
