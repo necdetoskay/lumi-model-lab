@@ -1,0 +1,51 @@
+name: SERA v0.29 StoryForge Cap-free Contract
+
+on:
+  push:
+    branches:
+      - "experiment/sera-*"
+    paths:
+      - "src/storyforge/**"
+      - "src/generate.py"
+      - "src/english_story_pipeline.py"
+      - "tests/test_storyforge_rc1.py"
+      - "tests/test_storyforge_capfree_v029.py"
+      - ".github/workflows/sera-v029-storyforge-capfree.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  storyforge-capfree-contract:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: sera-v029-storyforge-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v029-storyforge-source
+          clean: false
+          persist-credentials: false
+          set-safe-directory: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned-to-project Python dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Validate modified StoryForge and transport syntax
+        run: >-
+          python -m compileall -q src/storyforge
+          src/generate.py src/english_story_pipeline.py
+          tests/test_storyforge_capfree_v029.py
+      - name: Enforce SERA no application output-token ceilings
+        run: python -m experiments.sera.request_policy
+      - name: Real StoryForge unit, HTTP payload, retry, streaming and cap-free regressions
+        run: >-
+          python -m unittest
+          tests.test_storyforge_rc1
+          tests.test_generate_streaming
+          tests.test_english_story_pipeline
+          tests.test_storyforge_capfree_v029 -v
