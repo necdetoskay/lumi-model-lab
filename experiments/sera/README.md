@@ -798,3 +798,42 @@ causal/state reducers, real production worker and model resolver, provider
 request idempotency and machine-authenticated atomic WorldState/EventGraph
 writes are not complete. Mara S1 remains HOLD. No output token caps,
 no human intervention requirements or production database changes.
+
+
+## v0.25 — Source-bound custody transfer and verified character knowledge
+
+[Complete architecture and noncanonical boundaries](./SERA_V025_RELATION_KNOWLEDGE.md).
+
+- [Relation/knowledge preview](./relation_knowledge_preview_v025.py)
+  independently validates source-grounded item holder transfers and
+  character learning against active known identities, deterministic
+  application-owned alias/fact policy, co-location, holder compare-and-swap,
+  source chronology and exact evidence. Moving **holder** does not change
+  **owner**. No new objective fact is invented when a character hears a
+  rumor; only facts marked VERIFIED in the trusted registry can enter a
+  character's knowledge candidate list.
+- The [v0.23 full scene gate](./full_scene_qualification_v023.py) can
+  now simulate these source-bound state categories when a valid
+  `relation_case` is attached to the current source/world archive.
+  Unqualified transfer/knowledge changes still require automatic
+  re-extraction/replan rather than human approval.
+- The [v0.22 worker](./fresh_scene_evidence_worker_v022.py) and
+  [v0.23 composed runner](./composed_scene_runner_v023.py) have an
+  application-owned per-draft `trusted_relation_builder` with an
+  explicit `relation_policy_id` bound into resumable state.
+- **Cross-family caution:** Physical movement, custody/knowledge and
+  openable/document facets still replay against separate entry snapshots.
+  If multiple stateful families occur together, the full-scene gate
+  blocks until a single causally ordered reducer can qualify them.
+- [Isolated](./tests/test_relation_knowledge_v025.py),
+  [full-scene](./tests/test_relation_full_scene_v025.py) and
+  [complete mocked-provider worker](./tests/test_relation_worker_v025.py)
+  tests address source truth boundaries, rumor rejection, forged prior
+  holder, identity mismatch, duplicate knowledge, nested items,
+  durable model receipts and zero-human recovery.
+
+**No canonical authorization, production LUMI DB writes, model output
+token ceilings or mandatory operator review.** Actual real-world
+verified-fact origins, mixed-family state order, legal owner changes,
+production worker integration and unseen paid-story acceptance remain
+open; frozen Mara S1 remains HOLD.
