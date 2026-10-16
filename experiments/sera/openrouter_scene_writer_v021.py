@@ -105,7 +105,7 @@ def make_request(*, source, defects, story_context=None):
 
 
 def _durable_provider_response(*, root, model, request, api_key,
-                               provider_call):
+                               provider_call, reconciler=None):
     """Save complete paid envelope before parsing model JSON.
 
     Unknown in-flight requests are never blindly repeated, including
@@ -130,14 +130,24 @@ def _durable_provider_response(*, root, model, request, api_key,
                  isinstance(record.get("envelope"), dict),
                  "V021_ARCHIVED_PROVIDER_REQUEST_MISMATCH")
         return record["envelope"]
-    try:
-        with started.open("x", encoding="utf-8") as file:
-            file.write(signature + "\n")
-            file.flush()
-            os.fsync(file.fileno())
-    except FileExistsError as exc:
-        raise CoverageError("V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL") from exc
-    envelope = provider_call(key=api_key, model=model, prepared=prepared)
+    if started.exists():
+        # A prior process may have spent money before receipt journaling.
+        # Only a separately authenticated, READ-ONLY known-generation
+        # resolver may recover it; an unknown ID can NEVER trigger POST.
+        if reconciler is None:
+            raise CoverageError("V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL")
+        envelope = reconciler(
+            model=model, request=request, request_sha256=signature,
+        )
+    else:
+        try:
+            with started.open("x", encoding="utf-8") as file:
+                file.write(signature + "\n")
+                file.flush()
+                os.fsync(file.fileno())
+        except FileExistsError as exc:
+            raise CoverageError("V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL") from exc
+        envelope = provider_call(key=api_key, model=model, prepared=prepared)
     # An unknown/broken provider response might have incurred a charge.
     # Retain STARTED and do not automatically retry without a receipt.
     if not isinstance(envelope, dict) or not isinstance(
@@ -179,7 +189,7 @@ def _provider_body(response, model):
 def create_writer(*, api_key, model, story_context=None,
                   provider_call=one_provider_call,
                   archive_dir=None, fallback_model=None,
-                  observed_spend_guard_usd="0.15"):
+                  observed_spend_guard_usd="0.15", reconciler=None):
     """Create automatically repairing, source-bound writer callback.
 
     When archive_dir is supplied each raw provider reply is persisted BEFORE
@@ -200,6 +210,8 @@ def create_writer(*, api_key, model, story_context=None,
              "V021_STORY_CONTEXT_INVALID")
     _require(not fallback_model or archive_dir is not None,
              "V021_DURABLE_FALLBACK_ARCHIVE_REQUIRED")
+    _require(reconciler is None or (callable(reconciler) and
+             archive_dir is not None), "V030_RECONCILER_NEEDS_DURABLE_ARCHIVE")
     try:
         guard = Decimal(str(observed_spend_guard_usd))
     except (InvalidOperation, ValueError, TypeError) as exc:
@@ -221,6 +233,7 @@ def create_writer(*, api_key, model, story_context=None,
             reply = _durable_provider_response(
                 root=root, model=selected_model, request=request,
                 api_key=api_key, provider_call=provider_call,
+                reconciler=reconciler,
             )
             body, choice, price = _provider_body(reply, selected_model)
             spent += price
