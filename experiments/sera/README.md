@@ -1197,3 +1197,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - The `real_blind_benchmark_v040.py` adapter reuses the original v0.10 independent prompt, exact quote binder and partial candidate coverage; model answers cannot grant event or world authority, and a four-sentence pilot is not full story recall.
 - A code-SHA-pinned one-use launch file plus self-hosted Linux workflow strictly gates at most two paid requests, observed $0.05 USD spend stop, provider balance preflight, no auto-retry if receipt unknown, and archived raw provider diagnostics.
 - **No artificial model output-token ceilings, no main branch merge, no SERA SQLite simulation mutation or Project_LUMI production DB write.** Real Mara S1 remains HOLD even if both models produce plausible answers; independent semantic completeness still requires evidence.
+
+
+## v0.40.1 — real Haiku/Gemini receipt replay; no further billing
+
+[Observed real-model findings and limits](./SERA_V0401_REAL_MODEL_REPLAY_FINDINGS.md).
+
+- Actual v0.40 one-use real pilot ran two source-blind OpenRouter models on one frozen Mara S1 four-sentence segment. Combined provider-reported **USD 0.01637775**; initial Gemini bound 13 mentions / 3 events and `bench`, while Haiku's response initially failed JSON parsing.
+- Haiku's raw reply **did** contain a complete JSON object enclosed in a full fenced code block. Replayed the exact SHA-pinned archived real provider receipts using the pre-existing v0.11 strict JSON fence decoder plus actual v0.10 binder: now **both** models bind `bench` to source; Gemini 13 mentions/3 candidate events, Haiku 9 mentions/6 candidate events.
+- Important semantic red flag: Haiku suggests `CHANGE_STATE` for the watch that the story merely says is **already open**. `V0401_STATIC_WATCH_DESCRIPTION_MAY_BE_FALSE_TRANSITION` is a diagnostic HOLD finding, not trusted event approval or objective gold label. Gemini marks that statement TEXTURE/no event.
+- [Real-receipt replay CI 38937487848](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38937487848) SUCCESS: 669 offline tests, strict immutable artifact verification, no new provider calls or charges, no G2 or SQLite state writes, no output token ceiling. Original Mara S1 remains HOLD.
