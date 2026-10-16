@@ -143,11 +143,63 @@ def _assess(result, prose, world):
     return ready, failures
 
 
+def _recover_existing_paid_rewrite(*, source, world, output_dir,
+                                   max_rewrites, recover_rewrite_scene):
+    """Rehydrate only a previously started paid writer request.
+
+    All earlier source checks and rewrites are read from immutable
+    journals; the callback must be the writer's GET-only recovery path.
+    """
+    current = source
+    for idx in range(max_rewrites):
+        check = output_dir / f"check_{idx:02d}.json"
+        if not check.is_file():
+            return False
+        row = _read(check)
+        if not isinstance(row, dict) or (
+            row.get("prose_sha256") != prose_hash(current)
+        ):
+            raise CoverageError("V031_REWRITE_CHECKPOINT_SOURCE_MISMATCH")
+        ready, defects = _assess(row.get("assessment"), current, world)
+        if ready:
+            return False
+        saved = output_dir / f"rewrite_{idx:02d}.json"
+        pending = output_dir / f"rewrite_{idx:02d}.started"
+        if saved.is_file():
+            old_answer = _read(saved)
+            _receipt(old_answer, prose_hash(current))
+            if prose_hash(old_answer["prose"]) == prose_hash(current):
+                raise CoverageError("V031_PREVIOUS_REWRITE_NO_SOURCE_CHANGE")
+            current = old_answer["prose"]
+            continue
+        if not pending.is_file():
+            return False
+        if _read(pending) != {
+            "prose_sha256": prose_hash(current),
+            "defects_sha256": _digest(defects),
+        }:
+            raise CoverageError("V031_PENDING_REWRITE_PROOF_MISMATCH")
+        try:
+            answer = recover_rewrite_scene(
+                source=current, defects=deepcopy(defects),
+            )
+            _receipt(answer, prose_hash(current))
+            if prose_hash(answer["prose"]) == prose_hash(current):
+                return False
+        except (CoverageError, OSError, TypeError, ValueError):
+            # Unknown generation ID: leave terminal failure intact.
+            return False
+        _write(saved, answer)
+        return True
+    return False
+
+
 def execute(*, prose, world, check_scene, rewrite_scene,
             output_dir, max_rewrites=2,
             observed_spend_guard_usd="0.15",
             prepare_evidence=None, evidence_policy_id=None,
-            resume_reconciled_evidence=False):
+            resume_reconciled_evidence=False,
+            recover_rewrite_scene=None):
     """Automatically rewrite affected scene until source-bound gates pass.
 
     check_scene MUST be deterministic and without a new billed provider
@@ -178,6 +230,8 @@ def execute(*, prose, world, check_scene, rewrite_scene,
     if (type(resume_reconciled_evidence) is not bool or
         (resume_reconciled_evidence and prepare_evidence is None)):
         raise CoverageError("V030_SCENE_RECONCILIATION_POLICY_INVALID")
+    if recover_rewrite_scene is not None and not callable(recover_rewrite_scene):
+        raise CoverageError("V031_REWRITE_RECOVERY_CALLBACK_INVALID")
     output_dir = Path(output_dir)
     contract = {
         "schema": SCHEMA, "original_prose_sha256": prose_hash(prose),
@@ -196,36 +250,58 @@ def execute(*, prose, world, check_scene, rewrite_scene,
     final = output_dir / "final.json"
     if final.exists():
         previous = _read(final)
-        if (not resume_reconciled_evidence or
-            not isinstance(previous, dict) or
-            previous.get("status") != "FAILED_SAFE_FINAL" or
-            previous.get("reason_code") !=
-                "V022_EVIDENCE_GENERATION_FAILED_SAFE"):
-            return previous
-        # One noncanonical evidence replay may verify an orphaned
-        # generation via authenticated GET; the v0.22 journal ensures
-        # existing STARTED signatures are NEVER billed a second time.
-        # If recovery cannot complete, preserve the prior terminal result.
-        try:
-            recovered = prepare_evidence(
-                prose=prose, world=deepcopy(world),
+        if (recover_rewrite_scene is not None and
+            isinstance(previous, dict) and
+            previous.get("status") == "FAILED_SAFE_FINAL" and
+            previous.get("reason_code") in (
+                "V020_REWRITE_PROVIDER_FAILED_SAFE",
+                "V020_UNKNOWN_IN_FLIGHT_REWRITE_NO_AUTO_RESEND",
+            )):
+            recovered = _recover_existing_paid_rewrite(
+                source=prose, world=world, output_dir=output_dir,
+                max_rewrites=max_rewrites,
+                recover_rewrite_scene=recover_rewrite_scene,
             )
-        except Exception:
+            if not recovered:
+                return previous
+            prior = output_dir / "pre_reconciled_writer_safe_stop.json"
+            if prior.exists():
+                if _read(prior) != previous:
+                    raise CoverageError("V031_PRIOR_WRITER_FAILURE_DRIFT")
+            else:
+                _write(prior, previous)
+            final.unlink()
+        elif (not resume_reconciled_evidence or
+              not isinstance(previous, dict) or
+              previous.get("status") != "FAILED_SAFE_FINAL" or
+              previous.get("reason_code") !=
+                  "V022_EVIDENCE_GENERATION_FAILED_SAFE"):
             return previous
-        if (not isinstance(recovered, dict) or
-            recovered.get("status") != "EVIDENCE_READY_NONCANONICAL" or
-            recovered.get("prose_sha256") != prose_hash(prose) or
-            recovered.get("world_sha256") != _digest(world) or
-            recovered.get("canonical_commit_authorized") is not False or
-            recovered.get("world_db_writes") != 0):
-            return previous
-        prior = output_dir / "pre_reconciliation_safe_stop.json"
-        if prior.exists():
-            if _read(prior) != previous:
-                raise CoverageError("V030_SCENE_PRIOR_FAILURE_DRIFT")
         else:
-            _write(prior, previous)
-        final.unlink()
+            # One noncanonical evidence replay may verify an orphaned
+            # generation via authenticated GET; the v0.22 journal ensures
+            # existing STARTED signatures are NEVER billed a second time.
+            # If recovery cannot complete, preserve the prior terminal result.
+            try:
+                recovered = prepare_evidence(
+                    prose=prose, world=deepcopy(world),
+                )
+            except Exception:
+                return previous
+            if (not isinstance(recovered, dict) or
+                recovered.get("status") != "EVIDENCE_READY_NONCANONICAL" or
+                recovered.get("prose_sha256") != prose_hash(prose) or
+                recovered.get("world_sha256") != _digest(world) or
+                recovered.get("canonical_commit_authorized") is not False or
+                recovered.get("world_db_writes") != 0):
+                return previous
+            prior = output_dir / "pre_reconciliation_safe_stop.json"
+            if prior.exists():
+                if _read(prior) != previous:
+                    raise CoverageError("V030_SCENE_PRIOR_FAILURE_DRIFT")
+            else:
+                _write(prior, previous)
+            final.unlink()
 
     original_world = _digest(world)
     current = prose
