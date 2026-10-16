@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install pinned Ed25519 trust verifier for G2 tests
+        run: python -m pip install cryptography==46.0.4
       - name: Check Python syntax
         run: python -m compileall -q experiments/sera
       - name: Enforce no user-forbidden model output token ceilings
