@@ -498,3 +498,27 @@ proposals** (finite typed schema + abstain/repair), compared against
 this source-specific diagnostic without granting it truth authority;
 afterward all event and identity proposals require independent
 qualified validation before any actual `WorldStore` transaction.
+
+## SERA v0.15 — blind, reusable, model-assisted entity identities
+
+[New v0.15 contract and operational safeguards](./SERA_V015_BLIND_IDENTITY_REVIEW.md).
+
+The generic `blind_identity_v015.py` reviewer independently asks a
+model to classify EVERY unregistered source-mentioned entity into a
+strict finite taxonomy or `ABSTAIN`. It supplies original source
+sentences, up to two adjacent context sentences (for pronouns), and
+the original registered World entity/region IDs. It **does not
+show** the older hand-authored Mara identity hypotheses or prior
+Gemini event classifications.
+
+Returned source spans, sentence IDs, complete ref coverage,
+entity-parent kind, enum values, alias cycles and abstention
+are checked deterministically. The live adapter
+`mara_s1_blind_identity_pilot_v015.py` is **one request only** and
+stores raw evidence before binding or error reporting.
+The self-hosted CI one-shot grant workflow is
+`.github/workflows/sera-mara-v015-blind-identity-once.yml`.
+
+Every model result remains noncanonical, with zero world writes,
+entity creations, physical-presence confirmations or relationship
+attachments. Model output token ceilings remain forbidden.
