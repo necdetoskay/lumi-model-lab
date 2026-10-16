@@ -69,7 +69,10 @@ class MaraS1TypedLiveTests(unittest.TestCase):
         self.assertEqual(requests[0]["model"], MODEL)
         self.assertEqual(requests[0]["response_format"]["type"], "json_schema")
         self.assertFalse(requests[0]["stream"])
-        self.assertEqual(requests[0]["max_tokens"], 4096)
+        for field in ("max_tokens", "max_completion_tokens",
+                      "max_output_tokens", "max_generation_tokens"):
+            self.assertNotIn(field, requests[0],
+                             "No application-imposed model output token caps")
         self.assertNotIn("reasoning", requests[0])
 
     def test_missing_key_fail_closed(self):
