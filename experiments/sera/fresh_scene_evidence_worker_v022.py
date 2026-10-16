@@ -17,6 +17,7 @@ from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 import json
+import os
 from pathlib import Path
 
 from experiments.sera.artifact_scene_checker_v021 import build_bundle, digest
@@ -60,11 +61,12 @@ def _require(ok, code):
 
 def _save(file, data):
     temp = file.with_suffix(".pending")
-    with temp.open("x", encoding="utf-8") as stream:
+    with temp.open("w", encoding="utf-8") as stream:
         stream.write(json.dumps(
             data, ensure_ascii=False, indent=2, allow_nan=False,
         ) + "\n")
         stream.flush()
+        os.fsync(stream.fileno())
     temp.replace(file)
 
 
@@ -218,8 +220,21 @@ def create_preparer(*, evidence_root, work_root, scene_key,
         else:
             _save(root / "contract.json", contract)
         final = root / "final.json"
+        target = outroot / (source_sha + ".json")
         if final.is_file():
-            return _load(final)
+            previous = _load(final)
+            if previous.get("status") != "EVIDENCE_READY_NONCANONICAL":
+                return previous
+            if target.is_file():
+                verified = _load(target)
+                _require(isinstance(verified, dict) and
+                         verified.get("prose_sha256") == source_sha and
+                         verified.get("world_sha256") == world_sha,
+                         "V022_COMPLETED_EVIDENCE_SOURCE_OR_WORLD_CHANGED")
+                return previous
+            # Final receipt is recoverable, but exported evidence vanished.
+            # Regenerate from the already-archived paid model replies.
+            final.unlink()
 
         spent = Decimal("0")
         calls = 0
@@ -271,6 +286,12 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             raise CoverageError(last_reason)
 
         try:
+            if target.is_file():
+                older = _load(target)
+                _require(isinstance(older, dict) and
+                         older.get("world_sha256") == world_sha and
+                         older.get("prose_sha256") == source_sha,
+                         "V022_DIFFERENT_PROOF_FOR_SAME_SOURCE")
             plan = create_plan(
                 prose=prose, scene_key=scene_key,
                 entry_revision=world["revision"], registry=known_registry,
@@ -353,7 +374,6 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 typed_registry=roles, typed_candidates=typed,
             )
             outroot.mkdir(parents=True, exist_ok=True)
-            target = outroot / (source_sha + ".json")
             if target.exists():
                 _require(_load(target) == bundle,
                          "V022_DIFFERENT_PROOF_FOR_SAME_SOURCE")
