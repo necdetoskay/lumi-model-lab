@@ -106,7 +106,8 @@ def _assess(result, prose, world):
 
 def execute(*, prose, world, check_scene, rewrite_scene,
             output_dir, max_rewrites=2,
-            observed_spend_guard_usd="0.15"):
+            observed_spend_guard_usd="0.15",
+            prepare_evidence=None, evidence_policy_id=None):
     """Automatically rewrite affected scene until source-bound gates pass.
 
     check_scene MUST be deterministic and without a new billed provider
@@ -126,6 +127,14 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         raise CoverageError("V020_REWRITE_SPEND_POLICY_INVALID") from exc
     if not spend_guard.is_finite() or spend_guard <= 0:
         raise CoverageError("V020_REWRITE_SPEND_POLICY_INVALID")
+    if prepare_evidence is not None and (
+        not callable(prepare_evidence) or
+        not isinstance(evidence_policy_id, str) or
+        not evidence_policy_id.strip()
+    ):
+        raise CoverageError("V022_EVIDENCE_POLICY_ID_REQUIRED")
+    if prepare_evidence is None and evidence_policy_id is not None:
+        raise CoverageError("V022_UNUSED_EVIDENCE_POLICY_ID")
     output_dir = Path(output_dir)
     contract = {
         "schema": SCHEMA, "original_prose_sha256": prose_hash(prose),
@@ -133,6 +142,8 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         "max_rewrites": max_rewrites,
         "observed_spend_guard_usd": str(spend_guard),
     }
+    if prepare_evidence is not None:
+        contract["evidence_policy_id"] = evidence_policy_id
     if output_dir.exists():
         if _read(output_dir / "contract.json") != contract:
             raise CoverageError("V020_REWRITE_RESUME_CONTRACT_MISMATCH")
@@ -175,6 +186,24 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         return out
 
     for idx in range(max_rewrites + 1):
+        if prepare_evidence is not None:
+            # v0.22 paid extraction owns per-source model request/receipt
+            # checkpoints. Never try to redo a paid call from this controller.
+            try:
+                prepared = prepare_evidence(
+                    prose=current, world=deepcopy(world),
+                )
+                if (not isinstance(prepared, dict) or
+                    prepared.get("status") != "EVIDENCE_READY_NONCANONICAL" or
+                    prepared.get("prose_sha256") != prose_hash(current) or
+                    prepared.get("world_sha256") != _digest(world) or
+                    prepared.get("canonical_commit_authorized") is not False or
+                    prepared.get("world_db_writes") != 0):
+                    reason = "V022_EVIDENCE_GENERATION_FAILED_SAFE"
+                    break
+            except Exception:
+                reason = "V022_EVIDENCE_GENERATION_FAILED_SAFE"
+                break
         scan = output_dir / f"check_{idx:02d}.json"
         started = output_dir / f"check_{idx:02d}.started"
         if scan.is_file():
