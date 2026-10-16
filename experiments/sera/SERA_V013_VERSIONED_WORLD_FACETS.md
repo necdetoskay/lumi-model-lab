@@ -122,3 +122,88 @@ all 25 candidate semantics before allowing any first-scene exit state
 to be accepted. Then create a versioned migration and real commit
 authorization design; never silently migrate from v0.2 or write directly
 to the production database.
+
+## Complete Mara model-event and entity-mention audit
+
+After qualifying the three versioned facet reducers, two independent
+**offline** censuses inspected the **original archived provider evidence**.
+Neither census submitted any additional model requests or generated an
+accepted scene exit state.
+
+### 25 source-bound event candidates
+
+[Actual 25-event audit run 38868197633](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38868197633)
+via `mara_s1_event_census_v013.py` and
+`mara_s1_event_census_cli_v013.py`.
+
+| Gemini-proposed event type | Candidates |
+| --- | ---: |
+| `CLAIM_MENTION` | 8 |
+| `COMMUNICATE` | 5 |
+| `OBSERVE` | 4 |
+| `MOVE` | 3 |
+| `WRITE` | 2 |
+| `OPEN` | 1 |
+| `CLOSE` | 1 |
+| `KNOWLEDGE_UPDATE` | 1 |
+| **Total** | **25** |
+
+Of those **16 were tagged observed actions**, while **9 had
+`REPORTED_CLAIM` epistemics**. Eight `CLAIM_MENTION` candidates
+do **not** exhaust all reported statements. Eleven candidate events
+still need qualified typed effect/timeline mapping, nine include
+unregistered identities, and all 25 lack authenticated adjudication and
+a measured independent completeness benchmark.
+
+The two Haiku-supported semantic repair proposals remain marked
+as **noncanonical corrections**. The three v0.13 reducer events are
+offline **simulations**, not a three-event approval of Mara S1.
+**0/25** original event candidates are authorized for canonical commit.
+
+### All 60 model-proposed entity/character mentions
+
+[Actual all-mentions audit run 38868633198](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38868633198)
+via `mara_s1_mention_census_v013.py` and
+`mara_s1_mention_census_cli_v013.py`:
+
+- **28/28 original numbered source sentences**, **7/7 archived
+  source-bound batches**, **60 exact-source mentions**, **22 distinct
+  entity references**.
+- **16** different unregistered/provisional references including
+  `new:bench`, `new:pencil`, `new:watch_case`, document/record
+  subobjects, location aliases and reported train subjects.
+- The model proposed `PRESENT` once for each of
+  `new:bench` and `new:pencil`; this is *not* verified identity,
+  ownership, physical presence or authorization to create entities.
+- `new:vane_thumb` is an anatomical part mention, **not** a standalone
+  object for inventory.
+- `new:train` and `new:train_41` are
+  `REPORTED_ONLY`; the archive's quoted `Arrival recorded: 02:10`
+  is **not** an objectively verified physical arrival.
+- `new:watch_case` remains a provisional reference / potential
+  component of `vane_watch`; its ontology/identity is not silently
+  inferred or created.
+
+No new physical entity was auto-registered: **0**. Distinguishing
+entity mentions from event references caught the previously hidden
+`bench` entity, which is explicitly mentioned but does not require a
+new state-changing event.
+
+**Current test gate:** [run 38868633198](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38868633198)
+— **345/345 Python tests PASS**, with versioned v0.13 reducer replay
+qualification and real-provider mention census separately green.
+
+### Next qualification sequence
+
+1. Perform context-sensitive identity resolution of every unregistered
+   candidate: registered objects versus components, anatomical parts,
+   locations, evidence artifacts and reported subjects.
+2. Review typed effects for the 25 events, especially apparent movement,
+   document writing, observation and testimony. Preserve `HOLD`
+   on ambiguous candidates; never convert claims to world facts.
+3. Use an authenticated external adjudicator / independent validation
+   authority and genuine calibration data, not fabricated model or fixture
+   approvals.
+4. Only then design production migration, validated transactional
+   WorldStore + EventGraph commit and rollback checks. The source-bound
+   v0.13 experiment is not a production schema upgrade.
