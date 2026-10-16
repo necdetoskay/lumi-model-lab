@@ -39,7 +39,8 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         extraction_spend_guard_usd="0.30",
         max_extraction_requests=24,
         trusted_temporal_builder=None,
-        temporal_policy_id=None):
+        temporal_policy_id=None,
+        trusted_relation_builder=None, relation_policy_id=None):
     """Run the actual staged v0.23 LAB workflow, no canon writes.
 
     Store work_root separately per authorized story job. The caller,
@@ -78,6 +79,7 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         "max_extraction_requests": max_extraction_requests,
         "full_scene_gate_required": True,
         "temporal_policy_id": temporal_policy_id,
+        "relation_policy_id": relation_policy_id,
         "production_canon_authority": False,
     }
     root = Path(work_root)
@@ -98,6 +100,8 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         observed_spend_guard_usd=extraction_spend_guard_usd,
         trusted_temporal_builder=trusted_temporal_builder,
         temporal_policy_id=temporal_policy_id,
+        trusted_relation_builder=trusted_relation_builder,
+        relation_policy_id=relation_policy_id,
     )
     writer = create_writer(
         api_key=api_key,
