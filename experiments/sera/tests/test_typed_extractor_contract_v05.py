@@ -207,6 +207,20 @@ class TypedExtractorProtocolTests(unittest.TestCase):
                 scene_key=SCENE, entry=base(),
             )
 
+    def test_empty_extractor_lists_never_count_as_coverage_pass(self):
+        req = make_typed_request(
+            prose=PROSE, scene_key=SCENE, entry=base(), registry=REGISTRY,
+        )
+        out = bind_typed_response(
+            raw={"mentions": [], "events": []},
+            request=req, prose=PROSE, scene_key=SCENE, entry=base(),
+        )
+        self.assertEqual(out["status"], "HOLD")
+        self.assertEqual(set(out["completeness_warnings"]), {
+            "V05_NO_ENTITY_MENTIONS", "V05_NO_EVENT_CANDIDATES",
+        })
+        self.assertFalse(out["commit_authorized"])
+
     def test_reported_claim_never_promoted_by_schema(self):
         data = payload(raw_event(
             typ="LEARN_FACT",
