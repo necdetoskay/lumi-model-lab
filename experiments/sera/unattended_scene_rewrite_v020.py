@@ -1,0 +1,236 @@
+"""SERA v0.20 — unattended, lab-only source-to-rewrite scene controller.
+
+This is a reusable state-machine integration seam, not a production model
+adapter or authorization gate. The caller supplies a deterministic
+check_scene(prose=..., world=...) that runs ALL required nonbillable gates
+and a rewrite_scene(source=..., defects=...) callback that returns a
+COMPLETED, receipted model answer. There is no manual retry or approval.
+Every rewritten scene must be checked again from scratch. Unknown in-flight
+calls are never blindly resent; no model output token ceiling exists.
+"""
+from __future__ import annotations
+
+from copy import deepcopy
+from decimal import Decimal, InvalidOperation
+from hashlib import sha256
+import json
+from pathlib import Path
+
+from experiments.sera.coverage import CoverageError, prose_hash
+from experiments.sera.world_state_v02 import canonical, validate as validate_world
+
+SCHEMA = "sera.unattended-scene-rewrite-controller.v0.20"
+MAX_REWRITES = 4
+
+
+def _digest(obj):
+    return sha256(canonical(obj).encode("utf-8")).hexdigest()
+
+
+def _read(file):
+    try:
+        return json.loads(file.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise CoverageError("V020_REWRITE_DURABLE_RECORD_INVALID") from exc
+
+
+def _write(file, obj):
+    temp = file.with_suffix(file.suffix + ".pending")
+    temp.write_text(
+        json.dumps(obj, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+        encoding="utf-8",
+    )
+    temp.replace(file)
+
+
+def _receipt(payload, expected_source_hash):
+    if (not isinstance(payload, dict) or set(payload) != {"prose", "receipt"}
+        or not isinstance(payload["prose"], str)
+        or not payload["prose"].strip()):
+        raise CoverageError("V020_REWRITE_REPLY_SCHEMA_INVALID")
+    proof = payload["receipt"]
+    if (not isinstance(proof, dict) or
+        set(proof) != {"source_prose_sha256", "response_id", "model",
+                       "finish_reason", "cost_usd"} or
+        proof["source_prose_sha256"] != expected_source_hash or
+        not isinstance(proof["response_id"], str) or
+        not proof["response_id"].strip() or
+        not isinstance(proof["model"], str) or not proof["model"] or
+        proof["finish_reason"] != "stop"):
+        raise CoverageError("V020_REWRITE_PROVIDER_RECEIPT_INVALID")
+    try:
+        charge = Decimal(str(proof["cost_usd"]))
+    except (ValueError, TypeError, InvalidOperation) as exc:
+        raise CoverageError("V020_REWRITE_COST_INVALID") from exc
+    if not charge.is_finite() or charge < 0:
+        raise CoverageError("V020_REWRITE_COST_INVALID")
+    return charge
+
+
+def _assess(result, prose, world):
+    if not isinstance(result, dict) or set(result) != {"projection", "typed"}:
+        raise CoverageError("V020_REWRITE_ASSESSMENT_INVALID")
+    projection, typed = result["projection"], result["typed"]
+    if (not isinstance(projection, dict) or not isinstance(typed, dict) or
+        projection.get("schema") != "sera.event-candidate-repair.v0.19" or
+        typed.get("schema") != "sera.typed-aspect-candidate-recovery.v0.20" or
+        projection.get("prose_sha256") != prose_hash(prose) or
+        typed.get("prose_sha256") != prose_hash(prose) or
+        typed.get("world_sha256") != _digest(world) or
+        projection.get("canonical_commit_authorized") is not False or
+        typed.get("canonical_commit_authorized") is not False or
+        projection.get("world_db_writes") != 0 or
+        typed.get("world_db_writes") != 0 or
+        typed.get("requires_manual_intervention") is not False):
+        raise CoverageError("V020_REWRITE_ASSESSMENT_SOURCE_OR_AUTHORITY_INVALID")
+    ready = (
+        projection.get("next_automatic_action") ==
+        "CONTINUE_FULL_SCENE_GATES" and
+        projection.get("status") ==
+        "CANDIDATES_STRUCTURALLY_CLEAN_NONCANONICAL" and
+        typed.get("status") == "TYPED_FACETS_SIMULATED_NONCANONICAL" and
+        typed.get("next_automatic_action") ==
+        "CONTINUE_INDEPENDENT_SCENE_QUALIFICATION"
+    )
+    failures = (projection.get("remaining_semantic_task_codes", []) +
+                projection.get("unsupported_semantic_tasks", []) +
+                typed.get("blocker_codes", []))
+    if not isinstance(failures, list):
+        raise CoverageError("V020_REWRITE_DEFECTS_SCHEMA_INVALID")
+    return ready, failures
+
+
+def execute(*, prose, world, check_scene, rewrite_scene,
+            output_dir, max_rewrites=2):
+    """Automatically rewrite affected scene until source-bound gates pass.
+
+    check_scene MUST be deterministic and without a new billed provider
+    request; a future durable worker will orchestrate the actual paid
+    extraction outside this controller. rewrite_scene may be paid, but
+    its response MUST have provider/cost receipt and source fingerprint.
+    A crash before receipt is a terminal-safe exception, not a human queue.
+    """
+    validate_world(world)
+    if (type(max_rewrites) is not int or
+        not 0 <= max_rewrites <= MAX_REWRITES or
+        not isinstance(prose, str) or not prose.strip()):
+        raise CoverageError("V020_REWRITE_POLICY_INVALID")
+    output_dir = Path(output_dir)
+    contract = {
+        "schema": SCHEMA, "original_prose_sha256": prose_hash(prose),
+        "world_sha256": _digest(world),
+        "max_rewrites": max_rewrites,
+    }
+    if output_dir.exists():
+        if _read(output_dir / "contract.json") != contract:
+            raise CoverageError("V020_REWRITE_RESUME_CONTRACT_MISMATCH")
+    else:
+        output_dir.mkdir(parents=True, exist_ok=False)
+        _write(output_dir / "contract.json", contract)
+    final = output_dir / "final.json"
+    if final.exists():
+        return _read(final)
+
+    original_world = _digest(world)
+    current = prose
+    audit = []
+    spent = Decimal("0")
+    status = "FAILED_SAFE_FINAL"
+    reason = "V020_REWRITE_ATTEMPTS_EXHAUSTED"
+
+    def finish():
+        out = {
+            "schema": SCHEMA, "status": status,
+            "reason_code": reason,
+            "original_prose_sha256": contract["original_prose_sha256"],
+            "final_prose_sha256": prose_hash(current),
+            "candidate_prose_noncanonical": current,
+            "attempts": deepcopy(audit),
+            "rewrite_count": sum(1 for a in audit if "rewrite_response_id" in a),
+            "provider_reported_spend_usd": str(spent),
+            "next_automatic_action": (
+                "CONTINUE_OTHER_FULL_STORY_GATES" if status ==
+                "SCENE_CANDIDATE_READY_NONCANONICAL" else
+                "TERMINAL_SAFE_NO_WORLD_WRITE"
+            ),
+            "canonical_commit_authorized": False,
+            "world_db_writes": 0,
+            "requires_manual_intervention": False,
+        }
+        if _digest(world) != original_world:
+            raise CoverageError("V020_REWRITE_WORLD_MUTATED")
+        _write(final, out)
+        return out
+
+    for idx in range(max_rewrites + 1):
+        scan = output_dir / f"check_{idx:02d}.json"
+        started = output_dir / f"check_{idx:02d}.started"
+        if scan.is_file():
+            row = _read(scan)
+            if row.get("prose_sha256") != prose_hash(current):
+                reason = "V020_CHECKPOINT_SOURCE_MISMATCH"
+                break
+            assessment = row["assessment"]
+        elif started.exists():
+            reason = "V020_UNKNOWN_IN_FLIGHT_CHECK"
+            break
+        else:
+            _write(started, {"prose_sha256": prose_hash(current)})
+            try:
+                assessment = check_scene(prose=current, world=deepcopy(world))
+                _assess(assessment, current, world)
+                _write(scan, {
+                    "prose_sha256": prose_hash(current),
+                    "assessment": assessment,
+                })
+            except Exception:
+                reason = "V020_SCENE_CHECK_FAILED_SAFE"
+                break
+        try:
+            ready, defects = _assess(assessment, current, world)
+        except (CoverageError, TypeError):
+            reason = "V020_SCENE_CHECK_INVALID"
+            break
+        audit.append({"attempt": idx, "prose_sha256": prose_hash(current),
+                      "structurally_ready_noncanonical": ready,
+                      "defects": deepcopy(defects)})
+        if ready:
+            status = "SCENE_CANDIDATE_READY_NONCANONICAL"
+            reason = "V020_ONLY_STRUCTURAL_GATES_QUALIFIED"
+            break
+        if idx == max_rewrites:
+            break
+        before = prose_hash(current)
+        saved = output_dir / f"rewrite_{idx:02d}.json"
+        pending = output_dir / f"rewrite_{idx:02d}.started"
+        if saved.is_file():
+            answer = _read(saved)
+        elif pending.exists():
+            reason = "V020_UNKNOWN_IN_FLIGHT_REWRITE_NO_AUTO_RESEND"
+            break
+        else:
+            _write(pending, {
+                "prose_sha256": before, "defects_sha256": _digest(defects),
+            })
+            try:
+                answer = rewrite_scene(
+                    source=current,
+                    defects=deepcopy(defects),
+                )
+                _receipt(answer, before)
+                _write(saved, answer)
+            except Exception:
+                reason = "V020_REWRITE_PROVIDER_FAILED_SAFE"
+                break
+        try:
+            cost = _receipt(answer, before)
+            if prose_hash(answer["prose"]) == before:
+                reason = "V020_REWRITE_NO_SOURCE_CHANGE"
+                break
+            spent += cost
+            audit[-1]["rewrite_response_id"] = answer["receipt"]["response_id"]
+            current = answer["prose"]
+        except (CoverageError, ValueError, TypeError):
+            reason = "V020_REWRITE_RECEIPT_OR_SOURCE_INVALID"
+            break
+    return finish()
