@@ -203,6 +203,52 @@ class BlindAnnotationV08Tests(unittest.TestCase):
         self.assertFalse(result["gold_qualified"])
         self.assertFalse(result["canonical_commit_authorized"])
 
+    def test_new_object_cue_not_in_lexicon_can_be_recorded_as_advisory(self):
+        packet, form = reviewed()
+        start = PROSE.index("case")
+        form["rows"][0]["extra_entity_candidates"].append({
+            "ref": "new:watch_case",
+            "start": start, "end": start + len("case"),
+            "quote": "case",
+            "decision": "PHYSICALLY_PRESENT",
+            "reason": "Visible watch case in synthetic source",
+        })
+        result = validate_annotation(packet=packet, annotation=form,
+                                     require_complete=True)
+        self.assertTrue(result["fully_reviewed_claimed"])
+        self.assertFalse(result["gold_qualified"])
+        self.assertFalse(result["canonical_commit_authorized"])
+
+    def test_made_up_extra_object_quote_is_rejected(self):
+        packet, form = reviewed()
+        form["rows"][0]["extra_entity_candidates"].append({
+            "ref": "new:fictional_key",
+            "start": 0, "end": 4,
+            "quote": "key!",
+            "decision": "PHYSICALLY_PRESENT",
+            "reason": "Fabricated evidence must fail",
+        })
+        with self.assertRaisesRegex(
+            CoverageError, "ANNOTATION_EXTRA_ENTITY_INVALID"
+        ):
+            validate_annotation(packet=packet, annotation=form)
+
+    def test_extra_entity_disagreement_is_visible_to_adjudicator(self):
+        packet, reviewer_a = reviewed("A")
+        _, reviewer_b = reviewed("B")
+        start = PROSE.index("case")
+        reviewer_a["rows"][0]["extra_entity_candidates"].append({
+            "ref": "new:case_as_object",
+            "start": start, "end": start+4,
+            "quote": "case", "decision": "PHYSICALLY_PRESENT",
+            "reason": "Explicit noun in source",
+        })
+        result = compare_annotations(packet=packet, reviewer_a=reviewer_a,
+                                     reviewer_b=reviewer_b)
+        self.assertIn("ENTITY_PRESENCE",
+                      result["disagreements"][0]["components"])
+        self.assertIn("s001", result["priority_sentence_ids"])
+
     def test_evidence_reference_fingerprint_prevents_source_drift(self):
         packet, form = reviewed()
         form["source_packet_sha256"] = "a" * 64
