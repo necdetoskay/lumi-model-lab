@@ -158,3 +158,117 @@ There is no cleanup/deletion command, no production filesystem change,
 and no attempt to modify the old root-owned cache. A different,
 single-file `v015c` launch grant is required, pinned to the exact
 updated workflow SHA and both previous pre-provider failed run IDs.
+
+## Actual blind Haiku provider evidence and deterministic forensic recovery
+
+The third, isolated checkout launch
+[Actions 38872615837](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38872615837)
+successfully used self-hosted `q25-offline-isolated` to run the
+**original-source-only model pilot**. Its provider response ID was
+`gen-1792138627-dbcmqQibflV3ANup75VW`.
+
+- **One actual Haiku 4.5 call**, `finish_reason=stop`;
+  **USD 0.015781** provider-reported cost.
+- **All 16 original requested refs returned in the raw response**.
+- The model emitted a full Markdown JSON code fence but failed to
+  escape ordinary double quotes inside **three `support_quote`
+  values**. The initial binder correctly returned diagnostic HOLD
+  `PROBE_FENCED_JSON_MALFORMED`, and the raw content was archived.
+- No output-token ceiling, model retry, fallback, canonical DB write,
+  entity introduction or relation attachment occurred.
+
+A new **generic syntax + source-only forensic layer** was added:
+`paid_blind_identity_forensics_v015.py` and
+`mara_s1_paid_identity_replay_v015.py`.
+
+It accepts only a single entire JSON fence, repairs only malformed
+single-line **`support_quote` double-quote escaping**, and restores
+literal typographic quote/apostrophe differences only when the
+candidate has a **unique length-preserving exact match** inside a
+sentence that actually mentioned that entity ref.
+
+This does not change the model's `classification`, `relation`,
+`relation_target`, reason or decision. Each row then passes through
+the original strict v0.15 validator; malformed semantic/type/parent
+relationships are **quarantined individually**, not rewritten into
+a false model abstention and not used for world state.
+
+The real paid-response archive was replayed with **zero new model calls**:
+[Actions 38873775587](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38873775587).
+
+| Actual forensic outcome | Count |
+| --- | ---: |
+| Original model identity rows | 16 |
+| Safely re-escaped support-quote JSON fields | 3 |
+| Source-unique typographic mappings | 6 |
+| Source-/contract-bound NONCANONICAL proposals | 12 |
+| Quarantined model rows | 4 |
+| Actual entities or aliases committed | 0 |
+| New model calls during recovery | 0 |
+
+The four quarantined rows are **not** four missing model answers:
+
+1. `new:bench` — physical-item classification but unsupported
+   `POTENTIAL_LOCATION_WITHIN` relation on this event-identity
+   contract.
+2. `new:pencil` — same mismatch.
+3. `new:north_quay_station` — region alias proposed using document-like
+   `POTENTIAL_ALIAS_OF` instead of
+   `EXISTING_REGION_NAME_CANDIDATE`.
+4. `new:strike_record` — document-component classification but
+   `POTENTIAL_DOCUMENT_ENTRY_OF` relation instead of
+   `POTENTIAL_PART_OF`.
+
+These are structural/typing errors, NOT a reason to rerun the model
+automatically. The original response is retained for a future
+source-validated repair proposal. Unknown parent/alias types continue
+to be HOLD.
+
+## Actual independent-versus-prior comparison
+
+Only **after** the paid blind response was archived, SERA compared
+all 16 underlying model opinions against the earlier Mara-only
+v0.14 rulebook; results:
+[Actions 38874297940](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38874297940).
+
+- **15/16** same classification labels (NOT an accuracy metric).
+- **11/16** same relation type, **11/16** same target.
+- **9/16** same combined class/relation/target hypothesis.
+- **4/16** still quarantined by the strict independent binder.
+- `new:archive` is a material interpretation disagreement:
+  prior `ABSTRACT_SOURCE_COLLECTION`, blind model
+  `DOCUMENT_ALIAS_CANDIDATE → archive_telegram`.
+- The blind model proposes `new:entry_train_41` as a document
+  subentry of `platform_clock`, where the prior hypothesis used
+  `new:strike_record`; likewise `new:platform_record` is
+  linked to `platform_clock` rather than `new:strike_record`.
+  The existing `OBJECT` world type cannot establish whether the
+  target is a **document**, which must remain a review blocker.
+- The model separately recognized watch hands versus the thumb,
+  negated marks versus actual objects, and reported train subjects.
+  These still remain unverified proposals, not world facts.
+
+Comparison code:
+`identity_disagreement_v015.py`,
+`mara_s1_blind_identity_disagreement_cli_v015.py`;
+tests prove even **100% model/old-rule agreement** cannot authorize
+an entity or establish human gold. Full contract testing:
+**375/375 offline Python tests PASS**, original evidence-driven
+forensics and comparison both green on the isolated self-hosted
+worktree.
+
+### Next focused epic
+
+The model-proposal loop exists, including closed type output,
+abstention, source binding and deterministic partial recovery.
+The next improvement should be an independently qualified
+**identity relation-target aspect gate**: resolve parent kinds
+(DOCUMENT vs CLOCK/OBJECT vs REGION vs CHARACTER), ground
+`PART_OF`, `ALIAS_OF`, `DOCUMENT_ENTRY_OF`, and object
+introduction separately, and preserve negative/report-only evidence.
+Only then proceed toward authenticated canonical authority and
+transactional release of the full Mara S1 event state.
+
+**Canonical Mara S1 stays HOLD; no manual rulebook was shown to Haiku
+during this paid identity review, and no model-output token limit
+was configured.**
