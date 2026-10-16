@@ -67,13 +67,13 @@ class TypedAspectRecoveryV020Tests(unittest.TestCase):
         # candidates; proves no Mara ref is a hard-coded rule in the engine.
         world["entities"]["story_watch"] = world["entities"].pop("vane_watch")
         world["entities"]["journal_object"] = world["entities"].pop("mara_notebook")
-        for entry in world["entities"].values():
-            if isinstance(entry, dict):
-                for key in ("object_id", "ref", "id"):
-                    if entry.get(key) == "vane_watch":
-                        entry[key] = "story_watch"
-                    elif entry.get(key) == "mara_notebook":
-                        entry[key] = "journal_object"
+        replacements = {"vane_watch": "story_watch",
+                        "mara_notebook": "journal_object"}
+        for ident, entry in world["entities"].items():
+            entry["entity_id"] = ident
+            for field in ("owner", "holder", "worn_by", "parent_id"):
+                if entry[field] in replacements:
+                    entry[field] = replacements[entry[field]]
         new_events = three()
         for item in new_events:
             item["object_id"] = ("story_watch" if item["object_id"] ==
