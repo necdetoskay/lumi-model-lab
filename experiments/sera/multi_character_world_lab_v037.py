@@ -189,24 +189,22 @@ class ScenarioLab:
         ).fetchone() is None and self.db.execute(
             "SELECT 1 FROM world_streams WHERE stream_id=?", (world_id,)
         ).fetchone() is None, "V037_WORLD_ALREADY_SEEDED")
-        self.store.create(world_id, initial, travel_minutes=routes)
-        try:
-            self.db.execute("BEGIN IMMEDIATE")
-            self.db.execute(
+        def register_fixture(db):
+            db.execute(
                 "INSERT INTO lab_worlds VALUES (?,?,?,?,?,?)",
                 (world_id, fixture["scenario_id"], fixture["household_id"],
                  fixture["universe_id"], fixture["profile_id"],
                  "SYNTHETIC_FIXTURE"),
             )
-            self.db.executemany(
+            db.executemany(
                 "INSERT INTO lab_characters VALUES (?,?,?,?,?,?)", identities
             )
-            self.db.execute("COMMIT")
-        except BaseException:
-            self.db.execute("ROLLBACK")
-            # No silent successful return from an incomplete fixture; this
-            # orphaned stream is a visible setup error requiring a fresh DB.
-            raise
+        # One SQLite transaction creates the stream, first snapshot,
+        # scenario/world identity and every character membership together.
+        self.store.create(
+            world_id, initial, travel_minutes=routes,
+            on_stream_created=register_fixture,
+        )
         return {
             "status": "SYNTHETIC_WORLD_SEEDED_NONCANONICAL",
             "world_id": world_id,
@@ -276,6 +274,31 @@ class ScenarioLab:
             "loadout": loadout(state, run["character_id"]),
             "visible_entities": visible,
             "run_status": run["status"],
+            "canonical_commit_authorized": False,
+            "production_db_writes": 0,
+            "g2_commit_request": None,
+        }
+
+    def scene_inputs(self, run_id, *, expected_revision):
+        """Separately return safe writer context and full validator-only state.
+
+        The pipeline MUST send writer_context to the writer, never validator_world,
+        since the latter contains other characters' private facts. This API
+        does not grant semantic truth or any real commit privilege.
+        """
+        run = self._run(run_id)
+        require(run["kind"] == "STORY" and run["status"] == "OPEN",
+                "V037_STORY_RUN_NOT_OPEN")
+        state = self.store.head(run["world_id"])
+        require(type(expected_revision) is int and
+                expected_revision == state["revision"],
+                "V037_SCENE_ENTRY_REVISION_CONFLICT")
+        return {
+            "source": "SYNTHETIC_SQLITE_WORLD",
+            "writer_context": self.context(run_id),
+            "validator_world": state,
+            "validator_only_private_state": True,
+            "expected_revision": expected_revision,
             "canonical_commit_authorized": False,
             "production_db_writes": 0,
             "g2_commit_request": None,
