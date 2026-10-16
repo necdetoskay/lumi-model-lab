@@ -120,6 +120,28 @@ class AutonomousSemanticV018Tests(unittest.TestCase):
                          "V018_UNCONFIRMED_IN_FLIGHT_CALL")
         self.assertFalse(replay["canonical_commit_authorized"])
 
+    def test_replay_counts_previously_paid_fallback_against_call_budget(self):
+        calls = []
+        def provider(*, model, prepared):
+            calls.append(prepared)
+            if len(calls) == 1:
+                return reply("incomplete json")
+            context = json.loads(prepared["request"]["messages"][1]["content"])
+            return reply(answer(
+                context["exact_chronological_sentences"][-1]["quote"][:10]
+            ))
+        with TemporaryDirectory() as d:
+            root = Path(d) / "stage"
+            original = run(root, provider, max_provider_calls=4)
+            (root / "final.json").unlink()
+            replay = run(root, provider, max_provider_calls=4)
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(original["provider_calls"], 4)
+        self.assertEqual(replay["provider_calls"], 4)
+        self.assertEqual(replay["observed_spend_usd"], "0.004")
+        self.assertEqual(replay["status"],
+                         "SEMANTIC_ADVISORIES_COMPLETE_NONCANONICAL")
+
     def test_paid_receipt_replayed_without_new_call_after_crash(self):
         calls = []
         with TemporaryDirectory() as d:
