@@ -226,3 +226,34 @@ application-set LLM output token limits is preserved and CI-enforced.
 
 Real event acceptance, independent semantic coverage, typed aspect reducer
 mutations and first S1 exit-state qualification are still pending.
+
+## SERA v0.7 — Real-scene reference review and extraction binding
+
+[v0.7 source/provenance architecture](./SERA_V07_MARA_GOLD_REVIEW.md) ·
+[tracked integration epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306).
+
+`sentence_review_packet_v07.py` constructs the **UNREVIEWED** reference
+worksheet for all 28 sentences of the exact frozen Mara S1 prose, with
+original nine *analyst-proposed* events and all scanned entity/action cues.
+The packet is CI-archived for external human annotation. Model/code-derived
+suggestions are never silently labeled human gold.
+
+`independent_ledger_bridge_v07.py` attaches an already completed blind M2
+extractor report to the sentence ledger, preserving multiple exact sentence
+evidence spans for one reported event and highlighting omitted T2 candidates.
+This is an advisory `HOLD` result, not a model invocation or state commit.
+
+`offline_benchmark_v07.py` computes sentence classification and entity
+mention precision/recall on explicitly reviewed or synthetic-only fixture
+labels, but refuses to report true Mara event/entity accuracy while the
+reference remains unadjudicated. It never grants canonical commit authority.
+
+```bash
+python -m experiments.sera.sentence_review_packet_v07 \\
+  --output /tmp/mara-s1-28-sentence-unreviewed.json
+python -m unittest discover -s experiments/sera/tests -v
+```
+
+No output token ceilings were added. Live independent extraction, authenticated
+human adjudication, state reducer aspect mutations and an accepted real S1
+exit state remain separate qualification gates.
