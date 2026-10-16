@@ -118,7 +118,7 @@ class CandidateProjectionV019Tests(unittest.TestCase):
         summary = self.get_probe(original)
         summary["independent_advisories"][0]["kind_model_proposed"] = "MOVE"
         with self.assertRaisesRegex(
-            CoverageError, "V019_ADVISORY_SOURCE_REBIND_MISMATCH"
+            CoverageError, "V019_ADVISORY_HASH_MISMATCH"
         ):
             project(prose=SOURCE, extraction_report=original,
                     semantic_summary=summary)
