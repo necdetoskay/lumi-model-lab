@@ -121,7 +121,7 @@ def qualify(*, prose, world, bundle, projection, typed):
     joint_facets = bool(moving and relational and candidates and
                         bundle.get("temporal_case") is not None and
                         bundle.get("relation_case") is not None)
-    joint = bool(moving and relational and not candidates and
+    joint = bool(moving and relational and
                  bundle.get("temporal_case") is not None and
                  bundle.get("relation_case") is not None)
     if joint_facets:
@@ -133,6 +133,7 @@ def qualify(*, prose, world, bundle, projection, typed):
                 temporal_case=bundle["temporal_case"],
                 relation_case=bundle["relation_case"],
                 typed_candidates=candidates,
+                typed_registry=bundle.get("typed_registry"),
                 typed_registry=bundle["typed_registry"],
             )
         except CoverageError as exc:
