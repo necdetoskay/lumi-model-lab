@@ -194,6 +194,35 @@ class AutonomousSemanticV018Tests(unittest.TestCase):
                          "NO_TARGETED_RISKS_FOUND_NONCANONICAL")
         self.assertFalse(result["canonical_commit_authorized"])
 
+    def test_single_complete_json_fence_is_recovered_without_fallback(self):
+        calls = []
+        def provider(*, model, prepared):
+            calls.append(prepared)
+            context = json.loads(prepared["request"]["messages"][1]["content"])
+            quote = context["exact_chronological_sentences"][-1]["quote"][:10]
+            return reply("```json\n" + answer(quote) + "\n```")
+        with TemporaryDirectory() as d:
+            outcome = run(Path(d) / "stage", provider)
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(outcome["status"],
+                         "SEMANTIC_ADVISORIES_COMPLETE_NONCANONICAL")
+
+    def test_fenced_json_with_outside_prose_requires_automatic_fallback(self):
+        calls = []
+        def provider(*, model, prepared):
+            calls.append(prepared)
+            context = json.loads(prepared["request"]["messages"][1]["content"])
+            quote = context["exact_chronological_sentences"][-1]["quote"][:10]
+            if len(calls) == 1:
+                return reply("```json\n" + answer(quote) +
+                             "\n```\nexternal text")
+            return reply(answer(quote))
+        with TemporaryDirectory() as d:
+            outcome = run(Path(d) / "stage", provider)
+        self.assertEqual(len(calls), 4)
+        self.assertEqual(outcome["status"],
+                         "SEMANTIC_ADVISORIES_COMPLETE_NONCANONICAL")
+
     def test_no_application_output_token_ceiling_sent(self):
         calls = []
         with TemporaryDirectory() as d:
