@@ -249,6 +249,27 @@ class BlindAnnotationV08Tests(unittest.TestCase):
                       result["disagreements"][0]["components"])
         self.assertIn("s001", result["priority_sentence_ids"])
 
+    def test_extra_entity_review_order_is_not_semantic_disagreement(self):
+        packet, a = reviewed("A")
+        _, b = reviewed("B")
+        start_case = PROSE.index("case")
+        start_watch = PROSE.index("watch")
+        extras = [
+            {"ref": "new:watch_case", "start": start_case,
+             "end": start_case + 4, "quote": "case",
+             "decision": "PHYSICALLY_PRESENT", "reason": "Object part"},
+            {"ref": "new:watch_body", "start": start_watch,
+             "end": start_watch + 5, "quote": "watch",
+             "decision": "PHYSICALLY_PRESENT", "reason": "Object body"},
+        ]
+        a["rows"][0]["extra_entity_candidates"] = deepcopy(extras)
+        b["rows"][0]["extra_entity_candidates"] = list(reversed(deepcopy(extras)))
+        outcome = compare_annotations(packet=packet, reviewer_a=a,
+                                      reviewer_b=b)
+        self.assertEqual(outcome["disagreements"], [])
+        self.assertIn("s001", outcome["agreed_sentence_ids"])
+        self.assertFalse(outcome["canonical_commit_authorized"])
+
     def test_evidence_reference_fingerprint_prevents_source_drift(self):
         packet, form = reviewed()
         form["source_packet_sha256"] = "a" * 64
