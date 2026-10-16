@@ -123,7 +123,7 @@ class WorldStore:
         return row
 
     def create(self, stream_id, initial, *, travel_minutes=None,
-               world_rules=()):
+               world_rules=(), on_stream_created=None):
         validate(initial)
         check(initial["revision"] == 0 and initial["events"] == [],
               "INITIAL_STATE_MUST_BE_UNCOMMITTED")
@@ -149,6 +149,10 @@ class WorldStore:
                 "INSERT INTO world_snapshots VALUES (?,?,?,?)",
                 (stream_id, 0, state_json, state_hash),
             )
+            # Optional fixture metadata must be part of the SAME atomic seed.
+            # No nested BEGIN/COMMIT in the callback; failure rolls back all.
+            if on_stream_created is not None:
+                on_stream_created(self.db)
             self.db.execute("COMMIT")
         except BaseException:
             self.db.execute("ROLLBACK")
