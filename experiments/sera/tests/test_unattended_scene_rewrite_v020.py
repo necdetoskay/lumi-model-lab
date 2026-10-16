@@ -65,11 +65,13 @@ def good_rewrite(*, source, defects):
 
 
 def run(folder, *, checker=analysis, writer=good_rewrite,
-        prose=ORIGINAL, max_rewrites=2):
+        prose=ORIGINAL, max_rewrites=2,
+        observed_spend_guard_usd="0.15"):
     return execute(
         prose=prose, world=base(),
         check_scene=checker, rewrite_scene=writer,
         output_dir=folder, max_rewrites=max_rewrites,
+        observed_spend_guard_usd=observed_spend_guard_usd,
     )
 
 
@@ -167,6 +169,40 @@ class UnattendedSceneControllerV020Tests(unittest.TestCase):
             out = run(Path(root) / "stage", checker=malicious)
         self.assertEqual(out["reason_code"], "V020_SCENE_CHECK_FAILED_SAFE")
         self.assertFalse(out["canonical_commit_authorized"])
+
+    def test_observed_usd_spend_stops_autonomous_extra_charge(self):
+        calls = []
+        def writer(*, source, defects):
+            calls.append(source)
+            result = good_rewrite(source=source, defects=defects)
+            result["prose"] = "The notebook still mentioned a train."
+            return result
+        with TemporaryDirectory() as root:
+            out = run(
+                Path(root) / "stage", writer=writer, max_rewrites=2,
+                observed_spend_guard_usd="0.001",
+            )
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(out["provider_reported_spend_usd"], "0.002")
+        self.assertEqual(out["reason_code"],
+                         "V020_REWRITE_OBSERVED_SPEND_GUARD")
+        self.assertEqual(out["status"], "FAILED_SAFE_FINAL")
+
+    def test_no_evidence_defects_cannot_trigger_unfocused_writer(self):
+        calls = []
+        def missing(*, prose, world):
+            result = analysis(prose=prose, world=world)
+            result["projection"]["remaining_semantic_task_codes"] = []
+            result["typed"]["blocker_codes"] = []
+            return result
+        def rewrite(*, source, defects):
+            calls.append(source)
+            return good_rewrite(source=source, defects=defects)
+        with TemporaryDirectory() as root:
+            result = run(Path(root) / "stage", checker=missing, writer=rewrite)
+        self.assertEqual(calls, [])
+        self.assertEqual(result["reason_code"], "V020_SCENE_CHECK_FAILED_SAFE")
+        self.assertFalse(result["canonical_commit_authorized"])
 
     def test_source_change_or_attempt_policy_mismatch_refuses_replay(self):
         with TemporaryDirectory() as root:
