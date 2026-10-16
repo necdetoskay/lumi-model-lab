@@ -68,6 +68,40 @@ jobs:
           path: ${{ runner.temp }}/sera-v038-two-scene-smoke.json
           retention-days: 90
           if-no-files-found: error
+      - name: Verify blind provider-double recovery across two SQLite story scenes
+        run: |
+          python -m experiments.sera.blind_ensemble_smoke_v039 \
+            --output "$RUNNER_TEMP/sera-v039-blind-story-proof.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(os.environ["RUNNER_TEMP"]) / "sera-v039-blind-story-proof.json"
+          proof = json.loads(p.read_text(encoding="utf-8"))
+          assert proof["status"] == "SYNTHETIC_BLIND_RECOVERY_TWO_SCENE_PASS"
+          assert proof["fixture_character_count"] == 3
+          assert proof["final_revision"] == 2
+          assert proof["final_watch"] == {
+              "owner": "mara", "holder": "elin", "location": "hallway",
+          }
+          assert proof["sqlite_hash_chain_replay"] is True
+          assert proof["model_call_count"] == 0
+          assert proof["production_db_writes"] == 0
+          assert proof["canonical_commit_authorized"] is False
+          assert proof["semantic_completeness_proven"] is False
+          assert all([row["status"] for row in scene["source_only_attempts"]] ==
+                     ["REEXTRACTION_REQUIRED", "SOURCE_BOUND_CANDIDATE"]
+                     for scene in proof["scenes"])
+          assert all(scene["assurance_status"] == "HOLD"
+                     for scene in proof["scenes"])
+          print("SERA_V039_BLIND_STORY_RECOVERY_NONCANONICAL_PASS")
+          PY
+      - name: Archive offline blind synthetic recovery evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v039-blind-synthetic-story-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v039-blind-story-proof.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Verify immutable source Spine compilation
         run: >-
           python -m experiments.sera.spine_contracts
