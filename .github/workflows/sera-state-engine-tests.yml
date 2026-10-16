@@ -31,3 +31,16 @@ jobs:
           evidence/v4-2-mara-run-38794774463/sonnet-original-spine-pre-haiku.json
       - name: Score synthetic gold extraction corpus
         run: python -m experiments.sera.gold_calibration
+      - name: Audit real Mara first-scene HOLD without state writes
+        run: |
+          python - <<'PY'
+          from experiments.sera.mara_s1_v04_audit import audit_real_mara
+          audit=audit_real_mara()
+          assert audit["candidate_count"] == 9
+          assert audit["candidate_statuses"] == {"HOLD": 9}
+          assert audit["unregistered_physical_candidates"] == ["new:bench","new:pencil"]
+          assert audit["commit_authorized"] is False
+          print("MARA_LIVE_SOURCE_AUDIT",audit["candidate_statuses"])
+          print("UNREGISTERED_PHYSICAL_OBJECTS",audit["unregistered_physical_candidates"])
+          print("REAL_MARA_CANONICAL_COMMITS",audit["eventgraph_committed_count"])
+          PY
