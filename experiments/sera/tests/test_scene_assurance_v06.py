@@ -8,6 +8,8 @@ from __future__ import annotations
 from copy import deepcopy
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
+import sqlite3
 import unittest
 
 from experiments.sera.coverage import CoverageError
@@ -18,6 +20,7 @@ from experiments.sera.scene_contract_v06 import make_contract, align_intents
 from experiments.sera.scene_assurance_v06 import (
     audit_scene, repair_routes,
 )
+from experiments.sera.observation_archive_v06 import ObservationArchive
 from experiments.sera.aspect_epistemic_v06 import (
     proposition, character_stance, review_aspect_change,
 )
@@ -314,6 +317,67 @@ class AssuranceIntegrationV06Tests(unittest.TestCase):
         self.assertFalse(r["canonical_commit_authorized"])
         self.assertIn("LEDGER_ALL_SENTENCES_UNREVIEWED",r["findings"])
         self.assertIn("INDEPENDENT_EXTRACTION_NOT_PERFORMED",r["findings"])
+
+    def test_t2_sightings_persist_without_creating_world_entities(self):
+        audit = audit_scene(
+            prose=REAL["prose"], scene_key=REAL["scene_id"],
+            entry_revision=0, registry=REAL_REGISTRY,
+            candidate_lexicon=LEXICON,
+        )
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/"t2-archive.sqlite"
+            with ObservationArchive(path) as archive:
+                receipt=archive.save(
+                    inspection_id="mara-s1-scanner-v06",stream_id="mara",
+                    inspection=audit,
+                )
+                self.assertFalse(receipt["idempotent"])
+                self.assertEqual(receipt["canonical_db_writes"], 0)
+                self.assertTrue(archive.save(
+                    inspection_id="mara-s1-scanner-v06",stream_id="mara",
+                    inspection=audit,
+                )["idempotent"])
+                for entity in ("candidate:bench", "candidate:pencil"):
+                    sightings=archive.sightings(
+                        stream_id="mara",candidate_ref=entity,
+                    )
+                    self.assertTrue(sightings)
+                    self.assertTrue(all(
+                        s["tier"]=="T2" and not s["canonical_entity_created"]
+                        for s in sightings
+                    ))
+                with self.assertRaises(sqlite3.DatabaseError):
+                    archive.db.execute("DELETE FROM candidate_sightings")
+                with self.assertRaises(sqlite3.DatabaseError):
+                    archive.db.execute("UPDATE inspection_archive "
+                                       "SET result_status='COMMITTED'")
+            with ObservationArchive(path) as opened:
+                previous=opened.inspection("mara-s1-scanner-v06")
+                self.assertEqual(previous["status"], "HOLD")
+                self.assertFalse(previous["canonical_commit_authorized"])
+                self.assertEqual(previous["world_db_writes"],0)
+
+    def test_archive_rejects_any_canonical_claim_or_recycled_id(self):
+        inspection=audit_scene(
+            prose=REAL["prose"],scene_key=REAL["scene_id"],
+            entry_revision=0,registry=REAL_REGISTRY,
+            candidate_lexicon=LEXICON,
+        )
+        with ObservationArchive() as archive:
+            archive.save(inspection_id="one",stream_id="mara",
+                         inspection=inspection)
+            changed=deepcopy(inspection)
+            changed["findings"]=[]
+            with self.assertRaisesRegex(
+                    CoverageError,"OBSERVATION_ID_REUSE_CONFLICT"):
+                archive.save(inspection_id="one",stream_id="mara",
+                             inspection=changed)
+            changed=deepcopy(inspection)
+            changed["canonical_commit_authorized"]=True
+            with self.assertRaisesRegex(
+                    CoverageError,"OBSERVATION_CANONICAL_WRITE_NOT_ALLOWED"):
+                archive.save(inspection_id="other",stream_id="mara",
+                             inspection=changed)
 
     def test_contract_without_aligner_held_not_assumed_matched(self):
         contract=make_contract(
