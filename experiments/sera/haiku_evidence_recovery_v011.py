@@ -146,3 +146,47 @@ def recover_historical_first(*,audit:dict,task_artifact:dict,
     recovered["historical_provider_response_id"]=RESPONSE_ID
     recovered["historical_provider_reported_cost"]=0.001252
     return recovered
+
+
+SECOND_LAUNCH="sera-haiku-two-38865139580"
+SECOND_REQUEST_SHA="75b76a72fd0959497831d2fec0c5c11bb556c99524451e6f022be41c188a2637"
+SECOND_RESPONSE_ID="gen-1792134407-PqvZxmTDP1L3FTPTumf7"
+
+def recover_historical_second(*,audit:dict,task_artifact:dict,
+                              manifest:dict)->dict:
+    """Exact second historical Haiku response: DOCUMENT_WRITE, not speech."""
+    qualify_source(audit)
+    require(isinstance(manifest,dict) and
+            manifest.get("schema")=="sera.haiku-two-remaining.v0.11.1" and
+            manifest.get("launch_id")==SECOND_LAUNCH and
+            manifest.get("new_provider_calls")==1 and
+            manifest.get("completed_tasks")==["task_001"] and
+            manifest.get("pending_tasks")==["task_002","task_003"] and
+            manifest.get("canonical_commit_authorized") is False,
+            "PROBE_SECOND_MANIFEST_NOT_PINNED")
+    require(isinstance(task_artifact,dict) and
+            task_artifact.get("task_id")=="task_002" and
+            task_artifact.get("request_sha256")==SECOND_REQUEST_SHA and
+            task_artifact.get("provider_response_id")==SECOND_RESPONSE_ID and
+            task_artifact.get("model_requested")==MODEL and
+            task_artifact.get("observed_model")==MODEL and
+            task_artifact.get("finish_reason")=="stop" and
+            task_artifact.get("provider_reported_cost")==0.001472 and
+            task_artifact.get("canonical_commit_authorized") is False,
+            "PROBE_SECOND_RESPONSE_NOT_PINNED")
+    request=make_task_request(audit=audit,task_id="task_002")
+    require(request["request_sha256"]==SECOND_REQUEST_SHA,
+            "PROBE_SECOND_REQUEST_MISMATCH")
+    out=recover_model_task(
+        risk_audit=audit,task_id="task_002",
+        raw_provider_content=task_artifact.get("raw_content"))
+    require(out["bound_advisory"]["verdict_model_proposed"]=="DOCUMENT_WRITE" and
+            out["bound_advisory"]["kind_model_proposed"]=="WRITE" and
+            out["bound_advisory"]["effect_model_proposed"]=="DOCUMENT" and
+            out["quote_binding_method"]==
+                "TYPOGRAPHIC_DOUBLE_QUOTES_EQUIVALENCE_UNVERIFIED",
+            "PROBE_SECOND_NOT_SOURCE_BOUND_DOCUMENT_WRITE")
+    out["historical_launch_id"]=SECOND_LAUNCH
+    out["historical_provider_response_id"]=SECOND_RESPONSE_ID
+    out["historical_provider_reported_cost"]=0.001472
+    return out
