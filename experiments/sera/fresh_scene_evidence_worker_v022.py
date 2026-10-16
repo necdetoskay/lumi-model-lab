@@ -157,7 +157,9 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     api_key, extraction_model, semantic_model, typed_model,
                     provider_call=one_provider_call,
                     fallback_model=None,
-                    max_model_requests=24, observed_spend_guard_usd="0.30"):
+                    max_model_requests=24, observed_spend_guard_usd="0.30",
+                    trusted_temporal_builder=None,
+                    temporal_policy_id=None):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -173,6 +175,12 @@ def create_preparer(*, evidence_root, work_root, scene_key,
              isinstance(typed_registry, dict) and
              set(typed_registry) == {"openables", "documents"},
              "V022_REGISTRY_CONFIGURATION_INVALID")
+    _require((trusted_temporal_builder is None and
+              temporal_policy_id is None) or
+             (callable(trusted_temporal_builder) and
+              isinstance(temporal_policy_id, str) and
+              bool(temporal_policy_id.strip())),
+             "V024_TEMPORAL_BUILDER_POLICY_INVALID")
     _require(type(max_model_requests) is int and
              1 <= max_model_requests <= 100,
              "V022_REQUEST_GUARD_INVALID")
@@ -211,6 +219,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             "max_model_requests": max_model_requests,
             "observed_spend_guard_usd": str(guard),
         }
+        if trusted_temporal_builder is not None:
+            contract["temporal_policy_id"] = temporal_policy_id
         job_id = sha256(canonical(contract).encode("utf-8")).hexdigest()
         root = workroot / job_id
         root.mkdir(parents=True, exist_ok=True)
@@ -368,10 +378,24 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 bind=lambda ans: _validate_typed(prose, ans),
             )
             _check_critical_coverage(report, typed)
+            temporal_case = None
+            if trusted_temporal_builder is not None:
+                # Application-owned route/time policy, never a model's
+                # self-selected destination or invented action minute.
+                temporal_case = trusted_temporal_builder(
+                    prose=prose, world=deepcopy(world),
+                    extraction_report=deepcopy(report),
+                )
+                _require(temporal_case is None or
+                         (isinstance(temporal_case, dict) and
+                          temporal_case.get("entry") == world and
+                          temporal_case.get("scene_key") == scene_key),
+                         "V024_TEMPORAL_APPLICATION_POLICY_INVALID")
             bundle = build_bundle(
                 prose=prose, world=world,
                 extraction_report=report, semantic_summary=summary,
                 typed_registry=roles, typed_candidates=typed,
+                temporal_case=temporal_case,
             )
             outroot.mkdir(parents=True, exist_ok=True)
             if target.exists():
