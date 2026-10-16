@@ -111,11 +111,11 @@ def validate_event(*,event:dict,state:dict,prose:str):
          set(event["payload"])==TYPES[event["type"]],
          "V013_EVENT_PAYLOAD_INVALID")
     _proof(event["evidence"],prose)
-    need(event["evidence"]["start"]>state["last_source_offset"],
-         "V013_EVENT_NARRATIVE_ORDER_OR_DUPLICATE")
     need(event["event_id"] not in [x["event"]["event_id"]
                                    for x in state["events"]],
          "V013_EVENT_ID_REPLAY")
+    need(event["evidence"]["start"]>state["last_source_offset"],
+         "V013_EVENT_NARRATIVE_ORDER_OR_DUPLICATE")
     actor=_entity(state["base_world"],event["actor_id"],"CHARACTER")
     obj=_entity(state["base_world"],event["object_id"],"OBJECT")
     need(actor["location"]==obj["location"],"V013_ACTOR_OBJECT_NOT_COLOCATED")
