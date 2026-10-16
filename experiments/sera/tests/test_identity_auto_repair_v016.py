@@ -127,6 +127,20 @@ class AutomaticIdentityRepairTests(unittest.TestCase):
         self.assertIn("V016_TARGETED_REPAIR_RESPONSE_INVALID",
                       res["quarantined_proposals"][0]["error_code"])
 
+    def test_network_failure_is_automatic_abstention_for_only_one_identity(self):
+        calls=[]
+        def provider_failure(task):
+            calls.append(task["target_ref"])
+            raise ConnectionError("synthetic provider unreachable")
+        output=run(json.dumps(problem_response()),model_repair=provider_failure)
+        self.assertEqual(calls,["new:strike_record"])
+        self.assertEqual(output["accepted_source_bound_count"],15)
+        self.assertEqual(output["automatic_abstain_count"],1)
+        self.assertEqual(output["additional_model_calls"],1)
+        self.assertIn("provider unreachable",
+                      output["quarantined_proposals"][0]["error_code"])
+        self.assertFalse(output["canonical_commit_authorized"])
+
     def test_durable_checkpoint_each_step_before_and_after_model(self):
         checkpoints=[]
         def one(t):
