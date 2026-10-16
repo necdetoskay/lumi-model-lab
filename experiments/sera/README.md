@@ -1177,3 +1177,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Two characters / two scenes: Mara hands the watch to Elin, then Elin moves with it to hallway. Shared world revisions **0 → 1 → 2**, retained watch OWNER Mara vs HOLDER Elin, registered route and coherent item position. Invalid/reported text, stale revision, impossible journey, wrong holder and forged route fail before DB mutation.
 - `ensemble_story_smoke_v038.py` produces inspectable machine-readable proof for self-hosted CI and confirms immutable replay and zero external model calls, production writes, or canon commit authority.
 - **Honest limit:** v0.6 scene assurance deliberately stays HOLD, no independent semantic extraction or real StoryForge writer was invoked; fixture evidence is NOT live G2 or semantic gold. Frozen actual Mara S1 still HOLD, no model output-token ceiling, no main merge.
+
+
+## v0.39 — blind synthetic extraction with automatic retry (STORY / LAB ONLY)
+
+[Architecture and safety boundaries](./SERA_V039_BLIND_SYNTHETIC_STORY_RECOVERY.md).
+
+- Reuses the actual v0.10 `create_plan` / `bind_batch` / `aggregate` blind sentence-sweep. Deterministic nonbillable model-double returns an incomplete actor/object report, then a corrected source-bound report. Missing physical entity hints, fabricated quotes, omitted events and reported-only claims cannot be silently promoted to objective state.
+- Exact independently provided synthetic fixture grant + v0.38 spatial/relational feasibility and v0.2 reducer parity must pass before any v0.37 SQLite simulation commit. Mara gives watch to Elin, Elin carries it to hallway, shared world 0 → 1 → 2 and hash-chain replays. Scope-scoped IDs avoid v0.10 batch-local ID collisions.
+- Unsupported/failed source interpretation ends with `FAILED_SAFE_FINAL` and zero unsafe world writes; no manual intervention, external provider, model output token ceilings, G2 canon authority or production DB writes.
+- Test harness `blind_ensemble_smoke_v039.py` produces a self-hosted CI synthetic proof artifact. **Limit**: scripted responses do not prove independent real LLM semantic recall; the offline v0.6 assurance remains HOLD. Durable provider request recovery, full multi-sentence extraction, model-driven replan/rewrite and real StoryForge integration remain future work.
