@@ -273,16 +273,17 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     _require(_load(prior) == previous,
                              "V030_EVIDENCE_PRIOR_FAILURE_DRIFT")
                 final.unlink()
-            if target.is_file():
-                verified = _load(target)
-                _require(isinstance(verified, dict) and
-                         verified.get("prose_sha256") == source_sha and
-                         verified.get("world_sha256") == world_sha,
-                         "V022_COMPLETED_EVIDENCE_SOURCE_OR_WORLD_CHANGED")
-                return previous
-            # Final receipt is recoverable, but exported evidence vanished.
-            # Regenerate from the already-archived paid model replies.
-            final.unlink()
+            else:
+                if target.is_file():
+                    verified = _load(target)
+                    _require(isinstance(verified, dict) and
+                             verified.get("prose_sha256") == source_sha and
+                             verified.get("world_sha256") == world_sha,
+                             "V022_COMPLETED_EVIDENCE_SOURCE_OR_WORLD_CHANGED")
+                    return previous
+                # A completed receipt can be reconstructed from already
+                # archived paid envelopes if its export vanished.
+                final.unlink()
 
         spent = Decimal("0")
         calls = 0
