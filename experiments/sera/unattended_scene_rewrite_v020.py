@@ -99,6 +99,12 @@ def _assess(result, prose, world):
                 "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL" and
                 "qualification" in result and
                 typed.get("empty_facet_scope_requires_full_gate") is True)
+            or (typed.get("status") ==
+                "DEFERRED_TO_V027_ORDERED_FACETS_NONCANONICAL" and
+                "qualification" in result and
+                typed.get("ordered_facet_scope_requires_full_gate") is True
+                and isinstance(result["qualification"], dict) and
+                result["qualification"].get("ordered_facet_preview") is not None)
         )
     )
     failures = (projection.get("remaining_semantic_task_codes", []) +
