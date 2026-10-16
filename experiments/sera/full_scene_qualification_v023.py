@@ -1,0 +1,191 @@
+"""SERA v0.23 — noncanonical full-scene coverage + authority quarantine.
+
+Deterministic qualification AFTER v0.10/0.18 source-bound extraction,
+v0.19 semantic risk projection and v0.20 typed facet simulation.
+Prevents a successful *partial* openable/document simulation from being
+mistaken for complete physical/causal/epistemic event coverage.
+
+A qualified scene remains NONCANONICAL. No human review dependency, no
+WorldState/EventGraph writes, no interpretation of model confidence as truth,
+no artificial output token cap or scene-specific Mara condition.
+"""
+from __future__ import annotations
+
+from collections import Counter
+
+from experiments.sera.coverage import CoverageError, prose_hash
+from experiments.sera.sentence_ledger_v06 import sentences
+from experiments.sera.world_state_v02 import validate as validate_world
+from experiments.sera.artifact_scene_checker_v021 import digest
+
+SCHEMA = "sera.full-scene-qualification.v0.23"
+# These are stateful operations v0.13 CANNOT currently simulate safely.
+UNSUPPORTED_MUTATIONS = frozenset({
+    "MOVE", "TRANSFER", "CHANGE_STATE", "KNOWLEDGE_UPDATE",
+    "LEARN_FACT", "DISCOVER",
+})
+TYPED_EFFECTS = {
+    "OPEN": frozenset({"OBSERVE_OPENABLE", "SET_OPENABLE"}),
+    "CLOSE": frozenset({"SET_OPENABLE"}),
+    "WRITE": frozenset({"APPEND_DOCUMENT_ENTRY"}),
+}
+NONOBJECTIVE = frozenset({
+    "REPORTED_CLAIM", "HYPOTHESIS", "NEGATED", "UNCERTAIN",
+})
+SERIOUS_FINDING_PREFIXES = (
+    "SWEEP_UNACCOUNTED_ACTION_CUE:",
+    "SWEEP_MISSING_ENTITY_HINT:",
+    "SWEEP_UNRESOLVED_SENTENCE:",
+    "SWEEP_UNMAPPED_EVENT:",
+    "SWEEP_CLAIM_PROMOTED_TO_WORLD:",
+    "SWEEP_DISPOSITION_EVENT_CONFLICT:",
+    "SWEEP_EVENT_DISPOSITION_CONFLICT:",
+    "SWEEP_EXPECTED_EVENT_NOT_EXTRACTED:",
+    "SWEEP_POSSIBLY_MISCLASSIFIED:",
+)
+
+
+def _ensure(ok, code):
+    if not ok:
+        raise CoverageError(code)
+
+
+def qualify(*, prose, world, bundle, projection, typed):
+    validate_world(world)
+    _ensure(isinstance(bundle, dict) and
+            bundle.get("schema") == "sera.recheck-evidence-bundle.v0.21" and
+            bundle.get("prose_sha256") == prose_hash(prose) and
+            bundle.get("world_sha256") == digest(world),
+            "V023_BUNDLE_SOURCE_OR_WORLD_MISMATCH")
+    report = bundle.get("extraction_report")
+    _ensure(isinstance(report, dict) and
+            report.get("schema") == "sera.blind-sweep-bound.v0.10" and
+            report.get("source_prose_sha256") == prose_hash(prose) and
+            report.get("canonical_commit_authorized") is False and
+            report.get("world_state_writes") == 0 and
+            report.get("sentences_accounted_for") == len(sentences(prose)),
+            "V023_SOURCE_SWEEP_INCOMPLETE")
+    _ensure(isinstance(projection, dict) and
+            projection.get("schema") == "sera.event-candidate-repair.v0.19" and
+            projection.get("prose_sha256") == prose_hash(prose) and
+            projection.get("canonical_commit_authorized") is False and
+            projection.get("world_db_writes") == 0 and
+            isinstance(typed, dict) and
+            typed.get("schema") == "sera.typed-aspect-candidate-recovery.v0.20" and
+            typed.get("prose_sha256") == prose_hash(prose) and
+            typed.get("world_sha256") == digest(world) and
+            typed.get("canonical_commit_authorized") is False and
+            typed.get("world_db_writes") == 0,
+            "V023_UPSTREAM_CHECK_SOURCE_OR_AUTHORITY_MISMATCH")
+    events = report.get("candidate_events")
+    candidates = bundle.get("typed_candidates")
+    _ensure(isinstance(events, list) and isinstance(candidates, list),
+            "V023_EVENTS_MISSING")
+    sid_set = {s["id"] for s in sentences(prose)}
+    known = world["entities"]
+    defects = []
+    counters = Counter()
+
+    def flag(code, *, event_id=None, sentence_id=None):
+        row = {"code": code}
+        if event_id is not None:
+            row["event_id"] = event_id
+        if sentence_id is not None:
+            row["sentence_id"] = sentence_id
+        defects.append(row)
+        counters[code] += 1
+
+    seen = set()
+    for event in events:
+        _ensure(isinstance(event, dict) and
+                isinstance(event.get("event_id"), str) and
+                event["event_id"] not in seen and
+                event.get("sentence_id") in sid_set and
+                type(event.get("start")) is int and
+                type(event.get("end")) is int and
+                0 <= event["start"] < event["end"] <= len(prose) and
+                prose[event["start"]:event["end"]] == event.get("quote") and
+                isinstance(event.get("entity_refs"), list),
+                "V023_EVENT_SOURCE_BINDING_INVALID")
+        seen.add(event["event_id"])
+        ident, sid = event["event_id"], event["sentence_id"]
+        kind, effect = event.get("kind"), event.get("effect")
+        refs = event["entity_refs"]
+        _ensure(all(isinstance(x, str) and x for x in refs),
+                "V023_EVENT_ENTITY_REF_INVALID")
+        if kind == "UNMAPPED" or effect == "UNKNOWN":
+            flag("UNMAPPED_OR_UNKNOWN_EFFECT", event_id=ident, sentence_id=sid)
+        if event.get("epistemic") in NONOBJECTIVE and effect in (
+            "WORLD", "OBJECT", "DOCUMENT",
+        ):
+            flag("NONOBJECTIVE_CLAIM_HAS_PHYSICAL_EFFECT",
+                 event_id=ident, sentence_id=sid)
+        if kind in UNSUPPORTED_MUTATIONS and effect not in (
+            "NONE", "UNKNOWN",
+        ):
+            flag("STATE_EFFECT_WITHOUT_QUALIFIED_REDUCER",
+                 event_id=ident, sentence_id=sid)
+        # A physical event must have a known, active, registered object /
+        # character. Mentions such as new:train never become world truth.
+        if effect in ("OBJECT", "WORLD", "DOCUMENT"):
+            if not refs or any(
+                ref not in known or
+                known[ref].get("lifecycle") != "ACTIVE"
+                for ref in refs
+            ):
+                flag("PHYSICAL_EFFECT_UNREGISTERED_OR_PROVISIONAL_REF",
+                     event_id=ident, sentence_id=sid)
+        if kind in TYPED_EFFECTS and effect in ("OBJECT", "DOCUMENT"):
+            if not any(
+                typed_row.get("type") in TYPED_EFFECTS[kind] and
+                typed_row.get("sentence_id") == sid and
+                isinstance(typed_row.get("evidence"), dict) and
+                type(typed_row["evidence"].get("start")) is int and
+                type(typed_row["evidence"].get("end")) is int and
+                typed_row["evidence"]["start"] < event["end"] and
+                event["start"] < typed_row["evidence"]["end"]
+                for typed_row in candidates if isinstance(typed_row, dict)
+            ):
+                flag("PHYSICAL_EFFECT_NOT_REDUCER_COVERED",
+                     event_id=ident, sentence_id=sid)
+
+    # v0.10 already validates source provenance and lexical cues. A
+    # suspicious source finding cannot disappear because v0.19 only
+    # audits targeted semantic risks.
+    for issue in report.get("findings", []):
+        _ensure(isinstance(issue, str), "V023_SWEEP_FINDINGS_INVALID")
+        if issue.startswith(SERIOUS_FINDING_PREFIXES):
+            flag("SOURCE_COMPLETENESS_OR_DISPOSITION_DEFECT")
+    if projection.get("remaining_semantic_task_codes") or \
+       projection.get("unsupported_semantic_tasks") or \
+       projection.get("temporal_failure"):
+        flag("UNRESOLVED_SOURCE_SEMANTIC_OR_TIME_DEFECT")
+    if typed.get("blocker_codes") or \
+       typed.get("status") != "TYPED_FACETS_SIMULATED_NONCANONICAL":
+        flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
+
+    # Do not invent a trusted temporal schedule. If this source contains
+    # movement, a separate location/travel/time reducer is needed.
+    # The v0.13 openable/document facet check does not qualify movement.
+    status = ("REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL" if defects
+              else "FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL")
+    return {
+        "schema": SCHEMA,
+        "prose_sha256": prose_hash(prose),
+        "world_sha256": digest(world),
+        "status": status,
+        "source_sentence_count": len(sentences(prose)),
+        "source_event_count": len(events),
+        "typed_candidate_count": len(candidates),
+        "defects": defects,
+        "defect_frequency": dict(sorted(counters.items())),
+        "next_automatic_action": (
+            "AUTO_REEXTRACT_OR_REPLAN_SCENE" if defects else
+            "CONTINUE_INDEPENDENT_CANON_QUALIFICATION"
+        ),
+        "semantic_truth_proven": False,
+        "all_state_types_implemented": False,
+        "canonical_commit_authorized": False,
+        "world_db_writes": 0,
+        "requires_manual_intervention": False,
+    }
