@@ -158,10 +158,15 @@ class FullSceneQualificationV023Tests(unittest.TestCase):
                 "REPORTED_CLAIM"
             )
             doc.write_text(json.dumps(bundle), encoding="utf-8")
-            # Since v0.19's risk task set changed, the existing v0.18 receipt
-            # is stale: do not declare this scene qualified or reuse it.
-            with self.assertRaises(CoverageError):
-                _checker(root)(prose=SOURCE_2, world=entry())
+            # Neither v0.19 nor the v0.20 object simulation alone
+            # detects this OBSERVE/REPORTED contradiction. The new full
+            # gate must quarantine it as a nonobjective physical effect.
+            result = _checker(root)(prose=SOURCE_2, world=entry())
+            self.assertIn("NONOBJECTIVE_CLAIM_HAS_PHYSICAL_EFFECT",
+                          [x["code"] for x in
+                           result["qualification"]["defects"]])
+            self.assertFalse(result["qualification"]
+                             ["canonical_commit_authorized"])
 
     def test_default_v021_replay_stays_legacy_but_never_canon(self):
         with TemporaryDirectory() as d:
