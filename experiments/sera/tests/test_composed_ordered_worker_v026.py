@@ -117,8 +117,7 @@ def temporal_builder(*, prose, world, extraction_report, **unused):
             "actor_id": (
                 "vane" if row["kind"] == "TRANSFER"
                 else "mara" if row["kind"] == "KNOWLEDGE_UPDATE"
-                else "vane" if row["quote"].startswith("Vane")
-                else "mara"
+                else row["entity_refs"][0]
             ),
             "kind": ("MOVEMENT" if row["kind"] == "MOVE" else "ACTION"),
             "to_location": ("archive" if row["kind"] == "MOVE"
