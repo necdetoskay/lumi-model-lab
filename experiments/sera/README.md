@@ -356,3 +356,26 @@ python -m unittest discover -s experiments/sera/tests -v
 See the separate pinned one-shot GitHub Actions workflow for isolated
 evidence and provider billing reports. Historical failed/truncated model
 attempts do not establish scene truth, nor do 276 offline passing tests.
+
+## SERA v0.10 actual provider result / six-batch resume
+
+The first paid blind model pilot completed s009–s012 (4/28 sentences)
+in [Actions 38860727745](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38860727745):
+`google/gemini-3.7-flash`, **USD 0.005589** reported cost, `finish_reason=stop`,
+**no model-output token limit set**. The provider detected three event
+candidates, including Vane **closing the watch case**, but returned
+grammatical mention-role labels outside the strict enum.
+
+The existing paid raw response was successfully reprocessed without
+another model call in [offline forensics 38861188156](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38861188156),
+recovering **4 source rows, 7 candidate mentions and 3 candidate events**
+while preserving the **original** request fingerprint. Whitelisted grammar
+labels map only to unasserted `MENTIONED`; the watch-case and body-part
+candidates are not automatically registered as world objects.
+
+`mara_s1_remaining_sweep_v010.py` reuses that original paid batch and
+handles only the **six missing source batches**, with separate immutable
+provider evidence, per-batch actual reported cost, a measured dollar
+spend stop and hard stop on provider or schema errors. A successful full
+28-sentence run is still semantic HOLD, **not** a canonical S1 exit state.
+See [v0.10 architecture](./SERA_V010_AUTOMATIC_EXTRACTION.md).
