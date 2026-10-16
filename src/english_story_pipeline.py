@@ -329,6 +329,7 @@ def call_structured_json_with_retry(
     seed: int | None,
     request_class: str,
     max_parse_attempts: int = 2,
+    forbid_output_token_limit: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     parse_failures: list[dict[str, Any]] = []
     last_text: str | None = None
@@ -358,6 +359,7 @@ def call_structured_json_with_retry(
             seed=effective_seed,
             request_class=request_class,
             structured_output=True,
+            forbid_output_token_limit=forbid_output_token_limit,
         )
         last_text = text
         last_body = body
