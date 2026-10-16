@@ -138,6 +138,34 @@ class AutonomousSceneRecoveryTests(unittest.TestCase):
         self.assertTrue(rebuilt["recovered_from_archived_provider_receipts"])
         self.assertEqual(out["provider_reported_total_spend_usd"], "0.001")
 
+    def test_crash_reuses_paid_primary_and_targeted_without_another_charge(self):
+        calls = []
+        def provider(*, model, prepared):
+            calls.append(prepared)
+            if len(calls) == 1:
+                return envelope(problem_response())
+            row = next(x for x in problem_response()["rows"]
+                       if x["entity_ref"] == "new:strike_record")
+            row["relation"] = "POTENTIAL_PART_OF"
+            return envelope({"rows": [row]})
+        with TemporaryDirectory() as directory:
+            folder = Path(directory) / "stage"
+            first = run(folder, provider, max_scene_attempts=2)
+            self.assertEqual(first["status"],
+                             "IDENTITY_CANDIDATES_READY_NONCANONICAL")
+            (folder / "final.json").unlink()
+            (folder / "attempt_01" / "result.json").write_text(
+                json.dumps({"status": "STARTED"}), encoding="utf-8")
+            resumed = run(folder, provider, max_scene_attempts=2)
+            stage = json.loads(
+                (folder / "attempt_01" / "result.json").read_text())
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(stage["recovered_from_archived_provider_receipts"])
+        self.assertEqual(stage["result"]["accepted_source_bound_count"], 16)
+        self.assertEqual(resumed["provider_reported_total_spend_usd"], "0.002")
+        self.assertEqual(resumed["status"],
+                         "IDENTITY_CANDIDATES_READY_NONCANONICAL")
+
     def test_crashed_stage_without_valid_receipt_fails_safe_not_resend(self):
         calls = []
         def provider(*, model, prepared):
