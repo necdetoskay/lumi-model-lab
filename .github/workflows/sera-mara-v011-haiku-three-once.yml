@@ -1,0 +1,120 @@
+name: SERA v0.11 Independent Haiku Three-Probe One-Shot
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-v011-haiku-once-20261016.json
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: sera-v011-haiku-three-oneuse-20261016
+  cancel-in-progress: false
+jobs:
+  independent-probes:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V011-HAIKU-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate exact source grant and no-token-cap policy
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,subprocess
+          from experiments.sera.mara_s1_haiku_probes_v011 import MODEL,MAX_PROVIDER_ATTEMPTS,USD_OBSERVED_SPEND_STOP
+          from experiments.sera.request_policy import verify_current_sera_clients
+          path=pathlib.Path("experiments/sera/launch/mara-s1-v011-haiku-once-20261016.json")
+          grant=json.loads(path.read_text(encoding="utf-8"))
+          expected={
+            "schema":"sera.mara-v011-independent-probes-grant.v0.1",
+            "authorized":True,
+            "scope":"THREE_TARGETED_MARA_S1_SEMANTIC_RISKS_ONLY",
+            "source_prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+            "risk_evidence_run_id":38862521913,
+            "model":"anthropic/claude-haiku-4.5",
+            "max_provider_attempts":3,
+            "observed_spend_stop_usd":"0.08",
+            "output_token_cap_set":False,
+            "no_retries":True,
+            "no_writer_regeneration":True,
+            "no_jev_call":True,
+            "no_canonical_commit":True,
+            "no_project_lumi_db_write":True,
+            "no_reruns":True,
+            "launch_id":"sera-mara-v011-haiku-once-20261016",
+          }
+          assert set(grant)==set(expected)|{"approved_code_sha"},"GRANT_SCHEMA_INVALID"
+          assert all(grant[k]==v for k,v in expected.items()),"GRANT_VALUES_INVALID"
+          prior=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert grant["approved_code_sha"]==prior,"GRANT_CODE_SHA_MISMATCH"
+          changed=subprocess.check_output([
+            "git","diff-tree","--no-commit-id","--name-only","-r","HEAD"
+          ],text=True).splitlines()
+          assert changed==[str(path)],"GRANT_NOT_SINGLE_FILE"
+          assert MODEL=="anthropic/claude-haiku-4.5"
+          assert MAX_PROVIDER_ATTEMPTS==3
+          assert str(USD_OBSERVED_SPEND_STOP)=="0.08"
+          verify_current_sera_clients()
+          print("SERA_V011_HAIKU_PINNED_ONE_USE_GRANT_GREEN")
+          PY
+          python3 -m unittest discover -s experiments/sera/tests -q
+      - name: Install preflight dependency
+        run: python -m pip install requests
+      - name: Obtain source-pinned real Mara risk report without paid model call
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v011-input"
+          gh run download 38862521913 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v011-real-mara-risk-report-38862521913 \
+            --dir "$RUNNER_TEMP/sera-v011-input"
+          test -s "$RUNNER_TEMP/sera-v011-input/risks.json"
+          python -m experiments.sera.mara_s1_haiku_probes_v011 \
+            --evidence "$RUNNER_TEMP/sera-v011-input/risks.json"
+      - name: Independently assess three risks with Haiku; no token cap
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$OPENROUTER_API_KEY" ]]; then
+            echo "SERA_V011_KEY_MISSING_NO_CALL"
+            exit 1
+          fi
+          python -m experiments.sera.mara_s1_haiku_probes_v011 \
+            --live --evidence "$RUNNER_TEMP/sera-v011-input/risks.json" \
+            --output-dir "$RUNNER_TEMP/sera-v011-haiku" \
+            --launch-id "sera-v011-haiku-$GITHUB_RUN_ID"
+          python3 - <<'PY'
+          import json,os
+          f=os.path.join(os.environ["RUNNER_TEMP"],"sera-v011-haiku","manifest.json")
+          d=json.load(open(f,encoding="utf-8"))
+          assert d["provider_attempts"]<=3
+          assert d["model_output_token_cap_configured"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["world_db_writes"]==0
+          print("SERA_V011_HAIKU_STATUS",d["status"])
+          print("SERA_V011_HAIKU_ATTEMPTS",d["provider_attempts"])
+          print("SERA_V011_HAIKU_COST",d["provider_reported_cost_usd"])
+          print("SERA_V011_HAIKU_COMPLETED",d["reviewed_task_ids"])
+          print("SERA_V011_HAIKU_PENDING",d["pending_task_ids"])
+          print("SERA_V011_HAIKU_ERROR",d.get("error_code"))
+          PY
+      - name: Preserve raw and bound independent Haiku answers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v011-haiku-targeted-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v011-haiku/
+          retention-days: 90
+          if-no-files-found: warn
