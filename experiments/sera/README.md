@@ -594,3 +594,37 @@ or given canonical WorldStore/WorldEvent commit rights.
 - Regression coverage: \`tests/test_scene_recovery_v017.py\`, \`tests/test_semantic_recovery_v018.py\`, \`tests/test_event_candidate_projection_v019.py\`. All use synthetic provider injection without billable calls.
 
 **Not yet a full autonomous story generator:** The writer/replanner has not consumed these noncanonical replan signals. Semantic source binding or inter-model agreement is not objective gold. A provider call with no recorded reply still needs external idempotency/reconciliation; final canonical EventGraph/WorldState commit authority is unimplemented. Mara S1 remains HOLD and the original frozen Sonnet Spine is unchanged. The next stage must implement and qualify unattended affected-scene rewriting with durable paid receipts, full re-extraction, causal/time/scene-state checks, transactional release and automatic terminal failure without any human gate.
+
+
+## v0.19 — Real frozen Mara archived-provider replay (NO new LLM calls)
+
+The fully automated, self-hosted workflow
+[38882410488](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38882410488)
+retrieved the earlier **actual paid** Gemini 28-sentence/25-event archive
+(run `38861828582`) and three independent, archived Haiku 4.5 source
+advisories (run `38865604842`). It ran the original-source validation
+and generic v0.19 projection with **zero additional LLM/provider requests**,
+zero extra model cost, zero human-edit steps, zero production DB writes and
+no application-configured model output-token ceiling.
+
+Verified automatic **noncanonical** event reclassifications:
+- `batch_004:s014:e1`: `MOVE / CHARACTER_KNOWLEDGE` →
+  `OBSERVE / CHARACTER_KNOWLEDGE` (attention toward a record is not travel).
+- `batch_006:s021:e1`: `COMMUNICATE / NONE` →
+  `WRITE / DOCUMENT` (notebook addition is not spoken dialogue).
+
+The remaining typed transition task
+`OPENABLE_BEFORE_CLOSE_NEEDS_TYPED_ASPECT:s004` correctly remains
+unresolved: an open watch baseline and subsequent physical case closure
+require a controlled, authorized typed aspect/state transition. A supported
+*experimental* v0.13 simulated reducer exists, but the v0.19 pipeline must
+not unilaterally promote model opinions or invent an aspect binding.
+The result is `AUTO_REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL`,
+**not** Mara S1 acceptance.
+
+Reproducible proof: [self-hosted workflow source](../../.github/workflows/sera-v019-real-mara-archived-replay.yml),
+[actual archive replay module](./mara_s1_archived_semantic_replay_v019.py), and
+its structured artifact attached to the successful run. This is the next
+integration target for generic type-safe aspect proposals and automatic
+story-rewriter/replanner consumption, without per-story hardcoded rules or
+required human approvals.
