@@ -21,6 +21,7 @@ from pathlib import Path
 from experiments.sera.blind_identity_v015 import make_request
 from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.identity_stage_v016 import execute as identity_stage
+from experiments.sera.identity_auto_repair_v016 import repair as replay_identity
 from experiments.sera.request_policy import enforce_no_output_token_limit
 from experiments.sera.world_state_v02 import canonical
 
@@ -82,6 +83,52 @@ def _receipts_complete(attempt_dir):
         if not charge.is_finite() or charge < 0:
             return False, "V017_PROVIDER_CHARGE_INVALID"
     return True, None
+
+
+
+def _recover_completed_provider_receipts(*, attempt_dir, prose, world, census):
+    """Rebind durable paid evidence after a worker crash; ZERO new model calls.
+
+    Any in-flight unreceipted request is rejected before entering here.
+    Previously paid targeted replies remain archived; their interpretations
+    are conservatively NOT reconstructed as authority by this recovery.
+    """
+    receipts_ok, error = _receipts_complete(attempt_dir)
+    if not receipts_ok:
+        raise CoverageError(error)
+    primary = _read(attempt_dir / "primary.json")
+    original = primary.get("raw_content")
+    if not isinstance(original, str) or not original.strip():
+        raise CoverageError("V017_ARCHIVED_PRIMARY_CONTENT_INVALID")
+    ledger = _read(attempt_dir / "ledger.json")
+    saved = [item["ref"] for item in ledger
+             if isinstance(item, dict) and
+             item.get("stage") == "RAW_RESPONSE_SAVED"]
+    charges = Decimal("0")
+    for ref in saved:
+        name = ("primary.json" if ref == "ALL" else
+                "targeted_" + sha256(ref.encode("utf-8")).hexdigest()[:24]
+                + ".json")
+        charges += Decimal(str(_read(attempt_dir / name)["usage"]["cost"]))
+    # Recompute source-bound proposals with no external model callback.
+    # If a previously paid targeted answer is omitted, the supervisor
+    # automatically proceeds to a new full-scene attempt only when safe.
+    result = replay_identity(
+        prose=prose, world=world, census=census,
+        raw_provider_content=original, max_targeted_calls=0,
+    )
+    summary = {
+        "schema": "sera.identity-stage.v0.16",
+        "status": "AUTO_REPAIR_FINISHED_NONCANONICAL_HOLD",
+        "primary_calls": saved.count("ALL"),
+        "targeted_calls": len(saved) - saved.count("ALL"),
+        "provider_reported_total_spend_usd": float(charges),
+        "result": result, "error": None,
+        "recovered_from_archived_provider_receipts": True,
+        "canonical_commit_authorized": False, "world_db_writes": 0,
+    }
+    _persist(attempt_dir / "result.json", summary)
+    return summary
 
 
 def _ready(stage):
@@ -177,8 +224,18 @@ def execute(*, prose, world, census, call_model, output_dir,
                 break
             stage = _read(attempt_dir / "result.json")
             if stage.get("status") == "STARTED":
-                reason = "V017_INCOMPLETE_ATTEMPT_AFTER_CRASH"
-                break
+                receipts_ok, receipt_error = _receipts_complete(attempt_dir)
+                if not receipts_ok:
+                    reason = receipt_error
+                    break
+                try:
+                    stage = _recover_completed_provider_receipts(
+                        attempt_dir=attempt_dir, prose=prose,
+                        world=world, census=census,
+                    )
+                except (CoverageError, ValueError, TypeError, KeyError):
+                    reason = "V017_ARCHIVED_REBIND_FAILED_SAFE"
+                    break
         else:
             def provider(*, model, prepared):
                 # Only for a fresh full-scene re-extraction: prior judgments
