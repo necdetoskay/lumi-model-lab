@@ -15,7 +15,7 @@ def run_from_archives(*,six_dir:Path,pilot_zip:Path)->dict:
     source=prepare()
     pilot=read_evidence(pilot_zip)
     forensic=replay(evidence=pilot)  # source/old API response pinned exactly
-    if forensic["model_calls_during_replay"]!=0:
+    if forensic["paid_model_calls_during_replay"]!=0:
         raise CoverageError("MENTION_PILOT_NOT_OFFLINE")
     original=bind_batch(
         plan=source["plan"],batch_id="batch_003",
