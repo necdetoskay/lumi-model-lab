@@ -1,0 +1,77 @@
+name: SERA v0.40.1 — Replay Archived Real Model Receipts Without Billing
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/real_blind_receipt_replay_v0401.py
+      - experiments/sera/tests/test_real_blind_receipt_replay_v0401.py
+      - .github/workflows/sera-v0401-real-receipt-replay.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  replay-two-actual-models:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v0401-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v0401-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify SERA output-token policy and offline replay tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve immutable original real-model evidence; never request models
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v0401"
+          gh run download 38936451931 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v040-real-blind-once-38936451931 \
+            --dir "$RUNNER_TEMP/sera-v0401"
+          test -s "$RUNNER_TEMP/sera-v0401/result.json"
+          test -s "$RUNNER_TEMP/sera-v0401/provider_reply_1.json"
+          test -s "$RUNNER_TEMP/sera-v0401/provider_reply_2.json"
+      - name: Bind both actual paid responses to frozen source after strict JSON repair
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.real_blind_receipt_replay_v0401 \
+            --receipt-dir "$RUNNER_TEMP/sera-v0401" \
+            --output "$RUNNER_TEMP/sera-v0401/replay-proof.json"
+          python - <<'PY'
+          from pathlib import Path
+          import os,json
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v0401"/"replay-proof.json"
+          report=json.loads(p.read_text(encoding="utf-8"))
+          assert report["status"] == "REPLAYED_ACTUAL_MODEL_EVIDENCE_NONCANONICAL"
+          assert report["source_run_id"] == 38936451931
+          assert report["provider_calls_during_replay"] == 0
+          assert report["production_db_writes"] == 0
+          assert report["sqlite_lab_writes"] == 0
+          assert report["semantic_recall_proven"] is False
+          assert report["canonical_commit_authorized"] is False
+          assert len(report["models"]) == 2
+          assert report["models"][1]["original_v040_status"] ==               "MODEL_RESPONSE_SOURCE_BIND_HOLD"
+          assert report["models"][1].get("json_envelope") ==               "FULL_JSON_CODE_FENCE"
+          print("SERA_V0401_HAIKU_FENCED_JSON_RECOVERED_ACTUAL_RECEIPT_NONCANONICAL")
+          PY
+      - name: Archive unbilled actual-model replay results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v0401-actual-receipts-replay-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v0401/replay-proof.json
+          retention-days: 90
+          if-no-files-found: warn
