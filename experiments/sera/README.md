@@ -1167,3 +1167,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - `scene_inputs` distinctly returns private-data-filtered `writer_context` and `validator_world`; never send full validator state to a writer prompt. External fixture grant is required for any simulated event, and all commits remain NONCANONICAL.
 - Initial data + metadata are inserted in the same SQLite transaction. New tests cover multi-character custody, movement, replay, stale revisions, rollback, writer privacy and SQLite persistence.
 - Origin and Saga have reserved fixture fields/run kinds, but only STORY is active. Actual Mara S1 remains HOLD; no G2 DB write, migration, main merge, billable model call or app-defined output token ceiling.
+
+
+## v0.38 — source-bound two-scene SQLite story handoff (NONCANONICAL)
+
+[Architecture and hard authority boundaries](./SERA_V038_STORY_SCENE_REHEARSAL.md).
+
+- `story_scene_rehearsal_v038.py` obtains v0.37 SQLite `scene_inputs` and reuses **real** v0.6 sentence assurance, v0.24 spatial / v0.25 holder relation previews, v0.2 reducer and transactional WorldStore. A fixture source event MUST have one exact sentence, registered identities, source hash and an external **synthetic-only** event-fingerprint grant; only then can it mutate the isolated SQLite test world.
+- Two characters / two scenes: Mara hands the watch to Elin, then Elin moves with it to hallway. Shared world revisions **0 → 1 → 2**, retained watch OWNER Mara vs HOLDER Elin, registered route and coherent item position. Invalid/reported text, stale revision, impossible journey, wrong holder and forged route fail before DB mutation.
+- `ensemble_story_smoke_v038.py` produces inspectable machine-readable proof for self-hosted CI and confirms immutable replay and zero external model calls, production writes, or canon commit authority.
+- **Honest limit:** v0.6 scene assurance deliberately stays HOLD, no independent semantic extraction or real StoryForge writer was invoked; fixture evidence is NOT live G2 or semantic gold. Frozen actual Mara S1 still HOLD, no model output-token ceiling, no main merge.
