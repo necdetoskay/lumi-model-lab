@@ -1,0 +1,73 @@
+name: SERA v0.11 Haiku Historical Recovery Without Model Calls
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/haiku_historical_replay_v011.py
+      - .github/workflows/sera-v011-haiku-recovery-evidence.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-provider-forensics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run source-only tests
+        run: python -m unittest discover -s experiments/sera/tests -q
+      - name: Obtain the two pre-existing paid/source evidence archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera"
+          gh run download 38862521913 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v011-real-mara-risk-report-38862521913 \
+            --dir "$RUNNER_TEMP/sera"
+          gh run download 38863339302 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v011-haiku-targeted-38863339302 \
+            --dir "$RUNNER_TEMP/sera/haiku-historical"
+          test -s "$RUNNER_TEMP/sera/risks.json"
+          test -s "$RUNNER_TEMP/sera/haiku-historical/task_001.json"
+          test -s "$RUNNER_TEMP/sera/haiku-historical/manifest.json"
+          python - <<'PY'
+          import json,zipfile,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"sera"
+          with zipfile.ZipFile(root/"haiku-historical.zip","w",compression=zipfile.ZIP_DEFLATED) as z:
+              for name in ("manifest.json","task_001.json"):
+                  z.write(root/"haiku-historical"/name,arcname=name)
+          PY
+      - name: Rebind exact original Haiku answer without any API
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.haiku_historical_replay_v011 \
+            --risks "$RUNNER_TEMP/sera/risks.json" \
+            --historical-zip "$RUNNER_TEMP/sera/haiku-historical.zip" \
+            --output "$RUNNER_TEMP/sera/recovered-task-001.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"sera"/"recovered-task-001.json").read_text())
+          assert d["model_calls_during_recovery"]==0
+          assert d["bound_advisory"]["verdict_model_proposed"]=="STATE_OBSERVATION"
+          assert d["bound_advisory"]["kind_model_proposed"]=="OBSERVE"
+          assert d["quote_binding_method"]=="TYPOGRAPHIC_APOSTROPHE_EQUIVALENCE_UNVERIFIED"
+          assert d["provider_content_envelope"]=="FULL_JSON_CODE_FENCE"
+          assert d["canonical_commit_authorized"] is False
+          assert d["world_db_writes"]==0
+          print("SERA_REAL_HAIKU_TASK1_FORENSIC_GREEN")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-v011-haiku-recovery-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera/recovered-task-001.json
+          retention-days: 90
+          if-no-files-found: warn
