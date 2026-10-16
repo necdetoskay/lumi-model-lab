@@ -68,12 +68,15 @@ def qualify(*, prose, world, bundle, projection, typed):
     _ensure(isinstance(projection, dict) and
             projection.get("schema") == "sera.event-candidate-repair.v0.19" and
             projection.get("prose_sha256") == prose_hash(prose) and
+            projection.get("original_report_sha256") == digest(report) and
             projection.get("canonical_commit_authorized") is False and
             projection.get("world_db_writes") == 0 and
             isinstance(typed, dict) and
             typed.get("schema") == "sera.typed-aspect-candidate-recovery.v0.20" and
             typed.get("prose_sha256") == prose_hash(prose) and
             typed.get("world_sha256") == digest(world) and
+            typed.get("original_candidates_sha256") ==
+                digest(bundle.get("typed_candidates")) and
             typed.get("canonical_commit_authorized") is False and
             typed.get("world_db_writes") == 0,
             "V023_UPSTREAM_CHECK_SOURCE_OR_AUTHORITY_MISMATCH")
