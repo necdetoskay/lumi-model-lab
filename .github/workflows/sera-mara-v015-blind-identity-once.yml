@@ -1,0 +1,126 @@
+name: SERA v0.15 One-Use Blind Haiku Identity Pilot
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-blind-identity-once-v015.json
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: sera-v015-mara-blind-identity-once
+  cancel-in-progress: false
+jobs:
+  one-blind-proposal:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V015-BLIND-ONCE]')
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate immutable single-file one-call grant
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          from experiments.sera.mara_s1_blind_identity_pilot_v015 import MODEL
+          from experiments.sera.request_policy import verify_current_sera_clients
+          p=Path("experiments/sera/launch/mara-s1-blind-identity-once-v015.json")
+          d=json.loads(p.read_text(encoding="utf-8"))
+          expected={
+              "schema":"sera.mara-blind-identity-once.v0.15",
+              "authorized":True,
+              "scope":"FROZEN_MARA_S1_16_SOURCE_MENTION_IDENTITIES_ONLY",
+              "original_mentions_run":38868633198,
+              "source_prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+              "model":"anthropic/claude-haiku-4.5",
+              "max_provider_attempts":1,
+              "no_retry":True,
+              "no_fallback":True,
+              "output_token_cap_set":False,
+              "no_world_state_write":True,
+              "no_auto_entity_create":True,
+              "no_auto_relation_attach":True,
+              "no_canonical_commit":True,
+              "no_reruns":True,
+              "launch_id":"sera-mara-s1-blind-identity-once-20261016",
+          }
+          assert set(d)==set(expected)|{"approved_code_sha"},"V015_GRANT_SCHEMA"
+          assert all(d[k]==v for k,v in expected.items()),"V015_GRANT_VALUES"
+          parent=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert d["approved_code_sha"]==parent,"V015_GRANT_SHA_MISMATCH"
+          changes=subprocess.check_output(["git","diff-tree","--no-commit-id",
+                     "--name-only","-r","HEAD"],text=True).splitlines()
+          assert changes==[str(p)],"V015_GRANT_NOT_SINGLE_FILE"
+          assert MODEL==d["model"]
+          verify_current_sera_clients()
+          print("SERA_V015_ONE_CALL_GRANT_VERIFIED")
+          PY
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Install existing provider preflight requirements
+        run: python -m pip install requests
+      - name: Retrieve original 60 mention evidence, never repeat prior sweep
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v015"
+          gh run download 38868633198 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v013-mara-all-mentions-38868633198 \
+            --dir "$RUNNER_TEMP/sera-v015"
+          test -s "$RUNNER_TEMP/sera-v015/full-mentions.json"
+          python -m experiments.sera.mara_s1_blind_identity_pilot_v015 \
+            --mentions "$RUNNER_TEMP/sera-v015/full-mentions.json"
+      - name: Ask independent Haiku for 16 blind source-only identity opinions
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$OPENROUTER_API_KEY" ]]; then
+            echo "SERA_V015_NO_PROVIDER_KEY_NO_BILLING"
+            exit 1
+          fi
+          python -m experiments.sera.mara_s1_blind_identity_pilot_v015 \
+            --live \
+            --mentions "$RUNNER_TEMP/sera-v015/full-mentions.json" \
+            --output "$RUNNER_TEMP/sera-v015/identity-provider-response.json" \
+            --launch-id "sera-v015-blind-$GITHUB_RUN_ID"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          f=Path(os.environ["RUNNER_TEMP"])/"sera-v015"/"identity-provider-response.json"
+          d=json.loads(f.read_text(encoding="utf-8"))
+          assert d["provider_attempts"]<=1
+          assert d["output_token_limit_configured"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["new_entities_created"]==0
+          assert d["new_relationship_links"]==0
+          assert d["world_db_writes"]==0
+          print("SERA_V015_REAL_MODEL_STATUS",d["status"])
+          print("SERA_V015_REAL_MODEL_CALLS",d["provider_attempts"])
+          print("SERA_V015_REAL_MODEL_COST",d["provider_reported_cost"])
+          print("SERA_V015_REAL_MODEL_ERROR",d["error_code"])
+          bound=d.get("bound_advisory")
+          if bound:
+            print("SERA_V015_PROPOSED",bound["proposed_count"])
+            print("SERA_V015_ABSTAINED",bound["abstained_count"])
+          if d["status"]!="ALL_IDENTITY_MODEL_OPINIONS_BOUND_NONCANONICAL_HOLD":
+            raise SystemExit("SERA_V015_DIAGNOSTIC_HOLD_REVIEW_ARCHIVE")
+          PY
+      - name: Retain original provider content and advisory binding
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v015-blind-identity-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v015/identity-provider-response.json
+          retention-days: 90
+          if-no-files-found: warn
