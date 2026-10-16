@@ -1308,3 +1308,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Automatically create **26 unique source-only tasks**: Haiku 5 source quote quarantines s006/s014/s018/s021/s024 and 21 Gemini/Haiku event-signature disagreements. Two historical watch/pencil physical-causality risk flags are preserved within the relevant tasks.
 - Reuse v0.11 `make_task_request` and actual v0.18 source-binder to exercise **26 synthetic offline reviewer replies**, with previously proposed events and prior model answers omitted from independent requests. Unknown started-but-unreceipted replies `FAILED_SAFE_FINAL`; restart of all 26 complete tasks **0 extra callback**. This is **not** actual new real-LLM repair.
 - Self-hosted [v0.49 CI #38959739074](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38959739074) **733/733 Python PASS**, artifact `sera-v049-real-mara-26-blind-recovery-tasks-38959739074` ID `12071663511`. **0 new paid calls/charges, 0 world writes, 0 model output ceilings, no `main` merge**. Real Mara S1 remains HOLD, SceneTrace SHADOW ONLY.
+
+
+## v0.50 — ZERO-HUMAN automatic row repair and independent disagreement review
+
+[Full v0.50 report: what the system automatically repairs and what is still unproven](./SERA_V050_UNATTENDED_ROW_REPAIR.md).
+
+- The runtime never demands human JSON editing, quote repair, retry, reviewer approval, or replan. A complete receipted invalid first answer automatically routes to another model; unknown potentially billable in-flight calls fail safely without duplicate POST. Source/receipt journal survives restart.
+- 5 previously quarantined Mara source rows are **independently single-row re-extracted as scripted candidates** using existing real v0.10/v0.41.2 source binder. 21 previously disagreed rows receive **blind v0.11 requests** and source binding via actual v0.18 binder. **26 distinct noncanonical tasks** all handled without human steps; two malformed scripted replies automatically invoke second model. All returned physical claims remain UNVERIFIED.
+- [Self-hosted CI #38963749101](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38963749101) SUCCESS **740/740 tests**. Artifact `sera-v050-26-auto-repairs-real-provenance-38963749101` ID `12073403564`: original 14 real v0.48 receipts verified + 5 synthetic re-extraction + 21 synthetic independent advisories + 2 synthetic fallbacks + replay with 0 new callbacks. 0 new paid calls, $0 new spend, 0 G2/SQLite world writes; no model output token ceilings or main merge.
+- **Do not equate scripted candidates with real repaired Mara semantics**. v0.51 needs full independent v0.22/v0.21/v0.20 scene recheck after repair. Original real Mara S1 still HOLD, SceneTrace still SHADOW ONLY.
