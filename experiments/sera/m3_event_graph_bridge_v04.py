@@ -9,14 +9,19 @@ from collections import Counter
 from hashlib import sha256
 
 from experiments.sera.coverage import CoverageError, reconcile, prose_hash
-from experiments.sera.event_graph_v03 import SCHEMA as GRAPH_SCHEMA
+from experiments.sera.event_graph_v03 import (
+    SCHEMA as GRAPH_SCHEMA, world_effects,
+)
 from experiments.sera.jev_verifier import (
     build_atomic_questions, adjudicate,
 )
 from experiments.sera.typed_event_bridge_v04 import (
     canonicalize_event, event_fingerprint, normalize_report, resolve_time,
 )
-from experiments.sera.world_state_v02 import canonical, validate as validate_world
+from experiments.sera.world_state_v02 import (
+    canonical, validate as validate_world, apply_event, fingerprint,
+    WorldStateError,
+)
 
 SCHEMA = "sera.m3-graph-advisory.v0.4"
 ACTION_MAP = {
@@ -215,4 +220,51 @@ def inspect_scene(*, prose: str, scene_key: str, entry: dict,
         "commit_authorized": False,
         "application_review_issued": False,
         "production_db_writes": 0,
+    }
+
+
+def shadow_reduce(*, graph_draft: dict, entry: dict, travel_minutes: dict,
+                  world_rules: frozenset[str] = frozenset()) -> dict:
+    """Pure diagnostic replay of ONE typed candidate, never a database commit.
+
+    An ephemeral fingerprint is supplied solely to exercise v0.2 reducer's
+    physical checks. It is NOT an application approval or proof of narrative
+    entailment; no approval token is stored, issued or returned.
+    """
+    validate_world(entry)
+    if not isinstance(graph_draft, dict) or graph_draft.get("status") != (
+        "DRAFT_NOT_AUTHORIZED"
+    ) or graph_draft.get("commit_authorized") is not False:
+        raise CoverageError("BRIDGE_SHADOW_NOT_UNAUTHORIZED_DRAFT")
+    world_event = graph_draft.get("world_event")
+    if not isinstance(world_event, dict):
+        return {
+            "status": "HOLD_WORLD_CURSOR_UNRESOLVED",
+            "effects": None,
+            "commit_authorized": False,
+            "db_writes": 0,
+        }
+    # Self-signed ephemeral checksum here is an INPUT required by the pure
+    # reducer. It grants nothing in EventGraphStore or any external runtime.
+    try:
+        after = apply_event(
+            entry, world_event,
+            approvals={world_event["event_id"]: fingerprint(world_event)},
+            travel_minutes=travel_minutes, world_rules=world_rules,
+        )
+    except WorldStateError as exc:
+        return {
+            "status": "HOLD_PHYSICAL_INVARIANT",
+            "error_code": exc.code,
+            "effects": None,
+            "commit_authorized": False,
+            "db_writes": 0,
+        }
+    return {
+        "status": "PHYSICAL_SHADOW_VALID_NOT_STORY_ACCEPTED",
+        "entry_revision": entry["revision"],
+        "exit_revision": after["revision"],
+        "effects": world_effects(entry, after),
+        "commit_authorized": False,
+        "db_writes": 0,
     }
