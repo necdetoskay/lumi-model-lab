@@ -78,10 +78,23 @@ button.danger{background:#a73d3d}button:disabled{opacity:.5;cursor:not-allowed}
 <div id="sentenceMeta" class="muted"></div>
 <h2 id="sentenceTitle">Cümle</h2>
 <div id="sentenceQuote" class="quote"></div>
+<p id="neighborContext" class="muted"></p>
 <p id="cueNotice" class="muted"></p>
 <label for="disposition">Cümlenin genel sınıfı</label>
 <select id="disposition"></select>
 <div id="entityList"></div>
+<h3>Tarayıcının kaçırdığı nesneyi ekle</h3>
+<p class="muted">Bu ek kayıt yalnızca inceleme adayıdır; nesneyi dünyaya kaydetmez.</p>
+<div class="field-grid">
+<div><label for="extraRef">Yeni nesne kimliği (new:...)</label><input id="extraRef" placeholder="new:paper_key"></div>
+<div><label for="extraQuote">Bu cümleden birebir alıntı</label><input id="extraQuote" placeholder="ör. copper key"></div>
+<div><label for="extraOccurrence">Alıntının geçiş numarası</label><input id="extraOccurrence" type="number" min="1" step="1" value="1"></div>
+<div><label for="extraDecision">Nesnenin durumu</label><select id="extraDecision"></select></div>
+</div>
+<label for="extraReason">Nesne kararının gerekçesi</label>
+<input id="extraReason" placeholder="Nesnenin neden fark edildiğini açıklayın">
+<div class="actions"><button id="addExtraEntity" class="secondary" type="button">Eksik nesne adayını ekle</button></div>
+<div id="extraEntityList"></div>
 <h3>Olaylar ve kaynak kanıtı</h3>
 <p class="muted">Tek bir cümlede birden fazla olay olabilir. Her olay için metinden birebir bir ifade seçin. Birden fazla cümleye yayılan olayda aynı event_id'yi tekrar kullanın.</p>
 <div id="eventList"></div>
@@ -146,6 +159,7 @@ function message(text,problem=false){
 function rowComplete(row){
  return row.disposition!=="UNREVIEWED" &&
  row.entity_decisions.every(x=>x.decision!=="UNREVIEWED"&&x.reason.trim()) &&
+ (row.extra_entity_candidates||[]).every(x=>x.decision!=="UNREVIEWED"&&x.reason.trim()) &&
  (!["STATE_EVENT","KNOWLEDGE_EVENT"].includes(row.disposition)||row.events.length>0);
 }
 function refreshNav(){
@@ -193,11 +207,29 @@ function renderEvents(row){
  });
  if(!row.events.length)element("p",target,"Henüz olay eklenmedi.","muted");
 }
+function renderExtraEntities(row){
+ const target=byId("extraEntityList");target.replaceChildren();
+ (row.extra_entity_candidates||[]).forEach((item,i)=>{
+  const node=element("div",target,null,"entity");
+  element("strong",node,item.ref+" — “"+item.quote+"”");
+  element("div",node,item.decision+" · "+item.reason,"muted");
+  const remove=element("button",node,"Adayı sil","danger");
+  remove.type="button";
+  remove.onclick=()=>{
+   row.extra_entity_candidates.splice(i,1);renderExtraEntities(row);refreshNav();
+   message("Ek nesne adayı silindi.");
+  };
+ });
+}
 function render(){
  const row=form.rows[current];
  byId("sentenceMeta").textContent=row.sentence_id+" · "+row.start+"–"+row.end+" · "+form.reviewer_alias;
  byId("sentenceTitle").textContent="Cümle "+(current+1)+" / "+form.rows.length;
  byId("sentenceQuote").textContent=row.quote;
+ const previous=current>0?form.rows[current-1].quote:"";
+ const following=current<form.rows.length-1?form.rows[current+1].quote:"";
+ byId("neighborContext").textContent="Bağlam · Önceki: "+(previous||"—")+
+   " · Sonraki: "+(following||"—");
  const cue=cues[row.sentence_id]||[];
  byId("cueNotice").textContent="Bağımsız sözcük/eylem ipuçları: "+(cue.join(", ")||"Yok (bu, olay olmadığı anlamına gelmez)");
  fillOptions(byId("disposition"),DISPOSITIONS,row.disposition);
@@ -206,7 +238,7 @@ function render(){
    if(!confirm("Bu cümledeki bütün işaretlemeleri sıfırlamak istiyor musunuz?")){
     e.target.value=row.disposition;return;
    }
-   row.events=[];
+   row.events=[];row.extra_entity_candidates=[];
    row.entity_decisions.forEach(x=>{x.decision="UNREVIEWED";x.reason="";});
   }
   row.disposition=e.target.value;render();
@@ -227,6 +259,8 @@ function render(){
   input.placeholder="Metindeki kanıta dayalı gerekçe";
   input.oninput=e=>{ent.reason=e.target.value;refreshNav();};
  });
+ renderExtraEntities(row);
+ fillOptions(byId("extraDecision"),ENTITY,"PHYSICALLY_PRESENT");
  byId("rowNotes").value=row.notes;
  byId("rowNotes").oninput=e=>{row.notes=e.target.value;};
  renderEvents(row);
@@ -235,6 +269,32 @@ function render(){
  resetEvent();refreshNav();
  message("Bu form yerel tarayıcı belleğinde. Cümlenin doğru yorumlandığı otomatik garanti edilmez.");
 }
+byId("addExtraEntity").onclick=()=>{
+ const row=form.rows[current];
+ if(row.disposition==="UNREVIEWED"){
+  message("Önce cümle sınıfını seçin.",true);return;
+ }
+ const ref=byId("extraRef").value.trim();
+ const quote=byId("extraQuote").value;
+ const occurrence=Number(byId("extraOccurrence").value);
+ const span=quoteOffsets(row,quote,occurrence);
+ const reason=byId("extraReason").value.trim();
+ if(!/^new:[a-z][a-z0-9_-]*$/i.test(ref)||!span||!reason||
+    (row.extra_entity_candidates||[]).some(x=>x.ref===ref)||
+    row.entity_decisions.some(x=>x.ref===ref)){
+  message("new: ile başlayan yeni kimlik, cümlede bulunan ifade ve açıklayıcı gerekçe zorunludur.",true);
+  return;
+ }
+ if(!Array.isArray(row.extra_entity_candidates))row.extra_entity_candidates=[];
+ row.extra_entity_candidates.push({
+  ref,start:span.start,end:span.end,quote:span.quote,
+  decision:byId("extraDecision").value,reason,
+ });
+ byId("extraRef").value="";byId("extraQuote").value="";
+ byId("extraOccurrence").value="1";byId("extraReason").value="";
+ renderExtraEntities(row);refreshNav();
+ message("Nesne yalnızca bağımsız inceleme adayı olarak kaydedildi.");
+};
 byId("addEvent").addEventListener("click",()=>{
  const row=form.rows[current],type=byId("eventType").value;
  if(["UNREVIEWED","TEXTURE","NO_TRACKED_CHANGE"].includes(row.disposition)){
@@ -290,7 +350,9 @@ byId("fileInput").onchange=async e=>{
      b.start!==a.start||b.end!==a.end||b.quote!==a.quote||
      !Array.isArray(b.entity_decisions)||
      b.entity_decisions.length!==a.entity_decisions.length||
-     !Array.isArray(b.events))throw Error("Cümle kimliği veya metni farklı.");
+     !Array.isArray(b.events)||
+     !Array.isArray(b.extra_entity_candidates||[]))
+     throw Error("Cümle kimliği veya metni farklı.");
    for(let j=0;j<a.entity_decisions.length;j++){
     const p=a.entity_decisions[j],q=b.entity_decisions[j];
     if(!q||["ref","start","end","quote"].some(k=>p[k]!==q[k]))
