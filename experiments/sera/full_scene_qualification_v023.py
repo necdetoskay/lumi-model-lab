@@ -318,7 +318,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         sum((bool(spatial is not None),
              bool(relation_preview is not None), bool(candidates)))
     )
-    if active_families > 1:
+    if active_families > 1 or (joint_facets and
+                                ordered_facet_preview is None):
         flag("CROSS_FAMILY_STATE_ORDER_UNQUALIFIED")
 
     # Do not invent a trusted temporal schedule. If this source contains
