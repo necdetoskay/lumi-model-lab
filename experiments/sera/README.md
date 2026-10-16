@@ -552,3 +552,33 @@ and [full design/evidence](./SERA_V015_BLIND_IDENTITY_REVIEW.md).
 part links, train arrivals or canonical events were authorized.
 The next boundary is independently qualifying document vs object
 vs region parent aspects and relation ontology.
+
+## SERA v0.16 — Autonomous repair is part of the generation stage
+
+[Canonical rule and test evidence](./SERA_V016_AUTONOMOUS_REPAIR_ARCHITECTURE.md).
+
+**No manual repairs or human prompt editing are permitted in normal story
+generation.** The generation stage must diagnose, safely repair,
+independently revalidate, and either return source-bound candidate events
+or automatic abstentions/HOLD. Human intervention is not a prerequisite
+for any individual story to finish the repair stage.
+
+`identity_auto_repair_v016.py` processes each generated identity separately:
+strict JSON recovery, unique quote normalization, schema and source
+binding, conservative repair of unsupported relation metadata, and
+targeted low-cost model re-review only of unresolved identities,
+followed by full deterministic revalidation. A failed repair does
+not discard other valid rows; automatically quarantined rows retain
+their original evidence and reason. `identity_stage_v016.py`
+invokes primary model and automatic targeted repair **within one stage
+call**, with a durable audit trail and bounded provider-call count.
+No canonical database writes or output-token ceilings are configured.
+
+[Real archived paid response qualification](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38875977497):
+16/16 candidate identities accounted for, **15 source-bound**, **3**
+conservative relationship fixes in code, **1 automatically abstained**
+(`new:strike_record`) during the zero-model-call forensic replay.
+The model-assisted continuation is verified by independent synthetic
+provider error-injection tests, not claimed as real paid response.
+This SERA experimental stage is **not yet wired into LUMI production**
+or given canonical WorldStore/WorldEvent commit rights.
