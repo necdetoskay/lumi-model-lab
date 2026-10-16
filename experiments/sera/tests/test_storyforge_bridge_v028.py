@@ -91,6 +91,33 @@ def fake_attestor(name):
     raise CoverageError("UNKNOWN_MODEL")
 
 
+def signed_grant():
+    _, _, contract = prepare(
+        request=fake_request(), result=fake_result(),
+        world=base(), trusted_scope=world_scope(),
+        verify_scope=true_verifier,
+        models=deepcopy(ROLES), model_attestor=fake_attestor,
+        scene_span={"start": 0, "end": len(SOURCE)},
+        scene_key=SCENE, job_id="job-v028-scene-1",
+    )
+    return {
+        "approved": True,
+        "job_id": "job-v028-scene-1",
+        "scene_key": SCENE,
+        "request_sha256": contract["request_sha256"],
+        "result_sha256": contract["result_sha256"],
+        "world_sha256": contract["world_sha256"],
+        "model_profile_sha256": contract["model_profile_sha256"],
+        "budget_policy_id": "synthetic-preauthorized-small-budget-v1",
+    }
+
+
+def fake_grant_verifier(grant):
+    return grant.get("budget_policy_id") == (
+        "synthetic-preauthorized-small-budget-v1"
+    )
+
+
 def launch(root, **updates):
     options = {
         "request": fake_request(), "result": fake_result(),
@@ -135,9 +162,13 @@ class StoryForgeBridgeV028Tests(unittest.TestCase):
             root = Path(temp)
             before = deepcopy(base())
             first = launch(root, paid_authorized=True,
+                           paid_grant=signed_grant(),
+                           verify_paid_grant=fake_grant_verifier,
                            api_key="synthetic-not-a-real-key",
                            provider_call=model(calls))
             second = launch(root, paid_authorized=True,
+                            paid_grant=signed_grant(),
+                            verify_paid_grant=fake_grant_verifier,
                             api_key="synthetic-not-a-real-key",
                             provider_call=lambda **kw:self.fail(
                                 "Already receipted model must not rebill"))
@@ -253,17 +284,52 @@ class StoryForgeBridgeV028Tests(unittest.TestCase):
         self.assertEqual(output["status"],
                          "DRY_RUN_READY_NO_MODEL_CALLS_NONCANONICAL")
 
+    def test_paid_flag_without_app_signed_scope_cannot_spend(self):
+        with TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(
+                CoverageError,
+                "V028_PAID_GRANT_NOT_AUTHENTICATED_OR_SCOPE_MISMATCH"
+            ):
+                launch(Path(temp), paid_authorized=True,
+                       api_key="anything",
+                       provider_call=lambda **kw:self.fail("must not bill"))
+        wrong = signed_grant()
+        wrong["world_sha256"] = "f"*64
+        with TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(
+                CoverageError,
+                "V028_PAID_GRANT_NOT_AUTHENTICATED_OR_SCOPE_MISMATCH"
+            ):
+                launch(Path(temp), paid_authorized=True, paid_grant=wrong,
+                       verify_paid_grant=fake_grant_verifier,
+                       api_key="anything",
+                       provider_call=lambda **kw:self.fail("must not bill"))
+        with TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(
+                CoverageError,
+                "V028_PAID_GRANT_NOT_AUTHENTICATED_OR_SCOPE_MISMATCH"
+            ):
+                launch(Path(temp), paid_authorized=True,
+                       paid_grant=signed_grant(),
+                       verify_paid_grant=lambda g: False,
+                       api_key="anything",
+                       provider_call=lambda **kw:self.fail("must not bill"))
+
     def test_cannot_trigger_payment_without_provider_or_key(self):
         with TemporaryDirectory() as temp:
             with self.assertRaisesRegex(
                 CoverageError, "V028_PAID_PROVIDER_NOT_CONFIGURED"
             ):
-                launch(Path(temp), paid_authorized=True)
+                launch(Path(temp), paid_authorized=True,
+                       paid_grant=signed_grant(),
+                       verify_paid_grant=fake_grant_verifier)
         with TemporaryDirectory() as temp:
             with self.assertRaisesRegex(
                 CoverageError, "V028_PAID_PROVIDER_NOT_CONFIGURED"
             ):
                 launch(Path(temp), paid_authorized=True,
+                       paid_grant=signed_grant(),
+                       verify_paid_grant=fake_grant_verifier,
                        api_key="fake",provider_call=None)
 
 
