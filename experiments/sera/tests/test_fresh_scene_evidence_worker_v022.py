@@ -261,7 +261,8 @@ class FreshEvidenceWorkerV022Tests(unittest.TestCase):
                 prose=SOURCE_2,world=entry())
         self.assertEqual(len(calls),1)
         self.assertEqual(out["status"],"FAILED_SAFE_FINAL")
-        self.assertIn("V022_CALL_OR_SPEND_GUARD",out["failure_code"])
+        self.assertIn("V022_SPEND_GUARD_BEFORE_SEMANTIC",
+                      out["failure_code"])
 
 
 if __name__=="__main__":
