@@ -239,7 +239,7 @@ class OrderedFacetsV027Tests(unittest.TestCase):
         def extra(w,r,t,rel,c,roles):
             c.append(deepcopy(c[-1]))
         with self.assertRaisesRegex(
-            CoverageError, "V027_FACET_SOURCE_ONE_TO_ONE_INVALID"
+            CoverageError, "V027_TYPED_EVENT_IDS_NOT_UNIQUE"
         ):
             direct(mutate=extra)
 
