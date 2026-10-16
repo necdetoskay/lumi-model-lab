@@ -139,6 +139,14 @@ def preview(*, prose, world, extraction_report, temporal_case):
             key for key, item in projected["entities"].items()
             if item["holder"] == actor_id or item["worn_by"] == actor_id
         )
+        # An item nested inside a carried container has a separate
+        # location dependency not yet represented by this one-level
+        # reducer. Fail closed instead of leaving its contents behind.
+        carried_ids = set(carried)
+        nested = [key for key, item in projected["entities"].items()
+                  if item["parent_id"] in carried_ids and
+                  key not in carried_ids]
+        _require(not nested, "V024_NESTED_CARRIED_GRAPH_UNQUALIFIED")
         # All carried things must already be co-located with the actor.
         _require(all(projected["entities"][key]["location"] == prior
                      for key in carried),
