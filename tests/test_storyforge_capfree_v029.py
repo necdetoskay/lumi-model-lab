@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 from experiments.sera.request_policy import UserOutputLimitPolicyError
-from src.generate import call_openrouter
+from src.generate import OpenRouterCallError, call_openrouter
 from src.storyforge.runtime import (
     _preflight_storyforge_output_policy, _structured_call,
 )
@@ -118,6 +118,8 @@ class OutputCapFreeStoryForgeV029Tests(unittest.TestCase):
         self.assertIsNone(structured.call_args.kwargs["max_tokens"])
         self.assertIs(structured.call_args.kwargs
                       ["forbid_output_token_limit"],True)
+        self.assertIs(structured.call_args.kwargs
+                      ["forbid_ambiguous_paid_retry"],True)
         self.assertIsNone(meta["request"]["max_tokens"])
 
     @patch("src.english_story_pipeline.call_openrouter")
@@ -140,6 +142,34 @@ class OutputCapFreeStoryForgeV029Tests(unittest.TestCase):
         self.assertIsNone(provider.call_args.kwargs["max_tokens"])
         self.assertIs(provider.call_args.kwargs
                       ["forbid_output_token_limit"],True)
+        # General structured callers may opt in; StoryForge does so.
+        self.assertIs(provider.call_args.kwargs
+                      ["forbid_ambiguous_paid_retry"],False)
+
+    @patch("src.generate.requests.post")
+    @patch("src.generate.normalize_openrouter_request")
+    def test_unknown_charged_transport_never_blindly_resends(
+        self, normalized, post
+    ):
+        import requests
+        normalized.side_effect=lambda _m,p,**_:dict(p)
+        post.side_effect=requests.Timeout("response lost after send")
+        with self.assertRaisesRegex(
+            OpenRouterCallError, "OPENROUTER_UNKNOWN_CHARGE_NO_RESEND"
+        ) as caught:
+            call_openrouter(
+                api_key="synthetic-key", model="qualified/writer",
+                system_prompt="system", user_prompt="story",
+                temperature=0.7, max_tokens=None, seed=None,
+                request_class="teacher_story_medium_reasoning",
+                forbid_output_token_limit=True,
+                forbid_ambiguous_paid_retry=True,
+            )
+        self.assertEqual(post.call_count,1)
+        trace=caught.exception.trace
+        self.assertTrue(trace["retry_suppressed"])
+        self.assertTrue(trace["needs_provider_idempotent_reconciliation"])
+        self.assertEqual(trace["attempts"],1)
 
     @patch("src.storyforge.runtime.normalize_openrouter_request")
     def test_storyforge_preflight_rejects_profile_cap_before_other_calls(
