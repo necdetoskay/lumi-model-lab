@@ -1,0 +1,129 @@
+name: SERA v0.10 Mara Remaining Six Batches One-Shot
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-v010-remaining-once-20261016.json
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: sera-v010-six-once-20261016
+  cancel-in-progress: false
+jobs:
+  remaining-six:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V010-SIX-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify one-use grant pinned to exact code and no caps
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,subprocess
+          from experiments.sera.mara_s1_sweep_pilot_v010 import prepare
+          from experiments.sera.mara_s1_remaining_sweep_v010 import MAX_NEW_PROVIDER_ATTEMPTS,OBSERVED_SPEND_STOP_USD
+          from experiments.sera.request_policy import verify_current_sera_clients
+          path=pathlib.Path("experiments/sera/launch/mara-s1-v010-remaining-once-20261016.json")
+          grant=json.loads(path.read_text(encoding="utf-8"))
+          expected={
+             "schema":"sera.mara-v010-resume-six-grant.v0.1",
+             "authorized":True,
+             "scope":"FROZEN_MARA_S1_MISSING_SIX_BATCHES_ONLY",
+             "source_prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+             "reused_paid_pilot_run_id":38860727745,
+             "reused_pilot_batch_id":"batch_003",
+             "model":"google/gemini-3.7-flash",
+             "max_new_provider_attempts":6,
+             "observed_spend_stop_usd":"0.12",
+             "output_token_cap_set":False,
+             "no_retries":True,
+             "no_writer_regeneration":True,
+             "no_jev_call":True,
+             "no_canonical_commit":True,
+             "no_project_lumi_db_write":True,
+             "no_reruns":True,
+             "launch_id":"sera-mara-v010-six-once-20261016",
+          }
+          assert set(grant)==set(expected)|{"approved_code_sha"},"GRANT_FIELDS_INVALID"
+          assert all(grant[k]==v for k,v in expected.items()),"GRANT_VALUES_INVALID"
+          parent=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert grant["approved_code_sha"]==parent,"GRANT_CODE_SHA_MISMATCH"
+          changed=subprocess.check_output([
+             "git","diff-tree","--no-commit-id","--name-only","-r","HEAD"
+          ],text=True).splitlines()
+          assert changed==[str(path)],"GRANT_NOT_SINGLE_FILE"
+          p=prepare()
+          assert p["plan"]["sentence_count"]==28
+          assert len(p["plan"]["batches"])==7
+          assert p["plan"]["model_output_token_limit"]=="NOT_SET_BY_APPLICATION"
+          assert MAX_NEW_PROVIDER_ATTEMPTS==6
+          assert str(OBSERVED_SPEND_STOP_USD)=="0.12"
+          verify_current_sera_clients()
+          print("SERA_V010_SIX_BATCH_GRANT_PINNED_GREEN")
+          PY
+          python3 -m unittest discover -s experiments/sera/tests -q
+      - name: Install provider preflight dependency
+        run: python -m pip install requests
+      - name: Retrieve existing paid batch and verify original proof
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-old-pilot"
+          gh run download 38860727745 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-case-pilot-38860727745 \
+            --dir "$RUNNER_TEMP/sera-old-pilot"
+          test -s "$RUNNER_TEMP/sera-old-pilot/result.json"
+          python3 -m experiments.sera.mara_s1_v010_forensics \
+            "$RUNNER_TEMP/sera-old-pilot/result.json" \
+            --output "$RUNNER_TEMP/sera-old-pilot/replayed.json" >/dev/null
+      - name: Run at most six paid groups and preserve every response
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$OPENROUTER_API_KEY" ]]; then
+            echo "SERA_V010_PROVIDER_KEY_MISSING_NO_CALL"
+            exit 1
+          fi
+          python3 -m experiments.sera.mara_s1_remaining_sweep_v010 \
+            --live \
+            --pilot-evidence "$RUNNER_TEMP/sera-old-pilot/result.json" \
+            --launch-id "sera-v010-six-$GITHUB_RUN_ID" \
+            --output-dir "$RUNNER_TEMP/sera-v010-full"
+          python3 - <<'PY'
+          import os,json
+          p=os.path.join(os.environ["RUNNER_TEMP"],"sera-v010-full","manifest.json")
+          d=json.load(open(p,encoding="utf-8"))
+          assert d["new_provider_attempts"]<=6
+          assert d["model_output_token_cap_configured"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["world_db_writes"]==0
+          print("SERA_V010_FULL_STATUS",d["status"])
+          print("SERA_V010_NEW_PROVIDER_ATTEMPTS",d["new_provider_attempts"])
+          print("SERA_V010_TOTAL_NEW_REPORTED_COST",d["new_provider_cost_usd"])
+          print("SERA_V010_COMPLETED",len(d["completed_batch_ids"]))
+          print("SERA_V010_PENDING",len(d["pending_batch_ids"]))
+          print("SERA_V010_MODEL_ERRORS",d.get("error_code"))
+          print("SERA_V010_EVENT_CANDIDATES",d.get("candidate_events"))
+          print("SERA_V010_TARGETED_PROBES",d.get("targeted_probe_count"))
+          PY
+      - name: Archive one-shot batch diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v010-six-remaining-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v010-full/
+          retention-days: 90
+          if-no-files-found: warn
