@@ -310,12 +310,12 @@ def compare_annotations(*, packet: dict,
         components = []
         if ar["disposition"] != br["disposition"]:
             components.append("DISPOSITION")
-        ahints = [(x["ref"], x["start"], x["end"], x["decision"])
-                  for x in ar["entity_decisions"] +
-                           ar.get("extra_entity_candidates", [])]
-        bhints = [(x["ref"], x["start"], x["end"], x["decision"])
-                  for x in br["entity_decisions"] +
-                           br.get("extra_entity_candidates", [])]
+        ahints = sorted((x["ref"], x["start"], x["end"], x["decision"])
+                        for x in ar["entity_decisions"] +
+                                 ar.get("extra_entity_candidates", []))
+        bhints = sorted((x["ref"], x["start"], x["end"], x["decision"])
+                        for x in br["entity_decisions"] +
+                                 br.get("extra_entity_candidates", []))
         if ahints != bhints:
             components.append("ENTITY_PRESENCE")
         def spans(row):
