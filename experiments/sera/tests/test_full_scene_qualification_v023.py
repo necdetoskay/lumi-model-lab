@@ -10,6 +10,7 @@ import unittest
 from experiments.sera.artifact_scene_checker_v021 import create_checker
 from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.full_scene_qualification_v023 import qualify
+from experiments.sera.event_candidate_projection_v019 import project
 from experiments.sera.tests.test_fresh_scene_evidence_worker_v022 import (
     SOURCE_1, SOURCE_2, entry, fake_model, preparer,
 )
@@ -115,6 +116,36 @@ class FullSceneQualificationV023Tests(unittest.TestCase):
                       [x["code"] for x in calls[0]
                        if isinstance(x, dict) and "code" in x])
         self.assertFalse(outcome["canonical_commit_authorized"])
+
+    def test_blind_sweep_must_corrobate_each_typed_physical_operation(self):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            prepare(root)
+            saved = json.loads(file(root).read_text(encoding="utf-8"))
+            original = _checker(root)(prose=SOURCE_2, world=entry())
+            # The independent sweep said only COMMUNICATE for the first
+            # sentence. The typed model said OBSERVE_OPENABLE. A correct
+            # source quote in both reports cannot replace agreement on
+            # the actual physical or observation operation.
+            saved["extraction_report"]["candidate_events"][0]["kind"] = (
+                "COMMUNICATE"
+            )
+            changed = project(
+                prose=SOURCE_2,
+                extraction_report=saved["extraction_report"],
+                semantic_summary=saved["semantic_summary"],
+            )
+            out = qualify(
+                prose=SOURCE_2, world=entry(), bundle=saved,
+                projection=changed, typed=original["typed"],
+            )
+        self.assertIn(
+            "TYPED_OPERATION_NOT_BACKED_BY_INDEPENDENT_SWEEP",
+            [x["code"] for x in out["defects"]],
+        )
+        self.assertEqual(out["status"],
+                         "REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL")
+        self.assertFalse(out["canonical_commit_authorized"])
 
     def test_mutated_report_or_typed_proof_cannot_be_exchanged_between_runs(self):
         with TemporaryDirectory() as d:
