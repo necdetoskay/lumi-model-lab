@@ -98,49 +98,69 @@ def qualify(*, prose, world, bundle, projection, typed):
         defects.append(row)
         counters[code] += 1
 
-    # v0.24 may qualify one conservative subset: source-anchored
-    # character MOVEs with application-owned routes and feasible time
-    # windows. It is a pure spatial preview, NEVER a canonical event.
+    # v0.26 takes priority over independent v0.24/v0.25 previews
+    # only when both families occur, no typed facets are involved, and
+    # application-owned full temporal + relation policies exist.
     spatial = None
     spatial_failure = None
+    relation_preview = None
+    relation_failure = None
+    ordered_preview = None
+    ordered_failure = None
     moving = [e for e in events if isinstance(e, dict) and
               e.get("kind") == "MOVE" and
               e.get("effect") in ("WORLD", "OBJECT")]
-    if moving and bundle.get("temporal_case") is not None:
-        from experiments.sera.spatial_preview_v024 import preview
-        try:
-            spatial = preview(
-                prose=prose, world=world, extraction_report=report,
-                temporal_case=bundle["temporal_case"],
-            )
-        except CoverageError as exc:
-            spatial_failure = str(exc)
-            flag("SPATIAL_SOURCE_OR_ROUTE_UNQUALIFIED")
-    # Holder/fact transitions require independent original-source
-    # events AND an application-owned identity/verified-fact policy.
-    relation_preview = None
-    relation_failure = None
     relational = [e for e in events if isinstance(e, dict) and
                   e.get("kind") in ("TRANSFER", "LEARN_FACT",
                                    "KNOWLEDGE_UPDATE") and
                   e.get("effect") in (
                       "WORLD", "OBJECT", "CHARACTER_KNOWLEDGE",
                   )]
-    if relational and bundle.get("relation_case") is not None:
-        from experiments.sera.relation_knowledge_preview_v025 import preview
+    joint = bool(moving and relational and not candidates and
+                 bundle.get("temporal_case") is not None and
+                 bundle.get("relation_case") is not None)
+    if joint:
+        from experiments.sera.ordered_causal_preview_v026 import preview
         try:
-            relation_preview = preview(
+            ordered_preview = preview(
                 prose=prose, world=world, extraction_report=report,
+                temporal_case=bundle["temporal_case"],
                 relation_case=bundle["relation_case"],
+                typed_candidates=candidates,
             )
         except CoverageError as exc:
-            relation_failure = str(exc)
-            flag("RELATION_OR_KNOWLEDGE_SOURCE_UNQUALIFIED")
+            ordered_failure = str(exc)
+            flag("ORDERED_CAUSAL_REPLAY_UNQUALIFIED")
+    else:
+        if moving and bundle.get("temporal_case") is not None:
+            from experiments.sera.spatial_preview_v024 import preview
+            try:
+                spatial = preview(
+                    prose=prose, world=world, extraction_report=report,
+                    temporal_case=bundle["temporal_case"],
+                )
+            except CoverageError as exc:
+                spatial_failure = str(exc)
+                flag("SPATIAL_SOURCE_OR_ROUTE_UNQUALIFIED")
+        if relational and bundle.get("relation_case") is not None:
+            from experiments.sera.relation_knowledge_preview_v025 import preview
+            try:
+                relation_preview = preview(
+                    prose=prose, world=world, extraction_report=report,
+                    relation_case=bundle["relation_case"],
+                )
+            except CoverageError as exc:
+                relation_failure = str(exc)
+                flag("RELATION_OR_KNOWLEDGE_SOURCE_UNQUALIFIED")
     covered_relations = (
+        set(ordered_preview["covered_relation_ids"])
+        if ordered_preview is not None else
         {x["event_id"] for x in relation_preview["transitions"]}
         if relation_preview is not None else set()
     )
     covered_movements = (
+        set(ordered_preview["covered_movement_ids"])
+        if ordered_preview is not None else
         {x["source_event_id"] for x in spatial["transitions"]}
         if spatial is not None else set()
     )
@@ -260,17 +280,14 @@ def qualify(*, prose, world, bundle, projection, typed):
     ):
         flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
 
-    # Each v0.13 / v0.24 / v0.25 reducer replays from the SAME entry
-    # snapshot. Combining their independent conclusions without a shared
-    # ordered state machine could approve impossible cross-family scenes
-    # (move then hand off at the old location; give away then write on the
-    # same held object). Keep mixed stateful families on autonomous replan
-    # until a unified causal reducer exists.
-    active_families = sum((
-        bool(spatial is not None),
-        bool(relation_preview is not None),
-        bool(candidates),
-    ))
+    # If v0.26 already proved one evolving-state motion+relation replay,
+    # it counts as ONE coherent family. Independent v0.13 facets still
+    # require a future common reducer and must remain a blocker.
+    active_families = (
+        1 + bool(candidates) if ordered_preview is not None else
+        sum((bool(spatial is not None),
+             bool(relation_preview is not None), bool(candidates)))
+    )
     if active_families > 1:
         flag("CROSS_FAMILY_STATE_ORDER_UNQUALIFIED")
 
@@ -291,6 +308,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         "spatial_failure": spatial_failure,
         "relation_preview": relation_preview,
         "relation_failure": relation_failure,
+        "ordered_preview": ordered_preview,
+        "ordered_failure": ordered_failure,
         "defects": defects,
         "defect_frequency": dict(sorted(counters.items())),
         "next_automatic_action": (
