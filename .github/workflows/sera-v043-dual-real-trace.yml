@@ -1,0 +1,89 @@
+name: SERA v0.43 SceneTrace Two Real Provider Batches Shadow Comparison
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_trace_dual_real_v043.py
+      - experiments/sera/tests/test_scene_trace_dual_real_v043.py
+      - .github/workflows/sera-v043-dual-real-trace.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  dual-real-mara-receipts:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v043-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v043-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline regression and no output token ceilings
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve original frozen two real-model batches without API key
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v043/bench" "$RUNNER_TEMP/sera-v043/pencil"
+          gh run download 38936451931 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v040-real-blind-once-38936451931 \
+            --dir "$RUNNER_TEMP/sera-v043/bench"
+          gh run download 38938438488 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v041-real-pencil-once-38938438488 \
+            --dir "$RUNNER_TEMP/sera-v043/pencil"
+      - name: Compare both models' source-bound events and real defect warnings
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.scene_trace_dual_real_v043 \
+            --bench-receipt-dir "$RUNNER_TEMP/sera-v043/bench" \
+            --pencil-receipt-dir "$RUNNER_TEMP/sera-v043/pencil" \
+            --output "$RUNNER_TEMP/sera-v043/real-dual-model-comparison.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v043/real-dual-model-comparison.json"
+          proof=json.loads(p.read_text(encoding="utf-8"))
+          assert proof["status"]=="REAL_PAID_MODEL_RECEIPTS_CROSS_CHECKED_SHADOW_ONLY"
+          assert proof["source_sentence_count"]==28
+          assert proof["source_sentence_rows_sampled_by_both_models"]==8
+          assert proof["source_bound_model_rows"]=={
+              "google/gemini-3.7-flash":8,
+              "anthropic/claude-haiku-4.5":6,
+          }
+          assert proof["quarantined_model_rows"]=={
+              "google/gemini-3.7-flash":0,
+              "anthropic/claude-haiku-4.5":2,
+          }
+          assert proof["source_bound_event_candidate_disagreements"]>=2
+          flags={x["risk_code"] for x in proof["source_bound_semantic_risk_flags"]}
+          assert "STATIC_WATCH_PREDICATE_MISREAD_AS_TRANSITION_RISK" in flags
+          assert "PENCIL_MOTION_OBSERVED_BUT_CAUSAL_ACTOR_UNKNOWN" in flags
+          assert proof["semantic_recall_improvement_proven"] is False
+          assert proof["model_error_rate_reduction_proven"] is False
+          assert proof["additional_paid_requests"]==0
+          assert proof["production_db_writes"]==0
+          assert proof["sqlite_lab_writes"]==0
+          assert proof["canonical_commit_authorized"] is False
+          print("SERA_V043_REAL_TWO_MODEL_SCENETRACE_COMPARISON_PASS_NONCANONICAL")
+          PY
+      - name: Archive real-provider source-level contrast
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v043-real-mara-dual-evidence-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v043/real-dual-model-comparison.json
+          retention-days: 90
+          if-no-files-found: warn
