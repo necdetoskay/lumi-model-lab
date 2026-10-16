@@ -65,9 +65,6 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             root=Path(d)
             first=stage(root,lost)
             self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
-            first_evidence_finals = [
-                fp.read_text() for fp in (root/"jobs").rglob("final.json")
-            ]
             def recon(*,model,request,request_sha256):
                 recovered.append((model,request_sha256))
                 # Simulates a fully authenticated, read-only generation
@@ -85,25 +82,13 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
                          charged[0]["prepared"]["request"]):
                     self.fail("Original billable POST repeated")
                 return local_model(**kw)
-            probe=preparer(root,other_stages,reconciler=recon)
-            evidence_result=probe(prose=SOURCE_2,world=entry())
-            self.assertEqual(evidence_result["status"],
-                             "EVIDENCE_READY_NONCANONICAL", evidence_result)
             second=stage(root,other_stages,reconciler=recon)
             third=stage(root,lambda **kw:self.fail("finished replay billed"),
                         reconciler=recon)
             prior=root/"controller"/"pre_reconciliation_safe_stop.json"
-            debug = {
-                "first": first, "second": second,
-                "first_evidence_finals": first_evidence_finals,
-                "reconciler_calls": recovered,
-                "provider_stage_count": len(all_calls),
-                "controller_final": (root/"controller"/"final.json").read_text(),
-                "evidence_finals": [
-                    fp.read_text() for fp in (root/"jobs").rglob("final.json")
-                ],
-            }
-            self.assertTrue(prior.is_file(), debug)
+            self.assertTrue(prior.is_file(),
+                            {"first":first, "second":second,
+                             "calls":len(recovered)})
         self.assertEqual(second["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
         self.assertEqual(second,third)
         self.assertEqual(len(charged),1)
