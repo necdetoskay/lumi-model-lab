@@ -135,6 +135,30 @@ class SentenceLedgerV06Tests(unittest.TestCase):
                          "STRUCTURAL_PASS_SEMANTIC_UNVERIFIED")
         self.assertFalse(result["canonical_commit_authorized"])
 
+    def test_single_narrative_event_can_span_two_sentences(self):
+        source = "Vane said he waited. He saw no train."
+        s = scan(source, {"vane": ["Vane"]})
+        ledger = build_pending_ledger(s)
+        for row in ledger["rows"]:
+            row["disposition"] = "KNOWLEDGE_EVENT"
+            row["reason"] = "One witness statement continues across sentences"
+            row["event_ids"] = ["vane_testimony"]
+        evidence = []
+        for row, sentence in zip(ledger["rows"], s["sentences"]):
+            evidence.append({
+                "event_id": "vane_testimony",
+                "sentence_id": row["sentence_id"],
+                "start": sentence["start"], "end": sentence["end"],
+                "quote": sentence["quote"],
+            })
+        out = validate_ledger(
+            prose=source, scan=s, ledger=ledger, evidence_events=evidence,
+        )
+        self.assertEqual(out["event_evidence_count"], 2)
+        self.assertEqual(out["distinct_narrative_events"], 1)
+        self.assertEqual(out["status"],
+                         "STRUCTURAL_PASS_SEMANTIC_UNVERIFIED")
+
     def test_missing_sentence_row_is_rejected(self):
         s, ledger, ev = ledger_ok()
         ledger["rows"].pop()
