@@ -28,7 +28,7 @@ For every one of the **28** original source sentences, it exposes two per-model 
 | Exact story timestamps trusted | 0 | 0 |
 | Authoritative world transitions | 0 | 0 |
 
-**Six** source-bound sentence-level event-signature disagreements were found. These are candidate differences, **not six proven model errors**.
+**Six** source-bound sentence-level event-signature disagreements were found. Of these, **four** alter the suggested event-kind list (`s001`, `s004`, `s022`, `s023`) and **two** keep the event kind but differ in epistemic category, effect or entity refs (`s002`, `s003`). These are candidate differences, **not six proven model errors**. Each row now exports `disagreement_class` and model-specific candidate kinds; downstream triage can distinguish likely event omission/addition from disagreement over event meaning.
 
 Two specific **advisory** risk flags were recorded against model events after confirming exact source bindings:
 1. Haiku `s004`: `STATIC_WATCH_PREDICATE_MISREAD_AS_TRANSITION_RISK` — the prose already describes the watch as open, but the model proposes `CHANGE_STATE` based on that adjective. The candidate needs independent state-transition authority; none is granted.
