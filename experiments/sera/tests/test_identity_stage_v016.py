@@ -1,6 +1,7 @@
 """v0.16 single-stage generation + automatic repair tests, no provider."""
 from __future__ import annotations
 from pathlib import Path
+from hashlib import sha256
 from tempfile import TemporaryDirectory
 from copy import deepcopy
 import json
@@ -53,7 +54,8 @@ class IdentityStageTests(unittest.TestCase):
             self.assertEqual(out["result"]["automatic_abstain_count"],0)
             self.assertEqual(out["result"]["additional_model_calls"],1)
             self.assertTrue((path/"primary.json").is_file())
-            self.assertTrue((path/"targeted_new_strike_record.json").is_file())
+            safe="targeted_"+sha256(b"new:strike_record").hexdigest()[:24]+".json"
+            self.assertTrue((path/safe).is_file())
             self.assertEqual(json.loads((path/"result.json").read_text())
                              ["status"],out["status"])
             events=json.loads((path/"ledger.json").read_text())
@@ -93,6 +95,41 @@ class IdentityStageTests(unittest.TestCase):
         self.assertEqual(out["result"]["accepted_source_bound_count"],15)
         self.assertEqual(out["result"]["automatic_abstain_count"],1)
         self.assertFalse(out["canonical_commit_authorized"])
+
+    def test_invalid_attempt_policy_prevents_any_paid_call(self):
+        calls=[]
+        with TemporaryDirectory() as directory:
+            from experiments.sera.coverage import CoverageError
+            with self.assertRaisesRegex(
+                CoverageError,"V016_STAGE_REPAIR_POLICY_INVALID"
+            ):
+                execute(
+                    prose=PROSE,world=entry_state(),
+                    census=synthetic_mention_census(),
+                    call_model=calls.append,
+                    output_dir=Path(directory)/"new",
+                    repair_calls_allowed=99,
+                )
+        self.assertEqual(calls,[])
+
+    def test_high_observed_primary_cost_stops_targeted_charge_safely(self):
+        calls=[]
+        def expensive(*,model,prepared):
+            calls.append(prepared)
+            result=envelope(problem_response())
+            result["raw"]["usage"]["cost"]=0.06
+            return result
+        with TemporaryDirectory() as directory:
+            out=execute(
+                prose=PROSE,world=entry_state(),
+                census=synthetic_mention_census(),call_model=expensive,
+                output_dir=Path(directory)/"stage",
+            )
+        self.assertEqual(len(calls),1)
+        self.assertEqual(out["status"],"AUTO_REPAIR_FINISHED_NONCANONICAL_HOLD")
+        self.assertEqual(out["targeted_calls"],0)
+        self.assertEqual(out["result"]["automatic_abstain_count"],1)
+        self.assertEqual(out["provider_reported_total_spend_usd"],0.06)
 
     def test_model_error_at_first_call_stays_safe_without_manual_retry(self):
         with TemporaryDirectory() as directory:
