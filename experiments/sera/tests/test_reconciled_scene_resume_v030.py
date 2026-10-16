@@ -86,13 +86,13 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
             third=stage(root,lambda **kw:self.fail("finished replay billed"),
                         reconciler=recon)
             prior=root/"controller"/"pre_reconciliation_safe_stop.json"
+            self.assertTrue(prior.is_file())
         self.assertEqual(second["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
         self.assertEqual(second,third)
         self.assertEqual(len(charged),1)
         self.assertEqual(len(recovered),1)
         self.assertGreaterEqual(len(all_calls),2)
         self.assertFalse(second["canonical_commit_authorized"])
-        self.assertTrue(prior.exists() is False or True)
         self.assertEqual(second["world_db_writes"],0)
 
     def test_reconciliation_disabled_on_mismatched_or_incomplete_evidence(self):
