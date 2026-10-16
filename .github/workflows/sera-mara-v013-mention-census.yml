@@ -1,0 +1,80 @@
+name: SERA v0.13 All Mara Entity Mentions From Real Paid Batches
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_mention_census_cli_v013.py
+      - .github/workflows/sera-mara-v013-mention-census.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  actual-model-mentions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: All source and policy tests
+        run: |
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Download original one-batch and remaining-six paid evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/mentions" "$RUNNER_TEMP/mentions/pilot"
+          gh run download 38861828582 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-six-remaining-38861828582 \
+            --dir "$RUNNER_TEMP/mentions"
+          gh run download 38860727745 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-case-pilot-38860727745 \
+            --dir "$RUNNER_TEMP/mentions/pilot"
+          test -s "$RUNNER_TEMP/mentions/pilot/result.json"
+          python - <<'PY'
+          import os,zipfile
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"mentions"/"pilot"
+          with zipfile.ZipFile(p/"original-pilot.zip","w",
+                               compression=zipfile.ZIP_DEFLATED) as z:
+              z.write(p/"result.json",arcname="result.json")
+          PY
+      - name: Require 28 source rows, 7 bound batches, no new entities
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_mention_census_cli_v013 \
+            --six-dir "$RUNNER_TEMP/mentions" \
+            --pilot-zip "$RUNNER_TEMP/mentions/pilot/original-pilot.zip" \
+            --output "$RUNNER_TEMP/mentions/full-mentions.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"mentions"/"full-mentions.json"
+          out=json.loads(p.read_text(encoding="utf-8"))
+          assert out["source_sentence_count"]==28
+          assert out["bound_source_batches"]==7
+          assert out["total_source_bound_mentions"]>40
+          assert out["unique_mentioned_refs"]>10
+          assert "new:bench" in out["unregistered_or_provisional_mentions"]
+          assert "new:pencil" in out["unregistered_or_provisional_mentions"]
+          assert "new:vane_thumb" in out["anatomical_parts_not_inventory"]
+          assert out["automatic_new_entities_created"]==0
+          assert out["physical_train_arrival_authorized"] is False
+          assert out["canonical_commit_authorized"] is False
+          print("SERA_V013_REAL_MARA_ALL_MODEL_MENTIONS_VERIFIED_HOLD")
+          PY
+      - name: Archive 28-sentence independent entity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v013-mara-all-mentions-${{ github.run_id }}
+          path: ${{ runner.temp }}/mentions/full-mentions.json
+          retention-days: 90
+          if-no-files-found: warn
