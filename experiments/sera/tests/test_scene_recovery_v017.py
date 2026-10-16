@@ -120,7 +120,7 @@ class AutonomousSceneRecoveryTests(unittest.TestCase):
         self.assertEqual(len(calls), 2)
         self.assertEqual(first, resumed)
 
-    def test_resume_unfinished_attempt_fails_safe_without_new_billable_call(self):
+    def test_crashed_stage_automatically_rebinds_receipted_answer_without_charge(self):
         calls = []
         def provider(*, model, prepared):
             calls.append(prepared)
@@ -132,9 +132,28 @@ class AutonomousSceneRecoveryTests(unittest.TestCase):
             (folder / "attempt_01" / "result.json").write_text(
                 json.dumps({"status": "STARTED"}), encoding="utf-8")
             out = run(folder, provider)
+            rebuilt = json.loads((folder / "attempt_01" / "result.json").read_text())
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(out["status"], "IDENTITY_CANDIDATES_READY_NONCANONICAL")
+        self.assertTrue(rebuilt["recovered_from_archived_provider_receipts"])
+        self.assertEqual(out["provider_reported_total_spend_usd"], "0.001")
+
+    def test_crashed_stage_without_valid_receipt_fails_safe_not_resend(self):
+        calls = []
+        def provider(*, model, prepared):
+            calls.append(prepared)
+            return envelope(synthetic_model_rows())
+        with TemporaryDirectory() as directory:
+            folder = Path(directory) / "stage"
+            run(folder, provider)
+            (folder / "final.json").unlink()
+            (folder / "attempt_01" / "result.json").write_text(
+                json.dumps({"status": "STARTED"}), encoding="utf-8")
+            (folder / "attempt_01" / "primary.json").unlink()
+            out = run(folder, provider)
         self.assertEqual(len(calls), 1)
         self.assertEqual(out["status"], "FAILED_SAFE_FINAL")
-        self.assertEqual(out["reason_code"], "V017_INCOMPLETE_ATTEMPT_AFTER_CRASH")
+        self.assertEqual(out["reason_code"], "V017_PROVIDER_RECEIPT_MISSING")
 
     def test_changed_source_fingerprint_rejected_before_any_model_call(self):
         calls = []
