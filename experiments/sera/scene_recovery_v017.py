@@ -110,12 +110,24 @@ def _recover_completed_provider_receipts(*, attempt_dir, prose, world, census):
                 "targeted_" + sha256(ref.encode("utf-8")).hexdigest()[:24]
                 + ".json")
         charges += Decimal(str(_read(attempt_dir / name)["usage"]["cost"]))
-    # Recompute source-bound proposals with no external model callback.
-    # If a previously paid targeted answer is omitted, the supervisor
-    # automatically proceeds to a new full-scene attempt only when safe.
+    # Recompute every source-bound proposal, reusing paid targeted answers
+    # if available. Never make a fresh network request during crash replay.
+    targeted_refs = set(saved) - {"ALL"}
+    def archived_targeted(task):
+        ref = task["target_ref"]
+        if ref not in targeted_refs:
+            raise CoverageError("V017_TARGETED_ARCHIVE_UNAVAILABLE")
+        filename = ("targeted_" +
+                    sha256(ref.encode("utf-8")).hexdigest()[:24] + ".json")
+        content = _read(attempt_dir / filename).get("raw_content")
+        if not isinstance(content, str):
+            raise CoverageError("V017_TARGETED_ARCHIVE_CONTENT_INVALID")
+        return content
     result = replay_identity(
         prose=prose, world=world, census=census,
-        raw_provider_content=original, max_targeted_calls=0,
+        raw_provider_content=original,
+        model_repair=archived_targeted if targeted_refs else None,
+        max_targeted_calls=min(len(targeted_refs), 4),
     )
     summary = {
         "schema": "sera.identity-stage.v0.16",
