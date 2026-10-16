@@ -330,3 +330,29 @@ python -m experiments.sera.browser_e2e_v09
 CI [38858676688](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38858676688)
 passed **257 offline tests plus the separate actual Chromium E2E job**.
 No actual Mara gold or first scene exit state has been authorized.
+
+## SERA v0.10 — Autonomous source-bound extraction and targeted probes
+
+[Full architecture, gates and one-shot test](./SERA_V010_AUTOMATIC_EXTRACTION.md).
+The v0.10 `sentence_sweep_v010.py` replaces whole-scene giant JSON
+output **for extraction trials** with seven independent four-sentence
+Mara source windows, requiring one model disposition per numbered sentence,
+all supported candidate events and mentions, and exact prose evidence.
+The deterministic merger flags missing entities and unaccounted state-change
+verbs for a separate blind targeted probe, preserving HOLD until
+independent semantic verification and approval.
+
+`mara_s1_sweep_pilot_v010.py` can run a *single* source-pinned,
+preflight-protected paid diagnostic for the window containing Vane's
+watch-case closure. It makes no automatic retries, generated prose,
+WorldState commits or JEV calls. The user-prohibited model output token
+limit is never set. A passed batch still leaves other sentences HOLD.
+
+```bash
+python -m experiments.sera.mara_s1_sweep_pilot_v010  # dry run; no provider
+python -m unittest discover -s experiments/sera/tests -v
+```
+
+See the separate pinned one-shot GitHub Actions workflow for isolated
+evidence and provider billing reports. Historical failed/truncated model
+attempts do not establish scene truth, nor do 276 offline passing tests.
