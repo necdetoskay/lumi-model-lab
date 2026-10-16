@@ -83,7 +83,7 @@ def _bind(*, audit, request, response):
         raise CoverageError("V018_PROVIDER_TEXT_MISSING")
     raw_text = message["content"].strip()
     if raw_text.startswith("```"):
-        fence = re.fullmatch(r"```(?:json)?[ \\t]*\\r?\\n([\\s\\S]*?)\\r?\\n```", raw_text)
+        fence = re.fullmatch(r"```(?:json)?[ \t]*\r?\n([\s\S]*?)\r?\n```", raw_text)
         if fence is None:
             raise CoverageError("V018_PROVIDER_JSON_FENCE_INVALID")
         raw_text = fence.group(1)
