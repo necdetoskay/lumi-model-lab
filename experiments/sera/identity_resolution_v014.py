@@ -153,9 +153,7 @@ def resolve(*,prose:str,world:dict,mention_census:dict,
         hits=item["source_evidence"]
         require(isinstance(hits,list) and len(hits)==item["occurrences"] and
                 Counter(x["role_model_proposed"] for x in hits)==
-                    Counter(item["model_roles"]) .__class__(
-                        item["model_roles"]
-                    ),"IDENTITY_MENTION_ROLE_COUNT_INVALID:"+ref)
+                    Counter(item["model_roles"]),"IDENTITY_MENTION_ROLE_COUNT_INVALID:"+ref)
         for hit in hits:
             sid=hit.get("sentence_id")
             source=source_by_id.get(sid)
