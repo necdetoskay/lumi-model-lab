@@ -1147,3 +1147,12 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
   activation, read-only SQL role, actual physical world registry, model
   worker integration, guaranteed billed-call recovery and canon publication
   remain independent qualifications. No main merge or paid call; Mara S1 HOLD.
+
+
+## v0.36 — Independently signed physical source (SHADOW / NOT LIVE)
+
+[Source trust and G2 physical sufficiency audit](./SERA_V036_PHYSICAL_SOURCE_TRUST_AND_GAPS.md).
+
+- `g2_physical_pinned_reader_v036.py` verifies an **independent** Ed25519-signed physical snapshot using a separately pinned public key, signed G2 authority digest, per-read challenge nonce/expiry, issuer/audience/permission and mandatory one-use replay callback, then invokes the existing conservative v0.33 physical projector.
+- Native G2 node/edge and character location/route knowledge schemas **do not provide objective current location or object custody on their own**. Missing physical position, owner/holder/wear, verifiable events, and route duration may NOT be inferred from story text, known place or model reasoning.
+- Signed physical test records remain synthetic and the output is NONCANONICAL; no deployed physical endpoint or production database read. World/EventGraph writes, G2 StoryOutcome commit, manual rescue and application output token limits remain prohibited. Mara S1 HOLD.
