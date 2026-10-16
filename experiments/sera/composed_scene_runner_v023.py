@@ -40,13 +40,20 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         max_extraction_requests=24,
         trusted_temporal_builder=None,
         temporal_policy_id=None,
-        trusted_relation_builder=None, relation_policy_id=None):
+        trusted_relation_builder=None, relation_policy_id=None,
+        reconciler=None, reconciliation_policy_id=None):
     """Run the actual staged v0.23 LAB workflow, no canon writes.
 
     Store work_root separately per authorized story job. The caller,
     not a model answer, chooses the session, world, provider credentials,
     registered entities, and immutable scene policy.
     """
+    if ((reconciler is None) != (reconciliation_policy_id is None) or
+        (reconciler is not None and
+         (not callable(reconciler) or
+          not isinstance(reconciliation_policy_id, str) or
+          not reconciliation_policy_id.strip()))):
+        raise CoverageError("V030_RECONCILER_POLICY_INVALID")
     validate_world(world)
     if not isinstance(prose, str) or not prose.strip():
         raise CoverageError("V023_RUN_SOURCE_REQUIRED")
@@ -80,6 +87,7 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         "full_scene_gate_required": True,
         "temporal_policy_id": temporal_policy_id,
         "relation_policy_id": relation_policy_id,
+        "reconciliation_policy_id": reconciliation_policy_id,
         "production_canon_authority": False,
     }
     root = Path(work_root)
@@ -102,6 +110,7 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         temporal_policy_id=temporal_policy_id,
         trusted_relation_builder=trusted_relation_builder,
         relation_policy_id=relation_policy_id,
+        reconciler=reconciler,
     )
     writer = create_writer(
         api_key=api_key,
@@ -110,6 +119,7 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         fallback_model=repair_model,
         archive_dir=root/"writer_paid_receipts",
         observed_spend_guard_usd=writer_spend_guard_usd,
+        reconciler=reconciler,
     )
     return execute(
         prose=prose, world=world,
