@@ -316,6 +316,14 @@ class AspectEpistemicV06Tests(unittest.TestCase):
         self.assertFalse(stance["heard_or_believed_is_objective_fact"])
         self.assertFalse(stance["canonical_commit_authorized"])
 
+    def test_narrator_cannot_self_authorize_objective_truth(self):
+        with self.assertRaisesRegex(
+                CoverageError,"PROPOSITION_TRUSTED_VERIFICATION_NOT_IMPLEMENTED"):
+            proposition(proposition_id="fact:station",
+                        text="The clock objectively proved the train arrived",
+                        origin="NARRATOR",source_entity_id="narrator",
+                        evidence_ref="scene:1",truth="VERIFIED")
+
     def test_document_cannot_self_assert_verified_truth(self):
         with self.assertRaisesRegex(
                 CoverageError,"PROPOSITION_CLAIM_NOT_OBJECTIVE_FACT"):
