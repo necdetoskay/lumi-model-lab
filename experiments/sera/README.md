@@ -257,3 +257,27 @@ python -m unittest discover -s experiments/sera/tests -v
 No output token ceilings were added. Live independent extraction, authenticated
 human adjudication, state reducer aspect mutations and an accepted real S1
 exit state remain separate qualification gates.
+
+## SERA v0.8 — Blind human review and adjudication (no gold yet)
+
+[Architecture and review instructions](./SERA_V08_BLIND_ADJUDICATION.md) ·
+[Integration epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306).
+
+Run `review_forms_cli_v08.py export --output-dir <path>` to produce two
+**blinded, completely UNREVIEWED** source-bound Mara S1 annotation forms,
+without revealing the original nine analyst event suggestions.
+
+The `review_adjudication_v08.py` validator accounts for every source
+sentence, every known lexical entity hint, exact event quote spans,
+multi-sentence event identities, epistemic effects and review notes. After
+external reviewers edit the two forms, run `review_forms_cli_v08.py compare`
+to list disagreements, incomplete rows, and shared high-risk omissions.
+Matching answers are advisory and cannot self-elevate to gold, and the
+reviewer alias is NOT an authenticated user. All status outputs remain
+`NOT_GOLD_HUMAN_ADJUDICATION_REQUIRED` and
+`canonical_commit_authorized=false`.
+
+The SERA CI workflow archives both blind JSON forms and instructions as
+downloadable GitHub Actions artifacts. No models, human decisions or state
+writes are simulated, and no application-defined model output token limit
+is set.
