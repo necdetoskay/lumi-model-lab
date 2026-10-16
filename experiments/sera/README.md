@@ -2,6 +2,8 @@
 
 Independent LUMI Model Lab scene-state experiment on `experiment/sera-scene-state-v0-1-20261015`. **Not a promoted story pipeline.**
 
+> **Mandatory owner requirement (2026-10-16): ZERO manual intervention throughout story generation.** Any old reference below to mandatory human review, gold labels, approval clicks, manual story corrections, or manual retries is **historical laboratory context**, not a production/runtime dependency. Runtime must automatically validate → targeted repair → independent revalidation → re-extract/replan/rewrite/recheck, ending in a machine-verifiable safe result or `FAILED_SAFE_FINAL` without unauthorized world writes. No output token ceilings. See [SERA v0.16 owner policy](./SERA_V016_AUTONOMOUS_REPAIR_ARCHITECTURE.md) and [AGENTS.md](./AGENTS.md).
+
 ## Frozen source
 
 Original Sonnet 5.5 pre-Haiku Spine: `evidence/v4-2-mara-run-38794774463/sonnet-original-spine-pre-haiku.json`.
@@ -582,3 +584,13 @@ The model-assisted continuation is verified by independent synthetic
 provider error-injection tests, not claimed as real paid response.
 This SERA experimental stage is **not yet wired into LUMI production**
 or given canonical WorldStore/WorldEvent commit rights.
+
+
+## v0.17–v0.19 — Unattended candidate recovery and semantic continuity (2026-10-16)
+
+- [v0.17 identity recovery](./SERA_V017_UNATTENDED_IDENTITY_RECOVERY.md): complete v0.16 identity stage runs inside an automatic scene supervisor. Paid provider replies, including targeted corrections, are archived and reusable after a crash; only confirmed, already paid evidence is safely reprocessed. Receipted failures may trigger automatic full-scene re-extraction. Unknown in-flight provider calls MUST NOT be blindly resent.
+- [v0.18 semantic recovery](./semantic_recovery_v018.py): source-based semantic risk auditor drives independent model probes without a reviewer queue. Every probe has exact source context, a durable request/response/cost receipt, conservative strict JSON-fence handling and an automatic alternative-model fallback for *already receipted* invalid replies. All answers are independently source-bound, never canon-authorized; saved advisory digest guards against accidental downstream modification.
+- [v0.19 event candidate projection](./event_candidate_projection_v019.py): independently rebind v0.18 advisories, narrowly propose corrections (attention vs relocation, notebook write vs dialogue, reported claim vs physical event), rerun the entire semantic risk audit and optionally check application-controlled temporal dependency/travel windows. No invented time, accepted state or entity. Unresolved aspect/chronology problems automatically produce a typed re-extraction/replan signal rather than asking a person to adjudicate.
+- Regression coverage: \`tests/test_scene_recovery_v017.py\`, \`tests/test_semantic_recovery_v018.py\`, \`tests/test_event_candidate_projection_v019.py\`. All use synthetic provider injection without billable calls.
+
+**Not yet a full autonomous story generator:** The writer/replanner has not consumed these noncanonical replan signals. Semantic source binding or inter-model agreement is not objective gold. A provider call with no recorded reply still needs external idempotency/reconciliation; final canonical EventGraph/WorldState commit authority is unimplemented. Mara S1 remains HOLD and the original frozen Sonnet Spine is unchanged. The next stage must implement and qualify unattended affected-scene rewriting with durable paid receipts, full re-extraction, causal/time/scene-state checks, transactional release and automatic terminal failure without any human gate.
