@@ -1227,3 +1227,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Bench (source noun), watch already open (static descriptive cue) and observed pencil movement (unproven causal actor) remain **noncanonical candidates**, not physical state transitions. Time mentions are not action timestamps. No model-produced "after" state or agent guess is accepted.
 - [Self-hosted real receipt smoke](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38942956711): 684/684 Python tests before final hardening; artifact includes full JSON timeline and source-order Markdown. No additional provider calls, SQLite writes, production DB changes, token generation ceilings or required human runtime step.
 - Baseline comparison is intentionally **HOLD for core integration**: timeline visibility improved, but independent semantic recall/precision improvement **has not** been shown. Keep SceneTrace as sidecar until a controlled A/B on genuine model-produced stories proves a material advantage.
+
+
+## v0.43 — Source-anchored cross-model REAL SceneTrace comparison, no new model calls
+
+[Measured actual Mara dual-model evidence and interpretation](./SERA_V043_REAL_DUAL_MODEL_SCENETRACE.md).
+
+- Replays **two immutable original paid OpenRouter experiments** (Gemini 3.7 Flash + Haiku 4.5, frozen Mara S1 bench and pencil four-sentence batches) using SHA-pinned receipts and existing v0.10 binder, v0.11 full-JSON-fence parser and v0.41.2 sentence quarantine. New provider calls / added cost: **zero**.
+- Two models each attempted source extraction for 8/28 frozen Mara source sentences. Gemini: **8 source-bound / 0 quarantined**; Haiku: **6 source-bound / 2 quarantined**. No semantic meaning is assigned to the 20 story sentences that were not queried.
+- Six source-bound candidate-event-signature disagreements, separated into **four event-type mismatches** and **two epistemic/argument/effect mismatches**. The measured differences are **not proven model errors**. Separate source-anchored warnings: Haiku's static already-open watch `CHANGE_STATE`, Gemini's pencil `MOVE` where the causal agent remains unknown.
+- Existing v0.42 full-source trace stays advisory; model agreement and exact quotes are not event/clock/identity/world authority. All test-only values remain noncanonical and original Mara S1 remains HOLD. Independent recall/precision gain **not demonstrated**; keep SceneTrace **SHADOW ONLY** pending controlled structured-beat A/B and independent semantic evaluation.
