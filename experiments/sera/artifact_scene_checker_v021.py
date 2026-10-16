@@ -51,7 +51,13 @@ def build_bundle(*, prose, world, extraction_report, semantic_summary,
     }
 
 
-def create_checker(*, evidence_root):
+def create_checker(*, evidence_root, full_qualification=False):
+    """Set full_qualification=True for v0.23 scene-worker qualification.
+
+    The v0.21 two-gate mode is kept only for historical lab replays.
+    """
+    if type(full_qualification) is not bool:
+        raise CoverageError("V023_QUALIFICATION_POLICY_INVALID")
     root = Path(evidence_root)
     def check_scene(*, prose, world):
         validate_world(world)
@@ -86,5 +92,14 @@ def create_checker(*, evidence_root):
             projected["world_db_writes"] != 0 or
             typed["world_db_writes"] != 0):
             raise CoverageError("V021_EVIDENCE_UNAUTHORIZED_WORLD_CHANGE")
-        return {"projection": projected, "typed": typed}
+        result = {"projection": projected, "typed": typed}
+        if full_qualification:
+            # No recursive dependency: import after the v0.21 module is
+            # loaded so the v0.23 qualifier may reuse its SHA digest.
+            from experiments.sera.full_scene_qualification_v023 import qualify
+            result["qualification"] = qualify(
+                prose=prose, world=world, bundle=bundle,
+                projection=projected, typed=typed,
+            )
+        return result
     return check_scene
