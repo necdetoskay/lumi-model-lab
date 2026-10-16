@@ -206,6 +206,21 @@ def bind_typed_response(*, raw: dict, request: dict, prose: str,
            request.get("prose_sha256") == prose_hash(prose) and
            request.get("entry_revision") == entry["revision"],
            "V05_REQUEST_BINDING_MISMATCH")
+    _check(request.get("response_format", {}).get("type") == "json_schema",
+           "V05_REQUEST_FORMAT_INVALID")
+    try:
+        payload = json.loads(request["messages"][1]["content"])
+        schema = request["response_format"]["json_schema"]["schema"]
+        digest = sha256(canonical({
+            "messages": request["messages"], "schema": schema,
+        }).encode("utf-8")).hexdigest()
+    except (KeyError, IndexError, TypeError, ValueError):
+        raise CoverageError("V05_REQUEST_MALFORMED") from None
+    _check(digest == request.get("request_sha256") and
+           payload.get("prose") == prose and
+           payload.get("entry_state") == entry and
+           payload.get("scene_key") == scene_key,
+           "V05_REQUEST_CONTENT_MISMATCH")
     validate_raw_typed(raw)
     # Source bindings/quotes come from the app, not model-computed indices.
     report = bind_raw_extraction(
@@ -214,6 +229,13 @@ def bind_typed_response(*, raw: dict, request: dict, prose: str,
     )
     typed = normalize_report(report=report, role=role,
                              prose=prose, scene_key=scene_key, entry=entry)
+    # The model's numeric at may refer to a watch/record rather than the
+    # physical event. Until independently adjudicated, it cannot be treated
+    # as an authenticated action timestamp.
+    for item, original in zip(typed, raw["events"]):
+        if original["at"] is not None:
+            item["blockers"].append("V05_ABSOLUTE_ACTION_TIME_NOT_ADJUDICATED")
+            item["status"] = "HOLD"
     return {
         "schema": SCHEMA,
         "request_sha256": request["request_sha256"],
