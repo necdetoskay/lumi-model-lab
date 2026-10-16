@@ -1035,3 +1035,33 @@ A completely lost ID cannot be safely recovered by v0.31. A real
 app-authenticated provider trace/id capture or supported idempotent
 contract remains necessary. No real paid calls, LUMI production
 WorldState/EventGraph writes or Mara S1 canonical exit are claimed.
+
+
+## v0.32 — Authenticated Project_LUMI G2 read-only source scope
+
+[Architecture, exact G2 production table references and remaining app-side integration](./SERA_V032_G2_READONLY_SCOPE.md).
+
+- [Lab-only G2 source bridge](./g2_readonly_scope_bridge_v032.py)
+  requires an independent application-authenticated
+  `readonly_lookup(contract_id)` plus `verify_source(rows, provenance)`.
+  It validates the **five-key household/profile/universe/worldInstance/
+  primaryCharacter UUID scope**, started intent, ACCEPTED G2 production
+  run, accepted StoryArtifact exact English bytes, frozen vs. current
+  universe/world/character revisions and fingerprints, and original
+  character snapshot ref. It does not invent G2 UUIDs, equate native
+  domain fingerprints to local hashes or trust model-supplied world IDs.
+- Only after an authenticated source preflight can the bridge construct
+  a hash-bound v0.28 StoryForge lab job. It explicitly enforces
+  `paid_authorized=False` with zero provider calls, zero
+  WorldState/EventGraph writes and `g2_commit_request=None`.
+- [Scoped adversarial tests](./tests/test_g2_readonly_scope_v032.py)
+  use a clearly **synthetic** signature and identity fixture; check
+  wrong user/world/character, forged source, stale world and character
+  heads, missing contract, unaccepted run, changed story text, lost
+  snapshot ref and replay drift. They do NOT attest to real DB access.
+
+**Still blocked:** A real Project_LUMI authorized G2 source/signature,
+local simulation-to-native world mapping, production worker/real paid
+model gates and independent transactional publish authority. Project_LUMI
+main, production database and frozen Mara S1 remain unchanged. No
+application output-token caps or manually repaired stories.
