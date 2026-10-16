@@ -379,3 +379,27 @@ provider evidence, per-batch actual reported cost, a measured dollar
 spend stop and hard stop on provider or schema errors. A successful full
 28-sentence run is still semantic HOLD, **not** a canonical S1 exit state.
 See [v0.10 architecture](./SERA_V010_AUTOMATIC_EXTRACTION.md).
+
+## SERA v0.11 — Semantic risk audit and independent targeted second opinion
+
+[Architecture, actual Mara findings and provenance](./SERA_V011_SEMANTIC_REPAIR.md).
+
+All 28 Mara S1 sentences have now been source-bound in seven v0.10 model
+batches, yielding **25 Gemini event candidates** (NOT approved state).
+The independent, offline `semantic_risks_v011.py` review of original
+provider evidence identified three important questions: whether Mara's
+turn toward the clock was actual relocation, whether the notebook
+`added` sentence was wrongly classified as speech, and whether a pocket
+watch open before the case closes implies a qualified `case_open` state.
+It also identified two lexical probe false-positives, preserving the raw
+original extraction.
+
+`mara_s1_haiku_probes_v011.py` sends source-only questions to a different
+model family, **without revealing Gemini judgments**. It is opt-in, has
+a single-run provider/cost guard, does not set model output token ceilings,
+and saves every raw/provider-cost result with no state commits. Passing
+unit tests or source-bound model agreement does not create gold labels or
+authorize the first Mara S1 canonical exit state.
+
+Offline tests: [CI 38862839733](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38862839733),
+**293/293 PASS** plus actual Chromium E2E.
