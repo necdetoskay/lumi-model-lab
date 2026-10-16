@@ -205,6 +205,82 @@ def _check_cycle(ref_map):
             seen.add(current)
             current=parents[current]
 
+def validate_model_row(*,ref:str,row:dict,world:dict,
+                       request:dict,mentions:dict,source_map:dict)->dict:
+    """One model-proposed identity; never canonical object permission."""
+    require(set(row)==ROW_FIELDS and
+            row.get("decision") in DECISIONS and
+            isinstance(row.get("reason"),str) and row["reason"].strip(),
+            "V015_ROW_FIELDS_INVALID:"+ref)
+    decision=row["decision"]
+    cls=row["classification"]
+    relation=row["relation"]
+    target=row["relation_target"]
+    if decision=="ABSTAIN":
+        require(cls=="UNRESOLVED" and relation=="NONE" and
+                target is None and
+                row["support_sentence_id"] is None and
+                row["support_quote"] is None,
+                "V015_ABSTAIN_SHALL_NOT_ASSERT:"+ref)
+        support=None
+    else:
+        require(cls in ACTION_BY_CLASS and relation in RELATION_VALUES,
+                "V015_CLASSIFICATION_UNKNOWN:"+ref)
+        expected=RELATION_REQUIRED.get(cls,"NONE")
+        require(relation==expected and
+                ((relation=="NONE" and target is None) or
+                 (relation!="NONE" and
+                  isinstance(target,str) and target!=ref and
+                  target in set(request["requested_refs"])|
+                      set(world["entities"])|set(world["regions"]))),
+                "V015_RELATION_UNGROUNDED:"+ref)
+        if cls=="ANATOMICAL_PART_CANDIDATE":
+            require(target in world["entities"] and
+                    world["entities"][target]["kind"]=="CHARACTER",
+                    "V015_ANATOMICAL_PARENT_INVALID:"+ref)
+        if cls=="OBJECT_COMPONENT_CANDIDATE":
+            require(target in world["entities"] and
+                    world["entities"][target]["kind"]=="OBJECT",
+                    "V015_OBJECT_PARENT_INVALID:"+ref)
+        if cls in ("REGION_ALIAS_CANDIDATE","SUBLOCATION_CANDIDATE"):
+            require(target in world["regions"],
+                    "V015_REGION_TARGET_INVALID:"+ref)
+        sentence_id=row["support_sentence_id"]
+        quote=row["support_quote"]
+        s=source_map.get(sentence_id)
+        mentions_in_sentence={h["sentence_id"] for h in
+                              mentions[ref]["source_evidence"]}
+        require(s is not None and sentence_id in mentions_in_sentence and
+                isinstance(quote,str) and quote.strip(),
+                "V015_EVIDENCE_SENTENCE_INVALID:"+ref)
+        # REQUIRE verbatim source characters. No fuzzy repairs, no
+        # partial token casefold, no model-generated evidence.
+        position=s["quote"].find(quote)
+        require(position>=0,"V015_SOURCE_QUOTE_NOT_EXACT:"+ref)
+        support={
+            "sentence_id":sentence_id,
+            "source_start":s["start"]+position,
+            "source_end":s["start"]+position+len(quote),
+            "quote":quote,
+        }
+    return {
+        "entity_ref":ref,"decision":decision,
+        "proposed_classification":cls,
+        "proposed_relation":relation,
+        "proposed_relation_target":target,
+        "independent_review_action":(
+            ACTION_BY_CLASS[cls] if decision=="PROPOSE"
+            else "INDEPENDENT_IDENTITY_REVIEW_REQUIRED"),
+        "source_support":support,
+        "model_reason_untrusted":row["reason"],
+        "lexical_context_not_semantic_proof":True,
+        "entity_creation_authorized":False,
+        "relation_attachment_authorized":False,
+        "physical_presence_confirmed":False,
+        "canonical_commit_authorized":False,
+        "status":"MODEL_PROPOSAL_REVIEW_REQUIRED",
+    }
+
 def bind(*,prose:str,world:dict,census:dict,request:dict,
          raw_response:str)->dict:
     _source,unknown=_input(prose=prose,world=world,census=census)
@@ -224,79 +300,10 @@ def bind(*,prose:str,world:dict,census:dict,request:dict,
     checked=[]
     rowmap={r["entity_ref"]:r for r in rows}
     for ref in sorted(unknown):
-        row=rowmap[ref]
-        require(set(row)==ROW_FIELDS and
-                row.get("decision") in DECISIONS and
-                isinstance(row.get("reason"),str) and row["reason"].strip(),
-                "V015_ROW_FIELDS_INVALID:"+ref)
-        decision=row["decision"]
-        cls=row["classification"]
-        relation=row["relation"]
-        target=row["relation_target"]
-        if decision=="ABSTAIN":
-            require(cls=="UNRESOLVED" and relation=="NONE" and
-                    target is None and
-                    row["support_sentence_id"] is None and
-                    row["support_quote"] is None,
-                    "V015_ABSTAIN_SHALL_NOT_ASSERT:"+ref)
-            support=None
-        else:
-            require(cls in ACTION_BY_CLASS and relation in RELATION_VALUES,
-                    "V015_CLASSIFICATION_UNKNOWN:"+ref)
-            expected=RELATION_REQUIRED.get(cls,"NONE")
-            require(relation==expected and
-                    ((relation=="NONE" and target is None) or
-                     (relation!="NONE" and
-                      isinstance(target,str) and target!=ref and
-                      target in set(request["requested_refs"])|
-                          set(world["entities"])|set(world["regions"]))),
-                    "V015_RELATION_UNGROUNDED:"+ref)
-            if cls=="ANATOMICAL_PART_CANDIDATE":
-                require(target in world["entities"] and
-                        world["entities"][target]["kind"]=="CHARACTER",
-                        "V015_ANATOMICAL_PARENT_INVALID:"+ref)
-            if cls=="OBJECT_COMPONENT_CANDIDATE":
-                require(target in world["entities"] and
-                        world["entities"][target]["kind"]=="OBJECT",
-                        "V015_OBJECT_PARENT_INVALID:"+ref)
-            if cls in ("REGION_ALIAS_CANDIDATE","SUBLOCATION_CANDIDATE"):
-                require(target in world["regions"],
-                        "V015_REGION_TARGET_INVALID:"+ref)
-            sentence_id=row["support_sentence_id"]
-            quote=row["support_quote"]
-            s=source_map.get(sentence_id)
-            mentions_in_sentence={h["sentence_id"] for h in
-                                  mentions[ref]["source_evidence"]}
-            require(s is not None and sentence_id in mentions_in_sentence and
-                    isinstance(quote,str) and quote.strip(),
-                    "V015_EVIDENCE_SENTENCE_INVALID:"+ref)
-            # REQUIRE verbatim source characters. No fuzzy repairs, no
-            # partial token casefold, no model-generated evidence.
-            position=s["quote"].find(quote)
-            require(position>=0,"V015_SOURCE_QUOTE_NOT_EXACT:"+ref)
-            support={
-                "sentence_id":sentence_id,
-                "source_start":s["start"]+position,
-                "source_end":s["start"]+position+len(quote),
-                "quote":quote,
-            }
-        checked.append({
-            "entity_ref":ref,"decision":decision,
-            "proposed_classification":cls,
-            "proposed_relation":relation,
-            "proposed_relation_target":target,
-            "independent_review_action":(
-                ACTION_BY_CLASS[cls] if decision=="PROPOSE"
-                else "INDEPENDENT_IDENTITY_REVIEW_REQUIRED"),
-            "source_support":support,
-            "model_reason_untrusted":row["reason"],
-            "lexical_context_not_semantic_proof":True,
-            "entity_creation_authorized":False,
-            "relation_attachment_authorized":False,
-            "physical_presence_confirmed":False,
-            "canonical_commit_authorized":False,
-            "status":"MODEL_PROPOSAL_REVIEW_REQUIRED",
-        })
+        checked.append(validate_model_row(
+            ref=ref,row=rowmap[ref],world=world,request=request,
+            mentions=mentions,source_map=source_map,
+        ))
     _check_cycle(rowmap)
     return {
         "schema":"sera.blind-identity-bound.v0.15",
