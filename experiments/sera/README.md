@@ -281,3 +281,31 @@ The SERA CI workflow archives both blind JSON forms and instructions as
 downloadable GitHub Actions artifacts. No models, human decisions or state
 writes are simulated, and no application-defined model output token limit
 is set.
+
+## SERA v0.9 — browser-based double review for frozen Mara S1
+
+[Workflow architecture and review guide](./SERA_V09_REVIEW_WORKSPACE.md) ·
+[epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306).
+
+`reviewer_ui_v09.py` exports **two standalone offline HTML pages** with
+all 28 exact source-bound Mara sentences and independent lexical cues. Each
+human reviewer can classify entities and events, add source-evidenced new
+object candidates omitted by the scanner, navigate between sentences,
+and export or resume a JSON review file without any remote network calls.
+
+```bash
+python -m experiments.sera.reviewer_ui_v09 --output-dir /tmp/mara-review
+python -m experiments.sera.review_forms_cli_v08 validate \
+  --review reviewer_A_unverified-NOT_GOLD.json --require-complete
+```
+
+The GitHub Actions SERA workflow archives both HTML pages, blank JSON forms
+and instructions for human review; generated JavaScript passes a syntax
+gate. Event evidence uses Unicode code-point offsets corresponding to
+Python string indexing. New object candidates are **only annotation hints**,
+not World State entity introductions.
+
+Two actual independent human reviews and authenticated final adjudication
+are still required before Mara's precision/recall and canon exit state can
+be accepted. No reviewer identity, GOLD status, model calls or output token
+limits are inferred/added by these forms.
