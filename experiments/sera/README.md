@@ -1207,3 +1207,14 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Haiku's raw reply **did** contain a complete JSON object enclosed in a full fenced code block. Replayed the exact SHA-pinned archived real provider receipts using the pre-existing v0.11 strict JSON fence decoder plus actual v0.10 binder: now **both** models bind `bench` to source; Gemini 13 mentions/3 candidate events, Haiku 9 mentions/6 candidate events.
 - Important semantic red flag: Haiku suggests `CHANGE_STATE` for the watch that the story merely says is **already open**. `V0401_STATIC_WATCH_DESCRIPTION_MAY_BE_FALSE_TRANSITION` is a diagnostic HOLD finding, not trusted event approval or objective gold label. Gemini marks that statement TEXTURE/no event.
 - [Real-receipt replay CI 38937487848](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38937487848) SUCCESS: 669 offline tests, strict immutable artifact verification, no new provider calls or charges, no G2 or SQLite state writes, no output token ceiling. Original Mara S1 remains HOLD.
+
+
+## v0.41/41.2 — second real Mara model pilot: ambiguous pencil movement
+
+[Observed real-model findings, source-candidate isolation and safety](./SERA_V041_REAL_PENCIL_RESULTS.md).
+
+- [Two **actual** independent provider calls](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38938438488) in a second, separately code-pinned, self-hosted one-use workflow against the previously missed **pencil** segment from the same frozen Mara S1: Gemini 3.7 Flash source-bound the pencil, 5 candidate events across 4 sentences, USD $0.00837525; Haiku 4.5 produced a fenced JSON body, 2 extra advisory mention.reason fields and incorrect exact quote spans, USD $0.005599. Total pencil pilot USD $0.01397425.
+- v0.41.1 immutable offline receipt replay safely strips only known *nonsemantic advisory* mention.reason fields, leaving action fields and original raw envelopes untouched. Haiku's complete 4-sentence binder correctly stays HOLD for `SWEEP_QUOTE_NOT_IN_TARGET_SENTENCE`; original story text is never rewritten.
+- [v0.41.2 offline replay CI SUCCESS, 677 Python tests](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38939483561): real Haiku **s022 pencil observation source-bound**, s023 structurally bound, s021/s024 quarantined for fabricated or nonexact quoted spans. Does **not** promote partial rows to whole-scene success. Both models lack independently verified pencil mover, cause, timing, ownership or canonical identity.
+- All new replay operations have **zero additional paid model calls** and zero SQLite simulation/production DB writes. Combined v0.40 bench + v0.41 pencil provider-reported cost USD $0.030352; these two four-sentence trials **do not** establish scene-wide precision, event recall or G2 physical authority.
+- Existing v0.10/v0.11 binder reused, no output token ceiling. Original Mara S1 remains HOLD, Origin/Saga still future-scoped.
