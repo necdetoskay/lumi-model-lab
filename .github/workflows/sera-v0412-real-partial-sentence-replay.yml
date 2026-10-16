@@ -1,0 +1,74 @@
+name: SERA v0.41.2 Partial Real Pencil Sentence Evidence No Billing
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/real_pencil_partial_rows_v0412.py
+      - experiments/sera/tests/test_real_pencil_partial_rows_v0412.py
+      - .github/workflows/sera-v0412-real-partial-sentence-replay.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  salvage-source-only:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v0412-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v0412-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate offline and output-token constraints
+        run: |
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Recover immutable original real Haiku/Gemini receipt offline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v0412"
+          gh run download 38938438488 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v041-real-pencil-once-38938438488 \
+            --dir "$RUNNER_TEMP/sera-v0412"
+          test -s "$RUNNER_TEMP/sera-v0412/result.json"
+          test -s "$RUNNER_TEMP/sera-v0412/provider_reply_1.json"
+          test -s "$RUNNER_TEMP/sera-v0412/provider_reply_2.json"
+      - name: Bind only valid candidate source rows and quarantine bad quotes
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.real_pencil_partial_rows_v0412 \
+            --receipt-dir "$RUNNER_TEMP/sera-v0412" \
+            --output "$RUNNER_TEMP/sera-v0412/partial-rows.json"
+          python - <<'PY'
+          from pathlib import Path
+          import json,os
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v0412/partial-rows.json"
+          report=json.loads(p.read_text(encoding="utf-8"))
+          assert report["source_run_id"]==38938438488
+          assert report["target_pencil_row_source_bound"] is True
+          assert report["whole_provider_response_bound"] is False
+          assert report["source_complete"] is False
+          assert len(report["quarantined_rows"])>=1
+          assert report["new_provider_calls"]==0
+          assert report["canonical_commit_authorized"] is False
+          assert report["production_db_writes"]==0
+          print("SERA_V0412_REAL_PENCIL_PARTIAL_CANDIDATE_QUARANTINE_GREEN")
+          PY
+      - name: Archive no-charge source-only row isolation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v0412-real-pencil-partial-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v0412/partial-rows.json
+          retention-days: 90
+          if-no-files-found: warn
