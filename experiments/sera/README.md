@@ -726,3 +726,36 @@ authenticated transactional canon commits, unseen paid story runs, and
 full Mara S1 canonical exit are still required. Zero mandatory manual
 actions, zero artificial model output-token ceilings; original Sonnet
 Spine remains unchanged.
+
+
+## v0.23 — Full candidate-event qualification and composed autonomous lab loop
+
+[Architecture, test scope and remaining release blockers](./SERA_V023_FULL_EVENT_QUALIFICATION.md).
+
+- [Full scene qualifier](./full_scene_qualification_v023.py):
+  independent v0.10 event coverage is checked **against** all v0.13 typed
+  source operations. Incomplete untyped MOVE / TRANSFER / knowledge /
+  temporal-causal state effects, nonobjective reported facts carrying
+  physical changes, unregistered physical actors/objects, missing lexical
+  action cues and uncorroborated typed model state changes remain automatic
+  re-extraction/replan blockers rather than silently passing.
+- [v0.21 evidence checker](./artifact_scene_checker_v021.py) can run with
+  `full_qualification=True`, and the v0.20 unattended controller now
+  incorporates that third gate's exact source/world-bound findings into the
+  automated writer recheck cycle.
+- [v0.23 composed lab runner](./composed_scene_runner_v023.py) wires the
+  previously built OpenRouter-compatible model transport, durable
+  source-revision-aware evidence worker, v0.19/v0.20/v0.23 checks and
+  automated bounded rewrite loop. Synthetic integration validates
+  restart, immutable policy changes and correct noncanonical qualification
+  without human corrections or paid model calls.
+- All source event/reducer digests are linked, but a model's confident
+  classification is **not** objective semantic proof, and successful
+  noncanonical evidence is **not** permission for WorldState/EventGraph
+  commits.
+
+Missing for production: all unsupported state reducers, real production
+LUMI worker/model resolver integration, provider-side missing-response
+idempotency, independently qualified canon commit/rollback, and an unseen
+real-model complete Mara S1 release. No output token caps or human
+review/approval dependency.
