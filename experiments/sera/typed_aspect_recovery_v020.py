@@ -50,10 +50,8 @@ def _validate_registry(world, registry):
         refs.extend(values)
     ensure(len(set(refs)) == len(refs),
            "V020_REGISTRY_DUPLICATE_OBJECT")
-    # v0.13 requires at least one object in each type. Reject rather than
-    # silently infer missing object roles.
-    ensure(registry["openables"] and registry["documents"],
-           "V020_V013_REDUCER_ROLE_COVERAGE_MISSING")
+    # A scene may contain only one facet family. Never invent missing roles.
+    ensure(bool(refs), "V020_NO_REGISTERED_FACET_OBJECTS")
     for ident in refs:
         e = world.get("entities", {}).get(ident)
         ensure(isinstance(e, dict) and e.get("kind") == "OBJECT" and
