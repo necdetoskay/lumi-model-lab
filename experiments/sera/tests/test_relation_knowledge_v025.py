@@ -19,7 +19,9 @@ FACTS = {"station_clock_stopped": {
 
 
 def row(eid, kind, start, text, refs):
-    return {"event_id": eid, "kind": kind, "effect": "WORLD",
+    return {"event_id": eid, "kind": kind,
+            "effect": ("CHARACTER_KNOWLEDGE" if kind == "LEARN_FACT" else
+                       "WORLD"),
             "epistemic": "OBSERVED_ACTION", "sentence_id": eid,
             "start": start, "end": start+len(text), "quote": text,
             "entity_refs": refs}
