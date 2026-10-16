@@ -1,0 +1,64 @@
+name: SERA v0.12 Real Mara Shadow Facet Dry Projection
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_shadow_projection_v012.py
+      - .github/workflows/sera-mara-v012-shadow-real.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  shadow-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit and adversarial contract tests
+        run: python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve real source-verified Mara repair suggestions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v012-shadow"
+          gh run download 38866189103 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v012-repair-proposals-38866189103 \
+            --dir "$RUNNER_TEMP/sera-v012-shadow"
+          test -s "$RUNNER_TEMP/sera-v012-shadow/provisional-corrections.json"
+      - name: Pure shadow case OPEN to CLOSED and notebook APPEND
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_shadow_projection_v012 \
+            --corrections "$RUNNER_TEMP/sera-v012-shadow/provisional-corrections.json" \
+            --output "$RUNNER_TEMP/sera-v012-shadow/shadow-state.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v012-shadow"/"shadow-state.json"
+          d=json.loads(p.read_text())
+          facets=d["typed_shadow_facet_state"]["facets"]
+          assert facets["openable"]["case_position"]=="CLOSED"
+          assert facets["document"]["preexisting_content"]=="UNKNOWN"
+          assert len(facets["document"]["observed_appends"])==1
+          assert facets["document"]["observed_appends"][0]["text"]== \
+                 "Discrepancy documented; explanation unknown."
+          assert d["source_world_sha256"]==d["world_sha256_after_projection"]
+          assert d["world_state_unchanged"] is True
+          assert d["source_action_clock_minutes_invented"]==0
+          assert d["canonical_db_writes"]==0
+          assert d["canonical_commit_authorized"] is False
+          print("SERA_V012_REAL_MARA_SHADOW_PROJECTION_VERIFIED_GREEN")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-mara-v012-shadow-state-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v012-shadow/shadow-state.json
+          retention-days: 90
+          if-no-files-found: warn
