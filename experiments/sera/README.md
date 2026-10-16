@@ -1247,3 +1247,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Eight predeclared narrow policy contrast cases cover static-vs-action, observer-vs-agent, advisory-only cases, and deliberate unsupported patterns. No match is **unverified**, never approval. Negative tests reject fabricated spans, source fingerprints, unbound/quarantined model events, duplicate risk events and forged world grants.
 - [Self-hosted CI 38946880572](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38946880572) SUCCESS **696/696 Python tests**. Scope: 8/28 real model sampled sentences, 20 not assessed, six real candidate disagreements unchanged. **0 new model calls**, 0 extra cost/SQLite/production writes, no output token cap, no integration or main merge.
 - These two proposals were already HOLD in prior SERA; **new value is traceable missing evidence and proposed machine next action, not reduction of a measured real error rate**. SceneTrace remains shadow-only. Original frozen Mara S1 remains HOLD.
+
+
+## v0.45 — Existing real source-risk cards into autonomous, no-charge **scripted** repair
+
+[Design, exact tests, limitations](./SERA_V045_AUTONOMOUS_SHADOW_REPAIR.md).
+
+- SHA-pinned earlier real Mara Gemini/Haiku receipts produce two v0.44 evidence challenges: watch-open state vs invented change, and moving-pencil observation vs guessed causal actor. The callback's blind source-only request includes **none** of the other model's interpretation or alleged source actor.
+- `scene_trace_autorepair_v045.py` uses actual SERA strict v0.11 JSON parsing, source phrase matching, output-token ceiling policy, per-attempt journal and restart. It automatically rejects a deliberately forged pencil quote/actor and retries from the source; repeated invalid output ends `FAILED_SAFE_FINAL`. A started-but-unreceipted callback is not blindly repeated after restart. Zero human workflow gates.
+- **Only a scripted offline model double answers these re-extraction requests**, not real OpenRouter. A synthetically corrected answer grants **zero real semantic completeness or canonical/world authority**; all resulting advisories stay NONCANONICAL. No real/provider-side idempotency proof, no full-scene replan, no G2 production DB writes or SQLite commits.
+- [Self-hosted run 38948392449](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38948392449) **SUCCESS 703/703 tests**, 2 real risk sources, 3 synthetic attempts, no additional paid calls, no real repaired story qualification, no main merge.
