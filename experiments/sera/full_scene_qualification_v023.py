@@ -260,6 +260,20 @@ def qualify(*, prose, world, bundle, projection, typed):
     ):
         flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
 
+    # Each v0.13 / v0.24 / v0.25 reducer replays from the SAME entry
+    # snapshot. Combining their independent conclusions without a shared
+    # ordered state machine could approve impossible cross-family scenes
+    # (move then hand off at the old location; give away then write on the
+    # same held object). Keep mixed stateful families on autonomous replan
+    # until a unified causal reducer exists.
+    active_families = sum((
+        bool(spatial is not None),
+        bool(relation_preview is not None),
+        bool(candidates),
+    ))
+    if active_families > 1:
+        flag("CROSS_FAMILY_STATE_ORDER_UNQUALIFIED")
+
     # Do not invent a trusted temporal schedule. If this source contains
     # movement, a separate location/travel/time reducer is needed.
     # The v0.13 openable/document facet check does not qualify movement.
