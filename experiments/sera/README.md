@@ -1277,3 +1277,14 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Controlled adverse conditions: both models give safely receipted malformed rows -> `FAILED_SAFE_FINAL`; unknown/unreceipted initial call -> no fallback, `FAILED_SAFE_FINAL` (no blind resend). Final replay uses **zero extra model or writer callbacks**.
 - [Self-hosted v0.47 CI 38954533957](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38954533957) **718/718 tests**; 4 scenarios, all green. **0 real model calls, 0 paid USD, 0 SQLite/production writes**, no output-token ceilings or main merge.
 - These **scripted** positive examples are NOT evidence that the real 28-sentence Mara S1 is fixed, that a new real provider model improved semantic recall, or that G2 production publication is qualified. v0.46 real-source Mara `HOLD` remains. SceneTrace stays SHADOW ONLY.
+
+
+## v0.48 — Real Mara 28-source-sentence / 2-model pilot READY, **paid launch NOT authorized**
+
+[Architecture, evidence scope, one-use grant protocol and known limitations](./SERA_V048_REAL_FULL_MARA_PRELAUNCH.md).
+
+- Same frozen Mara S1 SHA, **28/28** original source sentences, **7 four-sentence batches**, exactly **14 independent Gemini 3.7 Flash / Claude Haiku 4.5 planned provider attempts**. Prior Writer/other analyst answers are excluded; no application output token-generation cap. Existing v0.11 JSON parser, v0.41.1 metadata-only normalizer, v0.41.2 per-source-sentence quarantine reused.
+- Strict actual source-bound/QUARANTINED/NOT_SAMPLED model-by-model accounting, candidate event disagreements, two known watch/pencil source-risk flags, and per-call observed USD/roundtrip reporting are prepared. A 28/28 candidate-bound result is **not** semantic recall/precision gold or canonical Story/World authority.
+- Self-hosted [preflight run 38955555493](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38955555493) succeeded **726/726 Python tests**, no provider secret, no billable call, no DB/SQLite writes. Other follow-up preflights independently confirm the revised manifest and latency/contrast logic.
+- IMPORTANT: `launch/sera-v048-fullscene-paid-once.json` intentionally does **not exist** yet. The paid workflow is blocked until an **explicit separate user-authorized, code-SHA-pinned, grant-only commit**, with `[SERA-V048-PAID-ONCE]` and run_attempt=1. Maximum **14** one-shot attempts, observed-spend stop **$0.25** (not a guaranteed total invoice), no blind retries and no automatic paid model repair.
+- **Original real Mara S1 HOLD; SceneTrace shadow-only, no main merge.** The next paid test requires the user's specific authorization.
