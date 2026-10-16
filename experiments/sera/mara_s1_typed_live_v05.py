@@ -87,14 +87,17 @@ def prepare_request() -> dict:
     return {"prose": prose, "entry": entry, "request": request}
 
 
-def one_provider_call(*, key: str, prepared: dict) -> dict:
+def one_provider_call(*, key: str, prepared: dict,
+                      model: str = MODEL) -> dict:
     if not key:
         raise CoverageError("V05_LIVE_KEY_MISSING")
+    if not isinstance(model, str) or not model.strip():
+        raise CoverageError("V05_PROVIDER_MODEL_INVALID")
     req = prepared["request"]
     # Do not specify max_tokens, max_completion_tokens or other output ceilings.
     # Provider/model hard limits remain outside application control.
     payload = {
-        "model": MODEL, "messages": req["messages"],
+        "model": model, "messages": req["messages"],
         "response_format": req["response_format"],
         "temperature": 0,
         # Do not send unqualified model-specific reasoning flags.
