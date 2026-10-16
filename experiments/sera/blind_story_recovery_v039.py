@@ -158,7 +158,7 @@ def blind_recover(*, prose, scene_key, entry_revision, aliases, lexicon,
     }
 
 
-def run_scene(*, lab, run_id, scene_key, prose, approved_fixture_event,
+def _run_scene(*, lab, run_id, scene_key, prose, approved_fixture_event,
               fixture_approvals, aliases, lexicon, reply_for_blind_batch,
               scene_window=None, max_attempts=2):
     """v0.10 extracted event must match preapproved fixture, then v0.38 checks.
@@ -295,3 +295,39 @@ def run_scene(*, lab, run_id, scene_key, prose, approved_fixture_event,
         "canonical_commit_authorized": False,
         "g2_commit_request": None,
     }
+
+
+def run_scene(*, lab, run_id, scene_key, prose, approved_fixture_event,
+              fixture_approvals, aliases, lexicon, reply_for_blind_batch,
+              scene_window=None, max_attempts=2):
+    """Automatic FAIL-SAFE boundary for untrusted source/fixture mismatches.
+
+    Never turn an invalid model candidate into a persisted world event.
+    Unexpected committed revisions in an error path are NOT disguised as a
+    safe failure; they are raised as invariant violations.
+    """
+    original_revision = lab.context(run_id)["revision"]
+    try:
+        return _run_scene(
+            lab=lab, run_id=run_id, scene_key=scene_key, prose=prose,
+            approved_fixture_event=approved_fixture_event,
+            fixture_approvals=fixture_approvals, aliases=aliases,
+            lexicon=lexicon, reply_for_blind_batch=reply_for_blind_batch,
+            scene_window=scene_window, max_attempts=max_attempts,
+        )
+    except (CoverageError, WorldStateError) as exc:
+        current_revision = lab.context(run_id)["revision"]
+        if current_revision != original_revision:
+            raise CoverageError("V039_ERROR_AFTER_UNEXPECTED_WORLD_WRITE") from exc
+        return {
+            "schema": SCHEMA, "status": "FAILED_SAFE_FINAL",
+            "run_id": run_id, "scene_key": scene_key,
+            "entry_revision": original_revision,
+            "exit_revision": original_revision,
+            "source_prose_sha256": prose_hash(prose),
+            "last_findings": [str(exc)],
+            "independent_semantic_qualification": False,
+            "provider_calls": 0, "production_db_writes": 0,
+            "canonical_commit_authorized": False,
+            "g2_commit_request": None,
+        }
