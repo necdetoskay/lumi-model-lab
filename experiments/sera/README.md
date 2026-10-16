@@ -759,3 +759,42 @@ LUMI worker/model resolver integration, provider-side missing-response
 idempotency, independently qualified canon commit/rollback, and an unseen
 real-model complete Mara S1 release. No output token caps or human
 review/approval dependency.
+
+
+## v0.24 — Source-bound movement and no-phantom-object scenes
+
+[Detailed spatial architecture, evidence and remaining limitations](./SERA_V024_SPATIAL_PREVIEW.md).
+
+- [Pure spatial preview](./spatial_preview_v024.py) binds every
+  independently extracted MOVE/WORLD event to a real registered character,
+  its exact source quote, a source-mentioned registered destination and
+  an application-governed temporal/route case. The v0.5 temporal DAG
+  solver rules out impossible arrival windows and undocumented routes.
+  Held/worn objects accompany the actor only in an immutable, **noncanonical**
+  candidate snapshot. No invented arrival minute, scene-specific Mara
+  rules, model approval or production WorldState writes.
+- The [v0.23 full-event gate](./full_scene_qualification_v023.py)
+  no longer has to block a MOVE that passed all of those checks, but
+  reported/uncertain claims, unsupported transfers/knowledge effects,
+  missing route evidence and other full-scene defects remain blockers.
+- [v0.21 evidence checker](./artifact_scene_checker_v021.py) now accepts
+  truly facet-free scenes without inventing a watch/document only
+  when the full v0.23 gate runs. Its zero-facet conclusion alone is
+  **not** scene qualification.
+- [v0.22 source-evidence worker](./fresh_scene_evidence_worker_v022.py)
+  accepts an application-owned, explicitly policy-fingerprinted temporal
+  case builder for each fresh prose revision. The
+  [composed lab runner](./composed_scene_runner_v023.py) propagates the
+  trusted policy. No runtime manual per-story correction is required.
+- [Pure movement tests](./tests/test_spatial_preview_v024.py),
+  [v0.23 integration](./tests/test_spatial_full_scene_v024.py) and
+  [fully composed mock-provider movement-only worker tests](./tests/test_spatial_worker_v024.py)
+  cover route gaps, impossible timestamps, source binding, actor/region
+  identity, carried gear, reported-claim isolation and resumability.
+
+**Still experimental and noncanonical:** Production trusted-route
+policy provisioning, full spatial semantic certainty, ownership/knowledge/
+causal/state reducers, real production worker and model resolver, provider
+request idempotency and machine-authenticated atomic WorldState/EventGraph
+writes are not complete. Mara S1 remains HOLD. No output token caps,
+no human intervention requirements or production database changes.
