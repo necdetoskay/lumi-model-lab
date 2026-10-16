@@ -100,7 +100,7 @@ class TemporalDomainsV05Tests(unittest.TestCase):
         self.assertEqual(out["domains"][1]["earliest_feasible_minute"], 145)
 
     def test_contradictory_earliest_bound_with_later_exact_is_hold(self):
-        self.fail("TIME_EVENT_INFEASIBLE:a", [
+        self.fail("TIME_EVENT_INFEASIBLE:b", [
             evt("a", 1, early=155),
             evt("b", 2, exact=150, deps=[("a", 10)]),
         ])
