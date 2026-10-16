@@ -95,13 +95,18 @@ def _assess(result, prose, world):
     failures = (projection.get("remaining_semantic_task_codes", []) +
                 projection.get("unsupported_semantic_tasks", []) +
                 typed.get("blocker_codes", []))
-    if not isinstance(failures, list):
+    if (not isinstance(failures, list) or not all(
+        isinstance(item, (str, dict)) and bool(item) for item in failures
+    )):
         raise CoverageError("V020_REWRITE_DEFECTS_SCHEMA_INVALID")
+    if not ready and not failures:
+        raise CoverageError("V020_REWRITE_MISSING_DEFECT_EVIDENCE")
     return ready, failures
 
 
 def execute(*, prose, world, check_scene, rewrite_scene,
-            output_dir, max_rewrites=2):
+            output_dir, max_rewrites=2,
+            observed_spend_guard_usd="0.15"):
     """Automatically rewrite affected scene until source-bound gates pass.
 
     check_scene MUST be deterministic and without a new billed provider
@@ -115,11 +120,18 @@ def execute(*, prose, world, check_scene, rewrite_scene,
         not 0 <= max_rewrites <= MAX_REWRITES or
         not isinstance(prose, str) or not prose.strip()):
         raise CoverageError("V020_REWRITE_POLICY_INVALID")
+    try:
+        spend_guard = Decimal(str(observed_spend_guard_usd))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise CoverageError("V020_REWRITE_SPEND_POLICY_INVALID") from exc
+    if not spend_guard.is_finite() or spend_guard <= 0:
+        raise CoverageError("V020_REWRITE_SPEND_POLICY_INVALID")
     output_dir = Path(output_dir)
     contract = {
         "schema": SCHEMA, "original_prose_sha256": prose_hash(prose),
         "world_sha256": _digest(world),
         "max_rewrites": max_rewrites,
+        "observed_spend_guard_usd": str(spend_guard),
     }
     if output_dir.exists():
         if _read(output_dir / "contract.json") != contract:
@@ -199,6 +211,9 @@ def execute(*, prose, world, check_scene, rewrite_scene,
             reason = "V020_ONLY_STRUCTURAL_GATES_QUALIFIED"
             break
         if idx == max_rewrites:
+            break
+        if spent >= spend_guard:
+            reason = "V020_REWRITE_OBSERVED_SPEND_GUARD"
             break
         before = prose_hash(current)
         saved = output_dir / f"rewrite_{idx:02d}.json"
