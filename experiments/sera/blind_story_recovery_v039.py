@@ -166,14 +166,10 @@ def run_scene(*, lab, run_id, scene_key, prose, approved_fixture_event,
     NOTE: All approvals are supplied by synthetic fixture outside this
     method; no model output yields permission or a guessed timestamp.
     """
-    inp = lab.scene_inputs(
-        run_id, expected_revision=lab._run(run_id)["start_revision"]
-        if lab.context(run_id)["revision"] ==
-           lab._run(run_id)["start_revision"]
-        else lab.context(run_id)["revision"],
-    )
-    # Above is deliberately the active head, never an earlier story-start
-    # snapshot: a second character continues the shared world truth.
+    # Read the CURRENT shared-world revision. Story run start_revision may
+    # be older after another character has finished a scene.
+    current_revision = lab.context(run_id)["revision"]
+    inp = lab.scene_inputs(run_id, expected_revision=current_revision)
     entry = inp["validator_world"]
     start_revision = entry["revision"]
     ensure(isinstance(approved_fixture_event, dict) and
