@@ -68,7 +68,10 @@ def _receipt(payload, expected_source_hash):
 
 
 def _assess(result, prose, world):
-    if not isinstance(result, dict) or set(result) != {"projection", "typed"}:
+    if not isinstance(result, dict) or set(result) not in (
+        {"projection", "typed"},
+        {"projection", "typed", "qualification"},
+    ):
         raise CoverageError("V020_REWRITE_ASSESSMENT_INVALID")
     projection, typed = result["projection"], result["typed"]
     if (not isinstance(projection, dict) or not isinstance(typed, dict) or
@@ -95,6 +98,30 @@ def _assess(result, prose, world):
     failures = (projection.get("remaining_semantic_task_codes", []) +
                 projection.get("unsupported_semantic_tasks", []) +
                 typed.get("blocker_codes", []))
+    # v0.23 full-scene qualification is REQUIRED for the new v0.23
+    # composed worker, but old experimental two-gate v0.20 replays remain
+    # explicitly NONCANONICAL and backward-compatible.
+    if "qualification" in result:
+        q = result["qualification"]
+        if (not isinstance(q, dict) or
+            q.get("schema") != "sera.full-scene-qualification.v0.23" or
+            q.get("prose_sha256") != prose_hash(prose) or
+            q.get("world_sha256") != _digest(world) or
+            q.get("canonical_commit_authorized") is not False or
+            q.get("world_db_writes") != 0 or
+            q.get("requires_manual_intervention") is not False or
+            not isinstance(q.get("defects"), list)):
+            raise CoverageError("V023_FULL_GATE_INVALID_OR_FORGED")
+        complete = (
+            q.get("status") == "FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL"
+            and q.get("next_automatic_action") ==
+                "CONTINUE_INDEPENDENT_CANON_QUALIFICATION"
+            and q["defects"] == []
+        )
+        ready = ready and complete
+        failures += deepcopy(q["defects"])
+        if not complete and not q["defects"]:
+            raise CoverageError("V023_FULL_GATE_MISSING_DEFECT_EVIDENCE")
     if (not isinstance(failures, list) or not all(
         isinstance(item, (str, dict)) and bool(item) for item in failures
     )):
