@@ -103,6 +103,23 @@ def compare_files(*, review_a: Path, review_b: Path,
     return result
 
 
+
+def validate_file(*, review: Path, require_complete: bool = False) -> dict:
+    """Validate a locally saved reviewer form before human comparison.
+
+    The result cannot authenticate a reviewer or declare gold. Incomplete
+    forms are allowed during editing; --require-complete rejects blanks.
+    """
+    packet = generate_mara_packet()
+    prose = json.loads(PATH.read_text(encoding="utf-8"))["prose"]
+    validate_review_packet(prose=prose, packet=packet)
+    form = json.loads(review.read_text(encoding="utf-8"))
+    return validate_annotation(
+        packet=packet, annotation=form,
+        require_complete=require_complete,
+    )
+
+
 def main():
     p = argparse.ArgumentParser()
     cmd = p.add_subparsers(dest="command", required=True)
@@ -112,9 +129,16 @@ def main():
     compare.add_argument("--review-a", required=True, type=Path)
     compare.add_argument("--review-b", required=True, type=Path)
     compare.add_argument("--output", type=Path)
+    validate = cmd.add_parser("validate")
+    validate.add_argument("--review", required=True, type=Path)
+    validate.add_argument("--require-complete", action="store_true")
     args = p.parse_args()
     if args.command == "export":
         result = emit_forms(args.output_dir)
+    elif args.command == "validate":
+        result = validate_file(
+            review=args.review, require_complete=args.require_complete,
+        )
     else:
         result = compare_files(
             review_a=args.review_a, review_b=args.review_b,
