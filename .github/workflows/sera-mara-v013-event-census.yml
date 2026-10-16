@@ -1,0 +1,81 @@
+name: SERA v0.13 Mara Full 25-Event HOLD Census
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_event_census_cli_v013.py
+      - .github/workflows/sera-mara-v013-event-census.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run SERA offline safety and source tests
+        run: |
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Fetch original full source extraction, repairs and typed simulation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/census"
+          gh run download 38861828582 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-six-remaining-38861828582 \
+            --dir "$RUNNER_TEMP/census"
+          gh run download 38866189103 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v012-repair-proposals-38866189103 \
+            --dir "$RUNNER_TEMP/census"
+          gh run download 38867777726 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v013-typed-reducer-38867777726 \
+            --dir "$RUNNER_TEMP/census"
+          test -s "$RUNNER_TEMP/census/full_scene_assurance.json"
+          test -s "$RUNNER_TEMP/census/provisional-corrections.json"
+          test -s "$RUNNER_TEMP/census/qualified-simulation.json"
+      - name: Gate all 25 Mara source events; keep world state HOLD
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_event_census_cli_v013 \
+            --full-report "$RUNNER_TEMP/census/full_scene_assurance.json" \
+            --repairs "$RUNNER_TEMP/census/provisional-corrections.json" \
+            --versioned "$RUNNER_TEMP/census/qualified-simulation.json" \
+            --output "$RUNNER_TEMP/census/full-event-gates.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          c=json.loads((Path(os.environ["RUNNER_TEMP"])/"census"/"full-event-gates.json").read_text(encoding="utf-8"))
+          assert len(c["rows"])==25
+          assert c["source_model_event_count"]==25
+          assert c["source_sentence_count"]==28
+          assert c["candidate_repair_count"]==2
+          assert c["versioned_facet_events_simulated"]==3
+          assert c["events_qualified_for_canonical_commit"]==0
+          assert c["production_database_writes"]==0
+          assert c["real_model_calls_in_census"]==0
+          assert c["canonical_commit_authorized"] is False
+          assert all(x["status"]=="HOLD_NOT_CANONICAL" for x in c["rows"])
+          assert c["status"]=="ALL_25_EVENTS_AUDITED_SEMANTIC_AND_AUTHORITY_HOLD"
+          print("SERA_V013_25_EVENT_GATES_SOURCE_VERIFIED_HOLD_GREEN")
+          PY
+      - name: Archive the audited 25-event unresolved blocker inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v013-all-events-hold-${{ github.run_id }}
+          path: ${{ runner.temp }}/census/full-event-gates.json
+          retention-days: 90
+          if-no-files-found: warn
