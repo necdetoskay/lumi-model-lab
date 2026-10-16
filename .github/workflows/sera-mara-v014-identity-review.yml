@@ -1,0 +1,82 @@
+name: SERA v0.14 Real Mara Identity and Event Dependency Review
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_identity_review_cli_v014.py
+      - .github/workflows/sera-mara-v014-identity-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  identity-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: No model-output token ceilings and offline unit contracts
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve archived full scene event AND entity evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v014"
+          gh run download 38868633198 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v013-mara-all-mentions-38868633198 \
+            --dir "$RUNNER_TEMP/sera-v014"
+          gh run download 38868197633 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v013-all-events-hold-38868197633 \
+            --dir "$RUNNER_TEMP/sera-v014"
+          test -s "$RUNNER_TEMP/sera-v014/full-mentions.json"
+          test -s "$RUNNER_TEMP/sera-v014/full-event-gates.json"
+      - name: Require exact-source complete 16-ref identity proposals
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_identity_review_cli_v014 \
+            --mentions "$RUNNER_TEMP/sera-v014/full-mentions.json" \
+            --events "$RUNNER_TEMP/sera-v014/full-event-gates.json" \
+            --output "$RUNNER_TEMP/sera-v014/identity-proposals.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"sera-v014"/"identity-proposals.json").read_text())
+          assert d["all_unregistered_refs_proposed"]==16
+          assert d["original_model_entity_mentions"]==60
+          assert d["original_model_event_candidates"]==25
+          assert d["source_events_with_unregistered_refs"]==9
+          assert set(d["physical_item_candidate_refs"])=={"new:bench","new:pencil"}
+          refs={x["source_entity_ref"]:x for x in d["entity_identity_proposals"]}
+          assert refs["new:watch_hands"]["proposed_classification"]=="OBJECT_COMPONENT_CANDIDATE"
+          assert refs["new:watch_hands"]["proposed_relation_target"]=="vane_watch"
+          assert refs["new:watch_case"]["proposed_relation_target"]=="vane_watch"
+          assert refs["new:vane_thumb"]["proposed_classification"]=="ANATOMICAL_PART_CANDIDATE"
+          assert refs["new:vane_thumb"]["proposed_relation_target"]=="vane"
+          assert refs["new:train_41"]["proposed_classification"]=="REPORTED_TOPIC_NONPHYSICAL"
+          assert set(d["negative_markers_must_not_be_created"])=={"new:mark","new:strike_mark"}
+          assert d["created_entities"]==0
+          assert d["approved_relation_links"]==0
+          assert d["allowed_physical_train_arrivals"]==0
+          assert d["actual_event_commits"]==0
+          assert d["new_model_calls"]==0
+          assert d["canonical_commit_authorized"] is False
+          print("SERA_V014_REAL_MARA_16_IDENTITIES_25_EVENTS_HOLD_GREEN")
+          PY
+      - name: Archive source-bound identity proposals for next qualification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v014-identity-proposals-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v014/identity-proposals.json
+          retention-days: 90
+          if-no-files-found: warn
