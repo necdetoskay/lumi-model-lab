@@ -44,3 +44,15 @@ The partial per-row replay `real_pencil_partial_rows_v0412.py` performs strict v
 - Do not relax original Mara S1 HOLD, physically trusted Project_LUMI G2 source requirement, or forbid-human-manual-step / forbid-app-output-token-cap policies.
 
 [Tracking Epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306)
+
+
+## v0.41.2 actual source-row isolation — qualified result
+
+[Self-hosted CI 38939483561](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38939483561) completed **SUCCESS**, 677/677 Python tests. Proof artifact `sera-v0412-real-pencil-partial-38939483561`, ID `12062162747`.
+
+- Source-bound and retained as **noncanonical candidates only**: `s022` (Vane witnesses pencil movement, `new:pencil`) and `s023` (empty model event row).
+- **Quarantined**: `s021` and `s024`, both `SWEEP_QUOTE_NOT_IN_TARGET_SENTENCE`. No source quote rewrite or fake PASS.
+- A partially rebound Haiku source observation is **NOT** independent proof that all physical events in the four-sentence group were extracted or that the pencil moved by any particular actor.
+- New provider calls **0**; SQLite simulation writes **0**; production/canon writes **0**.
+
+These results establish the immediate next development priority: independent semantic actor-vs-observer reconciliation and source-complete multi-sentence re-extraction with durable receipts. They do not justify unlocking original Mara S1.
