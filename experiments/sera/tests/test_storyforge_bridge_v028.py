@@ -271,6 +271,31 @@ class StoryForgeBridgeV028Tests(unittest.TestCase):
             ):
                 launch(root, models=different, model_attestor=qualified)
 
+    def test_v030_readonly_reconciliation_policy_is_scope_locked_in_story_job(self):
+        with TemporaryDirectory() as temp:
+            root = Path(temp)
+            first = launch(
+                root, reconciler=lambda **kwargs:self.fail(
+                    "No provider query during dryrun"),
+                reconciliation_policy_id="authenticated-get-only-v1",
+            )
+            self.assertEqual(first["provider_calls"], 0)
+            with self.assertRaisesRegex(
+                CoverageError, "V028_IMMUTABLE_JOB_CONTRACT_CHANGED"
+            ):
+                launch(
+                    root,
+                    reconciler=lambda **kwargs:self.fail("Never called"),
+                    reconciliation_policy_id="different-reader-policy-v2",
+                )
+        with TemporaryDirectory() as temp:
+            with self.assertRaisesRegex(
+                CoverageError, "V030_STORYFORGE_RECONCILIATION_POLICY_INVALID"
+            ):
+                launch(Path(temp),
+                       reconciler=lambda **kwargs:None,
+                       reconciliation_policy_id=None)
+
     def test_real_provider_never_called_when_paid_unauthorized(self):
         with TemporaryDirectory() as temp:
             output=launch(
