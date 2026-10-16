@@ -1,0 +1,90 @@
+name: SERA M3.5 Artifact Forensics (Offline)
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/analyze-mara-s1-v05-20261016.json
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  analyze-frozen-artifact:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V05-FORENSICS-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify pinned forensic-only intent
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          p=pathlib.Path("experiments/sera/launch/analyze-mara-s1-v05-20261016.json")
+          d=json.loads(p.read_text())
+          expected={
+            "schema":"sera.mara-s1-v05-forensics-once.v0.1",
+            "authorized":True,
+            "scope":"INSPECT_EXISTING_ARTIFACT_ONLY",
+            "source_run_id":38849464433,
+            "source_artifact_id":12024517816,
+            "no_model_calls":True,
+            "no_database_writes":True,
+            "launch_id":"sera-v05-forensics-20261016-once",
+          }
+          if set(d)!=set(expected)|{"approved_code_sha"} or any(
+             d.get(k)!=v for k,v in expected.items()):
+             raise SystemExit("FORENSICS_GRANT_INVALID")
+          parent=subprocess.check_output(
+              ["git","rev-parse","HEAD^"],text=True).strip()
+          if d["approved_code_sha"]!=parent:
+              raise SystemExit("FORENSICS_CODE_PIN_FAILED")
+          changed=subprocess.check_output(
+              ["git","diff-tree","--no-commit-id","--name-only","-r","HEAD"],
+              text=True).splitlines()
+          if changed!=[str(p)]:
+              raise SystemExit("FORENSICS_TRIGGER_NOT_SINGLE_FILE")
+          print("FORENSICS_NO_PAID_CALL_VERIFIED")
+          PY
+      - name: Fetch exact previous Actions artifact and summarize failure
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-forensics"
+          python3 - <<'PY'
+          import io, os, pathlib, urllib.request, zipfile
+          url=("https://api.github.com/repos/" + os.environ["GITHUB_REPOSITORY"]
+               +"/actions/artifacts/12024517816/zip")
+          req=urllib.request.Request(
+              url,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+                           "Accept":"application/vnd.github+json"})
+          with urllib.request.urlopen(req,timeout=45) as r:
+              raw=r.read()
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              content=z.read("result.json")
+          target=pathlib.Path(os.environ["RUNNER_TEMP"])/"sera-forensics"/"result.json"
+          target.write_bytes(content)
+          PY
+          python3 -m experiments.sera.mara_s1_v05_artifact_forensics \
+            "$RUNNER_TEMP/sera-forensics/result.json" \
+            | tee "$RUNNER_TEMP/sera-forensics/summary.json"
+      - name: Archive sanitized forensic summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v05-forensics-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-forensics/summary.json
+          retention-days: 90
+          if-no-files-found: warn
