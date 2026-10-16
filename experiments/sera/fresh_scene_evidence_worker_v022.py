@@ -362,6 +362,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 fallback_model=fallback_model or semantic_model,
                 max_provider_calls=min(20, max_model_requests),
                 observed_spend_guard_usd=str(guard),
+                reconciler=reconciler,
             )
             _require(summary["status"] in (
                 "SEMANTIC_ADVISORIES_COMPLETE_NONCANONICAL",
