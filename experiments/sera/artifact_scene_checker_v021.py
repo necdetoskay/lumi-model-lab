@@ -106,6 +106,33 @@ def create_checker(*, evidence_root, full_qualification=False):
                 "world_db_writes": 0,
                 "empty_facet_scope_requires_full_gate": True,
             }
+        elif (full_qualification and bundle["typed_candidates"] and
+              bundle["temporal_case"] is not None and
+              bundle["relation_case"] is not None and
+              any(isinstance(e, dict) and e.get("kind") == "MOVE"
+                  for e in bundle["extraction_report"].get(
+                      "candidate_events", [])) and
+              any(isinstance(e, dict) and e.get("kind") in (
+                  "TRANSFER", "LEARN_FACT", "KNOWLEDGE_UPDATE")
+                  for e in bundle["extraction_report"].get(
+                      "candidate_events", []))):
+            # v0.13 independently validates at ORIGINAL entry location,
+            # which is incorrect when an object is used AFTER movement.
+            # Defer ONLY with v0.27 full gate; no independently approved
+            # result or model claim grants final scene readiness.
+            typed = {
+                "schema": "sera.typed-aspect-candidate-recovery.v0.20",
+                "status": "DEFERRED_TO_V027_ORDERED_FACETS_NONCANONICAL",
+                "prose_sha256": prose_hash(prose),
+                "world_sha256": digest(world),
+                "original_candidates_sha256": digest(
+                    bundle["typed_candidates"]),
+                "blocker_codes": [],
+                "requires_manual_intervention": False,
+                "canonical_commit_authorized": False,
+                "world_db_writes": 0,
+                "ordered_facet_scope_requires_full_gate": True,
+            }
         else:
             typed = recover(
                 prose=prose, world=world,
