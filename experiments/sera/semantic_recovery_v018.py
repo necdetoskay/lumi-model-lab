@@ -173,6 +173,9 @@ def execute(*, prose, extraction_report, call_model, output_dir,
             receipt_path = root / f"receipt_{suffix}_{round_index}.json"
             started_path = root / f"started_{suffix}_{round_index}.json"
             if receipt_path.is_file():
+                # Replayed paid attempts still consume the original budget.
+                # Never reset counted provider calls after worker restart.
+                calls += 1
                 try:
                     body = _verify_receipt(
                         _load(receipt_path), model=model, request_digest=digest,
@@ -182,6 +185,7 @@ def execute(*, prose, extraction_report, call_model, output_dir,
                     break
                 spent += _cost(body)
             elif started_path.exists():
+                calls += 1
                 # Provider might already have charged a lost response.
                 reason = "V018_UNCONFIRMED_IN_FLIGHT_CALL"
                 break
