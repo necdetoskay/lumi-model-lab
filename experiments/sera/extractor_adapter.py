@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from experiments.sera.request_policy import enforce_no_output_token_limit
 
 from experiments.sera.coverage import (
     EXTRACTION_SCHEMA, CoverageError, prose_hash, validate_report,
@@ -148,6 +149,7 @@ def extract_once_live(*, model: str, messages: list[dict],
         "response_format": {"type": "json_object"},
         "stream": False,
     }
+    enforce_no_output_token_limit(request_payload)
     data = json.dumps(request_payload, ensure_ascii=False).encode("utf-8")
     request = Request(
         ENDPOINT, method="POST", data=data,
