@@ -907,3 +907,37 @@ reconciliation, transactional WorldState/EventGraph commits and unseen
 paid full-story qualification remain unimplemented. No production
 DB writes, human manual patch/approval/restart or LLM output-token caps.
 Mara S1 remains HOLD.
+
+
+## v0.28 — StoryForge request/result bridge (lab, noncanonical)
+
+[Architecture, signed billing preflight and release constraints](./SERA_V028_STORYFORGE_BRIDGE.md).
+
+- [First-party StoryForge input adapter](./storyforge_bridge_v028.py)
+  validates a v1 StoryForge request/result pair, the accepted English
+  source scene, matching request/profile/world IDs, story/fidelity
+  editorial PASS and immutable frozen plan/context. StoryForge's
+  `publication_ready` is expressly **NOT** authorization to publish
+  SERA scene facts or commit WorldState/EventGraph mutations.
+- An independent application `verify_scope` authenticates the active
+  world/request/policy snapshot; exact qualification-ready runtime
+  profiles for all SERA model roles are bound to the job contract.
+  Unknown or fallback models and stale content hashes fail safely.
+- The default `paid_authorized=False` creates only a signed-source
+  **preflight** without sending ANY request. A real paid job additionally
+  requires a separate authenticated, exact request/world/model-bound
+  `paid_grant` and `verify_paid_grant`. Existing provider-side SERA
+  journaling, source revision extraction and noncanonical gate are reused.
+- [Integration and adversarial tests](./tests/test_storyforge_bridge_v028.py)
+  cover the actual v1 field shapes, mock OpenRouter staged scene
+  verification, model receipt replay, signed-grant rejection, world
+  and source tampering, and no publication authority or manual gates.
+  ZERO real billable calls were made.
+
+**Still open:** actual authorized live StoryForge/LUMI worker integration,
+full authenticated policy-grant provider, complete unseen and Mara
+story acceptance, real provider idempotent charged-request
+reconciliation, and safe machine-only transactional WorldState/
+EventGraph commits. Historical StoryForge internal output caps must
+be retired before a production StoryForge generation path is
+requalified; this bridge adds none. Experimental branch only.
