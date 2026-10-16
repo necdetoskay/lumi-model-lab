@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from hashlib import sha256
 
 from experiments.sera.coverage import CoverageError
 from experiments.sera.identity_auto_repair_v016 import repair
@@ -25,9 +26,9 @@ def run(*,paid:dict,mentions:dict)->dict:
         model_repair=None,
         max_targeted_calls=0,
     )
-    if result["request_sha256"]!=paid["request_sha256"] or (
-        result["original_response_sha256"]==
-        paid.get("wrong_original_response_sha256","NOT_GIVEN")
+    if (result["request_sha256"]!=paid["request_sha256"] or
+        result["original_response_sha256"]!=sha256(
+            paid["raw_provider_content"].encode("utf-8")).hexdigest()
     ):
         raise CoverageError("V016_REPLAY_REQUEST_OR_RAW_INVALID")
     return {
