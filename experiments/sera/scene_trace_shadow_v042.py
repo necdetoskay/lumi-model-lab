@@ -104,12 +104,19 @@ def build_trace(*, prose, scene_id, registry, candidate_lexicon,
                         "SCENETRACE_MODEL_ATOM_SHAPE_INVALID")
                 _source_span(prose,src,item)
                 if cat=="candidate_events":
-                    require(item.get("epistemic") is not None and
-                            item.get("kind") is not None and
-                            isinstance(item.get("entity_refs"),list),
+                    require(set(item)=={"kind","epistemic","effect",
+                                        "quote","start","end","entity_refs"} and
+                            isinstance(item.get("epistemic"),str) and
+                            isinstance(item.get("kind"),str) and
+                            isinstance(item.get("effect"),str) and
+                            isinstance(item.get("entity_refs"),list) and
+                            all(isinstance(x,str) for x in item["entity_refs"]),
                             "SCENETRACE_MODEL_EVENT_UNTYPED")
                 else:
-                    require(isinstance(item.get("entity_ref"),str) and
+                    require(set(item)=={"entity_ref","start","end",
+                                        "quote","role"} and
+                            isinstance(item.get("role"),str) and
+                            isinstance(item.get("entity_ref"),str) and
                             bool(item["entity_ref"]),
                             "SCENETRACE_MODEL_MENTION_ID_INVALID")
         accepted[row["sentence_id"]]=row
