@@ -188,7 +188,9 @@ jobs:
       - name: Install Chromium browser test dependency (no model/provider calls)
         run: |
           python -m pip install playwright==1.56.0
-          python -m playwright install --with-deps chromium
+          # Self-hosted restricted runner forbids sudo via no-new-privileges.
+          # Install browser binaries into the user cache without system apt.
+          python -m playwright install chromium
       - name: Real Chromium Mara blind reviewer end-to-end
         run: |
           set -euo pipefail
