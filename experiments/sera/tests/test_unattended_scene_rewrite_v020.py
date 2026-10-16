@@ -117,6 +117,45 @@ class UnattendedSceneControllerV020Tests(unittest.TestCase):
         self.assertEqual(len(checks), 2)
         self.assertEqual(len(calls), 1)
 
+    def test_interrupted_free_validator_automatically_recomputes_from_archive(self):
+        scans = []
+        writes = []
+        def checker(*, prose, world):
+            scans.append(prose)
+            return analysis(prose=prose, world=world)
+        def writer(*, source, defects):
+            writes.append(source)
+            return good_rewrite(source=source, defects=defects)
+        with TemporaryDirectory() as temp:
+            root = Path(temp) / "stage"
+            first = run(root, checker=checker, writer=writer)
+            (root / "final.json").unlink()
+            (root / "check_01.json").unlink()
+            resumed = run(root, checker=checker, writer=writer)
+        self.assertEqual(first, resumed)
+        self.assertEqual(len(scans), 3)  # no billed check
+        self.assertEqual(len(writes), 1)  # paid rewrite not repeated
+        self.assertFalse(resumed["requires_manual_intervention"])
+
+    def test_corrupted_started_validator_source_never_rechecks_wrong_story(self):
+        calls = []
+        def checker(*, prose, world):
+            calls.append(prose)
+            return analysis(prose=prose, world=world)
+        with TemporaryDirectory() as temp:
+            root = Path(temp) / "stage"
+            run(root, checker=checker)
+            (root / "final.json").unlink()
+            (root / "check_00.json").unlink()
+            (root / "check_00.started").write_text(
+                '{"prose_sha256":"WRONG_SOURCE"}', encoding="utf-8"
+            )
+            out = run(root, checker=checker)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(out["status"], "FAILED_SAFE_FINAL")
+        self.assertEqual(out["reason_code"],
+                         "V020_CHECKPOINT_SOURCE_MISMATCH")
+
     def test_lost_provider_reply_stops_without_double_bill_or_human(self):
         calls = []
         def unavailable(*, source, defects):
