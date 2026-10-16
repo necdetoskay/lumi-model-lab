@@ -1,0 +1,78 @@
+name: SERA v0.13 Versioned World Aspect Real Mara Qualification
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_versioned_facets_v013.py
+      - .github/workflows/sera-mara-v013-real-reducer.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  typed-reducer-real-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python offline suite and no output token ceiling enforcement
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Fetch original provider-derived correction evidence, without AI call
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v013"
+          gh run download 38866189103 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v012-repair-proposals-38866189103 \
+            --dir "$RUNNER_TEMP/v013"
+          test -s "$RUNNER_TEMP/v013/provisional-corrections.json"
+      - name: Versioned typed facet reducer and deterministic historical replay
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_versioned_facets_v013 \
+            --corrections "$RUNNER_TEMP/v013/provisional-corrections.json" \
+            --output "$RUNNER_TEMP/v013/qualified-simulation.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          file=Path(os.environ["RUNNER_TEMP"])/"v013"/"qualified-simulation.json"
+          q=json.loads(file.read_text(encoding="utf-8"))
+          assert q["state_schema"]=="sera.world-state.v0.13-experimental"
+          assert q["simulated_reducer_events"]==3
+          assert q["simulated_revision"]==3
+          assert q["versioned_aspects"]["vane_watch"]["position"]=="CLOSED"
+          doc=q["versioned_aspects"]["mara_notebook"]
+          assert doc["preexisting_content"]=="UNKNOWN"
+          assert len(doc["observed_appends"])==1
+          assert doc["observed_appends"][0]["text"]== \
+                 "Discrepancy documented; explanation unknown."
+          assert q["world_v02_snapshot_unchanged"] is True
+          assert q["history_verifies_deterministically"] is True
+          assert q["reconstructed_initial_snapshot_unchanged"] is True
+          assert q["actual_source_action_times_set"]==0
+          assert q["production_database_writes"]==0
+          assert q["real_canonical_authorization"] is False
+          assert q["gold_reference_qualified"] is False
+          print("SERA_V013_VERSIONED_REAL_MARA_REDUCER_QUALIFICATION_GREEN")
+          PY
+      - name: Archive detached proof, not a production state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-v013-typed-reducer-${{ github.run_id }}
+          path: ${{ runner.temp }}/v013/qualified-simulation.json
+          retention-days: 90
+          if-no-files-found: warn
