@@ -211,7 +211,6 @@ def bind(*,prose:str,world:dict,census:dict,request:dict,
     source_map={s["id"]:s for s in sentences(prose)}
     checked=[]
     rowmap={r["entity_ref"]:r for r in rows}
-    _check_cycle(rowmap)
     for ref in sorted(unknown):
         row=rowmap[ref]
         require(set(row)==ROW_FIELDS and
@@ -286,6 +285,7 @@ def bind(*,prose:str,world:dict,census:dict,request:dict,
             "canonical_commit_authorized":False,
             "status":"MODEL_PROPOSAL_REVIEW_REQUIRED",
         })
+    _check_cycle(rowmap)
     return {
         "schema":"sera.blind-identity-bound.v0.15",
         "source_prose_sha256":prose_hash(prose),
