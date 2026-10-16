@@ -1267,3 +1267,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Per-task v0.18 stage receipts are retained and rebound without new callbacks on worker restart. Both missing v0.18 and missing v0.22 responses fail safely and are never blindly re-sent. No model sidecar is provided as truth to the independent judge.
 - [Self-hosted v0.46 CI #38949896426](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38949896426): **712/712 Python tests PASS**; rerunning full v0.45/v0.18/v0.22 control sequence produces identical terminal state with no new model-double callbacks. **0 new paid model requests, 0 SQLite or Project_LUMI DB writes, no model output token cap, no main merge**.
 - Important: real prior source receipts + **scripted new model outputs** are not proof of automatic correction by real LLMs or full-event recall. SceneTrace remains SHADOW ONLY; original Mara S1 HOLD is not lifted.
+
+
+## v0.47 — Full v0.22 model fallback + v0.20 rewrite/recheck **scripted** safety experiment
+
+[Verified four-path evidence, design and limitations](./SERA_V047_FULL_FALLBACK_AND_REWRITE.md).
+
+- Uses actual `fresh_scene_evidence_worker_v022.create_preparer`, `artifact_scene_checker_v021.create_checker`, `unattended_scene_rewrite_v020.execute` and SceneTrace to exercise two-scene/source-SHA proof. On a complete-but-invalid primary model receipt (`{"rows":[]}`), a distinct fallback model's source-bound answer can autonomously advance the complete **2-sentence Ari/box synthetic fixture**. The v0.20 controller then independently checks new evidence and performs one scripted scene rewrite when needed.
+- Controlled adverse conditions: both models give safely receipted malformed rows -> `FAILED_SAFE_FINAL`; unknown/unreceipted initial call -> no fallback, `FAILED_SAFE_FINAL` (no blind resend). Final replay uses **zero extra model or writer callbacks**.
+- [Self-hosted v0.47 CI 38954533957](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38954533957) **718/718 tests**; 4 scenarios, all green. **0 real model calls, 0 paid USD, 0 SQLite/production writes**, no output-token ceilings or main merge.
+- These **scripted** positive examples are NOT evidence that the real 28-sentence Mara S1 is fixed, that a new real provider model improved semantic recall, or that G2 production publication is qualified. v0.46 real-source Mara `HOLD` remains. SceneTrace stays SHADOW ONLY.
