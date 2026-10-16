@@ -5,7 +5,7 @@ on:
     branches:
       - experiment/sera-scene-state-v0-1-20261015
     paths:
-      - experiments/sera/launch/analyze-mara-s1-v05-20261016.json
+      - experiments/sera/launch/analyze-mara-s1-v05-retry-20261016.json
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
   analyze-frozen-artifact:
     if: >-
       github.run_attempt == 1 &&
-      contains(github.event.head_commit.message, '[SERA-V05-FORENSICS-ONCE]')
+      contains(github.event.head_commit.message, '[SERA-V05-FORENSICS-RETRY]')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -40,7 +40,7 @@ jobs:
             "source_artifact_id":12024517816,
             "no_model_calls":True,
             "no_database_writes":True,
-            "launch_id":"sera-v05-forensics-20261016-once",
+            "launch_id":"sera-v05-forensics-20261016-retry",
           }
           if set(d)!=set(expected)|{"approved_code_sha"} or any(
              d.get(k)!=v for k,v in expected.items()):
@@ -56,6 +56,8 @@ jobs:
               raise SystemExit("FORENSICS_TRIGGER_NOT_SINGLE_FILE")
           print("FORENSICS_NO_PAID_CALL_VERIFIED")
           PY
+      - name: Install REST client (no provider/model traffic)
+        run: python -m pip install requests
       - name: Fetch exact previous Actions artifact and summarize failure
         env:
           GH_TOKEN: ${{ github.token }}
@@ -64,15 +66,17 @@ jobs:
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/sera-forensics"
           python3 - <<'PY'
-          import io, os, pathlib, urllib.request, zipfile
+          import io, os, pathlib, requests, zipfile
           url=("https://api.github.com/repos/" + os.environ["GITHUB_REPOSITORY"]
                +"/actions/artifacts/12024517816/zip")
-          req=urllib.request.Request(
-              url,headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
-                           "Accept":"application/vnd.github+json"})
-          with urllib.request.urlopen(req,timeout=45) as r:
-              raw=r.read()
-          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+          resp=requests.get(
+              url,
+              headers={"Authorization":"Bearer "+os.environ["GH_TOKEN"],
+                       "Accept":"application/vnd.github+json"},
+              timeout=45,
+          )
+          resp.raise_for_status()
+          with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
               content=z.read("result.json")
           target=pathlib.Path(os.environ["RUNNER_TEMP"])/"sera-forensics"/"result.json"
           target.write_bytes(content)
