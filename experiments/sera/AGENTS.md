@@ -22,3 +22,37 @@ This is an explicit repeated user instruction. Do **not** silently reintroduce c
 4. One complete evidence record per attempt; if a provider fails, inspect that failure before proposing another billable attempt.
 
 Violating this requirement is a test failure, not an ordinary design preference.
+
+
+## Owner policy: zero manual story-generation gates (2026-10-16)
+
+**Mandatory for SERA and any integrated LUMI story worker.** Never design normal
+story generation to require a person to fix model JSON, curate per-story model
+answers, approve scene events/entities, perform manual gold review, press retry
+or resume, or trigger a rescue CLI. Historical reviewer forms and human-gold
+research may remain as *optional laboratory evaluation*, not as a generation
+dependency. Older docs that mention human review as a release blocker are
+superseded for the **runtime workflow** by this section and by the v0.16
+canonical architecture addendum.
+
+Every error must flow through machine-operated detection, source-bound
+deterministic repair, inexpensive targeted second-model repair, independent
+revalidation and, if necessary, complete affected-stage re-extraction,
+automatic replan/rewrite and checkpoint resume. Model confidence or agreement
+alone never authorizes WorldState/EventGraph changes. If safe completion is
+impossible after authorized attempts, finish with an explicit durable
+`FAILED_SAFE_FINAL` outcome and **zero unsafe world writes**; never leave a
+mandatory `WAITING_FOR_HUMAN` or endless HOLD loop.
+
+A missing durable provider response may conceal an already-billed call.
+Never blindly resend an unknown in-flight request. Implement request-ID
+reconciliation/idempotent provider recovery before declaring crash/outage
+autonomy qualified. Budgets may bound *provider requests and observed cost*;
+they must not impose model output token-generation ceilings.
+
+**Do not confuse test coverage with semantic success.** v0.17 identity
+candidate coverage, v0.18 source-bound independent opinions and v0.19
+event-candidate projections are experimental **noncanonical** components,
+not proof of a complete autonomous production pipeline. Production rollout
+requires durable writer/replanner integration, real independent source
+qualification, transaction/rollback and machine-verifiable commit permission.
