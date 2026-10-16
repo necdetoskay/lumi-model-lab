@@ -266,8 +266,10 @@ def repair(*,prose,world,census,raw_provider_content,
                                    task["request_sha256"]})
                 counters["model_repaired"]+=1
                 error=None
-            except (CoverageError,ValueError,TypeError) as exc:
-                error="V016_TARGETED_REPAIR_UNRESOLVED:"+str(exc)
+            except Exception as exc:
+                # Network/provider refusal or malformed repair is localized
+                # to THIS ref; source-bound peers are never discarded.
+                error="V016_TARGETED_REPAIR_UNRESOLVED:"+str(exc)[:240]
         if bound is None:
             quarantined[ref]={
                 "entity_ref":ref,"original_model_row":original,
