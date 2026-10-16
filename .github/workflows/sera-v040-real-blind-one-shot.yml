@@ -1,0 +1,98 @@
+name: SERA v0.40 Real Blind Model Benchmark — One Use
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/sera-v040-real-blind-one-shot.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sera-v040-frozen-mara-bench-once-20261016
+  cancel-in-progress: false
+
+jobs:
+  frozen-source-real-model-pilot:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V040-PAID-ONCE]')
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v040-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v040-source
+          fetch-depth: 2
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact one-use source/code pin and read-only model policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,subprocess
+          from experiments.sera.real_blind_benchmark_v040 import prepare,verified_grant,GRANT
+          grant=json.loads(GRANT.read_text(encoding="utf-8"))
+          source=prepare()
+          verified_grant(source,grant)
+          parent=subprocess.check_output(['git','rev-parse','HEAD^'],text=True).strip()
+          assert grant['approved_code_sha']==parent, 'V040_APPROVED_PARENT_CODE_PIN_MISMATCH'
+          changed=subprocess.check_output([
+              'git','diff-tree','--no-commit-id','--name-only','-r','HEAD'
+          ],text=True).splitlines()
+          assert changed==[str(GRANT)], 'V040_LAUNCH_COMMIT_NOT_SINGLE_GRANT_FILE'
+          assert len(source["batch"]["sentence_ids"])<=4
+          assert source["batch"]["response_format"]=={"type":"json_object"}
+          print('V040_ONE_USE_SCOPE_CODE_BLIND_PROMPT_PIN_PASS')
+          PY
+          python3 -m unittest discover -s experiments/sera/tests -q
+          python3 -m experiments.sera.real_blind_benchmark_v040
+      - name: Provider preflight dependencies
+        run: python3 -m pip install requests
+      - name: Two strictly bounded single-try real OpenRouter model probes
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+            echo "V040_PROVIDER_KEY_NOT_CONFIGURED_NO_PAID_CALL"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera-v040-real"
+          python3 -m experiments.sera.real_blind_benchmark_v040 \
+            --live \
+            --launch-id "sera-v040-real-blind-once-${GITHUB_RUN_ID}" \
+            --output "$RUNNER_TEMP/sera-v040-real/result.json"
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'sera-v040-real'
+          doc=json.loads((root/'result.json').read_text(encoding='utf-8'))
+          assert doc['provider_attempts']<=2
+          assert doc['model_output_token_limit_set'] is False
+          assert doc['canonical_commit_authorized'] is False
+          assert doc['production_db_writes']==0
+          assert doc['semantic_recall_proven'] is False
+          print('V040_LIVE_MODEL_DIAGNOSTIC_STATUS',doc['status'])
+          print('V040_MODEL_PROBES',[(m['requested_model'],m['status'],
+               m['target_bench_mentioned'],m['provider_cost_usd'])
+               for m in doc['results']])
+          PY
+      - name: Archive real provider response and exact source-bound evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v040-real-blind-once-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v040-real/
+          retention-days: 90
+          if-no-files-found: warn
