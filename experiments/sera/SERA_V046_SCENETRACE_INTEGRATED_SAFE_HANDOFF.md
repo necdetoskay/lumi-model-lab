@@ -20,7 +20,7 @@ v0.45'in önceki gerçek OpenRouter yanıtlarından kaynaklanan (ancak offline m
 
 ## Ölçülen ilk başarılı CI
 
-[Self-hosted v0.46 #38949732425](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38949732425): **710/710 Python test PASS**. Son durum:
+[Self-hosted v0.46 #38949732425](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38949732425): **712/712 Python test PASS**. Son durum:
 
 | Kontrol | Sonuç |
 | --- | --- |
@@ -36,6 +36,8 @@ v0.45'in önceki gerçek OpenRouter yanıtlarından kaynaklanan (ancak offline m
 | Gerçek/SQLite dünya durumuna yazma | **0** |
 | Uygulama çıktı token sınırı | **Yok** |
 | Ana branch merge | **Yok** |
+
+Ayrıca v0.46'nın ek regresyonunda, hem v0.18 hem v0.22 aşamasındaki `STARTED` fakat receipt'i bilinmeyen yanıt yeniden başlatılsa bile çağrı tekrarlanmıyor ve dünya kaydı yapılmıyor. [Yeni self-hosted run #38949896426](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38949896426) SUCCESS, **712/712 Python testi**.
 
 V0.46'nın en önemli sonucu: **hedefli model cevaplarının kaynak alıntılarını doğrulamak, tam sahne olay/nesne kapsamını kanıtlamaya yetmez**. Bu nedenle sıradaki worker eksik veri sağladığında otomatik fail-safe sona ulaşıyor. `FAILED_SAFE_FINAL` burada **başarısız otomatik hikâye üretimidir ama başarılı güvenlik ve yeniden başlatma testidir.**
 
