@@ -257,6 +257,34 @@ class OrderedFacetsV027Tests(unittest.TestCase):
         ):
             direct(mutate=duplicate)
 
+    def test_document_or_physical_state_cannot_be_promoted_from_none_effect(self):
+        def fake_write(w,r,t,rel,c,roles):
+            r["candidate_events"][5]["effect"] = "NONE"
+        with self.assertRaisesRegex(
+            CoverageError, "V027_FACET_INDEPENDENT_SWEEP_MISMATCH"
+        ):
+            direct(mutate=fake_write)
+        def fake_closed(w,r,t,rel,c,roles):
+            r["candidate_events"][4]["effect"] = "NONE"
+        with self.assertRaisesRegex(
+            CoverageError, "V027_FACET_INDEPENDENT_SWEEP_MISMATCH"
+        ):
+            direct(mutate=fake_closed)
+
+    def test_duplicate_or_colliding_facet_receipt_ids_fail_closed(self):
+        def duplicate(w,r,t,rel,c,roles):
+            c[1]["event_id"] = c[0]["event_id"]
+        with self.assertRaisesRegex(
+            CoverageError, "V027_TYPED_EVENT_IDS_NOT_UNIQUE"
+        ):
+            direct(mutate=duplicate)
+        def colliding(w,r,t,rel,c,roles):
+            c[0]["event_id"] = "source-3"
+        with self.assertRaisesRegex(
+            CoverageError, "V027_TYPED_EVENT_IDS_NOT_UNIQUE"
+        ):
+            direct(mutate=colliding)
+
     def test_unrelated_location_policy_or_forged_actor_blocks_replay(self):
         def lost_route(w,r,t,rel,c,roles):
             t["travel_minutes"] = {}
