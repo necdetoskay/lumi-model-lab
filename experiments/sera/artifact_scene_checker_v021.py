@@ -81,12 +81,34 @@ def create_checker(*, evidence_root, full_qualification=False):
             semantic_summary=bundle["semantic_summary"],
             temporal_case=bundle["temporal_case"],
         )
-        typed = recover(
-            prose=prose, world=world,
-            registry=bundle["typed_registry"],
-            candidates=bundle["typed_candidates"],
-            projection=projected,
-        )
+        roles = bundle["typed_registry"]
+        if (isinstance(roles, dict) and
+            set(roles) == {"openables", "documents"} and
+            roles["openables"] == [] and roles["documents"] == [] and
+            bundle["typed_candidates"] == []):
+            # No phantom watch or notebook: the empty facet registry is
+            # acceptable ONLY with the full v0.23 all-event gate, which
+            # still detects unsupported MOVE/TRANSFER/state effects.
+            if not full_qualification:
+                raise CoverageError("V024_EMPTY_FACETS_REQUIRE_FULL_GATE")
+            typed = {
+                "schema": "sera.typed-aspect-candidate-recovery.v0.20",
+                "status": "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL",
+                "prose_sha256": prose_hash(prose),
+                "world_sha256": digest(world),
+                "original_candidates_sha256": digest([]),
+                "blocker_codes": [],
+                "requires_manual_intervention": False,
+                "canonical_commit_authorized": False,
+                "world_db_writes": 0,
+                "empty_facet_scope_requires_full_gate": True,
+            }
+        else:
+            typed = recover(
+                prose=prose, world=world,
+                registry=roles, candidates=bundle["typed_candidates"],
+                projection=projected,
+            )
         if (projected["canonical_commit_authorized"] is not False or
             typed["canonical_commit_authorized"] is not False or
             projected["world_db_writes"] != 0 or
