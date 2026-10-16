@@ -181,6 +181,8 @@ def dual_real_evaluation(*, bench_receipt_dir, pencil_receipt_dir):
     model_comparisons=[]
     risks=[]
     disagreement_count=0
+    kind_disagreement_count=0
+    field_disagreement_count=0
     unique_scoped=set()
     for sentence in plan["source_sentences"]:
         sid=sentence["id"]
@@ -228,8 +230,18 @@ def dual_real_evaluation(*, bench_receipt_dir, pencil_receipt_dir):
                         })
         both=len(signatures)==2
         disputed=both and signatures[0]!=signatures[1]
+        disagreement_class=(
+            "EVENT_KIND_SET_MISMATCH" if disputed and
+            statuses[0]["candidate_event_kinds"]!=
+                statuses[1]["candidate_event_kinds"] else
+            "EVENT_ARGUMENT_OR_EPISTEMIC_MISMATCH" if disputed else None
+        )
         if disputed:
             disagreement_count+=1
+            if disagreement_class=="EVENT_KIND_SET_MISMATCH":
+                kind_disagreement_count+=1
+            else:
+                field_disagreement_count+=1
         model_comparisons.append({
             "sentence_id":sid,"narrative_ordinal":len(model_comparisons)+1,
             "quote":sentence["quote"],
@@ -237,6 +249,7 @@ def dual_real_evaluation(*, bench_receipt_dir, pencil_receipt_dir):
             "model_candidates":statuses,
             "both_models_source_bound":both,
             "event_candidate_signature_disagreement":disputed,
+            "disagreement_class":disagreement_class,
             "independent_semantic_event_verified":False,
             "exact_story_second":None,
             "world_state_write_authorized":False,
@@ -261,6 +274,9 @@ def dual_real_evaluation(*, bench_receipt_dir, pencil_receipt_dir):
         "source_bound_model_rows":bound_counts,
         "quarantined_model_rows":quarantine_counts,
         "source_bound_event_candidate_disagreements":disagreement_count,
+        "event_kind_disagreement_count":kind_disagreement_count,
+        "event_argument_or_epistemic_disagreement_count":
+            field_disagreement_count,
         "source_bound_semantic_risk_flags":risks,
         "model_batch_evidence":bind_meta,
         "source_timeline":model_comparisons,
@@ -299,6 +315,9 @@ def main():
         "quarantined_model_rows":proof["quarantined_model_rows"],
         "event_signature_disagreements":
             proof["source_bound_event_candidate_disagreements"],
+        "event_kind_disagreements":proof["event_kind_disagreement_count"],
+        "event_argument_or_epistemic_disagreements":
+            proof["event_argument_or_epistemic_disagreement_count"],
         "risk_flags":[(r["model"],r["source_sentence_id"],r["risk_code"])
                       for r in proof["source_bound_semantic_risk_flags"]],
         "extra_model_calls":proof["additional_paid_requests"],
