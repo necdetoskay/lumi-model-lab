@@ -1,0 +1,79 @@
+name: SERA v0.50 Unattended Mara Row Repair and Disagreement Review
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/automated_row_recovery_v050.py
+      - experiments/sera/automated_row_recovery_smoke_v050.py
+      - experiments/sera/tests/test_automated_row_recovery_v050.py
+      - .github/workflows/sera-v050-auto-row-repair-shadow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  no-human-gate-repair-lab:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: sera-v050-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v050-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce token policy and run complete offline regression suite
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve original completed 14 real blind Mara receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v050/real-v048"
+          gh run download 38957808652 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v048-full-28-real-model-once-38957808652 \
+            --dir "$RUNNER_TEMP/sera-v050/real-v048"
+      - name: Execute automatic single-row recovery and blinded independent review
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.automated_row_recovery_smoke_v050 \
+            --receipt-root "$RUNNER_TEMP/sera-v050/real-v048" \
+            --output-root "$RUNNER_TEMP/sera-v050/recovery"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'sera-v050'/'recovery'
+          d=json.loads((root/'proof.json').read_text(encoding='utf-8'))
+          assert d['status']=='SCRIPTED_AUTONOMOUS_REEXTRACTION_AND_INDEPENDENT_REVIEW_NONCANONICAL'
+          assert d['immutable_real_provider_receipts_verified']==14
+          assert d['reextracted_source_rows_scripted_only']==5
+          assert d['source_blind_independent_advisories_scripted_only']==21
+          assert d['fallbacks_after_fully_received_invalid_source']==2
+          assert d['replay_provider_attempts']==0
+          assert d['same_results_after_restart'] is True
+          assert d['new_paid_calls']==0
+          assert d['canonical_commit_authorized'] is False
+          assert d['world_db_writes']==0
+          assert d['requires_manual_intervention'] is False
+          assert d['genuine_full_28_sentence_semantic_correctness_proven'] is False
+          print('SERA_V050_REAL_PROVENANCE_AUTONOMOUS_OFFLINE_REPAIR_GREEN')
+          PY
+      - name: Preserve source-bound scripted dispositions, no real provider key
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v050-26-auto-repairs-real-provenance-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/sera-v050/recovery/proof.json
+            ${{ runner.temp }}/sera-v050/recovery/worker/
+          retention-days: 90
+          if-no-files-found: warn
