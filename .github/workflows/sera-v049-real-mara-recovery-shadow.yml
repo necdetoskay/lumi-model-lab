@@ -1,0 +1,82 @@
+name: SERA v0.49 Real Mara 26-Task Source-Only Recovery Offline
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/real_mara_recovery_queue_v049.py
+      - experiments/sera/real_mara_recovery_smoke_v049.py
+      - experiments/sera/tests/test_real_mara_recovery_queue_v049.py
+      - .github/workflows/sera-v049-real-mara-recovery-shadow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  source-real-provenance-blind-review:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: sera-v049-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v049-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce token-limit hard rule and all offline SERA safety tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve immutable completed v0.48 14 real provider envelopes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v049/real-v048"
+          gh run download 38957808652 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v048-full-28-real-model-once-38957808652 \
+            --dir "$RUNNER_TEMP/sera-v049/real-v048"
+      - name: Reverify raw real receipts; stage 5 quarantines and 21 disagreements
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.real_mara_recovery_smoke_v049 \
+            --receipt-root "$RUNNER_TEMP/sera-v049/real-v048" \
+            --output-root "$RUNNER_TEMP/sera-v049/review"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ['RUNNER_TEMP'])/'sera-v049'/'review'
+          d=json.loads((root/'proof.json').read_text(encoding='utf-8'))
+          assert d['status']=='REAL_SOURCE_TASKS_READY_SCRIPTED_REVIEW_ONLY'
+          assert d['archived_real_model_responses_verified']==14
+          assert d['quarantined_haiku_rows']==5
+          assert d['cross_model_candidate_disagreement_tasks']==21
+          assert d['source_blind_independent_review_requests']==26
+          assert d['scripted_review_bound_responses']==26
+          assert d['extra_model_calls_on_replay']==0
+          assert d['new_paid_provider_calls']==0
+          assert d['additional_real_model_semantic_fixes']==0
+          assert d['true_mara_physical_qualification'] is False
+          assert d['world_commit_authorized'] is False
+          assert d['production_db_writes']==0
+          print('SERA_V049_VERIFIED_14_REAL_RECEIPTS_26_BLIND_WORKORDERS_GREEN')
+          PY
+      - name: Preserve exact blind requests, offline response/restart receipts and audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v049-real-mara-26-blind-recovery-tasks-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/sera-v049/review/proof.json
+            ${{ runner.temp }}/sera-v049/review/work_orders.json
+            ${{ runner.temp }}/sera-v049/review/contract.json
+            ${{ runner.temp }}/sera-v049/review/task_*.request.json
+            ${{ runner.temp }}/sera-v049/review/scripted/
+          retention-days: 90
+          if-no-files-found: warn
