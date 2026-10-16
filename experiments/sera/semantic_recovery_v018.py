@@ -11,6 +11,7 @@ from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 import json
+import re
 from pathlib import Path
 
 from experiments.sera.coverage import CoverageError, prose_hash
@@ -80,8 +81,14 @@ def _bind(*, audit, request, response):
     message = choice.get("message")
     if not isinstance(message, dict) or not isinstance(message.get("content"), str):
         raise CoverageError("V018_PROVIDER_TEXT_MISSING")
+    raw_text = message["content"].strip()
+    if raw_text.startswith("```"):
+        fence = re.fullmatch(r"```(?:json)?[ \\t]*\\r?\\n([\\s\\S]*?)\\r?\\n```", raw_text)
+        if fence is None:
+            raise CoverageError("V018_PROVIDER_JSON_FENCE_INVALID")
+        raw_text = fence.group(1)
     try:
-        parsed = json.loads(message["content"])
+        parsed = json.loads(raw_text)
     except ValueError as exc:
         raise CoverageError("V018_PROVIDER_JSON_INVALID") from exc
     return bind_task_response(audit=audit, request=request, raw=parsed)
