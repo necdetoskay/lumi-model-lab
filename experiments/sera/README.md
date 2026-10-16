@@ -1156,3 +1156,14 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - `g2_physical_pinned_reader_v036.py` verifies an **independent** Ed25519-signed physical snapshot using a separately pinned public key, signed G2 authority digest, per-read challenge nonce/expiry, issuer/audience/permission and mandatory one-use replay callback, then invokes the existing conservative v0.33 physical projector.
 - Native G2 node/edge and character location/route knowledge schemas **do not provide objective current location or object custody on their own**. Missing physical position, owner/holder/wear, verifiable events, and route duration may NOT be inferred from story text, known place or model reasoning.
 - Signed physical test records remain synthetic and the output is NONCANONICAL; no deployed physical endpoint or production database read. World/EventGraph writes, G2 StoryOutcome commit, manual rescue and application output token limits remain prohibited. Mara S1 HOLD.
+
+ 
+## v0.37 — Multi-character SQLite Story World (LAB ONLY)
+
+[Architecture, fixture contract and qualification](./SERA_V037_MULTICHARACTER_SQLITE_STORY_LAB.md).
+
+- Reuses the original SQLite WorldStore v0.2 for immutable world revisions, causal event history, CAS and rollback. Adds lab-only scoped worlds/character memberships/story runs/events — **no second physical source store**.
+- Seeds the same world with Mara, Elin and robot Rho, plus objects, clothing, registered routes and isolated per-character knowledge. Different story runs share the same physical world, and other worlds remain isolated.
+- `scene_inputs` distinctly returns private-data-filtered `writer_context` and `validator_world`; never send full validator state to a writer prompt. External fixture grant is required for any simulated event, and all commits remain NONCANONICAL.
+- Initial data + metadata are inserted in the same SQLite transaction. New tests cover multi-character custody, movement, replay, stale revisions, rollback, writer privacy and SQLite persistence.
+- Origin and Saga have reserved fixture fields/run kinds, but only STORY is active. Actual Mara S1 remains HOLD; no G2 DB write, migration, main merge, billable model call or app-defined output token ceiling.
