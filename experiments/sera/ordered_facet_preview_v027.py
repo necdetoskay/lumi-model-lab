@@ -59,7 +59,13 @@ def _facet_step(*, state, aspects, prose, original, candidate, registry):
             prose[proof["start"]:proof["end"]] == proof["quote"] and
             candidate.get("sentence_id") == original.get("sentence_id"),
             "V027_FACET_SOURCE_INVALID")
+    allowed_effect = {
+        "OBSERVE_OPENABLE": frozenset({"NONE", "OBJECT"}),
+        "SET_OPENABLE": frozenset({"OBJECT"}),
+        "APPEND_DOCUMENT_ENTRY": frozenset({"DOCUMENT"}),
+    }
     require(original["kind"] in KINDS[candidate["type"]] and
+            original.get("effect") in allowed_effect[candidate["type"]] and
             original["start"] < proof["end"] and
             proof["start"] < original["end"],
             "V027_FACET_INDEPENDENT_SWEEP_MISMATCH")
@@ -182,6 +188,14 @@ def preview(*, prose, world, extraction_report, temporal_case, relation_case,
                 sent["start"] <= e["start"] and e["end"] <= sent["end"],
                 "V027_SOURCE_SENTENCE_INVALID")
 
+    require(all(isinstance(x, dict) and
+                isinstance(x.get("event_id"), str) and
+                bool(x["event_id"].strip()) for x in typed_candidates) and
+            len({x["event_id"] for x in typed_candidates}) ==
+                len(typed_candidates) and
+            not set(ids).intersection(
+                {x["event_id"] for x in typed_candidates}),
+            "V027_TYPED_EVENT_IDS_NOT_UNIQUE")
     used = set()
     facet_map = {}
     for event in ordered:
