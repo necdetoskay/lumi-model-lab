@@ -119,3 +119,23 @@ measuring usage is not an output limit.
 **S1 remains HOLD.** A passing binder does not prove identity
 accuracy, that all mentions were detected by the upstream model,
 or that all 25 events can safely commit.
+
+## Self-hosted checkout diagnostic and one-use recovery
+
+The initial **single-use** launch
+[38872127365](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38872127365)
+found the configured self-hosted runner `q25-offline-isolated`, but
+`actions/checkout@v4` stopped before any Python or provider step.
+The logs show `fatal: --local can only be used inside a git
+repository`, followed by a missing artifact warning.
+**Zero LLM API attempts** took place.
+
+Do not rerun that grant or reuse a paid-response ID: none exists.
+The v0.15b workflow repair clears only a *non-git*
+`GITHUB_WORKSPACE` after the failed checkout and requests
+`clean: false` plus `set-safe-directory: false`.
+It requires a **different**, specifically named
+`mara-s1-blind-identity-once-v015b.json` single-file
+approval pinned to the repaired branch SHA and the ID of the
+pre-provider failure. No alteration to the model prompt, output token
+policy or state-writing authority was made by this operational change.
