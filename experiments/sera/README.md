@@ -467,3 +467,34 @@ First real Mara S1 canonical exit state is still **HOLD**. Next steps
 are provisional identity/part-of resolution, independent semantic
 event qualification, real trusted authority and transactional
 production migration tests.
+
+## SERA v0.14 — 16 provisional reference identity proposals
+
+[Architecture and real source findings](./SERA_V014_ENTITY_IDENTITY_GATE.md).
+
+A reusable source-bound `identity_resolution_v014.py` contract
+now enforces **complete** provisional reference coverage and explicit
+review-only interpretation categories. The Mara-specific
+`mara_s1_identity_rules_v014.py` rulebook is a set of **hypotheses**,
+not human gold and not a hardcoded global ontology. Its exact source
+anchors are checked against original paid model mentions and source
+sentences, and the join with 25-event source-gate results prevents
+silent cross-sentence object aliasing.
+
+[Actual v0.14 proof 38870235664](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38870235664):
+**351/351 Python tests PASS**. From **60 source mentions** and
+**25 original event proposals**, every one of **16 unregistered refs**
+has a noncanonical review category; **9 events** depend on those
+unregistered identities. Only `new:bench` and `new:pencil`
+are independent physical-item candidates. `new:watch_hands` and
+`new:watch_case` are potential watch parts, `new:vane_thumb`
+an anatomical part, and `new:mark`/`new:strike_mark` explicit
+absences rather than newly created objects. Reported trains stay
+nonphysical topics. **0 entity creations, 0 relationship links,
+0 canonical commits and 0 new model charges.**
+
+The next general-purpose step is **blind model-assisted identity
+proposals** (finite typed schema + abstain/repair), compared against
+this source-specific diagnostic without granting it truth authority;
+afterward all event and identity proposals require independent
+qualified validation before any actual `WorldStore` transaction.
