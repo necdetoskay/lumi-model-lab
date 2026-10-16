@@ -152,9 +152,27 @@ class TypedAspectRecoveryV020Tests(unittest.TestCase):
             run(typed={"openables": ["vane_watch"],
                        "documents": ["vane_watch"]})
         with self.assertRaisesRegex(
-            CoverageError, "V020_V013_REDUCER_ROLE_COVERAGE_MISSING"
+            CoverageError, "V020_NO_REGISTERED_FACET_OBJECTS"
         ):
-            run(typed={"openables": ["vane_watch"], "documents": []})
+            run(typed={"openables": [], "documents": []})
+
+    def test_single_openable_role_is_generic_and_needs_no_document(self):
+        response = run(events=three()[:2],
+                       typed={"openables": ["vane_watch"], "documents": []})
+        self.assertEqual(response["status"],
+                         "TYPED_FACETS_SIMULATED_NONCANONICAL")
+        self.assertEqual(response["typed_preview"]["aspects"]["vane_watch"]
+                         ["position"], "CLOSED")
+        self.assertEqual(len(response["typed_preview"]["aspects"]), 1)
+
+    def test_single_document_role_is_generic_and_needs_no_openable(self):
+        response = run(events=[three()[2]],
+                       typed={"openables": [], "documents": ["mara_notebook"]})
+        self.assertEqual(response["status"],
+                         "TYPED_FACETS_SIMULATED_NONCANONICAL")
+        self.assertEqual(len(response["typed_preview"]["aspects"]), 1)
+        self.assertEqual(len(response["typed_preview"]["aspects"]
+                             ["mara_notebook"]["observed_appends"]), 1)
 
     def test_unresolved_v019_scene_defect_holds_even_if_facets_simulate(self):
         source = projected_source(PROSE, "AUTO_EVENT_REEXTRACTION_OR_REPLAN")
