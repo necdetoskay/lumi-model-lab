@@ -1218,3 +1218,12 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - [v0.41.2 offline replay CI SUCCESS, 677 Python tests](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38939483561): real Haiku **s022 pencil observation source-bound**, s023 structurally bound, s021/s024 quarantined for fabricated or nonexact quoted spans. Does **not** promote partial rows to whole-scene success. Both models lack independently verified pencil mover, cause, timing, ownership or canonical identity.
 - All new replay operations have **zero additional paid model calls** and zero SQLite simulation/production DB writes. Combined v0.40 bench + v0.41 pencil provider-reported cost USD $0.030352; these two four-sentence trials **do not** establish scene-wide precision, event recall or G2 physical authority.
 - Existing v0.10/v0.11 binder reused, no output token ceiling. Original Mara S1 remains HOLD, Origin/Saga still future-scoped.
+
+
+## v0.42 — SceneTrace v0.1 shadow-only on actual frozen Mara evidence
+
+- [Architecture and measurement constraints](./SERA_V042_SCENETRACE_SHADOW.md) · [Issue #307](https://github.com/necdetoskay/lumi-model-lab/issues/307). Keeps existing SERA story engine untouched.
+- `scene_trace_shadow_v042.py` projects the **existing** v0.6 lexical/source scanner and **existing** v0.41.2 real-model source-bound/quarantined candidate rows into a fully span-validated source-order timeline. Actual Mara S1 yielded **28 source sentences, 105 source/candidate atoms, two source-bound model rows, two quarantined rows and 24 not assessed by that model pilot**.
+- Bench (source noun), watch already open (static descriptive cue) and observed pencil movement (unproven causal actor) remain **noncanonical candidates**, not physical state transitions. Time mentions are not action timestamps. No model-produced "after" state or agent guess is accepted.
+- [Self-hosted real receipt smoke](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38942956711): 684/684 Python tests before final hardening; artifact includes full JSON timeline and source-order Markdown. No additional provider calls, SQLite writes, production DB changes, token generation ceilings or required human runtime step.
+- Baseline comparison is intentionally **HOLD for core integration**: timeline visibility improved, but independent semantic recall/precision improvement **has not** been shown. Keep SceneTrace as sidecar until a controlled A/B on genuine model-produced stories proves a material advantage.
