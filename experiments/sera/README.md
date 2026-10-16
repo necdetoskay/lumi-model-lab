@@ -1127,3 +1127,23 @@ conclusion before asserting CI PASS: queued jobs are not completed tests.
 The signed physical world registry, actual live authorized GET proof,
 G2 transactional publisher, paid unseen-story test and Mara S1 canonical
 HOLD release are still open. Main, production DB and frozen Spine untouched.
+
+
+## v0.35 — Production-shaped Node Ed25519 public-key trust
+
+[Protocol/security and remaining integration gates](./SERA_V035_ED25519_NODE_PYTHON_TRUST.md).
+
+- `g2_ed25519_pinned_reader_v035.py` wraps the existing v0.33 HTTPS
+  nonce/issuer/audience/scope source reader with **cryptography-backed real
+  Ed25519 signature verification**, pinned to a separately provisioned
+  public-key PEM, SHA-256 digest of its raw 32 public-key bytes, and key ID.
+  HTTP response data cannot provide or override the trusted verification key.
+- Regression tests create temporary test keys, sign real production-shaped
+  canonical JSON through **Node.js crypto.sign** as the v0.34 Project_LUMI
+  source does, then verify the entire frozen synthetic G2 source via the
+  Python pinned reader and v0.32 authority gate. Invalid signatures, changed
+  rows/roles/scopes and replay do not authorize even a read-only preflight.
+- **Does not mean live G2 access**: separate Project_LUMI v0.34 endpoint CI,
+  activation, read-only SQL role, actual physical world registry, model
+  worker integration, guaranteed billed-call recovery and canon publication
+  remain independent qualifications. No main merge or paid call; Mara S1 HOLD.
