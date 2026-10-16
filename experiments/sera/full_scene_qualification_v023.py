@@ -98,6 +98,28 @@ def qualify(*, prose, world, bundle, projection, typed):
         defects.append(row)
         counters[code] += 1
 
+    # v0.24 may qualify one conservative subset: source-anchored
+    # character MOVEs with application-owned routes and feasible time
+    # windows. It is a pure spatial preview, NEVER a canonical event.
+    spatial = None
+    spatial_failure = None
+    moving = [e for e in events if isinstance(e, dict) and
+              e.get("kind") == "MOVE" and
+              e.get("effect") in ("WORLD", "OBJECT")]
+    if moving and bundle.get("temporal_case") is not None:
+        from experiments.sera.spatial_preview_v024 import preview
+        try:
+            spatial = preview(
+                prose=prose, world=world, extraction_report=report,
+                temporal_case=bundle["temporal_case"],
+            )
+        except CoverageError as exc:
+            spatial_failure = str(exc)
+            flag("SPATIAL_SOURCE_OR_ROUTE_UNQUALIFIED")
+    covered_movements = (
+        {x["source_event_id"] for x in spatial["transitions"]}
+        if spatial is not None else set()
+    )
     seen = set()
     for event in events:
         _ensure(isinstance(event, dict) and
@@ -123,9 +145,9 @@ def qualify(*, prose, world, bundle, projection, typed):
         ):
             flag("NONOBJECTIVE_CLAIM_HAS_PHYSICAL_EFFECT",
                  event_id=ident, sentence_id=sid)
-        if kind in UNSUPPORTED_MUTATIONS and effect not in (
+        if (kind in UNSUPPORTED_MUTATIONS and effect not in (
             "NONE", "UNKNOWN",
-        ):
+        ) and not (kind == "MOVE" and ident in covered_movements)):
             flag("STATE_EFFECT_WITHOUT_QUALIFIED_REDUCER",
                  event_id=ident, sentence_id=sid)
         # A physical event must have a known, active, registered object /
@@ -214,6 +236,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         "source_sentence_count": len(sentences(prose)),
         "source_event_count": len(events),
         "typed_candidate_count": len(candidates),
+        "spatial_preview": spatial,
+        "spatial_failure": spatial_failure,
         "defects": defects,
         "defect_frequency": dict(sorted(counters.items())),
         "next_automatic_action": (
