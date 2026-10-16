@@ -18,7 +18,7 @@ from experiments.sera.typed_event_bridge_v04 import (
     canonicalize_event, normalize_report, resolve_time, SCHEMA,
 )
 from experiments.sera.m3_event_graph_bridge_v04 import (
-    draft_graph, inspect_scene, verify_verdict,
+    draft_graph, inspect_scene, verify_verdict, shadow_reduce,
 )
 from experiments.sera.tests.test_world_state_v02 import base
 from experiments.sera.world_state_v02 import canonical
@@ -315,6 +315,62 @@ class TypedEventBridgeTests(unittest.TestCase):
         )
         self.assertEqual(out["status"], "HOLD")
         self.assertTrue(out["typed_disagreements"])
+
+    def test_physical_shadow_stays_noncanonical_and_does_not_mutate_entry(self):
+        w, i, _, verdict = bundle_and_verdict()
+        entry = base()
+        before = deepcopy(entry)
+        out = inspect_scene(
+            prose=PROSE, scene_key=SCENE, entry=entry,
+            registry=REGISTRY, writer=w, independent=i,
+            verdict=verdict,
+        )
+        shadow = shadow_reduce(
+            graph_draft=out["proposals"][0], entry=entry, travel_minutes={},
+        )
+        self.assertEqual(shadow["status"],
+                         "PHYSICAL_SHADOW_VALID_NOT_STORY_ACCEPTED")
+        self.assertEqual(shadow["effects"], [])
+        self.assertFalse(shadow["commit_authorized"])
+        self.assertEqual(shadow["db_writes"], 0)
+        self.assertEqual(entry, before)
+
+    def test_physical_shadow_rejects_impossible_travel(self):
+        entry = base()
+        row = normalize_report(
+            report=report("WRITER", typ="MOVE_CHARACTER",
+                          args={"character_id": "mara", "to": "archive"},
+                          at=138),
+            role="WRITER", prose=PROSE, scene_key=SCENE, entry=entry,
+        )[0]
+        graph = draft_graph(row, entry=entry, scene_key=SCENE)
+        result = shadow_reduce(
+            graph_draft=graph, entry=entry,
+            travel_minutes={"station->archive": 10},
+        )
+        self.assertEqual(result["status"], "HOLD_PHYSICAL_INVARIANT")
+        self.assertEqual(result["error_code"], "MOVE_TRAVEL_TOO_FAST")
+        self.assertEqual(entry["entities"]["mara"]["location"], "station")
+
+    def test_physical_shadow_records_all_affected_equipment(self):
+        entry = base()
+        row = normalize_report(
+            report=report("WRITER", typ="MOVE_CHARACTER",
+                          args={"character_id": "mara", "to": "archive"},
+                          at=150),
+            role="WRITER", prose=PROSE, scene_key=SCENE, entry=entry,
+        )[0]
+        draft = draft_graph(row, entry=entry, scene_key=SCENE)
+        result = shadow_reduce(
+            graph_draft=draft, entry=entry,
+            travel_minutes={"station->archive": 10},
+        )
+        self.assertEqual(result["status"],
+                         "PHYSICAL_SHADOW_VALID_NOT_STORY_ACCEPTED")
+        ids = {effect["id"] for effect in result["effects"]}
+        self.assertEqual(ids, {"mara", "mara_coat", "mara_notebook"})
+        self.assertEqual(entry["entities"]["mara_coat"]["location"], "station")
+        self.assertFalse(result["commit_authorized"])
 
     def test_extracted_bench_missing_from_both_lists_not_auto_committed(self):
         prose = "Vane looked at his pocket watch near the bench."
