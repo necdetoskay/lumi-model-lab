@@ -68,21 +68,30 @@ def synthetic_mention_census():
 
 def synthetic_event_census():
     ids=list(MARA_RULES)
+    rows=[]
+    for i in range(25):
+        ref=ids[i] if i<len(ids) else "mara"
+        anchor=MARA_RULES[ref]["anchor"] if ref in MARA_RULES else "Mara"
+        hit=hit_for(ref,anchor)
+        rows.append({
+            "source_event_id":f"synthetic-event-{i:03d}",
+            "sentence_id":hit["sentence_id"],
+            "model_event_kind":"OBSERVE",
+            "source_evidence":{
+                "start":hit["source_start"],"end":hit["source_end"],
+                "quote":hit["quote"],
+            },
+            "registry_unresolved_refs":[ref] if ref in MARA_RULES else [],
+            "status":"HOLD_NOT_CANONICAL",
+            "canonical_commit_authorized":False,
+        })
     return {
         "schema":"sera.mara-s1-event-qualification-census.v0.13",
         "source_prose_sha256":prose_hash(PROSE),
         "source_model_event_count":25,
         "events_qualified_for_canonical_commit":0,
         "canonical_commit_authorized":False,
-        "rows":[{
-            "source_event_id":f"synthetic-event-{i:03d}",
-            "sentence_id":"s001",
-            "model_event_kind":"OBSERVE",
-            "source_evidence":{"quote":"Mara"},
-            "registry_unresolved_refs":[ids[i]] if i<len(ids) else [],
-            "status":"HOLD_NOT_CANONICAL",
-            "canonical_commit_authorized":False,
-        } for i in range(25)],
+        "rows":rows,
     }
 
 class IdentityV014Tests(unittest.TestCase):
