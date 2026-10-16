@@ -315,6 +315,7 @@ def _structured_call(
         request_class=request_class,
         max_parse_attempts=2,
         forbid_output_token_limit=True,
+        forbid_ambiguous_paid_retry=True,
     )
     return parsed, {
         "model": model,
@@ -931,6 +932,7 @@ def run_storyforge(
             request_class="teacher_story_medium_reasoning",
             structured_output=False,
             forbid_output_token_limit=True,
+            forbid_ambiguous_paid_retry=True,
         ),
     )
     artifacts["english_story"] = story
@@ -1181,6 +1183,7 @@ def run_storyforge(
             request_class="translation",
             structured_output=False,
             forbid_output_token_limit=True,
+            forbid_ambiguous_paid_retry=True,
         ),
     )
     artifacts["turkish_story"] = tr_story
