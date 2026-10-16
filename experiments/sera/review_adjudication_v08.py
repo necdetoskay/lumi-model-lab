@@ -83,6 +83,7 @@ def blank_annotation(packet: dict, *, reviewer_alias: str) -> dict:
                 "decision": "UNREVIEWED", "reason": "",
             } for hint in source["entity_hints"]],
             "events": [],
+            "extra_entity_candidates": [],
             "notes": "",
         })
     return {
@@ -138,10 +139,16 @@ def validate_annotation(*, packet: dict, annotation: dict,
                 known_event_refs.add(hint["ref"])
     event_count = 0
     for row, original in zip(rows, source):
-        require(isinstance(row, dict) and set(row) == {
+        for extra in row.get("extra_entity_candidates", []):
+            if isinstance(extra, dict) and isinstance(extra.get("ref"), str):
+                known_event_refs.add(extra["ref"])
+        expected_fields = {
             "sentence_id", "start", "end", "quote", "disposition",
             "entity_decisions", "events", "notes",
-        } and all(row[k] == original[k] for k in (
+        }
+        require(isinstance(row, dict) and set(row) in (
+            expected_fields, expected_fields | {"extra_entity_candidates"},
+        ) and all(row[k] == original[k] for k in (
             "sentence_id", "start", "end", "quote"
         )), "ANNOTATION_SENTENCE_SOURCE_MISMATCH")
         sid = row["sentence_id"]
@@ -171,6 +178,26 @@ def validate_annotation(*, packet: dict, annotation: dict,
                         "ANNOTATION_ENTITY_REASON_REQUIRED")
             elif row["disposition"] != "UNREVIEWED":
                 risk.append(f"HINT_UNREVIEWED:{sid}:{mention['ref']}")
+        extras = row.get("extra_entity_candidates", [])
+        require(isinstance(extras, list),
+                "ANNOTATION_EXTRA_ENTITY_LIST_INVALID")
+        base_ids = {x["ref"] for x in row["entity_decisions"]}
+        extra_ids = set()
+        for extra in extras:
+            require(isinstance(extra, dict) and set(extra) == {
+                "ref", "start", "end", "quote", "decision", "reason",
+            } and isinstance(extra["ref"], str) and
+                extra["ref"].startswith("new:") and
+                extra["ref"] not in base_ids and
+                extra["ref"] not in extra_ids and
+                extra["decision"] in ENTITY_DECISIONS and
+                isinstance(extra["reason"], str) and
+                extra["reason"].strip() and
+                _span_in_sentence(row, extra),
+                "ANNOTATION_EXTRA_ENTITY_INVALID")
+            extra_ids.add(extra["ref"])
+            if extra["decision"] == "AMBIGUOUS":
+                risk.append(f"ANNOTATION_EXTRA_ENTITY_AMBIGUOUS:{sid}:{extra['ref']}")
         local_ids = set()
         for event in row["events"]:
             require(isinstance(event, dict) and set(event) == {
@@ -208,7 +235,7 @@ def validate_annotation(*, packet: dict, annotation: dict,
                     "ANNOTATION_CROSS_SENTENCE_EVENT_CONFLICT")
             event_count += 1
         if row["disposition"] == "UNREVIEWED":
-            require(not row["events"] and all(
+            require(not row["events"] and not extras and all(
                 e["decision"] == "UNREVIEWED"
                 for e in row["entity_decisions"]
             ), "ANNOTATION_PARTIAL_ROW_MISLABELED")
@@ -284,9 +311,11 @@ def compare_annotations(*, packet: dict,
         if ar["disposition"] != br["disposition"]:
             components.append("DISPOSITION")
         ahints = [(x["ref"], x["start"], x["end"], x["decision"])
-                  for x in ar["entity_decisions"]]
+                  for x in ar["entity_decisions"] +
+                           ar.get("extra_entity_candidates", [])]
         bhints = [(x["ref"], x["start"], x["end"], x["decision"])
-                  for x in br["entity_decisions"]]
+                  for x in br["entity_decisions"] +
+                           br.get("extra_entity_candidates", [])]
         if ahints != bhints:
             components.append("ENTITY_PRESENCE")
         def spans(row):
