@@ -403,3 +403,30 @@ authorize the first Mara S1 canonical exit state.
 
 Offline tests: [CI 38862839733](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38862839733),
 **293/293 PASS** plus actual Chromium E2E.
+
+## SERA v0.12 Haiku correction proposals and typed shadow aspects
+
+[Complete implementation, real-provider evidence and remaining blockers](./SERA_V012_HAIKU_REPAIRS_AND_SHADOW_FACETS.md).
+
+All three independent Haiku targeted opinions for Mara's completed 28-sentence
+Gemini sweep are now source-bound. Whitelist-only code-fence and Unicode
+quotation recovery reused the two earlier **paid** answers, instead of
+repeating provider calls. Haiku supported reclassifying `MOVE` to
+`OBSERVE`, `COMMUNICATE` to `WRITE`, and modeling a watch open
+baseline followed by a closure. Reported new Haiku cost was **USD 0.004235**
+total, with no application-set output token ceilings.
+
+The `mara_s1_candidate_corrections_v012.py` module generated **two
+source-pinned, NONCANONICAL event-correction proposals** and **three typed
+shadow aspect proposals** from actual archived model evidence. The detached
+`shadow_aspect_projection_v012.py` simulated `UNKNOWN → OPEN → CLOSED`
+for Vane's watch case and one exact-source notebook append while retaining
+`preexisting_content=UNKNOWN`. It does not modify v0.2 World State,
+commit EventGraph, manufacture action time or approve semantic truth.
+
+Real provider evidence qualification:
+[corrections run 38866189103](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38866189103),
+[shadow projection run 38866515258](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38866515258).
+**320/320 offline tests PASS** and shadow World State hash unchanged.
+Mara S1 remains **HOLD**, awaiting proper canonical facet contracts,
+wider event/identity qualification and authority gating.
