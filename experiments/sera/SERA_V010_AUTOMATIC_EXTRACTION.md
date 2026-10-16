@@ -138,3 +138,68 @@ independent extraction, semantic recall score, or S1 exit World State.
 The user requirement **never to impose model output token limits**
 is explicitly retained in `AGENTS.md` and
 `request_policy.py`.
+
+## Actual Gemini one-batch evidence and forensic repair
+
+The approved source-pinned, one-use paid pilot ran in
+[Actions 38860727745](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38860727745).
+
+- Requested/observed `google/gemini-3.7-flash`.
+- **One provider call**, 1,057 input tokens and 1,279 completion tokens
+  reported as usage (not output limits); model completed with
+  `finish_reason=stop`.
+- **USD 0.005589** provider-reported cost.
+- Real source target: batch_003, Mara sentences **s009–s012**.
+- Model returned all four sentence rows and **three event proposals**:
+  reported watch-stop/time claim, **watch case closure**, and another
+  reported watch statement.
+- Model identified `new:watch_case` and `new:vane_thumb`.
+- Initial deterministic binder refused the response because model used
+  grammar labels `subject`, `agent`, `target`, `instrument`,
+  `possessor`, `referenced_owner` instead of allowed SERA role
+  values. This is **not** an output-token truncation.
+- The vetted finite mapping converts such grammar labels into the
+  **least authorizing** `MENTIONED` value; raw roles and original source
+  spans remain present for review. It does not infer physical presence,
+  ownership, anatomy relationships or objective truth.
+- The original paid request digest is pinned to
+  `137b7f4c44557f6507eaba6012ac0f6c8b5344b5d322de7a8082fdec391b3094`.
+  The extractor prompt was updated *after* the paid call; the replay
+  explicitly preserves the distinct historical/new fingerprints and
+  does not misrepresent the new prompt as having been used earlier.
+
+An independent offline forensic workflow downloaded the actual provider
+artifact and successfully re-bound the original response **at zero
+additional model cost**:
+[Actions 38861188156](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38861188156).
+
+**Recovered: 4/4 source rows, 7 candidate mentions, 3 candidate events.**
+This proves the original failure included an adapter contract mismatch.
+It does **not** prove every physically relevant event was extracted.
+`new:vane_thumb` is a body-part candidate, not a silently created
+independent world object. Twenty-four other story sentences remain pending.
+
+## Full source completion without repeating the paid pilot
+
+`mara_s1_remaining_sweep_v010.py` reuses the verified
+`batch_003` evidence and can process only the remaining six groups.
+An actual provider call is made only in explicit `--live` mode, behind
+a code-SHA-pinned single-use CI grant.
+
+- **At most six new model calls**, no provider fallback, no retry on an
+  invalid response, no artificial output-token ceilings.
+- Hard stop on provider errors, incomplete JSON, missing reported cost
+  or observed additional provider spend reaching **USD 0.12**. This is
+  a monetary guard, **not** a token limit.
+- Persist every batch's response and extraction provenance separately,
+  with final manifest, incomplete-batch resume queue and a full-scene
+  source ledger only when **all seven groups** are bound.
+- Even full successful extraction remains
+  `ALL_28_SENTENCES_EXTRACTED_SEMANTIC_HOLD` until separate semantic
+  validation and state-authority gates qualify the scene.
+
+Offline tests including a simulated six-batch completion and first-failure
+stop: [CI 38861464837](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38861464837)
+— **283/283 tests PASS**, Chromium E2E PASS.
+
+Workflow: `.github/workflows/sera-mara-v010-six-remaining-once.yml`.
