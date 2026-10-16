@@ -173,3 +173,21 @@ To inspect the real scene's unresolved findings without model calls:
 ```bash
 python -m experiments.sera.mara_s1_v04_audit
 ```
+
+## M3.5 — Typed extractor contract and temporal domains (2026-10-16)
+
+[Architecture, tests and two measured live outcomes](./M3_5_TYPED_EXTRACTION_TEMPORAL_V05.md).
+The provider-facing `typed_extractor_contract_v05.py` constrains operation-specific
+required keys. `temporal_domains_v05.py` solves app-reviewed causal order,
+scene time windows and minimum travel without claiming invented timestamps.
+The read-only `mara_s1_typed_live_v05.py` targets the **unchanged 243-word
+live Mara S1 scene**, never regenerates it and never commits state.
+
+The first real provider call hit completion length (USD 0.0183705 as reported);
+a separately pinned reasoning-off retry returned HTTP 400 (cost not reported).
+Both remain HOLD and the unsupported reasoning override was removed. Evidence
+is preserved in the two one-use Actions runs; no JEV requalification or
+production state update is implied. The artifact was examined via an offline
+forensic workflow (no extra model call). Issue [#304](https://github.com/necdetoskay/lumi-model-lab/issues/304)
+remains open for provider-schema compatibility, open-world recall calibration,
+trusted semantic adjudication and a complete S1 exit-state acceptance.
