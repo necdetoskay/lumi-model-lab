@@ -33,6 +33,22 @@ jobs:
           evidence/v4-2-mara-run-38794774463/sonnet-original-spine-pre-haiku.json
       - name: Score synthetic gold extraction corpus
         run: python -m experiments.sera.gold_calibration
+      - name: Verify all-sentence v0.6 Mara coverage without model calls
+        run: |
+          python -m experiments.sera.mara_s1_v06_audit
+          python - <<'PY'
+          from experiments.sera.mara_s1_v06_audit import run
+          report = run()
+          assert report["sentence_count"] == report["accounted_sentence_count"]
+          assert report["review_status"] == "HOLD"
+          assert report["model_calls"] == 0
+          assert report["canonical_db_writes"] == 0
+          assert report["canonical_commit_authorized"] is False
+          assert "candidate:bench" in report["candidate_refs"]
+          assert "candidate:pencil" in report["candidate_refs"]
+          assert report["watch_case_cue_found"]
+          assert report["notebook_writing_cue_found"]
+          PY
       - name: Audit real Mara first-scene HOLD without state writes
         run: |
           python - <<'PY'
