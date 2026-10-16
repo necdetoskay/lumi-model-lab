@@ -116,6 +116,28 @@ def qualify(*, prose, world, bundle, projection, typed):
         except CoverageError as exc:
             spatial_failure = str(exc)
             flag("SPATIAL_SOURCE_OR_ROUTE_UNQUALIFIED")
+    # Holder/fact transitions require independent original-source
+    # events AND an application-owned identity/verified-fact policy.
+    relation_preview = None
+    relation_failure = None
+    relational = [e for e in events if isinstance(e, dict) and
+                  e.get("kind") in ("TRANSFER", "LEARN_FACT",
+                                   "KNOWLEDGE_UPDATE") and
+                  e.get("effect") in ("WORLD", "OBJECT")]
+    if relational and bundle.get("relation_case") is not None:
+        from experiments.sera.relation_knowledge_preview_v025 import preview
+        try:
+            relation_preview = preview(
+                prose=prose, world=world, extraction_report=report,
+                relation_case=bundle["relation_case"],
+            )
+        except CoverageError as exc:
+            relation_failure = str(exc)
+            flag("RELATION_OR_KNOWLEDGE_SOURCE_UNQUALIFIED")
+    covered_relations = (
+        {x["event_id"] for x in relation_preview["transitions"]}
+        if relation_preview is not None else set()
+    )
     covered_movements = (
         {x["source_event_id"] for x in spatial["transitions"]}
         if spatial is not None else set()
@@ -147,7 +169,10 @@ def qualify(*, prose, world, bundle, projection, typed):
                  event_id=ident, sentence_id=sid)
         if (kind in UNSUPPORTED_MUTATIONS and effect not in (
             "NONE", "UNKNOWN",
-        ) and not (kind == "MOVE" and ident in covered_movements)):
+        ) and not (kind == "MOVE" and ident in covered_movements)
+          and not (kind in ("TRANSFER", "LEARN_FACT",
+                            "KNOWLEDGE_UPDATE") and
+                   ident in covered_relations)):
             flag("STATE_EFFECT_WITHOUT_QUALIFIED_REDUCER",
                  event_id=ident, sentence_id=sid)
         # A physical event must have a known, active, registered object /
@@ -248,6 +273,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         "typed_candidate_count": len(candidates),
         "spatial_preview": spatial,
         "spatial_failure": spatial_failure,
+        "relation_preview": relation_preview,
+        "relation_failure": relation_failure,
         "defects": defects,
         "defect_frequency": dict(sorted(counters.items())),
         "next_automatic_action": (
