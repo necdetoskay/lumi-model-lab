@@ -261,12 +261,15 @@ def validate_ledger(*, prose: str, scan: dict, ledger: dict,
             "event_id", "sentence_id", "start", "end", "quote",
         }, "LEDGER_EVIDENCE_EVENT_SCHEMA_INVALID")
         eid, sid = e["event_id"], e["sentence_id"]
-        check(isinstance(eid, str) and eid and eid not in events and
+        key = (eid, sid)
+        check(isinstance(eid, str) and eid and key not in events and
               sid in by_id and _quoted_spans(prose, [e]) and
               by_id[sid]["start"] <= e["start"] and
               e["end"] <= by_id[sid]["end"],
               "LEDGER_EVENT_EVIDENCE_INVALID")
-        events[eid] = e
+        # Same narrative event may be supported by *different* spans in
+        # consecutive sentences (e.g. a multi-sentence witness statement).
+        events[key] = e
     flags = []
     linked = set()
     for row in rows:
@@ -289,10 +292,10 @@ def validate_ledger(*, prose: str, scan: dict, ledger: dict,
             check(disp == "AMBIGUOUS", "LEDGER_NON_EVENT_HAS_EVENTS")
             flags.append("LEDGER_AMBIGUOUS_LINKED_EVENTS")
         for eid in row["event_ids"]:
-            check(eid in events and
-                  events[eid]["sentence_id"] == sid and eid not in linked,
+            key = (eid, sid)
+            check(key in events and key not in linked,
                   "LEDGER_EVENT_LINK_INVALID")
-            linked.add(eid)
+            linked.add(key)
         needed = {h["ref"] for h in scan["hints"]
                   if h["sentence_id"] == sid}
         check(set(row["candidate_refs"]) == needed,
@@ -312,6 +315,7 @@ def validate_ledger(*, prose: str, scan: dict, ledger: dict,
         "total_sentences": len(ids),
         "accounted_sentences": len(rows),
         "event_evidence_count": len(events),
+        "distinct_narrative_events": len({eid for eid, _ in events}),
         "candidate_sightings": len(scan["hints"]),
         "findings": sorted(set(flags)),
         "status": "HOLD" if flags else "STRUCTURAL_PASS_SEMANTIC_UNVERIFIED",
