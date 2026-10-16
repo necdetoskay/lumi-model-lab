@@ -6,7 +6,7 @@ advisory. No network, model execution, world reduction or SQLite writes.
 """
 from __future__ import annotations
 
-from experiments.sera.coverage import CoverageError, prose_hash, reconcile
+from experiments.sera.coverage import CoverageError, prose_hash, reconcile, validate_report
 from experiments.sera.sentence_ledger_v06 import (
     scanner, build_pending_ledger, validate_ledger,
 )
@@ -26,6 +26,8 @@ ROUTES = {
     "EVENT_DISAGREEMENT": "TARGETED_EVENT_CHECK",
     "NEW_ENTITY_REQUIRES_AUTHORITY": "REVIEW_ENTITY_INTRODUCTION",
     "ASPECT_NOT_REGISTERED": "REVIEW_ASPECT_SCHEMA",
+    "INDEPENDENT_UNREPORTED_SCAN_HINT": "TARGETED_CANDIDATE_RECALL_CHECK",
+    "M2_SINGLE_SOURCE_UNRECONCILED": "TARGETED_INDEPENDENT_CROSS_CHECK",
 }
 # This is a repair recommendation budget, NOT a model output token limit.
 MAX_REPORT_REPAIR_ROUNDS = 2
@@ -67,6 +69,7 @@ def audit_scene(*, prose: str, scene_key: str, entry_revision: int,
                 unplanned_changes: list[dict] | None = None,
                 writer: dict | None = None,
                 independent: dict | None = None,
+                independent_only: dict | None = None,
                 prior_repair_rounds: int = 0) -> dict:
     """One conservative offline scene gate, mandatory exact text partitions.
 
@@ -102,7 +105,15 @@ def audit_scene(*, prose: str, scene_key: str, entry_revision: int,
             raise CoverageError("ASSURANCE_ALIGNMENT_WITHOUT_CONTRACT")
         plan = None
     m2 = None
-    if writer is not None or independent is not None:
+    if independent_only is not None:
+        if writer is not None or independent is not None:
+            raise CoverageError("ASSURANCE_SINGLE_SOURCE_CONFLICT")
+        validate_report(
+            independent_only, role="INDEPENDENT", prose=prose,
+            scene_key=scene_key, entry_revision=entry_revision,
+        )
+        findings.append("M2_SINGLE_SOURCE_UNRECONCILED")
+    elif writer is not None or independent is not None:
         if writer is None or independent is None:
             raise CoverageError("ASSURANCE_NEEDS_BOTH_REPORTS")
         m2 = reconcile(
