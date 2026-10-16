@@ -136,7 +136,30 @@ def execute(*, prose, extraction_report, call_model, output_dir,
         _save(root / "contract.json", contract)
     final = root / "final.json"
     if final.is_file():
-        return _load(final)
+        previous = _load(final)
+        # Reopen ONLY a previously receipted-orphan safe stop when a
+        # trusted read-only generation reconciler has been installed.
+        # All other terminal outcomes are immutable. Preserve the prior
+        # terminal record before attempting autonomous continuation.
+        recovery_reason = previous.get("failure_code") if isinstance(previous, dict) else None
+        can_recover = bool(
+            reconciler is not None and isinstance(previous, dict) and
+            previous.get("status") == "FAILED_SAFE_FINAL" and
+            recovery_reason in (
+                "V018_UNCONFIRMED_IN_FLIGHT_CALL",
+                "V018_PROVIDER_FAILED_UNRECEIPTED",
+                "V030_GENERATION_ID_UNAVAILABLE_NO_RESEND",
+                "V030_PROVIDER_READ_UNAVAILABLE",
+            ) and list(root.glob("started_*.json"))
+        )
+        if not can_recover:
+            return previous
+        prior = root / "pre_reconciliation_safe_stop.json"
+        if not prior.exists():
+            _save(prior, previous)
+        elif _load(prior) != previous:
+            raise CoverageError("V030_SEMANTIC_PRIOR_FAILURE_DRIFT")
+        final.unlink()
 
     entries = []
     spent = Decimal("0")
