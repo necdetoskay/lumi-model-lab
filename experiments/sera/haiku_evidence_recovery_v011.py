@@ -44,7 +44,8 @@ def parse_json_model_reply(text:str) -> tuple[dict,str]:
 
 def fold(s:str) -> str:
     # Length preserving: do NOT perform fuzzy-match or silent truth repair.
-    return s.replace("’","'").replace("‘","'")
+    return (s.replace("’","'").replace("‘","'")
+            .replace("“",'"').replace("”",'"'))
 
 def source_quote_repair(*,task:dict,proposed_quote:str) -> tuple[str,str]:
     require(isinstance(proposed_quote,str) and proposed_quote.strip(),
@@ -70,8 +71,11 @@ def source_quote_repair(*,task:dict,proposed_quote:str) -> tuple[str,str]:
             start=pos+1
     if exact:
         return proposed_quote,"EXACT"
-    require(len(equivalent)==1,"PROBE_APOSTROPHE_MATCH_NOT_UNIQUE")
-    return equivalent[0],"TYPOGRAPHIC_APOSTROPHE_EQUIVALENCE_UNVERIFIED"
+    require(len(equivalent)==1,"PROBE_TYPOGRAPHIC_MATCH_NOT_UNIQUE")
+    method=("TYPOGRAPHIC_DOUBLE_QUOTES_EQUIVALENCE_UNVERIFIED"
+            if any(c in equivalent[0] for c in ("“","”"))
+            else "TYPOGRAPHIC_APOSTROPHE_EQUIVALENCE_UNVERIFIED")
+    return equivalent[0],method
 
 def recover_model_task(*,risk_audit:dict,task_id:str,
                        raw_provider_content:str) -> dict:
