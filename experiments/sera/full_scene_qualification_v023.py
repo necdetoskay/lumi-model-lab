@@ -219,8 +219,18 @@ def qualify(*, prose, world, bundle, projection, typed):
        projection.get("unsupported_semantic_tasks") or \
        projection.get("temporal_failure"):
         flag("UNRESOLVED_SOURCE_SEMANTIC_OR_TIME_DEFECT")
-    if typed.get("blocker_codes") or \
-       typed.get("status") != "TYPED_FACETS_SIMULATED_NONCANONICAL":
+    facet_status = typed.get("status")
+    if facet_status == "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL":
+        roles = bundle.get("typed_registry")
+        _ensure(isinstance(roles, dict) and
+                roles == {"openables": [], "documents": []} and
+                candidates == [] and
+                typed.get("empty_facet_scope_requires_full_gate") is True,
+                "V024_EMPTY_FACET_COVERAGE_FORGED")
+    if typed.get("blocker_codes") or facet_status not in (
+        "TYPED_FACETS_SIMULATED_NONCANONICAL",
+        "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL",
+    ):
         flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
 
     # Do not invent a trusted temporal schedule. If this source contains
