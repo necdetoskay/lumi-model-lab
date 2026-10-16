@@ -148,6 +148,30 @@ class SceneTraceShadowV042Tests(unittest.TestCase):
                          "MODEL_SOURCE_SPAN_ONLY")
         self.assertFalse(atoms[0]["world_commit_authorized"])
 
+    def test_no_model_metadata_can_smuggle_state_permission(self):
+        src,reg,lex=inputs()
+        candidate=candidate_row(src)
+        candidate["candidate_mentions"][0]["world_commit_authorized"]=True
+        with self.assertRaisesRegex(CoverageError,
+                                    "SCENETRACE_MODEL_MENTION_ID_INVALID"):
+            build_trace(prose=src["prose"],scene_id="mara",
+                        registry=reg,candidate_lexicon=lex,
+                        source_bound_rows=[candidate])
+        event_source=candidate_row(src)
+        event_source["candidate_events"]=[{
+            "kind":"MOVE","epistemic":"OBSERVED_ACTION",
+            "effect":"OBJECT",
+            "start":event_source["candidate_mentions"][0]["start"],
+            "end":event_source["candidate_mentions"][0]["end"],
+            "quote":"pencil","entity_refs":["candidate:pencil"],
+            "at_minute":135,
+        }]
+        with self.assertRaisesRegex(CoverageError,
+                                    "SCENETRACE_MODEL_EVENT_UNTYPED"):
+            build_trace(prose=src["prose"],scene_id="mara",
+                        registry=reg,candidate_lexicon=lex,
+                        source_bound_rows=[event_source])
+
 
 if __name__=="__main__":
     unittest.main()
