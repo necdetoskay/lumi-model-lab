@@ -133,4 +133,6 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         max_rewrites=max_rewrites,
         observed_spend_guard_usd=writer_spend_guard_usd,
         resume_reconciled_evidence=(reconciler is not None),
+        recover_rewrite_scene=(writer.recover_existing
+                               if reconciler is not None else None),
     )
