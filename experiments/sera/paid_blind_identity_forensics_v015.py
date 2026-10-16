@@ -117,9 +117,9 @@ def exact_source_quote(*,prose:str,source_map:dict,
     if quote in sent["quote"]:
         return quote,"EXACT_SOURCE_QUOTE"
     folded=fold_typography(quote)
-    need(folded!=quote,
-         "V015_FORENSIC_QUOTE_NOT_EXACT_OR_TYPOGRAPHIC")
     source_fold=fold_typography(sent["quote"])
+    need(folded!=quote or source_fold!=sent["quote"],
+         "V015_FORENSIC_QUOTE_NOT_EXACT_OR_TYPOGRAPHIC")
     matching=[]
     start=0
     while True:
