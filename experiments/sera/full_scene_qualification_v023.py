@@ -107,6 +107,8 @@ def qualify(*, prose, world, bundle, projection, typed):
     relation_failure = None
     ordered_preview = None
     ordered_failure = None
+    ordered_facet_preview = None
+    ordered_facet_failure = None
     moving = [e for e in events if isinstance(e, dict) and
               e.get("kind") == "MOVE" and
               e.get("effect") in ("WORLD", "OBJECT")]
@@ -116,10 +118,27 @@ def qualify(*, prose, world, bundle, projection, typed):
                   e.get("effect") in (
                       "WORLD", "OBJECT", "CHARACTER_KNOWLEDGE",
                   )]
+    joint_facets = bool(moving and relational and candidates and
+                        bundle.get("temporal_case") is not None and
+                        bundle.get("relation_case") is not None)
     joint = bool(moving and relational and not candidates and
                  bundle.get("temporal_case") is not None and
                  bundle.get("relation_case") is not None)
-    if joint:
+    if joint_facets:
+        from experiments.sera.ordered_facet_preview_v027 import preview
+        try:
+            ordered_facet_preview = preview(
+                prose=prose, world=world,
+                extraction_report=report,
+                temporal_case=bundle["temporal_case"],
+                relation_case=bundle["relation_case"],
+                typed_candidates=candidates,
+                typed_registry=bundle["typed_registry"],
+            )
+        except CoverageError as exc:
+            ordered_facet_failure = str(exc)
+            flag("ORDERED_FACET_CAUSAL_REPLAY_UNQUALIFIED")
+    elif joint:
         from experiments.sera.ordered_causal_preview_v026 import preview
         try:
             ordered_preview = preview(
@@ -153,12 +172,16 @@ def qualify(*, prose, world, bundle, projection, typed):
                 relation_failure = str(exc)
                 flag("RELATION_OR_KNOWLEDGE_SOURCE_UNQUALIFIED")
     covered_relations = (
+        set(ordered_facet_preview["covered_relation_ids"])
+        if ordered_facet_preview is not None else
         set(ordered_preview["covered_relation_ids"])
         if ordered_preview is not None else
         {x["event_id"] for x in relation_preview["transitions"]}
         if relation_preview is not None else set()
     )
     covered_movements = (
+        set(ordered_facet_preview["covered_movement_ids"])
+        if ordered_facet_preview is not None else
         set(ordered_preview["covered_movement_ids"])
         if ordered_preview is not None else
         {x["source_event_id"] for x in spatial["transitions"]}
@@ -274,9 +297,15 @@ def qualify(*, prose, world, bundle, projection, typed):
                 candidates == [] and
                 typed.get("empty_facet_scope_requires_full_gate") is True,
                 "V024_EMPTY_FACET_COVERAGE_FORGED")
+    if facet_status == "DEFERRED_TO_V027_ORDERED_FACETS_NONCANONICAL":
+        _ensure(typed.get("ordered_facet_scope_requires_full_gate") is True,
+                "V027_DEFERRED_FACET_AUTHORITY_INVALID")
+        if ordered_facet_preview is None:
+            flag("DEFERRED_TYPED_FACETS_NOT_ORDERED")
     if typed.get("blocker_codes") or facet_status not in (
         "TYPED_FACETS_SIMULATED_NONCANONICAL",
         "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL",
+        "DEFERRED_TO_V027_ORDERED_FACETS_NONCANONICAL",
     ):
         flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
 
@@ -284,6 +313,7 @@ def qualify(*, prose, world, bundle, projection, typed):
     # it counts as ONE coherent family. Independent v0.13 facets still
     # require a future common reducer and must remain a blocker.
     active_families = (
+        1 if ordered_facet_preview is not None else
         1 + bool(candidates) if ordered_preview is not None else
         sum((bool(spatial is not None),
              bool(relation_preview is not None), bool(candidates)))
@@ -310,6 +340,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         "relation_failure": relation_failure,
         "ordered_preview": ordered_preview,
         "ordered_failure": ordered_failure,
+        "ordered_facet_preview": ordered_facet_preview,
+        "ordered_facet_failure": ordered_facet_failure,
         "defects": defects,
         "defect_frequency": dict(sorted(counters.items())),
         "next_automatic_action": (
