@@ -139,10 +139,11 @@ def validate_review_packet(*, prose: str, packet: dict) -> dict:
     require(isinstance(got, list) and len(got) == len(expected),
             "REVIEW_PACKET_SENTENCE_COVERAGE_INVALID")
     for row, sentence in zip(got, expected):
-        require(isinstance(row, dict) and all(
-            row.get(k) == sentence[k] for k in ("sentence_id", "start",
-                                               "end", "quote")
-        ), "REVIEW_PACKET_SENTENCE_MISMATCH")
+        require(isinstance(row, dict) and
+                row.get("sentence_id") == sentence["id"] and
+                all(row.get(k) == sentence[k] for k in (
+                    "start", "end", "quote"
+                )), "REVIEW_PACKET_SENTENCE_MISMATCH")
         decision = row.get("review")
         require(isinstance(decision, dict) and
                 decision.get("status") == "UNREVIEWED" and
