@@ -286,7 +286,18 @@ def aggregate(*, plan: dict, bound_batches: list[dict],
     for dest in ledger["rows"]:
         sid = dest["sentence_id"]
         row = rows[sid]
-        dest["disposition"] = row["disposition"]
+        proposed_disposition = row["disposition"]
+        if proposed_disposition in ("STATE_EVENT", "KNOWLEDGE_EVENT") and not row["events"]:
+            findings.append(f"SWEEP_EXPECTED_EVENT_NOT_EXTRACTED:{sid}")
+            dest["disposition"] = "AMBIGUOUS"
+        elif proposed_disposition not in ("STATE_EVENT", "KNOWLEDGE_EVENT",
+                                           "AMBIGUOUS") and row["events"]:
+            # Claims may carry report/utterance candidates. Do NOT elevate
+            # to a world mutation; leave as ambiguous evidence for repair.
+            findings.append(f"SWEEP_DISPOSITION_EVENT_CONFLICT:{sid}")
+            dest["disposition"] = "AMBIGUOUS"
+        else:
+            dest["disposition"] = proposed_disposition
         dest["event_ids"] = [e["event_id"] for e in row["events"]]
         dest["reason"] = "MODEL_UNVERIFIED: " + row["reason"]
         evidence.extend({
@@ -378,6 +389,10 @@ def aggregate(*, plan: dict, bound_batches: list[dict],
         "sentences_accounted_for": len(rows),
         "ledger_validation": checked,
         "model_ledger": ledger,
+        "model_sentence_dispositions": [
+            {"sentence_id": s["id"], "model_disposition": rows[s["id"]]["disposition"]}
+            for s in source
+        ],
         "candidate_events": [
             {**e, "sentence_id": row["sentence_id"]}
             for row in (rows[s["id"]] for s in source)
