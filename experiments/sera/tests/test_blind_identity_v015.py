@@ -62,6 +62,18 @@ class BlindIdentityV015Tests(unittest.TestCase):
             "provisional_refs",
         })
         self.assertIn("new:watch_case",req["requested_refs"])
+        watch=next(x for x in data["provisional_refs"]
+                   if x["entity_ref"]=="new:watch_hands")
+        self.assertEqual(len(watch["mention_sentence_ids"]),1)
+        self.assertTrue(any(
+            "Mara glanced at the watch" in s["source_text"] or
+            "pocket watch" in s["source_text"]
+            for s in watch["source_context_sentences"]
+        ))
+        self.assertTrue(any(
+            "Its hands remained" in s["source_text"]
+            for s in watch["source_context_sentences"]
+        ))
         self.assertNotIn("physical_presence_confirmed",req["messages"][1]["content"])
         self.assertNotIn("PROPOSED_AWAITING",req["messages"][1]["content"])
         self.assertNotIn("candidate_parent_or_alias_target",
