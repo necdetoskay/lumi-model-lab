@@ -159,7 +159,9 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     fallback_model=None,
                     max_model_requests=24, observed_spend_guard_usd="0.30",
                     trusted_temporal_builder=None,
-                    temporal_policy_id=None):
+                    temporal_policy_id=None,
+                    trusted_relation_builder=None,
+                    relation_policy_id=None):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -181,6 +183,12 @@ def create_preparer(*, evidence_root, work_root, scene_key,
               isinstance(temporal_policy_id, str) and
               bool(temporal_policy_id.strip())),
              "V024_TEMPORAL_BUILDER_POLICY_INVALID")
+    _require((trusted_relation_builder is None and
+              relation_policy_id is None) or
+             (callable(trusted_relation_builder) and
+              isinstance(relation_policy_id, str) and
+              bool(relation_policy_id.strip())),
+             "V025_RELATION_BUILDER_POLICY_INVALID")
     _require(type(max_model_requests) is int and
              1 <= max_model_requests <= 100,
              "V022_REQUEST_GUARD_INVALID")
@@ -221,6 +229,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
         }
         if trusted_temporal_builder is not None:
             contract["temporal_policy_id"] = temporal_policy_id
+        if trusted_relation_builder is not None:
+            contract["relation_policy_id"] = relation_policy_id
         job_id = sha256(canonical(contract).encode("utf-8")).hexdigest()
         root = workroot / job_id
         root.mkdir(parents=True, exist_ok=True)
@@ -391,11 +401,23 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                           temporal_case.get("entry") == world and
                           temporal_case.get("scene_key") == scene_key),
                          "V024_TEMPORAL_APPLICATION_POLICY_INVALID")
+            relation_case = None
+            if trusted_relation_builder is not None:
+                relation_case = trusted_relation_builder(
+                    prose=prose, world=deepcopy(world),
+                    extraction_report=deepcopy(report),
+                )
+                _require(relation_case is None or (
+                    isinstance(relation_case, dict) and
+                    relation_case.get("entry") == world and
+                    relation_case.get("policy_id") == relation_policy_id
+                ), "V025_RELATION_APPLICATION_POLICY_INVALID")
             bundle = build_bundle(
                 prose=prose, world=world,
                 extraction_report=report, semantic_summary=summary,
                 typed_registry=roles, typed_candidates=typed,
                 temporal_case=temporal_case,
+                relation_case=relation_case,
             )
             outroot.mkdir(parents=True, exist_ok=True)
             if target.exists():
