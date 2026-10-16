@@ -139,3 +139,22 @@ It requires a **different**, specifically named
 approval pinned to the repaired branch SHA and the ID of the
 pre-provider failure. No alteration to the model prompt, output token
 policy or state-writing authority was made by this operational change.
+
+## v0.15c — Non-destructive self-hosted checkout isolation
+
+[Second isolated launch 38872399171](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38872399171)
+also stopped **before Python, preflight or any provider call**.
+The first recovery attempted to clear a repository-local workspace
+without `.git`; the runner lacked permission to remove historical
+root-owned `src/__pycache__/*.pyc` files. We did **not** change
+filesystem permissions or attempt privilege escalation, and no LLM
+was billed.
+
+The v0.15c workflow now uses an independent
+`actions/checkout@v4` target `sera-v015c-source` inside the
+runner's repository workspace, and runs all Python commands from
+that isolated checkout using the job's `defaults.run.working-directory`.
+There is no cleanup/deletion command, no production filesystem change,
+and no attempt to modify the old root-owned cache. A different,
+single-file `v015c` launch grant is required, pinned to the exact
+updated workflow SHA and both previous pre-provider failed run IDs.
