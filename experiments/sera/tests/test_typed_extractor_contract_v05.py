@@ -184,6 +184,29 @@ class TypedExtractorProtocolTests(unittest.TestCase):
         with self.assertRaisesRegex(CoverageError, "V05_RAW_SCHEMA_INVALID"):
             validate_raw_typed(data)
 
+    def test_model_provided_absolute_clock_requires_separate_adjudication(self):
+        request = make_typed_request(
+            prose=PROSE, scene_key=SCENE, entry=base(), registry=REGISTRY,
+        )
+        out = bind_typed_response(
+            raw=payload(raw_event(minute=140)), request=request,
+            prose=PROSE, scene_key=SCENE, entry=base(),
+        )
+        self.assertEqual(out["status"], "HOLD")
+        self.assertIn("V05_ABSOLUTE_ACTION_TIME_NOT_ADJUDICATED",
+                      out["normalized_events"][0]["blockers"])
+
+    def test_tampered_request_body_even_with_existing_hash_is_rejected(self):
+        request = make_typed_request(
+            prose=PROSE, scene_key=SCENE, entry=base(), registry=REGISTRY,
+        )
+        request["messages"][1]["content"] += " ALTERED"
+        with self.assertRaisesRegex(CoverageError, "V05_REQUEST_MALFORMED"):
+            bind_typed_response(
+                raw=payload(), request=request, prose=PROSE,
+                scene_key=SCENE, entry=base(),
+            )
+
     def test_reported_claim_never_promoted_by_schema(self):
         data = payload(raw_event(
             typ="LEARN_FACT",
