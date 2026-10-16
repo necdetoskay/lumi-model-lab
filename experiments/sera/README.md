@@ -837,3 +837,37 @@ token ceilings or mandatory operator review.** Actual real-world
 verified-fact origins, mixed-family state order, legal owner changes,
 production worker integration and unseen paid-story acceptance remain
 open; frozen Mara S1 remains HOLD.
+
+
+## v0.26 — One chronological simulated world across movement, custody, learning
+
+[Complete architecture and verified boundaries](./SERA_V026_ORDERED_CAUSAL_REPLAY.md).
+
+- [Ordered v0.26 causal preview](./ordered_causal_preview_v026.py)
+  uses an application-governed global v0.5 time/route DAG and
+  independently sourced event spans. It then runs v0.24 movement and
+  v0.25 custody/verified-fact transitions **in source order**, always
+  starting the next event from the prior event's isolated validated
+  WorldState snapshot. Its proof includes before/after SHA-256 state
+  lineage for every step, no fabricated arrival minute or canon write.
+- [Full v0.23 gate](./full_scene_qualification_v023.py) now calls
+  v0.26 when BOTH movement and custody/knowledge are present, provided
+  the two trusted per-scene application policies exist and no v0.13
+  facet actions require yet-unsolved causal composition. Incorrect
+  handoff after only the sender has arrived, missing route, unsupported
+  source effect or alleged physical state change still returns typed
+  automatic re-extraction/replan instead of unsafe approval.
+- [Pure/adversarial regression](./tests/test_ordered_causal_preview_v026.py)
+  and [full staged mocked provider worker](./tests/test_composed_ordered_worker_v026.py)
+  cover dynamic possession changes, previously carried object movement,
+  duplicate cost-free receipt replay, trustworthy fact registry,
+  impossible chronology, tampering, safe terminal failure and
+  immutable source/entry policy. No real model bill was incurred.
+
+**v0.26 is NONCANONICAL:** openable/document facets in the same moving/
+transferring scene, nested objects, additional untyped state changes,
+real application-authenticated facts/route/identity provider, missing
+billable-response reconciliation, production LUMI worker binding and
+transactional authenticated WorldState/EventGraph commits/rollback
+are still required. Mara S1 remains HOLD. Zero mandatory manual
+intervention, zero application-defined LLM output token ceilings.
