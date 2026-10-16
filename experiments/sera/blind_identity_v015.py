@@ -147,11 +147,23 @@ def make_request(*,prose:str,world:dict,census:dict)->dict:
             continue
         sids=sorted({h["sentence_id"] for h in item["source_evidence"]},
                     key=lambda sid:by_id[sid]["start"])
+        # Up to two adjacent sentences provide pronoun/part-of context:
+        # "Its hands" refers to the previously mentioned pocket watch.
+        # Only *mention_sentence_ids* can ground the returned quote;
+        # surrounding context is not itself identity evidence for a ref.
+        ordered=[s["id"] for s in source]
+        indexes={sid:i for i,sid in enumerate(ordered)}
+        window=sorted({
+            ordered[j] for sid in sids
+            for j in range(max(0,indexes[sid]-2),
+                           min(len(ordered),indexes[sid]+3))
+        },key=lambda sid:indexes[sid])
         context=[{"sentence_id":sid,"source_text":by_id[sid]["quote"]}
-                 for sid in sids]
+                 for sid in window]
         entries.append({
             "entity_ref":ref,
-            "mentioned_in_context":context,
+            "mention_sentence_ids":sids,
+            "source_context_sentences":context,
             # Critically: no prior v0.14 classification, model role,
             # relationship hypothesis or prior model reasoning supplied.
         })
