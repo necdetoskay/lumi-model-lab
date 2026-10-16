@@ -70,7 +70,7 @@ class MaraS1TypedLiveTests(unittest.TestCase):
         self.assertEqual(requests[0]["response_format"]["type"], "json_schema")
         self.assertFalse(requests[0]["stream"])
         self.assertEqual(requests[0]["max_tokens"], 4096)
-        self.assertEqual(requests[0]["reasoning"], {"enabled": False})
+        self.assertNotIn("reasoning", requests[0])
 
     def test_missing_key_fail_closed(self):
         with self.assertRaisesRegex(Exception, "V05_LIVE_KEY_MISSING"):
