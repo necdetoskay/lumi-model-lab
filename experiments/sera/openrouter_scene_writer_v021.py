@@ -105,13 +105,16 @@ def make_request(*, source, defects, story_context=None):
 
 
 def _durable_provider_response(*, root, model, request, api_key,
-                               provider_call, reconciler=None):
+                               provider_call, reconciler=None,
+                               recovery_only=False):
     """Save complete paid envelope before parsing model JSON.
 
     Unknown in-flight requests are never blindly repeated, including
     after process crashes. Replays are bound to exact request+model.
     """
     prepared = {"request": request}
+    if recovery_only and root is None:
+        raise CoverageError("V031_RECOVERY_REQUIRES_DURABLE_ARCHIVE")
     if root is None:
         return provider_call(key=api_key, model=model, prepared=prepared)
     root.mkdir(parents=True, exist_ok=True)
@@ -140,6 +143,10 @@ def _durable_provider_response(*, root, model, request, api_key,
             model=model, request=request, request_sha256=signature,
         )
     else:
+        if recovery_only:
+            # No archival started marker means no confirmed earlier
+            # attempt. A recovery-only path MUST NOT send a new POST.
+            raise CoverageError("V031_NO_PRIOR_BILLABLE_ATTEMPT")
         try:
             with started.open("x", encoding="utf-8") as file:
                 file.write(signature + "\n")
@@ -222,7 +229,7 @@ def create_writer(*, api_key, model, story_context=None,
     saved_context = deepcopy(story_context or {})
     models = [model] + ([fallback_model] if fallback_model else [])
 
-    def rewrite_scene(*, source, defects):
+    def _rewrite(*, source, defects, recovery_only=False):
         request = make_request(source=source, defects=defects,
                                story_context=saved_context)
         spent = Decimal("0")
@@ -233,7 +240,7 @@ def create_writer(*, api_key, model, story_context=None,
             reply = _durable_provider_response(
                 root=root, model=selected_model, request=request,
                 api_key=api_key, provider_call=provider_call,
-                reconciler=reconciler,
+                reconciler=reconciler, recovery_only=recovery_only,
             )
             body, choice, price = _provider_body(reply, selected_model)
             spent += price
@@ -262,4 +269,16 @@ def create_writer(*, api_key, model, story_context=None,
             }
         raise CoverageError(failure)
 
+    def rewrite_scene(*, source, defects):
+        return _rewrite(source=source, defects=defects)
+
+    def recover_existing(*, source, defects):
+        # Only archived paid responses or GET-only independently attested
+        # known generations; never fallback to a fresh paid request.
+        _require(reconciler is not None and root is not None,
+                 "V031_RECOVERY_RECONCILER_REQUIRED")
+        return _rewrite(source=source, defects=defects,
+                        recovery_only=True)
+
+    rewrite_scene.recover_existing = recover_existing
     return rewrite_scene
