@@ -1096,3 +1096,34 @@ The existing latest-story GET is insufficient, while production POST
 must never be used as a reader. The server-side endpoint, access policy,
 read-only DB role, signed repeatable-read snapshot and live proof remain
 separate work. Production code/main, data and frozen Mara S1 untouched.
+
+
+## v0.34 — Real Project_LUMI G2 server read source (isolated implementation)
+
+[Architecture, exact source code, server isolation and verification status](./SERA_V034_PROJECT_LUMI_SERVER_INTEGRATION.md).
+
+- [Project_LUMI separate experiment branch](https://github.com/necdetoskay/Project_LUMI/tree/experiment/sera-g2-readonly-authority-v034-20261016)
+  now contains the server-side `GET /api/internal/sera/g2-authority-readonly`
+  matching v0.33's proposed contract. All G2 rows are read from actual
+  `story`/`profile` table names in one PostgreSQL REPEATABLE READ
+  READ ONLY transaction. Existing production POST and canonical commit
+  services are not invoked.
+- The service is OFF without explicit scoped server configuration,
+  separate verified-full TLS SELECT-only database credentials and an
+  app-managed internal service token. It rejects privileged DB roles,
+  mismatched five-key G2 scope, stale Universe/World/Character heads,
+  wrong/absent Character snapshot ref and overlarge evidence.
+- Provenance is Ed25519 signed by an app-owned server key and includes
+  request nonce, 5-key scope, issuer/audience and short expiry.
+  Model Lab's independent v0.33 pinned public key reader remains the
+  consumer. Credentials/keys are not stored in the repository.
+- [Web source/security tests](https://github.com/necdetoskay/Project_LUMI/blob/experiment/sera-g2-readonly-authority-v034-20261016/apps/web/tests/sera-g2-authority-readonly.service.test.ts)
+  and [HTTP abuse tests](https://github.com/necdetoskay/Project_LUMI/blob/experiment/sera-g2-readonly-authority-v034-20261016/apps/web/tests/sera-g2-authority-readonly.api.test.ts)
+  are wired to a [dedicated self-hosted workflow](https://github.com/necdetoskay/Project_LUMI/blob/experiment/sera-g2-readonly-authority-v034-20261016/.github/workflows/sera-v034-g2-readonly-source.yml).
+
+**NO production endpoint enabled, deployed, tested against live database,
+or accepted as canon authority.** Check the dedicated workflow's FINAL
+conclusion before asserting CI PASS: queued jobs are not completed tests.
+The signed physical world registry, actual live authorized GET proof,
+G2 transactional publisher, paid unseen-story test and Mara S1 canonical
+HOLD release are still open. Main, production DB and frozen Spine untouched.
