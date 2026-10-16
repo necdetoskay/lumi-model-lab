@@ -11,7 +11,6 @@ This adapter authenticates ONLY a detached READ, never spending/commit.
 from __future__ import annotations
 
 import base64
-import binascii
 from hashlib import sha256
 import re
 
@@ -70,7 +69,7 @@ def pinned_verifier(*, public_key_pem, raw_public_key_sha256, key_id):
                 return False
             key.verify(raw_sig, message)
             return True
-        except (ValueError, binascii.Error, Exception) as exc:
+        except Exception:
             # This callback is a boolean trust boundary. Never leak the
             # original signed source or secrets through exception text.
             return False
