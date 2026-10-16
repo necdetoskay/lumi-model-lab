@@ -217,7 +217,12 @@ def qualify(*, prose, world, bundle, projection, typed):
         ) and not (kind == "MOVE" and ident in covered_movements)
           and not (kind in ("TRANSFER", "LEARN_FACT",
                             "KNOWLEDGE_UPDATE") and
-                   ident in covered_relations)):
+                   ident in covered_relations)
+          and not (kind == "CHANGE_STATE" and
+                   ordered_facet_preview is not None and
+                   any(step["source_event_id"] == ident and
+                       step["kind"] == "SET_OPENABLE"
+                       for step in ordered_facet_preview["steps"]))):
             flag("STATE_EFFECT_WITHOUT_QUALIFIED_REDUCER",
                  event_id=ident, sentence_id=sid)
         # A physical event must have a known, active, registered object /
