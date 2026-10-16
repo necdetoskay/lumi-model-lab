@@ -49,6 +49,31 @@ jobs:
           assert report["watch_case_cue_found"]
           assert report["notebook_writing_cue_found"]
           PY
+      - name: Generate Mara 28-sentence review worksheet (not gold)
+        run: |
+          python -m experiments.sera.sentence_review_packet_v07 \
+            --output "$RUNNER_TEMP/sera-mara-review/mara-s1-28-sentence-unreviewed.json"
+          python - <<'PY'
+          from experiments.sera.sentence_review_packet_v07 import generate_mara_packet
+          from experiments.sera.offline_benchmark_v07 import summarize_unreviewed_packet
+          packet = generate_mara_packet()
+          metrics = summarize_unreviewed_packet(packet)
+          assert metrics["sentence_count"] == 28
+          assert metrics["analyst_candidate_count"] == 9
+          assert metrics["event_recall"] is None
+          assert metrics["entity_precision"] is None
+          assert packet["canonical_commit_authorized"] is False
+          print("MARA_GOLD_QUALIFICATION", metrics["reason"])
+          print("MARA_REFERENCE_SENTENCES", metrics["sentence_count"])
+          print("MARA_CANDIDATES_NOT_GOLD", metrics["analyst_candidate_count"])
+          PY
+      - name: Archive review worksheet for human annotation
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-s1-unreviewed-worksheet-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-mara-review/mara-s1-28-sentence-unreviewed.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Audit real Mara first-scene HOLD without state writes
         run: |
           python - <<'PY'
