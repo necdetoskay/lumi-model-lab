@@ -122,8 +122,9 @@ class MaraProposedCorrectionsTests(unittest.TestCase):
 
     def test_model_opinion_without_exact_source_quote_is_blocked(self):
         bad=opinions()
-        bad["task_002"]["bound_advisory"]["possible_source_evidence"][0]["quote"]=
+        bad["task_002"]["bound_advisory"]["possible_source_evidence"][0]["quote"] = (
             "invented notebook contents"
+        )
         with self.assertRaisesRegex(CoverageError,
                                     "V012_ADVICE_EVIDENCE_NOT_EXACT"):
             propose(prose=PROSE,full_report=sample_report(),bundle=bad)
