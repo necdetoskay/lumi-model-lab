@@ -182,6 +182,96 @@ class SceneWriterV021Tests(unittest.TestCase):
             writer(source=ORIGINAL, defects=[])
         self.assertEqual(calls, [])
 
+    def test_durable_archived_invalid_json_automatically_falls_back(self):
+        models = []
+        def provider(*, key, model, prepared):
+            models.append(model)
+            source = json.loads(
+                prepared["request"]["messages"][1]["content"]
+            )["scene_prose"]
+            return envelope(
+                source, model=model,
+                text=("broken primary json" if model == MODEL else None),
+            )
+        with TemporaryDirectory() as temp:
+            root = Path(temp) / "paid_receipts"
+            writer = create_writer(
+                api_key="synthetic", model=MODEL,
+                fallback_model="synthetic/repair-alternative",
+                archive_dir=root, provider_call=provider,
+            )
+            first = writer(source=ORIGINAL, defects=["WRONG_CLAIM"])
+            replayed = writer(source=ORIGINAL, defects=["WRONG_CLAIM"])
+            saved = list(root.glob("*.response.json"))
+        self.assertEqual(models, [MODEL, "synthetic/repair-alternative"])
+        self.assertEqual(first, replayed)
+        self.assertEqual(first["receipt"]["model"],
+                         "synthetic/repair-alternative")
+        self.assertEqual(first["receipt"]["cost_usd"], "0.004")
+        self.assertEqual(len(saved), 2)
+        self.assertEqual(first["prose"],
+                         "The train arrival was unverified. Recorded as a report.")
+
+    def test_unknown_paid_provider_reply_is_not_blindly_resent_on_recovery(self):
+        requests = []
+        def unknown(*, key, model, prepared):
+            requests.append(model)
+            return {"error": "HTTP_502", "raw": None}
+        with TemporaryDirectory() as temp:
+            writer = create_writer(
+                api_key="synthetic", model=MODEL,
+                archive_dir=Path(temp) / "archive",
+                fallback_model="synthetic/alternate",
+                provider_call=unknown,
+            )
+            with self.assertRaisesRegex(
+                CoverageError, "V021_UNRECEIPTED_PROVIDER_RESULT"
+            ):
+                writer(source=ORIGINAL, defects=["CLAIM"])
+            with self.assertRaisesRegex(
+                CoverageError, "V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL"
+            ):
+                writer(source=ORIGINAL, defects=["CLAIM"])
+        self.assertEqual(requests, [MODEL])
+
+    def test_spend_guard_prevents_new_fallback_call_after_billed_bad_json(self):
+        calls = []
+        def provider(*, key, model, prepared):
+            calls.append(model)
+            return envelope(ORIGINAL, model=model, text="bad json")
+        with TemporaryDirectory() as temp:
+            writer = create_writer(
+                api_key="synthetic", model=MODEL,
+                fallback_model="synthetic/alternate", archive_dir=Path(temp),
+                provider_call=provider, observed_spend_guard_usd="0.001",
+            )
+            with self.assertRaisesRegex(
+                CoverageError, "V021_OBSERVED_SPEND_GUARD"
+            ):
+                writer(source=ORIGINAL, defects=["CLAIM"])
+        self.assertEqual(calls, [MODEL])
+
+    def test_paid_raw_reply_recovered_from_archive_without_provider_call(self):
+        requests = []
+        def provider(*, key, model, prepared):
+            requests.append(model)
+            return envelope(ORIGINAL)
+        with TemporaryDirectory() as temp:
+            archive = Path(temp)
+            first = create_writer(
+                api_key="synthetic", model=MODEL,
+                archive_dir=archive, provider_call=provider,
+            )
+            answer = first(source=ORIGINAL, defects=["CLAIM"])
+            def must_not_call(**kwargs):
+                raise AssertionError("paid reply must not repeat")
+            recovered = create_writer(
+                api_key="synthetic", model=MODEL,
+                archive_dir=archive, provider_call=must_not_call,
+            )(source=ORIGINAL, defects=["CLAIM"])
+        self.assertEqual(requests, [MODEL])
+        self.assertEqual(answer, recovered)
+
     def test_no_request_limit_from_scene_writer_builder(self):
         p = make_request(source=ORIGINAL, defects=[{"code": "CLAIM_PROMOTED"}])
         self.assertEqual(p["response_format"], {"type": "json_object"})
