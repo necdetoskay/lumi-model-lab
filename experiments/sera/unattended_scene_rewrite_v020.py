@@ -183,11 +183,17 @@ def execute(*, prose, world, check_scene, rewrite_scene,
                 reason = "V020_CHECKPOINT_SOURCE_MISMATCH"
                 break
             assessment = row["assessment"]
-        elif started.exists():
-            reason = "V020_UNKNOWN_IN_FLIGHT_CHECK"
-            break
         else:
-            _write(started, {"prose_sha256": prose_hash(current)})
+            # check_scene is contractually nonbillable and deterministic.
+            # An interrupted check is safe to recompute from the same
+            # frozen source. Only an unknown in-flight *provider* rewrite
+            # must remain fail-closed to avoid double billing.
+            if started.exists():
+                if _read(started) != {"prose_sha256": prose_hash(current)}:
+                    reason = "V020_CHECKPOINT_SOURCE_MISMATCH"
+                    break
+            else:
+                _write(started, {"prose_sha256": prose_hash(current)})
             try:
                 assessment = check_scene(prose=current, world=deepcopy(world))
                 _assess(assessment, current, world)
