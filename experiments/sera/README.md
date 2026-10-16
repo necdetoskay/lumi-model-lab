@@ -1187,3 +1187,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Exact independently provided synthetic fixture grant + v0.38 spatial/relational feasibility and v0.2 reducer parity must pass before any v0.37 SQLite simulation commit. Mara gives watch to Elin, Elin carries it to hallway, shared world 0 → 1 → 2 and hash-chain replays. Scope-scoped IDs avoid v0.10 batch-local ID collisions.
 - Unsupported/failed source interpretation ends with `FAILED_SAFE_FINAL` and zero unsafe world writes; no manual intervention, external provider, model output token ceilings, G2 canon authority or production DB writes.
 - Test harness `blind_ensemble_smoke_v039.py` produces a self-hosted CI synthetic proof artifact. **Limit**: scripted responses do not prove independent real LLM semantic recall; the offline v0.6 assurance remains HOLD. Durable provider request recovery, full multi-sentence extraction, model-driven replan/rewrite and real StoryForge integration remain future work.
+
+
+## v0.40 — first real-model comparison of a frozen Mara S1 source batch
+
+[Real-model launch contract, caveats and evaluation protocol](./SERA_V040_REAL_MODEL_BENCHMARK.md).
+
+- Real OpenRouter model identities: Gemini 3.7 Flash and Haiku 4.5, **blindly and independently** requested once each against the frozen 243-word Mara source, selecting the original source's four-sentence batch containing the previously missed bench.
+- The `real_blind_benchmark_v040.py` adapter reuses the original v0.10 independent prompt, exact quote binder and partial candidate coverage; model answers cannot grant event or world authority, and a four-sentence pilot is not full story recall.
+- A code-SHA-pinned one-use launch file plus self-hosted Linux workflow strictly gates at most two paid requests, observed $0.05 USD spend stop, provider balance preflight, no auto-retry if receipt unknown, and archived raw provider diagnostics.
+- **No artificial model output-token ceilings, no main branch merge, no SERA SQLite simulation mutation or Project_LUMI production DB write.** Real Mara S1 remains HOLD even if both models produce plausible answers; independent semantic completeness still requires evidence.
