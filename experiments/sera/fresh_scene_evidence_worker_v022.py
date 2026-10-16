@@ -246,7 +246,33 @@ def create_preparer(*, evidence_root, work_root, scene_key,
         if final.is_file():
             previous = _load(final)
             if previous.get("status") != "EVIDENCE_READY_NONCANONICAL":
-                return previous
+                # Only an authenticated, previously STARTED provider call
+                # may reopen terminal safe failure: no fresh provider POST
+                # is allowed for the pending signature. All other failed
+                # worlds, policies or semantic gates remain terminal.
+                orphaned = (
+                    list((root / "receipts").glob("*/*.started")) or
+                    list((root / "semantic").glob("started_*.json"))
+                )
+                allowed = {
+                    "V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL",
+                    "V021_UNRECEIPTED_PROVIDER_RESULT",
+                    "V030_GENERATION_ID_UNAVAILABLE_NO_RESEND",
+                    "V030_PROVIDER_READ_UNAVAILABLE",
+                    "V022_SEMANTIC_STAGE_FAILED_SAFE",
+                }
+                if (reconciler is None or
+                    previous.get("status") != "FAILED_SAFE_FINAL" or
+                    previous.get("failure_code") not in allowed or
+                    not orphaned):
+                    return previous
+                prior = root / "pre_reconciliation_safe_stop.json"
+                if not prior.exists():
+                    _save(prior, previous)
+                else:
+                    _require(_load(prior) == previous,
+                             "V030_EVIDENCE_PRIOR_FAILURE_DRIFT")
+                final.unlink()
             if target.is_file():
                 verified = _load(target)
                 _require(isinstance(verified, dict) and
