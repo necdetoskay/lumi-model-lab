@@ -1,0 +1,53 @@
+name: SERA v0.48 Full Mara 28-Sentence Blind Preflight (NO BILLING)
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/real_full_scene_blind_v048.py
+      - experiments/sera/tests/test_real_full_scene_blind_v048.py
+      - .github/workflows/sera-v048-full-mara-preflight.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dry-full-28-coverage:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v048-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v048-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: No provider secret and no output generation token cap
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+          python -m experiments.sera.real_full_scene_blind_v048 > /tmp/sera-v048-dry-manifest.json
+          python - <<'PY'
+          import json
+          data=json.load(open('/tmp/sera-v048-dry-manifest.json'))
+          assert data['source_sentence_count']==28
+          assert len(data['batches'])==7
+          assert data['planned_provider_attempts']==14
+          assert data['grant_present'] is False
+          assert data['real_provider_calls_during_preparation']==0
+          assert data['canonical_commit_authorized'] is False
+          print('SERA_V048_FULL_MARA_PRELAUNCH_SCOPE_PASS_NO_BILLING')
+          PY
+      - name: Archive only non-sensitive preflight scope
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v048-full-mara-dry-preflight-${{ github.run_id }}
+          path: /tmp/sera-v048-dry-manifest.json
+          retention-days: 90
+          if-no-files-found: error
