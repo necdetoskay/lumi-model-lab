@@ -67,7 +67,20 @@ jobs:
               "google/gemini-3.7-flash":0,
               "anthropic/claude-haiku-4.5":2,
           }
-          assert proof["source_bound_event_candidate_disagreements"]>=2
+          assert proof["source_bound_event_candidate_disagreements"]==6
+          assert proof["event_kind_disagreement_count"]==4
+          assert proof["event_argument_or_epistemic_disagreement_count"]==2
+          disputes={x["sentence_id"]:x["disagreement_class"]
+                    for x in proof["source_timeline"]
+                    if x["event_candidate_signature_disagreement"]}
+          assert disputes=={
+              "s001":"EVENT_KIND_SET_MISMATCH",
+              "s002":"EVENT_ARGUMENT_OR_EPISTEMIC_MISMATCH",
+              "s003":"EVENT_ARGUMENT_OR_EPISTEMIC_MISMATCH",
+              "s004":"EVENT_KIND_SET_MISMATCH",
+              "s022":"EVENT_KIND_SET_MISMATCH",
+              "s023":"EVENT_KIND_SET_MISMATCH",
+          }
           flags={x["risk_code"] for x in proof["source_bound_semantic_risk_flags"]}
           assert "STATIC_WATCH_PREDICATE_MISREAD_AS_TRANSITION_RISK" in flags
           assert "PENCIL_MOTION_OBSERVED_BUT_CAUSAL_ACTOR_UNKNOWN" in flags
