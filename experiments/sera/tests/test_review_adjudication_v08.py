@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import json
 import unittest
 
 from experiments.sera.coverage import CoverageError
@@ -11,6 +14,7 @@ from experiments.sera.sentence_review_packet_v07 import (
 from experiments.sera.review_adjudication_v08 import (
     blank_annotation, validate_annotation, compare_annotations,
 )
+from experiments.sera.review_forms_cli_v08 import emit_forms, compare_files
 
 PROSE = "Vane closed the watch case. Mara wrote in her notebook by the bench."
 REGISTRY = {
@@ -247,6 +251,46 @@ class ComparisonV08Tests(unittest.TestCase):
         with self.assertRaisesRegex(CoverageError,
                                     "ADJUDICATION_DUPLICATE_ALIAS"):
             compare_annotations(packet=packet, reviewer_a=a, reviewer_b=b)
+
+class ExportedMaraReviewFormsV08Tests(unittest.TestCase):
+    def test_two_blind_json_forms_are_exported_and_never_gold(self):
+        with TemporaryDirectory() as folder:
+            path = Path(folder)
+            summary = emit_forms(path)
+            self.assertEqual(summary["sentence_count"], 28)
+            self.assertFalse(summary["gold_qualified"])
+            self.assertEqual(summary["model_calls"], 0)
+            self.assertFalse(summary["canonical_commit_authorized"])
+            files = [path / name for name in summary["exported"]]
+            self.assertTrue(all(file.exists() for file in files))
+            a = json.loads(files[0].read_text(encoding="utf-8"))
+            b = json.loads(files[1].read_text(encoding="utf-8"))
+            self.assertNotEqual(a["reviewer_alias"], b["reviewer_alias"])
+            self.assertNotIn("evt_s1_01", files[0].read_text())
+            self.assertEqual(len(a["rows"]), 28)
+            self.assertTrue(all(r["disposition"] == "UNREVIEWED"
+                                for r in b["rows"]))
+            queue = compare_files(review_a=files[0], review_b=files[1])
+            self.assertEqual(len(queue["disagreements"]), 28)
+            self.assertEqual(queue["agreed_sentence_ids"], [])
+            self.assertFalse(queue["canonical_commit_authorized"])
+            self.assertEqual(queue["status"],
+                             "NOT_GOLD_HUMAN_ADJUDICATION_REQUIRED")
+
+    def test_comparison_rejects_changed_source_form(self):
+        with TemporaryDirectory() as folder:
+            path = Path(folder)
+            summary = emit_forms(path)
+            a = path / summary["exported"][0]
+            b = path / summary["exported"][1]
+            content = json.loads(a.read_text())
+            content["rows"][0]["quote"] = "tampered"
+            a.write_text(json.dumps(content))
+            with self.assertRaisesRegex(
+                CoverageError, "ANNOTATION_SENTENCE_SOURCE_MISMATCH"
+            ):
+                compare_files(review_a=a, review_b=b)
+
 
 
 if __name__ == "__main__":
