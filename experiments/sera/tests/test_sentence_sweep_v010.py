@@ -115,6 +115,55 @@ class PlanV010Tests(unittest.TestCase):
             bind_batch(plan=plan, batch_id=batch["batch_id"],
                        raw=raw, prose=MARA)
 
+    def test_whitelisted_grammar_roles_are_preserved_but_not_world_presence(self):
+        plan=mara_plan()
+        batch=next(b for b in plan["batches"] if "s011" in b["sentence_ids"])
+        raw=empty_raw(batch)
+        item=next(x for x in raw["rows"] if x["sentence_id"]=="s011")
+        item["disposition"]="STATE_EVENT"
+        item["mentions"]=[
+            {"entity_ref":"vane","role":"agent",
+             "evidence_quote":"Vane","occurrence":0},
+            {"entity_ref":"new:watch_case","role":"target",
+             "evidence_quote":"case","occurrence":0},
+            {"entity_ref":"new:vane_thumb","role":"instrument",
+             "evidence_quote":"thumb","occurrence":0},
+        ]
+        item["events"]=[{
+            "kind":"CLOSE","epistemic":"OBSERVED_ACTION",
+            "effect":"OBJECT","evidence_quote":"closed",
+            "occurrence":0,"entity_refs":["vane","new:watch_case"],
+            "reason":"Source explicitly describes the case closing",
+        }]
+        bound=bind_batch(plan=plan,batch_id=batch["batch_id"],
+                         raw=raw,prose=MARA)
+        mentions=next(r["mentions"] for r in bound["rows"]
+                      if r["sentence_id"]=="s011")
+        self.assertEqual({m["raw_model_role"] for m in mentions},
+                         {"agent","target","instrument"})
+        self.assertEqual({m["role"] for m in mentions},{"MENTIONED"})
+        self.assertTrue(all(m["role_binding"]==
+                            "PROVIDER_GRAMMAR_ROLE_ADVISORY"
+                            for m in mentions))
+        self.assertFalse(bound["canonical_commit_authorized"])
+
+    def test_unrecognized_model_role_not_silently_mapped(self):
+        plan=mara_plan()
+        batch=plan["batches"][0]
+        raw=empty_raw(batch)
+        source=next(s for s in plan["source_sentences"]
+                    if s["id"]==batch["sentence_ids"][0])
+        raw["rows"][0]["mentions"]=[{
+            "entity_ref":"new:unknown",
+            "role":"OWNER_IS_VERIFIED",
+            "evidence_quote":source["quote"][:4],
+            "occurrence":0,
+        }]
+        with self.assertRaisesRegex(CoverageError,
+                                    "SWEEP_MENTION_ROLE_UNMAPPED"):
+            bind_batch(plan=plan,batch_id=batch["batch_id"],
+                       raw=raw,prose=MARA)
+
     def test_duplicate_or_missing_sentence_row_blocks_response(self):
         plan = mara_plan()
         batch = plan["batches"][0]
