@@ -14,6 +14,8 @@ from src.english_story_pipeline import call_structured_json_with_retry
 from src.generate import call_openrouter, count_words, parse_cost, parse_usage
 from src.openrouter_jev import call_openrouter_jev, noul_probability, noul_question
 from src.story_defect_detection import DEFECT_FAMILIES, segment_story
+from src.model_registry import normalize_openrouter_request
+from experiments.sera.request_policy import enforce_no_output_token_limit
 
 from .contracts import StoryForgeRequest, StoryForgeResult
 
@@ -741,6 +743,41 @@ def _apply_local_repairs(story: str, repair_payload: dict[str, Any]) -> tuple[st
     return current, applied
 
 
+def _preflight_storyforge_output_policy(models: dict[str, str]) -> None:
+    """Reject model-profile output ceilings BEFORE any StoryForge model call.
+
+    A profile can force its own request max even when all callers use
+    max_tokens=None. The live outbound provider boundary rechecks too.
+    This is independent of usage/cost guards and provider native limits.
+    """
+    classes = {
+        "planner": ("story_plan", True),
+        "plan_validator": ("editorial_audit", True),
+        "writer": ("teacher_story_medium_reasoning", False),
+        "primary_auditor": ("editorial_audit", True),
+        "secondary_auditor": ("editorial_audit", True),
+        "repair": ("editorial_audit", True),
+        "translator": ("translation", False),
+        "fidelity": ("editorial_audit", True),
+    }
+    if set(models) != set(classes):
+        raise RuntimeError("STORYFORGE_MODEL_PROFILE_ROLES_INCOMPLETE")
+    for role, (request_class, structured) in classes.items():
+        candidate = normalize_openrouter_request(
+            models[role],
+            {
+                "model": models[role],
+                "messages": [
+                    {"role": "system", "content": "cap-free preflight"},
+                    {"role": "user", "content": "cap-free preflight"},
+                ],
+            },
+            request_class=request_class,
+            structured_output=structured,
+        )
+        enforce_no_output_token_limit(candidate)
+
+
 def run_storyforge(
     request: StoryForgeRequest | dict[str, Any],
     *,
@@ -769,6 +806,7 @@ def run_storyforge(
         "translator": profile["translation"]["model"],
         "fidelity": profile["translation_fidelity"]["model"],
     }
+    _preflight_storyforge_output_policy(models)
 
     request_snapshot = req.model_dump(mode="json")
     evidence: dict[str, Any] = {
