@@ -157,3 +157,50 @@ jobs:
           print("UNREGISTERED_PHYSICAL_OBJECTS",audit["unregistered_physical_candidates"])
           print("REAL_MARA_CANONICAL_COMMITS",audit["eventgraph_committed_count"])
           PY
+
+  sera-browser-e2e:
+    needs: sera-m1-offline
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chromium browser test dependency (no model/provider calls)
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Real Chromium Mara blind reviewer end-to-end
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.browser_e2e_v09 \
+            | tee "$RUNNER_TEMP/sera-browser-e2e-summary.json"
+          python - <<'PY'
+          import json, os
+          path = os.path.join(os.environ["RUNNER_TEMP"], "sera-browser-e2e-summary.json")
+          proof=json.load(open(path, encoding="utf-8"))
+          for field in (
+              "source_bound_object_added", "fabricated_event_blocked",
+              "source_claim_kept_reported", "download_python_validated",
+              "json_roundtrip_exact", "cross_reviewer_import_blocked",
+              "mobile_navigation_passed",
+          ):
+              assert proof[field] is True, f"BROWSER_E2E_FAILURE:{field}"
+          assert proof["sentence_count"] == 28
+          assert proof["real_human_reviews_performed"] == 0
+          assert proof["real_gold_qualified"] is False
+          assert proof["paid_model_calls"] == 0
+          assert proof["canonical_world_writes"] == 0
+          print("SERA_BROWSER_E2E_VERIFIED_GREEN")
+          PY
+      - name: Preserve noncanonical browser E2E diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-browser-e2e-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-browser-e2e-summary.json
+          retention-days: 30
+          if-no-files-found: warn
