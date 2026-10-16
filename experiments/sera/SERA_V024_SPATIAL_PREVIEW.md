@@ -36,6 +36,10 @@ It demands:
   together, validates resulting co-location invariants and leaves
   original world revisions and DB unchanged. Hashes bind original
   source, world, temporal case and report.
+- A carried container containing nested registered children remains an
+  unsupported graph transform. v0.24 now **fails safe** before moving
+  anything when it cannot move those contents consistently; it never
+  leaves the child object at a stale source location and claims success.
 
 [full_scene_qualification_v023.py](./full_scene_qualification_v023.py)
 now regards only successfully previewed MOVEs as having a partial
