@@ -191,3 +191,38 @@ production state update is implied. The artifact was examined via an offline
 forensic workflow (no extra model call). Issue [#304](https://github.com/necdetoskay/lumi-model-lab/issues/304)
 remains open for provider-schema compatibility, open-world recall calibration,
 trusted semantic adjudication and a complete S1 exit-state acceptance.
+
+## SERA v0.6 — Sentence Ledger + T2 memory + Scene Contract
+
+[Architecture and exact boundaries](./SERA_V06_SCENE_ASSURANCE_ARCHITECTURE.md) ·
+[Implementation epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306)
+
+The three outside architecture reviews motivated a **coverage-first** stage.
+The new `scene_assurance_v06.audit_scene` composes an every-sentence source
+ledger, model-independent T2 noun/action candidate scanner, optional
+pre-Writing scene intent alignment, and original M2 reconcile reports.
+A missing planned action never becomes a committed world event automatically;
+writer-added actions are flagged for review.
+
+`observation_archive_v06.ObservationArchive` can persist T2 physical object
+sightings and their exact source quotes in a **separate experimental SQLite
+audit archive** while WorldStore remains unchanged. Registered aspect
+proposals (`openable.case_open`, `writable.entries`) and attributed
+character knowledge propositions are currently **advisory, not reducer
+events**. The bounded repair router suggests selective next actions but
+makes no LLM calls.
+
+```bash
+python -m experiments.sera.mara_s1_v06_audit
+python -m unittest discover -s experiments/sera/tests -v
+```
+
+The 243-word real Mara first scene has **28 structurally accounted-for sentence
+spans**, T2 bench and pencil candidates, and action cues for closing the watch
+case and writing in Mara's notebook. **These are not human gold annotations**
+and the actual scene's nine events remain HOLD. No provider calls, output token
+ceilings, or production DB writes were added. The user prohibition on
+application-set LLM output token limits is preserved and CI-enforced.
+
+Real event acceptance, independent semantic coverage, typed aspect reducer
+mutations and first S1 exit-state qualification are still pending.
