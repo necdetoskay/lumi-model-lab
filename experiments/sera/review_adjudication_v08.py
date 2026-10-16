@@ -129,6 +129,13 @@ def validate_annotation(*, packet: dict, annotation: dict,
     all_events = {}
     missing = []
     risk = []
+    known_event_refs = set()
+    for sentence in source:
+        for hint in sentence["entity_hints"]:
+            if hint["ref"].startswith("candidate:"):
+                known_event_refs.add("new:" + hint["ref"].split(":", 1)[1])
+            else:
+                known_event_refs.add(hint["ref"])
     event_count = 0
     for row, original in zip(rows, source):
         require(isinstance(row, dict) and set(row) == {
@@ -186,6 +193,12 @@ def validate_annotation(*, packet: dict, annotation: dict,
                     _span_in_sentence(row, event),
                     "ANNOTATION_EVENT_INVALID")
             local_ids.add(event["event_id"])
+            for entity_ref in event["entity_refs"]:
+                if entity_ref not in known_event_refs:
+                    # An unscanned implied/coreferential entity may be real;
+                    # flag it for review without silently rejecting or
+                    # fabricating a physical world entity.
+                    risk.append(f"ANNOTATION_UNGROUNDED_ENTITY_REF:{sid}:{entity_ref}")
             signature = (
                 event["event_type"], event["epistemic"],
                 event["effect"], tuple(sorted(event["entity_refs"])),
