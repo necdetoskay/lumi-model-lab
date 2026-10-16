@@ -1,34 +1,30 @@
-name: SERA v0.15b Blind Haiku Identity — Checkout Recovery
+name: SERA v0.15c Blind Haiku Identity — Isolated Source Checkout
 on:
   push:
     branches:
       - experiment/sera-scene-state-v0-1-20261015
     paths:
-      - experiments/sera/launch/mara-s1-blind-identity-once-v015b.json
+      - experiments/sera/launch/mara-s1-blind-identity-once-v015c.json
 permissions:
   actions: read
   contents: read
 concurrency:
-  group: sera-v015b-mara-blind-identity-checkout-recovery
+  group: sera-v015c-mara-blind-identity-fresh-worktree
   cancel-in-progress: false
 jobs:
   one-blind-proposal:
     if: >-
       github.run_attempt == 1 &&
-      contains(github.event.head_commit.message, '[SERA-V015B-BLIND-ONCE]')
+      contains(github.event.head_commit.message, '[SERA-V015C-BLIND-ONCE]')
     runs-on: [self-hosted, linux]
     timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: sera-v015c-source
     steps:
-      - name: Restore repository workspace after original pre-provider checkout failure
-        run: |
-          set -euo pipefail
-          # Run 38872127365 failed before any model call.
-          # Only touch this job's designated workspace; never remote systems.
-          if [[ -d "$GITHUB_WORKSPACE" && ! -d "$GITHUB_WORKSPACE/.git" ]]; then
-            find "$GITHUB_WORKSPACE" -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
-          fi
       - uses: actions/checkout@v4
         with:
+          path: sera-v015c-source
           fetch-depth: 2
           persist-credentials: false
           clean: false
@@ -44,7 +40,7 @@ jobs:
           from pathlib import Path
           from experiments.sera.mara_s1_blind_identity_pilot_v015 import MODEL
           from experiments.sera.request_policy import verify_current_sera_clients
-          p=Path("experiments/sera/launch/mara-s1-blind-identity-once-v015b.json")
+          p=Path("experiments/sera/launch/mara-s1-blind-identity-once-v015c.json")
           d=json.loads(p.read_text(encoding="utf-8"))
           expected={
               "schema":"sera.mara-blind-identity-once.v0.15",
@@ -62,8 +58,8 @@ jobs:
               "no_auto_relation_attach":True,
               "no_canonical_commit":True,
               "no_reruns":True,
-              "launch_id":"sera-mara-s1-blind-identity-once-v015b-20261016",
-              "previous_checkout_failed_run_id":38872127365,
+              "launch_id":"sera-mara-s1-blind-identity-once-v015c-20261016",
+              "previous_pre_provider_failed_run_ids":[38872127365,38872399171],
           }
           assert set(d)==set(expected)|{"approved_code_sha"},"V015_GRANT_SCHEMA"
           assert all(d[k]==v for k,v in expected.items()),"V015_GRANT_VALUES"
@@ -131,7 +127,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sera-mara-v015b-blind-identity-${{ github.run_id }}
+          name: sera-mara-v015c-blind-identity-${{ github.run_id }}
           path: ${{ runner.temp }}/sera-v015/identity-provider-response.json
           retention-days: 90
           if-no-files-found: warn
