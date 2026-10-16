@@ -294,6 +294,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             _save(root / "full_sweep.json", report)
             if spent >= guard:
                 raise CoverageError("V022_SPEND_GUARD_BEFORE_SEMANTIC")
+            calls_before_semantic = calls
+            spent_before_semantic = spent
             def semantic_call(*, model, prepared):
                 nonlocal spent, calls
                 if calls >= max_model_requests or spent >= guard:
@@ -321,9 +323,10 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 "SEMANTIC_ADVISORIES_COMPLETE_NONCANONICAL",
                 "NO_TARGETED_RISKS_FOUND_NONCANONICAL",
             ), "V022_SEMANTIC_STAGE_FAILED_SAFE")
-            # v0.18 accounts any cached paid semantic model calls itself.
-            calls += summary["provider_calls"]
-            spent += Decimal(summary["observed_spend_usd"])
+            # v0.18 includes both newly paid and cached receipts; do not
+            # double-count newly performed semantic calls on this iteration.
+            calls = calls_before_semantic + summary["provider_calls"]
+            spent = spent_before_semantic + Decimal(summary["observed_spend_usd"])
             source_input = {
                 "schema": SCHEMA, "source_prose_sha256": source_sha,
                 "scene_key": scene_key, "original_prose": prose,
