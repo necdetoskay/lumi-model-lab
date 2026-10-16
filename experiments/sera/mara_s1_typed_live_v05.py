@@ -15,6 +15,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from experiments.sera.coverage import CoverageError
+from experiments.sera.request_policy import enforce_no_output_token_limit
 from experiments.sera.mara_s1_v04_audit import PATH, EXPECTED_SHA
 from experiments.sera.typed_extractor_contract_v05 import (
     make_typed_request, bind_typed_response,
@@ -100,6 +101,7 @@ def one_provider_call(*, key: str, prepared: dict) -> dict:
         # One attempted no-reasoning call returned HTTP 400 (diagnostic HOLD).
         "stream": False,
     }
+    enforce_no_output_token_limit(payload)
     http = Request(
         ENDPOINT, method="POST",
         headers={
