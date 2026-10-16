@@ -1,0 +1,129 @@
+name: SERA v0.11.2 Final Haiku Watch-Case Probe
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-haiku-last-once-20261016.json
+permissions:
+  actions: read
+  contents: read
+concurrency:
+  group: sera-v0112-final-haiku-single-20261016
+  cancel-in-progress: false
+jobs:
+  watch-case-only:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V0112-LAST-ONLY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 11
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify grant pins exactly third question; no output token cap
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          from experiments.sera.haiku_last_probe_v011 import MAX_NEW_CALLS,MODEL,TASK
+          from experiments.sera.request_policy import verify_current_sera_clients
+          path=Path("experiments/sera/launch/mara-s1-haiku-last-once-20261016.json")
+          grant=json.loads(path.read_text(encoding="utf-8"))
+          expected={
+            "schema":"sera.haiku-last-probe-once.v0.11.2",
+            "authorized":True,
+            "scope":"ONLY_OPEN_WATCH_BEFORE_CLOSE_TASK_003",
+            "source_prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+            "risk_run_id":38862521913,
+            "original_haiku_run_id":38863339302,
+            "notebook_haiku_run_id":38865139580,
+            "model":"anthropic/claude-haiku-4.5",
+            "max_new_provider_calls":1,
+            "output_token_cap_set":False,
+            "no_retries":True,
+            "no_writer_regeneration":True,
+            "no_jev":True,
+            "no_canonical_commit":True,
+            "no_world_db_write":True,
+            "no_reruns":True,
+            "launch_id":"sera-mara-v0112-haiku-last-20261016"
+          }
+          assert set(grant)==set(expected)|{"approved_code_sha"},"GRANT_SCHEMA_INVALID"
+          assert all(grant[k]==v for k,v in expected.items()),"GRANT_VALUES_INVALID"
+          parent=subprocess.check_output(["git","rev-parse","HEAD^"],text=True).strip()
+          assert grant["approved_code_sha"]==parent,"GRANT_PINNED_SHA_WRONG"
+          files=subprocess.check_output([
+            "git","diff-tree","--no-commit-id","--name-only","-r","HEAD"
+          ],text=True).splitlines()
+          assert files==[str(path)],"GRANT_NOT_SINGLE_FILE"
+          assert MAX_NEW_CALLS==1 and TASK=="task_003" and MODEL==expected["model"]
+          verify_current_sera_clients()
+          print("SERA_HAIKU_FINAL_ONE_USE_GRANT_GREEN")
+          PY
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Install preflight library
+        run: python -m pip install requests
+      - name: Obtain and source-verify the first two prior paid answers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/risk" "$RUNNER_TEMP/first" "$RUNNER_TEMP/second"
+          gh run download 38862521913 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v011-real-mara-risk-report-38862521913 \
+            --dir "$RUNNER_TEMP/risk"
+          gh run download 38863339302 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v011-haiku-targeted-38863339302 \
+            --dir "$RUNNER_TEMP/first"
+          gh run download 38865139580 --repo "$GITHUB_REPOSITORY" \
+            --name sera-haiku-v0111-two-38865139580 \
+            --dir "$RUNNER_TEMP/second"
+          python -m experiments.sera.haiku_last_probe_v011 \
+            --risks "$RUNNER_TEMP/risk/risks.json" \
+            --first-dir "$RUNNER_TEMP/first" \
+            --second-dir "$RUNNER_TEMP/second"
+      - name: Ask exactly one independent watch-case state question
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$OPENROUTER_API_KEY" ]]; then
+            echo "SERA_NO_KEY_NO_MODEL_CALL"
+            exit 1
+          fi
+          python -m experiments.sera.haiku_last_probe_v011 \
+            --live \
+            --risks "$RUNNER_TEMP/risk/risks.json" \
+            --first-dir "$RUNNER_TEMP/first" \
+            --second-dir "$RUNNER_TEMP/second" \
+            --output-dir "$RUNNER_TEMP/final" \
+            --launch-id "sera-v0112-final-$GITHUB_RUN_ID"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ["RUNNER_TEMP"])/"final"/"manifest.json").read_text())
+          assert d["new_provider_calls"]<=1
+          assert d["output_token_cap_set"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["world_db_writes"]==0
+          print("SERA_FINAL_HAIKU_STATUS",d["status"])
+          print("SERA_FINAL_HAIKU_COST",d["new_provider_reported_cost_usd"])
+          print("SERA_FINAL_HAIKU_COMPLETED",d["completed_tasks"])
+          print("SERA_FINAL_HAIKU_PENDING",d["pending_tasks"])
+          print("SERA_FINAL_HAIKU_ERROR",d["error_code"])
+          PY
+      - name: Archive watch-case independent response and two reused proofs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v0112-final-haiku-${{ github.run_id }}
+          path: ${{ runner.temp }}/final/
+          retention-days: 90
+          if-no-files-found: warn
