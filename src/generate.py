@@ -204,7 +204,8 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
                     temperature: float, max_tokens: int | None, seed: int | None,
                     request_class: str = "teacher_story",
                     structured_output: bool = False,
-                    forbid_output_token_limit: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
+                    forbid_output_token_limit: bool = False,
+                    forbid_ambiguous_paid_retry: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
@@ -252,6 +253,22 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
             transport_error = None
         except (requests.Timeout, requests.ConnectionError) as exc:
             transport_error = exc
+            if forbid_ambiguous_paid_retry:
+                # The request might have reached the provider and been
+                # billed despite the lost response. Do not blindly resend.
+                raise OpenRouterCallError(
+                    "OPENROUTER_UNKNOWN_CHARGE_NO_RESEND",
+                    {
+                        "stage": "transport_unknown_billable",
+                        "model": model,
+                        "request_class": request_class,
+                        "request": payload,
+                        "attempts": attempt + 1,
+                        "retry_suppressed": True,
+                        "needs_provider_idempotent_reconciliation": True,
+                        "error": {"type": type(exc).__name__},
+                    },
+                ) from exc
             if attempt >= len(OPENROUTER_RETRY_DELAYS_SECONDS):
                 message_text = (
                     "OpenRouter transport failed after "
