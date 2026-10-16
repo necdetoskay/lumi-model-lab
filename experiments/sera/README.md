@@ -159,3 +159,17 @@ without a separately qualified evidence-to-authority adapter.**
   writes. The status string `APPLICATION` and SHA equality bindings are
   NOT authentication; a trusted server-side review/capability adapter remains
   necessary before deployment.
+
+## M3.4 typed model event / JEV / EventGraph bridge
+
+- [Architecture and validation boundaries](./M3_EVENTGRAPH_BRIDGE_V04.md)
+- `typed_event_bridge_v04.py`: strict per-event required-key/ID validation, canonical v0.2 reducer mapping, source SHA/offsets and unknown-time preservation. Empty Gemini-style arguments are HOLD, never auto-completed.
+- `m3_event_graph_bridge_v04.py`: compares independently normalized proposals, revalidates JEV claim identity, produces **non-committable** EventGraph drafts and optionally shadow-replays physical invariants with zero DB writes.
+- `mara_s1_v04_audit.py`: read-only recheck of the exact archived 243-word first Mara scene; **9/9 event candidates remain HOLD**, bench and pencil remain unregistered, prior live JEV ESCALATE not overturned.
+- Tests are offline. No real JEV provider authentication, independent gold qualification, accepted real-world state, or production DB integration is claimed. Fingerprint equality and `authority=APPLICATION` text fields are not a security boundary.
+
+To inspect the real scene's unresolved findings without model calls:
+
+```bash
+python -m experiments.sera.mara_s1_v04_audit
+```
