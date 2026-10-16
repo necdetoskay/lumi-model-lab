@@ -1237,3 +1237,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - Two models each attempted source extraction for 8/28 frozen Mara source sentences. Gemini: **8 source-bound / 0 quarantined**; Haiku: **6 source-bound / 2 quarantined**. No semantic meaning is assigned to the 20 story sentences that were not queried.
 - Six source-bound candidate-event-signature disagreements, separated into **four event-type mismatches** and **two epistemic/argument/effect mismatches**. The measured differences are **not proven model errors**. Separate source-anchored warnings: Haiku's static already-open watch `CHANGE_STATE`, Gemini's pencil `MOVE` where the causal agent remains unknown.
 - Existing v0.42 full-source trace stays advisory; model agreement and exact quotes are not event/clock/identity/world authority. All test-only values remain noncanonical and original Mara S1 remains HOLD. Independent recall/precision gain **not demonstrated**; keep SceneTrace **SHADOW ONLY** pending controlled structured-beat A/B and independent semantic evaluation.
+
+
+## v0.44 — Real Mara source-evidence challenge cards, no new model calls
+
+[Architecture, actual findings and limits](./SERA_V044_SCENETRACE_EVIDENCE_CHALLENGES.md).
+
+- Replays earlier-paid, SHA-256 pinned Gemini/Haiku v0.40+v0.41 receipts through the actual v0.43 source-bound per-model timeline. Two already-known risky physical proposals now generate **machine-readable evidence challenges**: Haiku's already-open pocket watch `CHANGE_STATE` (opening transition not proven), Gemini's observed pencil `MOVE` (causal actor/location transition not proven). Each records exact source span, missing evidence, and next autonomous targeted re-extraction type, without running one.
+- Eight predeclared narrow policy contrast cases cover static-vs-action, observer-vs-agent, advisory-only cases, and deliberate unsupported patterns. No match is **unverified**, never approval. Negative tests reject fabricated spans, source fingerprints, unbound/quarantined model events, duplicate risk events and forged world grants.
+- [Self-hosted CI 38946880572](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38946880572) SUCCESS **696/696 Python tests**. Scope: 8/28 real model sampled sentences, 20 not assessed, six real candidate disagreements unchanged. **0 new model calls**, 0 extra cost/SQLite/production writes, no output token cap, no integration or main merge.
+- These two proposals were already HOLD in prior SERA; **new value is traceable missing evidence and proposed machine next action, not reduction of a measured real error rate**. SceneTrace remains shadow-only. Original frozen Mara S1 remains HOLD.
