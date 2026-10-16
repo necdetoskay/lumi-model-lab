@@ -239,7 +239,7 @@ class OrderedFacetsV027Tests(unittest.TestCase):
         def extra(w,r,t,rel,c,roles):
             c.append(deepcopy(c[-1]))
         with self.assertRaisesRegex(
-            CoverageError, "V027_FACET_EXTRA_OR_UNACCOUNTED"
+            CoverageError, "V027_FACET_SOURCE_ONE_TO_ONE_INVALID"
         ):
             direct(mutate=extra)
 
@@ -265,7 +265,7 @@ class OrderedFacetsV027Tests(unittest.TestCase):
         def forged_actor(w,r,t,rel,c,roles):
             c[0]["actor_id"] = "vane"
         with self.assertRaisesRegex(
-            CoverageError, "V027_FACET_CURRENT_STATE_OR_IDENTITY_INVALID"
+            CoverageError, "V027_ACTION_TIMELINE_ACTOR_INVALID"
         ):
             direct(mutate=forged_actor)
 
