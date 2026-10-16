@@ -152,6 +152,40 @@ def qualify(*, prose, world, bundle, projection, typed):
                 flag("PHYSICAL_EFFECT_NOT_REDUCER_COVERED",
                      event_id=ident, sentence_id=sid)
 
+    # The separately prompted typed-facet model must never create an
+    # actual state effect omitted by the independent sentence sweep.
+    # Evidence overlap and known object role alone cannot prove that a
+    # physical operation happened; missing cross-model event coverage is
+    # an automatic re-extraction/replan blocker, not a human adjudication.
+    acceptable_kinds = {
+        "OBSERVE_OPENABLE": frozenset({"OBSERVE", "OPEN"}),
+        "SET_OPENABLE": frozenset({"CLOSE", "OPEN", "CHANGE_STATE"}),
+        "APPEND_DOCUMENT_ENTRY": frozenset({"WRITE"}),
+    }
+    for item in candidates:
+        _ensure(isinstance(item, dict) and
+                item.get("type") in acceptable_kinds and
+                isinstance(item.get("evidence"), dict),
+                "V023_TYPED_CANDIDATE_INVALID")
+        source_evidence = item["evidence"]
+        _ensure(type(source_evidence.get("start")) is int and
+                type(source_evidence.get("end")) is int and
+                0 <= source_evidence["start"] <
+                source_evidence["end"] <= len(prose) and
+                prose[source_evidence["start"]:source_evidence["end"]] ==
+                    source_evidence.get("quote"),
+                "V023_TYPED_CANDIDATE_SOURCE_INVALID")
+        if not any(
+            row["sentence_id"] == item["sentence_id"] and
+            row["kind"] in acceptable_kinds[item["type"]] and
+            row["start"] < source_evidence["end"] and
+            source_evidence["start"] < row["end"]
+            for row in events
+        ):
+            flag("TYPED_OPERATION_NOT_BACKED_BY_INDEPENDENT_SWEEP",
+                 event_id=item["event_id"],
+                 sentence_id=item.get("sentence_id"))
+
     # v0.10 already validates source provenance and lexical cues. A
     # suspicious source finding cannot disappear because v0.19 only
     # audits targeted semantic risks.
