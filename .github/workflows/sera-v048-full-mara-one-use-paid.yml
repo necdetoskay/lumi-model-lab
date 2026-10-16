@@ -1,0 +1,100 @@
+name: SERA v0.48 Full Mara Real Two-Model Pilot — EXPLICIT ONE USE ONLY
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/sera-v048-fullscene-paid-once.json
+permissions:
+  contents: read
+concurrency:
+  group: sera-v048-frozen-mara-fullscene-one-use-20261016
+  cancel-in-progress: false
+jobs:
+  frozen-28-blind-source-paid-once:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-V048-PAID-ONCE]')
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 24
+    defaults:
+      run:
+        working-directory: sera-v048-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v048-source
+          fetch-depth: 2
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate separately authorized ONLY grant file, exact code parent and 28 frozen inputs
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          from experiments.sera.real_full_scene_blind_v048 import (
+              prepare,require_grant,GRANT,MAX_ATTEMPTS,
+          )
+          source,manifest=prepare()
+          grant=json.loads(GRANT.read_text(encoding='utf-8'))
+          assert require_grant(manifest,grant)
+          parent=subprocess.check_output([
+              'git','rev-parse','HEAD^'
+          ],text=True).strip()
+          assert parent==grant['approved_code_sha'],'V048_GRANT_PARENT_SHA_MISMATCH'
+          changed=subprocess.check_output([
+              'git','diff-tree','--no-commit-id','--name-only','-r','HEAD',
+          ],text=True).splitlines()
+          assert changed==[str(GRANT.relative_to(Path.cwd()))], \
+              'V048_LAUNCH_COMMIT_MUST_MODIFY_ONLY_GRANT'
+          assert len(manifest['batches'])==7
+          assert manifest['planned_provider_attempts']==MAX_ATTEMPTS==14
+          assert source['prose'] and len(source['plan']['source_sentences'])==28
+          print('SERA_V048_EXACT_GRANT_CODE_PIN_AND_28_SOURCE_PASS')
+          PY
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Install existing provider adapter dependencies
+        run: python3 -m pip install requests
+      - name: One-use real source-only Gemini+Haiku model responses (no retries)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+            echo 'V048_PAID_SECRET_ABSENT_NO_ATTEMPT'
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera-v048-paid"
+          python -m experiments.sera.real_full_scene_blind_v048 \
+            --live \
+            --launch-id "sera-v048-full-once-${GITHUB_RUN_ID}" \
+            --output "$RUNNER_TEMP/sera-v048-paid/result.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          report=json.loads((Path(os.environ['RUNNER_TEMP'])/
+              'sera-v048-paid/result.json').read_text(encoding='utf-8'))
+          assert report['attempts_started']<=14
+          assert report['source_sha256']==\
+              '80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03'
+          assert report['model_output_token_limit_set'] is False
+          assert report['canonical_commit_authorized'] is False
+          assert report['production_db_writes']==0
+          assert report['coverage']['semantic_recall_precision_proven'] is False
+          assert report['coverage']['story_ready_for_g2_commit'] is False
+          print('SERA_V048_REAL_MODEL_NONCANONICAL',report['status'])
+          print('SERA_V048_PROVIDER_CHARGE_USD',report['observed_spend_usd'])
+          PY
+      - name: Archive immutable original envelopes and source-only decisions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v048-full-28-real-model-once-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v048-paid/
+          retention-days: 90
+          if-no-files-found: warn
