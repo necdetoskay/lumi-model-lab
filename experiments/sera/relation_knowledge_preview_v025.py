@@ -57,7 +57,9 @@ def preview(*, prose, world, extraction_report, relation_case):
     sourced = [e for e in extraction_report["candidate_events"]
                if isinstance(e, dict) and e.get("kind") in (
                    "TRANSFER", "LEARN_FACT", "KNOWLEDGE_UPDATE",
-               ) and e.get("effect") in ("WORLD", "OBJECT")]
+               ) and e.get("effect") in (
+                   "WORLD", "OBJECT", "CHARACTER_KNOWLEDGE",
+               )]
     specs = relation_case["transitions"]
     require(len(specs) == len(sourced) and bool(sourced) and all(
         isinstance(t, dict) and set(t) == {
@@ -101,7 +103,9 @@ def preview(*, prose, world, extraction_report, relation_case):
                 isinstance(ev.get("entity_refs"), list),
                 "V025_NONOBJECTIVE_OR_UNSOURCED_EVENT")
         if t["operation"] == "TRANSFER_HOLDER":
-            require(ev["kind"] == "TRANSFER" and t["fact_id"] is None,
+            require(ev["kind"] == "TRANSFER" and
+                    ev.get("effect") in ("WORLD", "OBJECT") and
+                    t["fact_id"] is None,
                     "V025_TRANSFER_OPERATION_MISMATCH")
             item_id, old, new = t["object_id"], t["from_id"], t["to_id"]
             require(all(isinstance(v, str) and v for v in (
@@ -131,6 +135,7 @@ def preview(*, prose, world, extraction_report, relation_case):
             })
         else:
             require(ev["kind"] in ("LEARN_FACT", "KNOWLEDGE_UPDATE") and
+                    ev.get("effect") == "CHARACTER_KNOWLEDGE" and
                     t["object_id"] is None and t["from_id"] is None,
                     "V025_LEARNING_OPERATION_MISMATCH")
             actor_id, fact_id = t["to_id"], t["fact_id"]
