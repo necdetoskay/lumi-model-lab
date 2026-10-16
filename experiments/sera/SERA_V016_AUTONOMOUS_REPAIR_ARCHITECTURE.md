@@ -67,6 +67,27 @@ Required before calling the whole LUMI production workflow autonomous:
 - Extend identical repair-disposition contracts across Spine planning, sentence coverage, event typing, causality, epistemic state and draft/Judge.
 - Implement durable idempotent provider-call receipt/recovery (on crash, do not charge twice for an unknown in-flight response).
 - Implement scene-critical versus incidental HOLD propagation, automatic replanning when needed, retry/circuit-breaker behavior and a machine-verifiable production commit gate.
-- Verify on unseen stories with independent annotated gold and adversarial cases; **source binding is not semantic accuracy**.
+- Verify on unseen stories with source-grounded automatic/adversarial benchmarks, differential independent-model probes and explicit semantic-risk metrics; **source binding is not semantic accuracy**. Human-authored gold may be used in separate optional research, but it is neither a production story-stage dependency nor an operator action to unblock a story.
 
 **Status:** v0.16 identity self-healing stage and real archived-response offline qualification **PASS**. First fully approved Mara S1 canonical exit state **HOLD**. No human correction is required by the v0.16 identity-stage control flow.
+
+
+## 2026-10-16 binding clarification — zero manual intervention at EVERY runtime gate
+
+**Owner requirement (mandatory; supersedes every older human-review / 'human adjudicator' / manual-gold wording if construed as part of the production pipeline):** From the first Spine request to final scene state and story delivery, **zero required manual work**. Never require a user, developer or operator to edit output, supply scene-specific expected answers, rerun a failed prompt, approve extracted entities/events, adjudicate model disagreements, press a resume button, or manually release a HOLD. This requirement applies to *all* scenes, not only the v0.16 identity module.
+
+The durable runtime must be an automatic state machine, not a reviewer queue:
+
+1. Capture immutable source, prompt, model/version, response, provider cost, schema and checkpoint receipts. No application-defined model output-token ceilings.
+2. Detect structural, semantic, missing-event/entity, object-state, causality, chronology, epistemic, scene-contract and continuity problems deterministically wherever provable, plus independent model-based challenge checks.
+3. Apply narrowly safe deterministic repair; automatically use a separately routed low-cost model for uncertain/localized repairs; verify corrected results against the **same** source-bound schema, WorldState/EventGraph invariants, and independent verifier. Disagreement is not evidence of correctness.
+4. If targeted repair fails, automatically re-extract, replan the affected portion, regenerate the scene/draft as necessary, re-run the **full** affected checks, and resume from a durable checkpoint without an operator.
+5. On provider timeout, invalid JSON, unavailable model, or crash: persist recoverable receipts, schedule automatic idempotent retry/fallback/circuit-breaker transition with bounded *attempts and cost*, avoid repeated charge of an unknown in-flight request. Attempt limits are **not token limits**.
+6. A noncritical unresolved observation can be quarantined with explicit provenance **only if** it cannot alter a scene-critical event, persistent entity, causal dependency or authorized state effect. An unresolved scene-critical fact may **never** be silently dropped, invented, or committed.
+7. The scene enters the next step only after automatic qualification and machine-verifiable policy authorization. No model self-approval and no human approval prompt. On exhausted automatic recovery, transition to `FAILED_SAFE_FINAL` with a visible machine-readable reason, and no unauthorized world mutations; never remain in an indefinite `HOLD_WAITING_FOR_HUMAN` state.
+
+**Meaning of HOLD:** An internal transient safeguard while automatic recovery/replanning proceeds, not an instruction to ask a person to fix the story. If no safe solution exists, report an explicit terminal failure; it would be dishonest to promise that every possible narrative ambiguity can always be resolved successfully.
+
+**Nonnegotiable release acceptance:** End-to-end unattended execution on unseen stories, injected schema/provider/semantic failures, scene-critical vs incidental omissions, checkpoint/crash/restart replay, no duplicated paid calls, fully automated retry/replan/abstain/final-state transitions, and proof of no manual gate. Automatically constructed synthetic/adversarial reference fixtures and independent blinded model challenges can support tests, but their agreement is not objective semantic gold. Optional external human evaluation cannot be a hidden prerequisite for producing a story.
+
+**Current implementation boundary:** v0.16 has this behavior within its experimental **identity-stage** scope (the live second-model success path is still unqualified). The **whole** production story pipeline does not yet meet this contract; Mara S1 remains noncanonical. Do not mark the whole-system checkbox complete until verified end-to-end.
