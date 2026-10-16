@@ -522,3 +522,33 @@ The self-hosted CI one-shot grant workflow is
 Every model result remains noncanonical, with zero world writes,
 entity creations, physical-presence confirmations or relationship
 attachments. Model output token ceilings remain forbidden.
+
+## v0.15 actual blind Haiku result, self-healing forensic replay
+
+The independent, source-only Haiku identity pilot successfully made
+**one paid call** with `finish_reason=stop`, **USD 0.015781** actual
+provider-reported cost, **16/16 model rows** and no output-token
+ceiling. The provider incorrectly escaped three quoted evidence
+fields inside fenced JSON. The strict binder **HOLD** protected world
+state; no second provider call was needed.
+
+The offline `paid_blind_identity_forensics_v015.py` and
+`mara_s1_paid_identity_replay_v015.py` repair only safely verifiable
+quoted JSON field syntax and unique typographic exact-source matches.
+Of the **16 original model opinions**, **12** are now bound as
+NONCANONICAL proposals, **4** are isolated in source/relationship
+contract quarantine (bench, pencil, station alias, strike record).
+[Real evidence replay 38873775587](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38873775587).
+
+Only AFTER the independent model response was archived, the
+`identity_disagreement_v015.py` report compared it with the older,
+hand-authored Mara hypotheses: **15/16 category label agreement**,
+**9/16 full class/relation/target agreement**. This is an
+inter-hypothesis difference metric, NOT accuracy or adjudicated gold.
+[Real comparison 38874297940](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38874297940)
+and [full design/evidence](./SERA_V015_BLIND_IDENTITY_REVIEW.md).
+
+**375/375 Python tests PASS**. No automatic world identities,
+part links, train arrivals or canonical events were authorized.
+The next boundary is independently qualifying document vs object
+vs region parent aspects and relation ontology.
