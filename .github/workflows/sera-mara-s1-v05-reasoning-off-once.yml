@@ -1,0 +1,109 @@
+name: SERA M3.5 Typed Extractor No-Reasoning Retry
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/launch/mara-s1-v05-reasoning-off-once-20261016.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sera-mara-s1-typed-v05-reasoning-off-20261016-once
+  cancel-in-progress: false
+
+jobs:
+  type-extract:
+    if: >-
+      github.run_attempt == 1 &&
+      contains(github.event.head_commit.message, '[SERA-MARA-V05-REASONING-OFF-ONCE]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify pinned one-use grant and exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          path=pathlib.Path("experiments/sera/launch/mara-s1-v05-reasoning-off-once-20261016.json")
+          request=json.loads(path.read_text(encoding="utf-8"))
+          expected={
+            "schema":"sera.mara-s1-typed-extraction-reasoning-off-once.v0.5",
+            "authorized":True,
+            "scope":"FROZEN_MARA_S1_INDEPENDENT_ONLY",
+            "prose_sha256":"80304dbab7a8ed66501e5f3b1f773719f4f6a624a14c2eb03ef39160df686a03",
+            "model":"google/gemini-3.7-flash",
+            "max_provider_attempts":1,
+            "max_generation_tokens":4096,
+            "no_writer_regeneration":True,
+            "no_jev_call":True,
+            "no_state_commit":True,
+            "no_production_db_write":True,
+            "no_reruns":True,
+            "launch_id":"sera-mara-s1-typed-v05-reasoning-off-20261016-once",
+          }
+          if set(request)!=set(expected)|{"approved_code_sha"}:
+              raise SystemExit("V05_TRIGGER_UNKNOWN_FIELDS")
+          if any(request.get(k)!=v for k,v in expected.items()):
+              raise SystemExit("V05_TRIGGER_VALUES_NOT_PINNED")
+          prev=subprocess.check_output(
+              ["git","rev-parse","HEAD^"],text=True).strip()
+          if prev!=request["approved_code_sha"]:
+              raise SystemExit("V05_CODE_REVISION_NOT_PINNED")
+          changed=subprocess.check_output(
+              ["git","diff-tree","--no-commit-id","--name-only","-r","HEAD"],
+              text=True).splitlines()
+          if changed!=[str(path)]:
+              raise SystemExit("V05_TRIGGER_NOT_SINGLE_FILE")
+          print("V05_ONE_USE_GRANT_VERIFIED")
+          PY
+          python3 -m unittest discover -s experiments/sera/tests -q
+          python3 -m experiments.sera.mara_s1_typed_live_v05
+      - name: Install provider-key preflight dependency
+        run: python -m pip install requests
+      - name: One typed extraction attempt; no state/database commits
+        shell: bash
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+            echo "V05_PROVIDER_KEY_ABSENT_NO_CALL"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/sera-v05"
+          python3 -m experiments.sera.mara_s1_typed_live_v05 \
+            --live \
+            --launch-id "sera-mara-s1-typed-v05-reasoning-off-once-${GITHUB_RUN_ID}" \
+            --output "$RUNNER_TEMP/sera-v05/result.json"
+          python3 - <<'PY'
+          import json,os
+          p=os.path.join(os.environ["RUNNER_TEMP"],"sera-v05","result.json")
+          result=json.load(open(p,encoding="utf-8"))
+          assert result["provider_attempts"]<=1
+          assert result["production_db_writes"]==0
+          assert result["commit_authorized"] is False
+          print("V05_TYPED_RESULT",result["status"])
+          print("V05_TYPED_EVENT_COUNT",result.get("event_count"))
+          print("V05_NEW_ENTITY_REFS",result.get("new_entity_refs"))
+          print("V05_REPORTED_COST",result.get("provider_reported_cost"))
+          print("V05_ERROR",result.get("error_code"))
+          PY
+      - name: Archive single-run model response and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-mara-s1-typed-v05-reasoning-off-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v05/
+          retention-days: 90
+          if-no-files-found: warn
