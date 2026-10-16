@@ -161,7 +161,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     trusted_temporal_builder=None,
                     temporal_policy_id=None,
                     trusted_relation_builder=None,
-                    relation_policy_id=None):
+                    relation_policy_id=None, reconciler=None):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -189,6 +189,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
               isinstance(relation_policy_id, str) and
               bool(relation_policy_id.strip())),
              "V025_RELATION_BUILDER_POLICY_INVALID")
+    _require(reconciler is None or callable(reconciler),
+             "V030_EVIDENCE_RECONCILER_INVALID")
     _require(type(max_model_requests) is int and
              1 <= max_model_requests <= 100,
              "V022_REQUEST_GUARD_INVALID")
@@ -290,6 +292,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     root=root / "receipts" / tag, model=chosen,
                     request=request, api_key=api_key,
                     provider_call=provider_call,
+                    reconciler=reconciler,
                 )
                 calls += 1
                 body, choice, price = _provider_body(reply, chosen)
