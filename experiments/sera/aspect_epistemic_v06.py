@@ -83,17 +83,19 @@ def proposition(*, proposition_id: str, text: str, origin: str,
         proposition_id, text, source_entity_id, evidence_ref
     )), "PROPOSITION_VALUES_INVALID")
     require(origin in ORIGINS and truth in TRUTH, "PROPOSITION_CATEGORY_INVALID")
-    require(not (origin in ("DIALOGUE", "DOCUMENT", "THOUGHT")
-                 and truth == "VERIFIED"),
-            "PROPOSITION_CLAIM_NOT_OBJECTIVE_FACT")
+    if truth == "VERIFIED":
+        if origin in ("DIALOGUE", "DOCUMENT", "THOUGHT"):
+            raise CoverageError("PROPOSITION_CLAIM_NOT_OBJECTIVE_FACT")
+        # Neither narration nor observation supplied by an LLM is a trusted
+        # objective-truth attestation. Keep the pilot uniformly provisional.
+        raise CoverageError("PROPOSITION_TRUSTED_VERIFICATION_NOT_IMPLEMENTED")
     return {
         "schema": "sera.proposition.v0.6",
         "proposition_id": proposition_id, "text": text,
         "origin": origin, "source_entity_id": source_entity_id,
         "evidence_ref": evidence_ref, "truth": truth,
-        "canonical_objective_fact": truth == "VERIFIED" and origin in (
-            "DIRECT_OBSERVATION", "NARRATOR",
-        ),
+        "canonical_objective_fact": False,
+        "approval_status": "PENDING_TRUSTED_REVIEW",
     }
 
 
