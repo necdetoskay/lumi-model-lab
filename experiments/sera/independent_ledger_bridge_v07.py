@@ -7,6 +7,10 @@ not human review and never an authority to apply reducer events.
 """
 from __future__ import annotations
 
+from hashlib import sha256
+
+from experiments.sera.world_state_v02 import canonical
+
 from experiments.sera.coverage import (
     CoverageError, prose_hash, validate_report,
 )
@@ -108,9 +112,8 @@ def bind_independent_to_ledger(*, prose: str, scene_key: str,
         "scene_key": scene_key, "prose_sha256": prose_hash(prose),
         "entry_revision": entry_revision,
         "source_role": "INDEPENDENT",
-        "source_report_sha256": __import__("hashlib").sha256(
-            __import__("experiments.sera.world_state_v02",
-                       fromlist=["canonical"]).canonical(report).encode("utf-8")
+        "source_report_sha256": sha256(
+            canonical(report).encode("utf-8")
         ).hexdigest(),
         "event_links": links,
         "ledger_validation": checked,
