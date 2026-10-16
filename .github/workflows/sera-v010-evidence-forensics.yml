@@ -1,0 +1,70 @@
+name: SERA v0.10 Historical Mara Provider Forensics
+
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - "experiments/sera/mara_s1_v010_forensics.py"
+      - ".github/workflows/sera-v010-evidence-forensics.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  evidence-forensics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download ORIGINAL paid provider evidence, no API calls
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-real-provider"
+          gh run download 38860727745 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-case-pilot-38860727745 \
+            --dir "$RUNNER_TEMP/sera-real-provider"
+          test -s "$RUNNER_TEMP/sera-real-provider/result.json"
+      - name: Replay frozen response through corrected strict binder
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_v010_forensics \
+            "$RUNNER_TEMP/sera-real-provider/result.json" \
+            --output "$RUNNER_TEMP/sera-real-provider/forensic-result.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path=Path(os.environ["RUNNER_TEMP"])/"sera-real-provider"/"forensic-result.json"
+          proof=json.loads(path.read_text(encoding="utf-8"))
+          assert proof["model_returned_sentences"]==4
+          assert proof["recovered_candidate_events"]==3
+          assert proof["recovered_candidate_mentions"]==7
+          assert proof["watch_case_closure_candidate_found"] is True
+          assert proof["provisional_watch_case_found"] is True
+          assert "new:vane_thumb" in proof["body_part_candidates_must_not_auto_create_entity"]
+          assert proof["request_prompt_changed_since_paid_call"] is True
+          assert proof["remaining_source_batches"]==6
+          assert proof["provider_reported_cost_original"]==0.005589
+          assert proof["paid_model_calls_during_replay"]==0
+          assert proof["canonical_commit_authorized"] is False
+          assert proof["world_db_writes"]==0
+          print("SERA_V010_REAL_PROVIDER_FORENSIC_REPLAY_GREEN")
+          PY
+      - name: Archive verified offline replay
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v010-offline-forensics-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-real-provider/forensic-result.json
+          retention-days: 90
+          if-no-files-found: warn
