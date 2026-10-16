@@ -1,0 +1,60 @@
+{
+  "schema": "sera.source-proof-contrast-cases.v0.44",
+  "purpose": "Deterministic policy regression only, not whole-story ground truth nor live-model semantic score",
+  "cases": [
+    {
+      "id": "STATIC_WATCH",
+      "source": "Teodor Vane stood beside the bench, his pocket watch open in his palm.",
+      "kind": "CHANGE_STATE",
+      "expected": "BLOCK_STATIC_PREDICATE_AS_TRANSITION"
+    },
+    {
+      "id": "ACTIVE_WATCH",
+      "source": "Vane opened his pocket watch.",
+      "kind": "CHANGE_STATE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    },
+    {
+      "id": "STATIC_WATCH_OBSERVATION",
+      "source": "Teodor Vane stood beside the bench, his pocket watch open in his palm.",
+      "kind": "OBSERVE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    },
+    {
+      "id": "PENCIL_OBSERVER",
+      "source": "Vane watched the pencil move.",
+      "kind": "MOVE",
+      "expected": "BLOCK_UNATTRIBUTED_CAUSAL_AGENT"
+    },
+    {
+      "id": "PENCIL_OBSERVATION",
+      "source": "Vane watched the pencil move.",
+      "kind": "OBSERVE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    },
+    {
+      "id": "PENCIL_EXPLICIT_ACTION",
+      "source": "Mara moved the pencil.",
+      "kind": "MOVE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    },
+    {
+      "id": "OTHER_STATIC",
+      "source": "The old clock was broken.",
+      "kind": "CHANGE_STATE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    },
+    {
+      "id": "OTHER_REPORTED",
+      "source": "The telegram said the train arrived.",
+      "kind": "MOVE",
+      "expected": "NO_POLICY_BLOCK_SEMANTIC_UNVERIFIED"
+    }
+  ],
+  "qualifications": {
+    "gold_semantics_for_full_scene": false,
+    "new_real_paid_model_calls": 0,
+    "reducer_mutation_authorized": false,
+    "notes": "Unrecognized linguistic constructions are not automatically safe. NO_POLICY_BLOCK is explicitly not PASS."
+  }
+}
