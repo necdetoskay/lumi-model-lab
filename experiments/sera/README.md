@@ -691,3 +691,38 @@ extractions cannot certify new prose. The production worker and
 authenticated commit pathway are still NOT connected; no canonical
 state was written, no paid calls occurred in unit tests, and Mara S1
 remains HOLD. Zero required human steps, zero configured token output caps.
+
+
+## v0.22 — Fresh independent evidence for EVERY new scene draft
+
+[Architecture and precise acceptance boundaries](./SERA_V022_FRESH_EVIDENCE_WORKER.md).
+
+- [fresh_scene_evidence_worker_v022.py](./fresh_scene_evidence_worker_v022.py)
+  is the missing paid-but-durable stage that automatically runs a blind,
+  source-complete v0.10 sentence sweep for the **current** prose version,
+  v0.18 independent semantic risk processing, and independent source-bound
+  v0.13 typed aspect proposals. Its outputs form a new hashed v0.21 evidence
+  bundle consumed by actual v0.19/v0.20 scene revalidation.
+- [unattended_scene_rewrite_v020.py](./unattended_scene_rewrite_v020.py)
+  now has an optional per-draft `prepare_evidence` hook. It is explicitly
+  separate from the nonbillable scene checker and cannot reuse an old
+  draft's cached model opinions as truth. Each new draft must have a fresh,
+  source/world-bound evidence archive before any structural-ready decision.
+- Per-scene stage contracts bind source, entry world, registry, model
+  policy, max provider requests and observed spend. Fully receipted malformed
+  replies can automatically use a fallback, completed paid responses are
+  reused on restart, and even an accidentally lost export can be restored
+  without new provider calls. Potentially paid *unknown* in-flight calls
+  end safely without manual intervention or blind resend.
+- [Integration and fault-injection tests](./tests/test_fresh_scene_evidence_worker_v022.py)
+  cover a non-Mara box open/close scenario, actual independent re-extraction
+  of both original and rewritten drafts, generic v0.19/v0.20 checks,
+  crash/restart, forged quotes, world revision isolation, spend limits,
+  and recovered paid receipts. No paid models or production DB were touched.
+
+**v0.22 remains LAB NONCANONICAL.** Real deployed LUMI worker integration,
+all event/knowledge/causal gates, provider-side idempotency/reconciliation,
+authenticated transactional canon commits, unseen paid story runs, and
+full Mara S1 canonical exit are still required. Zero mandatory manual
+actions, zero artificial model output-token ceilings; original Sonnet
+Spine remains unchanged.
