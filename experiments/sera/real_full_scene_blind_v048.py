@@ -36,7 +36,7 @@ from experiments.sera.scene_trace_dual_real_v043 import source_risks
 
 SCHEMA = "sera.v048-full-blind-real-mara"
 GRANT_SCHEMA = "sera.v048-fullscene-one-use-paid-grant"
-GRANT = Path(__file__).parent/"launch"/"sera-v048-fullscene-paid-once.json"
+GRANT = Path(__file__).parent/"launch"/"sera-v048-fullscene-paid-once-after-preflight-failure.json"
 MAX_ATTEMPTS = 14
 MAX_SPEND_USD = Decimal("0.25")
 MIN_PREFLIGHT_REMAINING_USD = 0.35
