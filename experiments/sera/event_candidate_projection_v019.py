@@ -92,6 +92,10 @@ def project(*, prose, extraction_report, semantic_summary,
            semantic_summary.get("world_db_writes") == 0,
            "V019_SEMANTIC_SOURCE_INVALID")
     supplied = semantic_summary.get("independent_advisories")
+    # This digest detects accidental/post-processor modification of the
+    # v0.18 summary. It is NOT a production authentication signature.
+    _check(semantic_summary.get("advisory_sha256") == _sha(supplied),
+           "V019_ADVISORY_HASH_MISMATCH")
     _check(isinstance(supplied, list) and len(supplied) == len(tasks) and
            [x.get("task_id") for x in supplied if isinstance(x, dict)] ==
            [x["task_id"] for x in tasks],
