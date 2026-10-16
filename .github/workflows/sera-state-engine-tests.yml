@@ -23,6 +23,8 @@ jobs:
           python-version: "3.12"
       - name: Check Python syntax
         run: python -m compileall -q experiments/sera
+      - name: Enforce no user-forbidden model output token ceilings
+        run: python -m experiments.sera.request_policy
       - name: Run deterministic SERA unit tests
         run: python -m unittest discover -s experiments/sera/tests -v
       - name: Verify immutable source Spine compilation
