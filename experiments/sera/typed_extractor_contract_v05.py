@@ -236,6 +236,11 @@ def bind_typed_response(*, raw: dict, request: dict, prose: str,
         if original["at"] is not None:
             item["blockers"].append("V05_ABSOLUTE_ACTION_TIME_NOT_ADJUDICATED")
             item["status"] = "HOLD"
+    completeness_warnings = []
+    if not report["mentions"]:
+        completeness_warnings.append("V05_NO_ENTITY_MENTIONS")
+    if not report["events"]:
+        completeness_warnings.append("V05_NO_EVENT_CANDIDATES")
     return {
         "schema": SCHEMA,
         "request_sha256": request["request_sha256"],
@@ -243,7 +248,9 @@ def bind_typed_response(*, raw: dict, request: dict, prose: str,
         "source_role": role,
         "report": report,
         "normalized_events": typed,
-        "status": "HOLD" if any(e["blockers"] for e in typed) else
+        "completeness_warnings": completeness_warnings,
+        "status": "HOLD" if completeness_warnings or
+                  any(e["blockers"] for e in typed) else
                   "STRUCTURALLY_TYPED_PENDING_SEMANTIC",
         "commit_authorized": False,
     }
