@@ -640,8 +640,8 @@ required human approvals.
   baseline, writing imaginary notebook text, object/actor co-location mistakes,
   unknown object identities and fabricated action clocks do **not** mutate
   world state. Upstream v0.19 semantic HOLD still prevents scene readiness.
-  The v0.13 role registry currently requires both openable and document
-  objects; scenes with just one role safely block pending schema refinement.
+  The v0.13 role registry now accepts openable-only or document-only
+  scenes without fabricating an object; an entirely empty registry blocks.
 - `unattended_scene_rewrite_v020.py` is the new automatic, restart-aware
   scene rewrite/check **integration seam**: a deterministic offline scene
   validator delivers typed defects to an injected writer; every returned prose
@@ -653,9 +653,41 @@ required human approvals.
 - **Crucial boundary**: production LUMI's real model resolver, event extraction,
   comprehensive semantic/causal/scene checks, idempotent provider recovery and
   authenticated canonical DB commit are **not integrated**. The writer/checker
-  callbacks are synthetic in the current tests. A lab
+  callbacks are now connected to actual source-bound v0.19/v0.20
+  validators and the OpenRouter writer transport in v0.21 laboratory tests;
+  those tests inject a synthetic provider. A lab
   `SCENE_CANDIDATE_READY_NONCANONICAL` is **NOT** story-release approval.
 
 Mara S1 first canon exit state remains **HOLD**. WorldState and original
 Sonnet Spine were not modified. See [open Epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306)
 for proof and remaining production integration gates.
+
+
+## v0.21 — Model writer, paid receipt recovery, actual source rechecks
+
+[Detailed v0.21 architecture and acceptance gaps](./SERA_V021_MODEL_WRITER_INTEGRATION.md).
+
+- [OpenRouter writer adapter](./openrouter_scene_writer_v021.py) reuses
+  SERA's existing cap-free model transport, verifies source SHA against
+  the provider's complete JSON output and builds model/response ID/cost
+  receipts independently of model claims. Optional fallback automatically
+  handles a **fully receipted** malformed first answer. The adapter can
+  archive full paid provider replies before JSON parsing and reuse them
+  after crashes without double charging; unknown in-flight calls never
+  resend blindly. A durable archive is mandatory for future paid
+  production qualification.
+- [Actual v0.19/v0.20 evidence checker](./artifact_scene_checker_v021.py)
+  loads a world+source-hashed evidence bundle and runs source-bound
+  semantic risk review and versioned typed-state simulation for the
+  candidate scene, rather than trusting an injected "READY" flag.
+- Nonbillable validation can resume itself after a crash; the paid
+  writer's request evidence remains durable and distinct from a scene's
+  old model conclusions.
+
+**Remaining blocker:** For every **newly rewritten scene**, the worker
+must generate a completely new, paid, durable independent extraction
+and qualification evidence archive before v0.21 can continue. Old
+extractions cannot certify new prose. The production worker and
+authenticated commit pathway are still NOT connected; no canonical
+state was written, no paid calls occurred in unit tests, and Mara S1
+remains HOLD. Zero required human steps, zero configured token output caps.
