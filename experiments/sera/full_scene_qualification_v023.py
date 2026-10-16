@@ -133,7 +133,6 @@ def qualify(*, prose, world, bundle, projection, typed):
                 temporal_case=bundle["temporal_case"],
                 relation_case=bundle["relation_case"],
                 typed_candidates=candidates,
-                typed_registry=bundle.get("typed_registry"),
                 typed_registry=bundle["typed_registry"],
             )
         except CoverageError as exc:
