@@ -14,7 +14,7 @@ from experiments.sera.sentence_review_packet_v07 import (
 from experiments.sera.review_adjudication_v08 import (
     blank_annotation, validate_annotation, compare_annotations,
 )
-from experiments.sera.review_forms_cli_v08 import emit_forms, compare_files
+from experiments.sera.review_forms_cli_v08 import emit_forms, compare_files, validate_file
 
 PROSE = "Vane closed the watch case. Mara wrote in her notebook by the bench."
 REGISTRY = {
@@ -287,6 +287,18 @@ class ExportedMaraReviewFormsV08Tests(unittest.TestCase):
             self.assertFalse(queue["canonical_commit_authorized"])
             self.assertEqual(queue["status"],
                              "NOT_GOLD_HUMAN_ADJUDICATION_REQUIRED")
+
+    def test_downloaded_browser_form_can_be_validated_offline(self):
+        with TemporaryDirectory() as folder:
+            directory = Path(folder)
+            files = emit_forms(directory)["exported"]
+            sample = directory / files[0]
+            incomplete = validate_file(review=sample)
+            self.assertEqual(incomplete["reviewed_sentence_count"], 0)
+            self.assertFalse(incomplete["gold_qualified"])
+            self.assertFalse(incomplete["canonical_commit_authorized"])
+            with self.assertRaisesRegex(CoverageError, "ANNOTATION_NOT_COMPLETE"):
+                validate_file(review=sample, require_complete=True)
 
     def test_comparison_rejects_changed_source_form(self):
         with TemporaryDirectory() as folder:
