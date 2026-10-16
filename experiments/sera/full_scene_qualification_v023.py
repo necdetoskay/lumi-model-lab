@@ -123,7 +123,9 @@ def qualify(*, prose, world, bundle, projection, typed):
     relational = [e for e in events if isinstance(e, dict) and
                   e.get("kind") in ("TRANSFER", "LEARN_FACT",
                                    "KNOWLEDGE_UPDATE") and
-                  e.get("effect") in ("WORLD", "OBJECT")]
+                  e.get("effect") in (
+                      "WORLD", "OBJECT", "CHARACTER_KNOWLEDGE",
+                  )]
     if relational and bundle.get("relation_case") is not None:
         from experiments.sera.relation_knowledge_preview_v025 import preview
         try:
