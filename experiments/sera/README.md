@@ -941,3 +941,34 @@ reconciliation, and safe machine-only transactional WorldState/
 EventGraph commits. Historical StoryForge internal output caps must
 be retired before a production StoryForge generation path is
 requalified; this bridge adds none. Experimental branch only.
+
+
+## v0.29 — Cap-free StoryForge runtime, provider-profile preflight and no blind retry
+
+[Architecture, actual StoryForge test coverage and production boundaries](./SERA_V029_STORYFORGE_CAPFREE.md).
+
+- [StoryForge runtime](../../src/storyforge/runtime.py) has all FOUR
+  historical numeric output caps removed. Its 8 model-stage profiles
+  are preflight-checked before any StoryForge provider call; a registry
+  policy silently restoring an output ceiling will be rejected.
+- [Generic OpenRouter transport](../../src/generate.py) has opt-in
+  no-output-ceiling enforcement on the **final normalized request**;
+  [structured retry](../../src/english_story_pipeline.py) forwards it.
+  StoryForge opts in for planning, audits, editing, prose and fidelity.
+- StoryForge also opts in to **no blind network retry** when a
+  timeout/connection failure could hide a paid provider response.
+  This produces a machine-safe unknown-charge diagnostic instead of
+  a duplicate request. Actual provider-side reconciliation is still
+  required for fully autonomous crash/outage resume.
+- [v0.29 StoryForge runtime/transport tests](../../tests/test_storyforge_capfree_v029.py),
+  [dedicated self-hosted CI](../../.github/workflows/sera-v029-storyforge-capfree.yml),
+  and [SERA source policy guard](./tests/test_storyforge_integration_policy_v029.py)
+  keep both the cross-runtime output-ceiling ban and legacy StoryForge
+  behavior under regression coverage, without billable model calls.
+
+**No LUMI production worker or authenticated WorldState/EventGraph
+commit integration, no paid unseen story run, and no Mara S1 canon exit
+are claimed.** Separate historical scripts may retain old output caps;
+this change scopes specifically to the formerly-blocked StoryForge
+runtime and transport. Frozen Sonnet Spine, main and production DB
+remain unchanged; no manual story repair/approval gate is introduced.
