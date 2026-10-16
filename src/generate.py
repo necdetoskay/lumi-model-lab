@@ -203,7 +203,8 @@ def _aggregate_openrouter_stream(response: requests.Response, model: str) -> dic
 def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt: str,
                     temperature: float, max_tokens: int | None, seed: int | None,
                     request_class: str = "teacher_story",
-                    structured_output: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
+                    structured_output: bool = False,
+                    forbid_output_token_limit: bool = False) -> tuple[str, dict[str, Any], dict[str, Any]]:
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
@@ -222,6 +223,12 @@ def call_openrouter(*, api_key: str, model: str, system_prompt: str, user_prompt
         request_class=request_class,
         structured_output=structured_output,
     )
+
+    if forbid_output_token_limit:
+        # Check the FINAL normalized outbound body; model runtime profiles
+        # may inject an output cap even if the caller passed None.
+        from experiments.sera.request_policy import enforce_no_output_token_limit
+        enforce_no_output_token_limit(payload)
 
     stream_enabled = payload.get("stream") is True
 
