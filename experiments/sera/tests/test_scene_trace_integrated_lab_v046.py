@@ -71,7 +71,9 @@ class IntegratedSceneTraceV046Tests(TestCase):
                 risk_proof=proof,prose=source,output_root=root,
                 synthetic_reply=lambda **kw: self.fail("unnecessary model call"),
             )
-        self.assertEqual(initial,repeat)
+        self.assertEqual(initial["status"],repeat["status"])
+        self.assertEqual(initial["bound_advisories"],repeat["bound_advisories"])
+        self.assertEqual(initial["scripted_dispatches_current_run"],2)
         self.assertEqual(repeat["status"],
                          "TWO_SOURCE_BOUND_ADVISORIES_NONCANONICAL")
         self.assertEqual(repeat["scripted_dispatches_current_run"],0)
@@ -181,7 +183,7 @@ class IntegratedSceneTraceV046Tests(TestCase):
         prose,proof=historical_risks()
         proof["challenges"][0]["source_evidence_span"]["quote"]="tampered"
         with self.assertRaisesRegex(
-            CoverageError,"V045_CHALLENGE_SOURCE_SPAN_INVALID",
+            CoverageError,"V046_UNVERIFIED_RISK_SOURCE_SPAN",
         ):
             _audit_from_real_challenges(
                 risk_proof=proof,prose=prose,
