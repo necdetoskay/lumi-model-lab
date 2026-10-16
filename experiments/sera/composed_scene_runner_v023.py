@@ -132,4 +132,5 @@ def run(*, prose, world, scene_key, work_root, api_key, registry,
         output_dir=root/"scene_controller",
         max_rewrites=max_rewrites,
         observed_spend_guard_usd=writer_spend_guard_usd,
+        resume_reconciled_evidence=(reconciler is not None),
     )
