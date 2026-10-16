@@ -24,7 +24,6 @@ from experiments.sera.world_state_v02 import (
 )
 
 MODEL = "google/gemini-3.7-flash"
-MAX_TOKENS = 4096
 MIN_PROVIDER_KEY_REMAINING = 0.25
 ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 SCENE = "hook_empty_platform"
@@ -91,10 +90,12 @@ def one_provider_call(*, key: str, prepared: dict) -> dict:
     if not key:
         raise CoverageError("V05_LIVE_KEY_MISSING")
     req = prepared["request"]
+    # Do not specify max_tokens, max_completion_tokens or other output ceilings.
+    # Provider/model hard limits remain outside application control.
     payload = {
         "model": MODEL, "messages": req["messages"],
         "response_format": req["response_format"],
-        "temperature": 0, "max_tokens": MAX_TOKENS,
+        "temperature": 0,
         # Do not send unqualified model-specific reasoning flags.
         # One attempted no-reasoning call returned HTTP 400 (diagnostic HOLD).
         "stream": False,
@@ -226,6 +227,7 @@ def main():
             "request_sha256": prepared["request"]["request_sha256"],
             "model": MODEL,
             "max_attempts": 1,
+            "token_limit": "NOT_SET_BY_APPLICATION",
             "schema_type": "json_schema",
             "production_db_writes": 0,
         }, ensure_ascii=False, indent=2))
