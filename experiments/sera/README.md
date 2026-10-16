@@ -309,3 +309,24 @@ Two actual independent human reviews and authenticated final adjudication
 are still required before Mara's precision/recall and canon exit state can
 be accepted. No reviewer identity, GOLD status, model calls or output token
 limits are inferred/added by these forms.
+
+## SERA v0.9 Chromium E2E qualification
+
+[Verified real-browser test and trust boundaries](./SERA_V09_CHROMIUM_E2E_QUALIFICATION.md).
+The branch CI now has a separate Playwright **Chromium browser E2E** job,
+not merely JavaScript syntax tests. The test navigates the exact Mara
+28-sentence offline review UI; blocks a fabricated quote; creates a genuine
+source-backed *synthetic QA* event and lexicon-missed entity candidate;
+downloads, Python-validates, imports and round-trips JSON; checks A/B reviewer
+isolation and mobile layout. It must remain noncanonical and cannot impersonate
+a real human adjudicator. Run locally:
+
+```bash
+python -m pip install playwright==1.56.0
+python -m playwright install chromium
+python -m experiments.sera.browser_e2e_v09
+```
+
+CI [38858676688](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38858676688)
+passed **257 offline tests plus the separate actual Chromium E2E job**.
+No actual Mara gold or first scene exit state has been authorized.
