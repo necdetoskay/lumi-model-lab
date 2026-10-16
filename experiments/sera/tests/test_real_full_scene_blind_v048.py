@@ -71,9 +71,11 @@ class RealFullSceneBlindV048Tests(TestCase):
                 self.assertNotIn(banned,wire)
             self.assertNotIn("prior_model_answer",json.dumps(wire))
 
-    def test_no_grant_is_valid_by_default(self):
+    def test_missing_or_invalid_authorization_never_passes_validation(self):
+        # The SAME suite runs both during preparation (GRANT absent)
+        # and after a separately approved grant-only commit (GRANT present).
+        # Existence is not authorization: wrong shape must always fail.
         _,manifest=prepare()
-        self.assertFalse(GRANT.is_file())
         self.assertEqual(str(MAX_SPEND_USD),"0.25")
         self.assertEqual(MAX_ATTEMPTS,14)
         with self.assertRaisesRegex(
