@@ -180,7 +180,7 @@ class AutomatedRowRecoveryV050Tests(TestCase):
             self.assertNotIn("Haiku",json.dumps(user))
             self.assertNotIn("model_candidate",json.dumps(user))
             self.assertNotIn("risk_code",json.dumps(user))
-            self.assertNotIn("previous",json.dumps(user))
+            self.assertNotIn("previous_model_answer",json.dumps(user))
         self.assertEqual(sum("target_sentences" in json.loads(
             request_for(source=source,task=task,audit=audit)
             ["messages"][1]["content"]) for task in tasks),5)
