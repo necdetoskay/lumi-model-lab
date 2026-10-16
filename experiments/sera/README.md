@@ -972,3 +972,35 @@ are claimed.** Separate historical scripts may retain old output caps;
 this change scopes specifically to the formerly-blocked StoryForge
 runtime and transport. Frozen Sonnet Spine, main and production DB
 remain unchanged; no manual story repair/approval gate is introduced.
+
+
+## v0.30 — Authenticated, known-generation read-only provider recovery
+
+[Full design and hard provider limitations](./SERA_V030_READONLY_PROVIDER_RECONCILIATION.md).
+
+- [OpenRouter known-generation reader](./openrouter_reconciliation_v030.py)
+  uses documented authenticated metadata+stored-content GET endpoints;
+  recovery requires independent app-authenticated binding of generation
+  ID to EXACT original model/request SHA and exact stored prompt.
+  Wrong model/prompt, unknown ID, unavailable content or unverifiable
+  cost fail closed. No generation POST, no output token ceilings, no
+  human operator step or canonical approval is possible.
+- Durable v0.21 writer and v0.22 source/typed stages can attach read-only
+  recovered replies to STARTED checkpoints; v0.18 semantic task ledger
+  supports the same. v0.20 can restart after verified independent
+  evidence becomes complete, retaining prior safe-stop proof.
+- The composed runner and [v0.28 StoryForge bridge](./storyforge_bridge_v028.py)
+  bind the selected authenticated recovery policy into the immutable
+  job contract. Preflight without signed paid grant remains no-cost,
+  and no real WorldState/EventGraph writes occur.
+- [Provider provenance/adversarial suite](./tests/test_openrouter_reconciliation_v030.py)
+  and [automatic scene restart suite](./tests/test_reconciled_scene_resume_v030.py)
+  use zero-billable synthetic inputs and explicitly reject unknown
+  generations or duplicate POSTs.
+
+**Not solved:** A lost generation ID cannot be discovered by those GETs
+from request SHA alone; provider idempotency/extra authenticated ID
+capture is still required. Full v0.20 writer-REWRITE in-flight recovery,
+real app-world auth, actual paid unseen-story testing, transactional
+WorldState/EventGraph commit/rollback and frozen Mara S1 canon release
+are NOT yet implemented. Production main/DB/Spine untouched.
