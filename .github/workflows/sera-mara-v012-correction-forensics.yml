@@ -1,0 +1,79 @@
+name: SERA v0.12 Real Mara Provisional Repair Forensics
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/mara_s1_correction_report_v012.py
+      - .github/workflows/sera-mara-v012-correction-forensics.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  repair-proposals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify all offline tests, without provider calls
+        run: python -m unittest discover -s experiments/sera/tests -q
+      - name: Fetch ORIGINAL completed Gemini and Haiku artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/mara-v012" "$RUNNER_TEMP/mara-v012/haiku"
+          gh run download 38861828582 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-six-remaining-38861828582 \
+            --dir "$RUNNER_TEMP/mara-v012"
+          gh run download 38865604842 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v0112-final-haiku-38865604842 \
+            --dir "$RUNNER_TEMP/mara-v012/haiku"
+          test -s "$RUNNER_TEMP/mara-v012/full_scene_assurance.json"
+          test -s "$RUNNER_TEMP/mara-v012/haiku/task_003.json"
+          python - <<'PY'
+          from pathlib import Path
+          import os,zipfile
+          root=Path(os.environ["RUNNER_TEMP"])/"mara-v012"
+          names=("manifest.json","reused-task-001.json",
+                 "reused-task-002.json","task_003.json")
+          with zipfile.ZipFile(root/"haiku-source.zip","w",
+                               compression=zipfile.ZIP_DEFLATED) as z:
+              for name in names:
+                  z.write(root/"haiku"/name,arcname=name)
+          PY
+      - name: Create source-verified correction-only report and HOLD
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_correction_report_v012 \
+            --full-scene "$RUNNER_TEMP/mara-v012/full_scene_assurance.json" \
+            --haiku-zip "$RUNNER_TEMP/mara-v012/haiku-source.zip" \
+            --output "$RUNNER_TEMP/mara-v012/provisional-corrections.json"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path(os.environ["RUNNER_TEMP"])/"mara-v012"
+          x=json.loads((root/"provisional-corrections.json").read_text())
+          assert x["original_model_event_count"]==25
+          assert len(x["replacements"])==2
+          assert len(x["shadow_facet_proposals"])==3
+          assert x["replacements"][0]["proposed_replacement"]["kind"]=="OBSERVE"
+          assert x["replacements"][1]["proposed_replacement"]["kind"]=="WRITE"
+          assert [x["new"] for x in x["shadow_facet_proposals"][:2]]==[
+            "OPEN","CLOSED"]
+          assert x["status"]=="PROPOSED_REPAIR_ONLY_CANNOT_COMMIT"
+          assert x["canonical_commit_authorized"] is False
+          assert x["world_state_writes"]==0
+          print("SERA_V012_REAL_MODEL_REPAIR_PROPOSALS_VERIFIED_GREEN")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sera-mara-v012-repair-proposals-${{ github.run_id }}
+          path: ${{ runner.temp }}/mara-v012/provisional-corrections.json
+          retention-days: 90
+          if-no-files-found: warn
