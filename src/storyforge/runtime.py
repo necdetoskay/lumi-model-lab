@@ -301,7 +301,6 @@ def _structured_call(
     payload: Any,
     seed: int,
     request_class: str,
-    max_tokens: int | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     parsed, body, request, failures = call_structured_json_with_retry(
         api_key=api_key,
@@ -309,10 +308,11 @@ def _structured_call(
         system_prompt=system,
         user_prompt=json.dumps(payload, ensure_ascii=False),
         temperature=0.0,
-        max_tokens=max_tokens,
+        max_tokens=None,
         seed=seed,
         request_class=request_class,
         max_parse_attempts=2,
+        forbid_output_token_limit=True,
     )
     return parsed, {
         "model": model,
@@ -684,7 +684,6 @@ def _audit_story(
         },
         seed=seed,
         request_class="editorial_audit",
-        max_tokens=2800,
     )
     trace = {
         "raw_audit_payload": payload,
@@ -842,7 +841,6 @@ def run_storyforge(
             },
             seed=seed + 1,
             request_class="editorial_audit",
-            max_tokens=2200,
         ),
     )
     evidence["plan_validator"] = validator_meta
@@ -894,6 +892,7 @@ def run_storyforge(
             seed=seed + 2,
             request_class="teacher_story_medium_reasoning",
             structured_output=False,
+            forbid_output_token_limit=True,
         ),
     )
     artifacts["english_story"] = story
@@ -1024,7 +1023,6 @@ def run_storyforge(
                 },
                 seed=seed + 5 + ((repair_cycle - 1) * 3),
                 request_class="editorial_audit",
-                max_tokens=1800,
             ),
         )
         if repair_cycle == 1:
@@ -1144,6 +1142,7 @@ def run_storyforge(
             seed=seed + 8,
             request_class="translation",
             structured_output=False,
+            forbid_output_token_limit=True,
         ),
     )
     artifacts["turkish_story"] = tr_story
@@ -1181,7 +1180,6 @@ def run_storyforge(
             },
             seed=seed + 9,
             request_class="editorial_audit",
-            max_tokens=1800,
         ),
     )
     evidence["fidelity"] = fidelity_meta
