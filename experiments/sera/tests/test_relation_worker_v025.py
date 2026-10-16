@@ -133,7 +133,7 @@ class ComposedTransferKnowledgeV025Tests(unittest.TestCase):
             replay=invoke(root,lambda **kwargs:self.fail("duplicate charge"))
         self.assertEqual(answer, replay)
         self.assertEqual(answer["status"],
-                         "SCENE_CANDIDATE_READY_NONCANONICAL")
+                         "SCENE_CANDIDATE_READY_NONCANONICAL", answer)
         self.assertEqual(answer["rewrite_count"],0)
         self.assertEqual(len(evidence["typed_candidates"]),0)
         self.assertEqual(len(evidence["extraction_report"]["candidate_events"]),2)
