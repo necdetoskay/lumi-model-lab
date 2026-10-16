@@ -28,6 +28,7 @@ KEYS = frozenset({
     "schema", "prose_sha256", "world_sha256",
     "extraction_report", "semantic_summary",
     "typed_registry", "typed_candidates", "temporal_case",
+    "relation_case",
 })
 
 
@@ -36,7 +37,8 @@ def digest(value):
 
 
 def build_bundle(*, prose, world, extraction_report, semantic_summary,
-                 typed_registry, typed_candidates, temporal_case=None):
+                 typed_registry, typed_candidates, temporal_case=None,
+                 relation_case=None):
     """Produce a *non-authorizing* versioned archive from existing evidence."""
     validate_world(world)
     return {
@@ -48,6 +50,7 @@ def build_bundle(*, prose, world, extraction_report, semantic_summary,
         "typed_registry": deepcopy(typed_registry),
         "typed_candidates": deepcopy(typed_candidates),
         "temporal_case": deepcopy(temporal_case),
+        "relation_case": deepcopy(relation_case),
     }
 
 
