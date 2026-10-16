@@ -85,6 +85,10 @@ class AutomaticReconciliationResumeV030Tests(unittest.TestCase):
                          charged[0]["prepared"]["request"]):
                     self.fail("Original billable POST repeated")
                 return local_model(**kw)
+            probe=preparer(root,other_stages,reconciler=recon)
+            evidence_result=probe(prose=SOURCE_2,world=entry())
+            self.assertEqual(evidence_result["status"],
+                             "EVIDENCE_READY_NONCANONICAL", evidence_result)
             second=stage(root,other_stages,reconciler=recon)
             third=stage(root,lambda **kw:self.fail("finished replay billed"),
                         reconciler=recon)
