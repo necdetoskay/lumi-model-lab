@@ -1,0 +1,73 @@
+name: SERA v0.11 Actual Mara Semantic Risk Audit
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/semantic_risks_v011.py
+      - experiments/sera/mara_s1_risk_audit_v011.py
+      - experiments/sera/tests/test_semantic_risks_v011.py
+      - .github/workflows/sera-v011-real-risk-forensics.yml
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  source-risk-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Source-bound offline contract tests
+        run: python -m unittest discover -s experiments/sera/tests -q
+      - name: Fetch actual fully extracted Mara S1 scene, no model call
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v011"
+          gh run download 38861828582 --repo "$GITHUB_REPOSITORY" \
+            --name sera-mara-v010-six-remaining-38861828582 \
+            --dir "$RUNNER_TEMP/sera-v011"
+          test -s "$RUNNER_TEMP/sera-v011/full_scene_assurance.json"
+      - name: Identify semantics and filter lexical false positives
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.mara_s1_risk_audit_v011 \
+            "$RUNNER_TEMP/sera-v011/full_scene_assurance.json" \
+            --output "$RUNNER_TEMP/sera-v011/risks.json"
+          python - <<'PY'
+          import json,os,pathlib
+          path=pathlib.Path(os.environ["RUNNER_TEMP"])/"sera-v011"/"risks.json"
+          d=json.loads(path.read_text(encoding="utf-8"))
+          findings=d["findings"]
+          assert d["candidate_event_count"]==25
+          assert any(x.startswith("DOCUMENT_APPEND_MISREAD_AS_SPEECH:")
+                     for x in findings)
+          assert any(x.startswith("MOVE_KIND_EFFECT_MISMATCH:")
+                     for x in findings)
+          assert any(x.startswith("OPENABLE_BEFORE_CLOSE_NEEDS_TYPED_ASPECT:")
+                     for x in findings)
+          assert any(x.startswith("LEXICAL_CUE_EVENT_OVERLAP_ALREADY_FOUND:")
+                     for x in findings)
+          assert any(x.startswith("ATTRIBUTED_DOCUMENT_TEXT_CUE:")
+                     for x in findings)
+          assert d["targeted_task_count"]==3
+          assert d["automatic_state_writes"]==0
+          assert d["canonical_commit_authorized"] is False
+          print("SERA_V011_REAL_MARA_SEMANTIC_RISKS_VERIFIED")
+          print("SERA_V011_TARGETED_TASKS",d["targeted_task_count"])
+          PY
+      - name: Archive deterministic risk assessment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v011-real-mara-risk-report-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v011/risks.json
+          retention-days: 90
+          if-no-files-found: warn
