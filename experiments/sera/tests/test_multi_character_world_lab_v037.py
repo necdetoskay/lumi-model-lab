@@ -194,6 +194,39 @@ class MultiCharacterScenarioV037Tests(unittest.TestCase):
         with self.assertRaisesRegex(WorldStateError, "V037_DUPLICATE_ROUTE"):
             self.lab.seed(bad)
 
+    def test_writer_sees_only_character_view_while_validator_sees_entire_world(self):
+        self.lab.begin_story(run_id="mara-scene",world_id=self.fixture["world_id"],
+                             character_id="mara")
+        inputs = self.lab.scene_inputs("mara-scene", expected_revision=0)
+        self.assertIn("secret-elins-note",
+                      inputs["validator_world"]["entities"]["elin"]["knowledge"])
+        self.assertNotIn("secret-elins-note",
+                         json.dumps(inputs["writer_context"]))
+        self.assertTrue(inputs["validator_only_private_state"])
+        self.assertFalse(inputs["canonical_commit_authorized"])
+        with self.assertRaisesRegex(WorldStateError,
+                                    "V037_SCENE_ENTRY_REVISION_CONFLICT"):
+            self.lab.scene_inputs("mara-scene", expected_revision=1)
+
+    def test_metadata_insert_failure_rolls_back_initial_stream_and_snapshot(self):
+        self.lab.db.executescript("""
+            CREATE TRIGGER sabotage_seed
+            BEFORE INSERT ON lab_characters
+            WHEN NEW.world_id='rejected-seed'
+            BEGIN SELECT RAISE(ABORT,'INJECTED_LAB_SEED_FAILURE'); END;
+        """)
+        broken = seed()
+        broken["world_id"] = "rejected-seed"
+        with self.assertRaisesRegex(sqlite3.DatabaseError,
+                                    "INJECTED_LAB_SEED_FAILURE"):
+            self.lab.seed(broken)
+        for table in ("world_streams","world_snapshots","lab_worlds",
+                      "lab_characters"):
+            self.assertEqual(self.lab.db.execute(
+                "SELECT count(*) FROM " + table + " WHERE " +
+                ("stream_id" if table.startswith("world_") else "world_id") +
+                "='rejected-seed'").fetchone()[0], 0)
+
     def test_origin_and_saga_identifiers_reserved_but_stages_are_disabled(self):
         self.assertEqual(self.lab.db.execute(
             "SELECT origin_fixture_ref,saga_fixture_ref FROM lab_characters "
