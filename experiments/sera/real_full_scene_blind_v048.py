@@ -235,8 +235,34 @@ def analyze_plan_coverage(source,receipts):
             "source_risk_flags":risk,
             "independent_semantic_correctness_proven":False,
         }
+    # Compare model candidate signatures only when BOTH are source-bound.
+    # Agreement and disagreement are diagnostic, NEVER semantic truth.
+    event_signatures={}
+    for item in receipts:
+        for row in item["assessment"].get("source_bound_rows",[]):
+            key=(item["model"],row["sentence_id"])
+            require(key not in event_signatures,
+                    "V048_DUPLICATE_COMPARISON_SOURCE_ROW")
+            event_signatures[key]=sorted([
+                (e["kind"],e["epistemic"],e["effect"],
+                 tuple(sorted(e["entity_refs"])))
+                for e in row["candidate_events"]
+            ])
+    comparable=[
+        sid for sid in source_ids
+        if all((model,sid) in event_signatures for model in MODELS)
+    ]
+    discrepancies=[
+        sid for sid in comparable
+        if event_signatures[(MODELS[0],sid)]!=
+           event_signatures[(MODELS[1],sid)]
+    ]
     return {
         "model_results":by_model,
+        "both_models_source_bound_sentence_count":len(comparable),
+        "model_candidate_signature_disagreement_count":len(discrepancies),
+        "model_candidate_disagreement_sentence_ids":discrepancies,
+        "agreement_does_not_prove_physical_truth":True,
         "source_complete_candidate_binding_all_models":all(
             v["source_bound_sentence_count"]==28 for v in by_model.values()
         ),
