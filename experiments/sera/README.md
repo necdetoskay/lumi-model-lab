@@ -1257,3 +1257,13 @@ HOLD release are still open. Main, production DB and frozen Spine untouched.
 - `scene_trace_autorepair_v045.py` uses actual SERA strict v0.11 JSON parsing, source phrase matching, output-token ceiling policy, per-attempt journal and restart. It automatically rejects a deliberately forged pencil quote/actor and retries from the source; repeated invalid output ends `FAILED_SAFE_FINAL`. A started-but-unreceipted callback is not blindly repeated after restart. Zero human workflow gates.
 - **Only a scripted offline model double answers these re-extraction requests**, not real OpenRouter. A synthetically corrected answer grants **zero real semantic completeness or canonical/world authority**; all resulting advisories stay NONCANONICAL. No real/provider-side idempotency proof, no full-scene replan, no G2 production DB writes or SQLite commits.
 - [Self-hosted run 38948392449](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38948392449) **SUCCESS 703/703 tests**, 2 real risk sources, 3 synthetic attempts, no additional paid calls, no real repaired story qualification, no main merge.
+
+
+## v0.46 — SceneTrace v0.45 source repair integrated with real v0.18/v0.22 code (offline doubles)
+
+[Architecture, exact receipts, verified safe stop](./SERA_V046_SCENETRACE_INTEGRATED_SAFE_HANDOFF.md).
+
+- Existing SHA-256 pinned REAL Mara Gemini/Haiku response receipts still supply only **two source-bound physical risk challenges**, not full semantic truth. v0.45 automatic source-only repair now hands off to actual v0.11 independent question construction and actual v0.18 quote/JSON binder. v0.22 **actual** full-scene evidence worker is invoked next, with an intentionally incomplete SCRIPTED model reply. Source coverage rejects it with `SWEEP_SENTENCE_MISSING_OR_DUPLICATE`, and the orchestration correctly terminates `FAILED_SAFE_FINAL` with zero unsafe writes.
+- Per-task v0.18 stage receipts are retained and rebound without new callbacks on worker restart. Both missing v0.18 and missing v0.22 responses fail safely and are never blindly re-sent. No model sidecar is provided as truth to the independent judge.
+- [Self-hosted v0.46 CI #38949896426](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38949896426): **712/712 Python tests PASS**; rerunning full v0.45/v0.18/v0.22 control sequence produces identical terminal state with no new model-double callbacks. **0 new paid model requests, 0 SQLite or Project_LUMI DB writes, no model output token cap, no main merge**.
+- Important: real prior source receipts + **scripted new model outputs** are not proof of automatic correction by real LLMs or full-event recall. SceneTrace remains SHADOW ONLY; original Mara S1 HOLD is not lifted.
