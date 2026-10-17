@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import stat
 import sqlite3
 import time
 from pathlib import Path
@@ -31,9 +33,20 @@ def _hash(value):
 class ProviderJournal:
     """Shared local SQLite journal; use one durable DB for all worker processes."""
 
-    def __init__(self, db_path):
+    def __init__(self, db_path, *, expected_file_identity=None):
         self.path = Path(db_path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        # Legacy isolated/offline lab journals may bootstrap themselves.
+        # LIVE paid lane must bind an already-provisioned device+inode.
+        self._expected_file_identity = expected_file_identity
+        if expected_file_identity is not None:
+            if (not isinstance(expected_file_identity, tuple) or
+                len(expected_file_identity)!=2 or
+                any(type(v) is not int or v < 0 for v in expected_file_identity)
+                or not self.path.is_absolute()):
+                raise JournalBlocked("V052_PAID_JOURNAL_EXPECTED_IDENTITY_INVALID")
+            self._assert_bound_file()
+        else:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._connect() as db:
             db.execute("""CREATE TABLE IF NOT EXISTS grants (
                 grant_id TEXT PRIMARY KEY, binding_sha TEXT NOT NULL,
@@ -49,12 +62,38 @@ class ProviderJournal:
                 FOREIGN KEY(grant_id) REFERENCES grants(grant_id)
             )""")
 
+    def _assert_bound_file(self):
+        if self._expected_file_identity is None:
+            return
+        try:
+            info = os.lstat(self.path)
+        except OSError as exc:
+            raise JournalBlocked("V052_PAID_JOURNAL_FILE_MISSING_OR_REPLACED") from exc
+        if (not stat.S_ISREG(info.st_mode) or
+            (info.st_dev,info.st_ino) != self._expected_file_identity):
+            raise JournalBlocked("V052_PAID_JOURNAL_FILE_IDENTITY_CHANGED")
+
     def _connect(self):
-        db = sqlite3.connect(str(self.path), timeout=30, isolation_level=None)
-        db.execute("PRAGMA busy_timeout=30000")
-        db.execute("PRAGMA synchronous=FULL")
-        db.execute("PRAGMA foreign_keys=ON")
-        return db
+        self._assert_bound_file()
+        # mode=rw forbids silent replacement/creation in the protected lane.
+        if self._expected_file_identity is None:
+            db = sqlite3.connect(str(self.path), timeout=30, isolation_level=None)
+        else:
+            from urllib.parse import quote
+            uri="file:"+quote(str(self.path))+"?mode=rw"
+            try:
+                db=sqlite3.connect(uri, uri=True,timeout=30,isolation_level=None)
+            except sqlite3.Error as exc:
+                raise JournalBlocked("V052_PAID_JOURNAL_OPEN_FAILED") from exc
+        try:
+            self._assert_bound_file()
+            db.execute("PRAGMA busy_timeout=30000")
+            db.execute("PRAGMA synchronous=FULL")
+            db.execute("PRAGMA foreign_keys=ON")
+            return db
+        except BaseException:
+            db.close()
+            raise
 
     def register_grant(self, *, grant_id, binding, authorized=False):
         """Authorization must be explicitly supplied by a separate human-approved control."""
