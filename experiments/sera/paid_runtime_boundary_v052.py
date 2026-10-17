@@ -182,3 +182,34 @@ def assert_paid_approval_active(*, config_path, original_config, approval_id):
         raise JournalBlocked("V052_PAID_APPROVAL_REVOKED")
     verify_shared_local_journal(fresh)
     return True
+
+
+def open_bound_paid_journal(cfg):
+    """Existing journal only: pin device/inode for EVERY subsequent DB open."""
+    path=verify_shared_local_journal(cfg)
+    try:
+        info=os.lstat(path)
+        journal=ProviderJournal(
+            path,expected_file_identity=(info.st_dev,info.st_ino))
+        # No silent acceptance of replacement between first read and bind.
+        verify_shared_local_journal(cfg)
+        return journal
+    except OSError as exc:
+        raise JournalBlocked("V052_PAID_JOURNAL_BIND_FAILED") from exc
+
+
+def bind_revocation_checked_transport(*, transport, config_path,
+                                      original_config, approval_id):
+    """Check owner-managed revocation immediately at the HTTP transport edge.
+
+    Not an atomic external revocation guarantee: change just AFTER this check
+    can still race with a POST. This closes the larger stage->transport window.
+    """
+    if not callable(transport):
+        raise JournalBlocked("V052_PAID_TRANSPORT_INVALID")
+    def single_post(*,model,payload,request_id):
+        assert_paid_approval_active(
+            config_path=config_path,original_config=original_config,
+            approval_id=approval_id)
+        return transport(model=model,payload=payload,request_id=request_id)
+    return single_post
