@@ -47,9 +47,11 @@ class MaraMultifacetLabControl(unittest.TestCase):
             {
                 "event_id":"blind-example-"+str(number),
                 "sentence_id":s["id"],
-                "kind":{"OBSERVE_OPENABLE":"OBSERVE",
-                        "SET_OPENABLE":"CLOSE",
-                        "APPEND_DOCUMENT_ENTRY":"WRITE"}[kind],
+                "kind":("OPEN" if kind=="SET_OPENABLE" and
+                        payload["next"]=="OPEN" else
+                        {"OBSERVE_OPENABLE":"OBSERVE",
+                         "SET_OPENABLE":"CLOSE",
+                         "APPEND_DOCUMENT_ENTRY":"WRITE"}[kind]),
                 "effect":"DOCUMENT" if kind=="APPEND_DOCUMENT_ENTRY" else
                           "OBJECT",
                 "epistemic":"OBSERVED_ACTION",
@@ -67,9 +69,9 @@ class MaraMultifacetLabControl(unittest.TestCase):
             self.event(2,"SET_OPENABLE","vane","vane_watch",
                  "Vane closed the case with his thumb",
                  {"expected":"OPEN","next":"CLOSED"}),
-            self.event(3,"OBSERVE_OPENABLE","mara","mara_notebook",
+            self.event(3,"SET_OPENABLE","mara","mara_notebook",
                  "Mara opened her notebook",
-                 {"expected":"UNKNOWN","observed":"OPEN"}),
+                 {"expected":"UNKNOWN","next":"OPEN"}),
             self.event(4,"APPEND_DOCUMENT_ENTRY","mara","mara_notebook",
                  "Archive telegram: arrival recorded at 02:10.",
                  {"expected_append_count":0,
@@ -103,6 +105,8 @@ class MaraMultifacetLabControl(unittest.TestCase):
                          "CLOSED")
         self.assertEqual(data["facets"]["mara_notebook"]["openables"]["position"],
                          "OPEN")
+        self.assertIs(data["facets"]["mara_notebook"]["openables"]
+                      ["baseline_observed"], False)
         self.assertEqual(
             data["facets"]["mara_notebook"]["documents"]["observed_appends"][0]["text"],
             "Archive telegram: arrival recorded at 02:10.")
@@ -111,6 +115,22 @@ class MaraMultifacetLabControl(unittest.TestCase):
         self.assertEqual(result,self.run_preview())
         self.assertEqual(result["world_db_writes"],0)
         self.assertFalse(result["canonical_commit_authorized"])
+
+    def test_explicit_open_cannot_be_silently_recast_as_observation(self):
+        # An action ("opened") must remain a source-backed SET from
+        # an UNKNOWN prior state; model can't drop the actual movement.
+        def corrupt(proposals):
+            proposals[2]["type"]="OBSERVE_OPENABLE"
+            proposals[2]["payload"]={"expected":"UNKNOWN",
+                                     "observed":"OPEN"}
+        with self.assertRaisesRegex(
+            CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
+            self.run_preview(changes=corrupt)
+        def invented_baseline(proposals):
+            proposals[2]["payload"]["expected"]="CLOSED"
+        with self.assertRaisesRegex(
+            CoverageError,"V054_OPENABLE_COMPARE_AND_SWAP_INVALID"):
+            self.run_preview(changes=invented_baseline)
 
     def test_missing_model_sweep_event_blocks_notebook_open(self):
         def change(report):
