@@ -147,6 +147,35 @@ class FullSceneQualificationV023Tests(unittest.TestCase):
                          "REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL")
         self.assertFalse(out["canonical_commit_authorized"])
 
+    def test_physical_open_is_not_satisfied_by_passive_open_observation(self):
+        with TemporaryDirectory() as d:
+            root = Path(d)
+            prepare(root)
+            saved = json.loads(file(root).read_text(encoding="utf-8"))
+            observed = _checker(root)(prose=SOURCE_2, world=entry())
+            # An independently emitted OPEN action cannot be laundered into
+            # OBSERVE_OPENABLE merely because its quote overlaps.
+            model_action = saved["extraction_report"]["candidate_events"][0]
+            model_action["kind"] = "OPEN"
+            model_action["effect"] = "OBJECT"
+            model_action["epistemic"] = "OBSERVED_ACTION"
+            projected = project(
+                prose=SOURCE_2,
+                extraction_report=saved["extraction_report"],
+                semantic_summary=saved["semantic_summary"],
+            )
+            verdict = qualify(
+                prose=SOURCE_2, world=entry(), bundle=saved,
+                projection=projected, typed=observed["typed"],
+            )
+            codes = {x["code"] for x in verdict["defects"]}
+            self.assertIn("PHYSICAL_EFFECT_NOT_REDUCER_COVERED", codes)
+            self.assertIn("TYPED_OPERATION_NOT_BACKED_BY_INDEPENDENT_SWEEP",
+                          codes)
+            self.assertEqual(
+                verdict["status"],"REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL")
+            self.assertFalse(verdict["canonical_commit_authorized"])
+
     def test_mutated_report_or_typed_proof_cannot_be_exchanged_between_runs(self):
         with TemporaryDirectory() as d:
             root = Path(d)
