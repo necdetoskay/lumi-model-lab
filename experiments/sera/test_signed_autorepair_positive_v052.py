@@ -63,6 +63,8 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         self.fake=fake_model(self.provider_rows)
         self.fail_first_sweep=False
         self.failed_sweep_once=False
+        self.uncertain_first_sweep=False
+        self.uncertain_send_count=0
 
     def approval(self):
         manifest=dict(schema=SCHEMA,scope=SCOPE,
@@ -79,6 +81,9 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
             self.signer.sign(_canonical(manifest).encode("utf-8"))).decode("ascii"))
 
     def fake_wire(self,*,model,payload,request_id):
+        if model==MODELS["extraction"] and self.uncertain_first_sweep:
+            self.uncertain_send_count+=1
+            raise TimeoutError("provider may have received and billed")
         packet=json.loads(payload["messages"][1]["content"])
         self.assertNotIn("max_tokens",payload)
         self.assertNotIn("max_completion_tokens",payload)
@@ -208,6 +213,22 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         out_again,_=self.lane(fail_if_post=True)
         self.assertEqual(out,out_again)
         self.assertEqual(len(self.sent),count)
+
+    def test_uncertain_first_post_is_never_automatically_resent(self):
+        self.uncertain_first_sweep=True
+        stopped,budget=self.lane()
+        self.assertEqual(stopped["status"],"FAILED_SAFE_FINAL")
+        self.assertEqual(self.uncertain_send_count,1)
+        self.assertEqual(len(self.sent),0)
+        with budget.journal._connect() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM calls WHERE status='STARTED'"
+            ).fetchone()[0],1)
+        resumed,_=self.lane(fail_if_post=True)
+        self.assertEqual(resumed["status"],"FAILED_SAFE_FINAL")
+        self.assertEqual(self.uncertain_send_count,1)
+        self.assertEqual(len(self.sent),0)
+        self.assertFalse(resumed["canonical_commit_authorized"])
 
     def test_no_manual_or_unreceipted_prose_registered(self):
         _,budget=self.lane()
