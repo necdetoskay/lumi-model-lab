@@ -19,6 +19,7 @@ from experiments.sera.artifact_scene_checker_v021 import create_checker, digest
 from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.fresh_scene_evidence_worker_v022 import create_preparer
 from experiments.sera.mara_s1_typed_live_v05 import entry_state, REGISTRY
+from experiments.sera.mara_scene_capabilities_v054 import registered_mara_facets
 from experiments.sera.openrouter_scene_writer_v021 import create_writer
 from experiments.sera.real_blind_benchmark_v040 import (
     prepare as frozen_mara_source, LEXICON, EXPECTED_SHA,
@@ -41,7 +42,8 @@ def require(ok, why):
 
 def run_offline_lane(*, prose, world, output_root, scene_key,
                      registry, candidate_lexicon, typed_registry,
-                     provider_call, models, max_rewrites=2):
+                     provider_call, models, max_rewrites=2,
+                     max_source_repair_attempts=0):
     """Prove production-like stage wiring with offline provider callbacks.
 
     The source-only extractor and source-bound repair Writer are both real
@@ -63,7 +65,9 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
             isinstance(candidate_lexicon, dict) and
             isinstance(typed_registry, dict) and
             set(typed_registry) == {"openables", "documents"} and
-            type(max_rewrites) is int and 0 <= max_rewrites <= 2,
+            type(max_rewrites) is int and 0 <= max_rewrites <= 2 and
+            type(max_source_repair_attempts) is int and
+            0 <= max_source_repair_attempts <= 1,
             "V052_SCENE_POLICY_INVALID")
     root = Path(output_root)
     contract = {
@@ -77,6 +81,7 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
         "models": deepcopy(models),
         "transport": TRANSPORT,
         "max_rewrites": max_rewrites,
+        "max_source_repair_attempts": max_source_repair_attempts,
         "checker": "v0.21+full_scene_qualification_v0.23",
         "writer": "openrouter_scene_writer_v0.21_adapter_OFFLINE",
         "user_model_output_token_ceiling": "OMITTED",
@@ -115,6 +120,7 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
         provider_call=provider_call,
         max_model_requests=28,
         observed_spend_guard_usd="0.30",
+        max_source_repair_attempts=max_source_repair_attempts,
     )
     writer = create_writer(
         api_key=FAKE_KEY,
@@ -188,9 +194,10 @@ def frozen_mara_offline(*, output_root, provider_call, models,
         prose=prose, world=world,
         output_root=output_root, scene_key="v052-frozen-mara-s1-28-sentences",
         registry=aliases, candidate_lexicon=lexicon,
-        typed_registry={"openables": [], "documents": []},
+        typed_registry=registered_mara_facets(world),
         provider_call=provider_call,
         models=models, max_rewrites=max_rewrites,
+        max_source_repair_attempts=1,
     )
     require(result["source_sha256"] == EXPECTED_SHA and
             result["source_sentence_count"] == 28 and
