@@ -37,6 +37,8 @@ jobs:
         run: python -m experiments.sera.request_policy
       - name: Run deterministic SERA unit tests
         run: python -m unittest discover -s experiments/sera/tests -v
+      - name: Run root-level v0.52 provider and Mara adversarial tests (NO NETWORK)
+        run: python -m unittest discover -s experiments/sera -p 'test_*_v052.py' -v
       - name: Verify two-scene multi-character synthetic story handoff
         run: |
           python -m experiments.sera.ensemble_story_smoke_v038 \
