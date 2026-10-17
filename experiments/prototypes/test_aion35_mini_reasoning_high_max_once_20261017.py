@@ -156,6 +156,30 @@ class AionHighMaxTests(unittest.TestCase):
                 ):
                     ab.real_stream_call(request,"sk-test")
 
+    def test_sse_uses_utf8_even_if_provider_content_type_omits_charset(self):
+        from unittest.mock import MagicMock
+        payload={
+            "id":"gen-utf8",
+            "model":ab.MODEL,
+            "choices":[{
+                "delta":{"content":"The wind blew — and the rings touched."},
+                "finish_reason":"stop",
+            }],
+            "usage":{"prompt_tokens":661,"completion_tokens":300},
+        }
+        response=MagicMock()
+        response.__enter__.return_value=response
+        response.iter_lines.return_value=[
+            b"data: "+json.dumps(payload,ensure_ascii=False).encode("utf-8"),
+            b"data: [DONE]",
+        ]
+        response.raise_for_status.return_value=None
+        with patch("requests.post",return_value=response):
+            value=ab.real_stream_call(ab.make_request("high"),"sk-test")
+        self.assertEqual(value["story"],
+                         "The wind blew — and the rings touched.")
+        self.assertNotIn("â",value["story"])
+
     def test_consumed_global_one_use_claim_prevents_second_paid_run(self):
         with TemporaryDirectory() as tmp:
             root=Path(tmp)
