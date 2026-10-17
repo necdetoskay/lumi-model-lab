@@ -25,6 +25,7 @@ from experiments.sera.mara_s1_typed_live_v05 import entry_state, REGISTRY
 from experiments.sera.openrouter_real_transport_v052 import make_openrouter_transport
 from experiments.sera.openrouter_scene_writer_v021 import create_writer, make_request
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, ProviderJournal, _hash
+from experiments.sera.paid_issuer_trust_v052 import verify_pinned_paid_issuer
 from experiments.sera.real_blind_benchmark_v040 import (
     prepare as frozen_mara_source, LEXICON, EXPECTED_SHA)
 from experiments.sera.scene_qualified_model_lane_v052 import require
@@ -36,10 +37,14 @@ import json
 SCHEMA="sera.v052-mara-delegated-model-shadow"
 
 
-def run_delegated_mara(*, models, approval, trusted_public_key, api_key,
+def run_delegated_mara(*, models, approval, trusted_public_key,
+                       trusted_raw_key_sha256, api_key,
                        journal_path, output_root, max_rewrites=2, opener=None):
     """Entry is intentionally not registered as a CI-paid workflow/CLI."""
     contract=preflight(models=models,max_rewrites=max_rewrites)
+    verify_pinned_paid_issuer(
+        public_key=trusted_public_key,
+        trusted_raw_key_sha256=trusted_raw_key_sha256)
     verify_delegated_approval(
         approval=approval,trusted_public_key=trusted_public_key,
         source_sha256=contract["source_sha256"],
