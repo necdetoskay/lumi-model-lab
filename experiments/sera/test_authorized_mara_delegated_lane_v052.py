@@ -239,6 +239,28 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(replay,outcome)
         self.assertEqual(len(seen),28)
 
+    def test_mara_source_chronology_archived_without_any_paid_post(self):
+        from experiments.sera.real_blind_benchmark_v040 import EXPECTED_SHA
+        initial=self.launch()
+        path=self.root/"mara-run"/"source-chronology"/(
+            EXPECTED_SHA+".source.json")
+        self.assertTrue(path.exists())
+        timeline=json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(timeline["source_sentence_count"],28)
+        self.assertFalse(timeline["model_report_available"])
+        self.assertFalse(timeline["wall_clock_action_time_proven"])
+        clocks=[x["quote"] for row in timeline["source_sentences"]
+                for x in row["quoted_clock_expressions"]]
+        self.assertIn("02:07",clocks)
+        self.assertIn("02:10",clocks)
+        self.assertTrue(all(row["action_minute"] is None
+                            for row in timeline["source_sentences"]))
+        self.assertFalse(timeline["canonical_commit_authorized"])
+        second=self.launch()
+        self.assertEqual(second,initial)
+        self.assertEqual(timeline,json.loads(path.read_text(encoding="utf-8")))
+        self.assertEqual(self.sent,[])
+
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
         result=self.launch()
         self.assertEqual(result["status"],"FAILED_SAFE_FINAL")
