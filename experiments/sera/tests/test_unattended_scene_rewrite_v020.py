@@ -268,6 +268,68 @@ class UnattendedSceneControllerV020Tests(unittest.TestCase):
         self.assertEqual(out["rewrite_count"], 0)
         self.assertEqual(out["status"], "SCENE_CANDIDATE_READY_NONCANONICAL")
 
+    def test_v054_multifacet_ready_requires_independent_full_v023_gate(self):
+        # Synthetic checker contract only; this is NOT a Mara model PASS.
+        # v0.54 cannot enter READY through the legacy v0.20 facet shortcut.
+        prose = "Recorded as a report."
+        def checker(*, prose, world, full=True, defects=None, preview=True):
+            outcome = analysis(prose=prose, world=world)
+            typed = outcome["typed"]
+            typed["status"] = "TYPED_MULTIFACET_SIMULATED_NONCANONICAL"
+            typed.pop("next_automatic_action", None)
+            typed["multifacet_preview"] = {
+                "schema": "sera.multifacet-physical-preview.v0.54",
+                "simulation_is_not_world_truth": preview,
+            }
+            if full:
+                bad = [] if defects is None else defects
+                outcome["qualification"] = {
+                    "schema": "sera.full-scene-qualification.v0.23",
+                    "prose_sha256": prose_hash(prose),
+                    "world_sha256": fingerprint(world),
+                    "status": ("FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL"
+                               if not bad else
+                               "REEXTRACTION_OR_REPLAN_REQUIRED_NONCANONICAL"),
+                    "next_automatic_action": (
+                        "CONTINUE_INDEPENDENT_CANON_QUALIFICATION"
+                        if not bad else "AUTO_REEXTRACT_OR_REPLAN_SCENE"),
+                    "defects": bad,
+                    "canonical_commit_authorized": False,
+                    "world_db_writes": 0,
+                    "requires_manual_intervention": False,
+                }
+            return outcome
+        def no_writer(**_):
+            self.fail("A synthetic check must not call Writer")
+        with TemporaryDirectory() as root:
+            passed = run(Path(root)/"v054-qualified", prose=prose,
+                         checker=checker, writer=no_writer, max_rewrites=0)
+            unqualified = run(
+                Path(root)/"v054-without-v023", prose=prose, writer=no_writer,
+                checker=lambda **kw: checker(**kw, full=False), max_rewrites=0)
+            defective = run(
+                Path(root)/"v054-v023-defect", prose=prose, writer=no_writer,
+                checker=lambda **kw: checker(
+                    **kw, defects=[{"code":"SOURCE_EVENT_MISMATCH"}]),
+                max_rewrites=0)
+            untrusted_preview = run(
+                Path(root)/"v054-forged-preview", prose=prose,
+                writer=no_writer,
+                checker=lambda **kw: checker(**kw, preview=False),
+                max_rewrites=0)
+        self.assertEqual(passed["status"], "SCENE_CANDIDATE_READY_NONCANONICAL")
+        self.assertEqual(passed["rewrite_count"], 0)
+        self.assertEqual(unqualified["reason_code"],
+                         "V020_SCENE_CHECK_FAILED_SAFE")
+        self.assertEqual(defective["status"], "FAILED_SAFE_FINAL")
+        self.assertEqual(defective["reason_code"],
+                         "V020_REWRITE_ATTEMPTS_EXHAUSTED")
+        self.assertEqual(untrusted_preview["reason_code"],
+                         "V020_SCENE_CHECK_FAILED_SAFE")
+        for output in (passed, unqualified, defective, untrusted_preview):
+            self.assertFalse(output["canonical_commit_authorized"])
+            self.assertEqual(output["world_db_writes"], 0)
+
     def test_receipt_cannot_represent_unbound_source_or_model_incomplete(self):
         def wrong(*, source, defects):
             payload = good_rewrite(source=source, defects=defects)
