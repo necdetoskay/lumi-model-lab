@@ -401,7 +401,9 @@ def aggregate(*, plan: dict, bound_batches: list[dict],
         ):
             findings.append(f"SWEEP_COMPOUND_OPEN_WRITE_COLLAPSED:{sid}")
             candidate_probes.append((
-                sid,"ACTION",s["quote"],"SEPARATE_OPEN_AND_WRITE_ACTIONS"))
+                sid,"ACTION",
+                next(x["quote"] for x in source if x["id"]==sid),
+                "SEPARATE_OPEN_AND_WRITE_ACTIONS"))
         if row["disposition"] == "AMBIGUOUS":
             findings.append(f"SWEEP_UNRESOLVED_SENTENCE:{sid}")
         # Models that call a physically changing sentence TEXTURE or
