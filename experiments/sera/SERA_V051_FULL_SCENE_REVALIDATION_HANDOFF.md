@@ -19,13 +19,13 @@ v0.50 tek tek 5 karantina cümlesini yeniden çıkarıp 21 model ayrışmasını
 
 ## Deney kanıtları
 
-[**Self-hosted CI #38997979876**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38997979876) **SUCCESS: 748/748 Python testi** (son ek negatif güvenlik testi sonrası yeni koşumu da kontrol edin).
+[**Self-hosted CI #38998048487**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38998048487) **SUCCESS: 749/749 Python testi**. Ek negatif güvenlik testi, replan/failed durumda sahte semantik veya kanonik yetki yükseltmesini de reddeder.
 
 1. **Gerçek Mara S1 geçmiş makbuzları:** v0.48'deki 14 gerçek model yanıtı ve geçmiş gözlemlenen 0,10590625 USD doğrulanır. Orijinal 28 cümledeki beş satır sorunu ve 21 ayrışma için **28 sentetik onarım/inceleme çağrısı (iki fallback)** yapılır. Ardından gerçek v0.22 koduna tam sahne için bilerek **eksik, tam makbuzlanmış iki sentetik model cevabı** verilir. Yetersiz full-scene coverage → `FAILED_SAFE_FINAL`; sahne için gerçek bağımsız kanıt olmadığından writer **0 çağrı**, G2/WorldState değişikliği **0**, yeniden başlatmada yeni callback **0**. Bu, başarının değil **güvenli zorunlu kanıt kapısının** testidir.
 2. **İki cümlelik Ari/kutu kontrolü:** Ayrı bir **test-only, kontrollü kaynak-bağlı stage** çıkışı kullanılır; v0.50'nin gerçek Mara çıktısıymış gibi gösterilmez. Gerçek v0.22 worker → gerçek v0.21 checker → gerçek v0.20 controller **bir otomatik sentetik rewrite** yapar, yeni cümlelerden kanıt üretir ve `SCENE_CANDIDATE_READY_NONCANONICAL` sonucuna varır. Yeniden başlatmada model ve writer çağrısı **0**. Bu kontrol gerçek Mara 28-cümle başarısını veya gerçek LLM doğruluğunu kanıtlamaz.
 3. Ek güvenlik: farklı source SHA ve world revision, task/provenance drift, tamamlanmamış 26 görev, gerçeklik statüsü sahteciliği ve eksik provider makbuzunun tekrar gönderilmesi engellenir. Durumlar otomatik `FAILED_SAFE_FINAL` ile kapanabilir; insan hikâye tamiri gerekmez.
 
-Kanıt artefaktı `sera-v051-original-real-mara-full-scene-handoff-38997979876` (ID `12087417953`), `proof.json`, v0.50 kaynak-bağlı görev ve receipt kayıtları, v0.22/v0.20 tam sahne kontrol raporlarını içerir.
+Kanıt artefaktı `sera-v051-original-real-mara-full-scene-handoff-38998048487` (ID `12087353278`), `proof.json`, v0.50 kaynak-bağlı görev ve receipt kayıtları, v0.22/v0.20 tam sahne kontrol raporlarını içerir.
 
 **v0.51 sıfır yeni ücretli model isteği, sıfır yeni USD, sıfır SQLite/G2 world write, sıfır main merge, sıfır uygulama tanımlı output token tavanı.**
 
