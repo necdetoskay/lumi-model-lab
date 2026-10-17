@@ -183,10 +183,18 @@ class DelegatedBudgetTests(unittest.TestCase):
 
     def test_concurrent_same_request_single_post(self):
         def run(_):
-            return self.invoke()
+            try:
+                return self.invoke()
+            except JournalBlocked as exc:
+                return str(exc)
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
             values=list(pool.map(run,range(4)))
         self.assertEqual(len(values),4)
+        self.assertEqual(len(self.calls),1)
+        # Racing readers may legitimately encounter STARTED and fail safely.
+        self.assertTrue(all(isinstance(v,dict) or
+                            "UNKNOWN_INFLIGHT" in v for v in values))
+        self.assertIsInstance(self.invoke(),dict)
         self.assertEqual(len(self.calls),1)
 
     def test_approval_id_cannot_be_rebound(self):
