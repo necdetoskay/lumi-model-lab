@@ -184,6 +184,97 @@ class TypedSourceOnlyAutorepair(unittest.TestCase):
             self.assertEqual(replay(prose=SOURCE_2,world=entry()),result)
             self.assertEqual(len(sent),before)
 
+    def test_only_missing_late_source_window_runs_and_preserves_early_event(self):
+        # Unrelated five-sentence synthetic control, not a Mara/gold event
+        # answer. Full typed model sees opening but repeatedly omits closing;
+        # one narrowly scoped last-source-window reread recovers it.
+        prose=("Ari saw the box open. Ari looked at the box. "
+               "Ari studied the box. Ari waited by the box. "
+               "Ari closed the box.")
+        source=__import__(
+            "experiments.sera.sentence_ledger_v06",
+            fromlist=["sentences"]).sentences(prose)
+        self.assertEqual(len(source),5)
+        with TemporaryDirectory() as temp:
+            root=Path(temp)
+            parser=fake_model([])
+            calls=[]
+            full_typed=[]
+            window_typed=[]
+            def provider(*,key,model,prepared):
+                request=prepared["request"]
+                packet=json.loads(request["messages"][-1]["content"])
+                calls.append((model,request,packet))
+                raw=parser(key=key,model=model,prepared=prepared)
+                if model!=TYPED or "original_prose" not in packet:
+                    return raw
+                decoded=json.loads(raw["raw"]["choices"][0]["message"]["content"])
+                for event in decoded["typed_candidates"]:
+                    if event["type"]=="SET_OPENABLE":
+                        event["sentence_id"]=source[-1]["id"]
+                is_window="EXACT SOURCE WINDOW TYPED RE-EXTRACTION" in (
+                    request["messages"][0]["content"])
+                if is_window:
+                    window_typed.append(request)
+                    decoded["typed_candidates"]=[
+                        e for e in decoded["typed_candidates"]
+                        if e["sentence_id"]==source[-1]["id"]
+                    ]
+                else:
+                    full_typed.append(request)
+                    decoded["typed_candidates"]=[
+                        e for e in decoded["typed_candidates"]
+                        if e["sentence_id"]==source[0]["id"]
+                    ]
+                return response(model,decoded,len(calls))
+            worker=self.worker(root,provider,typed_batch_recovery=True)
+            output=worker(prose=prose,world=entry())
+            self.assertEqual(output["status"],"EVIDENCE_READY_NONCANONICAL",
+                             output)
+            self.assertEqual(len(full_typed),2)
+            self.assertEqual(len(window_typed),1)
+            self.assertIn(source[-1]["quote"],
+                          window_typed[0]["messages"][0]["content"])
+            self.assertNotIn(source[0]["quote"],
+                             window_typed[0]["messages"][0]["content"])
+            checked=create_checker(
+                evidence_root=root/"evidence",full_qualification=True)(
+                    prose=prose,world=entry())
+            self.assertEqual(checked["qualification"]["status"],
+                             "FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL")
+            recorded=len(calls)
+            replay=self.worker(
+                root,lambda **_:self.fail("Do not repost receipted model"),
+                typed_batch_recovery=True)
+            self.assertEqual(replay(prose=prose,world=entry()),output)
+            self.assertEqual(len(calls),recorded)
+
+    def test_critical_coverage_requires_correct_open_and_close_polarity(self):
+        from experiments.sera.fresh_scene_evidence_worker_v022 import (
+            _check_critical_coverage,_missing_critical_typed_sentence_ids,
+        )
+        source=__import__(
+            "experiments.sera.sentence_ledger_v06",
+            fromlist=["sentences"]).sentences(SOURCE_2)
+        action="closed the box"
+        at=SOURCE_2.index(action)
+        event={"kind":"CLOSE","effect":"OBJECT",
+               "sentence_id":source[-1]["id"],
+               "start":at,"end":at+len(action)}
+        reported={"candidate_events":[event],"findings":[]}
+        wrong={"type":"SET_OPENABLE","sentence_id":source[-1]["id"],
+               "evidence":{"start":at,"end":at+len(action)},
+               "payload":{"expected":"UNKNOWN","next":"OPEN"}}
+        self.assertEqual(
+            _missing_critical_typed_sentence_ids(reported,[wrong]),
+            {source[-1]["id"]})
+        with self.assertRaisesRegex(
+                Exception,"V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED"):
+            _check_critical_coverage(reported,[wrong])
+        right=dict(wrong,payload={"expected":"OPEN","next":"CLOSED"})
+        self.assertFalse(_missing_critical_typed_sentence_ids(reported,[right]))
+        _check_critical_coverage(reported,[right])
+
     def test_window_response_outside_exact_sentence_is_rejected(self):
         from experiments.sera.fresh_scene_evidence_worker_v022 import (
             _typed_source_window_request, _validate_typed_window,
