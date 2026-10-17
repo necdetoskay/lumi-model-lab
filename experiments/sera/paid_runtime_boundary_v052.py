@@ -23,7 +23,8 @@ from experiments.sera.provider_grant_journal_v052 import JournalBlocked, Provide
 SCHEMA="sera.v052-paid-local-runtime-trust"
 TABLE="paid_runtime_identity"
 RUNTIME_KEYS=frozenset({"schema","trusted_raw_key_sha256","journal_path",
-                         "journal_id","host_id_sha256"})
+                         "journal_id","host_id_sha256",
+                         "revoked_approval_ids"})
 IDENTITY_KEYS=("journal_id","journal_path","host_id_sha256","device","inode")
 
 
@@ -87,6 +88,11 @@ def read_protected_runtime_config(path):
     if (not isinstance(cfg["journal_id"],str) or
         re.fullmatch("[a-f0-9]{64}",cfg["journal_id"]) is None):
         raise JournalBlocked("V052_PAID_JOURNAL_ID_INVALID")
+    revoked=cfg["revoked_approval_ids"]
+    if (not isinstance(revoked,list) or len(revoked)>1000 or
+        len(set(str(x) for x in revoked))!=len(revoked) or
+        any(not isinstance(x,str) or not x or len(x)>256 for x in revoked)):
+        raise JournalBlocked("V052_PAID_APPROVAL_REVOCATION_CONFIG_INVALID")
     if cfg["host_id_sha256"] != _host_identity():
         raise JournalBlocked("V052_PAID_HOST_MISMATCH")
     return cfg
@@ -156,3 +162,23 @@ def provision_local_journal(*, path):
                 "journal_path":str(p)}
     finally:
         os.umask(oldmask)
+
+
+def assert_paid_approval_active(*, config_path, original_config, approval_id):
+    """Check protected owner revocations immediately before a new model POST.
+
+    This is not an external revocation service: deployment owner must update
+    and distribute the protected config atomically to the dedicated host.
+    A changed trust root or journal identity cannot migrate an active run.
+    """
+    fresh=read_protected_runtime_config(config_path)
+    original={k:v for k,v in original_config.items()
+              if k!="revoked_approval_ids"}
+    current={k:v for k,v in fresh.items()
+             if k!="revoked_approval_ids"}
+    if current!=original:
+        raise JournalBlocked("V052_PAID_RUNTIME_TRUST_CHANGED")
+    if approval_id in fresh["revoked_approval_ids"]:
+        raise JournalBlocked("V052_PAID_APPROVAL_REVOKED")
+    verify_shared_local_journal(fresh)
+    return True
