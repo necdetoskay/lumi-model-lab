@@ -181,15 +181,18 @@ class DelegatedMaraNoSpend(unittest.TestCase):
             def read(self):
                 return self.body
         seen={}
+        requests=[]
         def fake_open(req,timeout):
             body=json.loads(req.data.decode("utf-8"))
             self.assertEqual(body["model"],MODELS["extraction"])
+            requests.append(body)
             packet=json.loads(body["messages"][1]["content"])
             self.assertEqual(packet["source_prose_sha256"],EXPECTED_SHA)
             targets=packet["target_sentences"]
             self.assertEqual(len(targets),4)
             for sentence in targets:
-                self.assertNotIn(sentence["id"],seen)
+                if sentence["id"] in seen:
+                    self.assertEqual(seen[sentence["id"]],sentence["quote"])
                 seen[sentence["id"]]=sentence["quote"]
             # All 28 IDs are accounted for, but the model falsely denies
             # every physical action, object and cause.
@@ -197,15 +200,15 @@ class DelegatedMaraNoSpend(unittest.TestCase):
                    "disposition":"NO_TRACKED_CHANGE",
                    "reason":"Deliberately incomplete adversarial model",
                    "mentions":[],"events":[]} for s in targets]
-            raw={"id":"mara-fake-"+str(len(seen)), "model":MODELS["extraction"],
+            raw={"id":"mara-fake-"+str(len(requests)), "model":MODELS["extraction"],
                  "choices":[{"finish_reason":"stop",
                              "message":{"content":json.dumps({"rows":rows})}}],
                  "usage":{"prompt_tokens":400,"completion_tokens":200,
                           "cost":"0.001"}}
             return MockHTTP(json.dumps(raw).encode("utf-8"))
         approval=self.approval(
-            max_posts=7,
-            max_posts_per_role={"extraction":7,"semantic":0,"typed":0,"writer":0},
+            max_posts=14,
+            max_posts_per_role={"extraction":14,"semantic":0,"typed":0,"writer":0},
             max_observed_usd="0.05")
         outcome=self.launch(approval=approval,opener=fake_open)
         self.assertEqual(len(seen),28)
@@ -215,13 +218,20 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(outcome["automatic_rewrites"],0)
         self.assertFalse(outcome["canonical_commit_authorized"])
         self.assertEqual(outcome["production_db_writes"],0)
-        self.assertEqual(outcome["allocated_provider_requests"],7)
-        self.assertEqual(self.billable_rows(),7)
+        self.assertGreater(outcome["allocated_provider_requests"],7)
+        self.assertLessEqual(outcome["allocated_provider_requests"],14)
+        self.assertEqual(self.billable_rows(),len(requests))
+        self.assertTrue(any(
+            "SOURCE-ONLY AUTOMATIC RE-EXTRACTION" in
+            r["messages"][0]["content"] for r in requests[7:]))
+        for request in requests:
+            packet=json.loads(request["messages"][1]["content"])
+            self.assertEqual(packet["source_prose_sha256"],EXPECTED_SHA)
         self.assertFalse(outcome["full_scene_qualification_gate_invoked"])
         with sqlite3.connect(self.ledger_path) as db:
             self.assertEqual(db.execute(
                 "SELECT COUNT(*) FROM calls WHERE status='RECEIPTED'"
-            ).fetchone()[0],7)
+            ).fetchone()[0],len(requests))
         replay=self.launch(
             approval=approval,
             opener=lambda *_args,**_kw:self.fail("already receipted; NO re-POST"))
