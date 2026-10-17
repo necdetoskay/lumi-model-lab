@@ -314,11 +314,23 @@ def run_live(*,output_root,claim_root,api_key,grant):
         # comparison, but is still preserved as real historical evidence.
         if provider.get("finish_reason")!="stop" or not provider["story"].strip():
             break
+    pair_complete = (
+        len(results) == 2 and
+        all(
+            row["finish_reason"] == "stop" and
+            row["nonempty_story"] and
+            row["returned_model"] == MODEL and
+            row["generation_id"]
+            for row in results.values()
+        ) and
+        len({row["generation_id"] for row in results.values()}) == 2
+    )
     comparison = {
         "schema": SCHEMA,
         "status": ("TWO_GENUINE_PROVIDER_ANSWERS_COMPARABLE"
-                   if len(results)==2 else
+                   if pair_complete else
                    "PARTIAL_OR_FAILED_SAFE_NO_PROVIDER_RESEND"),
+        "both_provider_generations_distinct_and_complete": pair_complete,
         "source_input": inputs,
         "completed_real_provider_replies": len(results),
         "real_paid_post_ceiling": 2,
