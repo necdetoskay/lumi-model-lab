@@ -6,6 +6,8 @@ on:
     paths:
       - experiments/prototypes/aion35_mini_reasoning_high_max_once_20261017.py
       - experiments/prototypes/test_aion35_mini_reasoning_high_max_once_20261017.py
+      - experiments/prototypes/aion35_mini_high_max_offline_evaluator_20261017.py
+      - experiments/prototypes/test_aion35_mini_high_max_offline_evaluator_20261017.py
       - .github/workflows/aion35-mini-high-max-offline.yml
   workflow_dispatch:
 permissions:
@@ -29,5 +31,5 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - name: Offline Aion HIGH MAX safety and deterministic prompt tests
         run: |
-          python -m unittest experiments.prototypes.test_aion35_mini_reasoning_high_max_once_20261017 -v
+          python -m unittest experiments.prototypes.test_aion35_mini_reasoning_high_max_once_20261017 experiments.prototypes.test_aion35_mini_high_max_offline_evaluator_20261017 -v
           python -m experiments.prototypes.aion35_mini_reasoning_high_max_once_20261017 --dry-run
