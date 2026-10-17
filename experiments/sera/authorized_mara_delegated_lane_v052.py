@@ -80,6 +80,16 @@ def run_delegated_mara(*, models, approval, trusted_public_key, api_key,
                 previous.get("production_db_writes")==0,
                 "V052_DELEGATED_PREVIOUS_FINAL_UNSAFE")
         if previous["status"]=="LAB_CANDIDATE_NONCANONICAL":
+            # A cached candidate is not sufficient by itself. Re-audit each
+            # completed provider receipt without calling the provider.
+            saved_receipts=audit_delegated_receipts(
+                journal=journal,approval_id=budget.approval_id)
+            if (not saved_receipts["all_provider_receipts_qualified"] or
+                previous.get("provider_receipt_audit_status") !=
+                    "COMPLETE_NONCANONICAL" or
+                previous.get("observed_provider_spend_usd") !=
+                    saved_receipts["total_observed_usd"]):
+                raise CoverageError("V052_CACHED_CANDIDATE_RECEIPTS_UNQUALIFIED")
             return previous
         # Failed terminal records may only resume from already receipted
         # work through the v0.20/v0.22 GET-only recovery path.
