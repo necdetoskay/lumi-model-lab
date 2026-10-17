@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from experiments.sera.artifact_scene_checker_v021 import create_checker
 from experiments.sera.coverage import prose_hash
@@ -119,6 +120,28 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
                     prose=self.prose,world=self.world)
             self.assertEqual(output,replay)
             self.assertEqual(before,len(self.calls))
+
+    def test_public_frozen_mara_offline_entry_is_not_empty_facets(self):
+        from experiments.sera.scene_qualified_model_lane_v052 import frozen_mara_offline
+        stub={
+            "source_sha256":EXPECTED_SHA,"source_sentence_count":28,
+            "provider_is_real":False,"status":"FAILED_SAFE_FINAL",
+            "canonical_commit_authorized":False,"production_db_writes":0,
+        }
+        # Contract-only spy: it must NOT fabricate a full scene PASS.
+        with patch("experiments.sera.scene_qualified_model_lane_v052.run_offline_lane",
+                   return_value=stub) as runner:
+            output=frozen_mara_offline(
+                output_root="/unwritten-mara-test",
+                provider_call=lambda **_:self.fail("No network"),
+                models={})
+        self.assertEqual(output["status"],"FAILED_SAFE_FINAL")
+        opts=runner.call_args.kwargs
+        self.assertEqual(opts["typed_registry"],
+                         registered_mara_facets(self.world))
+        self.assertEqual(opts["max_source_repair_attempts"],1)
+        self.assertEqual(opts["prose"],self.prose)
+        self.assertEqual(opts["world"],self.world)
 
     def test_no_analyst_gold_or_manual_scene_edits_enter_requests(self):
         with TemporaryDirectory() as directory:
