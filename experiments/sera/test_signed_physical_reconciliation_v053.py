@@ -95,6 +95,15 @@ class PinnedSourceJoinTests(unittest.TestCase):
              "HOLD_NONCANONICAL_REQUIRES_INDEPENDENT_EVENT_PROOF")
         self.assertEqual(result["registered_physical_entry_entity_count"],
                          len(self.world["entities"]))
+        facts={v["entity_id"]:v for v in result["registered_physical_entry"]}
+        self.assertEqual(set(facts),set(self.world["entities"]))
+        self.assertEqual(facts[BOX]["location_id"],
+                         self.world["entities"][BOX]["location"])
+        self.assertEqual(facts[BOX]["holder_id"],
+                         self.world["entities"][BOX]["holder"])
+        self.assertEqual(facts[BOX]["owner_id"],
+                         self.world["entities"][BOX]["owner"])
+        self.assertEqual(result["registered_route_count"],0)
         self.assertEqual(result["source_sentence_count"],2)
         self.assertEqual(result["model_candidate_event_count"],0)
         self.assertEqual(result["verified_future_event_count"],0)
@@ -136,6 +145,12 @@ class PinnedSourceJoinTests(unittest.TestCase):
         self.assertEqual(e["unregistered_or_candidate_refs"],["new:train_41"])
         self.assertEqual(e["status"],
                          "ENTITY_IDENTITY_NOT_PHYSICALLY_REGISTERED")
+
+    def test_invalid_nested_model_reference_fails_closed_not_typeerror(self):
+        report=self.report(refs=[{"invented_identity":"forged"}])
+        with self.assertRaisesRegex(CoverageError,
+                                    "V053_MODEL_EVENT_ENTITY_REFS_INVALID"):
+            reconcile_signed_physical_source(**self.args(report=report))
 
     def test_broken_signature_and_unpinned_key_fail_before_result(self):
         args=self.args()
