@@ -113,6 +113,13 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
             # Never escalate an ambiguous provider outcome into a blind POST.
             raise CoverageError("V052_REAL_PROVIDER_STOPPED_SAFE:" +
                                 type(exc).__name__) from exc
+    def safe_reconciler(*, model, request, request_sha256):
+        try:
+            return callback.recover_completed(
+                model=model,request=request,request_sha256=request_sha256)
+        except Exception as exc:
+            raise CoverageError("V052_READ_ONLY_RECOVERY_STOPPED_SAFE:" +
+                                type(exc).__name__) from exc
     root=Path(output_root)
     # Keep the real lane completely isolated from v0.52 synthetic receipts.
     saved=dict(contract,approval_id=approval["manifest"]["approval_id"],
@@ -145,12 +152,12 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
         extraction_model=models["extraction"],
         semantic_model=models["semantic"],typed_model=models["typed"],
         provider_call=safe_callback,max_model_requests=28,
-        observed_spend_guard_usd="0.30")
+        observed_spend_guard_usd="0.30",reconciler=safe_reconciler)
     writer=create_writer(
         api_key="SIGNED_PROVIDER_CALLBACK_KEY_UNUSED",
         model=models["writer"],provider_call=safe_callback,
         archive_dir=root/"writer-model-receipts",
-        observed_spend_guard_usd="0.15",
+        observed_spend_guard_usd="0.15",reconciler=safe_reconciler,
         story_context={
             "scene_key":SCENE_KEY,
             "entry_world_sha256":contract["world_sha256"],
