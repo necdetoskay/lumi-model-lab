@@ -16,8 +16,7 @@ from experiments.sera.signed_physical_reconciliation_v053 import (
     reconcile_signed_physical_source,
 )
 from experiments.sera.sentence_sweep_v010 import REPORT_SCHEMA
-from experiments.sera.tests.test_g2_physical_pinned_reader_v036 import (
-    PinnedPhysicalTests,KEY_ID,ISSUER,AUDIENCE,NONCE,NOW)
+from experiments.sera.tests import test_g2_physical_pinned_reader_v036 as signed_fixture
 from experiments.sera.tests.test_g2_physical_projection_v033 import BOX
 
 SCENE="offline-signed-physical-source-join"
@@ -26,7 +25,7 @@ PROSE=("Ari moved the box. The timetable said train 41 arrived at 02:10.")
 
 class PinnedSourceJoinTests(unittest.TestCase):
     def setUp(self):
-        self.signer= PinnedPhysicalTests(methodName=
+        self.signer= signed_fixture.PinnedPhysicalTests(methodName=
             "test_signed_physical_source_is_shadow_only_and_replay_is_denied")
         self.signer.setUp()
         self.packet=self.signer.signed()
@@ -84,9 +83,9 @@ class PinnedSourceJoinTests(unittest.TestCase):
                     authority=self.signer.authority,projection=self.packet,
                     public_key_pem=self.signer.pem,
                     raw_public_key_sha256=self.signer.fingerprint,
-                    key_id=KEY_ID,issuer=ISSUER,audience=AUDIENCE,
-                    expected_nonce=NONCE,consume_nonce=self.signer.consume,
-                    now=NOW+1,model_report=report)
+                    key_id=signed_fixture.KEY_ID,issuer=signed_fixture.ISSUER,audience=signed_fixture.AUDIENCE,
+                    expected_nonce=signed_fixture.NONCE,consume_nonce=self.signer.consume,
+                    now=signed_fixture.NOW+1,model_report=report)
 
     def test_signed_entry_baseline_with_no_model_events_is_still_hold(self):
         result=reconcile_signed_physical_source(**self.args())
