@@ -1,5 +1,10 @@
 """SERA v0.52 journaled provider bridge offline adversarial tests."""
 import tempfile
+import base64
+import time
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+from cryptography.hazmat.primitives import serialization
+from experiments.sera.provider_grant_journal_v052 import _canonical
 import unittest
 from pathlib import Path
 
@@ -18,6 +23,9 @@ class BridgeTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.journal = ProviderJournal(Path(self.tmp.name)/"grants.db")
         self.requests = []
+        self.signer = Ed25519PrivateKey.generate()
+        self.public_key = self.signer.public_key().public_bytes(
+            serialization.Encoding.Raw, serialization.PublicFormat.Raw)
         self.request = {"messages":[{"role":"user","content":"source"}]}
         self.fingerprint = fingerprint_for_request(
             stage="extraction",model=MODELS["extraction"],
@@ -30,16 +38,25 @@ class BridgeTests(unittest.TestCase):
         return {"raw":{"id":"g1","choices":[],"usage":{}},"error":None}
 
     def bridge(self, **overrides):
+        grants={self.fingerprint:dict(grant_id="sera-grant-01",request_id="req-01")}
+        manifest=dict(scope="SERA_V052_MARA_NONCANONICAL_PAID",**SHA,
+                      approved_models=MODELS, grants=grants,
+                      expires_at=int(time.time())+3600, approval_id="approval-01")
+        approval=dict(manifest=manifest,signature=base64.b64encode(
+            self.signer.sign(_canonical(manifest).encode("utf-8"))).decode("ascii"))
         args=dict(journal=self.journal,approved_models=MODELS,
                   grants={self.fingerprint:dict(grant_id="sera-grant-01",
                                                  request_id="req-01")},
-                  transport=self.transport,authorization_verified=True,**SHA)
+                  transport=self.transport,authorization_verified=True,
+                  approval=approval,trusted_public_key=self.public_key,**SHA)
         args.update(overrides)
         return create_journaled_provider(**args)
 
     def test_missing_verified_authorization(self):
         with self.assertRaises(JournalBlocked):
-            self.bridge(authorization_verified=False)
+            self.bridge(authorization_verified=False,approval=None)
+        with self.assertRaises(JournalBlocked):
+            self.bridge(approval=None,authorization_verified=True)
 
     def test_unregistered_grant_never_posts(self):
         with self.assertRaisesRegex(JournalBlocked,"GRANT_MISSING"):
