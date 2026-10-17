@@ -1,0 +1,28 @@
+name: Aion HIGH MAX offline comparison safety tests
+on:
+  push:
+    branches:
+      - experiment/aion35-mini-reasoning-high-max-20261017
+    paths:
+      - experiments/prototypes/aion35_mini_reasoning_high_max_once_20261017.py
+      - experiments/prototypes/test_aion35_mini_reasoning_high_max_once_20261017.py
+      - .github/workflows/aion35-mini-high-max-offline.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dry-only:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements.txt
+      - name: Offline Aion HIGH MAX safety and deterministic prompt tests
+        run: |
+          python -m unittest experiments.prototypes.test_aion35_mini_reasoning_high_max_once_20261017 -v
+          python -m experiments.prototypes.aion35_mini_reasoning_high_max_once_20261017 --dry-run
