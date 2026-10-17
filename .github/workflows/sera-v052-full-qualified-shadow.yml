@@ -1,0 +1,63 @@
+name: SERA v0.52 Full Qualified Offline Autorepair Proof
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_qualified_model_lane_v052.py
+      - experiments/sera/tests/test_scene_qualified_model_lane_v052.py
+      - experiments/sera/scene_qualified_smoke_v052.py
+      - .github/workflows/sera-v052-full-qualified-shadow.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  full-qualified-offline-proof:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sera-v052-offline-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v052-offline-source
+          clean: false
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frozen no-token-limit policy
+        run: python -m experiments.sera.request_policy
+      - name: Eight original v0.52 model-interface unit tests
+        run: python -m unittest experiments.sera.tests.test_scene_qualified_model_lane_v052 -v
+      - name: Execute Mara 28-source fail-safe and Ari source-to-rewrite v0.23 full gate
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.scene_qualified_smoke_v052 \
+            --output-root "$RUNNER_TEMP/sera-v052-full-qualified-smoke"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ["RUNNER_TEMP"])/"sera-v052-full-qualified-smoke"/"proof.json"
+          d=json.loads(p.read_text(encoding="utf-8"))
+          assert d["status"]=="SYNTHETIC_ARI_QUALIFIED_MARA_28_FAILED_SAFE"
+          assert d["mara_original_source_sentence_count"]==28
+          assert d["mara_status"]=="FAILED_SAFE_FINAL"
+          assert d["ari_automatic_rewrites"]==1
+          assert d["ari_full_v023_qualification"] is True
+          assert d["restart_extra_callbacks"]==0
+          assert d["new_real_provider_calls"]==0
+          assert d["model_output_token_ceiling_set"] is False
+          assert d["genuine_real_mara_repair_qualified"] is False
+          assert d["canonical_commit_authorized"] is False
+          assert d["production_db_writes"]==0
+          print("SERA_V052_ARI_SYNTHETIC_REWRITE_MARA_28_SAFE_STOP_VERIFIED")
+          PY
+      - name: Archive synthetic evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v052-qualified-shadow-${{ github.run_id }}
+          path: ${{ runner.temp }}/sera-v052-full-qualified-smoke/
+          retention-days: 90
+          if-no-files-found: error
