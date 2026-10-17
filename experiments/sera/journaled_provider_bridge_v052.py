@@ -13,6 +13,7 @@ from experiments.sera.provider_grant_journal_v052 import JournalBlocked, _hash
 from experiments.sera.request_policy import enforce_no_output_token_limit
 from experiments.sera.signed_paid_approval_v052 import verify_approval
 from experiments.sera.openrouter_real_transport_v052 import decode_receipted_wire
+from experiments.sera.world_state_v02 import canonical
 
 STAGES = frozenset({"extraction", "semantic", "typed", "writer"})
 
@@ -86,6 +87,35 @@ def create_journaled_provider(*, journal, source_sha256, world_sha256,
         if isinstance(receipt, dict) and "wire_payload_b64" in receipt:
             return decode_receipted_wire(receipt)
         return receipt
+    def recover_completed(*, model, request, request_sha256):
+        """Read journal receipt only; upstream crash resume must NEVER POST."""
+        if not isinstance(request,dict) or not isinstance(model,str):
+            raise JournalBlocked("V052_RECOVERY_REQUEST_INVALID")
+        expected = sha256(canonical({"model":model,"request":request})
+                          .encode("utf-8")).hexdigest()
+        if request_sha256 != expected:
+            raise JournalBlocked("V052_RECOVERY_UPSTREAM_SIGNATURE_DRIFT")
+        stage=next((s for s,m in models.items() if m==model),None)
+        if stage is None:
+            raise JournalBlocked("V052_RECOVERY_MODEL_NOT_APPROVED")
+        fingerprint=_hash({
+            "stage":stage,"model":model,"request":request,
+            "source_sha256":source_sha256,"world_sha256":world_sha256,
+            "scene_key":scene_key,"policy_sha256":policy_sha256})
+        grant=grants.get(fingerprint)
+        if not isinstance(grant,dict) or set(grant)!={"grant_id","request_id"}:
+            raise JournalBlocked("V052_RECOVERY_GRANT_UNKNOWN")
+        binding=dict(source_sha256=source_sha256,world_sha256=world_sha256,
+                     scene_key=scene_key,policy_sha256=policy_sha256,
+                     model=model,stage=stage,request_fingerprint=fingerprint)
+        receipt=journal.read_completed(
+            grant_id=grant["grant_id"],request_id=grant["request_id"],
+            binding=binding,model=model,payload=request)
+        if "wire_payload_b64" in receipt:
+            return decode_receipted_wire(receipt)
+        return receipt
+
+    provider_call.recover_completed = recover_completed
     return provider_call
 
 
