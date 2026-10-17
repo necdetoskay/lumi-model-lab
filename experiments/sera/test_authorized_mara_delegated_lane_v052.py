@@ -54,7 +54,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.sent.append((args,kwargs))
         raise AssertionError("network forbidden")
 
-    def run(self,**kwargs):
+    def launch(self,**kwargs):
         args=dict(models=MODELS,approval=self.approval(),
                   trusted_public_key=self.public,
                   api_key="FAKE_OFFLINE_ONLY",
@@ -65,7 +65,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         return run_delegated_mara(**args)
 
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
-        result=self.run()
+        result=self.launch()
         self.assertEqual(result["status"],"FAILED_SAFE_FINAL")
         self.assertEqual(result["allocated_provider_requests"],0)
         self.assertEqual(result["source_sentence_count"],28)
@@ -74,14 +74,14 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(self.sent,[])
 
     def test_restart_does_not_spend_after_failed_safe_final(self):
-        a=self.run()
-        b=self.run()
+        a=self.launch()
+        b=self.launch()
         self.assertEqual(a,b)
         self.assertEqual(self.sent,[])
 
     def test_unsigned_approval_rejected_before_journal_created(self):
         with self.assertRaises(JournalBlocked):
-            self.run(approval={})
+            self.launch(approval={})
         self.assertFalse((self.root/"ledger.sqlite3").exists())
         self.assertFalse(self.sent)
 
@@ -89,14 +89,14 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         a=self.approval()
         a["manifest"]["max_observed_usd"]="999999"
         with self.assertRaisesRegex(JournalBlocked,"SIGNATURE_INVALID"):
-            self.run(approval=a)
+            self.launch(approval=a)
         self.assertFalse(self.sent)
 
     def test_untrusted_signer_key_rejected(self):
         other=Ed25519PrivateKey.generate().public_key().public_bytes(
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
         with self.assertRaisesRegex(JournalBlocked,"SIGNATURE_INVALID"):
-            self.run(trusted_public_key=other)
+            self.launch(trusted_public_key=other)
         self.assertFalse(self.sent)
 
     def test_generated_revision_rebind_without_writer_receipt_is_forbidden(self):
@@ -116,7 +116,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_wrong_world_fingerprint_refused_before_paid_post(self):
         altered=self.approval(world_sha256="d"*64)
         with self.assertRaisesRegex(JournalBlocked,"SCOPE_DRIFT"):
-            self.run(approval=altered)
+            self.launch(approval=altered)
         self.assertEqual(self.sent,[])
 
 
