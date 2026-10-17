@@ -51,6 +51,7 @@ def simulate_blind_coverage(plan,prose):
                 start=cue["start"]-s["start"]
                 word=cue["quote"].casefold()
                 kind=("CLOSE" if word.startswith(("closed","shut")) else
+                      "OPEN" if word.startswith("opened") else
                       "WRITE" if cue["family"]=="DOCUMENT_CHANGE" else
                       "CHANGE_STATE")
                 events.append({
@@ -110,6 +111,32 @@ class MaraFull28MechanicalCoverage(unittest.TestCase):
         self.assertEqual(report["world_state_writes"],0)
         self.assertEqual(report,bind_all(
             self.plan,self.prose,simulate_blind_coverage(self.plan,self.prose)))
+
+    def test_one_broad_write_cannot_hide_notebook_open_action(self):
+        broken=deepcopy(self.raw)
+        target=next(s for s in self.plan["source_sentences"]
+                    if "Mara opened her notebook and wrote" in s["quote"])
+        for batch in self.plan["batches"]:
+            row=next((r for r in broken[batch["batch_id"]]["rows"]
+                      if r["sentence_id"]==target["id"]),None)
+            if row is None:
+                continue
+            row["events"]=[{
+                "kind":"WRITE","epistemic":"UNCERTAIN",
+                "effect":"DOCUMENT","evidence_quote":target["quote"],
+                "occurrence":0,"entity_refs":[],
+                "reason":"ADVERSARIAL_ONE_EVENT_SWALLOWS_OPEN_AND_WRITE",
+            }]
+            row["disposition"]="STATE_EVENT"
+            break
+        output=bind_all(self.plan,self.prose,broken)
+        self.assertEqual(output["sentences_accounted_for"],28)
+        self.assertTrue(any(f.startswith(
+            "SWEEP_COMPOUND_OPEN_WRITE_COLLAPSED:"
+        ) for f in output["findings"]),output["findings"])
+        self.assertTrue(output["targeted_probes"])
+        self.assertFalse(output["semantic_recall_proven"])
+        self.assertFalse(output["canonical_commit_authorized"])
 
     def test_omitting_source_cued_physical_change_blocks_coverage(self):
         broken=deepcopy(self.raw)
