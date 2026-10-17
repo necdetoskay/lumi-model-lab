@@ -118,6 +118,13 @@ def preview(*,prose,world,registry,candidates,extraction_report):
         need(any(
             isinstance(e,dict) and e.get("sentence_id")==sid and
             e.get("kind") in TYPE_KINDS[proposed["type"]] and
+            # An OPEN statement cannot justify closing an object (or the
+            # inverse). CHANGE_STATE requires an independently qualified
+            # explicit transition elsewhere; do not infer polarity.
+            (proposed["type"]!="SET_OPENABLE" or
+             e.get("kind")=="CHANGE_STATE" or
+             e.get("kind")==("OPEN" if proposed["payload"]["next"]=="OPEN"
+                              else "CLOSE")) and
             proposed["actor_id"] in e.get("entity_refs",[]) and
             ident in e.get("entity_refs",[]) and
             e.get("epistemic") in ("OBSERVED_ACTION","NARRATOR_ASSERTION") and
