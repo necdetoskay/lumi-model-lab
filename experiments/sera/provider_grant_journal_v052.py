@@ -138,3 +138,27 @@ class ProviderJournal:
             row = db.execute("SELECT status FROM calls WHERE grant_id=?",
                              (grant_id,)).fetchone()
             return row[0] if row else "NOT_STARTED"
+
+    def read_completed(self, *, grant_id, binding, request_id, model, payload):
+        """GET-only local receipt; NEVER creates a grant or calls a provider."""
+        enforce_no_output_token_limit(payload)
+        binding_sha = _hash(binding)
+        request_sha = _hash({"model": model, "payload": payload})
+        with self._connect() as db:
+            row = db.execute(
+                """SELECT request_id,request_sha,binding_sha,model,status,
+                          envelope_json,envelope_sha FROM calls WHERE grant_id=?""",
+                (grant_id,)).fetchone()
+        if row is None:
+            raise JournalBlocked("V052_RECOVERY_NO_PRIOR_POST")
+        if row[:4] != (request_id, request_sha, binding_sha, model):
+            raise JournalBlocked("V052_RECOVERY_REQUEST_OR_MODEL_DRIFT")
+        if row[4] != "RECEIPTED":
+            raise JournalBlocked("V052_RECOVERY_UNKNOWN_INFLIGHT_NO_REPOST")
+        try:
+            envelope = json.loads(row[5])
+            if not isinstance(envelope, dict) or _hash(envelope) != row[6]:
+                raise ValueError("incorrect receipt hash")
+        except (ValueError, TypeError, OSError) as exc:
+            raise JournalBlocked("V052_RECOVERY_RECEIPT_CORRUPT") from exc
+        return envelope
