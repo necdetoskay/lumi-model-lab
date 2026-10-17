@@ -11,21 +11,24 @@ import json
 
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, _hash
 from experiments.sera.request_policy import enforce_no_output_token_limit
+from experiments.sera.signed_paid_approval_v052 import verify_approval
 
 STAGES = frozenset({"extraction", "semantic", "typed", "writer"})
 
 
 def create_journaled_provider(*, journal, source_sha256, world_sha256,
                               scene_key, policy_sha256, approved_models,
-                              grants, transport, authorization_verified=False):
+                              grants, transport, authorization_verified=False,
+                              approval=None, trusted_public_key=None):
     """Return adapter matching provider_call(key=, model=, prepared=).
 
     grants: immutable mapping request fingerprint -> {"grant_id","request_id"}.
     Grant registration is forbidden here. Do not bind unknown/new source SHA
     to a previous grant after a rewrite: launch a fresh authorized grant set.
     """
-    if authorization_verified is not True:
-        raise JournalBlocked("V052_INDEPENDENT_PAID_AUTHORIZATION_NOT_VERIFIED")
+    # A boolean assertion by the caller is NOT authorization.
+    if authorization_verified is True and approval is None:
+        raise JournalBlocked("V052_SIGNED_APPROVAL_REQUIRED")
     if not isinstance(approved_models, dict) or set(approved_models) != STAGES:
         raise JournalBlocked("V052_MODEL_ROLE_ALLOWLIST_INVALID")
     if len(set(approved_models.values())) != 4 or any(
@@ -41,6 +44,10 @@ def create_journaled_provider(*, journal, source_sha256, world_sha256,
             raise JournalBlocked("V052_FINGERPRINT_INVALID")
     if not isinstance(scene_key, str) or not scene_key.strip():
         raise JournalBlocked("V052_SCENE_KEY_INVALID")
+    verify_approval(approval=approval, trusted_public_key=trusted_public_key,
+                    source_sha256=source_sha256,world_sha256=world_sha256,
+                    scene_key=scene_key,policy_sha256=policy_sha256,
+                    approved_models=approved_models,grants=grants)
     models = dict(approved_models)
 
     def provider_call(*, key, model, prepared):
