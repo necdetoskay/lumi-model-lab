@@ -25,7 +25,7 @@ UNSUPPORTED_MUTATIONS = frozenset({
     "LEARN_FACT", "DISCOVER",
 })
 TYPED_EFFECTS = {
-    "OPEN": frozenset({"OBSERVE_OPENABLE", "SET_OPENABLE"}),
+    "OPEN": frozenset({"SET_OPENABLE"}),
     "CLOSE": frozenset({"SET_OPENABLE"}),
     "WRITE": frozenset({"APPEND_DOCUMENT_ENTRY"}),
 }
@@ -256,7 +256,7 @@ def qualify(*, prose, world, bundle, projection, typed):
     # physical operation happened; missing cross-model event coverage is
     # an automatic re-extraction/replan blocker, not a human adjudication.
     acceptable_kinds = {
-        "OBSERVE_OPENABLE": frozenset({"OBSERVE", "OPEN"}),
+        "OBSERVE_OPENABLE": frozenset({"OBSERVE"}),
         "SET_OPENABLE": frozenset({"CLOSE", "OPEN", "CHANGE_STATE"}),
         "APPEND_DOCUMENT_ENTRY": frozenset({"WRITE"}),
     }
