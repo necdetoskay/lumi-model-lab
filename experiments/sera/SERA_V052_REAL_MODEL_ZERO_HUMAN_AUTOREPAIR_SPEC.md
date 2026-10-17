@@ -115,3 +115,14 @@ Bu durum gerçek modelle tamamlanmış 28 cümlelik onarım iddiası değildir.
 5. **Orijinal 28 Mara karşıt kanıtı:** `test_authorized_mara_delegated_lane_v052.py` gerçek 28-cümleli source SHA ile yedi orijinal cümle paketi ve yalnız gerektiğinde kaynak-tabanlı yeni denemeleri, imzalı grant/journal + gerçek HTTP biçimi altında çalıştırır; fiziksel olayları atlayan model güvenli durdurulur ve yeniden başlatmada POST tekrarlanmaz. **Gerçek sağlayıcı LLM çağrısı, ücretlendirme ve 28-cümlelik başarılı tam onarım yapılmış değildir**.
 
 Model **çıktı token limiti konulmadı**; `max_source_repair_attempts` model çıktı uzunluğu değil, kullanıcı onayı kapsamına bağlı ücretli yeniden istek sayısıdır. Canonical/G2/production veritabanına yazım yoktur, hikâye/JSON için manuel tamir yoktur.
+
+
+## 17 Ekim 2026 — 28 cümleli kaynak kronolojisi ve zaman damgası doğruluğu
+
+Yeni `source_chronology_v052.py`, her gerçek kaynak SHA'sı için **tam kaynak cümle sırası** ve opsiyonel bağımsız modelin kaynak-bağlı olay adaylarını kaydeder. `authorized_mara_delegated_lane_v052.py` her `proven_preparer` girişinde `source-chronology/<prose_sha>.source.json` üretir; ancak tam kanıt gerçekten hazırsa `<prose_sha>.model.json` içine `full_sweep` adaylarının kaynak açıklamalarını koyar.
+
+**Neden:** Hikâyedeki `02:07` durmuş bir saatin göstergesi, `02:10` ise rapor/manifest içinde anlatılan saat olabilir. **Bunlar aksiyonun kanıtlanmış gerçekleşme zamanı değildir.** Bu nedenle kronoloji `source_ordinal` (metinsel sıralama) ile `action_minute=null` (gerçek zaman bilinmiyor) alanlarını ayrı tutar. Metinden kopyalanmış alıntıların codepoint [start,end) aralıkları ve tam kaynak hash'i tekrar doğrulanır. Modelin önerdiği `MOVE`, `WRITE` vb. yalnız `MODEL_CANDIDATE_UNVERIFIED` statüsündedir; fiziksel varlık, nedensellik, sahiplik veya canonical WorldState/commit iddia edilmez.
+
+`test_source_chronology_v052.py` gerçek frozen Mara 28/28 satır bütünlüğü ve yeniden oynatımda aynı digest, yanlış aksiyon saati, çarpıtılmış olay alıntısı, eksik/çift satır ve source/world drift testlerini içerir. Mara gerçek izinli lane ayrıca kaynağın kronolojisini önceden/yeniden başlatmada saklar; kaydedilmiş nihai durum tekrar kullanılmadan önce orijinal SHA'dan yeniden üretip tarar. Böylece biri bir olaya sonradan `action_minute=130` eklese bile cached `LAB_CANDIDATE` veya cached fail record güvenilir sayılamaz.
+
+**Sınır:** Bu kanıt, semantik hatırlama, gerçek olay zamanı, karakter/nesne ilişkileri veya Mara 28'in Writer ile başarıyla onarımı değildir. Bunlar için güvenilir fiziksel dünya kaynağı, doğrulanmış olay kimlikleri ve kaynak-bağlı model onarımı gerekir. Tüm çalışma OFFLINE/LAB; gerçek provider faturası, manuel hikâye/JSON düzenlemesi, çıktı token tavanı veya üretim veritabanı/world commit **yoktur**.
