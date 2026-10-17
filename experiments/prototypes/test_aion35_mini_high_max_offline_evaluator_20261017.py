@@ -133,7 +133,7 @@ class AionPairedOfflineEvidenceTests(unittest.TestCase):
             root=Path(tmp)
             out=fixture(root,repeated)
             with self.assertRaisesRegex(RuntimeError,
-                                        "PAIR_RESULT_STATUS_NOT_SUPPORTED"):
+                                        "PAIR_DUPLICATE_PROVIDER_GENERATION"):
                 # The run result truthfully says not comparable. Tampering
                 # the final status into a PASS cannot override receipt guard.
                 mutate(root/"run"/"result.json",
