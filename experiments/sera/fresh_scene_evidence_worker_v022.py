@@ -184,27 +184,6 @@ def _source_only_repair_request(*, original, failure_code, attempt):
     safe=(failure_code if isinstance(failure_code,str) and
           re.fullmatch(r"[A-Z0-9_]{1,100}",failure_code)
           else "V022_MODEL_RESPONSE_INVALID")
-    if source_focus is not None:
-        _require(isinstance(source_focus,list) and
-                 all(isinstance(x,dict) and
-                     set(x)=={"sentence_id","source_quote"} and
-                     isinstance(x["sentence_id"],str) and
-                     isinstance(x["source_quote"],str) and
-                     x["source_quote"] for x in source_focus),
-                 "V022_TYPED_FOCUS_QUOTE_INVALID")
-        try:
-            packet=json.loads(original["messages"][1]["content"])
-        except (ValueError,TypeError) as exc:
-            raise CoverageError("V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID") from exc
-        prose=packet.get("original_prose") if isinstance(packet,dict) else None
-        _require(isinstance(prose,str) and prose.strip(),
-                 "V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID")
-        actual={x["id"]:x["quote"] for x in sentences(prose)}
-        _require(len({r["sentence_id"] for r in source_focus})==
-                 len(source_focus) and
-                 all(actual.get(row["sentence_id"])==row["source_quote"]
-                     for row in source_focus),
-                 "V022_TYPED_FOCUS_NOT_VERBATIM_SOURCE")
     amended=deepcopy(original)
     amended["messages"][0]["content"]+=(
         "\\n\\nSOURCE-ONLY AUTOMATIC RE-EXTRACTION, attempt "+
@@ -263,6 +242,27 @@ def _typed_only_coverage_retry_request(*,original,attempt,source_focus=None):
              isinstance(original["messages"][0].get("content"),str) and
              isinstance(original["messages"][1].get("content"),str),
              "V022_TYPED_REEXTRACTION_ORIGINAL_INVALID")
+    if source_focus is not None:
+        _require(isinstance(source_focus,list) and
+                 all(isinstance(x,dict) and
+                     set(x)=={"sentence_id","source_quote"} and
+                     isinstance(x["sentence_id"],str) and
+                     isinstance(x["source_quote"],str) and
+                     x["source_quote"] for x in source_focus),
+                 "V022_TYPED_FOCUS_QUOTE_INVALID")
+        try:
+            packet=json.loads(original["messages"][1]["content"])
+        except (ValueError,TypeError) as exc:
+            raise CoverageError("V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID") from exc
+        prose=packet.get("original_prose") if isinstance(packet,dict) else None
+        _require(isinstance(prose,str) and prose.strip(),
+                 "V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID")
+        actual={x["id"]:x["quote"] for x in sentences(prose)}
+        _require(len({r["sentence_id"] for r in source_focus})==
+                 len(source_focus) and
+                 all(actual.get(row["sentence_id"])==row["source_quote"]
+                     for row in source_focus),
+                 "V022_TYPED_FOCUS_NOT_VERBATIM_SOURCE")
     amended=deepcopy(original)
     amended["messages"][0]["content"]+=(
         "\n\nINDEPENDENT SOURCE-ONLY TYPED FACET RE-EXTRACTION, attempt "+
