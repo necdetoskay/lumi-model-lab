@@ -32,6 +32,7 @@ from experiments.sera.paid_runtime_boundary_v052 import (read_protected_runtime_
 from experiments.sera.real_blind_benchmark_v040 import (
     prepare as frozen_mara_source, LEXICON, EXPECTED_SHA)
 from experiments.sera.scene_qualified_model_lane_v052 import require
+from experiments.sera.source_chronology_v052 import build_source_chronology
 from experiments.sera.scene_trace_autorepair_v045 import _read, _write
 from experiments.sera.unattended_scene_rewrite_v020 import execute as scene_loop
 
@@ -149,6 +150,24 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         max_model_requests=28,observed_spend_guard_usd="0.30",
         max_source_repair_attempts=1)
 
+    def archive_source_chronology(*,prose,world,model_report=None):
+        """Immutable noncanonical source and model-candidate timeline."""
+        result=build_source_chronology(
+            prose=prose,scene_key=SCENE_KEY,
+            world_sha256=digest(world),registry=registry,
+            candidate_lexicon=lexicon,model_report=model_report)
+        target=root/"source-chronology"/(
+            prose_hash(prose)+(
+                ".model.json" if model_report is not None
+                else ".source.json"))
+        if target.exists():
+            require(_read(target)==result,
+                    "V052_DELEGATED_CHRONOLOGY_ARCHIVE_DRIFT")
+        else:
+            target.parent.mkdir(parents=True,exist_ok=True)
+            _write(target,result)
+        return result
+
     def proven_preparer(*,prose,world):
         if digest(world)!=contract["world_sha256"]:
             raise CoverageError("V052_DELEGATED_WORLD_DRIFT")
@@ -156,7 +175,17 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
             callback.use_source(prose)
         except JournalBlocked as exc:
             raise CoverageError("V052_DELEGATED_UNPROVEN_SOURCE") from exc
-        return preparer(prose=prose,world=world)
+        archive_source_chronology(prose=prose,world=world)
+        produced=preparer(prose=prose,world=world)
+        if produced.get("status")=="EVIDENCE_READY_NONCANONICAL":
+            stored=_read(root/"evidence"/(prose_hash(prose)+".json"))
+            require(stored.get("prose_sha256")==prose_hash(prose) and
+                    stored.get("world_sha256")==digest(world),
+                    "V052_DELEGATED_CHRONOLOGY_EVIDENCE_DRIFT")
+            archive_source_chronology(
+                prose=prose,world=world,
+                model_report=stored["extraction_report"])
+        return produced
 
     story_context={
         "scene_key":SCENE_KEY,
