@@ -32,6 +32,7 @@ from experiments.sera.sentence_sweep_v010 import (
     create_plan, bind_batch, aggregate,
 )
 from experiments.sera.world_state_v013 import EVENT_KEYS, TYPES
+from experiments.sera.multifacet_physical_preview_v054 import source_backed_typed_match
 from experiments.sera.sentence_ledger_v06 import sentences
 from experiments.sera.world_state_v02 import canonical, validate as validate_world
 
@@ -143,7 +144,7 @@ def _critical_source_findings(report):
             finding.startswith(SOURCE_BLOCKING_FINDING_PREFIXES)]
 
 
-def _missing_critical_typed_sentence_ids(report, typed):
+def _missing_critical_typed_sentence_ids(report, typed, *, prose=None):
     """Find only source-backed unaccounted critical actions (no model gold).
 
     This is a routing hint, NOT approval of the independent sweep or the
@@ -157,25 +158,19 @@ def _missing_critical_typed_sentence_ids(report, typed):
                 item["effect"] not in ("OBJECT", "DOCUMENT")):
             continue
         def supports(candidate):
-            if (candidate["sentence_id"] != item["sentence_id"] or
-                    candidate["evidence"]["start"] >= item["end"] or
-                    item["start"] >= candidate["evidence"]["end"]):
-                return False
-            if kind == "WRITE":
-                return candidate["type"] == "APPEND_DOCUMENT_ENTRY"
-            return (
-                candidate["type"] == "SET_OPENABLE" and
-                candidate["payload"].get("next") ==
-                ("OPEN" if kind == "OPEN" else "CLOSED")
+            # SOURCE-EVIDENCED writing verb and exact quoted payload may be
+            # nonoverlapping spans in the SAME original sentence.
+            return source_backed_typed_match(
+                prose=prose, event=item, candidate=candidate,
             )
         if not any(supports(row) for row in typed):
             missing.add(item["sentence_id"])
     return missing
 
 
-def _check_critical_coverage(report, typed):
+def _check_critical_coverage(report, typed, *, prose=None):
     """No OPEN, CLOSE or WRITE may disappear or flip polarity."""
-    _require(not _missing_critical_typed_sentence_ids(report, typed),
+    _require(not _missing_critical_typed_sentence_ids(report, typed, prose=prose),
              "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED")
     _require(not _critical_source_findings(report),
              "V022_UNRESOLVED_FULL_SENTENCE_SWEEP_FINDING")
@@ -714,7 +709,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             # Unknown in-flight POST outcomes are still NEVER blindly resent.
             for attempt in range(1,max_source_repair_attempts+1):
                 try:
-                    _check_critical_coverage(report,typed)
+                    _check_critical_coverage(report,typed,prose=prose)
                     break
                 except CoverageError as exc:
                     if str(exc)!="V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED":
@@ -734,13 +729,13 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             if typed_batch_recovery:
                 missing = False
                 try:
-                    _check_critical_coverage(report, typed)
+                    _check_critical_coverage(report, typed, prose=prose)
                 except CoverageError as exc:
                     if str(exc) != "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED":
                         raise
                     missing = True
                 if missing:
-                    gaps = _missing_critical_typed_sentence_ids(report, typed)
+                    gaps = _missing_critical_typed_sentence_ids(report, typed, prose=prose)
                     selected_batches = [
                         batch for batch in plan["batches"]
                         if gaps.intersection(batch["sentence_ids"])
@@ -787,7 +782,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             # model. Distinct model/request/tag = new auditable receipt.
             # No fallback is silently invented or used unless configured.
             try:
-                _check_critical_coverage(report,typed)
+                _check_critical_coverage(report,typed,prose=prose)
             except CoverageError as exc:
                 if (str(exc)!="V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED" or
                     fallback_model is None):
@@ -799,7 +794,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                         source_focus=source_focus),
                     stage_models=[fallback_model],schema_retry=False,
                     bind=lambda ans:_validate_typed(prose,ans))
-                _check_critical_coverage(report,typed)
+                _check_critical_coverage(report,typed,prose=prose)
             temporal_case = None
             if trusted_temporal_builder is not None:
                 # Application-owned route/time policy, never a model's
