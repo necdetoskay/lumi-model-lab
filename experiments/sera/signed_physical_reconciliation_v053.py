@@ -79,8 +79,8 @@ def reconcile_signed_physical_source(
             e=events_by_id[ident]
             refs=raw.get("entity_refs")
             need(isinstance(refs,list) and
-                 len(refs)==len(set(refs)) and
-                 all(isinstance(x,str) and x for x in refs),
+                 all(isinstance(x,str) and x for x in refs) and
+                 len(refs)==len(set(refs)),
                  "V053_MODEL_EVENT_ENTITY_REFS_INVALID")
             known=[r for r in refs if r in entities]
             unknown=[r for r in refs if r not in entities]
@@ -123,6 +123,17 @@ def reconcile_signed_physical_source(
         "trusted_physical_key_id":trusted["physical_key_id"],
         "chronology_sha256":chronology["chronology_sha256"],
         "registered_physical_entry_entity_count":len(entities),
+        "registered_physical_entry":[
+            {
+                "entity_id":identifier,
+                "kind":entity["kind"],
+                "location_id":entity["location"],
+                "owner_id":entity["owner"],
+                "holder_id":entity["holder"],
+                "worn_by_id":entity["worn_by"],
+            } for identifier,entity in sorted(entities.items())
+        ],
+        "registered_route_count":len(trusted["registered_routes"]),
         "source_sentence_count":chronology["source_sentence_count"],
         "source_order_is_event_clock":False,
         "model_candidate_event_count":len(proposals),
