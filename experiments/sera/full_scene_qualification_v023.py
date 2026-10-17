@@ -17,6 +17,7 @@ from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.sentence_ledger_v06 import sentences
 from experiments.sera.world_state_v02 import validate as validate_world
 from experiments.sera.artifact_scene_checker_v021 import digest
+from experiments.sera.multifacet_physical_preview_v054 import source_backed_typed_match
 
 SCHEMA = "sera.full-scene-qualification.v0.23"
 # These are stateful operations v0.13 CANNOT currently simulate safely.
@@ -239,12 +240,8 @@ def qualify(*, prose, world, bundle, projection, typed):
         if kind in TYPED_EFFECTS and effect in ("OBJECT", "DOCUMENT"):
             if not any(
                 typed_row.get("type") in TYPED_EFFECTS[kind] and
-                typed_row.get("sentence_id") == sid and
-                isinstance(typed_row.get("evidence"), dict) and
-                type(typed_row["evidence"].get("start")) is int and
-                type(typed_row["evidence"].get("end")) is int and
-                typed_row["evidence"]["start"] < event["end"] and
-                event["start"] < typed_row["evidence"]["end"]
+                source_backed_typed_match(
+                    prose=prose,event=event,candidate=typed_row)
                 for typed_row in candidates if isinstance(typed_row, dict)
             ):
                 flag("PHYSICAL_EFFECT_NOT_REDUCER_COVERED",
@@ -274,10 +271,9 @@ def qualify(*, prose, world, bundle, projection, typed):
                     source_evidence.get("quote"),
                 "V023_TYPED_CANDIDATE_SOURCE_INVALID")
         if not any(
-            row["sentence_id"] == item["sentence_id"] and
             row["kind"] in acceptable_kinds[item["type"]] and
-            row["start"] < source_evidence["end"] and
-            source_evidence["start"] < row["end"]
+            source_backed_typed_match(
+                prose=prose,event=row,candidate=item)
             for row in events
         ):
             flag("TYPED_OPERATION_NOT_BACKED_BY_INDEPENDENT_SWEEP",
