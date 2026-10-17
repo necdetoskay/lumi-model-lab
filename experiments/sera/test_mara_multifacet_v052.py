@@ -31,7 +31,9 @@ class MaraMultifacetLabControl(unittest.TestCase):
     def event(self,number,kind,actor,obj,evidence,payload,sweep_quote=None):
         start=self.prose.index(evidence)
         s=next(s for s in self.source
-               if s["start"]<=start and start+len(evidence)<=s["end"])
+               if s["start"]<=start<s["end"] and
+               (kind=="APPEND_DOCUMENT_ENTRY" or
+                start+len(evidence)<=s["end"]))
         # Test-only handwritten *source-bound example*. Independent sweep
         # events are likewise mock, not qualified provider evidence.
         sweep_quote=sweep_quote or evidence
@@ -62,6 +64,12 @@ class MaraMultifacetLabControl(unittest.TestCase):
         )
 
     def controls(self):
+        # Source-controlled COMPLETE quoted entry, not just its first
+        # sentence. This is a lab fixture, NEVER a model-provided answer.
+        prefix="Mara opened her notebook and wrote: “"
+        quote_start=self.prose.index(prefix)+len(prefix)
+        quote_end=self.prose.index("”",quote_start)
+        complete_entry=self.prose[quote_start:quote_end]
         pairs=[
             self.event(1,"OBSERVE_OPENABLE","vane","vane_watch",
                  "pocket watch open in his palm",
@@ -73,9 +81,9 @@ class MaraMultifacetLabControl(unittest.TestCase):
                  "Mara opened her notebook",
                  {"expected":"UNKNOWN","next":"OPEN"}),
             self.event(4,"APPEND_DOCUMENT_ENTRY","mara","mara_notebook",
-                 "Archive telegram: arrival recorded at 02:10.",
+                 complete_entry,
                  {"expected_append_count":0,
-                  "text":"Archive telegram: arrival recorded at 02:10."},
+                  "text":complete_entry},
                  sweep_quote="Mara opened her notebook and wrote: “Archive telegram: arrival recorded at 02:10."),
         ]
         proposals=[p for p,_ in pairs]
@@ -109,7 +117,7 @@ class MaraMultifacetLabControl(unittest.TestCase):
                       ["baseline_observed"], False)
         self.assertEqual(
             data["facets"]["mara_notebook"]["documents"]["observed_appends"][0]["text"],
-            "Archive telegram: arrival recorded at 02:10.")
+            self.controls()[0][-1]["payload"]["text"])
         self.assertTrue(all(x["action_minute"] is None for x in data["receipts"]))
         self.assertEqual(before,self.world)
         self.assertEqual(result,self.run_preview())
@@ -149,9 +157,21 @@ class MaraMultifacetLabControl(unittest.TestCase):
         self.assertEqual(
             out["multifacet_preview"]["facets"]["mara_notebook"]
             ["documents"]["observed_appends"][0]["text"],
-            "Archive telegram: arrival recorded at 02:10.")
+            self.controls()[0][-1]["payload"]["text"])
         self.assertEqual(out["world_db_writes"],0)
         self.assertFalse(out["canonical_commit_authorized"])
+
+    def test_partial_quoted_document_entry_is_not_a_complete_append(self):
+        def truncate(proposals):
+            content=proposals[-1]["payload"]["text"]
+            partial=content.split(". ",1)[0]+"."
+            event=proposals[-1]
+            event["payload"]["text"]=partial
+            event["evidence"]["quote"]=partial
+            event["evidence"]["end"]=event["evidence"]["start"]+len(partial)
+        with self.assertRaisesRegex(
+                CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
+            self.run_preview(changes=truncate)
 
     def test_spoken_claim_or_action_without_quote_delimiter_cannot_fake_write(self):
         wrote=self.prose.index("wrote: “")
