@@ -6,6 +6,7 @@ consumption across processes; do not use on NFS/multiple hosts.
 """
 from __future__ import annotations
 import os
+from contextlib import closing
 from pathlib import Path
 import re
 import sqlite3
@@ -71,7 +72,7 @@ class LocalPhysicalNonceStore:
     def __init__(self,path):
         self.path=Path(path)
         self.file_identity=identity(self.path)
-        with self.connect() as db:
+        with closing(self.connect()) as db:
             rows=db.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' "
                 "AND name='physical_nonce_claim'").fetchall()
