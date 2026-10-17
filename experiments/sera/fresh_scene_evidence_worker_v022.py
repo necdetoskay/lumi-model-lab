@@ -562,7 +562,23 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     stage_models=typed_models,schema_retry=False,
                     bind=lambda ans: _validate_typed(prose,ans),
                 )
-            _check_critical_coverage(report,typed)
+            # A syntactically valid but STILL incomplete primary facet
+            # model can be checked by an explicitly configured alternate
+            # model. Distinct model/request/tag = new auditable receipt.
+            # No fallback is silently invented or used unless configured.
+            try:
+                _check_critical_coverage(report,typed)
+            except CoverageError as exc:
+                if (str(exc)!="V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED" or
+                    fallback_model is None):
+                    raise
+                typed=provider_json(
+                    tag="typed_coverage_independent_fallback",
+                    request=_typed_only_coverage_retry_request(
+                        original=typed_request,attempt=1),
+                    stage_models=[fallback_model],schema_retry=False,
+                    bind=lambda ans:_validate_typed(prose,ans))
+                _check_critical_coverage(report,typed)
             temporal_case = None
             if trusted_temporal_builder is not None:
                 # Application-owned route/time policy, never a model's
