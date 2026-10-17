@@ -1,5 +1,7 @@
 """No-network delegated Mara 28-sentence integration + revision lineage."""
 import base64
+import json
+import sqlite3
 from hashlib import sha256
 import tempfile
 import time
@@ -17,6 +19,8 @@ from experiments.sera.delegated_paid_budget_v052 import (
 from experiments.sera.delegated_provider_bridge_v052 import create_delegated_provider
 from experiments.sera.provider_grant_journal_v052 import (
     ProviderJournal, JournalBlocked, _canonical)
+from experiments.sera.paid_runtime_boundary_v052 import (
+    provision_local_journal, SCHEMA as RUNTIME_SCHEMA)
 
 MODELS={"extraction":"test/real-extract","semantic":"test/real-semantic",
         "typed":"test/real-typed","writer":"test/real-writer"}
@@ -32,6 +36,16 @@ class DelegatedMaraNoSpend(unittest.TestCase):
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
         self.sent=[]
         self.contract=preflight(models=MODELS)
+        self.ledger_path=self.root/"ledger.sqlite3"
+        runtime=provision_local_journal(path=self.ledger_path)
+        self.trust_config=self.root/"paid-trust.json"
+        config=dict(schema=RUNTIME_SCHEMA,
+                    trusted_raw_key_sha256=sha256(self.public).hexdigest(),
+                    journal_path=str(self.ledger_path),
+                    journal_id=runtime["journal_id"],
+                    host_id_sha256=runtime["host_id_sha256"])
+        self.trust_config.write_text(json.dumps(config),encoding="utf-8")
+        self.trust_config.chmod(0o600)
 
     def approval(self,**changes):
         p=self.contract
@@ -60,11 +74,16 @@ class DelegatedMaraNoSpend(unittest.TestCase):
                   trusted_public_key=self.public,
                   trusted_raw_key_sha256=sha256(self.public).hexdigest(),
                   api_key="FAKE_OFFLINE_ONLY",
-                  journal_path=self.root/"ledger.sqlite3",
+                  journal_path=self.ledger_path,
+                  runtime_trust_config_path=self.trust_config,
                   output_root=self.root/"mara-run",
                   opener=self.no_http)
         args.update(kwargs)
         return run_delegated_mara(**args)
+
+    def billable_rows(self):
+        with sqlite3.connect(self.ledger_path) as db:
+            return db.execute("SELECT COUNT(*) FROM calls").fetchone()[0]
 
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
         result=self.launch()
@@ -84,7 +103,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_unsigned_approval_rejected_before_journal_created(self):
         with self.assertRaises(JournalBlocked):
             self.launch(approval={})
-        self.assertFalse((self.root/"ledger.sqlite3").exists())
+        self.assertEqual(self.billable_rows(),0)
         self.assertFalse(self.sent)
 
     def test_approval_cost_tamper_fails_signature(self):
@@ -97,21 +116,43 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_untrusted_signer_key_rejected(self):
         other=Ed25519PrivateKey.generate().public_key().public_bytes(
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
-        with self.assertRaisesRegex(JournalBlocked,"PIN_MISMATCH"):
+        with self.assertRaisesRegex(JournalBlocked,"TRUST_OVERRIDE_FORBIDDEN"):
             self.launch(trusted_public_key=other)
         self.assertFalse(self.sent)
 
     def test_substituted_deployment_pin_rejected_before_journal(self):
-        with self.assertRaisesRegex(JournalBlocked,"PIN_MISMATCH"):
+        with self.assertRaisesRegex(JournalBlocked,"TRUST_OVERRIDE_FORBIDDEN"):
             self.launch(trusted_raw_key_sha256="f"*64)
-        self.assertFalse((self.root/"ledger.sqlite3").exists())
+        self.assertEqual(self.billable_rows(),0)
         self.assertFalse(self.sent)
 
     def test_missing_deployment_pin_rejected_before_journal(self):
-        with self.assertRaisesRegex(JournalBlocked,"PIN_CONFIG_MISSING"):
+        with self.assertRaisesRegex(JournalBlocked,"TRUST_OVERRIDE_FORBIDDEN"):
             self.launch(trusted_raw_key_sha256=None)
-        self.assertFalse((self.root/"ledger.sqlite3").exists())
+        self.assertEqual(self.billable_rows(),0)
         self.assertFalse(self.sent)
+
+    def test_untrusted_runtime_config_is_rejected(self):
+        self.trust_config.chmod(0o666)
+        with self.assertRaisesRegex(JournalBlocked,"TRUST_FILE_INSECURE"):
+            self.launch()
+        self.assertEqual(self.billable_rows(),0)
+        self.assertEqual(self.sent,[])
+
+    def test_duplicate_journal_copy_refused(self):
+        import shutil
+        copied=self.root/"copy.sqlite3"
+        shutil.copy2(self.ledger_path,copied)
+        with self.assertRaisesRegex(JournalBlocked,"TRUST_OVERRIDE_FORBIDDEN"):
+            self.launch(journal_path=copied)
+        self.assertEqual(self.billable_rows(),0)
+
+    def test_live_runtime_cannot_create_fresh_missing_journal(self):
+        self.ledger_path.unlink()
+        with self.assertRaisesRegex(JournalBlocked,"PAID_JOURNAL_MISSING"):
+            self.launch()
+        self.assertFalse(self.ledger_path.exists())
+        self.assertEqual(self.sent,[])
 
     def test_generated_revision_rebind_without_writer_receipt_is_forbidden(self):
         approval=self.approval()
