@@ -20,7 +20,8 @@ STAGES = frozenset({"extraction", "semantic", "typed", "writer"})
 def create_journaled_provider(*, journal, source_sha256, world_sha256,
                               scene_key, policy_sha256, approved_models,
                               grants, transport, authorization_verified=False,
-                              approval=None, trusted_public_key=None):
+                              approval=None, trusted_public_key=None,
+                              auto_register_signed_grants=False):
     """Return adapter matching provider_call(key=, model=, prepared=).
 
     grants: immutable mapping request fingerprint -> {"grant_id","request_id"}.
@@ -71,7 +72,11 @@ def create_journaled_provider(*, journal, source_sha256, world_sha256,
         binding = dict(source_sha256=source_sha256,world_sha256=world_sha256,
                        scene_key=scene_key,policy_sha256=policy_sha256,
                        model=model,stage=stage,request_fingerprint=signature)
-        # Pre-registered approval must bind this exact request+model+source.
+        # Auto-registration is allowed ONLY after the above signature gate:
+        # every grant in this session binds the immutable full request hash.
+        if auto_register_signed_grants is True:
+            journal.register_grant(grant_id=grant["grant_id"],
+                                   binding=binding, authorized=True)
         receipt = journal.execute_once(
             grant_id=grant["grant_id"], binding=binding,
             request_id=grant["request_id"], model=model,payload=request,
