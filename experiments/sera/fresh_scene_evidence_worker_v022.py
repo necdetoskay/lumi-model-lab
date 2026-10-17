@@ -45,6 +45,14 @@ For a witnessed prior OPEN/CLOSED baseline return OBSERVE_OPENABLE, not
 a fictional opening action. For an actual later state transition return
 SET_OPENABLE only when that operation and its prior state are sourced.
 For an actual verbatim document addition use APPEND_DOCUMENT_ENTRY.
+If the story explicitly says a character wrote or added a quoted document
+entry, evidence.quote and payload.text MUST be the COMPLETE original text
+between its matching opening/closing quotation marks, even when it crosses
+multiple prose sentence boundaries. Anchor sentence_id at the initiating
+WRITE action sentence, not the later continuation sentence. Treat distinct
+later "added" entries as separate ordered append actions. NEVER split one
+quoted entry into made-up individual sentence appends. Do not convert
+reported document content into an actual outside-world event.
 Objects must be registered, co-located with their actor and have their
 correct role. Every event must have EXACT v0.13 event keys:
 event_id,type,actor_id,object_id,sentence_id,evidence,payload.
