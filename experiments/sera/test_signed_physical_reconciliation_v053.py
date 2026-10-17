@@ -165,6 +165,30 @@ class PinnedSourceJoinTests(unittest.TestCase):
             self.args(report=report)
         self.assertEqual(self.signer.used,set())
 
+    def test_real_mara_cannot_borrow_unrelated_signed_world_snapshot(self):
+        """Correct Ed25519 signature does not bind an unrelated story world."""
+        from experiments.sera.real_blind_benchmark_v040 import prepare
+        from experiments.sera.mara_s1_typed_live_v05 import entry_state,REGISTRY
+        from experiments.sera.real_blind_benchmark_v040 import LEXICON
+        from pathlib import Path
+        import json
+        mara=prepare()["prose"]
+        original=entry_state()
+        aliases={k:v for k,v in REGISTRY.items() if k in original["entities"]}
+        candidate_aliases=json.loads(LEXICON.read_text(
+            encoding="utf-8"))["candidates"]
+        timeline=build_source_chronology(
+            prose=mara,scene_key="hook_empty_platform",
+            world_sha256=digest(original),
+            registry=aliases,candidate_lexicon=candidate_aliases)
+        args=self.args()
+        args.update(prose=mara,scene_key="hook_empty_platform",
+                    chronology=timeline,
+                    registry=aliases,candidate_lexicon=candidate_aliases)
+        with self.assertRaisesRegex(
+                CoverageError,"CHRONOLOGY_NOT_BOUND_TO_PINNED_PHYSICAL_WORLD"):
+            reconcile_signed_physical_source(**args)
+
     def test_no_replay_of_same_physical_challenge(self):
         args=self.args()
         reconcile_signed_physical_source(**args)
