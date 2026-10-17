@@ -1,0 +1,140 @@
+"""SERA v0.52 P0: durable single-use authorization and provider POST journal.
+
+This is a safety primitive, NOT an authorization grant and NOT a paid runner.
+Callers must never infer consent from credentials or a different experiment.
+A started-but-unreceipted POST remains unknown and is never retried.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import sqlite3
+import time
+from pathlib import Path
+
+from experiments.sera.request_policy import enforce_no_output_token_limit
+
+SCHEMA = "sera.v052-paid-post-journal"
+class JournalBlocked(RuntimeError):
+    pass
+
+
+def _canonical(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True,
+                      separators=(",", ":"), allow_nan=False)
+
+
+def _hash(value):
+    return hashlib.sha256(_canonical(value).encode("utf-8")).hexdigest()
+
+
+class ProviderJournal:
+    """Shared local SQLite journal; use one durable DB for all worker processes."""
+
+    def __init__(self, db_path):
+        self.path = Path(db_path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self._connect() as db:
+            db.execute("""CREATE TABLE IF NOT EXISTS grants (
+                grant_id TEXT PRIMARY KEY, binding_sha TEXT NOT NULL,
+                authorized INTEGER NOT NULL CHECK(authorized = 1),
+                consumed INTEGER NOT NULL DEFAULT 0 CHECK(consumed IN (0,1))
+            )""")
+            db.execute("""CREATE TABLE IF NOT EXISTS calls (
+                request_id TEXT PRIMARY KEY, grant_id TEXT NOT NULL UNIQUE,
+                request_sha TEXT NOT NULL, binding_sha TEXT NOT NULL,
+                model TEXT NOT NULL, status TEXT NOT NULL,
+                started_at REAL NOT NULL, completed_at REAL,
+                envelope_json TEXT, envelope_sha TEXT,
+                FOREIGN KEY(grant_id) REFERENCES grants(grant_id)
+            )""")
+
+    def _connect(self):
+        db = sqlite3.connect(str(self.path), timeout=30, isolation_level=None)
+        db.execute("PRAGMA busy_timeout=30000")
+        db.execute("PRAGMA synchronous=FULL")
+        db.execute("PRAGMA foreign_keys=ON")
+        return db
+
+    def register_grant(self, *, grant_id, binding, authorized=False):
+        """Authorization must be explicitly supplied by a separate human-approved control."""
+        if not authorized or not isinstance(grant_id, str) or not grant_id.strip():
+            raise JournalBlocked("V052_EXPLICIT_SERA_PAID_AUTHORIZATION_REQUIRED")
+        if not isinstance(binding, dict) or not binding:
+            raise JournalBlocked("V052_GRANT_BINDING_REQUIRED")
+        required = {"source_sha256", "world_sha256", "scene_key",
+                    "policy_sha256", "model"}
+        if not required <= set(binding) or any(not isinstance(binding[k], str)
+                                                or not binding[k] for k in required):
+            raise JournalBlocked("V052_GRANT_BINDING_INCOMPLETE")
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            existing = db.execute("SELECT binding_sha FROM grants WHERE grant_id=?",
+                                  (grant_id,)).fetchone()
+            fingerprint = _hash(binding)
+            if existing:
+                if existing[0] != fingerprint:
+                    raise JournalBlocked("V052_GRANT_REBIND_FORBIDDEN")
+                return
+            db.execute("INSERT INTO grants VALUES (?, ?, 1, 0)",
+                       (grant_id, fingerprint))
+
+    def execute_once(self, *, grant_id, binding, request_id, model, payload, transport):
+        """Persist STARTED atomically before POST; persist full envelope before parsing.
+
+        transport(model=..., payload=..., request_id=...) performs exactly one POST.
+        A crash after STARTED cannot silently repeat billable work.
+        """
+        if not isinstance(payload, dict) or not callable(transport):
+            raise JournalBlocked("V052_TRANSPORT_INVALID")
+        enforce_no_output_token_limit(payload)
+        if not isinstance(request_id, str) or not request_id.strip():
+            raise JournalBlocked("V052_REQUEST_ID_REQUIRED")
+        if not isinstance(model, str) or model != binding.get("model"):
+            raise JournalBlocked("V052_MODEL_NOT_ALLOWED")
+        binding_sha, request_sha = _hash(binding), _hash({"model":model,"payload":payload})
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            grant = db.execute("SELECT binding_sha,consumed FROM grants WHERE grant_id=?",
+                               (grant_id,)).fetchone()
+            if not grant or grant[0] != binding_sha:
+                raise JournalBlocked("V052_GRANT_MISSING_OR_DRIFT")
+            prior = db.execute("""SELECT request_id,request_sha,binding_sha,status,
+                                         envelope_json,envelope_sha FROM calls
+                                  WHERE grant_id=?""", (grant_id,)).fetchone()
+            if prior:
+                if prior[:3] != (request_id,request_sha,binding_sha):
+                    raise JournalBlocked("V052_GRANT_ALREADY_SPENT")
+                if prior[3] != "RECEIPTED":
+                    raise JournalBlocked("V052_UNKNOWN_INFLIGHT_NO_REPOST")
+                if _hash(json.loads(prior[4])) != prior[5]:
+                    raise JournalBlocked("V052_RECEIPT_CORRUPT")
+                return json.loads(prior[4])
+            if grant[1]:
+                raise JournalBlocked("V052_GRANT_ALREADY_SPENT")
+            db.execute("UPDATE grants SET consumed=1 WHERE grant_id=?", (grant_id,))
+            db.execute("""INSERT INTO calls
+                (request_id,grant_id,request_sha,binding_sha,model,status,started_at)
+                VALUES (?,?,?,?,?,'STARTED',?)""",
+                (request_id,grant_id,request_sha,binding_sha,model,time.time()))
+        # Never persist credentials; caller must use a transport that redacts secrets.
+        envelope = transport(model=model, payload=payload, request_id=request_id)
+        if not isinstance(envelope, dict):
+            raise JournalBlocked("V052_RESPONSE_NOT_AN_ENVELOPE")
+        encoded = _canonical(envelope)
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute("SELECT status FROM calls WHERE request_id=?",
+                             (request_id,)).fetchone()
+            if not row or row[0] != "STARTED":
+                raise JournalBlocked("V052_RECEIPT_STATE_DRIFT")
+            db.execute("""UPDATE calls SET status='RECEIPTED',completed_at=?,
+                          envelope_json=?,envelope_sha=? WHERE request_id=?""",
+                       (time.time(), encoded, _hash(envelope), request_id))
+        return envelope
+
+    def status(self, grant_id):
+        with self._connect() as db:
+            row = db.execute("SELECT status FROM calls WHERE grant_id=?",
+                             (grant_id,)).fetchone()
+            return row[0] if row else "NOT_STARTED"
