@@ -242,6 +242,11 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_mara_source_chronology_archived_without_any_paid_post(self):
         from experiments.sera.real_blind_benchmark_v040 import EXPECTED_SHA
         initial=self.launch()
+        self.assertFalse(initial["physical_g2_entry_snapshot_verified"])
+        self.assertEqual(initial["physical_source_status"],
+                         "LAB_FIXTURE_NOT_G2_ATTESTED")
+        self.assertTrue(initial["v053_signed_physical_source_gate_pending"])
+        self.assertEqual(initial["physical_future_events_verified"],0)
         path=self.root/"mara-run"/"source-chronology"/(
             EXPECTED_SHA+".source.json")
         self.assertTrue(path.exists())
