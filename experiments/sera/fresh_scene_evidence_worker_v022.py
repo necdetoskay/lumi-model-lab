@@ -353,7 +353,10 @@ def _validate_typed_window(prose, answer, target_sentences):
     _require(all(
         item["sentence_id"] in source and
         source[item["sentence_id"]]["start"] <= item["evidence"]["start"] <
-        item["evidence"]["end"] <= source[item["sentence_id"]]["end"]
+        source[item["sentence_id"]]["end"] and
+        item["evidence"]["start"] < item["evidence"]["end"] <= len(prose) and
+        (item["type"] == "APPEND_DOCUMENT_ENTRY" or
+         item["evidence"]["end"] <= source[item["sentence_id"]]["end"])
         for item in typed
     ), "V022_TYPED_WINDOW_OUTSIDE_TARGET")
     return typed
