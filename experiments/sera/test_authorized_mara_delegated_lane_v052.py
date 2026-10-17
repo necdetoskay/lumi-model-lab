@@ -43,7 +43,8 @@ class DelegatedMaraNoSpend(unittest.TestCase):
                     trusted_raw_key_sha256=sha256(self.public).hexdigest(),
                     journal_path=str(self.ledger_path),
                     journal_id=runtime["journal_id"],
-                    host_id_sha256=runtime["host_id_sha256"])
+                    host_id_sha256=runtime["host_id_sha256"],
+                    revoked_approval_ids=[])
         self.trust_config.write_text(json.dumps(config),encoding="utf-8")
         self.trust_config.chmod(0o600)
 
@@ -153,6 +154,24 @@ class DelegatedMaraNoSpend(unittest.TestCase):
             self.launch()
         self.assertFalse(self.ledger_path.exists())
         self.assertEqual(self.sent,[])
+
+    def test_revoked_signed_approval_never_posts(self):
+        self.trust_config.write_text(json.dumps({
+            **json.loads(self.trust_config.read_text(encoding="utf-8")),
+            "revoked_approval_ids":["mara-approval-offline"]
+        }),encoding="utf-8")
+        with self.assertRaisesRegex(JournalBlocked,"APPROVAL_REVOKED"):
+            self.launch()
+        self.assertEqual(self.billable_rows(),0)
+        self.assertEqual(self.sent,[])
+
+    def test_invalid_revocation_list_denied(self):
+        cfg=json.loads(self.trust_config.read_text(encoding="utf-8"))
+        cfg["revoked_approval_ids"]=["id","id"]
+        self.trust_config.write_text(json.dumps(cfg),encoding="utf-8")
+        with self.assertRaisesRegex(JournalBlocked,"REVOCATION_CONFIG_INVALID"):
+            self.launch()
+        self.assertEqual(self.billable_rows(),0)
 
     def test_generated_revision_rebind_without_writer_receipt_is_forbidden(self):
         approval=self.approval()
