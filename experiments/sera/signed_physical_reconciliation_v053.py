@@ -39,12 +39,16 @@ def reconcile_signed_physical_source(
     Even a fully signed entry world does NOT attest that the model event
     happened; it only makes pre-event registered relations available.
     """
-    need(isinstance(chronology,dict) and
+    # With an HTTPS G2 read, the verified physical world SHA is unknown
+    # until the signature is checked. In that mode derive chronology from
+    # verified entry, never from a caller-supplied simulated world.
+    need(chronology is None or (
+         isinstance(chronology,dict) and
          chronology.get("source_prose_sha256")==prose_hash(prose) and
          chronology.get("scene_key")==scene_key and
          chronology.get("canonical_commit_authorized") is False and
          chronology.get("world_db_writes")==0 and
-         chronology.get("source_graph_status")=="HOLD_NONCANONICAL",
+         chronology.get("source_graph_status")=="HOLD_NONCANONICAL"),
          "V053_CHRONOLOGY_SOURCE_UNTRUSTED")
     # Do NOT call the loose v0.33 verify_projection injection: the ONLY
     # authority path is v0.36 pinned Ed25519 + one-use nonce.
@@ -65,6 +69,8 @@ def reconcile_signed_physical_source(
         world_sha256=trusted["world_sha256"],
         registry=registry,candidate_lexicon=candidate_lexicon,
         model_report=model_report)
+    if chronology is None:
+        chronology=expected
     need(chronology==expected,
          "V053_CHRONOLOGY_NOT_BOUND_TO_PINNED_PHYSICAL_WORLD")
     entities=trusted["world"]["entities"]
