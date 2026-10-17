@@ -347,3 +347,46 @@ class DelegatedBudget:
                 db.execute("""INSERT INTO delegated_revisions VALUES (?,?,?,?)""",
                            (self.approval_id,revised,parent,fingerprint))
         return revised
+
+    def receipt_summary(self):
+        """Read-only audit: per-POST provider generation IDs, tokens, costs.
+
+        Keep scene prose, raw response text, credentials and signatures out of
+        the shareable summary. Missing price or unknown in-flight is never
+        reported as a qualified receipt.
+        """
+        with self.journal._connect() as db:
+            rows=db.execute("""SELECT r.stage,r.revision_sha,r.request_id,
+                      c.status,c.envelope_json,c.envelope_sha
+                      FROM delegated_requests r
+                      LEFT JOIN calls c ON c.grant_id=r.grant_id
+                      WHERE r.approval_id=?
+                      ORDER BY r.rowid""",(self.approval_id,)).fetchall()
+        report=[]
+        for role,revision,request_id,status,raw,checksum in rows:
+            entry=dict(stage=role,revision_sha256=revision,
+                       request_id=request_id,status=status or "ALLOCATED_UNSENT")
+            if status == "RECEIPTED":
+                try:
+                    envelope=json.loads(raw)
+                    if _hash(envelope) != checksum:
+                        raise JournalBlocked("V052_DELEGATED_ARCHIVE_CORRUPT")
+                    body,cost=_priced(envelope)
+                except (TypeError,ValueError,JournalBlocked) as exc:
+                    entry["status"]="RECEIPTED_UNQUALIFIED"
+                    entry["reason"]=type(exc).__name__
+                else:
+                    usage=body.get("usage",{})
+                    details=usage.get("completion_tokens_details",{})
+                    if not isinstance(details,dict):
+                        details={}
+                    entry.update(
+                        status="RECEIPTED_PRICED",
+                        generation_id=body["id"],model=body.get("model"),
+                        input_tokens=usage.get("prompt_tokens"),
+                        output_tokens=usage.get("completion_tokens"),
+                        reasoning_tokens=details.get("reasoning_tokens"),
+                        observed_cost_usd=str(cost),
+                        latency_ms=envelope.get("duration_ms"))
+            report.append(entry)
+        return report
