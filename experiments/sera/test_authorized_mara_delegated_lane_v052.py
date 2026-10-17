@@ -155,6 +155,68 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(first,second)
         self.assertEqual(len(observed),self.billable_rows())
 
+    def test_all_28_rows_but_no_physical_events_cannot_fake_scene_success(self):
+        """Seven signed real-wire batches, 28 source rows, unsafe omissions HOLD."""
+        from experiments.sera.real_blind_benchmark_v040 import EXPECTED_SHA
+        from experiments.sera.sentence_ledger_v06 import sentences
+        from experiments.sera.real_blind_benchmark_v040 import prepare
+        class MockHTTP:
+            def __init__(self, body):
+                self.body=body
+            def __enter__(self):
+                return self
+            def __exit__(self,*_args):
+                return False
+            def read(self):
+                return self.body
+        seen={}
+        def fake_open(req,timeout):
+            body=json.loads(req.data.decode("utf-8"))
+            self.assertEqual(body["model"],MODELS["extraction"])
+            packet=json.loads(body["messages"][1]["content"])
+            self.assertEqual(packet["source_prose_sha256"],EXPECTED_SHA)
+            targets=packet["target_sentences"]
+            self.assertEqual(len(targets),4)
+            for sentence in targets:
+                self.assertNotIn(sentence["id"],seen)
+                seen[sentence["id"]]=sentence["quote"]
+            # All 28 IDs are accounted for, but the model falsely denies
+            # every physical action, object and cause.
+            rows=[{"sentence_id":s["id"],
+                   "disposition":"NO_TRACKED_CHANGE",
+                   "reason":"Deliberately incomplete adversarial model",
+                   "mentions":[],"events":[]} for s in targets]
+            raw={"id":"mara-fake-"+str(len(seen)), "model":MODELS["extraction"],
+                 "choices":[{"finish_reason":"stop",
+                             "message":{"content":json.dumps({"rows":rows})}}],
+                 "usage":{"prompt_tokens":400,"completion_tokens":200,
+                          "cost":"0.001"}}
+            return MockHTTP(json.dumps(raw).encode("utf-8"))
+        approval=self.approval(
+            max_posts=7,
+            max_posts_per_role={"extraction":7,"semantic":0,"typed":0,"writer":0},
+            max_observed_usd="0.05")
+        outcome=self.launch(approval=approval,opener=fake_open)
+        self.assertEqual(len(seen),28)
+        expected={s["id"]:s["quote"] for s in sentences(prepare()["prose"])}
+        self.assertEqual(seen,expected)
+        self.assertEqual(outcome["status"],"FAILED_SAFE_FINAL")
+        self.assertEqual(outcome["automatic_rewrites"],0)
+        self.assertFalse(outcome["canonical_commit_authorized"])
+        self.assertEqual(outcome["production_db_writes"],0)
+        self.assertEqual(outcome["allocated_provider_requests"],7)
+        self.assertEqual(self.billable_rows(),7)
+        self.assertFalse(outcome["full_scene_qualification_gate_invoked"])
+        with sqlite3.connect(self.ledger_path) as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM calls WHERE status='RECEIPTED'"
+            ).fetchone()[0],7)
+        replay=self.launch(
+            approval=approval,
+            opener=lambda *_args,**_kw:self.fail("already receipted; NO re-POST"))
+        self.assertEqual(replay,outcome)
+        self.assertEqual(len(seen),28)
+
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
         result=self.launch()
         self.assertEqual(result["status"],"FAILED_SAFE_FINAL")
