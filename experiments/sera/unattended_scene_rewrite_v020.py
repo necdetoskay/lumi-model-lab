@@ -96,6 +96,15 @@ def _assess(result, prose, world):
              and typed.get("next_automatic_action") ==
                 "CONTINUE_INDEPENDENT_SCENE_QUALIFICATION")
             or (typed.get("status") ==
+                "TYPED_MULTIFACET_SIMULATED_NONCANONICAL" and
+                "qualification" in result and
+                typed.get("blocker_codes") == [] and
+                isinstance(typed.get("multifacet_preview"), dict) and
+                typed["multifacet_preview"].get("schema") ==
+                    "sera.multifacet-physical-preview.v0.54" and
+                typed["multifacet_preview"].get(
+                    "simulation_is_not_world_truth") is True)
+            or (typed.get("status") ==
                 "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL" and
                 "qualification" in result and
                 typed.get("empty_facet_scope_requires_full_gate") is True)
