@@ -249,6 +249,61 @@ class TypedSourceOnlyAutorepair(unittest.TestCase):
             self.assertEqual(replay(prose=prose,world=entry()),output)
             self.assertEqual(len(calls),recorded)
 
+    def test_verbatim_document_content_can_follow_source_write_verb(self):
+        from experiments.sera.fresh_scene_evidence_worker_v022 import (
+            _check_critical_coverage, _missing_critical_typed_sentence_ids,
+        )
+        from experiments.sera.multifacet_physical_preview_v054 import (
+            source_backed_typed_match,
+        )
+        from experiments.sera.sentence_ledger_v06 import sentences
+        prose='Ari wrote: “The signal is unconfirmed.”'
+        sid=sentences(prose)[0]["id"]
+        word_at=prose.index("wrote")
+        line="The signal is unconfirmed."
+        line_at=prose.index(line)
+        source_event={
+            "sentence_id":sid,"kind":"WRITE","effect":"DOCUMENT",
+            "start":word_at,"end":word_at+len("wrote"),"quote":"wrote",
+        }
+        candidate={
+            "event_id":"proposed-not-approved","type":"APPEND_DOCUMENT_ENTRY",
+            "actor_id":"ari","object_id":"notebook","sentence_id":sid,
+            "evidence":{"start":line_at,"end":line_at+len(line),
+                        "quote":line},
+            "payload":{"expected_append_count":0,"text":line},
+        }
+        report={"candidate_events":[source_event],"findings":[]}
+        self.assertTrue(source_backed_typed_match(
+            prose=prose,event=source_event,candidate=candidate))
+        self.assertFalse(_missing_critical_typed_sentence_ids(
+            report,[candidate],prose=prose))
+        _check_critical_coverage(report,[candidate],prose=prose)
+        # Without the ORIGINAL source, there is no permission to infer a
+        # nonoverlapping relationship from prior model opinions.
+        self.assertFalse(source_backed_typed_match(
+            prose=None,event=source_event,candidate=candidate))
+        with self.assertRaisesRegex(Exception,
+                                    "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED"):
+            _check_critical_coverage(report,[candidate])
+
+        tampered=dict(candidate,payload={"expected_append_count":0,
+                                         "text":"Train definitely arrived."})
+        self.assertFalse(source_backed_typed_match(
+            prose=prose,event=source_event,candidate=tampered))
+        speech=dict(source_event,kind="COMMUNICATE")
+        self.assertFalse(source_backed_typed_match(
+            prose=prose,event=speech,candidate=candidate))
+        # Merely adjacent prose is not a literal quoted append.
+        no_colon=prose.replace("wrote: “","wrote “")
+        shifted=dict(source_event,start=no_colon.index("wrote"),
+                     end=no_colon.index("wrote")+len("wrote"))
+        shifted_candidate=dict(candidate,evidence={
+            "start":no_colon.index(line),
+            "end":no_colon.index(line)+len(line),"quote":line})
+        self.assertFalse(source_backed_typed_match(
+            prose=no_colon,event=shifted,candidate=shifted_candidate))
+
     def test_critical_coverage_requires_correct_open_and_close_polarity(self):
         from experiments.sera.fresh_scene_evidence_worker_v022 import (
             _check_critical_coverage,_missing_critical_typed_sentence_ids,
