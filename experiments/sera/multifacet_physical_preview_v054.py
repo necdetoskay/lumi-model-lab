@@ -87,16 +87,15 @@ def source_backed_typed_match(*, prose, event, candidate):
     between=prose[event["end"]:span["start"]]
     content=prose[span["start"]:span["end"]]
     payload=candidate.get("payload")
-    if (not re.search(r"\\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\\b\\s*$",
+    if (not re.search(r"\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*$",
                       verb, re.IGNORECASE) or
-        not re.fullmatch(r"\\s*:\\s*([\\u201c\\u2018\\\"'])",between) or
+        not re.fullmatch(r"""\s*:\s*(["“‘'])""",between) or
         not isinstance(payload,dict) or
         payload.get("text")!=content or
         span.get("quote")!=content):
         return False
     opener=between.strip()[-1]
-    closer={"\\u201c":"\\u201d","\\u2018":"\\u2019",
-            '"':'"',"'":"'"}.get(opener)
+    closer={"“":"”","‘":"’",'"':'"',"'":"'"}.get(opener)
     return prose[span["end"]:].startswith(closer)
 
 
