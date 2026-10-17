@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from hashlib import sha256
+import re
 
 from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.sentence_ledger_v06 import sentences
@@ -34,6 +35,69 @@ TYPE_KINDS={
 def need(ok,code):
     if not ok:
         raise CoverageError(code)
+
+
+def source_backed_typed_match(*, prose, event, candidate):
+    """Bind separate source assertions, NEVER manufacture a WRITE event.
+
+    A blind sweep may cite just "wrote" while a typed proposal must cite
+    the actual quoted text appended to a document. Allow those disjoint
+    spans only when the same original sentence has a literal write-verb
+    followed immediately by colon + opening quote + EXACT content +
+    matching closing quote. All other types still require overlap.
+    This is evidence linkage, not independent semantic authority.
+    """
+    if not isinstance(event, dict) or not isinstance(candidate, dict):
+        return False
+    kind=event.get("kind")
+    op=candidate.get("type")
+    span=candidate.get("evidence")
+    if (not isinstance(span, dict) or
+        event.get("sentence_id")!=candidate.get("sentence_id") or
+        type(event.get("start")) is not int or
+        type(event.get("end")) is not int or
+        type(span.get("start")) is not int or
+        type(span.get("end")) is not int or
+        not (0<=event["start"]<event["end"]<=len(prose) and
+             0<=span["start"]<span["end"]<=len(prose))):
+        return False
+    if op=="APPEND_DOCUMENT_ENTRY":
+        if kind!="WRITE":
+            return False
+    elif op=="OBSERVE_OPENABLE":
+        if kind!="OBSERVE":
+            return False
+    elif op=="SET_OPENABLE":
+        if kind not in ("OPEN","CLOSE","CHANGE_STATE"):
+            return False
+        expected={"OPEN":"OPEN","CLOSE":"CLOSED"}
+        if (kind in expected and
+            (not isinstance(candidate.get("payload"),dict) or
+             candidate["payload"].get("next")!=expected[kind])):
+            return False
+    else:
+        return False
+    if event["start"]<span["end"] and span["start"]<event["end"]:
+        return True
+    if op!="APPEND_DOCUMENT_ENTRY" or event["end"]>span["start"]:
+        return False
+    # Never bridge a normal mention, dialogue, a remote quotation, or a
+    # different sentence. A matching write verb alone is insufficient.
+    verb=prose[event["start"]:event["end"]]
+    between=prose[event["end"]:span["start"]]
+    content=prose[span["start"]:span["end"]]
+    payload=candidate.get("payload")
+    if (not re.search(r"\\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\\b\\s*$",
+                      verb, re.IGNORECASE) or
+        not re.fullmatch(r"\\s*:\\s*([\\u201c\\u2018\\\"'])",between) or
+        not isinstance(payload,dict) or
+        payload.get("text")!=content or
+        span.get("quote")!=content):
+        return False
+    opener=between.strip()[-1]
+    closer={"\\u201c":"\\u201d","\\u2018":"\\u2019",
+            '"':'"',"'":"'"}.get(opener)
+    return prose[span["end"]:].startswith(closer)
 
 
 def digest(value):
@@ -118,18 +182,12 @@ def preview(*,prose,world,registry,candidates,extraction_report):
         need(any(
             isinstance(e,dict) and e.get("sentence_id")==sid and
             e.get("kind") in TYPE_KINDS[proposed["type"]] and
-            # An OPEN statement cannot justify closing an object (or the
-            # inverse). CHANGE_STATE requires an independently qualified
-            # explicit transition elsewhere; do not infer polarity.
-            (proposed["type"]!="SET_OPENABLE" or
-             e.get("kind")=="CHANGE_STATE" or
-             e.get("kind")==("OPEN" if proposed["payload"]["next"]=="OPEN"
-                              else "CLOSE")) and
+            source_backed_typed_match(
+                prose=prose,event=e,candidate=proposed) and
             proposed["actor_id"] in e.get("entity_refs",[]) and
             ident in e.get("entity_refs",[]) and
             e.get("epistemic") in ("OBSERVED_ACTION","NARRATOR_ASSERTION") and
             type(e.get("start")) is int and type(e.get("end")) is int and
-            e["start"]<span["end"] and span["start"]<e["end"] and
             0<=e["start"]<e["end"]<=len(prose) and
             prose[e["start"]:e["end"]]==e.get("quote")
             for e in events),
