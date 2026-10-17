@@ -222,6 +222,19 @@ class V051SourceRepairToFullSceneHandoffTests(TestCase):
             ):
                 ari_gate(Path(tmp),stage,lambda **kw:None,lambda **kw:None)
 
+    def test_failed_or_replan_rows_cannot_claim_physical_truth(self):
+        stage=ari_source_stage()
+        stage["status"]="REPLAN_REQUIRED_NONCANONICAL"
+        stage["task_results"][0]["status"]="AUTO_REPLAN_REQUIRED_NONCANONICAL"
+        stage["task_results"][0]["canonical_commit_authorized"]=True
+        with TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(
+                CoverageError,"V051_ROW_REPAIR_SOURCE_OR_TRUTH_MISMATCH",
+            ):
+                ari_gate(Path(tmp),stage,lambda **kw:self.fail(
+                    "cannot start unsafe v022"),
+                         lambda **kw:self.fail("cannot write unsafe scene"))
+
     def test_incomplete_row_accounting_is_never_full_source_proof(self):
         stage=ari_source_stage()
         stage["tasks_accounted_for"]=0
