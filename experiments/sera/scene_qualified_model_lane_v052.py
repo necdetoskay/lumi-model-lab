@@ -43,7 +43,8 @@ def require(ok, why):
 def run_offline_lane(*, prose, world, output_root, scene_key,
                      registry, candidate_lexicon, typed_registry,
                      provider_call, models, max_rewrites=2,
-                     max_source_repair_attempts=0):
+                     max_source_repair_attempts=0,
+                     typed_batch_recovery=False):
     """Prove production-like stage wiring with offline provider callbacks.
 
     The source-only extractor and source-bound repair Writer are both real
@@ -67,7 +68,8 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
             set(typed_registry) == {"openables", "documents"} and
             type(max_rewrites) is int and 0 <= max_rewrites <= 2 and
             type(max_source_repair_attempts) is int and
-            0 <= max_source_repair_attempts <= 1,
+            0 <= max_source_repair_attempts <= 1 and
+            type(typed_batch_recovery) is bool,
             "V052_SCENE_POLICY_INVALID")
     root = Path(output_root)
     contract = {
@@ -82,6 +84,7 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
         "transport": TRANSPORT,
         "max_rewrites": max_rewrites,
         "max_source_repair_attempts": max_source_repair_attempts,
+        "typed_batch_recovery": typed_batch_recovery,
         "checker": "v0.21+full_scene_qualification_v0.23",
         "writer": "openrouter_scene_writer_v0.21_adapter_OFFLINE",
         "user_model_output_token_ceiling": "OMITTED",
@@ -121,6 +124,7 @@ def run_offline_lane(*, prose, world, output_root, scene_key,
         max_model_requests=28,
         observed_spend_guard_usd="0.30",
         max_source_repair_attempts=max_source_repair_attempts,
+        typed_batch_recovery=typed_batch_recovery,
     )
     writer = create_writer(
         api_key=FAKE_KEY,
@@ -198,6 +202,7 @@ def frozen_mara_offline(*, output_root, provider_call, models,
         provider_call=provider_call,
         models=models, max_rewrites=max_rewrites,
         max_source_repair_attempts=1,
+        typed_batch_recovery=True,
     )
     require(result["source_sha256"] == EXPECTED_SHA and
             result["source_sentence_count"] == 28 and
