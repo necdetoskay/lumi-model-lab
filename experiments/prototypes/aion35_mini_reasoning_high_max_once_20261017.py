@@ -201,6 +201,7 @@ def real_stream_call(request, api_key):
         generation_id = None
         returned_model = None
         event_count = 0
+        stream_closed_cleanly = False
         for line in resp.iter_lines(decode_unicode=True):
             if not line:
                 continue
@@ -210,6 +211,7 @@ def real_stream_call(request, api_key):
                 continue
             body = line[5:].strip()
             if body == "[DONE]":
+                stream_closed_cleanly = True
                 break
             event_count += 1
             packet = json.loads(body)
@@ -233,6 +235,8 @@ def real_stream_call(request, api_key):
     story = "".join(text)
     checked(generation_id and event_count > 0,
             "NO_PROVIDER_GENERATION_ID")
+    checked(stream_closed_cleanly and finish_reason is not None,
+            "PROVIDER_STREAM_TRUNCATED_OR_NO_DONE")
     return {
         "generation_id": generation_id,
         "returned_model": returned_model,
