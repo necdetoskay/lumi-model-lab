@@ -161,6 +161,27 @@ class MaraMultifacetLabControl(unittest.TestCase):
         self.assertEqual(out["world_db_writes"],0)
         self.assertFalse(out["canonical_commit_authorized"])
 
+    def test_window_validator_retains_complete_multisentence_entry(self):
+        from experiments.sera.fresh_scene_evidence_worker_v022 import (
+            _validate_typed_window,
+        )
+        proposals,_=self.controls()
+        quoted=proposals[-1]
+        anchor=next(x for x in self.source
+                    if x["id"]==quoted["sentence_id"])
+        self.assertGreater(quoted["evidence"]["end"],anchor["end"])
+        self.assertEqual(
+            _validate_typed_window(
+                self.prose,{"typed_candidates":[quoted]},[anchor]),
+            [quoted])
+        crossing=deepcopy(quoted)
+        crossing["type"]="OBSERVE_OPENABLE"
+        crossing["payload"]={"expected":"UNKNOWN","observed":"OPEN"}
+        with self.assertRaisesRegex(
+            CoverageError,"V022_TYPED_WINDOW_OUTSIDE_TARGET"):
+            _validate_typed_window(
+                self.prose,{"typed_candidates":[crossing]},[anchor])
+
     def test_partial_quoted_document_entry_is_not_a_complete_append(self):
         def truncate(proposals):
             content=proposals[-1]["payload"]["text"]
