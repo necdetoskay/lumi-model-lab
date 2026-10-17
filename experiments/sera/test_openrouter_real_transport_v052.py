@@ -1,5 +1,6 @@
 """SERA v0.52 real HTTP adapter: NO-NETWORK adversarial receipts."""
 import base64
+from io import BytesIO
 import json
 import tempfile
 import time
@@ -135,7 +136,7 @@ class RealTransportOfflineTests(unittest.TestCase):
                                     binding=self.binding,authorized=True)
         def rejected(req,timeout):
             self.sent.append((req,timeout))
-            raise HTTPError(ENDPOINT,429,"rate limit",{},None)
+            raise HTTPError(ENDPOINT,429,"rate limit",{},BytesIO(b'{"error":"rate-limit"}'))
         result=self.invoke(self.bridge(opener=rejected))
         self.assertEqual(result["error"],"HTTP_429")
         self.assertIsNone(result["raw"])
