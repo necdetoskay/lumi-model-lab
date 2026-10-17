@@ -86,7 +86,7 @@ class TypedSourceOnlyAutorepair(unittest.TestCase):
             checked=create_checker(
                 evidence_root=root/"evidence",full_qualification=True)(
                     prose=SOURCE_2,world=entry())
-            self.assertEqual(checked["full_qualification"]["status"],
+            self.assertEqual(checked["qualification"]["status"],
                              "FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL")
             before=len(self.requests)
             restart=self.worker(root,lambda **_:self.fail(
