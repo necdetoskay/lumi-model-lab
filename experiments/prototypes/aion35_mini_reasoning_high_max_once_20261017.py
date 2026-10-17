@@ -202,11 +202,15 @@ def real_stream_call(request, api_key):
         returned_model = None
         event_count = 0
         stream_closed_cleanly = False
-        for line in resp.iter_lines(decode_unicode=True):
+        for line in resp.iter_lines(decode_unicode=False):
             if not line:
                 continue
             if isinstance(line, bytes):
-                line = line.decode("utf-8")
+                # SSE JSON is UTF-8. requests' default decode_unicode=True
+                # can incorrectly choose ISO-8859-1 for text/event-stream,
+                # producing visible mojibake like "â\\x80\\x94".
+                # Keep the original paid receipts immutable, fix decoder only.
+                line = line.decode("utf-8", errors="strict")
             if not line.startswith("data:"):
                 continue
             body = line[5:].strip()
