@@ -19,7 +19,7 @@ import json
 from pathlib import Path
 
 from experiments.sera.artifact_scene_checker_v021 import create_checker, digest
-from experiments.sera.coverage import prose_hash
+from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.fresh_scene_evidence_worker_v022 import create_preparer
 from experiments.sera.journaled_provider_bridge_v052 import create_journaled_provider
 from experiments.sera.mara_s1_typed_live_v05 import entry_state, REGISTRY
@@ -105,6 +105,14 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
         approved_models=models,grants=grants,transport=transport,
         approval=approval,trusted_public_key=trusted_public_key,
         auto_register_signed_grants=True)
+    def safe_callback(*, key, model, prepared):
+        try:
+            return callback(key=key,model=model,prepared=prepared)
+        except Exception as exc:
+            # The durable journal has already recorded STARTED or RECEIPTED.
+            # Never escalate an ambiguous provider outcome into a blind POST.
+            raise CoverageError("V052_REAL_PROVIDER_STOPPED_SAFE:" +
+                                type(exc).__name__) from exc
     root=Path(output_root)
     # Keep the real lane completely isolated from v0.52 synthetic receipts.
     saved=dict(contract,approval_id=approval["manifest"]["approval_id"],
@@ -136,11 +144,11 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
         api_key="SIGNED_PROVIDER_CALLBACK_KEY_UNUSED",
         extraction_model=models["extraction"],
         semantic_model=models["semantic"],typed_model=models["typed"],
-        provider_call=callback,max_model_requests=28,
+        provider_call=safe_callback,max_model_requests=28,
         observed_spend_guard_usd="0.30")
     writer=create_writer(
         api_key="SIGNED_PROVIDER_CALLBACK_KEY_UNUSED",
-        model=models["writer"],provider_call=callback,
+        model=models["writer"],provider_call=safe_callback,
         archive_dir=root/"writer-model-receipts",
         observed_spend_guard_usd="0.15",
         story_context={
