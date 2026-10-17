@@ -14,7 +14,7 @@ import secrets
 import time
 from urllib.parse import quote, urlsplit
 
-from experiments.sera.coverage import CoverageError
+from experiments.sera.coverage import CoverageError,prose_hash
 from experiments.sera.g2_authenticated_http_reader_v033 import (
     _get_json, MAX_BODY_BYTES,
 )
@@ -92,6 +92,11 @@ def create_physical_reader(
              authority.get("world_db_writes")==0 and
              authority.get("g2_commit_request") is None,
              "V053_G2_AUTHORITY_NOT_AUTHENTICATED")
+        # The signed G2 story authority attests the ORIGINAL accepted prose
+        # only. Writer-generated revisions need a separately checked signed
+        # source lineage; they cannot call this initial-source GET gate.
+        need(authority.get("accepted_english_sha256")==prose_hash(prose),
+             "V053_G2_PHYSICAL_ACCEPTED_PROSE_SHA_MISMATCH")
         nonce=nonce_factory()
         need(isinstance(nonce,str) and 24<=len(nonce)<=180 and
              all(ch.isascii() and (ch.isalnum() or ch in "_-")
