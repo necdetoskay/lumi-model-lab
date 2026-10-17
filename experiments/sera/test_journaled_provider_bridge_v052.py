@@ -58,6 +58,36 @@ class BridgeTests(unittest.TestCase):
         with self.assertRaises(JournalBlocked):
             self.bridge(approval=None,authorization_verified=True)
 
+    def test_forged_signature_rejected(self):
+        signer=Ed25519PrivateKey.generate()
+        bad=self.bridge_signature_fixture()
+        bad["signature"]=base64.b64encode(
+            signer.sign(_canonical(bad["manifest"]).encode("utf-8"))).decode("ascii")
+        with self.assertRaisesRegex(JournalBlocked,"SIGNATURE_INVALID"):
+            self.bridge(approval=bad)
+
+    def bridge_signature_fixture(self):
+        grants={self.fingerprint:dict(grant_id="sera-grant-01",request_id="req-01")}
+        manifest=dict(scope="SERA_V052_MARA_NONCANONICAL_PAID",**SHA,
+                      approved_models=MODELS,grants=grants,
+                      expires_at=int(time.time())+3600,approval_id="approval-01")
+        return dict(manifest=manifest,signature=base64.b64encode(
+            self.signer.sign(_canonical(manifest).encode("utf-8"))).decode("ascii"))
+
+    def test_expired_signed_approval_rejected(self):
+        approved=self.bridge_signature_fixture()
+        approved["manifest"]["expires_at"]=1
+        approved["signature"]=base64.b64encode(
+            self.signer.sign(_canonical(approved["manifest"]).encode("utf-8"))).decode("ascii")
+        with self.assertRaisesRegex(JournalBlocked,"APPROVAL_EXPIRED"):
+            self.bridge(approval=approved)
+
+    def test_tampered_scene_binding_rejected(self):
+        approved=self.bridge_signature_fixture()
+        approved["manifest"]["scene_key"]="other-scene"
+        with self.assertRaisesRegex(JournalBlocked,"BINDING_DRIFT"):
+            self.bridge(approval=approved)
+
     def test_unregistered_grant_never_posts(self):
         with self.assertRaisesRegex(JournalBlocked,"GRANT_MISSING"):
             self.bridge()(key="placeholder",model=MODELS["extraction"],
