@@ -194,6 +194,39 @@ def _source_only_repair_request(*, original, failure_code, attempt):
     return amended
 
 
+
+def _typed_only_coverage_retry_request(*,original,attempt):
+    """Retry valid-schema but missed typed source action without prior replies.
+
+    The SOURCE prose and app-owned registered roles come from the original
+    typed request. Neither extractor's classification nor first typed model
+    output is provided, so no rejected candidate can contaminate the retry.
+    """
+    _require(type(attempt) is int and 1<=attempt<=2 and
+             isinstance(original,dict) and
+             isinstance(original.get("messages"),list) and
+             len(original["messages"])==2 and
+             original["messages"][0].get("role")=="system" and
+             original["messages"][1].get("role")=="user" and
+             isinstance(original["messages"][0].get("content"),str) and
+             isinstance(original["messages"][1].get("content"),str),
+             "V022_TYPED_REEXTRACTION_ORIGINAL_INVALID")
+    amended=deepcopy(original)
+    amended["messages"][0]["content"]+=(
+        "\n\nINDEPENDENT SOURCE-ONLY TYPED FACET RE-EXTRACTION, attempt "+
+        str(attempt)+". Deterministic gate reported a source-backed "
+        "physical/document event without a matching typed reducer action. "
+        "Read the ORIGINAL prose and APP-REGISTERED facet roles from "
+        "the unchanged user packet again. Return exactly one JSON object "
+        "with typed_candidates, including only ACTUAL supported actions, "
+        "and exact evidence spans/sentence IDs. If unable to prove an "
+        "action, omit it rather than invent a transition. "
+        "Previous model replies, other extractors' candidate decisions, "
+        "gold answers, and manual corrections are NOT available.")
+    enforce_no_output_token_limit(amended)
+    return amended
+
+
 def create_preparer(*, evidence_root, work_root, scene_key,
                     registry, candidate_lexicon, typed_registry,
                     api_key, extraction_model, semantic_model, typed_model,
@@ -503,7 +536,26 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 stage_models=typed_models,
                 bind=lambda ans: _validate_typed(prose, ans),
             )
-            _check_critical_coverage(report, typed)
+            # A complete, paid, valid JSON facet list can nevertheless miss
+            # an independently source-bound CLOSE / WRITE. A single fresh
+            # typed-only reread is safer than treating syntactic JSON as a
+            # completed scene, and it needs a new durable signed request.
+            # Unknown in-flight POST outcomes are still NEVER blindly resent.
+            for attempt in range(1,max_source_repair_attempts+1):
+                try:
+                    _check_critical_coverage(report,typed)
+                    break
+                except CoverageError as exc:
+                    if str(exc)!="V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED":
+                        raise
+                typed = provider_json(
+                    tag="typed_coverage_repair_"+str(attempt),
+                    request=_typed_only_coverage_retry_request(
+                        original=typed_request,attempt=attempt),
+                    stage_models=typed_models,schema_retry=False,
+                    bind=lambda ans: _validate_typed(prose,ans),
+                )
+            _check_critical_coverage(report,typed)
             temporal_case = None
             if trusted_temporal_builder is not None:
                 # Application-owned route/time policy, never a model's
