@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: aion-paid-worktree
+          fetch-depth: 2
           persist-credentials: false
           clean: false
       - uses: actions/setup-python@v5
@@ -32,7 +33,7 @@ jobs:
       - name: Verify dedicated persistent runner for unique claim
         run: |
           set -euo pipefail
-          test "$RUNNER_NAME" = "lumi-q25"
+          test "$RUNNER_NAME" = "q25-offline-isolated"
           test -n "$OPENROUTER_API_KEY"
           test "$GITHUB_REF_NAME" = "experiment/aion35-mini-reasoning-high-max-20261017"
       - name: Dependencies and frozen zero-cap offline tests
