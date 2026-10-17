@@ -383,6 +383,25 @@ def aggregate(*, plan: dict, bound_batches: list[dict],
                 findings.append(f"SWEEP_UNACCOUNTED_ACTION_CUE:{sid}:{cue['quote']}")
                 candidate_probes.append((sid, "ACTION",
                                          cue["quote"], cue["family"]))
+        # A single broadly quoted WRITE cannot stand in for TWO
+        # independent physical operations in the same source sentence.
+        # This is generic cue-to-operation cardinality, not an analyst
+        # answer about Mara or permission to mutate either object.
+        words={c["quote"].casefold():c for c in cue_row["cues"]}
+        physical_open=any(k in ("opened","open") and
+                          v["family"]=="PHYSICAL_CHANGE"
+                          for k,v in words.items())
+        document_write=any(k in ("wrote","writing","writes","jotted",
+                                 "scribbled","added")
+                           and v["family"]=="DOCUMENT_CHANGE"
+                           for k,v in words.items())
+        if physical_open and document_write and (
+            not any(e["kind"]=="OPEN" for e in row["events"]) or
+            not any(e["kind"]=="WRITE" for e in row["events"])
+        ):
+            findings.append(f"SWEEP_COMPOUND_OPEN_WRITE_COLLAPSED:{sid}")
+            candidate_probes.append((
+                sid,"ACTION",s["quote"],"SEPARATE_OPEN_AND_WRITE_ACTIONS"))
         if row["disposition"] == "AMBIGUOUS":
             findings.append(f"SWEEP_UNRESOLVED_SENTENCE:{sid}")
         # Models that call a physically changing sentence TEXTURE or
