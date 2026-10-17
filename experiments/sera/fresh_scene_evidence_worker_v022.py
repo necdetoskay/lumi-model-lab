@@ -405,10 +405,17 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     # Each repaired request is a DIFFERENT fingerprint and
                     # needs another signed grant slot. Unknown network
                     # outcomes stop before this block can reach retry.
-                    reply=_durable_provider_response(
-                        root=root/"receipts"/tag_id,model=chosen,
-                        request=exact,api_key=api_key,
-                        provider_call=provider_call,reconciler=reconciler)
+                    try:
+                        reply=_durable_provider_response(
+                            root=root/"receipts"/tag_id,model=chosen,
+                            request=exact,api_key=api_key,
+                            provider_call=provider_call,reconciler=reconciler)
+                    except (TimeoutError,ConnectionError,BrokenPipeError) as exc:
+                        # Transport failed after a durable STARTED marker.
+                        # This stage must halt: no billable second POST for
+                        # an outcome that might already have been charged.
+                        raise CoverageError(
+                            "V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL") from exc
                     calls+=1
                     body,choice,price=_provider_body(reply,chosen)
                     spent+=price
