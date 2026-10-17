@@ -19,6 +19,7 @@ from experiments.sera.coverage import CoverageError, prose_hash
 from experiments.sera.delegated_paid_budget_v052 import (
     DelegatedBudget, verify_delegated_approval)
 from experiments.sera.delegated_provider_bridge_v052 import create_delegated_provider
+from experiments.sera.delegated_receipt_audit_v052 import audit_delegated_receipts
 from experiments.sera.fresh_scene_evidence_worker_v022 import create_preparer
 from experiments.sera.mara_s1_typed_live_v05 import entry_state, REGISTRY
 from experiments.sera.openrouter_real_transport_v052 import make_openrouter_transport
@@ -157,8 +158,11 @@ def run_delegated_mara(*, models, approval, trusted_public_key, api_key,
         return proven_writer(source=source,defects=defects,recovery=True)
 
     checker=create_checker(evidence_root=root/"evidence",full_qualification=True)
+    frozen_prose=frozen_mara_source()["prose"]
+    if prose_hash(frozen_prose)!=EXPECTED_SHA:
+        raise CoverageError("V052_DELEGATED_ORIGINAL_MARA_SHA_DRIFT")
     loop=scene_loop(
-        prose=frozen_mara_source()["prose"],world=deepcopy(world),
+        prose=frozen_prose,world=deepcopy(world),
         check_scene=checker,rewrite_scene=rewrite,
         output_dir=root/"controller",prepare_evidence=proven_preparer,
         evidence_policy_id="v052-delegated-v022-v023-source-lineage",
@@ -168,7 +172,11 @@ def run_delegated_mara(*, models, approval, trusted_public_key, api_key,
             loop.get("world_db_writes")==0 and
             loop.get("requires_manual_intervention") is False,
             "V052_DELEGATED_CONTROLLER_UNSAFE")
-    ready=loop["status"]=="SCENE_CANDIDATE_READY_NONCANONICAL"
+    receipt_audit=audit_delegated_receipts(
+        journal=journal,approval_id=budget.approval_id)
+    _write(root/"provider_receipt_audit.json",receipt_audit)
+    ready=(loop["status"]=="SCENE_CANDIDATE_READY_NONCANONICAL"
+           and receipt_audit["all_provider_receipts_qualified"])
     with journal._connect() as db:
         posts=db.execute(
             "SELECT COUNT(*) FROM delegated_requests WHERE approval_id=?",
@@ -184,6 +192,9 @@ def run_delegated_mara(*, models, approval, trusted_public_key, api_key,
         "controller_reason_code":loop.get("reason_code"),
         "automatic_rewrites":loop.get("rewrite_count",0),
         "allocated_provider_requests":posts,
+        "provider_receipt_audit_status":receipt_audit["status"],
+        "provider_receipts_qualified":receipt_audit["all_provider_receipts_qualified"],
+        "observed_provider_spend_usd":receipt_audit["total_observed_usd"],
         "provider_receipts_require_independent_audit":True,
         "full_scene_qualification_gate_invoked":True,
         "semantic_quality_final_release_approved":False,
