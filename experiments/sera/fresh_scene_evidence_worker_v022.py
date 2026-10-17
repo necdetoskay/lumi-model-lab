@@ -287,6 +287,66 @@ def _typed_only_coverage_retry_request(*,original,attempt,source_focus=None):
     return amended
 
 
+
+def _typed_source_window_request(*, original, target_sentences):
+    """Independent typed reread of one exact source window, without old replies.
+
+    The unmodified complete source and entry world remain available as
+    context. Only window sentence IDs may appear in the response; neither
+    sweep labels nor gold events are supplied as a proposed answer.
+    """
+    _require(isinstance(original, dict) and
+             isinstance(original.get("messages"), list) and
+             len(original["messages"]) == 2 and
+             isinstance(original["messages"][0].get("content"), str) and
+             isinstance(original["messages"][1].get("content"), str) and
+             isinstance(target_sentences, list) and
+             bool(target_sentences),
+             "V022_TYPED_WINDOW_REQUEST_INVALID")
+    try:
+        packet = json.loads(original["messages"][1]["content"])
+    except (TypeError, ValueError) as exc:
+        raise CoverageError("V022_TYPED_WINDOW_SOURCE_INVALID") from exc
+    prose = packet.get("original_prose") if isinstance(packet, dict) else None
+    _require(isinstance(prose, str) and bool(prose.strip()),
+             "V022_TYPED_WINDOW_SOURCE_INVALID")
+    actual = {item["id"]: item for item in sentences(prose)}
+    ids = [item.get("id") for item in target_sentences
+           if isinstance(item, dict)]
+    _require(len(ids) == len(target_sentences) and
+             len(set(ids)) == len(ids) and
+             all(isinstance(ident, str) and
+                 actual.get(ident) == row for ident, row in
+                 zip(ids, target_sentences)),
+             "V022_TYPED_WINDOW_NOT_VERBATIM_SOURCE")
+    amended = deepcopy(original)
+    amended["messages"][0]["content"] += (
+        "\n\nINDEPENDENT EXACT SOURCE WINDOW TYPED RE-EXTRACTION. "
+        "The complete ORIGINAL prose/registered capabilities/entry world "
+        "remain in the user packet as read-only context. Extract ONLY "
+        "actual supported typed actions in these TARGET source sentences, "
+        "with original-global evidence offsets and sentence IDs: " +
+        json.dumps(target_sentences, ensure_ascii=False, sort_keys=True) +
+        ". Do not output typed actions from context sentences. "
+        "Do not invent missing observations, events, object states or "
+        "action times. Prior model replies, proposed repairs, Writer "
+        "conclusions and analyst gold are NOT supplied.")
+    enforce_no_output_token_limit(amended)
+    return amended
+
+
+def _validate_typed_window(prose, answer, target_sentences):
+    typed = _validate_typed(prose, answer)
+    source = {s["id"]: s for s in target_sentences}
+    _require(all(
+        item["sentence_id"] in source and
+        source[item["sentence_id"]]["start"] <= item["evidence"]["start"] <
+        item["evidence"]["end"] <= source[item["sentence_id"]]["end"]
+        for item in typed
+    ), "V022_TYPED_WINDOW_OUTSIDE_TARGET")
+    return typed
+
+
 def create_preparer(*, evidence_root, work_root, scene_key,
                     registry, candidate_lexicon, typed_registry,
                     api_key, extraction_model, semantic_model, typed_model,
@@ -297,7 +357,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     temporal_policy_id=None,
                     trusted_relation_builder=None,
                     relation_policy_id=None, reconciler=None,
-                    max_source_repair_attempts=0):
+                    max_source_repair_attempts=0,
+                    typed_batch_recovery=False):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -333,6 +394,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
     _require(type(max_source_repair_attempts) is int and
              0<=max_source_repair_attempts<=2,
              "V022_SOURCE_REPAIR_POLICY_INVALID")
+    _require(type(typed_batch_recovery) is bool,
+             "V022_TYPED_WINDOW_POLICY_INVALID")
     _require(fallback_model is None or (
         isinstance(fallback_model, str) and bool(fallback_model.strip()) and
         fallback_model not in (extraction_model, typed_model)
@@ -369,6 +432,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             "max_source_repair_attempts": max_source_repair_attempts,
             "observed_spend_guard_usd": str(guard),
         }
+        if typed_batch_recovery:
+            contract["typed_batch_recovery"] = True
         if trusted_temporal_builder is not None:
             contract["temporal_policy_id"] = temporal_policy_id
         if trusted_relation_builder is not None:
@@ -624,6 +689,42 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     stage_models=typed_models,schema_retry=False,
                     bind=lambda ans: _validate_typed(prose,ans),
                 )
+            # If full-scene rereads still omit source-cued actions, break
+            # the ORIGINAL scene into existing four-sentence source windows.
+            # Run each independently; never turn prior model responses into
+            # ground truth or reuse full-scene candidate lists as answers.
+            if typed_batch_recovery:
+                missing = False
+                try:
+                    _check_critical_coverage(report, typed)
+                except CoverageError as exc:
+                    if str(exc) != "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED":
+                        raise
+                    missing = True
+                if missing:
+                    window_candidates = []
+                    for batch in plan["batches"]:
+                        targets = [s for s in plan["source_sentences"]
+                                   if s["id"] in batch["sentence_ids"]]
+                        window_request = _typed_source_window_request(
+                            original=typed_request, target_sentences=targets)
+                        window_candidates.extend(provider_json(
+                            tag="typed_window_"+batch["batch_id"],
+                            request=window_request,
+                            stage_models=[typed_model], schema_retry=False,
+                            bind=lambda ans, selected=targets:
+                                _validate_typed_window(prose, ans, selected),
+                        ))
+                    window_candidates.sort(
+                        key=lambda row: (row["evidence"]["start"],
+                                         row["evidence"]["end"],
+                                         row["event_id"]))
+                    _require(len(set(x["event_id"] for x in
+                                     window_candidates)) ==
+                             len(window_candidates),
+                             "V022_TYPED_WINDOW_DUPLICATE_EVENT_ID")
+                    typed = window_candidates
+                    _check_critical_coverage(report, typed)
             # A syntactically valid but STILL incomplete primary facet
             # model can be checked by an explicitly configured alternate
             # model. Distinct model/request/tag = new auditable receipt.
