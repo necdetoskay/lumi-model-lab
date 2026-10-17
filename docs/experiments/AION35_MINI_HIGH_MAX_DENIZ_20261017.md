@@ -29,3 +29,12 @@ Tarih: 26 Eylül 2026, archived test `36257356137`; Aion 3.5 Mini writer draft *
 Repository sahibi veya yetkili iş akışı düzenleyicisi, bağımsız branch'teki **read-only checkout + self-hosted offline test -> opt-in tek seferlik grant -> Aion 2 gerçek çağrı -> artifact** iş akışını kod incelemesinden geçirip **normal GitHub Actions workflow edit izni üzerinden** etkinleştirmeli. API anahtarı hiçbir zaman sohbet veya commit içeriğine yazılmamalı. İş akışının uygulama kodundaki ödeme limiti **iki POST** olup servis cevabı ve provider fiyatlaması değişken olduğundan mutlak dolar harcama garantisi değildir.
 
 Not: İki örnekle yarışma için henüz kalite kararı çıkarılamaz; karşılaştırma ancak gerçek metinler oluştuğunda başlayabilir.
+
+
+## 17 Ekim 2026 — Güncel CI doğrulaması
+
+[**Salt okunur self-hosted CI #39005594002**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39005594002): **SUCCESS, 7/7 test.** Ek testler gerçek SSE event formatının son `[DONE]` işaretini ve provider `finish_reason` değerini zorunlu kılıyor; yarım kalmış stream daha sonra geçerli hikâye sayılmıyor. Ayrı test, aynı tek-kullanımlık yetkiyle ikinci yürütmenin iki ilave POST göndermeden `FileExistsError` ile reddedildiğini doğruladı. `--dry-run` özeti orijinal istemin hash'ini ve iki payloadın yalnız `reasoning.effort` alanında ayrıldığını kanıtladı.
+
+CI workflow: `.github/workflows/aion35-mini-high-max-offline.yml`. Bu iş akışının **API anahtarı erişimi veya ücretli gönderim adımı YOKTUR**. Güvenlik kontrolü nedeniyle kabul edilmeyen önceki credential-bearing paid workflow **kurulmadı**. Bu nedenle gerçek HIGH/MAX yanıtı = 0, gözlemlenebilir model kalitesi = henüz yok, yeni maliyet = 0 USD.
+
+**Güvenlik önkoşulu:** Gelecekte ücretli iş akışı yetkili kişi tarafından incelenirse tek-kullanım kilidinin bütün self-hosted runner'lar için ortak ve kalıcı storage'da tutulduğu ayrıca kanıtlanmalı. Yalnız runner-local veya temizlenen `GITHUB_WORKSPACE` dizini, birden çok runner varken global idempotency garantisi vermez. Bilinmeyen faturalandırılabilir sağlayıcı sonucu otomatik tekrar gönderilemez.
