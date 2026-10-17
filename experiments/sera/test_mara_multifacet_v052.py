@@ -136,6 +136,15 @@ class MaraMultifacetLabControl(unittest.TestCase):
         with self.assertRaisesRegex(CoverageError,"V054_OPENABLE_COMPARE_AND_SWAP_INVALID"):
             self.run_preview(changes=change)
 
+    def test_open_evidence_cannot_authorize_closing_watch_case(self):
+        def reverse(report):
+            event=next(e for e in report["candidate_events"]
+                       if e["event_id"]=="blind-example-2")
+            event["kind"]="OPEN"
+        with self.assertRaisesRegex(
+            CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
+            self.run_preview(report_changes=reverse)
+
     def test_multi_facet_roles_are_explicit_not_assumed(self):
         with self.assertRaisesRegex(CoverageError,"V054_MULTIFACET_REQUIRES_SHARED_OBJECT"):
             self.run_preview(roles={
