@@ -45,7 +45,7 @@ def registered_mara_facets(world):
     """Registered v0.13 capabilities only; NEVER a claimed action/event."""
     # Watch case and notebook EXIST in the frozen v0.2 world.
     # They are not a hand-authored answer to the sentence extractor.
-    roles={"openables":["vane_watch"],"documents":["mara_notebook"]}
+    roles={"openables":["vane_watch","mara_notebook"],"documents":["mara_notebook"]}
     for identifier in roles["openables"]+roles["documents"]:
         entity=world["entities"].get(identifier)
         require(isinstance(entity,dict) and entity["kind"]=="OBJECT"
