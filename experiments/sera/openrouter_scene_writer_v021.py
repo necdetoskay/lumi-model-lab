@@ -154,7 +154,16 @@ def _durable_provider_response(*, root, model, request, api_key,
                 os.fsync(file.fileno())
         except FileExistsError as exc:
             raise CoverageError("V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL") from exc
-        envelope = provider_call(key=api_key, model=model, prepared=prepared)
+        try:
+            envelope = provider_call(key=api_key, model=model, prepared=prepared)
+        except Exception as exc:
+            # A provider exception can happen AFTER a billable POST left this
+            # process. Preserve the STARTED marker; never silently resubmit.
+            # Normalize the error so orchestration does not mistake a
+            # timeout, broken callback or opaque provider error for proof
+            # that the provider never received the first request.
+            raise CoverageError(
+                "V021_UNCONFIRMED_IN_FLIGHT_PROVIDER_CALL") from exc
     # An unknown/broken provider response might have incurred a charge.
     # Retain STARTED and do not automatically retry without a receipt.
     if not isinstance(envelope, dict) or not isinstance(
