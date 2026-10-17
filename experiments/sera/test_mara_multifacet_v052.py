@@ -132,6 +132,50 @@ class MaraMultifacetLabControl(unittest.TestCase):
             CoverageError,"V054_OPENABLE_COMPARE_AND_SWAP_INVALID"):
             self.run_preview(changes=invented_baseline)
 
+    def test_disjoint_wrote_verb_and_exact_document_quote_are_one_action(self):
+        # Independent source model may cite only "wrote" (action), whereas
+        # a typed model must cite the EXACT appended text, not a fake
+        # composite "wrote: quoted text" document payload.
+        wrote=self.prose.index("wrote: “")
+        def shorten(report):
+            event=report["candidate_events"][-1]
+            event["start"]=wrote
+            event["end"]=wrote+len("wrote")
+            event["quote"]="wrote"
+        out=self.run_preview(report_changes=shorten)
+        self.assertEqual(out["status"],
+                         "TYPED_MULTIFACET_SIMULATED_NONCANONICAL")
+        self.assertEqual(out["multifacet_preview"]["event_count"],4)
+        self.assertEqual(
+            out["multifacet_preview"]["facets"]["mara_notebook"]
+            ["documents"]["observed_appends"][0]["text"],
+            "Archive telegram: arrival recorded at 02:10.")
+        self.assertEqual(out["world_db_writes"],0)
+        self.assertFalse(out["canonical_commit_authorized"])
+
+    def test_spoken_claim_or_action_without_quote_delimiter_cannot_fake_write(self):
+        wrote=self.prose.index("wrote: “")
+        def bad_verb(report):
+            e=report["candidate_events"][-1]
+            # Same sentence, but the independent model did not observe a
+            # WRITE verb at its declared quote/evidence.
+            q="Mara opened her notebook"
+            e["start"]=self.prose.index(q)
+            e["end"]=e["start"]+len(q)
+            e["quote"]=q
+        with self.assertRaisesRegex(
+                CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
+            self.run_preview(report_changes=bad_verb)
+        def wrong_kind(report):
+            e=report["candidate_events"][-1]
+            e["start"]=wrote
+            e["end"]=wrote+len("wrote")
+            e["quote"]="wrote"
+            e["kind"]="COMMUNICATE"
+        with self.assertRaisesRegex(
+                CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
+            self.run_preview(report_changes=wrong_kind)
+
     def test_missing_model_sweep_event_blocks_notebook_open(self):
         def change(report):
             report["candidate_events"]=[e for e in report["candidate_events"]
