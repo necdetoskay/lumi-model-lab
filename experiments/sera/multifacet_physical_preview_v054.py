@@ -92,7 +92,7 @@ def source_backed_typed_match(*, prose, event, candidate):
     payload=candidate.get("payload")
     if (not re.search(r"\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*$",
                       verb, re.IGNORECASE) or
-        not re.fullmatch(r"""\s*:\s*(["“‘'])""",between) or
+        not re.fullmatch(r"""\s*[:,]\s*(["“‘'])""",between) or
         not isinstance(payload,dict) or
         payload.get("text")!=content or
         span.get("quote")!=content):
@@ -177,7 +177,10 @@ def preview(*,prose,world,registry,candidates,extraction_report):
         need(isinstance(row,dict) and isinstance(span,dict) and
              set(span)=={"start","end","quote"} and
              type(span["start"]) is int and type(span["end"]) is int and
-             row["start"]<=span["start"]<span["end"]<=row["end"] and
+             row["start"]<=span["start"]<row["end"] and
+             span["start"]<span["end"]<=len(prose) and
+             (proposed["type"]=="APPEND_DOCUMENT_ENTRY" or
+              span["end"]<=row["end"]) and
              prose[span["start"]:span["end"]]==span["quote"] and
              span["start"]>last_start,
              "V054_SOURCE_SPAN_OR_ORDER_INVALID")
