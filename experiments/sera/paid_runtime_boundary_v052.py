@@ -41,7 +41,15 @@ def _safe_owned_file(path):
     p=Path(path)
     if not p.is_absolute():
         raise JournalBlocked("V052_PAID_TRUST_PATH_NOT_ABSOLUTE")
+    parent=p.parent
     try:
+        parent_info=os.lstat(parent)
+        if (not stat.S_ISDIR(parent_info.st_mode) or
+            parent_info.st_uid not in (0,os.geteuid()) or
+            parent_info.st_mode & (stat.S_IWGRP|stat.S_IWOTH)):
+            raise JournalBlocked("V052_PAID_TRUST_PARENT_INSECURE")
+        if p.resolve(strict=True)!=p:
+            raise JournalBlocked("V052_PAID_TRUST_SYMLINKED_PATH")
         fd=os.open(p,os.O_RDONLY | getattr(os,"O_NOFOLLOW",0)
                    | getattr(os,"O_CLOEXEC",0))
         try:
@@ -88,6 +96,13 @@ def verify_shared_local_journal(cfg):
     """Verify an existing SINGLE local journal, without creating it."""
     p=Path(cfg["journal_path"])
     try:
+        parent=os.lstat(p.parent)
+        if (not stat.S_ISDIR(parent.st_mode) or
+            parent.st_uid not in (0,os.geteuid()) or
+            parent.st_mode & (stat.S_IWGRP|stat.S_IWOTH)):
+            raise JournalBlocked("V052_PAID_JOURNAL_PARENT_INSECURE")
+        if p.resolve(strict=True)!=p:
+            raise JournalBlocked("V052_PAID_JOURNAL_SYMLINKED_PATH")
         info=os.lstat(p)
         if (not stat.S_ISREG(info.st_mode) or
             info.st_uid not in (0,os.geteuid()) or
