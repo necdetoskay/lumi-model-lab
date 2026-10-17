@@ -94,3 +94,34 @@ paid-response replay, changed immutable policy and browser E2E.
   patching/retry, no untracked canon writes.
 
 Tracked at [SERA Epic #306](https://github.com/necdetoskay/lumi-model-lab/issues/306).
+
+## 2026-10-17 — Preserve source OPEN actions (v0.54 handoff)
+
+The frozen Mara source says **"Mara opened her notebook"**. It is an
+*actual action*, not just a passive statement that the notebook is open.
+Earlier tests accepted `OBSERVE_OPENABLE` against a source `OPEN`,
+which could silently erase the physical opening from the staged event trace.
+
+The existing v0.22→v0.54→v0.23 path now enforces:
+- An independent, source-bound `OPEN` requires a typed
+  `SET_OPENABLE` action. `OBSERVE_OPENABLE` only supports independently
+  extracted `OBSERVE` (a described OPEN/CLOSED state).
+- In v0.54's detached multi-capability simulator, a source-explicit
+  first opening/closing may use `SET_OPENABLE(expected=UNKNOWN,
+  next=OPEN|CLOSED)` when the prior state truly is unknown. This **does
+  not invent an opposite prior state** or authorize a canon transition.
+  Later operations must match the last source-established state.
+- The v0.22 typed request explains this rule only for the v0.54
+  multi-capability path. The legacy single-facet v0.13 CAS contract is
+  not silently changed.
+- v0.22 early coverage, v0.54 independent source backing and v0.23
+  whole-scene gate reject the passive-observation-for-opening substitution.
+  New regressions exercise the exact frozen Mara quote and an independent
+  two-sentence adversarial check.
+
+[Offline self-hosted CI #39054833912](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39054833912)
+verified 759 baseline + 138 v0.52 + 28 v0.53 = **925 Python PASS** and browser
+E2E PASS at commit `bd8a47a2429e`. This is a **real correctness
+invariant fix**, not proof of positive 28-sentence independently generated
+Mara semantics or a Writer-repaired end-to-end result. Original Mara still
+stops safely in the scripted empty-typed diagnostic; Issue #309 remains OPEN.
