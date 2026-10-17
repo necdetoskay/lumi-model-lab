@@ -145,13 +145,14 @@ def _check_critical_coverage(report, typed):
     """Do not silently drop a sourced physical CLOSE/WRITE event."""
     for item in report["candidate_events"]:
         expected = {
-            "CLOSE": "SET_OPENABLE",
-            "WRITE": "APPEND_DOCUMENT_ENTRY",
+            "OPEN": frozenset({"OBSERVE_OPENABLE","SET_OPENABLE"}),
+            "CLOSE": frozenset({"SET_OPENABLE"}),
+            "WRITE": frozenset({"APPEND_DOCUMENT_ENTRY"}),
         }.get(item["kind"])
         if expected is None or item["effect"] not in ("OBJECT", "DOCUMENT"):
             continue
         _require(any(
-            e["type"] == expected and
+            e["type"] in expected and
             e["sentence_id"] == item["sentence_id"] and
             e["evidence"]["start"] < item["end"] and
             item["start"] < e["evidence"]["end"]
