@@ -1,5 +1,7 @@
 """SERA v0.52 real HTTP adapter: NO-NETWORK adversarial receipts."""
 import base64
+from hashlib import sha256
+from experiments.sera.world_state_v02 import canonical
 from io import BytesIO
 import json
 import tempfile
@@ -142,6 +144,43 @@ class RealTransportOfflineTests(unittest.TestCase):
         self.assertIsNone(result["raw"])
         self.assertEqual(self.journal.status("sera-grant-test"),"RECEIPTED")
         self.assertEqual(len(self.sent),1)
+
+    def request_signature(self):
+        return sha256(canonical({
+            "model":MODELS["extraction"],"request":self.request
+        }).encode("utf-8")).hexdigest()
+
+    def test_get_only_recovery_from_durable_response(self):
+        self.journal.register_grant(grant_id="sera-grant-test",
+                                    binding=self.binding,authorized=True)
+        callback=self.bridge()
+        first=self.invoke(callback)
+        recovered=self.bridge().recover_completed(
+            model=MODELS["extraction"],request=self.request,
+            request_sha256=self.request_signature())
+        self.assertEqual(first,recovered)
+        self.assertEqual(len(self.sent),1)
+
+    def test_get_only_recovery_refuses_unknown_inflight(self):
+        self.journal.register_grant(grant_id="sera-grant-test",
+                                    binding=self.binding,authorized=True)
+        def outage(req,timeout):
+            self.sent.append((req,timeout))
+            raise URLError("unknown post outcome")
+        with self.assertRaises(URLError):
+            self.invoke(self.bridge(opener=outage))
+        with self.assertRaisesRegex(JournalBlocked,"UNKNOWN_INFLIGHT"):
+            self.bridge().recover_completed(
+                model=MODELS["extraction"],request=self.request,
+                request_sha256=self.request_signature())
+        self.assertEqual(len(self.sent),1)
+
+    def test_get_only_recovery_refuses_unattempted(self):
+        with self.assertRaisesRegex(JournalBlocked,"NO_PRIOR_POST"):
+            self.bridge().recover_completed(
+                model=MODELS["extraction"],request=self.request,
+                request_sha256=self.request_signature())
+        self.assertEqual(self.sent,[])
 
     def test_stream_and_model_mismatch_rejected_without_send(self):
         t=self.transport()
