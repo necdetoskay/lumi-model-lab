@@ -65,6 +65,8 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         self.failed_sweep_once=False
         self.uncertain_first_sweep=False
         self.uncertain_send_count=0
+        self.omit_first_physical_sweep=False
+        self.physical_omission_emitted=False
 
     def approval(self):
         manifest=dict(schema=SCHEMA,scope=SCOPE,
@@ -87,7 +89,16 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         packet=json.loads(payload["messages"][1]["content"])
         self.assertNotIn("max_tokens",payload)
         self.assertNotIn("max_completion_tokens",payload)
-        if model==MODELS["extraction"] and self.fail_first_sweep and (
+        if model==MODELS["extraction"] and self.omit_first_physical_sweep and (
+                not self.physical_omission_emitted):
+            self.physical_omission_emitted=True
+            content=json.dumps({"rows":[
+                {"sentence_id":sentence["id"],
+                 "disposition":"NO_TRACKED_CHANGE",
+                 "reason":"Mock deliberately ignores source physical action",
+                 "mentions":[],"events":[]}
+                for sentence in packet["target_sentences"]]})
+        elif model==MODELS["extraction"] and self.fail_first_sweep and (
                 not self.failed_sweep_once):
             self.failed_sweep_once=True
             content=json.dumps({"rows":[]})
@@ -213,6 +224,25 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         out_again,_=self.lane(fail_if_post=True)
         self.assertEqual(out,out_again)
         self.assertEqual(len(self.sent),count)
+
+    def test_missing_physical_event_is_source_only_recovered_before_writer(self):
+        self.omit_first_physical_sweep=True
+        result,budget=self.lane()
+        self.assertTrue(self.physical_omission_emitted)
+        self.assertEqual(result["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
+        self.assertEqual(result["rewrite_count"],1)
+        self.assertEqual(result["final_prose_sha256"],prose_hash(SOURCE_2))
+        self.assertTrue(budget.revision_registered(prose_hash(SOURCE_2)))
+        extraction=[x for x in self.sent if x[0]==MODELS["extraction"]]
+        self.assertGreaterEqual(len(extraction),3)
+        self.assertNotEqual(extraction[0][1],extraction[1][1])
+        self.assertEqual(extraction[0][2],extraction[1][2])
+        self.assertTrue((self.root/"lane"/"controller"/"check_01.json").exists())
+        prior_count=len(self.sent)
+        replay,_=self.lane(fail_if_post=True)
+        self.assertEqual(replay,result)
+        self.assertEqual(len(self.sent),prior_count)
+        self.assertFalse(result["canonical_commit_authorized"])
 
     def test_uncertain_first_post_is_never_automatically_resent(self):
         self.uncertain_first_sweep=True
