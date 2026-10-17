@@ -309,10 +309,24 @@ def qualify(*, prose, world, bundle, projection, typed):
             flag("DEFERRED_TYPED_FACETS_NOT_ORDERED")
     if typed.get("blocker_codes") or facet_status not in (
         "TYPED_FACETS_SIMULATED_NONCANONICAL",
+        "TYPED_MULTIFACET_SIMULATED_NONCANONICAL",
         "NO_APPLICABLE_TYPED_FACETS_NONCANONICAL",
         "DEFERRED_TO_V027_ORDERED_FACETS_NONCANONICAL",
     ):
         flag("UNRESOLVED_TYPED_REDUCER_DEFECT")
+
+    if facet_status == "TYPED_MULTIFACET_SIMULATED_NONCANONICAL":
+        # The source-bound multi-capability reducer is one coherent family.
+        # It does not grant permission to bypass movement/transfer ordering.
+        multi=typed.get("multifacet_preview")
+        _ensure(isinstance(multi,dict) and
+                multi.get("schema")=="sera.multifacet-physical-preview.v0.54" and
+                multi.get("event_count")==len(candidates) and
+                multi.get("simulation_is_not_world_truth") is True and
+                typed.get("canonical_commit_authorized") is False,
+                "V054_MULTIFACET_PREVIEW_AUTHORITY_INVALID")
+        if moving or relational:
+            flag("V054_MIXED_MOVEMENT_REQUIRES_COMMON_ORDERED_REDUCER")
 
     # If v0.26 already proved one evolving-state motion+relation replay,
     # it counts as ONE coherent family. Independent v0.13 facets still
