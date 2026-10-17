@@ -86,6 +86,76 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         with sqlite3.connect(self.ledger_path) as db:
             return db.execute("SELECT COUNT(*) FROM calls").fetchone()[0]
 
+    def test_real_wire_shape_28_sentence_mara_incomplete_evidence_is_failed_safe(self):
+        """Signed, fully journaled mock OpenRouter POST on the real Mara source.
+
+        The injected model deliberately omits its source rows, and v0.22 must
+        refuse to treat the incomplete 28-sentence coverage as a qualified
+        scene. Restart must use journal receipts; no second mock POST.
+        """
+        from experiments.sera.real_blind_benchmark_v040 import EXPECTED_SHA
+        from experiments.sera.sentence_ledger_v06 import sentences
+        from experiments.sera.real_blind_benchmark_v040 import prepare
+        class MockHTTP:
+            def __init__(self,body):
+                self.body=body
+            def __enter__(self):
+                return self
+            def __exit__(self,*args):
+                return False
+            def read(self):
+                return self.body
+        observed=[]
+        def offline_open(req,timeout):
+            payload=json.loads(req.data.decode("utf-8"))
+            observed.append(payload)
+            assert req.full_url=="https://openrouter.ai/api/v1/chat/completions"
+            assert req.get_method()=="POST"
+            assert payload["model"]==MODELS["extraction"]
+            assert payload["stream"] is False
+            assert not any(k in payload for k in (
+                "max_tokens","max_completion_tokens","max_output_tokens",
+                "max_generation_tokens","max_new_tokens"))
+            mock=dict(
+                id="offline-only-mara-g-"+str(len(observed)),
+                model=MODELS["extraction"],
+                choices=[{"finish_reason":"stop",
+                          "message":{"content":json.dumps({"rows":[]})}}],
+                usage={"cost":"0.001","prompt_tokens":400,
+                       "completion_tokens":17})
+            return MockHTTP(json.dumps(mock).encode("utf-8"))
+        # Unlike safety-only tests with extraction quota=0, allow actual
+        # stage execution through the EXACT real OpenRouter wire adapter.
+        signed=self.approval(
+            max_posts=2,max_posts_per_role=dict(
+                extraction=2,semantic=0,typed=0,writer=0))
+        first=self.launch(approval=signed,opener=offline_open)
+        self.assertEqual(len(sentences(prepare()["prose"])),28)
+        self.assertEqual(first["source_sha256"],EXPECTED_SHA)
+        self.assertEqual(first["source_sentence_count"],28)
+        self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
+        self.assertEqual(first["automatic_rewrites"],0)
+        self.assertFalse(first["full_scene_qualification_gate_invoked"])
+        self.assertFalse(first["provider_receipts_qualified"] is False and
+                         first["allocated_provider_requests"]==0)
+        self.assertFalse(first["canonical_commit_authorized"])
+        self.assertEqual(first["production_db_writes"],0)
+        self.assertGreaterEqual(len(observed),1)
+        self.assertLessEqual(len(observed),2)
+        self.assertEqual(self.billable_rows(),len(observed))
+        for model_request in observed:
+            self.assertEqual(model_request["model"],MODELS["extraction"])
+        with sqlite3.connect(self.ledger_path) as db:
+            rows=db.execute("SELECT status,envelope_json FROM calls").fetchall()
+            self.assertEqual(len(rows),len(observed))
+            self.assertTrue(all(row[0]=="RECEIPTED" for row in rows))
+            self.assertTrue(all(
+                "wire_payload_b64" in json.loads(row[1]) for row in rows))
+        second=self.launch(approval=signed,opener=lambda *_a,**_kw:
+                           self.fail("restart must never re-POST"))
+        self.assertEqual(first,second)
+        self.assertEqual(len(observed),self.billable_rows())
+
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
         result=self.launch()
         self.assertEqual(result["status"],"FAILED_SAFE_FINAL")
