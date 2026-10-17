@@ -41,7 +41,7 @@ class FrozenMaraFacetControl(unittest.TestCase):
 
     def baseline(self):
         return create(base_world=self.world,prose=self.prose,
-                      openables=self.roles["openables"],
+                      openables=["vane_watch"],
                       documents=self.roles["documents"])
 
     def controls(self):
@@ -61,7 +61,7 @@ class FrozenMaraFacetControl(unittest.TestCase):
     def test_frozen_source_and_registered_capabilities_without_auto_event_authority(self):
         self.assertEqual(prose_hash(self.prose),EXPECTED_SHA)
         self.assertEqual(len(self.units),28)
-        self.assertEqual(self.roles,{"openables":["vane_watch"],
+        self.assertEqual(self.roles,{"openables":["vane_watch","mara_notebook"],
                                      "documents":["mara_notebook"]})
         before=self.baseline()
         self.assertEqual(before["revision"],0)
