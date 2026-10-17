@@ -73,3 +73,21 @@ deployment are separate release gates.
 - Self-hosted CI uses discovery guards and no real network/provider calls.
   The raw signed fixtures are TEST-ONLY and prove neither G2 availability
   nor the correctness of Mara's 28-sentence physical events.
+
+## v0.53 local physical nonce consumption implementation (offline)
+
+`g2_physical_nonce_store_v053.py` supplies `LocalPhysicalNonceStore.consume`
+for the `consume_nonce` callback. It uses a protected, **pre-provisioned**
+SQLite file and `BEGIN IMMEDIATE` plus a UNIQUE nonce primary key.
+A story worker cannot silently recreate a lost file; file identity and
+protected parent/directory permissions are validated. Concurrent same-host
+workers compete for the same nonce and **exactly one wins**. This is
+**security metadata only**; it never updates G2 WorldState, story events or
+canonical data.
+
+Provisioning this file is a separate deployment owner/infra step. The
+app-private nonce store MUST be durable across restarts and MUST NOT be
+mounted on NFS or shared across uncoordinated hosts. The true G2 endpoint,
+public signer pin, real read-only service credentials and authoritative
+physical registry still must be independently provisioned and verified.
+The mock CI test key never authorizes real G2 state.
