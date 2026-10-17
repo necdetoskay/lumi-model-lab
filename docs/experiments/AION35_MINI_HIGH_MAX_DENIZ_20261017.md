@@ -1,6 +1,11 @@
 # Aion 3.5 Mini — aynı Deniz hikâyesiyle HIGH / MAX düşünme karşılaştırması
 
-**17 Ekim 2026 · Yetki: iki Aion yazar denemesi kullanıcı tarafından onaylandı · Durum: PAID RUN BLOCKED BEFORE PROVIDER**
+**17 Ekim 2026 · Durum: REAL HIGH/MAX 2/2 PROVIDER SUCCESS · Tek kullanımlık yetki tüketildi.**
+
+> **Güncel gerçek sonuçlar:** [Aion 3.5 Mini HIGH vs MAX ücretli hikâye kanıtı](./AION35_MINI_HIGH_MAX_REAL_RESULT_20261017.md) · [GitHub CI #39006601046](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39006601046). HIGH: **503 kelime / 8.288 reasoning token / 128,539 saniye / 0,0136297 USD**. MAX: **514 kelime / 9.787 reasoning token / 225,453 saniye / 0,0177919 USD**. Toplam gerçek ücret 0,0314216 USD. İki yanıt da finish_reason stop, kaynak Spines aynı, 0 yazı editörü, 0 world write, 0 client-side output token tavanı.
+
+> **Aşağıdaki hazırlık/blokaj notları tarihsel durumdur; artık geçerli güncel statü değildir.** Eski ilk job runner adı uyuşmadığından provider öncesinde durdu, ikinci tek-use job tamamlandı. Sonraki Unicode düzeltme ve 17/17 offline test yeni ücretli çağrı yapmadı.
+
 
 ## Dondurulmuş deney
 
@@ -20,11 +25,11 @@ Tarih: 26 Eylül 2026, archived test `36257356137`; Aion 3.5 Mini writer draft *
 - `experiments/prototypes/test_aion35_mini_reasoning_high_max_once_20261017.py`: beş offline test: sadece reasoning farklı, hiçbir output cap yok, iki mock yanıt, tek-kullanımlık ödeme talebi, reply kaybında no-repost ve grant dışında commit değişikliği reddi.
 - Ayrı deney branch'i: `experiment/aion35-mini-reasoning-high-max-20261017`. Canonical/main ve üretim veritabanı değiştirilmedi.
 
-## Önemli blokaj
+## Tarihsel blokaj (çözüldü; aşağıdaki not geçmiş kayıttır)
 
 **GitHub Actions workflow oluşturma çağrısı güvenlik kontrolü tarafından reddedildi.** Güvenlik engelini başka bir araç/host veya API anahtarını farklı yere aktarma yoluyla aşmadık. Bu nedenle gerçek `high` ve `max` çağrıları **henüz gönderilmedi**, sonuç ve ödenen ücret **0**. Hazırlanan Python kodu henüz CI'da denenmiş kabul edilemez; kodu sadece git commit altında kayıt altına aldık. Güvenli, yetkili bir workflow kurulum yolu sağlanmadan deneyin parasal sınırı aşılarak başlatılması yasaktır.
 
-## Gereken güvenli son adım
+## Tarihsel plan (tamamlandı)
 
 Repository sahibi veya yetkili iş akışı düzenleyicisi, bağımsız branch'teki **read-only checkout + self-hosted offline test -> opt-in tek seferlik grant -> Aion 2 gerçek çağrı -> artifact** iş akışını kod incelemesinden geçirip **normal GitHub Actions workflow edit izni üzerinden** etkinleştirmeli. API anahtarı hiçbir zaman sohbet veya commit içeriğine yazılmamalı. İş akışının uygulama kodundaki ödeme limiti **iki POST** olup servis cevabı ve provider fiyatlaması değişken olduğundan mutlak dolar harcama garantisi değildir.
 
