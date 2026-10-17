@@ -124,6 +124,23 @@ def _validate_typed(prose, answer):
     return typed
 
 
+SOURCE_BLOCKING_FINDING_PREFIXES=(
+    "SWEEP_UNACCOUNTED_ACTION_CUE:",
+    "SWEEP_MISSING_ENTITY_HINT:",
+    "SWEEP_UNRESOLVED_SENTENCE:",
+    "SWEEP_UNMAPPED_EVENT:",
+    "SWEEP_CLAIM_PROMOTED_TO_WORLD:",
+    "SWEEP_EXPECTED_EVENT_NOT_EXTRACTED:",
+    "SWEEP_POSSIBLY_MISCLASSIFIED:",
+)
+
+
+def _critical_source_findings(report):
+    return [finding for finding in report["findings"]
+            if isinstance(finding,str) and
+            finding.startswith(SOURCE_BLOCKING_FINDING_PREFIXES)]
+
+
 def _check_critical_coverage(report, typed):
     """Do not silently drop a sourced physical CLOSE/WRITE event."""
     for item in report["candidate_events"]:
@@ -140,16 +157,8 @@ def _check_critical_coverage(report, typed):
             item["start"] < e["evidence"]["end"]
             for e in typed
         ), "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED")
-    for code in report["findings"]:
-        _require(not code.startswith((
-            "SWEEP_UNACCOUNTED_ACTION_CUE:",
-            "SWEEP_MISSING_ENTITY_HINT:",
-            "SWEEP_UNRESOLVED_SENTENCE:",
-            "SWEEP_UNMAPPED_EVENT:",
-            "SWEEP_CLAIM_PROMOTED_TO_WORLD:",
-            "SWEEP_EXPECTED_EVENT_NOT_EXTRACTED:",
-            "SWEEP_POSSIBLY_MISCLASSIFIED:",
-        )), "V022_UNRESOLVED_FULL_SENTENCE_SWEEP_FINDING")
+    _require(not _critical_source_findings(report),
+             "V022_UNRESOLVED_FULL_SENTENCE_SWEEP_FINDING")
 
 
 def _source_only_repair_request(*, original, failure_code, attempt):
@@ -346,12 +355,12 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             _save(final, result)
             return result
 
-        def provider_json(*, tag, request, stage_models, bind):
+        def provider_json(*, tag, request, stage_models, bind, schema_retry=True):
             nonlocal spent, calls
             enforce_no_output_token_limit(request)
             last_reason="V022_ALL_RECEIPTED_MODELS_UNQUALIFIED"
             for chosen in stage_models:
-                for retry_no in range(max_source_repair_attempts+1):
+                for retry_no in range((max_source_repair_attempts if schema_retry else 0)+1):
                     if calls>=max_model_requests or spent>=guard:
                         raise CoverageError("V022_CALL_OR_SPEND_GUARD")
                     exact=(request if retry_no==0 else
@@ -411,6 +420,33 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     ),
                 ))
             report = aggregate(plan=plan, bound_batches=bound, prose=prose)
+            # Fully receipted, syntactically valid extraction can still
+            # omit a source-cued physical action or object. Re-run ONLY the
+            # affected source batches with the original blind source packet.
+            # No old model text, Writer claims or fabricated gold labels.
+            if max_source_repair_attempts and _critical_source_findings(report):
+                blocked_ids={finding.split(":",2)[1]
+                             for finding in _critical_source_findings(report)}
+                for batch_idx,batch in enumerate(plan["batches"]):
+                    if not blocked_ids.intersection(batch["sentence_ids"]):
+                        continue
+                    original_request={
+                        "messages": batch["messages"],
+                        "response_format": batch["response_format"],
+                    }
+                    repair_request=_source_only_repair_request(
+                        original=original_request,
+                        failure_code="V022_SOURCE_COVERAGE_DEFICIT",
+                        attempt=1)
+                    bound[batch_idx]=provider_json(
+                        tag=batch["batch_id"]+"_coverage_repair",
+                        request=repair_request,stage_models=models,
+                        schema_retry=False,
+                        bind=lambda answer, ident=batch["batch_id"]: bind_batch(
+                            plan=plan,batch_id=ident,raw=answer,prose=prose))
+                report=aggregate(plan=plan,bound_batches=bound,prose=prose)
+                _require(not _critical_source_findings(report),
+                         "V022_SOURCE_COVERAGE_REPAIR_EXHAUSTED")
             _save(root / "full_sweep.json", report)
             if spent >= guard:
                 raise CoverageError("V022_SPEND_GUARD_BEFORE_SEMANTIC")
