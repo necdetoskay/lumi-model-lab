@@ -15,7 +15,11 @@ from unittest.mock import patch
 
 from experiments.sera.artifact_scene_checker_v021 import create_checker
 from experiments.sera.coverage import prose_hash
-from experiments.sera.fresh_scene_evidence_worker_v022 import create_preparer
+from experiments.sera.fresh_scene_evidence_worker_v022 import (
+    create_preparer,_deterministic_physical_source_focus,
+    _typed_only_coverage_retry_request,
+)
+from experiments.sera.coverage import CoverageError
 from experiments.sera.mara_scene_capabilities_v054 import registered_mara_facets
 from experiments.sera.mara_s1_typed_live_v05 import entry_state,REGISTRY
 from experiments.sera.real_blind_benchmark_v040 import prepare,LEXICON,EXPECTED_SHA
@@ -142,6 +146,41 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
         self.assertEqual(opts["max_source_repair_attempts"],1)
         self.assertEqual(opts["prose"],self.prose)
         self.assertEqual(opts["world"],self.world)
+
+    def test_typed_retry_focus_is_only_exact_original_mara_sentences(self):
+        source_focus=_deterministic_physical_source_focus(self.plan)
+        self.assertGreaterEqual(len(source_focus),2)
+        quotes=[row["source_quote"] for row in source_focus]
+        self.assertTrue(any("Vane closed the case" in q for q in quotes))
+        self.assertTrue(any("Mara opened her notebook" in q for q in quotes))
+        source_rows={s["id"]:s["quote"] for s in self.plan["source_sentences"]}
+        self.assertTrue(all(source_rows[r["sentence_id"]]==r["source_quote"]
+                            for r in source_focus))
+        original={
+            "messages":[
+                {"role":"system","content":"Independent synthetic typed test"},
+                {"role":"user","content":json.dumps({
+                    "original_prose":self.prose,
+                    "registered_roles":registered_mara_facets(self.world)})},
+            ],
+            "response_format":{"type":"json_object"},
+        }
+        amended=_typed_only_coverage_retry_request(
+            original=original,attempt=1,source_focus=source_focus)
+        prompt=amended["messages"][0]["content"]
+        self.assertIn("LEXICAL SOURCE ATTENTION ONLY",prompt)
+        self.assertIn("Mara opened her notebook",prompt)
+        self.assertIn("Vane closed the case",prompt)
+        self.assertNotIn("evt_s1_01",prompt)
+        self.assertNotIn("typed_world_event",prompt)
+        self.assertEqual(original["messages"][1],amended["messages"][1])
+        self.assertFalse(any(k in amended for k in (
+            "max_tokens","max_completion_tokens","max_output_tokens")))
+        contaminated=[dict(source_focus[0],source_quote="model fabricated movement")]
+        with self.assertRaisesRegex(
+                CoverageError,"V022_TYPED_FOCUS_NOT_VERBATIM_SOURCE"):
+            _typed_only_coverage_retry_request(
+                original=original,attempt=1,source_focus=contaminated)
 
     def test_no_analyst_gold_or_manual_scene_edits_enter_requests(self):
         with TemporaryDirectory() as directory:
