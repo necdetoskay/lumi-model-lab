@@ -58,8 +58,10 @@ def source_backed_typed_match(*, prose, event, candidate):
         type(event.get("end")) is not int or
         type(span.get("start")) is not int or
         type(span.get("end")) is not int or
-        not (0<=event["start"]<event["end"]<=len(prose) and
-             0<=span["start"]<span["end"]<=len(prose))):
+        not (0<=event["start"]<event["end"] and
+             0<=span["start"]<span["end"]) or
+        (isinstance(prose,str) and
+         (event["end"]>len(prose) or span["end"]>len(prose)))):
         return False
     if op=="APPEND_DOCUMENT_ENTRY":
         if kind!="WRITE":
@@ -79,7 +81,8 @@ def source_backed_typed_match(*, prose, event, candidate):
         return False
     if event["start"]<span["end"] and span["start"]<event["end"]:
         return True
-    if op!="APPEND_DOCUMENT_ENTRY" or event["end"]>span["start"]:
+    if (not isinstance(prose,str) or op!="APPEND_DOCUMENT_ENTRY" or
+            event["end"]>span["start"]):
         return False
     # Never bridge a normal mention, dialogue, a remote quotation, or a
     # different sentence. A matching write verb alone is insufficient.
