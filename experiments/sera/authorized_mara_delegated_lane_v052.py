@@ -96,6 +96,23 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         _write(manifest_file,saved)
     final=root/"final.json"
     if final.exists():
+        # A cached terminal result, including a noncanonical candidate,
+        # must not hide deleted or modified source chronology evidence.
+        # Rebuild deterministically from frozen text, not model assertions.
+        archived=root/"source-chronology"/(
+            EXPECTED_SHA+".source.json")
+        if not archived.is_file():
+            raise CoverageError("V052_DELEGATED_INITIAL_CHRONOLOGY_MISSING")
+        source_world=entry_state()
+        known={k:v for k,v in REGISTRY.items()
+               if k in source_world["entities"]}
+        candidates=json.loads(LEXICON.read_text(encoding="utf-8"))["candidates"]
+        expected_chronology=build_source_chronology(
+            prose=frozen_mara_source()["prose"],
+            scene_key=SCENE_KEY,world_sha256=digest(source_world),
+            registry=known,candidate_lexicon=candidates)
+        require(_read(archived)==expected_chronology,
+                "V052_DELEGATED_CACHED_CHRONOLOGY_DRIFT")
         previous=_read(final)
         require(previous.get("schema")==SCHEMA and
                 previous.get("approval_id")==budget.approval_id and
