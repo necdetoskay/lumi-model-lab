@@ -36,6 +36,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
         self.sent=[]
         self.contract=preflight(models=MODELS)
+        self.signed_test_expires_at=int(time.time())+2000
         self.ledger_path=self.root/"ledger.sqlite3"
         runtime=provision_local_journal(path=self.ledger_path)
         self.trust_config=self.root/"paid-trust.json"
@@ -52,7 +53,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         p=self.contract
         manifest={
             "schema":SCHEMA,"scope":SCOPE,"approval_id":"mara-approval-offline",
-            "expires_at":int(time.time())+2000,
+            "expires_at":self.signed_test_expires_at,
             "source_sha256":p["source_sha256"],
             "world_sha256":p["world_sha256"],
             "scene_key":p["scene_key"],
