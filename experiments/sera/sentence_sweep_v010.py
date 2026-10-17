@@ -387,14 +387,17 @@ def aggregate(*, plan: dict, bound_batches: list[dict],
         # independent physical operations in the same source sentence.
         # This is generic cue-to-operation cardinality, not an analyst
         # answer about Mara or permission to mutate either object.
-        words={c["quote"].casefold():c for c in cue_row["cues"]}
-        physical_open=any(k in ("opened","open") and
-                          v["family"]=="PHYSICAL_CHANGE"
-                          for k,v in words.items())
-        document_write=any(k in ("wrote","writing","writes","jotted",
-                                 "scribbled","added")
-                           and v["family"]=="DOCUMENT_CHANGE"
-                           for k,v in words.items())
+        # Preserve multiple cue families for the SAME word. "opened"
+        # is legitimately BOTH PHYSICAL_CHANGE and PHYSICAL_INTERACTION;
+        # a dict keyed by its text would lose the physical-change family.
+        physical_open=any(c["quote"].casefold() in ("opened","open") and
+                          c["family"]=="PHYSICAL_CHANGE"
+                          for c in cue_row["cues"])
+        document_write=any(c["quote"].casefold() in (
+                            "wrote","writing","writes","jotted",
+                            "scribbled","added") and
+                           c["family"]=="DOCUMENT_CHANGE"
+                           for c in cue_row["cues"])
         if physical_open and document_write and (
             not any(e["kind"]=="OPEN" for e in row["events"]) or
             not any(e["kind"]=="WRITE" for e in row["events"])
