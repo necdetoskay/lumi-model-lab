@@ -24,6 +24,7 @@ CLIENTS = (
     "mara_s1_typed_live_v05.py",
     "mara_s1_resume.py",
     "extractor_adapter.py",
+    "openrouter_real_transport_v052.py",
 )
 
 
