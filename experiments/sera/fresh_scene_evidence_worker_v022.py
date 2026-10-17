@@ -183,6 +183,14 @@ def _source_only_repair_request(*, original, failure_code, attempt):
     safe=(failure_code if isinstance(failure_code,str) and
           re.fullmatch(r"[A-Z0-9_]{1,100}",failure_code)
           else "V022_MODEL_RESPONSE_INVALID")
+    if source_focus is not None:
+        _require(isinstance(source_focus,list) and
+                 all(isinstance(x,dict) and
+                     set(x)=={"sentence_id","source_quote"} and
+                     isinstance(x["sentence_id"],str) and
+                     isinstance(x["source_quote"],str) and
+                     x["source_quote"] for x in source_focus),
+                 "V022_TYPED_FOCUS_QUOTE_INVALID")
     amended=deepcopy(original)
     amended["messages"][0]["content"]+=(
         "\\n\\nSOURCE-ONLY AUTOMATIC RE-EXTRACTION, attempt "+
@@ -197,7 +205,35 @@ def _source_only_repair_request(*, original, failure_code, attempt):
 
 
 
-def _typed_only_coverage_retry_request(*,original,attempt):
+def _deterministic_physical_source_focus(plan):
+    """Only ORIGINAL source sentences with lexical physical/document cues.
+
+    The scanner is app-owned and source-only; this list carries NO event
+    type, model verdict, suggested actor/object, gold annotation, or fix.
+    It merely directs the next independent read toward likely activity.
+    """
+    _require(isinstance(plan,dict) and
+             isinstance(plan.get("source_sentences"),list) and
+             isinstance(plan.get("source_scan"),dict),
+             "V022_TYPED_FOCUS_SOURCE_PLAN_INVALID")
+    source={s["id"]:s for s in plan["source_sentences"]}
+    focus=[]
+    seen=set()
+    for item in plan["source_scan"].get("sentence_cues",[]):
+        if not any(c.get("family") in ("PHYSICAL_CHANGE","DOCUMENT_CHANGE")
+                   for c in item.get("cues",[])):
+            continue
+        sid=item.get("sentence_id")
+        _require(sid in source,"V022_TYPED_FOCUS_UNKNOWN_SOURCE")
+        if sid in seen: continue
+        seen.add(sid)
+        row=source[sid]
+        focus.append({"sentence_id":sid,
+                      "source_quote":row["quote"]})
+    return focus
+
+
+def _typed_only_coverage_retry_request(*,original,attempt,source_focus=None):
     """Retry valid-schema but missed typed source action without prior replies.
 
     The SOURCE prose and app-owned registered roles come from the original
@@ -225,6 +261,14 @@ def _typed_only_coverage_retry_request(*,original,attempt):
         "action, omit it rather than invent a transition. "
         "Previous model replies, other extractors' candidate decisions, "
         "gold answers, and manual corrections are NOT available.")
+    if source_focus:
+        # Quoted source cues are deterministic, not a prior model's answer.
+        amended["messages"][0]["content"]+=(
+            "\\n\\nLEXICAL SOURCE ATTENTION ONLY; not event labels or gold. "
+            "Verify every action independently from ORIGINAL prose. "
+            "These are the complete source sentence quotes selected by "
+            "the deterministic cue scanner, not a list of approved events: "+
+            json.dumps(source_focus,ensure_ascii=False,sort_keys=True))
     enforce_no_output_token_limit(amended)
     return amended
 
@@ -545,6 +589,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 stage_models=typed_models,
                 bind=lambda ans: _validate_typed(prose, ans),
             )
+            source_focus=_deterministic_physical_source_focus(plan)
             # A complete, paid, valid JSON facet list can nevertheless miss
             # an independently source-bound CLOSE / WRITE. A single fresh
             # typed-only reread is safer than treating syntactic JSON as a
@@ -560,7 +605,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 typed = provider_json(
                     tag="typed_coverage_repair_"+str(attempt),
                     request=_typed_only_coverage_retry_request(
-                        original=typed_request,attempt=attempt),
+                        original=typed_request,attempt=attempt,
+                        source_focus=source_focus),
                     stage_models=typed_models,schema_retry=False,
                     bind=lambda ans: _validate_typed(prose,ans),
                 )
@@ -577,7 +623,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 typed=provider_json(
                     tag="typed_coverage_independent_fallback",
                     request=_typed_only_coverage_retry_request(
-                        original=typed_request,attempt=1),
+                        original=typed_request,attempt=1,
+                        source_focus=source_focus),
                     stage_models=[fallback_model],schema_retry=False,
                     bind=lambda ans:_validate_typed(prose,ans))
                 _check_critical_coverage(report,typed)
