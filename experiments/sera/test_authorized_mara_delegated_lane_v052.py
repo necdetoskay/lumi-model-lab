@@ -136,8 +136,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(first["status"],"FAILED_SAFE_FINAL")
         self.assertEqual(first["automatic_rewrites"],0)
         self.assertFalse(first["full_scene_qualification_gate_invoked"])
-        self.assertFalse(first["provider_receipts_qualified"] is False and
-                         first["allocated_provider_requests"]==0)
+        self.assertGreaterEqual(first["allocated_provider_requests"],1)
         self.assertFalse(first["canonical_commit_authorized"])
         self.assertEqual(first["production_db_writes"],0)
         self.assertGreaterEqual(len(observed),1)
