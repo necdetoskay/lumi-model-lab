@@ -48,6 +48,12 @@ class ProviderJournal:
         else:
             self.path.parent.mkdir(parents=True, exist_ok=True)
         with self._connect() as db:
+            if expected_file_identity is not None:
+                tables={row[0] for row in db.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'")}
+                if not {"grants","calls","paid_runtime_identity"} <= tables:
+                    raise JournalBlocked("V052_PAID_JOURNAL_SCHEMA_OR_HISTORY_MISSING")
+                return
             db.execute("""CREATE TABLE IF NOT EXISTS grants (
                 grant_id TEXT PRIMARY KEY, binding_sha TEXT NOT NULL,
                 authorized INTEGER NOT NULL CHECK(authorized = 1),
