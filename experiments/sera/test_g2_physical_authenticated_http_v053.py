@@ -11,10 +11,12 @@ from experiments.sera.g2_physical_authenticated_http_v053 import (
 )
 from experiments.sera.tests import test_g2_physical_pinned_reader_v036 as fixture
 from experiments.sera.tests.test_g2_readonly_scope_v032 import IDS
+from experiments.sera.tests.test_storyforge_bridge_v028 import fake_result
+from experiments.sera.sentence_ledger_v06 import sentences
 
 ENDPOINT="https://g2-authority.project-lumi.example"+API_PATH
 KEY="synthetic-physical-read-token-very-long"
-PROSE="Ari moved the box. The timetable said train 41 arrived at 02:10."
+PROSE=fake_result()["english_story"]
 SCENE="signed-http-physical-source-offline-v053"
 
 
@@ -74,13 +76,22 @@ class ReadonlySignedPhysicalHTTPTests(unittest.TestCase):
         response=self.call()
         self.assertEqual(len(self.calls),1)
         self.assertEqual(self.calls[0]["method"],"GET")
-        self.assertEqual(response["source_sentence_count"],2)
+        self.assertEqual(response["source_sentence_count"],len(sentences(PROSE)))
         self.assertGreater(response["registered_physical_entry_entity_count"],0)
         self.assertEqual(response["physical_baseline_status"],"SIGNED_G2_ENTRY_ONLY")
         self.assertEqual(response["verified_future_event_count"],0)
         self.assertEqual(response["world_db_writes"],0)
         self.assertFalse(response["canonical_commit_authorized"])
         self.assertEqual(self.signed.authority,original)
+
+    def test_unrelated_story_rejected_before_any_https_get(self):
+        from experiments.sera.real_blind_benchmark_v040 import prepare
+        mara=prepare()["prose"]
+        with self.assertRaisesRegex(
+                CoverageError,"V053_G2_PHYSICAL_ACCEPTED_PROSE_SHA_MISMATCH"):
+            self.call(prose=mara)
+        self.assertEqual(self.calls,[])
+        self.assertEqual(self.signed.used,set())
 
     def test_invalid_endpoint_rejected_without_any_network(self):
         bad=[
