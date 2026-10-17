@@ -27,7 +27,7 @@ from experiments.sera.openrouter_scene_writer_v021 import create_writer, make_re
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, ProviderJournal, _hash
 from experiments.sera.paid_issuer_trust_v052 import verify_pinned_paid_issuer
 from experiments.sera.paid_runtime_boundary_v052 import (read_protected_runtime_config,
-    verify_shared_local_journal)
+    verify_shared_local_journal, assert_paid_approval_active)
 from experiments.sera.real_blind_benchmark_v040 import (
     prepare as frozen_mara_source, LEXICON, EXPECTED_SHA)
 from experiments.sera.scene_qualified_model_lane_v052 import require
@@ -61,7 +61,9 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         world_sha256=contract["world_sha256"],
         scene_key=SCENE_KEY,policy_sha256=contract["policy_sha256"],
         approved_models=models,max_rewrites=max_rewrites)
-    verify_shared_local_journal(runtime_cfg)
+    assert_paid_approval_active(
+        config_path=runtime_trust_config_path,original_config=runtime_cfg,
+        approval_id=approval["manifest"]["approval_id"])
     if not isinstance(api_key,str) or not api_key.strip():
         raise JournalBlocked("V052_DELEGATED_PROVIDER_KEY_MISSING")
     journal=ProviderJournal(journal_path)
@@ -115,6 +117,11 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
     lexicon=json.loads(LEXICON.read_text(encoding="utf-8"))["candidates"]
     def safe_provider(*,key,model,prepared):
         try:
+            # Re-check owner-protected revocations and journal identity at
+            # every stage, not only at launch. No manual story approval.
+            assert_paid_approval_active(
+                config_path=runtime_trust_config_path,
+                original_config=runtime_cfg,approval_id=budget.approval_id)
             return callback(key=key,model=model,prepared=prepared)
         except Exception as exc:
             raise CoverageError("V052_DELEGATED_PROVIDER_FAILED_SAFE:"
