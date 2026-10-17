@@ -10,7 +10,7 @@ from pathlib import Path
 
 from experiments.sera.paid_runtime_boundary_v052 import (
     SCHEMA,provision_local_journal,read_protected_runtime_config,
-    verify_shared_local_journal)
+    verify_shared_local_journal,assert_paid_approval_active)
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked
 
 
@@ -25,7 +25,8 @@ class PaidRuntimeBoundaryTests(unittest.TestCase):
         self.value=dict(
             schema=SCHEMA,trusted_raw_key_sha256=sha256(b"fake issuer").hexdigest(),
             journal_path=identity["journal_path"],journal_id=identity["journal_id"],
-            host_id_sha256=identity["host_id_sha256"])
+            host_id_sha256=identity["host_id_sha256"],
+            revoked_approval_ids=[])
         self.write_config()
 
     def write_config(self):
@@ -100,6 +101,24 @@ class PaidRuntimeBoundaryTests(unittest.TestCase):
         self.write_config()
         with self.assertRaisesRegex(JournalBlocked,"NOT_PROVISIONED"):
             self.checked()
+
+    def test_live_revocation_update_stops_next_request(self):
+        original=read_protected_runtime_config(self.config)
+        self.assertTrue(assert_paid_approval_active(
+            config_path=self.config,original_config=original,approval_id="alpha"))
+        self.value["revoked_approval_ids"]=["alpha"]
+        self.write_config()
+        with self.assertRaisesRegex(JournalBlocked,"APPROVAL_REVOKED"):
+            assert_paid_approval_active(
+                config_path=self.config,original_config=original,approval_id="alpha")
+
+    def test_live_trust_change_blocks_existing_run(self):
+        original=read_protected_runtime_config(self.config)
+        self.value["trusted_raw_key_sha256"]="f"*64
+        self.write_config()
+        with self.assertRaisesRegex(JournalBlocked,"RUNTIME_TRUST_CHANGED"):
+            assert_paid_approval_active(
+                config_path=self.config,original_config=original,approval_id="alpha")
 
     def test_bootstrap_cannot_replace_existing_ledger(self):
         with self.assertRaisesRegex(JournalBlocked,"REQUIRES_NEW_ABSOLUTE_PATH"):
