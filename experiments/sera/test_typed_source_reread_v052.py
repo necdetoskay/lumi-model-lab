@@ -34,7 +34,8 @@ FALLBACK="synthetic/independent-facet-fallback"
 
 
 class TypedSourceOnlyAutorepair(unittest.TestCase):
-    def worker(self,root,provider,*,fallback_model=None):
+    def worker(self,root,provider,*,fallback_model=None,
+               typed_batch_recovery=False):
         return create_preparer(
             evidence_root=root/"evidence",work_root=root/"jobs",
             scene_key="synthetic-typed-source-reread",
@@ -47,6 +48,7 @@ class TypedSourceOnlyAutorepair(unittest.TestCase):
             fallback_model=fallback_model,
             max_model_requests=18,max_source_repair_attempts=1,
             observed_spend_guard_usd="0.30",
+            typed_batch_recovery=typed_batch_recovery,
         )
 
     def mock(self,*,always_empty=False,typed_timeout=False):
@@ -140,6 +142,72 @@ class TypedSourceOnlyAutorepair(unittest.TestCase):
             self.assertEqual(len(self.requests),previous)
             self.assertFalse((root/"evidence"/
                 (prose_hash(SOURCE_2)+".json")).exists())
+
+    def test_exact_source_window_recovers_incomplete_full_typed_rereads(self):
+        # The mock is a source parser for the unrelated two-sentence Ari
+        # control, NOT an analyst-filled Mara event answer.
+        with TemporaryDirectory() as temp:
+            root=Path(temp)
+            calls=[]
+            parser=fake_model(calls)
+            typed_attempts=[]
+            sent=[]
+            def provider(*,key,model,prepared):
+                request=prepared["request"]
+                packet=json.loads(request["messages"][-1]["content"])
+                sent.append((model,request,packet))
+                if model==TYPED and "original_prose" in packet:
+                    typed_attempts.append(request)
+                    if len(typed_attempts)<=2:
+                        return response(model,{"typed_candidates":[]},len(sent))
+                return parser(key=key,model=model,prepared=prepared)
+            result=self.worker(root,provider,typed_batch_recovery=True)(
+                prose=SOURCE_2,world=entry())
+            self.assertEqual(result["status"],"EVIDENCE_READY_NONCANONICAL",
+                             result)
+            self.assertEqual(len(typed_attempts),3)
+            window=typed_attempts[-1]
+            self.assertIn("EXACT SOURCE WINDOW TYPED RE-EXTRACTION",
+                          window["messages"][0]["content"])
+            self.assertEqual(window["messages"][1],typed_attempts[0]["messages"][1])
+            self.assertNotIn("prior typed",window["messages"][1]["content"].lower())
+            self.assertNotIn("max_tokens",window)
+            check=create_checker(
+                evidence_root=root/"evidence",full_qualification=True)(
+                    prose=SOURCE_2,world=entry())
+            self.assertEqual(check["qualification"]["status"],
+                             "FULL_SCENE_COVERAGE_CANDIDATE_NONCANONICAL")
+            before=len(sent)
+            replay=self.worker(
+                root,lambda **_:self.fail("cached window receipt repost"),
+                typed_batch_recovery=True)
+            self.assertEqual(replay(prose=SOURCE_2,world=entry()),result)
+            self.assertEqual(len(sent),before)
+
+    def test_window_response_outside_exact_sentence_is_rejected(self):
+        from experiments.sera.fresh_scene_evidence_worker_v022 import (
+            _typed_source_window_request, _validate_typed_window,
+        )
+        from experiments.sera.sentence_ledger_v06 import sentences
+        source=sentences(SOURCE_2)
+        original={"messages":[
+            {"role":"system","content":"independent typed test"},
+            {"role":"user","content":json.dumps({
+                "original_prose":SOURCE_2, "registered_roles":{
+                    "openables":["box"],"documents":[]}})}],
+            "response_format":{"type":"json_object"}}
+        scoped=_typed_source_window_request(
+            original=original,target_sentences=[source[0]])
+        self.assertEqual(scoped["messages"][1],original["messages"][1])
+        parser=fake_model([])
+        produced=parser(key="synthetic",model=TYPED,
+                        prepared={"request":original})
+        reply=json.loads(produced["raw"]["choices"][0]["message"]["content"])
+        with self.assertRaisesRegex(
+                Exception,"V022_TYPED_WINDOW_OUTSIDE_TARGET"):
+            _validate_typed_window(SOURCE_2,reply,[source[0]])
+        self.assertFalse(any(
+            k in scoped for k in ("max_tokens","max_completion_tokens")))
 
     def test_unknown_typed_post_never_triggers_blind_retry(self):
         with TemporaryDirectory() as temp:
