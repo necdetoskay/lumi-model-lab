@@ -4,6 +4,8 @@ from __future__ import annotations
 from copy import deepcopy
 from urllib.parse import parse_qs,urlsplit
 import unittest
+import tempfile
+from pathlib import Path
 
 from experiments.sera.coverage import CoverageError
 from experiments.sera.g2_physical_authenticated_http_v053 import (
@@ -12,6 +14,8 @@ from experiments.sera.g2_physical_authenticated_http_v053 import (
 from experiments.sera.tests import test_g2_physical_pinned_reader_v036 as fixture
 from experiments.sera.tests.test_g2_readonly_scope_v032 import IDS
 from experiments.sera.tests.test_storyforge_bridge_v028 import fake_result
+from experiments.sera.g2_physical_nonce_store_v053 import (
+    LocalPhysicalNonceStore,provision_nonce_store)
 from experiments.sera.sentence_ledger_v06 import sentences
 
 ENDPOINT="https://g2-authority.project-lumi.example"+API_PATH
@@ -146,6 +150,22 @@ class ReadonlySignedPhysicalHTTPTests(unittest.TestCase):
                                     "PHYSICAL_SCOPE_OR_PROOF_MISMATCH"):
             self.call(reader=source)
         self.assertEqual(self.signed.used,set())
+
+    def test_real_durable_nonce_store_blocks_replay_across_reader_restarts(self):
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/"protected-physical-nonces.db"
+            provision_nonce_store(path)
+            reader_1=self.reader(
+                consume_nonce=LocalPhysicalNonceStore(path).consume)
+            result=self.call(reader=reader_1)
+            self.assertEqual(result["world_db_writes"],0)
+            # Simulates another worker/restart on the SAME host. Callback is
+            # rebuilt from the existing protected SQLite nonce record.
+            reader_2=self.reader(
+                consume_nonce=LocalPhysicalNonceStore(path).consume)
+            with self.assertRaisesRegex(CoverageError,"PHYSICAL_NONCE_REPLAY"):
+                self.call(reader=reader_2)
+            self.assertEqual(len(self.calls),2)
 
     def test_same_challenge_cannot_be_replayed_to_get_second_authority(self):
         self.call()
