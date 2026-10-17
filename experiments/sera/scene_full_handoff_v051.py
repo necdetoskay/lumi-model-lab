@@ -63,8 +63,14 @@ def _stage_contract(stage, prose, *, expected_tasks=None):
             ),
             "V051_ROW_STAGE_AUTHORITY_OR_SOURCE_INVALID")
     if expected_tasks is not None:
-        require(stage.get("tasks_accounted_for")==expected_tasks and
-                len(stage.get("task_results",[]))==expected_tasks,
+        completed=stage.get("tasks_accounted_for")
+        rows=stage.get("task_results")
+        require(type(completed) is int and
+                isinstance(rows,list) and
+                len(rows)==completed and
+                (0<=completed<=expected_tasks if
+                 stage["status"]=="FAILED_SAFE_FINAL" else
+                 completed==expected_tasks),
                 "V051_INCOMPLETE_ROW_REPAIR_ACCOUNTING")
     if stage["status"]=="SOURCE_CANDIDATES_READY_FOR_FULL_REEXTRACTION_NONCANONICAL":
         require(all(r.get("status") in (STATUS_SOURCE,STATUS_REVIEW) and
