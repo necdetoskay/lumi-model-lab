@@ -12,6 +12,13 @@ on:
 permissions:
   contents: read
 
+# A newer experimental commit supersedes stale queued/in-progress branch
+# results. Keep one current offline qualification instead of saturating the
+# self-hosted runner with dozens of obsolete intermediate commits.
+concurrency:
+  group: sera-state-engine-offline-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   sera-m1-offline:
     runs-on: [self-hosted, linux]
