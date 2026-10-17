@@ -10,7 +10,8 @@ from pathlib import Path
 
 from experiments.sera.paid_runtime_boundary_v052 import (
     SCHEMA,provision_local_journal,read_protected_runtime_config,
-    verify_shared_local_journal,assert_paid_approval_active)
+    verify_shared_local_journal,assert_paid_approval_active,
+    open_bound_paid_journal,bind_revocation_checked_transport)
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked
 
 
@@ -119,6 +120,60 @@ class PaidRuntimeBoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(JournalBlocked,"RUNTIME_TRUST_CHANGED"):
             assert_paid_approval_active(
                 config_path=self.config,original_config=original,approval_id="alpha")
+
+    def test_journal_replacement_after_open_stops_all_new_connections(self):
+        bound=open_bound_paid_journal(self.value)
+        with bound._connect() as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM calls").fetchone()[0],0)
+        replacement=self.root/"replacement.db"
+        shutil.copy2(self.ledger,replacement)
+        os.replace(replacement,self.ledger)
+        with self.assertRaisesRegex(JournalBlocked,"FILE_IDENTITY_CHANGED"):
+            bound._connect()
+
+    def test_pinned_journal_missing_billing_schema_fails_closed(self):
+        with sqlite3.connect(self.ledger) as db:
+            db.execute("DROP TABLE calls")
+        with self.assertRaisesRegex(JournalBlocked,"SCHEMA_OR_HISTORY_MISSING"):
+            open_bound_paid_journal(self.value)
+
+    def test_transport_rechecks_revocation_after_stage_admission(self):
+        posted=[]
+        original=read_protected_runtime_config(self.config)
+        send=bind_revocation_checked_transport(
+            transport=lambda **kwargs:posted.append(kwargs) or {"raw":{}},
+            config_path=self.config,original_config=original,
+            approval_id="mara-approval-offline")
+        self.value["revoked_approval_ids"]=["mara-approval-offline"]
+        self.write_config()
+        with self.assertRaisesRegex(JournalBlocked,"APPROVAL_REVOKED"):
+            send(model="test/model",payload={"messages":[]},request_id="first")
+        self.assertEqual(posted,[])
+
+    def test_transport_detects_journal_replacement_before_http(self):
+        posted=[]
+        original=read_protected_runtime_config(self.config)
+        send=bind_revocation_checked_transport(
+            transport=lambda **kwargs:posted.append(kwargs) or {"raw":{}},
+            config_path=self.config,original_config=original,
+            approval_id="mara-approval-offline")
+        replacement=self.root/"replacement.db"
+        shutil.copy2(self.ledger,replacement)
+        os.replace(replacement,self.ledger)
+        with self.assertRaisesRegex(JournalBlocked,"IDENTITY_OR_COPY_DRIFT"):
+            send(model="test/model",payload={"messages":[]},request_id="first")
+        self.assertEqual(posted,[])
+
+    def test_transport_allowed_when_still_authorized(self):
+        posted=[]
+        original=read_protected_runtime_config(self.config)
+        send=bind_revocation_checked_transport(
+            transport=lambda **kwargs:posted.append(kwargs) or {"raw":{}},
+            config_path=self.config,original_config=original,
+            approval_id="mara-approval-offline")
+        self.assertEqual(send(model="test/model",payload={"messages":[]},
+                              request_id="first"),{"raw":{}})
+        self.assertEqual(len(posted),1)
 
     def test_bootstrap_cannot_replace_existing_ledger(self):
         with self.assertRaisesRegex(JournalBlocked,"REQUIRES_NEW_ABSOLUTE_PATH"):
