@@ -12,6 +12,7 @@ import json
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, _hash
 from experiments.sera.request_policy import enforce_no_output_token_limit
 from experiments.sera.signed_paid_approval_v052 import verify_approval
+from experiments.sera.openrouter_real_transport_v052 import decode_receipted_wire
 
 STAGES = frozenset({"extraction", "semantic", "typed", "writer"})
 
@@ -71,10 +72,15 @@ def create_journaled_provider(*, journal, source_sha256, world_sha256,
                        scene_key=scene_key,policy_sha256=policy_sha256,
                        model=model,stage=stage,request_fingerprint=signature)
         # Pre-registered approval must bind this exact request+model+source.
-        return journal.execute_once(
+        receipt = journal.execute_once(
             grant_id=grant["grant_id"], binding=binding,
             request_id=grant["request_id"], model=model,payload=request,
             transport=transport)
+        # Real HTTP wire receipts are durably stored BEFORE model JSON parse.
+        # Existing injected offline scripted envelopes remain unchanged.
+        if isinstance(receipt, dict) and "wire_payload_b64" in receipt:
+            return decode_receipted_wire(receipt)
+        return receipt
     return provider_call
 
 
