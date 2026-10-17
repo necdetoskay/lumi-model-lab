@@ -143,23 +143,40 @@ def _critical_source_findings(report):
             finding.startswith(SOURCE_BLOCKING_FINDING_PREFIXES)]
 
 
-def _check_critical_coverage(report, typed):
-    """Do not silently drop a sourced physical CLOSE/WRITE event."""
+def _missing_critical_typed_sentence_ids(report, typed):
+    """Find only source-backed unaccounted critical actions (no model gold).
+
+    This is a routing hint, NOT approval of the independent sweep or the
+    typed model. Polarity matters: a typed CLOSE cannot account for OPEN.
+    Nonphysical reported speech is deliberately excluded.
+    """
+    missing = set()
     for item in report["candidate_events"]:
-        expected = {
-            "OPEN": frozenset({"SET_OPENABLE"}),
-            "CLOSE": frozenset({"SET_OPENABLE"}),
-            "WRITE": frozenset({"APPEND_DOCUMENT_ENTRY"}),
-        }.get(item["kind"])
-        if expected is None or item["effect"] not in ("OBJECT", "DOCUMENT"):
+        kind = item["kind"]
+        if (kind not in ("OPEN", "CLOSE", "WRITE") or
+                item["effect"] not in ("OBJECT", "DOCUMENT")):
             continue
-        _require(any(
-            e["type"] in expected and
-            e["sentence_id"] == item["sentence_id"] and
-            e["evidence"]["start"] < item["end"] and
-            item["start"] < e["evidence"]["end"]
-            for e in typed
-        ), "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED")
+        def supports(candidate):
+            if (candidate["sentence_id"] != item["sentence_id"] or
+                    candidate["evidence"]["start"] >= item["end"] or
+                    item["start"] >= candidate["evidence"]["end"]):
+                return False
+            if kind == "WRITE":
+                return candidate["type"] == "APPEND_DOCUMENT_ENTRY"
+            return (
+                candidate["type"] == "SET_OPENABLE" and
+                candidate["payload"].get("next") ==
+                ("OPEN" if kind == "OPEN" else "CLOSED")
+            )
+        if not any(supports(row) for row in typed):
+            missing.add(item["sentence_id"])
+    return missing
+
+
+def _check_critical_coverage(report, typed):
+    """No OPEN, CLOSE or WRITE may disappear or flip polarity."""
+    _require(not _missing_critical_typed_sentence_ids(report, typed),
+             "V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED")
     _require(not _critical_source_findings(report),
              "V022_UNRESOLVED_FULL_SENTENCE_SWEEP_FINDING")
 
@@ -723,8 +740,23 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                         raise
                     missing = True
                 if missing:
-                    window_candidates = []
-                    for batch in plan["batches"]:
+                    gaps = _missing_critical_typed_sentence_ids(report, typed)
+                    selected_batches = [
+                        batch for batch in plan["batches"]
+                        if gaps.intersection(batch["sentence_ids"])
+                    ]
+                    # Preserve candidates from UNTOUCHED source batches.
+                    # Each targeted window is reread in full; old opinions
+                    # from that window are NOT given to its extractor.
+                    replaced = {
+                        sid for batch in selected_batches
+                        for sid in batch["sentence_ids"]
+                    }
+                    window_candidates = [
+                        row for row in typed
+                        if row["sentence_id"] not in replaced
+                    ]
+                    for batch in selected_batches:
                         targets = [s for s in plan["source_sentences"]
                                    if s["id"] in batch["sentence_ids"]]
                         window_request = _typed_source_window_request(
@@ -744,6 +776,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                                      window_candidates)) ==
                              len(window_candidates),
                              "V022_TYPED_WINDOW_DUPLICATE_EVENT_ID")
+                    _require(len(window_candidates) <= 256,
+                             "V022_TYPED_REPLY_TOO_MANY")
                     # Defer the final coverage check to the existing
                     # independent fallback path; a well-receipted, but
                     # incomplete window set must not skip that model.
