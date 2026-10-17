@@ -224,6 +224,13 @@ class DelegatedBudget:
             db.execute("BEGIN IMMEDIATE")
             exists=self._find(db,fingerprint)
             if exists:
+                if int(time.time()) >= self.manifest["expires_at"]:
+                    prior=db.execute(
+                        "SELECT status FROM calls WHERE grant_id=?",
+                        (exists[0],)).fetchone()
+                    if prior is None:
+                        raise JournalBlocked(
+                            "V052_DELEGATED_EXPIRED_UNSTARTED_POST")
                 return fingerprint,exists[0],exists[1]
             if int(time.time()) >= self.manifest["expires_at"]:
                 raise JournalBlocked("V052_DELEGATED_EXPIRED")
@@ -246,6 +253,13 @@ class DelegatedBudget:
                        (self.approval_id,fingerprint,grant_id,request_id,
                         role,revision_sha))
             return fingerprint,grant_id,request_id
+
+    def revision_registered(self, sha):
+        with self.journal._connect() as db:
+            row=db.execute(
+                "SELECT 1 FROM delegated_revisions WHERE approval_id=? AND revision_sha=?",
+                (self.approval_id,sha)).fetchone()
+        return row is not None
 
     def completed(self, *, role, revision_sha, model, payload):
         """No allocation; read an existing priced or unpriced receipt."""
@@ -313,6 +327,23 @@ class DelegatedBudget:
             if existing and existing != expected:
                 raise JournalBlocked("V052_DELEGATED_REVISION_REBIND")
             if not existing:
+                # Enforce approval's maximum number of model-generated
+                # scene revisions; a revision is NOT a new payment approval.
+                depth=0
+                ancestor=parent
+                while ancestor != self.initial_sha:
+                    ancestor_row=db.execute(
+                        """SELECT parent_sha FROM delegated_revisions
+                           WHERE approval_id=? AND revision_sha=?""",
+                        (self.approval_id,ancestor)).fetchone()
+                    if not ancestor_row or not ancestor_row[0]:
+                        raise JournalBlocked("V052_DELEGATED_REVISION_CHAIN_INVALID")
+                    ancestor=ancestor_row[0]
+                    depth+=1
+                    if depth >= self.manifest["max_rewrites"]:
+                        raise JournalBlocked("V052_DELEGATED_REWRITE_DEPTH_EXHAUSTED")
+                if depth >= self.manifest["max_rewrites"]:
+                    raise JournalBlocked("V052_DELEGATED_REWRITE_DEPTH_EXHAUSTED")
                 db.execute("""INSERT INTO delegated_revisions VALUES (?,?,?,?)""",
                            (self.approval_id,revised,parent,fingerprint))
         return revised
