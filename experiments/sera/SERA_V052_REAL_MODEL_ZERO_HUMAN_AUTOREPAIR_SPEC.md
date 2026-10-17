@@ -1,0 +1,36 @@
+# SERA v0.52 — Gerçek-model, sıfır-insan Mara S1 uçtan uca otonom onarım
+
+**17 Ekim 2026 | EXPERIMENT / SHADOW ONLY | Status: SPECIFIED / NOT LIVE-PROVEN**
+
+## Ön koşullar ve gerçek durum
+
+- v0.51 [mimari](./SERA_V051_FULL_SCENE_REVALIDATION_HANDOFF.md) ve [self-hosted CI #38998048487](https://github.com/necdetoskay/lumi-model-lab/actions/runs/38998048487) ile 749/749 offline PASS; Mara için **28 cümlenin gerçek modellerce başarıyla otomatik onarıldığı kanıtlanmadı**.
+- v0.48'deki 14 gerçek Gemini/Haiku yanıtının kaydı duruyor. Daha sonra `v0.50` ve `v0.51` onarım yanıtları **scripted provider double**. Bu testlerin hiçbirini `real_model_pass` olarak raporlamak yasaktır.
+- `v0.51.handoff` kaynak sözleşmesinde bilinçli olarak `transport=SYNTHETIC_SCRIPTED_NO_OPENROUTER_API`, yer tutucu API anahtarı ve `repair_model_was_real=false` bulunduruyor. Bunu gizlice gerçek çağrıya çevirmek yerine **yeni v0.52 real-path** ayrı kanıt ve güvenlik sınırıyla kurulmalı.
+- Aion HIGH/MAX için ayrı bir çalışmada harcanmış tek kullanımlık çağrı yetkisi **SERA'ya aktarılamaz**. SERA model provider harcaması için ayrı açık onay ve doğrulanmış kimlik gerekir.
+
+## v0.52 uygulama hedefi
+
+Esas ölçüm “scripted testi geçti” değil, **dondurulmuş Mara 28 cümlelik S1 kaynak sahnesinin gerçekten model tarafından kaynak bağlı hatalarının düzeltilip tam bağımsız sahne denetiminden geçmesi** olacak. Bir sahnenin doğrulanması yine canonical WorldState/G2 commit yetkisi değildir.
+
+1. **Kaynak sabitliği.** Mara orijinal prose SHA `EXPECTED_SHA`, world revision SHA, tekil job/grant ID ve provider politikası immutable kontrat. Modelin ilk cevabına aynı sahnenin daha önceki test yanıtı veya gold etiketleri sızdırılmayacak.
+2. **Tam sahne kaynak-kör gerçek extraction.** v0.22 `create_preparer` gerçek registered models üzerinden her cümle için sentence sweep, independent semantic ve typed facet kanıtını üretir; her provider POST'un önce persistent STARTED, sonra tam cevap/envelope/generation ID makbuzu saklanır. İlk eksik cevap sahne kapısını geçemez. 
+3. **Bağımsız sahne denetimi.** v0.21 `create_checker` ve v0.20 `execute` eksik cümle, yanlış kaynak quote, yanlış aktör/nesne/hareket, nedensellik/temporal bilginin uydurulması gibi kusurları ayırır. V0.23+ qualified full-scene checks dahil olmadan STRUCTURAL_READY sonuç yalnız provisionaldır.
+4. **Gerçek yazar otomatik onarım.** Yalnızca kaynakla kanıtlı, v0.20 modelin doğrulanmış kusurları için v0.21 `create_writer` çağrılır. Model yazar sahnenin bütünüyle yeni metnini döndürür; önceki gerçeklere sadık kalmak zorunda; editör/insan metin JSON değiştiremez. Unresolved local defect fallback veya safe stop olabilir, ancak false PASS yasaktır.
+5. **Yeni sahnenin sıfırdan kontrolü.** Her prose SHA değişiminden sonra v0.22–v0.23–v0.21 kanıtları sıfırdan oluşur; eski source-bound alıntılar taşınamaz. Bütün model/transport/rewrite/idempotency/cost receipts ve otomatik karar grafiği immutable olarak raporlanır.
+6. **Kanonik sınır.** v0.52 yalnız `LAB_CANDIDATE_NONCANONICAL` / `FAILED_SAFE_FINAL` / `INCOMPLETE_EVIDENCE_HOLD` verebilir; production DB, WorldState, saga, G2 write **0**. Gold precision/recall, yanlış-PASS ve eserin insan/bağımsız değerlendirmesi ayrı release gate.
+
+## Geliştirme sırası / acceptance checklist
+
+- [ ] P0: Real-path provider adapter + one-use explicit grant, model allowlist, shareable durable receipt idempotency ve preflight; **API anahtarı koda/günlüğe yazılmaz**.
+- [ ] P1: Tam 28 cümle real-model blind extraction smoke; yanıtları ayrı tamamlanmış makbuzlarla sakla; kaynak/prose SHA/actor alias doğrula.
+- [ ] P2: Bağımsız checker + automatic writer + yeni source SHA ile tam 28 cümle yeniden extraction/recheck; önceki truth/sweep'leri taşıma.
+- [ ] P3: Kopan SSE, süresi dolan token, provider 429/503, bozuk JSON, alternatif model, aynı grant replay, WorldState drift, sahte alıntı gibi adversarial offline testler.
+- [ ] P4: Şartsız self-hosted CI proof ve ayrı yetkilendirilmiş maliyetli **bir** gerçek Mara denemesi. İlk ücretli istekten sonra kaydı olmayan bilinmeyen yanıt kör tekrar edilmez. Yeniden deneme yalnız mevcut makbuzu GET-only uzlaştıran destekli yol varsa mümkündür.
+- [ ] P5: Gerçek hikâye bütünlüğü SERA semantik gold ve source-level gözden geçirme; 0 false canonical writes. Bu, `production ready` ilanı değildir.
+
+## Değişmez kullanıcı şartları
+
+**Hiçbir manuel hikâye/prose/JSON/gold düzeltmesi. LLM için uygulama tanımlı çıktı token sınırı yok.** Kontrol amaçlı ücretli istek sayısı ve harcama gözcüsü ise faturalandırılabilir çalıştırma güvenliği için ayrı, kabul edilebilir mekanizmalardır. Gözlenen sağlayıcı maliyeti önceden kesin dolar üst limiti garantisi sayılmayacak. GitHub Actions sadece self-hosted runner üzerinde çalışacak.
+
+Bu belge **v0.52 spesifikasyonudur; gerçek-model uçtan uca başarı veya ücretli çalıştırma tamamlandı iddiası değildir**.
