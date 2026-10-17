@@ -67,6 +67,8 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         self.uncertain_send_count=0
         self.omit_first_physical_sweep=False
         self.physical_omission_emitted=False
+        self.omit_first_typed_event=False
+        self.typed_omission_emitted=False
 
     def approval(self):
         manifest=dict(schema=SCHEMA,scope=SCOPE,
@@ -102,6 +104,10 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
                 not self.failed_sweep_once):
             self.failed_sweep_once=True
             content=json.dumps({"rows":[]})
+        elif model==MODELS["typed"] and self.omit_first_typed_event and (
+                not self.typed_omission_emitted):
+            self.typed_omission_emitted=True
+            content=json.dumps({"typed_candidates":[]})
         elif model==MODELS["writer"]:
             self.assertEqual(packet["scene_prose"],SOURCE_1)
             self.assertEqual(packet["source_prose_sha256"],prose_hash(SOURCE_1))
@@ -224,6 +230,28 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         out_again,_=self.lane(fail_if_post=True)
         self.assertEqual(out,out_again)
         self.assertEqual(len(self.sent),count)
+
+    def test_signed_typed_facet_omission_autonomously_reextracted_and_v023_passes(self):
+        self.omit_first_typed_event=True
+        outcome,budget=self.lane()
+        self.assertTrue(self.typed_omission_emitted)
+        self.assertEqual(outcome["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
+        self.assertEqual(outcome["rewrite_count"],1)
+        self.assertEqual(outcome["final_prose_sha256"],prose_hash(SOURCE_2))
+        self.assertTrue(budget.revision_registered(prose_hash(SOURCE_2)))
+        typed=[x for x in self.sent if x[0]==MODELS["typed"]]
+        self.assertGreaterEqual(len(typed),3)
+        self.assertNotEqual(typed[0][1],typed[1][1])
+        self.assertEqual(typed[0][2],typed[1][2])
+        with budget.journal._connect() as db:
+            completed=db.execute(
+                "SELECT COUNT(*) FROM calls WHERE status='RECEIPTED'"
+            ).fetchone()[0]
+        self.assertEqual(completed,len(self.sent))
+        previous=len(self.sent)
+        replay,_=self.lane(fail_if_post=True)
+        self.assertEqual(replay,outcome)
+        self.assertEqual(len(self.sent),previous)
 
     def test_missing_physical_event_is_source_only_recovered_before_writer(self):
         self.omit_first_physical_sweep=True
