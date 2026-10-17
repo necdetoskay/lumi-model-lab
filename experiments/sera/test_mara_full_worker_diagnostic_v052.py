@@ -18,6 +18,7 @@ from experiments.sera.coverage import prose_hash
 from experiments.sera.fresh_scene_evidence_worker_v022 import (
     create_preparer,_deterministic_physical_source_focus,
     _typed_only_coverage_retry_request,
+    _check_critical_coverage,
 )
 from experiments.sera.coverage import CoverageError
 from experiments.sera.mara_scene_capabilities_v054 import registered_mara_facets
@@ -189,6 +190,30 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
                 CoverageError,"V022_TYPED_FOCUS_NOT_VERBATIM_SOURCE"):
             _typed_only_coverage_retry_request(
                 original=original,attempt=1,source_focus=contaminated)
+
+    def test_source_stated_open_cannot_be_covered_by_state_observation(self):
+        # Mechanical source provenance only, not a prepared model answer.
+        unit=next(x for x in self.plan["source_sentences"]
+                  if "Mara opened her notebook" in x["quote"])
+        offset=self.prose.index("Mara opened her notebook")
+        quote="Mara opened her notebook"
+        report={
+            "candidate_events":[{
+                "sentence_id":unit["id"],"kind":"OPEN","effect":"OBJECT",
+                "start":offset,"end":offset+len(quote),"quote":quote,
+            }],
+            "findings":[],
+        }
+        passive=[{
+            "type":"OBSERVE_OPENABLE","sentence_id":unit["id"],
+            "evidence":{"start":offset,"end":offset+len(quote),
+                        "quote":quote},
+        }]
+        with self.assertRaisesRegex(
+            CoverageError,"V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED"):
+            _check_critical_coverage(report,passive)
+        transition=[dict(passive[0],type="SET_OPENABLE")]
+        _check_critical_coverage(report,transition)
 
     def test_no_analyst_gold_or_manual_scene_edits_enter_requests(self):
         with TemporaryDirectory() as directory:
