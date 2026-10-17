@@ -312,7 +312,12 @@ def run_live(*,output_root,claim_root,api_key,grant):
         atomic_json(out/(effort+".summary.json"),results[effort])
         # A missing or length-truncated response is not a valid story
         # comparison, but is still preserved as real historical evidence.
-        if provider.get("finish_reason")!="stop" or not provider["story"].strip():
+        if (
+            provider.get("finish_reason") != "stop" or
+            not provider.get("story", "").strip() or
+            not provider.get("generation_id") or
+            provider.get("returned_model") != MODEL
+        ):
             break
     pair_complete = (
         len(results) == 2 and
