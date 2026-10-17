@@ -194,7 +194,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     trusted_temporal_builder=None,
                     temporal_policy_id=None,
                     trusted_relation_builder=None,
-                    relation_policy_id=None, reconciler=None,\n                    max_source_repair_attempts=0):
+                    relation_policy_id=None, reconciler=None,
+                    max_source_repair_attempts=0):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -262,7 +263,8 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             "roles_sha": digest(roles),
             "models": [extraction_model, semantic_model,
                        typed_model, fallback_model],
-            "max_model_requests": max_model_requests,\n            "max_source_repair_attempts": max_source_repair_attempts,
+            "max_model_requests": max_model_requests,
+            "max_source_repair_attempts": max_source_repair_attempts,
             "observed_spend_guard_usd": str(guard),
         }
         if trusted_temporal_builder is not None:
