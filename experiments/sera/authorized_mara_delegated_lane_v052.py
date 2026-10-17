@@ -41,6 +41,22 @@ import json
 SCHEMA="sera.v052-mara-delegated-model-shadow"
 
 
+def registered_mara_facets(world):
+    """Registered v0.13 capabilities only; NEVER a claimed action/event."""
+    # Watch case and notebook EXIST in the frozen v0.2 world.
+    # They are not a hand-authored answer to the sentence extractor.
+    roles={"openables":["vane_watch"],"documents":["mara_notebook"]}
+    for identifier in roles["openables"]+roles["documents"]:
+        entity=world["entities"].get(identifier)
+        require(isinstance(entity,dict) and entity["kind"]=="OBJECT"
+                and entity["lifecycle"]=="ACTIVE",
+                "V052_MARA_REGISTERED_FACET_MISSING")
+    require(world["entities"]["vane_watch"]["holder"]=="vane" and
+            world["entities"]["mara_notebook"]["holder"]=="mara",
+            "V052_MARA_FACET_CUSTODY_MISMATCH")
+    return roles
+
+
 def run_delegated_mara(*, models, approval, trusted_public_key,
                        trusted_raw_key_sha256, api_key,
                        journal_path, output_root, runtime_trust_config_path,
@@ -156,20 +172,7 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
             raise CoverageError("V052_DELEGATED_READ_ONLY_RECOVERY_FAILED_SAFE:"
                                 +type(exc).__name__) from exc
 
-    # Source-specific registered physical FACET CAPABILITIES, not event
-    # annotations or manually edited source/gold. The case of Vane's
-    # pocket watch is an openable; Mara's registered notebook is a
-    # document. The provider must still prove each action and exact
-    # source span; capability registration never grants event truth.
-    facet_roles={"openables":["vane_watch"],"documents":["mara_notebook"]}
-    for identifier in facet_roles["openables"]+facet_roles["documents"]:
-        entity=world["entities"].get(identifier)
-        require(isinstance(entity,dict) and entity["kind"]=="OBJECT"
-                and entity["lifecycle"]=="ACTIVE",
-                "V052_MARA_REGISTERED_FACET_MISSING")
-    require(world["entities"]["vane_watch"]["holder"]=="vane" and
-            world["entities"]["mara_notebook"]["holder"]=="mara",
-            "V052_MARA_FACET_CUSTODY_MISMATCH")
+    facet_roles=registered_mara_facets(world)
 
     preparer=create_preparer(
         evidence_root=root/"evidence",work_root=root/"evidence-work",
