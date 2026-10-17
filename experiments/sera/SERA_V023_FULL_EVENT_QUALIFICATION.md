@@ -125,3 +125,51 @@ E2E PASS at commit `bd8a47a2429e`. This is a **real correctness
 invariant fix**, not proof of positive 28-sentence independently generated
 Mara semantics or a Writer-repaired end-to-end result. Original Mara still
 stops safely in the scripted empty-typed diagnostic; Issue #309 remains OPEN.
+
+## 2026-10-17 — Literal document entries spanning source sentences
+
+Frozen original Mara S1 exposes a structural source-evidence distinction that
+must not be solved by fabricated model labels, handwritten story JSON or
+loosening the source gate:
+
+- An independent blind sentence sweep can quote **`wrote`** (the physical
+  action), while the typed reducer must retain **the entire quoted notebook
+  entry** (the actual written text). These source spans need not overlap.
+  Such a mismatch previously produced false
+  `V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED` failures.
+- More seriously, Mara's first literal notebook entry spans multiple prose
+  sentences before its closing `”`. A model output containing just
+  `"Archive telegram: arrival recorded at 02:10."` would be an **incomplete
+  document mutation** and cannot be considered a complete append.
+- The shared source-matching rule now allows disjoint WRITE-verb/quoted-
+  content evidence only when bound to the same original action sentence,
+  with explicit `wrote:` / `added,`-style source syntax, exact original
+  offsets, the complete content up to its closing matching quotation mark
+  and a source-backed WRITE classification. For an explicitly quoted entry,
+  a broad overlapping sweep event also CANNOT authorize truncated content.
+- v0.54 simulation accepts a complete APPEND_DOCUMENT_ENTRY span extending
+  beyond its action sentence, but OPEN/CLOSE/OBSERVE spans remain tied to
+  their sentence and to source-observed object state/polarity.
+- The v0.22 typed source windows retain that complete global document span
+  and anchor `sentence_id` on the originating WRITE sentence. The
+  model instructions explicitly prohibit splitting one quoted entry into
+  invented per-sentence appends. v0.23 calls the same verifier for both
+  physical-event coverage and independent typed-sweep corroboration.
+- A later `added,` quote is a **separate** ordered document append, not
+  a continuation of the previous quote; its physical action time remains
+  unknown. All staging is noncanonical and read-only.
+
+Lab tests prove literal first multi-sentence content, a separate second
+append, rejection of partial content, unsupported speech/event mismatches,
+out-of-scope typed evidence and default source-only safety. Test-only
+preconstructed events **never** enter a real model request. Verified by
+[self-hosted CI #39062570931](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39062570931)
+at code commit `e800c3ae`: **759 baseline + 146 v0.52 + 28 v0.53 =
+933 Python PASS** and browser E2E PASS.
+
+**Still not proven:** 28/28 genuinely independent source semantics from a
+real model, actual Mara v0.22→v0.54→v0.23 full qualification, automated Writer
+repair to changed SHA, and canonical WorldState/EventGraph commit. The frozen
+mechanical diagnostic deliberately returns empty typed model arrays and still
+stops safely at `V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED`, 14 scripted
+requests and 7 blind source batches. No paid calls or world/DB writes.
