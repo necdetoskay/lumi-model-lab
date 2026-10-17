@@ -72,10 +72,13 @@ def _stage_contract(stage, prose, *, expected_tasks=None):
                  stage["status"]=="FAILED_SAFE_FINAL" else
                  completed==expected_tasks),
                 "V051_INCOMPLETE_ROW_REPAIR_ACCOUNTING")
+    require(all(isinstance(r,dict) and
+                r.get("semantic_truth_verified") is False and
+                r.get("canonical_commit_authorized") is False
+                for r in stage.get("task_results",[])),
+            "V051_ROW_REPAIR_SOURCE_OR_TRUTH_MISMATCH")
     if stage["status"]=="SOURCE_CANDIDATES_READY_FOR_FULL_REEXTRACTION_NONCANONICAL":
-        require(all(r.get("status") in (STATUS_SOURCE,STATUS_REVIEW) and
-                    r.get("semantic_truth_verified") is False and
-                    r.get("canonical_commit_authorized") is False
+        require(all(r.get("status") in (STATUS_SOURCE,STATUS_REVIEW)
                     for r in stage["task_results"]),
                 "V051_ROW_REPAIR_SOURCE_OR_TRUTH_MISMATCH")
     return True
