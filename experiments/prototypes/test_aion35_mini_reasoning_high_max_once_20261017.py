@@ -117,6 +117,63 @@ class AionHighMaxTests(unittest.TestCase):
                     "launch_id":"aion35mini-deniz-high-max-20261017-once",
                 },root/"claims")
 
+    def test_complete_provider_sse_requires_done_and_final_finish_reason(self):
+        from unittest.mock import MagicMock
+        def packet(content="",finish=None,usage=None):
+            body={
+                "id":"gen-1","model":ab.MODEL,
+                "choices":[{"delta":{"content":content},"finish_reason":finish}],
+            }
+            if usage is not None:
+                body["usage"]=usage
+            return "data: "+json.dumps(body)
+        def stubbed(lines):
+            response=MagicMock()
+            response.__enter__.return_value=response
+            response.iter_lines.return_value=lines
+            response.raise_for_status.return_value=None
+            return response
+        request=ab.make_request("high")
+        events=[
+            packet("Deniz heard a tick. "),
+            packet("He looked up.",finish="stop",
+                   usage={"prompt_tokens":661,"completion_tokens":3000,
+                          "cost":0.01}),
+            "data: [DONE]",
+        ]
+        with patch("requests.post",return_value=stubbed(events)):
+            receipt=ab.real_stream_call(request,"sk-test")
+        self.assertEqual(receipt["generation_id"],"gen-1")
+        self.assertEqual(receipt["finish_reason"],"stop")
+        self.assertEqual(receipt["story"],
+                         "Deniz heard a tick. He looked up.")
+        self.assertEqual(receipt["usage"]["cost"],0.01)
+        for bad in [events[:-1],
+                    [events[0],packet("end",finish=None),"data: [DONE]"]]:
+            with patch("requests.post",return_value=stubbed(bad)):
+                with self.assertRaisesRegex(
+                    RuntimeError,"PROVIDER_STREAM_TRUNCATED_OR_NO_DONE",
+                ):
+                    ab.real_stream_call(request,"sk-test")
+
+    def test_consumed_global_one_use_claim_prevents_second_paid_run(self):
+        with TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            grant={"launch_id":"aion35mini-deniz-high-max-20261017-once"}
+            with patch.object(ab,"validate_one_use_launch",
+                              return_value=ab.verify_equal_experiment()), \
+                 patch.object(ab,"real_stream_call",
+                              side_effect=fake_provider) as provider:
+                ab.run_live(output_root=root/"run-1",
+                            claim_root=root/"claims",
+                            api_key="sk-test-not-a-real-api-key",grant=grant)
+                self.assertEqual(provider.call_count,2)
+                with self.assertRaises(FileExistsError):
+                    ab.run_live(output_root=root/"run-2",
+                                claim_root=root/"claims",
+                                api_key="sk-test-not-a-real-api-key",grant=grant)
+                self.assertEqual(provider.call_count,2)
+
     def test_grant_must_solely_modify_exact_launch_file(self):
         grant={
             "schema":ab.SCHEMA,
