@@ -25,7 +25,7 @@ EVENT_ROLES={
     "APPEND_DOCUMENT_ENTRY":"documents",
 }
 TYPE_KINDS={
-    "OBSERVE_OPENABLE":frozenset({"OBSERVE","OPEN"}),
+    "OBSERVE_OPENABLE":frozenset({"OBSERVE"}),
     "SET_OPENABLE":frozenset({"OPEN","CLOSE","CHANGE_STATE"}),
     "APPEND_DOCUMENT_ENTRY":frozenset({"WRITE"}),
 }
@@ -145,11 +145,15 @@ def preview(*,prose,world,registry,candidates,extraction_report):
             facet["position"]=payload["observed"]
             facet["baseline_observed"]=True
         elif proposed["type"]=="SET_OPENABLE":
-            need(facet["baseline_observed"] is True and
-                 facet["position"] in ("OPEN","CLOSED") and
-                 payload["expected"]==facet["position"] and
+            # Source may explicitly say "opened" while prior OPEN/CLOSED
+            # state is unobserved. UNKNOWN is epistemic uncertainty, not
+            # an invented CLOSED baseline. Only a source-backed action may
+            # establish the next state in this case.
+            prior=facet["position"]
+            need(prior in ("UNKNOWN","OPEN","CLOSED") and
+                 payload["expected"]==prior and
                  payload["next"] in ("OPEN","CLOSED") and
-                 payload["next"]!=payload["expected"],
+                 payload["next"]!=prior,
                  "V054_OPENABLE_COMPARE_AND_SWAP_INVALID")
             facet["position"]=payload["next"]
         else:
