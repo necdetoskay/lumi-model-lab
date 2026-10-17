@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives import serialization
 
 from experiments.sera.authorized_mara_delegated_lane_v052 import run_delegated_mara
 from experiments.sera.authorized_mara_real_lane_v052 import preflight
-from experiments.sera.coverage import prose_hash
+from experiments.sera.coverage import CoverageError,prose_hash
 from experiments.sera.delegated_paid_budget_v052 import (
     DelegatedBudget, SCOPE, SCHEMA)
 from experiments.sera.delegated_provider_bridge_v052 import create_delegated_provider
@@ -260,6 +260,21 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertEqual(second,initial)
         self.assertEqual(timeline,json.loads(path.read_text(encoding="utf-8")))
         self.assertEqual(self.sent,[])
+
+    def test_saved_mara_timeline_forgery_is_not_silently_reused(self):
+        from experiments.sera.real_blind_benchmark_v040 import EXPECTED_SHA
+        self.launch()
+        path=self.root/"mara-run"/"source-chronology"/(
+            EXPECTED_SHA+".source.json")
+        record=json.loads(path.read_text(encoding="utf-8"))
+        record["source_sentences"][0]["action_minute"]=130
+        record["source_sentences"][0]["action_time_status"]="FORGED_FACT"
+        path.write_text(json.dumps(record,ensure_ascii=False),encoding="utf-8")
+        with self.assertRaisesRegex(CoverageError,
+                                    "V052_DELEGATED_CACHED_CHRONOLOGY_DRIFT"):
+            self.launch()
+        self.assertFalse(self.sent)
+        self.assertEqual(self.billable_rows(),0)
 
     def test_bounded_zero_extraction_cap_is_safe_final_with_no_post(self):
         result=self.launch()
