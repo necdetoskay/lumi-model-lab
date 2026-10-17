@@ -173,6 +173,29 @@ class MaraMultifacetLabControl(unittest.TestCase):
                 CoverageError,"V054_NOT_BACKED_BY_INDEPENDENT_SOURCE_EVENT"):
             self.run_preview(changes=truncate)
 
+    def test_second_quoted_notebook_append_remains_ordered_and_separate(self):
+        # Laboratory-only source-bound example; never an approved model
+        # answer or the complete 28-sentence qualification.
+        proposals,report=self.controls()
+        second="Discrepancy documented; explanation unknown."
+        typed,sweep=self.event(
+            5,"APPEND_DOCUMENT_ENTRY","mara","mara_notebook",second,
+            {"expected_append_count":1,"text":second},
+            sweep_quote="added")
+        proposals.append(typed)
+        report["candidate_events"].append(sweep)
+        result=preview(
+            prose=self.prose,world=self.world,registry=ROLES,
+            candidates=proposals,extraction_report=report)
+        appends=result["multifacet_preview"]["facets"]["mara_notebook"][
+            "documents"]["observed_appends"]
+        self.assertEqual(len(appends),2)
+        self.assertEqual(appends[1]["text"],second)
+        self.assertEqual(result["multifacet_preview"]["event_count"],5)
+        self.assertTrue(all(r["action_minute"] is None
+                            for r in result["multifacet_preview"]["receipts"]))
+        self.assertEqual(result["world_db_writes"],0)
+
     def test_spoken_claim_or_action_without_quote_delimiter_cannot_fake_write(self):
         wrote=self.prose.index("wrote: “")
         def bad_verb(report):
