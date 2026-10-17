@@ -46,3 +46,17 @@ Bu belge **v0.52 spesifikasyonudur; gerçek-model uçtan uca başarı veya ücre
 - [**Özel v0.52 self-hosted CI #39008745878**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39008745878): **SUCCESS: 8/8 focused tests + smoke**. Artefakt `sera-v052-qualified-shadow-39008745878` ID `12091816849`, net durum `SYNTHETIC_ARI_QUALIFIED_MARA_28_FAILED_SAFE`; **Ari'nin iki cümlelik sentetik başarısı Mara'nın 28 cümlelik gerçek başarı iddiası değildir**.
 
 **Sıradaki gerçek blokaj P0/P1:** yalnız ayrı açık ücretli yetkiyle kullanabileceğimiz, global durable single-use grant ve provider makbuz korumasıyla gerçek model transport yolu. Ardından Mara'nın 28 cümlesinin gerçekten tam kaynak-kör çıkarımı → bağımsız doğrulama → model-written rewrite → *yeni SHA üzerinden* tekrar çıkarım/doğrulama. Gold semantic quality ve G2 state yetkisi bu sürümde verilmez. Aion HIGH/MAX önceki ücretli izni SERA için kullanılamaz; model çıktı token sınırı yine yasak.
+
+
+## 17 Ekim 2026 — P0 dinamik imzalı bütçe / kaynak soy ağacı (deneysel)
+
+**Durum: `DELEGATED_BUDGET_OFFLINE_PROVEN_PARTIAL / REAL_MARA_PAID_PROOF_PENDING`.**
+Bu durum gerçek modelle tamamlanmış 28 cümlelik onarım iddiası değildir.
+
+- `delegated_paid_budget_v052.py`: bağımsız Ed25519 imzasına bağlı tek Mara işi; ilk scene/source/world/policy SHA ve dört model rolü; rol bazında çağrı kotası, toplam POST kotası, raporlanmış maliyet gözcüsü, azami yeniden yazım derinliği. Atomik SQLite `BEGIN IMMEDIATE` ile tam istek parmak izi başına kalıcı tahsis; STARTED/unknown veya maliyeti belirsiz herhangi bir önceki deneme yeni harcamayı keser. Gözlenen harcama eşiği **garanti edilmiş fatura tavanı değildir**.
+- `delegated_provider_bridge_v052.py`: önceki sahne revision SHA'dan sonraki sahneye geçiş yalnızca receipted Writer generation ID + birebir source/prose doğrulamasıyla açılır; elle değiştirilmiş revizyon, desteklenmeyen model ve token çıktı tavanı reddedilir.
+- `authorized_mara_delegated_lane_v052.py`: gerçek `v0.22` kaynak-kör çıkarım, `v0.23` tam sahne doğrulaması, `v0.21` otomatik Writer ve `v0.20` otomatik döngüye bounded delegation bağlantısı; kronolojik scene SHA değişiklikleri için yeni kanıt zorunlu. Normal CI hiçbir provider POST yapmaz.
+- `receipt_summary()`: ham sahne/prose veya kimlik bilgisi yayımlamadan provider generation ID, model, gerçek input/output token, varsa reasoning token, varsa gecikme ve provider-reported cost; `RECEIPTED_PRICED` olmayan kayıtlara scene ready hakkı verilmez.
+- [14 offline delegated budget testinin bulunduğu CI #39029533548](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39029533548) **SUCCESS**. Sonraki revizyon ve entegrasyon commitlerinin self-hosted CI sonuçları ayrıca doğrulanmalı; eski green sonuç sonraki commit için kanıt sayılmaz.
+
+**Çözülmesi gereken güvenlik/ürün kapıları:** (1) trusted Ed25519 public-key kaynağının dağıtım tarafından sabitlenmesi ve anahtar iptali/rotasyonu, (2) tüm worker'ların aynı sağlam kalıcı journal ve kilitleri kullanmasının üretim düzeyinde kanıtı, (3) yanlış/kırık provider response ve çok aşamalı Writer→new SHA→fresh qualified check testlerinin en güncel committe PASS olması, (4) ayrık tek kullanımlık SERA ödeme izniyle gerçek model denemesi; ayrıca gerçek provider generation/maliyet/kaynak-semantiği verilerinin bağımsız doğrulanması. Hiçbir manuel metin/JSON düzeltmesi, çıktı token ceiling, canonical/G2/production write yetkisi yok. Issue #309 açık kalacak.
