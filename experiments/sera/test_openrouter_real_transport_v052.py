@@ -123,11 +123,12 @@ class RealTransportOfflineTests(unittest.TestCase):
         def broken(req,timeout):
             self.sent.append((req,timeout))
             return FakeResponse(b"{")
-        with self.assertRaises(json.JSONDecodeError):
+        with self.assertRaisesRegex(JournalBlocked,"RECEIPTED_MODEL_JSON_INVALID"):
             self.invoke(self.bridge(opener=broken))
-        with self.assertRaisesRegex(JournalBlocked,"UNKNOWN_INFLIGHT"):
+        with self.assertRaisesRegex(JournalBlocked,"RECEIPTED_MODEL_JSON_INVALID"):
             self.invoke(self.bridge())
         self.assertEqual(len(self.sent),1)
+        self.assertEqual(self.journal.status("sera-grant-test"),"RECEIPTED")
 
     def test_http_rejection_receipted_but_not_success(self):
         self.journal.register_grant(grant_id="sera-grant-test",
@@ -152,7 +153,7 @@ class RealTransportOfflineTests(unittest.TestCase):
         self.assertEqual(self.sent,[])
 
     def test_unsigned_approval_cannot_reach_transport(self):
-        with self.assertRaisesRegex(JournalBlocked,"SIGNED_APPROVAL"):
+        with self.assertRaisesRegex(JournalBlocked,"BINDING_DRIFT"):
             self.bridge(approval={"manifest":{},"signature":""})
         self.assertEqual(self.sent,[])
 
