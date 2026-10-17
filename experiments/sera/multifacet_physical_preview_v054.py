@@ -79,28 +79,52 @@ def source_backed_typed_match(*, prose, event, candidate):
             return False
     else:
         return False
-    if event["start"]<span["end"] and span["start"]<event["end"]:
+    overlapping = event["start"]<span["end"] and span["start"]<event["end"]
+    if op!="APPEND_DOCUMENT_ENTRY":
+        return overlapping
+    # Even if a broad independent WRITE event overlaps the model quote,
+    # a model's partial (first-sentence) TEXT must not pass as a complete
+    # quoted notebook addition. Bind source's literal opening/closing
+    # delimiters BEFORE granting any document coverage.
+    if not isinstance(prose,str):
+        return overlapping
+    source_rows={s["id"]:s for s in sentences(prose)}
+    row=source_rows.get(event["sentence_id"])
+    if row is None or not (row["start"]<=span["start"]<row["end"]):
+        return False
+    prior=prose[row["start"]:span["start"]]
+    quoted=re.search(
+        r"""\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*[:,]\s*(["“‘'])$""",
+        prior,re.IGNORECASE)
+    if quoted:
+        opener=quoted.group(1)
+        closer={"“":"”","‘":"’",'"':'"',"'":"'"}.get(opener)
+        payload=candidate.get("payload")
+        content=prose[span["start"]:span["end"]]
+        if (prose[span["end"]:span["end"]+1]!=closer or
+            not isinstance(payload,dict) or
+            payload.get("text")!=content or
+            span.get("quote")!=content):
+            return False
+        if overlapping:
+            return True
+        # For disjoint source spans, the independent WRITE quote must
+        # actually terminate in the action verb, not simply be an
+        # unrelated mention elsewhere in the sentence.
+        verb=prose[event["start"]:event["end"]]
+        return bool(event["end"]<=span["start"] and re.search(
+            r"""\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*$""",
+            verb,re.IGNORECASE))
+    if overlapping:
+        # For unquoted ordinary writing, retain existing overlap policy.
+        # A span starting INSIDE an already opened explicit quote cannot
+        # bypass complete-entry proof by omitting the opening characters.
+        if re.search(
+            r"""\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*[:,]\s*["“‘']""",
+            prior,re.IGNORECASE):
+            return False
         return True
-    if (not isinstance(prose,str) or op!="APPEND_DOCUMENT_ENTRY" or
-            event["end"]>span["start"]):
-        return False
-    # Never bridge a normal mention, dialogue, a remote quotation, or a
-    # different sentence. A matching write verb alone is insufficient.
-    verb=prose[event["start"]:event["end"]]
-    between=prose[event["end"]:span["start"]]
-    content=prose[span["start"]:span["end"]]
-    payload=candidate.get("payload")
-    if (not re.search(r"\b(?:wrote|writes|write|writing|added|jotted|scribbled|inscribed)\b\s*$",
-                      verb, re.IGNORECASE) or
-        not re.fullmatch(r"""\s*[:,]\s*(["“‘'])""",between) or
-        not isinstance(payload,dict) or
-        payload.get("text")!=content or
-        span.get("quote")!=content):
-        return False
-    opener=between.strip()[-1]
-    closer={"“":"”","‘":"’",'"':'"',"'":"'"}.get(opener)
-    return prose[span["end"]:].startswith(closer)
-
+    return False
 
 def digest(value):
     return sha256(canonical(value).encode("utf-8")).hexdigest()
