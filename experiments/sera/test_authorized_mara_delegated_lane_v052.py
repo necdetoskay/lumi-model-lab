@@ -139,8 +139,19 @@ class DelegatedMaraNoSpend(unittest.TestCase):
         self.assertGreaterEqual(first["allocated_provider_requests"],1)
         self.assertFalse(first["canonical_commit_authorized"])
         self.assertEqual(first["production_db_writes"],0)
-        self.assertGreaterEqual(len(observed),1)
-        self.assertLessEqual(len(observed),2)
+        self.assertEqual(len(observed),2)
+        self.assertEqual(first["allocated_provider_requests"],2)
+        original_user=json.loads(observed[0]["messages"][1]["content"])
+        repaired_user=json.loads(observed[1]["messages"][1]["content"])
+        self.assertEqual(original_user,repaired_user)
+        self.assertEqual(original_user["source_prose_sha256"],EXPECTED_SHA)
+        self.assertEqual(len(original_user["target_sentences"]),4)
+        self.assertNotEqual(observed[0]["messages"][0]["content"],
+                            observed[1]["messages"][0]["content"])
+        self.assertIn("SOURCE-ONLY AUTOMATIC RE-EXTRACTION",
+                      observed[1]["messages"][0]["content"])
+        self.assertNotIn('"rows":[]',
+                         json.dumps(observed[1],ensure_ascii=False))
         self.assertEqual(self.billable_rows(),len(observed))
         for model_request in observed:
             self.assertEqual(model_request["model"],MODELS["extraction"])
