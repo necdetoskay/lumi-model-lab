@@ -51,6 +51,20 @@ jobs:
           print(f"SERA_V052_TEST_DISCOVERY_VERIFIED modules={len(files)} cases={count}")
           PY
           python -m unittest discover -s experiments/sera -p 'test_*_v052.py' -v
+      - name: Verify signed physical entry versus unverified story events (OFFLINE)
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import unittest
+          folder=Path("experiments/sera")
+          modules=sorted(folder.glob("test_*_v053.py"))
+          tests=unittest.TestLoader().discover(str(folder),pattern="test_*_v053.py")
+          count=tests.countTestCases()
+          assert len(modules)>=1, f"V053_MODULE_MISSING:{len(modules)}"
+          assert count>=9, f"V053_TEST_COVERAGE_REGRESSION:{count}"
+          print(f"SERA_V053_TEST_DISCOVERY_VERIFIED modules={len(modules)} cases={count}")
+          PY
+          python -m unittest discover -s experiments/sera -p 'test_*_v053.py' -v
       - name: Verify two-scene multi-character synthetic story handoff
         run: |
           python -m experiments.sera.ensemble_story_smoke_v038 \
