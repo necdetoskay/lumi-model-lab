@@ -1,0 +1,84 @@
+name: SERA v0.51 Zero-Human Mara Repair Full Scene Evidence Handoff
+on:
+  push:
+    branches:
+      - experiment/sera-scene-state-v0-1-20261015
+    paths:
+      - experiments/sera/scene_full_handoff_v051.py
+      - experiments/sera/scene_full_handoff_smoke_v051.py
+      - experiments/sera/tests/test_scene_full_handoff_v051.py
+      - .github/workflows/sera-v051-repair-to-full-scene.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  real-receipt-to-full-scene-safety:
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 16
+    defaults:
+      run:
+        working-directory: sera-v051-source
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: sera-v051-source
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: No model output ceilings, execute all SERA offline tests
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.request_policy
+          python -m unittest discover -s experiments/sera/tests -q
+      - name: Retrieve original 14 real v048 independent Mara provider receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/sera-v051/real-v048"
+          gh run download 38957808652 --repo "$GITHUB_REPOSITORY" \
+            --name sera-v048-full-28-real-model-once-38957808652 \
+            --dir "$RUNNER_TEMP/sera-v051/real-v048"
+      - name: v050 autonomous repair to actual v022/21/20 gate with restart proof
+        run: |
+          set -euo pipefail
+          python -m experiments.sera.scene_full_handoff_smoke_v051 \
+            --receipt-root "$RUNNER_TEMP/sera-v051/real-v048" \
+            --output-root "$RUNNER_TEMP/sera-v051/gates"
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          f=Path(os.environ['RUNNER_TEMP'])/'sera-v051/gates/proof.json'
+          a=json.loads(f.read_text(encoding='utf-8'))
+          assert a['real_historical_mara_receipts_verified']==14
+          assert a['mara_source_sentence_count']==28
+          assert a['scripted_mara_row_reextractions']==5
+          assert a['scripted_mara_blind_advisories']==21
+          assert a['scripted_mara_row_fallbacks']==2
+          assert a['mara_full_scene_outcome']=='FAILED_SAFE_FINAL'
+          assert a['mara_scene_rewrite_count']==0
+          assert a['mara_new_provider_calls_on_replay']==0
+          assert a['positive_ari_2_sentence_control']['automatic_rewrites']==1
+          assert a['positive_ari_2_sentence_control']['replay_calls']==0
+          assert a['new_paid_openrouter_calls']==0
+          assert a['mara_g2_publish_qualified'] is False
+          assert a['canonical_commit_authorized'] is False
+          assert a['production_world_db_writes']==0
+          assert a['manual_story_repairs_required']==0
+          print('SERA_V051_REAL_MARA_14_RECEIPTS_TO_FULL_SCENE_FAILSAFE_AND_ARI_REWRITE_GREEN')
+          PY
+      - name: Archive source to full gate, replay and zero-world-write evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sera-v051-original-real-mara-full-scene-handoff-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/sera-v051/gates/proof.json
+            ${{ runner.temp }}/sera-v051/gates/mara/v050-row-stage/
+            ${{ runner.temp }}/sera-v051/gates/mara/v051-full/
+            ${{ runner.temp }}/sera-v051/gates/ari-control/
+          retention-days: 90
+          if-no-files-found: warn
