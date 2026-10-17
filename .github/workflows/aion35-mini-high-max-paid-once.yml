@@ -1,0 +1,69 @@
+name: Aion Mini High Max One-Use Paid Comparison
+on:
+  push:
+    branches:
+      - experiment/aion35-mini-reasoning-high-max-20261017
+    paths:
+      - experiments/triggers/aion35-reasoning-high-max-20261017.json
+permissions:
+  contents: read
+concurrency:
+  group: aion35mini-deniz-high-max-20261017-once
+  cancel-in-progress: false
+jobs:
+  one-use-pair:
+    if: contains(github.event.head_commit.message, '[AION-HIGHMAX-PAID-ONCE]')
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: aion-paid-worktree
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: aion-paid-worktree
+          persist-credentials: false
+          clean: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify dedicated persistent runner for unique claim
+        run: |
+          set -euo pipefail
+          test "$RUNNER_NAME" = "lumi-q25"
+          test -n "$OPENROUTER_API_KEY"
+          test "$GITHUB_REF_NAME" = "experiment/aion35-mini-reasoning-high-max-20261017"
+      - name: Dependencies and frozen zero-cap offline tests
+        run: |
+          set -euo pipefail
+          python -m pip install -r requirements.txt
+          python -m unittest experiments.prototypes.test_aion35_mini_reasoning_high_max_once_20261017 experiments.prototypes.test_aion35_mini_high_max_offline_evaluator_20261017 -q
+          python -m experiments.prototypes.aion35_mini_reasoning_high_max_once_20261017 --dry-run
+      - name: Provider credit and endpoint preflight
+        run: |
+          set -euo pipefail
+          python -m src.openrouter_preflight --json --min-remaining 0.10
+      - name: Execute maximum two real Aion calls with one-use claim
+        run: |
+          set -euo pipefail
+          python -m experiments.prototypes.aion35_mini_reasoning_high_max_once_20261017 \
+            --live \
+            --grant-file experiments/triggers/aion35-reasoning-high-max-20261017.json \
+            --claim-root "$HOME/.local/state/lumi-model-lab/aion35mini-deniz-highmax" \
+            --output-root runs/aion35-mini-deniz-highmax
+      - name: Verify and report paired original outputs without calling models
+        run: |
+          set -euo pipefail
+          python -m experiments.prototypes.aion35_mini_high_max_offline_evaluator_20261017 \
+            --input-root runs/aion35-mini-deniz-highmax \
+            --output runs/aion35-mini-deniz-highmax/comparison.json
+      - name: Preserve original provider receipts and stories
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aion35-mini-deniz-highmax-one-use-${{ github.run_id }}
+          path: aion-paid-worktree/runs/aion35-mini-deniz-highmax/
+          retention-days: 90
+          if-no-files-found: warn
