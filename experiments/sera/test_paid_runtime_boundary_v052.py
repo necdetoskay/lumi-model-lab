@@ -1,5 +1,6 @@
 """SERA v0.52 protected local paid runtime boundary: zero network tests."""
 import json
+import multiprocessing
 import os
 import shutil
 import sqlite3
@@ -12,7 +13,33 @@ from experiments.sera.paid_runtime_boundary_v052 import (
     SCHEMA,provision_local_journal,read_protected_runtime_config,
     verify_shared_local_journal,assert_paid_approval_active,
     open_bound_paid_journal,bind_revocation_checked_transport)
-from experiments.sera.provider_grant_journal_v052 import JournalBlocked
+from experiments.sera.provider_grant_journal_v052 import JournalBlocked,ProviderJournal
+
+
+def _concurrent_paid_worker(path, identity, ready, results):
+    """Separate Linux process, shared pre-provisioned SQLite, fake one-POST."""
+    try:
+        journal=ProviderJournal(path,expected_file_identity=identity)
+        binding=dict(source_sha256="a"*64,world_sha256="b"*64,
+                     scene_key="mara-no-network",policy_sha256="c"*64,
+                     model="test/isolated")
+        journal.register_grant(
+            grant_id="shared-grant-01",binding=binding,authorized=True)
+        ready.wait(5)
+        def fake_post(**kwargs):
+            results.put("POST")
+            return {"raw":{"id":"fake-receipt","usage":{"cost":0}},
+                    "error":None}
+        journal.execute_once(
+            grant_id="shared-grant-01",binding=binding,
+            request_id="shared-request-01",model="test/isolated",
+            payload={"messages":[{"role":"user","content":"offline"}]},
+            transport=fake_post)
+        results.put("RECEIPT")
+    except JournalBlocked:
+        results.put("BLOCKED")
+    except BaseException as exc:
+        results.put("ERROR:"+type(exc).__name__)
 
 
 class PaidRuntimeBoundaryTests(unittest.TestCase):
@@ -174,6 +201,42 @@ class PaidRuntimeBoundaryTests(unittest.TestCase):
         self.assertEqual(send(model="test/model",payload={"messages":[]},
                               request_id="first"),{"raw":{}})
         self.assertEqual(len(posted),1)
+
+    def test_real_separate_workers_share_one_post_journal(self):
+        if "fork" not in multiprocessing.get_all_start_methods():
+            self.skipTest("requires Linux fork worker isolation")
+        info=os.stat(self.ledger)
+        identity=(info.st_dev,info.st_ino)
+        context=multiprocessing.get_context("fork")
+        start=context.Event()
+        results=context.Queue()
+        workers=[context.Process(
+            target=_concurrent_paid_worker,
+            args=(str(self.ledger),identity,start,results))
+            for _ in range(4)]
+        for w in workers:
+            w.start()
+        start.set()
+        for w in workers:
+            w.join(7)
+            if w.is_alive():
+                w.terminate()
+                w.join(2)
+                self.fail("isolated worker stalled")
+            self.assertEqual(w.exitcode,0)
+        from queue import Empty
+        received=[]
+        while True:
+            try:
+                received.append(results.get(timeout=0.25))
+            except Empty:
+                break
+        self.assertEqual(received.count("POST"),1,received)
+        self.assertEqual(received.count("RECEIPT")+
+                         received.count("BLOCKED"),4,received)
+        self.assertFalse(any(x.startswith("ERROR:") for x in received),received)
+        journal=open_bound_paid_journal(self.value)
+        self.assertEqual(journal.status("shared-grant-01"),"RECEIPTED")
 
     def test_bootstrap_cannot_replace_existing_ledger(self):
         with self.assertRaisesRegex(JournalBlocked,"REQUIRES_NEW_ABSOLUTE_PATH"):
