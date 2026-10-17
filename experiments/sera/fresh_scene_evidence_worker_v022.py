@@ -32,6 +32,7 @@ from experiments.sera.sentence_sweep_v010 import (
     create_plan, bind_batch, aggregate,
 )
 from experiments.sera.world_state_v013 import EVENT_KEYS, TYPES
+from experiments.sera.sentence_ledger_v06 import sentences
 from experiments.sera.world_state_v02 import canonical, validate as validate_world
 
 SCHEMA = "sera.fresh-independent-evidence.v0.22"
@@ -191,6 +192,19 @@ def _source_only_repair_request(*, original, failure_code, attempt):
                      isinstance(x["source_quote"],str) and
                      x["source_quote"] for x in source_focus),
                  "V022_TYPED_FOCUS_QUOTE_INVALID")
+        try:
+            packet=json.loads(original["messages"][1]["content"])
+        except (ValueError,TypeError) as exc:
+            raise CoverageError("V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID") from exc
+        prose=packet.get("original_prose") if isinstance(packet,dict) else None
+        _require(isinstance(prose,str) and prose.strip(),
+                 "V022_TYPED_FOCUS_ORIGINAL_PACKET_INVALID")
+        actual={x["id"]:x["quote"] for x in sentences(prose)}
+        _require(len({r["sentence_id"] for r in source_focus})==
+                 len(source_focus) and
+                 all(actual.get(row["sentence_id"])==row["source_quote"]
+                     for row in source_focus),
+                 "V022_TYPED_FOCUS_NOT_VERBATIM_SOURCE")
     amended=deepcopy(original)
     amended["messages"][0]["content"]+=(
         "\\n\\nSOURCE-ONLY AUTOMATIC RE-EXTRACTION, attempt "+
