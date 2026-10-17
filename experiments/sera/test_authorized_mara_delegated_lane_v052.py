@@ -116,7 +116,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_untrusted_signer_key_rejected(self):
         other=Ed25519PrivateKey.generate().public_key().public_bytes(
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
-        with self.assertRaisesRegex(JournalBlocked,"TRUST_OVERRIDE_FORBIDDEN"):
+        with self.assertRaisesRegex(JournalBlocked,"PIN_MISMATCH"):
             self.launch(trusted_public_key=other)
         self.assertFalse(self.sent)
 
