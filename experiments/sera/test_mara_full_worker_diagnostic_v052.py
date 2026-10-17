@@ -222,7 +222,8 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
         with self.assertRaisesRegex(
             CoverageError,"V022_CRITICAL_TYPED_EVENT_NOT_ACCOUNTED"):
             _check_critical_coverage(report,passive)
-        transition=[dict(passive[0],type="SET_OPENABLE")]
+        transition=[dict(passive[0],type="SET_OPENABLE",
+                         payload={"expected":"UNKNOWN","next":"OPEN"})]
         _check_critical_coverage(report,transition)
 
     def test_no_analyst_gold_or_manual_scene_edits_enter_requests(self):
