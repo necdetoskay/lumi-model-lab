@@ -85,7 +85,20 @@ def create_checker(*, evidence_root, full_qualification=False):
             temporal_case=bundle["temporal_case"],
         )
         roles = bundle["typed_registry"]
-        if (isinstance(roles, dict) and
+        if (isinstance(roles,dict) and
+            set(roles)=={"openables","documents"} and
+            isinstance(roles["openables"],list) and
+            isinstance(roles["documents"],list) and
+            set(roles["openables"]) & set(roles["documents"]) and
+            bundle["typed_candidates"]):
+            # Multi-capability OBJECTS: never let legacy v0.13's single
+            # role-per-object simulator silently drop OPEN or WRITE.
+            from experiments.sera.multifacet_physical_preview_v054 import preview
+            typed=preview(
+                prose=prose,world=world,registry=roles,
+                candidates=bundle["typed_candidates"],
+                extraction_report=bundle["extraction_report"])
+        elif (isinstance(roles, dict) and
             set(roles) == {"openables", "documents"} and
             roles["openables"] == [] and roles["documents"] == [] and
             bundle["typed_candidates"] == []):
