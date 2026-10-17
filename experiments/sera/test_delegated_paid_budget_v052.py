@@ -176,6 +176,26 @@ class DelegatedBudgetTests(unittest.TestCase):
                 writer_payload=self.writer_payload,writer_response_id="fake")
         self.assertEqual(len(self.calls),1)
 
+    def test_priced_receipt_summary_does_not_expose_scene_text(self):
+        self.invoke(role="writer",payload=self.writer_payload)
+        report=self.budget.receipt_summary()
+        self.assertEqual(len(report),1)
+        self.assertEqual(report[0]["status"],"RECEIPTED_PRICED")
+        self.assertEqual(report[0]["generation_id"],"gen-1")
+        self.assertEqual(report[0]["input_tokens"],20)
+        self.assertEqual(report[0]["output_tokens"],12)
+        self.assertEqual(report[0]["observed_cost_usd"],"0.003")
+        self.assertNotIn("message",report[0])
+        self.assertNotIn(REVISED,_canonical(report))
+
+    def test_unpriced_receipt_summary_cannot_be_qualified(self):
+        def unpriced(**args):
+            return {"raw":{"id":"g","model":args["model"],
+                           "choices":[],"usage":{}},"error":None}
+        self.invoke(transport=unpriced)
+        report=self.budget.receipt_summary()
+        self.assertEqual(report[0]["status"],"RECEIPTED_UNQUALIFIED")
+
     def test_output_ceiling_forbidden_before_spend(self):
         with self.assertRaises(Exception):
             self.invoke(payload={"max_tokens":8,"messages":[]})
