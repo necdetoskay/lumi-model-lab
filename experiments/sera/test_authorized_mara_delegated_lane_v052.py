@@ -1,5 +1,6 @@
 """No-network delegated Mara 28-sentence integration + revision lineage."""
 import base64
+from hashlib import sha256
 import tempfile
 import time
 import unittest
@@ -57,6 +58,7 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def launch(self,**kwargs):
         args=dict(models=MODELS,approval=self.approval(),
                   trusted_public_key=self.public,
+                  trusted_raw_key_sha256=sha256(self.public).hexdigest(),
                   api_key="FAKE_OFFLINE_ONLY",
                   journal_path=self.root/"ledger.sqlite3",
                   output_root=self.root/"mara-run",
@@ -95,8 +97,20 @@ class DelegatedMaraNoSpend(unittest.TestCase):
     def test_untrusted_signer_key_rejected(self):
         other=Ed25519PrivateKey.generate().public_key().public_bytes(
             serialization.Encoding.Raw,serialization.PublicFormat.Raw)
-        with self.assertRaisesRegex(JournalBlocked,"SIGNATURE_INVALID"):
+        with self.assertRaisesRegex(JournalBlocked,"PIN_MISMATCH"):
             self.launch(trusted_public_key=other)
+        self.assertFalse(self.sent)
+
+    def test_substituted_deployment_pin_rejected_before_journal(self):
+        with self.assertRaisesRegex(JournalBlocked,"PIN_MISMATCH"):
+            self.launch(trusted_raw_key_sha256="f"*64)
+        self.assertFalse((self.root/"ledger.sqlite3").exists())
+        self.assertFalse(self.sent)
+
+    def test_missing_deployment_pin_rejected_before_journal(self):
+        with self.assertRaisesRegex(JournalBlocked,"PIN_CONFIG_MISSING"):
+            self.launch(trusted_raw_key_sha256=None)
+        self.assertFalse((self.root/"ledger.sqlite3").exists())
         self.assertFalse(self.sent)
 
     def test_generated_revision_rebind_without_writer_receipt_is_forbidden(self):
