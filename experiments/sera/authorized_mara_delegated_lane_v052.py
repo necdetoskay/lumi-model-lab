@@ -22,6 +22,7 @@ from experiments.sera.delegated_provider_bridge_v052 import create_delegated_pro
 from experiments.sera.delegated_receipt_audit_v052 import audit_delegated_receipts
 from experiments.sera.fresh_scene_evidence_worker_v022 import create_preparer
 from experiments.sera.mara_s1_typed_live_v05 import entry_state, REGISTRY
+from experiments.sera.mara_scene_capabilities_v054 import registered_mara_facets
 from experiments.sera.openrouter_real_transport_v052 import make_openrouter_transport
 from experiments.sera.openrouter_scene_writer_v021 import create_writer, make_request
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, ProviderJournal, _hash
@@ -39,22 +40,6 @@ from experiments.sera.unattended_scene_rewrite_v020 import execute as scene_loop
 import json
 
 SCHEMA="sera.v052-mara-delegated-model-shadow"
-
-
-def registered_mara_facets(world):
-    """Registered v0.13 capabilities only; NEVER a claimed action/event."""
-    # Watch case and notebook EXIST in the frozen v0.2 world.
-    # They are not a hand-authored answer to the sentence extractor.
-    roles={"openables":["vane_watch","mara_notebook"],"documents":["mara_notebook"]}
-    for identifier in roles["openables"]+roles["documents"]:
-        entity=world["entities"].get(identifier)
-        require(isinstance(entity,dict) and entity["kind"]=="OBJECT"
-                and entity["lifecycle"]=="ACTIVE",
-                "V052_MARA_REGISTERED_FACET_MISSING")
-    require(world["entities"]["vane_watch"]["holder"]=="vane" and
-            world["entities"]["mara_notebook"]["holder"]=="mara",
-            "V052_MARA_FACET_CUSTODY_MISMATCH")
-    return roles
 
 
 def run_delegated_mara(*, models, approval, trusted_public_key,
