@@ -61,6 +61,8 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         self.sent=[]
         self.provider_rows=[]
         self.fake=fake_model(self.provider_rows)
+        self.fail_first_sweep=False
+        self.failed_sweep_once=False
 
     def approval(self):
         manifest=dict(schema=SCHEMA,scope=SCOPE,
@@ -80,7 +82,11 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         packet=json.loads(payload["messages"][1]["content"])
         self.assertNotIn("max_tokens",payload)
         self.assertNotIn("max_completion_tokens",payload)
-        if model==MODELS["writer"]:
+        if model==MODELS["extraction"] and self.fail_first_sweep and (
+                not self.failed_sweep_once):
+            self.failed_sweep_once=True
+            content=json.dumps({"rows":[]})
+        elif model==MODELS["writer"]:
             self.assertEqual(packet["scene_prose"],SOURCE_1)
             self.assertEqual(packet["source_prose_sha256"],prose_hash(SOURCE_1))
             content=json.dumps(dict(source_prose_sha256=prose_hash(SOURCE_1),
@@ -129,7 +135,8 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
             extraction_model=MODELS["extraction"],
             semantic_model=MODELS["semantic"],typed_model=MODELS["typed"],
             provider_call=callback,reconciler=reconcile,
-            max_model_requests=24,observed_spend_guard_usd="0.30")
+            max_model_requests=24,observed_spend_guard_usd="0.30",
+            max_source_repair_attempts=1)
         context=dict(scene_key=SCENE,entry_world_sha256=digest(self.world),
                      fresh_source_sha_required_after_each_rewrite=True)
         actual_writer=create_writer(
@@ -180,6 +187,27 @@ class SignedAutorepairPositiveControl(unittest.TestCase):
         again,_=self.lane(fail_if_post=True)
         self.assertEqual(out,again)
         self.assertEqual(len(self.sent),before)
+
+    def test_billed_bad_sweep_repaired_source_only_then_writer_and_v023_pass(self):
+        self.fail_first_sweep=True
+        out,budget=self.lane()
+        self.assertEqual(out["status"],"SCENE_CANDIDATE_READY_NONCANONICAL")
+        self.assertEqual(out["rewrite_count"],1)
+        self.assertTrue(self.failed_sweep_once)
+        self.assertEqual([x[0] for x in self.sent].count(MODELS["writer"]),1)
+        extraction=[x for x in self.sent if x[0]==MODELS["extraction"]]
+        self.assertGreaterEqual(len(extraction),3)
+        self.assertNotEqual(extraction[0][1],extraction[1][1])
+        self.assertEqual(extraction[0][2],extraction[1][2])
+        self.assertTrue(budget.revision_registered(prose_hash(SOURCE_2)))
+        with budget.journal._connect() as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM calls WHERE status='RECEIPTED'"
+            ).fetchone()[0],len(self.sent))
+        count=len(self.sent)
+        out_again,_=self.lane(fail_if_post=True)
+        self.assertEqual(out,out_again)
+        self.assertEqual(len(self.sent),count)
 
     def test_no_manual_or_unreceipted_prose_registered(self):
         _,budget=self.lane()
