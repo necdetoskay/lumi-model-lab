@@ -147,7 +147,7 @@ def _check_critical_coverage(report, typed):
     """Do not silently drop a sourced physical CLOSE/WRITE event."""
     for item in report["candidate_events"]:
         expected = {
-            "OPEN": frozenset({"OBSERVE_OPENABLE","SET_OPENABLE"}),
+            "OPEN": frozenset({"SET_OPENABLE"}),
             "CLOSE": frozenset({"SET_OPENABLE"}),
             "WRITE": frozenset({"APPEND_DOCUMENT_ENTRY"}),
         }.get(item["kind"])
@@ -656,9 +656,30 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                 "entry_world": world,
                 "previous_model_opinions": "NOT_PROVIDED",
             }
+            # v0.54 has a separate, detached multi-capability reducer.
+            # An explicit first OPEN action with unknown prior state is a
+            # transition, NOT a passive observation, and must not invent
+            # a CLOSED baseline. Do not advertise this policy to legacy
+            # single-capability v0.13 validators.
+            multifacet=bool(set(roles["openables"]) & set(roles["documents"]))
+            typed_system=SYSTEM
+            if multifacet:
+                typed_system+=(
+                    "\n\nMULTI-CAPABILITY SOURCE ACTION POLICY (v0.54): "
+                    "If original prose explicitly states an opening or "
+                    "closing ACTION for a registered multi-capability object "
+                    "but its preceding OPEN/CLOSED state is unknown, return "
+                    "SET_OPENABLE with expected UNKNOWN and next OPEN or "
+                    "CLOSED as directly stated. UNKNOWN does not mean the "
+                    "object was previously CLOSED or OPEN. Use "
+                    "OBSERVE_OPENABLE only when the source DESCRIBES a "
+                    "state, without performing an opening/closing action. "
+                    "Return exact global source spans and maintain order. "
+                    "Never invent a prior state or action."
+                )
             typed_request = {
                 "messages": [
-                    {"role": "system", "content": SYSTEM},
+                    {"role": "system", "content": typed_system},
                     {"role": "user", "content": canonical(source_input)},
                 ],
                 "response_format": {"type": "json_object"},
