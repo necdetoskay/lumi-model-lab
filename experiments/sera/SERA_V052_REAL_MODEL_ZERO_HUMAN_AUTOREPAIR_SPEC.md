@@ -34,3 +34,15 @@ Esas ölçüm “scripted testi geçti” değil, **dondurulmuş Mara 28 cümlel
 **Hiçbir manuel hikâye/prose/JSON/gold düzeltmesi. LLM için uygulama tanımlı çıktı token sınırı yok.** Kontrol amaçlı ücretli istek sayısı ve harcama gözcüsü ise faturalandırılabilir çalıştırma güvenliği için ayrı, kabul edilebilir mekanizmalardır. Gözlenen sağlayıcı maliyeti önceden kesin dolar üst limiti garantisi sayılmayacak. GitHub Actions sadece self-hosted runner üzerinde çalışacak.
 
 Bu belge **v0.52 spesifikasyonudur; gerçek-model uçtan uca başarı veya ücretli çalıştırma tamamlandı iddiası değildir**.
+
+## 17 Ekim 2026 — v0.52 somut uygulama / dürüst kanıt sınırı
+
+**Yeni durum:** `OFFLINE_MODEL_ADAPTER_WIRED / REAL_PROVIDER_MARA_PENDING`.
+
+- `scene_qualified_model_lane_v052.py` yeni shadow lane içinde **gerçek modülleri** birleştirir: bağımsız kaynak-kör çıkarım `v0.22`, kaynak-bağlı otomatik model-yazar adaptörü `v0.21`, **zorunlu `v0.23` full-scene qualification**, otomatik sahne loop `v0.20`. Bu katman yalnız **injected `synthetic/v052-*` provider** kabul eder; production secret/env key okumaz, canlı POST göndermez. Yeni gerçek-provider grant gate henüz devreye alınmadı.
+- `test_scene_qualified_model_lane_v052.py`: 8 yeni test (2 cümle Ari'de kendi kendine yeniden yazım + zorunlu full-v0.23 yeniden doğrulama; orijinal 28 cümle Mara eksik kaynak kanıtı fail-safe; sahte gerçek modelin offline yola alınmaması; SHA/WorldState drift; belirsiz yanıt ile durdurma ve replay; 0 rewrite; sahte canonical truth; hiçbir model output-token ceiling).
+- [**Tüm SERA regresyon CI #39008646674**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39008646674): ilk deterministic suite **757/757 PASS** (eski 749 + yeni 8).
+- `scene_qualified_smoke_v052.py`: kendi kendine tekrar yürütülebilir synthetic kanıt. Ari S1 1 otomatik yeniden yazımdan sonra **full v0.23 noncanonical candidate**; Mara S1 **tam dondurulmuş 28 cümle** ama sentetik model eksik full source yanıtı verdiği için **`FAILED_SAFE_FINAL`**. Her iki ayrı sahnede tekrar başladığında 0 ek model callback. 0 üretim DB/world write, 0 manuel metin/JSON tamiri, 0 yeni ücretli provider.
+- [**Özel v0.52 self-hosted CI #39008745878**](https://github.com/necdetoskay/lumi-model-lab/actions/runs/39008745878): **SUCCESS: 8/8 focused tests + smoke**. Artefakt `sera-v052-qualified-shadow-39008745878` ID `12091816849`, net durum `SYNTHETIC_ARI_QUALIFIED_MARA_28_FAILED_SAFE`; **Ari'nin iki cümlelik sentetik başarısı Mara'nın 28 cümlelik gerçek başarı iddiası değildir**.
+
+**Sıradaki gerçek blokaj P0/P1:** yalnız ayrı açık ücretli yetkiyle kullanabileceğimiz, global durable single-use grant ve provider makbuz korumasıyla gerçek model transport yolu. Ardından Mara'nın 28 cümlesinin gerçekten tam kaynak-kör çıkarımı → bağımsız doğrulama → model-written rewrite → *yeni SHA üzerinden* tekrar çıkarım/doğrulama. Gold semantic quality ve G2 state yetkisi bu sürümde verilmez. Aion HIGH/MAX önceki ücretli izni SERA için kullanılamaz; model çıktı token sınırı yine yasak.
