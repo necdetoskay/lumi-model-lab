@@ -94,7 +94,7 @@ def audit_delegated_receipts(*, journal, approval_id):
             if (not isinstance(source_sha,str) or len(source_sha)!=64 or
                 any(c not in "0123456789abcdef" for c in source_sha) or
                 not isinstance(request_sha,str) or len(request_sha)!=64 or (
-                not isinstance(binding_sha,str) or len(binding_sha)!=64):
+                not isinstance(binding_sha,str) or len(binding_sha)!=64)):
                 raise ValueError("journal request/source fingerprints missing")
             line.update(generation_id=generation,
                         input_tokens=inp,output_tokens=out,
