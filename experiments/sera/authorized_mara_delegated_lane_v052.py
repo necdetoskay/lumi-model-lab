@@ -286,6 +286,12 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         "provider_receipts_require_independent_audit":True,
         "full_scene_qualification_gate_invoked":bool(list((root/"controller").glob("check_*.json"))),
         "semantic_quality_final_release_approved":False,
+        # LAB Mara entry_state() is a fixture, NOT v0.36 signed G2
+        # physical authority. A source chronology does not upgrade it.
+        "physical_g2_entry_snapshot_verified":False,
+        "physical_source_status":"LAB_FIXTURE_NOT_G2_ATTESTED",
+        "v053_signed_physical_source_gate_pending":True,
+        "physical_future_events_verified":0,
         "manual_story_or_json_edits":0,"canonical_commit_authorized":False,
         "production_db_writes":0,"requires_manual_intervention":False,
     }
