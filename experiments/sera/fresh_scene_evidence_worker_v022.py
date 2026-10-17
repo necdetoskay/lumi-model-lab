@@ -152,6 +152,39 @@ def _check_critical_coverage(report, typed):
         )), "V022_UNRESOLVED_FULL_SENTENCE_SWEEP_FINDING")
 
 
+def _source_only_repair_request(*, original, failure_code, attempt):
+    """New exact request after RECEIPTED malformed answer; no prior output.
+
+    Never insert model's rejected answer/claims into its own repair context.
+    Distinct attempt and source-only deterministic validation code become
+    part of the signed journal's new request fingerprint.
+    """
+    import re
+    _require(isinstance(original,dict) and
+             isinstance(original.get("messages"),list) and
+             len(original["messages"])>=2 and
+             original["messages"][0].get("role")=="system" and
+             original["messages"][-1].get("role")=="user" and
+             isinstance(original["messages"][0].get("content"),str) and
+             isinstance(original["messages"][-1].get("content"),str) and
+             type(attempt) is int and 1<=attempt<=2,
+             "V022_REPAIR_ORIGINAL_REQUEST_INVALID")
+    safe=(failure_code if isinstance(failure_code,str) and
+          re.fullmatch(r"[A-Z0-9_]{1,100}",failure_code)
+          else "V022_MODEL_RESPONSE_INVALID")
+    amended=deepcopy(original)
+    amended["messages"][0]["content"]+=(
+        "\\n\\nSOURCE-ONLY AUTOMATIC RE-EXTRACTION, attempt "+
+        str(attempt)+". Deterministic validator code: "+safe+
+        ". Read the ORIGINAL user source from scratch and return EVERY "
+        "required target row and exactly the specified JSON keys. "
+        "No previous model output, Writer analysis, gold answers or "
+        "manual corrections are provided. Preserve all uncertainty; "
+        "never invent an event, actor, location or action time.")
+    enforce_no_output_token_limit(amended)
+    return amended
+
+
 def create_preparer(*, evidence_root, work_root, scene_key,
                     registry, candidate_lexicon, typed_registry,
                     api_key, extraction_model, semantic_model, typed_model,
@@ -161,7 +194,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                     trusted_temporal_builder=None,
                     temporal_policy_id=None,
                     trusted_relation_builder=None,
-                    relation_policy_id=None, reconciler=None):
+                    relation_policy_id=None, reconciler=None,\n                    max_source_repair_attempts=0):
     """Return v0.20 prepare_evidence(prose=...,world=...) callback.
 
     The caller supplies only registered world identities and provider
@@ -194,6 +227,9 @@ def create_preparer(*, evidence_root, work_root, scene_key,
     _require(type(max_model_requests) is int and
              1 <= max_model_requests <= 100,
              "V022_REQUEST_GUARD_INVALID")
+    _require(type(max_source_repair_attempts) is int and
+             0<=max_source_repair_attempts<=2,
+             "V022_SOURCE_REPAIR_POLICY_INVALID")
     _require(fallback_model is None or (
         isinstance(fallback_model, str) and bool(fallback_model.strip()) and
         fallback_model not in (extraction_model, typed_model)
@@ -226,7 +262,7 @@ def create_preparer(*, evidence_root, work_root, scene_key,
             "roles_sha": digest(roles),
             "models": [extraction_model, semantic_model,
                        typed_model, fallback_model],
-            "max_model_requests": max_model_requests,
+            "max_model_requests": max_model_requests,\n            "max_source_repair_attempts": max_source_repair_attempts,
             "observed_spend_guard_usd": str(guard),
         }
         if trusted_temporal_builder is not None:
@@ -311,28 +347,39 @@ def create_preparer(*, evidence_root, work_root, scene_key,
         def provider_json(*, tag, request, stage_models, bind):
             nonlocal spent, calls
             enforce_no_output_token_limit(request)
-            last_reason = "V022_ALL_RECEIPTED_MODELS_UNQUALIFIED"
+            last_reason="V022_ALL_RECEIPTED_MODELS_UNQUALIFIED"
             for chosen in stage_models:
-                if calls >= max_model_requests or spent >= guard:
-                    raise CoverageError("V022_CALL_OR_SPEND_GUARD")
-                reply = _durable_provider_response(
-                    root=root / "receipts" / tag, model=chosen,
-                    request=request, api_key=api_key,
-                    provider_call=provider_call,
-                    reconciler=reconciler,
-                )
-                calls += 1
-                body, choice, price = _provider_body(reply, chosen)
-                spent += price
-                try:
-                    _require(choice["finish_reason"] == "stop",
-                             "V022_PROVIDER_INCOMPLETE")
-                    decoded = _parse_json(choice["message"].get("content"))
-                    return bind(decoded)
-                except (CoverageError, ValueError, TypeError) as exc:
-                    last_reason = str(exc)
-                    # A fully received, durable, malformed response may
-                    # automatically route to the next distinct model.
+                for retry_no in range(max_source_repair_attempts+1):
+                    if calls>=max_model_requests or spent>=guard:
+                        raise CoverageError("V022_CALL_OR_SPEND_GUARD")
+                    exact=(request if retry_no==0 else
+                           _source_only_repair_request(
+                                original=request,failure_code=last_reason,
+                                attempt=retry_no))
+                    tag_id=(tag if retry_no==0 else
+                            tag+"_source_repair_"+str(retry_no))
+                    # Each repaired request is a DIFFERENT fingerprint and
+                    # needs another signed grant slot. Unknown network
+                    # outcomes stop before this block can reach retry.
+                    reply=_durable_provider_response(
+                        root=root/"receipts"/tag_id,model=chosen,
+                        request=exact,api_key=api_key,
+                        provider_call=provider_call,reconciler=reconciler)
+                    calls+=1
+                    body,choice,price=_provider_body(reply,chosen)
+                    spent+=price
+                    try:
+                        _require(choice["finish_reason"]=="stop",
+                                 "V022_PROVIDER_INCOMPLETE")
+                        decoded=_parse_json(choice["message"].get("content"))
+                        return bind(decoded)
+                    except (CoverageError,ValueError,TypeError) as exc:
+                        last_reason=(exc.code if isinstance(exc,CoverageError)
+                                     else "V022_MODEL_RESPONSE_INVALID")
+                        # A received malformed response can be repaired
+                        # autonomously; never pass old untrusted prose back.
+                # An independently signed fallback model, if configured,
+                # starts from the unchanged original request.
             raise CoverageError(last_reason)
 
         try:
