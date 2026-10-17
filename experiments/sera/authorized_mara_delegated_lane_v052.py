@@ -146,7 +146,8 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         extraction_model=models["extraction"],
         semantic_model=models["semantic"],typed_model=models["typed"],
         provider_call=safe_provider,reconciler=safe_reconciler,
-        max_model_requests=28,observed_spend_guard_usd="0.30")
+        max_model_requests=28,observed_spend_guard_usd="0.30",
+        max_source_repair_attempts=1)
 
     def proven_preparer(*,prose,world):
         if digest(world)!=contract["world_sha256"]:
