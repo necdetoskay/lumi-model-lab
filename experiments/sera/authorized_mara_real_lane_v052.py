@@ -138,7 +138,10 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
                 result.get("canonical_commit_authorized") is False and
                 result.get("production_db_writes")==0,
                 "V052_REAL_LANE_ARCHIVE_UNSAFE")
-        return result
+        if result.get("status") == "LAB_CANDIDATE_NONCANONICAL":
+            return result
+        # A failed terminal controller may still recover an already saved
+        # provider receipt via GET-only reconciliation, never a fresh POST.
 
     prose=frozen_mara_source()["prose"]
     world=entry_state()
@@ -168,7 +171,9 @@ def run_signed_mara(*, models, approval, trusted_public_key, grants,
         rewrite_scene=writer,output_dir=root/"controller",
         prepare_evidence=prepare_evidence,
         evidence_policy_id="v052-signed-real-full-v023-noncanonical",
-        max_rewrites=max_rewrites,observed_spend_guard_usd="0.15")
+        max_rewrites=max_rewrites,observed_spend_guard_usd="0.15",
+        resume_reconciled_evidence=True,
+        recover_rewrite_scene=writer.recover_existing)
     require(loop.get("canonical_commit_authorized") is False and
             loop.get("world_db_writes")==0 and
             loop.get("requires_manual_intervention") is False,
