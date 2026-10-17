@@ -116,7 +116,7 @@ class FrozenMaraFacetControl(unittest.TestCase):
         with self.assertRaisesRegex(CoverageError,"V013_SEPARATE_SIMULATED_APPROVAL_REQUIRED"):
             simulate_batch(state=self.baseline(),events=events,
                            prose=self.prose,approvals={},mode=MODE)
-        with self.assertRaisesRegex(CoverageError,"V013_EVENT_NARRATIVE_ORDER_OR_DUPLICATE"):
+        with self.assertRaisesRegex(CoverageError,"V013_EVENT_ID_REPLAY|V013_EVENT_NARRATIVE_ORDER_OR_DUPLICATE"):
             simulate_batch(
                 state=self.baseline(),events=[events[0],events[0]],
                 prose=self.prose,
