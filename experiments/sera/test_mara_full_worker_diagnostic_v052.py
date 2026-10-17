@@ -19,12 +19,15 @@ from experiments.sera.fresh_scene_evidence_worker_v022 import (
     create_preparer,_deterministic_physical_source_focus,
     _typed_only_coverage_retry_request,
     _check_critical_coverage,
+    _missing_critical_typed_sentence_ids,
 )
 from experiments.sera.coverage import CoverageError
 from experiments.sera.mara_scene_capabilities_v054 import registered_mara_facets
 from experiments.sera.mara_s1_typed_live_v05 import entry_state,REGISTRY
 from experiments.sera.real_blind_benchmark_v040 import prepare,LEXICON,EXPECTED_SHA
-from experiments.sera.test_mara_28_mechanical_source_control_v052 import simulate_blind_coverage
+from experiments.sera.test_mara_28_mechanical_source_control_v052 import (
+    simulate_blind_coverage, bind_all,
+)
 from experiments.sera.sentence_ledger_v06 import sentences
 
 
@@ -110,10 +113,17 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
             ]
             self.assertEqual(set(batch_sets),set(self.by_sentence_batch))
             self.assertGreaterEqual(len(batch_sets),7)
-            # All seven exact-source typed windows are independently read.
+            # All seven source extraction batches are read; typed recovery
+            # asks ONLY windows selected by missing critical source events.
+            # This is mechanical source routing, never a Mara gold answer.
+            report=bind_all(self.plan,self.prose,self.responses)
+            gaps=_missing_critical_typed_sentence_ids(report,[])
+            selected=[b for b in self.plan["batches"]
+                      if gaps.intersection(b["sentence_ids"])]
             typed_packets = [payload for _, payload in self.calls
                              if "original_prose" in payload]
-            self.assertEqual(len(typed_packets),9)
+            self.assertEqual(len(typed_packets),2+len(selected))
+            self.assertLessEqual(len(selected),7)
             self.assertTrue(all(prose_hash(p["original_prose"])==EXPECTED_SHA
                                 for p in typed_packets))
             self.assertEqual(output["status"],"FAILED_SAFE_FINAL",
