@@ -8,6 +8,7 @@ journal record prevents blind rebilling. No output-token limit is added.
 """
 from __future__ import annotations
 
+import base64
 import json
 import time
 from urllib.error import HTTPError
@@ -65,15 +66,42 @@ def make_openrouter_transport(*, api_key, opener=None, timeout_seconds=180):
             with send(request, timeout=timeout_seconds) as response:
                 raw_bytes = response.read()
         except HTTPError as exc:
-            # Received HTTP rejection is a durable response, not a valid
-            # generated scene; do not leak potentially sensitive error text.
-            return {"raw": None, "error": "HTTP_" + str(exc.code),
+            # Archive the exact non-2xx response bytes too; a model response
+            # must never be confused with a completed story-stage result.
+            return {"wire_payload_b64": base64.b64encode(exc.read()).decode("ascii"),
+                    "http_status": exc.code,
                     "duration_ms": round((time.monotonic() - started) * 1000)}
-        # Network/timeout/JSON errors MUST propagate into UNKNOWN-INFLIGHT:
-        # the journal will not send another POST for this request.
-        result = json.loads(raw_bytes.decode("utf-8"))
-        if not isinstance(result, dict):
-            raise JournalBlocked("V052_PROVIDER_ENVELOPE_NOT_OBJECT")
-        return {"raw": result, "error": None,
+        # Persist the EXACT received response bytes before JSON decode. The
+        # journal is responsible for durable RECEIPTED-before-parse semantics.
+        # Network/timeouts propagate as UNKNOWN-INFLIGHT, never auto-resend.
+        return {"wire_payload_b64": base64.b64encode(raw_bytes).decode("ascii"),
+                "http_status": 200,
                 "duration_ms": round((time.monotonic() - started) * 1000)}
     return one_post
+
+
+
+def decode_receipted_wire(envelope):
+    """Only invoke AFTER ProviderJournal persisted the exact response bytes."""
+    if not isinstance(envelope, dict) or set(envelope) != {
+        "wire_payload_b64", "http_status", "duration_ms"
+    }:
+        raise JournalBlocked("V052_WIRE_RECEIPT_FORMAT_INVALID")
+    try:
+        raw = base64.b64decode(envelope["wire_payload_b64"], validate=True)
+    except (ValueError, TypeError) as exc:
+        raise JournalBlocked("V052_WIRE_RECEIPT_CORRUPT") from exc
+    status = envelope["http_status"]
+    if type(status) is not int:
+        raise JournalBlocked("V052_HTTP_STATUS_INVALID")
+    if status != 200:
+        return {"raw": None, "error": "HTTP_" + str(status),
+                "duration_ms": envelope["duration_ms"]}
+    try:
+        data = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise JournalBlocked("V052_RECEIPTED_MODEL_JSON_INVALID") from exc
+    if not isinstance(data, dict):
+        raise JournalBlocked("V052_RECEIPTED_ENVELOPE_INVALID")
+    return {"raw": data, "error": None,
+            "duration_ms": envelope["duration_ms"]}
