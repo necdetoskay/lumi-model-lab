@@ -93,6 +93,7 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
             provider_call=provider,max_source_repair_attempts=1,
             max_model_requests=28,
             observed_spend_guard_usd="0.30",
+            typed_batch_recovery=True,
         )
 
     def test_real_28_worker_uses_all_seven_batches_and_remains_honest(self):
@@ -108,6 +109,12 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
             ]
             self.assertEqual(set(batch_sets),set(self.by_sentence_batch))
             self.assertGreaterEqual(len(batch_sets),7)
+            # All seven exact-source typed windows are independently read.
+            typed_packets = [payload for _, payload in self.calls
+                             if "original_prose" in payload]
+            self.assertEqual(len(typed_packets),9)
+            self.assertTrue(all(prose_hash(p["original_prose"])==EXPECTED_SHA
+                                for p in typed_packets))
             self.assertEqual(output["status"],"FAILED_SAFE_FINAL",
                              "uncertain scanner evidence must never be promoted")
             self.assertFalse(output["canonical_commit_authorized"])
@@ -144,6 +151,7 @@ class FrozenMaraRealWorkerDiagnostic(unittest.TestCase):
         self.assertEqual(opts["typed_registry"],
                          registered_mara_facets(self.world))
         self.assertEqual(opts["max_source_repair_attempts"],1)
+        self.assertIs(opts["typed_batch_recovery"],True)
         self.assertEqual(opts["prose"],self.prose)
         self.assertEqual(opts["world"],self.world)
 
