@@ -723,8 +723,10 @@ def create_preparer(*, evidence_root, work_root, scene_key,
                                      window_candidates)) ==
                              len(window_candidates),
                              "V022_TYPED_WINDOW_DUPLICATE_EVENT_ID")
+                    # Defer the final coverage check to the existing
+                    # independent fallback path; a well-receipted, but
+                    # incomplete window set must not skip that model.
                     typed = window_candidates
-                    _check_critical_coverage(report, typed)
             # A syntactically valid but STILL incomplete primary facet
             # model can be checked by an explicitly configured alternate
             # model. Distinct model/request/tag = new auditable receipt.
