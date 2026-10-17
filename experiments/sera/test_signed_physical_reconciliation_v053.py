@@ -103,7 +103,8 @@ class PinnedSourceJoinTests(unittest.TestCase):
                          self.world["entities"][BOX]["holder"])
         self.assertEqual(facts[BOX]["owner_id"],
                          self.world["entities"][BOX]["owner"])
-        self.assertEqual(result["registered_route_count"],0)
+        self.assertEqual(result["registered_route_count"],
+                         len(self.packet["snapshot"]["registeredRoutes"]))
         self.assertEqual(result["source_sentence_count"],2)
         self.assertEqual(result["model_candidate_event_count"],0)
         self.assertEqual(result["verified_future_event_count"],0)
