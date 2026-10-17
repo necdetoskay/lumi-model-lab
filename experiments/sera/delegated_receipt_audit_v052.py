@@ -7,7 +7,8 @@ missing provider cost/tokens or request fingerprint drift cannot produce PASS.
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
-import hashlib
+import binascii
+import math
 import json
 
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, _hash
@@ -82,14 +83,17 @@ def audit_delegated_receipts(*, journal, approval_id):
             if finish_reason!="stop":
                 raise ValueError("provider completion not finished")
             duration=envelope.get("duration_ms")
-            if type(duration) not in (int,float) or duration<0:
+            if (type(duration) not in (int,float) or duration<0 or
+                not math.isfinite(duration)):
                 raise ValueError("provider latency missing")
             details=usage.get("completion_tokens_details")
             reason=(details.get("reasoning_tokens") if isinstance(details,dict)
                     else usage.get("reasoning_tokens"))
             if reason is not None and not _nonneg_int(reason):
                 raise ValueError("reasoning token count invalid")
-            if not isinstance(request_sha,str) or len(request_sha)!=64 or (
+            if (not isinstance(source_sha,str) or len(source_sha)!=64 or
+                any(c not in "0123456789abcdef" for c in source_sha) or
+                not isinstance(request_sha,str) or len(request_sha)!=64 or (
                 not isinstance(binding_sha,str) or len(binding_sha)!=64):
                 raise ValueError("journal request/source fingerprints missing")
             line.update(generation_id=generation,
@@ -97,7 +101,8 @@ def audit_delegated_receipts(*, journal, approval_id):
                         reasoning_tokens=reason,cost_usd=str(cost),
                         duration_ms=duration,finish_reason=finish_reason)
             total+=cost
-        except (ValueError,TypeError,KeyError,InvalidOperation,JournalBlocked) as exc:
+        except (ValueError,TypeError,KeyError,InvalidOperation,JournalBlocked,
+                UnicodeDecodeError,binascii.Error):
             complete=False
             line["audit_failure_code"]="V052_RECEIPT_UNQUALIFIED"
         receipts.append(line)
