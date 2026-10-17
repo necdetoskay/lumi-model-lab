@@ -18,7 +18,10 @@ from experiments.sera.tests.test_fresh_scene_evidence_worker_v022 import (
     SOURCE_1,SOURCE_2,EXTRACT,SEMANTIC,TYPED,entry,fake_model,
 )
 from experiments.sera.tests.test_automated_row_recovery_v050 import (
-    fixture as mara_fixture, scripted_provider,
+    scripted_provider,
+)
+from experiments.sera.tests.test_real_mara_recovery_queue_v049 import (
+    candidate_fixture as mara_fixture,
 )
 
 
