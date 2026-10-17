@@ -27,7 +27,8 @@ from experiments.sera.openrouter_scene_writer_v021 import create_writer, make_re
 from experiments.sera.provider_grant_journal_v052 import JournalBlocked, ProviderJournal, _hash
 from experiments.sera.paid_issuer_trust_v052 import verify_pinned_paid_issuer
 from experiments.sera.paid_runtime_boundary_v052 import (read_protected_runtime_config,
-    verify_shared_local_journal, assert_paid_approval_active)
+    verify_shared_local_journal, assert_paid_approval_active,
+    open_bound_paid_journal,bind_revocation_checked_transport)
 from experiments.sera.real_blind_benchmark_v040 import (
     prepare as frozen_mara_source, LEXICON, EXPECTED_SHA)
 from experiments.sera.scene_qualified_model_lane_v052 import require
@@ -66,15 +67,18 @@ def run_delegated_mara(*, models, approval, trusted_public_key,
         approval_id=approval["manifest"]["approval_id"])
     if not isinstance(api_key,str) or not api_key.strip():
         raise JournalBlocked("V052_DELEGATED_PROVIDER_KEY_MISSING")
-    journal=ProviderJournal(journal_path)
+    journal=open_bound_paid_journal(runtime_cfg)
     budget=DelegatedBudget(
         journal,approval=approval,trusted_public_key=trusted_public_key,
         source_sha256=EXPECTED_SHA,world_sha256=contract["world_sha256"],
         scene_key=SCENE_KEY,policy_sha256=contract["policy_sha256"],
         approved_models=models,max_rewrites=max_rewrites)
+    protected_transport=bind_revocation_checked_transport(
+        transport=make_openrouter_transport(api_key=api_key,opener=opener),
+        config_path=runtime_trust_config_path,original_config=runtime_cfg,
+        approval_id=budget.approval_id)
     callback=create_delegated_provider(
-        budget=budget,transport=make_openrouter_transport(
-            api_key=api_key,opener=opener))
+        budget=budget,transport=protected_transport)
     root=Path(output_root)
     saved=dict(contract,schema=SCHEMA,
                approval_id=budget.approval_id,
